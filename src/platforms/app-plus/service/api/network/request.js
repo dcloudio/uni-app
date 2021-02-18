@@ -109,7 +109,8 @@ export function createRequestTaskById (requestTaskId, {
       ok,
       status,
       data,
-      headers
+      headers,
+      errorMsg
     }) => {
       if (aborted) {
         return
@@ -128,11 +129,15 @@ export function createRequestTaskById (requestTaskId, {
           cookies: cookiesPrase(headers)
         })
       } else {
+        let errMsg = 'abort statusCode:' + statusCode
+        if (errorMsg) {
+          errMsg = errMsg + ' ' + errorMsg
+        }
         publishStateChange({
           requestTaskId,
           state: 'fail',
           statusCode,
-          errMsg: 'abort statusCode:' + statusCode
+          errMsg
         })
       }
     })
