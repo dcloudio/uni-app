@@ -251,11 +251,7 @@ admin 框架内置了一套 icon 图标，在`静态功能演示-图标`菜单�
 </style>
 ```
 
-在标签上使用图标的 class 名称，即：
-
-```
-<view class="el-icon-s-tools"></view>
-```
+在标签上使用图标的 class 名称即可：``el-icon-s-tools``
 
 ### 用户-角色-权限
 
