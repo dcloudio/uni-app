@@ -1675,6 +1675,39 @@ exports.main = async function(event,context) {
 }
 ```
 
+### 微信数据解密
+
+用法：`uniID.wxBizDataCrypt(Object params);`
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明													|
+| ---	| ---		| ---	| ---														|
+| encryptedData	| String| 是	|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。解密后得到的数据结构见后文	|
+| iv	| String| 是	|加密算法的初始向量	|
+| code	| String| `sessionKey`二选一	|微信登录返回的code	|
+| sessionKey	| String| `code`二选一	|用户的会话密钥，可通过uniID.code2SessionWeixin(code)获取	|
+
+**注意**
+
+- `code`参数和`sessionKey`参数必须选填一个。如果有`sessionKey`则使用此值进行解密，否则尝试使用`code`去获取`sessionKey`，若两个都没有则报错。
+
+**响应参数**
+
+| 字段| 类型	| 说明						|
+| ---	| ---			| ---							|
+| code| Number	|错误码，0表示成功|
+| message	| String	|详细信息					|
+| 解密数据	| String	|具体数据由微信接口解密为准					|
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	return uniID.wxBizDataCrypt(event)
+}
+```
+
 ## 支付宝小程序
 
 ### 支付宝登录
