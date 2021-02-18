@@ -73,7 +73,7 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
   const EXTNAMES = ['.js', '.ts', '.vue', '.nvue']
   const sourceMap = options.sourceMap !== false
   return {
-    name: 'uni:inject',
+    name: 'vite:uni-inject',
     transform(code, id) {
       if (!filter(id)) return null
       if (!EXTNAMES.includes(path.extname(id))) {

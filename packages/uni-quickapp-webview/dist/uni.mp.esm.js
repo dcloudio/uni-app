@@ -945,7 +945,7 @@ function initLifetimes$1(lifetimesOptions) {
     return extend(initLifetimes(lifetimesOptions), {
         ready() {
             if (this.$vm && lifetimesOptions.isPage(this)) {
-                if ( this.pageinstance) {
+                if (this.pageinstance) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
                 }
                 this.$vm.$callSyncHook('created');

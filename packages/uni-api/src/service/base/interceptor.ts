@@ -8,7 +8,7 @@ import {
   HOOKS,
 } from '../../helpers/interceptor'
 
-import { API_TYPE_SYNC, createApi } from '../../helpers/api'
+import { createSyncApi } from '../../helpers/api'
 
 import {
   AddInterceptorProtocol,
@@ -80,8 +80,8 @@ function removeHook(hooks: Function[] | undefined, hook: Function) {
   }
 }
 
-export const addInterceptor = createApi(
-  { type: API_TYPE_SYNC, name: 'addInterceptor' },
+export const addInterceptor = createSyncApi(
+  'addInterceptor',
   (method: string | Interceptor, interceptor: Interceptor | undefined) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
       mergeInterceptorHook(
@@ -95,8 +95,8 @@ export const addInterceptor = createApi(
   AddInterceptorProtocol
 )
 
-export const removeInterceptor = createApi(
-  { type: API_TYPE_SYNC, name: 'removeInterceptor' },
+export const removeInterceptor = createSyncApi(
+  'removeInterceptor',
   (method: string | Interceptor, interceptor: Interceptor | undefined) => {
     if (typeof method === 'string') {
       if (isPlainObject(interceptor)) {

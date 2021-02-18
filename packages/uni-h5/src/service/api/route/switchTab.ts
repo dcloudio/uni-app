@@ -1,3 +1,3 @@
-import { API_TYPE_ASYNC, createApi } from '@dcloudio/uni-api'
+import { createAsyncApi } from '@dcloudio/uni-api'
 
-export const switchTab = createApi({ type: API_TYPE_ASYNC }, () => {})
+export const switchTab = createAsyncApi('switchTab', () => {})

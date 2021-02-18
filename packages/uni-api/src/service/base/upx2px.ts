@@ -1,4 +1,4 @@
-import { API_TYPE_SYNC, createApi } from '../../helpers/api'
+import { createSyncApi } from '../../helpers/api'
 import { Upx2pxProtocol } from '../../protocols/base/upx2px'
 
 const EPS = 1e-4
@@ -14,8 +14,8 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios'
 }
 
-export const upx2px = createApi<typeof uni.upx2px>(
-  { type: API_TYPE_SYNC, name: 'upx2px' },
+export const upx2px = createSyncApi<typeof uni.upx2px>(
+  'upx2px',
   (number, newDeviceWidth?: number) => {
     if (deviceWidth === 0) {
       checkDeviceWidth()

@@ -1,8 +1,5 @@
-import { API_TYPE_SYNC, createApi } from '@dcloudio/uni-api'
+import { createSyncApi } from '@dcloudio/uni-api'
 
-export const getRealPath = createApi(
-  { type: API_TYPE_SYNC },
-  (path: string) => {
-    return path
-  }
-)
+export const getRealPath = createSyncApi('getRealPath', (path: string) => {
+  return path
+})

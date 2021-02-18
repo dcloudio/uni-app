@@ -12,7 +12,7 @@ export const app = {
     return id === appVuePath
   },
   load(filename: string, _options: VitePluginUniResolvedOptions) {
-    return `<template><VUniApp/></template><style src="@dcloudio/uni-h5/style/base.css"/>${fs
+    return `<template><VUniApp ref="app"/></template><style src="@dcloudio/uni-h5/style/base.css"/>${fs
       .readFileSync(filename, 'utf-8')
       .toString()}`
   },

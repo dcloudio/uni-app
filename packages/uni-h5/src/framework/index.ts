@@ -1,1 +1,1 @@
-export * from './app'
+export { getApp, getCurrentPages } from './app'

@@ -149,7 +149,7 @@ function findHooks(vueOptions, hooks = new Set()) {
 function initHook(mpOptions, hook, excludes) {
     if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
         mpOptions[hook] = function (args) {
-            if ( hook === 'onError') {
+            if (hook === 'onError') {
                 return getApp().$vm.$callHook(hook, args);
             }
             return this.$vm && this.$vm.$callHook(hook, args);

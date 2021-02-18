@@ -1,9 +1,9 @@
 <template>
-  <uni-app :class="{'uni-app--showtabbar':showTabBar}">
+  <uni-app :class="{ 'uni-app--showtabbar': showTabBar }">
     <!-- <transition :name="transitionName"> -->
     <!-- TODO -->
     <router-view :key="key" v-slot="{ Component }">
-      <keep-alive :include="keepAliveInclude">
+      <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
         <component :is="Component" />
       </keep-alive>
     </router-view>
@@ -15,9 +15,17 @@
       v-bind="showActionSheet"
       @close="_onActionSheetClose"
     />
-    <modal v-if="$options.components.Modal" v-bind="showModal" @close="_onModalClose" />
-    <template v-if="sysComponents&&sysComponents.length">
-      <component :is="item" v-for="(item, index) in sysComponents" :key="index" />
+    <modal
+      v-if="$options.components.Modal"
+      v-bind="showModal"
+      @close="_onModalClose"
+    />
+    <template v-if="sysComponents && sysComponents.length">
+      <component
+        :is="item"
+        v-for="(item, index) in sysComponents"
+        :key="index"
+      />
     </template>
   </uni-app>
 </template>
@@ -39,28 +47,28 @@ export default {
   props: {
     keepAliveInclude: {
       type: Array,
-      default: function() {
+      default: function () {
         return []
-      }
-    }
+      },
+    },
+    keepAliveExclude: {
+      type: Array,
+      default: function () {
+        return []
+      },
+    },
   },
   data() {
     return {
       transitionName: 'fade',
       hideTabBar: false,
       tabBar: __uniConfig.tabBar || {},
-      sysComponents: this.$sysComponents
+      sysComponents: this.$sysComponents,
     }
   },
   computed: {
     key() {
-      return (
-        this.$route.meta.name +
-        '-' +
-        this.$route.params.__id__ +
-        '-' +
-        (__uniConfig.reLaunch || 1)
-      )
+      return this.$route.path + '-' + (history.state.__id__ || -1)
     },
     hasTabBar() {
       return (
@@ -71,7 +79,7 @@ export default {
     },
     showTabBar() {
       return this.$route.meta.isTabBar && !this.hideTabBar
-    }
+    },
   },
   watch: {
     $route(newRoute, oldRoute) {
@@ -84,8 +92,8 @@ export default {
         const envMethod = canIUse('css.env')
           ? 'env'
           : canIUse('css.constant')
-            ? 'constant'
-            : ''
+          ? 'constant'
+          : ''
         const windowBottom =
           windowBottomValue && envMethod
             ? `calc(${windowBottomValue}px + ${envMethod}(safe-area-inset-bottom))`
@@ -102,7 +110,7 @@ export default {
       }
       // 触发 resize 事件
       window.dispatchEvent(new CustomEvent('resize'))
-    }
+    },
   },
   created() {
     if (canIUse('css.var')) {
@@ -110,7 +118,7 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('message', function(evt) {
+    window.addEventListener('message', function (evt) {
       if (
         isPlainObject(evt.data) &&
         evt.data.type === 'WEB_INVOKE_APPSERVICE'
@@ -122,13 +130,13 @@ export default {
         )
       }
     })
-    document.addEventListener('visibilitychange', function() {
+    document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') {
         UniServiceJSBridge.emit('onAppEnterForeground')
       } else {
         UniServiceJSBridge.emit('onAppEnterBackground')
       }
     })
-  }
+  },
 }
 </script>

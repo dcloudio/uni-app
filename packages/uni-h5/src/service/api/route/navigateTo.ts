@@ -1,9 +1,15 @@
-import { API_TYPE_ASYNC, createApi } from '@dcloudio/uni-api'
+import { Router } from 'vue-router'
+import { createAsyncApi } from '@dcloudio/uni-api'
+import { createPageState } from '../../../framework/app'
 
-export const navigateTo = createApi<typeof uni.navigateTo>(
-  { type: API_TYPE_ASYNC },
+export const navigateTo = createAsyncApi<typeof uni.navigateTo>(
+  'navigateTo',
   (options) => {
-    const router = getApp().$router
-    router.push(options.url)
+    const router = getApp().$router as Router
+    router.push({
+      path: options.url,
+      force: true,
+      state: createPageState('navigateTo'),
+    })
   }
 )

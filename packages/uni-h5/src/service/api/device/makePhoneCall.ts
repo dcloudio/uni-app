@@ -1,11 +1,7 @@
-import {
-  API_TYPE_ASYNC,
-  createApi,
-  MakePhoneCallProtocol,
-} from '@dcloudio/uni-api'
+import { createAsyncApi, MakePhoneCallProtocol } from '@dcloudio/uni-api'
 
-export const makePhoneCall = createApi<typeof uni.makePhoneCall>(
-  { type: API_TYPE_ASYNC, name: 'makePhoneCall' },
+export const makePhoneCall = createAsyncApi<typeof uni.makePhoneCall>(
+  'makePhoneCall',
   (option) => {
     window.location.href = `tel:${option.phoneNumber}`
   },

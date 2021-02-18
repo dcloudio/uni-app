@@ -1,6 +1,6 @@
 import { hasOwn } from '@vue/shared'
 
-import { createApi, CanIUseProtocol, API_TYPE_SYNC } from '@dcloudio/uni-api'
+import { CanIUseProtocol, createSyncApi } from '@dcloudio/uni-api'
 
 function cssSupports(css: string) {
   return window.CSS && window.CSS.supports && window.CSS.supports(css)
@@ -12,8 +12,8 @@ const SCHEMA_CSS = {
   'css.constant': cssSupports('top:constant(a)'),
 }
 
-export const canIUse = createApi<typeof uni.canIUse>(
-  { type: API_TYPE_SYNC, name: 'canIUse' },
+export const canIUse = createSyncApi<typeof uni.canIUse>(
+  'canIUse',
   (schema: string) => {
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema]

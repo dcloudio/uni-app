@@ -24,9 +24,9 @@ export function createResolveId(
       debugResolve(id)
       return '@dcloudio/uni-h5-vue'
     }
-    if (id.startsWith('@/')) {
-      debugResolve(id)
-      return path.join(options.inputDir, id.replace('@/', ''))
-    }
+    // if (id.startsWith('@/')) {
+    //   debugResolve(id)
+    //   return path.join(options.inputDir, id.replace('@/', ''))
+    // }
   }
 }

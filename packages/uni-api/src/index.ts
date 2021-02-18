@@ -23,10 +23,9 @@ export * from './protocols/media/getImageInfo'
 
 // helpers
 export {
-  createApi,
-  API_TYPE_ON,
-  API_TYPE_SYNC,
-  API_TYPE_ASYNC,
-  API_TYPE_RETURN,
+  createOnApi,
+  createSyncApi,
+  createAsyncApi,
+  createReturnApi,
 } from './helpers/api'
 export { isSyncApi, isContextApi, promisify } from './helpers/promise'

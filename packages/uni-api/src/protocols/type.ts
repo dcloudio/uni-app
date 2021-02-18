@@ -16,8 +16,8 @@ export interface ApiProtocol {
 }
 
 export interface ApiOptions {
-  beforeAll?: () => void
-  beforeSuccess?: () => void
+  beforeAll?: (res: unknown) => void
+  beforeSuccess?: (res: unknown) => void
   formatArgs?: {
     [name: string]: Validator
   }

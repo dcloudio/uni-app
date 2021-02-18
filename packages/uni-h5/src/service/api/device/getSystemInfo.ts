@@ -1,9 +1,9 @@
-import { API_TYPE_ASYNC, createApi } from '@dcloudio/uni-api'
+import { createAsyncApi } from '@dcloudio/uni-api'
 
 import { getSystemInfoSync } from './getSystemInfoSync'
 
-export const getSystemInfo = createApi<typeof uni.getSystemInfo>(
-  { type: API_TYPE_ASYNC, name: 'getSystemInfo' },
+export const getSystemInfo = createAsyncApi<typeof uni.getSystemInfo>(
+  'getSystemInfo',
   () => {
     return getSystemInfoSync()
   }

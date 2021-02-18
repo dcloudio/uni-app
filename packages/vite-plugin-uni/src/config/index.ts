@@ -2,7 +2,7 @@ import { Plugin } from 'vite'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { createCss } from './css'
-import { createAlias } from './alias'
+import { createResolve } from './resolve'
 import { createDefine } from './define'
 import { createServer } from './server'
 import { createBuild } from './build'
@@ -14,7 +14,7 @@ export function createConfig(
   return () => {
     return {
       define: createDefine(options),
-      alias: createAlias(options),
+      resolve: createResolve(options),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
       build: createBuild(options),

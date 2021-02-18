@@ -1,22 +1,148 @@
-import { isArray, isPromise, isFunction, isPlainObject, hasOwn, isString } from '@vue/shared';
+import { isPlainObject, isFunction, isArray, isPromise, hasOwn, isString } from '@vue/shared';
 
+function tryCatch(fn) {
+    return function () {
+        try {
+            return fn.apply(fn, arguments);
+        }
+        catch (e) {
+            // TODO
+            console.error(e);
+        }
+    };
+}
+
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function createInvokeCallbackName(name, callbackId) {
+    return 'api.' + name + '.' + callbackId;
+}
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+    invokeCallbacks[id] = {
+        name,
+        keepAlive,
+        callback,
+    };
+    return id;
+}
+// onNativeEventReceive((event,data)=>{}) 需要两个参数，目前写死最多两个参数
+function invokeCallback(id, res, extras) {
+    if (typeof id === 'number') {
+        const opts = invokeCallbacks[id];
+        if (opts) {
+            if (!opts.keepAlive) {
+                delete invokeCallbacks[id];
+            }
+            return opts.callback(res, extras);
+        }
+    }
+    return res;
+}
+function getKeepAliveApiCallback(name, callback) {
+    const onName = 'api.' + name.replace('off', 'on');
+    for (const key in invokeCallbacks) {
+        const item = invokeCallbacks[key];
+        if (item.callback === callback && item.name.indexOf(onName) === 0) {
+            delete invokeCallbacks[key];
+            return Number(key);
+        }
+    }
+    return -1;
+}
+function createKeepAliveApiCallback(name, callback) {
+    if (name.indexOf('off') === 0) {
+        return getKeepAliveApiCallback(name, callback);
+    }
+    const id = invokeCallbackId++;
+    return addInvokeCallback(id, createInvokeCallbackName(name, id), callback, true);
+}
+function getApiCallbacks(args) {
+    const apiCallbacks = {};
+    for (const name in args) {
+        const fn = args[name];
+        if (isFunction(fn)) {
+            apiCallbacks[name] = tryCatch(fn);
+            delete args[name];
+        }
+    }
+    return apiCallbacks;
+}
+function normalizeErrMsg(errMsg, name) {
+    if (!errMsg || errMsg.indexOf(':fail') === -1) {
+        return name + ':ok';
+    }
+    return name + errMsg.substring(errMsg.indexOf(':fail'));
+}
+function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
+    if (!isPlainObject(args)) {
+        args = {};
+    }
+    const { success, fail, complete } = getApiCallbacks(args);
+    const hasSuccess = isFunction(success);
+    const hasFail = isFunction(fail);
+    const hasComplete = isFunction(complete);
+    const callbackId = invokeCallbackId++;
+    addInvokeCallback(callbackId, createInvokeCallbackName(name, callbackId), (res) => {
+        res.errMsg = normalizeErrMsg(res.errMsg, name);
+        isFunction(beforeAll) && beforeAll(res);
+        if (res.errMsg === name + ':ok') {
+            isFunction(beforeSuccess) && beforeSuccess(res);
+            hasSuccess && success(res);
+        }
+        else {
+            hasFail && fail(res);
+        }
+        hasComplete && complete(res);
+    });
+    return callbackId;
+}
+
+const API_TYPE_ON = 0;
 const API_TYPE_SYNC = 1;
+const API_TYPE_ASYNC = 2;
+const API_TYPE_RETURN = 3;
 function validateProtocol(_name, _args, _protocol) {
     return true;
 }
 function formatApiArgs(args, options) {
-    if (!options) {
-        return args;
-    }
+    return args;
 }
-function createApi({ type, name, options }, fn, protocol) {
+function wrapperOnApi(name, fn) {
+    return (callback) => fn.apply(null, createKeepAliveApiCallback(name, callback));
+}
+function wrapperSyncApi(fn) {
+    return (...args) => fn.apply(null, args);
+}
+function wrapperAsyncApi(name, fn, options) {
+    return (args) => {
+        const callbackId = createAsyncApiCallback(name, args, options);
+        return invokeCallback(callbackId, fn.apply(null, [args, callbackId]));
+    };
+}
+function wrapperReturnApi(name, fn, options) {
+    return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
+}
+function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
-        if (type === API_TYPE_SYNC) {
-            if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol())) {
-                return fn.apply(null, formatApiArgs(args, options));
-            }
+        if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol())) {
+            return fn.apply(null, formatApiArgs(args));
         }
     };
+}
+function createSyncApi(name, fn, protocol, options) {
+    return createApi(API_TYPE_SYNC, name, fn, protocol, options);
+}
+function createApi(type, name, fn, protocol, options) {
+    switch (type) {
+        case API_TYPE_ON:
+            return wrapperApi(wrapperOnApi(name, fn), name, protocol);
+        case API_TYPE_SYNC:
+            return wrapperApi(wrapperSyncApi(fn), name, protocol);
+        case API_TYPE_ASYNC:
+            return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol);
+        case API_TYPE_RETURN:
+            return wrapperApi(wrapperReturnApi(name, fn), name, protocol);
+    }
 }
 
 const Upx2pxProtocol = [
@@ -38,7 +164,7 @@ function checkDeviceWidth() {
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
 }
-const upx2px = createApi({ type: API_TYPE_SYNC, name: 'upx2px' }, (number, newDeviceWidth) => {
+const upx2px = createSyncApi('upx2px', (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
         checkDeviceWidth();
     }
@@ -220,7 +346,7 @@ function removeHook(hooks, hook) {
         hooks.splice(index, 1);
     }
 }
-const addInterceptor = createApi({ type: API_TYPE_SYNC, name: 'addInterceptor' }, (method, interceptor) => {
+const addInterceptor = createSyncApi('addInterceptor', (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
@@ -228,7 +354,7 @@ const addInterceptor = createApi({ type: API_TYPE_SYNC, name: 'addInterceptor' }
         mergeInterceptorHook(globalInterceptors, method);
     }
 }, AddInterceptorProtocol);
-const removeInterceptor = createApi({ type: API_TYPE_SYNC, name: 'removeInterceptor' }, (method, interceptor) => {
+const removeInterceptor = createSyncApi('removeInterceptor', (method, interceptor) => {
     if (typeof method === 'string') {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);

@@ -1,6 +1,6 @@
 import safeAreaInsets from 'safe-area-insets'
 
-import { API_TYPE_SYNC, createApi } from '@dcloudio/uni-api'
+import { createSyncApi } from '@dcloudio/uni-api'
 
 import { getWindowOffset } from '@dcloudio/uni-core'
 
@@ -16,8 +16,8 @@ const isIOS = /iphone|ipad|ipod/i.test(ua)
 /**
  * 获取系统信息-同步
  */
-export const getSystemInfoSync = createApi<typeof uni.getSystemInfoSync>(
-  { type: API_TYPE_SYNC },
+export const getSystemInfoSync = createSyncApi<typeof uni.getSystemInfoSync>(
+  'getSystemInfoSync',
   () => {
     var screen = window.screen
     var pixelRatio = window.devicePixelRatio

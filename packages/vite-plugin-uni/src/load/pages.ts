@@ -52,31 +52,21 @@ function parsePagesJson(jsonStr: string) {
   const uniRoutesCode = generateRoutes(pagesJson).join(',')
   const uniConfigCode = generateConfig(pagesJson)
   return `
-    import {
-        defineAsyncComponent,
-        resolveComponent,
-        createVNode,
-        withCtx,
-        openBlock,
-        createBlock
-    } from 'vue'
-    
-    import {
-        PageComponent
-    } from '@dcloudio/uni-h5'
-    ${definePagesCode}
-    window.__uniConfig=${uniConfigCode}
-    window.__uniRoutes=[${uniRoutesCode}]
-    `
+import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
+import { PageComponent } from '@dcloudio/uni-h5'
+${definePagesCode}
+window.__uniConfig=${uniConfigCode}
+window.__uniRoutes=[${uniRoutesCode}]
+`
 }
 
 const registerGlobalCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
-    window.getApp = getApp
-    window.getCurrentPages = getCurrentPages
-    window.uni = window.__GLOBAL__ = uni
-    window.UniViewJSBridge = UniViewJSBridge
-    window.UniServiceJSBridge = UniServiceJSBridge
-    `
+window.getApp = getApp
+window.getCurrentPages = getCurrentPages
+window.uni = window.__GLOBAL__ = uni
+window.UniViewJSBridge = UniViewJSBridge
+window.UniServiceJSBridge = UniServiceJSBridge
+`
 
 function formatPages(pagesJson: Record<string, any>, jsonStr: string) {
   if (!Array.isArray(pagesJson.pages)) {
@@ -203,16 +193,16 @@ function formatPagesRoute(pagesJson: Record<string, any>): PageRouteOptions[] {
 
 function generatePageRoute({ name, path, props, meta }: PageRouteOptions) {
   return `{
-    path:'/${meta.isEntry ? '' : path}',
-    component:{
-      render() {
-        return (openBlock(), createBlock(PageComponent, Object.assign({}, __uniConfig.globalStyle, ${JSON.stringify(
-          props
-        )}), {page: withCtx(() => [createVNode(${name})]), _: 1}, 16))
-      }
-    },
-    meta: ${JSON.stringify(meta)}
-  }`
+  path:'/${meta.isEntry ? '' : path}',
+  component:{
+    render() {
+      return (openBlock(), createBlock(PageComponent, Object.assign({}, __uniConfig.globalStyle, ${JSON.stringify(
+        props
+      )}), {page: withCtx(() => [createVNode(${name})]), _: 1}, 16))
+    }
+  },
+  meta: ${JSON.stringify(meta)}
+}`
 }
 
 function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {

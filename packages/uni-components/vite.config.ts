@@ -27,7 +27,9 @@ export default defineConfig({
       external: ['vue', '@vue/shared', '@dcloudio/uni-shared'],
       preserveEntrySignatures: 'strict',
       output: {
+        dir: path.resolve(__dirname, 'dist'),
         format: 'es',
+        manualChunks: undefined,
         entryFileNames: 'uni-components.esm.js',
         assetFileNames(assetInfo) {
           if (assetInfo.name === 'style.css') {

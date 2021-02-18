@@ -3771,6 +3771,7 @@ const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook$1("onNaviga
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
 
 function createApp(rootComponent, rootProps = null) {
+    rootComponent && (rootComponent.mpType = 'app');
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
 

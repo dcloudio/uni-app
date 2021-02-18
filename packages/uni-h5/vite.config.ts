@@ -58,7 +58,9 @@ export default defineConfig({
         }),
       ],
       output: {
+        dir: path.resolve(__dirname, 'dist'),
         format: 'es',
+        manualChunks: undefined,
         entryFileNames: 'uni-h5.esm.js',
         assetFileNames(assetInfo) {
           if (assetInfo.name === 'style.css') {

@@ -9,5 +9,6 @@
         "replacement": "@dcloudio/uni-h5-vue/lib/vue.runtime.esm.js"
       }
     ]
-  }
+  },
+  "external": ["@dcloudio/uni-h5"]
 }
