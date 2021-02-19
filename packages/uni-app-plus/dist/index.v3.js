@@ -6626,7 +6626,8 @@ var serviceContext = (function () {
         ok,
         status,
         data,
-        headers
+        headers,
+        errorMsg
       }) => {
         if (aborted) {
           return
@@ -6645,11 +6646,15 @@ var serviceContext = (function () {
             cookies: cookiesPrase(headers)
           });
         } else {
+          let errMsg = 'abort statusCode:' + statusCode;
+          if (errorMsg) {
+            errMsg = errMsg + ' ' + errorMsg;
+          }
           publishStateChange$1({
             requestTaskId,
             state: 'fail',
             statusCode,
-            errMsg: 'abort statusCode:' + statusCode
+            errMsg
           });
         }
       });
@@ -20765,7 +20770,9 @@ var serviceContext = (function () {
   onMethod('onKeyboardHeightChange', res => {
     keyboardHeight = res.height;
     if (keyboardHeight > 0) {
-      onKeyboardShow && onKeyboardShow();
+      const callback = onKeyboardShow;
+      onKeyboardShow = null;
+      callback && callback();
     }
   });
 
