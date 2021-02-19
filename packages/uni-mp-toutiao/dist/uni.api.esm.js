@@ -113,7 +113,8 @@ const API_TYPE_ON = 0;
 const API_TYPE_TASK = 1;
 const API_TYPE_SYNC = 2;
 const API_TYPE_ASYNC = 3;
-function validateProtocol(_name, _args, _protocol) {
+function validateProtocol(name, args, protocol) {
+    console.log('validateProtocol', name, args, protocol);
     return true;
 }
 function formatApiArgs(args, options) {
@@ -139,13 +140,13 @@ function wrapperAsyncApi(name, fn, options) {
 }
 function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
-        if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol())) {
+        if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol(name, args, protocol))) {
             return fn.apply(null, formatApiArgs(args));
         }
     };
 }
 function createSyncApi(name, fn, protocol, options) {
-    return createApi(API_TYPE_SYNC, name, fn, protocol, options);
+    return createApi(API_TYPE_SYNC, name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
 }
 function createApi(type, name, fn, protocol, options) {
     switch (type) {

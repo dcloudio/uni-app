@@ -19,11 +19,8 @@ type API_TYPES =
   | typeof API_TYPE_SYNC
   | typeof API_TYPE_ASYNC
 
-function validateProtocol(
-  _name: string,
-  _args: any[],
-  _protocol: ApiProtocols
-) {
+function validateProtocol(name: string, args: any[], protocol: ApiProtocols) {
+  console.log('validateProtocol', name, args, protocol)
   return true
 }
 
@@ -71,10 +68,16 @@ function wrapperApi<T extends Function>(
 export function createOnApi<T extends Function>(
   name: string,
   fn: T,
-  options?: ApiOptions,
-  protocol?: ApiProtocols
+  protocol?: ApiProtocols,
+  options?: ApiOptions
 ) {
-  return createApi(API_TYPE_ON, name, fn, protocol, options)
+  return createApi(
+    API_TYPE_ON,
+    name,
+    fn,
+    __DEV__ ? protocol : undefined,
+    options
+  )
 }
 
 export function createTaskApi<T extends Function>(
@@ -83,7 +86,13 @@ export function createTaskApi<T extends Function>(
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return createApi(API_TYPE_TASK, name, fn, protocol, options)
+  return createApi(
+    API_TYPE_TASK,
+    name,
+    fn,
+    __DEV__ ? protocol : undefined,
+    options
+  )
 }
 
 export function createSyncApi<T extends Function>(
@@ -92,7 +101,13 @@ export function createSyncApi<T extends Function>(
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return createApi(API_TYPE_SYNC, name, fn, protocol, options)
+  return createApi(
+    API_TYPE_SYNC,
+    name,
+    fn,
+    __DEV__ ? protocol : undefined,
+    options
+  )
 }
 
 export function createAsyncApi<T extends Function>(
@@ -101,7 +116,9 @@ export function createAsyncApi<T extends Function>(
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return promisify(createApi(API_TYPE_ASYNC, name, fn, protocol, options))
+  return promisify(
+    createApi(API_TYPE_ASYNC, name, fn, __DEV__ ? protocol : undefined, options)
+  )
 }
 
 function createApi<T extends Function>(

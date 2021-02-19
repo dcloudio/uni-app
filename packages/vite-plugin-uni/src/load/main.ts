@@ -19,8 +19,9 @@ export const main = {
     if (!pagesJsPath) {
       pagesJsPath = slash(path.resolve(options.inputDir, 'pages.json.js'))
     }
-    return `import '${pagesJsPath}';${fs
+    return `import { plugin } from '@dcloudio/uni-h5';import '${pagesJsPath}';function createApp(rootComponent,rootProps){rootComponent && (rootComponent.mpType = 'app');return createVueApp(rootComponent, rootProps).use(plugin)};${fs
       .readFileSync(filename, 'utf-8')
-      .toString()}`
+      .toString()
+      .replace('createApp', 'createVueApp')}`
   },
 }
