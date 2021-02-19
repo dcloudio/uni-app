@@ -192,6 +192,7 @@ export default {
           width: 300  // 根据宽度获取合适的广告(单位px)
         },
         (res) => {
+					// 注意: 广告数据只能使用一次
           this.adData = res.ads[0];
           console.log(this.adData);
         },
