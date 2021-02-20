@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "safe-area-insets": "^1.4.1",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.4"
   }
 }
