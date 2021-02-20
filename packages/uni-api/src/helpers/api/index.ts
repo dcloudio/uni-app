@@ -1,12 +1,11 @@
-import { ApiOptions, ApiProtocol, ProtocolOptions } from '../../protocols/type'
+import { ApiOptions, ApiProtocols } from '../../protocols/type'
+import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
+  invokeCallback,
   createAsyncApiCallback,
   createKeepAliveApiCallback,
-  invokeCallback,
 } from './callback'
 import { promisify } from './promise'
-
-type ApiProtocols = ApiProtocol | ProtocolOptions[]
 
 export const API_TYPE_ON = 0
 export const API_TYPE_TASK = 1
@@ -18,11 +17,6 @@ type API_TYPES =
   | typeof API_TYPE_TASK
   | typeof API_TYPE_SYNC
   | typeof API_TYPE_ASYNC
-
-function validateProtocol(name: string, args: any[], protocol: ApiProtocols) {
-  console.log('validateProtocol', name, args, protocol)
-  return true
-}
 
 function formatApiArgs(args: any[], options?: ApiOptions) {
   return args
@@ -59,23 +53,26 @@ function wrapperApi<T extends Function>(
   options?: ApiOptions
 ) {
   return (function (...args: any[]) {
-    if (!(__DEV__ && protocol && !validateProtocol(name!, args, protocol))) {
-      return fn.apply(null, formatApiArgs(args, options))
+    if (__DEV__) {
+      const errMsg = validateProtocols(name!, args, protocol)
+      if (errMsg) {
+        return errMsg
+      }
     }
+    return fn.apply(null, formatApiArgs(args, options))
   } as unknown) as T
 }
 
 export function createOnApi<T extends Function>(
   name: string,
   fn: T,
-  protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
   return createApi(
     API_TYPE_ON,
     name,
     fn,
-    __DEV__ ? protocol : undefined,
+    __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
     options
   )
 }

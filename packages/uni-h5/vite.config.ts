@@ -16,6 +16,7 @@ export default defineConfig({
   define: {
     global: 'window',
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
+    __TEST__: false,
     __PLATFORM__: JSON.stringify('h5'),
   },
   resolve: {

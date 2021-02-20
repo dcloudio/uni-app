@@ -239,7 +239,7 @@ var keyboard = {
   },
   watch: {
     focus(val) {
-      if (val && true) {
+      if (val && false) {
         this.showSoftKeybord();
       }
     }
@@ -260,10 +260,6 @@ var keyboard = {
         };
         UniViewJSBridge.subscribe("hideKeyboard", this.hideKeyboardTemp);
         document.addEventListener("click", iosHideKeyboard, false);
-        {
-          this.setSoftinputNavBar();
-          this.setSoftinputTemporary();
-        }
       });
       el.addEventListener("blur", this.onKeyboardHide.bind(this));
     },
@@ -319,9 +315,6 @@ var keyboard = {
     onKeyboardHide() {
       UniViewJSBridge.unsubscribe("hideKeyboard", this.hideKeyboardTemp);
       document.removeEventListener("click", iosHideKeyboard, false);
-      {
-        this.resetSoftinputNavBar();
-      }
       if (String(navigator.vendor).indexOf("Apple") === 0) {
         document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
       }
@@ -3036,39 +3029,6 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-let view;
-let pullToRefreshStyle;
-let disabled;
-const lastAction = {};
-function disableScrollBounce({disable}) {
-  function exec() {
-    if (!view) {
-      view = plus.webview.currentWebview();
-    }
-    if (!disabled) {
-      pullToRefreshStyle = (view.getStyle() || {}).pullToRefresh || {};
-    }
-    disabled = disable;
-    if (pullToRefreshStyle.support) {
-      view.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
-        support: !disable
-      }));
-    }
-  }
-  const time = Date.now();
-  if (disable === lastAction.disable && time - lastAction.time < 20) {
-    return;
-  }
-  lastAction.disable = disable;
-  lastAction.time = time;
-  plusReady(() => {
-    if (plus.os.name === "iOS") {
-      setTimeout(exec, 20);
-    } else {
-      exec();
-    }
-  });
-}
 var index_vue_vue_type_style_index_0_lang$7 = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
@@ -3332,9 +3292,6 @@ const _sfc_main$a = {
     __handleTouchStart: function() {
       if (!this._isScaling) {
         if (!this.disabled) {
-          disableScrollBounce({
-            disable: true
-          });
           if (this._FA) {
             this._FA.cancel();
           }
@@ -3427,9 +3384,6 @@ const _sfc_main$a = {
     __handleTouchEnd: function() {
       var self = this;
       if (!this._isScaling && !this.disabled && this._isTouching) {
-        disableScrollBounce({
-          disable: false
-        });
         this.$el.style.willChange = "auto";
         this._isTouching = false;
         if (!this._checkCanMove && !this._revise("out-of-bounds") && this.inertia) {
@@ -5254,9 +5208,6 @@ const _sfc_main$h = {
     };
     this.__handleTouchStart = function(event2) {
       if (event2.touches.length === 1) {
-        disableScrollBounce({
-          disable: true
-        });
         needStop = null;
         touchStart = {
           x: event2.touches[0].pageX,
@@ -5269,9 +5220,6 @@ const _sfc_main$h = {
     };
     this.__handleTouchEnd = function(event2) {
       touchStart = null;
-      disableScrollBounce({
-        disable: false
-      });
       if (self.refresherHeight >= self.refresherThreshold) {
         self._setRefreshState("refreshing");
       } else {

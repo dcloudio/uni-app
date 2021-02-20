@@ -1,4 +1,144 @@
-import { isPlainObject, isFunction, isArray, isPromise, hasOwn, isString } from '@vue/shared';
+import { isArray, hasOwn, isObject, capitalize, toRawType, makeMap, isPlainObject, isFunction, isPromise, isString } from '@vue/shared';
+
+function validateProtocolFail(name, msg) {
+    const errMsg = `${name}:fail ${msg}`;
+    {
+        console.error(errMsg);
+    }
+    return {
+        errMsg,
+    };
+}
+function validateProtocol(name, data, protocol) {
+    for (const key in protocol) {
+        const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
+        if (errMsg) {
+            return validateProtocolFail(name, errMsg);
+        }
+    }
+}
+function validateProtocols(name, args, protocol) {
+    if (!protocol) {
+        return;
+    }
+    if (isArray(protocol)) {
+        const len = protocol.length;
+        const argsLen = args.length;
+        for (let i = 0; i < len; i++) {
+            const opts = protocol[i];
+            const data = Object.create(null);
+            if (argsLen > i) {
+                data[opts.name] = args[i];
+            }
+            const errMsg = validateProtocol(name, data, { [opts.name]: opts });
+            if (errMsg) {
+                return errMsg;
+            }
+        }
+        return;
+    }
+    return validateProtocol(name, args[0] || Object.create(null), protocol);
+}
+function validateProp(name, value, prop, isAbsent) {
+    const { type, required, validator } = prop;
+    // required!
+    if (required && isAbsent) {
+        return 'Missing required args: "' + name + '"';
+    }
+    // missing but optional
+    if (value == null && !prop.required) {
+        return;
+    }
+    // type check
+    if (type != null && type !== true) {
+        let isValid = false;
+        const types = isArray(type) ? type : [type];
+        const expectedTypes = [];
+        // value is valid as long as one of the specified types match
+        for (let i = 0; i < types.length && !isValid; i++) {
+            const { valid, expectedType } = assertType(value, types[i]);
+            expectedTypes.push(expectedType || '');
+            isValid = valid;
+        }
+        if (!isValid) {
+            return getInvalidTypeMessage(name, value, expectedTypes);
+        }
+    }
+    // custom validator
+    if (validator && !validator(value)) {
+        return ('Invalid args: custom validator check failed for args "' + name + '".');
+    }
+}
+const isSimpleType = /*#__PURE__*/ makeMap('String,Number,Boolean,Function,Symbol');
+function assertType(value, type) {
+    let valid;
+    const expectedType = getType(type);
+    if (isSimpleType(expectedType)) {
+        const t = typeof value;
+        valid = t === expectedType.toLowerCase();
+        // for primitive wrapper objects
+        if (!valid && t === 'object') {
+            valid = value instanceof type;
+        }
+    }
+    else if (expectedType === 'Object') {
+        valid = isObject(value);
+    }
+    else if (expectedType === 'Array') {
+        valid = isArray(value);
+    }
+    else {
+        {
+            valid = value instanceof type;
+        }
+    }
+    return {
+        valid,
+        expectedType,
+    };
+}
+function getInvalidTypeMessage(name, value, expectedTypes) {
+    let message = `Invalid args: type check failed for args "${name}".` +
+        ` Expected ${expectedTypes.map(capitalize).join(', ')}`;
+    const expectedType = expectedTypes[0];
+    const receivedType = toRawType(value);
+    const expectedValue = styleValue(value, expectedType);
+    const receivedValue = styleValue(value, receivedType);
+    // check if we need to specify expected value
+    if (expectedTypes.length === 1 &&
+        isExplicable(expectedType) &&
+        !isBoolean(expectedType, receivedType)) {
+        message += ` with value ${expectedValue}`;
+    }
+    message += `, got ${receivedType} `;
+    // check if we need to specify received value
+    if (isExplicable(receivedType)) {
+        message += `with value ${receivedValue}.`;
+    }
+    return message;
+}
+function getType(ctor) {
+    const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+    return match ? match[1] : '';
+}
+function styleValue(value, type) {
+    if (type === 'String') {
+        return `"${value}"`;
+    }
+    else if (type === 'Number') {
+        return `${Number(value)}`;
+    }
+    else {
+        return `${value}`;
+    }
+}
+function isExplicable(type) {
+    const explicitTypes = ['string', 'number', 'boolean'];
+    return explicitTypes.some((elem) => type.toLowerCase() === elem);
+}
+function isBoolean(...args) {
+    return args.some((elem) => elem.toLowerCase() === 'boolean');
+}
 
 function tryCatch(fn) {
     return function () {
@@ -113,10 +253,6 @@ const API_TYPE_ON = 0;
 const API_TYPE_TASK = 1;
 const API_TYPE_SYNC = 2;
 const API_TYPE_ASYNC = 3;
-function validateProtocol(name, args, protocol) {
-    console.log('validateProtocol', name, args, protocol);
-    return true;
-}
 function formatApiArgs(args, options) {
     return args;
 }
@@ -140,9 +276,13 @@ function wrapperAsyncApi(name, fn, options) {
 }
 function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
-        if (!((process.env.NODE_ENV !== 'production') && protocol && !validateProtocol(name, args, protocol))) {
-            return fn.apply(null, formatApiArgs(args));
+        if ((process.env.NODE_ENV !== 'production')) {
+            const errMsg = validateProtocols(name, args, protocol);
+            if (errMsg) {
+                return errMsg;
+            }
         }
+        return fn.apply(null, formatApiArgs(args));
     };
 }
 function createSyncApi(name, fn, protocol, options) {

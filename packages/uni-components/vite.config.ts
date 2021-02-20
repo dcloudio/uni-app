@@ -8,7 +8,8 @@ import { isCustomElement } from '../uni-shared'
 export default defineConfig({
   root: '.',
   define: {
-    __PLATFORM__: JSON.stringify('app-plus'),
+    __TEST__: false,
+    __PLATFORM__: JSON.stringify('h5'),
   },
   plugins: [
     vue({

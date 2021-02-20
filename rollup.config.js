@@ -12,7 +12,7 @@ if (!process.env.TARGET) {
 
 const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
-const resolve = p => path.resolve(packageDir, p)
+const resolve = (p) => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
 
 // ensure TS checks only once for each build
@@ -20,14 +20,14 @@ let hasTSChecked = false
 
 const configs = []
 const buildOptions = require(resolve(`build.json`))
-Object.keys(buildOptions.input).forEach(name => {
+Object.keys(buildOptions.input).forEach((name) => {
   const files = buildOptions.input[name]
   if (Array.isArray(files)) {
-    files.forEach(file => {
+    files.forEach((file) => {
       configs.push(
         createConfig(name, {
           file: resolve(file),
-          format: file.includes('.cjs.') ? 'cjs' : 'es'
+          format: file.includes('.cjs.') ? 'cjs' : 'es',
         })
       )
     })
@@ -35,7 +35,7 @@ Object.keys(buildOptions.input).forEach(name => {
     configs.push(
       createConfig(name, {
         file: resolve(buildOptions.input[name]),
-        format: (buildOptions.output && buildOptions.output.format) || `es`
+        format: (buildOptions.output && buildOptions.output.format) || `es`,
       })
     )
   }
@@ -53,10 +53,10 @@ function createConfig(entryFile, output, plugins = []) {
       compilerOptions: {
         sourceMap: output.sourcemap,
         declaration: shouldEmitDeclarations,
-        declarationMap: shouldEmitDeclarations
+        declarationMap: shouldEmitDeclarations,
       },
-      exclude: ['**/__tests__', 'test-dts']
-    }
+      exclude: ['**/__tests__', 'test-dts'],
+    },
   })
 
   // we only need to check TS and generate declarations once for each build.
@@ -68,7 +68,7 @@ function createConfig(entryFile, output, plugins = []) {
     '@vue/shared',
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.peerDependencies || {}),
-    ...(buildOptions.external || [])
+    ...(buildOptions.external || []),
   ]
 
   return {
@@ -79,11 +79,11 @@ function createConfig(entryFile, output, plugins = []) {
       nodeResolve(),
       commonjs(),
       json({
-        namedExports: false
+        namedExports: false,
       }),
       tsPlugin,
       createReplacePlugin(buildOptions),
-      ...plugins
+      ...plugins,
     ],
     output,
     onwarn: (msg, warn) => {
@@ -101,8 +101,8 @@ function createConfig(entryFile, output, plugins = []) {
                 return true
               }
               return false
-            }
-          }
+            },
+          },
   }
 }
 
@@ -112,13 +112,14 @@ function createAliasPlugin(buildOptions) {
 
 function createReplacePlugin(buildOptions) {
   const replacements = {
-    __DEV__: `(process.env.NODE_ENV !== 'production')`
+    __DEV__: `(process.env.NODE_ENV !== 'production')`,
+    __TEST__: false,
   }
   if (buildOptions.replacements) {
     Object.assign(replacements, buildOptions.replacements)
   }
 
-  Object.keys(replacements).forEach(key => {
+  Object.keys(replacements).forEach((key) => {
     if (key in process.env) {
       replacements[key] = process.env[key]
     }

@@ -1,6 +1,6 @@
 export type Data = Record<string, unknown>
 type DefaultFactory<T> = (protocols: Data) => T | null | undefined
-type ProtocolConstructor<T = any> =
+export type ProtocolConstructor<T = any> =
   | { new (...args: any[]): T & object }
   | { (): T }
   | ProtocolMethod<T>
@@ -15,6 +15,7 @@ export interface ApiProtocol {
   [name: string]: ProtocolOptions
 }
 
+export type ApiProtocols = ApiProtocol | ProtocolOptions[]
 export interface ApiOptions {
   beforeAll?: (res: unknown) => void
   beforeSuccess?: (res: unknown) => void
