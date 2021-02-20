@@ -8,7 +8,7 @@ function generateDeclaration (property, value, important, position) {
 }
 
 function clearImportant (value) {
-  var newValue = value.replace(/ !important$/, '')
+  var newValue = value.replace(/\s*!important/g, '')
   return {
     value: newValue,
     important: value !== newValue
