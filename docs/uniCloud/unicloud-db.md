@@ -168,7 +168,15 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 		}
 		onLoad() {
 			this.sWhere = "id=='" + this.tempstr + "'"
-		},
+
+			// 多条件示例
+
+			// id = this.tempstr 且 create_time > 1613960340000
+			// this.sWhere = "id=='" + this.tempstr + "' && create_time > 1613960340000"
+
+			// id = this.tempstr 或 name != null
+			// this.sWhere = "id=='" + this.tempstr + "' || name != null"
+		}
 	}
 </script>
 ```
