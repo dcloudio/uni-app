@@ -5,7 +5,8 @@ import {
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
 
 import {
-  findElm
+  findElm,
+  elementMatchesPolyfill
 } from './util'
 
 function getRootInfo (fields) {
@@ -95,7 +96,7 @@ function getNodeInfo (el, fields) {
 }
 
 function getNodesInfo (pageVm, component, selector, single, fields) {
-  const $el = findElm(component, pageVm)
+  const $el = elementMatchesPolyfill(findElm(component, pageVm))
   if (!$el || ($el && $el.nodeType === 8)) { // Comment
     return single ? null : []
   }
