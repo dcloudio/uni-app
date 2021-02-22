@@ -101,7 +101,7 @@
   <!-- 仅nvue页面支持 -->
   <view class="content">
     <view class="ad-draw">
-      <ad-draw :adData="adData" @load="onload" @error="onerror"></ad-draw>
+      <ad-draw :data="adData" @load="onload" @error="onerror"></ad-draw>
     </view>
   </view>
 </template>
@@ -115,6 +115,7 @@
       }
     },
     onReady: function (e) {
+      this.getAdData()
     },
     methods: {
       getAdData: function (e) {
