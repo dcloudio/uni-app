@@ -130,17 +130,13 @@ uni.request({
 })
 
 // 云函数收到的event为, 注意如果直接return此格式数据可能会被作为集成响应处理，参考下面的集成响应文档
-```
-
-```js
 {
     path: '/',
-    httpMethod: 'GET',
+    httpMethod: 'POST',
     headers: {
     	...
     	"content-type": 'application/json'
     },
-    queryStringParameters: {a: "1", b: "2"},
     requestContext: {云开发相关信息},
     isBase64Encoded: false,
     body: '{"a":1,"b":2}', // 注意此处可能是base64，需要根据isBase64Encoded判断
