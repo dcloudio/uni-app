@@ -358,11 +358,6 @@ const protocols = { // 需要做转换的 API 列表
       text: 'data'
     }
   },
-  pageScrollTo: {
-    args: {
-      duration: false
-    }
-  },
   login: {
     name: 'getAuthCode',
     returnValue (result) {
