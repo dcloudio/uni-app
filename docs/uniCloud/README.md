@@ -4,6 +4,11 @@
 
 从[HBuilderX 2.5.8](https://www.dcloud.io/hbuilderx.html)起支持。阿里云、腾讯云均已开放注册使用。
 
+<video style="width:100vw;height:56.25vw;" id="video" preload="none" controls="controls"
+	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/24cc615a-95c6-4bff-933b-0a3d68bcc55a.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/24cc615a-95c6-4bff-933b-0a3d68bcc55a.mp4"></video>
+[更多视频教程](https://study.163.com/course/courseLearn.htm?courseId=1209978085#/learn/video?lessonId=1280845026&courseId=1209978085)
+
+
 ### uniCloud 的价值
 
 - 对于程序员，从此你又get一个新技能，用熟悉的js，轻松搞定前后台整体业务。
