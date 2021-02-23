@@ -12,6 +12,29 @@
 </template>
 
 <script>
+import defaultMessage from './i18n/zh-Hans.json'
+function createTranslate (defaultMessage) {
+  let t = (key, values) => {
+    const appVm = getApp().$vm
+    if (appVm && appVm.$t) {
+      t = (key, values) => {
+        const msg = appVm.$t(key, values)
+        if (msg !== key) {
+          return msg
+        }
+        return defaultMessage[key]
+      }
+    } else {
+      t = (key, values) => {
+        return defaultMessage[key]
+      }
+    }
+    return t(key, values)
+  }
+  return t
+}
+const t = createTranslate(defaultMessage)
+
 const events = {
   load: 'load',
   error: 'error'
@@ -280,7 +303,7 @@ export default {
         success && success(res)
         if (showToast) {
           uni.showToast({
-            title: toastTitle || '新增成功'
+            title: toastTitle || t('uniCloud.component.add.success')
           })
         }
       }).catch((err) => {
@@ -306,8 +329,8 @@ export default {
         return
       }
       uni.showModal({
-        title: confirmTitle || '提示',
-        content: confirmContent || '是否删除该数据',
+        title: confirmTitle || t('uniCloud.component.remove.showModal.title'),
+        content: confirmContent || t('uniCloud.component.remove.showModal.content'),
         showCancel: true,
         success: (res) => {
           if (!res.confirm) {
@@ -336,7 +359,7 @@ export default {
         success && success(res)
         if (showToast) {
           uni.showToast({
-            title: toastTitle || '修改成功'
+            title: toastTitle || t('uniCloud.component.update.success')
           })
         }
       }).catch((err) => {

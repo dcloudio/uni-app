@@ -70,6 +70,7 @@ export function getCurrentPages (isAll = false, ignoreError = false) {
 
 export default function createApp (vm, routes) {
   appVm = vm
+  appVm.$vm = vm
   appVm.$$t = t
   appVm.globalData = appVm.$options.globalData || {}
 

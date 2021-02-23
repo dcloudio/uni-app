@@ -29,8 +29,8 @@ export function initI18n (locale, onChange) {
   }
 }
 
-function initLocaleWatcher (app) {
-  app.$i18n.vm.$watch('locale', (newLocale) => {
+function initLocaleWatcher (appVm) {
+  appVm.$i18n.vm.$watch('locale', (newLocale) => {
     i18n.setLocale(newLocale)
   }, {
     immediate: true
@@ -41,20 +41,20 @@ export function t (key, values) {
   if (__VIEW__) {
     return i18n.t(key, values)
   }
-  const app = getApp()
-  if (!app.$t) {
+  const appVm = getApp().$vm
+  if (!appVm.$t) {
     /* eslint-disable no-func-assign */
     t = function (key, values) {
       return i18n.t(key, values)
     }
   } else {
-    initLocaleWatcher(app)
+    initLocaleWatcher(appVm)
     /* eslint-disable no-func-assign */
     t = function (key, values) {
-      const $i18n = app.$i18n
+      const $i18n = appVm.$i18n
       const silentTranslationWarn = $i18n.silentTranslationWarn
       $i18n.silentTranslationWarn = true
-      const msg = app.$t(key, values)
+      const msg = appVm.$t(key, values)
       $i18n.silentTranslationWarn = silentTranslationWarn
       if (msg !== key) {
         return msg
