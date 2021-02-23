@@ -53,7 +53,7 @@
           class="uni-actionsheet__cell"
           @click="_close(-1)"
         >
-          取消
+          {{ $$t('uni.showActionSheet.cancel') }}
         </div>
       </div>
       <div :style="popupStyle.triangle" />
@@ -67,6 +67,7 @@
 <script>
 import popup from './mixins/popup'
 import keypress from '../../../helpers/keypress'
+import i18n from 'uni-mixins/i18n'
 import touchtrack from 'uni-mixins/touchtrack'
 import scroller from 'uni-mixins/scroller/index'
 import {
@@ -110,7 +111,7 @@ function initClick (dom) {
 export default {
   name: 'ActionSheet',
   components: { keypress },
-  mixins: [popup, touchtrack, scroller],
+  mixins: [i18n, popup, touchtrack, scroller],
   props: {
     title: {
       type: String,

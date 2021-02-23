@@ -1,4 +1,8 @@
 import {
+  t,
+  initI18n
+} from 'uni-core/helpers/i18n'
+import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
@@ -206,7 +210,7 @@ export function registerApp (appVm) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('[uni-app] registerApp')
   }
-
+  appVm.$$t = t
   appCtx = appVm
   appCtx.$vm = appVm
 
@@ -215,6 +219,9 @@ export function registerApp (appVm) {
   const globalData = appVm.$options.globalData || {}
   // merge globalData
   appCtx.globalData = Object.assign(globalData, appCtx.globalData)
+
+  // TODO
+  initI18n(plus.os.language)
 
   initOn(UniServiceJSBridge.on, {
     getApp,

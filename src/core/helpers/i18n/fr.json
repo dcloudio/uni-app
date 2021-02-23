@@ -1,0 +1,9 @@
+{
+  "uni.showActionSheet.cancel": "Annuler",
+  "uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
+  "uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
+  "uni.showModal.cancel": "Annuler",
+  "uni.showModal.confirm": "confirmer",
+  "uni.button.feedback.title": "retour d'information",
+  "uni.button.feedback.send": "envoyer"
+}

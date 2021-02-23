@@ -11,7 +11,9 @@ let toastType
 let timeout
 
 export function showLoading (args) {
-  return callApiSync(showToast, Object.assign({}, args, { type: 'loading' }), 'showToast', 'showLoading')
+  return callApiSync(showToast, Object.assign({}, args, {
+    type: 'loading'
+  }), 'showToast', 'showLoading')
 }
 
 export function hideLoading () {
@@ -111,10 +113,10 @@ export function showModal ({
   title = '',
   content = '',
   showCancel = true,
-  cancelText = '取消',
-  cancelColor = '#000000',
-  confirmText = '确定',
-  confirmColor = '#3CC51F'
+  cancelText,
+  cancelColor,
+  confirmText,
+  confirmColor
 } = {}, callbackId) {
   content = content || ' '
   plus.nativeUI.confirm(content, (e) => {
@@ -151,7 +153,9 @@ export function showActionSheet ({
 
   options.cancel = ''
 
-  plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
+  plus.nativeUI.actionSheet(Object.assign(options, {
+    popover
+  }), (e) => {
     if (e.index > 0) {
       invoke(callbackId, {
         errMsg: 'showActionSheet:ok',

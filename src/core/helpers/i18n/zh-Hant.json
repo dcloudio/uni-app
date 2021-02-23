@@ -1,0 +1,9 @@
+{
+  "uni.showActionSheet.cancel": "取消",
+  "uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
+  "uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
+  "uni.showModal.cancel": "取消",
+  "uni.showModal.confirm": "確認",
+  "uni.button.feedback.title": "問題反饋",
+  "uni.button.feedback.send": "發送"
+}

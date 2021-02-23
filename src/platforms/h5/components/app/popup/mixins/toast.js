@@ -1,3 +1,6 @@
+import {
+  t
+} from 'uni-core/helpers/i18n'
 export default {
   data () {
     return {
@@ -28,9 +31,9 @@ export default {
         }
         let warnMsg = ''
         if (type === 'onHideToast' && showType !== 'onShowToast') {
-          warnMsg = '请注意 showToast 与 hideToast 必须配对使用'
+          warnMsg = t('uni.showToast.unpaired')
         } else if (type === 'onHideLoading' && showType !== 'onShowLoading') {
-          warnMsg = '请注意 showLoading 与 hideLoading 必须配对使用'
+          warnMsg = t('uni.showLoading.unpaired')
         }
         if (warnMsg) {
           return console.warn(warnMsg)

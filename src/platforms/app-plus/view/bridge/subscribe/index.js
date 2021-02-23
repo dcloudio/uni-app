@@ -3,6 +3,10 @@ import {
 } from 'uni-shared'
 
 import {
+  initI18n
+} from 'uni-core/helpers/i18n'
+
+import {
   disableScroll as disableScrollListener,
   createScrollListener
 } from 'uni-core/view/bridge/subscribe/scroll'
@@ -44,6 +48,7 @@ function onCssVar ({
 }
 
 function onPageCreate ({
+  locale,
   statusbarHeight,
   windowTop,
   windowBottom,
@@ -52,6 +57,8 @@ function onPageCreate ({
   onPageReachBottom,
   onReachBottomDistance
 }, pageId) {
+  initI18n(locale)
+
   onCssVar({
     statusbarHeight,
     windowTop,

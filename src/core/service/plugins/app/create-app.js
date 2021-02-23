@@ -1,3 +1,8 @@
+import {
+  t,
+  initI18n
+} from 'uni-core/helpers/i18n'
+
 import initRouterGuard from './router-guard'
 
 let appVm = false
@@ -23,7 +28,8 @@ export function getCurrentPages (isAll = false, ignoreError = false) {
       childrenVm = layoutVm
     }
     childrenVm.$children.forEach(vm => {
-      if (tabBarVm !== vm && vm.$children.length && vm.$children[0].$options.name === 'Page' && vm.$children[0].$slots.page) {
+      if (tabBarVm !== vm && vm.$children.length && vm.$children[0].$options.name === 'Page' && vm.$children[0].$slots
+        .page) {
         // vm.$children[0]=Page->PageBody->RealPage
         const pageBody = vm.$children[0].$children.find(vm => vm.$options.name === 'PageBody')
         const pageVm = pageBody && pageBody.$children.find(vm => !!vm.$page)
@@ -64,8 +70,11 @@ export function getCurrentPages (isAll = false, ignoreError = false) {
 
 export default function createApp (vm, routes) {
   appVm = vm
+  appVm.$$t = t
   appVm.globalData = appVm.$options.globalData || {}
 
+  // h5
+  initI18n(navigator.userLanguage || navigator.language)
   // initEvents(appVm)
   initRouterGuard(appVm, routes)
 }
