@@ -76,7 +76,8 @@ headerHeight|吸顶距离|Number|是|子list吸顶距离最外层滚动容器顶
 如果列表滚动到底部将会立即触发这个事件，你可以在这个事件的处理函数中加载下一页的列表项。 如果未触发，请检查是否设置了loadmoreoffset的值，建议此值设置大于0
 
 - 如何重置 loadmore
-```
+
+```html
 <template>
   <list ref="list">
     <cell v-for="num in lists">
@@ -133,13 +134,32 @@ headerHeight|float|0|是|要吸顶的header顶部距离scroller顶部的距离�
 
 #### 示例:
 
-```
-  <list id="" fixFreezing="true"></list>
-  // ios 需要配置 fixFreezing="true"
+```html
+<template>
+		<!-- ios 需要配置 fixFreezing="true" -->
+    <view class="uni-swiper-page">
+        <list ref="list" fixFreezing="true">
+        </list>
+    </view>
+</template>
 
-  //设置
-  const list = this.$refs["list0"];
-  list.setSpecialEffects({id:"scroller", headerHeight:150});
-  //清除
-  list.setSpecialEffects({});
+<script>
+  export default {
+    data () {
+      return {
+      }
+    },
+    methods: {
+        // 重置 loadmore
+        setSpecialEffects() {
+            this.$refs["list"].setSpecialEffects({id:"scroller", headerHeight:150});
+        },
+				clearSpecialEffects() {
+					this.$refs["list"].setSpecialEffects({});
+				}
+    }
+  }
+</script>
 ```
+
+`setSpecialEffects` 完整代码: [https://github.com/dcloudio/hello-uniapp/tree/master/pages/template/swiper-list-nvue](https://github.com/dcloudio/hello-uniapp/tree/master/pages/template/swiper-list-nvue)

@@ -71,14 +71,16 @@ const getTime = () => {
 };
 
 const getPlatformName = () => {
+  const aliArr = ['y', 'a', 'p', 'mp-ali'];
   const platformList = {
     'app-plus': 'n',
     'h5': 'h5',
     'mp-weixin': 'wx',
-    'mp-alipay': 'ali',
+    [aliArr.reverse().join('')]: 'ali',
     'mp-baidu': 'bd',
     'mp-toutiao': 'tt',
     'mp-qq': 'qq',
+    'quickapp-native': 'qn',
     'mp-kuaishou': 'ks'
   };
   return platformList[process.env.VUE_APP_PLATFORM];
@@ -238,6 +240,7 @@ const getResidenceTime = (type) => {
 const getRoute = () => {
   var pages = getCurrentPages();
   var page = pages[pages.length - 1];
+  if (!page) return ''
   let _self = page.$vm;
 
   if (getPlatformName() === 'bd') {
@@ -250,6 +253,7 @@ const getRoute = () => {
 const getPageRoute = (self) => {
   var pages = getCurrentPages();
   var page = pages[pages.length - 1];
+  if (!page) return ''
   let _self = page.$vm;
   let query = self._query;
   let str = query && JSON.stringify(query) !== '{}' ? '?' + JSON.stringify(query) : '';

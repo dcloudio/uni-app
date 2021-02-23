@@ -16,7 +16,10 @@
 |:-|:-|:-|:-|:-|
 |longitude|Number||中心经度||
 |latitude|Number||中心纬度||
-|scale|Number|16|缩放级别，取值范围为5-18||
+|scale|Number|16|缩放级别，取值范围为3-20|高德地图缩放比例与微信小程序不同|
+|min-scale|Number|3|最小缩放级别|App-nvue 3.1.0+、微信小程序2.13+|
+|max-scale|Number|20|最大缩放级别|App-nvue 3.1.0+、微信小程序2.13+|
+|layer-style|Number|1|个性化地图|App-nvue 3.1.0+、微信小程序2.13+|
 |markers|Array||标记点||
 |polyline|Array||路线||
 |circles|Array||圆||
@@ -30,8 +33,11 @@
 |enable-overlooking|Boolean|false|是否开启俯视|App-nvue 2.1.5+、微信小程序2.3.0|
 |enable-satellite|Boolean|false|是否开启卫星图|App-nvue 2.1.5+、微信小程序2.7.0|
 |enable-traffic|Boolean|false|是否开启实时路况|App-nvue 2.1.5+、微信小程序2.7.0|
+|enable-poi|Boolean|false|是否展示 POI 点|App-nvue 3.1.0+|
+|enable-building|Boolean|false|是否展示建筑物|App-nvue 3.1.0+ 支持 (**废除原enable-3D属性 高德地图默认开启建筑物就是3D无法设置**)|
 |show-location|Boolean||显示带有方向的当前定位点|微信小程序、H5、百度小程序、支付宝小程序|
 |polygons|Array.`<polygon>`||多边形|App-nvue 2.1.5+、微信小程序、百度小程序、支付宝小程序|
+|enable-indoorMap|Boolean|false|是否展示室内地图|App-nvue 3.1.0+|
 |@markertap|EventHandle||点击标记点时触发，e.detail = {markerId}|App-nvue 2.3.3+, App平台需要指定 marker 对象属性 id|
 |@labeltap|EventHandle||点击label时触发，e.detail = {markerId} |微信小程序2.9.0|
 |@callouttap|EventHandle||点击标记点对应的气泡时触发，e.detail = {markerId}||
@@ -39,11 +45,13 @@
 |@regionchange|EventHandle||视野发生变化时触发|微信小程序、H5、百度小程序、支付宝小程序|
 |@tap|EventHandle||点击地图时触发; App-nuve、微信小程序2.9支持返回经纬度||
 |@updated|EventHandle||在地图渲染更新完成时触发|微信小程序、H5、百度小程序|
+|@anchorpointtap|EventHandle||点击定位标时触发，e.detail = {longitude, latitude}|App-nvue 3.1.0+、微信小程序2.13+|
 
 **注意** 
 
 - `<map>` 组件的宽/高推荐写直接量，比如：750rpx，不要设置百分比值。
 - `uni-app` 只支持 `gcj02` 坐标
+- App平台 `layer-style` 属性需要在地图服务商后台创建，[详情](https://developer.amap.com/api/android-sdk/guide/create-map/custom)
 
 **markers**
 
@@ -63,6 +71,10 @@
 |callout|自定义标记点上方的气泡窗口|Object|否|支持的属性见下表，可识别换行符。|App-nvue 2.1.5+|
 |label|为标记点旁边增加标签|Object|否|支持的属性见下表，可识别换行符。|App-nvue 2.1.5+、微信小程序、H5、App、百度小程序|
 |anchor|经纬度在标注图标的锚点，默认底边中点|Object|否|{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|joinCluster|是否参与点聚合|Boolean|否||App-nvue 3.1.0+、微信小程序|
+|clusterId|自定义点聚合簇效果时使用|Number|否||App-nvue 3.1.0+、微信小程序|
+|customCallout|自定义气泡窗口|Object|否||app暂时不支持、微信小程序|
+|aria-label|无障碍访问，（属性）元素的额外描述|String|否||App-nvue 3.1.0+、微信小程序|
 
 **marker 上的气泡 callout**
 
@@ -92,6 +104,10 @@
 |bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 |padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
 |textAlign|文本对齐方式。有效值: left, right, center|String|App-nvue 2.1.5+、微信小程序、百度小程序|
+|joinCluster|是否参与点聚合|Boolean|App-nvue 3.1.0+、微信小程序|
+|clusterId|自定义点聚合簇效果时使用|Number|App-nvue 3.1.0+、微信小程序|
+|customCallout|自定义气泡窗口|Object|App暂时不支持、微信小程序|
+|aria-label|无障碍访问，（属性）元素的额外描述|String|App-nvue 3.1.0+、微信小程序|
 
 **polyline**
 
@@ -107,6 +123,8 @@
 |arrowIconPath|更换箭头图标|String|否|在arrowLine为true时生效|App-nvue 2.1.5+、微信小程序、百度小程序|
 |borderColor|线的边框颜色|String|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
 |borderWidth|线的厚度|Number|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|colorList|彩虹线|Array|false|存在时忽略 color 值|App-nvue 3.1.0+、微信小程序|
+|level|压盖关系，默认为 abovelabels|String|false||App不支持（**需SDK提供支持**）、微信小程序|
 
 **polygon**<br>
 指定一系列坐标点，根据 points 坐标数据生成闭合多边形
@@ -118,6 +136,7 @@
 |strokeColor|描边的颜色|String|否|十六进制|
 |fillColor|填充颜色|String|否|十六进制|
 |zIndex|设置多边形 Z 轴数值|Number|否||
+|level|压盖关系，默认为 abovelabels|String|false|App不支持（**需SDK提供支持**）、微信小程序|
 
 **circles**
 
@@ -131,6 +150,7 @@
 |fillColor|填充颜色|String|否|8位十六进制表示，后两位表示alpha值，如：#0000AA|
 |radius|半径|Number|是||
 |strokeWidth|描边的宽度|Number|否|&nbsp;|
+|level|压盖关系，默认为 abovelabels|String|false|App不支持（**需SDK提供支持**）、微信小程序|
 
 **controls**
 

@@ -2,6 +2,8 @@
 
 > 基于 koa 风格的 uniCloud 云函数路由库，同时支持 uniCloud 客户端及 URL 化访问
 
+源码仓库：[https://gitee.com/dcloud/uni-cloud-router](https://gitee.com/dcloud/uni-cloud-router)
+
 ## 介绍
 
 ### 目录结构

@@ -1,7 +1,7 @@
 
 ```uni-app``` 是一个使用 [Vue.js](https://vuejs.org/) 开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、Web（响应式）、以及各种小程序（微信/支付宝/百度/头条/QQ/钉钉/淘宝）、快应用等多个平台。
 
-`DCloud`公司拥有600万开发者用户，几十万应用案例、12亿手机端月活用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
+`DCloud`公司拥有800万开发者用户，几十万应用案例、12亿手机端月活用户，数千款uni-app插件、70+微信/qq群。阿里小程序工具官方内置uni-app（[详见](https://docs.alipay.com/mini/ide/0.70-stable)），腾讯课堂官方为uni-app录制培训课程（[详见](https://ask.dcloud.net.cn/article/35640)），开发者可以放心选择。
 
 `uni-app`在手，做啥都不愁。即使不跨端，```uni-app```也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的H5开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
 
@@ -168,14 +168,14 @@
 
 从下面```uni-app```功能框架图可看出，```uni-app```在跨平台的过程中，不牺牲平台特色，可优雅的调用平台专有能力，真正做到海纳百川、各取所长。
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/uni-app-frame-0310.png)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/87a0a0d0-60aa-11eb-8ff1-d5dcf8779628.png)
 
 ### 一套代码，运行到多个平台
 
 ```uni-app```实现了一套代码，同时运行到多个平台；如下图所示，一套代码，同时运行到iOS模拟器、Android模拟器、H5、微信开发者工具、支付宝小程序Studio、百度开发者工具、字节跳动开发者工具、QQ开发者工具（底部8个终端选项卡代表8个终端模拟器）：
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/dev1x8.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/efd8e280-60a9-11eb-a16f-5b3e54966275.jpg)
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/doc/run1x9.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/4869eb60-60aa-11eb-b680-7980c8a877b8.jpg)

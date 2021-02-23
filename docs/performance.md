@@ -25,7 +25,7 @@ h5和小程序平台，以及app-vue，视图层是webview。而app-nvue的视�
 
 Android上小程序大多自带了一个几十M的chromium webview，而App端没办法带这么大体积的三方包，所以App端默认使用了Android system webview，这个系统webview跟随手机不同而有差异。当然App端也支持使用腾讯X5引擎，此时可以在Android端统一视图层。
 
-所以uni-app的js基本没有不同手机的兼容问题（因为js引擎自带了），而视图层的css，在app-vue上使用系统webview时会有手机浏览器的css兼容问题。此时或者不要用太细的css语法，或者集成腾讯x5引擎。
+所以uni-app的js基本没有不同手机的兼容问题（因为js引擎自带了），而视图层的css，在app-vue上使用系统webview时会有手机浏览器的css兼容问题。此时或者不要用太新的css语法，或者集成腾讯x5引擎。
 
 ###### 逻辑层和视图层分离的利与弊
 

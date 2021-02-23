@@ -9,9 +9,11 @@
   * [云数据库入门](uniCloud/hellodb.md)
   * [云函数操作云数据库](uniCloud/cf-database.md)
   * [DB Schema表结构](uniCloud/schema.md)
+  * [数据库索引](uniCloud/db-index.md)
   * [前端操作数据库的API及JQL语法](uniCloud/clientdb.md)
   * [unicloud-db前端组件](uniCloud/unicloud-db.md)
   * [openDB](https://gitee.com/dcloud/opendb)
+  * [性能优化](uniCloud/db-performance.md)
 * 云函数
   * [开发云函数](uniCloud/cf-functions.md)
   * [云函数公共模块](uniCloud/cf-common.md)
@@ -23,6 +25,7 @@
   * [云存储](uniCloud/storage.md)
   * [腾讯云自定义登录](uniCloud/authentication.md)
   * [腾讯云权限管理](uniCloud/policy-tcb.md)
+* [客户端sdk](uniCloud/client-sdk.md)
 * [uni-id用户体系](uniCloud/uni-id.md)
 * 扩展能力
   * [uniCloud admin](uniCloud/admin.md)
@@ -31,6 +34,7 @@
   * [发送短信](uniCloud/send-sms.md)
   * [uni一键登录](uniCloud/univerify.md)
   * [云端一体搜索](https://ext.dcloud.net.cn/plugin?id=3851)
+  * [uni-captcha图形验证码](https://ext.dcloud.net.cn/plugin?id=4048)
 * [前端网页托管](uniCloud/hosting.md)
 * [日志输出](uniCloud/cf-logger.md)
 * [同时连多服务空间](uniCloud/init.md)
