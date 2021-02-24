@@ -12,28 +12,10 @@
 </template>
 
 <script>
-import defaultMessage from './i18n/zh-Hans.json'
-function createTranslate (defaultMessage) {
-  let t = (key, values) => {
-    const appVm = getApp().$vm
-    if (appVm && appVm.$t) {
-      t = (key, values) => {
-        const msg = appVm.$t(key, values)
-        if (msg !== key) {
-          return msg
-        }
-        return defaultMessage[key]
-      }
-    } else {
-      t = (key, values) => {
-        return defaultMessage[key]
-      }
-    }
-    return t(key, values)
-  }
-  return t
-}
-const t = createTranslate(defaultMessage)
+import { initVueI18n } from '@dcloudio/uni-i18n'
+import messages from './i18n/index'
+
+const { t } = initVueI18n(messages)
 
 const events = {
   load: 'load',

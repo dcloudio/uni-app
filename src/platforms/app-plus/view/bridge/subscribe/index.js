@@ -3,7 +3,7 @@ import {
 } from 'uni-shared'
 
 import {
-  initI18n
+  setLocale
 } from 'uni-core/helpers/i18n'
 
 import {
@@ -57,7 +57,7 @@ function onPageCreate ({
   onPageReachBottom,
   onReachBottomDistance
 }, pageId) {
-  initI18n(locale)
+  setLocale(locale)
 
   onCssVar({
     statusbarHeight,

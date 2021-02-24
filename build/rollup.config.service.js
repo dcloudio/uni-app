@@ -1,4 +1,5 @@
 const path = require('path')
+const json = require('@rollup/plugin-json')
 const alias = require('@rollup/plugin-alias')
 const replace = require('@rollup/plugin-replace')
 
@@ -24,6 +25,7 @@ module.exports = {
       }
       ]
     }),
+    json(),
     replace({
       __GLOBAL__: 'getGlobalUni()',
       __PLATFORM_TITLE__: 'app-plus-nvue'

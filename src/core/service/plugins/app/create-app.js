@@ -1,8 +1,3 @@
-import {
-  t,
-  initI18n
-} from 'uni-core/helpers/i18n'
-
 import initRouterGuard from './router-guard'
 
 let appVm = false
@@ -71,11 +66,8 @@ export function getCurrentPages (isAll = false, ignoreError = false) {
 export default function createApp (vm, routes) {
   appVm = vm
   appVm.$vm = vm
-  appVm.$$t = t
   appVm.globalData = appVm.$options.globalData || {}
 
-  // h5
-  initI18n(navigator.userLanguage || navigator.language)
   // initEvents(appVm)
   initRouterGuard(appVm, routes)
 }

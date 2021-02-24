@@ -2272,10 +2272,6 @@ var serviceContext = (function () {
       return compiled;
   }
 
-  let curLocale = 'en';
-  let fallbackLocale = 'en';
-  let curMessages = {};
-  let messages = {};
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const defaultFormatter = new BaseFormatter();
@@ -2285,9 +2281,9 @@ var serviceContext = (function () {
   function startsWith(str, parts) {
       return parts.find((part) => str.indexOf(part) === 0);
   }
-  function normalizeLocale(locale) {
+  function normalizeLocale(locale, messages) {
       if (!locale) {
-          return fallbackLocale;
+          return;
       }
       locale = locale.trim().replace(/_/g, '-');
       if (messages[locale]) {
@@ -2310,31 +2306,135 @@ var serviceContext = (function () {
       if (lang) {
           return lang;
       }
-      return fallbackLocale;
   }
-  var index = {
-      init(options) {
-          if (options.fallbackLocale) {
-              fallbackLocale = options.fallbackLocale;
+  class I18n {
+      constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+          this.locale = 'en';
+          this.fallbackLocale = 'en';
+          this.message = {};
+          this.messages = {};
+          this.watchers = [];
+          if (fallbackLocale) {
+              this.fallbackLocale = fallbackLocale;
           }
-          messages = options.messages;
-          this.setLocale(options.locale);
-      },
+          this.formater = formater || defaultFormatter;
+          this.messages = messages;
+          this.setLocale(locale);
+          if (watcher) {
+              this.watchLocale(watcher);
+          }
+      }
       setLocale(locale) {
-          curLocale = normalizeLocale(locale);
-          curMessages = messages[curLocale];
-      },
+          const oldLocale = this.locale;
+          this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+          this.message = this.messages[this.locale];
+          this.watchers.forEach((watcher) => {
+              watcher(this.locale, oldLocale);
+          });
+      }
       getLocale() {
-          return curLocale;
-      },
+          return this.locale;
+      }
+      watchLocale(fn) {
+          const index = this.watchers.push(fn) - 1;
+          return () => {
+              this.watchers.splice(index, 1);
+          };
+      }
       t(key, values) {
-          if (!hasOwn$1(curMessages, key)) {
+          if (!hasOwn$1(this.message, key)) {
               console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
               return key;
           }
-          return defaultFormatter.interpolate(curMessages[key], values).join('');
-      },
-  };
+          return this.formater.interpolate(this.message[key], values).join('');
+      }
+  }
+
+  function initLocaleWatcher(appVm, i18n) {
+      appVm.$i18n &&
+          appVm.$i18n.vm.$watch('locale', (newLocale) => {
+              i18n.setLocale(newLocale);
+          }, {
+              immediate: true,
+          });
+  }
+  function getDefaultLocale() {
+      if (typeof navigator !== 'undefined') {
+          return navigator.userLanguage || navigator.language;
+      }
+      if (typeof plus !== 'undefined') {
+          // TODO 待调整为最新的获取语言代码
+          return plus.os.language;
+      }
+      return uni.getSystemInfoSync().language;
+  }
+  function initVueI18n(messages, fallbackLocale = 'en', locale) {
+      const i18n = new I18n({
+          locale: locale || fallbackLocale,
+          fallbackLocale,
+          messages,
+      });
+      let t = (key, values) => {
+          if (typeof getApp !== 'function') {
+              // app-plus view
+              /* eslint-disable no-func-assign */
+              t = function (key, values) {
+                  return i18n.t(key, values);
+              };
+          }
+          else {
+              const appVm = getApp().$vm;
+              if (!appVm.$t || !appVm.$i18n) {
+                  if (!locale) {
+                      i18n.setLocale(getDefaultLocale());
+                  }
+                  /* eslint-disable no-func-assign */
+                  t = function (key, values) {
+                      return i18n.t(key, values);
+                  };
+              }
+              else {
+                  initLocaleWatcher(appVm, i18n);
+                  /* eslint-disable no-func-assign */
+                  t = function (key, values) {
+                      const $i18n = appVm.$i18n;
+                      const silentTranslationWarn = $i18n.silentTranslationWarn;
+                      $i18n.silentTranslationWarn = true;
+                      const msg = appVm.$t(key, values);
+                      $i18n.silentTranslationWarn = silentTranslationWarn;
+                      if (msg !== key) {
+                          return msg;
+                      }
+                      return i18n.t(key, values);
+                  };
+              }
+          }
+          return t(key, values);
+      };
+      return {
+          t(key, values) {
+              return t(key, values);
+          },
+          setLocale(newLocale) {
+              return i18n.setLocale(newLocale);
+          },
+          mixin: {
+              beforeCreate() {
+                  const unwatch = i18n.watchLocale(() => {
+                      this.$forceUpdate();
+                  });
+                  this.$once('hook:beforeDestroy', function () {
+                      unwatch();
+                  });
+              },
+              methods: {
+                  $$t(key, values) {
+                      return t(key, values);
+                  },
+              },
+          },
+      };
+  }
 
   var en = {
   	"uni.showActionSheet.cancel": "cancel",
@@ -2386,7 +2486,7 @@ var serviceContext = (function () {
   	"uni.button.feedback.send": "發送"
   };
 
-  const messages$1 = {
+  const messages = {
     en,
     es,
     fr,
@@ -2394,56 +2494,10 @@ var serviceContext = (function () {
     'zh-Hant': zhHant
   };
 
-  const fallbackLocale$1 = 'en';
+  const fallbackLocale = 'en';
 
-  function initI18n (locale, onChange) {
-    index.init({
-      locale,
-      fallbackLocale: fallbackLocale$1,
-      messages: messages$1
-    });
-    if (onChange) {
-      index.watchLocale((newLocale, oldLocale) => {
-        onChange(newLocale, oldLocale);
-      });
-    }
-  }
-
-  function initLocaleWatcher (appVm) {
-    appVm.$i18n.vm.$watch('locale', (newLocale) => {
-      index.setLocale(newLocale);
-    }, {
-      immediate: true
-    });
-  }
-
-  function t (key, values) {
-    if (__VIEW__) {
-      return index.t(key, values)
-    }
-    const appVm = getApp().$vm;
-    if (!appVm.$t) {
-      /* eslint-disable no-func-assign */
-      t = function (key, values) {
-        return index.t(key, values)
-      };
-    } else {
-      initLocaleWatcher(appVm);
-      /* eslint-disable no-func-assign */
-      t = function (key, values) {
-        const $i18n = appVm.$i18n;
-        const silentTranslationWarn = $i18n.silentTranslationWarn;
-        $i18n.silentTranslationWarn = true;
-        const msg = appVm.$t(key, values);
-        $i18n.silentTranslationWarn = silentTranslationWarn;
-        if (msg !== key) {
-          return msg
-        }
-        return index.t(key, values)
-      };
-    }
-    return t(key, values)
-  }
+  const i18n = initVueI18n( messages , fallbackLocale);
+  const t = i18n.t;
 
   const showModal = {
     title: {
@@ -5820,12 +5874,12 @@ var serviceContext = (function () {
     }, fail);
   }
 
-  let index$1 = 0;
+  let index = 0;
   function saveFile$1 ({
     tempFilePath
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'saveFile');
-    const fileName = `${Date.now()}${index$1++}${getExtName(tempFilePath)}`;
+    const fileName = `${Date.now()}${index++}${getExtName(tempFilePath)}`;
 
     plus.io.resolveLocalFileSystemURL(tempFilePath, entry => { // 读取临时文件 FileEntry
       getSavedFileDir(dir => {
@@ -12323,7 +12377,7 @@ var serviceContext = (function () {
   //   misrepresented as being the original software.
   // 3. This notice may not be removed or altered from any source distribution.
 
-  var messages$2 = {
+  var messages$1 = {
     2:      'need dictionary',     /* Z_NEED_DICT       2  */
     1:      'stream end',          /* Z_STREAM_END      1  */
     0:      '',                    /* Z_OK              0  */
@@ -12458,7 +12512,7 @@ var serviceContext = (function () {
   var OS_CODE = 0x03; // Unix :) . Don't detect, use this default.
 
   function err(strm, errorCode) {
-    strm.msg = messages$2[errorCode];
+    strm.msg = messages$1[errorCode];
     return errorCode;
   }
 
@@ -14606,7 +14660,7 @@ var serviceContext = (function () {
     );
 
     if (status !== Z_OK$1) {
-      throw new Error(messages$2[status]);
+      throw new Error(messages$1[status]);
     }
 
     if (opt.header) {
@@ -14628,7 +14682,7 @@ var serviceContext = (function () {
       status = deflate_1.deflateSetDictionary(this.strm, dict);
 
       if (status !== Z_OK$1) {
-        throw new Error(messages$2[status]);
+        throw new Error(messages$1[status]);
       }
 
       this._dict_set = true;
@@ -14806,7 +14860,7 @@ var serviceContext = (function () {
     deflator.push(input, true);
 
     // That will never happens, if you don't cheat with options :)
-    if (deflator.err) { throw deflator.msg || messages$2[deflator.err]; }
+    if (deflator.err) { throw deflator.msg || messages$1[deflator.err]; }
 
     return deflator.result;
   }
@@ -17358,7 +17412,7 @@ var serviceContext = (function () {
     );
 
     if (status !== constants.Z_OK) {
-      throw new Error(messages$2[status]);
+      throw new Error(messages$1[status]);
     }
 
     this.header = new gzheader();
@@ -17376,7 +17430,7 @@ var serviceContext = (function () {
       if (opt.raw) { //In raw mode we need to set the dictionary early
         status = inflate_1.inflateSetDictionary(this.strm, opt.dictionary);
         if (status !== constants.Z_OK) {
-          throw new Error(messages$2[status]);
+          throw new Error(messages$1[status]);
         }
       }
     }
@@ -17606,7 +17660,7 @@ var serviceContext = (function () {
     inflator.push(input, true);
 
     // That will never happens, if you don't cheat with options :)
-    if (inflator.err) { throw inflator.msg || messages$2[inflator.err]; }
+    if (inflator.err) { throw inflator.msg || messages$1[inflator.err]; }
 
     return inflator.result;
   }
@@ -20765,7 +20819,6 @@ var serviceContext = (function () {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
     }
-    appVm.$$t = t;
     appCtx = appVm;
     appCtx.$vm = appVm;
 
@@ -20774,9 +20827,6 @@ var serviceContext = (function () {
     const globalData = appVm.$options.globalData || {};
     // merge globalData
     appCtx.globalData = Object.assign(globalData, appCtx.globalData);
-
-    // TODO
-    initI18n(plus.os.language);
 
     initOn(UniServiceJSBridge.on, {
       getApp: getApp$1,
@@ -21746,7 +21796,7 @@ var serviceContext = (function () {
   UniServiceJSBridge.invokeCallbackHandler = invokeCallbackHandler;
   UniServiceJSBridge.removeCallbackHandler = removeCallbackHandler;
 
-  var index$2 = {
+  var index$1 = {
     __vuePlugin: vuePlugin,
     __definePage: definePage,
     __registerApp: registerApp,
@@ -21756,7 +21806,7 @@ var serviceContext = (function () {
     getCurrentPages: getCurrentPages$1
   };
 
-  return index$2;
+  return index$1;
 
 }());
 
