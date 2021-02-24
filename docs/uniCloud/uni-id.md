@@ -767,7 +767,7 @@ exports.main = async function(event,context) {
 
 | 字段	| 类型	| 必填	| 说明						|
 | ---	| ---	| ---	| ---						|
-| password	| String| 是	|加密后的字符串		|
+| passwordHash	| String| 是	|加密后的字符串		|
 
 **重要**
 
