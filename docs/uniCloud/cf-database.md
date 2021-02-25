@@ -195,7 +195,7 @@ let res = await collection.add([{
 
 | 参数 | 类型   | 必填 | 说明                                     |
 | ---- | ------ | ---- | ---------------------------------------- |
-| data | object | 是   | 更新字段的Object，{'name': 'Ben'} _id 非必填|
+| data | object | 是   | 更新字段的Object，{'name': 'Ben'}|
 
 **响应参数**
 
