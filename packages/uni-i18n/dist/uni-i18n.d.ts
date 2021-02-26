@@ -30,6 +30,7 @@ export declare interface I18nOptions {
 
 export declare function initVueI18n(messages: LocaleMessages, fallbackLocale?: BuiltInLocale, locale?: BuiltInLocale): {
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
+    getLocale(): BuiltInLocale;
     setLocale(newLocale: BuiltInLocale): void;
     mixin: {
         beforeCreate(): void;

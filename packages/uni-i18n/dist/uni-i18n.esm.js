@@ -247,6 +247,9 @@ function initVueI18n(messages, fallbackLocale = 'en', locale) {
         t(key, values) {
             return t(key, values);
         },
+        getLocale() {
+            return i18n.getLocale();
+        },
         setLocale(newLocale) {
             return i18n.setLocale(newLocale);
         },
