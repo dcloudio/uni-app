@@ -353,7 +353,7 @@ let res = await db.collection('goods').where({
 
 - 数据量很大的情况下，带条件运算count全表的性能会很差，尽量使用其他方式替代，比如新增一个字段专门用来存放总数。不加条件时count全表不存在性能问题。
 
-### 设置记录数量
+### 设置记录数量@limit
 
 collection.limit()
 
