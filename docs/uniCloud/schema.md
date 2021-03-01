@@ -1296,7 +1296,6 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 
 注意事项
-- `checkbox-group`, `radio-group`, 为uni内置组件，可以省略 `children` 属性
 - `children` 属性, `{item}` 表示 `childrenData` 数组中的项
 
 
