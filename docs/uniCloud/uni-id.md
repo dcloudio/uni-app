@@ -922,11 +922,13 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段		| 类型	| 必填| 说明						|
-| ---			| ---		| ---	| ---							|
-| code		| Number| 是	|错误码，0表示成功|
-| message	| String| 是	|详细信息					|
-| userInfo| Object| 是	|获取的用户信息		|
+| 字段			| 类型	| 必填| 说明															|
+| ---				| ---		| ---	| ---																|
+| code			| Number| 是	|错误码，0表示成功									|
+| message		| String| 是	|详细信息														|
+| uid				| String| 是	|用户id															|
+| role			| Array	| 是	|用户角色列表，需要开启缓存角色权限	|
+| permission| Array	| 是	|用户权限列表，需要开启缓存角色权限	|
 
 ```js
 // 云函数代码
@@ -934,6 +936,11 @@ const uniID = require('uni-id')
 exports.main = async function(event,context) {
 	const res = await uniID.getUserInfoByToken(event.uniIdToken)
 	return res
+  // res = {
+  //   uid: 'xxx',
+  //   role: [],
+  //   permission: []
+  // }
 }
 ```
 
