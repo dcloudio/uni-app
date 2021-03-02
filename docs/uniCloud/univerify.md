@@ -71,7 +71,7 @@ uniCloud.callFunction({
 })
 
 // 云函数
-module.exports = async(event){
+exports.main = async function (event){
   const res = await uniCloud.getPhoneNumber({
     appid: '_UNI_ABCDEFG', // 替换成自己开通一键登录的应用的DCloud appid，使用callFunction方式调用时可以不传（会自动取当前客户端的appid），如果使用云函数URL化的方式访问必须传此参数
   	provider: 'univerify',
@@ -113,7 +113,7 @@ xhr.send(JSON.stringify({
 }));
   
 // 云函数，下面仅展示客户端使用post方式发送content-type为application/json请求的场景
-module.exports = async(event){
+exports.main = async function(event){
   let body = event.body
   if(event.isBase64Encoded) {
     body = Buffer.from(body,'base64')
@@ -170,7 +170,7 @@ const sign = hmac.digest('hex')
 ```js
 // 云函数验证签名，此示例中以接受GET请求为例作演示
 const crypto = require('crypto')
-module.exports = async(event)=>{
+exports.main = async function (event){
   
   const secret = 'your-secret-string' // 自己的密钥不要直接使用示例值，且注意不要泄露
   const hmac = crypto.createHmac('sha256', secret);
