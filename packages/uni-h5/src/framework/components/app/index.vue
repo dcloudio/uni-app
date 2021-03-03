@@ -2,9 +2,9 @@
   <uni-app :class="{ 'uni-app--showtabbar': showTabBar }">
     <!-- <transition :name="transitionName"> -->
     <!-- TODO -->
-    <router-view :key="key" v-slot="{ Component }">
-      <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
-        <component :is="Component" />
+    <router-view v-slot="{ Component }">
+      <keep-alive :exclude="keepAliveExclude">
+        <component :is="Component" :key="key" />
       </keep-alive>
     </router-view>
     <!-- </transition> -->
@@ -44,31 +44,18 @@ export default {
   name: 'App',
   components,
   mixins,
-  props: {
-    keepAliveInclude: {
-      type: Array,
-      default: function () {
-        return []
-      },
-    },
-    keepAliveExclude: {
-      type: Array,
-      default: function () {
-        return []
-      },
-    },
-  },
   data() {
     return {
       transitionName: 'fade',
       hideTabBar: false,
       tabBar: __uniConfig.tabBar || {},
       sysComponents: this.$sysComponents,
+      keepAliveExclude: [],
     }
   },
   computed: {
     key() {
-      return this.$route.path + '-' + (history.state.__id__ || -1)
+      return this.$route.path + '-' + (history.state.__id__ || 0)
     },
     hasTabBar() {
       return (

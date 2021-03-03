@@ -1,10 +1,10 @@
 import { App } from 'vue'
 import {
-  NavigationGuardWithThis,
-  NavigationHookAfter,
   Router,
-  RouteRecordRaw,
   RouterOptions,
+  RouteRecordRaw,
+  NavigationHookAfter,
+  NavigationGuardWithThis,
 } from 'vue-router'
 import {
   createRouter,
@@ -29,12 +29,8 @@ const scrollBehavior: RouterOptions['scrollBehavior'] = (
 }
 
 function createRouterOptions(): RouterOptions {
-  const history =
-    __UNI_ROUTER_MODE__ === 'history'
-      ? createWebHistory()
-      : createWebHashHistory()
   return {
-    history,
+    history: initHistory(),
     strict: !!__uniConfig.router.strict,
     routes: __uniRoutes as RouteRecordRaw[],
     scrollBehavior,
@@ -51,8 +47,27 @@ function createAppRouter(router: Router) {
   return router
 }
 
-const beforeEach: NavigationGuardWithThis<undefined> = (to, from, next) => {
-  const app = getApp()
-  if (app) next()
+function initHistory() {
+  const history =
+    __UNI_ROUTER_MODE__ === 'history'
+      ? createWebHistory()
+      : createWebHashHistory()
+  history.listen((_to, from, info) => {
+    if (info.direction === 'back') {
+      const app = getApp()
+      const id = history.state.__id__
+      if (app && id) {
+        ;(app.$refs.app as any).keepAliveExclude = [from + '-' + id]
+      }
+    }
+  })
+  return history
 }
-const afterEach: NavigationHookAfter = (to, from, failure) => {}
+
+const beforeEach: NavigationGuardWithThis<undefined> = (to, from, next) => {
+  next()
+}
+const afterEach: NavigationHookAfter = (to, from, failure) => {
+  console.log('afterEach.id', history.state.__id__)
+  console.log('afterEach', to, from, failure, JSON.stringify(history.state))
+}

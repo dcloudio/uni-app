@@ -10,7 +10,7 @@ export function getCurrentPages() {
   return []
 }
 
-let id = 0
+let id = 1
 export function createPageState(
   type: 'navigateTo' | 'redirectTo' | 'reLaunch' | 'switchTab'
 ) {

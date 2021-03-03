@@ -28,6 +28,7 @@ Object.keys(buildOptions.input).forEach((name) => {
         createConfig(name, {
           file: resolve(file),
           format: file.includes('.cjs.') ? 'cjs' : 'es',
+          exports: 'auto',
         })
       )
     })
@@ -36,6 +37,7 @@ Object.keys(buildOptions.input).forEach((name) => {
       createConfig(name, {
         file: resolve(buildOptions.input[name]),
         format: (buildOptions.output && buildOptions.output.format) || `es`,
+        exports: 'auto',
       })
     )
   }

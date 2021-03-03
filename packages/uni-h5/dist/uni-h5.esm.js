@@ -690,7 +690,7 @@ function getApp$1() {
 function getCurrentPages$1() {
   return [];
 }
-let id = 0;
+let id = 1;
 function createPageState(type) {
   return {
     __id__: id++,
@@ -712,9 +712,8 @@ const scrollBehavior = (to, from, savedPosition) => {
   }
 };
 function createRouterOptions() {
-  const history2 = __UNI_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
   return {
-    history: history2,
+    history: initHistory(),
     strict: !!__uniConfig.router.strict,
     routes: __uniRoutes,
     scrollBehavior
@@ -728,12 +727,25 @@ function createAppRouter(router) {
   initGuard(router);
   return router;
 }
+function initHistory() {
+  const history2 = __UNI_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
+  history2.listen((_to, from, info) => {
+    if (info.direction === "back") {
+      const app = getApp$1();
+      const id2 = history2.state.__id__;
+      if (app && id2) {
+        app.$refs.app.keepAliveExclude = [from + "-" + id2];
+      }
+    }
+  });
+  return history2;
+}
 const beforeEach = (to, from, next) => {
-  const app = getApp$1();
-  if (app)
-    next();
+  next();
 };
 const afterEach = (to, from, failure) => {
+  console.log("afterEach.id", history.state.__id__);
+  console.log("afterEach", to, from, failure, JSON.stringify(history.state));
 };
 var tabBar_vue_vue_type_style_index_0_lang = "\nuni-tabbar {\r\n  display: block;\r\n  box-sizing: border-box;\r\n  position: fixed;\r\n  left: 0;\r\n  bottom: 0;\r\n  width: 100%;\r\n  z-index: 998;\n}\nuni-tabbar .uni-tabbar {\r\n  display: flex;\r\n  position: fixed;\r\n  left: 0;\r\n  bottom: 0;\r\n  width: 100%;\r\n  z-index: 998;\r\n  box-sizing: border-box;\r\n  padding-bottom: 0;\r\n  padding-bottom: constant(safe-area-inset-bottom);\r\n  padding-bottom: env(safe-area-inset-bottom);\n}\nuni-tabbar .uni-tabbar ~ .uni-placeholder {\r\n  width: 100%;\r\n  height: 50px;\r\n  margin-bottom: 0;\r\n  margin-bottom: constant(safe-area-inset-bottom);\r\n  margin-bottom: env(safe-area-inset-bottom);\n}\nuni-tabbar .uni-tabbar * {\r\n  box-sizing: border-box;\n}\nuni-tabbar .uni-tabbar__item {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  flex-direction: column;\r\n  flex: 1;\r\n  font-size: 0;\r\n  text-align: center;\r\n  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n}\nuni-tabbar .uni-tabbar__bd {\r\n  position: relative;\r\n  height: 50px;\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  cursor: pointer;\n}\nuni-tabbar .uni-tabbar__icon {\r\n  position: relative;\r\n  display: inline-block;\r\n  margin-top: 5px;\r\n  width: 24px;\r\n  height: 24px;\n}\nuni-tabbar .uni-tabbar__icon.uni-tabbar__icon__diff {\r\n  margin-top: 0px;\r\n  width: 34px;\r\n  height: 34px;\n}\nuni-tabbar .uni-tabbar__icon img {\r\n  width: 100%;\r\n  height: 100%;\n}\nuni-tabbar .uni-tabbar__label {\r\n  position: relative;\r\n  text-align: center;\r\n  font-size: 10px;\r\n  line-height: 1.8;\n}\nuni-tabbar .uni-tabbar-border {\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  width: 100%;\r\n  height: 1px;\r\n  transform: scaleY(0.5);\n}\nuni-tabbar .uni-tabbar__reddot {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  width: 12px;\r\n  height: 12px;\r\n  border-radius: 50%;\r\n  background-color: #f43530;\r\n  color: #ffffff;\r\n  transform: translate(40%, -20%);\n}\nuni-tabbar .uni-tabbar__badge {\r\n  width: auto;\r\n  height: 16px;\r\n  line-height: 16px;\r\n  border-radius: 16px;\r\n  min-width: 16px;\r\n  padding: 0 2px;\r\n  font-size: 12px;\r\n  text-align: center;\r\n  white-space: nowrap;\n}\r\n";
 const _sfc_main = {
@@ -2034,31 +2046,18 @@ const _sfc_main$4 = {
   name: "App",
   components,
   mixins,
-  props: {
-    keepAliveInclude: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
-    keepAliveExclude: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    }
-  },
   data() {
     return {
       transitionName: "fade",
       hideTabBar: false,
       tabBar: __uniConfig.tabBar || {},
-      sysComponents: this.$sysComponents
+      sysComponents: this.$sysComponents,
+      keepAliveExclude: []
     };
   },
   computed: {
     key() {
-      return this.$route.path + "-" + (history.state.__id__ || -1);
+      return this.$route.path + "-" + (history.state.__id__ || 0);
     },
     hasTabBar() {
       return __uniConfig.tabBar && __uniConfig.tabBar.list && __uniConfig.tabBar.list.length;
@@ -2111,14 +2110,11 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-app", {
     class: {"uni-app--showtabbar": $options.showTabBar}
   }, [
-    createVNode(_component_router_view, {key: $options.key}, {
+    createVNode(_component_router_view, null, {
       default: withCtx(({Component}) => [
-        (openBlock(), createBlock(KeepAlive, {
-          include: $props.keepAliveInclude,
-          exclude: $props.keepAliveExclude
-        }, [
-          (openBlock(), createBlock(resolveDynamicComponent(Component)))
-        ], 1032, ["include", "exclude"]))
+        (openBlock(), createBlock(KeepAlive, {exclude: $data.keepAliveExclude}, [
+          (openBlock(), createBlock(resolveDynamicComponent(Component), {key: $options.key}))
+        ], 1032, ["exclude"]))
       ]),
       _: 1
     }),
