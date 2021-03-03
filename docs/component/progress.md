@@ -42,4 +42,4 @@
 </template>
 ```
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/43f66da0-4f30-11eb-b997-9918a5dda011.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/43f66da0-4f30-11eb-b997-9918a5dda011.png)

@@ -56,8 +56,8 @@ __仅 H5 支持__，HBuilderX 2.9.9 + 。
 
 custom-tab-bar 水平布局（horizontal）：
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/5dc930c0-2580-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/5dc930c0-2580-11eb-8a36-ebb87efcf8c0.png)
 
 custom-tab-bar 竖直布局（vertical）：
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b3b68450-2595-11eb-880a-0db19f4f74bb.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b3b68450-2595-11eb-880a-0db19f4f74bb.png)

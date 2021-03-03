@@ -94,4 +94,4 @@ export default {
 
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/245b9110-4f2f-11eb-97b7-0dc4655d6e68.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/245b9110-4f2f-11eb-97b7-0dc4655d6e68.png)

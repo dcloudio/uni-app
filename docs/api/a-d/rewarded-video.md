@@ -6,7 +6,7 @@
 
 手机用户观看几十秒视频广告，在广告播放完毕后可获得应用开发商提供的奖励，而应用开发商则可以从广告平台获取不菲的广告收入。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/23fcff30-441f-11eb-b680-7980c8a877b8.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/23fcff30-441f-11eb-b680-7980c8a877b8.png)
 
 与开屏、信息流等广告变现方式不同，激励视频收益高、但场景设计和编程工作量也较高。
 
@@ -436,7 +436,7 @@ rewardedVideoAd.load()
 
 ### 监听用户关闭广告
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/24d1db60-441f-11eb-bd01-97bc1429a9ff.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/24d1db60-441f-11eb-bd01-97bc1429a9ff.png)
 
 只有在用户点击激励视频广告组件上的 关闭广告 按钮时，广告才会关闭。这个事件可以通过 `RewardedVideoAd.onClose()` 监听。
 

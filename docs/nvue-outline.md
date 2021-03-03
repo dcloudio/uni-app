@@ -184,10 +184,10 @@ HBuilderX内置了weex调试工具的强化版，包括审查界面元素、看l
 
  > 此演示在Android 5.1版本手机上的效果，高版本手机效果没有这么明显
  
-<img style="width:300px;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/29c0c580-55ab-11eb-a16f-5b3e54966275.gif"></img>
+<img style="width:300px;" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/29c0c580-55ab-11eb-a16f-5b3e54966275.gif"></img>
  
 
-示例工程[点击下载](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d5adb160-55af-11eb-bd01-97bc1429a9ff.zip)
+示例工程[点击下载](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/d5adb160-55af-11eb-bd01-97bc1429a9ff.zip)
  
 
 

@@ -16,7 +16,7 @@
 ### 内置原生插件
 内置原生插件,uni-app已默认集成，支持直接在内置基座运行。
 
-仅在nvue页面，支持引入BindingX，animation， DOM.addRule等。
+仅在nvue页面，支持引入BindingX，animation， DOM.addRule等。
 
 在vue页面，支持引入clipboard，storage，stream，deviceInfo等。
 
@@ -69,7 +69,7 @@
 
 下载解压后目录结构如下：
 
-<img width="600px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c6b5e6d0-4f2b-11eb-b680-7980c8a877b8.png" />
+<img width="600px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c6b5e6d0-4f2b-11eb-b680-7980c8a877b8.png" />
 
 
 - 方式二：开发者自己开发uni-app原生插件
@@ -83,7 +83,7 @@
 
 在manifest.json -> App原生插件配置 -> 选择本地插件 -> 选择需要打包生效的插件 -> 保存后提交云端打包生效。
 
-<img width="600px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c79438e0-4f2b-11eb-8a36-ebb87efcf8c0.png" />
+<img width="600px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c79438e0-4f2b-11eb-8a36-ebb87efcf8c0.png" />
 
 ##### 第三步：开发调试本地原生插件
 在vue页面或nvue页面引入这个原生插件。
@@ -114,7 +114,7 @@
 ##### 第二步：使用自定义基座打包uni原生插件 （注：请使用真机运行自定义基座）
 在manifest.json -> App原生插件配置 -> 选择云端插件 -> 选择需要打包的插件 -> 保存后提交云端打包生效。
 
-<img width="600px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c8512040-4f2b-11eb-8a36-ebb87efcf8c0.png" />
+<img width="600px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/c8512040-4f2b-11eb-8a36-ebb87efcf8c0.png" />
 
 
 ##### 第三步：开发调试uni-app原生插件

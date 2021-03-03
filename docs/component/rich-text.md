@@ -131,13 +131,13 @@ export default {
                     text: 'Hello&nbsp;uni-app!'
                 }]
             }],
-            strings: '<div style="text-align:center;"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png"/></div>'
+            strings: '<div style="text-align:center;"><img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png"/></div>'
         }
     }
 }
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ef5ba530-4f2f-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ef5ba530-4f2f-11eb-bdc1-8bd33eb6adaa.png)
 
 **Tips**
 

@@ -24,7 +24,7 @@
 2. 单击左侧菜单栏【云函数】，进入云函数页面。
 3. 点击需要配置的云函数的【详情】按钮，配置访问路径。
 
-<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b79d1dc0-5a21-11eb-8a36-ebb87efcf8c0.jpg"></img>
+<img style="max-width:800px;height:auto;" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b79d1dc0-5a21-11eb-8a36-ebb87efcf8c0.jpg"></img>
 
 ### 绑定自定义域名
 
@@ -33,7 +33,7 @@
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
 2. 单击【云函数域名绑定】，在弹出的配置窗口中进行配置。
 
-<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/55897b30-5993-11eb-8ff1-d5dcf8779628.jpg"></img>
+<img style="max-width:800px;height:auto;" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/55897b30-5993-11eb-8ff1-d5dcf8779628.jpg"></img>
 
 >- 每个服务空间最多绑定1个自定义域名。
 >- uniCloud提供默认域名供体验和测试该特性。

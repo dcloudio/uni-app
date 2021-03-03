@@ -127,7 +127,7 @@
 ```
  
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f4db8b80-4f32-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f4db8b80-4f32-11eb-bdc1-8bd33eb6adaa.png)
 
 
 **注意**

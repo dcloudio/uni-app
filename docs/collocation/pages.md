@@ -1014,7 +1014,7 @@ midButton没有pagePath，需监听点击事件，自行处理点击后的行为
 **注意：** 在 App 里真机运行可直接打开配置的页面，微信开发者工具里需要手动改变编译模式，如下图：
 
 <div style="text-align:center;">
-	<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a4ceac70-4f2e-11eb-b680-7980c8a877b8.png" />
+	<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/a4ceac70-4f2e-11eb-b680-7980c8a877b8.png" />
 </div>
 
 **代码示例：**

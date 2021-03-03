@@ -211,7 +211,7 @@ RBAC：Role-Based Access Control，基于角色的访问控制。
 
 其基本思想：对系统操作的各种权限不是直接授予具体的用户，而是在用户集合与权限集合之间建立一个角色集合。每一种角色对应一组相应的权限。一旦用户被分配了适当的角色后，该用户就拥有此角色的所有权限。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/431878b0-0ca0-11eb-8a36-ebb87efcf8c0.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/431878b0-0ca0-11eb-8a36-ebb87efcf8c0.png)
 
 这样做的好处是，增强系统管理的扩展性，对于批量用户的权限变更，仅需变更该批用户角色对应权限即可，而无需对该批每个用户变更权限。
 
@@ -2704,12 +2704,12 @@ exports.main = async function(event,context) {
 
 **分享邀请码/邀请链接**
 
-<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
+<img width="375" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/1b181d40-e377-11ea-b680-7980c8a877b8.jpeg" />
 
 
 **受邀者注册**
 
-<img width="375" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
+<img width="375" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/1b12c610-e377-11ea-b997-9918a5dda011.jpeg" />
 
 
 ## 修改passwordSecret@modifysecret
@@ -2781,7 +2781,7 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
 
 详细checkToken流程如下：
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/ed45d350-5a4d-11eb-b997-9918a5dda011.jpg)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/ed45d350-5a4d-11eb-b997-9918a5dda011.jpg)
 
 可以看出，旧版token（removePermissionAndRoleFromToken为true时生成的）在checkToken时如需返回权限需要进行两次数据库查询。新版token不需要查库即可返回权限信息。
 

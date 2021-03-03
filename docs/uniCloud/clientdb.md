@@ -2459,7 +2459,7 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 
 **新建action**
 
-![新建action](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
+![新建action](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
 
 每个action在uni-clientDB-actions目录下存放一个以action名称命名的js文件。
 

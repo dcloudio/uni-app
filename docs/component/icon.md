@@ -61,6 +61,6 @@ export default {
 **效果展示**
 
 <div style="display:flex;align-items: flex-start;justify-content: center;flex-wrap: wrap;">
-		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d188f390-4f30-11eb-97b7-0dc4655d6e68.png" width="375" style="margin-right:20px;"/>
-		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d2562ea0-4f30-11eb-97b7-0dc4655d6e68.png" width="375"/>
+		<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d188f390-4f30-11eb-97b7-0dc4655d6e68.png" width="375" style="margin-right:20px;"/>
+		<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d2562ea0-4f30-11eb-97b7-0dc4655d6e68.png" width="375"/>
 </div>

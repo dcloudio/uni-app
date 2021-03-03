@@ -26,7 +26,7 @@
 
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中一个数据表
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
+  ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
 
 **web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
 
@@ -580,7 +580,7 @@ enum支持3种数据格式：
 
 - 方式一：在uniCloud web控制台创建
 1. uniCloud 控制台，选择服务空间，切换到数据库视图
-2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
+2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
 3. 给函数起个名字，比如叫“checkabc”
 
 - 方式二：在HBuilderX中创建
@@ -1206,11 +1206,11 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 2. 点击新建数据表
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/1ef863ed-d919-46f3-bd01-6092f2ed1e21.jpg)
 3. 使用[OpenDB](https://gitee.com/dcloud/opendb)表模板创建： `opendb-contacts` 通讯录表
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0e2ee195-05ae-4445-af41-45c41b2da70a.jpg)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0e2ee195-05ae-4445-af41-45c41b2da70a.jpg)
 4. 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3f93a350-2d13-4b8e-afb6-7dc367437b49.jpg)
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3f93a350-2d13-4b8e-afb6-7dc367437b49.jpg)
 5. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
- ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
+  ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 
 上图每个区域的解释如下：
 
@@ -1493,7 +1493,7 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 以城市选择举例。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e56e7cc0-50b8-11eb-97b7-0dc4655d6e68.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e56e7cc0-50b8-11eb-97b7-0dc4655d6e68.png)
 
 在这个业务里涉及2个表，一个是用户的地址信息表[uni-id-address](https://gitee.com/dcloud/opendb/tree/master/collection/uni-id-address)，一个是候选的省市区数据表[opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china)。
 

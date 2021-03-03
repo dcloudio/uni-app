@@ -6,7 +6,7 @@
 
 HBuilderX 3.0起版本，在云函数目录 `uniCloud` 右键菜单创建服务空间
 
-![创建服务空间1](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
+![创建服务空间1](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
 
 
 

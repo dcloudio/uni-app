@@ -76,7 +76,7 @@ export default {
 }
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3aa1edc0-4f2f-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3aa1edc0-4f2f-11eb-bd01-97bc1429a9ff.png)
 
 **Tips**
 

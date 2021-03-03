@@ -139,4 +139,4 @@ export default {
     }
 }
 ```
- ![uni](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/97ccca10-4f2f-11eb-b997-9918a5dda011.png)
+ ![uni](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/97ccca10-4f2f-11eb-b997-9918a5dda011.png)

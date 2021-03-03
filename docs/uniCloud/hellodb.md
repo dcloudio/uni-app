@@ -177,7 +177,7 @@ data很简单，就是存放的数据记录(record)。
 
 **在web控制台添加上述索引**
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/fca53140-1d91-11eb-880a-0db19f4f74bb.jpg)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/fca53140-1d91-11eb-880a-0db19f4f74bb.jpg)
 
 **在db_init.json内添加上述索引**
 

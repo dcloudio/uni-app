@@ -5,7 +5,7 @@
 
 
 
-<img max-width="500px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/d24d7f30-4b16-11eb-bdc1-8bd33eb6adaa.jpg" />
+<img max-width="500px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/d24d7f30-4b16-11eb-bdc1-8bd33eb6adaa.jpg" />
 
 
   - 对于老的uni-app项目，也可以对项目点右键，菜单中选择“创建uniCloud云开发环境”
@@ -77,7 +77,7 @@ HBuilderX 3.0之前版本目录结构如下：
 
   - HBuilderX 3.0起版本，在云函数目录`uniCloud`右键菜单创建服务空间，会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
 
-![创建服务空间1](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
+![创建服务空间1](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b16f9740-4c05-11eb-8a36-ebb87efcf8c0.jpg)
 
 
   - HBuilderX 3.0之前版本，在云函数目录`cloudfunctions`右键菜单创建服务空间，会打开web控制台[https://unicloud.dcloud.net.cn](https://unicloud.dcloud.net.cn) 进行创建
@@ -101,7 +101,7 @@ HBuilderX 3.0之前版本目录结构如下：
 
 HBuilderX 3.0起版本请在`uniCloud/cloudfunctions`目录右键创建云函数
 
-![新建云函数1](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/a18b3bb0-53d8-11eb-8ff1-d5dcf8779628.jpg)
+![新建云函数1](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/a18b3bb0-53d8-11eb-8ff1-d5dcf8779628.jpg)
 
 
 HBuilderX 3.0之前版本在 `cloudfunctions` 目录右键创建云函数
@@ -144,7 +144,7 @@ exports.main = async (event, context) => {
 
 如果使用`HBuilderX 3.0.0`及以上版本还可以使用客户端连接本地云函数的方式，不同于上面三种，客户端连接本地云函数需要在运行起来的客户端对应的HBuilderX控制台上切换连接云端还是本地云函数，如下图
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/28f84f90-3f69-11eb-8ff1-d5dcf8779628.jpg)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/28f84f90-3f69-11eb-8ff1-d5dcf8779628.jpg)
 
 - 上传部署云函数：将云函数部署到uniCloud服务空间，不会运行。（快捷键Ctrl+u）
 - 上传并运行云函数：先上传云函数，并在云端立即执行该云函数。在部署后同时运行，并打印日志出来。有延时，调试时不如本地运行云函数快捷。
@@ -205,13 +205,13 @@ exports.main = async (event, context) => {
 
 运行客户端后可以在HBuilderX控制台切换是连接本地云函数还是云端云函数，如下图所示
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/28f84f90-3f69-11eb-8ff1-d5dcf8779628.jpg)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/28f84f90-3f69-11eb-8ff1-d5dcf8779628.jpg)
 
 **日志查看**
 
 切换为本地云函数之后客户端的callFunction会直接调用cloudfunctions目录下的云函数。此时云函数的日志会在HBuilderX uniCloud控制台打印。如下图
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b6f52050-3f7a-11eb-8a36-ebb87efcf8c0.jpg)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b6f52050-3f7a-11eb-8a36-ebb87efcf8c0.jpg)
 
 切换连接云端云函数还是本地云函数之后会在项目下的`.hbuilderx`目录创建一个`launch.json`文件。关于此文件的说明请参考：【链接待补充】
 
@@ -271,15 +271,15 @@ exports.main = async (event, context) => {
 - 如果没有安装本地运行插件，按照提示安装即可
 - 如需配置运行参数请参考：[配置运行测试参数](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam)
 
-![本地运行](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/cb5457a0-4b19-11eb-8ff1-d5dcf8779628.jpg)
+![本地运行](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/cb5457a0-4b19-11eb-8ff1-d5dcf8779628.jpg)
 
 在云函数编辑器里，按`Ctrl+r`运行快捷键（或点工具栏的运行），可看到运行云函数的若干菜单。`Ctrl+r`然后回车或选`0`，即可高效的在控制台看到运行结果和日志输出。如下图所示：
 
-![运行快捷键](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/723ec000-4b1a-11eb-b680-7980c8a877b8.jpg)
+![运行快捷键](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/723ec000-4b1a-11eb-b680-7980c8a877b8.jpg)
 
 云函数目前无法断点debug，只能打印`console.log`看日志。
 
-![日志](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/caddd2a0-4b1a-11eb-b680-7980c8a877b8.jpg)
+![日志](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/caddd2a0-4b1a-11eb-b680-7980c8a877b8.jpg)
 
 运行云函数时，如需要给云函数传参，除了在前端传参外，在调试阶段，可以通过配置json文件来传测试参数。
 
@@ -342,7 +342,7 @@ const hour = getOffsetDate(8).getHours()
 
 可以打开一个json，配置运行参数。配置该json后，运行云函数时会将该json作为云函数调用的上行参数处理，可以在云函数中接收到参数。
 
-![配置运行参数](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/37245420-4b1b-11eb-b997-9918a5dda011.jpg)
+![配置运行参数](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/37245420-4b1b-11eb-b997-9918a5dda011.jpg)
 
 在云函数目录右键运行云函数，也可以在云函数编辑器里，按`Ctrl+r`运行快捷键，或点工具栏的运行
 
@@ -350,7 +350,7 @@ const hour = getOffsetDate(8).getHours()
 
 此时云函数运行会携带所配置的运行参数
 
-![运行参数](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/84352e10-4b1b-11eb-8ff1-d5dcf8779628.jpg)
+![运行参数](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/84352e10-4b1b-11eb-8ff1-d5dcf8779628.jpg)
 
 **模拟客户端类型**
 
