@@ -1077,6 +1077,8 @@ db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
 
 collection.doc().update(Object data)
 
+> 未使用set、remove更新操作符的情况下，此方法不会删除字段，仅将更新数据和已有数据合并。
+
 **参数说明**
 
 | 参数 | 类型   | 必填 | 说明                                     |
@@ -1150,7 +1152,7 @@ collection.doc().set()
 
 **注意：**
 
-- 此方法会覆写已有字段，需注意与`update`表现不同，比如以下示例执行`set`之后`follow`字段会被删除
+> 此方法会覆写已有字段，需注意与`update`表现不同，比如以下示例执行`set`之后`follow`字段会被删除
 
 ```js
 let res = await collection.doc('doc-id').set({
