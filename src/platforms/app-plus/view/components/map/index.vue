@@ -332,20 +332,12 @@ export default {
       map.__markers_map__ = {}
     },
     _addMarkers (markers, clear) {
-      if (this.map) {
-        if (clear) {
-          this._clearMarkers()
-        }
-        markers.forEach(marker => {
-          this._addMarker(this.map, marker)
-        })
-        return {
-          errMsg: 'addMapMarkers:ok'
-        }
+      if (clear) {
+        this._clearMarkers()
       }
-      return {
-        errMsg: 'addMapMarkers:fail:请先创建地图元素'
-      }
+      markers.forEach(marker => {
+        this._addMarker(this.map, marker)
+      })
     },
     _translateMapMarker ({
       autoRotate,
@@ -354,23 +346,13 @@ export default {
       duration,
       markerId
     }) {
-      if (this.map) {
-        const nativeMarker = this.map.__markers_map__[markerId + '']
-        if (nativeMarker) {
-          nativeMarker.setPoint(new plus.maps.Point(destination.longitude, destination.latitude))
-        }
-      }
-      return {
-        errMsg: 'translateMapMarker:ok'
+      const nativeMarker = this.map.__markers_map__[markerId + '']
+      if (nativeMarker) {
+        nativeMarker.setPoint(new plus.maps.Point(destination.longitude, destination.latitude))
       }
     },
     _addMapLines (lines) {
       const nativeMap = this.map
-      if (!nativeMap) {
-        return {
-          errMsg: 'addMapLines:fail:请先创建地图元素'
-        }
-      }
 
       if (nativeMap.__lines__.length > 0) {
         nativeMap.__lines__.forEach(circle => {
@@ -402,17 +384,9 @@ export default {
         nativeMap.addOverlay(polyline)
         nativeMap.__lines__.push(polyline)
       })
-      return {
-        errMsg: 'addMapLines:ok'
-      }
     },
     _addMapCircles (circles) {
       const nativeMap = this.map
-      if (!nativeMap) {
-        return {
-          errMsg: 'addMapCircles:fail:请先创建地图元素'
-        }
-      }
 
       if (nativeMap.__circles__.length > 0) {
         nativeMap.__circles__.forEach(circle => {
@@ -447,9 +421,6 @@ export default {
         nativeMap.addOverlay(nativeCircle)
         nativeMap.__circles__.push(nativeCircle)
       })
-      return {
-        errMsg: 'addMapCircles:ok'
-      }
     }
   }
 }
