@@ -4,6 +4,8 @@
   "uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
   "uni.showModal.cancel": "Annuler",
   "uni.showModal.confirm": "confirmer",
+  "uni.picker.done": "OK",
+  "uni.picker.cancel": "Annuler",
   "uni.button.feedback.title": "retour d'information",
   "uni.button.feedback.send": "envoyer"
 }

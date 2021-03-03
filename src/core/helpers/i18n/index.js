@@ -22,3 +22,4 @@ const i18n = initVueI18n(__PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? 
 export const t = i18n.t
 export const i18nMixin = i18n.mixin
 export const setLocale = i18n.setLocale
+export const getLocale = i18n.getLocale

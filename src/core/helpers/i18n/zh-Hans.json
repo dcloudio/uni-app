@@ -4,6 +4,8 @@
   "uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
   "uni.showModal.cancel": "取消",
   "uni.showModal.confirm": "确认",
+  "uni.picker.done": "完成",
+  "uni.picker.cancel": "取消",
   "uni.button.feedback.title": "问题反馈",
   "uni.button.feedback.send": "发送"
 }
