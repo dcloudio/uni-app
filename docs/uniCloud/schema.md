@@ -1177,7 +1177,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 ### schema2code代码生成系统@autocode
 
-`DB Schema`里有大量的信息，其实有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的前端页面，以及admin端的列表、新增、修改、删除全套功能。
+`DB Schema`里有大量的信息，其实有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增、修改、列表、详情的前端页面，以及admin端的列表、新增、修改、删除全套功能。
 
 为强化表单的自定义性，`DB Schema`还扩展了label、componentForEdit、componentForShow、group、order等属性，以控制表单项在界面上的渲染控件。
 
