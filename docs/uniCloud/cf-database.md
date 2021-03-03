@@ -2259,7 +2259,7 @@ let res = await db.collection('items').aggregate()
     boundaries: [0, 50, 100],
     default: 'other',
     output: {
-      count: $.sum(),
+      count: $.sum(1),
       ids: $.push('$_id')
     }
   })
@@ -2288,7 +2288,7 @@ let res = await db.collection('items').aggregate()
   },
   {
     "_id": "other",
-    "count": 22,
+    "count": 1,
     "ids": [
       "5"
     ]
