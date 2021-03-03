@@ -1199,9 +1199,18 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
 
-1. 在uniCloud web控制台，进入一个数据表的表结构schema界面，点击按钮 “schema2code”
+#### 快速上手schema2code生成“通讯录”
+> 成品演示地址:[http://contacts-demo.dcloud.net.cn/](http://contacts-demo.dcloud.net.cn/)
 
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
+1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中“云数据库”
+2. 点击新建数据表
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/cf14c597-cc74-4949-bf5b-99727b1f0888.png)
+3. 使用[OpenDB](https://gitee.com/dcloud/opendb)表模板创建： `opendb-contacts` 通讯录表
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0e2ee195-05ae-4445-af41-45c41b2da70a.jpg)
+4. 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3f93a350-2d13-4b8e-afb6-7dc367437b49.jpg)
+5. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
+ ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 
 上图每个区域的解释如下：
 
@@ -1235,11 +1244,19 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 
 - 区域G. 文件预览 (仅支持预览 自动生成的页面和校验规则)
 
-2. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中。
+> 注意：需HBuilderX 3.0.5+ 支持
 
-**注意：生成的代码，需HBuilderX2.9.5+方可正常运行。**
+**全程演示视频**：
+</br>
+<video style="width:50vw;height:28vw;" id="video" preload="none" controls="controls"
+	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4"></video>
 
-在生成uniCloud admin页面时，生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】。了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk)。
+
+
+
+
+
+如果生成uniCloud admin页面，生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】。了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk)。
 
 以uniCloud admin内置页面【用户列表页】为例，要实现列表按注册时间排倒叙，要在列表上方的搜索框搜索，需在生成的list.vue页面的script区域修改如下配置：
 
