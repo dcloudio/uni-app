@@ -320,6 +320,7 @@ enum支持3种数据格式：
       "bsonType": "array",
       "description": "角色",
       "label": "角色",
+      "foreignKey": "uni-id-roles.role_id",
       "enum": {
         "collection": "uni-id-roles", // 表名，这里使用 uni-id-roles表举例，在uniCloud控制台使用 opendb 创建此表
         "field": "role_name as text, role_id as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
