@@ -606,13 +606,13 @@ export default {
       }
     },
     _pickerViewChange (event) {
-      this.valueArray == this._l10nColumn(event.detail.value, true)
+      this.valueArray = this._l10nColumn(event.detail.value, true)
     },
     _l10nColumn (array, normalize) {
       if (this.mode === mode.DATE) {
-        const local = getLocale()
-        if (!local.startsWith('zh')) {
-          switch (local) {
+        const locale = getLocale()
+        if (!locale.startsWith('zh')) {
+          switch (locale) {
             case 'es':
             case 'fr':
               return [array[2], array[1], array[0]]
@@ -626,13 +626,13 @@ export default {
     },
     _l10nItem (item, index) {
       if (this.mode === mode.DATE) {
-        const local = getLocale()
-        if (local.startsWith('zh')) {
+        const locale = getLocale()
+        if (locale.startsWith('zh')) {
           const array = ['年', '月', '日']
           return item + array[index]
-        } else if (index === (local === 'es' || local === 'fr' ? 1 : 0)) {
+        } else if (index === (locale === 'es' || locale === 'fr' ? 1 : 0)) {
           let array
-          switch (local) {
+          switch (locale) {
             case 'es':
               array = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', '​​julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
               break
