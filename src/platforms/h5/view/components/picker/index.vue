@@ -612,13 +612,18 @@ export default {
       if (this.mode === mode.DATE) {
         const locale = getLocale()
         if (!locale.startsWith('zh')) {
-          switch (locale) {
-            case 'es':
-            case 'fr':
-              return [array[2], array[1], array[0]]
-            // case 'en':
-            default:
-              return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]]
+          switch (this.fields) {
+            case fields.DAY:
+              switch (locale) {
+                case 'es':
+                case 'fr':
+                  return [array[2], array[1], array[0]]
+                // case 'en':
+                default:
+                  return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]]
+              }
+            case fields.MONTH:
+              return [array[1], array[0]]
           }
         }
       }
@@ -630,7 +635,7 @@ export default {
         if (locale.startsWith('zh')) {
           const array = ['年', '月', '日']
           return item + array[index]
-        } else if (index === (locale === 'es' || locale === 'fr' ? 1 : 0)) {
+        } else if (this.fields !== fields.YEAR && index === (this.fields === fields.DAY && (locale === 'es' || locale === 'fr') ? 1 : 0)) {
           let array
           switch (locale) {
             case 'es':
