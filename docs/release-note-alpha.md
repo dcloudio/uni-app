@@ -1,3 +1,18 @@
+#### 3.1.4.20210303-alpha
+* 【uni-app】
+  + App平台 修复 nvueStyleCompiler 设置为 uni-app 时 subNvue 页面根节点 class 无效的 Bug
+  + App平台 修复 nvueStyleCompiler 设置为 uni-app 时 nvue 页面样式中 !important 前不含空格时报错的Bug [详情](https://ask.dcloud.net.cn/question/117212)
+  + H5平台 修复 部分情况下获取 wxs 实例错误的的Bug [详情](https://ask.dcloud.net.cn/question/117097)
+* 【uniCloud】
+  + clientDB 修复 数据库运算方法in报错的Bug
+  + clientDB 修复 jql非运算表现异常的Bug
+  + clientDB 优化 部分场景下getCount性能
+  + clientDB 优化 部分场景下jql联表查询性能
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 修复 微信分享本地图片在部分 Android11 设备可能失败的Bug [详情](https://ask.dcloud.net.cn/question/117050)
+  + Android平台 修复 页面中 input 标签 type 为 tel/email 时，弹出软键盘上方的辅助输入栏内容可能显示不正常的Bug [详情](https://ask.dcloud.net.cn/question/118051)
+  + iOS平台 修复 保存 gif 图片到系统相册可能引起卡死或崩溃的Bug [详情](https://ask.dcloud.net.cn/question/117814)
+
 #### 3.1.3.20210219-alpha
 * 【uni-app】
   + App平台、H5平台 修复 3.1.0 版本引出的 canvasGetImageData、canvasToTempFilePath 获取高度错误Bug [详情](https://ask.dcloud.net.cn/question/117082)

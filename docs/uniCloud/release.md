@@ -4,6 +4,12 @@
   + schema2code 优化 导出 admin list页面的批量删除逻辑，没有选择项时禁用批量删除按钮
   + schema2code 修复 生成 uni-file-picker 组件的属性 file-extname 类型错误的问题
 
+#### 2021-03-03
+  + clientDB 修复 数据库运算方法in报错的Bug
+  + clientDB 修复 jql非运算表现异常的Bug
+  + clientDB 优化 部分场景下getCount性能
+  + clientDB 优化 部分场景下jql联表查询性能
+
 #### 2021-02-04
   + 修复 uniCloud.getCurrentUserInfo 报错的Bug
 
