@@ -1,3 +1,9 @@
+#### 2021-03-04
+  + schema2code 新增 导出 uni_modules
+  + schema2code 调整 导出 components 目录为 uni_modules 结构
+  + schema2code 优化 导出 admin list页面的批量删除逻辑，没有选择项时禁用批量删除按钮
+  + schema2code 修复 生成 uni-file-picker 组件的属性 file-extname 类型错误的问题
+
 #### 2021-02-04
   + 修复 uniCloud.getCurrentUserInfo 报错的Bug
 
