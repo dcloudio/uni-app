@@ -129,7 +129,28 @@ nvue 的页面跳转，与 weex 不同，仍然遵循 uni-app 的路由模型。
 
 weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.net.cn/plugin?id=442)。但相比uni-app插件市场及官方[uni ui](https://ext.dcloud.net.cn/plugin?id=55)而言，weex语法的组件生态还是比较欠缺的。
 
+
+**HBuilderX 3.1.0+ 开始支持新的样式编译模式**
+- weex 编译模式：老模式，样式支持与普通 weex 相同
+- uni-app 编译模式：新模式，在 weex 原有样式基础上支持组合选择器（相邻兄弟选择器、普通兄弟选择器、子选择器、后代选择器）[详见](https://ask.dcloud.net.cn/article/38751)
+```js
+  // manifest.json  
+  {        
+      // ...        
+       /* App平台特有配置 */        
+      "app-plus":  {  
+          "nvueStyleCompiler": "uni-app"  
+      }  
+  }
+```
+
+
+
+
+
 ## 快速上手
+
+
 ### 1.新建nvue页面
 在HBuilderX的 ```uni-app``` 项目中，新建页面，弹出界面右上角可以选择是建立```vue```页面还是```nvue```页面，或者2个同时建。
 

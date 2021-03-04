@@ -18,6 +18,29 @@
 - 文字内容，必须只能在```text```组件下，```text```组件不能换行写内容，否则会出现无法去除的周边空白
 - 只有```text```标签可以设置字体大小，字体颜色
 
+
+**HBuilderX 3.1.0+ 开始支持更多简写样式**
+- `border`
+- `border-top`
+- `border-right`
+- `border-bottom`
+- `border-left`
+- `border-style`
+- `border-width`
+- `border-color`
+- `border-radius`
+- `flex-flow`
+- `background`
+
+
+**HBuilderX 3.1.0+ 开始支持新的样式编译模式**
+- 新增 `nvueStyleCompiler` 配置，支持组合选择器（相邻兄弟选择器、普通兄弟选择器、子选择器、后代选择器）。[详见](https://ask.dcloud.net.cn/article/38751)
+
+
+
+
+
+
 下面有些正确和错误的写法示例对比：
 
 - 选择器类型仅支持 class 选择器
