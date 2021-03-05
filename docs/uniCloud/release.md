@@ -1,3 +1,7 @@
+#### 2021-03-05
+  + schema2code 修复 exclusiveMinimum|exclusiveMaximum 默认验证提示语不准确的问题（重新保存schema后生效）
+  + schema2code 优化 生成的前端 list 页面，增加无数据提示语 "没有更多数据"
+
 #### 2021-03-04
   + schema2code 新增 导出 uni_modules
   + schema2code 调整 导出 components 目录为 uni_modules 结构
