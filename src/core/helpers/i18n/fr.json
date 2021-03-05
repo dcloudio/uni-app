@@ -1,4 +1,5 @@
 {
+  "uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
   "uni.showActionSheet.cancel": "Annuler",
   "uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
   "uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",

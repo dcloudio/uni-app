@@ -1,4 +1,5 @@
 {
+  "uni.async.error": "The connection timed out, click the screen to try again.",
   "uni.showActionSheet.cancel": "cancel",
   "uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
   "uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",

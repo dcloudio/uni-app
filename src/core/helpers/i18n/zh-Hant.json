@@ -1,4 +1,5 @@
 {
+  "uni.async.error": "連接服務器超時，點擊屏幕重試",
   "uni.showActionSheet.cancel": "取消",
   "uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
   "uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
