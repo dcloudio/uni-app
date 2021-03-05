@@ -6,6 +6,8 @@
   "uni.showModal.confirm": "confirm",
   "uni.picker.done": "Done",
   "uni.picker.cancel": "Cancel",
+  "uni.video.danmu": "Danmu",
+  "uni.video.volume": "Volume",
   "uni.button.feedback.title": "feedback",
   "uni.button.feedback.send": "send"
 }

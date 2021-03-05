@@ -6,6 +6,8 @@
   "uni.showModal.confirm": "确认",
   "uni.picker.done": "完成",
   "uni.picker.cancel": "取消",
+  "uni.video.danmu": "弹幕",
+  "uni.video.volume": "音量",
   "uni.button.feedback.title": "问题反馈",
   "uni.button.feedback.send": "发送"
 }
