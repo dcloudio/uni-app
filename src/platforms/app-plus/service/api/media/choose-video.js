@@ -10,6 +10,10 @@ import {
   warpPlusErrorCallback
 } from '../util'
 
+import {
+  t
+} from 'uni-core/helpers/i18n'
+
 export function chooseVideo ({
   sourceType,
   maxDuration,
@@ -66,11 +70,11 @@ export function chooseVideo ({
     }
   }
   plus.nativeUI.actionSheet({
-    cancel: '取消',
+    cancel: t('uni.chooseVideo.cancel'),
     buttons: [{
-      title: '拍摄'
+      title: t('uni.chooseVideo.sourceType.camera')
     }, {
-      title: '从手机相册选择'
+      title: t('uni.chooseVideo.sourceType.album')
     }]
   }, e => {
     switch (e.index) {
