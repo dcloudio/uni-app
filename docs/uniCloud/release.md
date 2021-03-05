@@ -1,5 +1,5 @@
 #### 2021-03-05
-  + schema2code 修复 exclusiveMinimum|exclusiveMaximum 默认验证提示语不准确的问题（重新保存schema后生效）
+  + DB Schema 修复 exclusiveMinimum|exclusiveMaximum 默认验证提示语不准确的问题（重新保存schema后生效）
   + schema2code 优化 生成的前端 list 页面，增加无数据提示语 "没有更多数据"
 
 #### 2021-03-04
