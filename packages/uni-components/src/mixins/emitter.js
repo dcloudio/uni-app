@@ -31,28 +31,29 @@ function broadcast(componentName, eventName, ...params) {
 export default {
   methods: {
     $dispatch(componentName, eventName, ...params) {
-      if (typeof componentName === 'string') {
-        componentName = [componentName]
-      }
-      let parent = this.$parent || this.$root
-      let name = parent.$options.name && parent.$options.name.substr(4)
+      console.log('$dispatch', componentName, eventName, params)
+      // if (typeof componentName === 'string') {
+      //   componentName = [componentName]
+      // }
+      // let parent = this.$parent || this.$root
+      // let name = parent.$options.name && parent.$options.name.substr(4)
 
-      while (parent && (!name || !~componentName.indexOf(name))) {
-        parent = parent.$parent
+      // while (parent && (!name || !~componentName.indexOf(name))) {
+      //   parent = parent.$parent
 
-        if (parent) {
-          name = parent.$options.name && parent.$options.name.substr(4)
-        }
-      }
-      if (parent) {
-        parent.$emit.apply(parent, [eventName].concat(params))
-      }
+      //   if (parent) {
+      //     name = parent.$options.name && parent.$options.name.substr(4)
+      //   }
+      // }
+      // if (parent) {
+      //   parent.$emit.apply(parent, [eventName].concat(params))
+      // }
     },
     $broadcast(componentName, eventName, ...params) {
       if (typeof componentName === 'string') {
         componentName = [componentName]
       }
       broadcast.apply(this, [componentName, eventName].concat(params))
-    }
-  }
+    },
+  },
 }
