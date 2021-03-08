@@ -6,6 +6,10 @@ import {
   invoke
 } from '../../bridge'
 
+import {
+  t
+} from 'uni-core/helpers/i18n'
+
 let toast
 let toastType
 let timeout
@@ -151,7 +155,7 @@ export function showActionSheet ({
     options.title = title
   }
 
-  options.cancel = ''
+  options.cancel = t('uni.showActionSheet.cancel')
 
   plus.nativeUI.actionSheet(Object.assign(options, {
     popover

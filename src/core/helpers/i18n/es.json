@@ -1,6 +1,6 @@
 {
   "uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
-  "uni.showActionSheet.cancel": "cancelar",
+  "uni.showActionSheet.cancel": "Cancelar",
   "uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
   "uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
   "uni.showModal.cancel": "Cancelar",
