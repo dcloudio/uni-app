@@ -15,6 +15,7 @@
   "uni.previewImage.button.save": "Save Image",
   "uni.previewImage.save.success": "Saved successfully",
   "uni.previewImage.save.fail": "Save failed",
+  "uni.setClipboardData.success": "Content copied",
   "uni.picker.done": "Done",
   "uni.picker.cancel": "Cancel",
   "uni.video.danmu": "Danmu",

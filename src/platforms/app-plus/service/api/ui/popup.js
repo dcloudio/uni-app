@@ -31,7 +31,8 @@ export function showToast ({
   duration = 1500,
   mask = false,
   position = '',
-  type = 'toast'
+  type = 'toast',
+  style
 } = {}) {
   hide(null)
   toastType = type
@@ -79,7 +80,7 @@ export function showToast ({
       }
     }
 
-    toast = plus.nativeUI.showWaiting(title, waitingOptions)
+    toast = plus.nativeUI.showWaiting(title, Object.assign(waitingOptions, style))
   }
 
   timeout = setTimeout(() => {

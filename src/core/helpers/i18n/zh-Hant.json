@@ -15,6 +15,7 @@
   "uni.previewImage.button.save": "保存圖像",
   "uni.previewImage.save.success": "保存圖像到相冊成功",
   "uni.previewImage.save.fail": "保存圖像到相冊失敗",
+  "uni.setClipboardData.success": "內容已復制",
   "uni.picker.done": "完成",
   "uni.picker.cancel": "取消",
   "uni.video.danmu": "彈幕",
