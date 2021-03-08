@@ -294,6 +294,35 @@ export default {
 </script>
 ```
 
+下拉刷新示例
+
+`this.$refs.udb.loadData({clear: true}, callback)`，
+
+可选参数 `clear: true`，是否清空数据和分页信息，`true`表示清空，默认`false`
+
+`callback` 是回调函数，加载数据完成后触发（即使加载失败）
+
+```
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		// 页面生命周期，下拉刷新后触发
+		onPullDownRefresh() {
+			this.$refs.udb.loadData({
+				clear: true
+			}, () => {
+				// 停止下拉刷新
+				uni.stopPullDownRefresh()
+			})
+		}
+	}
+</script>
+```
+
+
 ### loadMore
 
 在列表的加载下一页场景下，使用ref方式访问组件方法，加载更多数据，每加载成功一次，当前页 +1
@@ -301,6 +330,23 @@ export default {
 ```js
 this.$refs.udb.loadMore() //udb为unicloud-db组件的ref属性值
 ```
+
+### clear
+
+清空已加载的数据，但不会重置当前分页信息
+
+```js
+this.$refs.udb.clear() //udb为unicloud-db组件的ref属性值
+```
+
+### reset
+
+重置当前分页信息，但不会清空已加载的数据
+
+```js
+this.$refs.udb.reset() //udb为unicloud-db组件的ref属性值
+```
+
 
 ### remove
 
