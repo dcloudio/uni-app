@@ -69,7 +69,7 @@ export default {
     },
     cancelText: {
       type: String,
-      default: '取消'
+      default: 'Cancel'
     },
     cancelColor: {
       type: String,
@@ -77,7 +77,7 @@ export default {
     },
     confirmText: {
       type: String,
-      default: '确定'
+      default: 'OK'
     },
     confirmColor: {
       type: String,

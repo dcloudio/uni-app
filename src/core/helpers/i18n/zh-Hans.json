@@ -4,7 +4,7 @@
   "uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
   "uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
   "uni.showModal.cancel": "取消",
-  "uni.showModal.confirm": "确认",
+  "uni.showModal.confirm": "确定",
   "uni.chooseImage.cancel": "取消",
   "uni.chooseImage.sourceType.album": "从相册选择",
   "uni.chooseImage.sourceType.camera": "拍摄",
