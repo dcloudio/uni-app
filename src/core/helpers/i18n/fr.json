@@ -1,4 +1,5 @@
 {
+  "uni.app.quit": "Appuyez à nouveau pour quitter l'application",
   "uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
   "uni.showActionSheet.cancel": "Annuler",
   "uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",

@@ -15,12 +15,16 @@ import {
   closeWebview
 } from './util'
 
+import {
+  t
+} from 'uni-core/helpers/i18n'
+
 let firstBackTime = 0
 
 function quit () {
   if (!firstBackTime) {
     firstBackTime = Date.now()
-    plus.nativeUI.toast('再按一次退出应用')
+    plus.nativeUI.toast(t('uni.app.quit'))
     setTimeout(() => {
       firstBackTime = null
     }, 2000)

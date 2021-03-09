@@ -1,4 +1,5 @@
 {
+  "uni.app.quit": "Pulse otra vez para salir",
   "uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
   "uni.showActionSheet.cancel": "Cancelar",
   "uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
