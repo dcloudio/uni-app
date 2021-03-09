@@ -723,7 +723,7 @@ db.collection('book')
 
 查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
 
-只有使用传统MongoDB的写法{ '_id': false }明确指定不要返回_id，否则_id字段一定会返回。
+只有云函数内使用传统MongoDB的写法{ '_id': false }明确指定不要返回_id时才不会返回_id字段，否则_id字段一定会返回。
 
 ### 别名@alias
 
