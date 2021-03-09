@@ -389,7 +389,7 @@ collection.skip(value)
 let res = await collection.skip(4).get()
 ```
 
-**注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代**
+**注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代，参考：[skip性能优化](uniCloud/db-performance.md?id=skip)**
 
 ### 对结果排序
 
