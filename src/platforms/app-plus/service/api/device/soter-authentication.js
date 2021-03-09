@@ -2,6 +2,9 @@ import {
   invoke,
   requireNativePlugin
 } from '../../bridge'
+import {
+  t
+} from 'uni-core/helpers/i18n'
 
 function checkIsSupportFaceID () {
   const platform = plus.os.name.toLowerCase()
@@ -128,7 +131,7 @@ export function startSoterAuthentication ({
   const realAuthMode = enrolledRequestAuthMode[0]
   if (realAuthMode === 'fingerPrint') {
     if (plus.os.name.toLowerCase() === 'android') {
-      plus.nativeUI.showWaiting(authContent || '指纹识别中...').onclose = function () {
+      plus.nativeUI.showWaiting(authContent || t('uni.startSoterAuthentication.authContent')).onclose = function () {
         plus.fingerprint.cancel()
       }
     }

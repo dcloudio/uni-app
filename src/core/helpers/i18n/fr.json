@@ -21,6 +21,7 @@
   "uni.scanCode.fail": "Fallo de reconocimiento",
   "uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
   "uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
+  "uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
   "uni.picker.done": "OK",
   "uni.picker.cancel": "Annuler",
   "uni.video.danmu": "Danmu",

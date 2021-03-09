@@ -21,6 +21,7 @@
   "uni.scanCode.fail": "Échec de la reconnaissance",
   "uni.scanCode.flash.on": "Toque para encender la luz",
   "uni.scanCode.flash.off": "Toque para apagar la luz",
+  "uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
   "uni.picker.done": "OK",
   "uni.picker.cancel": "Cancelar",
   "uni.video.danmu": "Danmu",

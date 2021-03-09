@@ -21,6 +21,7 @@
   "uni.scanCode.fail": "Recognition failure",
   "uni.scanCode.flash.on": "Tap to turn light on",
   "uni.scanCode.flash.off": "Tap to turn light off",
+  "uni.startSoterAuthentication.authContent": "Fingerprint recognition",
   "uni.picker.done": "Done",
   "uni.picker.cancel": "Cancel",
   "uni.video.danmu": "Danmu",
