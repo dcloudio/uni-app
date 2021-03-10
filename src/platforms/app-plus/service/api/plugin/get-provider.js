@@ -70,7 +70,7 @@ export function getProvider ({
     })
   } else {
     invoke(callbackId, {
-      errMsg: 'getProvider:fail 服务[' + service + ']不支持'
+      errMsg: 'getProvider:fail service not found'
     })
   }
 }

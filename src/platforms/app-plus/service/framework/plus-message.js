@@ -29,7 +29,7 @@ export function consumePlusMessage (type, args) {
  */
 export function registerPlusMessage (type, callback, keepAlive = true) {
   if (callbacks[type]) {
-    return console.warn(`${type} 已注册:` + (callbacks[type].toString()))
+    return console.warn(`'${type}' registered: ` + (callbacks[type].toString()))
   }
   callback.keepAlive = !!keepAlive
   callbacks[type] = callback

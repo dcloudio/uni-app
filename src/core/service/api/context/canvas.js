@@ -226,9 +226,7 @@ function checkColor (e) {
     a = a >= 0 ? a : 255
     return [n, o, r, a]
   }
-  console.group('非法颜色: ' + e)
-  console.error('不支持颜色：' + e)
-  console.groupEnd()
+  console.error('unsupported color:' + e)
   return [0, 0, 0, 255]
 }
 

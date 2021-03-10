@@ -23,7 +23,7 @@ export function navigate (path, callback, isAppLaunch) {
       plus.navigator.closeSplashscreen()
     }
     if (!isAppLaunch && todoNavigator) {
-      return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
+      return console.error(`Waiting to navigate to: ${todoNavigator.path}, do not operate continuously: ${path}.`)
     }
     if (__uniConfig.renderer === 'native') { // 纯原生无需wait逻辑
       // 如果是首页还未初始化，需要等一等，其他无需等待

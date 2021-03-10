@@ -16,7 +16,7 @@ export function requestPayment (params, callbackId) {
     }) => id === provider)
     if (!service) {
       invoke(callbackId, {
-        errMsg: 'requestPayment:fail 支付服务[' + provider + ']不存在'
+        errMsg: 'requestPayment:fail service not found'
       })
     } else {
       plus.payment.request(service, params.orderInfo, res => {

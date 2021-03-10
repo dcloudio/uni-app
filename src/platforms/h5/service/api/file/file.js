@@ -17,9 +17,7 @@ export function getFileInfo ({
     })
   }).catch((err) => {
     invoke(callbackId, {
-      errMsg: 'getFileInfo:fail 文件[' +
-        filePath +
-        '] getFileInfo 失败:' + err.message
+      errMsg: 'getFileInfo:fail ' + err.message
     })
   })
 }
