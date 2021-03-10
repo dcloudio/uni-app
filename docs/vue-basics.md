@@ -659,7 +659,7 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 不同的是带有 v-show 的元素始终会被渲染并保留在 DOM 中。v-show 只是简单地切换元素的 `CSS` 属性的 `display` 。
 
-> 注意，v-show 不支持 template 元素，也不支持 v-else。
+> 注意，v-show 不支持 template 元素，也不支持 v-else。nvue 页面不支持 v-show。
 
 
 
