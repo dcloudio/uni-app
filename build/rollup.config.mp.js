@@ -1,4 +1,5 @@
 const path = require('path')
+const json = require('@rollup/plugin-json')
 const alias = require('@rollup/plugin-alias')
 const replace = require('@rollup/plugin-replace')
 
@@ -72,6 +73,7 @@ module.exports = {
         replacement: path.resolve(__dirname, '../src/core/helpers')
       }]
     }),
+    json(),
     replace({
       __GLOBAL__: platform.prefix,
       __PLATFORM_TITLE__: platform.title,

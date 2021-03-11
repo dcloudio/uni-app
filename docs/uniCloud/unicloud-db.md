@@ -53,14 +53,17 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |getcount|Boolean|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
 |getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组，一般用于非列表页，比如详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
-|manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值|
+|manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值。一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到|
 |gettree|Boolean|是否查询树状结构数据，HBuilderX3.0.5+ [详情](/uniCloud/clientdb?id=gettree)|
 |startwith|String|gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询，HBuilderX3.0.5+|
 |limitlevel|Number|gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1，HBuilderX3.0.5+|
+|groupby|String|对数据进行分组，HBuilderX3.1.0+|
+|group-field|String|对数据进行分组统计|
+|distinct|Boolean|是否对数据查询结果中重复的记录进行去重，默认值false，HBuilderX3.1.0+|
 |@load|EventHandle|成功回调。联网返回结果后，若希望先修改下数据再渲染界面，则在本方法里对data进行修改|
 |@error|EventHandle|失败回调|
 
-TODO：暂不支持groupby、in子查询功能。后续会补充
+TODO：暂不支持in子查询功能。后续会补充
 
 注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`)除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
 
@@ -144,6 +147,10 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 </script>
 ```
 
+**注意**
+
+- 此方式目前在微信小程序会报错，近期会进行修复
+
 方式2. 不在属性中写，而在js中拼接字符串
 ```html
 <template>
@@ -161,7 +168,15 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 		}
 		onLoad() {
 			this.sWhere = "id=='" + this.tempstr + "'"
-		},
+
+			// 多条件示例
+
+			// id = this.tempstr 且 create_time > 1613960340000
+			// this.sWhere = "id=='" + this.tempstr + "' && create_time > 1613960340000"
+
+			// id = this.tempstr 或 name != null
+			// this.sWhere = "id=='" + this.tempstr + "' || name != null"
+		}
 	}
 </script>
 ```
@@ -233,6 +248,52 @@ handleError(e) {
 this.$refs.udb.loadData() //udb为unicloud-db组件的ref属性值
 ```
 
+一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到。
+
+举例常见场景，页面pagea在url中获取参数id，然后加载数据
+
+请求地址：/pages/pagea?id=123
+
+pagea.vue源码：
+
+```html
+<template>
+	<view>
+		<unicloud-db ref="udb" collection="table1" :where="where" v-slot:default="{data,pagination,loading,error,options}" :options="options" manual>
+			{{data}}
+		</unicloud-db>
+	</view>
+</template>
+<script>
+export default {
+	data() {
+		return {
+			_id:'',
+			where: ''
+		}
+	},
+	onLoad(e) {
+		const id = e.id
+		if (id) {
+			this._id = id
+			this.where = "_id == '" + this._id + "'"
+		}
+		else {
+			uni.showModal({
+				content:"页面参数错误",
+				showCancel:false
+			})
+		}
+	},
+	onReady() {
+		if (this._id) {
+			this.$refs.udb.loadData()
+		}
+	}
+}
+</script>
+```
+
 ### loadMore
 
 在列表的加载下一页场景下，使用ref方式访问组件方法，加载更多数据，每加载成功一次，当前页 +1
@@ -261,6 +322,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
+|action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。场景：前端无权操作的数据，比如阅读数+1|
 |confirmTitle|string|提示|删除确认框标题|
 |confirmContent|string|是否删除该数据|删除确认框提示|
 |success|function||删除成功后的回调|
@@ -356,6 +418,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
+|action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
 |toastTitle|string|新增成功|新增成功后的toast提示|
 |success|function||新增成功后的回调|
 |fail|function||新增失败后的回调|
@@ -415,6 +478,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
+|action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
 |toastTitle|string|修改成功|修改成功后的toast提示|
 |success|function||更新成功后的回调|
 |fail|function||更新失败后的回调|

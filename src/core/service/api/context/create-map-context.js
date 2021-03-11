@@ -18,7 +18,22 @@ UniServiceJSBridge.subscribe('onMapMethodCallback', ({
   callback.invoke(callbackId, data)
 })
 
-const methods = ['getCenterLocation', 'moveToLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker']
+const methods = ['getCenterLocation',
+  'moveToLocation',
+  'getScale',
+  'getRegion',
+  'includePoints',
+  'translateMarker',
+  'addCustomLayer',
+  'removeCustomLayer',
+  'addGroundOverlay',
+  'removeGroundOverlay',
+  'updateGroundOverlay',
+  'initMarkerCluster',
+  'addMarkers',
+  'removeMarkers',
+  'moveAlong',
+  'openMapApp']
 
 export class MapContext {
   constructor (id, pageVm) {

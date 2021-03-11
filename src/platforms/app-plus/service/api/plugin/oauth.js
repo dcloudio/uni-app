@@ -95,7 +95,7 @@ export function getUserInfo (params, callbackId) {
     }, errorCallback)
   }).catch(() => {
     invoke(callbackId, {
-      errMsg: 'operateWXData:fail:请先调用 uni.login'
+      errMsg: 'operateWXData:fail 请先调用 uni.login'
     })
   })
 }

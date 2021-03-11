@@ -446,9 +446,7 @@ export default {
     _scrollIntoViewChanged: function (val) {
       if (val) {
         if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.group('scroll-into-view="' + val + '" 有误')
-          console.error('id 属性值格式错误。如不能以数字开头。')
-          console.groupEnd()
+          console.error(`id error: scroll-into-view=${val}`)
           return
         }
         var element = this.$el.querySelector('#' + val)

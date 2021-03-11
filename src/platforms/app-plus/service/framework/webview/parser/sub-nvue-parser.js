@@ -72,7 +72,7 @@ function initSubNVue (subNVue, routeOptions, webview) {
   delete style.type
 
   if (isPopup && !subNVue.id) {
-    console.warn('subNVue[' + subNVue.path + '] 尚未配置 id')
+    console.warn('subNVue[' + subNVue.path + '] is missing id')
   }
   // TODO lazyload
 

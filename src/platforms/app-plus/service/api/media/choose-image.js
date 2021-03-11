@@ -11,6 +11,10 @@ import {
   getFileName
 } from '../util'
 
+import {
+  t
+} from 'uni-core/helpers/i18n'
+
 /**
  * 获取文件信息
  * @param {string} filePath 文件路径
@@ -113,11 +117,11 @@ export function chooseImage ({
     }
   }
   plus.nativeUI.actionSheet({
-    cancel: '取消',
+    cancel: t('uni.chooseImage.cancel'),
     buttons: [{
-      title: '拍摄'
+      title: t('uni.chooseImage.sourceType.camera')
     }, {
-      title: '从手机相册选择'
+      title: t('uni.chooseImage.sourceType.album')
     }]
   }, (e) => {
     switch (e.index) {

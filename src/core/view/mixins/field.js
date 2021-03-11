@@ -15,7 +15,7 @@ UniViewJSBridge.subscribe('getSelectedTextRange', function ({ pageId, callbackId
     data.start = activeElement.selectionStart
     data.end = activeElement.selectionEnd
   } else {
-    data.errMsg = 'getSelectedTextRange:fail:no focused'
+    data.errMsg = 'getSelectedTextRange:fail no focused'
   }
   UniViewJSBridge.publishHandler('onGetSelectedTextRange', {
     callbackId,

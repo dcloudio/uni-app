@@ -1,5 +1,47 @@
-# uniCloud 更新日志
-======================================
+#### 2021-02-04
+  + 修复 uniCloud.getCurrentUserInfo 报错的Bug
+
+#### 2021-02-02
+  + 【重要】客户端 新增 uniCloud.mixinDatacom 混入，方便快速开发datacom组件，无需自行处理云数据绑定 [详情](https://uniapp.dcloud.net.cn/component/datacom?id=mixindatacom)
+  + 客户端 新增 uniCloud.chooseAndUploadFile API，选文件后直接上传到uniCloud云存储 [详情](https://uniapp.dcloud.net.cn/uniCloud/storage?id=chooseanduploadfile)
+  + 【重要】uni-id 新增 在token内默认缓存角色权限，云端获取角色权限不再查库，提升clientDB性能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=cachepermissionintoken)
+  + uni-id 新增 支持苹果登录 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=loginbyapple)
+  + uni-id 新增 客户端获取用户信息接口，包括权限角色 [详情](https://uniapp.dcloud.net.cn/uniCloud/client-sdk?id=client-getcurrentuserinfo)
+  + 云函数 新增 获取客户端标识 deviceId [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=intro)
+  + 阿里云 新增 云函数支持 uploadFile 接口（本地调试暂不支持）[详情](https://uniapp.dcloud.net.cn/uniCloud/storage?id=clouduploadfile)
+  + 阿里云 新增 云数据库 add update 可以传入日期对象
+  + 阿里云 新增 getTempFileURL 接口（仅为抹平和腾讯云的接口差异）[详情](https://uniapp.dcloud.net.cn/uniCloud/storage?id=cloudgettempfileurl)
+  + web控制台 阿里云 新增 慢查询日志，有助于分析数据库设计缺陷
+  + uniCloud本地调试插件 新增 支持 uni_modules
+  + uniCloud本地调试插件 修复 cli 项目无法使用 uniCloud 本地调试的Bug
+  + uniCloud本地调试插件 修复 客户端连接本地云函数时云函数内 callFunction 返回格式不正确的Bug
+  + DB Schema 字段类型bsonType 新增 file、date类型 [详情](https://uniapp.dcloud.io/uniCloud/schema?id=bsontype)
+  + DB Schema 字段类型bsonType 为 array 时，新增 arrayType 子类型，描述数组里项目的类型。比如 arrayType 设为 file，表示一组文件 [详见](https://uniapp.dcloud.io/uniCloud/schema?id=arraytype)
+  + DB Schema 新增 fieldRules 用于描述字段之间的关系，如字段“开始时间”需小于字段“结束时间” [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=field-rules)
+  + DB Schema 新增 count 权限 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=col-permission)
+  + DB Schema 新增 validateFunction 配置是否在客户端生效 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=validatefunction)
+  + clientDB 新增 数据库运算符，可在 where、field、groupBy、groupField 以及 DB Schema 的 fieldRules 内使用 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=where)
+  + clientDB 新增 支持 groupBy 对数据进行分组统计 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=groupby)
+  + clientDB 新增 支持 distinct 对数据进行去重 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=distinct)
+  + clientDB 修复 JQL 写法内使用下标访问数组内的元素报错的Bug
+  + unicloud-db组件 add、update 方法支持调用 action云函数 [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=add)
+  + schema2code 新增 生成前端页面时补充list.vue、detail.vue页面
+  + schema2code 调整 之前的 component 改名为 componentForEdit，并新增 componentForShow 。一个字段可以分别控制它在表单页面（add、edit）和展示页面（list、detail）所使用的组件
+  + schema2code 新增 展示页面可直接显示bool值为√或×，显示DB Schema里enum的text内容。
+
+#### 2021-02-01
+  + web控制台 新增 云数据库慢查询日志，帮助开发者优化数据库查询性能，仅阿里云支持
+
+#### 2021-01-09
+  + DB Schema 新增 支持对 string 类型数据配置 trim ，可自动对字符串去除前后空白字符 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=trim)
+  + DB Schema 修复 部分情况下使用 enum 报错的Bug
+  + DB Schema 修复 exclusiveMinimum、exclusiveMaximum 无效的bug
+  + clientDB 修复 查询树形结构时使用 startWith 某些写法导致报错的Bug
+  + clientDB 修复 field 内使用JQL联表查询语法时多个右花括号连续出现导致报错的Bug
+  + clientDB 修复 field 中包含`-`时报错的Bug
+  + uniCloud本地调试插件 修复 部分日志导致本地调试服务崩溃的Bug
+  + unicloud-db组件 支持tree查询，新增属性 gettree、startwith、limitlevel [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=props)
+
 #### 2021-01-08
   + web控制台 新增 协作者可访问被授权的空间 
   + web控制台 新增 云函数批量删除
@@ -7,13 +49,30 @@
   + web控制台 新增 公共模块批量删除
   + web控制台 新增  action 批量删除
 
-#### 2020-12-20
+#### 2020-12-30
+  + uniCloud本地调试插件 修复 调试时较早请求云函数且无法连接本地调试服务时报错的Bug
+  + uniCloud本地调试插件 修复 部分日志格式错误的Bug
+  + uniCloud本地调试插件 修复 本地云函数向云数据库插入值为 null 的字段会报错的Bug
+  + uniCloud本地调试插件 调整 输出调整复杂类型时调整最大展示层级为20级
+
+#### 2020-12-28
+  + clientDB API 新增 树形数据查询 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=gettree)
+
+#### 2020-12-25
+  + clientDB 新增 数据库错误 error 事件 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=error)
+  + clientDB 调整 refreshToken 事件由 db.auth 移至 db ，旧写法仍兼容 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=refreshtoken)
+  + uniCloud本地调试插件 修复 本地运行云函数运行结果显示不全的Bug
+
+#### 2020-12-23
+  + uniCloud本地调试插件 修复 windows 平台未打印输出对应的文件名和行号的Bug
+  + uniCloud本地调试插件 优化 多参数的 console.log 输出展现
+
+#### 2020-12-19
   + 【重要】调整 前端内置了`<unicloud-db>`组件，无需再人工引入插件市场的[clientDB组件插件](https://ext.dcloud.net.cn/plugin?id=3256) [规范](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db)
   + 【重要】新增 uniCloud 本地服务。支持前端项目在控制台切换连接云环境还是本地服务。本地修改直接生效，不用上传即可联调 [详情](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=calllocalfunction)
   + 【重要】调整 uniCloud 项目目录结构调整。根目录下为uniCloud目录，其下有二级目录 cloudfunctions 和 database。database目录存放数据表schema和扩展验证函数。并提供了目录结构迁移向导 [详情](https://ask.dcloud.net.cn/article/38028)
   + 【重要】新增 HBuilderX 本地编写 DB Schema，即数据表的表结构。支持新建、上传、下载表结构，支持代码提示。
   + 【重要】新增 `<unicloud-db>`组件（即之前的clientDB组件）支持代码提示。可提示JQL语法，在本地有schema的情况下可提示数据库表名字段。大幅提升开发效率 
-  + 阿里云 前端网页托管 新增 支持http强制跳转https
   + HBuilderX 新增 编写 validateFunction，即数据库扩展校验函数。支持新建、上传、下载validateFunction
   + HBuilderX 优化 uniCloud 关联云服务空间的选择方式。并支持关联其它项目服务空间，实现多个项目连接一个服务空间 [详情](https://ask.dcloud.net.cn/article/37949)
   + HBuilderX 新增 可视化管理公共模块依赖 （对云函数点右键->管理公共模块依赖）
@@ -21,6 +80,7 @@
   + HBuilderX 修复 云函数本地运行 控制台日志打印`null`和`undefined`值错误的Bug
   + HBuilderX 修复 前端网页托管 某些情况下，上传网站到服务器，控制台显示(0 MB)大于上传限制(0 MB)的Bug [详情](https://ask.dcloud.net.cn/question/111228)
   + uni-id 新增 App端一键登录 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=univerify)
+  + 其他云端更新日志另见：[https://uniapp.dcloud.io/uniCloud/release](https://uniapp.dcloud.io/uniCloud/release)
 
 #### 2020-12-10
   + web控制台 新增 阿里云新增稀疏索引 [详情](https://uniapp.dcloud.net.cn/uniCloud/hellodb?id=dbindex)
@@ -32,6 +92,12 @@
   + web控制台 优化 数据库记录编辑窗口
   + web控制台 修复 腾讯云 云存储文件夹过多时上拉加载错误的BUG
 
+#### 2020-11-21
+  + clientDB 新增 jql写法支持在field内写别名 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=alias)
+  + clientDB 新增 schema内enum支持使用云端数据 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema?id=enum)
+  + clientDB 新增 schema内bsonType支持password，设置后所有用户均不可读取此字段
+  + clientDB 优化 索引冲突时返回更友好的提示及错误码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue)
+
 #### 2020-11-14
   + uni-id 调整 2.0.0版本起验证码表名改为`opendb-verify-codes`
   + uni-id 调整 2.0.0版本起encryptPwd接口返回值调整 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=encrypt-password)
@@ -40,10 +106,14 @@
 #### 2020-11-13
   +  阿里云支持事务（startTransaction方式，暂不支持runTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
 
+#### 2020-10-31
+  + 新增 `<uni-clientDB>`组件支持remove方法，封装了删除确认框、删除数据库、删除前端data等操作，开发更便利 [详情](https://uniapp.dcloud.io/uniCloud/uni-clientdb-component?id=%e6%96%b9%e6%b3%95)
+  + 优化 提升云函数执行速度几十毫秒。非冷启动时与传统服务器性能拉齐（需重新部署云函数）
+
 #### 2020-10-24
   + clientDB 去除schema内permission中的点，例：`.write`改为`write`，旧写法仍然支持。
   + clientDB 优化无权限操作时的报错提示
-  
+
 #### 2020-10-24
   + 【重要】新增 clientDB 支持 `jql` 查询语法，大幅降低数据库操作难度 [详情](https://uniapp.dcloud.net.cn/uniCloud/database?id=jsquery)、大幅简化联表查询 [详情](https://uniapp.dcloud.net.cn/uniCloud/database?id=lookup)
   + 【重要】新增 uni-clientDB 组件，在前端通过组件直接获得云数据库内容，并直接绑定到界面上，大幅提升开发效率 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientdb-component)
@@ -65,8 +135,23 @@
 #### 2020-09-29
   + 腾讯云 开放包年包月套餐购买 [详情](https://uniapp.dcloud.net.cn/uniCloud/price?id=price-month)
 
+#### 2020-09-26
+  + 【重要】新增 腾讯云 云函数固定出口IP，可用于微信公众号开发等要求配置ip的场景 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=eip)
+  + 【重要】uni-clientDB 2.0 重大更新，可完整方便的控制权限和数据验证。大多数场景不再需要编写云函数 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB)
+  + 【重要】uni-id 新增 角色权限相关功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
+  + 【重要】云数据库支持JSON Schema规范，可在Web控制台数据库管理界面对数据进行格式描述 [详情](https://uniapp.dcloud.net.cn/uniCloud/schema)
+  + 阿里云 去除客户端上传文件类型限制
+
 #### 2020-09-16
   + 腾讯云 支持云函数固定出口IP，支持微信公众号开发 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=eip)
+
+#### 2020-09-03
+  + 修复 某些情况下，上传公共模块，UI卡顿的Bug
+  + 调整 阿里云放开文件上传类型限制
+
+#### 2020-08-29
+  + 新增 本地运行 加入显示调试行号等信息
+  + 修复 当npm镜像源为淘宝源时，某些云函数或公共模块上传失败的Bug
 
 #### 2020-08-20
   + 阿里云 升级mongoDB到4.0版本，现已支持地理位置
@@ -75,6 +160,10 @@
 #### 2020-08-12
   + web控制台 阿里云 新增 数据库集合导入导出功能 [详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=export)
   + web控制台 腾讯云 新增 资源概况页面
+
+#### 2020-08-05
+  + 阿里云 新增 支持协作者本地运行云函数
+  + 修复 HBuilderX 2.8.0引出的 公共模块右键菜单 更新依赖本模块的云函数菜单丢失的Bug
 
 #### 2020-08-04
   + 新增 3个内置短信模板 [详情](https://uniapp.dcloud.net.cn/uniCloud/send-sms)
@@ -96,6 +185,18 @@
   + web控制台 新增 云数据库新增、管理记录可全屏编辑
   + web控制台 优化 云数据库数据的展现形式
   + web控制台 修复 云数据库选项卡快速切换导致内容显示不正确的Bug
+
+#### 2020-07-01
+  + 【重要】新增[uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id)，实现简单、统一、可扩展的用户中心，推荐每个 uniCloud 开发者使用
+  + 新增 callfunction时自动携带`uni-id`的token，无需自行开发token管理方案
+  + 新增 web控制台 腾讯云 云数据库备份和恢复功能 [详情](https://uniapp.dcloud.io/uniCloud/cf-database?id=backup)
+  + 新增 web控制台 腾讯云 云数据库集合名称修改功能
+  + 修复 云函数内获取客户端系统类型可能为空的Bug
+  + 修复 HBuilderX 导入包含common目录的云函数模板，导致原common目录被覆盖的Bug
+  + 优化 HBuilderX 新建公共模块增加名称不能包含大写字母的限制
+  * 修复 HBuilderX 某些情况下，上传公共模块，出现npm install失败的Bug
+  + 修复 HBuilderX 公共模块 右键菜单出现两个上传公共模块菜单的Bug
+  + 修复 HBuilderX 上传公共模块没有填写appid时的错误提示与上传云函数不一致的Bug
 
 #### 2020-06-24
   + 腾讯云 新增 数据库回档功能 [详情](https://uniapp.dcloud.io/uniCloud/cf-database?id=backup)
@@ -128,53 +229,43 @@
   + web控制台 调整 阿里云去除云存储文件类型限制
 
 #### 2020-04-23
-* 【服务端SDK】
   + 阿里云 修复 云函数无法接收微信支付回调的Bug
 
 #### 2020-04-21
-* 【服务端SDK】
   + 腾讯云 修复 云函数互调某些情况下报签名错误的Bug
   + 腾讯云 修复 elemMatch 内使用 neq 报错的Bug [详情](https://ask.dcloud.net.cn/question/91531)
   + 阿里云 调整 云函数Url化最大可返回1MB数据，调整前为4KB
 
 #### 2020-04-08
-* 【web 控制台】
-  + 阿里云 新增 支持云函数定时触发
-  + 阿里云 优化 云函数上传并运行时会运行更新之前的云函数的问题
+  + web控制台 新增 阿里云支持云函数定时触发
+  + web控制台 优化 阿里云云函数上传并运行时会运行更新之前的云函数的问题
 
 #### 2020-03-27
-* 【web 控制台】
-  + 阿里云 新增 支持云函数Url化
+  + web控制台 新增 阿里云支持云函数Url化
 
 #### 2020-03-26
-* 【web 控制台】
-  + 新增 腾讯云服务空间，需发送邮件获取体验资格
-  + 新增 云函数运行日志
-  + 新增 云存储权限
-  + 新增 公共模块
-  + 阿里云 优化 文件存储上传体验
-  + 阿里云 优化 云数据库搜索体验
-  + 阿里云 修复 删除索引报错的Bug
-  + 阿里云 修复 云存储文件后缀为大写文件不显示的Bug
-  + 阿里云 修复 云数据库字段为空或为 null 时显示错误的Bug
- 
+  + web控制台 新增 腾讯云服务空间，需发送邮件获取体验资格
+  + web控制台 新增 云函数运行日志
+  + web控制台 新增 云存储权限
+  + web控制台 新增 公共模块
+  + web控制台 优化 阿里云文件存储上传体验
+  + web控制台 优化 阿里云云数据库搜索体验
+  + web控制台 修复 阿里云删除索引报错的Bug
+  + web控制台 修复 阿里云云存储文件后缀为大写文件不显示的Bug
+  + web控制台 修复 阿里云云数据库字段为空或为 null 时显示错误的Bug
 
 #### 2020-03-04
-* 【web 控制台】
-  + 阿里云 新增 云数据库分页
-  + 阿里云 新增 云数据库索引
-  + 控制台 新增 服务空间快捷切换选项卡
-  + 控制台 优化 云数据库长文本显示收起展开按钮
-  + 控制台 优化 云数据库搜索体验
+  + web控制台 新增 阿里云支持云数据库分页
+  + web控制台 新增 阿里云支持云数据库索引
+  + web控制台 新增 服务空间快捷切换选项卡
+  + web控制台 优化 云数据库长文本显示收起展开按钮
+  + web控制台 优化 云数据库搜索体验
 
 #### 2020-02-27
-* 【IDE】
   + db_init.json 调整 添加索引方向时应使用字符串
 
 #### 2020-02-26
-* 【服务端SDK】
   + 阿里云 新增 云数据库支持 add 批量添加数据 [详情](https://uniapp.dcloud.io/uniCloud/cf-database?id=add)
 
 #### 2020-02-24
-* 【服务端SDK】
   + 阿里云 新增 云函数互调功能 [详情](https://uniapp.dcloud.io/uniCloud/cf-functions?id=callbyfunction)

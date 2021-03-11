@@ -4,4 +4,6 @@
 
 - 微信小程序平台实现参考：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.startHCE.html)
 
-- App 平台通过Native.js实现，**安卓：**[NFC数据读取](https://ask.dcloud.net.cn/question/6726)
+- App 平台：
+  1. 通过Native.js实现，**安卓：**[NFC数据读取](https://ask.dcloud.net.cn/question/6726)
+  2. 使用原生插件，详见[插件市场](https://ext.dcloud.net.cn/search?q=nfc)

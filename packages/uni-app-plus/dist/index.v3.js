@@ -2174,6 +2174,331 @@ var serviceContext = (function () {
     pageScrollTo: pageScrollTo
   });
 
+  const isObject$1 = (val) => val !== null && typeof val === 'object';
+  class BaseFormatter {
+      constructor() {
+          this._caches = Object.create(null);
+      }
+      interpolate(message, values) {
+          if (!values) {
+              return [message];
+          }
+          let tokens = this._caches[message];
+          if (!tokens) {
+              tokens = parse(message);
+              this._caches[message] = tokens;
+          }
+          return compile(tokens, values);
+      }
+  }
+  const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+  const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+  function parse(format) {
+      const tokens = [];
+      let position = 0;
+      let text = '';
+      while (position < format.length) {
+          let char = format[position++];
+          if (char === '{') {
+              if (text) {
+                  tokens.push({ type: 'text', value: text });
+              }
+              text = '';
+              let sub = '';
+              char = format[position++];
+              while (char !== undefined && char !== '}') {
+                  sub += char;
+                  char = format[position++];
+              }
+              const isClosed = char === '}';
+              const type = RE_TOKEN_LIST_VALUE.test(sub)
+                  ? 'list'
+                  : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
+                      ? 'named'
+                      : 'unknown';
+              tokens.push({ value: sub, type });
+          }
+          else if (char === '%') {
+              // when found rails i18n syntax, skip text capture
+              if (format[position] !== '{') {
+                  text += char;
+              }
+          }
+          else {
+              text += char;
+          }
+      }
+      text && tokens.push({ type: 'text', value: text });
+      return tokens;
+  }
+  function compile(tokens, values) {
+      const compiled = [];
+      let index = 0;
+      const mode = Array.isArray(values)
+          ? 'list'
+          : isObject$1(values)
+              ? 'named'
+              : 'unknown';
+      if (mode === 'unknown') {
+          return compiled;
+      }
+      while (index < tokens.length) {
+          const token = tokens[index];
+          switch (token.type) {
+              case 'text':
+                  compiled.push(token.value);
+                  break;
+              case 'list':
+                  compiled.push(values[parseInt(token.value, 10)]);
+                  break;
+              case 'named':
+                  if (mode === 'named') {
+                      compiled.push(values[token.value]);
+                  }
+                  else {
+                      if (process.env.NODE_ENV !== 'production') {
+                          console.warn(`Type of token '${token.type}' and format of value '${mode}' don't match!`);
+                      }
+                  }
+                  break;
+              case 'unknown':
+                  if (process.env.NODE_ENV !== 'production') {
+                      console.warn(`Detect 'unknown' type of token!`);
+                  }
+                  break;
+          }
+          index++;
+      }
+      return compiled;
+  }
+
+  const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+  const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
+  const defaultFormatter = new BaseFormatter();
+  function include(str, parts) {
+      return !!parts.find((part) => str.indexOf(part) !== -1);
+  }
+  function startsWith(str, parts) {
+      return parts.find((part) => str.indexOf(part) === 0);
+  }
+  function normalizeLocale(locale, messages) {
+      if (!locale) {
+          return;
+      }
+      locale = locale.trim().replace(/_/g, '-');
+      if (messages[locale]) {
+          return locale;
+      }
+      locale = locale.toLowerCase();
+      if (locale.indexOf('zh') === 0) {
+          if (locale.indexOf('-hans') !== -1) {
+              return 'zh-Hans';
+          }
+          if (locale.indexOf('-hant') !== -1) {
+              return 'zh-Hant';
+          }
+          if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+              return 'zh-Hant';
+          }
+          return 'zh-Hans';
+      }
+      const lang = startsWith(locale, ['en', 'fr', 'es']);
+      if (lang) {
+          return lang;
+      }
+  }
+  class I18n {
+      constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+          this.locale = 'en';
+          this.fallbackLocale = 'en';
+          this.message = {};
+          this.messages = {};
+          this.watchers = [];
+          if (fallbackLocale) {
+              this.fallbackLocale = fallbackLocale;
+          }
+          this.formater = formater || defaultFormatter;
+          this.messages = messages;
+          this.setLocale(locale);
+          if (watcher) {
+              this.watchLocale(watcher);
+          }
+      }
+      setLocale(locale) {
+          const oldLocale = this.locale;
+          this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+          this.message = this.messages[this.locale];
+          this.watchers.forEach((watcher) => {
+              watcher(this.locale, oldLocale);
+          });
+      }
+      getLocale() {
+          return this.locale;
+      }
+      watchLocale(fn) {
+          const index = this.watchers.push(fn) - 1;
+          return () => {
+              this.watchers.splice(index, 1);
+          };
+      }
+      t(key, values) {
+          if (!hasOwn$1(this.message, key)) {
+              console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
+              return key;
+          }
+          return this.formater.interpolate(this.message[key], values).join('');
+      }
+  }
+
+  function initLocaleWatcher(appVm, i18n) {
+      appVm.$i18n &&
+          appVm.$i18n.vm.$watch('locale', (newLocale) => {
+              i18n.setLocale(newLocale);
+          }, {
+              immediate: true,
+          });
+  }
+  function getDefaultLocale() {
+      if (typeof navigator !== 'undefined') {
+          return navigator.userLanguage || navigator.language;
+      }
+      if (typeof plus !== 'undefined') {
+          // TODO 待调整为最新的获取语言代码
+          return plus.os.language;
+      }
+      return uni.getSystemInfoSync().language;
+  }
+  function initVueI18n(messages, fallbackLocale = 'en', locale) {
+      const i18n = new I18n({
+          locale: locale || fallbackLocale,
+          fallbackLocale,
+          messages,
+      });
+      let t = (key, values) => {
+          if (typeof getApp !== 'function') {
+              // app-plus view
+              /* eslint-disable no-func-assign */
+              t = function (key, values) {
+                  return i18n.t(key, values);
+              };
+          }
+          else {
+              const appVm = getApp().$vm;
+              if (!appVm.$t || !appVm.$i18n) {
+                  if (!locale) {
+                      i18n.setLocale(getDefaultLocale());
+                  }
+                  /* eslint-disable no-func-assign */
+                  t = function (key, values) {
+                      return i18n.t(key, values);
+                  };
+              }
+              else {
+                  initLocaleWatcher(appVm, i18n);
+                  /* eslint-disable no-func-assign */
+                  t = function (key, values) {
+                      const $i18n = appVm.$i18n;
+                      const silentTranslationWarn = $i18n.silentTranslationWarn;
+                      $i18n.silentTranslationWarn = true;
+                      const msg = appVm.$t(key, values);
+                      $i18n.silentTranslationWarn = silentTranslationWarn;
+                      if (msg !== key) {
+                          return msg;
+                      }
+                      return i18n.t(key, values);
+                  };
+              }
+          }
+          return t(key, values);
+      };
+      return {
+          t(key, values) {
+              return t(key, values);
+          },
+          setLocale(newLocale) {
+              return i18n.setLocale(newLocale);
+          },
+          mixin: {
+              beforeCreate() {
+                  const unwatch = i18n.watchLocale(() => {
+                      this.$forceUpdate();
+                  });
+                  this.$once('hook:beforeDestroy', function () {
+                      unwatch();
+                  });
+              },
+              methods: {
+                  $$t(key, values) {
+                      return t(key, values);
+                  },
+              },
+          },
+      };
+  }
+
+  var en = {
+  	"uni.showActionSheet.cancel": "cancel",
+  	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
+  	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
+  	"uni.showModal.cancel": "cancel",
+  	"uni.showModal.confirm": "confirm",
+  	"uni.button.feedback.title": "feedback",
+  	"uni.button.feedback.send": "send"
+  };
+
+  var es = {
+  	"uni.showActionSheet.cancel": "cancelar",
+  	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
+  	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
+  	"uni.showModal.cancel": "cancelar",
+  	"uni.showModal.confirm": "confirmar",
+  	"uni.button.feedback.title": "realimentación",
+  	"uni.button.feedback.send": "enviar"
+  };
+
+  var fr = {
+  	"uni.showActionSheet.cancel": "Annuler",
+  	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
+  	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
+  	"uni.showModal.cancel": "Annuler",
+  	"uni.showModal.confirm": "confirmer",
+  	"uni.button.feedback.title": "retour d'information",
+  	"uni.button.feedback.send": "envoyer"
+  };
+
+  var zhHans = {
+  	"uni.showActionSheet.cancel": "取消",
+  	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
+  	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
+  	"uni.showModal.cancel": "取消",
+  	"uni.showModal.confirm": "确认",
+  	"uni.button.feedback.title": "问题反馈",
+  	"uni.button.feedback.send": "发送"
+  };
+
+  var zhHant = {
+  	"uni.showActionSheet.cancel": "取消",
+  	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
+  	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
+  	"uni.showModal.cancel": "取消",
+  	"uni.showModal.confirm": "確認",
+  	"uni.button.feedback.title": "問題反饋",
+  	"uni.button.feedback.send": "發送"
+  };
+
+  const messages = {
+    en,
+    es,
+    fr,
+    'zh-Hans': zhHans,
+    'zh-Hant': zhHant
+  };
+
+  const fallbackLocale = 'en';
+
+  const i18n = initVueI18n( messages , fallbackLocale);
+  const t = i18n.t;
+
   const showModal = {
     title: {
       type: String,
@@ -2189,7 +2514,9 @@ var serviceContext = (function () {
     },
     cancelText: {
       type: String,
-      default: '取消'
+      default () {
+        return t('uni.showModal.cancel')
+      }
     },
     cancelColor: {
       type: String,
@@ -2197,7 +2524,9 @@ var serviceContext = (function () {
     },
     confirmText: {
       type: String,
-      default: '确定'
+      default () {
+        return t('uni.showModal.confirm')
+      }
     },
     confirmColor: {
       type: String,
@@ -6533,7 +6862,7 @@ var serviceContext = (function () {
     delete requestTasks[requestTaskId];
   };
 
-  const cookiesPrase = header => {
+  const cookiesParse = header => {
     let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
     let cookiesArr = [];
     if (!cookiesStr) {
@@ -6544,7 +6873,7 @@ var serviceContext = (function () {
     }
     const handleCookiesArr = cookiesStr.split(';');
     for (let i = 0; i < handleCookiesArr.length; i++) {
-      if (handleCookiesArr[i].indexOf('Expires=') !== -1) {
+      if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
         cookiesArr.push(handleCookiesArr[i].replace(',', ''));
       } else {
         cookiesArr.push(handleCookiesArr[i]);
@@ -6643,7 +6972,7 @@ var serviceContext = (function () {
             data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
             statusCode,
             header: headers,
-            cookies: cookiesPrase(headers)
+            cookies: cookiesParse(headers)
           });
         } else {
           let errMsg = 'abort statusCode:' + statusCode;
@@ -9531,7 +9860,9 @@ var serviceContext = (function () {
   let timeout;
 
   function showLoading$1 (args) {
-    return callApiSync(showToast$1, Object.assign({}, args, { type: 'loading' }), 'showToast', 'showLoading')
+    return callApiSync(showToast$1, Object.assign({}, args, {
+      type: 'loading'
+    }), 'showToast', 'showLoading')
   }
 
   function hideLoading () {
@@ -9631,10 +9962,10 @@ var serviceContext = (function () {
     title = '',
     content = '',
     showCancel = true,
-    cancelText = '取消',
-    cancelColor = '#000000',
-    confirmText = '确定',
-    confirmColor = '#3CC51F'
+    cancelText,
+    cancelColor,
+    confirmText,
+    confirmColor
   } = {}, callbackId) {
     content = content || ' ';
     plus.nativeUI.confirm(content, (e) => {
@@ -9671,7 +10002,9 @@ var serviceContext = (function () {
 
     options.cancel = '';
 
-    plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
+    plus.nativeUI.actionSheet(Object.assign(options, {
+      popover
+    }), (e) => {
       if (e.index > 0) {
         invoke$1(callbackId, {
           errMsg: 'showActionSheet:ok',
@@ -12044,7 +12377,7 @@ var serviceContext = (function () {
   //   misrepresented as being the original software.
   // 3. This notice may not be removed or altered from any source distribution.
 
-  var messages = {
+  var messages$1 = {
     2:      'need dictionary',     /* Z_NEED_DICT       2  */
     1:      'stream end',          /* Z_STREAM_END      1  */
     0:      '',                    /* Z_OK              0  */
@@ -12179,7 +12512,7 @@ var serviceContext = (function () {
   var OS_CODE = 0x03; // Unix :) . Don't detect, use this default.
 
   function err(strm, errorCode) {
-    strm.msg = messages[errorCode];
+    strm.msg = messages$1[errorCode];
     return errorCode;
   }
 
@@ -14327,7 +14660,7 @@ var serviceContext = (function () {
     );
 
     if (status !== Z_OK$1) {
-      throw new Error(messages[status]);
+      throw new Error(messages$1[status]);
     }
 
     if (opt.header) {
@@ -14349,7 +14682,7 @@ var serviceContext = (function () {
       status = deflate_1.deflateSetDictionary(this.strm, dict);
 
       if (status !== Z_OK$1) {
-        throw new Error(messages[status]);
+        throw new Error(messages$1[status]);
       }
 
       this._dict_set = true;
@@ -14527,7 +14860,7 @@ var serviceContext = (function () {
     deflator.push(input, true);
 
     // That will never happens, if you don't cheat with options :)
-    if (deflator.err) { throw deflator.msg || messages[deflator.err]; }
+    if (deflator.err) { throw deflator.msg || messages$1[deflator.err]; }
 
     return deflator.result;
   }
@@ -17079,7 +17412,7 @@ var serviceContext = (function () {
     );
 
     if (status !== constants.Z_OK) {
-      throw new Error(messages[status]);
+      throw new Error(messages$1[status]);
     }
 
     this.header = new gzheader();
@@ -17097,7 +17430,7 @@ var serviceContext = (function () {
       if (opt.raw) { //In raw mode we need to set the dictionary early
         status = inflate_1.inflateSetDictionary(this.strm, opt.dictionary);
         if (status !== constants.Z_OK) {
-          throw new Error(messages[status]);
+          throw new Error(messages$1[status]);
         }
       }
     }
@@ -17327,7 +17660,7 @@ var serviceContext = (function () {
     inflator.push(input, true);
 
     // That will never happens, if you don't cheat with options :)
-    if (inflator.err) { throw inflator.msg || messages[inflator.err]; }
+    if (inflator.err) { throw inflator.msg || messages$1[inflator.err]; }
 
     return inflator.result;
   }
@@ -20486,7 +20819,6 @@ var serviceContext = (function () {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
     }
-
     appCtx = appVm;
     appCtx.$vm = appVm;
 
@@ -21315,6 +21647,7 @@ var serviceContext = (function () {
 
     return {
       version: VD_SYNC_VERSION,
+      locale: plus.os.language, // TODO
       disableScroll,
       onPageScroll,
       onPageReachBottom,
@@ -21347,6 +21680,10 @@ var serviceContext = (function () {
         }
 
         if (this.mpType === 'page') {
+          const app = getApp();
+          if (app.$vm && app.$vm.$i18n) {
+            this._i18n = app.$vm.$i18n;
+          }
           this.$scope = this.$options.pageInstance;
           this.$scope.$vm = this;
           delete this.$options.pageInstance;

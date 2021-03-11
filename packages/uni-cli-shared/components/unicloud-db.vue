@@ -12,6 +12,11 @@
 </template>
 
 <script>
+import { initVueI18n } from '@dcloudio/uni-i18n'
+import messages from './i18n/index'
+
+const { t } = initVueI18n(messages)
+
 const events = {
   load: 'load',
   error: 'error'
@@ -280,7 +285,7 @@ export default {
         success && success(res)
         if (showToast) {
           uni.showToast({
-            title: toastTitle || '新增成功'
+            title: toastTitle || t('uniCloud.component.add.success')
           })
         }
       }).catch((err) => {
@@ -306,8 +311,8 @@ export default {
         return
       }
       uni.showModal({
-        title: confirmTitle || '提示',
-        content: confirmContent || '是否删除该数据',
+        title: confirmTitle || t('uniCloud.component.remove.showModal.title'),
+        content: confirmContent || t('uniCloud.component.remove.showModal.content'),
         showCancel: true,
         success: (res) => {
           if (!res.confirm) {
@@ -336,7 +341,7 @@ export default {
         success && success(res)
         if (showToast) {
           uni.showToast({
-            title: toastTitle || '修改成功'
+            title: toastTitle || t('uniCloud.component.update.success')
           })
         }
       }).catch((err) => {

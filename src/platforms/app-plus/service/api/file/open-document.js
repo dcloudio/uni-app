@@ -17,7 +17,7 @@ export function openDocument ({
     })
   }, err => {
     invoke(callbackId, {
-      errMsg: 'openDocument:fail 文件[' + filePath + ']读取失败:' + err.message
+      errMsg: 'openDocument:fail ' + err.message
     })
   })
 }

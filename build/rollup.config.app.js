@@ -1,4 +1,5 @@
 const path = require('path')
+const json = require('@rollup/plugin-json')
 const alias = require('@rollup/plugin-alias')
 const replace = require('@rollup/plugin-replace')
 const nodeResolve = require('@rollup/plugin-node-resolve')
@@ -89,6 +90,7 @@ module.exports = {
         replacement: resolve('src/core/helpers/protocol')
       }]
     }),
+    json(),
     nodeResolve(),
     requireContext(),
     commonjs(),

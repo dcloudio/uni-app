@@ -53,14 +53,14 @@ const Recorder = {
   pause () {
     if (recorder) {
       publishRecorderStateChange('error', {
-        errMsg: '暂不支持录音pause操作'
+        errMsg: 'Unsupported operation: pause'
       })
     }
   },
   resume () {
     if (recorder) {
       publishRecorderStateChange('error', {
-        errMsg: '暂不支持录音resume操作'
+        errMsg: 'Unsupported operation: resume'
       })
     }
   }

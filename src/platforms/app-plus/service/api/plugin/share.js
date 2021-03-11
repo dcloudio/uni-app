@@ -154,7 +154,7 @@ export function share (params, callbackId, method = 'share') {
     }) => id === provider)
     if (!service) {
       invoke(callbackId, {
-        errMsg: method + ':fail 分享服务[' + provider + ']不存在'
+        errMsg: method + ':fail service not found'
       })
     } else {
       if (service.authenticated) {

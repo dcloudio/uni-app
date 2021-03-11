@@ -1,0 +1,6 @@
+{
+  "uniCloud.component.add.success": "Success",
+  "uniCloud.component.update.success": "Success",
+  "uniCloud.component.remove.showModal.title": "Tips",
+  "uniCloud.component.remove.showModal.content": "是否删除该数据"
+}

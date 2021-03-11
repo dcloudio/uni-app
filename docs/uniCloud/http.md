@@ -14,6 +14,7 @@
 **使用限制**
 
 - 腾讯云免费服务空间最多只支持配置10个云函数URL化地址
+- 阿里云暂不支持修改响应头中的content-disposition，即无法返回html并在浏览器中展示，只可以触发下载
 
 ## 操作步骤
 
@@ -112,7 +113,7 @@ $ curl https://${云函数Url化域名}/${path}
 ```
 
 
-使用POST请求`https://${云函数Url化域名}/${functionPath}`，云函数接收到的`event`为请求发送的数据，**uni.request默认content-type为application/json**
+使用POST请求`https://${spaceId}.service.tcloudbase.com/${functionPath}`，云函数接收到的`event.body`为请求发送的数据，**uni.request默认content-type为application/json**
 
 ```js
 // 以uni.request为例
@@ -129,20 +130,16 @@ uni.request({
 })
 
 // 云函数收到的event为, 注意如果直接return此格式数据可能会被作为集成响应处理，参考下面的集成响应文档
-```
-
-```js
 {
     path: '/',
-    httpMethod: 'GET',
+    httpMethod: 'POST',
     headers: {
     	...
     	"content-type": 'application/json'
     },
-    queryStringParameters: {a: "1", b: "2"},
     requestContext: {云开发相关信息},
     isBase64Encoded: false,
-    body: '{"a":1,"b":2}',
+    body: '{"a":1,"b":2}', // 注意此处可能是base64，需要根据isBase64Encoded判断
 }
 ```
 
@@ -240,6 +237,8 @@ content-length: 13
 ##### 使用集成响应返回 HTML
 
 将`content-type`设置为`text/html`，即可在`body`中返回 HTML，会被浏览器自动解析：
+
+**阿里云目前无法返回html并在浏览器中展示，只可以触发下载**
 
 ```js
 exports.main = function() {

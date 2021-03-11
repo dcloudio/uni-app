@@ -350,3 +350,469 @@ datacom组件规范还要求支持绑定 value，且支持双向绑定，即：�
 |tree(树状控件)		|单选、多选	|树			|平铺		|展示		|										|
 
 欢迎开发者们开发这些`datacom组件`，后续插件市场将单列出datacom组件，给予更高的显示权重。
+
+
+### 使用mixinDatacom快速开发datacom@mixindatacom
+
+> 版本要求：HBuilderX 3.1.0+ 
+
+开发一个支持localdata的datacom组件相对容易，但要开发支持云端数据的datacom组件，实现对collection、field、where等属性的解析，工作量还是不小的。
+
+为此官方提供了一个mixin混入库，开发者在自己的datacom组件中混入`uniCloud.mixinDatacom`，即可方便的让自己的组件支持本地和云端的数据绑定，快速完成datacom组件。
+
+mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](https://cn.vuejs.org/v2/api/#Vue-mixin)
+
+#### 语法手册
+
+`uniCloud.mixinDatacom` 的props
+
+与标准的datacom组件相同，除了localdata外，其他都是`uniCloud-db组件`的标准属性。
+
+|属性名						| 类型			| 	默认值		| 说明|
+|:-:						| :-:			| :-:			| :-:	|
+|localdata					|Array			|				|本地数据，[详情](https://uniapp.dcloud.net.cn/component/datacom)|
+|collection					|String			|				|表名。支持输入多个表名，用 `,` 分割|
+|field						|String			|				|查询字段，多个字段用 `,` 分割|
+|where						|String			|				|查询条件，内容较多，另见jql文档：[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=jsquery)|
+|orderby					|String			|				|排序字段及正序倒叙设置|
+|groupby					|String			|				|对数据进行分组|
+|group-field				|String			|				|对数据进行分组统计|
+|distinct					|Boolean		|	false		|是否对数据查询结果中重复的记录进行去重|
+|action						|string			|				|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](https://uniapp.dcloud.net.cn/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
+|page-data					|String			|	add			|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮|
+|page-current				|Number			|	0			|当前页|
+|page-size					|Number			|	10			|每页数据数量|
+|getcount					|Boolean		|	false		|是否查询总数据条数，默认 `false`，需要分页模式时指定为 `true`|
+|getone						|Boolean		|	false		|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组。一般用于非列表页，比如详情页|
+|gettree					|Boolean		|	false		|是否查询树状数据，默认 `false`|
+|startwith					|String			|	''			|`gettree`的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询|
+|limitlevel					|Number			|	10			|`gettree`查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1|
+
+
+`uniCloud.mixinDatacom` 的data
+
+|属性名							| 类型			|	默认值	| 说明|
+|:-:							| :-:			| :-:		| :-:	|
+|mixinDatacomLoading			|Boolean		| 	false	|加载数据状态|
+|mixinDatacomHasMore			|Boolean		| 	false	|是否有更多数据|
+|mixinDatacomResData			|Array			| 	[]		|查询返回的数据|
+|mixinDatacomErrorMessage	|String			| 			|错误消息|
+|mixinDatacomPage			|OBject			| 			|分页信息|
+
+
+`uniCloud.mixinDatacom` methods
+
+|方法名							| 说明|
+|:-:							| :-:	|
+|mixinDatacomGet				|加载数据|
+|mixinDatacomEasyGet			|加载数据，包含 `mixinDatacomLoading` 、`mixinDatacomHasMore`、`mixinDatacomErrorMessage` 逻辑 |
+|onMixinDatacomPropsChange	|属性发生变化时触发|
+
+#### 使用方法
+
+使用 `uniCloud.mixinDatacom` 开发 `datacom` 组件需要以下步骤
+
+1. 在export default下声明`mixin: [uniCloud.mixinDatacom]`
+2. 在template中定义三个标签，绑定 `uniCloud.mixinDatacom` 的 `data` 状态，加载中`mixinDatacomLoading` 、加载出错提示 `mixinDatacomErrorMessage`、处理数据及相关UI展现 `mixinDatacomResData`
+3. 组件的created声明周期中调用 `uniCloud.mixinDatacom` 中的 `mixinDatacomGet()` 或 `mixinDatacomEasyGet()` 方法请求云端数据库。这两种方法的区别如下：
+	- `mixinDatacomGet()` 仅请求数据，自行处理各种状态和异常。
+	- `mixinDatacomEasyGet()` 在 `mixinDatacomGet()` 的基础之上封装了加载状态、分页及错误消息，可通过模板绑定。用起来更简单
+
+
+使用 `uniCloud.mixinDatacom` 开发 `datacom` 组件的优势
+
+- 不需要定义 `datacom` 组件的属性
+- 不需要关心 `uniClinetDB` API
+- 不需要判断哪些属性变化时需要重置已加载数据， 仅判断 `onMixinDatacomPropsChange(needReset, changed) {}` 参数 `needReset` 是否为 `true` 即可
+- 当 `uniClinetDB` 有新增属性时，组件代码也不需要跟随更新
+
+
+例如要开发一个datacom组件，名为uni-data-jql：
+
+- 方法1，使用 `mixinDatacomEasyGet()`
+
+```html
+<!-- uni-data-jql.vue -->
+<template>
+	<view>
+		<view v-if="mixinDatacomLoading">Loading...</view>
+		<view v-else-if="mixinDatacomErrorMessage">
+			请求错误：{{mixinDatacomErrorMessage}}
+		</view>
+		<view else="mixinDatacomResData">
+			<!-- 需要自行处理数据及相关UI展现 -->
+			{{mixinDatacomResData}}
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		mixins: [uniCloud.mixinDatacom],
+		data() {
+			return {}
+		},
+		created() {
+			// 调用 uniCloud.mixinDatacom 中的方法加载数据
+			this.mixinDatacomEasyGet()
+		},
+		methods: {
+			// 当组件属性发生变化时
+			onMixinDatacomPropsChange(needReset, changed) {
+				// needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
+				// changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
+				if (needReset) {
+					// 清空已加载的数据
+					this.mixinDatacomResData = []
+
+					// 重置分页数据，如果没有分页不需要处理
+					this.mixinDatacomPage.size = this.pageSize // 重置分页大小
+					this.mixinDatacomPage.current = 0 // 重置当前分页
+					this.mixinDatacomPage.count = 0 // 重置数据总数
+				}
+			}
+		}
+	}
+</script>
+```
+
+
+- 方法2，使用 `mixinDatacomGet()` 
+
+需要多写些代码处理各种状态。如果`mixinDatacomEasyGet`的封装无法灵活满足你的需求，可以使用这种方式。
+
+```html
+<!-- uni-data-jql.vue -->
+<template>
+	<view>
+		<view v-if="mixinDatacomLoading">Loading...</view>
+		<view v-else-if="mixinDatacomErrorMessage">
+			请求错误：{{mixinDatacomErrorMessage}}
+		</view>
+		<view else="mixinDatacomResData">
+			<!-- 需要自行处理数据及相关UI展现 -->
+			{{mixinDatacomResData}}
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		mixins: [uniCloud.mixinDatacom],
+		data() {
+			return {}
+		},
+		created() {
+			this.load()
+		},
+		methods: {
+			load() {
+				if (this.mixinDatacomLoading == true) {
+					return
+				}
+				this.mixinDatacomLoading = true
+
+				this.mixinDatacomGet().then((res) => {
+					this.mixinDatacomLoading = false
+					const {
+						data,
+						count
+					} = res.result
+					this.mixinDatacomResData = data
+				}).catch((err) => {
+					this.mixinDatacomLoading = false
+					this.mixinDatacomErrorMessage = err
+				})
+			},
+			// 当组件属性发生变化时
+			onMixinDatacomPropsChange(needReset, changed) {
+				// needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
+				// changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
+				if (needReset) {
+					// 清空已加载的数据
+					this.mixinDatacomResData = []
+
+					// 重置分页数据，如果没有分页不需要处理
+					this.mixinDatacomPage.size = this.pageSize // 重置分页大小
+					this.mixinDatacomPage.current = 0 // 重置当前分页
+					this.mixinDatacomPage.count = 0 // 重置数据总数
+				}
+			}
+		}
+	}
+</script>
+```
+
+
+做好这个uni-data-jql组件后，就可以在页面中使用了：
+
+```html
+<template>
+	<view>
+		<uni-data-jql collection="table1"></uni-data-jql>
+	</view>
+</template>
+
+<script>
+	// jql.vue 组件
+	import UniData from "./jql.vue" // 如果符合easycom规范，无需本代码
+	export default {
+		components: {
+			UniData // 如果符合easycom规范，无需本代码
+		},
+		data() {
+			return {}
+		},
+		methods: {}
+	}
+</script>
+```
+
+
+#### `uniCloud.mixinDatacom` 源码 @mixinDatacomsource
+为方便开发者理解mixinDatacom的工作原理，这里贴出mixinDatacom的源码：
+
+```js
+export default {
+	props: {
+		localdata: {
+			type: Array,
+			default () {
+				return []
+			}
+		},
+		options: {
+			type: [Object, Array],
+			default () {
+				return {}
+			}
+		},
+		collection: {
+			type: String,
+			default: ''
+		},
+		action: {
+			type: String,
+			default: ''
+		},
+		field: {
+			type: String,
+			default: ''
+		},
+		orderby: {
+			type: String,
+			default: ''
+		},
+		where: {
+			type: [String, Object],
+			default: ''
+		},
+		pageData: {
+			type: String,
+			default: 'add'
+		},
+		pageCurrent: {
+			type: Number,
+			default: 1
+		},
+		pageSize: {
+			type: Number,
+			default: 20
+		},
+		getcount: {
+			type: [Boolean, String],
+			default: false
+		},
+		gettree: {
+			type: [Boolean, String],
+			default: false
+		},
+		gettreepath: {
+		  type: [Boolean, String],
+		  default: false
+		},
+		startwith: {
+		  type: String,
+		  default: ''
+		},
+		limitlevel: {
+		  type: Number,
+		  default: 10
+		},
+		groupby: {
+		  type: String,
+		  default: ''
+		},
+		groupField: {
+		  type: String,
+		  default: ''
+		},
+		distinct: {
+		  type: [Boolean, String],
+		  default: false
+		},
+		manual: {
+		  type: Boolean,
+		  default: false
+		}
+	},
+	data() {
+		return {
+			mixinDatacomLoading: false, // 网络请求状态
+			mixinDatacomHasMore: false, // 是否有更多数据
+			mixinDatacomResData: [], // 请求返回的数据，调用 loadData 后会更新
+			mixinDatacomErrorMessage: '', // 请求出错时的错误消息
+			mixinDatacomPage: {} // 分页信息，详情见 created 生命周期
+		}
+	},
+	created() {
+		this.mixinDatacomPage = {
+			current: this.pageCurrent, // 当前页面，初始化设置 props中的 pageCurrent
+			size: this.pageSize, // 页面大小，初始化设置 props中的 pageSize
+			count: 0, // 数据总数，getcount=true时有效
+		}
+		this.$watch(() => {
+			var al = [];
+			['pageCurrent',
+				'pageSize',
+				'localdata',
+				'collection',
+				'action',
+				'field',
+				'orderby',
+				'where',
+				'getont',
+				'getcount',
+				'gettree'
+			].forEach(key => {
+				al.push(this[key])
+			})
+			return al
+		}, (newValue, oldValue) => {
+			let needReset = false
+			let changed = []
+			for (let i = 2; i < newValue.length; i++) {
+				if (newValue[i] !== oldValue[i]) {
+					needReset = true
+					changed.push(newValue[i])
+				}
+			}
+			if (newValue[0] !== oldValue[0]) {
+				this.mixinDatacomPage.current = this.pageCurrent
+			}
+			this.mixinDatacomPage.size = this.pageSize
+
+			this.onMixinDatacomPropsChange(needReset, changed)
+		})
+	},
+	methods: {
+		// props发生变化时被调用，在组件中覆盖此方法
+		// 非 pageCurrent，pageSize 改变时 needReset=true,需要重置数据
+		// changed，发生变化的属性名，类型为Array，例如 ['collection', 'action']
+		onMixinDatacomPropsChange(needReset, changed) {},
+		// 加载数据
+		mixinDatacomEasyGet({
+			getone = false,
+			success,
+			fail
+		} = {}) {
+			if (this.mixinDatacomLoading) {
+				return
+			}
+			this.mixinDatacomLoading = true
+
+			this.mixinDatacomErrorMessage = ''
+
+			this.mixinDatacomGet().then((res) => {
+				this.mixinDatacomLoading = false
+				const {
+					data,
+					count
+				} = res.result
+				if (this.getcount) {
+					this.mixinDatacomPage.count = count
+				}
+				this.mixinDatacomHasMore = data.length < this.pageSize
+				const responseData = getone ? (data.length ? data[0] : undefined) : data
+				this.mixinDatacomResData = responseData
+
+				if (success) {
+					success(responseData)
+				}
+			}).catch((err) => {
+				this.mixinDatacomLoading = false
+				this.mixinDatacomErrorMessage = err
+				fail && fail(err)
+			})
+		},
+		// 调用 uniClientDB 查询数据
+		mixinDatacomGet(options = {}) {
+			let db = uniCloud.database()
+
+			const action = options.action || this.action
+			if (action) {
+				db = db.action(action)
+			}
+
+			const collection = options.collection || this.collection
+			db = db.collection(collection)
+
+			const where = options.where || this.where
+			if (!(!where || !Object.keys(where).length)) {
+				db = db.where(where)
+			}
+
+			const field = options.field || this.field
+			if (field) {
+				db = db.field(field)
+			}
+
+			const groupby = options.groupby || this.groupby
+			if (groupby) {
+				db = db.groupBy(groupby)
+			}
+
+			const groupField = options.groupField || this.groupField
+			if (groupField) {
+				db = db.groupField(groupField)
+			}
+
+			const distinct = options.distinct !== undefined ? options.distinct : this.distinct
+			if (distinct === true) {
+				db = db.distinct()
+			}
+
+			const orderby = options.orderby || this.orderby
+			if (orderby) {
+				db = db.orderBy(orderby)
+			}
+
+			const current = options.pageCurrent !== undefined ? options.pageCurrent : this.mixinDatacomPage.current
+			const size = options.pageSize !== undefined ? options.pageSize : this.mixinDatacomPage.size
+			const getCount = options.getcount !== undefined ? options.getcount : this.getcount
+			const gettree = options.gettree !== undefined ? options.gettree : this.gettree
+			const gettreepath = options.gettreepath !== undefined ? options.gettreepath : this.gettreepath
+			const limitLevel = options.limitlevel !== undefined ? options.limitlevel : this.limitlevel
+			const startWith = options.startwith !== undefined ? options.startwith : this.startwith
+
+			const getOptions = {
+				getCount
+			}
+			const treeOptions = {
+				limitLevel,
+				startWith
+			}
+			if (gettree) {
+				getOptions.getTree = treeOptions
+			}
+			if (gettreepath) {
+				getOptions.getTreePath = treeOptions
+			}
+
+			db = db.skip(size * (current - 1)).limit(size).get(getOptions)
+
+			return db
+		}
+	}
+}
+```

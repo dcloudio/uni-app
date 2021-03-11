@@ -28,7 +28,7 @@ export function subscribePush (params, callbackId) {
     return clientInfo
   } else {
     return {
-      errMsg: 'subscribePush:fail:请确保当前运行环境已包含 push 模块'
+      errMsg: 'subscribePush:fail 请确保当前运行环境已包含 push 模块'
     }
   }
 }
@@ -43,7 +43,7 @@ export function unsubscribePush (params) {
 export function onPush () {
   if (!isListening) {
     return {
-      errMsg: 'onPush:fail:请先调用 uni.subscribePush'
+      errMsg: 'onPush:fail 请先调用 uni.subscribePush'
     }
   }
   if (plus.push.getClientInfo()) {
@@ -53,7 +53,7 @@ export function onPush () {
     }
   }
   return {
-    errMsg: 'onPush:fail:请确保当前运行环境已包含 push 模块'
+    errMsg: 'onPush:fail 请确保当前运行环境已包含 push 模块'
   }
 }
 

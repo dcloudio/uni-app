@@ -69,7 +69,7 @@ class LivePusherContext {
 
 export function createLivePusherContext (id, vm) {
   if (!vm) {
-    return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+    return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present')
   }
   const elm = findElmById(id, vm)
   if (!elm) {

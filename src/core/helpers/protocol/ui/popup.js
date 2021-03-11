@@ -1,3 +1,7 @@
+import {
+  t
+} from 'uni-core/helpers/i18n'
+
 import getRealPath from 'uni-platform/helpers/get-real-path'
 
 export const showModal = {
@@ -15,7 +19,9 @@ export const showModal = {
   },
   cancelText: {
     type: String,
-    default: '取消'
+    default () {
+      return t('uni.showModal.cancel')
+    }
   },
   cancelColor: {
     type: String,
@@ -23,7 +29,9 @@ export const showModal = {
   },
   confirmText: {
     type: String,
-    default: '确定'
+    default () {
+      return t('uni.showModal.confirm')
+    }
   },
   confirmColor: {
     type: String,

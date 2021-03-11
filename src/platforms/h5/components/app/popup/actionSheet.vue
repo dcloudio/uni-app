@@ -29,12 +29,8 @@
         >
           {{ title }}
         </div>
-        <div
-          :style="{maxHeight:`${HEIGHT}px`,overflow:'hidden'}"
-        >
-          <div
-            ref="content"
-          >
+        <div :style="{maxHeight:`${HEIGHT}px`,overflow:'hidden'}">
+          <div ref="content">
             <div
               v-for="(itemTitle, index) in itemList"
               :key="index"
@@ -53,7 +49,7 @@
           class="uni-actionsheet__cell"
           @click="_close(-1)"
         >
-          取消
+          {{ $$t('uni.showActionSheet.cancel') }}
         </div>
       </div>
       <div :style="popupStyle.triangle" />
@@ -67,6 +63,9 @@
 <script>
 import popup from './mixins/popup'
 import keypress from '../../../helpers/keypress'
+import {
+  i18nMixin
+} from 'uni-core/helpers/i18n'
 import touchtrack from 'uni-mixins/touchtrack'
 import scroller from 'uni-mixins/scroller/index'
 import {
@@ -109,8 +108,10 @@ function initClick (dom) {
 
 export default {
   name: 'ActionSheet',
-  components: { keypress },
-  mixins: [popup, touchtrack, scroller],
+  components: {
+    keypress
+  },
+  mixins: [i18nMixin, popup, touchtrack, scroller],
   props: {
     title: {
       type: String,
@@ -149,7 +150,9 @@ export default {
       if (newValue) {
         this.$nextTick(() => {
           // title 占位
-          if (this.title) { this.titleHeight = document.querySelector('.uni-actionsheet__title').offsetHeight }
+          if (this.title) {
+            this.titleHeight = document.querySelector('.uni-actionsheet__title').offsetHeight
+          }
           // 滚动条更新
           this._scroller.update()
           // 获取contentHeight 滚动时使用
@@ -221,54 +224,54 @@ export default {
 }
 </script>
 <style>
-uni-actionsheet {
-  display: block;
-  box-sizing: border-box;
-}
+  uni-actionsheet {
+    display: block;
+    box-sizing: border-box;
+  }
 
-uni-actionsheet .uni-actionsheet {
-  position: fixed;
-  left: 6px;
-  right: 6px;
-  bottom: 6px;
-  transform: translate(0, 100%);
-  backface-visibility: hidden;
-  z-index: 999;
-  visibility: hidden;
-  transition: transform 0.3s, visibility 0.3s;
-}
+  uni-actionsheet .uni-actionsheet {
+    position: fixed;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    transform: translate(0, 100%);
+    backface-visibility: hidden;
+    z-index: 999;
+    visibility: hidden;
+    transition: transform 0.3s, visibility 0.3s;
+  }
 
-uni-actionsheet .uni-actionsheet.uni-actionsheet_toggle {
-  visibility: visible;
-  transform: translate(0, 0);
-}
+  uni-actionsheet .uni-actionsheet.uni-actionsheet_toggle {
+    visibility: visible;
+    transform: translate(0, 0);
+  }
 
-uni-actionsheet .uni-actionsheet * {
-  box-sizing: border-box;
-}
+  uni-actionsheet .uni-actionsheet * {
+    box-sizing: border-box;
+  }
 
-uni-actionsheet .uni-actionsheet__menu,
-uni-actionsheet .uni-actionsheet__action {
-  border-radius: 5px;
-  background-color: #fcfcfd;
-}
+  uni-actionsheet .uni-actionsheet__menu,
+  uni-actionsheet .uni-actionsheet__action {
+    border-radius: 5px;
+    background-color: #fcfcfd;
+  }
 
-uni-actionsheet .uni-actionsheet__action {
-  margin-top: 6px;
-}
+  uni-actionsheet .uni-actionsheet__action {
+    margin-top: 6px;
+  }
 
-uni-actionsheet .uni-actionsheet__cell,
-uni-actionsheet .uni-actionsheet__title {
-  position: relative;
-  padding: 10px 6px;
-  text-align: center;
-  font-size: 18px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  cursor: pointer;
-}
+  uni-actionsheet .uni-actionsheet__cell,
+  uni-actionsheet .uni-actionsheet__title {
+    position: relative;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    cursor: pointer;
+  }
 
-uni-actionsheet .uni-actionsheet__title{
+  uni-actionsheet .uni-actionsheet__title {
     position: absolute;
     top: 0;
     right: 0;
@@ -277,52 +280,56 @@ uni-actionsheet .uni-actionsheet__title{
     background-color: #fff;
     border-radius: 5px 5px 0 0;
     border-bottom: 1px solid #e5e5e5;
-}
-
-uni-actionsheet .uni-actionsheet__cell:before {
-  content: " ";
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  height: 1px;
-  border-top: 1px solid #e5e5e5;
-  color: #e5e5e5;
-  transform-origin: 0 0;
-  transform: scaleY(0.5);
-}
-
-uni-actionsheet .uni-actionsheet__cell:active {
-  background-color: #ececec;
-}
-
-uni-actionsheet .uni-actionsheet__cell:first-child:before {
-  display: none;
-}
-
-@media screen and (min-width: 500px) and (min-height: 500px) {
-  .uni-mask.uni-actionsheet__mask {
-    background: none;
   }
-  uni-actionsheet .uni-actionsheet {
-    width: 300px;
-    left: 50%;
-    right: auto;
-    top: 50%;
-    bottom: auto;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0.3s, visibility 0.3s;
+
+  uni-actionsheet .uni-actionsheet__cell:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #e5e5e5;
+    color: #e5e5e5;
+    transform-origin: 0 0;
+    transform: scaleY(0.5);
   }
-  uni-actionsheet .uni-actionsheet.uni-actionsheet_toggle {
-    opacity: 1;
-    transform: translate(-50%, -50%);
+
+  uni-actionsheet .uni-actionsheet__cell:active {
+    background-color: #ececec;
   }
-  uni-actionsheet .uni-actionsheet__menu {
-    box-shadow: 0px 0 20px 5px rgba(0, 0, 0, 0.3);
-  }
-  uni-actionsheet .uni-actionsheet__action {
+
+  uni-actionsheet .uni-actionsheet__cell:first-child:before {
     display: none;
   }
-}
+
+  @media screen and (min-width: 500px) and (min-height: 500px) {
+    .uni-mask.uni-actionsheet__mask {
+      background: none;
+    }
+
+    uni-actionsheet .uni-actionsheet {
+      width: 300px;
+      left: 50%;
+      right: auto;
+      top: 50%;
+      bottom: auto;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    uni-actionsheet .uni-actionsheet.uni-actionsheet_toggle {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+
+    uni-actionsheet .uni-actionsheet__menu {
+      box-shadow: 0px 0 20px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    uni-actionsheet .uni-actionsheet__action {
+      display: none;
+    }
+  }
 </style>
