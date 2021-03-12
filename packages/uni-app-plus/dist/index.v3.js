@@ -1199,7 +1199,6 @@ var serviceContext = (function () {
   function startsWith(str, parts) {
       return parts.find((part) => str.indexOf(part) === 0);
   }
-  console.log('normalizeLocale');
   function normalizeLocale(locale, messages) {
       if (!locale) {
           return;
@@ -1238,14 +1237,12 @@ var serviceContext = (function () {
           }
           this.formater = formater || defaultFormatter;
           this.messages = messages;
-          console.log(`--2--${locale}`);
           this.setLocale(locale);
           if (watcher) {
               this.watchLocale(watcher);
           }
       }
       setLocale(locale) {
-        console.log(`locale:${locale}`);
           const oldLocale = this.locale;
           this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
           this.message = this.messages[this.locale];
@@ -1282,14 +1279,12 @@ var serviceContext = (function () {
   function initLocaleWatcher(appVm, i18n) {
       appVm.$i18n &&
           appVm.$i18n.vm.$watch('locale', (newLocale) => {
-            console.log('--3--');
               i18n.setLocale(newLocale);
           }, {
               immediate: true,
           });
   }
   function getDefaultLocale() {
-    console.log('getDefaultLocale');
       if (typeof navigator !== 'undefined') {
           return navigator.userLanguage || navigator.language;
       }
@@ -1317,7 +1312,6 @@ var serviceContext = (function () {
               const appVm = getApp().$vm;
               if (!appVm.$t || !appVm.$i18n) {
                   if (!locale) {
-                    console.log('--4--');
                       i18n.setLocale(getDefaultLocale());
                   }
                   /* eslint-disable no-func-assign */
@@ -1347,11 +1341,7 @@ var serviceContext = (function () {
           t(key, values) {
               return t(key, values);
           },
-          getLocale() {
-              return i18n.getLocale();
-          },
           setLocale(newLocale) {
-            console.log(`--1--:${newLocale}`);
               return i18n.setLocale(newLocale);
           },
           mixin: {
