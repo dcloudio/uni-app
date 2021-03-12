@@ -57,7 +57,11 @@
               :key="index"
               class="uni-picker-item"
             >
-              {{ typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0) }}
+              {{
+                typeof item === "object"
+                  ? item[rangeKey] || ""
+                  : _l10nItem(item, index0)
+              }}
             </div>
           </v-uni-picker-view-column>
         </v-uni-picker-view>
@@ -613,7 +617,11 @@ export default {
         const locale = getLocale()
         if (!locale.startsWith('zh')) {
           switch (this.fields) {
-            case fields.DAY:
+            case fields.YEAR:
+              return array
+            case fields.MONTH:
+              return [array[1], array[0]]
+            default:
               switch (locale) {
                 case 'es':
                 case 'fr':
@@ -622,8 +630,6 @@ export default {
                 default:
                   return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]]
               }
-            case fields.MONTH:
-              return [array[1], array[0]]
           }
         }
       }
@@ -635,7 +641,7 @@ export default {
         if (locale.startsWith('zh')) {
           const array = ['年', '月', '日']
           return item + array[index]
-        } else if (this.fields !== fields.YEAR && index === (this.fields === fields.DAY && (locale === 'es' || locale === 'fr') ? 1 : 0)) {
+        } else if (this.fields !== fields.YEAR && index === (this.fields !== fields.MONTH && (locale === 'es' || locale === 'fr') ? 1 : 0)) {
           let array
           switch (locale) {
             case 'es':
