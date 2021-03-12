@@ -32,7 +32,7 @@
 
 **App打包前端代码进行加密：**[https://ask.dcloud.net.cn/article/36437](https://ask.dcloud.net.cn/article/36437)
 
-**Android App字体跟随rom默认字体**[详见](https://uniapp.dcloud.net.cn/component/native-component?id=android%e7%b3%bb%e7%bb%9f%e4%b8%bb%e9%a2%98%e5%ad%97%e4%bd%93%e5%af%b9%e5%8e%9f%e7%94%9f%e7%bb%84%e4%bb%b6%e6%b8%b2%e6%9f%93%e7%9a%84%e5%bd%b1%e5%93%8d)
+**Android App字体跟随Rom默认字体/系统字体**[详见](https://uniapp.dcloud.net.cn/component/native-component?id=android%e7%b3%bb%e7%bb%9f%e4%b8%bb%e9%a2%98%e5%ad%97%e4%bd%93%e5%af%b9%e5%8e%9f%e7%94%9f%e7%bb%84%e4%bb%b6%e6%b8%b2%e6%9f%93%e7%9a%84%e5%bd%b1%e5%93%8d)
 
 **uni-app 中使用 5+ 的原生界面控件（包括map、video、livepusher、barcode、nview）：**[https://ask.dcloud.net.cn/article/35036](https://ask.dcloud.net.cn/article/35036)
 
