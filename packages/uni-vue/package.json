@@ -15,9 +15,5 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
-  },
-  "dependencies": {
-    "@vue/shared": "3.0.0-rc.5",
-    "vue": "^3.0.0-rc.5"
   }
 }
