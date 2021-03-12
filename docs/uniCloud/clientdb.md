@@ -20,6 +20,18 @@
 - `clientDB`依赖的uni-id需要在uni-id的config.json内添加uni-id相关配置，通过uni-id的init方法传递的参数不会对clientDB生效
 - 通常在管理控制台使用`clientDB`，需要获取不同角色用户拥有的权限（在权限规则内使用auth.permission），请先查阅[uni-id 角色权限](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
 
+## 对比：传统与clientDB云端协同的开发效率
+> 演示：在线通讯录项目，渲染云端数据到视图
+#### 传统开发方式:
+1. 传统开发你需要先写服务端代码（这里用php+mysql作为演示）用sql语法查询数据库中的数据并输出，然后再开放API。
+如图：
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e9e6ef89-1551-407b-9de4-5bbfb5864e57.jpg)
+2. 前端用ajax携带必要参数请求API，然后将请求结果赋值给data中的变量。最终把变量在试图中渲染出来。
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/6bb0d64d-45a9-4208-a5c7-c71329607c86.png)
+### clientDB的开发方式:
+- 云端协调的开发方式，unicloud-db组件渲染列表。
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/73dd3212-c5b9-492d-a950-d8e5b7355ef4.jpg)
+
 ## clientDB图解
 ![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
 
