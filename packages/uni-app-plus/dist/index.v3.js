@@ -1259,6 +1259,14 @@ var serviceContext = (function () {
               this.watchers.splice(index, 1);
           };
       }
+      mergeLocaleMessage(locale, message) {
+          if (this.messages[locale]) {
+              Object.assign(this.messages[locale], message);
+          }
+          else {
+              this.messages[locale] = message;
+          }
+      }
       t(key, locale, values) {
           let message = this.message;
           if (typeof locale === 'string') {
@@ -1340,6 +1348,9 @@ var serviceContext = (function () {
       return {
           t(key, values) {
               return t(key, values);
+          },
+          getLocale() {
+              return i18n.getLocale();
           },
           setLocale(newLocale) {
               return i18n.setLocale(newLocale);
