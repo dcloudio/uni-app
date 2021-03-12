@@ -272,9 +272,16 @@ export default {
       toastTitle,
       success,
       fail,
-      complete
+      complete,
+      needConfirm = true,
+      needLoading = true,
+      loadingTitle = ''
     } = {}) {
-      uni.showLoading()
+      if (needLoading) {
+        uni.showLoading({
+          title: loadingTitle
+        })
+      }
       /* eslint-disable no-undef */
       let db = uniCloud.database()
       if (action) {
@@ -290,12 +297,16 @@ export default {
         }
       }).catch((err) => {
         fail && fail(err)
-        uni.showModal({
-          content: err.message,
-          showCancel: false
-        })
+        if (needConfirm) {
+          uni.showModal({
+            content: err.message,
+            showCancel: false
+          })
+        }
       }).finally(() => {
-        uni.hideLoading()
+        if (needLoading) {
+          uni.hideLoading()
+        }
         complete && complete()
       })
     },
@@ -305,9 +316,16 @@ export default {
       fail,
       complete,
       confirmTitle,
-      confirmContent
+      confirmContent,
+      needConfirm = true,
+      needLoading = true,
+      loadingTitle = ''
     } = {}) {
       if (!id || !id.length) {
+        return
+      }
+      if (!needConfirm) {
+        this._execRemove(id, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
         return
       }
       uni.showModal({
@@ -318,7 +336,7 @@ export default {
           if (!res.confirm) {
             return
           }
-          this._execRemove(id, action, success, fail, complete)
+          this._execRemove(id, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
         }
       })
     },
@@ -328,9 +346,16 @@ export default {
       toastTitle,
       success,
       fail,
-      complete
+      complete,
+      needConfirm = true,
+      needLoading = true,
+      loadingTitle = ''
     } = {}) {
-      uni.showLoading()
+      if (needLoading) {
+        uni.showLoading({
+          title: loadingTitle
+        })
+      }
       /* eslint-disable no-undef */
       let db = uniCloud.database()
       if (action) {
@@ -346,12 +371,16 @@ export default {
         }
       }).catch((err) => {
         fail && fail(err)
-        uni.showModal({
-          content: err.message,
-          showCancel: false
-        })
+        if (needConfirm) {
+          uni.showModal({
+            content: err.message,
+            showCancel: false
+          })
+        }
       }).finally(() => {
-        uni.hideLoading()
+        if (needLoading) {
+          uni.hideLoading()
+        }
         complete && complete()
       })
     },
@@ -465,7 +494,7 @@ export default {
 
       return db
     },
-    _execRemove (id, action, success, fail, complete) {
+    _execRemove (id, action, success, fail, complete, needConfirm, needLoading, loadingTitle) {
       if (!this.collection || !id) {
         return
       }
@@ -475,9 +504,12 @@ export default {
         return
       }
 
-      uni.showLoading({
-        mask: true
-      })
+      if (needLoading) {
+        uni.showLoading({
+          mask: true,
+          title: loadingTitle
+        })
+      }
 
       /* eslint-disable no-undef */
       const db = uniCloud.database()
@@ -499,12 +531,16 @@ export default {
         }
       }).catch((err) => {
         fail && fail(err)
-        uni.showModal({
-          content: err.message,
-          showCancel: false
-        })
+        if (needConfirm) {
+          uni.showModal({
+            content: err.message,
+            showCancel: false
+          })
+        }
       }).finally(() => {
-        uni.hideLoading()
+        if (needLoading) {
+          uni.hideLoading()
+        }
         complete && complete()
       })
     },
