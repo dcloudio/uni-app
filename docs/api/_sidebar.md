@@ -114,6 +114,7 @@
 * 广告
   * [激励视频广告](api/a-d/rewarded-video.md)
   * [全屏视频广告](api/a-d/full-screen-video.md)
+  * [内容联盟广告](api/a-d/content-page.md)
   * [插屏广告](api/a-d/interstitial.md)
 * 第三方服务
   * [获取服务供应商](api/plugins/provider.md)
