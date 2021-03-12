@@ -21,7 +21,7 @@ module.exports = {
   outputDir,
   lintOnSave: true, // or error
   runtimeCompiler: false,
-  transpileDependencies: [],
+  transpileDependencies: ['@dcloudio/uni-i18n'],
   productionSourceMap: false,
   configureWebpack: webpackConfig,
   parallel: process.env.UNI_PLATFORM !== 'h5' || process.env.UNI_WATCH !== 'false' || process.env.UNI_UI === 'true',
