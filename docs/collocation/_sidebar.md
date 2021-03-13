@@ -12,6 +12,7 @@
   * [生命周期](collocation/frame/lifecycle.md)
   * [页面](collocation/frame/window.md)
   * [页面通讯](collocation/frame/communication.md)
+* [国际化](collocation/i18n.md)
 * 自动化测试
   * [快速开始](collocation/auto/quick-start.md)
   * [API](collocation/auto/api.md)
