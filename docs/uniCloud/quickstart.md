@@ -427,7 +427,10 @@ uniCloud的[web控制台](https://unicloud.dcloud.net.cn/)可以查看线上云�
 
 uniCloud支持云函数，但其实大多数场景下并不需要写云函数，可以通过clientDB直接操作云数据库。
 
-文档另见：[clientDB](https://uniapp.dcloud.io/uniCloud/database)
+1. 在HBuilderX中，uniCloud\database目录下编写数据表的schema文件。上传到uniCloud。
+2. 在前端通过clientDB组件或api，直接读写数据表。
+
+详细文档另见：[clientDB](https://uniapp.dcloud.io/uniCloud/database)
 
 ## 小程序中使用uniCloud的白名单配置
 
