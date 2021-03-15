@@ -15,6 +15,7 @@
     5. 如果不发布H5版，你将不需要购买备案域名。小程序和App可以免域名使用服务器；
 
 ### uniCloud是什么和不是什么
+
 uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的。
 
 它包含IaaS层（由阿里云和腾讯云提供）和PaaS层（由DCloud提供）。
@@ -23,7 +24,7 @@ uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的�
 
 开户和付费虽然通过DCloud渠道，但实际上开发者自动在云厂商处建立了账户和充值了余额。DCloud只获取云服务厂商的返佣。
 
-开发时虽然经由DCloud的工具，但应用上线时，手机端是直连阿里云或腾讯云的serverless，不经由DCloud的服务器。
+开发时虽使用DCloud的工具，但应用上线时，手机端是直连阿里云或腾讯云的serverless，不经由DCloud的服务器。
 
 <video style="width:50vw;height:37.5vw;" id="video" preload="none" controls="controls" poster="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4"></video>
 </br>
