@@ -25,8 +25,7 @@ uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的�
 
 开发时虽然经由DCloud的工具，但应用上线时，手机端是直连阿里云或腾讯云的serverless，不经由DCloud的服务器。
 
-<video style="width:50vw;height:37.5vw;" id="video" preload="none" controls="controls" poster="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4"
-</video>
+<video style="width:50vw;height:37.5vw;" id="video" preload="none" controls="controls" poster="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4"></video>
 </br>
 
 ### uniCloud是什么和不是什么
