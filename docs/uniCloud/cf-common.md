@@ -12,9 +12,9 @@
     |--hello-common // 云函数公用模块
       |--package.json
       |--index.js // 公用模块代码，可以不使用index.js，修改 package.json 内的 main 字段可以指定此文件名
-  |--use-common // 使用公用模块的云函数
-    |--package.json // 在 use-common 目录执行 npm init -y 生成
-    |--index.js // 云函数入口文件
+    |--use-common // 使用公用模块的云函数
+      |--package.json // 在 use-common 目录执行 npm init -y 生成
+      |--index.js // 云函数入口文件
 ```
 
 **创建并引入公用模块**
@@ -24,6 +24,10 @@
 3. 在`hello-common`右键上传公用模块
 4. 在要引入公用模块的云函数目录（本例中为`use-common`）执行`npm init -y`生成`package.json`文件
 5. 在`use-common`目录执行`npm install ../common/hello-common`引入`hello-common`模块
+
+在`HBuilderX 3.0.0`以上版本上述步骤4、5可以在云函数上右键选择`管理公共模块依赖`来实现
+
+公共模块依赖其他公共模块同理
 
 ![创建公用模块](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/create-common-module.jpg)
 
