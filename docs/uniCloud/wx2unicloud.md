@@ -16,10 +16,10 @@ uniCloud去掉了微信云开发的一些功能，添加了更多功能。以及
 |--				|--																			|--																																																		|
 |跨端			|只有微信小程序(虽可用其他工具变相开发H5、QQ小程序，但端不够全也难以保持一致性)					|全端。App、web、各家小程序快应用全支持																																									|
 |跨云			|只支持腾讯云。为其编写的云函数不能运行在其他云平台							|阿里云、腾讯云均支持，方便互相切换。对其他云也持开放态度																																				|
-|定价			|价格相同。提供2个免费空间													|价格相同。提供1个免费空间。DCloud只是获取腾讯云的返点，而不是加价售卖																																	|
-|前端操作数据库	|使用微信的账户权限而不是应用的账户权限，无法编程，不能有效控制数据权限安全	|完善的[clientDB](https://uniapp.dcloud.io/uniCloud/clientdb)模块，使用应用自己的用户权限体系，可灵活编程，安全可靠控制权限																				|
+|定价			|价格相同。													|价格相同。DCloud只是获取腾讯云的返点，而不是加价售卖																																	|
+|前端操作数据库	|使用微信的账户权限而不是应用的账户权限，无法编程，不能有效控制数据权限安全。客户端js sdk体积大，影响性能	|完善的[clientDB](https://uniapp.dcloud.io/uniCloud/clientdb)模块，使用应用自己的用户权限体系，可灵活编程，安全可靠控制权限																				|
 |数据库schema	|不支持																		|完善的数据库[schema](https://uniapp.dcloud.io/uniCloud/schema)设计，自带权限验证和数据合法性验证																										|
-|数据库查询语法	|MongoDB语法。学习门槛高、写法复杂，尤其聚合查询							|除了MongoDB语法外，支持JQL语法，大幅降低学习门槛，减少数据库操作的代码量，快速完成复杂查询																												|
+|数据库查询语法	|MongoDB语法。学习门槛高、写法复杂，尤其联表查询很难用							|除了MongoDB语法外，支持JQL语法，大幅降低学习门槛，减少数据库操作的代码量，快速完成复杂查询																												|
 |开发工具		|微信小程序工具，编码体验欠佳												|通用编程工具HBuilderX，高效操作完善，插件体系开放																																						|
 |前端数据库watch	|支持。权限按微信账户体系执行												|暂未集成。有需求可到需求墙投票：[http://dev.dcloud.net.cn/wish/](http://dev.dcloud.net.cn/wish/)。同时有插件可用于解决聊天场景，[详见](https://ext.dcloud.net.cn/search?q=im&cat1=7)																										|
 |opendb			|无																			|开放的数据库规范，众多价值，[详情](https://gitee.com/dcloud/opendb)																																	|
@@ -27,11 +27,11 @@ uniCloud去掉了微信云开发的一些功能，添加了更多功能。以及
 |admin系统		|不自带																		|自带开源[uniCloud admin](https://uniapp.dcloud.io/uniCloud/admin)系统，大小屏自适配，自带用户、角色、权限功能，还有更多[插件](https://ext.dcloud.net.cn/?cat1=7&cat2=74&orderBy=UpdatedDate)拿来即用	|
 |支付			|仅微信支付																	|[uniPay](https://uniapp.dcloud.io/uniCloud/unipay)，跨端统一支付																																		|
 |cms			|支持。但前端部分跨端不足													|支持。前端跨端、[管理端](https://ext.dcloud.net.cn/plugin?id=3543)开源																																	|
-|插件生态		|腾讯云开发了一批															|丰富的插件生态，包含腾讯云为uniCloud开发的插件，众多现成项目模块，[详情](https://ext.dcloud.net.cn/?cat1=7&orderBy=UpdatedDate)																		|
+|插件生态		|腾讯云开发了部分插件															|丰富的插件生态，包含腾讯云为uniCloud开发的插件，众多现成项目模块，[详情](https://ext.dcloud.net.cn/?cat1=7&orderBy=UpdatedDate)																		|
 
 上述差异，总结来看，uniCloud更开放、生态更丰富、开发效率更高。
 
-开发效率之所以高的原因，包括clientDB、JQL、HBuilderX这些对效率起很大影响的重要功能和工具，也包括大量现成的轮子拿来就用。
+开发效率之所以高的原因，包括clientDB、JQL、HBuilderX这些对效率起很大影响的重要功能和工具，也包括大量现成的轮子拿来就用。详见：[2021了，让我们把开发效率提升10倍吧！](https://mp.weixin.qq.com/s/d3y3pQqC_SMm3938_i2qNw)
 
 ## 技术迁移指南
 
