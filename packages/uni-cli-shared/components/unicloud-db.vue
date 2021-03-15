@@ -250,9 +250,14 @@ export default {
       this._execLoadData(callback, clear)
     },
     loadMore () {
-      if (this._isEnded) {
+      if (this._isEnded || this.loading) {
         return
       }
+
+      if (this.pageData === pageMode.add) {
+        this.paginationInternal.current++
+      }
+
       this._execLoadData()
     },
     refresh () {
@@ -402,7 +407,11 @@ export default {
 
         const data2 = this.getone ? (data.length ? data[0] : undefined) : data
 
-        callback && callback(data2, this._isEnded)
+        if (this.getcount) {
+          this.paginationInternal.count = count
+        }
+
+        callback && callback(data2, this._isEnded, this.paginationInternal)
         this._dispatchEvent(events.load, data2)
 
         if (this.getone || this.pageData === pageMode.replace) {
@@ -413,13 +422,6 @@ export default {
           } else {
             this.dataList.push(...data2)
           }
-          if (this.dataList.length) {
-            this.paginationInternal.current++
-          }
-        }
-
-        if (this.getcount) {
-          this.paginationInternal.count = count
         }
 
         // #ifdef H5
@@ -557,9 +559,9 @@ export default {
     },
     _dispatchEvent (type, data) {
       if (this._changeDataFunction) {
-        this._changeDataFunction(data, this._isEnded)
+        this._changeDataFunction(data, this._isEnded, this.paginationInternal)
       } else {
-        this.$emit(type, data, this._isEnded)
+        this.$emit(type, data, this._isEnded, this.paginationInternal)
       }
     }
   }
