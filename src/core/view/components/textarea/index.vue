@@ -317,6 +317,7 @@ uni-textarea {
   line-height: normal;
   white-space: pre-wrap;
   word-break: break-all;
+  box-sizing: content-box !important;
 }
 uni-textarea[hidden] {
   display: none;
