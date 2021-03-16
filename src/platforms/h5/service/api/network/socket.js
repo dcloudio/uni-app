@@ -93,9 +93,9 @@ class SocketTask {
     }
     try {
       ws.close(...arrgs)
-      this._callback(options, 'sendSocketMessage:ok')
+      this._callback(options, 'closeSocket:ok')
     } catch (error) {
-      this._callback(options, `sendSocketMessage:fail ${error}`)
+      this._callback(options, `closeSocket:fail ${error}`)
     }
   }
 
