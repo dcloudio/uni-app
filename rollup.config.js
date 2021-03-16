@@ -126,5 +126,5 @@ function createReplacePlugin(buildOptions) {
       replacements[key] = process.env[key]
     }
   })
-  return replace(replacements)
+  return replace({ values: replacements, preventAssignment: true })
 }

@@ -31,7 +31,10 @@ function parsePage(
 
   const methods = miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
 
-  methods.onLoad = function (this: CustomComponentInstanceProperty, query) {
+  methods.onLoad = function (
+    this: CustomComponentInstanceProperty,
+    query: Record<string, any>
+  ) {
     ;(this as any).options = query
     ;(this as any).$page = {
       fullPath: '/' + (this as any).route + stringifyQuery(query),

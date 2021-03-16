@@ -741,7 +741,7 @@ var parseAppOptions = /*#__PURE__*/Object.freeze({
   parse: parse
 });
 
-function handleLink(event) {
+function handleLink$1(event) {
     // detail 是微信,value 是百度(dipatch)
     const detail = (event.detail ||
         event.value);
@@ -860,7 +860,7 @@ function initChildVues(mpInstance) {
     if (childVues) {
         childVues.forEach((relationOptions) => {
             // 父子关系
-            handleLink.call(mpInstance, {
+            handleLink$1.call(mpInstance, {
                 detail: relationOptions,
             });
             const { mpInstance: childMPInstance, createComponent } = relationOptions;
@@ -934,18 +934,18 @@ function createObserver(isDidUpdate = false) {
         });
     };
 }
-const handleLink$1 = (function () {
+const handleLink = (function () {
     if (isComponent2) {
-        return function handleLink$1(detail) {
-            return handleLink.call(this, {
+        return function handleLink(detail) {
+            return handleLink$1.call(this, {
                 detail,
             });
         };
     }
-    return function handleLink$1(detail) {
+    return function handleLink(detail) {
         if (this.$vm && this.$vm.$.isMounted) {
             // 父已初始化
-            return handleLink.call(this, {
+            return handleLink$1.call(this, {
                 detail,
             });
         }
@@ -999,7 +999,7 @@ function createPage(vueOptions) {
         },
         __r: handleRef,
         __e: handleEvent,
-        __l: handleLink$1,
+        __l: handleLink,
     };
     if (__VUE_OPTIONS_API__) {
         pageOptions.data = initData(vueOptions);
@@ -1084,7 +1084,7 @@ function createComponent(vueOptions) {
         methods: {
             __r: handleRef,
             __e: handleEvent,
-            __l: handleLink$1,
+            __l: handleLink,
             triggerEvent,
         },
     };

@@ -146,7 +146,7 @@ function findHooks(vueOptions, hooks = new Set()) {
     }
     return hooks;
 }
-function initHook(mpOptions, hook, excludes) {
+function initHook$1(mpOptions, hook, excludes) {
     if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
         mpOptions[hook] = function (args) {
             return this.$vm && this.$vm.$callHook(hook, args);
@@ -155,10 +155,10 @@ function initHook(mpOptions, hook, excludes) {
 }
 const EXCLUDE_HOOKS = ['onReady'];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
-    hooks.forEach((hook) => initHook(mpOptions, hook, excludes));
+    hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
-    findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
+    findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 
 const HOOKS = [
@@ -810,7 +810,7 @@ function initTriggerEvent(mpInstance) {
         return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
     };
 }
-function initHook$1(name, options) {
+function initHook(name, options) {
     const oldHook = options[name];
     if (!oldHook) {
         options[name] = function () {
@@ -825,11 +825,11 @@ function initHook$1(name, options) {
     }
 }
 Page = function (options) {
-    initHook$1('onLoad', options);
+    initHook('onLoad', options);
     return MPPage(options);
 };
 Component = function (options) {
-    initHook$1('created', options);
+    initHook('created', options);
     return MPComponent(options);
 };
 

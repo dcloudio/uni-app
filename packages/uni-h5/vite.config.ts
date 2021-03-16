@@ -57,10 +57,13 @@ export default defineConfig({
       preserveEntrySignatures: 'strict',
       plugins: [
         replace({
-          createOnApi: `/*#__PURE__*/ createOnApi`,
-          createTaskApi: `/*#__PURE__*/ createTaskApi`,
-          createSyncApi: `/*#__PURE__*/ createSyncApi`,
-          createAsyncApi: `/*#__PURE__*/ createAsyncApi`,
+          values: {
+            createOnApi: `/*#__PURE__*/ createOnApi`,
+            createTaskApi: `/*#__PURE__*/ createTaskApi`,
+            createSyncApi: `/*#__PURE__*/ createSyncApi`,
+            createAsyncApi: `/*#__PURE__*/ createAsyncApi`,
+          },
+          preventAssignment: true,
         }),
       ],
       output: {
