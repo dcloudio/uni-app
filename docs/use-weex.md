@@ -348,7 +348,7 @@ globalEvent.addEventListener("plusMessage", e => {
 
 ### 2. uni.storage:
 
-vue和nvue页面可以使用相同的uni.storage存储。这个存储是持久化的。 比如登陆状态可以保存在这里。
+vue和nvue页面可以使用相同的uni.storage存储。这个存储是持久化的。 比如登录状态可以保存在这里。
 
 App端还支持plus.sqlite，也是共享通用的。
 
