@@ -7,6 +7,12 @@ import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
 import { InjectOptions, uniInjectPlugin } from './inject'
+
+import { uniAppVuePlugin } from './appVue'
+import { uniMainJsPlugin } from './mainJs'
+import { uniPagesJsonPlugin } from './pagesJson'
+import { uniManifestJsonPlugin } from './manifestJson'
+
 const debugPlugin = debug('uni:plugin')
 
 export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
@@ -64,6 +70,11 @@ export function resolvePlugins(
     0,
     'pre'
   )
+  addPlugin(plugins, uniAppVuePlugin(options), 1, 'pre')
+  addPlugin(plugins, uniMainJsPlugin(options), 1, 'pre')
+  addPlugin(plugins, uniPagesJsonPlugin(options), 1, 'pre')
+  addPlugin(plugins, uniManifestJsonPlugin(options), 1, 'pre')
+
   addPlugin(
     plugins,
     uniPreCssPlugin(Object.assign(uniPreCssPluginOptions, options)),

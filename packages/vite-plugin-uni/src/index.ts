@@ -1,9 +1,10 @@
+import fs from 'fs'
 import path from 'path'
+import { parse } from 'jsonc-parser'
 
 import { Plugin, ViteDevServer } from 'vite'
 
 import { initEnv } from './env'
-import { createLoad } from './load'
 import { createConfig } from './config'
 import { createResolveId } from './resolveId'
 import { createConfigResolved } from './configResolved'
@@ -16,6 +17,7 @@ export interface VitePluginUniOptions {
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   root: string
+  base: string
   inputDir: string
   assetsDir: string
   devServer?: ViteDevServer
@@ -23,14 +25,23 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
 
 export * from './vue'
 
+function resolveBase(inputDir: string) {
+  const manifest = parse(
+    fs.readFileSync(path.join(inputDir, 'manifest.json'), 'utf8')
+  )
+  return (manifest.h5 && manifest.h5.router && manifest.h5.router.base) || '/'
+}
+
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin {
+  const inputDir = rawOptions.inputDir || path.resolve(process.cwd(), 'src')
   const options: VitePluginUniResolvedOptions = {
     ...rawOptions,
     root: process.cwd(),
+    base: resolveBase(inputDir),
     assetsDir: 'assets',
-    inputDir: rawOptions.inputDir || path.resolve(process.cwd(), 'src'),
+    inputDir,
   }
   initEnv(options)
   return {
@@ -39,6 +50,5 @@ export default function uniPlugin(
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
     resolveId: createResolveId(options),
-    load: createLoad(options),
   }
 }

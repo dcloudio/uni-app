@@ -1,24 +1,43 @@
 import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
-
+import { parse } from 'jsonc-parser'
+import { Plugin } from 'vite'
 import { camelize, capitalize } from '@vue/shared'
-import { VitePluginUniResolvedOptions } from '..'
+import { VitePluginUniResolvedOptions } from '../..'
 
 const { parseJson } = require('@dcloudio/uni-cli-shared')
+const pkg = require('@dcloudio/vite-plugin-uni/package.json')
 
-export const pages = {
-  test(id: string, _inputDir: string) {
-    return id.endsWith('pages.json.js')
-  },
-  load(filename: string, options: VitePluginUniResolvedOptions) {
-    return (
-      (options.devServer ? registerGlobalCode : '') +
-      parsePagesJson(
-        fs.readFileSync(filename.substr(0, filename.length - 3), 'utf-8')
-      )
-    )
-  },
+const PAGES_JSON_JS = 'pages.json.js'
+
+export function uniPagesJsonPlugin(
+  options: VitePluginUniResolvedOptions
+): Plugin {
+  const pagesJsonPath = slash(path.join(options.inputDir, 'pages.json'))
+  return {
+    name: 'vite:uni-pages-json',
+    resolveId(id) {
+      if (id.endsWith(PAGES_JSON_JS)) {
+        return pagesJsonPath + '.js'
+      }
+    },
+    transform(code, id) {
+      if (id.endsWith(PAGES_JSON_JS)) {
+        return {
+          code:
+            (options.devServer ? registerGlobalCode : '') +
+            parsePagesJson(code, options),
+          map: { mappings: '' },
+        }
+      }
+    },
+    load(id) {
+      if (id.endsWith(PAGES_JSON_JS)) {
+        return JSON.stringify(parse(fs.readFileSync(pagesJsonPath, 'utf8')))
+      }
+    },
+  }
 }
 
 interface PageOptions {
@@ -46,17 +65,24 @@ interface PageRouteOptions {
   }
 }
 
-function parsePagesJson(jsonStr: string) {
+function parsePagesJson(
+  jsonStr: string,
+  options: VitePluginUniResolvedOptions
+) {
   const pagesJson = formatPagesJson(jsonStr)
   const definePagesCode = generatePagesDefineCode(pagesJson)
-  const uniRoutesCode = generateRoutes(pagesJson).join(',')
-  const uniConfigCode = generateConfig(pagesJson)
+  const uniRoutesCode = generateRoutes(pagesJson)
+  const uniConfigCode = generateConfig(pagesJson, options)
+  const manifestJsonPath = slash(
+    path.resolve(options.inputDir, 'manifest.json.js')
+  )
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent } from '@dcloudio/uni-h5'
+import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
+import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
+${uniConfigCode}
 ${definePagesCode}
-window.__uniConfig=${uniConfigCode}
-window.__uniRoutes=[${uniRoutesCode}]
+${uniRoutesCode}
 `
 }
 
@@ -148,7 +174,14 @@ function formatPageIdentifier(path: string) {
 function generatePageDefineCode(pageOptions: PageOptions) {
   return `const ${formatPageIdentifier(
     pageOptions.path
-  )} = defineAsyncComponent(() => import('./${pageOptions.path}.vue'))`
+  )} = defineAsyncComponent({
+ loader: () => import('./${pageOptions.path}.vue'),
+ loadingComponent: AsyncLoadingComponent,
+ errorComponent: AsyncErrorComponent,
+ delay: async.delay,
+ timeout: async.timeout,
+ suspensible: async.suspensible
+})`
 }
 
 function generatePagesDefineCode(pagesJson: Record<string, any>) {
@@ -210,16 +243,35 @@ function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
 }
 
 function generateRoutes(pagesJson: Record<string, any>) {
-  return [
+  return `window.__uniRoutes=[${[
     `{ path: '/${pagesJson.pages[0].path}', redirect: '/' }`,
     ...generatePagesRoute(formatPagesRoute(pagesJson)),
-  ]
+  ].join(',')}]`
 }
 
-function generateConfig(pagesJson: Record<string, any>) {
+function generateConfig(
+  pagesJson: Record<string, any>,
+  options: VitePluginUniResolvedOptions
+) {
   delete pagesJson.pages
   delete pagesJson.subPackages
   delete pagesJson.subpackages
-  pagesJson.router = {} // TODO
-  return JSON.stringify(pagesJson)
+  pagesJson.compilerVersion = pkg['uni-app'].compilerVersion
+  return (
+    (options.devServer
+      ? ''
+      : `window['____'+appid+'____']=true
+delete window['____'+appid+'____']
+`) +
+    `window.__uniConfig=Object.assign(${JSON.stringify(pagesJson)},{
+  async,
+  debug,
+  networkTimeout,
+  sdkConfigs,
+  qqMapKey,
+  nvue,
+  router
+})
+`
+  )
 }

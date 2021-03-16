@@ -4,20 +4,20 @@
   </div>
 </template>
 <style>
-	.uni-async-loading {
-    box-sizing: border-box;
-		width: 100%;
-		padding: 50px;
-		text-align: center;
-	}
+.uni-async-loading {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 50px;
+  text-align: center;
+}
 
-	.uni-async-loading .uni-loading {
-		width: 30px;
-		height: 30px;
-	}
+.uni-async-loading .uni-loading {
+  width: 30px;
+  height: 30px;
+}
 </style>
 <script>
 export default {
-  name: 'AsyncLoading'
+  name: 'AsyncLoading',
 }
 </script>

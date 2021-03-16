@@ -9234,7 +9234,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   ], 8, ["data-page"]);
 }
 _sfc_main$2.render = _sfc_render$2;
-var index_vue_vue_type_style_index_0_lang$1 = "\n.uni-async-error {\r\n		position: absolute;\r\n		left: 0;\r\n		right: 0;\r\n		top: 0;\r\n		bottom: 0;\r\n		color: #999;\r\n		padding: 100px 0;\r\n		text-align: center;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$1 = "\n.uni-async-error {\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  top: 0;\r\n  bottom: 0;\r\n  color: #999;\r\n  padding: 100px 0;\r\n  text-align: center;\n}\r\n";
 const _sfc_main$1 = {
   name: "AsyncError",
   methods: {
@@ -9250,7 +9250,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   }, " \u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5 ");
 }
 _sfc_main$1.render = _sfc_render$1;
-var index_vue_vue_type_style_index_0_lang = "\n.uni-async-loading {\n    box-sizing: border-box;\r\n		width: 100%;\r\n		padding: 50px;\r\n		text-align: center;\n}\n.uni-async-loading .uni-loading {\r\n		width: 30px;\r\n		height: 30px;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang = "\n.uni-async-loading {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  padding: 50px;\r\n  text-align: center;\n}\n.uni-async-loading .uni-loading {\r\n  width: 30px;\r\n  height: 30px;\n}\r\n";
 const _sfc_main = {
   name: "AsyncLoading"
 };

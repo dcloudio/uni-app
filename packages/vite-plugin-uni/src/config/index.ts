@@ -13,6 +13,8 @@ export function createConfig(
 ): Plugin['config'] {
   return () => {
     return {
+      root: options.root,
+      base: options.base,
       define: createDefine(options),
       resolve: createResolve(options),
       optimizeDeps: createOptimizeDeps(options),
