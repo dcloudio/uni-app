@@ -17,14 +17,14 @@ uni统计官网地址：[https://tongji.dcloud.net.cn/](https://tongji.dcloud.ne
 
 ```uni-app``` 支持接入`uni-AD`广告联盟，开发者可实现**一次开发，多端变现**。
 
-`uni-AD`支持开屏、信息流、激励视频、悬浮红包、推送等丰富的广告形式，且聚合了腾讯广点通、今日头条穿山甲、360联盟等主流广告源，有更高的广告填充率。
+`uni-AD`支持开屏、信息流、激励视频、悬浮红包、推送等丰富的广告形式，且聚合了腾讯广点通、今日头条穿山甲、快手、360联盟等主流广告源，有更高的广告填充率。
 
 更多信息参考 [uni-AD 广告联盟](https://uniad.dcloud.net.cn)
 
 ### 制作统一发行页面
 
 开发者的应用太多，App、小程序、h5...如何在一个url里呈现，统一简单的传播到用户侧？
-来看这个页面[http://m3w.cn/uniapp](http://m3w.cn/uniapp)，一个页面囊括所有。
+来看这个页面[https://m3w.cn/uniapp](https://m3w.cn/uniapp)，一个页面囊括所有。
 如何制作？开发一个uni-app，然后在HBuilderX的菜单工具-发行-生成统一发布页面。
 
 
