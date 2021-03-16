@@ -226,7 +226,7 @@
   + uni-ui 新增 uni-easyinput 组件，提供更强大、易用的输入框封装组件，内置表单校验 [详情](https://ext.dcloud.net.cn/plugin?id=3455)
   + uni-ui 新增 uni-data-checkbox 组件，简化单选复选框的使用 [详情](https://ext.dcloud.net.cn/plugin?id=3456)
   + uni-ui 修复 forms、list、dateformat、indexed-list等组件的问题 [详情](https://ext.dcloud.net.cn/plugin?id=55)
-  + hello uni-app 新增 App端一键登陆示例（API分类login示例中）
+  + hello uni-app 新增 App端一键登录示例（API分类login示例中）
   + hello uni-app 优化 适配PC宽屏，参考：[https://hellouniapp.dcloud.net.cn/](https://hellouniapp.dcloud.net.cn/)
   + hello uni-app 修复 在 H5 下【设置 tabBar】示例页面设置背景色时颜色错误的Bug
   + 前后一体登录项目模板 新增 App端一键登录、修改密码
@@ -2552,7 +2552,7 @@
 * 新增 内置 autoprefixer ，自动处理css兼容性(iOS>=8,Android>=4)，修复iOS8上部分组件变形的问题
 * 新增 App平台 二级页面支持单独取消原生导航栏，支持定义导航栏为透明渐变模式
 * 新增 组件 picker-view，规范参考[picker-view](https://uniapp.dcloud.io/component/picker-view)
-* 修复 uni.switchTab跳转的bug，注意switchTab跳转后会关闭所有非tabbar页面。可用于初始页为欢迎页、登陆页，之后switchTab到业务首页的场景
+* 修复 uni.switchTab跳转的bug，注意switchTab跳转后会关闭所有非tabbar页面。可用于初始页为欢迎页、登录页，之后switchTab到业务首页的场景
 * 修复 uni.request 未返回 header 的问题
 * 修复 组件 textarea 有时无法输入汉字的问题
 * 修复 组件 input 数字类型无法输入小数点的问题

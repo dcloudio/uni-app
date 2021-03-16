@@ -2,7 +2,7 @@
 
 `uni一键登录`是DCloud联合个推公司推出的，整合了三大运营商网关认证能力的服务。
 
-通过运营商的底层SDK，实现App端无需短信验证码直接获取手机号，也就是很多主流App都提供的一键登陆功能。
+通过运营商的底层SDK，实现App端无需短信验证码直接获取手机号，也就是很多主流App都提供的一键登录功能。
 
 `uni一键登录`是替代短信验证登录的下一代登录验证方式，能消除现有短信验证模式等待时间长、操作繁琐和容易泄露的痛点。
 
@@ -18,11 +18,11 @@
 
 - **用户体验好**
 
-一键登陆，无需等待和复制短信验证码，能有效降低用户流失率，提升用户注册量在App激活量中的转换率。
+一键登录，无需等待和复制短信验证码，能有效降低用户流失率，提升用户注册量在App激活量中的转换率。
 
 - **便宜**
 
-使用`uni一键登录`，每次验证仅需2分！比短信验证码便宜数倍，也比市场上三方提供的一键登陆要更便宜。
+使用`uni一键登录`，每次验证仅需2分！比短信验证码便宜数倍，也比市场上三方提供的一键登录要更便宜。
 
 - **安全**
 
@@ -74,12 +74,12 @@
 
 本文主要介绍uni-app的客户端调用方法。5+ App（Wap2App）请另行参考：[5+ App一键登录使用指南](https://ask.dcloud.net.cn/article/38009)
 
-DCloud还提供了更易用的封装。在[uni-id](/uniCloud/uni-id)里已经预置了`uni一键登陆`，并基于`uni-id`提供了[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)（也可以在HBuilderX 3.0+ 新建项目界面选择“前后一体登录模板”），开发者可以拿去直接用
+DCloud还提供了更易用的封装。在[uni-id](/uniCloud/uni-id)里已经预置了`uni一键登录`，并基于`uni-id`提供了[前后一体登录模板](https://ext.dcloud.net.cn/plugin?id=13)（也可以在HBuilderX 3.0+ 新建项目界面选择“前后一体登录模板”），开发者可以拿去直接用
 
 接下来继续介绍原始API的用法。
 
 ### 客户端-获取可用的服务提供商
-一键登陆，和 uni.login 中的微信登录、QQ登录等provider是并列的。
+一键登录，和 uni.login 中的微信登录、QQ登录等provider是并列的。
 
 其中一键登录对应的 provider ID为 'univerify'，当获取provider列表时发现包含 'univerify' ，则说明当前环境打包了一键登录的sdk。
 
@@ -97,7 +97,7 @@ uni.getProvider({
 
 如果当前设备环境不支持一键登录，此时应该显示其他的登录选项。
 
-如果手机没有插入有效的sim卡，或者手机蜂窝数据网络关闭，都有可能造成预登陆校验失败。
+如果手机没有插入有效的sim卡，或者手机蜂窝数据网络关闭，都有可能造成预登录校验失败。
 
 `uni.preLogin(options)`
 
@@ -256,7 +256,7 @@ uniCloud.callFunction({
   //   code: '',
   //   message: ''
   // }
-  // 登录成功，可以关闭一键登陆授权界面了
+  // 登录成功，可以关闭一键登录授权界面了
 }).catch(err=>{
   // 处理错误
 })
@@ -289,7 +289,7 @@ exports.main = async (event, context) => {
 
 完整的项目实例源码，可以参考：
 1. 云端一体项目模板：[https://ext.dcloud.net.cn/plugin?id=13](https://ext.dcloud.net.cn/plugin?id=13)
-2. hello uni-app。打包后直接体验：[https://m3w.cn/uniapp](https://m3w.cn/uniapp)；源码获取：在HBuilderX中新建uni-app项目，选择hello uni-app模板。一键登陆的具体位置在 API - login 栏目中。
+2. hello uni-app。打包后直接体验：[https://m3w.cn/uniapp](https://m3w.cn/uniapp)；源码获取：在HBuilderX中新建uni-app项目，选择hello uni-app模板。一键登录的具体位置在 API - login 栏目中。
 
 **注意**
 
@@ -463,7 +463,7 @@ module.exports = async(event){
 
 ## 运行基座和打包
 
-- 使用`uni一键登陆`，不需要制作自定义基座，使用HBuilder标准真机运行基座即可。在云函数中配置好apiKey、apiSecret后，一样从你的账户充值中扣费。
+- 使用`uni一键登录`，不需要制作自定义基座，使用HBuilder标准真机运行基座即可。在云函数中配置好apiKey、apiSecret后，一样从你的账户充值中扣费。
 
 - 云端打包
 在项目manifest.json页面“App模块配置”项的“OAuth(登录鉴权)”下勾选“一键登录(uni-verify)”

@@ -26,8 +26,7 @@ uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的�
 
 开发时虽使用DCloud的工具，但应用上线时，手机端是直连阿里云或腾讯云的serverless，不经由DCloud的服务器。
 
-<video style="width:50vw;height:37.5vw;" id="video" preload="none" controls="controls" poster="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4"></video>
-</br>
+<video style="width:50vw;height:37.5vw;margin-bottom:20px;" id="video" preload="none" controls="controls" poster="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/eb25cdcb-25c2-4f4f-b8c2-3797a12c6fe2.mp4"></video>
 
 ### uniCloud是什么和不是什么
 uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的。
@@ -192,7 +191,7 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 下面列举些常用的轮子
 
 1. 官方维护的插件
-- uni-id：不用再开发用户系统。用户注册、登录（含社交登录、短信验证码登录、App一键登陆）、修改或重置密码、token管理、图形验证码、RBAC权限角色系统...所有与用户相关的，不管前端还是云端，代码都是现成的。[详见](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
+- uni-id：不用再开发用户系统。用户注册、登录（含社交登录、短信验证码登录、App一键登录）、修改或重置密码、token管理、图形验证码、RBAC权限角色系统...所有与用户相关的，不管前端还是云端，代码都是现成的。[详见](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
 - uniPay：不管微信还是支付宝，不管App、微信小程序、还是支付宝小程序，不管前端还是服务端，一切都现成的，拿来即用。[详见](https://uniapp.dcloud.net.cn/uniCloud/unipay)
 - uSearch：云端一体搜索。搜索页面、输入联想、搜索历史记录、热搜词分析提取...一应俱全。[详见](https://ext.dcloud.net.cn/plugin?id=3851)
 - uniCloud Admin：全端可用的admin后台。自带用户管理、权限管理、角色管理、菜单管理。更有众多admin插件，比如cms插件、banner管理插件、App升级管理插件...[详见](https://uniapp.dcloud.net.cn/uniCloud/admin)

@@ -8,6 +8,8 @@ uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的�
 
 版本支持：HBuilderX 3.0+
 
+演示地址：https://unicloudadmindemo.dcloud.net.cn
+
 下载地址：[https://ext.dcloud.net.cn/plugin?id=3268](https://ext.dcloud.net.cn/plugin?id=3268)
 
 - 它基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
