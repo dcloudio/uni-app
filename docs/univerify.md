@@ -151,6 +151,7 @@ univerifyStyle 数据结构：
 {
   "fullScreen": true, // 是否全屏显示，true表示全屏模式，false表示非全屏模式，默认值为false。
   "backgroundColor": "#ffffff",  // 授权页面背景颜色，默认值：#ffffff  
+  "backgroundImage": "bg.png",  // 背景图片，仅在全屏模式下生效
   "icon": {  
       "path": "static/xxx.png" // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo   
   },  
