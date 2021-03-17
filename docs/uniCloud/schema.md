@@ -750,9 +750,9 @@ rule表达式里支持：
 3. js语法
 4. 另外还支持`new Date()`来获取时间。需要注意的是不同于数据库运算方法，`new Date()`内不可传入数据库字段作为参数
 
-上述配置中，`end_date`为字段名称。schema内也支持写字段操作方法，如add方法。
+上述配置中，`create_date`、`end_date`为字段名称。schema内也支持写字段操作方法，如add方法。
 
-例：在todo表内可以使用fieldRules限制`create_date`小于`end_date`
+例：在todo表内可以使用fieldRules限制`end_date`大于`create_date`
 
 ```json
 {
@@ -760,7 +760,7 @@ rule表达式里支持：
   "required": ["title","create_date"],
   "fieldRules": [{
     "rule": "end_date == null || end_date != null && create_date < end_date",
-    "errorMessage": "创建时间和结束时间不匹配"
+    "errorMessage": "结束时间需大于创建时间"
   }],
   "properties": {
     "title": {
@@ -769,7 +769,10 @@ rule表达式里支持：
     },
     "create_date": {
       "bsonType": "timestamp",
-      "title": "创建时间"
+      "title": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
     },
     "end_date": {
       "bsonType": "timestamp",
