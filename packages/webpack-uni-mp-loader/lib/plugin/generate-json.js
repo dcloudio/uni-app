@@ -129,7 +129,12 @@ module.exports = function generateJson (compilation) {
       Object.keys(usingComponents).forEach(key => {
         const value = usingComponents[key]
         if (value.includes('://')) {
-          delete usingComponents[key]
+          /**
+           * 百度小程序部分组件（如：editor）使用‘usingSwanComponents’ 引入
+           * 部分组件（如：swan-sitemap-list）使用'usingComponents'引入
+           * 经测试，两者保留都不会报错，因此去除以下 delete 语句
+           */
+          // delete usingComponents[key]
           jsonObj.usingSwanComponents = jsonObj.usingSwanComponents || {}
           jsonObj.usingSwanComponents[key] = value
         }
