@@ -18,7 +18,7 @@
 
 uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的。
 
-它包含IaaS层（由阿里云和腾讯云提供）和PaaS层（由DCloud提供）。
+它包含IaaS层（由阿里云和腾讯云提供硬件和网络）和PaaS层（由DCloud提供开发环境）。
 
 开发者可以自主选择uniCloud的硬件和网络资源的供应商，在阿里云和腾讯云之间切换。
 
