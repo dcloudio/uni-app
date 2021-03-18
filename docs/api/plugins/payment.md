@@ -172,6 +172,25 @@ uni.requestPayment({
 });
 ```
 
+微信 App 支付
+
+```javascript
+uni.requestPayment({
+    "provider": "wxpay", 
+    "orderInfo": {
+        "appid": "wx499********7c70e",  // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致
+        "noncestr": "c5sEwbaNPiXAF3iv", // 随机字符串
+        "package": "Sign=WXPay",        // 固定值
+        "partnerid": "148*****52",      // 微信支付商户号
+        "prepayid": "wx202254********************fbe90000", // 统一下单订单号 
+        "timestamp": 1597935292,        // 时间戳（单位：秒）
+        "sign": "A842B45937F6EFF60DEC7A2EAA52D5A0" // 签名，这里用的 MD5 签名
+    },
+    success(res) {},
+    fail(e) {}
+})
+```
+
 苹果应用内支付
 
 ```html
