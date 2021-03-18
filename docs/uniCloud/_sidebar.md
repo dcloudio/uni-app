@@ -28,6 +28,7 @@
 * [客户端sdk](uniCloud/client-sdk.md)
 * [uni-id用户体系](uniCloud/uni-id.md)
 * 扩展能力
+  * [uni-config-center](https://ext.dcloud.net.cn/plugin?id=4425)
   * [uniCloud admin](uniCloud/admin.md)
   * [uni-cloud-router](uniCloud/uni-cloud-router.md)
   * [unipay](uniCloud/unipay.md)
