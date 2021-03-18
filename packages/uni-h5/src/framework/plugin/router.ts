@@ -11,7 +11,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from 'vue-router'
-import { getApp } from '../app'
+import { getApp } from './app'
 
 export function initRouter(app: App) {
   app.use(createAppRouter(createRouter(createRouterOptions())))
@@ -49,7 +49,7 @@ function createAppRouter(router: Router) {
 
 function initHistory() {
   const history =
-    __UNI_ROUTER_MODE__ === 'history'
+    __UNI_FEATURE_ROUTER_MODE__ === 'history'
       ? createWebHistory()
       : createWebHashHistory()
   history.listen((_to, from, info) => {

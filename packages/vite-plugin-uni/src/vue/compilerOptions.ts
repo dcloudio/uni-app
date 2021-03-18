@@ -2,7 +2,7 @@ import { ElementNode, NodeTransform } from '@vue/compiler-core'
 
 import { CompilerOptions } from '@vue/compiler-sfc'
 
-const { isNativeTag } = require('@dcloudio/uni-shared')
+import { isNativeTag } from '@dcloudio/uni-shared'
 
 const transform: NodeTransform = (node) => {
   if (

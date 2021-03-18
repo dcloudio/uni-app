@@ -3,12 +3,12 @@ import { Plugin } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
+import { isBuiltInComponent } from '@dcloudio/uni-shared'
+import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
+
 import { UniPluginFilterOptions } from '.'
 import { debugEasycom, matchEasycom } from '../../easycom'
 
-const { isBuiltInComponent } = require('@dcloudio/uni-shared')
-
-const EXTNAMES = ['.vue', '.nvue']
 const COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
 const COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
 
@@ -20,7 +20,8 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
       if (!filter(id)) {
         return
       }
-      if (!EXTNAMES.includes(path.extname(id))) {
+      const { filename, query } = parseVueRequest(id)
+      if (query.vue || !EXTNAME_VUE.includes(path.extname(filename))) {
         return
       }
       debugEasycom(id)

@@ -3,30 +3,12 @@
     <!-- <transition :name="transitionName"> -->
     <!-- TODO -->
     <router-view v-slot="{ Component }">
-      <keep-alive :exclude="keepAliveExclude">
-        <component :is="Component" :key="key" />
+      <keep-alive :cache="routeCache">
+        <component :is="Component" :key="routeKey" />
       </keep-alive>
     </router-view>
     <!-- </transition> -->
     <tab-bar v-if="hasTabBar" v-show="showTabBar" v-bind="tabBar" />
-    <toast v-if="$options.components.Toast" v-bind="showToast" />
-    <action-sheet
-      v-if="$options.components.ActionSheet"
-      v-bind="showActionSheet"
-      @close="_onActionSheetClose"
-    />
-    <modal
-      v-if="$options.components.Modal"
-      v-bind="showModal"
-      @close="_onModalClose"
-    />
-    <template v-if="sysComponents && sysComponents.length">
-      <component
-        :is="item"
-        v-for="(item, index) in sysComponents"
-        :key="index"
-      />
-    </template>
   </uni-app>
 </template>
 <script>
@@ -40,6 +22,8 @@ import mixins from './popup/mixins'
 
 import { canIUse } from '../../../service/api'
 
+import { useKeepAliveRoute } from '../../plugin/page'
+
 export default {
   name: 'App',
   components,
@@ -50,7 +34,6 @@ export default {
       hideTabBar: false,
       tabBar: __uniConfig.tabBar || {},
       sysComponents: this.$sysComponents,
-      keepAliveExclude: [],
     }
   },
   computed: {
@@ -98,6 +81,13 @@ export default {
       // 触发 resize 事件
       window.dispatchEvent(new CustomEvent('resize'))
     },
+  },
+  setup() {
+    const { routeKey, routeCache } = useKeepAliveRoute()
+    return {
+      routeKey,
+      routeCache,
+    }
   },
   created() {
     if (canIUse('css.var')) {

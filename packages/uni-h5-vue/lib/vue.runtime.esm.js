@@ -3334,7 +3334,8 @@ const KeepAliveImpl = {
     props: {
         include: [String, RegExp, Array],
         exclude: [String, RegExp, Array],
-        max: [String, Number]
+        max: [String, Number],
+        cache: Function // fixed by xxxxxx
     },
     setup(props, { slots }) {
         const cache = new Map();
@@ -3395,7 +3396,7 @@ const KeepAliveImpl = {
         }
         function pruneCacheEntry(key) {
             const cached = cache.get(key);
-            if (!current || cached.type !== current.type) {
+            if (!current || cached.type !== current.type || cached.key !== current.key) {
                 unmount(cached);
             }
             else if (current) {
@@ -3468,6 +3469,10 @@ const KeepAliveImpl = {
                 return rawVNode;
             }
             const key = vnode.key == null ? comp : vnode.key;
+            // fixed by xxxxxx
+            if (typeof props.cache === 'function') {
+                props.cache(key, cache, pruneCacheEntry);
+            }
             const cachedVNode = cache.get(key);
             // clone vnode if it's reused because we are going to mutate it
             if (vnode.el) {
@@ -6561,6 +6566,11 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     if (asMixin && render && instance.render === NOOP) {
         instance.render = render;
     }
+    // fixed by xxxxxx
+    const customApplyOptions = ctx.$applyOptions;
+    if (customApplyOptions) {
+        customApplyOptions(options, instance, publicThis);
+    }
     // applyOptions is called non-as-mixin once per instance
     if (!asMixin) {
         isInBeforeCreate = true;
@@ -9098,7 +9108,7 @@ const render = ((...args) => {
 const hydrate = ((...args) => {
     ensureHydrationRenderer().hydrate(...args);
 });
-const createVueApp = ((...args) => {
+const createApp = ((...args) => {
     const app = ensureRenderer().createApp(...args);
     if ((process.env.NODE_ENV !== 'production')) {
         injectNativeTagCheck(app);
@@ -9186,7 +9196,9 @@ function initDev() {
 }
 
 // This entry exports the runtime only, and is built as
-(process.env.NODE_ENV !== 'production') && initDev();
+if ((process.env.NODE_ENV !== 'production')) {
+    initDev();
+}
 const compile$1 = () => {
     if ((process.env.NODE_ENV !== 'production')) {
         warn(`Runtime compilation is not supported in this build of Vue.` +
@@ -9195,4 +9207,4 @@ const compile$1 = () => {
     }
 };
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setScopeId, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setScopeId, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers };

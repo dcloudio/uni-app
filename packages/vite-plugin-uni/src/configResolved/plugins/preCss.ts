@@ -1,10 +1,9 @@
 import debug from 'debug'
 import { Plugin } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
+import { preJs } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
-
-const { preJs } = require('@dcloudio/uni-cli-shared')
 
 const debugPre = debug('uni:pre-css')
 const debugPreTry = debug('uni:pre-css-try')

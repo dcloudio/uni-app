@@ -23,6 +23,12 @@ import { walk } from 'estree-walker'
 
 import MagicString from 'magic-string'
 
+import {
+  EXTNAME_JS,
+  EXTNAME_VUE,
+  parseVueRequest,
+} from '@dcloudio/uni-cli-shared'
+
 import { UniPluginFilterOptions } from '.'
 
 interface Scope {
@@ -75,13 +81,14 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
     `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
     'g'
   )
-  const EXTNAMES = ['.js', '.ts', '.vue', '.nvue']
+  const EXTNAMES = EXTNAME_JS.concat(EXTNAME_VUE)
   const sourceMap = options.sourceMap !== false
   return {
     name: 'vite:uni-inject',
     transform(code, id) {
       if (!filter(id)) return null
-      if (!EXTNAMES.includes(path.extname(id))) {
+      const { filename, query } = parseVueRequest(id)
+      if (query.vue || !EXTNAMES.includes(path.extname(filename))) {
         return null
       }
       debugInjectTry(id)

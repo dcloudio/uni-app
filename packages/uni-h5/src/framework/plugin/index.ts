@@ -5,8 +5,8 @@ import { initView, initService } from '@dcloudio/uni-core'
 import { isCustomElement } from '@dcloudio/uni-shared'
 
 import { initRouter } from './router'
-import { initAppMount } from '../app'
 import { initSystemComponents } from './components'
+import { initMixin } from './mixin'
 
 export default {
   install(app: App) {
@@ -15,9 +15,9 @@ export default {
     initApp(app)
     initView(app)
     initService(app)
-    initAppMount(app)
     initSystemComponents(app)
 
+    initMixin(app)
     initRouter(app)
   },
 }

@@ -239,7 +239,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
 }
 
 function handlePromise(promise) {
-    if (__UNI_PROMISE_API__) {
+    if (__UNI_FEATURE_PROMISE__) {
         return promise
             .then((data) => {
             return [null, data];

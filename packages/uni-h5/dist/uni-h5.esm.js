@@ -1,8 +1,8 @@
 var __assign = Object.assign;
 import {isFunction, extend, isPlainObject, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate} from "@vue/shared";
-import {injectHook, openBlock, createBlock, createVNode, Fragment, renderList, toDisplayString, createCommentVNode, createTextVNode, Transition, withCtx, withModifiers, withDirectives, vShow, resolveComponent, KeepAlive, resolveDynamicComponent, mergeProps, toHandlers, renderSlot, vModelDynamic, vModelText} from "vue";
+import {injectHook, openBlock, createBlock, createVNode, Fragment, renderList, toDisplayString, createCommentVNode, createTextVNode, Transition, withCtx, withModifiers, withDirectives, vShow, nextTick, computed, resolveComponent, KeepAlive, resolveDynamicComponent, mergeProps, toHandlers, renderSlot, vModelDynamic, vModelText} from "vue";
 import {TABBAR_HEIGHT, plusReady, debounce, NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement} from "@dcloudio/uni-shared";
-import {createRouter, createWebHistory, createWebHashHistory} from "vue-router";
+import {createRouter, createWebHistory, createWebHashHistory, useRoute} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -43,7 +43,7 @@ function errorHandler(err, instance2, info) {
   }
   appInstance.$callHook("onError", err, info);
 }
-function initApp(app) {
+function initApp$1(app) {
   const appConfig = app._context.config;
   if (isFunction(app._component.onError)) {
     appConfig.errorHandler = errorHandler;
@@ -628,7 +628,7 @@ function handleWxsEvent($event) {
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
   extend(globalProperties, instance);
-  if (__UNI_WXS_API__) {
+  if (__UNI_FEATURE_WXS__) {
     globalProperties.getComponentDescriptor = getComponentDescriptor;
     Object.defineProperty(globalProperties, "$ownerInstance", {
       get() {
@@ -676,7 +676,7 @@ var wxInstance = /* @__PURE__ */ Object.freeze({
 });
 function initAppConfig(appConfig) {
   const globalProperties = appConfig.globalProperties;
-  if (__UNI_WX_API__) {
+  if (__UNI_FEATURE_WX__) {
     extend(globalProperties, wxInstance);
   }
 }
@@ -687,21 +687,13 @@ let appVm;
 function getApp$1() {
   return appVm;
 }
-function getCurrentPages$1() {
-  return [];
+function isApp(vm) {
+  return vm.$options.mpType === "app";
 }
-let id = 1;
-function createPageState(type) {
-  return {
-    __id__: id++,
-    __type__: type
-  };
-}
-function initAppMount(app) {
-  const oldMount = app.mount;
-  app.mount = function mount(rootContainer, isHydrate) {
-    return appVm = oldMount.call(app, rootContainer, isHydrate);
-  };
+function initApp(vm) {
+  appVm = vm;
+  appVm.$vm = vm;
+  appVm.globalData = appVm.$options.globalData || {};
 }
 function initRouter(app) {
   app.use(createAppRouter(createRouter(createRouterOptions())));
@@ -728,7 +720,7 @@ function createAppRouter(router) {
   return router;
 }
 function initHistory() {
-  const history2 = __UNI_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
+  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
   history2.listen((_to, from, info) => {
     if (info.direction === "back") {
       const app = getApp$1();
@@ -1521,7 +1513,7 @@ function hasCallback(args) {
   return false;
 }
 function handlePromise(promise) {
-  if (__UNI_PROMISE_API__) {
+  if (__UNI_FEATURE_PROMISE__) {
     return promise.then((data) => {
       return [null, data];
     }).catch((err) => [err]);
@@ -2001,6 +1993,57 @@ const getImageInfo = /* @__PURE__ */ createAsyncApi("getImageInfo", ({src}, call
 }, GetImageInfoProtocol, GetImageInfoOptions);
 const navigateBack = /* @__PURE__ */ createAsyncApi("navigateBack", () => {
 });
+const SEP = "$$";
+function getCurrentPages$1() {
+  return [];
+}
+let id = history.state && history.state.__id__ || 1;
+function createPageState(type) {
+  return {
+    __id__: ++id,
+    __type__: type
+  };
+}
+function isPage(vm) {
+  return vm.$options.mpType === "page";
+}
+function initPublicPage(route) {
+  return {
+    id,
+    path: route.path,
+    route: route.meta.pagePath,
+    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
+    options: {}
+  };
+}
+function initPage(vm) {
+  const route = vm.$route;
+  vm.__page__ = initPublicPage(route);
+}
+function routeCache(key, cache, pruneCacheEntry) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  nextTick(() => {
+    const keys = cache.keys();
+    for (const key2 of keys) {
+      const cPageId = parseInt(key2.split(SEP)[1]);
+      if (cPageId && cPageId > pageId) {
+        pruneCacheEntry(key2);
+      }
+    }
+    console.log("customKeepAlive", JSON.stringify([...cache.keys()]));
+  });
+}
+function useKeepAliveRoute() {
+  const route = useRoute();
+  const routeKey = computed(() => route.fullPath + "$$" + (history.state.__id__ || 1));
+  return {
+    routeKey,
+    routeCache
+  };
+}
 const navigateTo = /* @__PURE__ */ createAsyncApi("navigateTo", (options) => {
   const router = getApp().$router;
   router.push({
@@ -2051,8 +2094,7 @@ const _sfc_main$t = {
       transitionName: "fade",
       hideTabBar: false,
       tabBar: __uniConfig.tabBar || {},
-      sysComponents: this.$sysComponents,
-      keepAliveExclude: []
+      sysComponents: this.$sysComponents
     };
   },
   computed: {
@@ -2081,6 +2123,13 @@ const _sfc_main$t = {
       window.dispatchEvent(new CustomEvent("resize"));
     }
   },
+  setup() {
+    const {routeKey, routeCache: routeCache2} = useKeepAliveRoute();
+    return {
+      routeKey,
+      routeCache: routeCache2
+    };
+  },
   created() {
     if (canIUse("css.var")) {
       document.documentElement.style.setProperty("--status-bar-height", "0px");
@@ -2104,29 +2153,20 @@ const _sfc_main$t = {
 function _sfc_render$s(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_router_view = resolveComponent("router-view");
   const _component_tab_bar = resolveComponent("tab-bar");
-  const _component_toast = resolveComponent("toast");
-  const _component_action_sheet = resolveComponent("action-sheet");
-  const _component_modal = resolveComponent("modal");
   return openBlock(), createBlock("uni-app", {
     class: {"uni-app--showtabbar": $options.showTabBar}
   }, [
     createVNode(_component_router_view, null, {
       default: withCtx(({Component}) => [
-        (openBlock(), createBlock(KeepAlive, {exclude: $data.keepAliveExclude}, [
-          (openBlock(), createBlock(resolveDynamicComponent(Component), {key: $options.key}))
-        ], 1032, ["exclude"]))
+        (openBlock(), createBlock(KeepAlive, {cache: $setup.routeCache}, [
+          (openBlock(), createBlock(resolveDynamicComponent(Component), {key: $setup.routeKey}))
+        ], 1032, ["cache"]))
       ]),
       _: 1
     }),
     $options.hasTabBar ? withDirectives((openBlock(), createBlock(_component_tab_bar, mergeProps({key: 0}, $data.tabBar), null, 16)), [
       [vShow, $options.showTabBar]
-    ]) : createCommentVNode("", true),
-    _ctx.$options.components.Toast ? (openBlock(), createBlock(_component_toast, mergeProps({key: 1}, _ctx.showToast), null, 16)) : createCommentVNode("", true),
-    _ctx.$options.components.ActionSheet ? (openBlock(), createBlock(_component_action_sheet, mergeProps({key: 2}, _ctx.showActionSheet, {onClose: _ctx._onActionSheetClose}), null, 16, ["onClose"])) : createCommentVNode("", true),
-    _ctx.$options.components.Modal ? (openBlock(), createBlock(_component_modal, mergeProps({key: 3}, _ctx.showModal, {onClose: _ctx._onModalClose}), null, 16, ["onClose"])) : createCommentVNode("", true),
-    $data.sysComponents && $data.sysComponents.length ? (openBlock(true), createBlock(Fragment, {key: 4}, renderList($data.sysComponents, (item, index2) => {
-      return openBlock(), createBlock(resolveDynamicComponent(item), {key: index2});
-    }), 128)) : createCommentVNode("", true)
+    ]) : createCommentVNode("", true)
   ], 2);
 }
 _sfc_main$t.render = _sfc_render$s;
@@ -9035,7 +9075,6 @@ var pullToRefresh = {
 var index_vue_vue_type_style_index_0_lang$2 = "\nuni-page {\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 const _sfc_main$2 = {
   name: "Page",
-  mpType: "page",
   components: {
     PageHead: _sfc_main$5,
     PageBody: _sfc_main$4,
@@ -9272,14 +9311,32 @@ function initSystemComponents(app) {
   app.component(_sfc_main$1.name, _sfc_main$1);
   app.component(_sfc_main.name, _sfc_main);
 }
+function initMixin(app) {
+  app.mixin({
+    created() {
+      if (isApp(this)) {
+        initApp(this);
+      } else if (isPage(this)) {
+        initPage(this);
+        this.$callHook("onLoad", {});
+        this.$callHook("onShow");
+      }
+    },
+    mounted() {
+      if (isPage(this)) {
+        this.$callHook("onReady");
+      }
+    }
+  });
+}
 var index = {
   install(app) {
     app._context.config.isCustomElement = isCustomElement;
-    initApp(app);
+    initApp$1(app);
     initView(app);
     initService(app);
-    initAppMount(app);
     initSystemComponents(app);
+    initMixin(app);
     initRouter(app);
   }
 };

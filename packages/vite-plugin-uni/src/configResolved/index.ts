@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin, UserConfig } from 'vite'
+import { Plugin } from 'vite'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { resolvePlugins } from './plugins'
@@ -9,6 +9,7 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
     options.root = config.root
     options.inputDir = path.resolve(config.root, 'src')
     options.assetsDir = config.build.assetsDir
-    resolvePlugins((config as unknown) as UserConfig, options)
+
+    resolvePlugins(config.command, config.plugins as Plugin[], options)
   }) as Plugin['configResolved']
 }

@@ -51,7 +51,6 @@ import safeAreaInsets from 'safe-area-insets'
 
 export default {
   name: 'Page',
-  mpType: 'page',
   components: {
     PageHead,
     PageBody,

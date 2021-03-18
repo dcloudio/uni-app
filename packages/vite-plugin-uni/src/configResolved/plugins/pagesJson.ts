@@ -4,9 +4,9 @@ import slash from 'slash'
 import { parse } from 'jsonc-parser'
 import { Plugin } from 'vite'
 import { camelize, capitalize } from '@vue/shared'
+import { parseJson } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
-const { parseJson } = require('@dcloudio/uni-cli-shared')
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
 
 const PAGES_JSON_JS = 'pages.json.js'
@@ -175,7 +175,7 @@ function generatePageDefineCode(pageOptions: PageOptions) {
   return `const ${formatPageIdentifier(
     pageOptions.path
   )} = defineAsyncComponent({
- loader: () => import('./${pageOptions.path}.vue'),
+ loader: () => import('./${pageOptions.path}.vue?mpType=page'),
  loadingComponent: AsyncLoadingComponent,
  errorComponent: AsyncErrorComponent,
  delay: async.delay,

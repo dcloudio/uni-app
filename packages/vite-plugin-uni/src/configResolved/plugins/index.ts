@@ -1,6 +1,6 @@
 import { FilterPattern } from '@rollup/pluginutils'
 import debug from 'debug'
-import { UserConfig, Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
@@ -12,6 +12,7 @@ import { uniAppVuePlugin } from './appVue'
 import { uniMainJsPlugin } from './mainJs'
 import { uniPagesJsonPlugin } from './pagesJson'
 import { uniManifestJsonPlugin } from './manifestJson'
+import { uniPageVuePlugin } from './pageVue'
 
 const debugPlugin = debug('uni:plugin')
 
@@ -22,20 +23,21 @@ export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
 
 const UNI_H5_RE = /@dcloudio\/uni-h5/
 
+const COMMON_EXCLUDE = [
+  /pages\.json\.js$/,
+  /manifest\.json\.js$/,
+  /vue&type=/,
+  /vite\//,
+  /\/@vue\//,
+  /\/vue-router\//,
+  /\/vuex\//,
+  /@dcloudio\/uni-h5-vue/,
+  /@dcloudio\/uni-shared/,
+  /\.html$/,
+]
+
 const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [
-    /pages\.json\.js$/,
-    /vite\/dist\/client\/client\.js$/,
-    /vue&type=/,
-    /\/@vue\//,
-    /\/vue-router\//,
-    /\/vuex\//,
-    /@dcloudio\/uni-shared/,
-    /vite\/preload-helper/,
-    /vite\/dynamic-import-polyfill/,
-    /\.html$/,
-    UNI_H5_RE,
-  ],
+  exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
 }
 const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [UNI_H5_RE],
@@ -46,12 +48,7 @@ const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
 }
 
 const uniInjectPluginOptions: Partial<InjectOptions> = {
-  exclude: [
-    /@dcloudio\/uni-h5-vue/,
-    /@dcloudio\/uni-shared/,
-    /\/vue-router\//,
-    /@vue\/shared/,
-  ],
+  exclude: [...COMMON_EXCLUDE],
   '__GLOBAL__.': '@dcloudio/uni-h5',
   'uni.': '@dcloudio/uni-h5',
   getApp: ['@dcloudio/uni-h5', 'getApp'],
@@ -60,10 +57,10 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
 }
 
 export function resolvePlugins(
-  config: UserConfig,
+  command: ResolvedConfig['command'],
+  plugins: Plugin[],
   options: VitePluginUniResolvedOptions
 ) {
-  const plugins = config.plugins! as Plugin[]
   addPlugin(
     plugins,
     uniPrePlugin(Object.assign(uniPrePluginOptions, options)),
@@ -80,7 +77,7 @@ export function resolvePlugins(
     uniPreCssPlugin(Object.assign(uniPreCssPluginOptions, options)),
     'vite:css'
   )
-  if (!options.devServer) {
+  if (command === 'build') {
     addPlugin(
       plugins,
       uniInjectPlugin(Object.assign(uniInjectPluginOptions, options)),
@@ -92,10 +89,11 @@ export function resolvePlugins(
     uniEasycomPlugin(Object.assign(uniEasycomPluginOptions, options)),
     'vite:vue'
   )
+  addPlugin(plugins, uniPageVuePlugin({ command }), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   if (process.env.DEBUG) {
-    debugPlugin(config.plugins!.length)
-    debugPlugin(config.plugins!.map((p) => (p as Plugin).name))
+    debugPlugin(plugins.length)
+    debugPlugin(plugins.map((p) => (p as Plugin).name))
   }
 }
 

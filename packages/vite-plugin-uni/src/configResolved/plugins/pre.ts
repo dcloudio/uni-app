@@ -2,17 +2,21 @@ import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
-
+import {
+  preJs,
+  preHtml,
+  EXTNAME_JS,
+  EXTNAME_VUE,
+  parseVueRequest,
+} from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
-
-const { preJs, preHtml } = require('@dcloudio/uni-cli-shared')
 
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')
 const debugPreJsTry = debug('uni:pre-js-try')
 
-const PRE_JS_EXTNAME = ['.js', '.ts', '.json', '.css', '.vue', '.nvue']
-const PRE_HTML_EXTNAME = ['.vue', '.nvue']
+const PRE_JS_EXTNAME = ['.json', '.css'].concat(EXTNAME_VUE).concat(EXTNAME_JS)
+const PRE_HTML_EXTNAME = EXTNAME_VUE
 export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
@@ -21,7 +25,11 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
       if (!filter(id)) {
         return code
       }
-      const extname = path.extname(id)
+      const { filename, query } = parseVueRequest(id)
+      if (query.vue) {
+        return code
+      }
+      const extname = path.extname(filename)
       const isHtml = PRE_HTML_EXTNAME.includes(extname)
       const isJs = PRE_JS_EXTNAME.includes(extname)
       const isPre = isHtml || isJs
@@ -37,7 +45,12 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
         code = preJs(code)
         debugPreJs(id)
       }
-      return code
+      // https://github.com/vitejs/vite/blob/bc35fe994d48b2bd7076474f4a1a7b8ae5e8f401/packages/vite/src/node/server/sourcemap.ts#L15
+      // 读取sourcemap时，需要移除?mpType=page等参数，否则读取不到提示文件不存在
+      return {
+        code,
+        // map: this.getCombinedSourcemap(),
+      }
     },
   }
 }
