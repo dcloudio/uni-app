@@ -46,6 +46,7 @@
 |@tap|EventHandle||点击地图时触发; App-nuve、微信小程序2.9支持返回经纬度||
 |@updated|EventHandle||在地图渲染更新完成时触发|微信小程序、H5、百度小程序|
 |@anchorpointtap|EventHandle||点击定位标时触发，e.detail = {longitude, latitude}|App-nvue 3.1.0+、微信小程序2.13+|
+|@poitap|EventHandle||点击地图poi点时触发，e.detail = {name, longitude, latitude}|微信小程序2.3.0+|
 
 **注意** 
 
