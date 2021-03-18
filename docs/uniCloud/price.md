@@ -4,9 +4,9 @@
 
 选择腾讯云作为服务商时，可以创建一个免费的服务空间，资源详情参考[腾讯云免费额度](uniCloud/price?id=price-free)；如想提升免费空间资源配额，或创建更多服务空间，则需付费购买。
 
-付费用户享受腾讯云提供的SLA，[详见](https://uniapp.dcloud.net.cn/uniCloud/agreement)
+付费用户享受腾讯云提供的服务协议SLA，[详见](https://uniapp.dcloud.net.cn/uniCloud/agreement)
 
-uniCloud的腾讯云版的定价及套餐内容，是由腾讯公司直接公布的。DCloud公司不会加价，包括开发者通过DCloud充值也会直接充到开发者在腾讯云建立的子账户下。DCloud只从腾讯云等云厂商获取返佣，也不会在未来加价收割开发者。
+uniCloud的腾讯云版的定价、套餐内容、服务SLA，是由腾讯公司直接公布的。DCloud公司不会加价，包括开发者通过DCloud充值也会直接充到开发者在腾讯云建立的子账户下。DCloud只从腾讯云等云厂商获取返佣，也不会在未来加价收割开发者。
 
 uniCloud提供包月、按量计费两种计费方式（仅腾讯云），具体说明如下：
 
