@@ -25,7 +25,7 @@
 #### 传统开发方式:
 1. 传统开发你需要先写服务端代码（这里用php+mysql作为演示）用sql语法查询数据库中的数据并输出，然后再开放API。
 如图：
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e9e6ef89-1551-407b-9de4-5bbfb5864e57.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/73899409-d5bf-40d6-b74a-758d1fd06104.png)
 2. 前端用ajax携带必要参数请求API，然后将请求结果赋值给data中的变量。最终把变量在试图中渲染出来。
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/6bb0d64d-45a9-4208-a5c7-c71329607c86.png)
 ### clientDB的开发方式:
