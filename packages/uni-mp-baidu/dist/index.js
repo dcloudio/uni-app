@@ -1945,6 +1945,23 @@ function parseComponent (vueOptions) {
   const oldAttached = componentOptions.lifetimes.attached;
   // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
   componentOptions.lifetimes.onInit = function onInit (query) {
+    // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
+    const setData = this.setData;
+    const setDataArgs = [];
+    this.setData = function () {
+      setDataArgs.push(arguments);
+    };
+    this.__fixInitData = function () {
+      delete this.__fixInitData;
+      this.setData = setData;
+      if (setDataArgs.length) {
+        this.groupSetData(() => {
+          setDataArgs.forEach(args => {
+            setData.apply(this, args);
+          });
+        });
+      }
+    };
     oldAttached.call(this);
     this.pageinstance.$vm = this.$vm;
     this.$vm.__call_hook('onInit', query);
@@ -1952,6 +1969,8 @@ function parseComponent (vueOptions) {
   componentOptions.lifetimes.attached = function attached () {
     if (!this.$vm) {
       oldAttached.call(this);
+    } else {
+      this.__fixInitData && this.__fixInitData();
     }
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance
