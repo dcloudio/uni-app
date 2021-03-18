@@ -27,9 +27,11 @@
 
 // 支付宝小程序
 "mp-alipay": {
-  "myPlugin": {
-    "version": "*",
-    "provider": "2019235609092837"
+  "plugins": {
+    "myPlugin": {
+      "version": "*",
+      "provider": "2019235609092837"
+    }
   }
 }
 
