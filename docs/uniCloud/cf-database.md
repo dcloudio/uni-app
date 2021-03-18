@@ -4311,10 +4311,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.lt(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### lte
@@ -4331,10 +4328,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.lte(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### gt
@@ -4351,10 +4345,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.gt(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### gte
@@ -4371,10 +4362,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.gte(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### in
@@ -4391,10 +4379,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.in([0, 100])
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### nin
@@ -4411,10 +4396,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.nin([0, 100])
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 ### 查询·字段操作符
