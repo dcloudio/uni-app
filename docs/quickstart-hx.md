@@ -114,7 +114,7 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
 
 ## 发布uni-app
 
-### 打包为原生App（云端）
+### 打包为原生App
 
 在HBuilderX工具栏，点击发行，选择原生app-云端打包，如下图：
 
@@ -126,15 +126,12 @@ HBuilderX 还提供了快捷运行菜单，可以按数字快速选择要运行�
   <img style="max-width:600px;" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/001a20b0-d85a-11ea-81ea-f115fe74321c.png"/>
 </div>
 
-### 打包为原生App（离线）
+云端打包支持安心打包，保护用户隐私，不会上传代码和证书，通过差量包制作方式实现安心打包。详见：[https://ask.dcloud.net.cn/article/37979](https://ask.dcloud.net.cn/article/37979)
 
-``uni-app`` 支持离线打包，在 HBuilderX 发行菜单里生成离线打包资源，然后参考离线打包文档操作，可以从HBuilderX的发行菜单里找到文档链接，也可以直接访问：[https://nativesupport.dcloud.net.cn/AppDocs/README](https://nativesupport.dcloud.net.cn/AppDocs/README)。
+云打包也支持cli模式，通过HBuilderX的cli方式（不是uni-app的cli），可以调用命令行打包，方便持续集成。详见：[https://hx.dcloud.net.cn/cli/pack](https://hx.dcloud.net.cn/cli/pack)
 
-在HBuilderX工具栏，点击发行，选择本地打包，如下图，点击即可生成离线打包资源。
+虽然安心打包已经满足需求，但如仍然希望自己使用 xcode 或 Android studio 进行离线打包，则在 HBuilderX 发行菜单里找到本地打包菜单，生成离线打包资源，然后参考离线打包文档操作：[https://nativesupport.dcloud.net.cn/AppDocs/README](https://nativesupport.dcloud.net.cn/AppDocs/README)。
 
-<div align=center>
-  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/b9269080-4f37-11eb-8a36-ebb87efcf8c0.png"/>
-</div>
 
 ### 发布为H5
 
