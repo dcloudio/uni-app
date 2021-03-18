@@ -372,7 +372,7 @@ export default {
       const maxWidth = canvas.offsetWidth - x
       width = width ? Math.min(width, maxWidth) : maxWidth
       const maxHeight = canvas.offsetHeight - y
-      height = height ? Math.min(height, maxWidth) : maxHeight
+      height = height ? Math.min(height, maxHeight) : maxHeight
       if (!hidpi) {
         if (!destWidth && !destHeight) {
           destWidth = Math.round(width * pixelRatio)

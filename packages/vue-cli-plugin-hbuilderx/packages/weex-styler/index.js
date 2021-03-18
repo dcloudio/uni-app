@@ -4,7 +4,6 @@ var css = require('css')
 var util = require('./lib/util')
 var validateItem = require('./lib/validator').validate
 var shorthandParser = require('./lib/shorthand-parser')
-var importantStr = ' !important'
 
 // padding & margin shorthand parsing
 function convertLengthShorthand (rule, prop) {
@@ -101,8 +100,9 @@ function parse (code, done) {
 
             name = declaration.property
             value = declaration.value
-            var important = value.endsWith(importantStr)
-            value = value.replace(new RegExp(importantStr, 'g'), '')
+            var newValue = value.replace(/\s*!important/g, '')
+            var importantWeight = Number(value !== newValue)
+            value = newValue
 
             // validate declarations and collect them to result
             camelCasedName = util.hyphenedToCamelCase(name)
@@ -110,8 +110,13 @@ function parse (code, done) {
 
             /* istanbul ignore else */
             if (typeof subResult.value === 'number' || typeof subResult.value === 'string') {
-              // 增加 important 权重信息
-              ruleResult[camelCasedName] = process.env.UNI_USING_NVUE_STYLE_COMPILER ? [subResult.value, Number(important)] : subResult.value
+              if (process.env.UNI_USING_NVUE_STYLE_COMPILER) {
+                var oldValue = ruleResult[camelCasedName]
+                // 增加 important 权重信息
+                ruleResult[camelCasedName] = Array.isArray(oldValue) && oldValue[1] > importantWeight ? oldValue : [subResult.value, importantWeight]
+              } else {
+                ruleResult[camelCasedName] = subResult.value
+              }
             }
             if (subResult.log) {
               subResult.log.line = declaration.position.start.line

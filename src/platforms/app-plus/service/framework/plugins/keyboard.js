@@ -33,6 +33,8 @@ export function hookKeyboardEvent (event, callback) {
 onMethod('onKeyboardHeightChange', res => {
   keyboardHeight = res.height
   if (keyboardHeight > 0) {
-    onKeyboardShow && onKeyboardShow()
+    const callback = onKeyboardShow
+    onKeyboardShow = null
+    callback && callback()
   }
 })

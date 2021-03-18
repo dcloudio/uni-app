@@ -27,5 +27,5 @@ onMethod('onUIStyleChange', function (res) {
 
 export function onUIStyleChange (callbackId) {
   callbacks.push(callbackId)
-  console.log('API uni.onUIStyleChange 已过时，请使用 uni.onThemeChange，详情：https://uniapp.dcloud.net.cn/api/system/theme')
+  console.warn('The "uni.onUIStyleChange" API is deprecated, please use "uni.onThemeChange". Learn more: https://uniapp.dcloud.net.cn/api/system/theme.')
 }

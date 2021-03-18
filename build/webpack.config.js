@@ -66,7 +66,8 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       __VERSION__: JSON.stringify(pkg.version),
-      __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM)
+      __PLATFORM__: JSON.stringify(process.env.UNI_PLATFORM),
+      __VIEW__: JSON.stringify(!!process.env.UNI_VIEW)
     }),
     new webpack.ProvidePlugin(provides)
   ]

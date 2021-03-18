@@ -12,6 +12,10 @@ import { emitter } from 'uni-mixins'
 import { showPage } from './page'
 import * as webview from './webview'
 import { getNavigationBarHeight } from '../../utils'
+import {
+  i18nMixin,
+  getLocale
+} from 'uni-core/helpers/i18n'
 
 const mode = {
   SELECTOR: 'selector',
@@ -84,7 +88,7 @@ function getDefaultEndValue () {
 
 export default {
   name: 'Picker',
-  mixins: [emitter],
+  mixins: [i18nMixin, emitter],
   props: {
     name: {
       type: String,
@@ -205,7 +209,12 @@ export default {
       }
       const rect = event.currentTarget.getBoundingClientRect()
       this._showPicker(Object.assign({}, this.$props, {
-        value: this.valueSync
+        value: this.valueSync,
+        locale: getLocale(),
+        messages: {
+          done: this.$$t('uni.picker.done'),
+          cancel: this.$$t('uni.picker.cancel')
+        }
       }), {
         top: rect.top + getNavigationBarHeight(),
         left: rect.left,

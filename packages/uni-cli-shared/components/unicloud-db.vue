@@ -12,6 +12,11 @@
 </template>
 
 <script>
+import { initVueI18n } from '@dcloudio/uni-i18n'
+import messages from './i18n/index'
+
+const { t } = initVueI18n(messages)
+
 const events = {
   load: 'load',
   error: 'error'
@@ -245,9 +250,14 @@ export default {
       this._execLoadData(callback, clear)
     },
     loadMore () {
-      if (this._isEnded) {
+      if (this._isEnded || this.loading) {
         return
       }
+
+      if (this.pageData === pageMode.add) {
+        this.paginationInternal.current++
+      }
+
       this._execLoadData()
     },
     refresh () {
@@ -267,9 +277,16 @@ export default {
       toastTitle,
       success,
       fail,
-      complete
+      complete,
+      needConfirm = true,
+      needLoading = true,
+      loadingTitle = ''
     } = {}) {
-      uni.showLoading()
+      if (needLoading) {
+        uni.showLoading({
+          title: loadingTitle
+        })
+      }
       /* eslint-disable no-undef */
       let db = uniCloud.database()
       if (action) {
@@ -280,17 +297,21 @@ export default {
         success && success(res)
         if (showToast) {
           uni.showToast({
-            title: toastTitle || '新增成功'
+            title: toastTitle || t('uniCloud.component.add.success')
           })
         }
       }).catch((err) => {
         fail && fail(err)
-        uni.showModal({
-          content: err.message,
-          showCancel: false
-        })
+        if (needConfirm) {
+          uni.showModal({
+            content: err.message,
+            showCancel: false
+          })
+        }
       }).finally(() => {
-        uni.hideLoading()
+        if (needLoading) {
+          uni.hideLoading()
+        }
         complete && complete()
       })
     },
@@ -300,20 +321,27 @@ export default {
       fail,
       complete,
       confirmTitle,
-      confirmContent
+      confirmContent,
+      needConfirm = true,
+      needLoading = true,
+      loadingTitle = ''
     } = {}) {
       if (!id || !id.length) {
         return
       }
+      if (!needConfirm) {
+        this._execRemove(id, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
+        return
+      }
       uni.showModal({
-        title: confirmTitle || '提示',
-        content: confirmContent || '是否删除该数据',
+        title: confirmTitle || t('uniCloud.component.remove.showModal.title'),
+        content: confirmContent || t('uniCloud.component.remove.showModal.content'),
         showCancel: true,
         success: (res) => {
           if (!res.confirm) {
             return
           }
-          this._execRemove(id, action, success, fail, complete)
+          this._execRemove(id, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
         }
       })
     },
@@ -323,9 +351,16 @@ export default {
       toastTitle,
       success,
       fail,
-      complete
+      complete,
+      needConfirm = true,
+      needLoading = true,
+      loadingTitle = ''
     } = {}) {
-      uni.showLoading()
+      if (needLoading) {
+        uni.showLoading({
+          title: loadingTitle
+        })
+      }
       /* eslint-disable no-undef */
       let db = uniCloud.database()
       if (action) {
@@ -336,17 +371,21 @@ export default {
         success && success(res)
         if (showToast) {
           uni.showToast({
-            title: toastTitle || '修改成功'
+            title: toastTitle || t('uniCloud.component.update.success')
           })
         }
       }).catch((err) => {
         fail && fail(err)
-        uni.showModal({
-          content: err.message,
-          showCancel: false
-        })
+        if (needConfirm) {
+          uni.showModal({
+            content: err.message,
+            showCancel: false
+          })
+        }
       }).finally(() => {
-        uni.hideLoading()
+        if (needLoading) {
+          uni.hideLoading()
+        }
         complete && complete()
       })
     },
@@ -368,7 +407,11 @@ export default {
 
         const data2 = this.getone ? (data.length ? data[0] : undefined) : data
 
-        callback && callback(data2, this._isEnded)
+        if (this.getcount) {
+          this.paginationInternal.count = count
+        }
+
+        callback && callback(data2, this._isEnded, this.paginationInternal)
         this._dispatchEvent(events.load, data2)
 
         if (this.getone || this.pageData === pageMode.replace) {
@@ -379,13 +422,6 @@ export default {
           } else {
             this.dataList.push(...data2)
           }
-          if (this.dataList.length) {
-            this.paginationInternal.current++
-          }
-        }
-
-        if (this.getcount) {
-          this.paginationInternal.count = count
         }
 
         // #ifdef H5
@@ -460,7 +496,7 @@ export default {
 
       return db
     },
-    _execRemove (id, action, success, fail, complete) {
+    _execRemove (id, action, success, fail, complete, needConfirm, needLoading, loadingTitle) {
       if (!this.collection || !id) {
         return
       }
@@ -470,9 +506,12 @@ export default {
         return
       }
 
-      uni.showLoading({
-        mask: true
-      })
+      if (needLoading) {
+        uni.showLoading({
+          mask: true,
+          title: loadingTitle
+        })
+      }
 
       /* eslint-disable no-undef */
       const db = uniCloud.database()
@@ -494,12 +533,16 @@ export default {
         }
       }).catch((err) => {
         fail && fail(err)
-        uni.showModal({
-          content: err.message,
-          showCancel: false
-        })
+        if (needConfirm) {
+          uni.showModal({
+            content: err.message,
+            showCancel: false
+          })
+        }
       }).finally(() => {
-        uni.hideLoading()
+        if (needLoading) {
+          uni.hideLoading()
+        }
         complete && complete()
       })
     },
@@ -516,9 +559,9 @@ export default {
     },
     _dispatchEvent (type, data) {
       if (this._changeDataFunction) {
-        this._changeDataFunction(data, this._isEnded)
+        this._changeDataFunction(data, this._isEnded, this.paginationInternal)
       } else {
-        this.$emit(type, data, this._isEnded)
+        this.$emit(type, data, this._isEnded, this.paginationInternal)
       }
     }
   }

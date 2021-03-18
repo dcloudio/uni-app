@@ -33,22 +33,23 @@
             class="uni-picker-action uni-picker-action-cancel"
             @click="_cancel"
           >
-            取消
+            {{ $$t("uni.picker.cancel") }}
           </div>
           <div
             class="uni-picker-action uni-picker-action-confirm"
             @click="_change"
           >
-            确定
+            {{ $$t("uni.picker.done") }}
           </div>
         </div>
         <v-uni-picker-view
           v-if="contentVisible"
-          :value.sync="valueArray"
+          :value="_l10nColumn(valueArray)"
           class="uni-picker-content"
+          @change="_pickerViewChange"
         >
           <v-uni-picker-view-column
-            v-for="(rangeItem, index0) in rangeArray"
+            v-for="(rangeItem, index0) in _l10nColumn(rangeArray)"
             :key="index0"
           >
             <div
@@ -56,8 +57,11 @@
               :key="index"
               class="uni-picker-item"
             >
-              {{ typeof item === "object" ? item[rangeKey] || "" : item
-              }}{{ units[index0] || "" }}
+              {{
+                typeof item === "object"
+                  ? item[rangeKey] || ""
+                  : _l10nItem(item, index0)
+              }}
             </div>
           </v-uni-picker-view-column>
         </v-uni-picker-view>
@@ -115,6 +119,10 @@ import { emitter } from 'uni-mixins'
 import { formatDateTime } from 'uni-shared'
 import popup from '../../../components/app/popup/mixins/popup'
 import keypress from '../../../helpers/keypress'
+import {
+  i18nMixin,
+  getLocale
+} from 'uni-core/helpers/i18n'
 
 function getDefaultStartValue () {
   if (this.mode === mode.TIME) {
@@ -172,7 +180,7 @@ const selectorType = {
 export default {
   name: 'Picker',
   components: { keypress },
-  mixins: [emitter, popup],
+  mixins: [i18nMixin, emitter, popup],
   props: {
     name: {
       type: String,
@@ -263,16 +271,6 @@ export default {
     },
     endArray () {
       return this._getDateValueArray(this.end, getDefaultEndValue.bind(this)())
-    },
-    units () {
-      switch (this.mode) {
-        case mode.DATE:
-          return ['年', '月', '日']
-        case mode.TIME:
-          return ['时', '分']
-        default:
-          return []
-      }
     },
     selectorTypeComputed () {
       const type = this.selectorType
@@ -610,6 +608,57 @@ export default {
         style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`
         style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`
       }
+    },
+    _pickerViewChange (event) {
+      this.valueArray = this._l10nColumn(event.detail.value, true)
+    },
+    _l10nColumn (array, normalize) {
+      if (this.mode === mode.DATE) {
+        const locale = getLocale()
+        if (!locale.startsWith('zh')) {
+          switch (this.fields) {
+            case fields.YEAR:
+              return array
+            case fields.MONTH:
+              return [array[1], array[0]]
+            default:
+              switch (locale) {
+                case 'es':
+                case 'fr':
+                  return [array[2], array[1], array[0]]
+                // case 'en':
+                default:
+                  return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]]
+              }
+          }
+        }
+      }
+      return array
+    },
+    _l10nItem (item, index) {
+      if (this.mode === mode.DATE) {
+        const locale = getLocale()
+        if (locale.startsWith('zh')) {
+          const array = ['年', '月', '日']
+          return item + array[index]
+        } else if (this.fields !== fields.YEAR && index === (this.fields !== fields.MONTH && (locale === 'es' || locale === 'fr') ? 1 : 0)) {
+          let array
+          switch (locale) {
+            case 'es':
+              array = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', '​​julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+              break
+            case 'fr':
+              array = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+              break
+            // case 'en':
+            default:
+              array = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+              break
+          }
+          return array[Number(item) - 1]
+        }
+      }
+      return item
     }
   }
 }

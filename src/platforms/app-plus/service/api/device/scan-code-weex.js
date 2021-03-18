@@ -6,6 +6,10 @@ import {
   showPage
 } from '../page.js'
 
+import {
+  t
+} from 'uni-core/helpers/i18n'
+
 function getStatusBarStyle () {
   let style = plus.navigator.getStatusBarStyle()
   if (style === 'UIStatusBarStyleBlackTranslucent' || style === 'UIStatusBarStyleBlackOpaque' || style === 'null') {
@@ -23,17 +27,23 @@ export function scanCode (options, callbackId) {
   let result
   const page = showPage({
     url: '__uniappscan',
-    data: options,
+    data: Object.assign({}, options, {
+      messages: {
+        fail: t('uni.scanCode.fail'),
+        'flash.on': t('uni.scanCode.flash.on'),
+        'flash.off': t('uni.scanCode.flash.off')
+      }
+    }),
     style: {
       animationType: options.animationType || 'pop-in',
       titleNView: {
         autoBackButton: true,
         type: 'float',
-        titleText: options.titleText || '扫码',
+        titleText: options.titleText || t('uni.scanCode.title'),
         titleColor: '#ffffff',
         backgroundColor: 'rgba(0,0,0,0)',
         buttons: !options.onlyFromCamera ? [{
-          text: options.albumText || '相册',
+          text: options.albumText || t('uni.scanCode.album'),
           fontSize: '17px',
           width: '60px',
           onclick: () => {

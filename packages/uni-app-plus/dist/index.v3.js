@@ -1092,13 +1092,479 @@ var serviceContext = (function () {
     scanCode: scanCode
   });
 
+  const isObject$1 = (val) => val !== null && typeof val === 'object';
+  class BaseFormatter {
+      constructor() {
+          this._caches = Object.create(null);
+      }
+      interpolate(message, values) {
+          if (!values) {
+              return [message];
+          }
+          let tokens = this._caches[message];
+          if (!tokens) {
+              tokens = parse(message);
+              this._caches[message] = tokens;
+          }
+          return compile(tokens, values);
+      }
+  }
+  const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+  const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+  function parse(format) {
+      const tokens = [];
+      let position = 0;
+      let text = '';
+      while (position < format.length) {
+          let char = format[position++];
+          if (char === '{') {
+              if (text) {
+                  tokens.push({ type: 'text', value: text });
+              }
+              text = '';
+              let sub = '';
+              char = format[position++];
+              while (char !== undefined && char !== '}') {
+                  sub += char;
+                  char = format[position++];
+              }
+              const isClosed = char === '}';
+              const type = RE_TOKEN_LIST_VALUE.test(sub)
+                  ? 'list'
+                  : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
+                      ? 'named'
+                      : 'unknown';
+              tokens.push({ value: sub, type });
+          }
+          else if (char === '%') {
+              // when found rails i18n syntax, skip text capture
+              if (format[position] !== '{') {
+                  text += char;
+              }
+          }
+          else {
+              text += char;
+          }
+      }
+      text && tokens.push({ type: 'text', value: text });
+      return tokens;
+  }
+  function compile(tokens, values) {
+      const compiled = [];
+      let index = 0;
+      const mode = Array.isArray(values)
+          ? 'list'
+          : isObject$1(values)
+              ? 'named'
+              : 'unknown';
+      if (mode === 'unknown') {
+          return compiled;
+      }
+      while (index < tokens.length) {
+          const token = tokens[index];
+          switch (token.type) {
+              case 'text':
+                  compiled.push(token.value);
+                  break;
+              case 'list':
+                  compiled.push(values[parseInt(token.value, 10)]);
+                  break;
+              case 'named':
+                  if (mode === 'named') {
+                      compiled.push(values[token.value]);
+                  }
+                  else {
+                      if (process.env.NODE_ENV !== 'production') {
+                          console.warn(`Type of token '${token.type}' and format of value '${mode}' don't match!`);
+                      }
+                  }
+                  break;
+              case 'unknown':
+                  if (process.env.NODE_ENV !== 'production') {
+                      console.warn(`Detect 'unknown' type of token!`);
+                  }
+                  break;
+          }
+          index++;
+      }
+      return compiled;
+  }
+
+  const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+  const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
+  const defaultFormatter = new BaseFormatter();
+  function include(str, parts) {
+      return !!parts.find((part) => str.indexOf(part) !== -1);
+  }
+  function startsWith(str, parts) {
+      return parts.find((part) => str.indexOf(part) === 0);
+  }
+  function normalizeLocale(locale, messages) {
+      if (!locale) {
+          return;
+      }
+      locale = locale.trim().replace(/_/g, '-');
+      if (messages[locale]) {
+          return locale;
+      }
+      locale = locale.toLowerCase();
+      if (locale.indexOf('zh') === 0) {
+          if (locale.indexOf('-hans') !== -1) {
+              return 'zh-Hans';
+          }
+          if (locale.indexOf('-hant') !== -1) {
+              return 'zh-Hant';
+          }
+          if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+              return 'zh-Hant';
+          }
+          return 'zh-Hans';
+      }
+      const lang = startsWith(locale, ['en', 'fr', 'es']);
+      if (lang) {
+          return lang;
+      }
+  }
+  class I18n {
+      constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+          this.locale = 'en';
+          this.fallbackLocale = 'en';
+          this.message = {};
+          this.messages = {};
+          this.watchers = [];
+          if (fallbackLocale) {
+              this.fallbackLocale = fallbackLocale;
+          }
+          this.formater = formater || defaultFormatter;
+          this.messages = messages;
+          this.setLocale(locale);
+          if (watcher) {
+              this.watchLocale(watcher);
+          }
+      }
+      setLocale(locale) {
+          const oldLocale = this.locale;
+          this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+          this.message = this.messages[this.locale];
+          this.watchers.forEach((watcher) => {
+              watcher(this.locale, oldLocale);
+          });
+      }
+      getLocale() {
+          return this.locale;
+      }
+      watchLocale(fn) {
+          const index = this.watchers.push(fn) - 1;
+          return () => {
+              this.watchers.splice(index, 1);
+          };
+      }
+      mergeLocaleMessage(locale, message) {
+          if (this.messages[locale]) {
+              Object.assign(this.messages[locale], message);
+          }
+          else {
+              this.messages[locale] = message;
+          }
+      }
+      t(key, locale, values) {
+          let message = this.message;
+          if (typeof locale === 'string') {
+              locale = normalizeLocale(locale, this.messages);
+              locale && (message = this.messages[locale]);
+          }
+          else {
+              values = locale;
+          }
+          if (!hasOwn$1(message, key)) {
+              console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
+              return key;
+          }
+          return this.formater.interpolate(message[key], values).join('');
+      }
+  }
+
+  function initLocaleWatcher(appVm, i18n) {
+      appVm.$i18n &&
+          appVm.$i18n.vm.$watch('locale', (newLocale) => {
+              i18n.setLocale(newLocale);
+          }, {
+              immediate: true,
+          });
+  }
+  function getDefaultLocale() {
+      if (typeof navigator !== 'undefined') {
+          return navigator.userLanguage || navigator.language;
+      }
+      if (typeof plus !== 'undefined') {
+          // TODO 待调整为最新的获取语言代码
+          return plus.os.language;
+      }
+      return uni.getSystemInfoSync().language;
+  }
+  function initVueI18n(messages, fallbackLocale = 'en', locale) {
+      const i18n = new I18n({
+          locale: locale || fallbackLocale,
+          fallbackLocale,
+          messages,
+      });
+      let t = (key, values) => {
+          if (typeof getApp !== 'function') {
+              // app-plus view
+              /* eslint-disable no-func-assign */
+              t = function (key, values) {
+                  return i18n.t(key, values);
+              };
+          }
+          else {
+              const appVm = getApp().$vm;
+              if (!appVm.$t || !appVm.$i18n) {
+                  if (!locale) {
+                      i18n.setLocale(getDefaultLocale());
+                  }
+                  /* eslint-disable no-func-assign */
+                  t = function (key, values) {
+                      return i18n.t(key, values);
+                  };
+              }
+              else {
+                  initLocaleWatcher(appVm, i18n);
+                  /* eslint-disable no-func-assign */
+                  t = function (key, values) {
+                      const $i18n = appVm.$i18n;
+                      const silentTranslationWarn = $i18n.silentTranslationWarn;
+                      $i18n.silentTranslationWarn = true;
+                      const msg = appVm.$t(key, values);
+                      $i18n.silentTranslationWarn = silentTranslationWarn;
+                      if (msg !== key) {
+                          return msg;
+                      }
+                      return i18n.t(key, $i18n.locale, values);
+                  };
+              }
+          }
+          return t(key, values);
+      };
+      return {
+          t(key, values) {
+              return t(key, values);
+          },
+          getLocale() {
+              return i18n.getLocale();
+          },
+          setLocale(newLocale) {
+              return i18n.setLocale(newLocale);
+          },
+          mixin: {
+              beforeCreate() {
+                  const unwatch = i18n.watchLocale(() => {
+                      this.$forceUpdate();
+                  });
+                  this.$once('hook:beforeDestroy', function () {
+                      unwatch();
+                  });
+              },
+              methods: {
+                  $$t(key, values) {
+                      return t(key, values);
+                  },
+              },
+          },
+      };
+  }
+
+  var en = {
+  	"uni.app.quit": "Press back button again to exit",
+  	"uni.async.error": "The connection timed out, click the screen to try again.",
+  	"uni.showActionSheet.cancel": "Cancel",
+  	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
+  	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
+  	"uni.showModal.cancel": "Cancel",
+  	"uni.showModal.confirm": "OK",
+  	"uni.chooseImage.cancel": "Cancel",
+  	"uni.chooseImage.sourceType.album": "Album",
+  	"uni.chooseImage.sourceType.camera": "Camera",
+  	"uni.chooseVideo.cancel": "Cancel",
+  	"uni.chooseVideo.sourceType.album": "Album",
+  	"uni.chooseVideo.sourceType.camera": "Camera",
+  	"uni.previewImage.cancel": "Cancel",
+  	"uni.previewImage.button.save": "Save Image",
+  	"uni.previewImage.save.success": "Saved successfully",
+  	"uni.previewImage.save.fail": "Save failed",
+  	"uni.setClipboardData.success": "Content copied",
+  	"uni.scanCode.title": "Scan code",
+  	"uni.scanCode.album": "Album",
+  	"uni.scanCode.fail": "Recognition failure",
+  	"uni.scanCode.flash.on": "Tap to turn light on",
+  	"uni.scanCode.flash.off": "Tap to turn light off",
+  	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+  	"uni.picker.done": "Done",
+  	"uni.picker.cancel": "Cancel",
+  	"uni.video.danmu": "Danmu",
+  	"uni.video.volume": "Volume",
+  	"uni.button.feedback.title": "feedback",
+  	"uni.button.feedback.send": "send"
+  };
+
+  var es = {
+  	"uni.app.quit": "Pulse otra vez para salir",
+  	"uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
+  	"uni.showActionSheet.cancel": "Cancelar",
+  	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
+  	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
+  	"uni.showModal.cancel": "Cancelar",
+  	"uni.showModal.confirm": "OK",
+  	"uni.chooseImage.cancel": "Cancelar",
+  	"uni.chooseImage.sourceType.album": "Álbum",
+  	"uni.chooseImage.sourceType.camera": "Cámara",
+  	"uni.chooseVideo.cancel": "Cancelar",
+  	"uni.chooseVideo.sourceType.album": "Álbum",
+  	"uni.chooseVideo.sourceType.camera": "Cámara",
+  	"uni.previewImage.cancel": "Cancelar",
+  	"uni.previewImage.button.save": "Guardar imagen",
+  	"uni.previewImage.save.success": "Guardado exitosamente",
+  	"uni.previewImage.save.fail": "Error al guardar",
+  	"uni.setClipboardData.success": "Contenido copiado",
+  	"uni.scanCode.title": "Código de escaneo",
+  	"uni.scanCode.album": "Álbum",
+  	"uni.scanCode.fail": "Échec de la reconnaissance",
+  	"uni.scanCode.flash.on": "Toque para encender la luz",
+  	"uni.scanCode.flash.off": "Toque para apagar la luz",
+  	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+  	"uni.picker.done": "OK",
+  	"uni.picker.cancel": "Cancelar",
+  	"uni.video.danmu": "Danmu",
+  	"uni.video.volume": "Volumen",
+  	"uni.button.feedback.title": "realimentación",
+  	"uni.button.feedback.send": "enviar"
+  };
+
+  var fr = {
+  	"uni.app.quit": "Appuyez à nouveau pour quitter l'application",
+  	"uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
+  	"uni.showActionSheet.cancel": "Annuler",
+  	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
+  	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
+  	"uni.showModal.cancel": "Annuler",
+  	"uni.showModal.confirm": "OK",
+  	"uni.chooseImage.cancel": "Annuler",
+  	"uni.chooseImage.sourceType.album": "Album",
+  	"uni.chooseImage.sourceType.camera": "Caméra",
+  	"uni.chooseVideo.cancel": "Annuler",
+  	"uni.chooseVideo.sourceType.album": "Album",
+  	"uni.chooseVideo.sourceType.camera": "Caméra",
+  	"uni.previewImage.cancel": "Annuler",
+  	"uni.previewImage.button.save": "Guardar imagen",
+  	"uni.previewImage.save.success": "Enregistré avec succès",
+  	"uni.previewImage.save.fail": "Échec de la sauvegarde",
+  	"uni.setClipboardData.success": "Contenu copié",
+  	"uni.scanCode.title": "Code d’analyse",
+  	"uni.scanCode.album": "Album",
+  	"uni.scanCode.fail": "Fallo de reconocimiento",
+  	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
+  	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
+  	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+  	"uni.picker.done": "OK",
+  	"uni.picker.cancel": "Annuler",
+  	"uni.video.danmu": "Danmu",
+  	"uni.video.volume": "Le Volume",
+  	"uni.button.feedback.title": "retour d'information",
+  	"uni.button.feedback.send": "envoyer"
+  };
+
+  var zhHans = {
+  	"uni.app.quit": "再按一次退出应用",
+  	"uni.async.error": "连接服务器超时，点击屏幕重试",
+  	"uni.showActionSheet.cancel": "取消",
+  	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
+  	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
+  	"uni.showModal.cancel": "取消",
+  	"uni.showModal.confirm": "确定",
+  	"uni.chooseImage.cancel": "取消",
+  	"uni.chooseImage.sourceType.album": "从相册选择",
+  	"uni.chooseImage.sourceType.camera": "拍摄",
+  	"uni.chooseVideo.cancel": "取消",
+  	"uni.chooseVideo.sourceType.album": "从相册选择",
+  	"uni.chooseVideo.sourceType.camera": "拍摄",
+  	"uni.previewImage.cancel": "取消",
+  	"uni.previewImage.button.save": "保存图像",
+  	"uni.previewImage.save.success": "保存图像到相册成功",
+  	"uni.previewImage.save.fail": "保存图像到相册失败",
+  	"uni.setClipboardData.success": "内容已复制",
+  	"uni.scanCode.title": "扫码",
+  	"uni.scanCode.album": "相册",
+  	"uni.scanCode.fail": "识别失败",
+  	"uni.scanCode.flash.on": "轻触照亮",
+  	"uni.scanCode.flash.off": "轻触关闭",
+  	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+  	"uni.picker.done": "完成",
+  	"uni.picker.cancel": "取消",
+  	"uni.video.danmu": "弹幕",
+  	"uni.video.volume": "音量",
+  	"uni.button.feedback.title": "问题反馈",
+  	"uni.button.feedback.send": "发送"
+  };
+
+  var zhHant = {
+  	"uni.app.quit": "再按一次退出應用",
+  	"uni.async.error": "連接服務器超時，點擊屏幕重試",
+  	"uni.showActionSheet.cancel": "取消",
+  	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
+  	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
+  	"uni.showModal.cancel": "取消",
+  	"uni.showModal.confirm": "確定",
+  	"uni.chooseImage.cancel": "取消",
+  	"uni.chooseImage.sourceType.album": "從相冊選擇",
+  	"uni.chooseImage.sourceType.camera": "拍攝",
+  	"uni.chooseVideo.cancel": "取消",
+  	"uni.chooseVideo.sourceType.album": "從相冊選擇",
+  	"uni.chooseVideo.sourceType.camera": "拍攝",
+  	"uni.previewImage.cancel": "取消",
+  	"uni.previewImage.button.save": "保存圖像",
+  	"uni.previewImage.save.success": "保存圖像到相冊成功",
+  	"uni.previewImage.save.fail": "保存圖像到相冊失敗",
+  	"uni.setClipboardData.success": "內容已復制",
+  	"uni.scanCode.title": "掃碼",
+  	"uni.scanCode.album": "相冊",
+  	"uni.scanCode.fail": "識別失敗",
+  	"uni.scanCode.flash.on": "輕觸照亮",
+  	"uni.scanCode.flash.off": "輕觸關閉",
+  	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+  	"uni.picker.done": "完成",
+  	"uni.picker.cancel": "取消",
+  	"uni.video.danmu": "彈幕",
+  	"uni.video.volume": "音量",
+  	"uni.button.feedback.title": "問題反饋",
+  	"uni.button.feedback.send": "發送"
+  };
+
+  const messages = {
+    en,
+    es,
+    fr,
+    'zh-Hans': zhHans,
+    'zh-Hant': zhHant
+  };
+
+  const fallbackLocale = 'en';
+
+  const i18n = initVueI18n( messages , fallbackLocale);
+  const t = i18n.t;
+  const getLocale = i18n.getLocale;
+
   const setClipboardData = {
     beforeSuccess () {
-      uni.showToast({
-        title: '内容已复制',
-        icon: 'success',
-        mask: false
-      });
+      const title = t('uni.setClipboardData.success');
+      if (title) {
+        uni.showToast({
+          title: t('uni.setClipboardData.success'),
+          icon: 'success',
+          mask: false,
+          style: {
+            width: undefined
+          }
+        });
+      }
     }
   };
 
@@ -2189,7 +2655,9 @@ var serviceContext = (function () {
     },
     cancelText: {
       type: String,
-      default: '取消'
+      default () {
+        return t('uni.showModal.cancel')
+      }
     },
     cancelColor: {
       type: String,
@@ -2197,7 +2665,9 @@ var serviceContext = (function () {
     },
     confirmText: {
       type: String,
-      default: '确定'
+      default () {
+        return t('uni.showModal.confirm')
+      }
     },
     confirmColor: {
       type: String,
@@ -3985,6 +4455,36 @@ var serviceContext = (function () {
     },
     getScale (ctx, cbs) {
       return invokeVmMethodWithoutArgs(ctx, 'getScale', cbs)
+    },
+    addCustomLayer (ctx, args) {
+      return invokeVmMethod(ctx, 'addCustomLayer', args)
+    },
+    removeCustomLayer (ctx, args) {
+      return invokeVmMethod(ctx, 'removeCustomLayer', args)
+    },
+    addGroundOverlay (ctx, args) {
+      return invokeVmMethod(ctx, 'addGroundOverlay', args)
+    },
+    removeGroundOverlay (ctx, args) {
+      return invokeVmMethod(ctx, 'removeGroundOverlay', args)
+    },
+    updateGroundOverlay (ctx, args) {
+      return invokeVmMethod(ctx, 'updateGroundOverlay', args)
+    },
+    initMarkerCluster (ctx, args) {
+      return invokeVmMethod(ctx, 'initMarkerCluster', args)
+    },
+    addMarkers (ctx, args) {
+      return invokeVmMethod(ctx, 'addMarkers', args)
+    },
+    removeMarkers (ctx, args) {
+      return invokeVmMethod(ctx, 'removeMarkers', args)
+    },
+    moveAlong (ctx, args) {
+      return invokeVmMethod(ctx, 'moveAlong', args)
+    },
+    openMapApp (ctx, args) {
+      return invokeVmMethod(ctx, 'openMapApp', args)
     }
   };
 
@@ -4115,7 +4615,7 @@ var serviceContext = (function () {
 
   function createLivePusherContext (id, vm) {
     if (!vm) {
-      return console.warn('uni.createLivePusherContext 必须传入第二个参数，即当前 vm 对象(this)')
+      return console.warn('uni.createLivePusherContext: 2 arguments required, but only 1 present')
     }
     const elm = findElmById(id, vm);
     if (!elm) {
@@ -4619,7 +5119,7 @@ var serviceContext = (function () {
    */
   function registerPlusMessage (type, callback, keepAlive = true) {
     if (callbacks$1[type]) {
-      return console.warn(`${type} 已注册:` + (callbacks$1[type].toString()))
+      return console.warn(`'${type}' registered: ` + (callbacks$1[type].toString()))
     }
     callback.keepAlive = !!keepAlive;
     callbacks$1[type] = callback;
@@ -4700,7 +5200,7 @@ var serviceContext = (function () {
     if (!onlyFromCamera) {
       buttons.push({
         float: 'right',
-        text: '相册',
+        text: t('uni.scanCode.album'),
         fontSize: '17px',
         width: '60px',
         onclick: function () {
@@ -4716,11 +5216,13 @@ var serviceContext = (function () {
               };
               webview.close('auto');
             }, () => {
-              plus.nativeUI.toast('识别失败');
+              plus.nativeUI.toast(t('uni.scanCode.fail'));
             }, filters, autoDecodeCharSet);
           }, err => {
-            if (err.code !== 12) {
-              plus.nativeUI.toast('选择失败');
+            // iOS {"code":-2,"message":"用户取消,https://ask.dcloud.net.cn/article/282"}
+            // Android {"code":12,"message":"User cancelled"}
+            if (err.code !== (plus.os.name === 'Android' ? 12 : -2)) {
+              plus.nativeUI.toast(t('uni.scanCode.fail'));
             }
           }, {
             multiple: false,
@@ -4738,7 +5240,7 @@ var serviceContext = (function () {
         type: 'float',
         backgroundColor: 'rgba(0,0,0,0)',
         titleColor: '#ffffff',
-        titleText: '扫码',
+        titleText: t('uni.scanCode.title'),
         titleSize: '17px',
         buttons
       },
@@ -4749,6 +5251,7 @@ var serviceContext = (function () {
       __uniapp_dark: isDark,
       __uniapp_scan_type: filters,
       __uniapp_auto_decode_char_set: autoDecodeCharSet,
+      __uniapp_locale: getLocale(),
       'uni-app': 'none'
     });
     const waiting = plus.nativeUI.showWaiting();
@@ -4947,17 +5450,23 @@ var serviceContext = (function () {
     let result;
     const page = showPage({
       url: '__uniappscan',
-      data: options,
+      data: Object.assign({}, options, {
+        messages: {
+          fail: t('uni.scanCode.fail'),
+          'flash.on': t('uni.scanCode.flash.on'),
+          'flash.off': t('uni.scanCode.flash.off')
+        }
+      }),
       style: {
         animationType: options.animationType || 'pop-in',
         titleNView: {
           autoBackButton: true,
           type: 'float',
-          titleText: options.titleText || '扫码',
+          titleText: options.titleText || t('uni.scanCode.title'),
           titleColor: '#ffffff',
           backgroundColor: 'rgba(0,0,0,0)',
           buttons: !options.onlyFromCamera ? [{
-            text: options.albumText || '相册',
+            text: options.albumText || t('uni.scanCode.album'),
             fontSize: '17px',
             width: '60px',
             onclick: () => {
@@ -5142,7 +5651,7 @@ var serviceContext = (function () {
     const realAuthMode = enrolledRequestAuthMode[0];
     if (realAuthMode === 'fingerPrint') {
       if (plus.os.name.toLowerCase() === 'android') {
-        plus.nativeUI.showWaiting(authContent || '指纹识别中...').onclose = function () {
+        plus.nativeUI.showWaiting(authContent || t('uni.startSoterAuthentication.authContent')).onclose = function () {
           plus.fingerprint.cancel();
         };
       }
@@ -5642,7 +6151,7 @@ var serviceContext = (function () {
       });
     }, err => {
       invoke$1(callbackId, {
-        errMsg: 'openDocument:fail 文件[' + filePath + ']读取失败:' + err.message
+        errMsg: 'openDocument:fail ' + err.message
       });
     });
   }
@@ -6153,11 +6662,11 @@ var serviceContext = (function () {
       }
     }
     plus.nativeUI.actionSheet({
-      cancel: '取消',
+      cancel: t('uni.chooseImage.cancel'),
       buttons: [{
-        title: '拍摄'
+        title: t('uni.chooseImage.sourceType.camera')
       }, {
-        title: '从手机相册选择'
+        title: t('uni.chooseImage.sourceType.album')
       }]
     }, (e) => {
       switch (e.index) {
@@ -6230,11 +6739,11 @@ var serviceContext = (function () {
       }
     }
     plus.nativeUI.actionSheet({
-      cancel: '取消',
+      cancel: t('uni.chooseVideo.cancel'),
       buttons: [{
-        title: '拍摄'
+        title: t('uni.chooseVideo.sourceType.camera')
       }, {
-        title: '从手机相册选择'
+        title: t('uni.chooseVideo.sourceType.album')
       }]
     }, e => {
       switch (e.index) {
@@ -6298,7 +6807,7 @@ var serviceContext = (function () {
         let title = '';
         const hasLongPressActions = longPressActions && longPressActions.callbackId;
         if (!hasLongPressActions) {
-          itemList = ['保存相册'];
+          itemList = [t('uni.previewImage.button.save')];
           itemColor = '#000000';
           title = '';
         } else {
@@ -6312,14 +6821,11 @@ var serviceContext = (function () {
             title: item,
             color: itemColor
           })),
-          cancel: ''
+          cancel: t('uni.previewImage.cancel')
         };
         if (title) {
           options.title = title;
         }
-        // if (plus.os.name === 'iOS') {
-        //   options.cancel = '取消'
-        // }
         plus.nativeUI.actionSheet(options, (e) => {
           if (e.index > 0) {
             if (hasLongPressActions) {
@@ -6331,9 +6837,9 @@ var serviceContext = (function () {
               return
             }
             plus.gallery.save(res.url, function (GallerySaveEvent) {
-              plus.nativeUI.toast('保存图片到相册成功');
+              plus.nativeUI.toast(t('uni.previewImage.save.success'));
             }, function () {
-              plus.nativeUI.toast('保存图片到相册失败');
+              plus.nativeUI.toast(t('uni.previewImage.save.fail'));
             });
           } else if (hasLongPressActions) {
             publish(longPressActions.callbackId, {
@@ -6395,14 +6901,14 @@ var serviceContext = (function () {
     pause () {
       if (recorder$1) {
         publishRecorderStateChange('error', {
-          errMsg: '暂不支持录音pause操作'
+          errMsg: 'Unsupported operation: pause'
         });
       }
     },
     resume () {
       if (recorder$1) {
         publishRecorderStateChange('error', {
-          errMsg: '暂不支持录音resume操作'
+          errMsg: 'Unsupported operation: resume'
         });
       }
     }
@@ -6533,7 +7039,7 @@ var serviceContext = (function () {
     delete requestTasks[requestTaskId];
   };
 
-  const cookiesPrase = header => {
+  const cookiesParse = header => {
     let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
     let cookiesArr = [];
     if (!cookiesStr) {
@@ -6544,7 +7050,7 @@ var serviceContext = (function () {
     }
     const handleCookiesArr = cookiesStr.split(';');
     for (let i = 0; i < handleCookiesArr.length; i++) {
-      if (handleCookiesArr[i].indexOf('Expires=') !== -1) {
+      if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
         cookiesArr.push(handleCookiesArr[i].replace(',', ''));
       } else {
         cookiesArr.push(handleCookiesArr[i]);
@@ -6626,7 +7132,8 @@ var serviceContext = (function () {
         ok,
         status,
         data,
-        headers
+        headers,
+        errorMsg
       }) => {
         if (aborted) {
           return
@@ -6642,14 +7149,18 @@ var serviceContext = (function () {
             data: ok && responseType === 'arraybuffer' ? base64ToArrayBuffer$2(data) : data,
             statusCode,
             header: headers,
-            cookies: cookiesPrase(headers)
+            cookies: cookiesParse(headers)
           });
         } else {
+          let errMsg = 'abort statusCode:' + statusCode;
+          if (errorMsg) {
+            errMsg = errMsg + ' ' + errorMsg;
+          }
           publishStateChange$1({
             requestTaskId,
             state: 'fail',
             statusCode,
-            errMsg: 'abort statusCode:' + statusCode
+            errMsg
           });
         }
       });
@@ -6986,7 +7497,7 @@ var serviceContext = (function () {
       });
     } else {
       invoke$1(callbackId, {
-        errMsg: 'getProvider:fail 服务[' + service + ']不支持'
+        errMsg: 'getProvider:fail service not found'
       });
     }
   }
@@ -7080,7 +7591,7 @@ var serviceContext = (function () {
       }, errorCallback);
     }).catch(() => {
       invoke$1(callbackId, {
-        errMsg: 'operateWXData:fail:请先调用 uni.login'
+        errMsg: 'operateWXData:fail 请先调用 uni.login'
       });
     });
   }
@@ -7120,7 +7631,7 @@ var serviceContext = (function () {
       }) => id === provider);
       if (!service) {
         invoke$1(callbackId, {
-          errMsg: 'requestPayment:fail 支付服务[' + provider + ']不存在'
+          errMsg: 'requestPayment:fail service not found'
         });
       } else {
         plus.payment.request(service, params.orderInfo, res => {
@@ -7157,7 +7668,7 @@ var serviceContext = (function () {
       return clientInfo
     } else {
       return {
-        errMsg: 'subscribePush:fail:请确保当前运行环境已包含 push 模块'
+        errMsg: 'subscribePush:fail 请确保当前运行环境已包含 push 模块'
       }
     }
   }
@@ -7172,7 +7683,7 @@ var serviceContext = (function () {
   function onPush () {
     if (!isListening) {
       return {
-        errMsg: 'onPush:fail:请先调用 uni.subscribePush'
+        errMsg: 'onPush:fail 请先调用 uni.subscribePush'
       }
     }
     if (plus.push.getClientInfo()) {
@@ -7182,7 +7693,7 @@ var serviceContext = (function () {
       }
     }
     return {
-      errMsg: 'onPush:fail:请确保当前运行环境已包含 push 模块'
+      errMsg: 'onPush:fail 请确保当前运行环境已包含 push 模块'
     }
   }
 
@@ -7340,7 +7851,7 @@ var serviceContext = (function () {
       }) => id === provider);
       if (!service) {
         invoke$1(callbackId, {
-          errMsg: method + ':fail 分享服务[' + provider + ']不存在'
+          errMsg: method + ':fail service not found'
         });
       } else {
         if (service.authenticated) {
@@ -7949,7 +8460,7 @@ var serviceContext = (function () {
     delete style.type;
 
     if (isPopup && !subNVue.id) {
-      console.warn('subNVue[' + subNVue.path + '] 尚未配置 id');
+      console.warn('subNVue[' + subNVue.path + '] is missing id');
     }
     // TODO lazyload
 
@@ -8269,7 +8780,7 @@ var serviceContext = (function () {
         plus.navigator.closeSplashscreen();
       }
       if (!isAppLaunch && todoNavigator) {
-        return console.error(`已存在待跳转页面${todoNavigator.path},请不要连续多次跳转页面${path}`)
+        return console.error(`Waiting to navigate to: ${todoNavigator.path}, do not operate continuously: ${path}.`)
       }
       if (__uniConfig.renderer === 'native') { // 纯原生无需wait逻辑
         // 如果是首页还未初始化，需要等一等，其他无需等待
@@ -8394,7 +8905,7 @@ var serviceContext = (function () {
   function quit () {
     if (!firstBackTime) {
       firstBackTime = Date.now();
-      plus.nativeUI.toast('再按一次退出应用');
+      plus.nativeUI.toast(t('uni.app.quit'));
       setTimeout(() => {
         firstBackTime = null;
       }, 2000);
@@ -9526,7 +10037,9 @@ var serviceContext = (function () {
   let timeout;
 
   function showLoading$1 (args) {
-    return callApiSync(showToast$1, Object.assign({}, args, { type: 'loading' }), 'showToast', 'showLoading')
+    return callApiSync(showToast$1, Object.assign({}, args, {
+      type: 'loading'
+    }), 'showToast', 'showLoading')
   }
 
   function hideLoading () {
@@ -9540,7 +10053,8 @@ var serviceContext = (function () {
     duration = 1500,
     mask = false,
     position = '',
-    type = 'toast'
+    type = 'toast',
+    style
   } = {}) {
     hide(null);
     toastType = type;
@@ -9588,7 +10102,7 @@ var serviceContext = (function () {
         }
       }
 
-      toast = plus.nativeUI.showWaiting(title, waitingOptions);
+      toast = plus.nativeUI.showWaiting(title, Object.assign(waitingOptions, style));
     }
 
     timeout = setTimeout(() => {
@@ -9626,10 +10140,10 @@ var serviceContext = (function () {
     title = '',
     content = '',
     showCancel = true,
-    cancelText = '取消',
-    cancelColor = '#000000',
-    confirmText = '确定',
-    confirmColor = '#3CC51F'
+    cancelText,
+    cancelColor,
+    confirmText,
+    confirmColor
   } = {}, callbackId) {
     content = content || ' ';
     plus.nativeUI.confirm(content, (e) => {
@@ -9664,9 +10178,11 @@ var serviceContext = (function () {
       options.title = title;
     }
 
-    options.cancel = '';
+    options.cancel = t('uni.showActionSheet.cancel');
 
-    plus.nativeUI.actionSheet(Object.assign(options, { popover }), (e) => {
+    plus.nativeUI.actionSheet(Object.assign(options, {
+      popover
+    }), (e) => {
       if (e.index > 0) {
         invoke$1(callbackId, {
           errMsg: 'showActionSheet:ok',
@@ -12039,7 +12555,7 @@ var serviceContext = (function () {
   //   misrepresented as being the original software.
   // 3. This notice may not be removed or altered from any source distribution.
 
-  var messages = {
+  var messages$1 = {
     2:      'need dictionary',     /* Z_NEED_DICT       2  */
     1:      'stream end',          /* Z_STREAM_END      1  */
     0:      '',                    /* Z_OK              0  */
@@ -12174,7 +12690,7 @@ var serviceContext = (function () {
   var OS_CODE = 0x03; // Unix :) . Don't detect, use this default.
 
   function err(strm, errorCode) {
-    strm.msg = messages[errorCode];
+    strm.msg = messages$1[errorCode];
     return errorCode;
   }
 
@@ -14322,7 +14838,7 @@ var serviceContext = (function () {
     );
 
     if (status !== Z_OK$1) {
-      throw new Error(messages[status]);
+      throw new Error(messages$1[status]);
     }
 
     if (opt.header) {
@@ -14344,7 +14860,7 @@ var serviceContext = (function () {
       status = deflate_1.deflateSetDictionary(this.strm, dict);
 
       if (status !== Z_OK$1) {
-        throw new Error(messages[status]);
+        throw new Error(messages$1[status]);
       }
 
       this._dict_set = true;
@@ -14522,7 +15038,7 @@ var serviceContext = (function () {
     deflator.push(input, true);
 
     // That will never happens, if you don't cheat with options :)
-    if (deflator.err) { throw deflator.msg || messages[deflator.err]; }
+    if (deflator.err) { throw deflator.msg || messages$1[deflator.err]; }
 
     return deflator.result;
   }
@@ -17074,7 +17590,7 @@ var serviceContext = (function () {
     );
 
     if (status !== constants.Z_OK) {
-      throw new Error(messages[status]);
+      throw new Error(messages$1[status]);
     }
 
     this.header = new gzheader();
@@ -17092,7 +17608,7 @@ var serviceContext = (function () {
       if (opt.raw) { //In raw mode we need to set the dictionary early
         status = inflate_1.inflateSetDictionary(this.strm, opt.dictionary);
         if (status !== constants.Z_OK) {
-          throw new Error(messages[status]);
+          throw new Error(messages$1[status]);
         }
       }
     }
@@ -17322,7 +17838,7 @@ var serviceContext = (function () {
     inflator.push(input, true);
 
     // That will never happens, if you don't cheat with options :)
-    if (inflator.err) { throw inflator.msg || messages[inflator.err]; }
+    if (inflator.err) { throw inflator.msg || messages$1[inflator.err]; }
 
     return inflator.result;
   }
@@ -17588,9 +18104,7 @@ var serviceContext = (function () {
       a = a >= 0 ? a : 255;
       return [n, o, r, a]
     }
-    console.group('非法颜色: ' + e);
-    console.error('不支持颜色：' + e);
-    console.groupEnd();
+    console.error('unsupported color:' + e);
     return [0, 0, 0, 255]
   }
 
@@ -18285,7 +18799,22 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods = ['getCenterLocation', 'moveToLocation', 'getScale', 'getRegion', 'includePoints', 'translateMarker'];
+  const methods = ['getCenterLocation',
+    'moveToLocation',
+    'getScale',
+    'getRegion',
+    'includePoints',
+    'translateMarker',
+    'addCustomLayer',
+    'removeCustomLayer',
+    'addGroundOverlay',
+    'removeGroundOverlay',
+    'updateGroundOverlay',
+    'initMarkerCluster',
+    'addMarkers',
+    'removeMarkers',
+    'moveAlong',
+    'openMapApp'];
 
   class MapContext {
     constructor (id, pageVm) {
@@ -18679,7 +19208,7 @@ var serviceContext = (function () {
 
   function onUIStyleChange (callbackId) {
     callbacks$7.push(callbackId);
-    console.log('API uni.onUIStyleChange 已过时，请使用 uni.onThemeChange，详情：https://uniapp.dcloud.net.cn/api/system/theme');
+    console.warn('The "uni.onUIStyleChange" API is deprecated, please use "uni.onThemeChange". Learn more: https://uniapp.dcloud.net.cn/api/system/theme.');
   }
 
   var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
@@ -20332,7 +20861,7 @@ var serviceContext = (function () {
       return defaultApp
     }
     console.error(
-      '[warn]: getApp() 操作失败，v3模式加速了首页 nvue 的启动速度，当在首页 nvue 中使用 getApp() 不一定可以获取真正的 App 对象。详情请参考：https://uniapp.dcloud.io/collocation/frame/window?id=getapp'
+      '[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.'
     );
   }
 
@@ -20481,7 +21010,6 @@ var serviceContext = (function () {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] registerApp');
     }
-
     appCtx = appVm;
     appCtx.$vm = appVm;
 
@@ -20765,7 +21293,9 @@ var serviceContext = (function () {
   onMethod('onKeyboardHeightChange', res => {
     keyboardHeight = res.height;
     if (keyboardHeight > 0) {
-      onKeyboardShow && onKeyboardShow();
+      const callback = onKeyboardShow;
+      onKeyboardShow = null;
+      callback && callback();
     }
   });
 
@@ -21308,6 +21838,7 @@ var serviceContext = (function () {
 
     return {
       version: VD_SYNC_VERSION,
+      locale: plus.os.language, // TODO
       disableScroll,
       onPageScroll,
       onPageReachBottom,
@@ -21340,6 +21871,10 @@ var serviceContext = (function () {
         }
 
         if (this.mpType === 'page') {
+          const app = getApp();
+          if (app.$vm && app.$vm.$i18n) {
+            this._i18n = app.$vm.$i18n;
+          }
           this.$scope = this.$options.pageInstance;
           this.$scope.$vm = this;
           delete this.$options.pageInstance;

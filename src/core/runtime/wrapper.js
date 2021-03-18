@@ -35,7 +35,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs)
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`__PLATFORM_TITLE__ ${methodName}暂不支持${key}`)
+          console.warn(`The '${methodName}' method of platform '__PLATFORM_TITLE__' does not support option '${key}'`)
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key]
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
@@ -70,7 +70,7 @@ export default function wrapper (methodName, method) {
     const protocol = protocols[methodName]
     if (!protocol) { // 暂不支持的 api
       return function () {
-        console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
+        console.error(`Platform '__PLATFORM_TITLE__' does not support '${methodName}'.`)
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数

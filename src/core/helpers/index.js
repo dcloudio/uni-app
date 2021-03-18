@@ -31,7 +31,6 @@ export function normalizeDataset (dataset = {}) {
         const len = key.length
         if (key.substr(0, 1) === 'v' && (len === 9 || len === 10)) {
           delete result[key]
-          break
         }
       }
     }
@@ -41,12 +40,27 @@ export function normalizeDataset (dataset = {}) {
 
 export function getTargetDataset (target) {
   let dataset = {}
-  if (target.__vue__) {
-    const $attrs = target.__vue__.$attrs
+  const vm = target.__vue__
+  function updateDataset (vm, force) {
+    const $attrs = vm.$attrs
     for (const key in $attrs) {
       if (key.startsWith('data-')) {
-        dataset[camelize(key.substr(5))] = $attrs[key]
+        const newKey = camelize(key.substr(5))
+        const value = $attrs[key]
+        dataset[newKey] = force ? value : dataset[newKey] || value
       }
+    }
+  }
+  if (vm) {
+    let $child = vm
+    while ($child && $child.$el === target) {
+      updateDataset($child)
+      $child = $child.$children[0]
+    }
+    let $parent = vm.$parent
+    while ($parent && $parent.$el === target) {
+      updateDataset($parent, true)
+      $parent = $parent.$parent
     }
   } else {
     dataset = target.dataset || {}

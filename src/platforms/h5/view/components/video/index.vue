@@ -83,7 +83,7 @@
           class="uni-video-danmu-button"
           @click.stop="triggerDanmu"
         >
-          弹幕
+          {{ $$t("uni.video.danmu") }}
         </div>
         <div
           v-show="showFullscreenBtn"
@@ -116,7 +116,7 @@
         class="uni-video-toast"
       >
         <div class="uni-video-toast-title">
-          音量
+          {{ $$t("uni.video.volume") }}
         </div>
         <svg
           class="uni-video-toast-icon"
@@ -167,6 +167,9 @@ import {
 import {
   supportsPassive
 } from 'uni-shared'
+import {
+  i18nMixin
+} from 'uni-core/helpers/i18n'
 
 const passiveOptions = supportsPassive ? {
   passive: false
@@ -197,7 +200,7 @@ export default {
       return str
     }
   },
-  mixins: [subscriber, interact],
+  mixins: [i18nMixin, subscriber, interact],
   props: {
     id: {
       type: String,

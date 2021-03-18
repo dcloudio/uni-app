@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const {
   parseEntry,
   getMainEntry,
-  // normalizePath,
+  normalizePath,
   getPlatformExts,
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
@@ -70,7 +70,7 @@ function getProvides () {
 
 function processWxss (name, assets) {
   const dirname = path.dirname(name)
-  const mainWxssCode = `@import "${path.relative(dirname, 'common/main.wxss')}";`
+  const mainWxssCode = `@import "${normalizePath(path.relative(dirname, 'common/main.wxss'))}";`
   const code = `${mainWxssCode}` + assets[name].source().toString()
   assets[name] = {
     size () {
@@ -84,9 +84,9 @@ function processWxss (name, assets) {
 
 function procssJs (name, assets, hasVendor) {
   const dirname = path.dirname(name)
-  const runtimeJsCode = `require('${path.relative(dirname, 'common/runtime.js')}');`
-  const vendorJsCode = hasVendor ? `require('${path.relative(dirname, 'common/vendor.js')}');` : ''
-  const mainJsCode = `require('${path.relative(dirname, 'common/main.js')}');`
+  const runtimeJsCode = `require('${normalizePath(path.relative(dirname, 'common/runtime.js'))}');`
+  const vendorJsCode = hasVendor ? `require('${normalizePath(path.relative(dirname, 'common/vendor.js'))}');` : ''
+  const mainJsCode = `require('${normalizePath(path.relative(dirname, 'common/main.js'))}');`
   const code = `${runtimeJsCode}${vendorJsCode}${mainJsCode}` + assets[name].source().toString()
   assets[name] = {
     size () {
