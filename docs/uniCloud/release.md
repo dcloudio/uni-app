@@ -1,3 +1,13 @@
+#### 2021-03-16
+  + unicloud-db组件 add、update、remove方法新增可选参数needConfirm、needLoading、loadingTitle [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=add)
+  + unicloud-db组件 新增 load 事件支持 pagination [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=loadevent)
+  + DB Schema 修复 exclusiveMinimum|exclusiveMaximum 默认验证提示语不准确的问题
+  + uniCloud本地调试插件 修复 公共模块修改之后无法立即生效的Bug
+  + schema2code 新增 导出 uni_modules
+  + schema2code 修复 生成 uni-file-picker 组件的属性 file-extname 类型错误的问题
+  + schema2code 优化 导出 admin list页面的批量删除逻辑，没有选择项时禁用批量删除按钮
+  + schema2code 优化 生成的前端 list 页面，增加无数据提示语 "没有更多数据"
+
 #### 2021-03-05
   + DB Schema 修复 exclusiveMinimum|exclusiveMaximum 默认验证提示语不准确的问题（重新保存schema后生效）
   + schema2code 优化 生成的前端 list 页面，增加无数据提示语 "没有更多数据"
