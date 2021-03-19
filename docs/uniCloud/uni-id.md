@@ -965,9 +965,9 @@ exports.main = async function(event,context) {
 
 此接口仅适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况，多数情况下不推荐使用。**如果你要使用clientDB，且必须要用这种方式初始化uni-id，必须在uni-id的config.json内也写上同样的配置。**
 
-**config参数说明**
+**InitParams参数说明**
 
-config格式与config.json完全相同
+InitParams格式与config.json完全相同
 
 **响应参数**
 
@@ -1003,6 +1003,37 @@ exports.main = async function(event,context) {
 	return res
 }
 ```
+
+### 创建uni-id实例@create-instance
+
+> uni-id 3.0.7及以上版本
+
+用法：`uniID.createInstance(Object CreateInstanceParams);`
+
+CreateInstanceParams内可以传入云函数context，**主要用于在单实例多并发的场景（目前uniCloud还未支持，后续会提供）**
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
+    context: context
+  })
+  payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
+  if (payload.code) {
+  	return payload
+  }
+	const res = await uniIDIns.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
+	return res
+}
+```
+
+**为什么需要自行创建uni-id实例**
+
+默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
 
 ## 手机号码
 
@@ -2809,7 +2840,38 @@ uni-id-users表内存储的password字段为使用hmac-sha1生成的hash值，�
     // 当前角色拥有'your permission id'对应的权限
   }
   ```
+
+## 自定义token内容@custom-token
+
+> uni-id 3.0.7及以上版本，且需要使用[uni-config-center](https://ext.dcloud.net.cn/plugin?id=4425)
+
+自`uni-id 3.0.0`起，支持在token内缓存用户的角色权限。但是某些情况下开发者可能还希望缓存一些别的东西，以便在客户端能方便的访问（**注意：不可缓存机密信息到token内**）。
+
+**用法**
+
+在`uni-config-center`模块内的uni-id插件内创建`custom-token.js`内容如下：
+
+```js
+module.exports = async (tokenObj) => { 
+  // tokenObj为原始token信息结构如下
+  // {
+  //   uid: 'abc', // 用户id
+  //   role: [], // 用户角色列表
+  //   permission: [] // 用户权限列表，admin角色的用户权限列表为空数组
+  // }
   
+  tokenObj.customField = 'hello custom token' // 自定义token字段
+  return tokenObj // 注意务必返回修改后的token对象
+}
+```
+
+uni-id会自动加载custom-token.js进行处理，在所有生成token的操作（包括：登录、注册、token过期自动刷新、开发者自行调用createToken）执行时自动获取新token信息，并生成token。
+
+**注意**
+
+- 使用custom-token时自行调用createToken接口会变为异步操作，需使用`await uniID.createToken(...)`
+- 不要删除原始token内的字段
+
 # 迁移指南@migration
 
 ## 自1.x.x版本升级到2.x.x@m1to2
@@ -2839,6 +2901,11 @@ uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到
 
 可以参考此次提交进行调整：[uniCloud admin](https://github.com/dcloudio/uniCloud-admin/commit/8359d699aacb8f7d074fce9aa82a36474cb6e7df)
 
+#### 使用uni-config-center@uni-config-center
+
+> uni-id 3.0.7及以上版本
+
+从插件市场导入支持uni_modules的uni-id，会自动安装依赖的uni-config-center到uni_modules内。如果此前并没有使用uni-config-center可以直接将uni-id的config.json移至`uni-config-center/uni-id/config.json`即可（可以参照插件市场的uni-id示例项目）
 
 # FAQ
 
