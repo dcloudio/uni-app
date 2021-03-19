@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 
-const targets = (exports.targets = fs.readdirSync('packages').filter(f => {
+const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
   if (!fs.statSync(`packages/${f}`).isDirectory()) {
     return false
   }
@@ -13,11 +13,16 @@ const targets = (exports.targets = fs.readdirSync('packages').filter(f => {
     )
   } catch (e) {}
   return false
-})).sort((a, b) => (a === 'uni-shared' ? -1 : 0))
-
+})).sort((a, b) =>
+  a === 'uni-shared' || b === 'size-check'
+    ? -1
+    : a === 'size-check' || b === 'uni-shared'
+    ? 1
+    : a.localeCompare(b)
+)
 exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   const matched = []
-  partialTargets.forEach(partialTarget => {
+  partialTargets.forEach((partialTarget) => {
     for (const target of targets) {
       if (target.match(partialTarget)) {
         matched.push(target)

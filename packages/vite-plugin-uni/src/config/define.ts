@@ -5,6 +5,7 @@ import { ConfigEnv, UserConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '..'
 
 interface PagesFeatures {
+  pages: boolean
   tabBar: boolean
 }
 interface ManifestFeatures {
@@ -19,12 +20,16 @@ function resolvePagesFeature(
   { command }: ConfigEnv
 ): PagesFeatures {
   const features: PagesFeatures = {
-    tabBar: true,
+    pages: true, // 是否多页面
+    tabBar: true, // 是否启用tabBar
   }
   if (command === 'build') {
-    const { tabBar } = parse(
+    const { tabBar, pages } = parse(
       fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8')
     )
+    if (pages && pages.length === 1) {
+      features.pages = false
+    }
     if (!(tabBar && tabBar.list && tabBar.list.length)) {
       features.tabBar = false
     }
@@ -57,15 +62,16 @@ export function createDefine(
   { inputDir }: VitePluginUniResolvedOptions,
   env: ConfigEnv
 ): UserConfig['define'] {
-  const features = Object.assign(
+  const { wx, wxs, promise, routerMode, pages, tabBar } = Object.assign(
     resolveManifestFeature(inputDir),
     resolvePagesFeature(inputDir, env)
   )
   return {
-    __UNI_FEATURE_WX__: features.wx,
-    __UNI_FEATURE_WXS__: features.wxs,
-    __UNI_FEATURE_PROMISE__: features.promise,
-    __UNI_FEATURE_ROUTER_MODE__: features.routerMode,
-    __UNI_FEATURE_TABBAR__: features.tabBar,
+    __UNI_FEATURE_WX__: wx,
+    __UNI_FEATURE_WXS__: wxs,
+    __UNI_FEATURE_PROMISE__: promise,
+    __UNI_FEATURE_ROUTER_MODE__: routerMode,
+    __UNI_FEATURE_PAGES__: pages,
+    __UNI_FEATURE_TABBAR__: tabBar,
   }
 }

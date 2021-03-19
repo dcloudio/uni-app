@@ -11,9 +11,11 @@ import { createOptimizeDeps } from './optimizeDeps'
 export function createConfig(
   options: VitePluginUniResolvedOptions
 ): Plugin['config'] {
-  return (_config, env) => {
+  return (config, env) => {
+    if (config.root) {
+      options.root = config.root
+    }
     return {
-      root: options.root,
       base: options.base,
       define: createDefine(options, env),
       resolve: createResolve(options),

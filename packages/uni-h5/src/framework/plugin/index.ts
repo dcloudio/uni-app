@@ -18,6 +18,9 @@ export default {
     initSystemComponents(app)
 
     initMixin(app)
-    initRouter(app)
+
+    if (__UNI_FEATURE_PAGES__) {
+      initRouter(app)
+    }
   },
 }

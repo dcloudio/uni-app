@@ -24,7 +24,7 @@ import Slider from './slider/index.vue'
 // import Swiper from './swiper/index.vue'
 import SwiperItem from './swiper-item/index.vue'
 import Switch from './switch/index.vue'
-// import Text from './text/index.vue'
+import Text from './text/index.vue'
 import Textarea from './textarea/index.vue'
 import View from './view/index.vue'
 export {
@@ -54,7 +54,7 @@ export {
   //   Swiper,
   SwiperItem,
   Switch,
-  //   Text,
+  Text,
   Textarea,
   View,
 }

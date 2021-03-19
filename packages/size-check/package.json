@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "name": "@dcloudio/size-check",
+  "version": "3.0.0",
+  "buildOptions": {
+    "bundler": "vite"
+  }
+}

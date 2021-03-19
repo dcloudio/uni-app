@@ -24,6 +24,9 @@ declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
 declare var __UNI_FEATURE_PROMISE__: boolean
 declare var __UNI_FEATURE_ROUTER_MODE__: 'hash' | 'history'
+
+declare var __UNI_FEATURE_PAGES__: boolean
+declare var __UNI_FEATURE_TABBAR__: boolean
 // TODO
 declare var __uniRoutes: any
 declare var __uniConfig: any
