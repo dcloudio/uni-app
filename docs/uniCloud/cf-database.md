@@ -2786,7 +2786,7 @@ let res = await db.collection('avatar').aggregate()
     "region": "asia",
     "maxScore": 100
   },
-  "totalCoins": 100
+  "totalCoins": 40
 }
 {
   "_id": {
