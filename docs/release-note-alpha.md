@@ -1,3 +1,16 @@
+#### 3.1.6.20210318-alpha
+* 【uni-app】
+  + 百度小程序平台 修复 使用基础库 3.260+ 时，复杂表达式不显示的Bug [详情](https://ask.dcloud.net.cn/question/118213)
+  + 百度小程序平台 修复 使用 usingComponents 引入部分动态库组件无效的Bug [#2526](https://github.com/dcloudio/uni-app/issues/2526)
+  + App-iOS平台 修复 nvue web-view 组件在应用设置 allowsInlineMediaPlayback 为 true 时不生效的Bug [详情](https://ask.dcloud.net.cn/question/106864)
+  + App-iOS平台 修复 nvue map 组件 polyline 设置 arrowIconPath 为自定义箭头图标无效的Bug [详情](https://ask.dcloud.net.cn/question/118538)
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 修复 3.1.0 版本引出的 wap2app 应用无法正常运行的Bug
+  + Android平台 修复 一键登录 在部分双卡设备可能无法调起授权页面的Bug [详情](https://ask.dcloud.net.cn/question/117826)
+* 【wap2app】
+  + iOS平台 默认模板和hello wap2app模板默认使用UIWebview内核
+  + iOS平台 默认模板和hello wap2app模板适配安全区域
+
 #### 3.1.5.20210316-alpha
 * 【uni-app】
   + App平台、H5平台 优化 uni.showModal、uni.showActionSheet 等 API 内置国际化支持 [详情](https://uniapp.dcloud.io/collocation/i18n)
