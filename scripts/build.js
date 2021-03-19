@@ -2,8 +2,6 @@ const fs = require('fs-extra')
 const path = require('path')
 const chalk = require('chalk')
 const execa = require('execa')
-const { gzipSync } = require('zlib')
-const { compress } = require('brotli')
 
 const { extract } = require('./apiExtractor')
 
@@ -22,10 +20,8 @@ run()
 async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
-    checkAllSizes(allTargets)
   } else {
     await buildAll(fuzzyMatchTarget(targets, buildAllMatching))
-    checkAllSizes(fuzzyMatchTarget(targets, buildAllMatching))
   }
 }
 
@@ -94,43 +90,4 @@ async function build(target) {
   if (types) {
     await extract(target)
   }
-}
-
-function checkAllSizes(targets) {
-  if (devOnly) {
-    return
-  }
-  console.log()
-  for (const target of targets) {
-    checkSize(target)
-  }
-  console.log()
-}
-
-function checkSize(target) {
-  const pkgDir = path.resolve(`packages/${target}`)
-  if (require(path.join(pkgDir, 'package.json')).buildOptions) {
-    return
-  }
-  console.log(`${chalk.blueBright(target)}:`)
-  checkFileSize(`${pkgDir}/dist/vue.runtime.esm.js`)
-  checkFileSize(`${pkgDir}/dist/uni.api.esm.js`)
-  checkFileSize(`${pkgDir}/dist/uni.mp.esm.js`)
-}
-
-function checkFileSize(filePath) {
-  if (!fs.existsSync(filePath)) {
-    return
-  }
-  const file = fs.readFileSync(filePath)
-  const minSize = (file.length / 1024).toFixed(2) + 'kb'
-  const gzipped = gzipSync(file)
-  const gzippedSize = (gzipped.length / 1024).toFixed(2) + 'kb'
-  const compressed = compress(file)
-  const compressedSize = (compressed.length / 1024).toFixed(2) + 'kb'
-  console.log(
-    `${chalk.gray(
-      chalk.bold(path.basename(filePath))
-    )} min:${minSize} / gzip:${gzippedSize} / brotli:${compressedSize}`
-  )
 }
