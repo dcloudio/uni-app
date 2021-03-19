@@ -13,7 +13,15 @@ export default {
   root: __dirname,
   build: {
     // minify: false,
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      },
+    },
   },
+
   plugins: [
     vue({
       template: {

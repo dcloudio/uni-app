@@ -19,4 +19,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           build_script: build
-          files: packages/uni-h5-vue/dist/vue.runtime.esm.js packages/uni-mp-alipay/dist
+          files: packages/size-check/dist/assets/index.js packages/size-check/dist/assets/index.css packages/uni-h5-vue/dist/vue.runtime.esm.js packages/uni-mp-vue/dist/vue.runtime.esm.js packages/uni-mp-alipay/dist/uni.api.esm.js packages/uni-mp-alipay/dist/uni.mp.esm.js packages/uni-mp-baidu/dist/uni.api.esm.js packages/uni-mp-baidu/dist/uni.mp.esm.js packages/uni-mp-qq/dist/uni.api.esm.js packages/uni-mp-qq/dist/uni.mp.esm.js packages/uni-mp-toutiao/dist/uni.api.esm.js packages/uni-mp-toutiao/dist/uni.mp.esm.js packages/uni-mp-weixin/dist/uni.api.esm.js packages/uni-mp-weixin/dist/uni.mp.esm.js packages/uni-quickapp-webview/dist/uni.api.esm.js packages/uni-quickapp-webview/dist/uni.mp.esm.js
