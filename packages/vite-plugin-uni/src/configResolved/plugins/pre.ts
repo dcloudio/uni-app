@@ -47,9 +47,15 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
       }
       // https://github.com/vitejs/vite/blob/bc35fe994d48b2bd7076474f4a1a7b8ae5e8f401/packages/vite/src/node/server/sourcemap.ts#L15
       // 读取sourcemap时，需要移除?mpType=page等参数，否则读取不到提示文件不存在
+      const map = this.getCombinedSourcemap()
+      if (map) {
+        map.sources = map.sources.map((source) =>
+          source.replace('?mpType=page', '')
+        )
+      }
       return {
         code,
-        // map: this.getCombinedSourcemap(),
+        map,
       }
     },
   }
