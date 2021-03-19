@@ -18,5 +18,5 @@ jobs:
       - uses: posva/size-check-action@v1.1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          build_script: size
+          build_script: build
           files: packages/uni-h5-vue/dist/vue.runtime.esm.js packages/uni-mp-alipay/dist
