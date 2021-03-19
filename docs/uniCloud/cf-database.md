@@ -2849,8 +2849,8 @@ let res = await db.collection('items').aggregate()
 返回结果如下：
 ```js
 {
-  "_id": "3",
-  "price": 20
+  "_id": "2",
+  "price": 50
 }
 {
   "_id": "4",
