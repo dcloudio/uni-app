@@ -52,7 +52,7 @@
 
 - `<map>` 组件的宽/高推荐写直接量，比如：750rpx，不要设置百分比值。
 - `uni-app` 只支持 `gcj02` 坐标
-- App平台 `layer-style` 属性需要在地图服务商后台创建，[详情](https://developer.amap.com/api/android-sdk/guide/create-map/custom)
+- App平台 `layer-style` 属性需要在地图服务商后台创建，值设置为高德后台申请的字符串，[详情](https://developer.amap.com/api/android-sdk/guide/create-map/custom)
 
 **markers**
 
@@ -72,7 +72,6 @@
 |callout|自定义标记点上方的气泡窗口|Object|否|支持的属性见下表，可识别换行符。|App-nvue 2.1.5+|
 |label|为标记点旁边增加标签|Object|否|支持的属性见下表，可识别换行符。|App-nvue 2.1.5+、微信小程序、H5、App、百度小程序|
 |anchor|经纬度在标注图标的锚点，默认底边中点|Object|否|{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点|App-nvue 2.1.5+、微信小程序、H5、百度小程序|
-|joinCluster|是否参与点聚合|Boolean|否||App-nvue 3.1.0+、微信小程序|
 |clusterId|自定义点聚合簇效果时使用|Number|否||App-nvue 3.1.0+、微信小程序|
 |customCallout|自定义气泡窗口|Object|否||app暂时不支持、微信小程序|
 |aria-label|无障碍访问，（属性）元素的额外描述|String|否||App-nvue 3.1.0+、微信小程序|
