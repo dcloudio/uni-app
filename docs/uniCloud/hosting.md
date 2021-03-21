@@ -13,7 +13,7 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 ## 案例
 
-- `HBuilderX`插件开发网站，是一个基于`markdown`的文档系统，域名：[https://hx.dcloud.net.cn/](https://hx.dcloud.net.cn/)
+- `HBuilderX`文档网站，是一个基于`markdown`的文档系统，域名：[https://hx.dcloud.net.cn/](https://hx.dcloud.net.cn/)
 - `uni统计`官网现已部署到uniCloud，一份报表，掌握业务全景，域名：[https://tongji.dcloud.net.cn](https://tongji.dcloud.net.cn)
 - `hello uni-app`项目现已部署到uniCloud，线上地址：[https://hellouniapp.dcloud.net.cn](https://hellouniapp.dcloud.net.cn)
 
@@ -59,6 +59,16 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/unicloud-hx-hosting-h5.jpg)
 
+  > HBuilderX 2.8.9+，支持前端网页托管管理器。
+
+  在菜单视图中，或者在左下角状态栏中，点击`前端网页托管`，可在左侧打开前端网页托管管理器。如下图
+
+![](https://static-5ba88b76-de33-43f7-bef8-5af8fa815c1c.bspapp.com/前端网页托管管理器.jpg)
+
+  在前端网页托管管理器中，可以看到当前用户的服务空间列表，置灰表示该服务空间还没有开通前端网页托管，点击后可根据提示开通。（如上图中置灰的ali1服务空间）。
+
+  点击可用的服务空间，在右侧可以看到远端的资源管理器，把本地文件拖进入，即可上传文件。
+
 **注意事项**
 
 1. `前端网页托管`适于uni-app的h5页面发布。尤其是配搭uniCloud云开发，将彻底不用再租用任何传统的服务器。
@@ -79,7 +89,7 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
   + 阿里云每分钟最多300次请求
   + 腾讯云限速100K/s
 
-业务如要上线商用，请配置自己的正式域名，配置自己的正式域名后，将不受上述测试域名的限制。
+业务如要上线商用，请配置自己的正式域名，配置自己的正式域名后，将不受上述测试域名的限制。（尤其注意阿里云测试域名是公共的，任意一个服务空间如果有上传恶意文件被投诉，会导致测试域名被微信内置浏览器整体禁封）
 
 前端网页托管配置自己域名的步骤如下：
 
@@ -92,9 +102,11 @@ DCloud为开发者提供了`uni发布平台`，包括网站发布、App发布和
 
 阿里云现已支持http强制跳转https，在上述添加界面打开对应开关即可
 
+如果你已经有备案过的域名，直接解析过来即可；如果你要新注册域名，首先自行在网上购买，然后注意域名如果想在国内正常绑定阿里云或腾讯云，需要域名备案。这里的备案流程和传统云主机略有不同，涉及一个uniCloud没有固定ip的问题。此时可以去买花生壳的备案服务；也可以临时买一个短期固定ip，走固定ip备案。这里有开发者分享的[经验贴](https://uniapp.dcloud.io/uniCloud/cf-functions?id=eip)
+
 **关于证书内容与私钥**
 
-证书签发后，可下载到本地，然后将内容复制黏贴到uniCloud web控制台。
+域名如果使用https，则需要证书。证书签发后，可下载到本地，然后将内容复制黏贴到uniCloud web控制台。
 
 注意：各运营商下载证书的后缀可能不同，一般来说，`.key`文件对应私钥，`.pem`或`.crt`文件对应证书。这几种类型文件都是文本内容，可选择记事本打开查看内容。
 
