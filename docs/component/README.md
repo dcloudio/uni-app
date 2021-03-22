@@ -61,7 +61,7 @@
 
 |属性名|类型|描述|注解|
 |:-|:-|:-|:-|
-|id|String|组件的唯一标示|保持整个页面唯一|
+|id|String|组件的唯一标示|一般用于获取组件上下文对象（如：[VideoContext](/api/media/video-context)），需要保持整个页面唯一|
 |ref|String|vue中组件的唯一标示|用来给子组件注册引用信息，详见 [Vue 文档](/vue-api?id=%e7%89%b9%e6%ae%8a%e5%b1%9e%e6%80%a7)|
 |class|String|组件的样式类|在对应的 css 中定义的样式类|
 |style|String|组件的内联样式|可以动态设置的内联样式|
