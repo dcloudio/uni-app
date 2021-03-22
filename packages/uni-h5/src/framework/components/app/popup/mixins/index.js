@@ -1,5 +1,8 @@
-import ActionSheet from './action-sheet'
-import Modal from './modal'
-import Toast from './toast'
-import Transtion from './transition'
-export default [ActionSheet, Modal, Toast, Transtion]
+const mixins = []
+const context = require.context('./', false, /\.js$/)
+context.keys().forEach(function (key) {
+  if (key !== './index.js') {
+    mixins.push(context(key).default)
+  }
+})
+export default mixins

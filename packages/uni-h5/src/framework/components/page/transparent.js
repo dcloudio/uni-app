@@ -1,4 +1,4 @@
-import { hexToRgba } from './hex-to-rgba'
+import { hexToRgba } from '../../../helpers/hexToRgba'
 
 export default {
   mounted() {
@@ -28,11 +28,11 @@ export default {
           return
         }
         if (alpha > 0.5 && this._A <= 0.5) {
-          iconElemsStyles.forEach(function(iconElemStyle) {
+          iconElemsStyles.forEach(function (iconElemStyle) {
             iconElemStyle.color = textColor
           })
         } else if (alpha <= 0.5 && this._A > 0.5) {
-          iconElemsStyles.forEach(function(iconElemStyle) {
+          iconElemsStyles.forEach(function (iconElemStyle) {
             iconElemStyle.color = '#fff'
           })
         }
@@ -41,10 +41,11 @@ export default {
         if (titleElem) {
           titleElem.style.opacity = alpha
         }
-        transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${
-          this._B
-        },${alpha})`
-        borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index) {
+        transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`
+        borderRadiusElemsStyles.forEach(function (
+          borderRadiusElemStyle,
+          index
+        ) {
           const oldColor = oldColors[index]
           // eslint-disable-next-line
           let rgba = oldColor.match(/[\d+\.]+/g)
@@ -84,6 +85,6 @@ export default {
         return `rgba(${r},${g},${b},0)`
       }
       return this.backgroundColor
-    }
-  }
+    },
+  },
 }

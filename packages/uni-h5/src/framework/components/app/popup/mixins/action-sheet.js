@@ -1,11 +1,11 @@
-import { isFunction } from '@vue/shared'
+import { isFn } from 'uni-shared'
 
 export default {
   data() {
     return {
       showActionSheet: {
-        visible: false
-      }
+        visible: false,
+      },
     }
   },
   created() {
@@ -13,7 +13,7 @@ export default {
       this.showActionSheet = args
       this.onActionSheetCloseCallback = callback
     })
-    UniServiceJSBridge.on('onHidePopup', args => {
+    UniServiceJSBridge.on('onHidePopup', (args) => {
       this.showActionSheet.visible = false
     })
   },
@@ -21,8 +21,8 @@ export default {
     // 处理 actionSheet close 回调
     _onActionSheetClose(type) {
       this.showActionSheet.visible = false
-      isFunction(this.onActionSheetCloseCallback) &&
+      isFn(this.onActionSheetCloseCallback) &&
         this.onActionSheetCloseCallback(type)
-    }
-  }
+    },
+  },
 }

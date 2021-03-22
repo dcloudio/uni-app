@@ -1,4 +1,4 @@
-export function hexToRgba(hex) {
+export function hexToRgba(hex: string) {
   let r
   let g
   let b
@@ -29,6 +29,6 @@ export function hexToRgba(hex) {
   return {
     r,
     g,
-    b
+    b,
   }
 }

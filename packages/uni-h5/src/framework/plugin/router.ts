@@ -14,7 +14,9 @@ import {
 import { getApp } from './app'
 
 export function initRouter(app: App) {
-  app.use(createAppRouter(createRouter(createRouterOptions())))
+  const router = createAppRouter(createRouter(createRouterOptions()))
+  app.use(router)
+  return router
 }
 
 const scrollBehavior: RouterOptions['scrollBehavior'] = (

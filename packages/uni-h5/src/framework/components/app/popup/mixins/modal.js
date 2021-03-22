@@ -1,11 +1,11 @@
-import { isFunction } from '@vue/shared'
+import { isFn } from 'uni-shared'
 
 export default {
   data() {
     return {
       showModal: {
-        visible: false
-      }
+        visible: false,
+      },
     }
   },
   created() {
@@ -13,7 +13,7 @@ export default {
       this.showModal = args
       this.onModalCloseCallback = callback
     })
-    UniServiceJSBridge.on('onHidePopup', args => {
+    UniServiceJSBridge.on('onHidePopup', (args) => {
       this.showModal.visible = false
     })
   },
@@ -21,7 +21,7 @@ export default {
     // 处理 modal close 回调
     _onModalClose(type) {
       this.showModal.visible = false
-      isFunction(this.onModalCloseCallback) && this.onModalCloseCallback(type)
-    }
-  }
+      isFn(this.onModalCloseCallback) && this.onModalCloseCallback(type)
+    },
+  },
 }

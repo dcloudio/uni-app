@@ -1,6 +1,6 @@
 export default {
   methods: {
     beforeTransition() {},
-    afterTransition() {}
-  }
+    afterTransition() {},
+  },
 }

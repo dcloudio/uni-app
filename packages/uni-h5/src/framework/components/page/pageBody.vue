@@ -12,32 +12,10 @@ uni-page-wrapper {
   position: relative;
 }
 
-uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
+uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   height: calc(100% - 44px);
   height: calc(100% - 44px - constant(safe-area-inset-top));
   height: calc(100% - 44px - env(safe-area-inset-top));
-}
-
-.uni-app--showtabbar uni-page-wrapper {
-  display: block;
-  height: calc(100% - 50px);
-  height: calc(100% - 50px - constant(safe-area-inset-bottom));
-  height: calc(100% - 50px - env(safe-area-inset-bottom));
-}
-
-.uni-app--showtabbar uni-page-wrapper::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 50px;
-  height: calc(50px + constant(safe-area-inset-bottom));
-  height: calc(50px + env(safe-area-inset-bottom));
-}
-
-.uni-app--showtabbar uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
-  height: calc(100% - 44px - 50px);
-  height: calc(100% - 44px - constant(safe-area-inset-top) - 50px - constant(safe-area-inset-bottom));
-  height: calc(100% - 44px - env(safe-area-inset-top) - 50px - env(safe-area-inset-bottom));
 }
 
 uni-page-body {
@@ -47,7 +25,34 @@ uni-page-body {
 }
 </style>
 <script>
+// import { appendCss } from '../../../helpers/appendCss'
+// import { tabBar } from '../app/observable'
 export default {
-  name: 'PageBody'
+  name: 'PageBody',
+  mounted() {
+    // const HEIGTH = tabBar.height || '50px'
+    // let cssText = `.uni-app--showtabbar uni-page-wrapper {
+    //                 display: block;
+    //                 height: calc(100% - ${HEIGTH});
+    //                 height: calc(100% - ${HEIGTH} - constant(safe-area-inset-bottom));
+    //                 height: calc(100% - ${HEIGTH} - env(safe-area-inset-bottom));
+    //               }`
+    // cssText += '\n'
+    // cssText += `.uni-app--showtabbar uni-page-wrapper::after {
+    //               content: "";
+    //               display: block;
+    //               width: 100%;
+    //               height: ${HEIGTH};
+    //               height: calc(${HEIGTH} + constant(safe-area-inset-bottom));
+    //               height: calc(${HEIGTH} + env(safe-area-inset-bottom));
+    //             }`
+    // cssText += '\n'
+    // cssText += `.uni-app--showtabbar uni-page-head[uni-page-head-type="default"] ~ uni-page-wrapper {
+    //               height: calc(100% - 44px - ${HEIGTH});
+    //               height: calc(100% - 44px - constant(safe-area-inset-top) - ${HEIGTH} - constant(safe-area-inset-bottom));
+    //               height: calc(100% - 44px - env(safe-area-inset-top) - ${HEIGTH} - env(safe-area-inset-bottom));
+    //             }`
+    // appendCss(cssText)
+  },
 }
 </script>

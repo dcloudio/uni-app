@@ -8,7 +8,7 @@
         v-if="mask"
         class="uni-mask"
         style="background: transparent;"
-        @touchmove.prevent.passive
+        @touchmove.prevent
       />
       <div
         v-if="!image&&!iconClass"
@@ -104,6 +104,7 @@ uni-toast {
   display: block;
   box-sizing: border-box;
   pointer-events: none;
+  font-size: 16px;
 }
 
 uni-toast .uni-sample-toast {

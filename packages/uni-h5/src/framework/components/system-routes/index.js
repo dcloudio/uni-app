@@ -5,5 +5,5 @@ import PreviewImage from './preview-image'
 export default {
   ChooseLocation,
   OpenLocation,
-  PreviewImage
+  PreviewImage,
 }

@@ -1,19 +1,35 @@
 <template>
   <uni-page-head :uni-page-head-type="type">
     <div
-      :style="{transitionDuration:duration,transitionTimingFunction:timingFunc,backgroundColor:bgColor,color:textColor}"
+      :style="{
+        transitionDuration: duration,
+        transitionTimingFunction: timingFunc,
+        backgroundColor: bgColor,
+        color: textColor,
+      }"
       :class="headClass"
       class="uni-page-head"
     >
       <div class="uni-page-head-hd">
         <div v-show="backButton" class="uni-page-head-btn" @click="_back">
-          <i :style="{color:color,fontSize:'27px'}" class="uni-btn-icon">&#xe601;</i>
+          <i :style="{ color: color, fontSize: '27px' }" class="uni-btn-icon"
+            >&#xe601;</i
+          >
         </div>
-        <template v-for="(btn,index) in leftBtns" :key="index">
+        <template v-for="(btn, index) in btns">
           <div
-            :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
+            v-if="btn.float === 'left'"
+            :key="index"
+            :style="{
+              backgroundColor:
+                type === 'transparent' ? btn.background : 'transparent',
+              width: btn.width,
+            }"
             :badge-text="btn.badgeText"
-            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
+            :class="{
+              'uni-page-head-btn-red-dot': btn.redDot || btn.badgeText,
+              'uni-page-head-btn-select': btn.select,
+            }"
             class="uni-page-head-btn"
           >
             <i
@@ -27,31 +43,47 @@
       </div>
       <div v-if="!searchInput" class="uni-page-head-bd">
         <div
-          :style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
+          :style="{
+            fontSize: titleSize,
+            opacity: type === 'transparent' ? 0 : 1,
+          }"
           class="uni-page-head__title"
         >
           <i v-if="loading" class="uni-loading" />
-          <img v-if="titleImage!==''" :src="titleImage" class="uni-page-head__title_image" />
-          <template v-else>{{ titleText }}</template>
+          <img
+            v-if="titleImage !== ''"
+            :src="titleImage"
+            class="uni-page-head__title_image"
+          />
+          <template v-else>
+            {{ titleText }}
+          </template>
         </div>
       </div>
       <div
         v-if="searchInput"
-        :style="{'border-radius':searchInput.borderRadius,'background-color':searchInput.backgroundColor}"
+        :style="{
+          'border-radius': searchInput.borderRadius,
+          'background-color': searchInput.backgroundColor,
+        }"
         class="uni-page-head-search"
       >
         <div
-          :style="{color:searchInput.placeholderColor}"
-          :class="[`uni-page-head-search-placeholder-${focus || text ? 'left' : searchInput.align}`]"
+          :style="{ color: searchInput.placeholderColor }"
+          :class="[
+            `uni-page-head-search-placeholder-${
+              focus || text ? 'left' : searchInput.align
+            }`,
+          ]"
           class="uni-page-head-search-placeholder"
           v-text="text || composing ? '' : searchInput.placeholder"
         />
-        <VUniInput
+        <v-uni-input
           ref="input"
           v-model="text"
           :focus="searchInput.autoFocus"
           :disabled="searchInput.disabled"
-          :style="{color:searchInput.color}"
+          :style="{ color: searchInput.color }"
           :placeholder-style="`color:${searchInput.placeholderColor}`"
           class="uni-page-head-search-input"
           confirm-type="search"
@@ -61,11 +93,20 @@
         />
       </div>
       <div class="uni-page-head-ft">
-        <template v-for="(btn,index) in rightBtns" :key="index">
+        <template v-for="(btn, index) in btns">
           <div
-            :style="{backgroundColor: type==='transparent'?btn.background:'transparent',width:btn.width}"
+            v-if="btn.float !== 'left'"
+            :key="index"
+            :style="{
+              backgroundColor:
+                type === 'transparent' ? btn.background : 'transparent',
+              width: btn.width,
+            }"
             :badge-text="btn.badgeText"
-            :class="{'uni-page-head-btn-red-dot':btn.redDot||btn.badgeText,'uni-page-head-btn-select':btn.select}"
+            :class="{
+              'uni-page-head-btn-red-dot': btn.redDot || btn.badgeText,
+              'uni-page-head-btn-select': btn.select,
+            }"
             class="uni-page-head-btn"
           >
             <i
@@ -79,8 +120,8 @@
       </div>
     </div>
     <div
-      v-if="type!=='transparent'&&type!=='float'"
-      :class="{'uni-placeholder-titlePenetrate': titlePenetrate}"
+      v-if="type !== 'transparent' && type !== 'float'"
+      :class="{ 'uni-placeholder-titlePenetrate': titlePenetrate }"
       class="uni-placeholder"
     />
   </uni-page-head>
@@ -93,9 +134,8 @@ uni-page-head {
 
 uni-page-head .uni-page-head {
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
+  left: var(--window-left);
+  right: var(--window-right);
   height: 44px;
   height: calc(44px + constant(safe-area-inset-top));
   height: calc(44px + env(safe-area-inset-top));
@@ -327,8 +367,8 @@ uni-page-head .uni-page-head-shadow-yellow::after {
 }
 </style>
 <script>
-import {Input} from '@dcloudio/uni-components'
-import {appendCss} from './append-css'
+import { appendCss } from '../../../helpers/dom'
+import { getRealPath } from '../../../helpers/getRealPath'
 
 import transparent from './transparent'
 
@@ -339,102 +379,99 @@ const FONTS = {
   favorite: '&#xe604;',
   home: '&#xe605;',
   menu: '&#xe606;',
-  close: '&#xe650;'
+  close: '&#xe650;',
 }
 export default {
   name: 'PageHead',
   mixins: [transparent],
-  components:{
-    VUniInput:Input
-  },
   props: {
     backButton: {
       type: Boolean,
-      default: true
+      default: true,
     },
     backgroundColor: {
       type: String,
-      default () {
+      default() {
         return this.type === 'transparent' ? '#000' : '#F8F8F8'
-      }
+      },
     },
     textColor: {
       type: String,
-      default: '#fff'
+      default: '#fff',
     },
     titleText: {
       type: String,
-      default: ''
+      default: '',
     },
     duration: {
       type: String,
-      default: '0'
+      default: '0',
     },
     timingFunc: {
       type: String,
-      default: ''
+      default: '',
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     titleSize: {
       type: String,
-      default: '16px'
+      default: '16px',
     },
     type: {
       default: 'default',
-      validator (value) {
+      validator(value) {
         return ['default', 'transparent', 'float'].indexOf(value) !== -1
-      }
+      },
     },
     coverage: {
       type: String,
-      default: '132px'
+      default: '132px',
     },
     buttons: {
       type: Array,
-      default () {
+      default() {
         return []
-      }
+      },
     },
     searchInput: {
       type: [Object, Boolean],
-      default () {
+      default() {
         return false
-      }
+      },
     },
     titleImage: {
       type: String,
-      default: ''
+      default: '',
     },
     titlePenetrate: {
       type: Boolean,
-      default: false
+      default: false,
     },
     shadow: {
       type: Object,
-      default () {
+      default() {
         return {}
-      }
-    }
+      },
+    },
   },
-  data () {
+  data() {
     return {
       focus: false,
       text: '',
-      composing: false
+      composing: false,
     }
   },
   computed: {
-    btns () {
+    btns() {
       const btns = []
       const fonts = {}
       if (this.buttons.length) {
-        this.buttons.forEach(button => {
+        this.buttons.forEach((button) => {
           const btn = Object.assign({}, button)
           if (btn.fontSrc && !btn.fontFamily) {
-            const fontSrc = btn.fontSrc = this.$getRealPath(btn.fontSrc)
+            const fontSrc = (btn.fontSrc = getRealPath(btn.fontSrc))
             let fontFamily
             if (fontSrc in fonts) {
               fontFamily = fonts[fontSrc]
@@ -446,8 +483,13 @@ export default {
             }
             btn.fontFamily = fontFamily
           }
-          btn.color = this.type === 'transparent' ? '#fff' : (btn.color || this.textColor)
-          let fontSize = btn.fontSize || (this.type === 'transparent' || /\\u/.test(btn.text) ? '22px' : '27px')
+          btn.color =
+            this.type === 'transparent' ? '#fff' : btn.color || this.textColor
+          let fontSize =
+            btn.fontSize ||
+            (this.type === 'transparent' || /\\u/.test(btn.text)
+              ? '22px'
+              : '27px')
           if (/\d$/.test(fontSize)) {
             fontSize += 'px'
           }
@@ -458,29 +500,23 @@ export default {
       }
       return btns
     },
-    leftBtns(){
-      return this.btns.filter(btn=>btn.float === 'left')
-    },
-    rightBtns(){
-      return this.btns.filter(btn=>btn.float !== 'left')
-    },
-    headClass () {
+    headClass() {
       const shadowColorType = this.shadow.colorType
       const data = {
         'uni-page-head-transparent': this.type === 'transparent',
         'uni-page-head-titlePenetrate': this.titlePenetrate,
-        'uni-page-head-shadow': shadowColorType
+        'uni-page-head-shadow': shadowColorType,
       }
       if (shadowColorType) {
         data[`uni-page-head-shadow-${shadowColorType}`] = shadowColorType
       }
       return data
-    }
+    },
   },
-  mounted () {
+  mounted() {
     if (this.searchInput) {
       const input = this.$refs.input
-      input.$watch('composing', val => {
+      input.$watch('composing', (val) => {
         this.composing = val
       })
       if (this.searchInput.disabled) {
@@ -488,44 +524,47 @@ export default {
           UniServiceJSBridge.emit('onNavigationBarSearchInputClicked', '')
         })
       } else {
-        input.$refs.input.addEventListener('keyup', event => {
+        input.$refs.input.addEventListener('keyup', (event) => {
           if (event.key.toUpperCase() === 'ENTER') {
             UniServiceJSBridge.emit('onNavigationBarSearchInputConfirmed', {
-              text: this.text
+              text: this.text,
             })
           }
         })
         input.$refs.input.addEventListener('focus', () => {
           UniServiceJSBridge.emit('onNavigationBarSearchInputFocusChanged', {
-            focus: true
+            focus: true,
           })
         })
         input.$refs.input.addEventListener('blur', () => {
           UniServiceJSBridge.emit('onNavigationBarSearchInputFocusChanged', {
-            focus: false
+            focus: false,
           })
         })
       }
     }
   },
   methods: {
-    _back () {
+    _back() {
       if (getCurrentPages().length === 1) {
         uni.reLaunch({
-          url: '/'
+          url: '/',
         })
       } else {
         uni.navigateBack({
-          from: 'backbutton'
+          from: 'backbutton',
         })
       }
     },
-    _onBtnClick (index) {
-      UniServiceJSBridge.emit('onNavigationBarButtonTap', Object.assign({}, this.btns[index], {
-        index
-      }))
+    _onBtnClick(index) {
+      UniServiceJSBridge.emit(
+        'onNavigationBarButtonTap',
+        Object.assign({}, this.btns[index], {
+          index,
+        })
+      )
     },
-    _formatBtnFontText (btn) {
+    _formatBtnFontText(btn) {
       if (btn.fontSrc && btn.fontFamily) {
         return btn.text.replace('\\u', '&#x')
       } else if (FONTS[btn.type]) {
@@ -533,28 +572,28 @@ export default {
       }
       return btn.text || ''
     },
-    _formatBtnStyle (btn) {
+    _formatBtnStyle(btn) {
       const style = {
         color: btn.color,
         fontSize: btn.fontSize,
-        fontWeight: btn.fontWeight
+        fontWeight: btn.fontWeight,
       }
       if (btn.fontFamily) {
         style.fontFamily = btn.fontFamily
       }
       return style
     },
-    _focus () {
+    _focus() {
       this.focus = true
     },
-    _blur () {
+    _blur() {
       this.focus = false
     },
-    _input (text) {
+    _input(text) {
       UniServiceJSBridge.emit('onNavigationBarSearchInputChanged', {
-        text
+        text,
       })
-    }
-  }
+    },
+  },
 }
 </script>

@@ -1,9 +1,9 @@
-import Toast from './toast.vue'
-import Modal from './modal.vue'
-import ActionSheet from './actionSheet.vue'
+import Toast from './toast'
+import Modal from './modal'
+import ActionSheet from './actionSheet'
 
 export default {
   Toast,
   Modal,
-  ActionSheet
+  ActionSheet,
 }

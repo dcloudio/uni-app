@@ -20,6 +20,8 @@ export declare const NAVBAR_HEIGHT = 44;
 
 export declare function plusReady(callback: () => void): void;
 
+export declare const RESPONSIVE_MIN_WIDTH = 768;
+
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
 export declare const TABBAR_HEIGHT = 50;

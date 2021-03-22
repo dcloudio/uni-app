@@ -1,4 +1,10 @@
-import { computed, nextTick, VNode, ComponentPublicInstance } from 'vue'
+import {
+  computed,
+  nextTick,
+  VNode,
+  ComponentPublicInstance,
+  ComputedRef,
+} from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 
 const SEP = '$$'
@@ -24,6 +30,10 @@ export function isPage(vm: ComponentPublicInstance) {
 }
 
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
+  if (!route) {
+    const { path } = __uniRoutes[0]
+    return { id, path, route: path.substr(1), fullPath: path }
+  }
   return {
     id,
     path: route.path,

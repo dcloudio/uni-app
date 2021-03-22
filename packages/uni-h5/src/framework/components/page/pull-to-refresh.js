@@ -1,7 +1,7 @@
 function processDeltaY(evt, identifier, startY) {
   const touch = Array.prototype.slice
     .call(evt.changedTouches)
-    .filter(touch => touch.identifier === identifier)[0]
+    .filter((touch) => touch.identifier === identifier)[0]
   if (!touch) {
     return false
   }
@@ -196,7 +196,7 @@ export default {
       if (style.webkitTransform) {
         style.webkitTransition = '-webkit-transform 0.3s'
         style.webkitTransform = 'translate3d(-50%, 0, 0)'
-        const abortTransitionEnd = function() {
+        const abortTransitionEnd = function () {
           timeout && clearTimeout(timeout)
           elem.removeEventListener('webkitTransitionEnd', abortTransitionEnd)
           style.webkitTransition = ''
@@ -237,7 +237,7 @@ export default {
       style.webkitTransition = '-webkit-transform 0.3s'
       style.webkitTransform += ' scale(0.01)'
 
-      const restoreTransitionEnd = function() {
+      const restoreTransitionEnd = function () {
         timeout && clearTimeout(timeout)
         elem.removeEventListener('webkitTransitionEnd', restoreTransitionEnd)
         style.webkitTransition = ''
@@ -247,6 +247,6 @@ export default {
 
       elem.addEventListener('webkitTransitionEnd', restoreTransitionEnd)
       const timeout = setTimeout(restoreTransitionEnd, 350) // 部分手机，部分情况webkitTransitionEnd不触发
-    }
-  }
+    },
+  },
 }

@@ -23,12 +23,17 @@ declare var __VUE_OPTIONS_API__: boolean
 declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
 declare var __UNI_FEATURE_PROMISE__: boolean
+declare var __UNI_FEATURE_LONGPRESS__: boolean
 declare var __UNI_FEATURE_ROUTER_MODE__: 'hash' | 'history'
 
 declare var __UNI_FEATURE_PAGES__: boolean
 declare var __UNI_FEATURE_TABBAR__: boolean
+declare var __UNI_FEATURE_TOPWINDOW__: boolean
+declare var __UNI_FEATURE_LEFTWINDOW__: boolean
+declare var __UNI_FEATURE_RIGHTWINDOW__: boolean
+declare var __UNI_FEATURE_RESPONSIVE__: boolean
 // TODO
 declare var __uniRoutes: any
-declare var __uniConfig: any
+declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: any
 declare var UniServiceJSBridge: any

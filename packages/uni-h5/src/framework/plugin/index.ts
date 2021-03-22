@@ -5,8 +5,9 @@ import { initView, initService } from '@dcloudio/uni-core'
 import { isCustomElement } from '@dcloudio/uni-shared'
 
 import { initRouter } from './router'
-// import { initSystemComponents } from './components'
+import { initSystemComponents } from './components'
 import { initMixin } from './mixin'
+import { initProvide } from './provide'
 
 export default {
   install(app: App) {
@@ -15,12 +16,9 @@ export default {
     initApp(app)
     initView(app)
     initService(app)
-    // initSystemComponents(app)
+    initSystemComponents(app)
 
     initMixin(app)
-
-    if (__UNI_FEATURE_PAGES__) {
-      initRouter(app)
-    }
+    initProvide(app, (__UNI_FEATURE_PAGES__ && initRouter(app)) || undefined)
   },
 }

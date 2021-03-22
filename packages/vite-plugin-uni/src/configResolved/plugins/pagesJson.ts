@@ -40,15 +40,6 @@ export function uniPagesJsonPlugin(
   }
 }
 
-interface PageOptions {
-  path: string
-  style?: Record<string, any>
-}
-interface SubpackagesOptions {
-  root: string
-  pages: PageOptions[]
-}
-
 interface PageRouteOptions {
   name: string
   path: string
@@ -76,6 +67,7 @@ function parsePagesJson(
   const manifestJsonPath = slash(
     path.resolve(options.inputDir, 'manifest.json.js')
   )
+
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
@@ -131,8 +123,8 @@ function formatPageStyle(pageStyle?: Record<string, any>) {
   }
 }
 
-function formatSubpackages(subpackages: SubpackagesOptions[]) {
-  const pages: PageOptions[] = []
+function formatSubpackages(subpackages?: UniApp.PagesJsonSubpackagesOptions[]) {
+  const pages: UniApp.PagesJsonPageOptions[] = []
   if (Array.isArray(subpackages)) {
     subpackages.forEach(({ root, pages: subPages }) => {
       if (root && subPages.length) {
@@ -147,7 +139,7 @@ function formatSubpackages(subpackages: SubpackagesOptions[]) {
 }
 
 function formatPagesJson(jsonStr: string) {
-  let pagesJson: Record<string, any> = {
+  let pagesJson: UniApp.PagesJson = {
     pages: [],
   }
   // preprocess
@@ -171,7 +163,7 @@ function formatPageIdentifier(path: string) {
   return capitalize(camelize(path.replace(/\//g, '-')))
 }
 
-function generatePageDefineCode(pageOptions: PageOptions) {
+function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
   return `const ${formatPageIdentifier(
     pageOptions.path
   )} = defineAsyncComponent({
@@ -184,16 +176,16 @@ function generatePageDefineCode(pageOptions: PageOptions) {
 })`
 }
 
-function generatePagesDefineCode(pagesJson: Record<string, any>) {
-  return (pagesJson.pages as PageOptions[])
+function generatePagesDefineCode(pagesJson: UniApp.PagesJson) {
+  return pagesJson.pages
     .map((pageOptions) => generatePageDefineCode(pageOptions))
     .join('\n')
 }
 
-function formatPagesRoute(pagesJson: Record<string, any>): PageRouteOptions[] {
+function formatPagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
   const firstPagePath = pagesJson.pages[0].path
   const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || []
-  return (pagesJson.pages as PageOptions[]).map((pageOptions) => {
+  return pagesJson.pages.map((pageOptions) => {
     const path = pageOptions.path
     const name = formatPageIdentifier(path)
     const isEntry = firstPagePath === path ? true : undefined
@@ -242,7 +234,7 @@ function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
   return pagesRouteOptions.map((pageOptions) => generatePageRoute(pageOptions))
 }
 
-function generateRoutes(pagesJson: Record<string, any>) {
+function generateRoutes(pagesJson: UniApp.PagesJson) {
   return `window.__uniRoutes=[${[
     `{ path: '/${pagesJson.pages[0].path}', redirect: '/' }`,
     ...generatePagesRoute(formatPagesRoute(pagesJson)),

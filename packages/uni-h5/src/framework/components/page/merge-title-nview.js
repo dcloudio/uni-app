@@ -1,5 +1,8 @@
 import { hasOwn, isPlainObject } from '@vue/shared'
 
+/**
+ * app-plus titleNView
+ */
 export function mergeTitleNView(navigationBar, titleNView) {
   if (isPlainObject(titleNView)) {
     if (hasOwn(titleNView, 'backgroundColor')) {
@@ -33,7 +36,7 @@ export function mergeTitleNView(navigationBar, titleNView) {
           borderRadius: '0px',
           placeholder: '',
           placeholderColor: '#CCCCCC',
-          disabled: false
+          disabled: false,
         },
         titleNView.searchInput
       )

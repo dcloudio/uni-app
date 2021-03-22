@@ -2,7 +2,7 @@ import path from 'path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import replace from '@rollup/plugin-replace'
 
 import { isCustomElement } from '../uni-shared'
@@ -31,7 +31,7 @@ export default defineConfig({
       },
       {
         find: '@dcloudio/uni-core',
-        replacement: resolve('../uni-core/src/index.ts'),
+        replacement: resolve('../uni-core/src'),
       },
       {
         find: '@dcloudio/uni-components',
@@ -47,6 +47,7 @@ export default defineConfig({
         },
       },
     }),
+    vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
     minify: false,
