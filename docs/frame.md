@@ -329,8 +329,8 @@ rpx 是相对于基准宽度的单位，可以根据屏幕宽度进行自适应�
 |#id|#firstname|选择拥有 id="firstname" 的组件|
 |element|view|选择所有 view 组件|
 |element, element|view, checkbox|选择所有文档的 view 组件和所有的 checkbox 组件|
-|::after|view::after|在 view 组件后边插入内容，**仅微信小程序和App生效**|
-|::before|view::before|在 view 组件前边插入内容，**仅微信小程序和App生效**|
+|::after|view::after|在 view 组件后边插入内容，**仅 vue 页面生效**|
+|::before|view::before|在 view 组件前边插入内容，**仅 vue 页面生效**|
 
 **注意：** 
 - 在 ```uni-app``` 中不能使用 ```*``` 选择器。
