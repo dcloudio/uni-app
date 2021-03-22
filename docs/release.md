@@ -177,7 +177,7 @@
   + App、H5平台 新增 网络请求相关接口 uni.request、uni.uploadFile、uni.downloadFile 支持 timeout 参数
   + App、H5平台 优化 input 组件 number 和 digit 类型支持输入负数（注意之前依赖键盘不能输入负数而没有校验输入内容应用应补充校验规则） [详情](https://ask.dcloud.net.cn/question/62987)
   + App、H5平台 修复 slider 组件显示最大值时拖动不跟手的Bug
-  + App、H5平台 修复 slider 组件 step 设置为小数时精度丢失的Bug [详情](https://ask.dcloud.net.cn/question/112749)  
+  + App、H5平台 修复 slider 组件 step 设置为小数时精度丢失的Bug [详情](https://ask.dcloud.net.cn/question/112749)
   + App平台 新增 uni.login 支持一键登录 [详情](https://uniapp.dcloud.io/univerify)
   + App平台 新增 uni-AD 支持 Draw信息流广告 [详情](https://uniapp.dcloud.net.cn/component/ad-draw)
   + App平台 新增 uni-AD ad 组件支持 adclicked 事件
@@ -235,7 +235,7 @@
   + 【重要】新增 uniCloud 本地服务。支持前端项目在控制台切换连接云环境还是本地服务。本地修改直接生效，不用上传即可联调 [详情](https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=calllocalfunction)
   + 【重要】调整 uniCloud 项目目录结构调整。根目录下为uniCloud目录，其下有二级目录 cloudfunctions 和 database。database目录存放数据表schema和扩展验证函数。并提供了目录结构迁移向导 [详情](https://ask.dcloud.net.cn/article/38028)
   + HBuilderX【重要】新增 本地编写 DB Schema，即数据表的表结构。支持新建、上传、下载表结构，支持代码提示。
-  + HBuilderX【重要】新增 `<unicloud-db>`组件（即之前的clientDB组件）支持代码提示。可提示JQL语法，在本地有schema的情况下可提示数据库表名字段。大幅提升开发效率 
+  + HBuilderX【重要】新增 `<unicloud-db>`组件（即之前的clientDB组件）支持代码提示。可提示JQL语法，在本地有schema的情况下可提示数据库表名字段。大幅提升开发效率
   + HBuilderX 新增 编写 validateFunction，即数据库扩展校验函数。支持新建、上传、下载validateFunction
   + HBuilderX 新增 uni-clientDB-actions 支持单文件上传、删除
   + HBuilderX 优化 db_init.json 当云数据库存在同名数据表时，提示覆盖的窗口UI
@@ -251,7 +251,7 @@
   + clientDB 优化 索引冲突时返回更友好的提示及错误码 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=returnvalue)
   + 阿里云支持事务（startTransaction方式，暂不支持runTransaction）[详情](https://uniapp.dcloud.net.cn/uniCloud/cf-database?id=starttransaction)
   + 其他云端更新日志另见：[https://uniapp.dcloud.io/uniCloud/release](https://uniapp.dcloud.io/uniCloud/release)
-    + 阿里云 修复 本地运行云函数向云数据库插入值为 null 的字段会报错的Bug
+  + 阿里云 修复 本地运行云函数向云数据库插入值为 null 的字段会报错的Bug
 * 【App插件(含5+App和uni-app的App端)】
   + 【重要】新增 一键登录，运营商网关认证，免短信验证获取手机号、一键免密登录 [详情](https://uniapp.dcloud.net.cn/univerify)
   + 新增 UniPush 华为手机，厂家通道离线推送可在服务端设置角标[参考插件](https://ext.dcloud.net.cn/plugin?id=1680)
@@ -265,12 +265,12 @@
   + 新增 QQ登录获取授权信息支持获取用户统一标识 unionid 属性 [规范](https://www.html5plus.org/doc/zh_cn/oauth.html#plus.oauth.UserInfo)
   + 更新 uni-AD 快手联盟SDK为3.3.5版
   + Android平台 更新 支付宝SDK为15.8.00，解决提交 GooglePlay 审核报存在不安全的加密模式的Bug [详情](https://ask.dcloud.net.cn/question/114053)
-  + Android平台 优化 应用启动时申请读写手机存储权限策略默认值为 once [详情](https://ask.dcloud.net.cn/article/36549) 
+  + Android平台 优化 应用启动时申请读写手机存储权限策略默认值为 once [详情](https://ask.dcloud.net.cn/article/36549)
   + Android平台 修复 uni-AD 开屏广告在部分设备可能触发崩溃的Bug
   + Android平台 修复 uni-AD 开屏基础广告展示gif图片可能引起应用崩溃的Bug
   + Android平台 修复 系统分享 sendWithSystem 分享应用资源图片可能失败的Bug [详情](https://ask.dcloud.net.cn/question/111836)
   + Android平台 修复 在Android10及以上设备无法保存视频文件到相册的Bug [详情](https://ask.dcloud.net.cn/question/112970)
-  + Android平台 修复 相册选择图片视频时超过 180M 的文件无法显示的Bug 
+  + Android平台 修复 相册选择图片视频时超过 180M 的文件无法显示的Bug
   + Android平台 修复 UniPush 第一次启动可能无法获取clientid的Bug [详情](https://ask.dcloud.net.cn/question/112318)
   + Android平台 修复 UniPush 消息对象 payload 属性值可能没有转换为JSON对象的Bug
   + Android平台 修复 Downloader 下载的链接地址无效时不会触发回调的Bug [详情](https://ask.dcloud.net.cn/question/111826)
@@ -661,7 +661,7 @@
   + 修复 2.7.14版本引出的H5端 main.js 内使用 uniCloud 导致 uniCloud 不可使用的Bug
   + 修复 云函数内获取客户端系统类型可能为空的Bug
   + 修复 HBuilderX 导入包含common目录的云函数模板，导致原common目录被覆盖的Bug
-  * 修复 HBuilderX 某些情况下，上传公共模块，出现npm install失败的Bug
+  + 修复 HBuilderX 某些情况下，上传公共模块，出现npm install失败的Bug
   + 修复 HBuilderX 上传公共模块没有填写appid时的错误提示与上传云函数不一致的Bug
   + 优化 HBuilderX 新建公共模块增加名称不能包含大写字母的限制
 * 【App插件(含5+App和uni-app的App端)】
@@ -674,7 +674,7 @@
   + Android平台 修复 Webview窗口的 iframe 中调用请求权限 requestPermissions 报错的Bug [详情](https://ask.dcloud.net.cn/question/100592)
   + Android平台 修复 Webview窗口设置 scrollIndicator 属性可能不生效的Bug
   + Android平台 修复 连接蓝牙设备 createBLEConnection 设置 timeout 属性无效的Bug
-  + Android平台 修复 获取蓝牙设备指定服务特征值的 write 属性值可能不正确的Bug [详情](https://ask.dcloud.net.cn/question/99149) 
+  + Android平台 修复 获取蓝牙设备指定服务特征值的 write 属性值可能不正确的Bug [详情](https://ask.dcloud.net.cn/question/99149)
   + 【重要】iOS平台 新增 云端打包支持配置自定义storyboard启动界面 [详情](https://ask.dcloud.net.cn/article/37475)
   + iOS平台 修复 uni-AD 同时并发调用多次获取信息流广告可能导致无法返回广告数据的Bug
   + iOS平台 修复 uni-AD 开屏广告点击特定基础广告时可能引起应用卡死的Bug
