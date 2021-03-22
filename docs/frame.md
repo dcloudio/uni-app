@@ -17,17 +17,18 @@
 
 <pre v-pre="" data-lang="">
 	<code class="lang-" style="padding:0">
-┌─uniCloud-aliyun       云空间目录，阿里云为uniCloud-aliyun,腾讯云为uniCloud-tcb（详见<a href="https://uniapp.dcloud.io/uniCloud/quickstart?id=%e7%9b%ae%e5%bd%95%e7%bb%93%e6%9e%84">uniCloud</a>）
+┌─uniCloud              云空间目录，阿里云为uniCloud-aliyun,腾讯云为uniCloud-tcb（详见<a href="https://uniapp.dcloud.io/uniCloud/quickstart?id=%e7%9b%ae%e5%bd%95%e7%bb%93%e6%9e%84">uniCloud</a>）
 │─components            符合vue组件规范的uni-app组件目录
 │  └─comp-a.vue         可复用的a组件
-├─hybrid                存放本地网页的目录，<a href="/component/web-view">详见</a>
+├─hybrid                App端存放本地html文件的目录，<a href="/component/web-view">详见</a>
 ├─platforms             存放各平台专用页面的目录，<a href="/platform?id=%E6%95%B4%E4%BD%93%E7%9B%AE%E5%BD%95%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91">详见</a>
 ├─pages                 业务页面文件存放的目录
 │  ├─index
 │  │  └─index.vue       index页面
 │  └─list
 │     └─list.vue        list页面
-├─static                存放应用引用静态资源（如图片、视频等）的目录，<b>注意：</b>静态资源只能存放于此
+├─static                存放应用引用的本地静态资源（如图片、视频等）的目录，<b>注意：</b>静态资源只能存放于此
+├─uni_modules           存放[uni_module](/uni_modules)规范的插件。
 ├─wxcomponents          存放小程序组件的目录，<a href="/frame?id=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81">详见</a>
 ├─main.js               Vue初始化入口文件
 ├─App.vue               应用配置，用来配置App全局样式以及监听 <a href="/collocation/frame/lifecycle?id=应用生命周期">应用生命周期</a>
@@ -37,10 +38,10 @@
 </pre>
 
 **Tips**
-- 编译到任意平台时，`static` 目录下的文件均会被打包进去，非 `static` 目录下的文件（vue、js、css 等）被引用到才会被包含进去。
+- 编译到任意平台时，`static` 目录下的文件均会被完整打包进去，且不会编译。非 `static` 目录下的文件（vue、js、css 等）只有被引用到才会被打包编译进去。
 - `static` 目录下的 `js` 文件不会被编译，如果里面有 `es6` 的代码，不经过转换直接运行，在手机设备上会报错。
-- `css`、`less/scss` 等资源同样不要放在 `static` 目录下，建议这些公用的资源放在 `common` 目录下。
-- HbuilderX 1.9.0+ 支持在根目录创建 `ext.json` `sitemap.json` 文件。  
+- `css`、`less/scss` 等资源不要放在 `static` 目录下，建议这些公用的资源放在自建的 `common` 目录下。
+- HbuilderX 1.9.0+ 支持在根目录创建 `ext.json`、`sitemap.json` 等小程序需要的文件。
 
 |有效目录|说明|
 |:-:|:-:|
@@ -71,8 +72,8 @@
 - `@`开头的绝对路径以及相对路径会经过base64转换规则校验
 - 引入的静态资源在非h5平台，均不转为base64。
 - H5平台，小于4kb的资源会被转换成base64，其余不转。
-- 自`HBuilderX 2.6.6-alpha`起`template`内支持`@`开头路径引入静态资源，旧版本不支持此方式
-- App平台自`HBuilderX 2.6.9-alpha`起`template`节点中引用静态资源文件时（如：图片），调整查找策略为【基于当前文件的路径搜索】，与其他平台保持一致
+- 自`HBuilderX 2.6.6`起`template`内支持`@`开头路径引入静态资源，旧版本不支持此方式
+- App平台自`HBuilderX 2.6.9`起`template`节点中引用静态资源文件时（如：图片），调整查找策略为【基于当前文件的路径搜索】，与其他平台保持一致
 - 支付宝小程序组件内 image 标签不可使用相对路径
 
 ### js文件引入
@@ -92,7 +93,7 @@ import add from '../../common/add.js'
 
 ### css引入静态资源
 
-> `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），可以使用相对路径或绝对路径（`HBuilderX 2.6.6-alpha`）
+> `css`文件或`style标签`内引入`css`文件时（scss、less文件同理），可以使用相对路径或绝对路径（`HBuilderX 2.6.6`）
 
 ```css
 /* 绝对路径 */
@@ -104,7 +105,7 @@ import add from '../../common/add.js'
 
 **注意**
 
-- 自`HBuilderX 2.6.6-alpha`起支持绝对路径引入静态资源，旧版本不支持此方式
+- 自`HBuilderX 2.6.6`起支持绝对路径引入静态资源，旧版本不支持此方式
 
 > `css`文件或`style标签`内引用的图片路径可以使用相对路径也可以使用绝对路径，需要注意的是，有些小程序端css文件不允许引用本地文件（请看注意事项）。
 
@@ -225,6 +226,12 @@ switch(uni.getSystemInfoSync().platform){
 
 ## 页面样式与布局
 
+uni-app的css与web的css基本一致。本文没有讲解css的用法。在你了解web的css的基础之上，本文讲述一些样式相关的注意事项。
+
+uni-app有vue页面和nvue页面。vue页面是webview渲染的、app端的nvue页面是原生渲染的。在nvue页面里样式比web会限制更多，另见[nvue样式专项文档](/nvue-css)
+
+本文重点介绍vue页面的样式注意事项。
+
 ### 尺寸单位
 
 `uni-app` 支持的通用 css 单位包括 px、rpx
@@ -232,7 +239,7 @@ switch(uni.getSystemInfoSync().platform){
 - px 即屏幕像素
 - rpx 即响应式px，一种根据屏幕宽度自适应的动态单位。以750宽的屏幕为基准，750rpx恰好为屏幕宽度。屏幕变宽，rpx 实际显示效果会等比放大，但在 App 端和 H5 端屏幕宽度达到 960px 时，默认将按照 375px 的屏幕宽度进行计算，具体配置参考：[rpx计算配置](https://uniapp.dcloud.io/collocation/pages?id=globalstyle) 。
 
-vue页面支持普通H5单位，但在nvue里不支持：
+vue页面支持下面这些普通H5单位，但在nvue里不支持：
 - rem 根字体大小可以通过 [page-meta](/component/page-meta?id=page-meta) 配置<span style="display:none">字节跳动小程序：屏幕宽度/20、百度小程序：16px、支付宝小程序：50px</span>
 - vh viewpoint height，视窗高度，1vh等于视窗高度的1%
 - vw viewpoint width，视窗宽度，1vw等于视窗宽度的1%
@@ -751,7 +758,7 @@ const package = require('packageName')
 	});
 </script>
 ```
-## 小程序组件支持
+## 小程序自定义组件支持
 
 ``uni-app`` 支持在 App 和 小程序 中使用**小程序自定义组件**，从HBuilderX2.4.7起，H5端也可以运行微信小程序组件。
 

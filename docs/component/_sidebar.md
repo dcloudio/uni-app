@@ -1,3 +1,4 @@
+* [组件概述](component/)
 * 视图容器
   * [view](component/view.md)
   * [scroll-view](component/scroll-view.md)
@@ -27,7 +28,6 @@
   * [textarea](component/textarea.md)
 * 路由与页面跳转
   * [navigator](component/navigator.md)
-  * [custom-tab-bar](component/custom-tab-bar.md)
 * 媒体组件
   * [audio](component/audio.md)
   * [camera](component/camera.md)
@@ -44,11 +44,10 @@
 * 广告
   * [ad](component/ad.md)
   * [ad-draw](component/ad-draw.md)
-* 导航类组件
-  * [navigation-bar](component/navigation-bar.md)
-  * [custom-tab-bar](component/custom-tab-bar.md)
 * 页面属性配置节点
   * [page-meta](component/page-meta.md)
+  * [navigation-bar](component/navigation-bar.md)
+  * [custom-tab-bar](component/custom-tab-bar.md)
 * 小程序开放能力组件
   * [official-account](component/official-account.md)
   * [open-data](component/open-data.md)
@@ -59,6 +58,9 @@
   * [recycle-list](component/recycle-list.md)
   * [waterfall](component/waterfall.md)
   * [refresh](component/refresh.md)
+* uniCloud专用组件
+  * [unicloud-db](uniCloud/unicloud-db)
+* [基础组件中原生组件说明](component/native-component.md)
 * 扩展组件（uni ui）
   * [uni-ui整体介绍](component/README?id=uniui)
   * [Badge 数字角标](https://ext.dcloud.net.cn/plugin?id=21)
@@ -89,10 +91,9 @@
   * [SwiperDot 轮播图指示点](https://ext.dcloud.net.cn/plugin?id=284)
   * [Tag 标签](https://ext.dcloud.net.cn/plugin?id=35)
   * [更多插件市场的组件](https://ext.dcloud.net.cn/?cat1=2)
-* [uniCloud组件](uniCloud/unicloud-db)
 * [datacom组件规范](component/datacom)
-* [配置小程序插件](component/mp-weixin-plugin.md)
-* [原生组件说明](component/native-component.md)
+* [App原生插件](https://nativesupport.dcloud.net.cn/NativePlugin/README)
+* [小程序插件](component/mp-weixin-plugin.md)
 <li></li>
 <div class="contact-box">
   <a href="//unicloud.dcloud.net.cn" target="_blank" class="contact-item">

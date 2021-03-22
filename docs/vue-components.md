@@ -1,27 +1,15 @@
-
 [观看本节视频讲解](https://learning.dcloud.io/#/?vid=12)
 
 ## 概念
 
 - 组件是视图层的基本组成单元。
-- 组件是一个单独功能模块的封装。
+- 组件是一个单独且可复用的功能模块的封装。
 - 一个组件包括开始标签和结束标签，标签上可以写属性，并对属性赋值。内容则写在两个标签之内。
 	- 根节点为 `<template>`，这个 `<template>` 下只能且必须有一个根 `<view>` 组件。这是[vue单文件组件规范](https://cn.vuejs.org/v2/guide/single-file-components.html)。
 	- 一个组件的 data 选项必须是一个函数。
 
-
+下面是一个基本组件示例，在根`<view>`组件下再次引入一个`<view>`组件，并给组件的text区绑定一个data。
 ```html
-	<!-- 在index.vue页面引用 user-info组件-->
-	<template>
-		<view>
-			<user-info></user-info>
-		</view>
-	</template>
-```
-
-
-```html
-	<!-- 我是组件 user-info -->
 	<template>
 		<view>
 			<view>{{userName}}</view>
@@ -38,6 +26,24 @@
 	</script>
 ```
 
+基础组件是内置在uni-app框架中的，包括view、text、input、button、video等几十个基础组件，列表详见：[uni-app基础组件](https://uniapp.dcloud.net.cn/component/README?id=%e5%9f%ba%e7%a1%80%e7%bb%84%e4%bb%b6)
+
+但仅有基础组件是不够用的，实际开发中会有很多封装的组件。
+
+比如我们需要一个五角星点击评分的组件，在DCloud的插件市场里可以获取到：[https://ext.dcloud.net.cn/plugin?id=33](https://ext.dcloud.net.cn/plugin?id=33)
+
+把这个uni-rate组件导入到你的uni-app项目下，在需要的vue页面里引用它，就可以在指定的地方显示出这个五角星组件。
+
+```html
+	<!-- 在index.vue页面引用 uni-rate 组件-->
+	<template>
+		<view>
+			<uni-rate></uni-rate><!-- 这里会显示一个五角星，并且点击后会自动亮星 -->
+		</view>
+	</template>
+```
+
+
 
 
 ## 优势
@@ -47,6 +53,7 @@
 - 合理的划分组件，有助于提高应用性能。
 - 代码更加方便组织和管理，并且扩展性也更强，便于多人协同开发。
 - 组件化开发能大幅度提高应用开发效率、测试性、复用性等。
+
 
 
 
@@ -834,20 +841,6 @@ Vue 实现了一套内容分发的 API，将 `slot` 元素作为承载分发内�
 
 
 
-
-## uni-app内置基础组件
-
-`uni-app` 内置了小程序的所有[组件](https://uniapp.dcloud.io/component/)，比如： `picker` , `map` 等，需要注意的是原生组件上的事件绑定，需要以 vue 的事件绑定语法来绑定，如 bindchange="eventName" 事件，需要写成 `@change="eventName"`
-
-```html
-	<picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="bindDateChange">
-		<view class="picker">
-		  当前选择: {{date}}
-		</view>
-	</picker>
-```
-
-
 ## 命名限制
 
 在 uni-app 中以下这些作为保留关键字，不可作为组件名。
@@ -905,6 +898,7 @@ Tips
 - 除以上列表中的名称外，标准的 HTML 及 SVG 标签名也不能作为组件名。
 - 在百度小程序中使用时，不要在 data 内使用 hidden ，可能会导致渲染错误。
 - methods中不可使用与生命周期同名的方法名。
+
 
 
 
