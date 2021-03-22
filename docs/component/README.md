@@ -62,6 +62,7 @@
 |属性名|类型|描述|注解|
 |:-|:-|:-|:-|
 |id|String|组件的唯一标示|保持整个页面唯一|
+|ref|String|vue中组件的唯一标示|在vue的js中可通过this.$refs.xxx获取到组件对象|
 |class|String|组件的样式类|在对应的 css 中定义的样式类|
 |style|String|组件的内联样式|可以动态设置的内联样式|
 |hidden|Boolean|组件是否隐藏|所有组件默认是显示的|
@@ -156,7 +157,7 @@ uni-app为开发者提供了一系列基础组件，类似HTML里的基础标签
 
 #### 基础组件列表
 
-基础组件分为以下八大类：
+基础组件分为以下十几大类：
 
 
 **视图容器（View Container）：**
@@ -214,7 +215,6 @@ uni-app为开发者提供了一系列基础组件，类似HTML里的基础标签
 |[video](component/video.md)|视频|
 |[live-player](component/live-player.md)|直播播放|
 |[live-pusher](component/live-pusher.md)|实时音视频录制，也称直播推流|
-
 
 **地图（Map）：**
 
@@ -303,7 +303,7 @@ uni-app支持的组件分为vue组件和小程序自定义组件。
 
 ### easycom组件规范
 
-> `HBuilderX 2.5.5`起支持`
+> `HBuilderX 2.5.5`起支持
 
 传统vue组件，需要安装、引用、注册，三个步骤后才能使用组件。`easycom`将其精简为一步。
 
@@ -422,7 +422,7 @@ datacom组件是一种数据驱动的、可云端一体的组件。
 封装组件涉及的知识点较多，相关文档详见：[vue组件详解](/vue-componets)
 
 
-### 扩展组件（uni-ui）：@uniui
+### 扩展组件（uni-ui）@uniui
 
 uni-ui是DCloud提供的一个跨端ui库，它是基于vue组件的、flex布局的、无dom的跨全端ui框架。
 
