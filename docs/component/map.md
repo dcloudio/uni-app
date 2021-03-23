@@ -104,7 +104,6 @@
 |bgColor|背景色|String|App-nvue 2.1.5+、微信小程序、百度小程序|
 |padding|文本边缘留白|Number|App-nvue 2.1.5+、微信小程序、百度小程序|
 |textAlign|文本对齐方式。有效值: left, right, center|String|App-nvue 2.1.5+、微信小程序、百度小程序|
-|joinCluster|是否参与点聚合|Boolean|App-nvue 3.1.0+、微信小程序|
 |clusterId|自定义点聚合簇效果时使用|Number|App-nvue 3.1.0+、微信小程序|
 |customCallout|自定义气泡窗口|Object|App暂时不支持、微信小程序|
 |aria-label|无障碍访问，（属性）元素的额外描述|String|App-nvue 3.1.0+、微信小程序|
