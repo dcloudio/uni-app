@@ -35,7 +35,7 @@ function createPageBodyVNode(ctx: SetupContext) {
     openBlock(),
     createBlock(
       PageBody,
-      { key: 1 },
+      { key: 0 },
       {
         default: withCtx(() => [renderSlot(ctx.slots, 'page')]),
         _: 3 /* FORWARDED */,
