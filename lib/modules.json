@@ -60,6 +60,7 @@
     "uni.getImageInfo": true,
     "uni.saveImageToPhotosAlbum": true,
     "uni.compressImage": true,
+    "uni.compressVideo": true,
     "uni.getRecorderManager": true,
     "uni.getBackgroundAudioManager": true,
     "uni.createInnerAudioContext": true,
