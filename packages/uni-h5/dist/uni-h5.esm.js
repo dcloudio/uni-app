@@ -8082,6 +8082,7 @@ var PageHead = defineComponent({
   name: "PageHead",
   setup() {
     const pageMeta = usePageMeta();
+    UniServiceJSBridge.emit("onNavigationBarChange", pageMeta.navigationBar.titleText);
     return () => (openBlock(), createBlock("uni-page-head", null, pageMeta.navigationBar.titleText));
   }
 });
@@ -8380,7 +8381,7 @@ function createPageHeadVNode() {
   return createVNode(PageHead);
 }
 function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(PageBody, {key: 1}, {
+  return openBlock(), createBlock(PageBody, {key: 0}, {
     default: withCtx(() => [renderSlot(ctx.slots, "page")]),
     _: 3
   });

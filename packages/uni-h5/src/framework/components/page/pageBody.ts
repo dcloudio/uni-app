@@ -12,9 +12,9 @@ import {
 
 import { usePageMeta } from '../../plugin/provide'
 
-import PageRefresh from './pageRefresh/index.vue'
+import PageRefresh from './page-refresh/component.vue'
 
-import { usePageRefresh } from './pageRefresh'
+import { usePageRefresh } from './page-refresh'
 
 export default defineComponent({
   name: 'PageBody',

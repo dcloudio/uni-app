@@ -15,6 +15,10 @@ export default defineComponent({
   name: 'PageHead',
   setup() {
     const pageMeta = usePageMeta()
+    UniServiceJSBridge.emit(
+      'onNavigationBarChange',
+      pageMeta.navigationBar.titleText
+    )
     return () => (
       openBlock(),
       createBlock('uni-page-head', null, pageMeta.navigationBar.titleText)
