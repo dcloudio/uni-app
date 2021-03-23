@@ -8,8 +8,8 @@ import {
   defineComponent,
 } from 'vue'
 
-import PageHead from './PageHead'
-import PageBody from './PageBody'
+import PageHead from './pageHead'
+import PageBody from './pageBody'
 import { providePageMeta } from '../../plugin/provide'
 
 export default defineComponent({
