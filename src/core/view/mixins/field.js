@@ -49,11 +49,27 @@ export default {
     focus: {
       type: [Boolean, String],
       default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
     }
   },
   data () {
     return {
-      valueSync: this._getValueString(this.value)
+      composing: false,
+      valueSync: this._getValueString(this.value),
+      focusSync: this.focus,
+      // Safari 14 以上修正禁用状态颜色
+      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
     }
   },
   watch: {
@@ -63,11 +79,35 @@ export default {
       } else {
         this._blur()
       }
+    },
+    focusSync (val) {
+      this.$emit('update:focus', val)
+    },
+    cursorNumber () {
+      this._checkCursor()
+    },
+    selectionStartNumber () {
+      this._checkSelection()
+    },
+    selectionEndNumber () {
+      this._checkSelection()
     }
   },
   computed: {
     needFocus () {
       return this.autoFocus || this.focus
+    },
+    cursorNumber () {
+      var cursor = Number(this.cursor)
+      return isNaN(cursor) ? -1 : cursor
+    },
+    selectionStartNumber () {
+      var selectionStart = Number(this.selectionStart)
+      return isNaN(selectionStart) ? -1 : selectionStart
+    },
+    selectionEndNumber () {
+      var selectionEnd = Number(this.selectionEnd)
+      return isNaN(selectionEnd) ? -1 : selectionEnd
     }
   },
   created () {
@@ -133,6 +173,38 @@ export default {
     _blur () {
       const field = this._field
       field && field.blur()
+    },
+    _onFocus ($event) {
+      this.focusSync = true
+      this.$trigger('focus', $event, {
+        value: this.valueSync
+      })
+      // 从 watch:focusSync 中移出到这里。在watcher中如果focus初始值为ture，则不会执行以下逻辑
+      this._checkSelection()
+      this._checkCursor()
+    },
+    _onBlur ($event) {
+      // iOS 输入法 compositionend 事件可能晚于 blur
+      if (this.composing) {
+        this.composing = false
+        this._onInput($event, true)
+      }
+      this.focusSync = false
+      this.$trigger('blur', $event, {
+        value: this.valueSync,
+        cursor: $event.target.selectionEnd
+      })
+    },
+    _checkSelection () {
+      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1) {
+        this._field.selectionStart = this.selectionStartNumber
+        this._field.selectionEnd = this.selectionEndNumber
+      }
+    },
+    _checkCursor () {
+      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1) {
+        this._field.selectionEnd = this._field.selectionStart = this.cursorNumber
+      }
     }
   }
 }
