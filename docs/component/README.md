@@ -291,8 +291,8 @@ uni-app为开发者提供了一系列基础组件，类似HTML里的基础标签
 uni-app支持的组件分为vue组件和小程序自定义组件。
 
 如果你还不了解这两种组件，可以参阅各自的文档
-- vue组件：[文档](/vue-componets)
-- 小程序自定义组件：其规范不是vue规范，而是小程序规范，[文档](/frame?id=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e7%bb%84%e4%bb%b6%e6%94%af%e6%8c%81)
+- vue组件：[文档](https://uniapp.dcloud.net.cn/vue-components?id=%e6%a6%82%e5%bf%b5)
+- 小程序自定义组件：其规范不是vue规范，而是小程序规范，[文档](https://uniapp.dcloud.net.cn/frame?id=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e8%87%aa%e5%ae%9a%e4%b9%89%e7%bb%84%e4%bb%b6%e6%94%af%e6%8c%81)
 
 日常开发来讲，推荐使用vue组件。uni-app支持小程序组件只要是为了兼容更多生态资源。
 
