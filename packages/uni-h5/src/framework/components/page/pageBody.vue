@@ -1,4 +1,5 @@
 <template>
+  <div></div>
   <uni-page-wrapper>
     <uni-page-body>
       <slot />

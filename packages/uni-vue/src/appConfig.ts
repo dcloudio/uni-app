@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from '@vue/runtime-core'
+import { ComponentPublicInstance } from 'vue'
 
 export function errorHandler(
   err: unknown,

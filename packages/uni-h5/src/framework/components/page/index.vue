@@ -9,10 +9,10 @@
     />
     <page-body
       v-if="enablePullDownRefresh"
-      @touchstart.native="_touchstart"
-      @touchmove.native="_touchmove"
-      @touchend.native="_touchend"
-      @touchcancel.native="_touchend"
+      @touchstart="_touchstart"
+      @touchmove="_touchmove"
+      @touchend="_touchend"
+      @touchcancel="_touchend"
     >
       <slot name="page" />
     </page-body>

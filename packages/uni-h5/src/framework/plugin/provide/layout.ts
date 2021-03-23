@@ -1,15 +1,26 @@
-import { computed, nextTick, Ref, ref } from 'vue'
+import { computed, inject, nextTick, provide, Ref, ref } from 'vue'
 import { Router } from 'vue-router'
 import { hasOwn } from '@vue/shared'
 import { RESPONSIVE_MIN_WIDTH } from '@dcloudio/uni-shared'
+import { PolySymbol } from '@dcloudio/uni-core'
+
 import { checkMinWidth } from '../../../helpers/dom'
+
+const layoutKey = PolySymbol(__DEV__ ? 'layout' : 'l')
 
 interface ProvideLayout {}
 
 // const windowTypes = ['top', 'left', 'right']
 
+export function useLayout() {
+  return inject(layoutKey)
+}
+
+export function provideLayout(router?: Router) {
+  provide(layoutKey, initLayout(router))
+}
 // 1. 查找minWidth，确认是否需要responsive
-export function initLayout(router?: Router): ProvideLayout {
+function initLayout(router?: Router): ProvideLayout {
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return {}
   }

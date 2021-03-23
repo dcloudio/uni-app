@@ -1,4 +1,4 @@
-import { ComponentInternalInstance } from '@vue/runtime-core'
+import { ComponentInternalInstance } from 'vue'
 // @ts-ignore
 import { isInSSRComponentSetup, injectHook } from 'vue'
 

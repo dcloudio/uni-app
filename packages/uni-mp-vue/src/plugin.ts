@@ -1,4 +1,4 @@
-import { App } from '@vue/runtime-core'
+import { App } from 'vue'
 
 import { initApp } from '@dcloudio/uni-vue'
 

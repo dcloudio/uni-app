@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, defineComponent, nextTick, computed, openBlock, createBlock, Fragment, withDirectives, createVNode, vShow, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, mergeProps, onMounted, ref, toDisplayString, toHandlers, renderSlot, withModifiers, vModelDynamic, renderList, vModelText, createTextVNode} from "vue";
-import {COMPONENT_NAME_PREFIX, RESPONSIVE_MIN_WIDTH, isCustomElement, plusReady, debounce, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
+import {injectHook, defineComponent, nextTick, computed, openBlock, createBlock, Fragment, withDirectives, createVNode, vShow, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, mergeProps, onMounted, ref, toDisplayString, toHandlers, renderSlot, withModifiers, vModelDynamic, renderList, vModelText, inject, provide, reactive} from "vue";
+import {COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -687,36 +687,15 @@ function initService(app) {
 function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
-function getRealRoute(fromRoute, toRoute) {
-  if (!toRoute) {
-    toRoute = fromRoute;
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
+function rpx2px(str) {
+  if (typeof str === "string") {
+    const res = parseInt(str) || 0;
+    if (str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1) {
+      return uni.upx2px(res);
     }
-    const pages = getCurrentPages();
-    if (pages.length) {
-      fromRoute = pages[pages.length - 1].$page.route;
-    } else {
-      fromRoute = "";
-    }
-  } else {
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
+    return res;
   }
-  if (toRoute.indexOf("./") === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2));
-  }
-  const toRouteArray = toRoute.split("/");
-  const toRouteLength = toRouteArray.length;
-  let i = 0;
-  for (; i < toRouteLength && toRouteArray[i] === ".."; i++) {
-  }
-  toRouteArray.splice(0, i);
-  toRoute = toRouteArray.join("/");
-  const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
-  fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
-  return "/" + fromRouteArray.concat(toRouteArray).join("/");
+  return str;
 }
 let appVm;
 function getApp$1() {
@@ -731,9 +710,7 @@ function initApp(vm) {
   appVm.globalData = appVm.$options.globalData || {};
 }
 function initRouter(app) {
-  const router = createAppRouter(createRouter(createRouterOptions()));
-  app.use(router);
-  return router;
+  app.use(createAppRouter(createRouter(createRouterOptions())));
 }
 const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
@@ -940,21 +917,6 @@ function createLeftWindowVNode(leftWindow) {
 }
 function createRightWindowVNode(leftWindow) {
 }
-function appendCss(css, cssId, replace = false) {
-  let style = document.getElementById(cssId);
-  if (style && replace) {
-    style.parentNode.removeChild(style);
-    style = null;
-  }
-  if (!style) {
-    style = document.createElement("style");
-    style.type = "text/css";
-    cssId && (style.id = cssId);
-    document.getElementsByTagName("head")[0].appendChild(style);
-  }
-  style.appendChild(document.createTextNode(css));
-}
-const screen = window.screen;
 const documentElement = document.documentElement;
 let styleObj;
 function updateCssVar(name, value) {
@@ -962,17 +924,6 @@ function updateCssVar(name, value) {
     styleObj = documentElement.style;
   }
   styleObj.setProperty(name, value);
-}
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen.width,
-    screen.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
 }
 const CSS_VARS = [
   "--status-bar-height",
@@ -1031,12 +982,12 @@ function useAppClass() {
     onLayoutChange
   };
 }
-const _sfc_main$u = {};
-const _hoisted_1$e = /* @__PURE__ */ createVNode("uni-top-window", null, null, -1);
-function _sfc_render$s(_ctx, _cache) {
+const _sfc_main$r = {};
+const _hoisted_1$d = /* @__PURE__ */ createVNode("uni-top-window", null, null, -1);
+function _sfc_render$p(_ctx, _cache) {
   const _component_router_view = resolveComponent("router-view");
   return openBlock(), createBlock("uni-layout", null, [
-    _hoisted_1$e,
+    _hoisted_1$d,
     createVNode("uni-content", null, [
       createVNode("uni-main", null, [
         (openBlock(), createBlock(KeepAlive, null, [
@@ -1046,11 +997,11 @@ function _sfc_render$s(_ctx, _cache) {
     ])
   ]);
 }
-_sfc_main$u.render = _sfc_render$s;
+_sfc_main$r.render = _sfc_render$p;
 function initSystemComponents(app) {
   AppComponent.name = COMPONENT_NAME_PREFIX + AppComponent.name;
   app.component(AppComponent.name, AppComponent);
-  app.component(_sfc_main$u.name, _sfc_main$u);
+  app.component(_sfc_main$r.name, _sfc_main$r);
 }
 function initMixin(app) {
   app.mixin({
@@ -1070,84 +1021,7 @@ function initMixin(app) {
     }
   });
 }
-function initLayout(router) {
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    return {};
-  }
-  initTopWindow(router);
-  initLeftWindow();
-  initRightWindow();
-  return {};
-}
-function initMediaQuery(minWidth, callback) {
-  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-  if (mediaQueryList.addEventListener) {
-    mediaQueryList.addEventListener("change", callback);
-  } else {
-    mediaQueryList.addListener(callback);
-  }
-}
-function initTopWindow(router) {
-  const res = {
-    matchTopWindow: ref(false),
-    topWindowStyle: ref({}),
-    showTopWindow: ref(false)
-  };
-  if (__UNI_FEATURE_TOPWINDOW__) {
-    return _initTopWindow(res, router);
-  }
-  return res;
-}
-function _initTopWindow(res, router) {
-  let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
-  const {matchMedia, style} = __uniConfig.topWindow;
-  if (matchMedia && hasOwn$1(matchMedia, "minWidth")) {
-    topWindowMinWidth = matchMedia.minWidth;
-  }
-  if (checkMinWidth(topWindowMinWidth)) {
-    initMediaQuery(topWindowMinWidth, (ev) => {
-      res.matchTopWindow.value = ev.matches;
-      nextTick(() => {
-      });
-    });
-  }
-  res.topWindowStyle = ref(style);
-  res.showTopWindow = computed(() => {
-    if (!res.matchTopWindow.value) {
-      return false;
-    }
-    if (router && !router.currentRoute.value.meta.topWindow) {
-      return false;
-    }
-    return true;
-  });
-  return res;
-}
-function initLeftWindow() {
-  let leftWindowMinWidth = RESPONSIVE_MIN_WIDTH;
-  if (__UNI_FEATURE_LEFTWINDOW__) {
-    const {matchMedia} = __uniConfig.leftWindow;
-    if (matchMedia && hasOwn$1(matchMedia, "minWidth")) {
-      leftWindowMinWidth = matchMedia.minWidth;
-    }
-  }
-  return {leftWindowMinWidth};
-}
-function initRightWindow() {
-  let rightWindowMinWidth = RESPONSIVE_MIN_WIDTH;
-  if (__UNI_FEATURE_RIGHTWINDOW__) {
-    const {matchMedia} = __uniConfig.rightWindow;
-    if (matchMedia && hasOwn$1(matchMedia, "minWidth")) {
-      rightWindowMinWidth = matchMedia.minWidth;
-    }
-  }
-  return {rightWindowMinWidth};
-}
-const layoutKey = PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
-function initProvide(app, router) {
-  app.provide(layoutKey, initLayout(router));
-}
-var index = {
+var index$1 = {
   install(app) {
     app._context.config.isCustomElement = isCustomElement;
     initApp$1(app);
@@ -1155,7 +1029,9 @@ var index = {
     initService(app);
     initSystemComponents(app);
     initMixin(app);
-    initProvide(app, __UNI_FEATURE_PAGES__ && initRouter(app) || void 0);
+    if (__UNI_FEATURE_PAGES__) {
+      initRouter(app);
+    }
   }
 };
 function broadcast(componentName, eventName, ...params) {
@@ -1540,7 +1416,7 @@ try {
 } catch (e2) {
 }
 const passiveOptions = supportsPassive$1 ? {passive: true} : false;
-const _sfc_main$t = {
+const _sfc_main$q = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1659,13 +1535,13 @@ const _sfc_main$t = {
     }
   }
 };
-const _hoisted_1$d = {class: "uni-audio-default"};
-const _hoisted_2$7 = {class: "uni-audio-right"};
-const _hoisted_3$3 = {class: "uni-audio-time"};
-const _hoisted_4$3 = {class: "uni-audio-info"};
+const _hoisted_1$c = {class: "uni-audio-default"};
+const _hoisted_2$6 = {class: "uni-audio-right"};
+const _hoisted_3$2 = {class: "uni-audio-time"};
+const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1675,7 +1551,7 @@ function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$d, [
+    createVNode("div", _hoisted_1$c, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1685,9 +1561,9 @@ function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$7, [
-        createVNode("div", _hoisted_3$3, toDisplayString($data.currentTime), 1),
-        createVNode("div", _hoisted_4$3, [
+      createVNode("div", _hoisted_2$6, [
+        createVNode("div", _hoisted_3$2, toDisplayString($data.currentTime), 1),
+        createVNode("div", _hoisted_4$2, [
           createVNode("div", _hoisted_5$1, toDisplayString($props.name), 1),
           createVNode("div", _hoisted_6$1, toDisplayString($props.author), 1)
         ])
@@ -1695,7 +1571,7 @@ function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$t.render = _sfc_render$r;
+_sfc_main$q.render = _sfc_render$o;
 const pixelRatio = function() {
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
@@ -1824,7 +1700,7 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-var index_vue_vue_type_style_index_0_lang$k = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$j = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -1849,7 +1725,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$s = {
+const _sfc_main$p = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -2345,20 +2221,20 @@ const _sfc_main$s = {
     }
   }
 };
-const _hoisted_1$c = {
+const _hoisted_1$b = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
-const _hoisted_2$6 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$c, null, 512),
-    createVNode("div", _hoisted_2$6, [
+    createVNode("canvas", _hoisted_1$b, null, 512),
+    createVNode("div", _hoisted_2$5, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
@@ -2367,8 +2243,8 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$s.render = _sfc_render$q;
-const _sfc_main$r = {
+_sfc_main$p.render = _sfc_render$n;
+const _sfc_main$o = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -2444,12 +2320,12 @@ const _sfc_main$r = {
     }
   }
 };
-const _hoisted_1$b = {class: "uni-checkbox-wrapper"};
-function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$a = {class: "uni-checkbox-wrapper"};
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$b, [
+    createVNode("div", _hoisted_1$a, [
       createVNode("div", {
         class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
         style: {color: $props.color}
@@ -2458,9 +2334,9 @@ function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$r.render = _sfc_render$p;
-var index_vue_vue_type_style_index_0_lang$j = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
-const _sfc_main$q = {
+_sfc_main$o.render = _sfc_render$m;
+var index_vue_vue_type_style_index_0_lang$i = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
+const _sfc_main$n = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -2526,12 +2402,12 @@ const _sfc_main$q = {
     }
   }
 };
-function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$q.render = _sfc_render$o;
+_sfc_main$n.render = _sfc_render$l;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -2916,7 +2792,7 @@ function register(Quill) {
 }
 var editor_css_vue_type_style_index_0_src_lang = ".ql-container {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  -webkit-user-select: text;\n  user-select: text;\n  outline: none;\n  overflow: hidden;\n  width: 100%;\n  height: 200px;\n  min-height: 200px;\n}\n.ql-container[hidden] {\n  display: none;\n}\n.ql-container .ql-editor {\n  position: relative;\n  font-size: inherit;\n  line-height: inherit;\n  font-family: inherit;\n  min-height: inherit;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-tap-highlight-color: transparent;\n  -webkit-touch-callout: none;\n  -webkit-overflow-scrolling: touch;\n}\n.ql-container .ql-editor::-webkit-scrollbar {\n  width: 0 !important;\n}\n.ql-container .ql-editor.scroll-disabled {\n  overflow: hidden;\n}\n.ql-container .ql-image-overlay {\n  display: flex;\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px dashed #ccc;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  user-select: none;\n}\n.ql-container .ql-image-overlay .ql-image-size {\n  position: absolute;\n  padding: 4px 8px;\n  text-align: center;\n  background-color: #fff;\n  color: #888;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  opacity: 0.8;\n  right: 4px;\n  top: 4px;\n  font-size: 12px;\n  display: inline-block;\n  width: auto;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar {\n  position: relative;\n  text-align: center;\n  box-sizing: border-box;\n  background: #000;\n  border-radius: 5px;\n  color: #fff;\n  font-size: 0;\n  min-height: 24px;\n  z-index: 100;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span {\n  display: inline-block;\n  cursor: pointer;\n  padding: 5px;\n  font-size: 12px;\n  border-right: 1px solid #fff;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span:last-child {\n  border-right: 0;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span.triangle-up {\n  padding: 0;\n  position: absolute;\n  top: -12px;\n  left: 50%;\n  transform: translatex(-50%);\n  width: 0;\n  height: 0;\n  border-width: 6px;\n  border-style: solid;\n  border-color: transparent transparent black transparent;\n}\n.ql-container .ql-image-overlay .ql-image-handle {\n  position: absolute;\n  height: 12px;\n  width: 12px;\n  border-radius: 50%;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  background: #fff;\n}\n.ql-container img {\n  display: inline-block;\n  max-width: 100%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n.ql-editor {\n  box-sizing: border-box;\n  height: 100%;\n  outline: none;\n  overflow-y: auto;\n  tab-size: 4;\n  -moz-tab-size: 4;\n  text-align: left;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n}\n.ql-editor > * {\n  cursor: text;\n}\n.ql-editor p,\n.ql-editor ol,\n.ql-editor ul,\n.ql-editor pre,\n.ql-editor blockquote,\n.ql-editor h1,\n.ql-editor h2,\n.ql-editor h3,\n.ql-editor h4,\n.ql-editor h5,\n.ql-editor h6 {\n  margin: 0;\n  padding: 0;\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol > li,\n.ql-editor ul > li {\n  list-style-type: none;\n}\n.ql-editor ul > li::before {\n  content: '\\2022';\n}\n.ql-editor ul[data-checked=true],\n.ql-editor ul[data-checked=false] {\n  pointer-events: none;\n}\n.ql-editor ul[data-checked=true] > li *,\n.ql-editor ul[data-checked=false] > li * {\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before,\n.ql-editor ul[data-checked=false] > li::before {\n  color: #777;\n  cursor: pointer;\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before {\n  content: '\\2611';\n}\n.ql-editor ul[data-checked=false] > li::before {\n  content: '\\2610';\n}\n.ql-editor li::before {\n  display: inline-block;\n  white-space: nowrap;\n  width: 2em;\n}\n.ql-editor ol li {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n.ql-editor ol li:before {\n  content: counter(list-0, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-increment: list-1;\n}\n.ql-editor ol li.ql-indent-1:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-increment: list-2;\n}\n.ql-editor ol li.ql-indent-2:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-increment: list-3;\n}\n.ql-editor ol li.ql-indent-3:before {\n  content: counter(list-3, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-increment: list-4;\n}\n.ql-editor ol li.ql-indent-4:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-increment: list-5;\n}\n.ql-editor ol li.ql-indent-5:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-increment: list-6;\n}\n.ql-editor ol li.ql-indent-6:before {\n  content: counter(list-6, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-increment: list-7;\n}\n.ql-editor ol li.ql-indent-7:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-increment: list-8;\n}\n.ql-editor ol li.ql-indent-8:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-reset: list-9;\n}\n.ql-editor ol li.ql-indent-9 {\n  counter-increment: list-9;\n}\n.ql-editor ol li.ql-indent-9:before {\n  content: counter(list-9, decimal) '. ';\n}\n.ql-editor .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n.ql-editor .ql-align-center {\n  text-align: center;\n}\n.ql-editor .ql-align-justify {\n  text-align: justify;\n}\n.ql-editor .ql-align-right {\n  text-align: right;\n}\n.ql-editor.ql-blank::before {\n  color: rgba(0, 0, 0, 0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  pointer-events: none;\n  position: absolute;\n}\n.ql-container.ql-disabled .ql-editor ul[data-checked] > li::before {\n  pointer-events: none;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n";
 var index_vue_vue_type_style_index_1_lang = "\n";
-const _sfc_main$p = {
+const _sfc_main$m = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -3238,15 +3114,15 @@ const _sfc_main$p = {
     }
   }
 };
-function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$p.render = _sfc_render$n;
-var index_vue_vue_type_style_index_0_lang$i = "\r\n";
-const _sfc_main$o = {
+_sfc_main$m.render = _sfc_render$k;
+var index_vue_vue_type_style_index_0_lang$h = "\r\n";
+const _sfc_main$l = {
   name: "Form",
   mixins: [listeners],
   data() {
@@ -3287,16 +3163,16 @@ const _sfc_main$o = {
     }
   }
 };
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-form", _ctx.$attrs, [
     createVNode("span", null, [
       renderSlot(_ctx.$slots, "default")
     ])
   ], 16);
 }
-_sfc_main$o.render = _sfc_render$m;
-var index_vue_vue_type_style_index_0_lang$h = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,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')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
-const _sfc_main$n = {
+_sfc_main$l.render = _sfc_render$j;
+var index_vue_vue_type_style_index_0_lang$g = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,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')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
+const _sfc_main$k = {
   name: "Icon",
   props: {
     type: {
@@ -3326,7 +3202,7 @@ const _sfc_main$n = {
     }
   }
 };
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-icon", _ctx.$attrs, [
     createVNode("i", {
       class: `uni-icon-${$props.type}`,
@@ -3335,9 +3211,9 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 6)
   ], 16);
 }
-_sfc_main$n.render = _sfc_render$l;
-var index_vue_vue_type_style_index_0_lang$g = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
-const _sfc_main$m = {
+_sfc_main$k.render = _sfc_render$i;
+var index_vue_vue_type_style_index_0_lang$f = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
+const _sfc_main$j = {
   name: "Image",
   props: {
     src: {
@@ -3488,7 +3364,7 @@ const _sfc_main$m = {
     }
   }
 };
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-image", _ctx.$attrs, [
     createVNode("div", {
@@ -3503,11 +3379,11 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$m.render = _sfc_render$k;
-var index_vue_vue_type_style_index_0_lang$f = '\nuni-input {\r\n  display: block;\r\n  font-size: 16px;\r\n  line-height: 1.4em;\r\n  height: 1.4em;\r\n  min-height: 1.4em;\r\n  overflow: hidden;\n}\nuni-input[hidden] {\r\n  display: none;\n}\n.uni-input-wrapper,\r\n.uni-input-placeholder,\r\n.uni-input-form,\r\n.uni-input-input {\r\n  outline: none;\r\n  border: none;\r\n  padding: 0;\r\n  margin: 0;\r\n  text-decoration: inherit;\n}\n.uni-input-wrapper,\r\n.uni-input-form {\r\n  display: flex;\r\n  position: relative;\r\n  width: 100%;\r\n  height: 100%;\r\n  flex-direction: column;\r\n  justify-content: center;\n}\n.uni-input-placeholder,\r\n.uni-input-input {\r\n  width: 100%;\n}\n.uni-input-placeholder {\r\n  position: absolute;\r\n  top: auto !important;\r\n  left: 0;\r\n  color: gray;\r\n  overflow: hidden;\r\n  text-overflow: clip;\r\n  white-space: pre;\r\n  word-break: keep-all;\r\n  pointer-events: none;\r\n  line-height: inherit;\n}\n.uni-input-input {\r\n  display: block;\r\n  height: 100%;\r\n  background: none;\r\n  color: inherit;\r\n  opacity: 1;\r\n  -webkit-text-fill-color: currentcolor;\r\n  font: inherit;\r\n  line-height: inherit;\r\n  letter-spacing: inherit;\r\n  text-align: inherit;\r\n  text-indent: inherit;\r\n  text-transform: inherit;\r\n  text-shadow: inherit;\n}\n.uni-input-input[type="search"]::-webkit-search-cancel-button {\r\n  display: none;\n}\n.uni-input-input::-webkit-outer-spin-button,\r\n.uni-input-input::-webkit-inner-spin-button {\r\n  -webkit-appearance: none;\r\n  margin: 0;\n}\n.uni-input-input[type="number"] {\r\n  -moz-appearance: textfield;\n}\r\n';
+_sfc_main$j.render = _sfc_render$h;
+var index_vue_vue_type_style_index_0_lang$e = '\nuni-input {\r\n  display: block;\r\n  font-size: 16px;\r\n  line-height: 1.4em;\r\n  height: 1.4em;\r\n  min-height: 1.4em;\r\n  overflow: hidden;\n}\nuni-input[hidden] {\r\n  display: none;\n}\n.uni-input-wrapper,\r\n.uni-input-placeholder,\r\n.uni-input-form,\r\n.uni-input-input {\r\n  outline: none;\r\n  border: none;\r\n  padding: 0;\r\n  margin: 0;\r\n  text-decoration: inherit;\n}\n.uni-input-wrapper,\r\n.uni-input-form {\r\n  display: flex;\r\n  position: relative;\r\n  width: 100%;\r\n  height: 100%;\r\n  flex-direction: column;\r\n  justify-content: center;\n}\n.uni-input-placeholder,\r\n.uni-input-input {\r\n  width: 100%;\n}\n.uni-input-placeholder {\r\n  position: absolute;\r\n  top: auto !important;\r\n  left: 0;\r\n  color: gray;\r\n  overflow: hidden;\r\n  text-overflow: clip;\r\n  white-space: pre;\r\n  word-break: keep-all;\r\n  pointer-events: none;\r\n  line-height: inherit;\n}\n.uni-input-input {\r\n  display: block;\r\n  height: 100%;\r\n  background: none;\r\n  color: inherit;\r\n  opacity: 1;\r\n  -webkit-text-fill-color: currentcolor;\r\n  font: inherit;\r\n  line-height: inherit;\r\n  letter-spacing: inherit;\r\n  text-align: inherit;\r\n  text-indent: inherit;\r\n  text-transform: inherit;\r\n  text-shadow: inherit;\n}\n.uni-input-input[type="search"]::-webkit-search-cancel-button {\r\n  display: none;\n}\n.uni-input-input::-webkit-outer-spin-button,\r\n.uni-input-input::-webkit-inner-spin-button {\r\n  -webkit-appearance: none;\r\n  margin: 0;\n}\n.uni-input-input[type="number"] {\r\n  -moz-appearance: textfield;\n}\r\n';
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$l = {
+const _sfc_main$i = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -3685,16 +3561,16 @@ const _sfc_main$l = {
     }
   }
 };
-const _hoisted_1$a = {
+const _hoisted_1$9 = {
   ref: "wrapper",
   class: "uni-input-wrapper"
 };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-input", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$a, [
+    createVNode("div", _hoisted_1$9, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -3725,9 +3601,9 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$l.render = _sfc_render$j;
-var index_vue_vue_type_style_index_0_lang$e = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
-const _sfc_main$k = {
+_sfc_main$i.render = _sfc_render$g;
+var index_vue_vue_type_style_index_0_lang$d = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
+const _sfc_main$h = {
   name: "Label",
   mixins: [emitter],
   props: {
@@ -3758,7 +3634,7 @@ const _sfc_main$k = {
     }
   }
 };
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-label", mergeProps({
     class: {"uni-label-pointer": $options.pointer}
   }, _ctx.$attrs, {
@@ -3767,7 +3643,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$k.render = _sfc_render$i;
+_sfc_main$h.render = _sfc_render$f;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -4173,7 +4049,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-var index_vue_vue_type_style_index_0_lang$d = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$c = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -4234,7 +4110,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$j = {
+const _sfc_main$g = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -4786,17 +4662,17 @@ const _sfc_main$j = {
     }
   }
 };
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$j.render = _sfc_render$h;
-var index_vue_vue_type_style_index_0_lang$c = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
+_sfc_main$g.render = _sfc_render$e;
+var index_vue_vue_type_style_index_0_lang$b = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const _sfc_main$i = {
+const _sfc_main$f = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -4864,7 +4740,7 @@ const _sfc_main$i = {
     }
   }
 };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -4881,13 +4757,13 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16));
 }
-_sfc_main$i.render = _sfc_render$g;
+_sfc_main$f.render = _sfc_render$d;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const _sfc_main$h = {
+const _sfc_main$e = {
   name: "Progress",
   props: {
     percent: {
@@ -4984,11 +4860,11 @@ const _sfc_main$h = {
     }
   }
 };
-const _hoisted_1$9 = {
+const _hoisted_1$8 = {
   key: 0,
   class: "uni-progress-info"
 };
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-progress", mergeProps({class: "uni-progress"}, _ctx.$attrs), [
     createVNode("div", {
       style: $options.outerBarStyle,
@@ -4999,12 +4875,12 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-progress-inner-bar"
       }, null, 4)
     ], 4),
-    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$9, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
+    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$8, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$h.render = _sfc_render$f;
-var index_vue_vue_type_style_index_0_lang$b = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
-const _sfc_main$g = {
+_sfc_main$e.render = _sfc_render$c;
+var index_vue_vue_type_style_index_0_lang$a = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
+const _sfc_main$d = {
   name: "Radio",
   mixins: [emitter, listeners],
   props: {
@@ -5085,12 +4961,12 @@ const _sfc_main$g = {
     }
   }
 };
-const _hoisted_1$8 = {class: "uni-radio-wrapper"};
-function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$7 = {class: "uni-radio-wrapper"};
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$8, [
+    createVNode("div", _hoisted_1$7, [
       createVNode("div", {
         class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
         style: $data.radioChecked ? $options.checkedStyle : ""
@@ -5099,9 +4975,9 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$g.render = _sfc_render$e;
-var index_vue_vue_type_style_index_0_lang$a = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
-const _sfc_main$f = {
+_sfc_main$d.render = _sfc_render$b;
+var index_vue_vue_type_style_index_0_lang$9 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
+const _sfc_main$c = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
   props: {
@@ -5185,14 +5061,14 @@ const _sfc_main$f = {
     }
   }
 };
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$f.render = _sfc_render$d;
-var index_vue_vue_type_style_index_0_lang$9 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
-const _sfc_main$e = {
+_sfc_main$c.render = _sfc_render$a;
+var index_vue_vue_type_style_index_0_lang$8 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
+const _sfc_main$b = {
   name: "ResizeSensor",
   props: {
     initial: {
@@ -5472,7 +5348,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$d = {
+const _sfc_main$a = {
   name: "RichText",
   props: {
     nodes: {
@@ -5501,13 +5377,13 @@ const _sfc_main$d = {
     }
   }
 };
-const _hoisted_1$7 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$7
+    _hoisted_1$6
   ], 16);
 }
-_sfc_main$d.render = _sfc_render$c;
+_sfc_main$a.render = _sfc_render$9;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -6179,8 +6055,8 @@ var scroller = {
     }
   }
 };
-var index_vue_vue_type_style_index_0_lang$8 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
-const _sfc_main$c = {
+var index_vue_vue_type_style_index_0_lang$7 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
+const _sfc_main$9 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -6592,19 +6468,19 @@ const _sfc_main$c = {
     }
   }
 };
-const _hoisted_1$6 = {
+const _hoisted_1$5 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
-const _hoisted_2$5 = {
+const _hoisted_2$4 = {
   ref: "content",
   class: "uni-scroll-view-content"
 };
-const _hoisted_3$2 = {
+const _hoisted_3$1 = {
   key: 0,
   class: "uni-scroll-view-refresh"
 };
-const _hoisted_4$2 = {class: "uni-scroll-view-refresh-inner"};
+const _hoisted_4$1 = {class: "uni-scroll-view-refresh-inner"};
 const _hoisted_5 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
 const _hoisted_6 = /* @__PURE__ */ createVNode("path", {
   d: "M0 0h24v24H0z",
@@ -6625,23 +6501,23 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2BD009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$6, [
+    createVNode("div", _hoisted_1$5, [
       createVNode("div", {
         ref: "main",
         style: {"overflow-x": $props.scrollX ? "auto" : "hidden", "overflow-y": $props.scrollY ? "auto" : "hidden"},
         class: "uni-scroll-view"
       }, [
-        createVNode("div", _hoisted_2$5, [
+        createVNode("div", _hoisted_2$4, [
           $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
             style: {"background-color": $props.refresherBackground, height: $data.refresherHeight + "px"},
             class: "uni-scroll-view-refresher"
           }, [
-            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$2, [
-              createVNode("div", _hoisted_4$2, [
+            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$1, [
+              createVNode("div", _hoisted_4$1, [
                 $data.refreshState == "pulling" ? (openBlock(), createBlock("svg", {
                   key: 0,
                   style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
@@ -6667,8 +6543,8 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$c.render = _sfc_render$b;
-const _sfc_main$b = {
+_sfc_main$9.render = _sfc_render$8;
+const _sfc_main$8 = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
   props: {
@@ -6831,14 +6707,14 @@ const _sfc_main$b = {
     }
   }
 };
-const _hoisted_1$5 = {class: "uni-slider-wrapper"};
-const _hoisted_2$4 = {class: "uni-slider-tap-area"};
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$4 = {class: "uni-slider-wrapper"};
+const _hoisted_2$3 = {class: "uni-slider-tap-area"};
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$5, [
-      createVNode("div", _hoisted_2$4, [
+    createVNode("div", _hoisted_1$4, [
+      createVNode("div", _hoisted_2$3, [
         createVNode("div", {
           style: $options.setBgColor,
           class: "uni-slider-handle-wrapper"
@@ -6865,9 +6741,9 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$b.render = _sfc_render$a;
-var index_vue_vue_type_style_index_0_lang$7 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
-const _sfc_main$a = {
+_sfc_main$8.render = _sfc_render$7;
+var index_vue_vue_type_style_index_0_lang$6 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
+const _sfc_main$7 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -6888,14 +6764,14 @@ const _sfc_main$a = {
     }
   }
 };
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$a.render = _sfc_render$9;
-var index_vue_vue_type_style_index_0_lang$6 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
-const _sfc_main$9 = {
+_sfc_main$7.render = _sfc_render$6;
+var index_vue_vue_type_style_index_0_lang$5 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
+const _sfc_main$6 = {
   name: "Switch",
   mixins: [emitter, listeners],
   props: {
@@ -6973,12 +6849,12 @@ const _sfc_main$9 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-switch-wrapper"};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$3 = {class: "uni-switch-wrapper"};
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$4, [
+    createVNode("div", _hoisted_1$3, [
       withDirectives(createVNode("div", {
         class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
         style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
@@ -6994,14 +6870,14 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$9.render = _sfc_render$8;
-var index_vue_vue_type_style_index_0_lang$5 = "\nuni-text[selectable] {\r\n    cursor: auto;\r\n		user-select: text;\r\n		-webkit-user-select: text;\n}\r\n";
+_sfc_main$6.render = _sfc_render$5;
+var index_vue_vue_type_style_index_0_lang$4 = "\nuni-text[selectable] {\r\n    cursor: auto;\r\n		user-select: text;\r\n		-webkit-user-select: text;\n}\r\n";
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
   nbsp: "\xA0"
 };
-const _sfc_main$8 = {
+const _sfc_main$5 = {
   name: "Text",
   props: {
     selectable: {
@@ -7057,9 +6933,9 @@ const _sfc_main$8 = {
     ]);
   }
 };
-var index_vue_vue_type_style_index_0_lang$4 = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
+var index_vue_vue_type_style_index_0_lang$3 = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-const _sfc_main$7 = {
+const _sfc_main$4 = {
   name: "Textarea",
   mixins: [baseInput],
   props: {
@@ -7280,15 +7156,15 @@ const _sfc_main$7 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-textarea-wrapper"};
-const _hoisted_2$3 = {class: "uni-textarea-compute"};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$2 = {class: "uni-textarea-wrapper"};
+const _hoisted_2$2 = {class: "uni-textarea-compute"};
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-textarea", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$2, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -7302,7 +7178,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-textarea-line",
         textContent: toDisplayString(" ")
       }, null, 8, ["textContent"]),
-      createVNode("div", _hoisted_2$3, [
+      createVNode("div", _hoisted_2$2, [
         (openBlock(true), createBlock(Fragment, null, renderList($options.valueCompute, (item, index2) => {
           return openBlock(), createBlock("div", {
             key: index2,
@@ -7334,16 +7210,16 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
-var index_vue_vue_type_style_index_0_lang$3 = "\nuni-view {\r\n  display: block;\n}\nuni-view[hidden] {\r\n  display: none;\n}\r\n";
-const _sfc_main$6 = {
+_sfc_main$4.render = _sfc_render$4;
+var index_vue_vue_type_style_index_0_lang$2 = "\nuni-view {\r\n  display: block;\n}\nuni-view[hidden] {\r\n  display: none;\n}\r\n";
+const _sfc_main$3 = {
   name: "View",
   mixins: [hover],
   listeners: {
     "label-click": "clickHandler"
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-view", mergeProps({
     key: 0,
     class: [_ctx.hovering ? _ctx.hoverClass : ""],
@@ -7356,7 +7232,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16));
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$3.render = _sfc_render$3;
 const UniViewJSBridge$1 = extend(ViewJSBridge, {
   publishHandler(event2, args, pageId) {
     window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
@@ -7980,12 +7856,12 @@ const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS = /iphone|ipad|ipod/i.test(ua);
 const getSystemInfoSync = /* @__PURE__ */ createSyncApi("getSystemInfoSync", () => {
-  var screen2 = window.screen;
+  var screen = window.screen;
   var pixelRatio2 = window.devicePixelRatio;
   const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
-  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen2.width, screen2.height) : screen2.width;
-  var screenHeight = screenFix ? Math[landscape ? "min" : "max"](screen2.height, screen2.width) : screen2.height;
+  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+  var screenHeight = screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
   var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
   var windowHeight = window.innerHeight;
   var language = navigator.language;
@@ -8122,7 +7998,7 @@ const reLaunch = /* @__PURE__ */ createAsyncApi("reLaunch", () => {
 });
 const switchTab = /* @__PURE__ */ createAsyncApi("switchTab", () => {
 });
-const getRealPath$1 = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
+const getRealPath = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
@@ -8147,7 +8023,7 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
-  getRealPath: getRealPath$1
+  getRealPath
 });
 const uni$1 = api;
 const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
@@ -8155,572 +8031,68 @@ const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
     window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
   }
 });
-function mergeTitleNView(navigationBar, titleNView) {
-  if (isPlainObject(titleNView)) {
-    if (hasOwn$1(titleNView, "backgroundColor")) {
-      navigationBar.backgroundColor = titleNView.backgroundColor;
-    }
-    if (hasOwn$1(titleNView, "buttons")) {
-      navigationBar.buttons = titleNView.buttons;
-    }
-    if (hasOwn$1(titleNView, "titleColor")) {
-      navigationBar.textColor = titleNView.titleColor;
-    }
-    if (hasOwn$1(titleNView, "titleText")) {
-      navigationBar.titleText = titleNView.titleText;
-    }
-    if (hasOwn$1(titleNView, "titleSize")) {
-      navigationBar.titleSize = titleNView.titleSize;
-    }
-    if (hasOwn$1(titleNView, "type")) {
-      navigationBar.type = titleNView.type;
-    }
-    if (hasOwn$1(titleNView, "searchInput") && typeof titleNView.searchInput === "object") {
-      navigationBar.searchInput = Object.assign({
-        autoFocus: false,
-        align: "center",
-        color: "#000000",
-        backgroundColor: "rgba(255,255,255,0.5)",
-        borderRadius: "0px",
-        placeholder: "",
-        placeholderColor: "#CCCCCC",
-        disabled: false
-      }, titleNView.searchInput);
-    }
-  }
-  return navigationBar;
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "pageMeta" : "pm");
+function usePageMeta() {
+  return inject(pageMetaKey);
 }
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-function addBase(filePath) {
-  const base = __uniConfig.router.base;
-  if (!base) {
-    return filePath;
-  }
-  if (base !== "/") {
-    if (("/" + filePath).indexOf(base) === 0) {
-      return "/" + filePath;
-    }
-  }
-  return base + filePath;
+function providePageMeta() {
+  provide(pageMetaKey, initPageMeta());
 }
-function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
+function initPageMeta() {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute().meta)))));
   }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.substr(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
-  }
-  return filePath;
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[1].meta)))));
 }
-function hexToRgba(hex) {
-  let r;
-  let g2;
-  let b;
-  hex = hex.replace("#", "");
-  if (hex.length === 6) {
-    r = hex.substring(0, 2);
-    g2 = hex.substring(2, 4);
-    b = hex.substring(4, 6);
-  } else if (hex.length === 3) {
-    r = hex.substring(0, 1);
-    g2 = hex.substring(1, 2);
-    b = hex.substring(2, 3);
-  } else {
-    return false;
-  }
-  if (r.length === 1) {
-    r += r;
-  }
-  if (g2.length === 1) {
-    g2 += g2;
-  }
-  if (b.length === 1) {
-    b += b;
-  }
-  r = parseInt(r, 16);
-  g2 = parseInt(g2, 16);
-  b = parseInt(b, 16);
-  return {
-    r,
-    g: g2,
-    b
-  };
+const PAGE_META_KEYS = [
+  "navigationBar",
+  "refreshOptions"
+];
+function mergePageMeta(pageMeta) {
+  const res = Object.assign({}, __uniConfig.globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = Object.assign({}, __uniConfig.globalStyle[name] || {}, pageMeta[name] || {});
+  });
+  return res;
 }
-var transparent = {
-  mounted() {
-    if (this.type === "transparent") {
-      const transparentElemStyle = this.$el.querySelector(".uni-page-head-transparent").style;
-      const titleElem = this.$el.querySelector(".uni-page-head__title");
-      const iconElems = this.$el.querySelectorAll(".uni-btn-icon");
-      const iconElemsStyles = [];
-      const textColor = this.textColor;
-      for (let i = 0; i < iconElems.length; i++) {
-        iconElemsStyles.push(iconElems[i].style);
-      }
-      const borderRadiusElems = this.$el.querySelectorAll(".uni-page-head-btn");
-      const oldColors = [];
-      const borderRadiusElemsStyles = [];
-      for (let i = 0; i < borderRadiusElems.length; i++) {
-        const borderRadiusElem = borderRadiusElems[i];
-        oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
-        borderRadiusElemsStyles.push(borderRadiusElem.style);
-      }
-      this._A = 0;
-      UniViewJSBridge.on("onPageScroll", ({scrollTop}) => {
-        const alpha = Math.min(scrollTop / this.offset, 1);
-        if (alpha === 1 && this._A === 1) {
-          return;
-        }
-        if (alpha > 0.5 && this._A <= 0.5) {
-          iconElemsStyles.forEach(function(iconElemStyle) {
-            iconElemStyle.color = textColor;
-          });
-        } else if (alpha <= 0.5 && this._A > 0.5) {
-          iconElemsStyles.forEach(function(iconElemStyle) {
-            iconElemStyle.color = "#fff";
-          });
-        }
-        this._A = alpha;
-        if (titleElem) {
-          titleElem.style.opacity = alpha;
-        }
-        transparentElemStyle.backgroundColor = `rgba(${this._R},${this._G},${this._B},${alpha})`;
-        borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
-          const oldColor = oldColors[index2];
-          let rgba = oldColor.match(/[\d+\.]+/g);
-          rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
-          borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
-        });
-      });
-    } else if (this.type === "float") {
-      const iconElems = this.$el.querySelectorAll(".uni-btn-icon");
-      const iconElemsStyles = [];
-      for (let i = 0; i < iconElems.length; i++) {
-        iconElemsStyles.push(iconElems[i].style);
-      }
-      const borderRadiusElems = this.$el.querySelectorAll(".uni-page-head-btn");
-      const oldColors = [];
-      const borderRadiusElemsStyles = [];
-      for (let i = 0; i < borderRadiusElems.length; i++) {
-        const borderRadiusElem = borderRadiusElems[i];
-        oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
-        borderRadiusElemsStyles.push(borderRadiusElem.style);
-      }
+function normalizePageMeta(pageMeta) {
+  const {enablePullDownRefresh, navigationBar} = pageMeta;
+  if (enablePullDownRefresh) {
+    const refreshOptions = Object.assign({
+      support: true,
+      color: "#2BD009",
+      style: "circle",
+      height: 70,
+      range: 150,
+      offset: 0
+    }, pageMeta.refreshOptions || {});
+    let offset = rpx2px(refreshOptions.offset);
+    const {type} = navigationBar;
+    if (type !== "transparent" && type !== "none") {
+      offset += NAVBAR_HEIGHT + out.top;
     }
-  },
-  computed: {
-    color() {
-      return this.type === "transparent" ? "#fff" : this.textColor;
-    },
-    offset() {
-      return parseInt(this.coverage);
-    },
-    bgColor() {
-      if (this.type === "transparent") {
-        const {r, g: g2, b} = hexToRgba(this.backgroundColor);
-        this._R = r;
-        this._G = g2;
-        this._B = b;
-        return `rgba(${r},${g2},${b},0)`;
-      }
-      return this.backgroundColor;
-    }
+    refreshOptions.height = rpx2px(refreshOptions.height);
+    refreshOptions.range = rpx2px(refreshOptions.range);
+    pageMeta.refreshOptions = refreshOptions;
   }
-};
-var pageHead_vue_vue_type_style_index_0_lang = "\nuni-page-head {\r\n  display: block;\r\n  box-sizing: border-box;\n}\nuni-page-head .uni-page-head {\r\n  position: fixed;\r\n  left: var(--window-left);\r\n  right: var(--window-right);\r\n  height: 44px;\r\n  height: calc(44px + constant(safe-area-inset-top));\r\n  height: calc(44px + env(safe-area-inset-top));\r\n  padding: 7px 3px;\r\n  padding-top: calc(7px + constant(safe-area-inset-top));\r\n  padding-top: calc(7px + env(safe-area-inset-top));\r\n  display: flex;\r\n  overflow: hidden;\r\n  justify-content: space-between;\r\n  box-sizing: border-box;\r\n  z-index: 998;\r\n  color: #fff;\r\n  background-color: #000;\r\n  transition-property: all;\n}\nuni-page-head .uni-page-head-titlePenetrate,\r\nuni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd,\r\nuni-page-head .uni-page-head-titlePenetrate .uni-page-head-bd * {\r\n  pointer-events: none;\n}\nuni-page-head .uni-page-head-titlePenetrate * {\r\n  pointer-events: auto;\n}\nuni-page-head .uni-page-head.uni-page-head-transparent .uni-page-head-ft > div {\r\n  justify-content: center;\n}\nuni-page-head .uni-page-head ~ .uni-placeholder {\r\n  width: 100%;\r\n  height: 44px;\r\n  height: calc(44px + constant(safe-area-inset-top));\r\n  height: calc(44px + env(safe-area-inset-top));\n}\nuni-page-head .uni-placeholder-titlePenetrate {\r\n  pointer-events: none;\n}\nuni-page-head .uni-page-head * {\r\n  box-sizing: border-box;\n}\nuni-page-head .uni-page-head-hd {\r\n  display: flex;\r\n  align-items: center;\r\n  font-size: 16px;\n}\nuni-page-head .uni-page-head-bd {\r\n  position: absolute;\r\n  left: 70px;\r\n  right: 70px;\r\n  min-width: 0;\r\n  user-select: auto;\n}\n.uni-page-head-btn {\r\n  position: relative;\r\n  width: auto;\r\n  margin: 0 2px;\r\n  word-break: keep-all;\r\n  white-space: pre;\r\n  cursor: pointer;\n}\n.uni-page-head-transparent .uni-page-head-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  width: 32px;\r\n  height: 32px;\r\n  border-radius: 50%;\r\n  background-color: rgba(0, 0, 0, 0.5);\n}\nuni-page-head .uni-btn-icon {\r\n  overflow: hidden;\r\n  min-width: 1em;\n}\n.uni-page-head-btn-red-dot::after {\r\n  content: attr(badge-text);\r\n  position: absolute;\r\n  right: 0;\r\n  top: 0;\r\n  background-color: red;\r\n  color: white;\r\n  width: 18px;\r\n  height: 18px;\r\n  line-height: 18px;\r\n  border-radius: 18px;\r\n  overflow: hidden;\r\n  transform: scale(0.5) translate(40%, -40%);\r\n  transform-origin: 100% 0;\n}\n.uni-page-head-btn-red-dot[badge-text]::after {\r\n  font-size: 12px;\r\n  width: auto;\r\n  min-width: 18px;\r\n  max-width: 42px;\r\n  text-align: center;\r\n  padding: 0 3px;\r\n  transform: scale(0.7) translate(40%, -40%);\n}\n.uni-page-head-btn-select > .uni-btn-icon::after {\r\n  display: inline-block;\r\n  font-family: 'unibtn';\r\n  content: '\\e601';\r\n  margin-left: 2px;\r\n  transform: rotate(-90deg) scale(0.8);\n}\n.uni-page-head-search {\r\n  position: relative;\r\n  display: flex;\r\n  flex: 1;\r\n  margin: 0 2px;\r\n  line-height: 30px;\r\n  font-size: 15px;\n}\n.uni-page-head-search-input {\r\n  width: 100%;\r\n  height: 100%;\r\n  padding-left: 34px;\r\n  text-align: left;\n}\n.uni-page-head-search-placeholder {\r\n  position: absolute;\r\n  max-width: 100%;\r\n  height: 100%;\r\n  padding-left: 34px;\r\n  overflow: hidden;\r\n  word-break: keep-all;\r\n  white-space: pre;\n}\n.uni-page-head-search-placeholder-right {\r\n  right: 0;\n}\n.uni-page-head-search-placeholder-center {\r\n  left: 50%;\r\n  transform: translateX(-50%);\n}\n.uni-page-head-search-placeholder::before {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 2px;\r\n  width: 30px;\r\n  content: '\\ea0e';\r\n  display: block;\r\n  font-size: 20px;\r\n  font-family: 'uni';\r\n  text-align: center;\n}\nuni-page-head .uni-page-head-ft {\r\n  display: flex;\r\n  align-items: center;\r\n  flex-direction: row-reverse;\r\n  font-size: 13px;\n}\nuni-page-head .uni-page-head__title {\r\n  font-weight: bold;\r\n  font-size: 16px;\r\n  line-height: 30px;\r\n  text-align: center;\r\n  overflow: hidden;\r\n  white-space: nowrap;\r\n  text-overflow: ellipsis;\n}\nuni-page-head .uni-page-head__title .uni-loading {\r\n  width: 16px;\r\n  height: 16px;\r\n  margin-top: -3px;\n}\nuni-page-head .uni-page-head__title .uni-page-head__title_image {\r\n  width: auto;\r\n  height: 26px;\r\n  vertical-align: middle;\n}\nuni-page-head .uni-page-head-shadow {\r\n  overflow: visible;\n}\nuni-page-head .uni-page-head-shadow::after {\r\n  content: '';\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  top: 100%;\r\n  height: 5px;\r\n  background-size: 100% 100%;\n}\nuni-page-head .uni-page-head-shadow-grey::after {\r\n  background-image: url('https://cdn.dcloud.net.cn/img/shadow-grey.png');\n}\nuni-page-head .uni-page-head-shadow-blue::after {\r\n  background-image: url('https://cdn.dcloud.net.cn/img/shadow-blue.png');\n}\nuni-page-head .uni-page-head-shadow-green::after {\r\n  background-image: url('https://cdn.dcloud.net.cn/img/shadow-green.png');\n}\nuni-page-head .uni-page-head-shadow-orange::after {\r\n  background-image: url('https://cdn.dcloud.net.cn/img/shadow-orange.png');\n}\nuni-page-head .uni-page-head-shadow-red::after {\r\n  background-image: url('https://cdn.dcloud.net.cn/img/shadow-red.png');\n}\nuni-page-head .uni-page-head-shadow-yellow::after {\r\n  background-image: url('https://cdn.dcloud.net.cn/img/shadow-yellow.png');\n}\r\n";
-const FONTS = {
-  forward: "&#xe600;",
-  back: "&#xe601;",
-  share: "&#xe602;",
-  favorite: "&#xe604;",
-  home: "&#xe605;",
-  menu: "&#xe606;",
-  close: "&#xe650;"
-};
-const _sfc_main$5 = {
+  return pageMeta;
+}
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
+var PageHead = defineComponent({
   name: "PageHead",
-  mixins: [transparent],
-  props: {
-    backButton: {
-      type: Boolean,
-      default: true
-    },
-    backgroundColor: {
-      type: String,
-      default() {
-        return this.type === "transparent" ? "#000" : "#F8F8F8";
-      }
-    },
-    textColor: {
-      type: String,
-      default: "#fff"
-    },
-    titleText: {
-      type: String,
-      default: ""
-    },
-    duration: {
-      type: String,
-      default: "0"
-    },
-    timingFunc: {
-      type: String,
-      default: ""
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    titleSize: {
-      type: String,
-      default: "16px"
-    },
-    type: {
-      default: "default",
-      validator(value) {
-        return ["default", "transparent", "float"].indexOf(value) !== -1;
-      }
-    },
-    coverage: {
-      type: String,
-      default: "132px"
-    },
-    buttons: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
-    searchInput: {
-      type: [Object, Boolean],
-      default() {
-        return false;
-      }
-    },
-    titleImage: {
-      type: String,
-      default: ""
-    },
-    titlePenetrate: {
-      type: Boolean,
-      default: false
-    },
-    shadow: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  },
-  data() {
-    return {
-      focus: false,
-      text: "",
-      composing: false
-    };
-  },
-  computed: {
-    btns() {
-      const btns = [];
-      const fonts = {};
-      if (this.buttons.length) {
-        this.buttons.forEach((button) => {
-          const btn = Object.assign({}, button);
-          if (btn.fontSrc && !btn.fontFamily) {
-            const fontSrc = btn.fontSrc = getRealPath(btn.fontSrc);
-            let fontFamily;
-            if (fontSrc in fonts) {
-              fontFamily = fonts[fontSrc];
-            } else {
-              fontFamily = `font${Date.now()}`;
-              fonts[fontSrc] = fontFamily;
-              const cssText = `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`;
-              appendCss(cssText, "uni-btn-font-" + fontFamily);
-            }
-            btn.fontFamily = fontFamily;
-          }
-          btn.color = this.type === "transparent" ? "#fff" : btn.color || this.textColor;
-          let fontSize = btn.fontSize || (this.type === "transparent" || /\\u/.test(btn.text) ? "22px" : "27px");
-          if (/\d$/.test(fontSize)) {
-            fontSize += "px";
-          }
-          btn.fontSize = fontSize;
-          btn.fontWeight = btn.fontWeight || "normal";
-          btns.push(btn);
-        });
-      }
-      return btns;
-    },
-    headClass() {
-      const shadowColorType = this.shadow.colorType;
-      const data = {
-        "uni-page-head-transparent": this.type === "transparent",
-        "uni-page-head-titlePenetrate": this.titlePenetrate,
-        "uni-page-head-shadow": shadowColorType
-      };
-      if (shadowColorType) {
-        data[`uni-page-head-shadow-${shadowColorType}`] = shadowColorType;
-      }
-      return data;
-    }
-  },
-  mounted() {
-    if (this.searchInput) {
-      const input = this.$refs.input;
-      input.$watch("composing", (val) => {
-        this.composing = val;
-      });
-      if (this.searchInput.disabled) {
-        input.$el.addEventListener("click", () => {
-          UniServiceJSBridge.emit("onNavigationBarSearchInputClicked", "");
-        });
-      } else {
-        input.$refs.input.addEventListener("keyup", (event2) => {
-          if (event2.key.toUpperCase() === "ENTER") {
-            UniServiceJSBridge.emit("onNavigationBarSearchInputConfirmed", {
-              text: this.text
-            });
-          }
-        });
-        input.$refs.input.addEventListener("focus", () => {
-          UniServiceJSBridge.emit("onNavigationBarSearchInputFocusChanged", {
-            focus: true
-          });
-        });
-        input.$refs.input.addEventListener("blur", () => {
-          UniServiceJSBridge.emit("onNavigationBarSearchInputFocusChanged", {
-            focus: false
-          });
-        });
-      }
-    }
-  },
-  methods: {
-    _back() {
-      if (getCurrentPages().length === 1) {
-        uni.reLaunch({
-          url: "/"
-        });
-      } else {
-        uni.navigateBack({
-          from: "backbutton"
-        });
-      }
-    },
-    _onBtnClick(index2) {
-      UniServiceJSBridge.emit("onNavigationBarButtonTap", Object.assign({}, this.btns[index2], {
-        index: index2
-      }));
-    },
-    _formatBtnFontText(btn) {
-      if (btn.fontSrc && btn.fontFamily) {
-        return btn.text.replace("\\u", "&#x");
-      } else if (FONTS[btn.type]) {
-        return FONTS[btn.type];
-      }
-      return btn.text || "";
-    },
-    _formatBtnStyle(btn) {
-      const style = {
-        color: btn.color,
-        fontSize: btn.fontSize,
-        fontWeight: btn.fontWeight
-      };
-      if (btn.fontFamily) {
-        style.fontFamily = btn.fontFamily;
-      }
-      return style;
-    },
-    _focus() {
-      this.focus = true;
-    },
-    _blur() {
-      this.focus = false;
-    },
-    _input(text2) {
-      UniServiceJSBridge.emit("onNavigationBarSearchInputChanged", {
-        text: text2
-      });
-    }
+  setup() {
+    const pageMeta = usePageMeta();
+    return () => (openBlock(), createBlock("uni-page-head", null, pageMeta.navigationBar.titleText));
   }
-};
-const _hoisted_1$2 = {class: "uni-page-head-hd"};
-const _hoisted_2$2 = {
-  key: 0,
-  class: "uni-page-head-bd"
-};
-const _hoisted_3$1 = {
-  key: 0,
-  class: "uni-loading"
-};
-const _hoisted_4$1 = {class: "uni-page-head-ft"};
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_input = resolveComponent("v-uni-input");
-  return openBlock(), createBlock("uni-page-head", {"uni-page-head-type": $props.type}, [
-    createVNode("div", {
-      style: {
-        transitionDuration: $props.duration,
-        transitionTimingFunction: $props.timingFunc,
-        backgroundColor: _ctx.bgColor,
-        color: $props.textColor
-      },
-      class: [$options.headClass, "uni-page-head"]
-    }, [
-      createVNode("div", _hoisted_1$2, [
-        withDirectives(createVNode("div", {
-          class: "uni-page-head-btn",
-          onClick: _cache[1] || (_cache[1] = (...args) => $options._back && $options._back(...args))
-        }, [
-          createVNode("i", {
-            style: {color: _ctx.color, fontSize: "27px"},
-            class: "uni-btn-icon"
-          }, "\uE601", 4)
-        ], 512), [
-          [vShow, $props.backButton]
-        ]),
-        (openBlock(true), createBlock(Fragment, null, renderList($options.btns, (btn, index2) => {
-          return openBlock(), createBlock(Fragment, null, [
-            btn.float === "left" ? (openBlock(), createBlock("div", {
-              key: index2,
-              style: {
-                backgroundColor: $props.type === "transparent" ? btn.background : "transparent",
-                width: btn.width
-              },
-              "badge-text": btn.badgeText,
-              class: [{
-                "uni-page-head-btn-red-dot": btn.redDot || btn.badgeText,
-                "uni-page-head-btn-select": btn.select
-              }, "uni-page-head-btn"]
-            }, [
-              createVNode("i", {
-                style: $options._formatBtnStyle(btn),
-                class: "uni-btn-icon",
-                onClick: ($event) => $options._onBtnClick(index2),
-                innerHTML: $options._formatBtnFontText(btn)
-              }, null, 12, ["onClick", "innerHTML"])
-            ], 14, ["badge-text"])) : createCommentVNode("", true)
-          ], 64);
-        }), 256))
-      ]),
-      !$props.searchInput ? (openBlock(), createBlock("div", _hoisted_2$2, [
-        createVNode("div", {
-          style: {
-            fontSize: $props.titleSize,
-            opacity: $props.type === "transparent" ? 0 : 1
-          },
-          class: "uni-page-head__title"
-        }, [
-          $props.loading ? (openBlock(), createBlock("i", _hoisted_3$1)) : createCommentVNode("", true),
-          $props.titleImage !== "" ? (openBlock(), createBlock("img", {
-            key: 1,
-            src: $props.titleImage,
-            class: "uni-page-head__title_image"
-          }, null, 8, ["src"])) : (openBlock(), createBlock(Fragment, {key: 2}, [
-            createTextVNode(toDisplayString($props.titleText), 1)
-          ], 64))
-        ], 4)
-      ])) : createCommentVNode("", true),
-      $props.searchInput ? (openBlock(), createBlock("div", {
-        key: 1,
-        style: {
-          "border-radius": $props.searchInput.borderRadius,
-          "background-color": $props.searchInput.backgroundColor
-        },
-        class: "uni-page-head-search"
-      }, [
-        createVNode("div", {
-          style: {color: $props.searchInput.placeholderColor},
-          class: [[
-            `uni-page-head-search-placeholder-${$data.focus || $data.text ? "left" : $props.searchInput.align}`
-          ], "uni-page-head-search-placeholder"],
-          textContent: toDisplayString($data.text || $data.composing ? "" : $props.searchInput.placeholder)
-        }, null, 14, ["textContent"]),
-        createVNode(_component_v_uni_input, {
-          ref: "input",
-          modelValue: $data.text,
-          "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $data.text = $event),
-          focus: $props.searchInput.autoFocus,
-          disabled: $props.searchInput.disabled,
-          style: {color: $props.searchInput.color},
-          "placeholder-style": `color:${$props.searchInput.placeholderColor}`,
-          class: "uni-page-head-search-input",
-          "confirm-type": "search",
-          onFocus: $options._focus,
-          onBlur: $options._blur,
-          "onUpdate:value": $options._input
-        }, null, 8, ["modelValue", "focus", "disabled", "style", "placeholder-style", "onFocus", "onBlur", "onUpdate:value"])
-      ], 4)) : createCommentVNode("", true),
-      createVNode("div", _hoisted_4$1, [
-        (openBlock(true), createBlock(Fragment, null, renderList($options.btns, (btn, index2) => {
-          return openBlock(), createBlock(Fragment, null, [
-            btn.float !== "left" ? (openBlock(), createBlock("div", {
-              key: index2,
-              style: {
-                backgroundColor: $props.type === "transparent" ? btn.background : "transparent",
-                width: btn.width
-              },
-              "badge-text": btn.badgeText,
-              class: [{
-                "uni-page-head-btn-red-dot": btn.redDot || btn.badgeText,
-                "uni-page-head-btn-select": btn.select
-              }, "uni-page-head-btn"]
-            }, [
-              createVNode("i", {
-                style: $options._formatBtnStyle(btn),
-                class: "uni-btn-icon",
-                onClick: ($event) => $options._onBtnClick(index2),
-                innerHTML: $options._formatBtnFontText(btn)
-              }, null, 12, ["onClick", "innerHTML"])
-            ], 14, ["badge-text"])) : createCommentVNode("", true)
-          ], 64);
-        }), 256))
-      ])
-    ], 6),
-    $props.type !== "transparent" && $props.type !== "float" ? (openBlock(), createBlock("div", {
-      key: 0,
-      class: [{"uni-placeholder-titlePenetrate": $props.titlePenetrate}, "uni-placeholder"]
-    }, null, 2)) : createCommentVNode("", true)
-  ], 8, ["uni-page-head-type"]);
-}
-_sfc_main$5.render = _sfc_render$5;
-var pageBody_vue_vue_type_style_index_0_lang = "\nuni-page-wrapper {\r\n  display: block;\r\n  height: 100%;\r\n  position: relative;\n}\nuni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {\r\n  height: calc(100% - 44px);\r\n  height: calc(100% - 44px - constant(safe-area-inset-top));\r\n  height: calc(100% - 44px - env(safe-area-inset-top));\n}\nuni-page-body {\r\n  display: block;\r\n  box-sizing: border-box;\r\n  width: 100%;\n}\r\n";
-const _sfc_main$4 = {
-  name: "PageBody",
-  mounted() {
-  }
-};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-page-wrapper", null, [
-    createVNode("uni-page-body", null, [
-      renderSlot(_ctx.$slots, "default")
-    ])
-  ]);
-}
-_sfc_main$4.render = _sfc_render$4;
-var pageRefresh_vue_vue_type_style_index_0_lang = "\nuni-page-refresh {\r\n		position: absolute;\r\n		top: 0;\r\n		width: 100%;\r\n		height: 40px;\r\n		display: block;\r\n		box-sizing: border-box;\n}\nuni-page-refresh .uni-page-refresh {\r\n		position: absolute;\r\n		top: -45px;\r\n		left: 50%;\r\n		transform: translate3d(-50%, 0, 0);\r\n		width: 40px;\r\n		height: 40px;\r\n		justify-content: center;\r\n		align-items: center;\r\n		background: #fff;\r\n		border-radius: 50%;\r\n		box-shadow: 0 1px 6px rgba(0, 0, 0, .117647), 0 1px 4px rgba(0, 0, 0, .117647);\r\n		display: none;\n    z-index: 997;\n}\nuni-page-refresh .uni-page-refresh-inner {\r\n		display: flex;\r\n		align-items: center;\r\n		justify-content: center;\r\n		line-height: 0;\r\n		width: 40px;\r\n		height: 40px;\r\n		border-radius: 50%;\n}\nuni-page-refresh.uni-page-refresh--pulling .uni-page-refresh,\r\n	uni-page-refresh.uni-page-refresh--aborting .uni-page-refresh,\r\n	uni-page-refresh.uni-page-refresh--reached .uni-page-refresh,\r\n	uni-page-refresh.uni-page-refresh--refreshing .uni-page-refresh,\r\n	uni-page-refresh.uni-page-refresh--restoring .uni-page-refresh {\r\n		display: flex;\n}\nuni-page-refresh.uni-page-refresh--pulling .uni-page-refresh__spinner,\r\n	uni-page-refresh.uni-page-refresh--aborting .uni-page-refresh__spinner,\r\n	uni-page-refresh.uni-page-refresh--reached .uni-page-refresh__spinner,\r\n	uni-page-refresh.uni-page-refresh--refreshing .uni-page-refresh__icon,\r\n	uni-page-refresh.uni-page-refresh--restoring .uni-page-refresh__icon {\r\n		display: none;\n}\nuni-page-refresh.uni-page-refresh--refreshing .uni-page-refresh__spinner {\r\n		transform-origin: center center;\r\n		animation: uni-page-refresh-rotate 2s linear infinite;\n}\nuni-page-refresh.uni-page-refresh--refreshing .uni-page-refresh__path {\r\n		stroke-dasharray: 1, 200;\r\n		stroke-dashoffset: 0;\r\n		stroke-linecap: round;\r\n		animation: uni-page-refresh-dash 1.5s ease-in-out infinite, uni-page-refresh-colorful 6s ease-in-out infinite;\n}\n@keyframes uni-page-refresh-rotate {\n100% {\r\n			-webkit-transform: rotate(360deg);\r\n			transform: rotate(360deg);\n}\n}\n@keyframes uni-page-refresh-dash {\n0% {\r\n			stroke-dasharray: 1, 200;\r\n			stroke-dashoffset: 0;\n}\n50% {\r\n			stroke-dasharray: 89, 200;\r\n			stroke-dashoffset: -35px;\n}\n100% {\r\n			stroke-dasharray: 89, 200;\r\n			stroke-dashoffset: -124px;\n}\n}\r\n";
-const _sfc_main$3 = {
+});
+var _sfc_main$2 = {
   name: "PageRefresh",
-  props: {
-    color: {
-      type: String,
-      default: "#2BD009"
-    },
-    offset: {
-      type: Number,
-      default: 0
-    }
+  setup() {
+    const {refreshOptions} = usePageMeta();
+    return {
+      offset: refreshOptions.offset,
+      color: refreshOptions.color
+    };
   }
 };
 const _hoisted_1$1 = {class: "uni-page-refresh-inner"};
@@ -8735,15 +8107,15 @@ const _hoisted_4 = {
   height: "24",
   viewBox: "25 25 50 50"
 };
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-page-refresh", null, [
     createVNode("div", {
-      style: {"margin-top": $props.offset + "px"},
+      style: {"margin-top": $setup.offset + "px"},
       class: "uni-page-refresh"
     }, [
       createVNode("div", _hoisted_1$1, [
         (openBlock(), createBlock("svg", {
-          fill: $props.color,
+          fill: $setup.color,
           class: "uni-page-refresh__icon",
           width: "24",
           height: "24",
@@ -8754,7 +8126,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
         ], 8, ["fill"])),
         (openBlock(), createBlock("svg", _hoisted_4, [
           createVNode("circle", {
-            stroke: $props.color,
+            stroke: $setup.color,
             class: "uni-page-refresh__path",
             cx: "50",
             cy: "50",
@@ -8768,13 +8140,13 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-_sfc_main$3.render = _sfc_render$3;
-function processDeltaY(evt, identifier, startY) {
-  const touch = Array.prototype.slice.call(evt.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
+_sfc_main$2.render = _sfc_render$2;
+function processDeltaY(ev, identifier, startY) {
+  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
     return false;
   }
-  evt.deltaY = touch.pageY - startY;
+  ev.deltaY = touch.pageY - startY;
   return true;
 }
 const PULLING = "pulling";
@@ -8782,392 +8154,237 @@ const REACHED = "reached";
 const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
-var pullToRefresh = {
-  mounted() {
-    if (this.enablePullDownRefresh) {
-      this.refreshContainerElem = this.$refs.refresh.$el;
-      this.refreshControllerElem = this.refreshContainerElem.querySelector(".uni-page-refresh");
-      this.refreshInnerElemStyle = this.refreshControllerElem.querySelector(".uni-page-refresh-inner").style;
-      UniServiceJSBridge.on(this.$route.params.__id__ + ".startPullDownRefresh", () => {
-        if (!this.state) {
-          this.state = REFRESHING;
-          this._addClass();
-          setTimeout(() => {
-            this._refreshing();
-          }, 50);
-        }
-      });
-      UniServiceJSBridge.on(this.$route.params.__id__ + ".stopPullDownRefresh", () => {
-        if (this.state === REFRESHING) {
-          this._removeClass();
-          this.state = RESTORING;
-          this._addClass();
-          this._restoring(() => {
-            this._removeClass();
-            this.state = this.distance = this.offset = null;
-          });
-        }
-      });
-    }
-  },
-  methods: {
-    _touchstart(evt) {
-      const touch = evt.changedTouches[0];
-      this.touchId = touch.identifier;
-      this.startY = touch.pageY;
-      if ([ABORTING, REFRESHING, RESTORING].indexOf(this.state) >= 0) {
-        this.canRefresh = false;
-      } else {
-        this.canRefresh = true;
+function usePageRefresh(refreshRef) {
+  const {id: id2, refreshOptions} = usePageMeta();
+  const {range, height} = refreshOptions;
+  let refreshContainerElem;
+  let refreshControllerElem;
+  let refreshControllerElemStyle;
+  let refreshInnerElemStyle;
+  onMounted(() => {
+    refreshContainerElem = refreshRef.value.$el;
+    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
+    refreshControllerElemStyle = refreshControllerElem.style;
+    refreshInnerElemStyle = refreshControllerElem.querySelector(".uni-page-refresh-inner").style;
+    UniServiceJSBridge.on(id2 + ".startPullDownRefresh", () => {
+      if (!state) {
+        state = REFRESHING;
+        addClass();
+        setTimeout(() => {
+          refreshing();
+        }, 50);
       }
-    },
-    _touchmove(evt) {
-      if (!this.canRefresh) {
-        return;
-      }
-      if (!processDeltaY(evt, this.touchId, this.startY)) {
-        return;
-      }
-      let {
-        deltaY
-      } = evt;
-      if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
-        this.touchId = null;
-        return;
-      }
-      if (deltaY < 0 && !this.state) {
-        return;
-      }
-      evt.preventDefault();
-      if (this.distance == null) {
-        this.offset = deltaY;
-        this.state = PULLING;
-        this._addClass();
-      }
-      deltaY = deltaY - this.offset;
-      if (deltaY < 0) {
-        deltaY = 0;
-      }
-      this.distance = deltaY;
-      const reached = deltaY >= this.refreshOptions.range && this.state !== REACHED;
-      const pulling = deltaY < this.refreshOptions.range && this.state !== PULLING;
-      if (reached || pulling) {
-        this._removeClass();
-        this.state = this.state === REACHED ? PULLING : REACHED;
-        this._addClass();
-      }
-      this._pulling(deltaY);
-    },
-    _touchend(evt) {
-      if (!processDeltaY(evt, this.touchId, this.startY)) {
-        return;
-      }
-      if (this.state === null) {
-        return;
-      }
-      if (this.state === PULLING) {
-        this._removeClass();
-        this.state = ABORTING;
-        this._addClass();
-        this._aborting(() => {
-          this._removeClass();
-          this.state = this.distance = this.offset = null;
+    });
+    UniServiceJSBridge.on(id2 + ".stopPullDownRefresh", () => {
+      if (state === REFRESHING) {
+        removeClass();
+        state = RESTORING;
+        addClass();
+        restoring(() => {
+          removeClass();
+          state = distance = offset = null;
         });
-      } else if (this.state === REACHED) {
-        this._removeClass();
-        this.state = REFRESHING;
-        this._addClass();
-        this._refreshing();
       }
-    },
-    _toggleClass(type) {
-      if (!this.state) {
-        return;
-      }
-      const elem = this.refreshContainerElem;
-      if (elem) {
-        elem.classList[type]("uni-page-refresh--" + this.state);
-      }
-    },
-    _addClass() {
-      this._toggleClass("add");
-    },
-    _removeClass() {
-      this._toggleClass("remove");
-    },
-    _pulling(deltaY) {
-      const elem = this.refreshControllerElem;
-      if (!elem) {
-        return;
-      }
-      const style = elem.style;
-      let rotate = deltaY / this.refreshOptions.range;
-      if (rotate > 1) {
-        rotate = 1;
-      } else {
-        rotate = rotate * rotate * rotate;
-      }
-      const y = Math.round(deltaY / (this.refreshOptions.range / this.refreshOptions.height));
-      const transform = y ? "translate3d(-50%, " + y + "px, 0)" : 0;
-      style.webkitTransform = transform;
-      style.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
-      this.refreshInnerElemStyle.webkitTransform = "rotate(" + 360 * rotate + "deg)";
-    },
-    _aborting(callback) {
-      const elem = this.refreshControllerElem;
-      if (!elem) {
-        return;
-      }
-      const style = elem.style;
-      if (style.webkitTransform) {
-        style.webkitTransition = "-webkit-transform 0.3s";
-        style.webkitTransform = "translate3d(-50%, 0, 0)";
-        const abortTransitionEnd = function() {
-          timeout && clearTimeout(timeout);
-          elem.removeEventListener("webkitTransitionEnd", abortTransitionEnd);
-          style.webkitTransition = "";
-          callback();
-        };
-        elem.addEventListener("webkitTransitionEnd", abortTransitionEnd);
-        const timeout = setTimeout(abortTransitionEnd, 350);
-      } else {
-        callback();
-      }
-    },
-    _refreshing() {
-      const elem = this.refreshControllerElem;
-      if (!elem) {
-        return;
-      }
-      const style = elem.style;
-      style.webkitTransition = "-webkit-transform 0.2s";
-      style.webkitTransform = "translate3d(-50%, " + this.refreshOptions.height + "px, 0)";
-      UniServiceJSBridge.emit("onPullDownRefresh", {}, this.$route.params.__id__);
-    },
-    _restoring(callback) {
-      const elem = this.refreshControllerElem;
-      if (!elem) {
-        return;
-      }
-      const style = elem.style;
-      style.webkitTransition = "-webkit-transform 0.3s";
-      style.webkitTransform += " scale(0.01)";
-      const restoreTransitionEnd = function() {
-        timeout && clearTimeout(timeout);
-        elem.removeEventListener("webkitTransitionEnd", restoreTransitionEnd);
-        style.webkitTransition = "";
-        style.webkitTransform = "translate3d(-50%, 0, 0)";
-        callback();
-      };
-      elem.addEventListener("webkitTransitionEnd", restoreTransitionEnd);
-      const timeout = setTimeout(restoreTransitionEnd, 350);
+    });
+  });
+  let touchId;
+  let startY;
+  let canRefresh;
+  let state;
+  let distance;
+  let offset;
+  function toggleClass(type) {
+    if (!state) {
+      return;
+    }
+    if (refreshContainerElem) {
+      refreshContainerElem.classList[type]("uni-page-refresh--" + state);
     }
   }
-};
-var index_vue_vue_type_style_index_0_lang$2 = "\nuni-page {\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
-const _sfc_main$2 = {
-  name: "Page",
-  components: {
-    PageHead: _sfc_main$5,
-    PageBody: _sfc_main$4,
-    PageRefresh: _sfc_main$3
-  },
-  mixins: [pullToRefresh],
-  props: {
-    isQuit: {
-      type: Boolean,
-      default: false
-    },
-    isEntry: {
-      type: Boolean,
-      default: false
-    },
-    isTabBar: {
-      type: Boolean,
-      default: false
-    },
-    tabBarIndex: {
-      type: Number,
-      default: -1
-    },
-    navigationBarBackgroundColor: {
-      type: String,
-      default: "#000"
-    },
-    navigationBarTextStyle: {
-      default: "white",
-      validator(value) {
-        return ["white", "black"].indexOf(value) !== -1;
-      }
-    },
-    navigationBarTitleText: {
-      type: String,
-      default: ""
-    },
-    navigationStyle: {
-      default: "default",
-      validator(value) {
-        return ["default", "custom"].indexOf(value) !== -1;
-      }
-    },
-    backgroundColor: {
-      type: String,
-      default: "#ffffff"
-    },
-    backgroundTextStyle: {
-      default: "dark",
-      validator(value) {
-        return ["dark", "light"].indexOf(value) !== -1;
-      }
-    },
-    backgroundColorTop: {
-      type: String,
-      default: "#fff"
-    },
-    backgroundColorBottom: {
-      type: String,
-      default: "#fff"
-    },
-    enablePullDownRefresh: {
-      type: Boolean,
-      default: false
-    },
-    onReachBottomDistance: {
-      type: Number,
-      default: 50
-    },
-    disableScroll: {
-      type: Boolean,
-      default: false
-    },
-    titleNView: {
-      type: [Boolean, Object, String],
-      default: ""
-    },
-    pullToRefresh: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    titleImage: {
-      type: String,
-      default: ""
-    },
-    transparentTitle: {
-      type: String,
-      default: ""
-    },
-    titlePenetrate: {
-      type: String,
-      default: "NO"
-    },
-    navigationBarShadow: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    topWindow: {
-      type: Boolean,
-      default: true
+  function addClass() {
+    toggleClass("add");
+  }
+  function removeClass() {
+    toggleClass("remove");
+  }
+  function pulling(deltaY) {
+    if (!refreshControllerElem) {
+      return;
     }
-  },
-  data() {
-    let navigationBar = {};
-    const titleNViewTypeList = {
-      none: "default",
-      auto: "transparent",
-      always: "float"
-    };
-    let titleNView = this.titleNView;
-    if (titleNView === false || titleNView === "false" || this.navigationStyle === "custom" && !isPlainObject(titleNView) || this.transparentTitle === "always" && !isPlainObject(titleNView)) {
-      titleNView = {
-        type: "none"
-      };
+    let rotate = deltaY / range;
+    if (rotate > 1) {
+      rotate = 1;
     } else {
-      titleNView = Object.assign({}, {
-        type: this.navigationStyle === "custom" ? "none" : "default"
-      }, this.transparentTitle in titleNViewTypeList ? {
-        type: titleNViewTypeList[this.transparentTitle]
-      } : null, typeof titleNView === "object" ? titleNView : typeof titleNView === "boolean" ? {
-        type: titleNView ? "default" : "none"
-      } : null);
+      rotate = rotate * rotate * rotate;
     }
-    const yesNoParseList = {
-      YES: true,
-      NO: false
-    };
-    navigationBar = mergeTitleNView({
-      loading: false,
-      backButton: !this.isQuit && !this.$route.meta.isQuit,
-      backgroundColor: this.navigationBarBackgroundColor,
-      textColor: this.navigationBarTextStyle === "black" ? "#000" : "#fff",
-      titleText: this.navigationBarTitleText,
-      titleImage: this.titleImage,
-      duration: "0",
-      timingFunc: "",
-      titlePenetrate: yesNoParseList[this.titlePenetrate]
-    }, titleNView);
-    navigationBar.shadow = this.navigationBarShadow;
-    const refreshOptions = Object.assign({
-      support: true,
-      color: "#2BD009",
-      style: "circle",
-      height: 70,
-      range: 150,
-      offset: 0
-    }, this.pullToRefresh);
-    let offset = uni.upx2px(refreshOptions.offset);
-    if (titleNView.type !== "none" && titleNView.type !== "transparent") {
-      offset += NAVBAR_HEIGHT + out.top;
-    }
-    refreshOptions.offset = offset;
-    refreshOptions.height = uni.upx2px(refreshOptions.height);
-    refreshOptions.range = uni.upx2px(refreshOptions.range);
-    return {
-      navigationBar,
-      refreshOptions
-    };
-  },
-  created() {
-    const navigationBar = this.navigationBar;
-    document.title = navigationBar.titleText;
-    UniServiceJSBridge.emit("onNavigationBarChange", navigationBar);
+    const y = Math.round(deltaY / (range / height)) || 0;
+    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
+    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
   }
-};
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_page_head = resolveComponent("page-head");
-  const _component_page_refresh = resolveComponent("page-refresh");
-  const _component_page_body = resolveComponent("page-body");
-  return openBlock(), createBlock("uni-page", null, [
-    $data.navigationBar.type !== "none" ? (openBlock(), createBlock(_component_page_head, mergeProps({key: 0}, $data.navigationBar), null, 16)) : createCommentVNode("", true),
-    $props.enablePullDownRefresh ? (openBlock(), createBlock(_component_page_refresh, {
-      key: 1,
-      ref: "refresh",
-      color: $data.refreshOptions.color,
-      offset: $data.refreshOptions.offset
-    }, null, 8, ["color", "offset"])) : createCommentVNode("", true),
-    $props.enablePullDownRefresh ? (openBlock(), createBlock(_component_page_body, {
-      key: 2,
-      onTouchstart: _ctx._touchstart,
-      onTouchmove: _ctx._touchmove,
-      onTouchend: _ctx._touchend,
-      onTouchcancel: _ctx._touchend
-    }, {
-      default: withCtx(() => [
-        renderSlot(_ctx.$slots, "page")
-      ]),
-      _: 3
-    }, 8, ["onTouchstart", "onTouchmove", "onTouchend", "onTouchcancel"])) : (openBlock(), createBlock(_component_page_body, {key: 3}, {
-      default: withCtx(() => [
-        renderSlot(_ctx.$slots, "page")
-      ]),
-      _: 3
-    }))
-  ]);
+  function onTouchstart(ev) {
+    const touch = ev.changedTouches[0];
+    touchId = touch.identifier;
+    startY = touch.pageY;
+    if ([ABORTING, REFRESHING, RESTORING].indexOf(state) >= 0) {
+      canRefresh = false;
+    } else {
+      canRefresh = true;
+    }
+  }
+  function onTouchmove(ev) {
+    if (!canRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    let {deltaY} = ev;
+    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+      touchId = null;
+      return;
+    }
+    if (deltaY < 0 && !state) {
+      return;
+    }
+    if (ev.cancelable) {
+      ev.preventDefault();
+    }
+    if (distance === null) {
+      offset = deltaY;
+      state = PULLING;
+      addClass();
+    }
+    deltaY = deltaY - offset;
+    if (deltaY < 0) {
+      deltaY = 0;
+    }
+    distance = deltaY;
+    const isReached = deltaY >= range && state !== REACHED;
+    const isPulling = deltaY < range && state !== PULLING;
+    if (isReached || isPulling) {
+      removeClass();
+      state = state === REACHED ? PULLING : REACHED;
+      addClass();
+    }
+    pulling(deltaY);
+  }
+  function onTouchend(ev) {
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    if (state === null) {
+      return;
+    }
+    if (state === PULLING) {
+      removeClass();
+      state = ABORTING;
+      addClass();
+      aborting(() => {
+        removeClass();
+        state = distance = offset = null;
+      });
+    } else if (state === REACHED) {
+      removeClass();
+      state = REFRESHING;
+      addClass();
+      refreshing();
+    }
+  }
+  function aborting(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    if (refreshControllerElemStyle.transform) {
+      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      const abortTransitionEnd = function() {
+        timeout && clearTimeout(timeout);
+        refreshControllerElem.removeEventListener("webkitTransitionEnd", abortTransitionEnd);
+        refreshControllerElemStyle.transition = "";
+        callback();
+      };
+      refreshControllerElem.addEventListener("webkitTransitionEnd", abortTransitionEnd);
+      const timeout = setTimeout(abortTransitionEnd, 350);
+    } else {
+      callback();
+    }
+  }
+  function refreshing() {
+    if (refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
+    UniServiceJSBridge.emit("onPullDownRefresh", {}, id2);
+  }
+  function restoring(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+    refreshControllerElemStyle.transform += " scale(0.01)";
+    const restoreTransitionEnd = function() {
+      timeout && clearTimeout(timeout);
+      refreshControllerElem.removeEventListener("webkitTransitionEnd", restoreTransitionEnd);
+      refreshControllerElemStyle.transition = "";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      callback();
+    };
+    refreshControllerElem.addEventListener("webkitTransitionEnd", restoreTransitionEnd);
+    const timeout = setTimeout(restoreTransitionEnd, 350);
+  }
+  return {
+    onTouchstart,
+    onTouchmove,
+    onTouchend,
+    onTouchcancel: onTouchend
+  };
 }
-_sfc_main$2.render = _sfc_render$2;
+var PageBody = defineComponent({
+  name: "PageBody",
+  setup(props, ctx) {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageMeta() : void 0;
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? ref(null) : void 0;
+    const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
+    return () => (openBlock(), createBlock(Fragment, null, [
+      createPageRefreshVNode(refreshRef, pageMeta),
+      createVNode("uni-page-wrapper", pageRefresh, [
+        createVNode("uni-page-body", null, [
+          renderSlot(ctx.slots, "default")
+        ])
+      ])
+    ]));
+  }
+});
+function createPageRefreshVNode(refreshRef, pageMeta) {
+  if (!__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    return createCommentVNode("", true);
+  }
+  if (!pageMeta.enablePullDownRefresh) {
+    return createCommentVNode("", true);
+  }
+  return createVNode(_sfc_main$2, {ref: refreshRef}, null, 512);
+}
+var index = defineComponent({
+  name: "Page",
+  setup(props, ctx) {
+    providePageMeta();
+    return () => (openBlock(), createBlock("uni-page", null, [
+      createPageHeadVNode(),
+      createPageBodyVNode(ctx)
+    ]));
+  }
+});
+function createPageHeadVNode() {
+  return createVNode(PageHead);
+}
+function createPageBodyVNode(ctx) {
+  return openBlock(), createBlock(PageBody, {key: 1}, {
+    default: withCtx(() => [renderSlot(ctx.slots, "page")]),
+    _: 3
+  });
+}
 const isObject = (val) => val !== null && typeof val === "object";
 class BaseFormatter {
   constructor() {
@@ -9614,4 +8831,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$t as Audio, _sfc_main$s as Canvas, _sfc_main$r as Checkbox, _sfc_main$q as CheckboxGroup, _sfc_main$p as Editor, _sfc_main$o as Form, _sfc_main$n as Icon, _sfc_main$m as Image, _sfc_main$l as Input, _sfc_main$k as Label, _sfc_main$j as MovableView, _sfc_main$i as Navigator, _sfc_main$2 as PageComponent, _sfc_main$h as Progress, _sfc_main$g as Radio, _sfc_main$f as RadioGroup, _sfc_main$e as ResizeSensor, _sfc_main$d as RichText, _sfc_main$c as ScrollView, _sfc_main$b as Slider, _sfc_main$a as SwiperItem, _sfc_main$9 as Switch, _sfc_main$8 as Text, _sfc_main$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$6 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath$1 as getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$q as Audio, _sfc_main$p as Canvas, _sfc_main$o as Checkbox, _sfc_main$n as CheckboxGroup, _sfc_main$m as Editor, _sfc_main$l as Form, _sfc_main$k as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$1 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

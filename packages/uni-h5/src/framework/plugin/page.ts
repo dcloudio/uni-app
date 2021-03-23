@@ -1,10 +1,4 @@
-import {
-  computed,
-  nextTick,
-  VNode,
-  ComponentPublicInstance,
-  ComputedRef,
-} from 'vue'
+import { computed, nextTick, VNode, ComponentPublicInstance } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 
 const SEP = '$$'

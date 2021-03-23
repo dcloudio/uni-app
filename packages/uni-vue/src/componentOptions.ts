@@ -4,7 +4,7 @@ import {
   ComponentOptions,
   ComponentInternalInstance,
   ComponentPublicInstance,
-} from '@vue/runtime-core'
+} from 'vue'
 // @ts-ignore
 import { injectHook } from 'vue'
 

@@ -7,7 +7,6 @@ import { isCustomElement } from '@dcloudio/uni-shared'
 import { initRouter } from './router'
 import { initSystemComponents } from './components'
 import { initMixin } from './mixin'
-import { initProvide } from './provide'
 
 export default {
   install(app: App) {
@@ -19,6 +18,9 @@ export default {
     initSystemComponents(app)
 
     initMixin(app)
-    initProvide(app, (__UNI_FEATURE_PAGES__ && initRouter(app)) || undefined)
+
+    if (__UNI_FEATURE_PAGES__) {
+      initRouter(app)
+    }
   },
 }

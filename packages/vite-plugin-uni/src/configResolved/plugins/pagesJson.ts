@@ -1,9 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
-import { parse } from 'jsonc-parser'
 import { Plugin } from 'vite'
-import { camelize, capitalize } from '@vue/shared'
+import { parse } from 'jsonc-parser'
+import { hasOwn, camelize, capitalize, isPlainObject } from '@vue/shared'
 import { parseJson } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
@@ -43,17 +43,7 @@ export function uniPagesJsonPlugin(
 interface PageRouteOptions {
   name: string
   path: string
-  props: Record<string, any>
-  meta: {
-    isQuit: boolean | undefined
-    isEntry: boolean | undefined
-    isTabBar: boolean | undefined
-    tabBarIndex: number
-    windowTop: number
-    topWindow: boolean | undefined
-    leftWindow: boolean | undefined
-    rightWindow: boolean | undefined
-  }
+  meta: Partial<UniApp.PageRouteMeta>
 }
 
 function parsePagesJson(
@@ -109,6 +99,36 @@ function removePlatformStyle(globalStyle: Record<string, any>) {
   return globalStyle
 }
 
+const navigationBarMaps = {
+  navigationBarBackgroundColor: 'backgroundColor',
+  navigationBarTextStyle: 'textStyle',
+  navigationBarTitleText: 'titleText',
+  navigationBarShadow: 'shadow',
+  navigationStyle: 'style',
+  titleImage: 'titleImage',
+  titlePenetrate: 'titlePenetrate',
+}
+
+function normalizeNavigationBar(pageStyle: Record<string, any>) {
+  const navigationBar = Object.create(null)
+  Object.keys(navigationBarMaps).forEach((name) => {
+    if (hasOwn(pageStyle, name)) {
+      navigationBar[navigationBarMaps[name]] = pageStyle[name]
+      delete pageStyle[name]
+    }
+  })
+  const { titleNView } = pageStyle
+  if (isPlainObject(titleNView)) {
+    Object.assign(navigationBar, titleNView)
+  }
+  return navigationBar
+}
+
+function normalizePageStyle(pageStyle: Record<string, any>) {
+  pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
+  return pageStyle
+}
+
 function formatPageStyle(pageStyle?: Record<string, any>) {
   if (pageStyle) {
     const appGlobalStyle = pageStyle['app-plus']
@@ -119,8 +139,9 @@ function formatPageStyle(pageStyle?: Record<string, any>) {
     if (h5GlobalStyle) {
       Object.assign(pageStyle, h5GlobalStyle)
     }
-    return removePlatformStyle(pageStyle)
+    return normalizePageStyle(removePlatformStyle(pageStyle))
   }
+  return {}
 }
 
 function formatSubpackages(subpackages?: UniApp.PagesJsonSubpackagesOptions[]) {
@@ -193,37 +214,33 @@ function formatPagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
       (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === path
     )
     const isTabBar = tabBarIndex !== -1 ? true : undefined
-    const props = formatPageStyle(pageOptions.style) || {}
 
     let windowTop = 0
-    const meta = {
-      isQuit: isEntry || isTabBar ? true : undefined,
-      isEntry,
-      isTabBar,
-      tabBarIndex,
-      windowTop,
-      topWindow: props.topWindow,
-      leftWindow: props.leftWindow,
-      rightWindow: props.rightWindow,
-    }
-    Object.assign(props, meta)
+    const meta = Object.assign(
+      {
+        isQuit: isEntry || isTabBar ? true : undefined,
+        isEntry,
+        isTabBar,
+        tabBarIndex,
+        windowTop,
+      },
+      formatPageStyle(pageOptions.style)
+    )
+
     return {
       name,
       path: pageOptions.path,
-      props,
       meta,
     }
   })
 }
 
-function generatePageRoute({ name, path, props, meta }: PageRouteOptions) {
+function generatePageRoute({ name, path, meta }: PageRouteOptions) {
   return `{
   path:'/${meta.isEntry ? '' : path}',
   component:{
     render() {
-      return (openBlock(), createBlock(PageComponent, Object.assign({}, __uniConfig.globalStyle, ${JSON.stringify(
-        props
-      )}), {page: withCtx(() => [createVNode(${name})]), _: 1}, 16))
+      return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(${name})]), _: 1 /* STABLE */}))
     }
   },
   meta: ${JSON.stringify(meta)}
