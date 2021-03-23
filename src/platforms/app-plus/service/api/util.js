@@ -208,7 +208,7 @@ export function warpPlusErrorCallback (callbackId, name, errMsg) {
   }
 }
 
-export function warpPlusMethod (module, name, before) {
+export function warpPlusMethod (module, name, before, after) {
   return function (options, callbackId) {
     if (typeof before === 'function') {
       options = before(options)
@@ -217,6 +217,9 @@ export function warpPlusMethod (module, name, before) {
       success (data = {}) {
         delete data.code
         delete data.message
+        if (typeof after === 'function') {
+          data = after(data)
+        }
         invoke(callbackId, Object.assign({}, data, {
           errMsg: `${name}:ok`
         }))
