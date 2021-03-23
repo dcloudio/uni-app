@@ -40,7 +40,7 @@
 1. 在`uniCloud`项目右键，选择`创建database目录`
 2. 在第一步创建的database目录右键选择`新建数据集合schema`
 
-![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/hx%E6%8F%90%E7%A4%BAschema.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/a9ab149e-6293-49c0-af8e-2db893a956d4.jpg)
 
 **HBuilderX内创建的schema新建和保存时不会自动上传**
 

@@ -95,7 +95,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 <b>中国教育发布：</b>中国人民共和国教育部官方App。<a href="https://uniapp.dcloud.io/uniCloud/README">uniCloud云开发</a>案例。[详见报道](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
 <div style="display:flex;justify-content: space-around;">
 	<a href="http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html" target="_blank" class="clear-style barcode-view">
-		<img src="https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/jiaoyubuapp.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/97b8fd23-40e7-4440-bfcb-f45f52711219.jpg" width="200"/>
 		<span style="margin-top:15px;">iOS、Android通用扫码地址</span>
 	</a>
 </div>
@@ -103,7 +103,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 <b>CSDN：</b> Appstore新闻类榜单前十。<a href="https://nativesupport.dcloud.net.cn/">uni小程序SDK</a>案例。App内部众多栏目做成小程序形式。
 <div style="display:flex;justify-content: space-around;">
 	<a href="https://www.csdn.net/apps/download" target="_blank" class="clear-style barcode-view">
-		<img src="https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/csdnappdown.jpg" width="200"/>
+		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2fcf0a59-ebe0-47e3-9f85-f51f6a528a44.jpg" width="200"/>
 		<span style="margin-top:15px;">App码</span>
 	</a>
 </div>
