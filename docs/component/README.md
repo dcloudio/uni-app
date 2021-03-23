@@ -69,6 +69,8 @@
 |data-*|Any|自定义属性|组件上触发的事件时，会发送给事件处理函数|
 |@\*|EventHandler|组件的事件|详见各组件详细文档，事件绑定参考 [事件处理器](/vue-basics?id=事件处理器)|
 
+除了上述公共属性，还有一类特殊属性以`v-`开头，称之为vue指令，如v-if、v-else、v-for、v-model。详见[vue指令](/vue-api?id=%e6%a8%a1%e6%9d%bf%e6%8c%87%e4%bb%a4)
+
 #### 在组件中使用js变量
 
 组件中可以使用script的data中定义的js变量，但组件的属性中使用和内容区使用的用法不一样。
@@ -98,13 +100,15 @@
 
 #### 组件的事件
 
-每个组件都有事件，比如button组件，有点击事件。
+每个组件都有“事件”。事件就是在指定的条件下触发某个js方法。
+
+比如button组件，有点击事件，也就是当手机用户点击这个button组件时，会触发这个事件。
 
 事件也是组件的属性，只不过这类属性以`@`为前缀。
 
 事件的属性值，指向一个在script的methods里定义过的js方法，还可以给方法传参数。
 
-下面是一个相对复杂的组件使用例子：
+下面是组件事件的示例：
 - click是button组件的点击事件，在用户点击这个button时触发
 - click指向了methods中定义的goto方法，并且传递了一个参数'/pages/about/about'
 
@@ -118,13 +122,12 @@
     export default {
         methods: {
             goto(url) {
-                console.log("传入的参数是：" + url)
+                console.log("按钮被点击了，且传入的参数是：" + url)
             }
         }
     }
 </script>
 ```
-
 
 
 ### 基础组件
