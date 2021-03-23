@@ -4,6 +4,17 @@
   + 百度小程序平台 修复 使用 usingComponents 引入部分动态库组件无效的Bug [#2526](https://github.com/dcloudio/uni-app/issues/2526)
   + App-iOS平台 修复 nvue web-view 组件在应用设置 allowsInlineMediaPlayback 为 true 时不生效的Bug [详情](https://ask.dcloud.net.cn/question/106864)
   + App-iOS平台 修复 nvue map 组件 polyline 设置 arrowIconPath 为自定义箭头图标无效的Bug [详情](https://ask.dcloud.net.cn/question/118538)
+* 【uni-ui插件】
+  + ``uni-datetime-picker`` 新增: hide-second 属性; border 属性; 修复 选择跟显示的日期不一样的 bug， change事件触发2次的 bug; 分、秒 end 范围错误的 bug
+  + ``uni-tr``  新增 selectable 属性，用于 type=selection 时，设置某行是否可由全选按钮控制
+  + ``uni-data-checkbox`` 新增 disabled属性，支持nvue；优化 无选项时提示“暂无数据”，默认颜色显示
+  + ``uni-link``  新增 href 属性支持 tel:|mailto:
+  + ``uni-table`` 新增 示例demo
+  + ``uni-data-picker`` 修复 微信小程序某些情况下无法选择的问题，事件无法触发的问题
+  + ``uni-nav-bar`` 修复 easycom 下，找不到 uni-status-bar 的bug
+  + ``uni-easyinput`` 修复 示例在 qq 小程序上的bug
+  + ``uni-forms`` 修复 动态显示uni-forms-item的情况下，submit 方法获取值错误的Bug，schema 默认提示语不准确的问题
+  + ``cli 项目`` 建议使用 easycom 方式引用组件，如使用按需引用，需手动维护组件内部引用
 * 【App插件(含5+App和uni-app的App端)】
   + Android平台 修复 3.1.0 版本引出的 wap2app 应用无法正常运行的Bug
   + Android平台 修复 一键登录 在部分双卡设备可能无法调起授权页面的Bug [详情](https://ask.dcloud.net.cn/question/117826)
