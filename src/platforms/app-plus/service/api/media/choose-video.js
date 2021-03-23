@@ -7,7 +7,8 @@ import {
 } from '../../bridge'
 
 import {
-  warpPlusErrorCallback
+  warpPlusErrorCallback,
+  getFileName
 } from '../util'
 
 import {
@@ -16,26 +17,45 @@ import {
 
 export function chooseVideo ({
   sourceType,
+  compressed,
   maxDuration,
   camera
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel')
 
   function successCallback (tempFilePath = '') {
-    plus.io.getVideoInfo({
-      filePath: tempFilePath,
-      success (videoInfo) {
-        const result = {
-          errMsg: 'chooseVideo:ok',
-          tempFilePath: tempFilePath
-        }
-        result.size = videoInfo.size
-        result.duration = videoInfo.duration
-        result.width = videoInfo.width
-        result.height = videoInfo.height
-        invoke(callbackId, result)
-      },
-      errorCallback
+    const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
+    const compressVideo = compressed ? plus.zip.compressVideo : function (_, callback) {
+      callback({ tempFilePath })
+    }
+    if (compressed) {
+      plus.nativeUI.showWaiting()
+    }
+    compressVideo({
+      src: tempFilePath,
+      dst
+    }, ({ tempFilePath }) => {
+      if (compressed) {
+        plus.nativeUI.closeWaiting()
+      }
+      plus.io.getVideoInfo({
+        filePath: tempFilePath,
+        success (videoInfo) {
+          const result = {
+            errMsg: 'chooseVideo:ok',
+            tempFilePath: tempFilePath
+          }
+          result.size = videoInfo.size
+          result.duration = videoInfo.duration
+          result.width = videoInfo.width
+          result.height = videoInfo.height
+          invoke(callbackId, result)
+        },
+        errorCallback
+      })
+    }, error => {
+      plus.nativeUI.closeWaiting()
+      errorCallback(error)
     })
   }
 
