@@ -6,7 +6,7 @@
 
 全局安装vue-cli
 
-```
+```shell
 npm install -g @vue/cli
 ```
 
@@ -14,13 +14,13 @@ npm install -g @vue/cli
 
 **使用正式版**（对应HBuilderX最新正式版）
 
-```
+```shell
 vue create -p dcloudio/uni-preset-vue my-project
 ```
 
 **使用alpha版**（对应HBuilderX最新alpha版）
 
-```
+```shell
 vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 ```
 
@@ -51,7 +51,7 @@ vue create -p dcloudio/uni-preset-vue#alpha my-alpha-project
 
 ## 运行、发布uni-app
 
-```
+```shell
 npm run dev:%PLATFORM%
 npm run build:%PLATFORM%
 ```
