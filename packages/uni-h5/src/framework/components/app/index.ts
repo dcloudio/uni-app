@@ -25,20 +25,20 @@ export default defineComponent({
   setup() {
     useCssVar()
     useAppLifecycle()
-    const { appClass, onLayoutChange } = useAppClass()
+    const { clazz, onChange } = useAppClass()
 
     return () => (
       openBlock(),
       createBlock(
         'uni-app',
         {
-          class: appClass.value,
+          class: clazz.value,
         },
         [
           createVNode(
             Layout,
             {
-              onChange: onLayoutChange,
+              onChange,
             },
             null,
             8 /* PROPS */,
@@ -70,21 +70,21 @@ function useAppLifecycle() {
 function useAppClass() {
   const showTabBar = ref(false)
   const showMaxWidth = ref(false)
-  function onLayoutChange(type: string, value: boolean) {
+  function onChange(type: string, value: boolean) {
     if (type === 'showTabBar') {
       showTabBar.value = value
     } else if (type === 'showMaxWidth') {
       showMaxWidth.value = value
     }
   }
-  const appClass = computed(() => {
+  const clazz = computed(() => {
     return {
       'uni-app--showtabbar': showTabBar.value,
       'uni-app--maxwidth': showMaxWidth.value,
     }
   })
   return {
-    appClass,
-    onLayoutChange,
+    clazz,
+    onChange,
   }
 }

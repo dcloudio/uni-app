@@ -13,7 +13,7 @@ export function uniAppVuePlugin(options: VitePluginUniResolvedOptions): Plugin {
       //App.vue main request
       if (filename === appVuePath && !query.vue) {
         return {
-          code: `<template><VUniApp ref="app"/></template><style src="@dcloudio/uni-h5/style/base.css"/>${code}`,
+          code: `<template><VUniApp/></template>${code}`,
           map: this.getCombinedSourcemap(),
         }
       }

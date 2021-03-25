@@ -10,6 +10,6 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
     options.inputDir = path.resolve(config.root, 'src')
     options.assetsDir = config.build.assetsDir
 
-    resolvePlugins(config.command, config.plugins as Plugin[], options)
+    resolvePlugins(config, options)
   }) as Plugin['configResolved']
 }

@@ -1,4 +1,13 @@
 declare namespace UniApp {
+  type PLATFORM =
+    | 'h5'
+    | 'app-plus'
+    | 'mp-alipay'
+    | 'mp-baidu'
+    | 'mp-qq'
+    | 'mp-toutiao'
+    | 'mp-weixin'
+    | 'quickapp-webview'
   interface LayoutWindowOptions {
     matchMedia?: {
       minWidth?: number
@@ -53,22 +62,35 @@ declare namespace UniApp {
     refreshOptions?: PageRefreshOptions
   }
 
+  interface PagesJsonPageStyle {
+    enablePullDownRefresh?: boolean
+  }
+
   interface PagesJsonPageOptions {
     path: string
-    style?: Record<string, any>
+    style?: PagesJsonPageStyle
   }
   interface PagesJsonSubpackagesOptions {
     root: string
     pages: PagesJsonPageOptions[]
   }
 
+  interface PagesJsonWindowOptions extends PagesJsonPageOptions {
+    matchMedia: {
+      minWidth: number
+    }
+  }
+
   interface PagesJson {
     pages: PagesJsonPageOptions[]
     subpackages?: PagesJsonSubpackagesOptions[]
     subPackages?: PagesJsonSubpackagesOptions[]
-    globalStyle?: {}
+    globalStyle?: PagesJsonPageStyle
     tabBar?: {
       list: []
     }
+    topWindow?: PagesJsonWindowOptions
+    leftWindow?: PagesJsonWindowOptions
+    rightWindow?: PagesJsonWindowOptions
   }
 }

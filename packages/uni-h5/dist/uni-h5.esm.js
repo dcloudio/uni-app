@@ -987,12 +987,12 @@ var AppComponent = defineComponent({
   setup() {
     useCssVar();
     useAppLifecycle();
-    const {appClass, onLayoutChange} = useAppClass();
+    const {clazz, onChange: onChange2} = useAppClass();
     return () => (openBlock(), createBlock("uni-app", {
-      class: appClass.value
+      class: clazz.value
     }, [
       createVNode(Layout, {
-        onChange: onLayoutChange
+        onChange: onChange2
       }, null, 8, ["onChange"])
     ], 2));
   }
@@ -1014,44 +1014,27 @@ function useAppLifecycle() {
 function useAppClass() {
   const showTabBar = ref(false);
   const showMaxWidth = ref(false);
-  function onLayoutChange(type, value) {
+  function onChange2(type, value) {
     if (type === "showTabBar") {
       showTabBar.value = value;
     } else if (type === "showMaxWidth") {
       showMaxWidth.value = value;
     }
   }
-  const appClass = computed(() => {
+  const clazz = computed(() => {
     return {
       "uni-app--showtabbar": showTabBar.value,
       "uni-app--maxwidth": showMaxWidth.value
     };
   });
   return {
-    appClass,
-    onLayoutChange
+    clazz,
+    onChange: onChange2
   };
 }
-const _sfc_main$r = {};
-const _hoisted_1$d = /* @__PURE__ */ createVNode("uni-top-window", null, null, -1);
-function _sfc_render$p(_ctx, _cache) {
-  const _component_router_view = resolveComponent("router-view");
-  return openBlock(), createBlock("uni-layout", null, [
-    _hoisted_1$d,
-    createVNode("uni-content", null, [
-      createVNode("uni-main", null, [
-        (openBlock(), createBlock(KeepAlive, null, [
-          createVNode(_component_router_view)
-        ], 1024))
-      ])
-    ])
-  ]);
-}
-_sfc_main$r.render = _sfc_render$p;
 function initSystemComponents(app) {
   AppComponent.name = COMPONENT_NAME_PREFIX + AppComponent.name;
   app.component(AppComponent.name, AppComponent);
-  app.component(_sfc_main$r.name, _sfc_main$r);
 }
 function initMixin(app) {
   app.mixin({

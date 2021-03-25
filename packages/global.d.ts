@@ -1,15 +1,7 @@
 declare var tt: any
 declare var qa: any
 declare var swan: any
-declare var __PLATFORM__:
-  | 'h5'
-  | 'app-plus'
-  | 'mp-alipay'
-  | 'mp-baidu'
-  | 'mp-qq'
-  | 'mp-toutiao'
-  | 'mp-weixin'
-  | 'quickapp-webview'
+declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__: 'wx' | 'qq' | 'my' | 'swan' | 'tt' | 'qa'
 declare var __GLOBAL__: Record<string, any>
 
@@ -22,6 +14,7 @@ declare var __VUE_OPTIONS_API__: boolean
 
 declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
+declare var __UNI_FEATURE_NVUE__: boolean
 declare var __UNI_FEATURE_PROMISE__: boolean
 declare var __UNI_FEATURE_LONGPRESS__: boolean
 declare var __UNI_FEATURE_ROUTER_MODE__: 'hash' | 'history'

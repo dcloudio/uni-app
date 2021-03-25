@@ -17,6 +17,7 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   root: string
   base: string
   command: ResolvedConfig['command']
+  platform: UniApp.PLATFORM
   inputDir: string
   assetsDir: string
   devServer?: ViteDevServer
@@ -42,6 +43,7 @@ export default function uniPlugin(
     assetsDir: 'assets',
     inputDir,
     command: 'serve',
+    platform: 'h5',
   }
   initEnv(options)
   return {

@@ -57,10 +57,11 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
 }
 
 export function resolvePlugins(
-  command: ResolvedConfig['command'],
-  plugins: Plugin[],
+  config: ResolvedConfig,
   options: VitePluginUniResolvedOptions
 ) {
+  const command = config.command
+  const plugins = config.plugins as Plugin[]
   addPlugin(
     plugins,
     uniPrePlugin(Object.assign(uniPrePluginOptions, options)),
@@ -69,7 +70,7 @@ export function resolvePlugins(
   )
   addPlugin(plugins, uniAppVuePlugin(options), 1, 'pre')
   addPlugin(plugins, uniMainJsPlugin(options), 1, 'pre')
-  addPlugin(plugins, uniPagesJsonPlugin(options), 1, 'pre')
+  addPlugin(plugins, uniPagesJsonPlugin(config, options), 1, 'pre')
   addPlugin(plugins, uniManifestJsonPlugin(options), 1, 'pre')
 
   addPlugin(
