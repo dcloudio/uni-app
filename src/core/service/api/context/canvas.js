@@ -876,7 +876,7 @@ export function canvasToTempFilePath ({
   destHeight,
   canvasId,
   fileType,
-  qualit
+  quality
 }, callbackId) {
   var pageId = getCurrentPageId()
   if (!pageId) {
@@ -897,7 +897,7 @@ export function canvasToTempFilePath ({
     destWidth,
     destHeight,
     fileType,
-    qualit,
+    quality,
     dirname,
     callbackId: cId
   })

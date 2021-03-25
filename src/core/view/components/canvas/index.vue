@@ -363,7 +363,7 @@ export default {
       destHeight,
       hidpi = true,
       dataType,
-      qualit = 1,
+      quality = 1,
       type = 'png',
       callbackId
     }) {
@@ -399,7 +399,7 @@ export default {
       try {
         let compressed
         if (dataType === 'base64') {
-          data = newCanvas.toDataURL(`image/${type}`, qualit)
+          data = newCanvas.toDataURL(`image/${type}`, quality)
         } else {
           const imgData = context.getImageData(0, 0, destWidth, destHeight)
           if (__PLATFORM__ === 'app-plus') {
@@ -480,7 +480,7 @@ export default {
       destWidth,
       destHeight,
       fileType,
-      qualit,
+      quality,
       dirname,
       callbackId
     }) {
@@ -494,7 +494,7 @@ export default {
         hidpi: false,
         dataType: 'base64',
         type: fileType,
-        qualit
+        quality
       })
       if (!res.data || !res.data.length) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
