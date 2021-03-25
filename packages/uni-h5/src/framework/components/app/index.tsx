@@ -1,12 +1,4 @@
-import {
-  ref,
-  onMounted,
-  computed,
-  openBlock,
-  createBlock,
-  createVNode,
-  defineComponent,
-} from 'vue'
+import { ref, computed, onMounted, defineComponent } from 'vue'
 
 import Layout from './layout'
 
@@ -28,25 +20,9 @@ export default defineComponent({
     const { clazz, onChange } = useAppClass()
 
     return () => (
-      openBlock(),
-      createBlock(
-        'uni-app',
-        {
-          class: clazz.value,
-        },
-        [
-          createVNode(
-            Layout,
-            {
-              onChange,
-            },
-            null,
-            8 /* PROPS */,
-            ['onChange']
-          ),
-        ],
-        2 /* CLASS */
-      )
+      <uni-app class={clazz.value}>
+        <Layout onChange={onChange} />
+      </uni-app>
     )
   },
 })

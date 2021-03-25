@@ -1,13 +1,5 @@
 declare namespace UniApp {
-  type PLATFORM =
-    | 'h5'
-    | 'app-plus'
-    | 'mp-alipay'
-    | 'mp-baidu'
-    | 'mp-qq'
-    | 'mp-toutiao'
-    | 'mp-weixin'
-    | 'quickapp-webview'
+  type PLATFORM = keyof PagesJsonPagePlatformStyle
   interface LayoutWindowOptions {
     matchMedia?: {
       minWidth?: number
@@ -28,16 +20,38 @@ declare namespace UniApp {
     rightWindow?: LayoutWindowOptions
   }
 
+  interface PageNavigationBarButton {
+    type?:
+      | 'none'
+      | 'forward'
+      | 'back'
+      | 'share'
+      | 'favorite'
+      | 'home'
+      | 'menu'
+      | 'close'
+    color?: string
+    background?: string
+    colorPressed?: string
+    float?: 'right' | 'left'
+    fontWeight?: string
+    fontSize?: string
+    fontSrc?: string
+    select?: boolean
+    text?: string
+    width?: string
+  }
   interface PageNavigationBar {
-    type: 'default' | 'transparent' | 'float' | 'none'
-    titleText: string
-    textStyle: 'black' | 'white'
-    timingFunc: string
-    duration: string
-    backgroundColor: string
-    titlePenetrate: 'YES' | 'NO'
-    shadowColorType: 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'yellow'
-    backButton: boolean
+    type?: 'default' | 'transparent' | 'float' | 'none'
+    titleText?: string
+    textStyle?: 'black' | 'white'
+    timingFunc?: string
+    duration?: string
+    backgroundColor?: string
+    titlePenetrate?: 'YES' | 'NO'
+    shadowColorType?: 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'yellow'
+    backButton?: boolean
+    buttons?: PageNavigationBarButton[]
   }
   interface PageRefreshOptions {
     support: boolean
@@ -47,7 +61,24 @@ declare namespace UniApp {
     range: number
     offset: number
   }
-  interface PageRouteMeta {
+
+  interface PagesJsonPagePlatformStyle {
+    h5?: PagesJsonPageStyle
+    'app-plus'?: PagesJsonPageStyle
+    'mp-alipay'?: PagesJsonPageStyle
+    'mp-baidu'?: PagesJsonPageStyle
+    'mp-qq'?: PagesJsonPageStyle
+    'mp-toutiao'?: PagesJsonPageStyle
+    'mp-weixin'?: PagesJsonPageStyle
+    'quickapp-webview'?: PagesJsonPageStyle
+  }
+
+  interface PagesJsonPageStyle extends PagesJsonPagePlatformStyle {
+    enablePullDownRefresh?: boolean
+    navigationBar: PageNavigationBar
+    refreshOptions?: PageRefreshOptions
+  }
+  interface PageRouteMeta extends PagesJsonPageStyle {
     id: number
     isQuit?: boolean
     isEntry?: boolean
@@ -57,18 +88,11 @@ declare namespace UniApp {
     topWindow?: boolean
     leftWindow?: boolean
     rightWindow?: boolean
-    enablePullDownRefresh?: boolean
-    navigationBar: PageNavigationBar
-    refreshOptions?: PageRefreshOptions
-  }
-
-  interface PagesJsonPageStyle {
-    enablePullDownRefresh?: boolean
   }
 
   interface PagesJsonPageOptions {
     path: string
-    style?: PagesJsonPageStyle
+    style: PagesJsonPageStyle
   }
   interface PagesJsonSubpackagesOptions {
     root: string

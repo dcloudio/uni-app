@@ -55,7 +55,7 @@ function normalizeSubpackages(
   if (Array.isArray(subpackages)) {
     subpackages.forEach(({ root, pages: subPages }) => {
       if (root && subPages.length) {
-        subPages.forEach((subPage: { path: string }) => {
+        subPages.forEach((subPage) => {
           subPage.path = slash(path.join(root, subPage.path))
           pages.push(subPage)
         })
@@ -66,7 +66,7 @@ function normalizeSubpackages(
 }
 
 function normalizePageStyle(
-  pageStyle: Record<string, any>,
+  pageStyle: UniApp.PagesJsonPageStyle,
   platform: UniApp.PLATFORM
 ) {
   if (pageStyle) {
@@ -118,10 +118,10 @@ function normalizeNavigationBar(
 
 const platforms = ['h5', 'app-plus', 'mp-', 'quickapp']
 
-function removePlatformStyle(pageStyle: Record<string, any>) {
+function removePlatformStyle(pageStyle: UniApp.PagesJsonPageStyle) {
   Object.keys(pageStyle).forEach((name) => {
     if (platforms.find((prefix) => name.startsWith(prefix))) {
-      delete pageStyle[name]
+      delete pageStyle[name as UniApp.PLATFORM]
     }
   })
   return pageStyle

@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { ConfigEnv } from 'vite'
 import { parse } from 'jsonc-parser'
-
+import { isArray } from '@vue/shared'
 import { VitePluginUniResolvedOptions } from '..'
 import { normalizePagesJson } from './pagesJson'
 
@@ -15,6 +15,7 @@ interface PagesFeatures {
   leftWindow: boolean
   rightWindow: boolean
   pullDownRefresh: boolean
+  navigationBarButtons: boolean
 }
 interface ManifestFeatures {
   wx: boolean
@@ -46,6 +47,7 @@ function resolvePagesFeature(
     leftWindow: false, // 是否启用leftWindow
     rightWindow: false, // 是否启用rightWindow
     pullDownRefresh: false, // 是否启用下拉刷新
+    navigationBarButtons: true, // 是否启用标题按钮
   }
 
   const {
@@ -88,6 +90,15 @@ function resolvePagesFeature(
       )
     ) {
       features.nvue = false
+    }
+    if (
+      !pages.find(
+        (page) =>
+          isArray(page.style.navigationBar.buttons) &&
+          page.style.navigationBar.buttons.length
+      )
+    ) {
+      features.navigationBarButtons = false
     }
   }
 
@@ -137,6 +148,7 @@ export function getFeatures(
     leftWindow,
     rightWindow,
     pullDownRefresh,
+    navigationBarButtons,
   } = Object.assign(
     resolveManifestFeature(options),
     resolvePagesFeature(options, command),
@@ -156,5 +168,6 @@ export function getFeatures(
     __UNI_FEATURE_RIGHTWINDOW__: rightWindow,
     __UNI_FEATURE_RESPONSIVE__: topWindow || leftWindow || rightWindow,
     __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh,
+    __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons,
   }
 }

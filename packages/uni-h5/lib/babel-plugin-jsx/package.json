@@ -1,0 +1,51 @@
+{
+  "name": "@vue/babel-plugin-jsx",
+  "version": "1.0.3",
+  "description": "Babel plugin for Vue 3.0 JSX",
+  "author": "Amour1688 <lcz_1996@foxmail.com>",
+  "homepage": "https://github.com/vuejs/jsx-next/tree/dev/packages/babel-plugin-jsx#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/jsx-next.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint 'src/*.ts'",
+    "test": "yarn build && jest --coverage",
+    "prepublishOnly": "yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/vuejs/jsx-next/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/helper-module-imports": "^7.0.0",
+    "@babel/plugin-syntax-jsx": "^7.0.0",
+    "@babel/template": "^7.0.0",
+    "@babel/traverse": "^7.0.0",
+    "@babel/types": "^7.0.0",
+    "@vue/babel-helper-vue-transform-on": "^1.0.2",
+    "camelcase": "^6.0.0",
+    "html-tags": "^3.1.0",
+    "svg-tags": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@types/jest": "^26.0.7",
+    "@types/svg-tags": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
+    "@vue/compiler-dom": "3.0.5",
+    "@vue/test-utils": "2.0.0-beta.2",
+    "jest": "^26.0.1",
+    "regenerator-runtime": "^0.13.5",
+    "ts-jest": "^26.1.3",
+    "typescript": "^4.0.2",
+    "vue": "3.0.5"
+  }
+}

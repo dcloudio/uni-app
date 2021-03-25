@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, defineComponent, inject, provide, reactive, nextTick, computed, openBlock, createBlock, Fragment, withDirectives, createVNode, vShow, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, mergeProps, onMounted, ref, toDisplayString, toHandlers, renderSlot, withModifiers, vModelDynamic, renderList, vModelText, createTextVNode} from "vue";
+import {injectHook, defineComponent, inject, provide, reactive, nextTick, computed, withDirectives, createVNode, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText, createTextVNode} from "vue";
 import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -871,55 +871,48 @@ function useKeepAliveRoute() {
 }
 var Layout = defineComponent({
   name: "Layout",
+  props: {
+    onChange: Function
+  },
   emits: ["change"],
   setup() {
-    const route = __UNI_FEATURE_TABBAR__ ? useRoute() : null;
-    const keepAliveRoute = __UNI_FEATURE_PAGES__ ? useKeepAliveRoute() : null;
-    __UNI_FEATURE_TOPWINDOW__ ? useTopWindow() : null;
-    __UNI_FEATURE_LEFTWINDOW__ ? useLeftWindow() : null;
-    __UNI_FEATURE_RIGHTWINDOW__ ? useRightWindow() : null;
+    const route = __UNI_FEATURE_TABBAR__ && useRoute();
+    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
+    __UNI_FEATURE_TOPWINDOW__ && useTopWindow();
+    __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow();
+    __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow();
     return () => {
-      return openBlock(), createBlock(Fragment, null, [
-        createLayoutVNode(keepAliveRoute),
-        createTabBarVNode(route)
-      ], 64);
+      const layoutTsx = createLayoutTsx(keepAliveRoute);
+      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(route);
+      return [layoutTsx, tabBarTsx].filter(Boolean);
     };
   }
 });
-function createLayoutVNode(keepAliveRoute, topWindow, leftWindow, rightWindow) {
+function createLayoutTsx(keepAliveRoute, topWindow, leftWindow, rightWindow) {
   const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowVNode = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowVNode() : createCommentVNode("", true);
-  const leftWindowVNode = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowVNode() : createCommentVNode("", true);
-  const rightWindowVNode = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowVNode() : createCommentVNode("", true);
-  return createVNode("uni-layout", null, [
-    topWindowVNode,
-    createVNode("uni-content", null, [
-      createVNode("uni-main", null, [routerVNode]),
-      leftWindowVNode,
-      rightWindowVNode
-    ])
-  ]);
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx() : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx() : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx() : null;
+  return createVNode("uni-layout", null, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])]);
 }
-function createTabBarVNode(route) {
-  return __UNI_FEATURE_TABBAR__ ? withDirectives(createVNode(TabBar, null, null, 512), [
-    [vShow, route.meta.isTabBar]
-  ]) : createCommentVNode("", true);
+function createTabBarTsx(route) {
+  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, route.meta.isTabBar]]);
 }
 function createPageVNode() {
   return createVNode(__uniRoutes[1].component);
 }
 function createRouterViewVNode(keepAliveRoute) {
   return createVNode(RouterView, null, {
-    default: withCtx(({Component}) => [
-      (openBlock(), createBlock(KeepAlive, {cache: keepAliveRoute.routeCache}, [
-        (openBlock(), createBlock(resolveDynamicComponent(Component), {
-          key: keepAliveRoute.routeKey.value
-        }))
-      ], 1032, ["cache"]))
-    ]),
+    default: withCtx(({
+      Component
+    }) => [(openBlock(), createBlock(KeepAlive, {
+      cache: keepAliveRoute.routeCache
+    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
+      key: keepAliveRoute.routeKey.value
+    }))], 1032, ["cache"]))]),
     _: 1
   });
 }
@@ -948,53 +941,27 @@ function useRightWindow() {
     height: 0
   };
 }
-function createTopWindowVNode(topWindow) {
-  if (!__UNI_FEATURE_TOPWINDOW__) {
-    return createCommentVNode("", true);
-  }
-  const {component, style, height, show} = useTopWindow();
-  return withDirectives(createVNode("uni-top-window", null, [
-    createVNode("div", {
-      ref: "topWindow",
-      class: "uni-top-window",
-      style
-    }, [
-      createVNode(component, mergeProps({
-        onVnodeMounted(vnode) {
-        },
-        "navigation-bar-title-text": ""
-      }), null, 16, ["navigation-bar-title-text"])
-    ], 4),
-    createVNode("div", {
-      class: "uni-top-window--placeholder",
-      style: {height}
-    }, null, 4)
-  ], 512), [[vShow, show]]);
+function createTopWindowTsx(topWindow) {
 }
-function createLeftWindowVNode(leftWindow) {
+function createLeftWindowTsx(leftWindow) {
 }
-function createRightWindowVNode(leftWindow) {
+function createRightWindowTsx(leftWindow) {
 }
-const CSS_VARS = [
-  "--status-bar-height",
-  "--top-window-height",
-  "--window-left",
-  "--window-right",
-  "--window-margin"
-];
+const CSS_VARS = ["--status-bar-height", "--top-window-height", "--window-left", "--window-right", "--window-margin"];
 var AppComponent = defineComponent({
   name: "App",
   setup() {
     useCssVar();
     useAppLifecycle();
-    const {clazz, onChange: onChange2} = useAppClass();
-    return () => (openBlock(), createBlock("uni-app", {
+    const {
+      clazz,
+      onChange: onChange2
+    } = useAppClass();
+    return () => createVNode("uni-app", {
       class: clazz.value
-    }, [
-      createVNode(Layout, {
-        onChange: onChange2
-      }, null, 8, ["onChange"])
-    ], 2));
+    }, [createVNode(Layout, {
+      onChange: onChange2
+    }, null, 8, ["onChange"])], 2);
   }
 });
 function useCssVar() {
@@ -8074,17 +8041,16 @@ var PageHead = defineComponent({
       clazz,
       style
     } = usePageHead(navigationBar);
-    const backButtonJsx = createBackButtonJsx(navigationBar);
+    const backButtonJsx = __UNI_FEATURE_PAGES__ ? createBackButtonJsx(navigationBar) : null;
+    const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx("left", navigationBar) : [];
     return () => createVNode("uni-page-head", {
       "uni-page-head-type": navigationBar.type
-    }, {
-      default: () => [createVNode("div", {
-        class: clazz.value,
-        style: style.value
-      }, [createVNode("div", {
-        class: "uni-page-head-hd"
-      }, [backButtonJsx])], 6)]
-    }, 8, ["uni-page-head-type"]);
+    }, [createVNode("div", {
+      class: clazz.value,
+      style: style.value
+    }, [createVNode("div", {
+      class: "uni-page-head-hd"
+    }, [backButtonJsx, ...leftButtonsJsx])], 6)], 8, ["uni-page-head-type"]);
   }
 });
 function createBackButtonJsx(navigationBar) {
@@ -8092,10 +8058,18 @@ function createBackButtonJsx(navigationBar) {
     return createVNode("div", {
       class: "uni-page-head-btn"
     }, [createVNode("i", {
-      style: "{color:color,fontSize:'27px'}",
+      style: "fontSize:27px",
       class: "uni-btn-icon"
     }, [createTextVNode("\uE601")])]);
   }
+}
+function createButtonsJsx(float, navigationBar) {
+  if (isArray(navigationBar.buttons)) {
+    return navigationBar.buttons.filter((btn) => btn.float === float).map((btn, index2) => createVNode("div", {
+      key: index2
+    }, [createVNode("i", null, null)]));
+  }
+  return [];
 }
 function usePageHead(navigationBar) {
   const clazz = computed(() => {
