@@ -22,15 +22,20 @@
 
 ## 对比：传统与clientDB云端协同的开发效率
 > 演示：在线通讯录项目，渲染云端数据到视图
+
 #### 传统开发方式:
 1. 传统开发你需要先写服务端代码（这里用php+mysql作为演示）用sql语法查询数据库中的数据并输出，然后再开放API。
 如图：
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/73899409-d5bf-40d6-b74a-758d1fd06104.png)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/f0798882-cbcc-4b41-affc-7bce5ebaeb0e.png)
 2. 前端用ajax携带必要参数请求API，然后将请求结果赋值给data中的变量。最终把变量在试图中渲染出来。
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/6bb0d64d-45a9-4208-a5c7-c71329607c86.png)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/d2194fea-c90e-4f02-b241-d27167ccb015.png)
 ### clientDB的开发方式:
 - 云端协调的开发方式，unicloud-db组件渲染列表。
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/73dd3212-c5b9-492d-a950-d8e5b7355ef4.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/52890b20-4b89-4915-aba8-348b7c920d42.gif)
+
+- #### 总结：传统的开发方式，前后端合计需要68行代码；而用clientDB的unicloud-db组件的方式你只需要敲7个字母，8秒搞定。开发效率高了10倍以上。
+
+
 
 ## clientDB图解
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b673c28f-c41b-406d-8b7a-c3f4bfbf4b31.jpg)
