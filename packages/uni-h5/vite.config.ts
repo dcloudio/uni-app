@@ -54,7 +54,18 @@ export default defineConfig({
     assetsDir: '.',
     rollupOptions: {
       input: path.resolve(__dirname, 'src/index.ts'),
-      external: ['vue', 'vue-router', '@vue/shared', '@dcloudio/uni-shared'],
+      external(source) {
+        if (
+          ['vue', 'vue-router', '@vue/shared', '@dcloudio/uni-shared'].includes(
+            source
+          )
+        ) {
+          return true
+        }
+        if (source.startsWith('@dcloudio/uni-h5/style')) {
+          return true
+        }
+      },
       preserveEntrySignatures: 'strict',
       plugins: [
         replace({

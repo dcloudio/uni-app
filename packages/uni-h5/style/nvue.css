@@ -1,0 +1,57 @@
+[nvue] uni-view,
+[nvue] uni-label,
+[nvue] uni-swiper-item,
+[nvue] uni-scroll-view {
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+[nvue] uni-button {
+  margin: 0;
+}
+
+[nvue-dir-row] uni-view,
+[nvue-dir-row] uni-label,
+[nvue-dir-row] uni-swiper-item {
+  flex-direction: row;
+}
+
+[nvue-dir-column] uni-view,
+[nvue-dir-column] uni-label,
+[nvue-dir-column] uni-swiper-item {
+  flex-direction: column;
+}
+
+[nvue-dir-row-reverse] uni-view,
+[nvue-dir-row-reverse] uni-label,
+[nvue-dir-row-reverse] uni-swiper-item {
+  flex-direction: row-reverse;
+}
+
+[nvue-dir-column-reverse] uni-view,
+[nvue-dir-column-reverse] uni-label,
+[nvue-dir-column-reverse] uni-swiper-item {
+  flex-direction: column-reverse;
+}
+
+[nvue] uni-view,
+[nvue] uni-image,
+[nvue] uni-input,
+[nvue] uni-scroll-view,
+[nvue] uni-swiper,
+[nvue] uni-swiper-item,
+[nvue] uni-text,
+[nvue] uni-textarea,
+[nvue] uni-video {
+  position: relative;
+  border: 0px solid #000000;
+  box-sizing: border-box;
+}
+
+[nvue] uni-swiper-item {
+  position: absolute;
+}

@@ -2,19 +2,21 @@ import fs from 'fs'
 import path from 'path'
 import { parse } from 'jsonc-parser'
 
-import { Plugin, ViteDevServer } from 'vite'
+import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 
 import { initEnv } from './env'
 import { createConfig } from './config'
 import { createResolveId } from './resolveId'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
+import { createHandleHotUpdate } from './handleHotUpdate'
 export interface VitePluginUniOptions {
   inputDir?: string
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   root: string
   base: string
+  command: ResolvedConfig['command']
   inputDir: string
   assetsDir: string
   devServer?: ViteDevServer
@@ -39,6 +41,7 @@ export default function uniPlugin(
     base: resolveBase(inputDir),
     assetsDir: 'assets',
     inputDir,
+    command: 'serve',
   }
   initEnv(options)
   return {
@@ -47,5 +50,6 @@ export default function uniPlugin(
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
     resolveId: createResolveId(options),
+    handleHotUpdate: createHandleHotUpdate(options),
   }
 }

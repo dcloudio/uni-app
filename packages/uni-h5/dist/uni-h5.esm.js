@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, defineComponent, nextTick, computed, openBlock, createBlock, Fragment, withDirectives, createVNode, vShow, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, mergeProps, onMounted, ref, toDisplayString, toHandlers, renderSlot, withModifiers, vModelDynamic, renderList, vModelText, inject, provide, reactive} from "vue";
-import {COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, NAVBAR_HEIGHT} from "@dcloudio/uni-shared";
+import {injectHook, defineComponent, inject, provide, reactive, nextTick, computed, openBlock, createBlock, Fragment, withDirectives, createVNode, vShow, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, mergeProps, onMounted, ref, toDisplayString, toHandlers, renderSlot, withModifiers, vModelDynamic, renderList, vModelText, createTextVNode} from "vue";
+import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -756,9 +756,65 @@ const afterEach = (to, from, failure) => {
 var TabBar = defineComponent({
   name: "TabBar"
 });
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "pageMeta" : "pm");
+function usePageMeta() {
+  return inject(pageMetaKey);
+}
+function providePageMeta() {
+  provide(pageMetaKey, initPageMeta());
+}
+function initPageMeta() {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute().meta)))));
+  }
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[1].meta)))));
+}
+const PAGE_META_KEYS = [
+  "navigationBar",
+  "refreshOptions"
+];
+function mergePageMeta(pageMeta) {
+  const res = Object.assign({}, __uniConfig.globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = Object.assign({}, __uniConfig.globalStyle[name] || {}, pageMeta[name] || {});
+  });
+  return res;
+}
+function normalizePageMeta(pageMeta) {
+  const {enablePullDownRefresh, navigationBar} = pageMeta;
+  if (enablePullDownRefresh) {
+    const refreshOptions = Object.assign({
+      support: true,
+      color: "#2BD009",
+      style: "circle",
+      height: 70,
+      range: 150,
+      offset: 0
+    }, pageMeta.refreshOptions || {});
+    let offset = rpx2px(refreshOptions.offset);
+    const {type} = navigationBar;
+    if (type !== "transparent" && type !== "none") {
+      offset += NAVBAR_HEIGHT + out.top;
+    }
+    refreshOptions.height = rpx2px(refreshOptions.height);
+    refreshOptions.range = rpx2px(refreshOptions.range);
+    pageMeta.refreshOptions = refreshOptions;
+  }
+  return pageMeta;
+}
+const documentElement = document.documentElement;
+let styleObj;
+function updateCssVar(name, value) {
+  if (!styleObj) {
+    styleObj = documentElement.style;
+  }
+  styleObj.setProperty(name, value);
+}
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 const SEP = "$$";
+const currentPages = [];
 function getCurrentPages$1() {
-  return [];
+  return currentPages;
 }
 let id = history.state && history.state.__id__ || 1;
 function createPageState(type) {
@@ -780,10 +836,12 @@ function initPublicPage(route) {
     path: route.path,
     route: route.meta.pagePath,
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
-    options: {}
+    options: {},
+    meta: usePageMeta()
   };
 }
 function initPage(vm) {
+  currentPages.push(vm);
   const route = vm.$route;
   vm.__page__ = initPublicPage(route);
 }
@@ -916,14 +974,6 @@ function createTopWindowVNode(topWindow) {
 function createLeftWindowVNode(leftWindow) {
 }
 function createRightWindowVNode(leftWindow) {
-}
-const documentElement = document.documentElement;
-let styleObj;
-function updateCssVar(name, value) {
-  if (!styleObj) {
-    styleObj = documentElement.style;
-  }
-  styleObj.setProperty(name, value);
 }
 const CSS_VARS = [
   "--status-bar-height",
@@ -8031,61 +8081,70 @@ const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
     window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
   }
 });
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "pageMeta" : "pm");
-function usePageMeta() {
-  return inject(pageMetaKey);
-}
-function providePageMeta() {
-  provide(pageMetaKey, initPageMeta());
-}
-function initPageMeta() {
-  if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute().meta)))));
-  }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[1].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
-];
-function mergePageMeta(pageMeta) {
-  const res = Object.assign({}, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = Object.assign({}, __uniConfig.globalStyle[name] || {}, pageMeta[name] || {});
-  });
-  return res;
-}
-function normalizePageMeta(pageMeta) {
-  const {enablePullDownRefresh, navigationBar} = pageMeta;
-  if (enablePullDownRefresh) {
-    const refreshOptions = Object.assign({
-      support: true,
-      color: "#2BD009",
-      style: "circle",
-      height: 70,
-      range: 150,
-      offset: 0
-    }, pageMeta.refreshOptions || {});
-    let offset = rpx2px(refreshOptions.offset);
-    const {type} = navigationBar;
-    if (type !== "transparent" && type !== "none") {
-      offset += NAVBAR_HEIGHT + out.top;
-    }
-    refreshOptions.height = rpx2px(refreshOptions.height);
-    refreshOptions.range = rpx2px(refreshOptions.range);
-    pageMeta.refreshOptions = refreshOptions;
-  }
-  return pageMeta;
-}
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 var PageHead = defineComponent({
   name: "PageHead",
   setup() {
     const pageMeta = usePageMeta();
-    UniServiceJSBridge.emit("onNavigationBarChange", pageMeta.navigationBar.titleText);
-    return () => (openBlock(), createBlock("uni-page-head", null, pageMeta.navigationBar.titleText));
+    const navigationBar = pageMeta.navigationBar;
+    UniServiceJSBridge.emit("onNavigationBarChange", navigationBar.titleText);
+    const {
+      clazz,
+      style
+    } = usePageHead(navigationBar);
+    const backButtonJsx = createBackButtonJsx(navigationBar);
+    return () => createVNode("uni-page-head", {
+      "uni-page-head-type": navigationBar.type
+    }, {
+      default: () => [createVNode("div", {
+        class: clazz.value,
+        style: style.value
+      }, [createVNode("div", {
+        class: "uni-page-head-hd"
+      }, [backButtonJsx])], 6)]
+    }, 8, ["uni-page-head-type"]);
   }
 });
+function createBackButtonJsx(navigationBar) {
+  if (navigationBar.backButton) {
+    return createVNode("div", {
+      class: "uni-page-head-btn"
+    }, [createVNode("i", {
+      style: "{color:color,fontSize:'27px'}",
+      class: "uni-btn-icon"
+    }, [createTextVNode("\uE601")])]);
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz = computed(() => {
+    const {
+      type,
+      titlePenetrate,
+      shadowColorType
+    } = navigationBar;
+    const clazz2 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz2;
+  });
+  const style = computed(() => {
+    return {
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc,
+      backgroundColor: navigationBar.backgroundColor,
+      color: navigationBar.textStyle === "black" ? "#000" : "#fff"
+    };
+  });
+  return {
+    clazz,
+    style
+  };
+}
 var _sfc_main$2 = {
   name: "PageRefresh",
   setup() {

@@ -26,7 +26,7 @@ export function uniPagesJsonPlugin(
       if (id.endsWith(PAGES_JSON_JS)) {
         return {
           code:
-            (options.devServer ? registerGlobalCode : '') +
+            (options.command === 'serve' ? registerGlobalCode : '') +
             parsePagesJson(code, options),
           map: { mappings: '' },
         }
@@ -65,8 +65,15 @@ import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue
 ${uniConfigCode}
 ${definePagesCode}
 ${uniRoutesCode}
+${options.command === 'serve' ? hmrCode : ''}
 `
 }
+
+const hmrCode = `if(import.meta.hot){
+  import.meta.hot.on('invalidate', (data) => {
+      import.meta.hot.invalidate()
+  })
+}`
 
 const registerGlobalCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 window.getApp = getApp
@@ -103,24 +110,34 @@ const navigationBarMaps = {
   navigationBarBackgroundColor: 'backgroundColor',
   navigationBarTextStyle: 'textStyle',
   navigationBarTitleText: 'titleText',
-  navigationBarShadow: 'shadow',
   navigationStyle: 'style',
   titleImage: 'titleImage',
   titlePenetrate: 'titlePenetrate',
 }
 
-function normalizeNavigationBar(pageStyle: Record<string, any>) {
-  const navigationBar = Object.create(null)
+function normalizeNavigationBar(
+  pageStyle: Record<string, any>
+): UniApp.PageNavigationBar {
+  const navigationBar = Object.create(null) as UniApp.PageNavigationBar
   Object.keys(navigationBarMaps).forEach((name) => {
     if (hasOwn(pageStyle, name)) {
+      // @ts-ignore
       navigationBar[navigationBarMaps[name]] = pageStyle[name]
       delete pageStyle[name]
     }
   })
+  if (
+    pageStyle.navigationBarShadow &&
+    pageStyle.navigationBarShadow.colorType
+  ) {
+    navigationBar.shadowColorType = pageStyle.navigationBarShadow.colorType
+    delete pageStyle.navigationBarShadow
+  }
   const { titleNView } = pageStyle
   if (isPlainObject(titleNView)) {
     Object.assign(navigationBar, titleNView)
   }
+
   return navigationBar
 }
 
@@ -267,7 +284,7 @@ function generateConfig(
   delete pagesJson.subpackages
   pagesJson.compilerVersion = pkg['uni-app'].compilerVersion
   return (
-    (options.devServer
+    (options.command === 'serve'
       ? ''
       : `window['____'+appid+'____']=true
 delete window['____'+appid+'____']

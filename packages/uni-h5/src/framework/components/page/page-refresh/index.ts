@@ -93,7 +93,6 @@ export function usePageRefresh(refreshRef: Ref) {
   function removeClass() {
     toggleClass('remove')
   }
-
   function pulling(deltaY: number) {
     if (!refreshControllerElem) {
       return

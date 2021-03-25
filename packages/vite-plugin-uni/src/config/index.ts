@@ -16,6 +16,7 @@ export function createConfig(
     if (config.root) {
       options.root = config.root
     }
+    options.command = env.command
     return {
       base: options.base,
       define: createDefine(options, env),

@@ -6,7 +6,7 @@ export function createServer(
 ): UserConfig['server'] {
   return {
     watch: {
-      ignored: ['**/node_modules/**', '**/.git/**', '**/uniCloud**'],
+      ignored: ['**/uniCloud**'],
     },
   }
 }

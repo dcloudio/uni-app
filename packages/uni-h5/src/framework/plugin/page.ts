@@ -1,10 +1,13 @@
 import { computed, nextTick, VNode, ComponentPublicInstance } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
+import { usePageMeta } from './provide'
 
 const SEP = '$$'
 
+const currentPages: Page.PageInstance[] = []
+
 export function getCurrentPages() {
-  return []
+  return currentPages
 }
 
 let id = (history.state && history.state.__id__) || 1
@@ -34,10 +37,12 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
     route: route.meta.pagePath,
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {}, // $route.query
+    meta: usePageMeta(),
   }
 }
 
 export function initPage(vm: ComponentPublicInstance) {
+  currentPages.push(vm as Page.PageInstance)
   const route = vm.$route
   ;(vm as any).__page__ = initPublicPage(route)
 }

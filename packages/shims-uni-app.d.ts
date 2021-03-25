@@ -22,6 +22,13 @@ declare namespace UniApp {
   interface PageNavigationBar {
     type: 'default' | 'transparent' | 'float' | 'none'
     titleText: string
+    textStyle: 'black' | 'white'
+    timingFunc: string
+    duration: string
+    backgroundColor: string
+    titlePenetrate: 'YES' | 'NO'
+    shadowColorType: 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'yellow'
+    backButton: boolean
   }
   interface PageRefreshOptions {
     support: boolean
