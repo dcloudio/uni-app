@@ -197,7 +197,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (!isAppView) { // app-plus view不需要copy
       plugins.push(new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)))
     }
-    if (!process.env.UNI_SUBPACKGE) {
+    if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
       try {
         const automatorJson = require.resolve('@dcloudio/uni-automator/dist/automator.json')
         plugins.push(new CopyWebpackPlugin([{

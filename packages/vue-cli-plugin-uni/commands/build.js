@@ -28,7 +28,8 @@ module.exports = (api, options) => {
       '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.',
       '--auto-host': 'specify automator host',
       '--auto-port': 'specify automator port',
-      '--subpackage': 'specify subpackage'
+      '--subpackage': 'specify subpackage',
+      '--plugin': 'specify plugin'
     }
   }, async (args) => {
     for (const key in defaults) {
@@ -40,6 +41,10 @@ module.exports = (api, options) => {
     const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao']
     if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
       process.env.UNI_SUBPACKGE = args.subpackage
+    }
+
+    if (args.plugin && platforms.includes(process.env.UNI_PLATFORM)) {
+      process.env.UNI_MP_PLUGIN = args.plugin
     }
 
     require('./util').initAutomator(args)
