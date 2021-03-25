@@ -29,6 +29,7 @@
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/f0798882-cbcc-4b41-affc-7bce5ebaeb0e.png)
 2. 前端用ajax携带必要参数请求API，然后将请求结果赋值给data中的变量。最终把变量在试图中渲染出来。
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/d2194fea-c90e-4f02-b241-d27167ccb015.png)
+
 ### clientDB的开发方式:
 - 云端协调的开发方式，unicloud-db组件渲染列表。
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/52890b20-4b89-4915-aba8-348b7c920d42.gif)
