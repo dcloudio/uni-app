@@ -31,6 +31,7 @@
 * 扩展能力
   * [uni-config-center](https://ext.dcloud.net.cn/plugin?id=4425)
   * [uniCloud admin](uniCloud/admin.md)
+  * [uni-upgrade-center](uniCloud/upgrade-center.md)
   * [uni-cloud-router](uniCloud/uni-cloud-router.md)
   * [unipay](uniCloud/unipay.md)
   * [发送短信](uniCloud/send-sms.md)
