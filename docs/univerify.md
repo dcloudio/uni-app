@@ -26,7 +26,9 @@ uni.login({
         }
 })
 ```
-效果如下:
+
+全屏效果如下:
+
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/full.png)
 
 ### 产品优势
