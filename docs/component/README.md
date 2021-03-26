@@ -368,7 +368,7 @@ uni-app支持的组件分为vue组件和小程序自定义组件。
 
 uni_module其实不止服务于组件，它可以服务于组件、js库、页面、项目等所有DCloud插件市场所支持的种类。
 
-符合uni_module规范的组件都在项目的`uni_modules`目录下，以插件id为目录存放。
+符合uni_module规范的组件都在项目的`uni_modules`目录下，以插件id为目录存放。（项目模板不放在`uni_modules`目录下）
 
 在HBuilderX中点右键可方便的更新插件，插件作者也可以方便的上传插件。
 
