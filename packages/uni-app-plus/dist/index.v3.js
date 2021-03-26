@@ -63,8 +63,10 @@ var serviceContext = (function () {
     'chooseFile',
     'previewImage',
     'getImageInfo',
+    'getVideoInfo',
     'saveImageToPhotosAlbum',
     'compressImage',
+    'compressVideo',
     'getRecorderManager',
     'getBackgroundAudioManager',
     'createAudioContext',
@@ -1003,7 +1005,6 @@ var serviceContext = (function () {
     quality: {
       type: Number,
       validator (value, params) {
-        value = Math.floor(value);
         params.quality = value > 0 && value < 1 ? value : 1;
       }
     }
@@ -1893,6 +1894,10 @@ var serviceContext = (function () {
         params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$2;
       }
     },
+    compressed: {
+      type: Boolean,
+      default: true
+    },
     maxDuration: {
       type: Number,
       default: 60
@@ -1930,6 +1935,33 @@ var serviceContext = (function () {
     compressImage: compressImage
   });
 
+  const compressVideo = {
+    src: {
+      type: String,
+      required: true,
+      validator (src, params) {
+        params.src = getRealPath(src);
+      }
+    },
+    quality: {
+      type: String
+    },
+    bitrate: {
+      type: Number
+    },
+    fps: {
+      type: Number
+    },
+    resolution: {
+      type: Number
+    }
+  };
+
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    compressVideo: compressVideo
+  });
+
   const getImageInfo = {
     src: {
       type: String,
@@ -1940,9 +1972,24 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
+  });
+
+  const getVideoInfo = {
+    src: {
+      type: String,
+      required: true,
+      validator (src, params) {
+        params.src = getRealPath(src);
+      }
+    }
+  };
+
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getVideoInfo: getVideoInfo
   });
 
   const previewImage = {
@@ -1976,7 +2023,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -1991,7 +2038,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -2009,7 +2056,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -2120,7 +2167,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request
   });
@@ -2178,7 +2225,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -2220,7 +2267,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -2245,7 +2292,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -2266,7 +2313,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -2288,7 +2335,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     preLogin: preLogin
   });
@@ -2489,7 +2536,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -2535,7 +2582,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -2572,7 +2619,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -2615,7 +2662,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -2635,7 +2682,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2760,7 +2807,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2859,7 +2906,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2894,23 +2941,25 @@ var serviceContext = (function () {
   './media/choose-image.js': require_context_module_0_16,
   './media/choose-video.js': require_context_module_0_17,
   './media/compress-image.js': require_context_module_0_18,
-  './media/get-image-info.js': require_context_module_0_19,
-  './media/preview-image.js': require_context_module_0_20,
-  './media/save-image-to-photos-album.js': require_context_module_0_21,
-  './network/download-file.js': require_context_module_0_22,
-  './network/request.js': require_context_module_0_23,
-  './network/socket.js': require_context_module_0_24,
-  './network/upload-file.js': require_context_module_0_25,
-  './plugin/get-provider.js': require_context_module_0_26,
-  './plugin/load-sub-package.js': require_context_module_0_27,
-  './plugin/pre-login.js': require_context_module_0_28,
-  './route/route.js': require_context_module_0_29,
-  './storage/storage.js': require_context_module_0_30,
-  './ui/load-font-face.js': require_context_module_0_31,
-  './ui/navigation-bar.js': require_context_module_0_32,
-  './ui/page-scroll-to.js': require_context_module_0_33,
-  './ui/popup.js': require_context_module_0_34,
-  './ui/tab-bar.js': require_context_module_0_35,
+  './media/compress-video.js': require_context_module_0_19,
+  './media/get-image-info.js': require_context_module_0_20,
+  './media/get-video-info.js': require_context_module_0_21,
+  './media/preview-image.js': require_context_module_0_22,
+  './media/save-image-to-photos-album.js': require_context_module_0_23,
+  './network/download-file.js': require_context_module_0_24,
+  './network/request.js': require_context_module_0_25,
+  './network/socket.js': require_context_module_0_26,
+  './network/upload-file.js': require_context_module_0_27,
+  './plugin/get-provider.js': require_context_module_0_28,
+  './plugin/load-sub-package.js': require_context_module_0_29,
+  './plugin/pre-login.js': require_context_module_0_30,
+  './route/route.js': require_context_module_0_31,
+  './storage/storage.js': require_context_module_0_32,
+  './ui/load-font-face.js': require_context_module_0_33,
+  './ui/navigation-bar.js': require_context_module_0_34,
+  './ui/page-scroll-to.js': require_context_module_0_35,
+  './ui/popup.js': require_context_module_0_36,
+  './ui/tab-bar.js': require_context_module_0_37,
 
       };
       var req = function req(key) {
@@ -3949,7 +3998,7 @@ var serviceContext = (function () {
     }
   }
 
-  function warpPlusMethod (module, name, before) {
+  function warpPlusMethod (module, name, before, after) {
     return function (options, callbackId) {
       if (typeof before === 'function') {
         options = before(options);
@@ -3958,6 +4007,9 @@ var serviceContext = (function () {
         success (data = {}) {
           delete data.code;
           delete data.message;
+          if (typeof after === 'function') {
+            data = after(data);
+          }
           invoke$1(callbackId, Object.assign({}, data, {
             errMsg: `${name}:ok`
           }));
@@ -6685,26 +6737,45 @@ var serviceContext = (function () {
 
   function chooseVideo$1 ({
     sourceType,
+    compressed,
     maxDuration,
     camera
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      plus.io.getVideoInfo({
-        filePath: tempFilePath,
-        success (videoInfo) {
-          const result = {
-            errMsg: 'chooseVideo:ok',
-            tempFilePath: tempFilePath
-          };
-          result.size = videoInfo.size;
-          result.duration = videoInfo.duration;
-          result.width = videoInfo.width;
-          result.height = videoInfo.height;
-          invoke$1(callbackId, result);
-        },
-        errorCallback
+      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      const compressVideo = compressed ? plus.zip.compressVideo : function (_, callback) {
+        callback({ tempFilePath });
+      };
+      if (compressed) {
+        plus.nativeUI.showWaiting();
+      }
+      compressVideo({
+        src: tempFilePath,
+        dst
+      }, ({ tempFilePath }) => {
+        if (compressed) {
+          plus.nativeUI.closeWaiting();
+        }
+        plus.io.getVideoInfo({
+          filePath: tempFilePath,
+          success (videoInfo) {
+            const result = {
+              errMsg: 'chooseVideo:ok',
+              tempFilePath: tempFilePath
+            };
+            result.size = videoInfo.size;
+            result.duration = videoInfo.duration;
+            result.width = videoInfo.width;
+            result.height = videoInfo.height;
+            invoke$1(callbackId, result);
+          },
+          errorCallback
+        });
+      }, error => {
+        plus.nativeUI.closeWaiting();
+        errorCallback(error);
       });
     }
 
@@ -6773,9 +6844,31 @@ var serviceContext = (function () {
     }, errorCallback);
   }
 
+  function compressVideo$1 (options, callbackId) {
+    const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const successCallback = warpPlusSuccessCallback(callbackId, 'compressVideo');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'compressVideo');
+    plus.zip.compressVideo(Object.assign({}, options, {
+      dst
+    }), successCallback, errorCallback);
+  }
+
   const getImageInfo$1 = warpPlusMethod('io', 'getImageInfo', options => {
     options.savePath = options.filename = TEMP_PATH + '/download/';
     return options
+  });
+
+  const getVideoInfo$1 = warpPlusMethod('io', 'getVideoInfo', options => {
+    options.filePath = options.src;
+    return options
+  }, data => {
+    return {
+      duration: data.duration,
+      fps: data.fps || 30,
+      height: data.height,
+      width: data.width,
+      size: data.size
+    }
   });
 
   function previewImagePlus ({
@@ -10828,7 +10921,9 @@ var serviceContext = (function () {
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
     compressImage: compressImage$2,
+    compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
+    getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
@@ -18752,7 +18847,7 @@ var serviceContext = (function () {
     destHeight,
     canvasId,
     fileType,
-    qualit
+    quality
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
@@ -18773,7 +18868,7 @@ var serviceContext = (function () {
       destWidth,
       destHeight,
       fileType,
-      qualit,
+      quality,
       dirname,
       callbackId: cId
     });
