@@ -44,7 +44,7 @@
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/6d7fe2a6-1115-4535-8f3f-cdbb7c90e0ef.jpg)
 
 
-#### 总结：传统的开发方式，前后端合计需要64行代码；而用clientDB的unicloud-db组件的渲染方式仅需5含代码。开发效率高了10倍以上。
+#### 总结：传统的开发方式，前后端合计需要64行代码；而用clientDB的unicloud-db组件的渲染方式仅需6行代码。开发效率高了10倍以上。
 
 
 
