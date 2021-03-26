@@ -42,6 +42,8 @@ HBuilderX 3.0起目录结构做了调整如下：
 	</code>
 </pre>
 
+#### 注意：uniCloud目录是存放服务端文件的目录，他和前端代码在同一个项目下这里只是方便管理。在发行前端部分，比如打包app、小程序、h5的代码包里并不会包含uniCloud目录。
+
 HBuilderX 3.0之前版本目录结构如下：
 
 <pre v-pre="" data-lang="">
