@@ -98,12 +98,9 @@ export default {
   },
   data () {
     return {
-      composing: false,
       valid: true,
       wrapperHeight: 0,
-      cachedValue: '',
-      // Safari 14 以上修正禁用状态颜色
-      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
+      cachedValue: ''
     }
   },
   computed: {
@@ -211,21 +208,6 @@ export default {
       this.$triggerInput($event, {
         value: this.valueSync
       }, force)
-    },
-    _onFocus ($event) {
-      this.$trigger('focus', $event, {
-        value: $event.target.value
-      })
-    },
-    _onBlur ($event) {
-      // iOS 输入法 compositionend 事件可能晚于 blur
-      if (this.composing) {
-        this.composing = false
-        this._onInput($event, true)
-      }
-      this.$trigger('blur', $event, {
-        value: $event.target.value
-      })
     },
     _onComposition ($event) {
       if ($event.type === 'compositionstart') {

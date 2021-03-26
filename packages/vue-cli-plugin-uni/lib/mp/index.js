@@ -38,6 +38,8 @@ function getProvides () {
   if (process.env.UNI_USING_COMPONENTS) {
     if (process.env.UNI_SUBPACKGE) {
       provides.createApp = [uniPath, 'createSubpackageApp']
+    } else if (process.env.UNI_MP_PLUGIN) {
+      provides.createApp = [uniPath, 'createPlugin']
     } else {
       provides.createApp = [uniPath, 'createApp']
     }
@@ -126,11 +128,11 @@ class PreprocessAssetsPlugin {
 
 function initSubpackageConfig (webpackConfig, vueOptions) {
   if (process.env.UNI_OUTPUT_DEFAULT_DIR === process.env.UNI_OUTPUT_DIR) { // 未自定义output
-    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, process.env.UNI_SUBPACKGE)
+    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
   }
   vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
   webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
-  webpackConfig.output.jsonpFunction('webpackJsonp_' + process.env.UNI_SUBPACKGE)
+  webpackConfig.output.jsonpFunction('webpackJsonp_' + (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
 }
 
 module.exports = {
@@ -162,7 +164,7 @@ module.exports = {
       new webpack.ProvidePlugin(getProvides())
     ]
 
-    if (process.env.UNI_SUBPACKGE && process.env.UNI_SUBPACKGE !== 'main') {
+    if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
       plugins.push(new PreprocessAssetsPlugin())
     }
 
@@ -272,7 +274,7 @@ module.exports = {
         }))
     }
 
-    if (process.env.UNI_SUBPACKGE) {
+    if (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) {
       initSubpackageConfig(webpackConfig, vueOptions)
     }
 

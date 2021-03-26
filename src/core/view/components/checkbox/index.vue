@@ -6,7 +6,7 @@
   >
     <div class="uni-checkbox-wrapper">
       <div
-        :class="[checkboxChecked ? 'uni-checkbox-input-checked' : '']"
+        :class="{ 'uni-checkbox-input-checked' : checkboxChecked, 'uni-checkbox-input-disabled' : disabled }"
         :style="{color:color}"
         class="uni-checkbox-input"
       />

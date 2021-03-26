@@ -202,7 +202,11 @@ module.exports = {
               // event
               return path.skip()
             }
-
+            path = path.findParent((path) => path.isLogicalExpression()) || path
+            path.skip()
+            if (path.findParent((path) => path.shouldSkip)) {
+              return
+            }
             path.replaceWith(
               getMemberExpr(
                 path,

@@ -739,8 +739,8 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<view v-if="test1(key)&&test2(key)">{{getValue(key)}}</view>',
-      '<block wx:if="{{$root.m0&&$root.m1}}"><view>{{$root.m2}}</view></block>',
-      'with(this){var m0=test1(key);var m1=test2(key);var m2=m0&&m1?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2}})}'
+      '<block wx:if="{{$root.m0}}"><view>{{$root.m1}}</view></block>',
+      'with(this){var m0=test1(key)&&test2(key);var m1=m0?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}'
     )
     assertCodegen(
       '<view v-for="(item,index) in list" :key="index"><view v-if="item">{{getValue(item)}}</view></view>',

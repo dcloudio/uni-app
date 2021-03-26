@@ -260,6 +260,7 @@ export default {
 
   .uni-picker-view-group {
     height: 100%;
+    overflow: hidden;
   }
 
   .uni-picker-view-mask {
@@ -273,6 +274,7 @@ export default {
     left: 0;
     width: 100%;
     z-index: 3;
+    pointer-events: none;
   }
 
   .uni-picker-view-mask {

@@ -155,6 +155,7 @@ export default {
           }
         }
       }
+      window.dispatchEvent(new CustomEvent('updateview'))
     },
     _resetSize () {
       this.$el.style.width = this.originalStyle.width
