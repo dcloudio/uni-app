@@ -38,7 +38,7 @@
 
 
 ### clientDB的开发方式:
-- 云端协调的开发方式，unicloud-db组件渲染列表。
+- 云端协同的开发方式，unicloud-db组件渲染列表。
 
 仅：5行代码如图：
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/6d7fe2a6-1115-4535-8f3f-cdbb7c90e0ef.jpg)
