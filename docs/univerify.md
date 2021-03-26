@@ -14,8 +14,10 @@
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/demo.png)
 
 <a id="fullscreen"/>
+
 > HBuilderX3.1.6+版本授权登录界面支持全屏模式
-调用uni.login时设置univerifyStyle中的fullScreen属性值为true即可
+
+调用uni.login时设置univerifyStyle中的fullScreen属性值为true即可：
 ```js
 uni.login({
 	provider: 'univerify',
