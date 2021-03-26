@@ -26,7 +26,9 @@ declare var __UNI_FEATURE_LEFTWINDOW__: boolean
 declare var __UNI_FEATURE_RIGHTWINDOW__: boolean
 declare var __UNI_FEATURE_RESPONSIVE__: boolean
 declare var __UNI_FEATURE_PULL_DOWN_REFRESH__: boolean
+declare var __UNI_FEATURE_NAVIGATIONBAR__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: boolean
+declare var __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: boolean
 // TODO
 declare var __uniRoutes: any
 declare var __uniConfig: UniApp.UniConfig

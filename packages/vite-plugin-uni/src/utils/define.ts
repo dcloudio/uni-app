@@ -14,8 +14,10 @@ interface PagesFeatures {
   topWindow: boolean
   leftWindow: boolean
   rightWindow: boolean
+  navigationBar: boolean
   pullDownRefresh: boolean
   navigationBarButtons: boolean
+  navigationBarSearchInput: boolean
 }
 interface ManifestFeatures {
   wx: boolean
@@ -40,14 +42,16 @@ function resolvePagesFeature(
   command: ConfigEnv['command']
 ): PagesFeatures {
   const features: PagesFeatures = {
-    nvue: true, // 是否启用nvue
-    pages: true, // 是否多页面
-    tabBar: true, // 是否启用tabBar
-    topWindow: false, // 是否启用topWindow
-    leftWindow: false, // 是否启用leftWindow
-    rightWindow: false, // 是否启用rightWindow
-    pullDownRefresh: false, // 是否启用下拉刷新
-    navigationBarButtons: true, // 是否启用标题按钮
+    nvue: true,
+    pages: true,
+    tabBar: true,
+    topWindow: false,
+    leftWindow: false,
+    rightWindow: false,
+    navigationBar: true,
+    pullDownRefresh: false,
+    navigationBarButtons: true,
+    navigationBarSearchInput: true,
   }
 
   const {
@@ -76,7 +80,7 @@ function resolvePagesFeature(
   if (rightWindow && rightWindow.path) {
     features.rightWindow = true
   }
-  if (globalStyle && globalStyle.enablePullDownRefresh) {
+  if (globalStyle.enablePullDownRefresh) {
     features.pullDownRefresh = true
   } else {
     if (pages.find((page) => page.style && page.style.enablePullDownRefresh)) {
@@ -91,17 +95,37 @@ function resolvePagesFeature(
     ) {
       features.nvue = false
     }
-    if (
-      !pages.find(
-        (page) =>
-          isArray(page.style.navigationBar.buttons) &&
-          page.style.navigationBar.buttons.length
-      )
-    ) {
+    let isNavigationCustom = false
+    if (globalStyle.navigationBar.style === 'custom') {
+      isNavigationCustom = true // 全局custom
+      if (pages.find((page) => page.style.navigationBar.style === 'default')) {
+        isNavigationCustom = false
+      }
+    } else {
+      // 所有页面均custom
+      if (pages.every((page) => page.style.navigationBar.style === 'custom')) {
+        isNavigationCustom = true
+      }
+    }
+    if (isNavigationCustom) {
+      features.navigationBar = false
       features.navigationBarButtons = false
+      features.navigationBarSearchInput = false
+    } else {
+      if (
+        !pages.find(
+          (page) =>
+            isArray(page.style.navigationBar.buttons) &&
+            page.style.navigationBar.buttons.length
+        )
+      ) {
+        features.navigationBarButtons = false
+      }
+      if (!pages.find((page) => page.style.navigationBar.searchInput)) {
+        features.navigationBarSearchInput = false
+      }
     }
   }
-
   return features
 }
 
@@ -147,8 +171,10 @@ export function getFeatures(
     topWindow,
     leftWindow,
     rightWindow,
+    navigationBar,
     pullDownRefresh,
     navigationBarButtons,
+    navigationBarSearchInput,
   } = Object.assign(
     resolveManifestFeature(options),
     resolvePagesFeature(options, command),
@@ -167,7 +193,9 @@ export function getFeatures(
     __UNI_FEATURE_LEFTWINDOW__: leftWindow,
     __UNI_FEATURE_RIGHTWINDOW__: rightWindow,
     __UNI_FEATURE_RESPONSIVE__: topWindow || leftWindow || rightWindow,
+    __UNI_FEATURE_NAVIGATIONBAR__: navigationBar,
     __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh,
     __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons,
+    __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput,
   }
 }

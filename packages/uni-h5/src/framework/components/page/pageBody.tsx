@@ -1,15 +1,4 @@
-import {
-  ref,
-  Fragment,
-  openBlock,
-  renderSlot,
-  createBlock,
-  createVNode,
-  defineComponent,
-  createCommentVNode,
-  Ref,
-  VNodeProps,
-} from 'vue'
+import { ref, renderSlot, defineComponent, Ref } from 'vue'
 
 import { usePageMeta } from '../../plugin/provide'
 

@@ -753,7 +753,7 @@ const afterEach = (to, from, failure) => {
   console.log("afterEach.id", history.state.__id__);
   console.log("afterEach", to, from, failure, JSON.stringify(history.state));
 };
-var TabBar = defineComponent({
+var TabBar = /* @__PURE__ */ defineComponent({
   name: "TabBar"
 });
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "pageMeta" : "pm");
@@ -8034,7 +8034,17 @@ const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
     window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
   }
 });
-var PageHead = defineComponent({
+const ICON_FONTS = {
+  none: "",
+  forward: "&#xe600;",
+  back: "&#xe601;",
+  share: "&#xe602;",
+  favorite: "&#xe604;",
+  home: "&#xe605;",
+  menu: "&#xe606;",
+  close: "&#xe650;"
+};
+var PageHead = /* @__PURE__ */ defineComponent({
   name: "PageHead",
   setup() {
     const pageMeta = usePageMeta();
@@ -8044,9 +8054,11 @@ var PageHead = defineComponent({
       clazz,
       style
     } = usePageHead(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && userPageHeadButtons(navigationBar);
     return () => {
       const backButtonJsx = __UNI_FEATURE_PAGES__ ? createBackButtonJsx(navigationBar) : null;
-      const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx("left", navigationBar) : [];
+      const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx(buttons.left) : [];
+      const rightButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx(buttons.right) : [];
       return createVNode("uni-page-head", {
         "uni-page-head-type": navigationBar.type
       }, [createVNode("div", {
@@ -8054,7 +8066,9 @@ var PageHead = defineComponent({
         style: style.value
       }, [createVNode("div", {
         class: "uni-page-head-hd"
-      }, [backButtonJsx, ...leftButtonsJsx])], 6)], 8, ["uni-page-head-type"]);
+      }, [backButtonJsx, ...leftButtonsJsx, ...rightButtonsJsx]), createVNode("div", {
+        class: "uni-page-head-bd"
+      }, null)], 6)], 8, ["uni-page-head-type"]);
     };
   }
 });
@@ -8068,13 +8082,25 @@ function createBackButtonJsx(navigationBar) {
     }, [createTextVNode("\uE601")])]);
   }
 }
-function createButtonsJsx(float, navigationBar) {
-  if (isArray(navigationBar.buttons)) {
-    return navigationBar.buttons.filter((btn) => btn.float === float).map((btn, index2) => createVNode("div", {
-      key: index2
-    }, [createVNode("i", null, null)]));
-  }
-  return [];
+function createButtonsJsx(btns) {
+  return btns.map(({
+    btnClass,
+    btnStyle,
+    btnText,
+    badgeText,
+    iconStyle
+  }, index2) => {
+    return createVNode("div", {
+      key: index2,
+      class: btnClass,
+      style: btnStyle,
+      "badge-text": badgeText
+    }, [createVNode("i", {
+      class: "uni-btn-icon",
+      style: iconStyle,
+      innerHTML: btnText
+    }, null, 12, ["innerHTML"])], 14, ["badge-text"]);
+  });
 }
 function usePageHead(navigationBar) {
   const clazz = computed(() => {
@@ -8105,6 +8131,52 @@ function usePageHead(navigationBar) {
   return {
     clazz,
     style
+  };
+}
+function userPageHeadButtons(navigationBar) {
+  const left = [];
+  const right = [];
+  const {
+    buttons
+  } = navigationBar;
+  if (!isArray(buttons)) {
+    return {
+      left,
+      right
+    };
+  }
+  const {
+    type
+  } = navigationBar;
+  const isTransparent = type === "transparent";
+  buttons.forEach((btn) => {
+    const pageHeadBtn = usePageHeadButton(btn, isTransparent);
+    if (btn.float === "left") {
+      left.push(pageHeadBtn);
+    } else {
+      right.push(pageHeadBtn);
+    }
+  });
+}
+function usePageHeadButton(btn, isTransparent) {
+  return {
+    btnClass: {
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : ICON_FONTS[btn.type] || btn.text,
+    badgeText: btn.badgeText,
+    iconStyle: {
+      color: btn.color,
+      fontSize: btn.fontSize,
+      fontWeight: btn.fontWeight,
+      fontFamily: btn.fontFamily
+    }
   };
 }
 var _sfc_main$2 = {
@@ -8387,13 +8459,11 @@ var index = defineComponent({
   name: "Page",
   setup(props, ctx) {
     providePageMeta();
-    return () => createVNode("uni-page", null, [createVNode(PageHead, null, null), createPageBodyVNode(ctx)]);
+    return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
 function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(PageBody, {
-    key: 0
-  }, {
+  return openBlock(), createBlock(PageBody, {key: 0}, {
     default: withCtx(() => [renderSlot(ctx.slots, "page")]),
     _: 3
   });

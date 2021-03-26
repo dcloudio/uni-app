@@ -1,11 +1,14 @@
 import path from 'path'
 import slash from 'slash'
-import { hasOwn, isPlainObject } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { parseJson } from '@dcloudio/uni-cli-shared'
 
 export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   let pagesJson: UniApp.PagesJson = {
     pages: [],
+    globalStyle: {
+      navigationBar: {},
+    },
   }
   // preprocess
   try {
@@ -113,7 +116,34 @@ function normalizeNavigationBar(
   if (isPlainObject(titleNView)) {
     Object.assign(navigationBar, titleNView)
   }
+  if (isArray(navigationBar.buttons)) {
+    navigationBar.buttons = navigationBar.buttons.map((btn) =>
+      normalizeNavigationBarButton(
+        btn,
+        navigationBar.type,
+        navigationBar.textStyle === 'black' ? '#000' : '#fff'
+      )
+    )
+  }
   return navigationBar
+}
+
+function normalizeNavigationBarButton(
+  btn: UniApp.PageNavigationBarButton,
+  type: UniApp.PageNavigationBar['type'],
+  textColor: '#000' | '#fff'
+) {
+  btn.color = type === 'transparent' ? '#fff' : btn.color || textColor
+  if (!btn.fontSize) {
+    btn.fontSize =
+      type === 'transparent' || (btn.text && /\\u/.test(btn.text))
+        ? '22px'
+        : '27px'
+  } else if (/\d$/.test(btn.fontSize)) {
+    btn.fontSize += 'px'
+  }
+  btn.text = btn.text || ''
+  return btn
 }
 
 const platforms = ['h5', 'app-plus', 'mp-', 'quickapp']

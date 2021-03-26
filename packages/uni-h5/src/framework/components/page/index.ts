@@ -2,6 +2,7 @@ import {
   withCtx,
   openBlock,
   renderSlot,
+  createVNode,
   createBlock,
   SetupContext,
   defineComponent,
@@ -15,12 +16,14 @@ export default defineComponent({
   name: 'Page',
   setup(props, ctx) {
     providePageMeta()
-    return () => (
-      <uni-page>
-        <PageHead />
-        {createPageBodyVNode(ctx)}
-      </uni-page>
-    )
+    return () =>
+      createVNode(
+        'uni-page',
+        null,
+        __UNI_FEATURE_NAVIGATIONBAR__
+          ? [createVNode(PageHead), createPageBodyVNode(ctx)]
+          : [createPageBodyVNode(ctx)]
+      )
   },
 })
 

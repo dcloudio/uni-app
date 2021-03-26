@@ -1,4 +1,6 @@
 declare namespace UniApp {
+  type ClassObj = Record<string, boolean>
+  type StyleObj = Record<string, any>
   type PLATFORM = keyof PagesJsonPagePlatformStyle
   interface LayoutWindowOptions {
     matchMedia?: {
@@ -21,7 +23,7 @@ declare namespace UniApp {
   }
 
   interface PageNavigationBarButton {
-    type?:
+    type:
       | 'none'
       | 'forward'
       | 'back'
@@ -30,17 +32,31 @@ declare namespace UniApp {
       | 'home'
       | 'menu'
       | 'close'
-    color?: string
+    color: string
     background?: string
+    badgeText?: string
     colorPressed?: string
     float?: 'right' | 'left'
-    fontWeight?: string
-    fontSize?: string
+    fontWeight?: any
+    fontSize: string
     fontSrc?: string
+    fontFamily?: string
     select?: boolean
-    text?: string
+    text: string
     width?: string
+    redDot?: boolean
   }
+
+  interface PageNavigationBarSearchInput {
+    autoFocus?: boolean
+    align?: 'center' | 'left' | 'right'
+    backgroundColor?: string
+    borderRadius?: string
+    placeholder?: string
+    placeholderColor?: string
+    disabled?: boolean
+  }
+
   interface PageNavigationBar {
     type?: 'default' | 'transparent' | 'float' | 'none'
     titleText?: string
@@ -52,6 +68,8 @@ declare namespace UniApp {
     shadowColorType?: 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'yellow'
     backButton?: boolean
     buttons?: PageNavigationBarButton[]
+    searchInput?: PageNavigationBarSearchInput
+    style?: 'default' | 'custom'
   }
   interface PageRefreshOptions {
     support: boolean
@@ -109,7 +127,7 @@ declare namespace UniApp {
     pages: PagesJsonPageOptions[]
     subpackages?: PagesJsonSubpackagesOptions[]
     subPackages?: PagesJsonSubpackagesOptions[]
-    globalStyle?: PagesJsonPageStyle
+    globalStyle: PagesJsonPageStyle
     tabBar?: {
       list: []
     }
