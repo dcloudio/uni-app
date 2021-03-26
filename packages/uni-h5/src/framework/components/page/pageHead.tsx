@@ -9,23 +9,25 @@ export default defineComponent({
     const navigationBar = pageMeta.navigationBar
     UniServiceJSBridge.emit('onNavigationBarChange', navigationBar.titleText)
     const { clazz, style } = usePageHead(navigationBar)
-    // 单页面无需back按钮
-    const backButtonJsx = __UNI_FEATURE_PAGES__
-      ? createBackButtonJsx(navigationBar)
-      : null
-    const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
-      ? createButtonsJsx('left', navigationBar)
-      : []
-    return () => (
-      <uni-page-head uni-page-head-type={navigationBar.type}>
-        <div class={clazz.value} style={style.value}>
-          <div class="uni-page-head-hd">
-            {backButtonJsx}
-            {...leftButtonsJsx}
+    return () => {
+      // 单页面无需back按钮
+      const backButtonJsx = __UNI_FEATURE_PAGES__
+        ? createBackButtonJsx(navigationBar)
+        : null
+      const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
+        ? createButtonsJsx('left', navigationBar)
+        : []
+      return (
+        <uni-page-head uni-page-head-type={navigationBar.type}>
+          <div class={clazz.value} style={style.value}>
+            <div class="uni-page-head-hd">
+              {backButtonJsx}
+              {...leftButtonsJsx}
+            </div>
           </div>
-        </div>
-      </uni-page-head>
-    )
+        </uni-page-head>
+      )
+    }
   },
 })
 

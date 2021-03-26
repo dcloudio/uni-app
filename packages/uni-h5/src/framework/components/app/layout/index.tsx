@@ -25,8 +25,10 @@ export default defineComponent({
   },
   emits: ['change'],
   setup() {
-    const route = __UNI_FEATURE_TABBAR__ && useRoute()
-    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute()
+    const route = (__UNI_FEATURE_TABBAR__ &&
+      useRoute()) as RouteLocationNormalizedLoaded
+    const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
+      useKeepAliveRoute()) as KeepAliveRoute
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow()
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow()
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow()
@@ -37,22 +39,23 @@ export default defineComponent({
         leftWindow,
         rightWindow
       )
-      const tabBarTsx =
-        __UNI_FEATURE_TABBAR__ &&
-        createTabBarTsx(route as RouteLocationNormalizedLoaded)
-      return [layoutTsx, tabBarTsx].filter(Boolean)
+      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(route)
+      if (!tabBarTsx) {
+        return layoutTsx
+      }
+      return [layoutTsx, tabBarTsx]
     }
   },
 })
 
 function createLayoutTsx(
-  keepAliveRoute: KeepAliveRoute | false,
+  keepAliveRoute: KeepAliveRoute,
   topWindow?: unknown,
   leftWindow?: unknown,
   rightWindow?: unknown
 ) {
   const routerVNode = __UNI_FEATURE_PAGES__
-    ? createRouterViewVNode(keepAliveRoute as KeepAliveRoute)
+    ? createRouterViewVNode(keepAliveRoute)
     : createPageVNode()
   // 非响应式
   if (!__UNI_FEATURE_RESPONSIVE__) {

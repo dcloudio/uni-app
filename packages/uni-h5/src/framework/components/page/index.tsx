@@ -3,7 +3,6 @@ import {
   openBlock,
   renderSlot,
   createBlock,
-  createVNode,
   SetupContext,
   defineComponent,
 } from 'vue'
@@ -17,18 +16,13 @@ export default defineComponent({
   setup(props, ctx) {
     providePageMeta()
     return () => (
-      openBlock(),
-      createBlock('uni-page', null, [
-        createPageHeadVNode(),
-        createPageBodyVNode(ctx),
-      ])
+      <uni-page>
+        <PageHead />
+        {createPageBodyVNode(ctx)}
+      </uni-page>
     )
   },
 })
-
-function createPageHeadVNode() {
-  return createVNode(PageHead)
-}
 
 function createPageBodyVNode(ctx: SetupContext) {
   return (

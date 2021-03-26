@@ -884,7 +884,10 @@ var Layout = defineComponent({
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(route);
-      return [layoutTsx, tabBarTsx].filter(Boolean);
+      if (!tabBarTsx) {
+        return layoutTsx;
+      }
+      return [layoutTsx, tabBarTsx];
     };
   }
 });
@@ -8041,16 +8044,18 @@ var PageHead = defineComponent({
       clazz,
       style
     } = usePageHead(navigationBar);
-    const backButtonJsx = __UNI_FEATURE_PAGES__ ? createBackButtonJsx(navigationBar) : null;
-    const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx("left", navigationBar) : [];
-    return () => createVNode("uni-page-head", {
-      "uni-page-head-type": navigationBar.type
-    }, [createVNode("div", {
-      class: clazz.value,
-      style: style.value
-    }, [createVNode("div", {
-      class: "uni-page-head-hd"
-    }, [backButtonJsx, ...leftButtonsJsx])], 6)], 8, ["uni-page-head-type"]);
+    return () => {
+      const backButtonJsx = __UNI_FEATURE_PAGES__ ? createBackButtonJsx(navigationBar) : null;
+      const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx("left", navigationBar) : [];
+      return createVNode("uni-page-head", {
+        "uni-page-head-type": navigationBar.type
+      }, [createVNode("div", {
+        class: clazz.value,
+        style: style.value
+      }, [createVNode("div", {
+        class: "uni-page-head-hd"
+      }, [backButtonJsx, ...leftButtonsJsx])], 6)], 8, ["uni-page-head-type"]);
+    };
   }
 });
 function createBackButtonJsx(navigationBar) {
@@ -8361,43 +8366,34 @@ function usePageRefresh(refreshRef) {
 var PageBody = defineComponent({
   name: "PageBody",
   setup(props, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageMeta() : void 0;
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? ref(null) : void 0;
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
     const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
-    return () => (openBlock(), createBlock(Fragment, null, [
-      createPageRefreshVNode(refreshRef, pageMeta),
-      createVNode("uni-page-wrapper", pageRefresh, [
-        createVNode("uni-page-body", null, [
-          renderSlot(ctx.slots, "default")
-        ])
-      ])
-    ]));
+    return () => {
+      const pageRefreshTsx = createPageRefreshTsx(refreshRef, pageMeta);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+    };
   }
 });
-function createPageRefreshVNode(refreshRef, pageMeta) {
-  if (!__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    return createCommentVNode("", true);
+function createPageRefreshTsx(refreshRef, pageMeta) {
+  if (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh) {
+    return null;
   }
-  if (!pageMeta.enablePullDownRefresh) {
-    return createCommentVNode("", true);
-  }
-  return createVNode(_sfc_main$2, {ref: refreshRef}, null, 512);
+  return createVNode(_sfc_main$2, {
+    ref: refreshRef
+  }, null, 512);
 }
 var index = defineComponent({
   name: "Page",
   setup(props, ctx) {
     providePageMeta();
-    return () => (openBlock(), createBlock("uni-page", null, [
-      createPageHeadVNode(),
-      createPageBodyVNode(ctx)
-    ]));
+    return () => createVNode("uni-page", null, [createVNode(PageHead, null, null), createPageBodyVNode(ctx)]);
   }
 });
-function createPageHeadVNode() {
-  return createVNode(PageHead);
-}
 function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(PageBody, {key: 0}, {
+  return openBlock(), createBlock(PageBody, {
+    key: 0
+  }, {
     default: withCtx(() => [renderSlot(ctx.slots, "page")]),
     _: 3
   });
