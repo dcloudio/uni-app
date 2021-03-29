@@ -2908,6 +2908,7 @@ uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到
 从插件市场导入支持uni_modules的uni-id，会自动安装依赖的uni-config-center到uni_modules内。如果此前并没有使用uni-config-center可以直接将uni-id的config.json移至`uni-config-center/uni-id/config.json`即可（可以参照插件市场的uni-id示例项目）
 
 - uni-id会优先使用uni-config-center内添加的配置
+- 如果批量上传后报“请在公用模块uni-id的config.json或init方法中内添加配置项”，请重新上传一次`uni-config-center`
 
 # FAQ
 
