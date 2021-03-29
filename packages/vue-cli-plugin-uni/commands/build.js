@@ -1,5 +1,4 @@
 const path = require('path')
-const fs = require('fs')
 
 const {
   runByHBuilderX,
@@ -208,10 +207,13 @@ module.exports.defaultModes = {
  * 编译到微信小程序插件 文件校验
  */
 function analysisPluginDir () {
+  const fs = require('fs-extra')
+
   // plugin.json 是否存在
   const pluginJsonName = 'plugin.json'
   const pluginJsonPath = path.resolve(process.env.UNI_INPUT_DIR, pluginJsonName)
-  if (!fs.existsSync(pluginJsonPath)) {
+
+  if (!fs.pathExistsSync(pluginJsonPath)) {
     console.error(`${pluginJsonName}文件不存在，请检查后重试`)
     process.exit(0)
   }
@@ -222,7 +224,8 @@ function analysisPluginDir () {
   process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
   const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
   const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
-  if (UNI_MP_PLUGIN_MAIN && !fs.existsSync(mainFilePath)) {
+
+  if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
     console.error(`${UNI_MP_PLUGIN_MAIN}入口文件不存在，请检查后重试`)
     process.exit(0)
   }
@@ -236,7 +239,7 @@ function analysisPluginDir () {
   if (allFilesPath.length) {
     allFilesPath.forEach(pagePath => {
       const curentPageAbsolutePath = path.resolve(process.env.UNI_INPUT_DIR, pagePath)
-      if (!fs.existsSync(curentPageAbsolutePath)) {
+      if (!fs.pathExistsSync(curentPageAbsolutePath)) {
         inexistenceFiles.push(curentPageAbsolutePath)
       }
     })
