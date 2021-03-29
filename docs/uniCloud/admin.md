@@ -423,3 +423,9 @@ uniCloud admin 支持所有三方的 Vue UI 库，包括 elementUI 等非 uni-ap
 注意：
 1. uni-app的button、input等组件，是在html的button、input等标签的外面包了一层，做法与微信小程序相同。如果使用for html的库，其css元素选择器可能需要调整后才能符合预期。
 2. uniCloud Admin暂不支持vue3的三方库。
+
+### 常见问题
+
+- 问： 使用unicloud admin新建用户无法登录，会提示“该账号暂无权限登录” ？
+  > 答：用户的逻辑：登陆时没有菜单会提示“暂无权限登录”，需要给新账号绑定角色，角色有菜单的方可登录
+  
