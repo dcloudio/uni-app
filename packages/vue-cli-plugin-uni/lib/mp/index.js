@@ -156,7 +156,7 @@ module.exports = {
 
     const statCode = process.env.UNI_USING_STAT ? 'import \'@dcloudio/uni-stat\';' : ''
 
-    const beforeCode = 'import \'uni-pages\';'
+    let beforeCode = 'import \'uni-pages\';'
 
     const plugins = [
       new WebpackUniAppPlugin(),
@@ -166,6 +166,17 @@ module.exports = {
 
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
       plugins.push(new PreprocessAssetsPlugin())
+    }
+
+    if (process.env.UNI_MP_PLUGIN) {
+      // 小程序插件入口使用
+      // packages\webpack-uni-mp-loader\lib\plugin\index-new.js -> addMPPluginRequire
+      beforeCode += 'wx.__webpack_require__ = __webpack_require__;'
+
+      const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
+      if (UNI_MP_PLUGIN_MAIN) {
+        process.UNI_ENTRY[UNI_MP_PLUGIN_MAIN.split('.')[0]] = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
+      }
     }
 
     return {
