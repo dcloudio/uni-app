@@ -4,6 +4,7 @@ const NAVBAR_HEIGHT = 44;
 const TABBAR_HEIGHT = 50;
 const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
+const PRIMARY_COLOR = '#007aff';
 
 function debounce(fn, delay) {
     let timeout;
@@ -122,4 +123,4 @@ function isNativeTag(tag) {
 }
 const COMPONENT_PREFIX = 'v-uni-';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, NAVBAR_HEIGHT, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, plusReady, stringifyQuery };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, NAVBAR_HEIGHT, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, plusReady, stringifyQuery };

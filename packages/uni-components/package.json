@@ -3,9 +3,6 @@
   "name": "@dcloudio/uni-components",
   "version": "3.0.0",
   "description": "@dcloudio/uni-components",
-  "buildOptions": {
-    "bundler": "vite"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

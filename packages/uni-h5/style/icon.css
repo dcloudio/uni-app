@@ -1,0 +1,9 @@
+uni-icon {
+  display: inline-block;
+  font-size: 0;
+  box-sizing: border-box;
+}
+
+uni-icon[hidden] {
+  display: none;
+}

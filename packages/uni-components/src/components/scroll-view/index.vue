@@ -3,21 +3,30 @@
     <div ref="wrap" class="uni-scroll-view">
       <div
         ref="main"
-        :style="{'overflow-x': scrollX?'auto':'hidden','overflow-y': scrollY?'auto':'hidden'}"
+        :style="{
+          'overflow-x': scrollX ? 'auto' : 'hidden',
+          'overflow-y': scrollY ? 'auto' : 'hidden',
+        }"
         class="uni-scroll-view"
       >
         <div ref="content" class="uni-scroll-view-content">
           <div
             v-if="refresherEnabled"
             ref="refresherinner"
-            :style="{'background-color': refresherBackground, 'height': refresherHeight + 'px'}"
+            :style="{
+              'background-color': refresherBackground,
+              height: refresherHeight + 'px',
+            }"
             class="uni-scroll-view-refresher"
           >
-            <div v-if="refresherDefaultStyle !== 'none'" class="uni-scroll-view-refresh">
+            <div
+              v-if="refresherDefaultStyle !== 'none'"
+              class="uni-scroll-view-refresh"
+            >
               <div class="uni-scroll-view-refresh-inner">
                 <svg
-                  v-if="refreshState=='pulling'"
-                  :style="{'transform': 'rotate('+ refreshRotate +'deg)'}"
+                  v-if="refreshState == 'pulling'"
+                  :style="{ transform: 'rotate(' + refreshRotate + 'deg)' }"
                   fill="#2BD009"
                   class="uni-scroll-view-refresh__icon"
                   width="24"
@@ -30,7 +39,7 @@
                   <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
                 <svg
-                  v-if="refreshState=='refreshing'"
+                  v-if="refreshState == 'refreshing'"
                   class="uni-scroll-view-refresh__spinner"
                   width="24"
                   height="24"
@@ -41,13 +50,13 @@
                     cy="50"
                     r="20"
                     fill="none"
-                    style="color: #2BD009;"
+                    style="color: #2bd009"
                     stroke-width="3"
                   />
                 </svg>
               </div>
             </div>
-            <slot v-if="refresherDefaultStyle=='none'" name="refresher" />
+            <slot v-if="refresherDefaultStyle == 'none'" name="refresher" />
           </div>
           <slot />
         </div>
@@ -57,9 +66,9 @@
 </template>
 <script>
 import scroller from '../../mixins/scroller/index'
-import {passiveOptions} from '../../helpers/index'
-import {disableScrollBounce} from '../../helpers/disable-scroll-bounce'
+import { disableScrollBounce } from '../../helpers/disable-scroll-bounce'
 
+const passiveOptions = { passive: true }
 // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
 
@@ -69,62 +78,62 @@ export default {
   props: {
     scrollX: {
       type: [Boolean, String],
-      default: false
+      default: false,
     },
     scrollY: {
       type: [Boolean, String],
-      default: false
+      default: false,
     },
     upperThreshold: {
       type: [Number, String],
-      default: 50
+      default: 50,
     },
     lowerThreshold: {
       type: [Number, String],
-      default: 50
+      default: 50,
     },
     scrollTop: {
       type: [Number, String],
-      default: 0
+      default: 0,
     },
     scrollLeft: {
       type: [Number, String],
-      default: 0
+      default: 0,
     },
     scrollIntoView: {
       type: String,
-      default: ''
+      default: '',
     },
     scrollWithAnimation: {
       type: [Boolean, String],
-      default: false
+      default: false,
     },
     enableBackToTop: {
       type: [Boolean, String],
-      default: false
+      default: false,
     },
     refresherEnabled: {
       type: [Boolean, String],
-      default: false
+      default: false,
     },
     refresherThreshold: {
       type: Number,
-      default: 45
+      default: 45,
     },
     refresherDefaultStyle: {
       type: String,
-      default: 'back'
+      default: 'back',
     },
     refresherBackground: {
       type: String,
-      default: '#fff'
+      default: '#fff',
     },
     refresherTriggered: {
       type: [Boolean, String],
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       lastScrollTop: this.scrollTopNumber,
       lastScrollLeft: this.scrollLeftNumber,
@@ -132,45 +141,45 @@ export default {
       lastScrollToLowerTime: 0,
       refresherHeight: 0,
       refreshRotate: 0,
-      refreshState: ''
+      refreshState: '',
     }
   },
   computed: {
-    upperThresholdNumber () {
+    upperThresholdNumber() {
       var val = Number(this.upperThreshold)
       return isNaN(val) ? 50 : val
     },
-    lowerThresholdNumber () {
+    lowerThresholdNumber() {
       var val = Number(this.lowerThreshold)
       return isNaN(val) ? 50 : val
     },
-    scrollTopNumber () {
+    scrollTopNumber() {
       return Number(this.scrollTop) || 0
     },
-    scrollLeftNumber () {
+    scrollLeftNumber() {
       return Number(this.scrollLeft) || 0
-    }
+    },
   },
   watch: {
-    scrollTopNumber (val) {
+    scrollTopNumber(val) {
       this._scrollTopChanged(val)
     },
-    scrollLeftNumber (val) {
+    scrollLeftNumber(val) {
       this._scrollLeftChanged(val)
     },
-    scrollIntoView (val) {
+    scrollIntoView(val) {
       this._scrollIntoViewChanged(val)
     },
-    refresherTriggered (val) {
+    refresherTriggered(val) {
       // TODO
       if (val === true) {
         this._setRefreshState('refreshing')
       } else if (val === false) {
         this._setRefreshState('restore')
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     var self = this
     this._attached = true
     this._scrollTopChanged(this.scrollTopNumber)
@@ -194,7 +203,10 @@ export default {
             if (main.scrollLeft === 0 && x > touchStart.x) {
               needStop = false
               return
-            } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
+            } else if (
+              main.scrollWidth === main.offsetWidth + main.scrollLeft &&
+              x < touchStart.x
+            ) {
               needStop = false
               return
             }
@@ -208,7 +220,10 @@ export default {
             if (main.scrollTop === 0 && y > touchStart.y) {
               needStop = false
               return
-            } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
+            } else if (
+              main.scrollHeight === main.offsetHeight + main.scrollTop &&
+              y < touchStart.y
+            ) {
               needStop = false
               return
             }
@@ -235,7 +250,7 @@ export default {
         self.refreshRotate = rotate
 
         self.$trigger('refresherpulling', event, {
-          deltaY: dy
+          deltaY: dy,
         })
       }
     }
@@ -243,14 +258,18 @@ export default {
     this.__handleTouchStart = function (event) {
       if (event.touches.length === 1) {
         disableScrollBounce({
-          disable: true
+          disable: true,
         })
         needStop = null
         touchStart = {
           x: event.touches[0].pageX,
-          y: event.touches[0].pageY
+          y: event.touches[0].pageY,
         }
-        if (self.refresherEnabled && self.refreshState !== 'refreshing' && self.$refs.main.scrollTop === 0) {
+        if (
+          self.refresherEnabled &&
+          self.refreshState !== 'refreshing' &&
+          self.$refs.main.scrollTop === 0
+        ) {
           self.refreshState = 'pulling'
         }
       }
@@ -258,7 +277,7 @@ export default {
     this.__handleTouchEnd = function (event) {
       touchStart = null
       disableScrollBounce({
-        disable: false
+        disable: false,
       })
       if (self.refresherHeight >= self.refresherThreshold) {
         self._setRefreshState('refreshing')
@@ -267,47 +286,89 @@ export default {
         self.$trigger('refresherabort', event, {})
       }
     }
-    this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
-    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passiveOptions)
-    this.$refs.main.addEventListener('scroll', this.__handleScroll, supportsPassive ? {
-      passive: false
-    } : false)
-    this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions)
+    this.$refs.main.addEventListener(
+      'touchstart',
+      this.__handleTouchStart,
+      passiveOptions
+    )
+    this.$refs.main.addEventListener(
+      'touchmove',
+      this.__handleTouchMove,
+      passiveOptions
+    )
+    this.$refs.main.addEventListener('scroll', this.__handleScroll, {
+      passive: false,
+    })
+    this.$refs.main.addEventListener(
+      'touchend',
+      this.__handleTouchEnd,
+      passiveOptions
+    )
   },
-  activated () {
+  activated() {
     // 还原 scroll-view 滚动位置
     this.scrollY && (this.$refs.main.scrollTop = this.lastScrollTop)
     this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft)
   },
-  beforeDestroy () {
-    this.$refs.main.removeEventListener('touchstart', this.__handleTouchStart, passiveOptions)
-    this.$refs.main.removeEventListener('touchmove', this.__handleTouchMove, passiveOptions)
-    this.$refs.main.removeEventListener('scroll', this.__handleScroll, supportsPassive ? {
-      passive: false
-    } : false)
-    this.$refs.main.removeEventListener('touchend', this.__handleTouchEnd, passiveOptions)
+  beforeDestroy() {
+    this.$refs.main.removeEventListener(
+      'touchstart',
+      this.__handleTouchStart,
+      passiveOptions
+    )
+    this.$refs.main.removeEventListener(
+      'touchmove',
+      this.__handleTouchMove,
+      passiveOptions
+    )
+    this.$refs.main.removeEventListener('scroll', this.__handleScroll, {
+      passive: false,
+    })
+    this.$refs.main.removeEventListener(
+      'touchend',
+      this.__handleTouchEnd,
+      passiveOptions
+    )
   },
   methods: {
     scrollTo: function (t, n) {
       var i = this.$refs.main
-      t < 0 ? t = 0 : n === 'x' && t > i.scrollWidth - i.offsetWidth ? t = i.scrollWidth - i.offsetWidth
-        : n === 'y' && t > i.scrollHeight - i.offsetHeight && (t = i.scrollHeight - i.offsetHeight)
+      t < 0
+        ? (t = 0)
+        : n === 'x' && t > i.scrollWidth - i.offsetWidth
+        ? (t = i.scrollWidth - i.offsetWidth)
+        : n === 'y' &&
+          t > i.scrollHeight - i.offsetHeight &&
+          (t = i.scrollHeight - i.offsetHeight)
       var r = 0
       var o = ''
-      n === 'x' ? r = i.scrollLeft - t : n === 'y' && (r = i.scrollTop - t)
+      n === 'x' ? (r = i.scrollLeft - t) : n === 'y' && (r = i.scrollTop - t)
       if (r !== 0) {
         this.$refs.content.style.transition = 'transform .3s ease-out'
-        this.$refs.content.style.webkitTransition = '-webkit-transform .3s ease-out'
+        this.$refs.content.style.webkitTransition =
+          '-webkit-transform .3s ease-out'
         if (n === 'x') {
           o = 'translateX(' + r + 'px) translateZ(0)'
         } else {
           n === 'y' && (o = 'translateY(' + r + 'px) translateZ(0)')
         }
-        this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
-        this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
+        this.$refs.content.removeEventListener(
+          'transitionend',
+          this.__transitionEnd
+        )
+        this.$refs.content.removeEventListener(
+          'webkitTransitionEnd',
+          this.__transitionEnd
+        )
         this.__transitionEnd = this._transitionEnd.bind(this, t, n)
-        this.$refs.content.addEventListener('transitionend', this.__transitionEnd)
-        this.$refs.content.addEventListener('webkitTransitionEnd', this.__transitionEnd)
+        this.$refs.content.addEventListener(
+          'transitionend',
+          this.__transitionEnd
+        )
+        this.$refs.content.addEventListener(
+          'webkitTransitionEnd',
+          this.__transitionEnd
+        )
         if (n === 'x') {
           // if (e !== 'ios') {
           i.style.overflowX = 'hidden'
@@ -331,14 +392,22 @@ export default {
         this._noBubble = false
       }
       if (this._noBubble === null && this.scrollY) {
-        if (Math.abs(this._y - $event.detail.y) / Math.abs(this._x - $event.detail.x) > 1) {
+        if (
+          Math.abs(this._y - $event.detail.y) /
+            Math.abs(this._x - $event.detail.x) >
+          1
+        ) {
           this._noBubble = true
         } else {
           this._noBubble = false
         }
       }
       if (this._noBubble === null && this.scrollX) {
-        if (Math.abs(this._x - $event.detail.x) / Math.abs(this._y - $event.detail.y) > 1) {
+        if (
+          Math.abs(this._x - $event.detail.x) /
+            Math.abs(this._y - $event.detail.y) >
+          1
+        ) {
           this._noBubble = true
         } else {
           this._noBubble = false
@@ -360,32 +429,54 @@ export default {
           scrollHeight: target.scrollHeight,
           scrollWidth: target.scrollWidth,
           deltaX: this.lastScrollLeft - target.scrollLeft,
-          deltaY: this.lastScrollTop - target.scrollTop
+          deltaY: this.lastScrollTop - target.scrollTop,
         })
         if (this.scrollY) {
-          if (target.scrollTop <= this.upperThresholdNumber && this.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
+          if (
+            target.scrollTop <= this.upperThresholdNumber &&
+            this.lastScrollTop - target.scrollTop > 0 &&
+            $event.timeStamp - this.lastScrollToUpperTime > 200
+          ) {
             this.$trigger('scrolltoupper', $event, {
-              direction: 'top'
+              direction: 'top',
             })
             this.lastScrollToUpperTime = $event.timeStamp
           }
-          if (target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >= target.scrollHeight && this.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
+          if (
+            target.scrollTop +
+              target.offsetHeight +
+              this.lowerThresholdNumber >=
+              target.scrollHeight &&
+            this.lastScrollTop - target.scrollTop < 0 &&
+            $event.timeStamp - this.lastScrollToLowerTime > 200
+          ) {
             this.$trigger('scrolltolower', $event, {
-              direction: 'bottom'
+              direction: 'bottom',
             })
             this.lastScrollToLowerTime = $event.timeStamp
           }
         }
         if (this.scrollX) {
-          if (target.scrollLeft <= this.upperThresholdNumber && this.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
+          if (
+            target.scrollLeft <= this.upperThresholdNumber &&
+            this.lastScrollLeft - target.scrollLeft > 0 &&
+            $event.timeStamp - this.lastScrollToUpperTime > 200
+          ) {
             this.$trigger('scrolltoupper', $event, {
-              direction: 'left'
+              direction: 'left',
             })
             this.lastScrollToUpperTime = $event.timeStamp
           }
-          if (target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >= target.scrollWidth && this.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
+          if (
+            target.scrollLeft +
+              target.offsetWidth +
+              this.lowerThresholdNumber >=
+              target.scrollWidth &&
+            this.lastScrollLeft - target.scrollLeft < 0 &&
+            $event.timeStamp - this.lastScrollToLowerTime > 200
+          ) {
             this.$trigger('scrolltolower', $event, {
-              direction: 'right'
+              direction: 'right',
             })
             this.lastScrollToLowerTime = $event.timeStamp
           }
@@ -468,10 +559,16 @@ export default {
         main.style.overflowY = this.scrollY ? 'auto' : 'hidden'
         main.scrollTop = val
       }
-      this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
-      this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
+      this.$refs.content.removeEventListener(
+        'transitionend',
+        this.__transitionEnd
+      )
+      this.$refs.content.removeEventListener(
+        'webkitTransitionEnd',
+        this.__transitionEnd
+      )
     },
-    _setRefreshState (state) {
+    _setRefreshState(state) {
       switch (state) {
         case 'refreshing':
           this.refresherHeight = this.refresherThreshold
@@ -484,14 +581,14 @@ export default {
       }
       this.refreshState = state
     },
-    getScrollPosition () {
+    getScrollPosition() {
       const main = this.$refs.main
       return {
         scrollLeft: main.scrollLeft,
-        scrollTop: main.scrollTop
+        scrollTop: main.scrollTop,
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style>

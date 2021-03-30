@@ -1,10 +1,7 @@
 import { computed, defineComponent, Ref, ref } from 'vue'
 import { isArray } from '@vue/shared'
-import {
-  Input,
-  ICON_PATH_SEARCH,
-  createSvgIconVNode,
-} from '@dcloudio/uni-components'
+import { Input } from '@dcloudio/uni-components'
+import { ICON_PATH_SEARCH, createSvgIconVNode } from '@dcloudio/uni-core'
 import { usePageMeta } from '../../plugin/provide'
 import {
   usePageHeadTransparent,

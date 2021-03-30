@@ -1,11 +1,7 @@
-import { supportsPassive } from '../helpers/index'
-
-const passiveOptions = supportsPassive
-  ? {
-      passive: true,
-      capture: true
-    }
-  : true
+const passiveOptions = {
+  passive: true,
+  capture: true,
+}
 const vms = []
 let userInteract = 0
 let inited
@@ -17,13 +13,13 @@ function addInteractListener(vm) {
       'touchmove',
       'touchend',
       'mousedown',
-      'mouseup'
+      'mouseup',
     ]
-    eventNames.forEach(eventName => {
+    eventNames.forEach((eventName) => {
       document.addEventListener(
         eventName,
-        function() {
-          vms.forEach(vm => {
+        function () {
+          vms.forEach((vm) => {
             vm.userInteract = true
             userInteract++
             setTimeout(() => {
@@ -53,7 +49,7 @@ export default {
       /**
        * 是否用户交互行为
        */
-      userInteract: false
+      userInteract: false,
     }
   },
   mounted() {
@@ -61,5 +57,5 @@ export default {
   },
   beforeDestroy() {
     removeInteractListener(this)
-  }
+  },
 }

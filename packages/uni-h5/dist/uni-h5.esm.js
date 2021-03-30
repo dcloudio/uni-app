@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, defineComponent, inject, provide, reactive, nextTick, computed, withDirectives, createVNode, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
-import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce} from "@dcloudio/uni-shared";
+import {injectHook, createVNode, defineComponent, inject, provide, reactive, nextTick, computed, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
+import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -697,6 +697,27 @@ function rpx2px(str) {
   }
   return str;
 }
+const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
+const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
+const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
+const ICON_PATH_INFO = "M15.808 0.128q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.176 3.776-2.176 8.16 0 4.224 2.176 7.872 2.080 3.552 5.632 5.632 3.648 2.176 7.872 2.176 4.384 0 8.16-2.176 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.416-2.176-8.16-2.112-3.616-5.728-5.728-3.744-2.176-8.16-2.176zM16.864 23.776q0 0.064-0.064 0.064h-1.568q-0.096 0-0.096-0.064l-0.256-11.328q0-0.064 0.064-0.064h2.112q0.096 0 0.064 0.064l-0.256 11.328zM16 10.88q-0.576 0-0.976-0.4t-0.4-0.96 0.4-0.96 0.976-0.4 0.976 0.4 0.4 0.96-0.4 0.96-0.976 0.4z";
+const ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
+const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
+const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
+const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
+function createSvgIconVNode(path, color = "#000", size = 27) {
+  return createVNode("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 32 32"
+  }, [
+    createVNode("path", {
+      d: path,
+      fill: color
+    }, null, 8, ["d", "fill"])
+  ], 8, ["width", "height"]);
+}
 function getRealRoute(fromRoute, toRoute) {
   if (!toRoute) {
     toRoute = fromRoute;
@@ -1080,7 +1101,7 @@ function initMixin(app) {
     }
   });
 }
-var index$1 = {
+var index$2 = {
   install(app) {
     app._context.config.isCustomElement = isCustomElement;
     initApp$1(app);
@@ -1463,19 +1484,7 @@ var baseInput = {
     }
   }
 };
-let supportsPassive$1 = false;
-try {
-  const opts = {};
-  Object.defineProperty(opts, "passive", {
-    get() {
-      supportsPassive$1 = true;
-    }
-  });
-  window.addEventListener("test-passive", null, opts);
-} catch (e2) {
-}
-const passiveOptions = supportsPassive$1 ? {passive: true} : false;
-const _sfc_main$q = {
+const _sfc_main$p = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1600,7 +1609,7 @@ const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1630,7 +1639,7 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$q.render = _sfc_render$o;
+_sfc_main$p.render = _sfc_render$n;
 const pixelRatio = function() {
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
@@ -1759,7 +1768,7 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-var index_vue_vue_type_style_index_0_lang$h = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$g = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -1784,7 +1793,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$p = {
+const _sfc_main$o = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -2286,7 +2295,7 @@ const _hoisted_1$b = {
   height: "150"
 };
 const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
@@ -2302,8 +2311,8 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$p.render = _sfc_render$n;
-const _sfc_main$o = {
+_sfc_main$o.render = _sfc_render$m;
+const _sfc_main$n = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -2380,7 +2389,7 @@ const _sfc_main$o = {
   }
 };
 const _hoisted_1$a = {class: "uni-checkbox-wrapper"};
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
@@ -2393,9 +2402,9 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$o.render = _sfc_render$m;
-var index_vue_vue_type_style_index_0_lang$g = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
-const _sfc_main$n = {
+_sfc_main$n.render = _sfc_render$l;
+var index_vue_vue_type_style_index_0_lang$f = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
+const _sfc_main$m = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -2461,12 +2470,12 @@ const _sfc_main$n = {
     }
   }
 };
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$n.render = _sfc_render$l;
+_sfc_main$m.render = _sfc_render$k;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -2851,7 +2860,7 @@ function register(Quill) {
 }
 var editor_css_vue_type_style_index_0_src_lang = ".ql-container {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  -webkit-user-select: text;\n  user-select: text;\n  outline: none;\n  overflow: hidden;\n  width: 100%;\n  height: 200px;\n  min-height: 200px;\n}\n.ql-container[hidden] {\n  display: none;\n}\n.ql-container .ql-editor {\n  position: relative;\n  font-size: inherit;\n  line-height: inherit;\n  font-family: inherit;\n  min-height: inherit;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-tap-highlight-color: transparent;\n  -webkit-touch-callout: none;\n  -webkit-overflow-scrolling: touch;\n}\n.ql-container .ql-editor::-webkit-scrollbar {\n  width: 0 !important;\n}\n.ql-container .ql-editor.scroll-disabled {\n  overflow: hidden;\n}\n.ql-container .ql-image-overlay {\n  display: flex;\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px dashed #ccc;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  user-select: none;\n}\n.ql-container .ql-image-overlay .ql-image-size {\n  position: absolute;\n  padding: 4px 8px;\n  text-align: center;\n  background-color: #fff;\n  color: #888;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  opacity: 0.8;\n  right: 4px;\n  top: 4px;\n  font-size: 12px;\n  display: inline-block;\n  width: auto;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar {\n  position: relative;\n  text-align: center;\n  box-sizing: border-box;\n  background: #000;\n  border-radius: 5px;\n  color: #fff;\n  font-size: 0;\n  min-height: 24px;\n  z-index: 100;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span {\n  display: inline-block;\n  cursor: pointer;\n  padding: 5px;\n  font-size: 12px;\n  border-right: 1px solid #fff;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span:last-child {\n  border-right: 0;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span.triangle-up {\n  padding: 0;\n  position: absolute;\n  top: -12px;\n  left: 50%;\n  transform: translatex(-50%);\n  width: 0;\n  height: 0;\n  border-width: 6px;\n  border-style: solid;\n  border-color: transparent transparent black transparent;\n}\n.ql-container .ql-image-overlay .ql-image-handle {\n  position: absolute;\n  height: 12px;\n  width: 12px;\n  border-radius: 50%;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  background: #fff;\n}\n.ql-container img {\n  display: inline-block;\n  max-width: 100%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n.ql-editor {\n  box-sizing: border-box;\n  height: 100%;\n  outline: none;\n  overflow-y: auto;\n  tab-size: 4;\n  -moz-tab-size: 4;\n  text-align: left;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n}\n.ql-editor > * {\n  cursor: text;\n}\n.ql-editor p,\n.ql-editor ol,\n.ql-editor ul,\n.ql-editor pre,\n.ql-editor blockquote,\n.ql-editor h1,\n.ql-editor h2,\n.ql-editor h3,\n.ql-editor h4,\n.ql-editor h5,\n.ql-editor h6 {\n  margin: 0;\n  padding: 0;\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol > li,\n.ql-editor ul > li {\n  list-style-type: none;\n}\n.ql-editor ul > li::before {\n  content: '\\2022';\n}\n.ql-editor ul[data-checked=true],\n.ql-editor ul[data-checked=false] {\n  pointer-events: none;\n}\n.ql-editor ul[data-checked=true] > li *,\n.ql-editor ul[data-checked=false] > li * {\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before,\n.ql-editor ul[data-checked=false] > li::before {\n  color: #777;\n  cursor: pointer;\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before {\n  content: '\\2611';\n}\n.ql-editor ul[data-checked=false] > li::before {\n  content: '\\2610';\n}\n.ql-editor li::before {\n  display: inline-block;\n  white-space: nowrap;\n  width: 2em;\n}\n.ql-editor ol li {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n.ql-editor ol li:before {\n  content: counter(list-0, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-increment: list-1;\n}\n.ql-editor ol li.ql-indent-1:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-increment: list-2;\n}\n.ql-editor ol li.ql-indent-2:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-increment: list-3;\n}\n.ql-editor ol li.ql-indent-3:before {\n  content: counter(list-3, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-increment: list-4;\n}\n.ql-editor ol li.ql-indent-4:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-increment: list-5;\n}\n.ql-editor ol li.ql-indent-5:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-increment: list-6;\n}\n.ql-editor ol li.ql-indent-6:before {\n  content: counter(list-6, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-increment: list-7;\n}\n.ql-editor ol li.ql-indent-7:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-increment: list-8;\n}\n.ql-editor ol li.ql-indent-8:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-reset: list-9;\n}\n.ql-editor ol li.ql-indent-9 {\n  counter-increment: list-9;\n}\n.ql-editor ol li.ql-indent-9:before {\n  content: counter(list-9, decimal) '. ';\n}\n.ql-editor .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n.ql-editor .ql-align-center {\n  text-align: center;\n}\n.ql-editor .ql-align-justify {\n  text-align: justify;\n}\n.ql-editor .ql-align-right {\n  text-align: right;\n}\n.ql-editor.ql-blank::before {\n  color: rgba(0, 0, 0, 0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  pointer-events: none;\n  position: absolute;\n}\n.ql-container.ql-disabled .ql-editor ul[data-checked] > li::before {\n  pointer-events: none;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n";
 var index_vue_vue_type_style_index_1_lang = "\n";
-const _sfc_main$m = {
+const _sfc_main$l = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -3173,15 +3182,15 @@ const _sfc_main$m = {
     }
   }
 };
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$m.render = _sfc_render$k;
-var index_vue_vue_type_style_index_0_lang$f = "\r\n";
-const _sfc_main$l = {
+_sfc_main$l.render = _sfc_render$j;
+var index_vue_vue_type_style_index_0_lang$e = "\r\n";
+const _sfc_main$k = {
   name: "Form",
   mixins: [listeners],
   data() {
@@ -3222,16 +3231,57 @@ const _sfc_main$l = {
     }
   }
 };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-form", _ctx.$attrs, [
     createVNode("span", null, [
       renderSlot(_ctx.$slots, "default")
     ])
   ], 16);
 }
-_sfc_main$l.render = _sfc_render$j;
-var index_vue_vue_type_style_index_0_lang$e = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,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')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
-const _sfc_main$k = {
+_sfc_main$k.render = _sfc_render$i;
+const INFO_COLOR = "#10aeff";
+const WARN_COLOR = "#f76260";
+const GREY_COLOR = "#b2b2b2";
+const CANCEL_COLOR = "#f43530";
+const ICONS = {
+  success: {
+    d: ICON_PATH_SUCCESS,
+    c: PRIMARY_COLOR
+  },
+  success_no_circle: {
+    d: ICON_PATH_SUCCESS_NO_CIRCLE,
+    c: PRIMARY_COLOR
+  },
+  info: {
+    d: ICON_PATH_INFO,
+    c: INFO_COLOR
+  },
+  warn: {
+    d: ICON_PATH_WARN,
+    c: WARN_COLOR
+  },
+  waiting: {
+    d: ICON_PATH_WAITING,
+    c: INFO_COLOR
+  },
+  cancel: {
+    d: ICON_PATH_CANCEL,
+    c: CANCEL_COLOR
+  },
+  download: {
+    d: ICON_PATH_DOWNLOAD,
+    c: PRIMARY_COLOR
+  },
+  search: {
+    d: ICON_PATH_SEARCH,
+    c: GREY_COLOR
+  },
+  clear: {
+    d: ICON_PATH_CLEAR,
+    c: GREY_COLOR
+  }
+};
+var index$1 = defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -3248,29 +3298,11 @@ const _sfc_main$k = {
       default: ""
     }
   },
-  methods: {
-    _converPx(value) {
-      if (/^-?\d+[ur]px$/i.test(value)) {
-        return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
-          return `${uni.upx2px(parseFloat(num))}px`;
-        });
-      } else if (/^-?[\d\.]+$/.test(value)) {
-        return `${value}px`;
-      }
-      return value || "";
-    }
+  setup(props) {
+    const path = computed(() => ICONS[props.type]);
+    return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props.color || path.value.c, rpx2px(props.size))]);
   }
-};
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-icon", _ctx.$attrs, [
-    createVNode("i", {
-      class: `uni-icon-${$props.type}`,
-      style: {"font-size": $options._converPx($props.size), color: $props.color},
-      role: "img"
-    }, null, 6)
-  ], 16);
-}
-_sfc_main$k.render = _sfc_render$i;
+});
 var index_vue_vue_type_style_index_0_lang$d = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
 const _sfc_main$j = {
   name: "Image",
@@ -6114,6 +6146,7 @@ var scroller = {
   }
 };
 var index_vue_vue_type_style_index_0_lang$6 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
+const passiveOptions = {passive: true};
 const _sfc_main$9 = {
   name: "ScrollView",
   mixins: [scroller],
@@ -6307,9 +6340,9 @@ const _sfc_main$9 = {
     };
     this.$refs.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
     this.$refs.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.$refs.main.addEventListener("scroll", this.__handleScroll, supportsPassive ? {
+    this.$refs.main.addEventListener("scroll", this.__handleScroll, {
       passive: false
-    } : false);
+    });
     this.$refs.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
   },
   activated() {
@@ -6319,9 +6352,9 @@ const _sfc_main$9 = {
   beforeDestroy() {
     this.$refs.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
     this.$refs.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.$refs.main.removeEventListener("scroll", this.__handleScroll, supportsPassive ? {
+    this.$refs.main.removeEventListener("scroll", this.__handleScroll, {
       passive: false
-    } : false);
+    });
     this.$refs.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
   },
   methods: {
@@ -6556,7 +6589,7 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   cy: "50",
   r: "20",
   fill: "none",
-  style: {color: "#2BD009"},
+  style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
 function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
@@ -6564,14 +6597,20 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("div", _hoisted_1$5, [
       createVNode("div", {
         ref: "main",
-        style: {"overflow-x": $props.scrollX ? "auto" : "hidden", "overflow-y": $props.scrollY ? "auto" : "hidden"},
+        style: {
+          "overflow-x": $props.scrollX ? "auto" : "hidden",
+          "overflow-y": $props.scrollY ? "auto" : "hidden"
+        },
         class: "uni-scroll-view"
       }, [
         createVNode("div", _hoisted_2$4, [
           $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
-            style: {"background-color": $props.refresherBackground, height: $data.refresherHeight + "px"},
+            style: {
+              "background-color": $props.refresherBackground,
+              height: $data.refresherHeight + "px"
+            },
             class: "uni-scroll-view-refresher"
           }, [
             $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$1, [
@@ -7290,19 +7329,6 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16));
 }
 _sfc_main$3.render = _sfc_render$3;
-const ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
-  return createVNode("svg", {
-    width: size,
-    height: size,
-    viewBox: "0 0 32 32"
-  }, [
-    createVNode("path", {
-      d: path,
-      fill: color
-    }, null, 8, ["d", "fill"])
-  ], 8, ["width", "height"]);
-}
 const UniViewJSBridge$1 = extend(ViewJSBridge, {
   publishHandler(event2, args, pageId) {
     window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
@@ -9217,4 +9243,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$q as Audio, _sfc_main$p as Canvas, _sfc_main$o as Checkbox, _sfc_main$n as CheckboxGroup, _sfc_main$m as Editor, _sfc_main$l as Form, ICON_PATH_SEARCH, _sfc_main$k as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createSvgIconVNode, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath$1 as getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$1 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$1 as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath$1 as getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$2 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
