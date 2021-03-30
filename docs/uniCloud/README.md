@@ -28,7 +28,7 @@ uniCloud是DCloud在阿里云和腾讯云的serverless服务上封装而成的�
 
 <video style="width:50vw;height:30vw;margin-bottom:20px;" id="video" preload="none" controls="controls" poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e5da48fa-33c1-4379-8927-65edc6d05d5f.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e5da48fa-33c1-4379-8927-65edc6d05d5f.mp4"></video>
 
-<a src="https://ke.qq.com/course/3416784?taid=11123338234831568&tuin=4025c735">更多视频教程</a>
+- [更多视频教程](https://ke.qq.com/course/3416784?taid=11123338234831568&tuin=4025c735)
 
 
 ### 什么是serverless？
