@@ -51,7 +51,7 @@ function analyzeUsingComponents () {
         return false
       }
       pkgs.add(pkgRoot)
-      if (pkgs.length > 1) { // 被多个分包引用
+      if (pkgs.size > 1) { // 被多个分包引用
         return false
       }
     }
