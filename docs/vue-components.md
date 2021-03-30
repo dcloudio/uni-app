@@ -358,6 +358,113 @@
 
 
 
+
+
+
+## ref
+
+
+被用来给元素或子组件注册引用信息，引用信息将会注册在父组件的 `$refs` 对象上。
+
+如果在普通的 DOM 元素上使用，引用指向的就是 DOM 元素；如果用在子组件上，引用就指向组件实例：
+
+```html
+
+//非H5端不支持通过this.$refs.content来获取view实例
+<view ref="content">hello</view>
+
+//支持通过this.$refs.child来获取child-component实例
+<child-component ref="child"></child-component>
+
+```
+
+
+当 `ref` 和 `v-for` 一起用于元素或组件的时候，引用信息将是包含 DOM 节点或组件实例的数组。
+
+
+
+**关于 ref 注册时间的重要说明：**
+
+因为 `ref` 本身是作为渲染结果被创建的，在初始渲染的时候你不能访问它们，它们还不存在！`$refs` 也不是响应式的，因此你不应该用它在模板中做数据绑定。
+
+
+
+
+#### 子组件ref
+
+
+尽管存在 prop 和事件，有的时候你仍可能需要在 JavaScript 里直接访问一个子组件。
+访问子组件实例或子元素，通过 ref 为子组件赋予一个 ID 引用，在vue的js中可通过`this.$refs.XXX`来获取到组件对象。
+
+```html
+	<base-input ref="usernameInput"></base-input>
+```
+
+你已经定义了这个 ref 的组件里，你可以使用：`this.$refs.usernameInput`来访问这个` <base-input> `实例。
+
+##### 示例：
+
+```html
+//base-input子组件页面
+<template>
+	<view>
+		<input :focus="isFocus" type="text" placeholder="请输入内容" />
+	</view>
+</template>
+<script>
+	export default {
+		name:"base-input",
+		data() {
+			return {
+				"isFocus":false
+			};
+		},
+		methods:{
+			focus(){
+				this.isFocus = true
+			}
+		}
+	}
+</script>
+```
+
+
+允许父级组件通过下面的代码聚焦` <base-input> ` 里的输入框：
+
+
+```html
+//index 父组件页面
+<template>
+	<view>
+		<base-input ref="usernameInput"></base-input>
+		<button type="default" @click="getFocus">获取焦点</button> 
+	</view>
+</template>
+<script>
+	export default {
+		methods:{
+			getFocus(){
+				//通过组件定义的ref调用focus方法
+				this.$refs.usernameInput.focus()
+			}
+		}
+	}
+</script>
+```
+
+
+**注意**
+
+> 非H5端只能用于获取自定义组件，不能用于获取内置组件实例（如：view、text）
+
+
+
+
+
+
+
+
+
 ## 自定义事件
 
 ### 将原生事件绑定到组件
