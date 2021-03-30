@@ -92,7 +92,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 	</a>
 </div>
 
-<b>中国教育发布：</b>中国人民共和国教育部官方App。<a href="https://uniapp.dcloud.io/uniCloud/README">uniCloud云开发</a>案例。[详见报道](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
+<b>中国教育发布：</b>中华人民共和国教育部官方App。<a href="https://uniapp.dcloud.io/uniCloud/README">uniCloud云开发</a>案例。[详见报道](http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html)
 <div style="display:flex;justify-content: space-around;">
 	<a href="http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202009/t20200904_485105.html" target="_blank" class="clear-style barcode-view">
 		<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/97b8fd23-40e7-4440-bfcb-f45f52711219.jpg" width="200"/>
