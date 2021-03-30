@@ -13,6 +13,7 @@ import { uniMainJsPlugin } from './mainJs'
 import { uniPagesJsonPlugin } from './pagesJson'
 import { uniManifestJsonPlugin } from './manifestJson'
 import { uniPageVuePlugin } from './pageVue'
+import { uniCopyPlugin } from './copy'
 
 const debugPlugin = debug('uni:plugin')
 
@@ -92,6 +93,9 @@ export function resolvePlugins(
   )
   addPlugin(plugins, uniPageVuePlugin({ command }), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
+  if (command === 'build') {
+    addPlugin(plugins, uniCopyPlugin(options), plugins.length)
+  }
   if (process.env.DEBUG) {
     debugPlugin(plugins.length)
     debugPlugin(plugins.map((p) => (p as Plugin).name))

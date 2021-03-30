@@ -1,4 +1,3 @@
-import path from 'path'
 import { Plugin } from 'vite'
 
 import { VitePluginUniResolvedOptions } from '..'
@@ -25,7 +24,6 @@ export function createConfig(
       server: createServer(options),
       build: createBuild(options),
       css: createCss(options),
-      publicDir: path.join(options.inputDir, 'static'),
     }
   }
 }

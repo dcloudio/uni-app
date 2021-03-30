@@ -27,6 +27,7 @@
     "fs-extra": "^9.0.1",
     "jsonc-parser": "^3.0.0",
     "magic-string": "^0.25.7",
+    "rollup-plugin-copy": "^3.4.0",
     "slash": "^3.0.0"
   },
   "peerDependencies": {

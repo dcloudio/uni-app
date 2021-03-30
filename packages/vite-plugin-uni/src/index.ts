@@ -12,6 +12,7 @@ import { createConfigureServer } from './configureServer'
 import { createHandleHotUpdate } from './handleHotUpdate'
 export interface VitePluginUniOptions {
   inputDir?: string
+  outputDir?: string
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   root: string
@@ -19,6 +20,7 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   command: ResolvedConfig['command']
   platform: UniApp.PLATFORM
   inputDir: string
+  outputDir: string
   assetsDir: string
   devServer?: ViteDevServer
 }
@@ -35,13 +37,22 @@ function resolveBase(inputDir: string) {
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin {
-  const inputDir = rawOptions.inputDir || path.resolve(process.cwd(), 'src')
+  const inputDir =
+    process.env.UNI_INPUT_DIR ||
+    rawOptions.inputDir ||
+    path.resolve(process.cwd(), 'src')
+  const outputDir =
+    process.env.UNI_OUTPUT_DIR ||
+    rawOptions.outputDir ||
+    path.resolve(process.cwd(), 'dist')
+
   const options: VitePluginUniResolvedOptions = {
     ...rawOptions,
     root: process.cwd(),
     base: resolveBase(inputDir),
     assetsDir: 'assets',
     inputDir,
+    outputDir,
     command: 'serve',
     platform: 'h5',
   }
