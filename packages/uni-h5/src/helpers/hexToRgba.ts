@@ -12,7 +12,7 @@ export function hexToRgba(hex: string) {
     g = hex.substring(1, 2)
     b = hex.substring(2, 3)
   } else {
-    return false
+    return { r: 0, g: 0, b: 0 }
   }
   if (r.length === 1) {
     r += r

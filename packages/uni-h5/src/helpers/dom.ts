@@ -1,16 +1,36 @@
-export function appendCss(css: string, cssId: string, replace = false) {
-  let style = document.getElementById(cssId) as HTMLStyleElement | null
-  if (style && replace) {
-    style.parentNode!.removeChild(style)
-    style = null
+const sheetsMap = new Map()
+export function updateStyle(id: string, content: string) {
+  let style = sheetsMap.get(id)
+  if (style && !(style instanceof HTMLStyleElement)) {
+    removeStyle(id)
+    style = undefined
   }
   if (!style) {
     style = document.createElement('style')
-    style.type = 'text/css'
-    cssId && (style.id = cssId)
-    document.getElementsByTagName('head')[0].appendChild(style)
+    style.setAttribute('type', 'text/css')
+    style.innerHTML = content
+    document.head.appendChild(style)
+  } else {
+    style.innerHTML = content
   }
-  style.appendChild(document.createTextNode(css))
+  sheetsMap.set(id, style)
+}
+
+export function removeStyle(id: string) {
+  let style = sheetsMap.get(id)
+  if (style) {
+    if (style instanceof CSSStyleSheet) {
+      // @ts-ignore
+      const index = document.adoptedStyleSheets.indexOf(style)
+      // @ts-ignore
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+        (s: CSSStyleSheet) => s !== style
+      )
+    } else {
+      document.head.removeChild(style)
+    }
+    sheetsMap.delete(id)
+  }
 }
 
 const screen = window.screen

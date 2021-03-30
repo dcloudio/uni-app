@@ -13,7 +13,9 @@ export function usePageMeta() {
 }
 
 export function providePageMeta() {
-  provide(pageMetaKey, initPageMeta())
+  const pageMeta = initPageMeta()
+  provide(pageMetaKey, pageMeta)
+  return pageMeta
 }
 
 function initPageMeta() {
@@ -75,5 +77,8 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
     refreshOptions.range = rpx2px(refreshOptions.range)
     pageMeta.refreshOptions = refreshOptions
   }
+  navigationBar.backButton = pageMeta.isQuit ? false : true
+  navigationBar.titleColor = navigationBar.titleColor || '#fff'
+  navigationBar.backgroundColor = navigationBar.backgroundColor || '#F7F7F7'
   return pageMeta
 }

@@ -29,6 +29,7 @@ declare var __UNI_FEATURE_PULL_DOWN_REFRESH__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: boolean
+declare var __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: boolean
 // TODO
 declare var __uniRoutes: any
 declare var __uniConfig: UniApp.UniConfig

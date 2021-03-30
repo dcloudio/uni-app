@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, defineComponent, inject, provide, reactive, nextTick, computed, withDirectives, createVNode, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText, createTextVNode} from "vue";
+import {injectHook, defineComponent, inject, provide, reactive, nextTick, computed, withDirectives, createVNode, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
 import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -697,17 +697,36 @@ function rpx2px(str) {
   }
   return str;
 }
-let appVm;
-function getApp$1() {
-  return appVm;
-}
-function isApp(vm) {
-  return vm.$options.mpType === "app";
-}
-function initApp(vm) {
-  appVm = vm;
-  appVm.$vm = vm;
-  appVm.globalData = appVm.$options.globalData || {};
+function getRealRoute(fromRoute, toRoute) {
+  if (!toRoute) {
+    toRoute = fromRoute;
+    if (toRoute.indexOf("/") === 0) {
+      return toRoute;
+    }
+    const pages = getCurrentPages();
+    if (pages.length) {
+      fromRoute = pages[pages.length - 1].$page.route;
+    } else {
+      fromRoute = "";
+    }
+  } else {
+    if (toRoute.indexOf("/") === 0) {
+      return toRoute;
+    }
+  }
+  if (toRoute.indexOf("./") === 0) {
+    return getRealRoute(fromRoute, toRoute.substr(2));
+  }
+  const toRouteArray = toRoute.split("/");
+  const toRouteLength = toRouteArray.length;
+  let i = 0;
+  for (; i < toRouteLength && toRouteArray[i] === ".."; i++) {
+  }
+  toRouteArray.splice(0, i);
+  toRoute = toRouteArray.join("/");
+  const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
+  fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
+  return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
 function initRouter(app) {
   app.use(createAppRouter(createRouter(createRouterOptions())));
@@ -735,15 +754,6 @@ function createAppRouter(router) {
 }
 function initHistory() {
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
-  history2.listen((_to, from, info) => {
-    if (info.direction === "back") {
-      const app = getApp$1();
-      const id2 = history2.state.__id__;
-      if (app && id2) {
-        app.$refs.app.keepAliveExclude = [from + "-" + id2];
-      }
-    }
-  });
   return history2;
 }
 const beforeEach = (to, from, next) => {
@@ -761,7 +771,9 @@ function usePageMeta() {
   return inject(pageMetaKey);
 }
 function providePageMeta() {
-  provide(pageMetaKey, initPageMeta());
+  const pageMeta = initPageMeta();
+  provide(pageMetaKey, pageMeta);
+  return pageMeta;
 }
 function initPageMeta() {
   if (__UNI_FEATURE_PAGES__) {
@@ -800,7 +812,39 @@ function normalizePageMeta(pageMeta) {
     refreshOptions.range = rpx2px(refreshOptions.range);
     pageMeta.refreshOptions = refreshOptions;
   }
+  navigationBar.backButton = pageMeta.isQuit ? false : true;
+  navigationBar.titleColor = navigationBar.titleColor || "#fff";
+  navigationBar.backgroundColor = navigationBar.backgroundColor || "#F7F7F7";
   return pageMeta;
+}
+const sheetsMap = new Map();
+function updateStyle(id2, content) {
+  let style = sheetsMap.get(id2);
+  if (style && !(style instanceof HTMLStyleElement)) {
+    removeStyle(id2);
+    style = void 0;
+  }
+  if (!style) {
+    style = document.createElement("style");
+    style.setAttribute("type", "text/css");
+    style.innerHTML = content;
+    document.head.appendChild(style);
+  } else {
+    style.innerHTML = content;
+  }
+  sheetsMap.set(id2, style);
+}
+function removeStyle(id2) {
+  let style = sheetsMap.get(id2);
+  if (style) {
+    if (style instanceof CSSStyleSheet) {
+      document.adoptedStyleSheets.indexOf(style);
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style);
+    } else {
+      document.head.removeChild(style);
+    }
+    sheetsMap.delete(id2);
+  }
 }
 const documentElement = document.documentElement;
 let styleObj;
@@ -1005,6 +1049,18 @@ function useAppClass() {
 function initSystemComponents(app) {
   AppComponent.name = COMPONENT_NAME_PREFIX + AppComponent.name;
   app.component(AppComponent.name, AppComponent);
+}
+let appVm;
+function getApp$1() {
+  return appVm;
+}
+function isApp(vm) {
+  return vm.$options.mpType === "app";
+}
+function initApp(vm) {
+  appVm = vm;
+  appVm.$vm = vm;
+  appVm.globalData = appVm.$options.globalData || {};
 }
 function initMixin(app) {
   app.mixin({
@@ -1703,7 +1759,7 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-var index_vue_vue_type_style_index_0_lang$j = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$h = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -2338,7 +2394,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$o.render = _sfc_render$m;
-var index_vue_vue_type_style_index_0_lang$i = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$g = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
 const _sfc_main$n = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
@@ -3124,7 +3180,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   }, _ctx.$attrs), null, 16, ["id"]);
 }
 _sfc_main$m.render = _sfc_render$k;
-var index_vue_vue_type_style_index_0_lang$h = "\r\n";
+var index_vue_vue_type_style_index_0_lang$f = "\r\n";
 const _sfc_main$l = {
   name: "Form",
   mixins: [listeners],
@@ -3174,7 +3230,7 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$l.render = _sfc_render$j;
-var index_vue_vue_type_style_index_0_lang$g = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,AAEAAAALAIAAAwAwR1NVQrD+s+0AAAE4AAAAQk9TLzJAKEx8AAABfAAAAFZjbWFw65cFHQAAAhwAAAJQZ2x5Zp+UEEcAAASUAAAIvGhlYWQUqc7xAAAA4AAAADZoaGVhB/YD+wAAALwAAAAkaG10eEJoAAAAAAHUAAAASGxvY2EUxhJeAAAEbAAAACZtYXhwASEAQwAAARgAAAAgbmFtZeNcHtgAAA1QAAAB5nBvc3T6OoZLAAAPOAAAAOYAAQAAA+gAAABaA+gAAAAAA7MAAQAAAAAAAAAAAAAAAAAAABIAAQAAAAEAAMCU2KdfDzz1AAsD6AAAAADY7EUUAAAAANjsRRQAAAAAA7MD5AAAAAgAAgAAAAAAAAABAAAAEgA3AAUAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKAB4ALAABREZMVAAIAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAAAAQOwAZAABQAIAnoCvAAAAIwCegK8AAAB4AAxAQIAAAIABQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUGZFZABA6gHqEQPoAAAAWgPoAAAAAAABAAAAAAAAAAAAAAPoAAAD6AAAA+gAAAPoAAAD6AAAA+gAAAPoAAAD6AAAA+gAAAPoAAAD6AAAA+gAAAPoAAAD6AAAA+gAAAPoAAAD6AAAAAAABQAAAAMAAAAsAAAABAAAAXQAAQAAAAAAbgADAAEAAAAsAAMACgAAAXQABABCAAAABAAEAAEAAOoR//8AAOoB//8AAAABAAQAAAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAANwAAAAAAAAAEQAA6gEAAOoBAAAAAQAA6gIAAOoCAAAAAgAA6gMAAOoDAAAAAwAA6gQAAOoEAAAABAAA6gUAAOoFAAAABQAA6gYAAOoGAAAABgAA6gcAAOoHAAAABwAA6ggAAOoIAAAACAAA6gkAAOoJAAAACQAA6goAAOoKAAAACgAA6gsAAOoLAAAACwAA6gwAAOoMAAAADAAA6g0AAOoNAAAADQAA6g4AAOoOAAAADgAA6g8AAOoPAAAADwAA6hAAAOoQAAAAEAAA6hEAAOoRAAAAEQAAAAAARACKAMQBEgFgAZIB4gH6AioCeAK0AwwDZAOiA9wEEAReAAAAAgAAAAADlQOVABQAKQAAJSInJicmNDc2NzYyFxYXFhQHBgcGJzI3Njc2NCcmJyYiBwYHBhQXFhcWAfRxYV83OTk3X2HiYV83OTk3X2FxZFVTMTIyMVNVyFVTMTIyMVNVUzk3X2HiYV83OTk3X2HiYV83OTIyMVNVyFVTMTIyMVNVyFVTMTIAAAIAAAAAA7MDswAXAC0AAAEiBwYHBhUUFxYXFjMyNzY3NjU0JyYnJhMHBiIvASY2OwERNDY7ATIWFREzMhYB7nZnZDs9PTtkZ3Z8amY7Pj47Zmkhdg4oDnYODRddCwcmBwtdFw0Dsz47Zmp8dmdkOz09O2Rndn1pZjs+/fCaEhKaEhoBFwgLCwj+6RoAAwAAAAADlQOVABQAGAAhAAAlIicmJyY0NzY3NjIXFhcWFAcGBwYDETMRJzI2NCYiBhQWAfRxYV83OTk3X2HiYV83OTk3X2GQPh8RGRkiGRlTOTdfYeJhXzc5OTdfYeJhXzc5AfT+3QEjKhgjGBgjGAAAAAACAAAAAAOxA+QAFwAsAAABBgcGDwERFBcWFxYXNjc2NzY1EScmJyYTAQYvASY/ATYyHwEWNjclNjIfARYB9WlsP3A3Rz5sXmxsXW09SDdwQGuP/tUEBIoDAxIBBQFxAQUCARICBQERBAPjFyASJBL+rI51ZUg/HBw/SGV1jgFUEiQSIP66/tkDA48EBBkCAVYCAQHlAQIQBAAAAAADAAAAAAOxA+QAFwAmAC8AAAEGBwYPAREUFxYXFhc2NzY3NjURJyYnJgczMhYVAxQGKwEiJwM0NhMiJjQ2MhYUBgH1aWtAcDdHPmxebGxdbT1IN3BAa4M0BAYMAwImBQELBh4PFhYeFRUD5BggEiQS/q2PdWRJPh0dPklkdY8BUxIkEiD4BgT+xgIDBQE6BAb+QBUfFRUfFQAAAAACAAAAAAOVA5UAFAAaAAAlIicmJyY0NzY3NjIXFhcWFAcGBwYDJwcXAScB9HFhXzc5OTdfYeJhXzc5OTdfYaJzLJ8BFi1TOTdfYeJhXzc5OTdfYeJhXzc5AUhzLJ8BFSwAAAAAAwAAAAADlQOVABQAKQAvAAAlIicmJyY0NzY3NjIXFhcWFAcGBwYnMjc2NzY0JyYnJiIHBgcGFBcWFxYTNxcBJzcB9HFhXzc5OTdfYeJhXzc5OTdfYXFkVVMxMjIxU1XIVVMxMjIxU1Uz8iT+6p8jUzk3X2HiYV83OTk3X2HiYV83OTIyMVNVyFVTMTIyMVNVyFVTMTIBBPIj/uufJAAAAAEAAAAAA5kDGAAHAAAlATcXARcBBgGF/vg7zgHYOv3vAcsBCTvPAdg7/e4BAAAAAAIAAAAAA5UDlQAFABoAAAE1IxUXNwMiJyYnJjQ3Njc2MhcWFxYUBwYHBgITPrEsvnFhXzc5OTdfYeJhXzc5OTdfYQIO4PqxLP7kOTdfYeJhXzc5OTdfYeJhXzc5AAAAAAMAAAAAA5UDlQAFABoALwAAARcHJzUzAyInJicmNDc2NzYyFxYXFhQHBgcGJzI3Njc2NCcmJyYiBwYHBhQXFhcWAg2iI7EyGXFhXzc5OTdfYeJhXzc5OTdfYXFkVVMxMjIxU1XIVVMxMjIxU1UCCaIksfr9ZTk3X2HiYV83OTk3X2HiYV83OTIyMVNVyFVTMTIyMVNVyFVTMTIAAAMAAAAAA5UDlQAUABgAIQAAJSInJicmNDc2NzYyFxYXFhQHBgcGAxMzEwMyNjQmIg4BFgH0cWFfNzk5N19h4mFfNzk5N19hkQU2BSAQFRUgFQEWUzk3X2HiYV83OTk3X2HiYV83OQKV/sQBPP43Fh8VFR8WAAAAAAQAAAAAA5UDlQAUACkALQA2AAAlIicmJyY0NzY3NjIXFhcWFAcGBwYnMjc2NzY0JyYnJiIHBgcGFBcWFxYTMxEjEyImNDYyFhQGAfRxYV83OTk3X2HiYV83OTk3X2FxZFVTMTIyMVNVyFVTMTIyMVNVSzIyGREZGSIZGVM5N19h4mFfNzk5N19h4mFfNzkyMjFTVchVUzEyMjFTVchVUzEyAcL+3QFNGCMYGCMYAAAAAwAAAAADlQOVABQAKQA1AAAlIicmJyY0NzY3NjIXFhcWFAcGBwYnMjc2NzY0JyYnJiIHBgcGFBcWFxYTFwcnByc3JzcXNxcB9HFhXzc5OTdfYeJhXzc5OTdfYXFkVVMxMjIxU1XIVVMxMjIxU1WHgiOCgiOCgiOCgiNTOTdfYeJhXzc5OTdfYeJhXzc5MjIxU1XIVVMxMjIxU1XIVVMxMgFvgiOCgiOCgiOCgiMAAAACAAAAAANUA0IAGAAlAAABFwcnDgEjIicmJyY0NzY3NjIXFhcWFRQGJzQuASIOARQeATI+AQKoqyOsJ180T0RCJycnJ0JEn0RCJiglDUFvg29BQW+Db0EBYKwjrCAjKCZCRJ9EQicnJydCRE82YZdBb0FBb4NvQUFvAAAAAgAAAAADlQOVAAsAIAAAATcnBycHFwcXNxc3AyInJicmNDc2NzYyFxYXFhQHBgcGAiB9LH19LH19LH19LKlxYV83OTk3X2HiYV83OTk3X2EB9H0sfX0sfX0sfX0s/tw5N19h4mFfNzk5N19h4mFfNzkAAAACAAAAAAOVA5UAFAAcAAAlIicmJyY0NzY3NjIXFhcWFAcGBwYDJzcnBwYfAQH0cWFfNzk5N19h4mFfNzk5N19hHoqKK7UBAbVTOTdfYeJhXzc5OTdfYeJhXzc5ARKPjy27AQG6AAAAAAUAAAAAA1cDbAAJAB0AJwArAC8AAAETHgEzITI2NxMzAw4BIyEiJicDIzU0NjMhMhYdASUyFh0BIzU0NjMHMxMjEzMDIwEaIgETDQEuDRMBIjIiAjAh/tIhMAIiVgwJApoJDP7xCQzQDAkVMhUyiTIVMgLd/cgOEhIOAjj9xSEuLiECOx4IDAwIHo4MCR0dCQz6/okBd/6JAAAAAAAAEADGAAEAAAAAAAEABAAAAAEAAAAAAAIABwAEAAEAAAAAAAMABAALAAEAAAAAAAQABAAPAAEAAAAAAAUACwATAAEAAAAAAAYABAAeAAEAAAAAAAoAKwAiAAEAAAAAAAsAEwBNAAMAAQQJAAEACABgAAMAAQQJAAIADgBoAAMAAQQJAAMACAB2AAMAAQQJAAQACAB+AAMAAQQJAAUAFgCGAAMAAQQJAAYACACcAAMAAQQJAAoAVgCkAAMAAQQJAAsAJgD6d2V1aVJlZ3VsYXJ3ZXVpd2V1aVZlcnNpb24gMS4wd2V1aUdlbmVyYXRlZCBieSBzdmcydHRmIGZyb20gRm9udGVsbG8gcHJvamVjdC5odHRwOi8vZm9udGVsbG8uY29tAHcAZQB1AGkAUgBlAGcAdQBsAGEAcgB3AGUAdQBpAHcAZQB1AGkAVgBlAHIAcwBpAG8AbgAgADEALgAwAHcAZQB1AGkARwBlAG4AZQByAGEAdABlAGQAIABiAHkAIABzAHYAZwAyAHQAdABmACAAZgByAG8AbQAgAEYAbwBuAHQAZQBsAGwAbwAgAHAAcgBvAGoAZQBjAHQALgBoAHQAdABwADoALwAvAGYAbwBuAHQAZQBsAGwAbwAuAGMAbwBtAAAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAQIBAwEEAQUBBgEHAQgBCQEKAQsBDAENAQ4BDwEQAREBEgETAAZjaXJjbGUIZG93bmxvYWQEaW5mbwxzYWZlLXN1Y2Nlc3MJc2FmZS13YXJuB3N1Y2Nlc3MOc3VjY2Vzcy1jaXJjbGURc3VjY2Vzcy1uby1jaXJjbGUHd2FpdGluZw53YWl0aW5nLWNpcmNsZQR3YXJuC2luZm8tY2lyY2xlBmNhbmNlbAZzZWFyY2gFY2xlYXIEYmFjawZkZWxldGUAAAAA')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$e = "\nuni-icon {\r\n  display: inline-block;\r\n  font-size: 0;\r\n  box-sizing: border-box;\n}\nuni-icon[hidden] {\r\n  display: none;\n}\nuni-icon > i {\r\n  font: normal normal normal 14px/1 'weui';\n}\nuni-icon > i:before {\r\n  margin: 0;\r\n  box-sizing: border-box;\n}\n@font-face {\r\n  font-weight: normal;\r\n  font-style: normal;\r\n  font-family: 'weui';\r\n  src: url('data:application/octet-stream;base64,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')\r\n    format('truetype');\n}\n.uni-icon-success:before {\r\n  content: '\\EA06';\n}\n.uni-icon-success_circle:before {\r\n  content: '\\EA07';\n}\n.uni-icon-success_no_circle:before {\r\n  content: '\\EA08';\n}\n.uni-icon-safe_success:before {\r\n  content: '\\EA04';\n}\n.uni-icon-safe_warn:before {\r\n  content: '\\EA05';\n}\n.uni-icon-info:before {\r\n  content: '\\EA03';\n}\n.uni-icon-info_circle:before {\r\n  content: '\\EA0C';\n}\n.uni-icon-warn:before {\r\n  content: '\\EA0B';\n}\n.uni-icon-waiting:before {\r\n  content: '\\EA09';\n}\n.uni-icon-waiting_circle:before {\r\n  content: '\\EA0A';\n}\n.uni-icon-circle:before {\r\n  content: '\\EA01';\n}\n.uni-icon-cancel:before {\r\n  content: '\\EA0D';\n}\n.uni-icon-download:before {\r\n  content: '\\EA02';\n}\n.uni-icon-search:before {\r\n  content: '\\EA0E';\n}\n.uni-icon-clear:before {\r\n  content: '\\EA0F';\n}\n.uni-icon-success {\r\n  color: #007aff;\n}\n.uni-icon-success_circle {\r\n  color: #007aff;\n}\n.uni-icon-success_no_circle {\r\n  color: #007aff;\n}\n.uni-icon-safe_success {\r\n  color: #007aff;\n}\n.uni-icon-safe_warn {\r\n  color: #ffbe00;\n}\n.uni-icon-info {\r\n  color: #10aeff;\n}\n.uni-icon-info_circle {\r\n  color: #007aff;\n}\n.uni-icon-warn {\r\n  color: #f76260;\n}\n.uni-icon-waiting {\r\n  color: #10aeff;\n}\n.uni-icon-waiting_circle {\r\n  color: #10aeff;\n}\n.uni-icon-circle {\r\n  color: #c9c9c9;\n}\n.uni-icon-cancel {\r\n  color: #f43530;\n}\n.uni-icon-download {\r\n  color: #007aff;\n}\n.uni-icon-search {\r\n  color: #b2b2b2;\n}\n.uni-icon-clear {\r\n  color: #b2b2b2;\n}\r\n";
 const _sfc_main$k = {
   name: "Icon",
   props: {
@@ -3215,7 +3271,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$k.render = _sfc_render$i;
-var index_vue_vue_type_style_index_0_lang$f = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$d = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
 const _sfc_main$j = {
   name: "Image",
   props: {
@@ -3383,7 +3439,6 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$j.render = _sfc_render$h;
-var index_vue_vue_type_style_index_0_lang$e = '\nuni-input {\r\n  display: block;\r\n  font-size: 16px;\r\n  line-height: 1.4em;\r\n  height: 1.4em;\r\n  min-height: 1.4em;\r\n  overflow: hidden;\n}\nuni-input[hidden] {\r\n  display: none;\n}\n.uni-input-wrapper,\r\n.uni-input-placeholder,\r\n.uni-input-form,\r\n.uni-input-input {\r\n  outline: none;\r\n  border: none;\r\n  padding: 0;\r\n  margin: 0;\r\n  text-decoration: inherit;\n}\n.uni-input-wrapper,\r\n.uni-input-form {\r\n  display: flex;\r\n  position: relative;\r\n  width: 100%;\r\n  height: 100%;\r\n  flex-direction: column;\r\n  justify-content: center;\n}\n.uni-input-placeholder,\r\n.uni-input-input {\r\n  width: 100%;\n}\n.uni-input-placeholder {\r\n  position: absolute;\r\n  top: auto !important;\r\n  left: 0;\r\n  color: gray;\r\n  overflow: hidden;\r\n  text-overflow: clip;\r\n  white-space: pre;\r\n  word-break: keep-all;\r\n  pointer-events: none;\r\n  line-height: inherit;\n}\n.uni-input-input {\r\n  display: block;\r\n  height: 100%;\r\n  background: none;\r\n  color: inherit;\r\n  opacity: 1;\r\n  -webkit-text-fill-color: currentcolor;\r\n  font: inherit;\r\n  line-height: inherit;\r\n  letter-spacing: inherit;\r\n  text-align: inherit;\r\n  text-indent: inherit;\r\n  text-transform: inherit;\r\n  text-shadow: inherit;\n}\n.uni-input-input[type="search"]::-webkit-search-cancel-button {\r\n  display: none;\n}\n.uni-input-input::-webkit-outer-spin-button,\r\n.uni-input-input::-webkit-inner-spin-button {\r\n  -webkit-appearance: none;\r\n  margin: 0;\n}\n.uni-input-input[type="number"] {\r\n  -moz-appearance: textfield;\n}\r\n';
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
 const _sfc_main$i = {
@@ -3605,7 +3660,7 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$i.render = _sfc_render$g;
-var index_vue_vue_type_style_index_0_lang$d = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$c = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
 const _sfc_main$h = {
   name: "Label",
   mixins: [emitter],
@@ -4052,7 +4107,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-var index_vue_vue_type_style_index_0_lang$c = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$b = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -4673,7 +4728,7 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$g.render = _sfc_render$e;
-var index_vue_vue_type_style_index_0_lang$b = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$a = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 const _sfc_main$f = {
   name: "Navigator",
@@ -4882,7 +4937,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$e.render = _sfc_render$c;
-var index_vue_vue_type_style_index_0_lang$a = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
+var index_vue_vue_type_style_index_0_lang$9 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
 const _sfc_main$d = {
   name: "Radio",
   mixins: [emitter, listeners],
@@ -4979,7 +5034,7 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$d.render = _sfc_render$b;
-var index_vue_vue_type_style_index_0_lang$9 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$8 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
 const _sfc_main$c = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
@@ -5070,7 +5125,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$c.render = _sfc_render$a;
-var index_vue_vue_type_style_index_0_lang$8 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
+var index_vue_vue_type_style_index_0_lang$7 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
 const _sfc_main$b = {
   name: "ResizeSensor",
   props: {
@@ -6058,7 +6113,7 @@ var scroller = {
     }
   }
 };
-var index_vue_vue_type_style_index_0_lang$7 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
+var index_vue_vue_type_style_index_0_lang$6 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
 const _sfc_main$9 = {
   name: "ScrollView",
   mixins: [scroller],
@@ -6745,7 +6800,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$8.render = _sfc_render$7;
-var index_vue_vue_type_style_index_0_lang$6 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$5 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
 const _sfc_main$7 = {
   name: "SwiperItem",
   props: {
@@ -6773,7 +6828,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$7.render = _sfc_render$6;
-var index_vue_vue_type_style_index_0_lang$5 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
+var index_vue_vue_type_style_index_0_lang$4 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
 const _sfc_main$6 = {
   name: "Switch",
   mixins: [emitter, listeners],
@@ -6874,7 +6929,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$6.render = _sfc_render$5;
-var index_vue_vue_type_style_index_0_lang$4 = "\nuni-text[selectable] {\r\n    cursor: auto;\r\n		user-select: text;\r\n		-webkit-user-select: text;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$3 = "\nuni-text[selectable] {\r\n    cursor: auto;\r\n		user-select: text;\r\n		-webkit-user-select: text;\n}\r\n";
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
@@ -6936,7 +6991,7 @@ const _sfc_main$5 = {
     ]);
   }
 };
-var index_vue_vue_type_style_index_0_lang$3 = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
+var index_vue_vue_type_style_index_0_lang$2 = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
 const _sfc_main$4 = {
   name: "Textarea",
@@ -7214,7 +7269,6 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$4.render = _sfc_render$4;
-var index_vue_vue_type_style_index_0_lang$2 = "\nuni-view {\r\n  display: block;\n}\nuni-view[hidden] {\r\n  display: none;\n}\r\n";
 const _sfc_main$3 = {
   name: "View",
   mixins: [hover],
@@ -7236,6 +7290,19 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16));
 }
 _sfc_main$3.render = _sfc_render$3;
+const ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
+function createSvgIconVNode(path, color = "#000", size = 27) {
+  return createVNode("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 32 32"
+  }, [
+    createVNode("path", {
+      d: path,
+      fill: color
+    }, null, 8, ["d", "fill"])
+  ], 8, ["width", "height"]);
+}
 const UniViewJSBridge$1 = extend(ViewJSBridge, {
   publishHandler(event2, args, pageId) {
     window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
@@ -8001,7 +8068,7 @@ const reLaunch = /* @__PURE__ */ createAsyncApi("reLaunch", () => {
 });
 const switchTab = /* @__PURE__ */ createAsyncApi("switchTab", () => {
 });
-const getRealPath = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
+const getRealPath$1 = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
@@ -8026,7 +8093,7 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
-  getRealPath
+  getRealPath: getRealPath$1
 });
 const uni$1 = api;
 const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
@@ -8034,19 +8101,144 @@ const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
     window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
   }
 });
-const ICON_FONTS = {
+function hexToRgba(hex) {
+  let r;
+  let g2;
+  let b;
+  hex = hex.replace("#", "");
+  if (hex.length === 6) {
+    r = hex.substring(0, 2);
+    g2 = hex.substring(2, 4);
+    b = hex.substring(4, 6);
+  } else if (hex.length === 3) {
+    r = hex.substring(0, 1);
+    g2 = hex.substring(1, 2);
+    b = hex.substring(2, 3);
+  } else {
+    return {r: 0, g: 0, b: 0};
+  }
+  if (r.length === 1) {
+    r += r;
+  }
+  if (g2.length === 1) {
+    g2 += g2;
+  }
+  if (b.length === 1) {
+    b += b;
+  }
+  r = parseInt(r, 16);
+  g2 = parseInt(g2, 16);
+  b = parseInt(b, 16);
+  return {
+    r,
+    g: g2,
+    b
+  };
+}
+function usePageHeadTransparentBackgroundColor(backgroundColor) {
+  const {r, g: g2, b} = hexToRgba(backgroundColor);
+  return `rgba(${r},${g2},${b},0)`;
+}
+function usePageHeadTransparent(headRef, {titleColor, coverage, backgroundColor}) {
+  let A = 0;
+  const rgb = computed(() => hexToRgba(backgroundColor));
+  const offset = parseInt(coverage);
+  onMounted(() => {
+    const $el = headRef.value;
+    const transparentElemStyle = $el.style;
+    const titleElem = $el.querySelector(".uni-page-head__title");
+    const borderRadiusElems = $el.querySelectorAll(".uni-page-head-btn");
+    const iconElems = $el.querySelectorAll(".uni-btn-icon");
+    const iconElemsStyles = [];
+    for (let i = 0; i < iconElems.length; i++) {
+      iconElemsStyles.push(iconElems[i].style);
+    }
+    const oldColors = [];
+    const borderRadiusElemsStyles = [];
+    for (let i = 0; i < borderRadiusElems.length; i++) {
+      const borderRadiusElem = borderRadiusElems[i];
+      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
+      borderRadiusElemsStyles.push(borderRadiusElem.style);
+    }
+    A = 0;
+    UniViewJSBridge.on("onPageScroll", ({scrollTop}) => {
+      const alpha = Math.min(scrollTop / offset, 1);
+      if (alpha === 1 && A === 1) {
+        return;
+      }
+      if (alpha > 0.5 && A <= 0.5) {
+        iconElemsStyles.forEach(function(iconElemStyle) {
+          iconElemStyle.color = titleColor;
+        });
+      } else if (alpha <= 0.5 && A > 0.5) {
+        iconElemsStyles.forEach(function(iconElemStyle) {
+          iconElemStyle.color = "#fff";
+        });
+      }
+      A = alpha;
+      if (titleElem) {
+        titleElem.style.opacity = alpha;
+      }
+      const bg = rgb.value;
+      transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
+      borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
+        const oldColor = oldColors[index2];
+        const rgba = oldColor.match(/[\d+\.]+/g);
+        rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
+        borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
+      });
+    });
+  });
+}
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+function addBase(filePath) {
+  const base = __uniConfig.router.base;
+  if (!base) {
+    return filePath;
+  }
+  if (base !== "/") {
+    if (("/" + filePath).indexOf(base) === 0) {
+      return "/" + filePath;
+    }
+  }
+  return base + filePath;
+}
+function getRealPath(filePath) {
+  if (__uniConfig.router.base === "./") {
+    filePath = filePath.replace(/^\.\/static\//, "/static/");
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.substr(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+  }
+  return filePath;
+}
+const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATHS = {
   none: "",
-  forward: "&#xe600;",
-  back: "&#xe601;",
-  share: "&#xe602;",
-  favorite: "&#xe604;",
-  home: "&#xe605;",
-  menu: "&#xe606;",
-  close: "&#xe650;"
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z"
 };
 var PageHead = /* @__PURE__ */ defineComponent({
   name: "PageHead",
   setup() {
+    const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = pageMeta.navigationBar;
     UniServiceJSBridge.emit("onNavigationBarChange", navigationBar.titleText);
@@ -8054,39 +8246,40 @@ var PageHead = /* @__PURE__ */ defineComponent({
       clazz,
       style
     } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && userPageHeadButtons(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(navigationBar);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && usePageHeadSearchInput();
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && usePageHeadTransparent(headRef, navigationBar);
     return () => {
-      const backButtonJsx = __UNI_FEATURE_PAGES__ ? createBackButtonJsx(navigationBar) : null;
-      const leftButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx(buttons.left) : [];
-      const rightButtonsJsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsJsx(buttons.right) : [];
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar) : null;
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       return createVNode("uni-page-head", {
         "uni-page-head-type": navigationBar.type
       }, [createVNode("div", {
+        ref: headRef,
         class: clazz.value,
         style: style.value
       }, [createVNode("div", {
         class: "uni-page-head-hd"
-      }, [backButtonJsx, ...leftButtonsJsx, ...rightButtonsJsx]), createVNode("div", {
-        class: "uni-page-head-bd"
-      }, null)], 6)], 8, ["uni-page-head-type"]);
+      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
+        class: "uni-page-head-ft"
+      }, [...rightButtonsTsx])], 6)], 8, ["uni-page-head-type"]);
     };
   }
 });
-function createBackButtonJsx(navigationBar) {
+function createBackButtonTsx(navigationBar) {
   if (navigationBar.backButton) {
     return createVNode("div", {
       class: "uni-page-head-btn"
-    }, [createVNode("i", {
-      style: "fontSize:27px",
-      class: "uni-btn-icon"
-    }, [createTextVNode("\uE601")])]);
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)]);
   }
 }
-function createButtonsJsx(btns) {
+function createButtonsTsx(btns) {
   return btns.map(({
     btnClass,
     btnStyle,
     btnText,
+    btnIconPath,
     badgeText,
     iconStyle
   }, index2) => {
@@ -8095,12 +8288,84 @@ function createButtonsJsx(btns) {
       class: btnClass,
       style: btnStyle,
       "badge-text": badgeText
-    }, [createVNode("i", {
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : createVNode("i", {
       class: "uni-btn-icon",
       style: iconStyle,
       innerHTML: btnText
     }, null, 12, ["innerHTML"])], 14, ["badge-text"]);
   });
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
+    return createPageHeadTitleTextTsx(navigationBar);
+  }
+  return createPageHeadSearchInputTsx(navigationBar, searchInput);
+}
+function createPageHeadTitleTextTsx({
+  loading,
+  titleText,
+  titleImage
+}) {
+  return createVNode("div", {
+    class: "uni-page-head-bd"
+  }, [createVNode("div", {
+    style: "{fontSize:titleSize,opacity:type==='transparent'?0:1}",
+    class: "uni-page-head__title"
+  }, [loading ? createVNode("i", {
+    class: "uni-loading"
+  }, null) : titleImage ? createVNode("img", {
+    src: titleImage,
+    class: "uni-page-head__title_image"
+  }, null, 8, ["src"]) : titleText])]);
+}
+function createPageHeadSearchInputTsx(navigationBar, {
+  text: text2,
+  focus,
+  composing,
+  onBlur,
+  onFocus,
+  onInput
+}) {
+  const {
+    color,
+    align: align2,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor
+  } = navigationBar.searchInput;
+  const searchStyle = {
+    borderRadius,
+    backgroundColor
+  };
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
+  return createVNode("div", {
+    class: "uni-page-head-search",
+    style: searchStyle
+  }, [createVNode("div", {
+    style: {
+      color: placeholderColor
+    },
+    class: placeholderClass
+  }, [createVNode("div", {
+    class: "uni-page-head-search-icon"
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$i, {
+    focus: autoFocus,
+    disabled,
+    style: {
+      color
+    },
+    "placeholder-style": {
+      color: placeholderColor
+    },
+    class: "uni-page-head-search-input",
+    "confirm-type": "search",
+    onFocus,
+    onBlur,
+    onInput
+  }, null, 8, ["focus", "disabled", "style", "placeholder-style", "onFocus", "onBlur", "onInput"])], 4);
 }
 function usePageHead(navigationBar) {
   const clazz = computed(() => {
@@ -8121,11 +8386,12 @@ function usePageHead(navigationBar) {
     return clazz2;
   });
   const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
     return {
+      backgroundColor,
+      color: navigationBar.titleColor,
       transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc,
-      backgroundColor: navigationBar.backgroundColor,
-      color: navigationBar.textStyle === "black" ? "#000" : "#fff"
+      transitionTimingFunction: navigationBar.timingFunc
     };
   });
   return {
@@ -8133,32 +8399,51 @@ function usePageHead(navigationBar) {
     style
   };
 }
-function userPageHeadButtons(navigationBar) {
+function usePageHeadButtons(navigationBar) {
   const left = [];
   const right = [];
   const {
     buttons
   } = navigationBar;
-  if (!isArray(buttons)) {
-    return {
-      left,
-      right
-    };
+  if (isArray(buttons)) {
+    const {
+      type
+    } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = Object.create(null);
+    buttons.forEach((btn) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`);
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
   }
-  const {
-    type
-  } = navigationBar;
-  const isTransparent = type === "transparent";
-  buttons.forEach((btn) => {
-    const pageHeadBtn = usePageHeadButton(btn, isTransparent);
-    if (btn.float === "left") {
-      left.push(pageHeadBtn);
-    } else {
-      right.push(pageHeadBtn);
-    }
-  });
+  return {
+    left,
+    right
+  };
 }
 function usePageHeadButton(btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
   return {
     btnClass: {
       "uni-page-head-btn": true,
@@ -8169,14 +8454,32 @@ function usePageHeadButton(btn, isTransparent) {
       backgroundColor: isTransparent ? btn.background : "transparent",
       width: btn.width
     },
-    btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : ICON_FONTS[btn.type] || btn.text,
+    btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text,
+    btnIconPath: ICON_PATHS[btn.type],
     badgeText: btn.badgeText,
-    iconStyle: {
-      color: btn.color,
-      fontSize: btn.fontSize,
-      fontWeight: btn.fontWeight,
-      fontFamily: btn.fontFamily
-    }
+    iconStyle
+  };
+}
+function usePageHeadSearchInput(navigationBar) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  function onFocus() {
+    focus.value = true;
+  }
+  function onBlur() {
+    focus.value = false;
+  }
+  function onInput(evt) {
+    text2.value = evt.detail.value;
+  }
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput
   };
 }
 var _sfc_main$2 = {
@@ -8458,8 +8761,8 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 var index = defineComponent({
   name: "Page",
   setup(props, ctx) {
-    providePageMeta();
-    return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
+    const {navigationBar} = providePageMeta();
+    return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
 function createPageBodyVNode(ctx) {
@@ -8914,4 +9217,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$q as Audio, _sfc_main$p as Canvas, _sfc_main$o as Checkbox, _sfc_main$n as CheckboxGroup, _sfc_main$m as Editor, _sfc_main$l as Form, _sfc_main$k as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$1 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$q as Audio, _sfc_main$p as Canvas, _sfc_main$o as Checkbox, _sfc_main$n as CheckboxGroup, _sfc_main$m as Editor, _sfc_main$l as Form, ICON_PATH_SEARCH, _sfc_main$k as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createSvgIconVNode, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath$1 as getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$1 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

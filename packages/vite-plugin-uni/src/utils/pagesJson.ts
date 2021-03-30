@@ -105,6 +105,18 @@ function normalizeNavigationBar(
       delete pageStyle[name]
     }
   })
+
+  const { titleNView } = pageStyle
+  if (isPlainObject(titleNView)) {
+    Object.assign(navigationBar, titleNView)
+    delete pageStyle.titleNView
+  }
+  if (!navigationBar.titleColor && hasOwn(navigationBar, 'textStyle')) {
+    navigationBar.titleColor =
+      (navigationBar as any).textStyle === 'black' ? '#000' : '#fff'
+    delete (navigationBar as any).textStyle
+  }
+
   if (
     pageStyle.navigationBarShadow &&
     pageStyle.navigationBarShadow.colorType
@@ -112,18 +124,23 @@ function normalizeNavigationBar(
     navigationBar.shadowColorType = pageStyle.navigationBarShadow.colorType
     delete pageStyle.navigationBarShadow
   }
-  const { titleNView } = pageStyle
-  if (isPlainObject(titleNView)) {
-    Object.assign(navigationBar, titleNView)
-  }
+
   if (isArray(navigationBar.buttons)) {
     navigationBar.buttons = navigationBar.buttons.map((btn) =>
       normalizeNavigationBarButton(
         btn,
         navigationBar.type,
-        navigationBar.textStyle === 'black' ? '#000' : '#fff'
+        navigationBar.titleColor!
       )
     )
+  }
+  if (isPlainObject(navigationBar.searchInput)) {
+    navigationBar.searchInput = normalizeNavigationBarSearchInput(
+      navigationBar.searchInput
+    )
+  }
+  if (navigationBar.type === 'transparent') {
+    navigationBar.coverage = navigationBar.coverage || '132px'
   }
   return navigationBar
 }
@@ -131,9 +148,9 @@ function normalizeNavigationBar(
 function normalizeNavigationBarButton(
   btn: UniApp.PageNavigationBarButton,
   type: UniApp.PageNavigationBar['type'],
-  textColor: '#000' | '#fff'
+  titleColor: '#000' | '#fff'
 ) {
-  btn.color = type === 'transparent' ? '#fff' : btn.color || textColor
+  btn.color = type === 'transparent' ? '#fff' : btn.color || titleColor
   if (!btn.fontSize) {
     btn.fontSize =
       type === 'transparent' || (btn.text && /\\u/.test(btn.text))
@@ -144,6 +161,24 @@ function normalizeNavigationBarButton(
   }
   btn.text = btn.text || ''
   return btn
+}
+
+function normalizeNavigationBarSearchInput(
+  searchInput: UniApp.PageNavigationBarSearchInput
+) {
+  return Object.assign(
+    {
+      autoFocus: false,
+      align: 'center',
+      color: '#000',
+      backgroundColor: 'rgba(255,255,255,0.5)',
+      borderRadius: '0px',
+      placeholder: '',
+      placeholderColor: '#CCCCCC',
+      disabled: false,
+    },
+    searchInput
+  )
 }
 
 const platforms = ['h5', 'app-plus', 'mp-', 'quickapp']

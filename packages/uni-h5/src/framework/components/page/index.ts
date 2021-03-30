@@ -15,12 +15,12 @@ import { providePageMeta } from '../../plugin/provide'
 export default defineComponent({
   name: 'Page',
   setup(props, ctx) {
-    providePageMeta()
+    const { navigationBar } = providePageMeta()
     return () =>
       createVNode(
         'uni-page',
         null,
-        __UNI_FEATURE_NAVIGATIONBAR__
+        __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== 'custom'
           ? [createVNode(PageHead), createPageBodyVNode(ctx)]
           : [createPageBodyVNode(ctx)]
       )

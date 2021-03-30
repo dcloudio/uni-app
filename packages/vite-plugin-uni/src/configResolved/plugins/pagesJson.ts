@@ -97,8 +97,14 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_PAGES__) {
     cssFiles.push('@dcloudio/uni-h5/style/layout.css')
   }
+  if (define.__UNI_FEATURE_NAVIGATIONBAR__) {
+    cssFiles.push('@dcloudio/uni-h5/style/pageHead.css')
+  }
   if (define.__UNI_FEATURE_NVUE__) {
     cssFiles.push('@dcloudio/uni-h5/style/nvue.css')
+  }
+  if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
+    cssFiles.push('@dcloudio/uni-h5/style/input.css')
   }
   return cssFiles.map((file) => `import '${file}'`).join('\n')
 }

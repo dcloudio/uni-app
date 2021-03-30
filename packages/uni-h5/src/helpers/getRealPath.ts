@@ -1,4 +1,4 @@
-import { getRealRoute } from '@dcloudio/uni-core/helpers/getRealRoute'
+import { getRealRoute } from '@dcloudio/uni-core'
 
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/

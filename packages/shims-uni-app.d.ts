@@ -12,6 +12,7 @@ declare namespace UniApp {
   interface UniConfig {
     router: {
       strict: boolean
+      base: string
     }
     globalStyle: {
       navigationBar: PageNavigationBar
@@ -48,6 +49,7 @@ declare namespace UniApp {
   }
 
   interface PageNavigationBarSearchInput {
+    color?: string
     autoFocus?: boolean
     align?: 'center' | 'left' | 'right'
     backgroundColor?: string
@@ -60,7 +62,8 @@ declare namespace UniApp {
   interface PageNavigationBar {
     type?: 'default' | 'transparent' | 'float' | 'none'
     titleText?: string
-    textStyle?: 'black' | 'white'
+    titleImage?: string
+    titleColor?: '#000' | '#fff'
     timingFunc?: string
     duration?: string
     backgroundColor?: string
@@ -70,6 +73,8 @@ declare namespace UniApp {
     buttons?: PageNavigationBarButton[]
     searchInput?: PageNavigationBarSearchInput
     style?: 'default' | 'custom'
+    loading?: boolean
+    coverage?: string
   }
   interface PageRefreshOptions {
     support: boolean

@@ -18,6 +18,7 @@ interface PagesFeatures {
   pullDownRefresh: boolean
   navigationBarButtons: boolean
   navigationBarSearchInput: boolean
+  navigationBarTransparent: boolean
 }
 interface ManifestFeatures {
   wx: boolean
@@ -52,6 +53,7 @@ function resolvePagesFeature(
     pullDownRefresh: false,
     navigationBarButtons: true,
     navigationBarSearchInput: true,
+    navigationBarTransparent: true,
   }
 
   const {
@@ -111,6 +113,7 @@ function resolvePagesFeature(
       features.navigationBar = false
       features.navigationBarButtons = false
       features.navigationBarSearchInput = false
+      features.navigationBarTransparent = false
     } else {
       if (
         !pages.find(
@@ -121,8 +124,17 @@ function resolvePagesFeature(
       ) {
         features.navigationBarButtons = false
       }
-      if (!pages.find((page) => page.style.navigationBar.searchInput)) {
+      if (
+        !globalStyle.navigationBar.searchInput &&
+        !pages.find((page) => page.style.navigationBar.searchInput)
+      ) {
         features.navigationBarSearchInput = false
+      }
+      if (
+        globalStyle.navigationBar.type !== 'transparent' &&
+        !pages.find((page) => page.style.navigationBar.type === 'transparent')
+      ) {
+        features.navigationBarTransparent = false
       }
     }
   }
@@ -175,6 +187,7 @@ export function getFeatures(
     pullDownRefresh,
     navigationBarButtons,
     navigationBarSearchInput,
+    navigationBarTransparent,
   } = Object.assign(
     resolveManifestFeature(options),
     resolvePagesFeature(options, command),
@@ -197,5 +210,6 @@ export function getFeatures(
     __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh,
     __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons,
     __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput,
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent,
   }
 }

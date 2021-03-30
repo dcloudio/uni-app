@@ -14,15 +14,6 @@
   </uni-view>
 </template>
 
-<style>
-uni-view {
-  display: block;
-}
-uni-view[hidden] {
-  display: none;
-}
-</style>
-
 <script>
 import hover from '../../mixins/hover'
 export default {

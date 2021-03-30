@@ -30,6 +30,7 @@ uni-page-head {
 .uni-page-head .uni-btn-icon {
   overflow: hidden;
   min-width: 1em;
+  font-style: normal;
 }
 
 .uni-page-head-titlePenetrate,
@@ -78,6 +79,10 @@ uni-page-head {
   word-break: keep-all;
   white-space: pre;
   cursor: pointer;
+}
+
+.uni-page-head-btn svg {
+  margin-top: -2px;
 }
 
 .uni-page-head-transparent .uni-page-head-btn {
@@ -158,16 +163,15 @@ uni-page-head {
   transform: translateX(-50%);
 }
 
-.uni-page-head-search-placeholder::before {
+.uni-page-head-search-icon {
   position: absolute;
   top: 0;
   left: 2px;
   width: 30px;
-  content: '\ea0e';
-  display: block;
-  font-size: 20px;
-  font-family: 'uni';
-  text-align: center;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .uni-page-head-ft {
