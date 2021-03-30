@@ -43,7 +43,7 @@
 
 `fail` 为 function 类型，加载失败后的回调
 
-HBuilder 基座的测试广告位 `adpid` 为 `1138104163`
+HBuilder 基座的测试广告位 `adpid` 为 `1111111112`
 
 
 示例代码
@@ -63,12 +63,12 @@ HBuilder 基座的测试广告位 `adpid` 为 `1138104163`
 			}
 		},
 		onLoad() {
-			// HBuilderX 标准基座真机运行测试内容联盟广告位标识（adpid）为：1138104163
-			// adpid: 1138104163 仅用于测试，发布时需要改为广告后台（https://uniad.dcloud.net.cn/）申请的 adpid
+			// HBuilderX 标准基座真机运行测试内容联盟广告位标识（adpid）为：1111111112
+			// adpid: 1111111112 仅用于测试，发布时需要改为广告后台（https://uniad.dcloud.net.cn/）申请的 adpid
 			// 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效
 
 			this.adOptions = {
-				adpid: 1138104163
+				adpid: 1111111112
 			}
 		},
 		methods: {
