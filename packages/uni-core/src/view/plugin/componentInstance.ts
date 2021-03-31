@@ -26,8 +26,3 @@ export function $handleEvent(this: ComponentPublicInstance, $event: Event) {
   }
   return $event
 }
-
-export function $getRealPath(v: string) {
-  // TODO
-  return v
-}

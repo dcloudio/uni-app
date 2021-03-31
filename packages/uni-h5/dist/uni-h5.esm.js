@@ -445,15 +445,11 @@ function $handleEvent($event) {
   }
   return $event;
 }
-function $getRealPath(v2) {
-  return v2;
-}
 var instance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   $trigger,
-  $handleEvent,
-  $getRealPath
+  $handleEvent
 });
 const CLASS_RE = /^\s+|\s+$/g;
 const WXS_CLASS_RE = /\s+/;
@@ -891,6 +887,12 @@ function createPageState(type) {
 function isPage(vm) {
   return vm.$options.mpType === "page";
 }
+function normalizeRoute(path) {
+  if (path.indexOf("/") === 0) {
+    return path.substr(1);
+  }
+  return path;
+}
 function initPublicPage(route) {
   if (!route) {
     const {path} = __uniRoutes[0];
@@ -899,7 +901,7 @@ function initPublicPage(route) {
   return {
     id,
     path: route.path,
-    route: route.meta.pagePath,
+    route: normalizeRoute(route.meta.route || route.path),
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {},
     meta: usePageMeta()
@@ -908,7 +910,7 @@ function initPublicPage(route) {
 function initPage(vm) {
   currentPages.push(vm);
   const route = vm.$route;
-  vm.__page__ = initPublicPage(route);
+  vm.$page = initPublicPage(route);
 }
 function routeCache(key, cache, pruneCacheEntry) {
   const pageId = parseInt(key.split(SEP)[1]);
@@ -3303,7 +3305,41 @@ var index$1 = defineComponent({
     return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props.color || path.value.c, rpx2px(props.size))]);
   }
 });
-var index_vue_vue_type_style_index_0_lang$d = "\nuni-image {\r\n		width: 320px;\r\n		height: 240px;\r\n		display: inline-block;\r\n		overflow: hidden;\r\n		position: relative;\n}\nuni-image[hidden] {\r\n		display: none;\n}\nuni-image>div {\r\n		width: 100%;\r\n		height: 100%;\n}\nuni-image>img {\r\n		-webkit-touch-callout: none;\r\n		-webkit-user-select: none;\r\n		-moz-user-select: none;\r\n		display: block;\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 100%;\r\n		height: 100%;\r\n		opacity: 0;\n}\nuni-image>.uni-image-will-change {\r\n		will-change: transform;\n}\r\n";
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+function addBase(filePath) {
+  const base = __uniConfig.router.base;
+  if (!base) {
+    return filePath;
+  }
+  if (base !== "/") {
+    if (("/" + filePath).indexOf(base) === 0) {
+      return "/" + filePath;
+    }
+  }
+  return base + filePath;
+}
+function getRealPath$1(filePath) {
+  if (__uniConfig.router.base === "./") {
+    filePath = filePath.replace(/^\.\/static\//, "/static/");
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.substr(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+  }
+  return filePath;
+}
+var index_vue_vue_type_style_index_0_lang$d = "\nuni-image {\r\n  width: 320px;\r\n  height: 240px;\r\n  display: inline-block;\r\n  overflow: hidden;\r\n  position: relative;\n}\nuni-image[hidden] {\r\n  display: none;\n}\nuni-image > div {\r\n  width: 100%;\r\n  height: 100%;\n}\nuni-image > img {\r\n  -webkit-touch-callout: none;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  display: block;\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\n}\nuni-image > .uni-image-will-change {\r\n  will-change: transform;\n}\r\n";
 const _sfc_main$j = {
   name: "Image",
   props: {
@@ -3332,7 +3368,7 @@ const _sfc_main$j = {
       return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0;
     },
     realImagePath() {
-      return this.$getRealPath(this.src);
+      return getRealPath$1(this.src);
     },
     modeStyle() {
       let size = "auto";
@@ -8094,7 +8130,7 @@ const reLaunch = /* @__PURE__ */ createAsyncApi("reLaunch", () => {
 });
 const switchTab = /* @__PURE__ */ createAsyncApi("switchTab", () => {
 });
-const getRealPath$1 = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
+const getRealPath = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
   return path;
 });
 var api = /* @__PURE__ */ Object.freeze({
@@ -8119,7 +8155,7 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
-  getRealPath: getRealPath$1
+  getRealPath
 });
 const uni$1 = api;
 const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
@@ -8215,40 +8251,6 @@ function usePageHeadTransparent(headRef, {titleColor, coverage, backgroundColor}
       });
     });
   });
-}
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-function addBase(filePath) {
-  const base = __uniConfig.router.base;
-  if (!base) {
-    return filePath;
-  }
-  if (base !== "/") {
-    if (("/" + filePath).indexOf(base) === 0) {
-      return "/" + filePath;
-    }
-  }
-  return base + filePath;
-}
-function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
-  }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.substr(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
-  }
-  return filePath;
 }
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATHS = {
@@ -8439,7 +8441,7 @@ function usePageHeadButtons(navigationBar) {
     const fonts = Object.create(null);
     buttons.forEach((btn) => {
       if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
+        const fontSrc = getRealPath$1(btn.fontSrc);
         let fontFamily = fonts[fontSrc];
         if (!fontFamily) {
           fontFamily = `font${Date.now()}`;
@@ -9243,4 +9245,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$1 as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath$1 as getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$2 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$1 as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$2 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

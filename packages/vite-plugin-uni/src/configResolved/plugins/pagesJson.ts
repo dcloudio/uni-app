@@ -152,6 +152,10 @@ function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
       pageOptions.style
     )
 
+    if (isEntry) {
+      ;(meta as any).route = pageOptions.path
+    }
+
     return {
       name,
       path: pageOptions.path,

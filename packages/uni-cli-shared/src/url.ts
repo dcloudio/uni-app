@@ -30,3 +30,12 @@ export function parseVueRequest(id: string) {
     query,
   }
 }
+
+const importQueryRE = /(\?|&)import(?:&|$)/
+export const isImportRequest = (url: string) => importQueryRE.test(url)
+
+export const queryRE = /\?.*$/
+export const hashRE = /#.*$/
+
+export const cleanUrl = (url: string) =>
+  url.replace(hashRE, '').replace(queryRE, '')

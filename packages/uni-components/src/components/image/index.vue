@@ -1,10 +1,7 @@
 <template>
   <uni-image v-bind="$attrs">
-    <div
-      ref="content"
-      :style="modeStyle"
-    />
-    <img :src="realImagePath">
+    <div ref="content" :style="modeStyle" />
+    <img :src="realImagePath" />
     <v-uni-resize-sensor
       v-if="mode === 'widthFix'"
       ref="sensor"
@@ -13,38 +10,41 @@
   </uni-image>
 </template>
 <script>
+import { getRealPath } from '@dcloudio/uni-platform'
 export default {
   name: 'Image',
   props: {
     src: {
       type: String,
-      default: ''
+      default: '',
     },
     mode: {
       type: String,
-      default: 'scaleToFill'
+      default: 'scaleToFill',
     },
     // TODO 懒加载
     lazyLoad: {
       type: [Boolean, String],
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       originalWidth: 0,
       originalHeight: 0,
-      availHeight: ''
+      availHeight: '',
     }
   },
   computed: {
-    ratio () {
-      return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0
+    ratio() {
+      return this.originalWidth && this.originalHeight
+        ? this.originalWidth / this.originalHeight
+        : 0
     },
-    realImagePath () {
-      return this.$getRealPath(this.src)
+    realImagePath() {
+      return getRealPath(this.src)
     },
-    modeStyle () {
+    modeStyle() {
       let size = 'auto'
       let position = ''
       const repeat = 'no-repeat'
@@ -95,23 +95,23 @@ export default {
       }
 
       return `background-position:${position};background-size:${size};background-repeat:${repeat};`
-    }
+    },
   },
   watch: {
-    src (newValue, oldValue) {
+    src(newValue, oldValue) {
       this._setContentImage()
       this._loadImage()
     },
-    mode (newValue, oldValue) {
+    mode(newValue, oldValue) {
       if (oldValue === 'widthFix') {
         this.$el.style.height = this.availHeight
       }
       if (newValue === 'widthFix' && this.ratio) {
         this._fixSize()
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.availHeight = this.$el.style.height || ''
     this._setContentImage()
     if (!this.realImagePath) {
@@ -120,26 +120,32 @@ export default {
     this._loadImage()
   },
   methods: {
-    _resize () {
+    _resize() {
       if (this.mode === 'widthFix') {
         this._fixSize()
       }
     },
-    _fixSize () {
+    _fixSize() {
       const elWidth = this._getWidth()
       if (elWidth) {
         let height = elWidth / this.ratio
         // fix: 解决 Chrome 浏览器上某些情况下导致 1px 缝隙的问题
-        if (typeof navigator && navigator.vendor === 'Google Inc.' && height > 10) {
+        if (
+          typeof navigator &&
+          navigator.vendor === 'Google Inc.' &&
+          height > 10
+        ) {
           height = Math.round(height / 2) * 2
         }
         this.$el.style.height = height + 'px'
       }
     },
-    _setContentImage () {
-      this.$refs.content.style.backgroundImage = this.src ? `url("${this.realImagePath}")` : 'none'
+    _setContentImage() {
+      this.$refs.content.style.backgroundImage = this.src
+        ? `url("${this.realImagePath}")`
+        : 'none'
     },
-    _loadImage () {
+    _loadImage() {
       const _self = this
       const img = new Image()
       img.onload = function ($event) {
@@ -152,59 +158,61 @@ export default {
 
         _self.$trigger('load', $event, {
           width: this.width,
-          height: this.height
+          height: this.height,
         })
       }
       img.onerror = function ($event) {
         _self.$trigger('error', $event, {
-          errMsg: `GET ${_self.src} 404 (Not Found)`
+          errMsg: `GET ${_self.src} 404 (Not Found)`,
         })
       }
       img.src = this.realImagePath
     },
-    _getWidth () {
+    _getWidth() {
       const computedStyle = window.getComputedStyle(this.$el)
-      const borderWidth = (parseFloat(computedStyle.borderLeftWidth, 10) || 0) + (parseFloat(computedStyle.borderRightWidth,
-        10) || 0)
-      const paddingWidth = (parseFloat(computedStyle.paddingLeft, 10) || 0) + (parseFloat(computedStyle.paddingRight, 10) ||
-					0)
+      const borderWidth =
+        (parseFloat(computedStyle.borderLeftWidth, 10) || 0) +
+        (parseFloat(computedStyle.borderRightWidth, 10) || 0)
+      const paddingWidth =
+        (parseFloat(computedStyle.paddingLeft, 10) || 0) +
+        (parseFloat(computedStyle.paddingRight, 10) || 0)
       return this.$el.offsetWidth - borderWidth - paddingWidth
-    }
-  }
+    },
+  },
 }
 </script>
 <style>
-	uni-image {
-		width: 320px;
-		height: 240px;
-		display: inline-block;
-		overflow: hidden;
-		position: relative;
-	}
+uni-image {
+  width: 320px;
+  height: 240px;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
 
-	uni-image[hidden] {
-		display: none;
-	}
+uni-image[hidden] {
+  display: none;
+}
 
-	uni-image>div {
-		width: 100%;
-		height: 100%;
-	}
+uni-image > div {
+  width: 100%;
+  height: 100%;
+}
 
-	uni-image>img {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
-	}
+uni-image > img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
 
-	uni-image>.uni-image-will-change {
-		will-change: transform;
-	}
+uni-image > .uni-image-will-change {
+  will-change: transform;
+}
 </style>

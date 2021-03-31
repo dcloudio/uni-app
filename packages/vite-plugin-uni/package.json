@@ -27,16 +27,18 @@
     "fs-extra": "^9.0.1",
     "jsonc-parser": "^3.0.0",
     "magic-string": "^0.25.7",
+    "mime": "^2.5.2",
     "rollup-plugin-copy": "^3.4.0",
     "slash": "^3.0.0"
   },
   "peerDependencies": {
     "@dcloudio/uni-cli-shared": "^3.0.0",
     "@dcloudio/uni-shared": "^3.0.0",
-    "@vue/shared": "^3.0.7",
-    "vite": "^2.1.1"
+    "@vue/shared": "^3.0.10",
+    "vite": "^2.1.5"
   },
   "devDependencies": {
+    "@types/mime": "^2.0.3",
     "@types/sass": "^1.16.0"
   },
   "uni-app": {

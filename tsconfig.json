@@ -27,7 +27,10 @@
     "rootDir": ".",
     "paths": {
       "@dcloudio/*": ["packages/*/src"],
-      "@dcloudio/uni-mp-polyfill": ["packages/uni-mp-core/src/runtime/polyfill"]
+      "@dcloudio/uni-mp-polyfill": [
+        "packages/uni-mp-core/src/runtime/polyfill"
+      ],
+      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"]
     }
   },
   "include": [

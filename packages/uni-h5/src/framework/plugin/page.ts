@@ -26,6 +26,13 @@ export function isPage(vm: ComponentPublicInstance) {
   return vm.$options.mpType === 'page'
 }
 
+function normalizeRoute(path: string) {
+  if (path.indexOf('/') === 0) {
+    return path.substr(1)
+  }
+  return path
+}
+
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
   if (!route) {
     const { path } = __uniRoutes[0]
@@ -34,7 +41,7 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
   return {
     id,
     path: route.path,
-    route: route.meta.pagePath,
+    route: normalizeRoute((route.meta.route as string) || route.path),
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {}, // $route.query
     meta: usePageMeta(),
@@ -44,7 +51,7 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
 export function initPage(vm: ComponentPublicInstance) {
   currentPages.push(vm as Page.PageInstance)
   const route = vm.$route
-  ;(vm as any).__page__ = initPublicPage(route)
+  ;(vm as any).$page = initPublicPage(route)
 }
 
 // TODO

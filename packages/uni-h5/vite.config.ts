@@ -43,6 +43,10 @@ export default defineConfig({
         find: '@dcloudio/uni-components',
         replacement: resolve('../uni-components/src/index.ts'),
       },
+      {
+        find: '@dcloudio/uni-platform',
+        replacement: resolve('./src/platform/index.ts'),
+      },
     ],
   },
   plugins: [

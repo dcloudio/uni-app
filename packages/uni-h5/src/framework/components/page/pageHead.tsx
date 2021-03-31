@@ -1,6 +1,7 @@
 import { computed, defineComponent, Ref, ref } from 'vue'
 import { isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
+import { getRealPath } from '@dcloudio/uni-platform'
 import { ICON_PATH_SEARCH, createSvgIconVNode } from '@dcloudio/uni-core'
 import { usePageMeta } from '../../plugin/provide'
 import {
@@ -9,7 +10,6 @@ import {
 } from './transparent'
 
 import { updateStyle } from '../../../helpers/dom'
-import { getRealPath } from '../../../helpers/getRealPath'
 
 const ICON_PATH_BACK =
   'M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z'

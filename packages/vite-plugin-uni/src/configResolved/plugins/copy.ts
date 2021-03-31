@@ -1,6 +1,7 @@
 import path from 'path'
 import { Plugin } from 'vite'
 import copy from 'rollup-plugin-copy'
+import { PUBLIC_DIR } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
 export function uniCopyPlugin({
@@ -11,11 +12,11 @@ export function uniCopyPlugin({
   return copy({
     targets: [
       {
-        src: path.resolve(inputDir, 'static'),
+        src: path.resolve(inputDir, PUBLIC_DIR),
         dest: outputDir,
       },
       {
-        src: path.resolve(inputDir, 'uni_modules/*/static'),
+        src: path.resolve(inputDir, 'uni_modules/*/' + PUBLIC_DIR),
         dest: outputDir,
         rename: (name, extension, fullPath) => {
           return path.relative(inputDir, fullPath)
