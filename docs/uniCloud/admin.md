@@ -8,6 +8,8 @@ uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的�
 
 版本支持：HBuilderX 3.0+
 
+演示地址：https://unicloudadmindemo.dcloud.net.cn
+
 下载地址：[https://ext.dcloud.net.cn/plugin?id=3268](https://ext.dcloud.net.cn/plugin?id=3268)
 
 - 它基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
@@ -39,11 +41,11 @@ uniCloud admin 同时支持 PC 端 和移动端。基础模块是全端可用的
 
 PC 端如下图：
 
-![pc](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c2a69410-15db-11eb-880a-0db19f4f74bb.png)
+![pc](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/c2a69410-15db-11eb-880a-0db19f4f74bb.png)
 
 移动端如下图：
 
-<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" width="375"/>
+<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/2766a010-11d7-11eb-8bd0-2998ac5bbf7e.png" width="375"/>
 
 - 在线演示地址：[https://unicloudadmindemo.dcloud.net.cn](https://unicloudadmindemo.dcloud.net.cn)
 
@@ -53,11 +55,11 @@ PC 端如下图：
 
 [HBuilderX](https://www.dcloud.io/hbuilderx.html) 3.0+版本新建 uni-app 项目，选择 uniCloud admin 项目模板，如下图
 
-![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c2085840-15db-11eb-880a-0db19f4f74bb.png)
+![download-admin](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/c2085840-15db-11eb-880a-0db19f4f74bb.png)
 
 创建完成后，可以跟随`云服务空间初始化向导`初始化项目，创建并绑定云服务空间
 
-![download-admin](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/2baaddd0-11f5-11eb-81ea-f115fe74321c.png)
+![download-admin](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/2baaddd0-11f5-11eb-81ea-f115fe74321c.png)
 
 <!-- 除了可视化向导外，也可以从[https://github.com/dcloudio/uniCloud-admin](https://github.com/dcloudio/uniCloud-admin)获取代码。 -->
 
@@ -108,13 +110,13 @@ PC 端如下图：
 
 > 注意：注册完毕后，建议从登录页面移除该链接
 
-![login](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c3f33850-15db-11eb-8ff1-d5dcf8779628.png)
+![login](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/c3f33850-15db-11eb-8ff1-d5dcf8779628.png)
 
 ### 分栏窗体介绍
 
 登录后我们会看到如下窗体, 窗体分为三个部分，topWindow 顶部窗口（导航栏），leftwindow 左侧窗口（菜单栏），右侧的内容主窗体
 
-![index](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/c3591b30-15db-11eb-8ff1-d5dcf8779628.png)
+![index](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/c3591b30-15db-11eb-8ff1-d5dcf8779628.png)
 
 #### 顶部窗口（导航栏）
 
@@ -421,3 +423,9 @@ uniCloud admin 支持所有三方的 Vue UI 库，包括 elementUI 等非 uni-ap
 注意：
 1. uni-app的button、input等组件，是在html的button、input等标签的外面包了一层，做法与微信小程序相同。如果使用for html的库，其css元素选择器可能需要调整后才能符合预期。
 2. uniCloud Admin暂不支持vue3的三方库。
+
+### 常见问题
+
+- 问： 使用unicloud admin新建用户无法登录，会提示“该账号暂无权限登录” ？
+  > 答：用户登录逻辑：登陆时系统检测没有菜单会提示“暂无权限登录”，需要给新账号绑定角色，角色有菜单方可登录
+  

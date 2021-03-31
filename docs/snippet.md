@@ -99,9 +99,9 @@ uni.showToast({
 
 在 `Page` 下找到 `webpack` 里的工程目录，可直接找到对应的`vue`页面进行断点调试；或按 `Ctrl+P`搜文件名，进入页面调试；也可点击控制台的 `log` 信息，进入对应的页面进行调试。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/56abde90-4f34-11eb-8a36-ebb87efcf8c0.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/56abde90-4f34-11eb-8a36-ebb87efcf8c0.png)
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5762ab70-4f34-11eb-bdc1-8bd33eb6adaa.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5762ab70-4f34-11eb-bdc1-8bd33eb6adaa.png)
 
 
 `点击工具栏的运行 -> 运行到浏览器 -> 选择 Chrome`，也可将 `uni-app`运行到 浏览器，可参考 [运行uni-app](/quickstart?id=运行uni-app)。
@@ -112,11 +112,11 @@ uni.showToast({
 
 页面样式调试和一般的`web`项目一样，通过调试的箭头选中元素即可查看相应的节点和样式，如下图：
 
-![uni-app](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/51d2b830-4f34-11eb-a16f-5b3e54966275.png)
+![uni-app](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/51d2b830-4f34-11eb-a16f-5b3e54966275.png)
 
 调试 `js` 时需要切换到 `Sources` 栏，根据sourcemap，找到 `webpack` 里正确的目录，选中想要调试的那个页面的`js`，进行调试（如果`js`代码是压缩过的，点击右下角的{}可格式化代码），如下图：
 
-![uni-app](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/52889ab0-4f34-11eb-b680-7980c8a877b8.png)
+![uni-app](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/52889ab0-4f34-11eb-b680-7980c8a877b8.png)
 
 ### 关于 App 的调试debug
 
@@ -127,15 +127,15 @@ uni.showToast({
 #### 打开调试窗口
 在 `HBuilderX` 中，正确运行项目： `运行 --> 运行到手机或模拟器 --> 选择设备`，项目启动后，在下方的控制台选择 `debug` 图标。
 
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/55245430-4f34-11eb-97b7-0dc4655d6e68.png)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/55245430-4f34-11eb-97b7-0dc4655d6e68.png)
 
 正确打开调试窗口后，显示如下：
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/50f7e890-4f34-11eb-b680-7980c8a877b8.png)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/50f7e890-4f34-11eb-b680-7980c8a877b8.png)
 
 #### Elements
 
 根据上一步，启动完成`debug`窗口后，可以看到`Elements`。`Elements` 主要显示当前页面的组织结构，目前`Elements`只支持`nvue`。
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5433b2a0-4f34-11eb-8a36-ebb87efcf8c0.png)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5433b2a0-4f34-11eb-8a36-ebb87efcf8c0.png)
 
 #### console.log打日志
 `console.log`是我们日常开发最常用的调试方法，`HBuilderX`中当然也不能少。
@@ -145,7 +145,7 @@ uni.showToast({
 
 `debug`窗口中看`console.log`的方法如下图：
 
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/53673ae0-4f34-11eb-a16f-5b3e54966275.jpg)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/53673ae0-4f34-11eb-a16f-5b3e54966275.jpg)
 
 
 
@@ -154,18 +154,18 @@ uni.showToast({
 
 在 `uniapp`（图中指示2）下找到需要调试的页面，单击打开 ，在右侧可以看到我们需要调试的内容（图中指示3）。在需要调试的代码行号的位置，点击打上断点（图中指示4）。
 
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/58f09e70-4f34-11eb-8a36-ebb87efcf8c0.png)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/58f09e70-4f34-11eb-8a36-ebb87efcf8c0.png)
 
 之后，在设备上进行操作，进入断点位置，可以方便我们跟踪调试代码。
 
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5839d190-4f34-11eb-8a36-ebb87efcf8c0.png)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/5839d190-4f34-11eb-8a36-ebb87efcf8c0.png)
 
 #### 同步断点到调试器
 在控制台众多代码中寻找要调试的代码是比较麻烦的一件事，`HBuilderX`的调试还提供一个便利的功能，可直接在编辑器中打断点，断点会自动同步到调试工具中。
 
 操作步骤：在HBuilderX编辑器中对目标行的行号处点右键，在右键菜单中选择“同步断点到调试器”，然后调试控制台会自动打开对应的代码并在指定行处标记断点。演示如下：
 
-![debug](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/55de5560-4f34-11eb-8a36-ebb87efcf8c0.gif)
+![debug](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/55de5560-4f34-11eb-8a36-ebb87efcf8c0.gif)
 
 
 Tip 

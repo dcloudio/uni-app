@@ -703,7 +703,7 @@ function processArgs (methodName, fromArgs, argsOption = {}, returnValue = {}, k
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) { // 不支持的参数
-          console.warn(`百度小程序 ${methodName}暂不支持${key}`);
+          console.warn(`The '${methodName}' method of platform '百度小程序' does not support option '${key}'`);
         } else if (isStr(keyOption)) { // 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) { // {name:newName,value:value}可重新指定参数 key:value
@@ -738,7 +738,7 @@ function wrapper (methodName, method) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
       return function () {
-        console.error(`百度小程序 暂不支持${methodName}`);
+        console.error(`Platform '百度小程序' does not support '${methodName}'.`);
       }
     }
     return function (arg1, arg2) { // 目前 api 最多两个参数
@@ -785,7 +785,7 @@ function createTodoApi (name) {
     complete
   }) {
     const res = {
-      errMsg: `${name}:fail:暂不支持 ${name} 方法`
+      errMsg: `${name}:fail method '${name}' not supported`
     };
     isFn(fail) && fail(res);
     isFn(complete) && complete(res);
@@ -819,7 +819,7 @@ function getProvider ({
     isFn(success) && success(res);
   } else {
     res = {
-      errMsg: 'getProvider:fail:服务[' + service + ']不存在'
+      errMsg: 'getProvider:fail service not found'
     };
     isFn(fail) && fail(res);
   }
@@ -969,7 +969,7 @@ function requestPayment (params) {
   }
   if (parseError) {
     params.fail && params.fail({
-      errMsg: 'requestPayment:fail: 参数 orderInfo 数据结构不正确，参考：https://uniapp.dcloud.io/api/plugins/payment?id=orderinfo'
+      errMsg: 'requestPayment:fail 参数 orderInfo 数据结构不正确，参考：https://uniapp.dcloud.io/api/plugins/payment?id=orderinfo'
     });
   } else {
     swan.requestPolymerPayment(params);
@@ -1945,6 +1945,23 @@ function parseComponent (vueOptions) {
   const oldAttached = componentOptions.lifetimes.attached;
   // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
   componentOptions.lifetimes.onInit = function onInit (query) {
+    // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
+    const setData = this.setData;
+    const setDataArgs = [];
+    this.setData = function () {
+      setDataArgs.push(arguments);
+    };
+    this.__fixInitData = function () {
+      delete this.__fixInitData;
+      this.setData = setData;
+      if (setDataArgs.length) {
+        this.groupSetData(() => {
+          setDataArgs.forEach(args => {
+            setData.apply(this, args);
+          });
+        });
+      }
+    };
     oldAttached.call(this);
     this.pageinstance.$vm = this.$vm;
     this.$vm.__call_hook('onInit', query);
@@ -1952,6 +1969,8 @@ function parseComponent (vueOptions) {
   componentOptions.lifetimes.attached = function attached () {
     if (!this.$vm) {
       oldAttached.call(this);
+    } else {
+      this.__fixInitData && this.__fixInitData();
     }
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance

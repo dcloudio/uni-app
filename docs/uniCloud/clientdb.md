@@ -20,8 +20,36 @@
 - `clientDB`依赖的uni-id需要在uni-id的config.json内添加uni-id相关配置，通过uni-id的init方法传递的参数不会对clientDB生效
 - 通常在管理控制台使用`clientDB`，需要获取不同角色用户拥有的权限（在权限规则内使用auth.permission），请先查阅[uni-id 角色权限](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=rbac)
 
+## 对比：传统与clientDB云端协同的开发效率
+> 演示：在线通讯录项目，渲染云端数据到视图
+
+### 传统开发方式:
+1. 传统开发你需要先写服务端代码（这里用php+mysql作为演示）用sql语法查询数据库中的数据并输出，然后再开放API。
+
+需写27行代码，如图：
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/f0798882-cbcc-4b41-affc-7bce5ebaeb0e.png)
+
+2. 前端用ajax携带必要参数请求API，然后将请求结果赋值给data中的变量。最终把变量在试图中渲染出来。
+
+需写37行代码，如图：
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/d2194fea-c90e-4f02-b241-d27167ccb015.png)
+
+> 传统云端分离的开发方式，共计：64行代码。
+
+
+### clientDB的开发方式:
+- 云端协同的开发方式，unicloud-db组件渲染列表。
+
+仅：5行代码如图：
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/6d7fe2a6-1115-4535-8f3f-cdbb7c90e0ef.jpg)
+
+
+#### 总结：基于uniCloud云端协同的开发方式，不需要写js代码，不需要写服务端的代码。直接在视图模板中写6行代码，即可完成传统开发方式需要64行代码才能完成的效果。且不仅仅是代码量的问题。整个开发过程的体验，提高了完全不止10倍的开发效率。
+
+
+
 ## clientDB图解
-![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b673c28f-c41b-406d-8b7a-c3f4bfbf4b31.jpg)
 
 `clientDB`的前端，有两种用法，可以用js API操作云数据库，也可以使用`<unicloud-db>`组件。
 
@@ -723,7 +751,7 @@ db.collection('book')
 
 查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
 
-只有使用传统MongoDB的写法{ '_id': false }明确指定不要返回_id，否则_id字段一定会返回。
+只有云函数内使用传统MongoDB的写法{ '_id': false }明确指定不要返回_id时才不会返回_id字段，否则_id字段一定会返回。
 
 ### 别名@alias
 
@@ -2459,7 +2487,7 @@ action是一种特殊的云函数，它不占用服务空间的云函数数量�
 
 **新建action**
 
-![新建action](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
+![新建action](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
 
 每个action在uni-clientDB-actions目录下存放一个以action名称命名的js文件。
 

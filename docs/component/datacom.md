@@ -101,7 +101,7 @@
 
 那么“datacom组件规范”，就定义了什么是`datacom组件`，以及它们的互联互通标准。
 
-所有的开发者，都可以在 [DCloud插件市场](https://ext.dcloud.net.cn) 提交自己制作的、符合`datacom组件规范`的组件。
+所有开发者，都可以在 [DCloud插件市场](https://ext.dcloud.net.cn) 提交符合`datacom组件规范`的组件。在插件市场组件分类下可以找到所有已上传的datacom组件，[详见](https://ext.dcloud.net.cn/search?&q=DataCom&orderBy=Relevance)
 
 详细的“datacom组件规范”见后文。
 

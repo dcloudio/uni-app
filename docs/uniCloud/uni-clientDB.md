@@ -2,7 +2,7 @@
 
 ## 旧版clientDB简介
 
-uni-clientDB 2.0.0版本不兼容旧版，如果你依然需要使用旧版本请在此链接下载 [uni-clientDB 1.0.8](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/839b6a50-fe54-11ea-81ea-f115fe74321c.zip)
+uni-clientDB 2.0.0版本不兼容旧版，如果你依然需要使用旧版本请在此链接下载 [uni-clientDB 1.0.8](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/839b6a50-fe54-11ea-81ea-f115fe74321c.zip)
 
 clientDB框架的目标：减少服务端代码开发。
 
@@ -89,7 +89,7 @@ uni-clientDB项目目录结构如下
 
 ## clientDB框架图解
 
-![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/clientdb.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b673c28f-c41b-406d-8b7a-c3f4bfbf4b31.jpg)
 
 上图中紫色部分为clientDB框架，它分为前端部分和云端部分。
 

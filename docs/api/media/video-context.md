@@ -23,8 +23,7 @@
 |hideStatusBar|无|隐藏状态栏，仅在iOS全屏下有效|微信小程序、百度小程序、QQ小程序|
 
 **注意：**
-- app-nvue 平台 2.2.5+ 支持 uni.createVideoContext(videoId, this)
-- app-nvue 平台 2.2.5以下使用本API，需同时设置组件属性id和ref ``<video id="video1" ref="video1"></video>``，或者直接使用 ref，例如 ``this.$refs.video1``
+- app-nvue 平台 2.2.5以下使用本API，需同时设置组件属性id和ref ``<video id="video1" ref="video1"></video>``，或者直接使用 ref，例如 ``this.$refs.video1``，2.2.5+ 支持直接使用 uni.createVideoContext(videoId, this)
 
 **示例**
 
@@ -33,7 +32,7 @@
 	<view>
 		<view class="page-body">
 			<view class="page-section">
-				<video id="myVideo" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/360e4b20-4f4b-11eb-8a36-ebb87efcf8c0.mp4" @error="videoErrorCallback" :danmu-list="danmuList"
+				<video id="myVideo" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/360e4b20-4f4b-11eb-8a36-ebb87efcf8c0.mp4" @error="videoErrorCallback" :danmu-list="danmuList"
 				    enable-danmu danmu-btn controls></video>
 
 				<view class="uni-list">

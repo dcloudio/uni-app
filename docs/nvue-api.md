@@ -3,7 +3,7 @@
 
 
 对于那些不依赖 UI 交互的原生功能，nvue将其封装成模块，这是一种通过 javascript 调用原生能力的方法。
-- uni-app默认内置集成原生模块，如：BindingX，animation， DOM.addRule等。
+- uni-app默认内置集成原生模块，如：BindingX，animation， DOM.addRule等。
   通过```uni.requireNativePlugin```引入 App 原生插件
 
   
@@ -53,7 +53,7 @@
 	
 ```
 
-<img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/18870440-30a9-11eb-bd01-97bc1429a9ff.PNG" />
+<img width="300px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/18870440-30a9-11eb-bd01-97bc1429a9ff.PNG" />
 
 
 **addRule(type, contentObject)**
@@ -171,7 +171,7 @@
 
 
 
-<img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/a3478060-33c8-11eb-880a-0db19f4f74bb.gif" />
+<img width="300px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/a3478060-33c8-11eb-880a-0db19f4f74bb.gif" />
 
 ### getComponentRect
 
@@ -255,7 +255,7 @@
 ```
 
 
-<img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/1852eff0-312d-11eb-8ff1-d5dcf8779628.gif" />
+<img width="300px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/1852eff0-312d-11eb-8ff1-d5dcf8779628.gif" />
 
 
 
@@ -522,7 +522,7 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 	</style>
 ```
 
-<img width="300px" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/6c9f84b0-30a6-11eb-880a-0db19f4f74bb.gif" />
+<img width="300px" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/6c9f84b0-30a6-11eb-880a-0db19f4f74bb.gif" />
 
 
 
@@ -680,7 +680,7 @@ BindingX类似一种强化版的css，运行性能高，但没有js那样足够�
 1. **vuex:** 自HBuilderX 2.2.5起，nvue支持```vuex```。这是vue官方的状态管理工具。
 > 注意：不支持直接引入```store```使用，可以使用```mapState```、```mapGetters```、```mapMutations```等辅助方法或者使用```this.$store```
 2. **uni.storage:**
-	- vue和nvue页面可以使用相同的```uni.storage```存储。这个存储是持久化的。 比如登陆状态可以保存在这里。
+	- vue和nvue页面可以使用相同的```uni.storage```存储。这个存储是持久化的。 比如登录状态可以保存在这里。
 	- App端还支持```plus.sqlite```，也是共享通用的。
 3. **globalData:** 小程序有```globalData```机制，这套机制在```uni-app```里也可以使用，全端通用。 在App.vue文件里定义```globalData```，如下：
 

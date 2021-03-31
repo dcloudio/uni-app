@@ -203,7 +203,7 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 
 
 
-## 事件
+## 事件@loadevent
 
 - load事件
 
@@ -217,7 +217,7 @@ load事件在查询执行后、渲染前触发，一般用于查询数据的二�
 handleLoad(data, ended, pagination) {
   // `data` 当前查询结果
   // `ended` 是否有更多数据
-  // `pagination` 分页信息
+  // `pagination` 分页信息 HBuilderX 3.1.5+ 支持
 }
 ```
 
@@ -294,6 +294,35 @@ export default {
 </script>
 ```
 
+下拉刷新示例
+
+`this.$refs.udb.loadData({clear: true}, callback)`，
+
+可选参数 `clear: true`，是否清空数据和分页信息，`true`表示清空，默认`false`
+
+`callback` 是回调函数，加载数据完成后触发（即使加载失败）
+
+```
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		// 页面生命周期，下拉刷新后触发
+		onPullDownRefresh() {
+			this.$refs.udb.loadData({
+				clear: true
+			}, () => {
+				// 停止下拉刷新
+				uni.stopPullDownRefresh()
+			})
+		}
+	}
+</script>
+```
+
+
 ### loadMore
 
 在列表的加载下一页场景下，使用ref方式访问组件方法，加载更多数据，每加载成功一次，当前页 +1
@@ -301,6 +330,23 @@ export default {
 ```js
 this.$refs.udb.loadMore() //udb为unicloud-db组件的ref属性值
 ```
+
+### clear
+
+清空已加载的数据，但不会重置当前分页信息
+
+```js
+this.$refs.udb.clear() //udb为unicloud-db组件的ref属性值
+```
+
+### reset
+
+重置当前分页信息，但不会清空已加载的数据
+
+```js
+this.$refs.udb.reset() //udb为unicloud-db组件的ref属性值
+```
+
 
 ### remove
 
@@ -325,6 +371,9 @@ udb为unicloud-db组件的ref属性值
 |action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。场景：前端无权操作的数据，比如阅读数+1|
 |confirmTitle|string|提示|删除确认框标题|
 |confirmContent|string|是否删除该数据|删除确认框提示|
+|needConfirm|boolean|true|控制是否有弹出框，HBuilderX 3.1.5+|
+|needLoading|boolean|true|是否显示Loading，HBuilderX 3.1.5+|
+|loadingTitle|string|''|显示loading的标题，HBuilderX 3.1.5+|
 |success|function||删除成功后的回调|
 |fail|function||删除失败后的回调|
 |complete|function||完成后的回调|
@@ -420,6 +469,8 @@ udb为unicloud-db组件的ref属性值
 |:-|:-|:-|:-|
 |action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
 |toastTitle|string|新增成功|新增成功后的toast提示|
+|needLoading|boolean|true|是否显示Loading，HBuilderX 3.1.5+|
+|loadingTitle|string|''|显示loading的标题，HBuilderX 3.1.5+|
 |success|function||新增成功后的回调|
 |fail|function||新增失败后的回调|
 |complete|function||完成后的回调|
@@ -480,6 +531,9 @@ udb为unicloud-db组件的ref属性值
 |:-|:-|:-|:-|
 |action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
 |toastTitle|string|修改成功|修改成功后的toast提示|
+|needConfirm|boolean|true|控制是否有弹出框，HBuilderX 3.1.5+|
+|needLoading|boolean|true|是否显示Loading，HBuilderX 3.1.5+|
+|loadingTitle|string|''|显示loading的标题，HBuilderX 3.1.5+|
 |success|function||更新成功后的回调|
 |fail|function||更新失败后的回调|
 |complete|function||完成后的回调|

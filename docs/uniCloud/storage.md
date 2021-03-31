@@ -1,12 +1,12 @@
 开发者使用`uniCloud`的云存储，无需再像传统模式那样单独去购买存储空间、CDN映射、流量采购等；
 
-并且`uniCloud`的云存储和cdn，免费提供给开发者使用！
+并且`uniCloud`的阿里云云存储和cdn，免费提供给开发者使用！
 
 如果您还未开通过uniCloud，请在web界面开通：[https://unicloud.dcloud.net.cn/](https://unicloud.dcloud.net.cn/)
 
 云存储的上传方式有3种：
 1. web界面：即在[https://unicloud.dcloud.net.cn/](https://unicloud.dcloud.net.cn/) web控制台，点击云存储，通过web界面进行文件上传。该管理界面同时提供了资源浏览、删除等操作界面。
-2. 客户端API上传：即在前端js中编写`uniCloud.uploadFile`
+2. 客户端API或组件上传：在前端js中编写`uniCloud.uploadFile`，或者使用uni ui的[FilePicker组件](https://ext.dcloud.net.cn/plugin?id=4079)，文件选择+上传均封装完毕。
 3. 云函数上传文件到云存储：即在云函数js中编写`uniCloud.uploadFile`
 
 **注意：**
@@ -130,6 +130,7 @@ uni.chooseImage({
 **Tips**
 
 - 阿里云返回的fileID为链接形式可以直接使用，腾讯云返回的为cloud://形式，如需展示需要调用getTempFileURL获取链接
+- uniCloud.uploadFile 只有上传，没有文件选择。uni ui的封装了[FilePicker组件](https://ext.dcloud.net.cn/plugin?id=4079)，从选择到上传一条龙。
 
 ### getTempFileURL(Object object)
 

@@ -95,7 +95,7 @@
 
 ```
  
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f5e29b40-4f32-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f5e29b40-4f32-11eb-bdc1-8bd33eb6adaa.png)
 
 
 **使用内置 behaviors**

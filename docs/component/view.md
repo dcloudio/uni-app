@@ -46,7 +46,7 @@
 </template>
 ```
  
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/113204c0-4f2f-11eb-97b7-0dc4655d6e68.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/113204c0-4f2f-11eb-97b7-0dc4655d6e68.png)
  
 **Tips**
 

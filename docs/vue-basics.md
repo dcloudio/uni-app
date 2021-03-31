@@ -349,7 +349,7 @@ v-on 指令，它用于监听 DOM 事件。v-on缩写为‘ @ ’
 		export default {
 			data() {
 				return {
-					rawHtml: '<div style="text-align:center;background-color: #007AFF;"><div >我是内容</div><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png"/></div>'
+					rawHtml: '<div style="text-align:center;background-color: #007AFF;"><div >我是内容</div><img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png"/></div>'
 				}
 			}
 		}
@@ -659,7 +659,7 @@ data 必须声明为返回一个初始数据对象的函数（注意函数内返
 
 不同的是带有 v-show 的元素始终会被渲染并保留在 DOM 中。v-show 只是简单地切换元素的 `CSS` 属性的 `display` 。
 
-> 注意，v-show 不支持 template 元素，也不支持 v-else。
+> 注意，v-show 不支持 template 元素，也不支持 v-else。nvue 页面不支持 v-show。
 
 
 

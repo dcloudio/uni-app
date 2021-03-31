@@ -18,11 +18,11 @@
 1. 进入 [uniCloud 控制台](https://console.cloud.tencent.com/tcb)。
 2. 切换到【云数据库】标签页，并选择需要添加索引的集合，进入索引管理 tab 页，如下图。
 
-  ![web控制台添加索引](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/15d24770-5faf-11eb-8d54-21c4ca4ce5d7.jpg)  
+  ![web控制台添加索引](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/15d24770-5faf-11eb-8d54-21c4ca4ce5d7.jpg)  
   
 3. 添加索引。
   
-  ![添加索引](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/fca53140-1d91-11eb-880a-0db19f4f74bb.jpg)
+  ![添加索引](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/fca53140-1d91-11eb-880a-0db19f4f74bb.jpg)
 
 注意：
 - 索引是支持多字段组合的，所以不是简单的设某个字段为索引。而是需要先给索引起一个name，然后在该索引下配置1个或多个字段。
@@ -131,7 +131,7 @@
 }
 ```
 
-![地理位置索引](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/21b31780-5fb0-11eb-bdc1-8bd33eb6adaa.jpg)
+![地理位置索引](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/21b31780-5fb0-11eb-bdc1-8bd33eb6adaa.jpg)
 
 ## 索引使用注意事项
 
@@ -155,7 +155,7 @@
 
 **配置索引为稀疏索引**
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/daf77fd0-5fb3-11eb-b680-7980c8a877b8.jpg)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/daf77fd0-5fb3-11eb-b680-7980c8a877b8.jpg)
 
 ### 字段大小限制
 

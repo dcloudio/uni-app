@@ -10,15 +10,13 @@
 
 **原生控件层级过高无法覆盖的解决方案：**[https://uniapp.dcloud.io/component/native-component](https://uniapp.dcloud.io/component/native-component)
 
-**uni-app 各环节（HBuilderX、cli、自定义基座、本地sdk、云打包引擎）版本兼容性说明：**[https://ask.dcloud.net.cn/article/35845](https://ask.dcloud.net.cn/article/35845)
-
-**uni-app 中选择和上传非图像、视频文件：**[https://ask.dcloud.net.cn/article/35547](https://ask.dcloud.net.cn/article/35547)
-
 **国际化/多语言/i18n方案：**[https://ask.dcloud.net.cn/article/35872](https://ask.dcloud.net.cn/article/35872)
 
 **本地存储详解：**[https://ask.dcloud.net.cn/article/166](https://ask.dcloud.net.cn/article/166)
 
 ## App常见问题
+
+**uni-app 各环节（HBuilderX、cli、自定义基座、本地sdk、云打包引擎）版本兼容性说明：**[https://ask.dcloud.net.cn/article/35845](https://ask.dcloud.net.cn/article/35845)
 
 **uni-app App整包升级检测：** [https://ask.dcloud.net.cn/article/34972](https://ask.dcloud.net.cn/article/34972)
 
@@ -33,6 +31,8 @@
 **Android平台应用启动时读写手机存储、访问设备信息(如IMEI)等权限策略及提示信息：**[https://ask.dcloud.net.cn/article/36549](https://ask.dcloud.net.cn/article/36549)
 
 **App打包前端代码进行加密：**[https://ask.dcloud.net.cn/article/36437](https://ask.dcloud.net.cn/article/36437)
+
+**Android App字体跟随Rom默认字体/系统字体**[详见](https://uniapp.dcloud.net.cn/component/native-component?id=android%e7%b3%bb%e7%bb%9f%e4%b8%bb%e9%a2%98%e5%ad%97%e4%bd%93%e5%af%b9%e5%8e%9f%e7%94%9f%e7%bb%84%e4%bb%b6%e6%b8%b2%e6%9f%93%e7%9a%84%e5%bd%b1%e5%93%8d)
 
 **uni-app 中使用 5+ 的原生界面控件（包括map、video、livepusher、barcode、nview）：**[https://ask.dcloud.net.cn/article/35036](https://ask.dcloud.net.cn/article/35036)
 

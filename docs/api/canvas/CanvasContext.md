@@ -142,7 +142,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/687c12e0-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/687c12e0-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 针对 ```arc(100, 75, 50, 0, 1.5 * Math.PI)```的三个关键坐标如下：
 * 绿色: 圆心 (100, 75)
@@ -200,7 +200,7 @@ ctx.fill()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1b5714b0-4f28-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1b5714b0-4f28-11eb-8a36-ebb87efcf8c0.png)
 ### CanvasContext.bezierCurveTo
 
 创建三次方贝塞尔曲线路径。
@@ -265,7 +265,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/03cf3750-4f28-11eb-b997-9918a5dda011.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/03cf3750-4f28-11eb-b997-9918a5dda011.png)
 
 针对 ```moveTo(20, 20)`` ```bezierCurveTo(20, 100, 200, 100, 200, 20)``` 的三个关键坐标如下：
 
@@ -305,7 +305,7 @@ ctx.clearRect(10, 10, 150, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/05afde30-4f28-11eb-a16f-5b3e54966275.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/05afde30-4f28-11eb-a16f-5b3e54966275.png)
 
 
 ### CanvasContext.clip
@@ -320,7 +320,7 @@ ctx.draw()
 const context = uni.createCanvasContext('myCanvas')
 
 uni.downloadFile({
-	url: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png',
+	url: 'https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d8590190-4f28-11eb-b680-7980c8a877b8.png',
 	success: function (res) {
 context.save()
 context.beginPath()
@@ -334,7 +334,7 @@ context.drawImage(res.tempFilePath, 48, 48)
 
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/067a3310-4f28-11eb-b997-9918a5dda011.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/067a3310-4f28-11eb-b997-9918a5dda011.png)
 
 ### CanvasContext.closePath
 关闭一个路径。
@@ -355,7 +355,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/074e9a10-4f28-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/074e9a10-4f28-11eb-8a36-ebb87efcf8c0.png)
 
 
 ```javascript
@@ -380,7 +380,7 @@ ctx.fill()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/02d34b20-4f28-11eb-b680-7980c8a877b8.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/02d34b20-4f28-11eb-b680-7980c8a877b8.png)
 
 ### CanvasContext.createCircularGradient
 创建一个从圆心开始的渐变。返回的 [CanvasGradient](/api/canvas/CanvasGradient) 对象，需要使用 ```CanvasGradient.addColorStop()``` 来指定渐变点，至少要两个。
@@ -409,7 +409,7 @@ ctx.fillRect(10, 10, 150, 80)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/04c3f790-4f28-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/04c3f790-4f28-11eb-8a36-ebb87efcf8c0.png)
 
 ### CanvasContext.createLinearGradient
 创建一个线性的渐变颜色。返回的 [CanvasGradient](/api/canvas/CanvasGradient) 对象，需要使用 ```CanvasGradient.addColorStop()``` 来指定渐变点，至少要两个。
@@ -440,7 +440,7 @@ ctx.fillRect(10, 10, 150, 80)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/24a94010-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/24a94010-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.createPattern
 对指定的图像创建模式的方法，可在指定的方向上重复元图像
@@ -484,7 +484,7 @@ ctx.fillRect(50, 50, 150, 100)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/33d7d100-4f28-11eb-97b7-0dc4655d6e68.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/33d7d100-4f28-11eb-97b7-0dc4655d6e68.png)
 
 
 ```javascript
@@ -497,7 +497,7 @@ ctx.fillRect(50, 50, 150, 100)
 ctx.draw(true)
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2ad88090-4f28-11eb-8ff1-d5dcf8779628.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2ad88090-4f28-11eb-8ff1-d5dcf8779628.png)
 
 ### CanvasContext.drawImage
 绘制图像到画布。
@@ -535,7 +535,7 @@ uni.chooseImage({
 })
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1946d250-4f28-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1946d250-4f28-11eb-8a36-ebb87efcf8c0.png)
 
 ### CanvasContext.fill
 对当前路径中的内容进行填充。默认的填充色为黑色。
@@ -555,7 +555,7 @@ ctx.fill()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1a366270-4f28-11eb-a16f-5b3e54966275.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1a366270-4f28-11eb-a16f-5b3e54966275.png)
 
 ```javascript
 const ctx = uni.createCanvasContext('myCanvas')
@@ -580,7 +580,7 @@ ctx.fill()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1b5714b0-4f28-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1b5714b0-4f28-11eb-8a36-ebb87efcf8c0.png)
 
 ### CanvasContext.fillRect
 填充一个矩形。
@@ -605,7 +605,7 @@ ctx.fillRect(10, 10, 150, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1c4656b0-4f28-11eb-a16f-5b3e54966275.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1c4656b0-4f28-11eb-a16f-5b3e54966275.png)
 
 ### CanvasContext.fillText
 在画布上绘制被填充的文本。
@@ -655,7 +655,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/27097730-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/27097730-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.measureText
 测量文本尺寸信息，目前仅返回文本宽度。同步接口。（App 端 2.8.12+ 支持）
@@ -706,7 +706,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2945d2a0-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2945d2a0-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.quadraticCurveTo
 创建二次贝塞尔曲线路径。曲线的起始点为路径中前一个点。
@@ -762,7 +762,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2a0a0d00-4f28-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2a0a0d00-4f28-11eb-bd01-97bc1429a9ff.png)
 
 针对 ```moveTo(20, 20)`` ```quadraticCurveTo(20, 100, 200, 20)``` 的三个关键坐标如下：
 
@@ -794,7 +794,7 @@ ctx.fill()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1c4656b0-4f28-11eb-a16f-5b3e54966275.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1c4656b0-4f28-11eb-a16f-5b3e54966275.png)
 
 ### CanvasContext.restore
 恢复之前保存的绘图上下文。
@@ -816,7 +816,7 @@ ctx.fillRect(50, 50, 150, 100)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2c8d0e60-4f28-11eb-8ff1-d5dcf8779628.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2c8d0e60-4f28-11eb-8ff1-d5dcf8779628.png)
 
 ### CanvasContext.rotate
 以原点为中心，原点可以用 translate方法修改。顺时针旋转当前坐标轴。多次调用rotate，旋转的角度会叠加。
@@ -841,7 +841,7 @@ ctx.strokeRect(100, 10, 150, 100)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2bbd8960-4f28-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2bbd8960-4f28-11eb-bd01-97bc1429a9ff.png)
 
 ### CanvasContext.save
 保存当前的绘图上下文。
@@ -887,7 +887,7 @@ ctx.strokeRect(10, 10, 25, 15)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2d528140-4f28-11eb-8ff1-d5dcf8779628.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2d528140-4f28-11eb-8ff1-d5dcf8779628.png)
 
 ### CanvasContext.setFillStyle
 设置填充色，如果没有设置 fillStyle，默认颜色为 black。
@@ -914,7 +914,7 @@ ctx.fillRect(10, 10, 150, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1c4656b0-4f28-11eb-a16f-5b3e54966275.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1c4656b0-4f28-11eb-a16f-5b3e54966275.png)
 
 ### CanvasContext.setFontSize
 设置字体的字号。
@@ -940,7 +940,7 @@ ctx.fillText('50', 90, 90)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1855bb90-4f28-11eb-a16f-5b3e54966275.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/1855bb90-4f28-11eb-a16f-5b3e54966275.png)
 
 
 ### CanvasContext.setGlobalAlpha
@@ -968,7 +968,7 @@ ctx.fillRect(100, 100, 150, 100)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/23c43740-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/23c43740-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.setLineCap
 设置线条的端点样式。
@@ -1012,7 +1012,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2577dab0-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2577dab0-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.setLineDash
 设置线条宽度。
@@ -1039,7 +1039,7 @@ ctx.stroke();
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2e1d4b50-4f28-11eb-8ff1-d5dcf8779628.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2e1d4b50-4f28-11eb-8ff1-d5dcf8779628.png)
 
 ### CanvasContext.setLineJoin
 设置线条的交点样式。
@@ -1087,7 +1087,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/264f9d10-4f28-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/264f9d10-4f28-11eb-bd01-97bc1429a9ff.png)
 
 ### CanvasContext.setLineWidth
 设置线条的宽度。
@@ -1128,7 +1128,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/27d356e0-4f28-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/27d356e0-4f28-11eb-bd01-97bc1429a9ff.png)
 
 ### CanvasContext.setMiterLimit
 设置最大斜接长度，斜接长度指的是在两条线交汇处内角和外角之间的距离。 当 ``setLineJoin()`` 为 miter 时才有效。超过最大倾斜长度的，连接处将以 lineJoin 为 bevel 来显示。
@@ -1182,7 +1182,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/289176c0-4f28-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/289176c0-4f28-11eb-bd01-97bc1429a9ff.png)
 
 ### CanvasContext.setShadow
 设置阴影样式。如果没有设置，offsetX 默认值为0， offsetY 默认值为0， blur 默认值为0，color 默认值为 black。
@@ -1206,7 +1206,7 @@ ctx.fillRect(10, 10, 150, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/308068a0-4f28-11eb-b997-9918a5dda011.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/308068a0-4f28-11eb-b997-9918a5dda011.png)
 
 ### CanvasContext.setStrokeStyle
 设置边框颜色。如果没有设置 fillStyle，默认颜色为 black。
@@ -1226,7 +1226,7 @@ ctx.strokeRect(10, 10, 150, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3302cdc0-4f28-11eb-97b7-0dc4655d6e68.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3302cdc0-4f28-11eb-97b7-0dc4655d6e68.png)
 
 ### CanvasContext.setTextAlign
 用于设置文字的对齐
@@ -1258,7 +1258,7 @@ ctx.fillText('textAlign=right', 150, 100)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2ee492f0-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2ee492f0-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.setTextBaseline
 用于设置文字的水平对齐
@@ -1296,7 +1296,7 @@ ctx.fillText('normal', 200, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2fba3270-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2fba3270-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.setTransform
 使用矩阵重新设置（覆盖）当前变换的方法
@@ -1334,7 +1334,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/31473b10-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/31473b10-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 
 ```javascript
@@ -1360,7 +1360,7 @@ ctx.stroke()
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/322c1cd0-4f28-11eb-bdc1-8bd33eb6adaa.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/322c1cd0-4f28-11eb-bdc1-8bd33eb6adaa.png)
 
 ### CanvasContext.strokeRect
 画一个矩形(非填充)。用 `setFillStroke()` 设置边框颜色，如果没设置默认是黑色。
@@ -1383,7 +1383,7 @@ ctx.strokeRect(10, 10, 150, 75)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3302cdc0-4f28-11eb-97b7-0dc4655d6e68.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/3302cdc0-4f28-11eb-97b7-0dc4655d6e68.png)
 
 
 ### CanvasContext.strokeText
@@ -1443,4 +1443,4 @@ ctx.strokeRect(10, 10, 150, 100)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/34aef720-4f28-11eb-97b7-0dc4655d6e68.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/34aef720-4f28-11eb-97b7-0dc4655d6e68.png)
