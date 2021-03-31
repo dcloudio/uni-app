@@ -1,6 +1,6 @@
-import { createAsyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi } from '@dcloudio/uni-api'
 
-export const navigateBack = createAsyncApi<typeof uni.navigateBack>(
+export const navigateBack = defineAsyncApi<typeof uni.navigateBack>(
   'navigateBack',
   () => {}
 )

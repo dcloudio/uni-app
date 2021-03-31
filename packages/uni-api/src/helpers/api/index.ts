@@ -63,12 +63,12 @@ function wrapperApi<T extends Function>(
   } as unknown) as T
 }
 
-export function createOnApi<T extends Function>(
+export function defineOnApi<T extends Function>(
   name: string,
   fn: T,
   options?: ApiOptions
 ) {
-  return createApi(
+  return defineApi(
     API_TYPE_ON,
     name,
     fn,
@@ -77,13 +77,13 @@ export function createOnApi<T extends Function>(
   )
 }
 
-export function createTaskApi<T extends Function>(
+export function defineTaskApi<T extends Function>(
   name: string,
   fn: T,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return createApi(
+  return defineApi(
     API_TYPE_TASK,
     name,
     fn,
@@ -92,13 +92,13 @@ export function createTaskApi<T extends Function>(
   )
 }
 
-export function createSyncApi<T extends Function>(
+export function defineSyncApi<T extends Function>(
   name: string,
   fn: T,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return createApi(
+  return defineApi(
     API_TYPE_SYNC,
     name,
     fn,
@@ -107,18 +107,18 @@ export function createSyncApi<T extends Function>(
   )
 }
 
-export function createAsyncApi<T extends Function>(
+export function defineAsyncApi<T extends Function>(
   name: string,
   fn: T,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
   return promisify(
-    createApi(API_TYPE_ASYNC, name, fn, __DEV__ ? protocol : undefined, options)
+    defineApi(API_TYPE_ASYNC, name, fn, __DEV__ ? protocol : undefined, options)
   )
 }
 
-function createApi<T extends Function>(
+function defineApi<T extends Function>(
   type: API_TYPES,
   name: string,
   fn: T,

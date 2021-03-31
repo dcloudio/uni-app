@@ -1,3 +1,3 @@
-import { createAsyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi } from '@dcloudio/uni-api'
 
-export const reLaunch = createAsyncApi('reLaunch', () => {})
+export const reLaunch = defineAsyncApi('reLaunch', () => {})

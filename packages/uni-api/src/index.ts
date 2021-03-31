@@ -23,10 +23,10 @@ export * from './protocols/media/getImageInfo'
 
 // helpers
 export {
-  createOnApi,
-  createTaskApi,
-  createSyncApi,
-  createAsyncApi,
+  defineOnApi,
+  defineTaskApi,
+  defineSyncApi,
+  defineAsyncApi,
 } from './helpers/api'
 
 export { handlePromise } from './helpers/api/promise'

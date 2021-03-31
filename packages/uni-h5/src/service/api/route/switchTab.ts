@@ -1,3 +1,3 @@
-import { createAsyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi } from '@dcloudio/uni-api'
 
-export const switchTab = createAsyncApi('switchTab', () => {})
+export const switchTab = defineAsyncApi('switchTab', () => {})

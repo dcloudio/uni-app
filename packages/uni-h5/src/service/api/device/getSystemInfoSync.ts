@@ -1,6 +1,6 @@
 import safeAreaInsets from 'safe-area-insets'
 
-import { createSyncApi } from '@dcloudio/uni-api'
+import { defineSyncApi } from '@dcloudio/uni-api'
 
 import { getWindowOffset } from '@dcloudio/uni-core'
 
@@ -18,7 +18,7 @@ import {
 /**
  * 获取系统信息-同步
  */
-export const getSystemInfoSync = createSyncApi<typeof uni.getSystemInfoSync>(
+export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
   'getSystemInfoSync',
   () => {
     const pixelRatio = window.devicePixelRatio

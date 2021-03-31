@@ -1,9 +1,10 @@
+import { getRealPath } from '@dcloudio/uni-platform'
 import { ApiOptions, ApiProtocol } from '../type'
 
 export const GetImageInfoOptions: ApiOptions = {
   formatArgs: {
     src(src, params) {
-      params.src = (uni as any).getRealPath(src)
+      params.src = getRealPath(src)
     },
   },
 }

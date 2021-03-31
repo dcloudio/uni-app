@@ -1,5 +1,5 @@
 import { getBaseSystemInfo } from '@dcloudio/uni-platform'
-import { createSyncApi } from '../../helpers/api'
+import { defineSyncApi } from '../../helpers/api'
 import { Upx2pxProtocol } from '../../protocols/base/upx2px'
 
 const EPS = 1e-4
@@ -15,7 +15,7 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios'
 }
 
-export const upx2px = createSyncApi<typeof uni.upx2px>(
+export const upx2px = defineSyncApi<typeof uni.upx2px>(
   'upx2px',
   (number, newDeviceWidth?: number) => {
     if (deviceWidth === 0) {

@@ -1,6 +1,6 @@
-import { createAsyncApi, OpenDocumentProtocol } from '@dcloudio/uni-api'
+import { defineAsyncApi, OpenDocumentProtocol } from '@dcloudio/uni-api'
 
-export const openDocument = createAsyncApi<typeof uni.openDocument>(
+export const openDocument = defineAsyncApi<typeof uni.openDocument>(
   'openDocument',
   (option) => {
     window.open(option.filePath)

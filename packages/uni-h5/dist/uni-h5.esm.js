@@ -3319,7 +3319,7 @@ function addBase(filePath) {
   }
   return base + filePath;
 }
-function getRealPath$1(filePath) {
+function getRealPath(filePath) {
   if (__uniConfig.router.base === "./") {
     filePath = filePath.replace(/^\.\/static\//, "/static/");
   }
@@ -3395,7 +3395,7 @@ const _sfc_main$j = {
       return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0;
     },
     realImagePath() {
-      return getRealPath$1(this.src);
+      return getRealPath(this.src);
     },
     modeStyle() {
       let size = "auto";
@@ -7716,13 +7716,13 @@ function wrapperApi(fn, name, protocol, options) {
     return fn.apply(null, formatApiArgs(args));
   };
 }
-function createSyncApi(name, fn, protocol, options) {
-  return createApi(API_TYPE_SYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+function defineSyncApi(name, fn, protocol, options) {
+  return defineApi(API_TYPE_SYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
 }
-function createAsyncApi(name, fn, protocol, options) {
-  return promisify(createApi(API_TYPE_ASYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(defineApi(API_TYPE_ASYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
-function createApi(type, name, fn, protocol, options) {
+function defineApi(type, name, fn, protocol, options) {
   switch (type) {
     case API_TYPE_ON:
       return wrapperApi(wrapperOnApi(name, fn), name, protocol);
@@ -7748,10 +7748,10 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = /* @__PURE__ */ createSyncApi("base64ToArrayBuffer", (base64) => {
+const base64ToArrayBuffer = defineSyncApi("base64ToArrayBuffer", (base64) => {
   return decode(base64);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ createSyncApi("arrayBufferToBase64", (arrayBuffer) => {
+const arrayBufferToBase64 = defineSyncApi("arrayBufferToBase64", (arrayBuffer) => {
   return encode(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 const Upx2pxProtocol = [
@@ -7772,7 +7772,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio2;
   isIOS = platform === "ios";
 }
-const upx2px = /* @__PURE__ */ createSyncApi("upx2px", (number, newDeviceWidth) => {
+const upx2px = defineSyncApi("upx2px", (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -7851,14 +7851,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = /* @__PURE__ */ createSyncApi("addInterceptor", (method, interceptor) => {
+const addInterceptor = defineSyncApi("addInterceptor", (method, interceptor) => {
   if (typeof method === "string" && isPlainObject(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = /* @__PURE__ */ createSyncApi("removeInterceptor", (method, interceptor) => {
+const removeInterceptor = defineSyncApi("removeInterceptor", (method, interceptor) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
@@ -7946,7 +7946,7 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
 }
-const createIntersectionObserver = /* @__PURE__ */ createSyncApi("createIntersectionObserver", (context, options) => {
+const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (context, options) => {
   if (!context) {
     context = getCurrentPageVm();
   }
@@ -7984,7 +7984,7 @@ const OpenDocumentProtocol = {
 const GetImageInfoOptions = {
   formatArgs: {
     src(src, params) {
-      params.src = uni.getRealPath(src);
+      params.src = getRealPath(src);
     }
   }
 };
@@ -8002,16 +8002,16 @@ const SCHEMA_CSS = {
   "css.env": cssSupports("top:env(a)"),
   "css.constant": cssSupports("top:constant(a)")
 };
-const canIUse = /* @__PURE__ */ createSyncApi("canIUse", (schema) => {
+const canIUse = defineSyncApi("canIUse", (schema) => {
   if (hasOwn$1(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = /* @__PURE__ */ createAsyncApi("makePhoneCall", (option) => {
+const makePhoneCall = defineAsyncApi("makePhoneCall", (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
-const getSystemInfoSync = /* @__PURE__ */ createSyncApi("getSystemInfoSync", () => {
+const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const pixelRatio2 = window.devicePixelRatio;
   const screenFix = getScreenFix();
   const landscape = isLandscape(screenFix);
@@ -8111,16 +8111,16 @@ const getSystemInfoSync = /* @__PURE__ */ createSyncApi("getSystemInfoSync", () 
     }
   };
 });
-const getSystemInfo = /* @__PURE__ */ createAsyncApi("getSystemInfo", () => {
+const getSystemInfo = defineAsyncApi("getSystemInfo", () => {
   return getSystemInfoSync();
 });
-const openDocument = /* @__PURE__ */ createAsyncApi("openDocument", (option) => {
+const openDocument = defineAsyncApi("openDocument", (option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = /* @__PURE__ */ createAsyncApi("getImageInfo", ({src}, callback) => {
+const getImageInfo = defineAsyncApi("getImageInfo", ({src}, callback) => {
   const img = new Image();
   img.onload = function() {
     callback({
@@ -8137,9 +8137,9 @@ const getImageInfo = /* @__PURE__ */ createAsyncApi("getImageInfo", ({src}, call
   };
   img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const navigateBack = /* @__PURE__ */ createAsyncApi("navigateBack", () => {
+const navigateBack = defineAsyncApi("navigateBack", () => {
 });
-const navigateTo = /* @__PURE__ */ createAsyncApi("navigateTo", (options) => {
+const navigateTo = defineAsyncApi("navigateTo", (options) => {
   const router = getApp().$router;
   router.push({
     path: options.url,
@@ -8147,14 +8147,11 @@ const navigateTo = /* @__PURE__ */ createAsyncApi("navigateTo", (options) => {
     state: createPageState("navigateTo")
   });
 });
-const redirectTo = /* @__PURE__ */ createAsyncApi("redirectTo", () => {
+const redirectTo = defineAsyncApi("redirectTo", () => {
 });
-const reLaunch = /* @__PURE__ */ createAsyncApi("reLaunch", () => {
+const reLaunch = defineAsyncApi("reLaunch", () => {
 });
-const switchTab = /* @__PURE__ */ createAsyncApi("switchTab", () => {
-});
-const getRealPath = /* @__PURE__ */ createSyncApi("getRealPath", (path) => {
-  return path;
+const switchTab = defineAsyncApi("switchTab", () => {
 });
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
@@ -8177,8 +8174,7 @@ var api = /* @__PURE__ */ Object.freeze({
   navigateTo,
   redirectTo,
   reLaunch,
-  switchTab,
-  getRealPath
+  switchTab
 });
 const uni$1 = api;
 const UniServiceJSBridge$1 = extend(ServiceJSBridge, {
@@ -8464,7 +8460,7 @@ function usePageHeadButtons(navigationBar) {
     const fonts = Object.create(null);
     buttons.forEach((btn) => {
       if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath$1(btn.fontSrc);
+        const fontSrc = getRealPath(btn.fontSrc);
         let fontFamily = fonts[fontSrc];
         if (!fontFamily) {
           fontFamily = `font${Date.now()}`;
@@ -9268,4 +9264,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$1 as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getRealPath, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$2 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$1 as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$2 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

@@ -2,7 +2,7 @@ import { extend } from '@vue/shared'
 
 import { ServiceJSBridge } from '@dcloudio/uni-core'
 
-import { createSyncApi } from '../../helpers/api'
+import { defineSyncApi } from '../../helpers/api'
 import { getCurrentPageVm } from '../utils'
 
 const defaultOptions = {
@@ -120,7 +120,7 @@ class ServiceIntersectionObserver {
   }
 }
 
-export const createIntersectionObserver = createSyncApi<
+export const createIntersectionObserver = defineSyncApi<
   typeof uni.createIntersectionObserver
 >('createIntersectionObserver', (context?, options?) => {
   if (!context) {

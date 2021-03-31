@@ -14,8 +14,6 @@ export * from './route/redirectTo'
 export * from './route/reLaunch'
 export * from './route/switchTab'
 
-export * from './util/getRealPath'
-
 export {
   upx2px,
   addInterceptor,

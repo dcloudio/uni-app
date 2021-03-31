@@ -1,5 +1,5 @@
 import {
-  createAsyncApi,
+  defineAsyncApi,
   GetImageInfoOptions,
   GetImageInfoProtocol,
 } from '@dcloudio/uni-api'
@@ -8,7 +8,7 @@ function _getServiceAddress() {
   return window.location.protocol + '//' + window.location.host
 }
 
-export const getImageInfo = createAsyncApi<typeof uni.getImageInfo>(
+export const getImageInfo = defineAsyncApi<typeof uni.getImageInfo>(
   'getImageInfo',
   ({ src }, callback?: Function) => {
     const img = new Image()

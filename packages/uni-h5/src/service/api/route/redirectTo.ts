@@ -1,3 +1,3 @@
-import { createAsyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi } from '@dcloudio/uni-api'
 
-export const redirectTo = createAsyncApi('redirectTo', () => {})
+export const redirectTo = defineAsyncApi('redirectTo', () => {})

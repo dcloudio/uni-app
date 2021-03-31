@@ -285,10 +285,10 @@ function wrapperApi(fn, name, protocol, options) {
         return fn.apply(null, formatApiArgs(args));
     };
 }
-function createSyncApi(name, fn, protocol, options) {
-    return createApi(API_TYPE_SYNC, name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+function defineSyncApi(name, fn, protocol, options) {
+    return defineApi(API_TYPE_SYNC, name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
 }
-function createApi(type, name, fn, protocol, options) {
+function defineApi(type, name, fn, protocol, options) {
     switch (type) {
         case API_TYPE_ON:
             return wrapperApi(wrapperOnApi(name, fn), name, protocol);
@@ -324,7 +324,7 @@ function checkDeviceWidth() {
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
 }
-const upx2px = createSyncApi('upx2px', (number, newDeviceWidth) => {
+const upx2px = defineSyncApi('upx2px', (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
         checkDeviceWidth();
     }
@@ -506,7 +506,7 @@ function removeHook(hooks, hook) {
         hooks.splice(index, 1);
     }
 }
-const addInterceptor = createSyncApi('addInterceptor', (method, interceptor) => {
+const addInterceptor = defineSyncApi('addInterceptor', (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
@@ -514,7 +514,7 @@ const addInterceptor = createSyncApi('addInterceptor', (method, interceptor) => 
         mergeInterceptorHook(globalInterceptors, method);
     }
 }, AddInterceptorProtocol);
-const removeInterceptor = createSyncApi('removeInterceptor', (method, interceptor) => {
+const removeInterceptor = defineSyncApi('removeInterceptor', (method, interceptor) => {
     if (typeof method === 'string') {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);

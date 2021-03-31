@@ -1,14 +1,14 @@
 // @ts-ignore
 import { encode, decode } from '../../helpers/base64-arraybuffer'
 
-import { createSyncApi } from '../../helpers/api'
+import { defineSyncApi } from '../../helpers/api'
 
 import {
   Base64ToArrayBufferProtocol,
   ArrayBufferToBase64Protocol,
 } from '../../protocols/base/base64'
 
-export const base64ToArrayBuffer = createSyncApi<
+export const base64ToArrayBuffer = defineSyncApi<
   typeof uni.base64ToArrayBuffer
 >(
   'base64ToArrayBuffer',
@@ -18,7 +18,7 @@ export const base64ToArrayBuffer = createSyncApi<
   Base64ToArrayBufferProtocol
 )
 
-export const arrayBufferToBase64 = createSyncApi<
+export const arrayBufferToBase64 = defineSyncApi<
   typeof uni.arrayBufferToBase64
 >(
   'arrayBufferToBase64',
