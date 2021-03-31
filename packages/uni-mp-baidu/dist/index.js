@@ -1643,7 +1643,7 @@ function parseBaseApp (vm, {
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
-      if (this.mpType === 'page') { // hack vue-i18n
+      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
         const app = getApp();
         if (app.$vm && app.$vm.$i18n) {
           this._i18n = app.$vm.$i18n;
@@ -2137,6 +2137,25 @@ function createSubpackageApp (vm) {
   return vm
 }
 
+function createPlugin (vm) {
+  const appOptions = parseApp(vm);
+  if (isFn(appOptions.onShow) && swan.onAppShow) {
+    swan.onAppShow((...args) => {
+      appOptions.onShow.apply(vm, args);
+    });
+  }
+  if (isFn(appOptions.onHide) && swan.onAppHide) {
+    swan.onAppHide((...args) => {
+      appOptions.onHide.apply(vm, args);
+    });
+  }
+  if (isFn(appOptions.onLaunch)) {
+    const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
+    appOptions.onLaunch.call(vm, args);
+  }
+  return vm
+}
+
 todos.forEach(todoApi => {
   protocols[todoApi] = false;
 });
@@ -2217,8 +2236,9 @@ swan.createApp = createApp;
 swan.createPage = createPage;
 swan.createComponent = createComponent;
 swan.createSubpackageApp = createSubpackageApp;
+swan.createPlugin = createPlugin;
 
 var uni$1 = uni;
 
 export default uni$1;
-export { createApp, createComponent, createPage, createSubpackageApp };
+export { createApp, createComponent, createPage, createPlugin, createSubpackageApp };
