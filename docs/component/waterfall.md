@@ -35,7 +35,7 @@ app端nvue专用组件。
 - `<header>`：当 `<header>` 到达屏幕顶部时，吸附在屏幕顶部。
 - `<refresh>`：用于给列表添加下拉刷新的功能。
 - `<loading>`：`<loading>` 用法与特性和 `<refresh>` 类似，用于给列表添加上拉加载更多的功能。
-  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e6b5dbe0-4f2e-11eb-97b7-0dc4655d6e68.png" />
+  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e6b5dbe0-4f2e-11eb-97b7-0dc4655d6e68.png" />
 
 #### 属性
 
@@ -49,7 +49,7 @@ app端nvue专用组件。
 - column-gap: [可选]列与列的间隙. 如果指定了 `normal` ，则对应 32.
 - left-gap: [可选]左边cell和列表的间隙. 如果未指定 ，则对应 `0`
 - right-gap: [可选]右边cell和列表的间隙. 如果未指定，则对应 `0`
-  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e78b5450-4f2e-11eb-b680-7980c8a877b8.png" />
+  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e78b5450-4f2e-11eb-b680-7980c8a877b8.png" />
 
 其他支持的属性参见 `<list>` 组件属性部分
 

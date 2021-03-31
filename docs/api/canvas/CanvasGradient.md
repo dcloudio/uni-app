@@ -33,5 +33,5 @@ ctx.fillRect(10, 10, 150, 80)
 ctx.draw()
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d1e88440-4f26-11eb-bd01-97bc1429a9ff.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/d1e88440-4f26-11eb-bd01-97bc1429a9ff.png)
 

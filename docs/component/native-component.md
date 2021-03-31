@@ -103,14 +103,14 @@ nvue页面全部都是原生组件，互相之间没有层级问题。
 
 #### Android系统主题字体对原生组件渲染的影响
 
-在Android手机上，调整系统主题字体，所有原生渲染的控件的字体都会变化，而webview渲染的字体则不会变化。
+在Android手机上，调整系统主题字体，所有原生渲染的控件的字体都会变化，而webview渲染的字体则不一定会变化，有的rom的系统webview会跟随变，有的不会变。
 
-如果原生渲染和webview渲染出现在同一页面，就会发现字体不一致。
+对于webview字体不会跟随rom变的情况，如果原生渲染和webview渲染出现在同一页面，就会发现字体不一致。
 
-部分小程序通过修改了自带的webview内核，实现了webview也可以使用rom主题字体，比如微信、qq、支付宝；其他小程序及app-vue下，webview仍然无法渲染为rom主题字体。
+部分小程序通过修改了自带的webview内核，实现了webview也可以使用rom主题字体，比如微信、qq、支付宝。
 
-不管Android字体问题、还是同层渲染问题，微信小程序都是依靠自带一个几十M的定制webview实现的，这对于App而言增加了太大的体积，不现实。
+app-nvue因为是原生渲染，没有字体不一致的问题。而app-vue下，在某些rom下，webview字体与系统字体不一致。
 
-app端若在意字体不一致的问题，有2种解决建议：
+app端遇到字体不一致，有2种方案：
 1. 直接使用nvue。nvue是纯原生渲染，不存在webview渲染和原生字体不一致的问题。
-2. app端不使用系统webview，而是使用x5浏览器内核。详见：[https://ask.dcloud.net.cn/article/36806](https://ask.dcloud.net.cn/article/36806)
+2. app端不使用系统webview，而是使用x5浏览器内核，x5是处理过的，可以跟随系统字体的。详见：[https://ask.dcloud.net.cn/article/36806](https://ask.dcloud.net.cn/article/36806)

@@ -135,7 +135,7 @@ button 组件没有 url 属性，如果要跳转页面，可以在@click中编�
 </template>
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f3edf730-4f32-11eb-8a36-ebb87efcf8c0.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f3edf730-4f32-11eb-8a36-ebb87efcf8c0.png)
 
 
 **注意**

@@ -25,7 +25,7 @@ web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)�
 
 ![登登多邻国小程序码](https://duolingo.91ddedu.com/static/miniapp.4a4ddf6b.jpg)
 
-- [国云商城](https://ext.dcloud.net.cn/plugin?id=1989)：优秀的电商系统，购买本系统，快速上线属于你自己的电商应用。
+- [国云商城](https://ext.dcloud.net.cn/plugin?id=2413)：优秀的电商系统，购买本系统，快速上线属于你自己的电商应用。
 - [云上商城](https://ext.dcloud.net.cn/plugin?id=1989)：完整的线上生活超市，根据当前定位，就近匹配仓库。
 - 纸塘壁纸：精美壁纸小程序。微信小程序搜索“纸塘壁纸PRO”
 - 纸塘日记：简约而优雅的日记本。[iOS App](https://apps.apple.com/cn/app/id1442487677)、[Android App](https://android.myapp.com/myapp/detail.htm?apkName=com.ztdiary.piaoshi)

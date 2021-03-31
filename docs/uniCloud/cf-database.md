@@ -195,7 +195,7 @@ let res = await collection.add([{
 
 | 参数 | 类型   | 必填 | 说明                                     |
 | ---- | ------ | ---- | ---------------------------------------- |
-| data | object | 是   | 更新字段的Object，{'name': 'Ben'} _id 非必填|
+| data | object | 是   | 更新字段的Object，{'name': 'Ben'}|
 
 **响应参数**
 
@@ -353,7 +353,7 @@ let res = await db.collection('goods').where({
 
 - 数据量很大的情况下，带条件运算count全表的性能会很差，尽量使用其他方式替代，比如新增一个字段专门用来存放总数。不加条件时count全表不存在性能问题。
 
-### 设置记录数量
+### 设置记录数量@limit
 
 collection.limit()
 
@@ -389,7 +389,7 @@ collection.skip(value)
 let res = await collection.skip(4).get()
 ```
 
-**注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代**
+**注意：数据量很大的情况下，skip性能会很差，尽量使用其他方式替代，参考：[skip性能优化](uniCloud/db-performance.md?id=skip)**
 
 ### 对结果排序
 
@@ -1077,6 +1077,8 @@ db.collection("table1").doc("5f79fdb337d16d0001899566").remove()
 
 collection.doc().update(Object data)
 
+> 未使用set、remove更新操作符的情况下，此方法不会删除字段，仅将更新数据和已有数据合并。
+
 **参数说明**
 
 | 参数 | 类型   | 必填 | 说明                                     |
@@ -1150,7 +1152,7 @@ collection.doc().set()
 
 **注意：**
 
-- 此方法会覆写已有字段，需注意与`update`表现不同，比如以下示例执行`set`之后`follow`字段会被删除
+> 此方法会覆写已有字段，需注意与`update`表现不同，比如以下示例执行`set`之后`follow`字段会被删除
 
 ```js
 let res = await collection.doc('doc-id').set({
@@ -2257,7 +2259,7 @@ let res = await db.collection('items').aggregate()
     boundaries: [0, 50, 100],
     default: 'other',
     output: {
-      count: $.sum(),
+      count: $.sum(1),
       ids: $.push('$_id')
     }
   })
@@ -2286,7 +2288,7 @@ let res = await db.collection('items').aggregate()
   },
   {
     "_id": "other",
-    "count": 22,
+    "count": 1,
     "ids": [
       "5"
     ]
@@ -2784,7 +2786,7 @@ let res = await db.collection('avatar').aggregate()
     "region": "asia",
     "maxScore": 100
   },
-  "totalCoins": 100
+  "totalCoins": 40
 }
 {
   "_id": {
@@ -2847,8 +2849,8 @@ let res = await db.collection('items').aggregate()
 返回结果如下：
 ```js
 {
-  "_id": "3",
-  "price": 20
+  "_id": "2",
+  "price": 50
 }
 {
   "_id": "4",
@@ -3164,6 +3166,7 @@ let res = await db.collection('orders').aggregate()
     "_id": 4,
     "title": "novel 1",
     "author": "author 1",
+    "time": 1564456048486,
     "category": "novel",
     "stock": 10,
     "book": "novel 1",
@@ -4309,10 +4312,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.lt(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### lte
@@ -4329,10 +4329,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.lte(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### gt
@@ -4349,10 +4346,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.gt(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### gte
@@ -4369,10 +4363,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.gte(50)
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### in
@@ -4389,10 +4380,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.in([0, 100])
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 #### nin
@@ -4409,10 +4397,7 @@ const dbCmd = db.command
 let res = await db.collection('todos').where({
   progress: dbCmd.nin([0, 100])
 })
-.get({
-  success: console.log,
-  fail: console.error
-})
+.get()
 ```
 
 ### 查询·字段操作符

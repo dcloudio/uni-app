@@ -38,7 +38,7 @@ media query 匹配检测节点。
         </match-media>
 
         <match-media :min-height="400" :orientation="landscape">
-            <view>当页面高度不小于 400px 且屏幕方向为纵向时展示这里</view>
+            <view>当页面高度不小于 400px 且屏幕方向为横向时展示这里</view>
         </match-media>
     </view>
 </template>

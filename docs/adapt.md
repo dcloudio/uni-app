@@ -283,7 +283,7 @@ uni-app理论上不限定浏览器。在HBuilderX 2.9发版时，就新闻示例
 
 当然还可以在iframe旁边放置二维码，提供手机版扫码地址，例如：
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/979f7940-12ba-11eb-b680-7980c8a877b8.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/979f7940-12ba-11eb-b680-7980c8a877b8.png)
 
 #### 通过electron打包为windows、mac、linux客户端
 
@@ -292,3 +292,13 @@ uni-app理论上不限定浏览器。在HBuilderX 2.9发版时，就新闻示例
 开发者可以随意调用electron的API，以调用更多操作系统的能力（为方便多端兼容，可以将这些特殊API写在自定义的条件编译里）
 
 插件市场有已经封装好的一些插件，详见：[https://ext.dcloud.net.cn/search?q=electron](https://ext.dcloud.net.cn/search?q=electron)
+
+#### 响应式布局组件：uni-row
+
+流式栅格系统，随着屏幕或视口分为 24 份，可以迅速简便地创建布局。
+
+该插件将屏幕分为五个档位：`<768px`、`>=768px`、`>=992px`、`>=1200px`、`>=1920px`。
+
+对应的可以使用`xs`、`sm`、`md`、`lg`、`xl`来控制在不同分辨率下的显示效果。详情可在插件市场查看。
+
+插件地址：https://ext.dcloud.net.cn/plugin?id=3958

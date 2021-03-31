@@ -4,7 +4,9 @@
 
 > 在各个小程序平台运行时，网络相关的 API 在使用前需要配置域名白名单。
 
-**推荐开发者使用更好的API`uniCloud.uploadFile`，uniCloud提供了免费CDN和更好的易用性，包括安全的cdn直传。详见：[https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile](https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile)**
+**推荐开发者上传到uniCloud，uniCloud提供了免费CDN和更好的易用性，包括安全的cdn直传。**
+- uniCloud的上传API：[https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile](https://uniapp.dcloud.io/uniCloud/storage?id=uploadfile)
+- 封装的更完善的[uni-file-picker组件](https://ext.dcloud.net.cn/plugin?id=4079)，文件选择、上传到uniCloud，一站式集成。
 
 **OBJECT 参数说明**
 

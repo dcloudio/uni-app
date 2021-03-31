@@ -106,13 +106,13 @@ uni.requestPayment是一个统一各平台的客户端支付API，不管是在�
 
 1. 在`manifest.json - App模块权限选择` 中勾选 payment(支付)
 2. 在 `manifest.json - App SDK配置` 中，勾选需要的支付平台，目前有微信支付、支付宝支付、苹果应用内支付(IAP)，其中微信支付需要填写从微信开放平台获取的AppID
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/b803e140-4f1d-11eb-8ff1-d5dcf8779628.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/b803e140-4f1d-11eb-8ff1-d5dcf8779628.png)
 <!-- ![uniapp](https://img-cdn-qiniu.dcloud.net.cn/uniapp/doc/pay1.png) -->
 <!-- 临时把老图注掉，替换正式地址时再把老图地址放开 -->
 3. 这些配置需要打包生效，真机运行仍然是HBuilder基座的设置，可使用自定义基座调试。离线打包请参考离线打包文档在原生工程中配置。
 4. 配置并打包后，通过`uni.getProvider`可以得到配置的结果列表，注意这里返回的是manifest配置的，与手机端是否安装微信、支付宝无关。
 
-如果手机端未安装支付宝，调用时会启动支付宝的wap页面登陆，如果已安装相应客户端，会启动其客户端登陆。
+如果手机端未安装支付宝，调用时会启动支付宝的wap页面登录，如果已安装相应客户端，会启动其客户端登录。
 
 #### uni-app里开发
 
@@ -142,7 +142,7 @@ App 支付
 ```javascript
 uni.requestPayment({
     provider: 'alipay',
-    orderInfo: 'orderInfo', //微信、支付宝订单数据
+    orderInfo: 'orderInfo', //微信、支付宝订单数据 【注意微信的订单信息，键值应该全部是小写，不能采用驼峰命名】
     success: function (res) {
         console.log('success:' + JSON.stringify(res));
     },
@@ -170,6 +170,25 @@ uni.requestPayment({
 		console.log('fail:' + JSON.stringify(err));
 	}
 });
+```
+
+微信 App 支付
+
+```javascript
+uni.requestPayment({
+    "provider": "wxpay", 
+    "orderInfo": {
+        "appid": "wx499********7c70e",  // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致
+        "noncestr": "c5sEwbaNPiXAF3iv", // 随机字符串
+        "package": "Sign=WXPay",        // 固定值
+        "partnerid": "148*****52",      // 微信支付商户号
+        "prepayid": "wx202254********************fbe90000", // 统一下单订单号 
+        "timestamp": 1597935292,        // 时间戳（单位：秒）
+        "sign": "A842B45937F6EFF60DEC7A2EAA52D5A0" // 签名，这里用的 MD5 签名
+    },
+    success(res) {},
+    fail(e) {}
+})
 ```
 
 苹果应用内支付

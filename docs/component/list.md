@@ -58,7 +58,7 @@ app端nvue专用组件。在app-nvue下，如果是长列表，使用list组件�
 
 `loadmoreoffset` 示意图：
 
-<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/40e33a30-4f30-11eb-b997-9918a5dda011.png" />
+<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/40e33a30-4f30-11eb-b997-9918a5dda011.png" />
 
 #### setSpecialEffects(object)
 设置嵌套list父容器支持swiper-list吸顶滚动效果

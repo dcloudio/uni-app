@@ -26,7 +26,7 @@
 
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中一个数据表
 2. 点击表右侧页签 “表结构”，点击 “编辑” 按钮，在编辑区域编写 Schema，编写完毕后点保存按钮即可生效。
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
+  ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/037fc310-549f-11eb-b997-9918a5dda011.png)
 
 **web控制台上编辑`DB Schema`保存后是实时生效的，请注意对现网商用项目的影响。**
 
@@ -40,7 +40,7 @@
 1. 在`uniCloud`项目右键，选择`创建database目录`
 2. 在第一步创建的database目录右键选择`新建数据集合schema`
 
-![](https://static-eefb4127-9f58-4963-a29b-42856d4205ee.bspapp.com/hx%E6%8F%90%E7%A4%BAschema.jpg)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/a9ab149e-6293-49c0-af8e-2db893a956d4.jpg)
 
 **HBuilderX内创建的schema新建和保存时不会自动上传**
 
@@ -101,8 +101,8 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 |exclusiveMaximum|boolean|是否排除 maximum|
 |minimum|number|如果bsonType为数字时，可接受的最小值|
 |exclusiveMinimum|boolean|是否排除 minimum|
-|minLength|number|最小长度|
-|maxLength|number|最大长度|
+|minLength|number|限制字符串或数组的最小长度|
+|maxLength|number|限制字符串或数组的最大长度|
 |trim|String|去除空白字符，支持 none&#124;both&#124;start&#124;end，默认none，仅bsonType="string"时有效|
 |format|'url'&#124;'email'|数据格式，不符合格式的数据无法入库。目前只支持'url'和'email'，未来会扩展其他格式|
 |pattern|String|正则表达式，如设置为手机号的正则表达式后，不符合该正则表达式则校验失败，无法入库|
@@ -264,7 +264,7 @@ enum支持3种数据格式：
 }
 ```
 
-通过schema2code生成前端表单页面时，带有enum的字段会生成uni-data-checkbox组件，该组件在界面上渲染时会生成1、2、3这3个候选的复选框。所以一般不推荐使用简单数组，而是推荐下面的 支持描述的数组
+通过schema2code生成前端表单页面时，带有enum的字段会生成[uni-data-checkbox组件](https://ext.dcloud.net.cn/plugin?id=3456)，该组件在界面上渲染时会生成1、2、3这3个候选的复选框。所以一般不推荐使用简单数组，而是推荐下面的 支持描述的数组
 
 - 支持描述的数组
 
@@ -320,6 +320,7 @@ enum支持3种数据格式：
       "bsonType": "array",
       "description": "角色",
       "label": "角色",
+      "foreignKey": "uni-id-roles.role_id",
       "enum": {
         "collection": "uni-id-roles", // 表名，这里使用 uni-id-roles表举例，在uniCloud控制台使用 opendb 创建此表
         "field": "role_name as text, role_id as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
@@ -580,7 +581,7 @@ enum支持3种数据格式：
 
 - 方式一：在uniCloud web控制台创建
 1. uniCloud 控制台，选择服务空间，切换到数据库视图
-2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
+2. 底部 “扩展校验函数” 点击 “+” 增加校验函数 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/2f4d0230-12a2-11eb-b244-a9f5e5565f30.png)
 3. 给函数起个名字，比如叫“checkabc”
 
 - 方式二：在HBuilderX中创建
@@ -749,9 +750,9 @@ rule表达式里支持：
 3. js语法
 4. 另外还支持`new Date()`来获取时间。需要注意的是不同于数据库运算方法，`new Date()`内不可传入数据库字段作为参数
 
-上述配置中，`end_date`为字段名称。schema内也支持写字段操作方法，如add方法。
+上述配置中，`create_date`、`end_date`为字段名称。schema内也支持写字段操作方法，如add方法。
 
-例：在todo表内可以使用fieldRules限制`create_date`小于`end_date`
+例：在todo表内可以使用fieldRules限制`end_date`大于`create_date`
 
 ```json
 {
@@ -759,7 +760,7 @@ rule表达式里支持：
   "required": ["title","create_date"],
   "fieldRules": [{
     "rule": "end_date == null || end_date != null && create_date < end_date",
-    "errorMessage": "创建时间和结束时间不匹配"
+    "errorMessage": "结束时间需大于创建时间"
   }],
   "properties": {
     "title": {
@@ -768,7 +769,10 @@ rule表达式里支持：
     },
     "create_date": {
       "bsonType": "timestamp",
-      "title": "创建时间"
+      "title": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
     },
     "end_date": {
       "bsonType": "timestamp",
@@ -1177,7 +1181,7 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 
 ### schema2code代码生成系统@autocode
 
-`DB Schema`里有大量的信息，其实有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增数据、修改数据的前端页面，以及admin端的列表、新增、修改、删除全套功能。
+`DB Schema`里有大量的信息，其实有了这些信息，前端将无需自己开发表单维护界面，uniCloud可以自动生成新增、修改、列表、详情的前端页面，以及admin端的列表、新增、修改、删除全套功能。
 
 为强化表单的自定义性，`DB Schema`还扩展了label、componentForEdit、componentForShow、group、order等属性，以控制表单项在界面上的渲染控件。
 
@@ -1199,9 +1203,18 @@ db.collection('street').where("shop_id=='123123 || shop_id=='456456'").get()
 DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符合`DB Schema`中的校验规则，实现云端统一。`uni-forms`组件地址：[https://ext.dcloud.net.cn/plugin?id=2773](https://ext.dcloud.net.cn/plugin?id=2773)
 
 
-1. 在uniCloud web控制台，进入一个数据表的表结构schema界面，点击按钮 “schema2code”
+#### 快速上手schema2code生成“通讯录”
+> 成品演示地址:[http://contacts-demo.dcloud.net.cn/](http://contacts-demo.dcloud.net.cn/)
 
-  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
+1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中“云数据库”
+2. 点击新建数据表
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/1ef863ed-d919-46f3-bd01-6092f2ed1e21.jpg)
+3. 使用[OpenDB](https://gitee.com/dcloud/opendb)表模板创建： `opendb-contacts` 通讯录表
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0e2ee195-05ae-4445-af41-45c41b2da70a.jpg)
+4. 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
+  ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3f93a350-2d13-4b8e-afb6-7dc367437b49.jpg)
+5. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
+  ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 
 上图每个区域的解释如下：
 
@@ -1235,11 +1248,19 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 
 - 区域G. 文件预览 (仅支持预览 自动生成的页面和校验规则)
 
-2. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中。
+> 注意：需HBuilderX 3.0.5+ 支持
 
-**注意：生成的代码，需HBuilderX2.9.5+方可正常运行。**
+**全程演示视频**：
+</br>
+<video style="width:50vw;height:28vw;" id="video" preload="none" controls="controls"
+	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4"></video>
 
-在生成uniCloud admin页面时，生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】。了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk)。
+
+
+
+
+
+如果生成uniCloud admin页面，生成的列表页（list），需自行配置【排序字段】和【模糊搜索字段】。了解更多参考[clientDB](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=jssdk)。
 
 以uniCloud admin内置页面【用户列表页】为例，要实现列表按注册时间排倒叙，要在列表上方的搜索框搜索，需在生成的list.vue页面的script区域修改如下配置：
 
@@ -1296,7 +1317,6 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 
 注意事项
-- `checkbox-group`, `radio-group`, 为uni内置组件，可以省略 `children` 属性
 - `children` 属性, `{item}` 表示 `childrenData` 数组中的项
 
 
@@ -1477,7 +1497,7 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 以城市选择举例。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e56e7cc0-50b8-11eb-97b7-0dc4655d6e68.png)
+![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/e56e7cc0-50b8-11eb-97b7-0dc4655d6e68.png)
 
 在这个业务里涉及2个表，一个是用户的地址信息表[uni-id-address](https://gitee.com/dcloud/opendb/tree/master/collection/uni-id-address)，一个是候选的省市区数据表[opendb-city-china](https://gitee.com/dcloud/opendb/tree/master/collection/opendb-city-china)。
 

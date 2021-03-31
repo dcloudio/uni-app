@@ -24,7 +24,7 @@
 2. 单击左侧菜单栏【云函数】，进入云函数页面。
 3. 点击需要配置的云函数的【详情】按钮，配置访问路径。
 
-<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/b79d1dc0-5a21-11eb-8a36-ebb87efcf8c0.jpg"></img>
+<img style="max-width:800px;height:auto;" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b79d1dc0-5a21-11eb-8a36-ebb87efcf8c0.jpg"></img>
 
 ### 绑定自定义域名
 
@@ -33,7 +33,7 @@
 1. 单击左侧菜单栏【云函数】，进入云函数页面。
 2. 单击【云函数域名绑定】，在弹出的配置窗口中进行配置。
 
-<img style="max-width:800px;height:auto;" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/55897b30-5993-11eb-8ff1-d5dcf8779628.jpg"></img>
+<img style="max-width:800px;height:auto;" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/55897b30-5993-11eb-8ff1-d5dcf8779628.jpg"></img>
 
 >- 每个服务空间最多绑定1个自定义域名。
 >- uniCloud提供默认域名供体验和测试该特性。
@@ -49,7 +49,7 @@
 
 ### 通过 HTTP URL 方式访问云函数
 
-- 方式一：通过`https://${云函数Url化域名}/${path}`直接访问函数，其中`${spaceId}`是服务空间 ID，`${path}`是配置的函数触发路径。
+- 方式一：通过`https://${云函数Url化域名}/${path}`直接访问函数，其中`${path}`是配置的函数触发路径。
 ```sh
 $ curl https://${云函数Url化域名}/${path}
 ```
@@ -148,6 +148,10 @@ uni.request({
 - 阿里云目前请求与响应有如下限制
   + 请求Body大小限制，不能超过1M。
   + 响应Body大小限制，不能超过1M。
+
+- 腾讯云目前请求与响应有如下限制
+  + 请求Body大小限制，不能超过4M。
+  + 响应Body大小限制，不能超过6M。
 
 >在云函数URL化的场景无法获取客户端平台信息，可以在调用依赖客户端平台的接口接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
 

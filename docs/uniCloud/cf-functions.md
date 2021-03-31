@@ -28,7 +28,7 @@ exports.main = async (event, context) => {
   let appid = context.APPID // manifest.json中配置的appid
   let clientIP = context.CLIENTIP // 客户端ip信息
   let clientUA = context.CLIENTUA // 客户端user-agent
-  let spaceInfo = context.DEVICEID // 客户端标识，新增于HBuilderX 3.1.0，同uni-app客户端getSystemInfo接口获取的deviceId
+  let deviceId = context.DEVICEID // 客户端标识，新增于HBuilderX 3.1.0，同uni-app客户端getSystemInfo接口获取的deviceId
   let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
 	... //其它业务代码
 }

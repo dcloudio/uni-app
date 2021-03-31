@@ -108,7 +108,7 @@
 
 ```
 
-![uniapp](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-uni-app-doc/433a97b0-4f30-11eb-b680-7980c8a877b8.png)
+![uniapp](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/433a97b0-4f30-11eb-b680-7980c8a877b8.png)
 
 **Tips**
 - 微信小程序端，滚动时在iOS自带振动反馈，可在系统设置 -> 声音与触感 -> 系统触感反馈中关闭

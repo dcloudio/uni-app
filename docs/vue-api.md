@@ -142,7 +142,7 @@
 |特殊属性		|描述						|H5		|App端|微信小程序  |说明	|
 | --				| --						| --	|--		|--			| --	|
 |key	| 主要用在 Vue 的虚拟 DOM 算法，在新旧 nodes 对比时辨识 VNodes [详情](https://cn.vuejs.org/v2/api/#key) 	|√	| √	| √		|App端旧版不支持表达式		|
-|ref	| ref 被用来给元素或子组件注册引用信息 [详情](https://cn.vuejs.org/v2/api/#ref) 	|√	| √	| √		|		|
+|ref	| ref 被用来给元素或子组件注册引用信息 [详情](https://cn.vuejs.org/v2/api/#ref) 	|√	| √	| √		|非 H5 平台只能获取 vue 组件实例不能获取到内置组件实例|
 |is	| 用于动态组件且基于 DOM 内模板的限制来工作 [详情](https://cn.vuejs.org/v2/api/#is) 	|√	| √	| x		|	-	|
 
 

@@ -7,10 +7,10 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |√|x|√|√|√|√|√|
 
-H5平台登陆注意事项：
-- 微信内嵌浏览器运行H5版时，可通过js sdk实现微信登陆，需要引入一个单独的js，[详见](https://ask.dcloud.net.cn/article/35380)
-- 普通浏览器上实现微信登陆，并非开放API，需要向微信申请，仅个别开发者有此权限
-- H5平台的其他登陆，比如QQ登陆、微博登陆，uni-app未封装，请在条件编译里按普通H5写法编写。
+H5平台登录注意事项：
+- 微信内嵌浏览器运行H5版时，可通过js sdk实现微信登录，需要引入一个单独的js，[详见](https://ask.dcloud.net.cn/article/35380)
+- 普通浏览器上实现微信登录，并非开放API，需要向微信申请，仅个别开发者有此权限
+- H5平台的其他登录，比如QQ登录、微博登录，uni-app未封装，请在条件编译里按普通H5写法编写。
 
 **OBJECT 参数说明**
 
@@ -39,7 +39,7 @@ H5平台登陆注意事项：
 * [百度小程序登录](https://smartprogram.baidu.com/docs/develop/api/open_log/#%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E/)
 * [字节跳动小程序登录](https://developer.toutiao.com/dev/cn/mini-app/develop/open-capacity/log-in/login)
 * [Apple登录、苹果登录、Sign in with Apple](https://ask.dcloud.net.cn/article/36651)
-* [一键登陆](/univerify)
+* [一键登录](/univerify)
 
 如果服务端使用`uniCloud`，那么官方提供了[uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id)云端统一登录服务，把微信登录、短信验证码登录及角色权限管理等服务端登录开发，进行了统一的封装。
 
@@ -131,18 +131,18 @@ uni.login({
 
 除了以上三个必有的信息外，不同服务供应商返回的其它信息会存在差异。
 
-#### App端登陆的扩展说明
+#### App端登录的扩展说明
 
-App端还支持更多登陆相关API，如`logout`，[详见](https://www.html5plus.org/doc/zh_cn/oauth.html)
+App端还支持更多登录相关API，如`logout`，[详见](https://www.html5plus.org/doc/zh_cn/oauth.html)
 
-App端登陆相关的SDK需要在manifest中配置：
-1. 打开 manifest.json -> App模块权限配置，勾选 OAuth(登陆鉴权)。
-2. 打开 manifest.json -> App SDK配置，查看到登陆鉴权。在说明中有蓝色链接，其中包括向微信、QQ、微博等平台申请sdk的链接。
+App端登录相关的SDK需要在manifest中配置：
+1. 打开 manifest.json -> App模块权限配置，勾选 OAuth(登录鉴权)。
+2. 打开 manifest.json -> App SDK配置，查看到登录鉴权。在说明中有蓝色链接，其中包括向微信、QQ、微博等平台申请sdk的链接。
 3. 向微信、QQ、微博等平台申请到sdk的信息后，回填到manifest里。
 4. 这些配置需要打包生效，真机运行仍然是HBuilder基座的设置，可使用[自定义基座包](http://ask.dcloud.net.cn/article/12723)。离线打包请参考离线打包文档在原生工程中配置。
 5. 配置并打包后，通过`uni.getProvider`可以得到配置的结果列表，注意这里返回的是manifest配置的，与手机端是否安装微信、QQ、微博无关。
 
-如果手机端未安装QQ、微博，调用时会启动这些平台的wap页面登陆，如果已安装相应客户端，会启动它们的客户端登陆。
+如果手机端未安装QQ、微博，调用时会启动这些平台的wap页面登录，如果已安装相应客户端，会启动它们的客户端登录。
 
 **示例**
 
@@ -162,9 +162,9 @@ uni.login({
 });
 ```
 
-#### App端集成其他登陆SDK如支付宝、淘宝、facebook登陆的说明
-1. [支付宝登陆](https://ext.dcloud.net.cn/search?q=%E6%94%AF%E4%BB%98%E5%AE%9D%E7%99%BB%E9%99%86)、[淘宝登陆](https://ext.dcloud.net.cn/search?q=%E7%99%BE%E5%B7%9D)、[抖音登录](https://ext.dcloud.net.cn/search?q=%E6%8A%96%E9%9F%B3%E7%99%BB%E5%BD%95)、[facebook登录](https://ext.dcloud.net.cn/search?q=facebook%E7%99%BB%E5%BD%95)等在插件市场均已有插件，还有[sharesdk](https://ext.dcloud.net.cn/search?q=sharesdk)等专业集成多家登录分享的插件。
-2. 也可以内嵌web-view组件，使用web登陆模式集成这些三方登陆
+#### App端集成其他登录SDK如支付宝、淘宝、facebook登录的说明
+1. [支付宝登录](https://ext.dcloud.net.cn/search?q=%E6%94%AF%E4%BB%98%E5%AE%9D%E7%99%BB%E9%99%86)、[淘宝登录](https://ext.dcloud.net.cn/search?q=%E7%99%BE%E5%B7%9D)、[抖音登录](https://ext.dcloud.net.cn/search?q=%E6%8A%96%E9%9F%B3%E7%99%BB%E5%BD%95)、[facebook登录](https://ext.dcloud.net.cn/search?q=facebook%E7%99%BB%E5%BD%95)等在插件市场均已有插件，还有[sharesdk](https://ext.dcloud.net.cn/search?q=sharesdk)等专业集成多家登录分享的插件。
+2. 也可以内嵌web-view组件，使用web登录模式集成这些三方登录
 
 ### uni.preLogin(OBJECT)
 预登录。
@@ -179,14 +179,14 @@ uni.login({
 
 |参数名|类型|必填|说明|
 |:-|:-|:-|:-|
-|provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，目前仅支持[一键登陆](/univerify)|
+|provider|String|否|登录服务提供商，通过 [uni.getProvider](/api/plugins/provider) 获取，目前仅支持[一键登录](/univerify)|
 |success|Function|否|接口调用成功的回调|
 |fail|Function|否|接口调用失败的回调函数|
 |complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 
 ### uni.closeAuthView()
-关闭[一键登陆](/univerify)页面。
+关闭[一键登录](/univerify)页面。
 
 **平台差异说明**
 
