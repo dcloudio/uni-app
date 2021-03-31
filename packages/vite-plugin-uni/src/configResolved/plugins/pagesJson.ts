@@ -27,7 +27,8 @@ export function uniPagesJsonPlugin(
       if (id.endsWith(PAGES_JSON_JS)) {
         return {
           code:
-            (options.command === 'serve' ? registerGlobalCode : '') +
+            registerGlobalCode +
+            (options.command === 'serve' ? registerDevServerGlobalCode : '') +
             parsePagesJson(code, config, options),
           map: { mappings: '' },
         }
@@ -79,10 +80,14 @@ const hmrCode = `if(import.meta.hot){
   })
 }`
 
-const registerGlobalCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
+const registerGlobalCode = `import {upx2px} from '@dcloudio/uni-h5'
+window.rpx2px = upx2px
+`
+
+const registerDevServerGlobalCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 window.getApp = getApp
 window.getCurrentPages = getCurrentPages
-window.uni = window.__GLOBAL__ = uni
+window.uni = uni
 window.UniViewJSBridge = UniViewJSBridge
 window.UniServiceJSBridge = UniServiceJSBridge
 `

@@ -3339,6 +3339,33 @@ function getRealPath$1(filePath) {
   }
   return filePath;
 }
+const ua = navigator.userAgent;
+const isAndroid = /android/i.test(ua);
+const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
+  return {
+    platform: isIOS$1 ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
 var index_vue_vue_type_style_index_0_lang$d = "\nuni-image {\r\n  width: 320px;\r\n  height: 240px;\r\n  display: inline-block;\r\n  overflow: hidden;\r\n  position: relative;\n}\nuni-image[hidden] {\r\n  display: none;\n}\nuni-image > div {\r\n  width: 100%;\r\n  height: 100%;\n}\nuni-image > img {\r\n  -webkit-touch-callout: none;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  display: block;\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\n}\nuni-image > .uni-image-will-change {\r\n  will-change: transform;\n}\r\n";
 const _sfc_main$j = {
   name: "Image",
@@ -7736,14 +7763,14 @@ const Upx2pxProtocol = [
 ];
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
-let isIOS$1 = false;
+let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-  const {platform, pixelRatio: pixelRatio2, windowWidth} = __GLOBAL__.getSystemInfoSync();
+  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
-  isIOS$1 = platform === "ios";
+  isIOS = platform === "ios";
 }
 const upx2px = /* @__PURE__ */ createSyncApi("upx2px", (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
@@ -7759,7 +7786,7 @@ const upx2px = /* @__PURE__ */ createSyncApi("upx2px", (number, newDeviceWidth) 
   }
   result = Math.floor(result + EPS);
   if (result === 0) {
-    if (deviceDPR === 1 || !isIOS$1) {
+    if (deviceDPR === 1 || !isIOS) {
       result = 1;
     } else {
       result = 0.5;
@@ -7984,24 +8011,20 @@ const canIUse = /* @__PURE__ */ createSyncApi("canIUse", (schema) => {
 const makePhoneCall = /* @__PURE__ */ createAsyncApi("makePhoneCall", (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
-const ua = navigator.userAgent;
-const isAndroid = /android/i.test(ua);
-const isIOS = /iphone|ipad|ipod/i.test(ua);
 const getSystemInfoSync = /* @__PURE__ */ createSyncApi("getSystemInfoSync", () => {
-  var screen = window.screen;
-  var pixelRatio2 = window.devicePixelRatio;
-  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-  const landscape = screenFix && Math.abs(window.orientation) === 90;
-  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var screenHeight = screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
-  var windowHeight = window.innerHeight;
-  var language = navigator.language;
-  var statusBarHeight = out.top;
-  var osname;
-  var osversion;
-  var model;
-  if (isIOS) {
+  const pixelRatio2 = window.devicePixelRatio;
+  const screenFix = getScreenFix();
+  const landscape = isLandscape(screenFix);
+  const screenWidth = getScreenWidth(screenFix, landscape);
+  const screenHeight = getScreenHeight(screenFix, landscape);
+  const windowWidth = getWindowWidth(screenWidth);
+  let windowHeight = window.innerHeight;
+  const language = navigator.language;
+  const statusBarHeight = out.top;
+  let osname;
+  let osversion;
+  let model;
+  if (isIOS$1) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
     if (osversionFind) {
@@ -8053,9 +8076,9 @@ const getSystemInfoSync = /* @__PURE__ */ createSyncApi("getSystemInfoSync", () 
     osname = "Other";
     osversion = "0";
   }
-  var system = `${osname} ${osversion}`;
-  var platform = osname.toLocaleLowerCase();
-  var safeArea = {
+  const system = `${osname} ${osversion}`;
+  const platform = osname.toLocaleLowerCase();
+  const safeArea = {
     left: out.left,
     right: windowWidth - out.right,
     top: out.top,

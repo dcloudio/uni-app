@@ -301,6 +301,10 @@ function createApi(type, name, fn, protocol, options) {
     }
 }
 
+function getBaseSystemInfo() {
+  return qq.getSystemInfoSync()
+}
+
 const Upx2pxProtocol = [
     {
         name: 'upx',
@@ -315,7 +319,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = qq.getSystemInfoSync();
+    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';

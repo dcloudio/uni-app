@@ -4,45 +4,36 @@ import { createSyncApi } from '@dcloudio/uni-api'
 
 import { getWindowOffset } from '@dcloudio/uni-core'
 
-const ua = navigator.userAgent
-/**
- * 是否安卓设备
- */
-const isAndroid = /android/i.test(ua)
-/**
- * 是否iOS设备
- */
-const isIOS = /iphone|ipad|ipod/i.test(ua)
+import {
+  ua,
+  isIOS,
+  isAndroid,
+  isLandscape,
+  getScreenFix,
+  getScreenWidth,
+  getWindowWidth,
+  getScreenHeight,
+} from '../../../platform/getBaseSystemInfo'
+
 /**
  * 获取系统信息-同步
  */
 export const getSystemInfoSync = createSyncApi<typeof uni.getSystemInfoSync>(
   'getSystemInfoSync',
   () => {
-    var screen = window.screen
-    var pixelRatio = window.devicePixelRatio
+    const pixelRatio = window.devicePixelRatio
     // 横屏时 iOS 获取的屏幕宽高颠倒，进行纠正
-    const screenFix =
-      /^Apple/.test(navigator.vendor) && typeof window.orientation === 'number'
-    const landscape = screenFix && Math.abs(window.orientation as number) === 90
-    var screenWidth = screenFix
-      ? Math[landscape ? 'max' : 'min'](screen.width, screen.height)
-      : screen.width
-    var screenHeight = screenFix
-      ? Math[landscape ? 'min' : 'max'](screen.height, screen.width)
-      : screen.height
-    var windowWidth =
-      Math.min(
-        window.innerWidth,
-        document.documentElement.clientWidth,
-        screenWidth
-      ) || screenWidth
-    var windowHeight = window.innerHeight
-    var language = navigator.language
-    var statusBarHeight = safeAreaInsets.top
-    var osname
-    var osversion
-    var model
+    const screenFix = getScreenFix()
+    const landscape = isLandscape(screenFix)
+    const screenWidth = getScreenWidth(screenFix, landscape)
+    const screenHeight = getScreenHeight(screenFix, landscape)
+    const windowWidth = getWindowWidth(screenWidth)
+    let windowHeight = window.innerHeight
+    const language = navigator.language
+    const statusBarHeight = safeAreaInsets.top
+    let osname
+    let osversion
+    let model
 
     if (isIOS) {
       osname = 'iOS'
@@ -99,9 +90,9 @@ export const getSystemInfoSync = createSyncApi<typeof uni.getSystemInfoSync>(
       osversion = '0'
     }
 
-    var system = `${osname} ${osversion}`
-    var platform = osname.toLocaleLowerCase()
-    var safeArea = {
+    const system = `${osname} ${osversion}`
+    const platform = osname.toLocaleLowerCase()
+    const safeArea = {
       left: safeAreaInsets.left,
       right: windowWidth - safeAreaInsets.right,
       top: safeAreaInsets.top,

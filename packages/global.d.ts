@@ -1,6 +1,7 @@
 declare var tt: any
 declare var qa: any
 declare var swan: any
+declare var qq: any
 declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__: 'wx' | 'qq' | 'my' | 'swan' | 'tt' | 'qa'
 declare var __GLOBAL__: Record<string, any>

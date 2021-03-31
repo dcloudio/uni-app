@@ -1,3 +1,15 @@
+declare namespace Page {
+  interface PageInstance {
+    $page: {
+      id: number
+      path: string
+      route: string
+      fullPath: string
+      options: Record<string, any>
+      meta: UniApp.PageRouteMeta
+    }
+  }
+}
 declare namespace UniApp {
   type ClassObj = Record<string, boolean>
   type StyleObj = Record<string, any>

@@ -1,3 +1,4 @@
+import { getBaseSystemInfo } from '@dcloudio/uni-platform'
 import { createSyncApi } from '../../helpers/api'
 import { Upx2pxProtocol } from '../../protocols/base/upx2px'
 
@@ -8,7 +9,7 @@ let deviceWidth = 0
 let deviceDPR = 0
 
 function checkDeviceWidth() {
-  const { platform, pixelRatio, windowWidth } = __GLOBAL__.getSystemInfoSync()
+  const { platform, pixelRatio, windowWidth } = getBaseSystemInfo()
   deviceWidth = windowWidth as number
   deviceDPR = pixelRatio as number
   isIOS = platform === 'ios'

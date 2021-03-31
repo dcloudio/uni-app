@@ -51,11 +51,11 @@ const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
 
 const uniInjectPluginOptions: Partial<InjectOptions> = {
   exclude: [...COMMON_EXCLUDE],
-  '__GLOBAL__.': '@dcloudio/uni-h5',
   'uni.': '@dcloudio/uni-h5',
   getApp: ['@dcloudio/uni-h5', 'getApp'],
   getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
   UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],
+  UniViewJSBridge: ['@dcloudio/uni-h5', 'UniViewJSBridge'],
 }
 
 export function resolvePlugins(

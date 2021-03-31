@@ -49,7 +49,7 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
 }
 
 export function initPage(vm: ComponentPublicInstance) {
-  currentPages.push(vm as Page.PageInstance)
+  currentPages.push((vm as unknown) as Page.PageInstance)
   const route = vm.$route
   ;(vm as any).$page = initPublicPage(route)
 }

@@ -3,6 +3,14 @@
     "src/runtime/index.ts": "dist/uni.mp.esm.js",
     "src/api/index.ts": "dist/uni.api.esm.js"
   },
+  "alias": {
+    "entries": [
+      {
+        "find": "@dcloudio/uni-platform",
+        "replacement": "packages/uni-mp-baidu/src/platform/index.ts"
+      }
+    ]
+  },
   "replacements": {
     "__GLOBAL__": "swan",
     "__PLATFORM__": "\"mp-baidu\"",

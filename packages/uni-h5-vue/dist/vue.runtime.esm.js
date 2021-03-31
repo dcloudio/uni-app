@@ -8084,7 +8084,7 @@ function patchStyle(el, prev, next) {
     else if (isString(next)) {
         if (prev !== next) {
             const current = style.display;
-            style.cssText = next;
+            style.cssText = normalizeRpx(next);
             // indicates that the `display` of the element is controlled by `v-show`,
             // so we always keep the current `display` value regardless of the `style` value,
             // thus handing over control to `v-show`.
@@ -8112,6 +8112,7 @@ function setStyle(style, name, val) {
         val.forEach(v => setStyle(style, name, v));
     }
     else {
+        val = normalizeRpx(val);
         if (name.startsWith('--')) {
             // custom property definition
             style.setProperty(name, val);
@@ -8148,6 +8149,18 @@ function autoPrefix(style, rawName) {
     }
     return rawName;
 }
+// fixed by xxxxxx
+// upx,rpx
+const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
+const normalizeRpx = (val) => {
+    if (isString(val)) {
+        return val.replace(rpxRE, (a, b) => {
+            // @ts-ignore
+            return rpx2px(b) + 'px';
+        });
+    }
+    return val;
+};
 
 const xlinkNS = 'http://www.w3.org/1999/xlink';
 function patchAttr(el, key, value, isSVG) {
