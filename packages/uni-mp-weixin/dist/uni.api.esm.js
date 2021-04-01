@@ -254,6 +254,15 @@ const API_TYPE_TASK = 1;
 const API_TYPE_SYNC = 2;
 const API_TYPE_ASYNC = 3;
 function formatApiArgs(args, options) {
+    const params = args[0];
+    if (!options ||
+        (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+        return args;
+    }
+    const formatArgs = options.formatArgs;
+    Object.keys(formatArgs).forEach((name) => {
+        formatArgs[name](args[0][name], params);
+    });
     return args;
 }
 function wrapperOnApi(name, fn) {
@@ -268,7 +277,12 @@ function wrapperSyncApi(fn) {
 function wrapperAsyncApi(name, fn, options) {
     return (args) => {
         const callbackId = createAsyncApiCallback(name, args, options);
-        const res = fn.apply(null, [args, callbackId]);
+        const res = fn.apply(null, [
+            args,
+            (res) => {
+                invokeCallback(callbackId, res);
+            },
+        ]);
         if (res) {
             invokeCallback(callbackId, res);
         }
@@ -282,7 +296,7 @@ function wrapperApi(fn, name, protocol, options) {
                 return errMsg;
             }
         }
-        return fn.apply(null, formatApiArgs(args));
+        return fn.apply(null, formatApiArgs(args, options));
     };
 }
 function defineSyncApi(name, fn, protocol, options) {
@@ -291,13 +305,13 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineApi(type, name, fn, protocol, options) {
     switch (type) {
         case API_TYPE_ON:
-            return wrapperApi(wrapperOnApi(name, fn), name, protocol);
+            return wrapperApi(wrapperOnApi(name, fn), name, protocol, options);
         case API_TYPE_TASK:
-            return wrapperApi(wrapperTaskApi(name, fn), name, protocol);
+            return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options);
         case API_TYPE_SYNC:
-            return wrapperApi(wrapperSyncApi(fn), name, protocol);
+            return wrapperApi(wrapperSyncApi(fn), name, protocol, options);
         case API_TYPE_ASYNC:
-            return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol);
+            return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol, options);
     }
 }
 
@@ -305,6 +319,7 @@ function getBaseSystemInfo() {
   return wx.getSystemInfoSync()
 }
 
+const API_UPX2PX = 'upx2px';
 const Upx2pxProtocol = [
     {
         name: 'upx',
@@ -324,7 +339,7 @@ function checkDeviceWidth() {
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
 }
-const upx2px = defineSyncApi('upx2px', (number, newDeviceWidth) => {
+const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
         checkDeviceWidth();
     }
@@ -452,6 +467,8 @@ function invokeApi(method, api, options, ...params) {
     return api(options, ...params);
 }
 
+const API_ADD_INTERCEPTOR = 'addInterceptor';
+const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
 const AddInterceptorProtocol = [
     {
         name: 'method',
@@ -506,7 +523,7 @@ function removeHook(hooks, hook) {
         hooks.splice(index, 1);
     }
 }
-const addInterceptor = defineSyncApi('addInterceptor', (method, interceptor) => {
+const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
@@ -514,7 +531,7 @@ const addInterceptor = defineSyncApi('addInterceptor', (method, interceptor) => 
         mergeInterceptorHook(globalInterceptors, method);
     }
 }, AddInterceptorProtocol);
-const removeInterceptor = defineSyncApi('removeInterceptor', (method, interceptor) => {
+const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
     if (typeof method === 'string') {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);

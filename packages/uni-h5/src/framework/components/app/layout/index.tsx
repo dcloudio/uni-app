@@ -87,7 +87,7 @@ function createTabBarTsx(route: RouteLocationNormalizedLoaded) {
 }
 
 function createPageVNode() {
-  return createVNode(__uniRoutes[1].component)
+  return createVNode(__uniRoutes[0].component)
 }
 
 function createRouterViewVNode(

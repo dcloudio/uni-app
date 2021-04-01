@@ -22,6 +22,7 @@ declare namespace UniApp {
   }
 
   interface UniConfig {
+    ready?: boolean
     router: {
       strict: boolean
       base: string
@@ -34,6 +35,15 @@ declare namespace UniApp {
     leftWindow?: LayoutWindowOptions
     rightWindow?: LayoutWindowOptions
   }
+
+  interface UniRoute {
+    path: string
+    redirect?: string
+    meta: PageRouteMeta
+    component?: any
+  }
+
+  type UniRoutes = UniRoute[]
 
   interface PageNavigationBarButton {
     type:
@@ -115,6 +125,7 @@ declare namespace UniApp {
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id: number
+    isNVue?: boolean
     isQuit?: boolean
     isEntry?: boolean
     isTabBar?: boolean

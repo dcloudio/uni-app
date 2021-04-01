@@ -31,7 +31,10 @@ function createRouterOptions(): RouterOptions {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes as RouteRecordRaw[],
+    routes: [
+      { path: __uniRoutes[0].path, redirect: '/' },
+      ...__uniRoutes,
+    ] as RouteRecordRaw[],
     scrollBehavior,
   }
 }

@@ -1,4 +1,4 @@
-export function getRealRoute(fromRoute: string, toRoute: string): string {
+export function getRealRoute(fromRoute: string, toRoute?: string): string {
   if (!toRoute) {
     toRoute = fromRoute
     if (toRoute.indexOf('/') === 0) {

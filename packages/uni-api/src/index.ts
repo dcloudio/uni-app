@@ -20,6 +20,7 @@ export * from './protocols/location/openLocation'
 export * from './protocols/media/chooseImage'
 export * from './protocols/media/chooseVideo'
 export * from './protocols/media/getImageInfo'
+export * from './protocols/route/route'
 
 // helpers
 export {
@@ -28,6 +29,8 @@ export {
   defineSyncApi,
   defineAsyncApi,
 } from './helpers/api'
+
+export { getCurrentPageVm } from './helpers/utils'
 
 export { handlePromise } from './helpers/api/promise'
 export { invokeApi, wrapperReturnValue } from './helpers/interceptor'

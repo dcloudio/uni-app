@@ -1,4 +1,5 @@
 import {
+  API_GET_IMAGE_INFO,
   defineAsyncApi,
   GetImageInfoOptions,
   GetImageInfoProtocol,
@@ -9,12 +10,12 @@ function _getServiceAddress() {
 }
 
 export const getImageInfo = defineAsyncApi<typeof uni.getImageInfo>(
-  'getImageInfo',
+  API_GET_IMAGE_INFO,
   ({ src }, callback?: Function) => {
     const img = new Image()
     img.onload = function () {
       callback!({
-        errMsg: 'getImageInfo:ok',
+        errMsg: `${API_GET_IMAGE_INFO}:ok`,
         width: img.naturalWidth,
         height: img.naturalHeight,
         path: src.indexOf('/') === 0 ? _getServiceAddress() + src : src,
@@ -22,7 +23,7 @@ export const getImageInfo = defineAsyncApi<typeof uni.getImageInfo>(
     }
     img.onerror = function () {
       callback!({
-        errMsg: 'getImageInfo:fail',
+        errMsg: `${API_GET_IMAGE_INFO}:fail`,
       })
     }
     img.src = src

@@ -1,3 +1,4 @@
+import { isPlainObject } from '@vue/shared'
 import { ApiOptions, ApiProtocols } from '../../protocols/type'
 import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
@@ -19,6 +20,17 @@ type API_TYPES =
   | typeof API_TYPE_ASYNC
 
 function formatApiArgs(args: any[], options?: ApiOptions) {
+  const params = args[0]
+  if (
+    !options ||
+    (!isPlainObject(options.formatArgs) && isPlainObject(params))
+  ) {
+    return args
+  }
+  const formatArgs = options.formatArgs!
+  Object.keys(formatArgs).forEach((name) => {
+    formatArgs[name](args[0][name], params)
+  })
   return args
 }
 
@@ -39,7 +51,12 @@ function wrapperSyncApi(fn: Function) {
 function wrapperAsyncApi(name: string, fn: Function, options?: ApiOptions) {
   return (args: Record<string, any>) => {
     const callbackId = createAsyncApiCallback(name, args, options)
-    const res = fn.apply(null, [args, callbackId])
+    const res = fn.apply(null, [
+      args,
+      (res: unknown) => {
+        invokeCallback(callbackId, res)
+      },
+    ])
     if (res) {
       invokeCallback(callbackId, res)
     }

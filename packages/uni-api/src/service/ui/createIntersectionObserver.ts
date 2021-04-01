@@ -3,7 +3,7 @@ import { extend } from '@vue/shared'
 import { ServiceJSBridge } from '@dcloudio/uni-core'
 
 import { defineSyncApi } from '../../helpers/api'
-import { getCurrentPageVm } from '../utils'
+import { getCurrentPageVm } from '../../helpers/utils'
 
 const defaultOptions = {
   thresholds: [0],
@@ -34,6 +34,8 @@ interface requestComponentObserver {
 let reqComponentObserverId = 1
 
 const reqComponentObserverCallbacks: Record<number, ObserveResultCallback> = {}
+
+export const API_CREATE_INTERSECTION_OBSERVER = 'createIntersectionObserver'
 
 ServiceJSBridge.subscribe(
   'requestComponentObserver',
@@ -122,7 +124,7 @@ class ServiceIntersectionObserver {
 
 export const createIntersectionObserver = defineSyncApi<
   typeof uni.createIntersectionObserver
->('createIntersectionObserver', (context?, options?) => {
+>(API_CREATE_INTERSECTION_OBSERVER, (context?, options?) => {
   if (!context) {
     context = getCurrentPageVm()
   }

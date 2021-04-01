@@ -1,6 +1,10 @@
 import { hasOwn } from '@vue/shared'
 
-import { CanIUseProtocol, defineSyncApi } from '@dcloudio/uni-api'
+import {
+  API_CAN_I_USE,
+  CanIUseProtocol,
+  defineSyncApi,
+} from '@dcloudio/uni-api'
 
 function cssSupports(css: string) {
   return window.CSS && window.CSS.supports && window.CSS.supports(css)
@@ -13,7 +17,7 @@ const SCHEMA_CSS = {
 }
 
 export const canIUse = defineSyncApi<typeof uni.canIUse>(
-  'canIUse',
+  API_CAN_I_USE,
   (schema: string) => {
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema]

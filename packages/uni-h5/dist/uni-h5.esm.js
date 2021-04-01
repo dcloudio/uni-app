@@ -1,7 +1,7 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
 import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
-import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
+import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView, isNavigationFailure} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -757,7 +757,10 @@ function createRouterOptions() {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
+    routes: [
+      {path: __uniRoutes[0].path, redirect: "/"},
+      ...__uniRoutes
+    ],
     scrollBehavior
   };
 }
@@ -994,7 +997,7 @@ function createTabBarTsx(route) {
   return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, route.meta.isTabBar]]);
 }
 function createPageVNode() {
-  return createVNode(__uniRoutes[1].component);
+  return createVNode(__uniRoutes[0].component);
 }
 function createRouterViewVNode(keepAliveRoute) {
   return createVNode(RouterView, null, {
@@ -7738,6 +7741,14 @@ const API_TYPE_TASK = 1;
 const API_TYPE_SYNC = 2;
 const API_TYPE_ASYNC = 3;
 function formatApiArgs(args, options) {
+  const params = args[0];
+  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+    return args;
+  }
+  const formatArgs = options.formatArgs;
+  Object.keys(formatArgs).forEach((name) => {
+    formatArgs[name](args[0][name], params);
+  });
   return args;
 }
 function wrapperOnApi(name, fn) {
@@ -7752,7 +7763,12 @@ function wrapperSyncApi(fn) {
 function wrapperAsyncApi(name, fn, options) {
   return (args) => {
     const callbackId = createAsyncApiCallback(name, args, options);
-    const res = fn.apply(null, [args, callbackId]);
+    const res = fn.apply(null, [
+      args,
+      (res2) => {
+        invokeCallback(callbackId, res2);
+      }
+    ]);
     if (res) {
       invokeCallback(callbackId, res);
     }
@@ -7766,7 +7782,7 @@ function wrapperApi(fn, name, protocol, options) {
         return errMsg;
       }
     }
-    return fn.apply(null, formatApiArgs(args));
+    return fn.apply(null, formatApiArgs(args, options));
   };
 }
 function defineSyncApi(name, fn, protocol, options) {
@@ -7778,15 +7794,17 @@ function defineAsyncApi(name, fn, protocol, options) {
 function defineApi(type, name, fn, protocol, options) {
   switch (type) {
     case API_TYPE_ON:
-      return wrapperApi(wrapperOnApi(name, fn), name, protocol);
+      return wrapperApi(wrapperOnApi(name, fn), name, protocol, options);
     case API_TYPE_TASK:
-      return wrapperApi(wrapperTaskApi(name, fn), name, protocol);
+      return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options);
     case API_TYPE_SYNC:
-      return wrapperApi(wrapperSyncApi(fn), name, protocol);
+      return wrapperApi(wrapperSyncApi(fn), name, protocol, options);
     case API_TYPE_ASYNC:
-      return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol);
+      return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol, options);
   }
 }
+const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
+const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
 const Base64ToArrayBufferProtocol = [
   {
     name: "base64",
@@ -7801,12 +7819,13 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = defineSyncApi("base64ToArrayBuffer", (base64) => {
+const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
   return decode(base64);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = defineSyncApi("arrayBufferToBase64", (arrayBuffer) => {
+const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
   return encode(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
+const API_UPX2PX = "upx2px";
 const Upx2pxProtocol = [
   {
     name: "upx",
@@ -7825,7 +7844,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio2;
   isIOS = platform === "ios";
 }
-const upx2px = defineSyncApi("upx2px", (number, newDeviceWidth) => {
+const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -7857,6 +7876,8 @@ var HOOKS;
 })(HOOKS || (HOOKS = {}));
 const globalInterceptors = {};
 const scopedInterceptors = {};
+const API_ADD_INTERCEPTOR = "addInterceptor";
+const API_REMOVE_INTERCEPTOR = "removeInterceptor";
 const AddInterceptorProtocol = [
   {
     name: "method",
@@ -7904,14 +7925,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = defineSyncApi("addInterceptor", (method, interceptor) => {
+const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
   if (typeof method === "string" && isPlainObject(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = defineSyncApi("removeInterceptor", (method, interceptor) => {
+const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
@@ -7947,6 +7968,7 @@ const defaultOptions = {
 };
 let reqComponentObserverId = 1;
 const reqComponentObserverCallbacks = {};
+const API_CREATE_INTERSECTION_OBSERVER = "createIntersectionObserver";
 ServiceJSBridge.subscribe("requestComponentObserver", ({reqId, reqEnd, res}) => {
   const callback = reqComponentObserverCallbacks[reqId];
   if (callback) {
@@ -7999,7 +8021,7 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
 }
-const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (context, options) => {
+const createIntersectionObserver = defineSyncApi(API_CREATE_INTERSECTION_OBSERVER, (context, options) => {
   if (!context) {
     context = getCurrentPageVm();
   }
@@ -8007,6 +8029,7 @@ const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (
 });
 const createSelectorQuery = () => {
 };
+const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
   {
     name: "schema",
@@ -8014,17 +8037,19 @@ const CanIUseProtocol = [
     required: true
   }
 ];
+const API_MAKE_PHONE_CALL = "makePhoneCall";
 const MakePhoneCallProtocol = {
   phoneNumber: {
     type: String,
     required: true,
     validator(phoneNumber) {
       if (!phoneNumber) {
-        return "makePhoneCall:fail parameter error: parameter.phoneNumber should not be empty String;";
+        return "parameter error: parameter.phoneNumber should not be empty String;";
       }
     }
   }
 };
+const API_OPEN_DOCUMENT = "openDocument";
 const OpenDocumentProtocol = {
   filePath: {
     type: String,
@@ -8034,6 +8059,7 @@ const OpenDocumentProtocol = {
     type: String
   }
 };
+const API_GET_IMAGE_INFO = "getImageInfo";
 const GetImageInfoOptions = {
   formatArgs: {
     src(src, params) {
@@ -8047,6 +8073,155 @@ const GetImageInfoProtocol = {
     required: true
   }
 };
+function encodeQueryString(url) {
+  if (typeof url !== "string") {
+    return url;
+  }
+  const index2 = url.indexOf("?");
+  if (index2 === -1) {
+    return url;
+  }
+  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  if (!query) {
+    return url;
+  }
+  url = url.substr(0, index2);
+  const params = [];
+  query.split("&").forEach((param) => {
+    const parts = param.replace(/\+/g, " ").split("=");
+    const key = parts.shift();
+    const val = parts.length > 0 ? parts.join("=") : "";
+    params.push(key + "=" + encodeURIComponent(val));
+  });
+  return params.length ? url + "?" + params.join("&") : url;
+}
+const ANIMATION_IN = [
+  "slide-in-right",
+  "slide-in-left",
+  "slide-in-top",
+  "slide-in-bottom",
+  "fade-in",
+  "zoom-out",
+  "zoom-fade-out",
+  "pop-in",
+  "none"
+];
+const ANIMATION_OUT = [
+  "slide-out-right",
+  "slide-out-left",
+  "slide-out-top",
+  "slide-out-bottom",
+  "fade-out",
+  "zoom-in",
+  "zoom-fade-in",
+  "pop-out",
+  "none"
+];
+const BaseRouteProtocol = {
+  url: {
+    type: String,
+    required: true
+  }
+};
+const API_NAVIGATE_TO = "navigateTo";
+const API_REDIRECT_TO = "redirectTo";
+const API_RE_LAUNCH = "reLaunch";
+const API_SWITCH_TAB = "switchTab";
+const API_NAVIGATE_BACK = "navigateBack";
+const API_PRELOAD_PAGE = "preloadPage";
+const API_UN_PRELOAD_PAGE = "unPreloadPage";
+const NavigateToProtocol = extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateBackProtocol = extend({
+  delta: {
+    type: Number
+  }
+}, createAnimationProtocol(ANIMATION_OUT));
+const RedirectToProtocol = BaseRouteProtocol;
+const ReLaunchProtocol = BaseRouteProtocol;
+const SwitchTabProtocol = BaseRouteProtocol;
+const NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
+const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
+const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
+const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
+const NavigateBackOptions = {
+  formatArgs: {
+    delta(delta, params) {
+      delta = parseInt(delta) || 1;
+      params.delta = Math.min(getCurrentPages().length - 1, delta);
+    }
+  }
+};
+function createAnimationProtocol(animationTypes) {
+  return {
+    animationType: {
+      type: String,
+      validator(type) {
+        if (type && animationTypes.indexOf(type) === -1) {
+          return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
+        }
+      }
+    },
+    animationDuration: {
+      type: Number
+    }
+  };
+}
+let navigatorLock;
+function beforeRoute() {
+  navigatorLock = "";
+}
+function createRouteOptions(type) {
+  return {
+    formatArgs: {
+      url: createNormalizeUrl(type)
+    },
+    beforeAll: beforeRoute
+  };
+}
+function createNormalizeUrl(type) {
+  return function normalizeUrl(url, params) {
+    url = getRealRoute(url);
+    const pagePath = url.split("?")[0];
+    const routeOptions = __uniRoutes.find(({path, redirect}) => path === pagePath || redirect === pagePath);
+    if (!routeOptions) {
+      return "page `" + url + "` is not found";
+    }
+    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+      if (routeOptions.meta.isTabBar) {
+        return `can not ${type} a tabbar page`;
+      }
+    } else if (type === API_SWITCH_TAB) {
+      if (!routeOptions.meta.isTabBar) {
+        return "can not switch to no-tabBar page";
+      }
+    }
+    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
+      url = pagePath;
+    }
+    if (routeOptions.meta.isEntry) {
+      url = url.replace(routeOptions.path, "/");
+    }
+    params.url = encodeQueryString(url);
+    if (type === API_UN_PRELOAD_PAGE) {
+      return;
+    } else if (type === API_PRELOAD_PAGE) {
+      if (routeOptions.meta.isTabBar) {
+        const pages = getCurrentPages(true);
+        const tabBarPagePath = routeOptions.path.substr(1);
+        if (pages.find((page) => page.route === tabBarPagePath)) {
+          return "tabBar page `" + tabBarPagePath + "` already exists";
+        }
+      }
+      return;
+    }
+    if (navigatorLock === url && params.openType !== "appLaunch") {
+      return `${navigatorLock} locked`;
+    }
+    if (__uniConfig.ready) {
+      navigatorLock = url;
+    }
+  };
+}
 function cssSupports(css) {
   return window.CSS && window.CSS.supports && window.CSS.supports(css);
 }
@@ -8055,13 +8230,13 @@ const SCHEMA_CSS = {
   "css.env": cssSupports("top:env(a)"),
   "css.constant": cssSupports("top:constant(a)")
 };
-const canIUse = defineSyncApi("canIUse", (schema) => {
+const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
   if (hasOwn$1(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = defineAsyncApi("makePhoneCall", (option) => {
+const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, (option) => {
   window.location.href = `tel:${option.phoneNumber}`;
 }, MakePhoneCallProtocol);
 const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
@@ -8167,17 +8342,17 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
 const getSystemInfo = defineAsyncApi("getSystemInfo", () => {
   return getSystemInfoSync();
 });
-const openDocument = defineAsyncApi("openDocument", (option) => {
+const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, (option) => {
   window.open(option.filePath);
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = defineAsyncApi("getImageInfo", ({src}, callback) => {
+const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}, callback) => {
   const img = new Image();
   img.onload = function() {
     callback({
-      errMsg: "getImageInfo:ok",
+      errMsg: `${API_GET_IMAGE_INFO}:ok`,
       width: img.naturalWidth,
       height: img.naturalHeight,
       path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
@@ -8185,27 +8360,45 @@ const getImageInfo = defineAsyncApi("getImageInfo", ({src}, callback) => {
   };
   img.onerror = function() {
     callback({
-      errMsg: "getImageInfo:fail"
+      errMsg: `${API_GET_IMAGE_INFO}:fail`
     });
   };
   img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const navigateBack = defineAsyncApi("navigateBack", () => {
-});
-const navigateTo = defineAsyncApi("navigateTo", (options) => {
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (options) => {
+  let canBack = true;
+  const vm = getCurrentPageVm();
+  if (vm && vm.$callHook("onBackPress") === true) {
+    canBack = false;
+  }
+  if (!canBack) {
+    return {
+      errMsg: `${API_NAVIGATE_BACK}:fail onBackPress`
+    };
+  }
+  getApp().$router.go(-options.delta);
+}, NavigateBackProtocol, NavigateBackOptions);
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, (options, callback) => {
   const router = getApp().$router;
   router.push({
     path: options.url,
     force: true,
     state: createPageState("navigateTo")
+  }).then((failure) => {
+    if (isNavigationFailure(failure)) {
+      return callback({
+        errMsg: `${API_NAVIGATE_TO}:fail ${failure.message}`
+      });
+    }
+    callback();
   });
-});
-const redirectTo = defineAsyncApi("redirectTo", () => {
-});
-const reLaunch = defineAsyncApi("reLaunch", () => {
-});
-const switchTab = defineAsyncApi("switchTab", () => {
-});
+}, NavigateToProtocol, NavigateToOptions);
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, () => {
+}, RedirectToProtocol, RedirectToOptions);
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, () => {
+}, ReLaunchProtocol, ReLaunchOptions);
+const switchTab = defineAsyncApi(API_SWITCH_TAB, () => {
+}, SwitchTabProtocol, SwitchTabOptions);
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",

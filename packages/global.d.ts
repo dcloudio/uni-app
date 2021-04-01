@@ -32,7 +32,11 @@ declare var __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: boolean
 // TODO
-declare var __uniRoutes: any
+declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: any
 declare var UniServiceJSBridge: any
+
+declare const getCurrentPages: <T extends AnyObject = {}>(
+  isAll?: boolean
+) => Array<Page.PageInstance<AnyObject, T> & T>

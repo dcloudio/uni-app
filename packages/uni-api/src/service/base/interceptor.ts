@@ -1,16 +1,18 @@
 import { isArray, isFunction, isPromise, isPlainObject } from '@vue/shared'
 
 import {
+  HOOKS,
   Interceptor,
   scopedInterceptors,
   globalInterceptors,
   Interceptors,
-  HOOKS,
 } from '../../helpers/interceptor'
 
 import { defineSyncApi } from '../../helpers/api'
 
 import {
+  API_ADD_INTERCEPTOR,
+  API_REMOVE_INTERCEPTOR,
   AddInterceptorProtocol,
   RemoveInterceptorProtocol,
 } from '../../protocols/base/interceptor'
@@ -81,7 +83,7 @@ function removeHook(hooks: Function[] | undefined, hook: Function) {
 }
 
 export const addInterceptor = defineSyncApi(
-  'addInterceptor',
+  API_ADD_INTERCEPTOR,
   (method: string | Interceptor, interceptor: Interceptor | undefined) => {
     if (typeof method === 'string' && isPlainObject(interceptor)) {
       mergeInterceptorHook(
@@ -96,7 +98,7 @@ export const addInterceptor = defineSyncApi(
 )
 
 export const removeInterceptor = defineSyncApi(
-  'removeInterceptor',
+  API_REMOVE_INTERCEPTOR,
   (method: string | Interceptor, interceptor: Interceptor | undefined) => {
     if (typeof method === 'string') {
       if (isPlainObject(interceptor)) {
