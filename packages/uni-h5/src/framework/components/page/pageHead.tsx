@@ -57,8 +57,17 @@ export default /*#__PURE__*/ defineComponent({
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
         ? createButtonsTsx(buttons.right)
         : []
+      const type = navigationBar.type || 'default'
+      const placeholderTsx = type !== 'transparent' && type !== 'float' && (
+        <div
+          class={{
+            'uni-placeholder': true,
+            'uni-placeholder-titlePenetrate': navigationBar.titlePenetrate,
+          }}
+        ></div>
+      )
       return (
-        <uni-page-head uni-page-head-type={navigationBar.type}>
+        <uni-page-head uni-page-head-type={type}>
           <div ref={headRef} class={clazz.value} style={style.value}>
             <div class="uni-page-head-hd">
               {backButtonTsx}
@@ -67,6 +76,7 @@ export default /*#__PURE__*/ defineComponent({
             {createPageHeadBdTsx(navigationBar, searchInput)}
             <div class="uni-page-head-ft">{...rightButtonsTsx}</div>
           </div>
+          {placeholderTsx}
         </uni-page-head>
       )
     }

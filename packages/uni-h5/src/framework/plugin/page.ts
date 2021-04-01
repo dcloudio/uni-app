@@ -1,13 +1,28 @@
-import { computed, nextTick, VNode, ComponentPublicInstance } from 'vue'
+import {
+  VNode,
+  nextTick,
+  computed,
+  ConcreteComponent,
+  ComponentPublicInstance,
+} from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 import { usePageMeta } from './provide'
 
 const SEP = '$$'
 
-const currentPages: Page.PageInstance[] = []
+const currentPagesMap = new Map<number, Page.PageInstance>()
 
-export function getCurrentPages() {
-  return currentPages
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id) => {
+    if (((page as unknown) as ComponentPublicInstance).$.isUnmounted) {
+      currentPagesMap.delete(id)
+    }
+  })
+}
+
+export function getCurrentPages(isAll: boolean = false) {
+  pruneCurrentPages() // TODO 目前页面unmounted时机较晚，前一个页面onShow里边调用getCurrentPages，可能还会获取到上一个准备被销毁的页面
+  return [...currentPagesMap.values()]
 }
 
 let id = (history.state && history.state.__id__) || 1
@@ -49,43 +64,64 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
 }
 
 export function initPage(vm: ComponentPublicInstance) {
-  currentPages.push((vm as unknown) as Page.PageInstance)
   const route = vm.$route
   ;(vm as any).$page = initPublicPage(route)
-}
-
-// TODO
-// https://github.com/vuejs/rfcs/pull/284
-// https://github.com/vuejs/vue-next/pull/3414
-function routeCache(
-  key: string,
-  cache: Map<string, VNode>,
-  pruneCacheEntry: (key: string) => void
-) {
-  const pageId = parseInt(key.split(SEP)[1])
-  if (!pageId) {
-    return
-  }
-  nextTick(() => {
-    // prune post-render after `current` has been updated
-    const keys = cache.keys()
-    for (const key of keys) {
-      const cPageId = parseInt(key.split(SEP)[1])
-      if (cPageId && cPageId > pageId) {
-        pruneCacheEntry(key)
-      }
-    }
-    console.log('customKeepAlive', JSON.stringify([...cache.keys()]))
-  })
+  currentPagesMap.set(vm.$page.id, (vm as unknown) as Page.PageInstance)
 }
 
 export function useKeepAliveRoute() {
   const route = useRoute()
   const routeKey = computed(
-    () => route.fullPath + '$$' + (history.state.__id__ || 1)
+    () => route.fullPath + SEP + (history.state.__id__ || 1)
   )
   return {
     routeKey,
     routeCache,
   }
+}
+
+// https://github.com/vuejs/rfcs/pull/284
+// https://github.com/vuejs/vue-next/pull/3414
+
+type CacheKey = string | number | ConcreteComponent
+interface KeepAliveCache {
+  get(key: CacheKey): VNode | void
+  set(key: CacheKey, value: VNode): void
+  delete(key: CacheKey): void
+  forEach(
+    fn: (value: VNode, key: CacheKey, map: Map<CacheKey, VNode>) => void,
+    thisArg?: any
+  ): void
+  pruneCacheEntry?: (cached: VNode) => void
+}
+const pageCacheMap = new Map<CacheKey, VNode>()
+const routeCache: KeepAliveCache = {
+  get(key) {
+    return pageCacheMap.get(key)
+  },
+  set(key, value) {
+    pruneRouteCache(key as string)
+    pageCacheMap.set(key, value)
+  },
+  delete(key) {
+    pageCacheMap.delete(key)
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn)
+  },
+}
+
+function pruneRouteCache(key: string) {
+  const pageId = parseInt(key.split(SEP)[1])
+  if (!pageId) {
+    return
+  }
+  routeCache.forEach((vnode, key) => {
+    const cPageId = parseInt((key as string).split(SEP)[1])
+    if (cPageId && cPageId > pageId) {
+      routeCache.delete(key)
+      routeCache.pruneCacheEntry!(vnode)
+      nextTick(() => pruneCurrentPages())
+    }
+  })
 }

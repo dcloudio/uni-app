@@ -94,11 +94,11 @@ function createRouterViewVNode(
   keepAliveRoute: ReturnType<typeof useKeepAliveRoute>
 ) {
   return createVNode(RouterView, null, {
-    default: withCtx(({ Component }) => [
+    default: withCtx(({ Component }: { Component: unknown }) => [
       (openBlock(),
       createBlock(
         KeepAlive,
-        { cache: keepAliveRoute.routeCache },
+        { matchBy: 'key', cache: keepAliveRoute.routeCache },
         [
           (openBlock(),
           createBlock(resolveDynamicComponent(Component), {

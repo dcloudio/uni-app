@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, createVNode, defineComponent, inject, provide, reactive, nextTick, computed, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
+import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
 import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -873,9 +873,17 @@ function updateCssVar(name, value) {
 }
 PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 const SEP = "$$";
-const currentPages = [];
-function getCurrentPages$1() {
-  return currentPages;
+const currentPagesMap = new Map();
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPages$1(isAll = false) {
+  pruneCurrentPages();
+  return [...currentPagesMap.values()];
 }
 let id = history.state && history.state.__id__ || 1;
 function createPageState(type) {
@@ -908,33 +916,47 @@ function initPublicPage(route) {
   };
 }
 function initPage(vm) {
-  currentPages.push(vm);
   const route = vm.$route;
   vm.$page = initPublicPage(route);
-}
-function routeCache(key, cache, pruneCacheEntry) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  nextTick(() => {
-    const keys = cache.keys();
-    for (const key2 of keys) {
-      const cPageId = parseInt(key2.split(SEP)[1]);
-      if (cPageId && cPageId > pageId) {
-        pruneCacheEntry(key2);
-      }
-    }
-    console.log("customKeepAlive", JSON.stringify([...cache.keys()]));
-  });
+  currentPagesMap.set(vm.$page.id, vm);
 }
 function useKeepAliveRoute() {
   const route = useRoute();
-  const routeKey = computed(() => route.fullPath + "$$" + (history.state.__id__ || 1));
+  const routeKey = computed(() => route.fullPath + SEP + (history.state.__id__ || 1));
   return {
     routeKey,
     routeCache
   };
+}
+const pageCacheMap = new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      nextTick(() => pruneCurrentPages());
+    }
+  });
 }
 var Layout = defineComponent({
   name: "Layout",
@@ -979,6 +1001,7 @@ function createRouterViewVNode(keepAliveRoute) {
     default: withCtx(({
       Component
     }) => [(openBlock(), createBlock(KeepAlive, {
+      matchBy: "key",
       cache: keepAliveRoute.routeCache
     }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
       key: keepAliveRoute.routeKey.value
@@ -1088,17 +1111,36 @@ function initApp(vm) {
 function initMixin(app) {
   app.mixin({
     created() {
-      if (isApp(this)) {
+      this.__isApp = isApp(this);
+      this.__isPage = !this.__isApp && isPage(this);
+      if (this.__isApp) {
         initApp(this);
-      } else if (isPage(this)) {
+      } else if (this.__isPage) {
         initPage(this);
         this.$callHook("onLoad", {});
+        this.__isVisible = true;
         this.$callHook("onShow");
       }
     },
     mounted() {
-      if (isPage(this)) {
+      if (this.__isPage) {
         this.$callHook("onReady");
+      }
+    },
+    beforeActivate() {
+      if (this.__isPage && !this.__isVisible) {
+        this.$callHook("onShow");
+      }
+    },
+    beforeDeactivate() {
+      if (this.__isPage) {
+        this.__isVisible = false;
+        this.$callHook("onHide");
+      }
+    },
+    beforeUnmount() {
+      if (this.__isPage) {
+        this.$callHook("onUnload");
       }
     }
   });
@@ -1605,7 +1647,7 @@ const _sfc_main$p = {
     }
   }
 };
-const _hoisted_1$c = {class: "uni-audio-default"};
+const _hoisted_1$d = {class: "uni-audio-default"};
 const _hoisted_2$6 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
@@ -1621,7 +1663,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$c, [
+    createVNode("div", _hoisted_1$d, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1770,7 +1812,7 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-var index_vue_vue_type_style_index_0_lang$g = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$f = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -2291,7 +2333,7 @@ const _sfc_main$o = {
     }
   }
 };
-const _hoisted_1$b = {
+const _hoisted_1$c = {
   ref: "canvas",
   width: "300",
   height: "150"
@@ -2303,7 +2345,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$b, null, 512),
+    createVNode("canvas", _hoisted_1$c, null, 512),
     createVNode("div", _hoisted_2$5, [
       renderSlot(_ctx.$slots, "default")
     ]),
@@ -2390,12 +2432,12 @@ const _sfc_main$n = {
     }
   }
 };
-const _hoisted_1$a = {class: "uni-checkbox-wrapper"};
+const _hoisted_1$b = {class: "uni-checkbox-wrapper"};
 function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$a, [
+    createVNode("div", _hoisted_1$b, [
       createVNode("div", {
         class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
         style: {color: $props.color}
@@ -2405,7 +2447,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["disabled"]);
 }
 _sfc_main$n.render = _sfc_render$l;
-var index_vue_vue_type_style_index_0_lang$f = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$e = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
 const _sfc_main$m = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
@@ -3191,7 +3233,7 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   }, _ctx.$attrs), null, 16, ["id"]);
 }
 _sfc_main$l.render = _sfc_render$j;
-var index_vue_vue_type_style_index_0_lang$e = "\r\n";
+var index_vue_vue_type_style_index_0_lang$d = "\r\n";
 const _sfc_main$k = {
   name: "Form",
   mixins: [listeners],
@@ -3366,7 +3408,7 @@ function getBaseSystemInfo() {
     windowWidth
   };
 }
-var index_vue_vue_type_style_index_0_lang$d = "\nuni-image {\r\n  width: 320px;\r\n  height: 240px;\r\n  display: inline-block;\r\n  overflow: hidden;\r\n  position: relative;\n}\nuni-image[hidden] {\r\n  display: none;\n}\nuni-image > div {\r\n  width: 100%;\r\n  height: 100%;\n}\nuni-image > img {\r\n  -webkit-touch-callout: none;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  display: block;\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\n}\nuni-image > .uni-image-will-change {\r\n  will-change: transform;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$c = "\nuni-image {\r\n  width: 320px;\r\n  height: 240px;\r\n  display: inline-block;\r\n  overflow: hidden;\r\n  position: relative;\n}\nuni-image[hidden] {\r\n  display: none;\n}\nuni-image > div {\r\n  width: 100%;\r\n  height: 100%;\n}\nuni-image > img {\r\n  -webkit-touch-callout: none;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  display: block;\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\n}\nuni-image > .uni-image-will-change {\r\n  will-change: transform;\n}\r\n";
 const _sfc_main$j = {
   name: "Image",
   props: {
@@ -3714,7 +3756,7 @@ const _sfc_main$i = {
     }
   }
 };
-const _hoisted_1$9 = {
+const _hoisted_1$a = {
   ref: "wrapper",
   class: "uni-input-wrapper"
 };
@@ -3723,7 +3765,7 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$9, [
+    createVNode("div", _hoisted_1$a, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -3755,7 +3797,7 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$i.render = _sfc_render$g;
-var index_vue_vue_type_style_index_0_lang$c = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$b = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
 const _sfc_main$h = {
   name: "Label",
   mixins: [emitter],
@@ -4202,7 +4244,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-var index_vue_vue_type_style_index_0_lang$b = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$a = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -4823,8 +4865,13 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$g.render = _sfc_render$e;
-var index_vue_vue_type_style_index_0_lang$a = "\nuni-navigator {\r\n    height: auto;\r\n    width: auto;\r\n    display: block;\r\n    cursor: pointer;\n}\nuni-navigator[hidden] {\r\n    display: none;\n}\n.navigator-hover {\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n    opacity: 0.7;\n}\r\n";
-const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
+const OPEN_TYPES = [
+  "navigate",
+  "redirect",
+  "switchTab",
+  "reLaunch",
+  "navigateBack"
+];
 const _sfc_main$f = {
   name: "Navigator",
   mixins: [hover],
@@ -4855,6 +4902,10 @@ const _sfc_main$f = {
     hoverStayTime: {
       type: [Number, String],
       default: 600
+    },
+    exists: {
+      type: String,
+      default: ""
     }
   },
   methods: {
@@ -4871,7 +4922,8 @@ const _sfc_main$f = {
           break;
         case "redirect":
           uni.redirectTo({
-            url: this.url
+            url: this.url,
+            exists: this.exists
           });
           break;
         case "switchTab":
@@ -4894,21 +4946,21 @@ const _sfc_main$f = {
   }
 };
 function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
-  return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
+  return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
     onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart && _ctx._hoverTouchStart(...args)),
     onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd && _ctx._hoverTouchEnd(...args)),
     onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel && _ctx._hoverTouchCancel(...args)),
     onClick: _cache[4] || (_cache[4] = (...args) => $options._onClick && $options._onClick(...args))
-  }, _ctx.$attrs), [
+  }, [
     renderSlot(_ctx.$slots, "default")
-  ], 16)) : (openBlock(), createBlock("uni-navigator", mergeProps({
+  ], 34)) : (openBlock(), createBlock("uni-navigator", {
     key: 1,
     onClick: _cache[5] || (_cache[5] = (...args) => $options._onClick && $options._onClick(...args))
-  }, _ctx.$attrs), [
+  }, [
     renderSlot(_ctx.$slots, "default")
-  ], 16));
+  ]));
 }
 _sfc_main$f.render = _sfc_render$d;
 const VALUES = {
@@ -5013,7 +5065,7 @@ const _sfc_main$e = {
     }
   }
 };
-const _hoisted_1$8 = {
+const _hoisted_1$9 = {
   key: 0,
   class: "uni-progress-info"
 };
@@ -5028,7 +5080,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-progress-inner-bar"
       }, null, 4)
     ], 4),
-    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$8, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
+    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$9, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
 _sfc_main$e.render = _sfc_render$c;
@@ -5114,12 +5166,12 @@ const _sfc_main$d = {
     }
   }
 };
-const _hoisted_1$7 = {class: "uni-radio-wrapper"};
+const _hoisted_1$8 = {class: "uni-radio-wrapper"};
 function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$7, [
+    createVNode("div", _hoisted_1$8, [
       createVNode("div", {
         class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
         style: $data.radioChecked ? $options.checkedStyle : ""
@@ -5530,10 +5582,10 @@ const _sfc_main$a = {
     }
   }
 };
-const _hoisted_1$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
+const _hoisted_1$7 = /* @__PURE__ */ createVNode("div", null, null, -1);
 function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$6
+    _hoisted_1$7
   ], 16);
 }
 _sfc_main$a.render = _sfc_render$9;
@@ -6622,7 +6674,7 @@ const _sfc_main$9 = {
     }
   }
 };
-const _hoisted_1$5 = {
+const _hoisted_1$6 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
@@ -6657,7 +6709,7 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
 }, null, -1);
 function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$5, [
+    createVNode("div", _hoisted_1$6, [
       createVNode("div", {
         ref: "main",
         style: {
@@ -6867,13 +6919,13 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-slider-wrapper"};
+const _hoisted_1$5 = {class: "uni-slider-wrapper"};
 const _hoisted_2$3 = {class: "uni-slider-tap-area"};
 function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$4, [
+    createVNode("div", _hoisted_1$5, [
       createVNode("div", _hoisted_2$3, [
         createVNode("div", {
           style: $options.setBgColor,
@@ -7009,12 +7061,12 @@ const _sfc_main$6 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-switch-wrapper"};
+const _hoisted_1$4 = {class: "uni-switch-wrapper"};
 function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$4, [
       withDirectives(createVNode("div", {
         class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
         style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
@@ -7316,7 +7368,7 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$2 = {class: "uni-textarea-wrapper"};
+const _hoisted_1$3 = {class: "uni-textarea-wrapper"};
 const _hoisted_2$2 = {class: "uni-textarea-compute"};
 function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
@@ -7324,7 +7376,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$2, [
+    createVNode("div", _hoisted_1$3, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -7378,18 +7430,19 @@ const _sfc_main$3 = {
     "label-click": "clickHandler"
   }
 };
+const _hoisted_1$2 = {key: 1};
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-view", mergeProps({
+  return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-view", {
     key: 0,
     class: [_ctx.hovering ? _ctx.hoverClass : ""],
     onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart && _ctx._hoverTouchStart(...args)),
     onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd && _ctx._hoverTouchEnd(...args)),
     onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel && _ctx._hoverTouchCancel(...args))
-  }, _ctx.$attrs), [
+  }, [
     renderSlot(_ctx.$slots, "default")
-  ], 16)) : (openBlock(), createBlock("uni-view", mergeProps({key: 1}, _ctx.$attrs), [
+  ], 34)) : (openBlock(), createBlock("uni-view", _hoisted_1$2, [
     renderSlot(_ctx.$slots, "default")
-  ], 16));
+  ]));
 }
 _sfc_main$3.render = _sfc_render$3;
 const UniViewJSBridge$1 = extend(ViewJSBridge, {
@@ -8300,8 +8353,15 @@ var PageHead = /* @__PURE__ */ defineComponent({
       const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar) : null;
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      const type = navigationBar.type || "default";
+      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
+        class: {
+          "uni-placeholder": true,
+          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+        }
+      }, null, 2);
       return createVNode("uni-page-head", {
-        "uni-page-head-type": navigationBar.type
+        "uni-page-head-type": type
       }, [createVNode("div", {
         ref: headRef,
         class: clazz.value,
@@ -8310,7 +8370,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
         class: "uni-page-head-hd"
       }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
         class: "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6)], 8, ["uni-page-head-type"]);
+      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
     };
   }
 });

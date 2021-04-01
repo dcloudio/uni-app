@@ -6,24 +6,23 @@
     @touchend="_hoverTouchEnd"
     @touchcancel="_hoverTouchCancel"
     @click="_onClick"
-    v-bind="$attrs"
   >
     <slot />
   </uni-navigator>
-  <uni-navigator
-    v-else
-    @click="_onClick"
-    v-bind="$attrs"
-  >
+  <uni-navigator v-else @click="_onClick">
     <slot />
   </uni-navigator>
 </template>
 <script>
-import {
-  hover
-} from '../../mixins'
+import hover from '../../mixins/hover'
 
-const OPEN_TYPES = ['navigate', 'redirect', 'switchTab', 'reLaunch', 'navigateBack']
+const OPEN_TYPES = [
+  'navigate',
+  'redirect',
+  'switchTab',
+  'reLaunch',
+  'navigateBack',
+]
 
 export default {
   name: 'Navigator',
@@ -31,87 +30,77 @@ export default {
   props: {
     hoverClass: {
       type: String,
-      default: 'navigator-hover'
+      default: 'navigator-hover',
     },
     url: {
       type: String,
-      default: ''
+      default: '',
     },
     openType: {
       type: String,
       default: 'navigate',
-      validator (value) {
+      validator(value) {
         return ~OPEN_TYPES.indexOf(value)
-      }
+      },
     },
     delta: {
       type: Number,
-      default: 1
+      default: 1,
     },
     hoverStartTime: {
       type: [Number, String],
-      default: 20
+      default: 20,
     },
     hoverStayTime: {
       type: [Number, String],
-      default: 600
-    }
+      default: 600,
+    },
+    exists: {
+      type: String,
+      default: '',
+    },
   },
 
   methods: {
-    _onClick ($event) {
+    _onClick($event) {
       if (this.openType !== 'navigateBack' && !this.url) {
-        console.error('<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab')
+        console.error(
+          '<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab'
+        )
         return
       }
 
       switch (this.openType) {
         case 'navigate':
           uni.navigateTo({
-            url: this.url
+            url: this.url,
           })
           break
         case 'redirect':
           uni.redirectTo({
-            url: this.url
+            url: this.url,
+            exists: this.exists,
           })
           break
         case 'switchTab':
           uni.switchTab({
-            url: this.url
+            url: this.url,
           })
           break
         case 'reLaunch':
           uni.reLaunch({
-            url: this.url
+            url: this.url,
           })
           break
         case 'navigateBack':
           uni.navigateBack({
-            delta: this.delta
+            delta: this.delta,
           })
           break
         default:
           break
       }
-    }
-  }
+    },
+  },
 }
 </script>
-<style>
-  uni-navigator {
-    height: auto;
-    width: auto;
-    display: block;
-    cursor: pointer;
-  }
-
-  uni-navigator[hidden] {
-    display: none;
-  }
-
-  .navigator-hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    opacity: 0.7;
-  }
-</style>

@@ -1,3 +1,13 @@
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    __isApp: boolean
+    __isPage: boolean
+    __isUnload: boolean
+    __isVisible: boolean
+    $page: Page.PageInstance['$page']
+  }
+}
+
 import plugin from './framework/plugin'
 export { plugin }
 

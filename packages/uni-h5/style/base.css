@@ -16,9 +16,17 @@ body {
 }
 
 uni-app,
-uni-page {
+uni-page,
+uni-page-wrapper,
+uni-page-body {
+  position: relative;
   display: block;
   box-sizing: border-box;
   width: 100%;
+}
+
+uni-app,
+uni-page,
+uni-page-wrapper {
   height: 100%;
 }

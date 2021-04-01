@@ -3393,6 +3393,43 @@ function getTransitionRawChildren(children, keepComment = false) {
 }
 
 const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
+class Cache {
+    constructor(max) {
+        this.max = max;
+        this._cache = new Map();
+        this._keys = new Set();
+        this._max = parseInt(max, 10);
+    }
+    get(key) {
+        const { _cache, _keys, _max } = this;
+        const cached = _cache.get(key);
+        if (cached) {
+            // make this key the freshest
+            _keys.delete(key);
+            _keys.add(key);
+        }
+        else {
+            _keys.add(key);
+            // prune oldest entry
+            if (_max && _keys.size > _max) {
+                const staleKey = _keys.values().next().value;
+                this.pruneCacheEntry(_cache.get(staleKey));
+                this.delete(staleKey);
+            }
+        }
+        return cached;
+    }
+    set(key, value) {
+        this._cache.set(key, value);
+    }
+    delete(key) {
+        this._cache.delete(key);
+        this._keys.delete(key);
+    }
+    forEach(fn, thisArg) {
+        this._cache.forEach(fn.bind(thisArg));
+    }
+}
 const KeepAliveImpl = {
     name: `KeepAlive`,
     // Marker for special handling inside the renderer. We are not using a ===
@@ -3403,7 +3440,11 @@ const KeepAliveImpl = {
         include: [String, RegExp, Array],
         exclude: [String, RegExp, Array],
         max: [String, Number],
-        cache: Function // fixed by xxxxxx
+        matchBy: {
+            type: String,
+            default: 'name'
+        },
+        cache: Object
     },
     setup(props, { slots }) {
         const instance = getCurrentInstance();
@@ -3418,14 +3459,35 @@ const KeepAliveImpl = {
         if (!sharedContext.renderer) {
             return slots.default;
         }
-        const cache = new Map();
-        const keys = new Set();
+        if ((process.env.NODE_ENV !== 'production') && props.cache && hasOwn(props, 'max')) {
+            warn('The `max` prop will be ignored if you provide a custom caching strategy');
+        }
+        const cache = props.cache || new Cache(props.max);
+        cache.pruneCacheEntry = pruneCacheEntry;
         let current = null;
+        function pruneCacheEntry(cached) {
+            if (!current ||
+                cached.type !== current.type ||
+                (props.matchBy === 'key' && cached.key !== current.key)) {
+                unmount(cached);
+            }
+            else if (current) {
+                // current active instance should no longer be kept-alive.
+                // we can't unmount it now but it might be later, so reset its flag now.
+                resetShapeFlag(current);
+            }
+        }
         const parentSuspense = instance.suspense;
         const { renderer: { p: patch, m: move, um: _unmount, o: { createElement } } } = sharedContext;
         const storageContainer = createElement('div');
         sharedContext.activate = (vnode, container, anchor, isSVG, optimized) => {
             const instance = vnode.component;
+            if (instance.ba) {
+                const currentState = instance.isDeactivated;
+                instance.isDeactivated = false;
+                invokeArrayFns(instance.ba);
+                instance.isDeactivated = currentState;
+            }
             move(vnode, container, anchor, 0 /* ENTER */, parentSuspense);
             // in case props have changed
             patch(instance.vnode, vnode, container, anchor, instance, parentSuspense, isSVG, vnode.slotScopeIds, optimized);
@@ -3442,8 +3504,14 @@ const KeepAliveImpl = {
         };
         sharedContext.deactivate = (vnode) => {
             const instance = vnode.component;
+            if (instance.bda) {
+                invokeKeepAliveHooks(instance.bda);
+            }
             move(vnode, storageContainer, null, 1 /* LEAVE */, parentSuspense);
             queuePostRenderEffect(() => {
+                if (instance.bda) {
+                    resetHookState(instance.bda);
+                }
                 if (instance.da) {
                     invokeArrayFns(instance.da);
                 }
@@ -3461,29 +3529,15 @@ const KeepAliveImpl = {
         }
         function pruneCache(filter) {
             cache.forEach((vnode, key) => {
-                const name = getComponentName(vnode.type);
+                const name = getMatchingName(vnode, props.matchBy);
                 if (name && (!filter || !filter(name))) {
-                    pruneCacheEntry(key);
+                    cache.delete(key);
+                    pruneCacheEntry(vnode);
                 }
             });
         }
-        function pruneCacheEntry(key) {
-            const cached = cache.get(key);
-            if (!current ||
-                cached.type !== current.type ||
-                cached.key !== current.key) {
-                unmount(cached);
-            }
-            else if (current) {
-                // current active instance should no longer be kept-alive.
-                // we can't unmount it now but it might be later, so reset its flag now.
-                resetShapeFlag(current);
-            }
-            cache.delete(key);
-            keys.delete(key);
-        }
         // prune cache on include/exclude prop change
-        watch(() => [props.include, props.exclude], ([include, exclude]) => {
+        watch(() => [props.include, props.exclude, props.matchBy], ([include, exclude]) => {
             include && pruneCache(name => matches(include, name));
             exclude && pruneCache(name => !matches(exclude, name));
         }, 
@@ -3500,10 +3554,17 @@ const KeepAliveImpl = {
         onMounted(cacheSubtree);
         onUpdated(cacheSubtree);
         onBeforeUnmount(() => {
-            cache.forEach(cached => {
+            cache.forEach((cached, key) => {
+                cache.delete(key);
+                pruneCacheEntry(cached);
                 const { subTree, suspense } = instance;
                 const vnode = getInnerChild(subTree);
-                if (cached.type === vnode.type) {
+                if (cached.type === vnode.type &&
+                    (props.matchBy !== 'key' || cached.key === vnode.key)) {
+                    // invoke its beforeDeactivate hook here
+                    if (vnode.component.bda) {
+                        invokeArrayFns(vnode.component.bda);
+                    }
                     // current instance will be unmounted as part of keep-alive's unmount
                     resetShapeFlag(vnode);
                     // but invoke its deactivated hook here
@@ -3511,7 +3572,6 @@ const KeepAliveImpl = {
                     da && queuePostRenderEffect(da, suspense);
                     return;
                 }
-                unmount(cached);
             });
         });
         return () => {
@@ -3530,29 +3590,25 @@ const KeepAliveImpl = {
             }
             else if (!isVNode(rawVNode) ||
                 (!(rawVNode.shapeFlag & 4 /* STATEFUL_COMPONENT */) &&
-                    !(rawVNode.shapeFlag & 128 /* SUSPENSE */))) {
+                    !isSuspense(rawVNode.type))) {
                 current = null;
                 return rawVNode;
             }
             let vnode = getInnerChild(rawVNode);
             const comp = vnode.type;
-            const name = getComponentName(comp);
-            const { include, exclude, max } = props;
+            const name = getMatchingName(vnode, props.matchBy);
+            const { include, exclude } = props;
             if ((include && (!name || !matches(include, name))) ||
                 (exclude && name && matches(exclude, name))) {
                 current = vnode;
                 return rawVNode;
             }
             const key = vnode.key == null ? comp : vnode.key;
-            // fixed by xxxxxx
-            if (typeof props.cache === 'function') {
-                props.cache(key, cache, pruneCacheEntry);
-            }
             const cachedVNode = cache.get(key);
             // clone vnode if it's reused because we are going to mutate it
             if (vnode.el) {
                 vnode = cloneVNode(vnode);
-                if (rawVNode.shapeFlag & 128 /* SUSPENSE */) {
+                if (isSuspense(rawVNode.type)) {
                     rawVNode.ssContent = vnode;
                 }
             }
@@ -3572,21 +3628,11 @@ const KeepAliveImpl = {
                 }
                 // avoid vnode being mounted as fresh
                 vnode.shapeFlag |= 512 /* COMPONENT_KEPT_ALIVE */;
-                // make this key the freshest
-                keys.delete(key);
-                keys.add(key);
-            }
-            else {
-                keys.add(key);
-                // prune oldest entry
-                if (max && keys.size > parseInt(max, 10)) {
-                    pruneCacheEntry(keys.values().next().value);
-                }
             }
             // avoid vnode being unmounted
             vnode.shapeFlag |= 256 /* COMPONENT_SHOULD_KEEP_ALIVE */;
             current = vnode;
-            return rawVNode;
+            return isSuspense(rawVNode.type) ? rawVNode : vnode;
         };
     }
 };
@@ -3606,8 +3652,14 @@ function matches(pattern, name) {
     /* istanbul ignore next */
     return false;
 }
+function onBeforeActivate(hook, target) {
+    registerKeepAliveHook(hook, "ba" /* BEFORE_ACTIVATE */, target);
+}
 function onActivated(hook, target) {
     registerKeepAliveHook(hook, "a" /* ACTIVATED */, target);
+}
+function onBeforeDeactivate(hook, target) {
+    registerKeepAliveHook(hook, "bda" /* BEFORE_DEACTIVATE */, target);
 }
 function onDeactivated(hook, target) {
     registerKeepAliveHook(hook, "da" /* DEACTIVATED */, target);
@@ -3628,6 +3680,7 @@ function registerKeepAliveHook(hook, type, target = currentInstance) {
             }
             hook();
         });
+    wrappedHook.__called = false;
     injectHook(type, wrappedHook, target);
     // In addition to registering it on the target instance, we walk up the parent
     // chain and register it on all ancestor instances that are keep-alive roots.
@@ -3663,7 +3716,25 @@ function resetShapeFlag(vnode) {
     vnode.shapeFlag = shapeFlag;
 }
 function getInnerChild(vnode) {
-    return vnode.shapeFlag & 128 /* SUSPENSE */ ? vnode.ssContent : vnode;
+    return isSuspense(vnode.type) ? vnode.ssContent : vnode;
+}
+function getMatchingName(vnode, matchBy) {
+    if (matchBy === 'name') {
+        return getComponentName(vnode.type);
+    }
+    return String(vnode.key);
+}
+function invokeKeepAliveHooks(hooks) {
+    for (let i = 0; i < hooks.length; i++) {
+        const hook = hooks[i];
+        if (!hook.__called) {
+            hook();
+            hook.__called = true;
+        }
+    }
+}
+function resetHookState(hooks) {
+    hooks.forEach((hook) => (hook.__called = false));
 }
 
 const isInternalKey = (key) => key[0] === '_' || key === '$stable';
@@ -4842,7 +4913,9 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         if (parentComponent) {
             let subTree = parentComponent.subTree;
-            if ((process.env.NODE_ENV !== 'production') && subTree.patchFlag & 2048 /* DEV_ROOT_FRAGMENT */) {
+            if ((process.env.NODE_ENV !== 'production') &&
+                subTree.patchFlag > 0 &&
+                subTree.patchFlag & 2048 /* DEV_ROOT_FRAGMENT */) {
                 subTree =
                     filterSingleRoot(subTree.children) || subTree;
             }
@@ -5198,12 +5271,14 @@ function baseCreateRenderer(options, createHydrationFns) {
                     }, parentSuspense);
                 }
                 // activated hook for keep-alive roots.
-                // #1742 activated hook must be accessed after first render
+                // #1742 beforeActivate/activated hook must be accessed after first render
                 // since the hook may be injected by a child keep-alive
-                const { a } = instance;
-                if (a &&
-                    initialVNode.shapeFlag & 256 /* COMPONENT_SHOULD_KEEP_ALIVE */) {
-                    queuePostRenderEffect(a, parentSuspense);
+                const { ba, a } = instance;
+                if (initialVNode.shapeFlag & 256 /* COMPONENT_SHOULD_KEEP_ALIVE */) {
+                    ba && invokeKeepAliveHooks(ba);
+                    a && queuePostRenderEffect(a, parentSuspense);
+                    // reset hook state
+                    ba && queuePostRenderEffect(() => resetHookState(ba), parentSuspense);
                 }
                 instance.isMounted = true;
                 if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
@@ -5628,7 +5703,10 @@ function baseCreateRenderer(options, createHydrationFns) {
             if (shouldInvokeDirs) {
                 invokeDirectiveHook(vnode, null, parentComponent, 'beforeUnmount');
             }
-            if (dynamicChildren &&
+            if (shapeFlag & 64 /* TELEPORT */) {
+                vnode.type.remove(vnode, parentComponent, parentSuspense, optimized, internals, doRemove);
+            }
+            else if (dynamicChildren &&
                 // #1153: fast path should not be taken for non-stable (v-for) fragments
                 (type !== Fragment ||
                     (patchFlag > 0 && patchFlag & 64 /* STABLE_FRAGMENT */))) {
@@ -5640,9 +5718,6 @@ function baseCreateRenderer(options, createHydrationFns) {
                     patchFlag & 256 /* UNKEYED_FRAGMENT */)) ||
                 (!optimized && shapeFlag & 16 /* ARRAY_CHILDREN */)) {
                 unmountChildren(children, parentComponent, parentSuspense);
-            }
-            if (shapeFlag & 64 /* TELEPORT */) {
-                vnode.type.remove(vnode, parentComponent, parentSuspense, optimized, internals, doRemove);
             }
             if (doRemove) {
                 remove(vnode);
@@ -6647,7 +6722,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // assets
     components, directives, 
     // lifecycle
-    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, 
+    beforeMount, mounted, beforeUpdate, updated, beforeActivate, activated, beforeDeactivate, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, 
     // public API
     expose } = options;
     const publicThis = instance.proxy;
@@ -6857,8 +6932,14 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     if (updated) {
         onUpdated(updated.bind(publicThis));
     }
+    if (beforeActivate) {
+        onBeforeActivate(beforeActivate.bind(publicThis));
+    }
     if (activated) {
         onActivated(activated.bind(publicThis));
+    }
+    if (beforeDeactivate) {
+        onBeforeDeactivate(beforeDeactivate.bind(publicThis));
     }
     if (deactivated) {
         onDeactivated(deactivated.bind(publicThis));
@@ -7351,7 +7432,9 @@ function createComponentInstance(vnode, parent, suspense) {
         u: null,
         um: null,
         bum: null,
+        bda: null,
         da: null,
+        ba: null,
         a: null,
         rtg: null,
         rtc: null,
@@ -9321,4 +9404,4 @@ const compile$1 = () => {
     }
 };
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
