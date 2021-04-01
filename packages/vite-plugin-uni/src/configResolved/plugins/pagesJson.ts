@@ -170,8 +170,10 @@ function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
 }
 
 function generatePageRoute({ name, path, meta }: PageRouteOptions) {
+  const { isEntry } = meta
+  const alias = isEntry ? `\n  alias:'/${path}',` : ''
   return `{
-  path:'/${meta.isEntry ? '' : path}',
+  path:'/${isEntry ? '' : path}',${alias}
   component:{
     render() {
       return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(${name})]), _: 1 /* STABLE */}))
@@ -187,7 +189,6 @@ function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
 
 function generateRoutes(pagesJson: UniApp.PagesJson) {
   return `window.__uniRoutes=[${[
-    `{ path: '/${pagesJson.pages[0].path}', redirect: '/' }`,
     ...generatePagesRoute(normalizePagesRoute(pagesJson)),
   ].join(',')}]`
 }

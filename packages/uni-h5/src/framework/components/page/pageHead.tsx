@@ -45,7 +45,6 @@ export default /*#__PURE__*/ defineComponent({
       usePageHeadSearchInput(navigationBar)) as PageHeadSearchInput
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ &&
       usePageHeadTransparent(headRef, navigationBar)
-
     return () => {
       // 单页面无需back按钮
       const backButtonTsx = __UNI_FEATURE_PAGES__
@@ -86,7 +85,7 @@ export default /*#__PURE__*/ defineComponent({
 function createBackButtonTsx(navigationBar: UniApp.PageNavigationBar) {
   if (navigationBar.backButton) {
     return (
-      <div class="uni-page-head-btn">
+      <div class="uni-page-head-btn" onClick={onPageHeadBackButton}>
         {createSvgIconVNode(
           ICON_PATH_BACK,
           navigationBar.type === 'transparent'
@@ -204,6 +203,18 @@ function createPageHeadSearchInputTsx(
       />
     </div>
   )
+}
+
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: '/',
+    })
+  } else {
+    ;(uni.navigateBack as Function)({
+      from: 'backbutton',
+    })
+  }
 }
 
 function usePageHead(navigationBar: UniApp.PageNavigationBar) {

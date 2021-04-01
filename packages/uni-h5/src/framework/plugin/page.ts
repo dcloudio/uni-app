@@ -56,7 +56,7 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
   return {
     id,
     path: route.path,
-    route: normalizeRoute((route.meta.route as string) || route.path),
+    route: normalizeRoute(route.path),
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {}, // $route.query
     meta: usePageMeta(),

@@ -133,9 +133,11 @@ function createNormalizeUrl(type: string) {
     url = getRealRoute(url)
     const pagePath = url.split('?')[0]
     // 匹配路由是否存在
-    const routeOptions = __uniRoutes.find(
-      ({ path, redirect }) => path === pagePath || redirect === pagePath
-    )
+    if (url === '/') {
+      // 首页
+      url = __uniRoutes[0].path
+    }
+    const routeOptions = __uniRoutes.find(({ path }) => path === pagePath)
 
     if (!routeOptions) {
       return 'page `' + url + '` is not found'

@@ -38,7 +38,7 @@ declare namespace UniApp {
 
   interface UniRoute {
     path: string
-    redirect?: string
+    alias?: string
     meta: PageRouteMeta
     component?: any
   }

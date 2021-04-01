@@ -757,32 +757,17 @@ function createRouterOptions() {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: [
-      {path: __uniRoutes[0].path, redirect: "/"},
-      ...__uniRoutes
-    ],
+    routes: __uniRoutes,
     scrollBehavior
   };
 }
-function initGuard(router) {
-  router.beforeEach(beforeEach);
-  router.afterEach(afterEach);
-}
 function createAppRouter(router) {
-  initGuard(router);
   return router;
 }
 function initHistory() {
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
   return history2;
 }
-const beforeEach = (to, from, next) => {
-  next();
-};
-const afterEach = (to, from, failure) => {
-  console.log("afterEach.id", history.state.__id__);
-  console.log("afterEach", to, from, failure, JSON.stringify(history.state));
-};
 var TabBar = /* @__PURE__ */ defineComponent({
   name: "TabBar"
 });
@@ -912,7 +897,7 @@ function initPublicPage(route) {
   return {
     id,
     path: route.path,
-    route: normalizeRoute(route.meta.route || route.path),
+    route: normalizeRoute(route.path),
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {},
     meta: usePageMeta()
@@ -8182,7 +8167,10 @@ function createNormalizeUrl(type) {
   return function normalizeUrl(url, params) {
     url = getRealRoute(url);
     const pagePath = url.split("?")[0];
-    const routeOptions = __uniRoutes.find(({path, redirect}) => path === pagePath || redirect === pagePath);
+    if (url === "/") {
+      url = __uniRoutes[0].path;
+    }
+    const routeOptions = __uniRoutes.find(({path}) => path === pagePath);
     if (!routeOptions) {
       return "page `" + url + "` is not found";
     }
@@ -8378,27 +8366,25 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (options) => {
   }
   getApp().$router.go(-options.delta);
 }, NavigateBackProtocol, NavigateBackOptions);
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, (options, callback) => {
+function navigate(type, url, callback) {
   const router = getApp().$router;
-  router.push({
-    path: options.url,
+  router[type === "navigateTo" ? "push" : "replace"]({
+    path: url,
     force: true,
-    state: createPageState("navigateTo")
+    state: createPageState(type)
   }).then((failure) => {
     if (isNavigationFailure(failure)) {
       return callback({
-        errMsg: `${API_NAVIGATE_TO}:fail ${failure.message}`
+        errMsg: `:fail ${failure.message}`
       });
     }
     callback();
   });
-}, NavigateToProtocol, NavigateToOptions);
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, () => {
-}, RedirectToProtocol, RedirectToOptions);
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, () => {
-}, ReLaunchProtocol, ReLaunchOptions);
-const switchTab = defineAsyncApi(API_SWITCH_TAB, () => {
-}, SwitchTabProtocol, SwitchTabOptions);
+}
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, (options, callback) => navigate(API_NAVIGATE_TO, options.url, callback), NavigateToProtocol, NavigateToOptions);
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, (options, callback) => navigate(API_REDIRECT_TO, options.url, callback), RedirectToProtocol, RedirectToOptions);
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, (options, callback) => navigate(API_RE_LAUNCH, options.url, callback), ReLaunchProtocol, ReLaunchOptions);
+const switchTab = defineAsyncApi(API_SWITCH_TAB, (options, callback) => navigate(API_SWITCH_TAB, options.url, callback), SwitchTabProtocol, SwitchTabOptions);
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
@@ -8570,8 +8556,9 @@ var PageHead = /* @__PURE__ */ defineComponent({
 function createBackButtonTsx(navigationBar) {
   if (navigationBar.backButton) {
     return createVNode("div", {
-      class: "uni-page-head-btn"
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)]);
+      class: "uni-page-head-btn",
+      onClick: onPageHeadBackButton
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)], 8, ["onClick"]);
   }
 }
 function createButtonsTsx(btns) {
@@ -8666,6 +8653,17 @@ function createPageHeadSearchInputTsx(navigationBar, {
     onBlur,
     onInput
   }, null, 8, ["focus", "disabled", "style", "placeholder-style", "onFocus", "onBlur", "onInput"])], 4);
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: "/"
+    });
+  } else {
+    uni.navigateBack({
+      from: "backbutton"
+    });
+  }
 }
 function usePageHead(navigationBar) {
   const clazz = computed(() => {
