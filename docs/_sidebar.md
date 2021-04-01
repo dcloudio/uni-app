@@ -27,6 +27,7 @@
 * [混合开发](hybrid.md)
 * [uni小程序sdk](https://nativesupport.dcloud.net.cn/README)
 * 运营服务
+  * [App升级中心](uniCloud/upgrade-center.md)
   * [uni一键登录](univerify.md)
   * [统一推送uniPush](unipush.md)
   * [uni统计](uni-stat.md)
