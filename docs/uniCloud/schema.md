@@ -1278,7 +1278,8 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 - 如果配置了字段的component属性，则严格按component的配置执行。
 - 如果没有配置component属性，那么默认有如下策略：
   * 字段类型为bool时，默认使用switch组件
-  * 字段类型为Array时，默认使用uni-data-checkbox组件
+  * 字段类型为Array时，默认使用uni-data-checkbox组件(显示为多选框)
+  * 字段类型为int且使用enum时，默认使用uni-data-checkbox组件(显示为单选框)
   * 字段类型为int时，满足以下2个条件时，使用slider组件
    - 必填字段
    - 配置 `minimum` 或 `maximum`
