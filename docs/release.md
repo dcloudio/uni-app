@@ -1,3 +1,10 @@
+#### 3.1.7.20210330
+* 【uni-app】
+  + App-Android平台 修复 3.1.6 版本引出的 nvue scroll-view组件设置 scroll-x 为 true 时可能引起闪退的Bug [详情](https://ask.dcloud.net.cn/question/119858)
+  + App-iOS平台 修复 picker 组件部分情况下显示异常的Bug [详情](https://ask.dcloud.net.cn/question/119591)
+* 【App插件(含5+App和uni-app的App端)】
+  + iOS 平台 修复 一键登录 授权登录界面使用浅色背景可能看到 loading 显示效果的Bug
+
 #### 3.1.6.20210326
 * 【uni-app】
   + App平台、H5平台 优化 uni.showModal、uni.showActionSheet 等 API 内置国际化支持 [详情](https://uniapp.dcloud.io/collocation/i18n)
