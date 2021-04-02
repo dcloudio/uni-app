@@ -121,6 +121,7 @@ function isCustomElement(tag) {
 function isNativeTag(tag) {
     return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag);
 }
-const COMPONENT_PREFIX = 'v-uni-';
+const COMPONENT_SELECTOR_PREFIX = 'uni-';
+const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, NAVBAR_HEIGHT, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, plusReady, stringifyQuery };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, plusReady, stringifyQuery };

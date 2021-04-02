@@ -77,4 +77,6 @@ export function isNativeTag(tag: string) {
   return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag)
 }
 
-export const COMPONENT_PREFIX = 'v-uni-'
+export const COMPONENT_SELECTOR_PREFIX = 'uni-'
+
+export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX

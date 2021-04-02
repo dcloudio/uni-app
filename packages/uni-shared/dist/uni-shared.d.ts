@@ -3,7 +3,9 @@ export declare const BUILT_IN_TAGS: string[];
 
 export declare const COMPONENT_NAME_PREFIX = "VUni";
 
-export declare const COMPONENT_PREFIX = "v-uni-";
+export declare const COMPONENT_PREFIX: string;
+
+export declare const COMPONENT_SELECTOR_PREFIX = "uni-";
 
 export declare function debounce(fn: Function, delay: number): {
     (this: any): void;

@@ -15,6 +15,7 @@ import { uniManifestJsonPlugin } from './manifestJson'
 import { uniPageVuePlugin } from './pageVue'
 import { uniCopyPlugin } from './copy'
 import { uniStaticPlugin } from './static'
+import { uniCssScopedPlugin } from './cssScoped'
 
 const debugPlugin = debug('uni:plugin')
 
@@ -38,6 +39,12 @@ const COMMON_EXCLUDE = [
   /\.html$/,
 ]
 
+const APP_VUE_RE = /App.vue$/
+
+const uniCssScopedPluginOptions: Partial<UniPluginFilterOptions> = {
+  exclude: [APP_VUE_RE],
+}
+
 const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
 }
@@ -46,7 +53,7 @@ const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
 }
 
 const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [/App.vue$/, UNI_H5_RE],
+  exclude: [APP_VUE_RE, UNI_H5_RE],
 }
 
 const uniInjectPluginOptions: Partial<InjectOptions> = {
@@ -64,6 +71,15 @@ export function resolvePlugins(
 ) {
   const command = config.command
   const plugins = config.plugins as Plugin[]
+  if (options.platform === 'h5') {
+    // h5平台需要为非App.vue组件自动增加scoped
+    addPlugin(
+      plugins,
+      uniCssScopedPlugin(Object.assign(uniCssScopedPluginOptions, options)),
+      0,
+      'pre'
+    )
+  }
   addPlugin(
     plugins,
     uniPrePlugin(Object.assign(uniPrePluginOptions, options)),

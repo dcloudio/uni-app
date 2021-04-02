@@ -3,5 +3,9 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src", "../shims-uni-app.d.ts"]
+  "include": [
+    "src",
+    "../shims-uni-app.d.ts",
+    "../../node_modules/postcss/lib/postcss.d.ts"
+  ]
 }

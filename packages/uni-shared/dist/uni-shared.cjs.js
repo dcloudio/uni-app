@@ -125,11 +125,13 @@ function isCustomElement(tag) {
 function isNativeTag(tag) {
     return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
 }
-const COMPONENT_PREFIX = 'v-uni-';
+const COMPONENT_SELECTOR_PREFIX = 'uni-';
+const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
+exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.PRIMARY_COLOR = PRIMARY_COLOR;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
