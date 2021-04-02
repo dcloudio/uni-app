@@ -1253,7 +1253,7 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 **全程演示视频**：
 </br>
 <video style="width:50vw;height:28vw;" id="video" preload="none" controls="controls"
-	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b537e2ca-0f4e-4ff0-a097-48fdeafb9873/bfcc37f1-389f-40e9-a538-bf6d53ab0990.mp4"></video>
+	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2aa9292a-5559-4070-aad8-a41e31cb3e35.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2aa9292a-5559-4070-aad8-a41e31cb3e35.mp4"></video>
 
 
 
