@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, Fragment, renderList, vModelText} from "vue";
+import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, createTextVNode, Fragment, renderList, vModelText} from "vue";
 import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView, isNavigationFailure} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -1133,7 +1133,7 @@ function initMixin(app) {
     }
   });
 }
-var index$2 = {
+var index$3 = {
   install(app) {
     app._context.config.isCustomElement = isCustomElement;
     initApp$1(app);
@@ -1516,7 +1516,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$p = {
+const _sfc_main$o = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1671,7 +1671,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$p.render = _sfc_render$n;
+_sfc_main$o.render = _sfc_render$n;
 const pixelRatio = function() {
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
@@ -1800,7 +1800,7 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-var index_vue_vue_type_style_index_0_lang$f = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$d = "\nuni-canvas {\r\n  width: 300px;\r\n  height: 150px;\r\n  display: block;\r\n  position: relative;\n}\nuni-canvas > canvas {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\n}\r\n";
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -1825,7 +1825,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$o = {
+const _sfc_main$n = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -2343,8 +2343,8 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$o.render = _sfc_render$m;
-const _sfc_main$n = {
+_sfc_main$n.render = _sfc_render$m;
+const _sfc_main$m = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -2434,9 +2434,9 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$n.render = _sfc_render$l;
-var index_vue_vue_type_style_index_0_lang$e = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
-const _sfc_main$m = {
+_sfc_main$m.render = _sfc_render$l;
+var index_vue_vue_type_style_index_0_lang$c = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
+const _sfc_main$l = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -2507,7 +2507,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$m.render = _sfc_render$k;
+_sfc_main$l.render = _sfc_render$k;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -2892,7 +2892,7 @@ function register(Quill) {
 }
 var editor_css_vue_type_style_index_0_src_lang = ".ql-container {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  -webkit-user-select: text;\n  user-select: text;\n  outline: none;\n  overflow: hidden;\n  width: 100%;\n  height: 200px;\n  min-height: 200px;\n}\n.ql-container[hidden] {\n  display: none;\n}\n.ql-container .ql-editor {\n  position: relative;\n  font-size: inherit;\n  line-height: inherit;\n  font-family: inherit;\n  min-height: inherit;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-tap-highlight-color: transparent;\n  -webkit-touch-callout: none;\n  -webkit-overflow-scrolling: touch;\n}\n.ql-container .ql-editor::-webkit-scrollbar {\n  width: 0 !important;\n}\n.ql-container .ql-editor.scroll-disabled {\n  overflow: hidden;\n}\n.ql-container .ql-image-overlay {\n  display: flex;\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px dashed #ccc;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  user-select: none;\n}\n.ql-container .ql-image-overlay .ql-image-size {\n  position: absolute;\n  padding: 4px 8px;\n  text-align: center;\n  background-color: #fff;\n  color: #888;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  opacity: 0.8;\n  right: 4px;\n  top: 4px;\n  font-size: 12px;\n  display: inline-block;\n  width: auto;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar {\n  position: relative;\n  text-align: center;\n  box-sizing: border-box;\n  background: #000;\n  border-radius: 5px;\n  color: #fff;\n  font-size: 0;\n  min-height: 24px;\n  z-index: 100;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span {\n  display: inline-block;\n  cursor: pointer;\n  padding: 5px;\n  font-size: 12px;\n  border-right: 1px solid #fff;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span:last-child {\n  border-right: 0;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span.triangle-up {\n  padding: 0;\n  position: absolute;\n  top: -12px;\n  left: 50%;\n  transform: translatex(-50%);\n  width: 0;\n  height: 0;\n  border-width: 6px;\n  border-style: solid;\n  border-color: transparent transparent black transparent;\n}\n.ql-container .ql-image-overlay .ql-image-handle {\n  position: absolute;\n  height: 12px;\n  width: 12px;\n  border-radius: 50%;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  background: #fff;\n}\n.ql-container img {\n  display: inline-block;\n  max-width: 100%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n.ql-editor {\n  box-sizing: border-box;\n  height: 100%;\n  outline: none;\n  overflow-y: auto;\n  tab-size: 4;\n  -moz-tab-size: 4;\n  text-align: left;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n}\n.ql-editor > * {\n  cursor: text;\n}\n.ql-editor p,\n.ql-editor ol,\n.ql-editor ul,\n.ql-editor pre,\n.ql-editor blockquote,\n.ql-editor h1,\n.ql-editor h2,\n.ql-editor h3,\n.ql-editor h4,\n.ql-editor h5,\n.ql-editor h6 {\n  margin: 0;\n  padding: 0;\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol > li,\n.ql-editor ul > li {\n  list-style-type: none;\n}\n.ql-editor ul > li::before {\n  content: '\\2022';\n}\n.ql-editor ul[data-checked=true],\n.ql-editor ul[data-checked=false] {\n  pointer-events: none;\n}\n.ql-editor ul[data-checked=true] > li *,\n.ql-editor ul[data-checked=false] > li * {\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before,\n.ql-editor ul[data-checked=false] > li::before {\n  color: #777;\n  cursor: pointer;\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before {\n  content: '\\2611';\n}\n.ql-editor ul[data-checked=false] > li::before {\n  content: '\\2610';\n}\n.ql-editor li::before {\n  display: inline-block;\n  white-space: nowrap;\n  width: 2em;\n}\n.ql-editor ol li {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n.ql-editor ol li:before {\n  content: counter(list-0, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-increment: list-1;\n}\n.ql-editor ol li.ql-indent-1:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-increment: list-2;\n}\n.ql-editor ol li.ql-indent-2:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-increment: list-3;\n}\n.ql-editor ol li.ql-indent-3:before {\n  content: counter(list-3, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-increment: list-4;\n}\n.ql-editor ol li.ql-indent-4:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-increment: list-5;\n}\n.ql-editor ol li.ql-indent-5:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-increment: list-6;\n}\n.ql-editor ol li.ql-indent-6:before {\n  content: counter(list-6, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-increment: list-7;\n}\n.ql-editor ol li.ql-indent-7:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-increment: list-8;\n}\n.ql-editor ol li.ql-indent-8:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-reset: list-9;\n}\n.ql-editor ol li.ql-indent-9 {\n  counter-increment: list-9;\n}\n.ql-editor ol li.ql-indent-9:before {\n  content: counter(list-9, decimal) '. ';\n}\n.ql-editor .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n.ql-editor .ql-align-center {\n  text-align: center;\n}\n.ql-editor .ql-align-justify {\n  text-align: justify;\n}\n.ql-editor .ql-align-right {\n  text-align: right;\n}\n.ql-editor.ql-blank::before {\n  color: rgba(0, 0, 0, 0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  pointer-events: none;\n  position: absolute;\n}\n.ql-container.ql-disabled .ql-editor ul[data-checked] > li::before {\n  pointer-events: none;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n";
 var index_vue_vue_type_style_index_1_lang = "\n";
-const _sfc_main$l = {
+const _sfc_main$k = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -3220,9 +3220,9 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$l.render = _sfc_render$j;
-var index_vue_vue_type_style_index_0_lang$d = "\r\n";
-const _sfc_main$k = {
+_sfc_main$k.render = _sfc_render$j;
+var index_vue_vue_type_style_index_0_lang$b = "\r\n";
+const _sfc_main$j = {
   name: "Form",
   mixins: [listeners],
   data() {
@@ -3270,7 +3270,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16);
 }
-_sfc_main$k.render = _sfc_render$i;
+_sfc_main$j.render = _sfc_render$i;
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -3313,7 +3313,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$1 = defineComponent({
+var index$2 = defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -3396,8 +3396,7 @@ function getBaseSystemInfo() {
     windowWidth
   };
 }
-var index_vue_vue_type_style_index_0_lang$c = "\nuni-image {\r\n  width: 320px;\r\n  height: 240px;\r\n  display: inline-block;\r\n  overflow: hidden;\r\n  position: relative;\n}\nuni-image[hidden] {\r\n  display: none;\n}\nuni-image > div {\r\n  width: 100%;\r\n  height: 100%;\n}\nuni-image > img {\r\n  -webkit-touch-callout: none;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  display: block;\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\n}\nuni-image > .uni-image-will-change {\r\n  will-change: transform;\n}\r\n";
-const _sfc_main$j = {
+const _sfc_main$i = {
   name: "Image",
   props: {
     src: {
@@ -3563,10 +3562,10 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$j.render = _sfc_render$h;
+_sfc_main$i.render = _sfc_render$h;
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$i = {
+const _sfc_main$h = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -3784,9 +3783,9 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$i.render = _sfc_render$g;
-var index_vue_vue_type_style_index_0_lang$b = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
-const _sfc_main$h = {
+_sfc_main$h.render = _sfc_render$g;
+var index_vue_vue_type_style_index_0_lang$a = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
+const _sfc_main$g = {
   name: "Label",
   mixins: [emitter],
   props: {
@@ -3826,7 +3825,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$h.render = _sfc_render$f;
+_sfc_main$g.render = _sfc_render$f;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -4232,7 +4231,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-var index_vue_vue_type_style_index_0_lang$a = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$9 = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -4293,7 +4292,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$g = {
+const _sfc_main$f = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -4852,7 +4851,7 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$g.render = _sfc_render$e;
+_sfc_main$f.render = _sfc_render$e;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -4860,7 +4859,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$f = {
+const _sfc_main$e = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -4950,13 +4949,13 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$f.render = _sfc_render$d;
+_sfc_main$e.render = _sfc_render$d;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const _sfc_main$e = {
+const _sfc_main$d = {
   name: "Progress",
   props: {
     percent: {
@@ -5071,9 +5070,9 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$9, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$e.render = _sfc_render$c;
-var index_vue_vue_type_style_index_0_lang$9 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
-const _sfc_main$d = {
+_sfc_main$d.render = _sfc_render$c;
+var index_vue_vue_type_style_index_0_lang$8 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
+const _sfc_main$c = {
   name: "Radio",
   mixins: [emitter, listeners],
   props: {
@@ -5168,9 +5167,9 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$d.render = _sfc_render$b;
-var index_vue_vue_type_style_index_0_lang$8 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
-const _sfc_main$c = {
+_sfc_main$c.render = _sfc_render$b;
+var index_vue_vue_type_style_index_0_lang$7 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
+const _sfc_main$b = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
   props: {
@@ -5259,9 +5258,9 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$c.render = _sfc_render$a;
-var index_vue_vue_type_style_index_0_lang$7 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
-const _sfc_main$b = {
+_sfc_main$b.render = _sfc_render$a;
+var index_vue_vue_type_style_index_0_lang$6 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
+const _sfc_main$a = {
   name: "ResizeSensor",
   props: {
     initial: {
@@ -5541,7 +5540,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$a = {
+const _sfc_main$9 = {
   name: "RichText",
   props: {
     nodes: {
@@ -5576,7 +5575,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     _hoisted_1$7
   ], 16);
 }
-_sfc_main$a.render = _sfc_render$9;
+_sfc_main$9.render = _sfc_render$9;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -6248,9 +6247,9 @@ var scroller = {
     }
   }
 };
-var index_vue_vue_type_style_index_0_lang$6 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
+var index_vue_vue_type_style_index_0_lang$5 = "\nuni-scroll-view {\n  display: block;\n  width: 100%;\n}\nuni-scroll-view[hidden] {\n  display: none;\n}\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n@keyframes uni-scroll-view-refresh-rotate {\n0% {\n    transform: rotate(0deg);\n}\n100% {\n    transform: rotate(360deg);\n}\n}\n@keyframes uni-scroll-view-refresh-dash {\n0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n}\n50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n}\n100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n}\n}\n";
 const passiveOptions = {passive: true};
-const _sfc_main$9 = {
+const _sfc_main$8 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -6743,8 +6742,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$9.render = _sfc_render$8;
-const _sfc_main$8 = {
+_sfc_main$8.render = _sfc_render$8;
+const _sfc_main$7 = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
   props: {
@@ -6941,9 +6940,9 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$8.render = _sfc_render$7;
-var index_vue_vue_type_style_index_0_lang$5 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
-const _sfc_main$7 = {
+_sfc_main$7.render = _sfc_render$7;
+var index_vue_vue_type_style_index_0_lang$4 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
+const _sfc_main$6 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -6969,9 +6968,9 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$6;
-var index_vue_vue_type_style_index_0_lang$4 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
-const _sfc_main$6 = {
+_sfc_main$6.render = _sfc_render$6;
+var index_vue_vue_type_style_index_0_lang$3 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
+const _sfc_main$5 = {
   name: "Switch",
   mixins: [emitter, listeners],
   props: {
@@ -7070,14 +7069,25 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$6.render = _sfc_render$5;
-var index_vue_vue_type_style_index_0_lang$3 = "\nuni-text[selectable] {\r\n    cursor: auto;\r\n		user-select: text;\r\n		-webkit-user-select: text;\n}\r\n";
+_sfc_main$5.render = _sfc_render$5;
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
   nbsp: "\xA0"
 };
-const _sfc_main$5 = {
+function normalizeText(text2, {
+  space,
+  decode: decode2
+}) {
+  if (space && SPACE_UNICODE[space]) {
+    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+  }
+  if (!decode2) {
+    return text2;
+  }
+  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+var index$1 = defineComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7093,46 +7103,39 @@ const _sfc_main$5 = {
       default: false
     }
   },
-  methods: {
-    _decodeHtml(htmlString) {
-      if (this.space && SPACE_UNICODE[this.space]) {
-        htmlString = htmlString.replace(/ /g, SPACE_UNICODE[this.space]);
-      }
-      if (this.decode) {
-        htmlString = htmlString.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
-      }
-      return htmlString;
-    }
-  },
-  render(createElement) {
-    const nodeList = [];
-    this.$slots.default && this.$slots.default.forEach((vnode) => {
-      if (vnode.text) {
-        const nodeText = vnode.text.replace(/\\n/g, "\n");
-        const texts = nodeText.split("\n");
-        texts.forEach((text2, index2) => {
-          nodeList.push(this._decodeHtml(text2));
-          if (index2 !== texts.length - 1) {
-            nodeList.push(createElement("br"));
+  setup(props, {
+    slots
+  }) {
+    return () => {
+      const children = [];
+      if (slots.default) {
+        slots.default().forEach((vnode) => {
+          if (vnode.shapeFlag & 8) {
+            const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
+            const len = lines.length - 1;
+            lines.forEach((text2, index2) => {
+              children.push(createTextVNode(normalizeText(text2, {
+                space: props.space,
+                decode: props.decode
+              })));
+              if (index2 !== len) {
+                children.push(createVNode("br"));
+              }
+            });
+          } else {
+            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
+              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
+            }
+            children.push(vnode);
           }
         });
-      } else {
-        if (vnode.componentOptions && vnode.componentOptions.tag !== "v-uni-text") {
-          console.warn("<text> \u7EC4\u4EF6\u5185\u53EA\u652F\u6301\u5D4C\u5957 <text>\uFF0C\u4E0D\u652F\u6301\u5176\u5B83\u7EC4\u4EF6\u6216\u81EA\u5B9A\u4E49\u7EC4\u4EF6\uFF0C\u5426\u5219\u4F1A\u5F15\u53D1\u5728\u4E0D\u540C\u5E73\u53F0\u7684\u6E32\u67D3\u5DEE\u5F02\u3002");
-        }
-        nodeList.push(vnode);
       }
-    });
-    return createElement("uni-text", {
-      on: this.$listeners,
-      attrs: {
-        selectable: !!this.selectable
-      }
-    }, [
-      createElement("span", {}, nodeList)
-    ]);
+      return createVNode("uni-text", {
+        selectable: props.selectable
+      }, [createVNode("span", null, [children])], 8, ["selectable"]);
+    };
   }
-};
+});
 var index_vue_vue_type_style_index_0_lang$2 = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
 const _sfc_main$4 = {
@@ -8638,7 +8641,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$i, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$h, {
     focus: autoFocus,
     disabled,
     style: {
@@ -9515,4 +9518,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$1 as Icon, _sfc_main$j as Image, _sfc_main$i as Input, _sfc_main$h as Label, _sfc_main$g as MovableView, _sfc_main$f as Navigator, index as PageComponent, _sfc_main$e as Progress, _sfc_main$d as Radio, _sfc_main$c as RadioGroup, _sfc_main$b as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, _sfc_main$5 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$2 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$i as Image, _sfc_main$h as Input, _sfc_main$g as Label, _sfc_main$f as MovableView, _sfc_main$e as Navigator, index as PageComponent, _sfc_main$d as Progress, _sfc_main$c as Radio, _sfc_main$b as RadioGroup, _sfc_main$a as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

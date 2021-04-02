@@ -1,0 +1,4 @@
+uni-text[selectable] {
+  cursor: auto;
+  user-select: text;
+}

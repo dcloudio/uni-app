@@ -1,0 +1,88 @@
+uni-page-refresh {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 40px;
+  display: block;
+  box-sizing: border-box;
+}
+
+.uni-page-refresh {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),
+    0 1px 4px rgba(0, 0, 0, 0.117647);
+  display: none;
+  z-index: 997;
+}
+
+.uni-page-refresh-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.uni-page-refresh--pulling .uni-page-refresh,
+.uni-page-refresh--aborting .uni-page-refresh,
+.uni-page-refresh--reached .uni-page-refresh,
+.uni-page-refresh--refreshing .uni-page-refresh,
+.uni-page-refresh--restoring .uni-page-refresh {
+  display: flex;
+}
+
+.uni-page-refresh--pulling .uni-page-refresh__spinner,
+.uni-page-refresh--aborting .uni-page-refresh__spinner,
+.uni-page-refresh--reached .uni-page-refresh__spinner,
+.uni-page-refresh--refreshing .uni-page-refresh__icon,
+.uni-page-refresh--restoring .uni-page-refresh__icon {
+  display: none;
+}
+
+.uni-page-refresh--refreshing .uni-page-refresh__spinner {
+  transform-origin: center center;
+  animation: uni-page-refresh-rotate 2s linear infinite;
+}
+
+.uni-page-refresh--refreshing .uni-page-refresh__path {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: uni-page-refresh-dash 1.5s ease-in-out infinite,
+    uni-page-refresh-colorful 6s ease-in-out infinite;
+}
+
+@keyframes uni-page-refresh-rotate {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes uni-page-refresh-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}

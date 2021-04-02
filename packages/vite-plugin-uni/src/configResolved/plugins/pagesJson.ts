@@ -108,6 +108,9 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_NVUE__) {
     cssFiles.push('@dcloudio/uni-h5/style/nvue.css')
   }
+  if (define.__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    cssFiles.push('@dcloudio/uni-h5/style/pageRefresh.css')
+  }
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
     cssFiles.push('@dcloudio/uni-h5/style/input.css')
   }
