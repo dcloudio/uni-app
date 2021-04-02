@@ -1,7 +1,7 @@
 import { UserConfig } from 'vite'
 import autoprefixer from 'autoprefixer'
 import { VitePluginUniResolvedOptions } from '..'
-import { uniapp } from '../utils/postcss'
+import { uniapp } from '../utils'
 
 export function createCss(
   _options: VitePluginUniResolvedOptions

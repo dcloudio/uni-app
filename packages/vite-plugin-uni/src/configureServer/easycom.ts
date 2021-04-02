@@ -2,7 +2,7 @@ import path from 'path'
 import { ViteDevServer } from 'vite'
 
 import { VitePluginUniResolvedOptions } from '..'
-import { debugEasycom, initEasycom } from '../easycom'
+import { debugEasycom, initEasycom } from '../utils'
 
 function initEasycoms(inputDir: string) {
   const dirs = ['components'].map((dir) => path.resolve(inputDir, dir))

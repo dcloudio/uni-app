@@ -7,7 +7,7 @@ import { isBuiltInComponent } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
-import { debugEasycom, matchEasycom } from '../../easycom'
+import { debugEasycom, matchEasycom } from '../../utils'
 
 const COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
 const COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
@@ -30,7 +30,7 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
       code = code.replace(/_resolveComponent\("(.+?)"\)/g, (str, name) => {
         if (name && !name.startsWith('_')) {
           if (isBuiltInComponent(name)) {
-            return addSystemImportDeclaration(
+            return addBuiltInImportDeclaration(
               importDeclarations,
               `__syscom_${i++}`,
               name
@@ -55,7 +55,7 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
   }
 }
 
-function addSystemImportDeclaration(
+function addBuiltInImportDeclaration(
   importDeclarations: string[],
   local: string,
   name: string

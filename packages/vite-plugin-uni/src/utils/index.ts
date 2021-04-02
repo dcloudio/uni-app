@@ -1,3 +1,5 @@
 export * from './filter'
 export * from './define'
+export * from './easycom'
+export * from './postcss'
 export * from './pagesJson'
