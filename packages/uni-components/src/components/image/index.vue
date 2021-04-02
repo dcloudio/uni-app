@@ -2,14 +2,11 @@
   <uni-image v-bind="$attrs">
     <div ref="content" :style="modeStyle" />
     <img :src="realImagePath" />
-    <v-uni-resize-sensor
-      v-if="mode === 'widthFix'"
-      ref="sensor"
-      @resize="_resize"
-    />
+    <ResizeSensor v-if="mode === 'widthFix'" ref="sensor" @resize="_resize" />
   </uni-image>
 </template>
 <script>
+import ResizeSensor from '../resize-sensor/index.vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 export default {
   name: 'Image',
@@ -110,6 +107,9 @@ export default {
         this._fixSize()
       }
     },
+  },
+  components: {
+    ResizeSensor,
   },
   mounted() {
     this.availHeight = this.$el.style.height || ''

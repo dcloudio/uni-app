@@ -1,7 +1,7 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, createTextVNode, Fragment, renderList, vModelText} from "vue";
-import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, isCustomElement, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView, isNavigationFailure} from "vue-router";
+import {NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -784,7 +784,7 @@ function initPageMeta() {
   if (__UNI_FEATURE_PAGES__) {
     return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute().meta)))));
   }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[1].meta)))));
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[0].meta)))));
 }
 const PAGE_META_KEYS = [
   "navigationBar",
@@ -1135,7 +1135,6 @@ function initMixin(app) {
 }
 var index$3 = {
   install(app) {
-    app._context.config.isCustomElement = isCustomElement;
     initApp$1(app);
     initView(app);
     initService(app);
@@ -3335,6 +3334,80 @@ var index$2 = defineComponent({
     return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props.color || path.value.c, rpx2px(props.size))]);
   }
 });
+var index_vue_vue_type_style_index_0_lang$a = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
+const _sfc_main$i = {
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  data: function() {
+    return {
+      size: {
+        width: -1,
+        height: -1
+      }
+    };
+  },
+  watch: {
+    size: {
+      deep: true,
+      handler: function(size) {
+        this.$emit("resize", Object.assign({}, size));
+      }
+    }
+  },
+  mounted: function() {
+    if (this.initial === true) {
+      this.$nextTick(this.update);
+    }
+    if (this.$el.offsetParent !== this.$el.parentNode) {
+      this.$el.parentNode.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      this.reset();
+    }
+  },
+  methods: {
+    reset: function() {
+      var expand = this.$el.firstChild;
+      var shrink = this.$el.lastChild;
+      expand.scrollLeft = 1e5;
+      expand.scrollTop = 1e5;
+      shrink.scrollLeft = 1e5;
+      shrink.scrollTop = 1e5;
+    },
+    update: function() {
+      this.size.width = this.$el.offsetWidth;
+      this.size.height = this.$el.offsetHeight;
+      this.reset();
+    }
+  },
+  render: function(create) {
+    return create("uni-resize-sensor", {
+      on: {
+        "~animationstart": this.update
+      }
+    }, [
+      create("div", {
+        on: {
+          scroll: this.update
+        }
+      }, [
+        create("div")
+      ]),
+      create("div", {
+        on: {
+          scroll: this.update
+        }
+      }, [
+        create("div")
+      ])
+    ]);
+  }
+};
 const SCHEME_RE = /^([a-z-]+:)?\/\//i;
 const DATA_RE = /^data:.*,.*/;
 function addBase(filePath) {
@@ -3396,7 +3469,7 @@ function getBaseSystemInfo() {
     windowWidth
   };
 }
-const _sfc_main$i = {
+const _sfc_main$h = {
   name: "Image",
   props: {
     src: {
@@ -3491,6 +3564,9 @@ const _sfc_main$i = {
       }
     }
   },
+  components: {
+    ResizeSensor: _sfc_main$i
+  },
   mounted() {
     this.availHeight = this.$el.style.height || "";
     this._setContentImage();
@@ -3548,24 +3624,24 @@ const _sfc_main$i = {
   }
 };
 function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
+  const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-image", _ctx.$attrs, [
     createVNode("div", {
       ref: "content",
       style: $options.modeStyle
     }, null, 4),
     createVNode("img", {src: $options.realImagePath}, null, 8, ["src"]),
-    $props.mode === "widthFix" ? (openBlock(), createBlock(_component_v_uni_resize_sensor, {
+    $props.mode === "widthFix" ? (openBlock(), createBlock(_component_ResizeSensor, {
       key: 0,
       ref: "sensor",
       onResize: $options._resize
     }, null, 8, ["onResize"])) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$i.render = _sfc_render$h;
+_sfc_main$h.render = _sfc_render$h;
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$h = {
+const _sfc_main$g = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -3783,9 +3859,9 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$h.render = _sfc_render$g;
-var index_vue_vue_type_style_index_0_lang$a = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
-const _sfc_main$g = {
+_sfc_main$g.render = _sfc_render$g;
+var index_vue_vue_type_style_index_0_lang$9 = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
+const _sfc_main$f = {
   name: "Label",
   mixins: [emitter],
   props: {
@@ -3825,7 +3901,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$g.render = _sfc_render$f;
+_sfc_main$f.render = _sfc_render$f;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -4231,7 +4307,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-var index_vue_vue_type_style_index_0_lang$9 = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
+var index_vue_vue_type_style_index_0_lang$8 = "\nuni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\nuni-movable-view[hidden] {\n  display: none;\n}\n";
 var requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -4292,7 +4368,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$f = {
+const _sfc_main$e = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -4851,7 +4927,7 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$f.render = _sfc_render$e;
+_sfc_main$e.render = _sfc_render$e;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -4859,7 +4935,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$e = {
+const _sfc_main$d = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -4949,13 +5025,13 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$e.render = _sfc_render$d;
+_sfc_main$d.render = _sfc_render$d;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const _sfc_main$d = {
+const _sfc_main$c = {
   name: "Progress",
   props: {
     percent: {
@@ -5070,9 +5146,9 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$9, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$d.render = _sfc_render$c;
-var index_vue_vue_type_style_index_0_lang$8 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
-const _sfc_main$c = {
+_sfc_main$c.render = _sfc_render$c;
+var index_vue_vue_type_style_index_0_lang$7 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
+const _sfc_main$b = {
   name: "Radio",
   mixins: [emitter, listeners],
   props: {
@@ -5167,9 +5243,9 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$c.render = _sfc_render$b;
-var index_vue_vue_type_style_index_0_lang$7 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
-const _sfc_main$b = {
+_sfc_main$b.render = _sfc_render$b;
+var index_vue_vue_type_style_index_0_lang$6 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
+const _sfc_main$a = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
   props: {
@@ -5258,81 +5334,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$b.render = _sfc_render$a;
-var index_vue_vue_type_style_index_0_lang$6 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
-const _sfc_main$a = {
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data: function() {
-    return {
-      size: {
-        width: -1,
-        height: -1
-      }
-    };
-  },
-  watch: {
-    size: {
-      deep: true,
-      handler: function(size) {
-        this.$emit("resize", Object.assign({}, size));
-      }
-    }
-  },
-  mounted: function() {
-    if (this.initial === true) {
-      this.$nextTick(this.update);
-    }
-    if (this.$el.offsetParent !== this.$el.parentNode) {
-      this.$el.parentNode.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      this.reset();
-    }
-  },
-  methods: {
-    reset: function() {
-      var expand = this.$el.firstChild;
-      var shrink = this.$el.lastChild;
-      expand.scrollLeft = 1e5;
-      expand.scrollTop = 1e5;
-      shrink.scrollLeft = 1e5;
-      shrink.scrollTop = 1e5;
-    },
-    update: function() {
-      this.size.width = this.$el.offsetWidth;
-      this.size.height = this.$el.offsetHeight;
-      this.reset();
-    }
-  },
-  render: function(create) {
-    return create("uni-resize-sensor", {
-      on: {
-        "~animationstart": this.update
-      }
-    }, [
-      create("div", {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create("div")
-      ]),
-      create("div", {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create("div")
-      ])
-    ]);
-  }
-};
+_sfc_main$a.render = _sfc_render$a;
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -8641,7 +8643,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$h, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$g, {
     focus: autoFocus,
     disabled,
     style: {
@@ -9518,4 +9520,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$i as Image, _sfc_main$h as Input, _sfc_main$g as Label, _sfc_main$f as MovableView, _sfc_main$e as Navigator, index as PageComponent, _sfc_main$d as Progress, _sfc_main$c as Radio, _sfc_main$b as RadioGroup, _sfc_main$a as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

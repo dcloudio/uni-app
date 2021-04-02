@@ -32,7 +32,7 @@ function initPageMeta() {
   }
   return reactive<UniApp.PageRouteMeta>(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[1].meta)))
+      JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[0].meta)))
     )
   )
 }
