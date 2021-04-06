@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isObject, capitalize, toRawType, makeMap, isPlainObject, isFunction, isPromise, isString } from '@vue/shared';
+import { isArray, hasOwn, isObject, capitalize, toRawType, makeMap, isPlainObject, isFunction, extend, isPromise, isString } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
     const errMsg = `${name}:fail ${msg}`;
@@ -276,16 +276,14 @@ function wrapperSyncApi(fn) {
 }
 function wrapperAsyncApi(name, fn, options) {
     return (args) => {
-        const callbackId = createAsyncApiCallback(name, args, options);
-        const res = fn.apply(null, [
-            args,
-            (res) => {
-                invokeCallback(callbackId, res);
-            },
-        ]);
-        if (res) {
-            invokeCallback(callbackId, res);
-        }
+        const id = createAsyncApiCallback(name, args, options);
+        fn(args)
+            .then((res) => {
+            invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+        })
+            .catch((err) => {
+            invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') });
+        });
     };
 }
 function wrapperApi(fn, name, protocol, options) {

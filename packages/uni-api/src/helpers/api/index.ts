@@ -1,4 +1,4 @@
-import { isPlainObject } from '@vue/shared'
+import { extend, isPlainObject } from '@vue/shared'
 import { ApiOptions, ApiProtocols } from '../../protocols/type'
 import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
@@ -48,18 +48,20 @@ function wrapperSyncApi(fn: Function) {
   return (...args: any[]) => fn.apply(null, args)
 }
 
-function wrapperAsyncApi(name: string, fn: Function, options?: ApiOptions) {
+function wrapperAsyncApi(
+  name: string,
+  fn: (args: unknown) => Promise<unknown>,
+  options?: ApiOptions
+) {
   return (args: Record<string, any>) => {
-    const callbackId = createAsyncApiCallback(name, args, options)
-    const res = fn.apply(null, [
-      args,
-      (res: unknown) => {
-        invokeCallback(callbackId, res)
-      },
-    ])
-    if (res) {
-      invokeCallback(callbackId, res)
-    }
+    const id = createAsyncApiCallback(name, args, options)
+    fn(args)
+      .then((res) => {
+        invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
+      })
+      .catch((err) => {
+        invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') })
+      })
   }
 }
 
@@ -91,7 +93,7 @@ export function defineOnApi<T extends Function>(
     fn,
     __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
     options
-  )
+  ) as T
 }
 
 export function defineTaskApi<T extends Function>(
@@ -106,7 +108,7 @@ export function defineTaskApi<T extends Function>(
     fn,
     __DEV__ ? protocol : undefined,
     options
-  )
+  ) as T
 }
 
 export function defineSyncApi<T extends Function>(
@@ -121,37 +123,80 @@ export function defineSyncApi<T extends Function>(
     fn,
     __DEV__ ? protocol : undefined,
     options
-  )
+  ) as T
+}
+interface AsyncMethodOptionLike {
+  success?: (...args: any[]) => void
 }
 
-export function defineAsyncApi<T extends Function>(
+type PromisifySuccessResult<P, R> = P extends {
+  success: any
+}
+  ? void
+  : P extends { fail: any }
+  ? void
+  : P extends { complete: any }
+  ? void
+  : Promise<R>
+
+type AsyncApiLike = (args: any) => Promise<unknown> | void
+
+type AsyncApiOptions<T extends AsyncApiLike> = Parameters<T>[0]
+
+type AsyncApiRes<T extends AsyncMethodOptionLike> = Parameters<
+  Exclude<T['success'], undefined>
+>[0]
+
+type AsyncApiRequired<T extends AsyncMethodOptionLike> = <P extends T>(
+  args: P
+) => PromisifySuccessResult<P, AsyncApiRes<T>>
+
+type AsyncApiOptional<T extends AsyncMethodOptionLike> = <P extends T>(
+  args?: P
+) => PromisifySuccessResult<P, AsyncApiRes<T>>
+
+interface AsyncApiOptionalOptions {
+  success?: any
+  fail?: any
+  complete?: any
+}
+
+type AsyncApi<
+  T extends AsyncMethodOptionLike
+> = AsyncApiOptionalOptions extends T
+  ? AsyncApiOptional<T>
+  : AsyncApiRequired<T>
+
+export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   name: string,
-  fn: T,
+  fn: (
+    args: Omit<P, 'success' | 'fail' | 'complete'>
+  ) => Promise<AsyncApiRes<P> | void>,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
   return promisify(
     defineApi(API_TYPE_ASYNC, name, fn, __DEV__ ? protocol : undefined, options)
-  )
+  ) as AsyncApi<P>
 }
 
-function defineApi<T extends Function>(
+function defineApi(
   type: API_TYPES,
   name: string,
-  fn: T,
+  fn: Function,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
   switch (type) {
     case API_TYPE_ON:
-      return wrapperApi<T>(wrapperOnApi(name, fn), name, protocol, options)
+      return wrapperApi(wrapperOnApi(name, fn), name, protocol, options)
     case API_TYPE_TASK:
-      return wrapperApi<T>(wrapperTaskApi(name, fn), name, protocol, options)
+      return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options)
     case API_TYPE_SYNC:
-      return wrapperApi<T>(wrapperSyncApi(fn), name, protocol, options)
+      return wrapperApi(wrapperSyncApi(fn), name, protocol, options)
     case API_TYPE_ASYNC:
-      return wrapperApi<T>(
-        wrapperAsyncApi(name, fn, options),
+      return wrapperApi(
+        wrapperAsyncApi(name, fn as any, options),
         name,
         protocol,
         options

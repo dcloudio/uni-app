@@ -8,8 +8,7 @@ import { navigate } from './utils'
 
 export const reLaunch = defineAsyncApi<typeof uni.reLaunch>(
   API_RE_LAUNCH,
-  (options, callback?: Function) =>
-    navigate(API_RE_LAUNCH, options.url, callback!),
+  ({ url }) => navigate(API_RE_LAUNCH, url),
   ReLaunchProtocol,
   ReLaunchOptions
 )

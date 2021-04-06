@@ -7752,16 +7752,12 @@ function wrapperSyncApi(fn) {
 }
 function wrapperAsyncApi(name, fn, options) {
   return (args) => {
-    const callbackId = createAsyncApiCallback(name, args, options);
-    const res = fn.apply(null, [
-      args,
-      (res2) => {
-        invokeCallback(callbackId, res2);
-      }
-    ]);
-    if (res) {
-      invokeCallback(callbackId, res);
-    }
+    const id2 = createAsyncApiCallback(name, args, options);
+    fn(args).then((res) => {
+      invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
+    }).catch((err) => {
+      invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
+    });
   };
 }
 function wrapperApi(fn, name, protocol, options) {
@@ -8229,8 +8225,9 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, (option) => {
-  window.location.href = `tel:${option.phoneNumber}`;
+const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}) => {
+  window.location.href = `tel:${phoneNumber}`;
+  return Promise.resolve();
 }, MakePhoneCallProtocol);
 const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const pixelRatio2 = window.devicePixelRatio;
@@ -8333,63 +8330,62 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   };
 });
 const getSystemInfo = defineAsyncApi("getSystemInfo", () => {
-  return getSystemInfoSync();
+  return Promise.resolve(getSystemInfoSync());
 });
-const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, (option) => {
-  window.open(option.filePath);
+const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}) => {
+  window.open(filePath);
+  return Promise.resolve();
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}, callback) => {
+const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}) => {
   const img = new Image();
-  img.onload = function() {
-    callback({
-      errMsg: `${API_GET_IMAGE_INFO}:ok`,
-      width: img.naturalWidth,
-      height: img.naturalHeight,
-      path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
-    });
-  };
-  img.onerror = function() {
-    callback({
-      errMsg: `${API_GET_IMAGE_INFO}:fail`
-    });
-  };
-  img.src = src;
+  return new Promise((resolve, reject) => {
+    img.onload = function() {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
+      });
+    };
+    img.onerror = function() {
+      reject();
+    };
+    img.src = src;
+  });
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (options) => {
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}) => new Promise((resolve, reject) => {
   let canBack = true;
   const vm = getCurrentPageVm();
   if (vm && vm.$callHook("onBackPress") === true) {
     canBack = false;
   }
   if (!canBack) {
-    return {
-      errMsg: `${API_NAVIGATE_BACK}:fail onBackPress`
-    };
+    return reject("onBackPress");
   }
-  getApp().$router.go(-options.delta);
-}, NavigateBackProtocol, NavigateBackOptions);
-function navigate(type, url, callback) {
+  getApp().$router.go(-delta);
+  resolve();
+}), NavigateBackProtocol, NavigateBackOptions);
+function navigate(type, url) {
   const router = getApp().$router;
-  router[type === "navigateTo" ? "push" : "replace"]({
-    path: url,
-    force: true,
-    state: createPageState(type)
-  }).then((failure) => {
-    if (isNavigationFailure(failure)) {
-      return callback({
-        errMsg: `:fail ${failure.message}`
-      });
-    }
-    callback();
+  return new Promise((resolve, reject) => {
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path: url,
+      force: true,
+      state: createPageState(type)
+    }).then((failure) => {
+      if (isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      return resolve();
+    });
   });
 }
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, (options, callback) => navigate(API_NAVIGATE_TO, options.url, callback), NavigateToProtocol, NavigateToOptions);
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, (options, callback) => navigate(API_REDIRECT_TO, options.url, callback), RedirectToProtocol, RedirectToOptions);
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, (options, callback) => navigate(API_RE_LAUNCH, options.url, callback), ReLaunchProtocol, ReLaunchOptions);
-const switchTab = defineAsyncApi(API_SWITCH_TAB, (options, callback) => navigate(API_SWITCH_TAB, options.url, callback), SwitchTabProtocol, SwitchTabOptions);
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, ({url}) => navigate(API_NAVIGATE_TO, url), NavigateToProtocol, NavigateToOptions);
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}) => navigate(API_REDIRECT_TO, url), RedirectToProtocol, RedirectToOptions);
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}) => navigate(API_RE_LAUNCH, url), ReLaunchProtocol, ReLaunchOptions);
+const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}) => navigate(API_SWITCH_TAB, url), SwitchTabProtocol, SwitchTabOptions);
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",

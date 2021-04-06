@@ -6,8 +6,9 @@ import {
 
 export const openDocument = defineAsyncApi<typeof uni.openDocument>(
   API_OPEN_DOCUMENT,
-  (option) => {
-    window.open(option.filePath)
+  ({ filePath }) => {
+    window.open(filePath)
+    return Promise.resolve()
   },
   OpenDocumentProtocol
 )

@@ -3,20 +3,19 @@ import { createPageState } from '../../../framework/plugin/page'
 
 export function navigate(
   type: 'navigateTo' | 'redirectTo' | 'reLaunch' | 'switchTab',
-  url: string,
-  callback: Function
-) {
+  url: string
+): Promise<void> {
   const router = getApp().$router as Router
-  router[type === 'navigateTo' ? 'push' : 'replace']({
-    path: url,
-    force: true,
-    state: createPageState(type),
-  }).then((failure) => {
-    if (isNavigationFailure(failure)) {
-      return callback({
-        errMsg: `:fail ${failure.message}`,
-      })
-    }
-    callback()
+  return new Promise((resolve, reject) => {
+    router[type === 'navigateTo' ? 'push' : 'replace']({
+      path: url,
+      force: true,
+      state: createPageState(type),
+    }).then((failure) => {
+      if (isNavigationFailure(failure)) {
+        return reject(failure.message)
+      }
+      return resolve()
+    })
   })
 }

@@ -5,6 +5,6 @@ import { getSystemInfoSync } from './getSystemInfoSync'
 export const getSystemInfo = defineAsyncApi<typeof uni.getSystemInfo>(
   'getSystemInfo',
   () => {
-    return getSystemInfoSync()
+    return Promise.resolve(getSystemInfoSync())
   }
 )

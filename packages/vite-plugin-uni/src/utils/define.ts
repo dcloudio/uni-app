@@ -145,7 +145,7 @@ function resolveManifestFeature(
   options: VitePluginUniResolvedOptions
 ): ManifestFeatures {
   const features: ManifestFeatures = {
-    wx: true, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）
+    wx: true,
     wxs: true, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
     promise: false, // 是否启用旧版本的 promise 支持（即返回[err,res]的格式）
     longpress: true, // 是否启用longpress
@@ -194,22 +194,23 @@ export function getFeatures(
     resolveProjectFeature(options, command)
   )
   return {
-    __UNI_FEATURE_WX__: wx,
-    __UNI_FEATURE_WXS__: wxs,
-    __UNI_FEATURE_NVUE__: nvue,
-    __UNI_FEATURE_PROMISE__: promise,
-    __UNI_FEATURE_LONGPRESS__: longpress,
-    __UNI_FEATURE_ROUTER_MODE__: routerMode,
-    __UNI_FEATURE_PAGES__: pages,
-    __UNI_FEATURE_TABBAR__: tabBar,
-    __UNI_FEATURE_TOPWINDOW__: topWindow,
-    __UNI_FEATURE_LEFTWINDOW__: leftWindow,
-    __UNI_FEATURE_RIGHTWINDOW__: rightWindow,
-    __UNI_FEATURE_RESPONSIVE__: topWindow || leftWindow || rightWindow,
-    __UNI_FEATURE_NAVIGATIONBAR__: navigationBar,
-    __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh,
-    __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons,
-    __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput,
-    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent,
+    __UNI_FEATURE_WX__: wx, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）
+    __UNI_FEATURE_WXS__: wxs, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
+    __UNI_FEATURE_PROMISE__: promise, // 是否启用旧版本的 promise 支持（即返回[err,res]的格式）,默认返回标准
+    __UNI_FEATURE_LONGPRESS__: longpress, // 是否启用longpress
+    // 以下特性，编译器已自动识别是否需要启用
+    __UNI_FEATURE_NVUE__: nvue, // 是否启用nvue
+    __UNI_FEATURE_ROUTER_MODE__: routerMode, // 路由模式
+    __UNI_FEATURE_PAGES__: pages, // 是否多页面
+    __UNI_FEATURE_TABBAR__: tabBar, // 是否包含tabBar
+    __UNI_FEATURE_TOPWINDOW__: topWindow, // 是否包含topWindow
+    __UNI_FEATURE_LEFTWINDOW__: leftWindow, // 是否包含leftWindow
+    __UNI_FEATURE_RIGHTWINDOW__: rightWindow, // 是否包含rightWindow
+    __UNI_FEATURE_RESPONSIVE__: topWindow || leftWindow || rightWindow, // 是否启用响应式
+    __UNI_FEATURE_NAVIGATIONBAR__: navigationBar, // 是否启用标题栏
+    __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh, // 是否启用下拉刷新
+    __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons, // 是否启用标题栏按钮
+    __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput, // 是否启用标题栏搜索框
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent, // 是否启用透明标题栏
   }
 }

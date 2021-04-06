@@ -11,22 +11,21 @@ function _getServiceAddress() {
 
 export const getImageInfo = defineAsyncApi<typeof uni.getImageInfo>(
   API_GET_IMAGE_INFO,
-  ({ src }, callback?: Function) => {
+  ({ src }) => {
     const img = new Image()
-    img.onload = function () {
-      callback!({
-        errMsg: `${API_GET_IMAGE_INFO}:ok`,
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        path: src.indexOf('/') === 0 ? _getServiceAddress() + src : src,
-      })
-    }
-    img.onerror = function () {
-      callback!({
-        errMsg: `${API_GET_IMAGE_INFO}:fail`,
-      })
-    }
-    img.src = src
+    return new Promise((resolve, reject) => {
+      img.onload = function () {
+        resolve({
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          path: src.indexOf('/') === 0 ? _getServiceAddress() + src : src,
+        } as UniApp.GetImageInfoSuccessData) // orientation和type是可选的，但GetImageInfoSuccessData定义的不对，暂时强制转换
+      }
+      img.onerror = function () {
+        reject()
+      }
+      img.src = src
+    })
   },
   GetImageInfoProtocol,
   GetImageInfoOptions

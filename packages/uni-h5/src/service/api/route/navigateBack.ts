@@ -8,19 +8,19 @@ import {
 
 export const navigateBack = defineAsyncApi<typeof uni.navigateBack>(
   API_NAVIGATE_BACK,
-  (options) => {
-    let canBack = true
-    const vm = getCurrentPageVm()
-    if (vm && vm.$callHook('onBackPress') === true) {
-      canBack = false
-    }
-    if (!canBack) {
-      return {
-        errMsg: `${API_NAVIGATE_BACK}:fail onBackPress`,
+  ({ delta }) =>
+    new Promise((resolve, reject) => {
+      let canBack = true
+      const vm = getCurrentPageVm()
+      if (vm && vm.$callHook('onBackPress') === true) {
+        canBack = false
       }
-    }
-    getApp().$router.go(-options.delta!)
-  },
+      if (!canBack) {
+        return reject('onBackPress')
+      }
+      getApp().$router.go(-delta!)
+      resolve()
+    }),
   NavigateBackProtocol,
   NavigateBackOptions
 )
