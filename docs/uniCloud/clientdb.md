@@ -469,7 +469,7 @@ order表内有以下数据，book_id字段为book表的书籍_id，quantity为�
 }
 ```
 
-book表的db schema也要保持正确
+book表的DB Schema也要保持正确
 ```json
 // book表schema
 {
@@ -489,7 +489,7 @@ book表的db schema也要保持正确
 }
 ```
 
-schema保存至云端后，即可在前端直接查询。查询表设为order和book这2个表名后，即可自动按照一个合并虚拟表来查询，field、where等设置均按合并虚拟表来设置。
+schema保存后，即可在前端直接查询。查询表设为order和book这2个表名后，即可自动按照一个合并虚拟表来查询，field、where等设置均按合并虚拟表来设置。
 
 ```js
 // 客户端联表查询
@@ -503,8 +503,11 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
   }).catch(err => {
     console.error(err)
   })
-  
-// 上面的写法是clientDB的jql语法，如果不使用jql的话，写法会变得很长，大致如下
+```
+
+上面的写法是clientDB的jql语法，如果不使用jql的话，使用传统MongoDB写法，需要写很长并且不太容易看懂的代码，大致如下
+
+```js
 // 注意clientDB内联表查询需要用拼接子查询的方式（let+pipeline）
 const db = uniCloud.database()
 const dbCmd = db.command
@@ -558,11 +561,9 @@ db.collection('order')
 
 ```
 
-关系型数据库做不到这种设计。`jql`充分利用了json文档型数据库的特点，实现了这个简化的联表查询方案。
+二维关系型数据库做不到这种设计。`jql`充分利用了json文档型数据库的特点，动态嵌套数据，实现了这个简化的联表查询方案。
 
 不止是2个表，3个、4个表也可以通过这种方式查询。
-
-不止js，`<uni-clientDB>`组件也支持所有`jql`功能，包括联表查询。
 
 **注意**
 
@@ -571,7 +572,7 @@ db.collection('order')
 - 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 - 各个表的_id字段会默认带上，即使没有指定返回
 
-### 查询条件@where
+### 查询记录过滤，where条件@where
 
 jql对查询条件进行了简化，开发者可以使用`where('a==1||b==2')`来表示字段`a等于1或字段b等于2`。如果不适用jql语法，上述条件需要写成下面这种形式
 
@@ -741,19 +742,57 @@ db.collection('book')
 
 `<unicloud-db>`组件提供了更简单的分页方法，包括两种模式：
 
-1. 滚动到底加载下一页
-2. 点击页码按钮切换不同页
+1. 滚动到底加载下一页（append模式）
+2. 点击页码按钮切换不同页（replace模式）
 
 详见：[https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=page](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=page)
 
 
-### 指定返回字段@field
+### 字段过滤@field
 
 查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
 
-只有云函数内使用传统MongoDB的写法{ '_id': false }明确指定不要返回_id时才不会返回_id字段，否则_id字段一定会返回。
+field可以指定字符串，也可以指定一个对象。
 
-### 别名@alias
+- 字符串写法：列出字段名称，多个字段以半角逗号做分隔符。比如`db.collection('book').field("title,author")`，查询结果会返回`_id`、`title`、`author`3个字段的数据。字符串写法，`_id`是一定会返回的
+- json写法：一般用于黑名单排除。比如`db.collection('book').field({ '_id': false })`，明确指定不返回`_id`。
+
+**复杂嵌套json数据过滤**
+
+如果数据库里的数据结构是嵌套json，比如book表有个价格字段，包括普通价格和vip用户价格，数据如下：
+
+```json
+{
+  "_id": "1",
+  "title": "西游记",
+  "author": "吴承恩",
+  "price":{
+	  "normal":10,
+	  "vip":8
+  }
+}
+```
+
+那么使用`db.collection('book').field("price.vip").get()`，就可以只返回vip价格，而不返回普通价格。查询结果如下：
+
+```json
+{
+  "_id": "1",
+  "price":{
+	  "vip":8
+  }
+}
+```
+
+对于联表查询，副表的数据嵌入到了主表的关联字段下面，此时在filed里通过{}来定义副表字段。比如之前联表查询章节举过的例子，book表和order表联表查询：
+```js
+// 联表查询
+db.collection('order,book') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
+  .field('book_id{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
+  .get()
+```
+
+### 字段别名@alias
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
 
@@ -802,12 +841,13 @@ db.collection('order,book')
 
 **注意**
 
+- as后面的别名，不可以和表schema中已经存在的字段重名
 - 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
 - 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
 
-### 对字段操作后返回@operator
+### 字段运算@operator
 
-自`HBuilderX 3.1.0`起，clientDB支持对字段进行一定的操作之后再返回，详细可用的方法列表请参考：[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
+自`HBuilderX 3.1.0`起，clientDB支持在云端数据库对字段进行一定的操作运算之后再返回，详细可用的方法列表请参考：[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
 
 > 需要注意的是，为方便书写，clientDB内将数据库运算方法的用法进行了简化（相对于云函数内使用数据库运算方法而言）。用法请参考上述链接
 
@@ -860,7 +900,7 @@ const res = await db.collection('class')
 
 sort方法和orderBy方法内可以传入一个字符串来指定排序规则。
 
-orderBy允许进行多个字段排序，以逗号分隔。每个字段可以指定 asc(升序)、desc(降序)。
+orderBy允许进行多个字段排序，以逗号分隔。每个字段可以指定 asc(升序)、desc(降序)。默认是升序。
 
 写在前面的排序字段优先级高于后面。
 
@@ -900,60 +940,38 @@ const db = uniCloud.database()
     })
 ```
 
-### 查询结果返回总数getcount@getcount
+### 限制查询记录的条数limit@limit
 
-使用`clientDB`时可以在get方法内传入`getCount:true`来同时返回总数
+使用limit方法，可以查询有限条数的数据记录。
+
+比如查询销量top10的书籍，或者查价格最高的一本书。
 
 ```js
-// 这以上面的order表数据为例
-const db = uniCloud.database()
-  db.collection('order')
-    .get({
-      getCount:true
-    })
-    .then(res => {
-      console.log(res);
-    }).catch(err => {
-      console.error(err)
-    })
-    
-// 如果不使用getCount，需要再调用一次count方法来返回总数
-const db = uniCloud.database()
-  db.collection('order')
+// 这以上面的book表数据为例，查价格最高的一本书
+  db.collection('book')
+    .orderBy('price desc')
+	.limit(1)
     .get()
-    .then(res => {
-      console.log(res);
-    }).catch(err => {
-      console.error(err)
-    })
-  db.collection('order')
-    .count()
-    .then(res => {
-      console.log(res);
-    }).catch(err => {
-      console.error(err)
-    })
 ```
 
-返回结果为
+limit默认值是100，即不设置的情况下，默认返回100条数据。
 
-```js
-{
-	"code": "",
-	"message": "",
-	"data": [{
-		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
-		"book": "3",
-		"quantity": 555
-	}],
-	"count": 5
-}
-```
+limit有最大值，腾讯云限制为最大1000条，阿里云限制为最大500条。
+
+一般情况下不应该给前端一次性返回过多数据，数据库查询也慢、网络返回也慢。可以通过分页的方式分批返回数据。
+
+在查询的result里，有一个`affectedDocs`。但affectedDocs和limit略有区别。affectedDocs小于等于limit。
+
+比如book表里只有2本书，limit虽然设了10，但查询结果只能返回2条记录，affectedDocs为2。
 
 
-### 查询结果时返回单条记录getone@getone
+### 只查一条记录getone@getone
 
-使用`clientDB`时可以在get方法内传入`getOne:true`来返回一条数据
+使用`clientDB`的API方式时，可以在get方法内传入参数`getOne:true`来返回一条数据。
+
+getOne其实等价于上一节的limit(1)。
+
+一般getOne和orderBy搭配。
 
 ```js
 // 这以上面的book表数据为例
@@ -985,6 +1003,76 @@ const db = uniCloud.database()
   }
 }
 ```
+
+如果使用uniCloud-db组件，则在组件的属性上增加一个 getone。[详见](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=props)
+
+### 统计数量getcount@getcount
+
+统计符合查询条件的记录数，是数据库层面的概念。
+
+在查询的result里，有一个`affectedDocs`。但affectedDocs和count计数不是一回事。
+
+- affectedDocs表示从服务器返回给前端的数据条数。默认100条，可通过limit方法调整。
+- count则是指符合查询条件的记录总数，至于这些记录是否返回给前端，和count无关。
+
+例如book表里有110本书，不写任何where、limit等条件，但写了count方法或getCount参数，那么result会变成如下：
+
+```json
+result:{
+	affectedDocs: 100,
+	code: "",
+	count: 110,
+	data:[...]
+}
+```
+
+也就是数据库查到了110条记录，通过count返回；而网络侧只给前端返回了100条数据，通过affectedDocs表示。
+
+count计数又有2种场景：
+- 单纯统计数量，不查询数据。使用count()方法
+- 查询记录返回详情，同时返回符合查询条件的数量、使用getCount参数
+
+#### 单纯统计数量，不返回数据明细
+
+使用count()方法，如`db.collection('order').count()`
+
+可以继续加where等条件进行数据记录过滤。
+
+#### 查询记录的同时返回计数
+
+使用`clientDB`的API方式时，可以在get方法内传入参数`getCount:true`来同时返回总数
+
+```js
+// 这以上面的order表数据为例
+const db = uniCloud.database()
+  db.collection('order')
+    .get({
+      getCount:true
+    })
+    .then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.error(err)
+    })
+```
+
+返回结果为
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
+		"book": "3",
+		"quantity": 555
+	}],
+	"count": 5
+}
+```
+
+如果使用uniCloud-db组件，则在组件的属性上增加一个 getcount。[详见](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=props)
+
 
 ### 查询树形数据gettree@gettree
 
@@ -2151,7 +2239,7 @@ const res = await db.collection('table1').where({
 - 更新数据库时不可使用更新操作符`db.command.inc`等
 - 更新数据时键值不可使用`{'a.b.c': 1}`的形式，需要写成`{a:{b:{c:1}}}`形式（后续会对此进行优化）
 
-### MongoDB聚合操作
+### MongoDB聚合操作@aggregate
 
 clientDB API支持使用聚合操作读取数据，关于聚合操作请参考[聚合操作](uniCloud/cf-database.md?id=aggregate)
 
@@ -2169,9 +2257,6 @@ const res = await db.collection('test').aggregate()
 .end()
 ```
 
-**注意**
-
-- 目前`<uni-clientdb>`组件暂不支持使用直接aggregate方法进行聚合操作，但是可以使用JQL进行联表查询、分组统计、数据去重等功能
 
 ### 刷新token@refreshtoken
 
