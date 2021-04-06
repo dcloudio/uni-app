@@ -23,7 +23,7 @@ function getConnection() {
     (navigator as any).mozConnection
   )
 }
-
+// 注意：框架对on类的API已做了统一的前置处理（仅首次调用on方法时，会调用具体的平台on实现，后续调用，框架不会再调用，实现时，直接监听平台事件即可）
 export const onNetworkStatusChange = defineOnApi<OnNetworkStatusChange>(
   API_ON_NETWORK_STATUS_CHANGE,
   () => {
@@ -36,7 +36,7 @@ export const onNetworkStatusChange = defineOnApi<OnNetworkStatusChange>(
     }
   }
 )
-
+// 注意：框架对off类的API已做了统一的前置处理（仅当框架内不存在对应的on监听时，会调用具体的平台off实现，若还存在事件，框架不会再调用，具体实现时，直接移除平台事件即可）
 export const offNetworkStatusChange = defineOffApi<
   typeof uni.offNetworkStatusChange
 >('offNetworkStatusChange', () => {
