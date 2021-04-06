@@ -20,6 +20,9 @@ export * from './protocols/location/openLocation'
 export * from './protocols/media/chooseImage'
 export * from './protocols/media/chooseVideo'
 export * from './protocols/media/getImageInfo'
+
+export * from './protocols/network/request'
+
 export * from './protocols/route/route'
 
 // helpers

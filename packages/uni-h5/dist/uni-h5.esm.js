@@ -7483,7 +7483,7 @@ var lookup = new Uint8Array(256);
 for (var i = 0; i < chars.length; i++) {
   lookup[chars.charCodeAt(i)] = i;
 }
-function encode(arraybuffer) {
+function encode$1(arraybuffer) {
   var bytes = new Uint8Array(arraybuffer), i, len = bytes.length, base64 = "";
   for (i = 0; i < len; i += 3) {
     base64 += chars[bytes[i] >> 2];
@@ -7816,8 +7816,20 @@ function wrapperOffApi(name, fn) {
     }
   };
 }
+function invokeSuccess(id2, name, res) {
+  return invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
+}
+function invokeFail(id2, name, err) {
+  return invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
+}
 function wrapperTaskApi(name, fn, options) {
-  return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
+  return (args) => {
+    const id2 = createAsyncApiCallback(name, args, options);
+    return fn(args, {
+      resolve: (res) => invokeSuccess(id2, name, res),
+      reject: (err) => invokeFail(id2, name, err)
+    });
+  };
 }
 function wrapperSyncApi(fn) {
   return (...args) => fn.apply(null, args);
@@ -7825,11 +7837,7 @@ function wrapperSyncApi(fn) {
 function wrapperAsyncApi(name, fn, options) {
   return (args) => {
     const id2 = createAsyncApiCallback(name, args, options);
-    fn(args).then((res) => {
-      invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
-    }).catch((err) => {
-      invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
-    });
+    fn(args).then((res) => invokeSuccess(id2, name, res)).catch((err) => invokeFail(id2, name, err));
   };
 }
 function wrapperApi(fn, name, protocol, options) {
@@ -7848,6 +7856,9 @@ function defineOnApi(name, fn, options) {
 }
 function defineOffApi(name, fn, options) {
   return defineApi(API_TYPE_OFF, name, fn, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(defineApi(API_TYPE_TASK, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 function defineSyncApi(name, fn, protocol, options) {
   return defineApi(API_TYPE_SYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
@@ -7889,7 +7900,7 @@ const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) =
   return decode(base64);
 }, Base64ToArrayBufferProtocol);
 const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
-  return encode(arrayBuffer);
+  return encode$1(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 const API_UPX2PX = "upx2px";
 const Upx2pxProtocol = [
@@ -8137,6 +8148,109 @@ const GetImageInfoProtocol = {
   src: {
     type: String,
     required: true
+  }
+};
+const API_REQUEST = "request";
+const METHOD = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
+const DEFAULT_METHOD = "GET";
+const dataType = {
+  JSON: "json"
+};
+const RESPONSE_TYPE = ["text", "arraybuffer"];
+const DEFAULT_RESPONSE_TYPE = "text";
+const encode = encodeURIComponent;
+function stringifyQuery(url, data) {
+  let str = url.split("#");
+  const hash = str[1] || "";
+  str = str[0].split("?");
+  let query = str[1] || "";
+  url = str[0];
+  const search = query.split("&").filter((item) => item);
+  const params = {};
+  search.forEach((item) => {
+    const part = item.split("=");
+    params[part[0]] = part[1];
+  });
+  for (const key in data) {
+    if (hasOwn$1(data, key)) {
+      let v2 = data[key];
+      if (typeof v2 === "undefined" || v2 === null) {
+        v2 = "";
+      } else if (isPlainObject(v2)) {
+        v2 = JSON.stringify(v2);
+      }
+      params[encode(key)] = encode(v2);
+    }
+  }
+  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
+  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
+}
+const RequestProtocol = {
+  method: {
+    type: String
+  },
+  data: {
+    type: [Object, String, Array, ArrayBuffer]
+  },
+  url: {
+    type: String,
+    required: true
+  },
+  header: {
+    type: Object
+  },
+  dataType: {
+    type: String
+  },
+  responseType: {
+    type: String
+  },
+  withCredentials: {
+    type: Boolean
+  }
+};
+const RequestOptions = {
+  formatArgs: {
+    method(value, params) {
+      params.method = (value || "").toUpperCase();
+      if (METHOD.indexOf(params.method) === -1) {
+        params.method = DEFAULT_METHOD;
+      }
+    },
+    data(value, params) {
+      params.data = value || "";
+    },
+    url(value, params) {
+      if (params.method === DEFAULT_METHOD && isPlainObject(params.data) && Object.keys(params.data).length) {
+        params.url = stringifyQuery(value, params.data);
+      }
+    },
+    header(value, params) {
+      const header = params.header = value || {};
+      if (params.method !== DEFAULT_METHOD) {
+        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+          header["Content-Type"] = "application/json";
+        }
+      }
+    },
+    dataType(value, params) {
+      params.dataType = (value || dataType.JSON).toLowerCase();
+    },
+    responseType(value, params) {
+      params.responseType = (value || "").toLowerCase();
+      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+        params.responseType = DEFAULT_RESPONSE_TYPE;
+      }
+    }
   }
 };
 function encodeQueryString(url) {
@@ -8480,6 +8594,125 @@ const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}) => {
     img.src = src;
   });
 }, GetImageInfoProtocol, GetImageInfoOptions);
+const request = defineTaskApi(API_REQUEST, ({
+  url,
+  data,
+  header,
+  method,
+  dataType: dataType2,
+  responseType,
+  withCredentials,
+  timeout = __uniConfig.networkTimeout.request
+}, {resolve, reject}) => {
+  let body = null;
+  const contentType = normalizeContentType(header);
+  if (method !== "GET") {
+    if (typeof data === "string" || data instanceof ArrayBuffer) {
+      body = data;
+    } else {
+      if (contentType === "json") {
+        try {
+          body = JSON.stringify(data);
+        } catch (error) {
+          body = data.toString();
+        }
+      } else if (contentType === "urlencoded") {
+        const bodyArray = [];
+        for (const key in data) {
+          if (hasOwn$1(data, key)) {
+            bodyArray.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+          }
+        }
+        body = bodyArray.join("&");
+      } else {
+        body = data.toString();
+      }
+    }
+  }
+  const xhr = new XMLHttpRequest();
+  const requestTask = new RequestTask(xhr);
+  xhr.open(method, url);
+  for (const key in header) {
+    if (hasOwn$1(header, key)) {
+      xhr.setRequestHeader(key, header[key]);
+    }
+  }
+  const timer = setTimeout(function() {
+    xhr.onload = xhr.onabort = xhr.onerror = null;
+    requestTask.abort();
+    reject("timeout");
+  }, timeout);
+  xhr.responseType = responseType;
+  xhr.onload = function() {
+    clearTimeout(timer);
+    const statusCode = xhr.status;
+    let res = responseType === "text" ? xhr.responseText : xhr.response;
+    if (responseType === "text" && dataType2 === "json") {
+      try {
+        res = JSON.parse(res);
+      } catch (error) {
+      }
+    }
+    resolve({
+      data: res,
+      statusCode,
+      header: parseHeaders(xhr.getAllResponseHeaders()),
+      cookies: []
+    });
+  };
+  xhr.onabort = function() {
+    clearTimeout(timer);
+    reject("abort");
+  };
+  xhr.onerror = function() {
+    clearTimeout(timer);
+    reject();
+  };
+  xhr.withCredentials = withCredentials;
+  xhr.send(body);
+  return requestTask;
+}, RequestProtocol, RequestOptions);
+function normalizeContentType(header) {
+  const name = Object.keys(header).find((name2) => name2.toLowerCase() === "content-type");
+  if (!name) {
+    return;
+  }
+  const contentType = header[name];
+  if (contentType.indexOf("application/json") === 0) {
+    return "json";
+  } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
+    return "urlencoded";
+  }
+  return "string";
+}
+class RequestTask {
+  constructor(xhr) {
+    this._xhr = xhr;
+  }
+  abort() {
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+function parseHeaders(headers) {
+  const headersObject = {};
+  headers.split("\n").forEach((header) => {
+    const find = header.match(/(\S+\s*):\s*(.*)/);
+    if (!find || find.length !== 3) {
+      return;
+    }
+    headersObject[find[1]] = find[2];
+  });
+  return headersObject;
+}
 const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}) => new Promise((resolve, reject) => {
   let canBack = true;
   const vm = getCurrentPageVm();
@@ -8531,6 +8764,7 @@ var api = /* @__PURE__ */ Object.freeze({
   getNetworkType,
   openDocument,
   getImageInfo,
+  request,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -9644,4 +9878,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, request, switchTab, uni$1 as uni, upx2px};

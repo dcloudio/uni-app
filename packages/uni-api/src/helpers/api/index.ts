@@ -65,9 +65,22 @@ function wrapperOffApi(name: string, fn: Function) {
   }
 }
 
+function invokeSuccess(id: number, name: string, res: unknown) {
+  return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
+}
+
+function invokeFail(id: number, name: string, err: string) {
+  return invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') })
+}
+
 function wrapperTaskApi(name: string, fn: Function, options?: ApiOptions) {
-  return (args: Record<string, any>) =>
-    fn.apply(null, [args, createAsyncApiCallback(name, args, options)])
+  return (args: Record<string, any>) => {
+    const id = createAsyncApiCallback(name, args, options)
+    return fn(args, {
+      resolve: (res: unknown) => invokeSuccess(id, name, res),
+      reject: (err: string) => invokeFail(id, name, err),
+    })
+  }
 }
 
 function wrapperSyncApi(fn: Function) {
@@ -82,22 +95,18 @@ function wrapperAsyncApi(
   return (args: Record<string, any>) => {
     const id = createAsyncApiCallback(name, args, options)
     fn(args)
-      .then((res) => {
-        invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
-      })
-      .catch((err) => {
-        invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') })
-      })
+      .then((res) => invokeSuccess(id, name, res))
+      .catch((err) => invokeFail(id, name, err))
   }
 }
 
-function wrapperApi<T extends Function>(
+function wrapperApi(
   fn: Function,
   name?: string,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return (function (...args: any[]) {
+  return function (...args: any[]) {
     if (__DEV__) {
       const errMsg = validateProtocols(name!, args, protocol)
       if (errMsg) {
@@ -105,50 +114,54 @@ function wrapperApi<T extends Function>(
       }
     }
     return fn.apply(null, formatApiArgs(args, options))
-  } as unknown) as T
+  }
 }
 
 export function defineOnApi<T extends Function>(
   name: string,
-  fn: T,
+  fn: () => void,
   options?: ApiOptions
 ) {
-  return defineApi(
+  return (defineApi(
     API_TYPE_ON,
     name,
     fn,
     __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
     options
-  ) as T
+  ) as unknown) as T
 }
 
 export function defineOffApi<T extends Function>(
   name: string,
-  fn: T,
+  fn: () => void,
   options?: ApiOptions
 ) {
-  return defineApi(
+  return (defineApi(
     API_TYPE_OFF,
     name,
     fn,
     __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
     options
-  ) as T
+  ) as unknown) as T
 }
 
-export function defineTaskApi<T extends Function>(
+type TaskApiLike = (args: any) => any
+
+export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   name: string,
-  fn: T,
+  fn: (
+    args: Omit<P, 'success' | 'fail' | 'complete'>,
+    res: {
+      resolve: (res: AsyncApiRes<P>) => void
+      reject: (err?: string) => void
+    }
+  ) => ReturnType<T>,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return defineApi(
-    API_TYPE_TASK,
-    name,
-    fn,
-    __DEV__ ? protocol : undefined,
-    options
-  ) as T
+  return (promisify(
+    defineApi(API_TYPE_TASK, name, fn, __DEV__ ? protocol : undefined, options)
+  ) as unknown) as T
 }
 
 export function defineSyncApi<T extends Function>(
@@ -157,13 +170,13 @@ export function defineSyncApi<T extends Function>(
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return defineApi(
+  return (defineApi(
     API_TYPE_SYNC,
     name,
     fn,
     __DEV__ ? protocol : undefined,
     options
-  ) as T
+  ) as unknown) as T
 }
 interface AsyncMethodOptionLike {
   success?: (...args: any[]) => void

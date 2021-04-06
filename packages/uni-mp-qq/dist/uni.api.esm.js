@@ -300,8 +300,20 @@ function wrapperOffApi(name, fn) {
         }
     };
 }
+function invokeSuccess(id, name, res) {
+    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+}
+function invokeFail(id, name, err) {
+    return invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') });
+}
 function wrapperTaskApi(name, fn, options) {
-    return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
+    return (args) => {
+        const id = createAsyncApiCallback(name, args, options);
+        return fn(args, {
+            resolve: (res) => invokeSuccess(id, name, res),
+            reject: (err) => invokeFail(id, name, err),
+        });
+    };
 }
 function wrapperSyncApi(fn) {
     return (...args) => fn.apply(null, args);
@@ -310,12 +322,8 @@ function wrapperAsyncApi(name, fn, options) {
     return (args) => {
         const id = createAsyncApiCallback(name, args, options);
         fn(args)
-            .then((res) => {
-            invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
-        })
-            .catch((err) => {
-            invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') });
-        });
+            .then((res) => invokeSuccess(id, name, res))
+            .catch((err) => invokeFail(id, name, err));
     };
 }
 function wrapperApi(fn, name, protocol, options) {
