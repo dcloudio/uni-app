@@ -275,3 +275,22 @@ exports.main = async function(event){
 2. 错误信息：`The root domain of your domain is reserved by another account`
 
   当前域名有在阿里云开通全站加速相关业务（可能配置了泛域名加速），与前端网页托管冲突。可以考虑使用三级域名或去除泛域名加速改为单独配置需要加速的域名。
+
+### 授权其他用户访问服务空间@collaborator
+
+开发期间经常需要多人共用同一个服务空间，此时可以在[DCloud开发者中心](https://dev.dcloud.net.cn/)将特定应用及其关联的服务空间共享给协作者，详细步骤如下
+
+1. 在开发者中心`我创建的应用`列表页面选择特定的应用
+
+  ![我创建的应用](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/865a0df3-3169-48df-8b4c-8acacf1a621f.jpg)
+  
+2. 在第一步选择的应用详情页面左侧菜单点击`项目成员管理`
+3. 输入协作者邮箱并点击`添加协作者按钮`，下方会出现协作者权限配置界面
+
+  ![项目成员管理](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2e59ce9b-f202-4432-954c-d6182187ef94.jpg)
+  
+4. 勾选uniCloud并点击`设置授权服务空间`，在弹出界面勾选希望此协作者访问的服务空间
+  
+  ![设置授权服务空间](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b3c234a7-e514-4b14-b33d-e7322130bd7d.jpg)
+
+5. 点击第4步弹出界面的`保存按钮`以及第3步的`保存权限设置`按钮
