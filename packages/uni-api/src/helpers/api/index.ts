@@ -25,6 +25,50 @@ type API_TYPES =
   | typeof API_TYPE_SYNC
   | typeof API_TYPE_ASYNC
 
+interface AsyncMethodOptionLike {
+  success?: (...args: any[]) => void
+}
+
+type PromisifySuccessResult<P, R> = P extends {
+  success: any
+}
+  ? void
+  : P extends { fail: any }
+  ? void
+  : P extends { complete: any }
+  ? void
+  : Promise<R>
+
+type TaskApiLike = (args: any) => any
+
+type AsyncApiLike = (args: any) => Promise<unknown> | void
+
+type AsyncApiOptions<T extends AsyncApiLike> = Parameters<T>[0]
+
+type AsyncApiRes<T extends AsyncMethodOptionLike> = Parameters<
+  Exclude<T['success'], undefined>
+>[0]
+
+type AsyncApiRequired<T extends AsyncMethodOptionLike> = <P extends T>(
+  args: P
+) => PromisifySuccessResult<P, AsyncApiRes<T>>
+
+type AsyncApiOptional<T extends AsyncMethodOptionLike> = <P extends T>(
+  args?: P
+) => PromisifySuccessResult<P, AsyncApiRes<T>>
+
+interface AsyncApiOptionalOptions {
+  success?: any
+  fail?: any
+  complete?: any
+}
+
+type AsyncApi<
+  T extends AsyncMethodOptionLike
+> = AsyncApiOptionalOptions extends T
+  ? AsyncApiOptional<T>
+  : AsyncApiRequired<T>
+
 function formatApiArgs(args: any[], options?: ApiOptions) {
   const params = args[0]
   if (
@@ -145,8 +189,6 @@ export function defineOffApi<T extends Function>(
   ) as unknown) as T
 }
 
-type TaskApiLike = (args: any) => any
-
 export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   name: string,
   fn: (
@@ -178,47 +220,6 @@ export function defineSyncApi<T extends Function>(
     options
   ) as unknown) as T
 }
-interface AsyncMethodOptionLike {
-  success?: (...args: any[]) => void
-}
-
-type PromisifySuccessResult<P, R> = P extends {
-  success: any
-}
-  ? void
-  : P extends { fail: any }
-  ? void
-  : P extends { complete: any }
-  ? void
-  : Promise<R>
-
-type AsyncApiLike = (args: any) => Promise<unknown> | void
-
-type AsyncApiOptions<T extends AsyncApiLike> = Parameters<T>[0]
-
-type AsyncApiRes<T extends AsyncMethodOptionLike> = Parameters<
-  Exclude<T['success'], undefined>
->[0]
-
-type AsyncApiRequired<T extends AsyncMethodOptionLike> = <P extends T>(
-  args: P
-) => PromisifySuccessResult<P, AsyncApiRes<T>>
-
-type AsyncApiOptional<T extends AsyncMethodOptionLike> = <P extends T>(
-  args?: P
-) => PromisifySuccessResult<P, AsyncApiRes<T>>
-
-interface AsyncApiOptionalOptions {
-  success?: any
-  fail?: any
-  complete?: any
-}
-
-type AsyncApi<
-  T extends AsyncMethodOptionLike
-> = AsyncApiOptionalOptions extends T
-  ? AsyncApiOptional<T>
-  : AsyncApiRequired<T>
 
 export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   name: string,
