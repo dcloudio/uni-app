@@ -185,7 +185,7 @@ export function getStorageInfo () {
   let currentSize = 0
   for (let index = 0; index < length; index++) {
     const key = plus.storage.key(index)
-    if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+    if (key !== STORAGE_KEYS && (key.indexOf(STORAGE_DATA_TYPE) < 0 || key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length)) {
       const value = plus.storage.getItem(key)
       currentSize += key.length + value.length
       keys.push(key)
