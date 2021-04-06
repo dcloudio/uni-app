@@ -13,10 +13,6 @@ const invokeCallbacks: {
   }
 } = {}
 
-function createInvokeCallbackName(name: string, callbackId: number) {
-  return 'api.' + name + '.' + callbackId
-}
-
 function addInvokeCallback(
   id: number,
   name: string,
@@ -45,29 +41,41 @@ export function invokeCallback(id: number, res: unknown, extras?: unknown) {
   return res
 }
 
-function getKeepAliveApiCallback(name: string, callback: Function) {
-  const onName = 'api.' + name.replace('off', 'on')
+export function findInvokeCallbackByName(name: string) {
   for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key]
-    if (item.callback === callback && item.name.indexOf(onName) === 0) {
-      delete invokeCallbacks[key]
-      return Number(key)
+    if (invokeCallbacks[key].name === name) {
+      return true
     }
   }
-  return -1
+  return false
+}
+
+export function removeKeepAliveApiCallback(name: string, callback: Function) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key]
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key]
+    }
+  }
+}
+
+export function offKeepAliveApiCallback(name: string) {
+  UniServiceJSBridge.off('api.' + name)
+}
+
+export function onKeepAliveApiCallback(name: string) {
+  UniServiceJSBridge.on('api.' + name, (res: unknown) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key]
+      if (opts.name === name) {
+        opts.callback(res)
+      }
+    }
+  })
 }
 
 export function createKeepAliveApiCallback(name: string, callback: Function) {
-  if (name.indexOf('off') === 0) {
-    return getKeepAliveApiCallback(name, callback)
-  }
-  const id = invokeCallbackId++
-  return addInvokeCallback(
-    id,
-    createInvokeCallbackName(name, id),
-    callback,
-    true
-  )
+  return addInvokeCallback(invokeCallbackId++, name, callback, true)
 }
 
 export const API_SUCCESS = 'success'
@@ -117,21 +125,17 @@ export function createAsyncApiCallback(
   const hasFail = isFunction(fail)
   const hasComplete = isFunction(complete)
   const callbackId = invokeCallbackId++
-  addInvokeCallback(
-    callbackId,
-    createInvokeCallbackName(name, callbackId),
-    (res: ApiRes) => {
-      res = res || {}
-      res.errMsg = normalizeErrMsg(res.errMsg, name)
-      isFunction(beforeAll) && beforeAll(res)
-      if (res.errMsg === name + ':ok') {
-        isFunction(beforeSuccess) && beforeSuccess(res)
-        hasSuccess && success!(res)
-      } else {
-        hasFail && fail!(res)
-      }
-      hasComplete && complete!(res)
+  addInvokeCallback(callbackId, name, (res: ApiRes) => {
+    res = res || {}
+    res.errMsg = normalizeErrMsg(res.errMsg, name)
+    isFunction(beforeAll) && beforeAll(res)
+    if (res.errMsg === name + ':ok') {
+      isFunction(beforeSuccess) && beforeSuccess(res)
+      hasSuccess && success!(res)
+    } else {
+      hasFail && fail!(res)
     }
-  )
+    hasComplete && complete!(res)
+  })
   return callbackId
 }

@@ -4,17 +4,23 @@ import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
   invokeCallback,
   createAsyncApiCallback,
+  onKeepAliveApiCallback,
+  offKeepAliveApiCallback,
+  findInvokeCallbackByName,
   createKeepAliveApiCallback,
+  removeKeepAliveApiCallback,
 } from './callback'
 import { promisify } from './promise'
 
 export const API_TYPE_ON = 0
-export const API_TYPE_TASK = 1
-export const API_TYPE_SYNC = 2
-export const API_TYPE_ASYNC = 3
+export const API_TYPE_OFF = 1
+export const API_TYPE_TASK = 2
+export const API_TYPE_SYNC = 3
+export const API_TYPE_ASYNC = 4
 
 type API_TYPES =
   | typeof API_TYPE_ON
+  | typeof API_TYPE_OFF
   | typeof API_TYPE_TASK
   | typeof API_TYPE_SYNC
   | typeof API_TYPE_ASYNC
@@ -35,8 +41,28 @@ function formatApiArgs(args: any[], options?: ApiOptions) {
 }
 
 function wrapperOnApi(name: string, fn: Function) {
-  return (callback: Function) =>
-    fn.apply(null, createKeepAliveApiCallback(name, callback))
+  return (callback: Function) => {
+    // 是否是首次调用on,如果是首次，需要初始化onMethod监听
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name)
+    createKeepAliveApiCallback(name, callback)
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name)
+      fn()
+    }
+  }
+}
+
+function wrapperOffApi(name: string, fn: Function) {
+  return (callback: Function) => {
+    name = name.replace('off', 'on')
+    removeKeepAliveApiCallback(name, callback)
+    // 是否还存在监听，若已不存在，则移除onMethod监听
+    const hasInvokeOnApi = findInvokeCallbackByName(name)
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name)
+      fn()
+    }
+  }
 }
 
 function wrapperTaskApi(name: string, fn: Function, options?: ApiOptions) {
@@ -89,6 +115,20 @@ export function defineOnApi<T extends Function>(
 ) {
   return defineApi(
     API_TYPE_ON,
+    name,
+    fn,
+    __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
+    options
+  ) as T
+}
+
+export function defineOffApi<T extends Function>(
+  name: string,
+  fn: T,
+  options?: ApiOptions
+) {
+  return defineApi(
+    API_TYPE_OFF,
     name,
     fn,
     __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
@@ -190,6 +230,8 @@ function defineApi(
   switch (type) {
     case API_TYPE_ON:
       return wrapperApi(wrapperOnApi(name, fn), name, protocol, options)
+    case API_TYPE_OFF:
+      return wrapperApi(wrapperOffApi(name, fn), name, protocol, options)
     case API_TYPE_TASK:
       return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options)
     case API_TYPE_SYNC:

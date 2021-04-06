@@ -337,10 +337,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/types@^2.0.24":
-  version "2.0.24"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.0.24.tgz#ed7ba22dd7604e67a7ccd3949f95055f042983e1"
-  integrity sha512-R5bmKdsHv3cewuJs9eQL2nwdNzDMWic3DyJ75Atno2oti9MEk1DZqcuxu1T2VyjQnEOn85ACy/FXGsLGhInStA==
+"@dcloudio/types@^2.0.25":
+  version "2.0.25"
+  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.0.25.tgz#c8e3de361b722e2bd7e40e477c0b9626e3777b31"
+  integrity sha512-r+AlgylZVlX2OLepxuyKzB4mRtnfdcIrnzHWbJOgZ57WDpJEcrXpP1mO0JhRGz3ewehru7P6sAcbKqRYcTkeXw==
 
 "@eslint/eslintrc@^0.4.0":
   version "0.4.0"

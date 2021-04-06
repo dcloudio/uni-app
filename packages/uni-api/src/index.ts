@@ -25,6 +25,7 @@ export * from './protocols/route/route'
 // helpers
 export {
   defineOnApi,
+  defineOffApi,
   defineTaskApi,
   defineSyncApi,
   defineAsyncApi,

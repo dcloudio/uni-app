@@ -163,4 +163,45 @@ declare namespace UniApp {
     leftWindow?: PagesJsonWindowOptions
     rightWindow?: PagesJsonWindowOptions
   }
+
+  type OnApiLike = (callback: (result: unknown) => void) => void
+  interface UniServiceJSBridge {
+    /**
+     * 监听 service 层的自定义事件。事件由 emit 触发，回调函数会接收所有传入事件触发函数的额外参数。
+     * @param event
+     * @param callback
+     */
+    on(event: string | string[], callback: Function): void
+    /**
+     * 监听 service 层的自定义事件。仅触发一次，在第一次触发之后移除监听器。
+     * @param event
+     * @param callback
+     */
+    once(event: string, callback: Function): void
+    /**
+     * 移除 service 层的自定义事件监听器。
+     * 如果没有提供参数，则移除所有的事件监听器；
+     * 如果只提供了事件，则移除该事件所有的监听器；
+     * 如果同时提供了事件与回调，则只移除这个回调的监听器。
+     * @param event
+     * @param callback
+     */
+    off(event?: string | string[], callback?: Function): void
+    /**
+     * 触发 Service 层的事件。附加参数都会传给监听器回调。
+     * @param event
+     * @param args
+     */
+    emit(event: string, ...args: any[]): void
+    /**
+     * 触发 Service 层事件类型API(on开头)回调。
+     * @param name
+     * @param res
+     */
+    invokeOnCallback<T extends OnApiLike>(
+      name: string,
+      res: Parameters<Parameters<T>[0]>[0]
+    ): void
+    publishHandler(event: string, args: unknown, pageId: number): void
+  }
 }

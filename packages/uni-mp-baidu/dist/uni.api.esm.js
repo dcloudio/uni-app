@@ -154,9 +154,6 @@ function tryCatch(fn) {
 
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function createInvokeCallbackName(name, callbackId) {
-    return 'api.' + name + '.' + callbackId;
-}
 function addInvokeCallback(id, name, callback, keepAlive = false) {
     invokeCallbacks[id] = {
         name,
@@ -178,23 +175,37 @@ function invokeCallback(id, res, extras) {
     }
     return res;
 }
-function getKeepAliveApiCallback(name, callback) {
-    const onName = 'api.' + name.replace('off', 'on');
+function findInvokeCallbackByName(name) {
     for (const key in invokeCallbacks) {
-        const item = invokeCallbacks[key];
-        if (item.callback === callback && item.name.indexOf(onName) === 0) {
-            delete invokeCallbacks[key];
-            return Number(key);
+        if (invokeCallbacks[key].name === name) {
+            return true;
         }
     }
-    return -1;
+    return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+    for (const key in invokeCallbacks) {
+        const item = invokeCallbacks[key];
+        if (item.callback === callback && item.name === name) {
+            delete invokeCallbacks[key];
+        }
+    }
+}
+function offKeepAliveApiCallback(name) {
+    UniServiceJSBridge.off('api.' + name);
+}
+function onKeepAliveApiCallback(name) {
+    UniServiceJSBridge.on('api.' + name, (res) => {
+        for (const key in invokeCallbacks) {
+            const opts = invokeCallbacks[key];
+            if (opts.name === name) {
+                opts.callback(res);
+            }
+        }
+    });
 }
 function createKeepAliveApiCallback(name, callback) {
-    if (name.indexOf('off') === 0) {
-        return getKeepAliveApiCallback(name, callback);
-    }
-    const id = invokeCallbackId++;
-    return addInvokeCallback(id, createInvokeCallbackName(name, id), callback, true);
+    return addInvokeCallback(invokeCallbackId++, name, callback, true);
 }
 function getApiCallbacks(args) {
     const apiCallbacks = {};
@@ -222,7 +233,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     const hasFail = isFunction(fail);
     const hasComplete = isFunction(complete);
     const callbackId = invokeCallbackId++;
-    addInvokeCallback(callbackId, createInvokeCallbackName(name, callbackId), (res) => {
+    addInvokeCallback(callbackId, name, (res) => {
         res = res || {};
         res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
@@ -250,9 +261,10 @@ function handlePromise(promise) {
 }
 
 const API_TYPE_ON = 0;
-const API_TYPE_TASK = 1;
-const API_TYPE_SYNC = 2;
-const API_TYPE_ASYNC = 3;
+const API_TYPE_OFF = 1;
+const API_TYPE_TASK = 2;
+const API_TYPE_SYNC = 3;
+const API_TYPE_ASYNC = 4;
 function formatApiArgs(args, options) {
     const params = args[0];
     if (!options ||
@@ -266,7 +278,27 @@ function formatApiArgs(args, options) {
     return args;
 }
 function wrapperOnApi(name, fn) {
-    return (callback) => fn.apply(null, createKeepAliveApiCallback(name, callback));
+    return (callback) => {
+        // 是否是首次调用on,如果是首次，需要初始化onMethod监听
+        const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+        createKeepAliveApiCallback(name, callback);
+        if (isFirstInvokeOnApi) {
+            onKeepAliveApiCallback(name);
+            fn();
+        }
+    };
+}
+function wrapperOffApi(name, fn) {
+    return (callback) => {
+        name = name.replace('off', 'on');
+        removeKeepAliveApiCallback(name, callback);
+        // 是否还存在监听，若已不存在，则移除onMethod监听
+        const hasInvokeOnApi = findInvokeCallbackByName(name);
+        if (!hasInvokeOnApi) {
+            offKeepAliveApiCallback(name);
+            fn();
+        }
+    };
 }
 function wrapperTaskApi(name, fn, options) {
     return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
@@ -304,6 +336,8 @@ function defineApi(type, name, fn, protocol, options) {
     switch (type) {
         case API_TYPE_ON:
             return wrapperApi(wrapperOnApi(name, fn), name, protocol, options);
+        case API_TYPE_OFF:
+            return wrapperApi(wrapperOffApi(name, fn), name, protocol, options);
         case API_TYPE_TASK:
             return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options);
         case API_TYPE_SYNC:

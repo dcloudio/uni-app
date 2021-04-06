@@ -55,35 +55,66 @@ function initApp$1(app) {
     globalProperties.$applyOptions = applyOptions;
   }
 }
-function initBridge(namespace) {
-  const {on, off, emit} = {
-    on(event2, callback) {
-      console.log(event2, callback);
-    },
-    off(event2, callback) {
-      console.log(event2, callback);
-    },
-    emit(event2, ...args) {
-      console.log(event2, args);
+function E() {
+}
+E.prototype = {
+  on: function(name, callback, ctx) {
+    var e2 = this.e || (this.e = {});
+    (e2[name] || (e2[name] = [])).push({
+      fn: callback,
+      ctx
+    });
+    return this;
+  },
+  once: function(name, callback, ctx) {
+    var self = this;
+    function listener() {
+      self.off(name, listener);
+      callback.apply(ctx, arguments);
     }
-  };
-  return {
-    on,
-    off,
-    emit,
+    listener._ = callback;
+    return this.on(name, listener, ctx);
+  },
+  emit: function(name) {
+    var data = [].slice.call(arguments, 1);
+    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+    var i = 0;
+    var len = evtArr.length;
+    for (i; i < len; i++) {
+      evtArr[i].fn.apply(evtArr[i].ctx, data);
+    }
+    return this;
+  },
+  off: function(name, callback) {
+    var e2 = this.e || (this.e = {});
+    var evts = e2[name];
+    var liveEvents = [];
+    if (evts && callback) {
+      for (var i = 0, len = evts.length; i < len; i++) {
+        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+          liveEvents.push(evts[i]);
+      }
+    }
+    liveEvents.length ? e2[name] = liveEvents : delete e2[name];
+    return this;
+  }
+};
+function initBridge(namespace) {
+  const emitter2 = new E();
+  return extend(emitter2, {
     subscribe(event2, callback) {
-      return on(`${namespace}.${event2}`, callback);
+      return emitter2.on(`${namespace}.${event2}`, callback);
     },
     unsubscribe(event2, callback) {
-      return off(`${namespace}.${event2}`, callback);
+      return emitter2.off(`${namespace}.${event2}`, callback);
     },
     subscribeHandler(event2, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
         console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event2}, ${JSON.stringify(args)}, ${pageId}`);
       }
-      return emit(`${namespace}.${event2}`, args, pageId);
+      return emitter2.emit(`${namespace}.${event2}`, args, pageId);
     }
-  };
+  });
 }
 const ViewJSBridge = initBridge("view");
 const LONGPRESS_TIMEOUT = 350;
@@ -639,7 +670,11 @@ function initView(app) {
   }
   initAppConfig$1(app._context.config);
 }
-const ServiceJSBridge = initBridge("service");
+const ServiceJSBridge = extend(initBridge("service"), {
+  invokeOnCallback(name, res) {
+    return UniServiceJSBridge.emit("api." + name, res);
+  }
+});
 function querySelector(vm, selector) {
   const el = vm.$el.querySelector(selector);
   return el && el.__vue__;
@@ -7483,6 +7518,13 @@ function decode(base64) {
   }
   return arraybuffer;
 }
+const API_TYPE_ON_PROTOCOLS = [
+  {
+    name: "callback",
+    type: Function,
+    required: true
+  }
+];
 function validateProtocolFail(name, msg) {
   const errMsg = `${name}:fail ${msg}`;
   {
@@ -7617,9 +7659,6 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function createInvokeCallbackName(name, callbackId) {
-  return "api." + name + "." + callbackId;
-}
 function addInvokeCallback(id2, name, callback, keepAlive = false) {
   invokeCallbacks[id2] = {
     name,
@@ -7640,23 +7679,37 @@ function invokeCallback(id2, res, extras) {
   }
   return res;
 }
-function getKeepAliveApiCallback(name, callback) {
-  const onName = "api." + name.replace("off", "on");
+function findInvokeCallbackByName(name) {
   for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name.indexOf(onName) === 0) {
-      delete invokeCallbacks[key];
-      return Number(key);
+    if (invokeCallbacks[key].name === name) {
+      return true;
     }
   }
-  return -1;
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name) {
+  UniServiceJSBridge.off("api." + name);
+}
+function onKeepAliveApiCallback(name) {
+  UniServiceJSBridge.on("api." + name, (res) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
+  });
 }
 function createKeepAliveApiCallback(name, callback) {
-  if (name.indexOf("off") === 0) {
-    return getKeepAliveApiCallback(name, callback);
-  }
-  const id2 = invokeCallbackId++;
-  return addInvokeCallback(id2, createInvokeCallbackName(name, id2), callback, true);
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
 }
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
@@ -7687,7 +7740,7 @@ function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}
   const hasFail = isFunction(fail);
   const hasComplete = isFunction(complete);
   const callbackId = invokeCallbackId++;
-  addInvokeCallback(callbackId, createInvokeCallbackName(name, callbackId), (res) => {
+  addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
     res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
@@ -7727,9 +7780,10 @@ function promisify(fn) {
   };
 }
 const API_TYPE_ON = 0;
-const API_TYPE_TASK = 1;
-const API_TYPE_SYNC = 2;
-const API_TYPE_ASYNC = 3;
+const API_TYPE_OFF = 1;
+const API_TYPE_TASK = 2;
+const API_TYPE_SYNC = 3;
+const API_TYPE_ASYNC = 4;
 function formatApiArgs(args, options) {
   const params = args[0];
   if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
@@ -7742,7 +7796,25 @@ function formatApiArgs(args, options) {
   return args;
 }
 function wrapperOnApi(name, fn) {
-  return (callback) => fn.apply(null, createKeepAliveApiCallback(name, callback));
+  return (callback) => {
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn) {
+  return (callback) => {
+    name = name.replace("off", "on");
+    removeKeepAliveApiCallback(name, callback);
+    const hasInvokeOnApi = findInvokeCallbackByName(name);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name);
+      fn();
+    }
+  };
 }
 function wrapperTaskApi(name, fn, options) {
   return (args) => fn.apply(null, [args, createAsyncApiCallback(name, args, options)]);
@@ -7771,6 +7843,12 @@ function wrapperApi(fn, name, protocol, options) {
     return fn.apply(null, formatApiArgs(args, options));
   };
 }
+function defineOnApi(name, fn, options) {
+  return defineApi(API_TYPE_ON, name, fn, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
+}
+function defineOffApi(name, fn, options) {
+  return defineApi(API_TYPE_OFF, name, fn, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
+}
 function defineSyncApi(name, fn, protocol, options) {
   return defineApi(API_TYPE_SYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
 }
@@ -7781,6 +7859,8 @@ function defineApi(type, name, fn, protocol, options) {
   switch (type) {
     case API_TYPE_ON:
       return wrapperApi(wrapperOnApi(name, fn), name, protocol, options);
+    case API_TYPE_OFF:
+      return wrapperApi(wrapperOffApi(name, fn), name, protocol, options);
     case API_TYPE_TASK:
       return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options);
     case API_TYPE_SYNC:
@@ -8332,6 +8412,51 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
 const getSystemInfo = defineAsyncApi("getSystemInfo", () => {
   return Promise.resolve(getSystemInfoSync());
 });
+const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
+function networkListener() {
+  getNetworkType().then(({networkType}) => {
+    UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
+      isConnected: networkType !== "none",
+      networkType
+    });
+  });
+}
+function getConnection() {
+  return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+}
+const onNetworkStatusChange = defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
+  const connection = getConnection();
+  if (connection) {
+    connection.addEventListener("change", networkListener);
+  } else {
+    window.addEventListener("offline", networkListener);
+    window.addEventListener("online", networkListener);
+  }
+});
+const offNetworkStatusChange = defineOffApi("offNetworkStatusChange", () => {
+  const connection = getConnection();
+  if (connection) {
+    connection.removeEventListener("change", networkListener);
+  } else {
+    window.removeEventListener("offline", networkListener);
+    window.removeEventListener("online", networkListener);
+  }
+});
+const getNetworkType = defineAsyncApi("getNetworkType", () => {
+  const connection = getConnection();
+  let networkType = "unknown";
+  if (connection) {
+    networkType = connection.type;
+    if (networkType === "cellular" && connection.effectiveType) {
+      networkType = connection.effectiveType.replace("slow-", "");
+    } else if (!["none", "wifi"].includes(networkType)) {
+      networkType = "unknown";
+    }
+  } else if (navigator.onLine === false) {
+    networkType = "none";
+  }
+  return Promise.resolve({networkType});
+});
 const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}) => {
   window.open(filePath);
   return Promise.resolve();
@@ -8401,6 +8526,9 @@ var api = /* @__PURE__ */ Object.freeze({
   makePhoneCall,
   getSystemInfo,
   getSystemInfoSync,
+  onNetworkStatusChange,
+  offNetworkStatusChange,
+  getNetworkType,
   openDocument,
   getImageInfo,
   navigateBack,
@@ -9516,4 +9644,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, switchTab, uni$1 as uni, upx2px};

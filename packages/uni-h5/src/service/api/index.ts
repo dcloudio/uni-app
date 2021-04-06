@@ -3,6 +3,7 @@ export * from './base/canIUse'
 export * from './device/makePhoneCall'
 export * from './device/getSystemInfo'
 export * from './device/getSystemInfoSync'
+export * from './device/network'
 
 export * from './file/openDocument'
 

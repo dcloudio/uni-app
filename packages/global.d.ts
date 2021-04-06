@@ -35,7 +35,7 @@ declare var __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: boolean
 declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: any
-declare var UniServiceJSBridge: any
+declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 
 declare const getCurrentPages: <T extends AnyObject = {}>(
   isAll?: boolean
