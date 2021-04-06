@@ -223,6 +223,7 @@
   "title": "广告",
   "apiList": {
     "uni.createRewardedVideoAd": true,
-    "uni.createFullScreenVideoAd": true
+    "uni.createFullScreenVideoAd": true,
+    "uni.'createInterstitialAd'": true
   }
 }]
