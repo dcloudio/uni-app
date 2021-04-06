@@ -25,7 +25,7 @@
 |Vue.set		| 向响应式对象中添加一个 property，并确保这个新 property 同样是响应式的，且触发视图更新 [详情](https://cn.vuejs.org/v2/api/#Vue-set)|√	| √|√	|		|
 |Vue.delete	| 删除对象的 property。如果对象是响应式的，确保删除能触发更新视图 [详情](https://cn.vuejs.org/v2/api/#Vue-delete)		|√	| √		| √	| |
 |Vue.directive	| 注册或获取全局指令 [详情](https://cn.vuejs.org/v2/api/#Vue-directive)|√	|√		| x			|	|
-|Vue.filter		| 注册或获取全局过滤器 [详情](https://cn.vuejs.org/v2/api/#Vue-filter)|√	|√		| √		|App端旧版不可以在class中使用			|
+|Vue.filter		| 注册或获取全局过滤器 [详情](https://cn.vuejs.org/v2/api/#Vue-filter)|√	|√		| x		|App端旧版不可以在class中使用			|
 |Vue.component	| 注册或获取全局组件。注册还会自动使用给定的 id 设置组件的名称 [详情](https://cn.vuejs.org/v2/api/#Vue-component)	|√	| √		| √	| |
 |Vue.use		| 安装 Vue.js 插件 [详情](https://cn.vuejs.org/v2/api/#Vue-use)	|√	| √		| √		|		|
 |Vue.mixin		| 全局注册一个混入，影响注册之后所有创建的每个 Vue 实例 [详情](https://cn.vuejs.org/v2/api/#Vue-mixin)	|√	|√		| √		|	|
