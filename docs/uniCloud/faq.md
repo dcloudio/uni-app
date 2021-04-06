@@ -58,7 +58,7 @@ uniCloud提供了比微信云开发更优秀的前端操作数据库方案，见
 
 ### 云开发是nodejs+改良版MongoDB组合，对比php+mysql的传统组合怎么样？
 
-nodejs的性能也于php，MongoDB的性能也优于mysql。
+nodejs的性能优于php，MongoDB的性能也优于mysql。
 
 对于前端而言，MongoDB这种类json的文档数据库更加易用，且有更高的灵活性。
 操作MongoDB仍然使用js的方法。
