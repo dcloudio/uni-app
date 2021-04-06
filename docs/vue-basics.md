@@ -299,7 +299,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 #### v-on
 
 
-v-on 指令，它用于监听 DOM 事件。v-on缩写为‘ @ ’
+v-on 指令，它用于监听 DOM 事件。v-on缩写为‘ @ ’，下文简称为 @事件
 
 
 ```html
@@ -856,12 +856,12 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 
 ### 监听事件
 
-可以用 v-on 指令监听 DOM 事件，并在触发时运行一些 `JavaScript` 代码。
+可以用@事件监听 DOM 事件，并在触发时运行一些 `JavaScript` 代码。
 
 ```html
 	<template>
 		<view>
-			<button v-on:click="counter += 1">Add 1</button>
+			<button @click="counter += 1">Add 1</button>
 			<text>The button above has been clicked {{ counter }} times.</text>
 		</view>
 	</template>
@@ -879,7 +879,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 
 ### 事件处理方法
 
-然而许多事件处理逻辑会更为复杂，所以直接把 `JavaScript` 代码写在 `v-on` 指令中是不可行的。因此 `v-on` 还可以接收一个需要调用的方法名称。
+然而许多事件处理逻辑会更为复杂，所以直接把 `JavaScript` 代码写在@事件中是不可行的。因此@事件还可以接收一个需要调用的方法名称。
 
 示例：
 
@@ -887,7 +887,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 	<template>
 		<view>
 			<!-- `greet` 是在下面定义的方法名 -->
-			<button v-on:click="greet">Greet</button>
+			<button @click="greet">Greet</button>
 		</view>
 	</template>
 	<script>
@@ -921,8 +921,8 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 ```html
 	<template>
 		<view>
-			<button v-on:click="say('hi')">Say hi</button>
-			<button v-on:click="say('what')">Say what</button>
+			<button @click="say('hi')">Say hi</button>
+			<button @click="say('what')">Say what</button>
 		</view>
 	</template>
 	<script>
@@ -943,7 +943,7 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 ```html
 	<template>
 		<view>
-			<button v-on:click="warn('Form cannot be submitted yet.', $event)">
+			<button @click="warn('Form cannot be submitted yet.', $event)">
 			  Submit
 			</button>
 		</view>
@@ -971,9 +971,9 @@ v-for 指令可以实现基于一个数组来渲染一个列表。
 
 ### 事件修饰符
 
-修饰符 (modifier) 是以半角句号 . 指明的特殊后缀，用于指出一个指令应该以特殊方式绑定。例如，`.prevent` 修饰符告诉 `v-on` 指令对于触发的事件调用 `event.preventDefault()`：
+修饰符 (modifier) 是以半角句号 . 指明的特殊后缀，用于指出一个指令应该以特殊方式绑定。例如，`.prevent` 修饰符告诉 @事件对于触发的事件调用 `event.preventDefault()`：
 
-v-on 提供了事件修饰符:
+@事件（v-on）提供了事件修饰符:
 
 - `.stop`: 各平台均支持， 使用时会阻止事件冒泡，在非 H5 端同时也会阻止事件的默认行为
 - `.native`: 监听原生事件，仅在 H5 平台支持
@@ -986,15 +986,16 @@ v-on 提供了事件修饰符:
 
 ```html
 	<!-- 阻止单击事件继续传播 -->
-	<view v-on:click.stop="doThis"></view>
+	<view @click.stop="doThis"></view>
 ```
 
 
-> 使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。因此，用 `v-on:click.prevent.self` 会阻止所有的点击，而 `v-on:click.self.prevent` 只会阻止对元素自身的点击。
+> 使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。因此，用 `@click.prevent.self` 会阻止所有的点击，而 `@click.self.prevent` 只会阻止对元素自身的点击。
+
 
 **注意**
 
-- 为兼容各端，事件需使用 **v-on** 或 **@** 的方式绑定，请勿使用小程序端的 `bind` 和 `catch` 进行事件绑定。
+- 为兼容各端，事件需使用 **@** 的方式绑定，请勿使用小程序端的 `bind` 和 `catch` 进行事件绑定。
 - 若需要禁止蒙版下的页面滚动，可使用 `@touchmove.stop.prevent="moveHandle"`，`moveHandle` 可以用来处理 `touchmove` 的事件，也可以是一个空函数。
 
 ```html
