@@ -4,6 +4,7 @@ import {
 } from 'uni-shared'
 import emitter from './emitter'
 import keyboard from './keyboard'
+import interact from './interact'
 
 UniViewJSBridge.subscribe('getSelectedTextRange', function ({ pageId, callbackId }) {
   const activeElement = document.activeElement
@@ -29,7 +30,7 @@ let startTime
 
 export default {
   name: 'Field',
-  mixins: [emitter, keyboard],
+  mixins: [emitter, keyboard, interact],
   model: {
     prop: 'value',
     event: 'update:value'
@@ -167,7 +168,10 @@ export default {
           return
         }
         field.focus()
-        plus.key.showSoftKeybord()
+        // 无用户交互的 webview 需主动显示键盘（安卓）
+        if (!this.userInteract) {
+          plus.key.showSoftKeybord()
+        }
       }
     },
     _blur () {
