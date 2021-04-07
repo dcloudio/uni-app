@@ -316,7 +316,8 @@ exports.main = async function(event, context) {
 let uniID = require('uni-id')
 exports.main = async function(event, context) {
   let uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
-    context: context // 传入context防止不同请求互相影响
+    context: context, // 传入context防止不同请求互相影响
+    config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
   })
   const res = uniIDIns.login({
     // ...一些参数

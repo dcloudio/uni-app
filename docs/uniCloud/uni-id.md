@@ -1011,14 +1011,15 @@ exports.main = async function(event,context) {
 
 用法：`uniID.createInstance(Object CreateInstanceParams);`
 
-CreateInstanceParams内可以传入云函数context，**主要用于在单实例多并发的场景（目前uniCloud还未支持，后续会提供）**
+CreateInstanceParams内可以传入云函数context，**主要用于在单实例多并发的场景**
 
 ```js
 // 云函数代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
   const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
-    context: context
+    context: context,
+    config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
   })
   payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
   if (payload.code) {
