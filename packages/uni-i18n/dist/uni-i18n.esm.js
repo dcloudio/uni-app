@@ -252,6 +252,7 @@ function initVueI18n(messages, fallbackLocale = 'en', locale) {
         return t(key, values);
     };
     return {
+        i18n,
         t(key, values) {
             return t(key, values);
         },

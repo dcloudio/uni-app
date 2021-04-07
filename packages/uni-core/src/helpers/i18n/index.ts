@@ -16,12 +16,11 @@ const messages = {
 
 const fallbackLocale = 'en'
 
-const i18n = initVueI18n(
+const i18n = /*#__PURE__*/ initVueI18n(
   __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {},
   fallbackLocale
 )
 
-export const t = i18n.t
-export const i18nMixin = i18n.mixin
-export const setLocale = i18n.setLocale
-export const getLocale = i18n.getLocale
+export function useI18n() {
+  return i18n
+}

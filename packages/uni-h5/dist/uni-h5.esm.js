@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, createTextVNode, Fragment, renderList, vModelText} from "vue";
+import {injectHook, createVNode, defineComponent, inject, provide, reactive, computed, nextTick, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, withModifiers, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, getCurrentInstance, watch, onBeforeMount} from "vue";
 import {passive, NAVBAR_HEIGHT, COMPONENT_NAME_PREFIX, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView, isNavigationFailure} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -119,7 +119,7 @@ function initBridge(namespace) {
 const ViewJSBridge = initBridge("view");
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$1 = passive(true);
+const passiveOptions$2 = passive(true);
 let longPressTimer = 0;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -162,10 +162,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$1);
-  window.addEventListener("touchmove", touchmove, passiveOptions$1);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$1);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$1);
+  window.addEventListener("touchstart", touchstart, passiveOptions$2);
+  window.addEventListener("touchmove", touchmove, passiveOptions$2);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
 }
 var attrs = ["top", "left", "right", "bottom"];
 var inited;
@@ -387,7 +387,7 @@ function normalizeDataset(dataset = {}) {
   const result = JSON.parse(JSON.stringify(dataset));
   return result;
 }
-function normalizeEvent(name, $event, detail = {}, target, currentTarget) {
+function normalizeEvent$1(name, $event, detail = {}, target, currentTarget) {
   if ($event._processed) {
     $event.type = detail.type || name;
     return $event;
@@ -467,12 +467,12 @@ function normalizeTouchList(touches) {
 }
 function $trigger(name, $event, detail) {
   const target = this.$el;
-  this.$emit(name, normalizeEvent(name, $event, detail, target, target));
+  this.$emit(name, normalizeEvent$1(name, $event, detail, target, target));
 }
 function $handleEvent($event) {
   if ($event instanceof Event) {
     const target = findUniTarget($event, this.$el);
-    return normalizeEvent($event.type, $event, {}, target || $event.target, $event.currentTarget);
+    return normalizeEvent$1($event.type, $event, {}, target || $event.target, $event.currentTarget);
   }
   return $event;
 }
@@ -642,7 +642,7 @@ function handleWxsEvent($event) {
   const currentTarget = $event.currentTarget;
   const instance2 = currentTarget && currentTarget.__vue__ && getComponentDescriptor.call(this, currentTarget.__vue__, false);
   const $origEvent = $event;
-  $event = normalizeEvent($origEvent.type, $origEvent, {}, findUniTarget($origEvent, this.$el) || $origEvent.target, $origEvent.currentTarget);
+  $event = normalizeEvent$1($origEvent.type, $origEvent, {}, findUniTarget($origEvent, this.$el) || $origEvent.target, $origEvent.currentTarget);
   $event.instance = instance2;
   $event.preventDefault = function() {
     return $origEvent.preventDefault();
@@ -748,6 +748,426 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
       fill: color
     }, null, 8, ["d", "fill"])
   ], 8, ["width", "height"]);
+}
+const isObject = (val) => val !== null && typeof val === "object";
+class BaseFormatter {
+  constructor() {
+    this._caches = Object.create(null);
+  }
+  interpolate(message, values) {
+    if (!values) {
+      return [message];
+    }
+    let tokens = this._caches[message];
+    if (!tokens) {
+      tokens = parse(message);
+      this._caches[message] = tokens;
+    }
+    return compile(tokens, values);
+  }
+}
+const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+function parse(format) {
+  const tokens = [];
+  let position = 0;
+  let text2 = "";
+  while (position < format.length) {
+    let char = format[position++];
+    if (char === "{") {
+      if (text2) {
+        tokens.push({type: "text", value: text2});
+      }
+      text2 = "";
+      let sub = "";
+      char = format[position++];
+      while (char !== void 0 && char !== "}") {
+        sub += char;
+        char = format[position++];
+      }
+      const isClosed = char === "}";
+      const type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
+      tokens.push({value: sub, type});
+    } else if (char === "%") {
+      if (format[position] !== "{") {
+        text2 += char;
+      }
+    } else {
+      text2 += char;
+    }
+  }
+  text2 && tokens.push({type: "text", value: text2});
+  return tokens;
+}
+function compile(tokens, values) {
+  const compiled = [];
+  let index2 = 0;
+  const mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
+  if (mode === "unknown") {
+    return compiled;
+  }
+  while (index2 < tokens.length) {
+    const token = tokens[index2];
+    switch (token.type) {
+      case "text":
+        compiled.push(token.value);
+        break;
+      case "list":
+        compiled.push(values[parseInt(token.value, 10)]);
+        break;
+      case "named":
+        if (mode === "named") {
+          compiled.push(values[token.value]);
+        }
+        break;
+    }
+    index2++;
+  }
+  return compiled;
+}
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+const defaultFormatter = new BaseFormatter();
+function include(str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1);
+}
+function startsWith(str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0);
+}
+function normalizeLocale(locale, messages2) {
+  if (!locale) {
+    return;
+  }
+  locale = locale.trim().replace(/_/g, "-");
+  if (messages2[locale]) {
+    return locale;
+  }
+  locale = locale.toLowerCase();
+  if (locale.indexOf("zh") === 0) {
+    if (locale.indexOf("-hans") !== -1) {
+      return "zh-Hans";
+    }
+    if (locale.indexOf("-hant") !== -1) {
+      return "zh-Hant";
+    }
+    if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
+      return "zh-Hant";
+    }
+    return "zh-Hans";
+  }
+  const lang = startsWith(locale, ["en", "fr", "es"]);
+  if (lang) {
+    return lang;
+  }
+}
+class I18n {
+  constructor({locale, fallbackLocale: fallbackLocale2, messages: messages2, watcher, formater}) {
+    this.locale = "en";
+    this.fallbackLocale = "en";
+    this.message = {};
+    this.messages = {};
+    this.watchers = [];
+    if (fallbackLocale2) {
+      this.fallbackLocale = fallbackLocale2;
+    }
+    this.formater = formater || defaultFormatter;
+    this.messages = messages2;
+    this.setLocale(locale);
+    if (watcher) {
+      this.watchLocale(watcher);
+    }
+  }
+  setLocale(locale) {
+    const oldLocale = this.locale;
+    this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+    this.message = this.messages[this.locale];
+    this.watchers.forEach((watcher) => {
+      watcher(this.locale, oldLocale);
+    });
+  }
+  getLocale() {
+    return this.locale;
+  }
+  watchLocale(fn) {
+    const index2 = this.watchers.push(fn) - 1;
+    return () => {
+      this.watchers.splice(index2, 1);
+    };
+  }
+  mergeLocaleMessage(locale, message) {
+    if (this.messages[locale]) {
+      Object.assign(this.messages[locale], message);
+    } else {
+      this.messages[locale] = message;
+    }
+  }
+  t(key, locale, values) {
+    let message = this.message;
+    if (typeof locale === "string") {
+      locale = normalizeLocale(locale, this.messages);
+      locale && (message = this.messages[locale]);
+    } else {
+      values = locale;
+    }
+    if (!hasOwn(message, key)) {
+      console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
+      return key;
+    }
+    return this.formater.interpolate(message[key], values).join("");
+  }
+}
+function initLocaleWatcher(appVm2, i18n2) {
+  appVm2.$i18n && appVm2.$i18n.vm.$watch("locale", (newLocale) => {
+    i18n2.setLocale(newLocale);
+  }, {
+    immediate: true
+  });
+}
+function getDefaultLocale() {
+  if (typeof navigator !== "undefined") {
+    return navigator.userLanguage || navigator.language;
+  }
+  if (typeof plus !== "undefined") {
+    return plus.os.language;
+  }
+  return uni.getSystemInfoSync().language;
+}
+function initVueI18n(messages2, fallbackLocale2 = "en", locale) {
+  const i18n2 = new I18n({
+    locale: locale || fallbackLocale2,
+    fallbackLocale: fallbackLocale2,
+    messages: messages2
+  });
+  let t2 = (key, values) => {
+    if (typeof getApp !== "function") {
+      t2 = function(key2, values2) {
+        return i18n2.t(key2, values2);
+      };
+    } else {
+      const appVm2 = getApp().$vm;
+      if (!appVm2.$t || !appVm2.$i18n) {
+        if (!locale) {
+          i18n2.setLocale(getDefaultLocale());
+        }
+        t2 = function(key2, values2) {
+          return i18n2.t(key2, values2);
+        };
+      } else {
+        initLocaleWatcher(appVm2, i18n2);
+        t2 = function(key2, values2) {
+          const $i18n = appVm2.$i18n;
+          const silentTranslationWarn = $i18n.silentTranslationWarn;
+          $i18n.silentTranslationWarn = true;
+          const msg = appVm2.$t(key2, values2);
+          $i18n.silentTranslationWarn = silentTranslationWarn;
+          if (msg !== key2) {
+            return msg;
+          }
+          return i18n2.t(key2, $i18n.locale, values2);
+        };
+      }
+    }
+    return t2(key, values);
+  };
+  return {
+    i18n: i18n2,
+    t(key, values) {
+      return t2(key, values);
+    },
+    getLocale() {
+      return i18n2.getLocale();
+    },
+    setLocale(newLocale) {
+      return i18n2.setLocale(newLocale);
+    },
+    mixin: {
+      beforeCreate() {
+        const unwatch = i18n2.watchLocale(() => {
+          this.$forceUpdate();
+        });
+        this.$once("hook:beforeDestroy", function() {
+          unwatch();
+        });
+      },
+      methods: {
+        $$t(key, values) {
+          return t2(key, values);
+        }
+      }
+    }
+  };
+}
+var en = {
+  "uni.app.quit": "Press back button again to exit",
+  "uni.async.error": "The connection timed out, click the screen to try again.",
+  "uni.showActionSheet.cancel": "Cancel",
+  "uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
+  "uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
+  "uni.showModal.cancel": "Cancel",
+  "uni.showModal.confirm": "OK",
+  "uni.chooseImage.cancel": "Cancel",
+  "uni.chooseImage.sourceType.album": "Album",
+  "uni.chooseImage.sourceType.camera": "Camera",
+  "uni.chooseVideo.cancel": "Cancel",
+  "uni.chooseVideo.sourceType.album": "Album",
+  "uni.chooseVideo.sourceType.camera": "Camera",
+  "uni.previewImage.cancel": "Cancel",
+  "uni.previewImage.button.save": "Save Image",
+  "uni.previewImage.save.success": "Saved successfully",
+  "uni.previewImage.save.fail": "Save failed",
+  "uni.setClipboardData.success": "Content copied",
+  "uni.scanCode.title": "Scan code",
+  "uni.scanCode.album": "Album",
+  "uni.scanCode.fail": "Recognition failure",
+  "uni.scanCode.flash.on": "Tap to turn light on",
+  "uni.scanCode.flash.off": "Tap to turn light off",
+  "uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+  "uni.picker.done": "Done",
+  "uni.picker.cancel": "Cancel",
+  "uni.video.danmu": "Danmu",
+  "uni.video.volume": "Volume",
+  "uni.button.feedback.title": "feedback",
+  "uni.button.feedback.send": "send"
+};
+var es = {
+  "uni.app.quit": "Pulse otra vez para salir",
+  "uni.async.error": "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo.",
+  "uni.showActionSheet.cancel": "Cancelar",
+  "uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
+  "uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
+  "uni.showModal.cancel": "Cancelar",
+  "uni.showModal.confirm": "OK",
+  "uni.chooseImage.cancel": "Cancelar",
+  "uni.chooseImage.sourceType.album": "\xC1lbum",
+  "uni.chooseImage.sourceType.camera": "C\xE1mara",
+  "uni.chooseVideo.cancel": "Cancelar",
+  "uni.chooseVideo.sourceType.album": "\xC1lbum",
+  "uni.chooseVideo.sourceType.camera": "C\xE1mara",
+  "uni.previewImage.cancel": "Cancelar",
+  "uni.previewImage.button.save": "Guardar imagen",
+  "uni.previewImage.save.success": "Guardado exitosamente",
+  "uni.previewImage.save.fail": "Error al guardar",
+  "uni.setClipboardData.success": "Contenido copiado",
+  "uni.scanCode.title": "C\xF3digo de escaneo",
+  "uni.scanCode.album": "\xC1lbum",
+  "uni.scanCode.fail": "\xC9chec de la reconnaissance",
+  "uni.scanCode.flash.on": "Toque para encender la luz",
+  "uni.scanCode.flash.off": "Toque para apagar la luz",
+  "uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+  "uni.picker.done": "OK",
+  "uni.picker.cancel": "Cancelar",
+  "uni.video.danmu": "Danmu",
+  "uni.video.volume": "Volumen",
+  "uni.button.feedback.title": "realimentaci\xF3n",
+  "uni.button.feedback.send": "enviar"
+};
+var fr = {
+  "uni.app.quit": "Appuyez \xE0 nouveau pour quitter l'application",
+  "uni.async.error": "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer.",
+  "uni.showActionSheet.cancel": "Annuler",
+  "uni.showToast.unpaired": "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast",
+  "uni.showLoading.unpaired": "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading",
+  "uni.showModal.cancel": "Annuler",
+  "uni.showModal.confirm": "OK",
+  "uni.chooseImage.cancel": "Annuler",
+  "uni.chooseImage.sourceType.album": "Album",
+  "uni.chooseImage.sourceType.camera": "Cam\xE9ra",
+  "uni.chooseVideo.cancel": "Annuler",
+  "uni.chooseVideo.sourceType.album": "Album",
+  "uni.chooseVideo.sourceType.camera": "Cam\xE9ra",
+  "uni.previewImage.cancel": "Annuler",
+  "uni.previewImage.button.save": "Guardar imagen",
+  "uni.previewImage.save.success": "Enregistr\xE9 avec succ\xE8s",
+  "uni.previewImage.save.fail": "\xC9chec de la sauvegarde",
+  "uni.setClipboardData.success": "Contenu copi\xE9",
+  "uni.scanCode.title": "Code d\u2019analyse",
+  "uni.scanCode.album": "Album",
+  "uni.scanCode.fail": "Fallo de reconocimiento",
+  "uni.scanCode.flash.on": "Appuyez pour activer l'\xE9clairage",
+  "uni.scanCode.flash.off": "Appuyez pour d\xE9sactiver l'\xE9clairage",
+  "uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+  "uni.picker.done": "OK",
+  "uni.picker.cancel": "Annuler",
+  "uni.video.danmu": "Danmu",
+  "uni.video.volume": "Le Volume",
+  "uni.button.feedback.title": "retour d'information",
+  "uni.button.feedback.send": "envoyer"
+};
+var zhHans = {
+  "uni.app.quit": "\u518D\u6309\u4E00\u6B21\u9000\u51FA\u5E94\u7528",
+  "uni.async.error": "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5",
+  "uni.showActionSheet.cancel": "\u53D6\u6D88",
+  "uni.showToast.unpaired": "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528",
+  "uni.showLoading.unpaired": "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528",
+  "uni.showModal.cancel": "\u53D6\u6D88",
+  "uni.showModal.confirm": "\u786E\u5B9A",
+  "uni.chooseImage.cancel": "\u53D6\u6D88",
+  "uni.chooseImage.sourceType.album": "\u4ECE\u76F8\u518C\u9009\u62E9",
+  "uni.chooseImage.sourceType.camera": "\u62CD\u6444",
+  "uni.chooseVideo.cancel": "\u53D6\u6D88",
+  "uni.chooseVideo.sourceType.album": "\u4ECE\u76F8\u518C\u9009\u62E9",
+  "uni.chooseVideo.sourceType.camera": "\u62CD\u6444",
+  "uni.previewImage.cancel": "\u53D6\u6D88",
+  "uni.previewImage.button.save": "\u4FDD\u5B58\u56FE\u50CF",
+  "uni.previewImage.save.success": "\u4FDD\u5B58\u56FE\u50CF\u5230\u76F8\u518C\u6210\u529F",
+  "uni.previewImage.save.fail": "\u4FDD\u5B58\u56FE\u50CF\u5230\u76F8\u518C\u5931\u8D25",
+  "uni.setClipboardData.success": "\u5185\u5BB9\u5DF2\u590D\u5236",
+  "uni.scanCode.title": "\u626B\u7801",
+  "uni.scanCode.album": "\u76F8\u518C",
+  "uni.scanCode.fail": "\u8BC6\u522B\u5931\u8D25",
+  "uni.scanCode.flash.on": "\u8F7B\u89E6\u7167\u4EAE",
+  "uni.scanCode.flash.off": "\u8F7B\u89E6\u5173\u95ED",
+  "uni.startSoterAuthentication.authContent": "\u6307\u7EB9\u8BC6\u522B\u4E2D...",
+  "uni.picker.done": "\u5B8C\u6210",
+  "uni.picker.cancel": "\u53D6\u6D88",
+  "uni.video.danmu": "\u5F39\u5E55",
+  "uni.video.volume": "\u97F3\u91CF",
+  "uni.button.feedback.title": "\u95EE\u9898\u53CD\u9988",
+  "uni.button.feedback.send": "\u53D1\u9001"
+};
+var zhHant = {
+  "uni.app.quit": "\u518D\u6309\u4E00\u6B21\u9000\u51FA\u61C9\u7528",
+  "uni.async.error": "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66",
+  "uni.showActionSheet.cancel": "\u53D6\u6D88",
+  "uni.showToast.unpaired": "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528",
+  "uni.showLoading.unpaired": "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528",
+  "uni.showModal.cancel": "\u53D6\u6D88",
+  "uni.showModal.confirm": "\u78BA\u5B9A",
+  "uni.chooseImage.cancel": "\u53D6\u6D88",
+  "uni.chooseImage.sourceType.album": "\u5F9E\u76F8\u518A\u9078\u64C7",
+  "uni.chooseImage.sourceType.camera": "\u62CD\u651D",
+  "uni.chooseVideo.cancel": "\u53D6\u6D88",
+  "uni.chooseVideo.sourceType.album": "\u5F9E\u76F8\u518A\u9078\u64C7",
+  "uni.chooseVideo.sourceType.camera": "\u62CD\u651D",
+  "uni.previewImage.cancel": "\u53D6\u6D88",
+  "uni.previewImage.button.save": "\u4FDD\u5B58\u5716\u50CF",
+  "uni.previewImage.save.success": "\u4FDD\u5B58\u5716\u50CF\u5230\u76F8\u518A\u6210\u529F",
+  "uni.previewImage.save.fail": "\u4FDD\u5B58\u5716\u50CF\u5230\u76F8\u518A\u5931\u6557",
+  "uni.setClipboardData.success": "\u5167\u5BB9\u5DF2\u5FA9\u5236",
+  "uni.scanCode.title": "\u6383\u78BC",
+  "uni.scanCode.album": "\u76F8\u518A",
+  "uni.scanCode.fail": "\u8B58\u5225\u5931\u6557",
+  "uni.scanCode.flash.on": "\u8F15\u89F8\u7167\u4EAE",
+  "uni.scanCode.flash.off": "\u8F15\u89F8\u95DC\u9589",
+  "uni.startSoterAuthentication.authContent": "\u6307\u7D0B\u8B58\u5225\u4E2D...",
+  "uni.picker.done": "\u5B8C\u6210",
+  "uni.picker.cancel": "\u53D6\u6D88",
+  "uni.video.danmu": "\u5F48\u5E55",
+  "uni.video.volume": "\u97F3\u91CF",
+  "uni.button.feedback.title": "\u554F\u984C\u53CD\u994B",
+  "uni.button.feedback.send": "\u767C\u9001"
+};
+const messages = {
+  en,
+  es,
+  fr,
+  "zh-Hans": zhHans,
+  "zh-Hant": zhHant
+};
+const fallbackLocale = "en";
+const i18n = /* @__PURE__ */ initVueI18n(messages, fallbackLocale);
+function useI18n() {
+  return i18n;
 }
 function getRealRoute(fromRoute, toRoute) {
   if (!toRoute) {
@@ -940,6 +1360,7 @@ function initPublicPage(route) {
 }
 function initPage(vm) {
   const route = vm.$route;
+  vm.$vm = vm;
   vm.$page = initPublicPage(route);
   currentPagesMap.set(vm.$page.id, vm);
 }
@@ -1143,6 +1564,10 @@ function initMixin(app) {
         this.$callHook("onLoad", {});
         this.__isVisible = true;
         this.$callHook("onShow");
+      } else {
+        if (this.$parent) {
+          this.$page = this.$parent.$page;
+        }
       }
     },
     mounted() {
@@ -1168,7 +1593,7 @@ function initMixin(app) {
     }
   });
 }
-var index$3 = {
+var index$4 = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -1227,8 +1652,8 @@ var listeners = {
     this._removeListeners(this.id);
   },
   methods: {
-    _addListeners(id2, watch) {
-      if (watch && !id2) {
+    _addListeners(id2, watch2) {
+      if (watch2 && !id2) {
         return;
       }
       const {listeners: listeners2} = this.$options;
@@ -1236,7 +1661,7 @@ var listeners = {
         return;
       }
       Object.keys(listeners2).forEach((name) => {
-        if (watch) {
+        if (watch2) {
           if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
             UniViewJSBridge.on(`uni-${name}-${this.$page.id}-${id2}`, this[listeners2[name]]);
           }
@@ -1251,8 +1676,8 @@ var listeners = {
         }
       });
     },
-    _removeListeners(id2, watch) {
-      if (watch && !id2) {
+    _removeListeners(id2, watch2) {
+      if (watch2 && !id2) {
         return;
       }
       const {listeners: listeners2} = this.$options;
@@ -1260,7 +1685,7 @@ var listeners = {
         return;
       }
       Object.keys(listeners2).forEach((name) => {
-        if (watch) {
+        if (watch2) {
           if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
             UniViewJSBridge.off(`uni-${name}-${this.$page.id}-${id2}`, this[listeners2[name]]);
           }
@@ -1359,8 +1784,8 @@ var subscriber = {
     }
   },
   methods: {
-    _toggleListeners(type, id2, watch) {
-      if (watch && !id2) {
+    _toggleListeners(type, id2, watch2) {
+      if (watch2 && !id2) {
         return;
       }
       if (!isFunction(this._handleSubscribe)) {
@@ -1550,7 +1975,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$o = {
+const _sfc_main$p = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1669,13 +2094,13 @@ const _sfc_main$o = {
     }
   }
 };
-const _hoisted_1$d = {class: "uni-audio-default"};
-const _hoisted_2$6 = {class: "uni-audio-right"};
-const _hoisted_3$2 = {class: "uni-audio-time"};
-const _hoisted_4$2 = {class: "uni-audio-info"};
-const _hoisted_5$1 = {class: "uni-audio-name"};
-const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$e = {class: "uni-audio-default"};
+const _hoisted_2$7 = {class: "uni-audio-right"};
+const _hoisted_3$3 = {class: "uni-audio-time"};
+const _hoisted_4$3 = {class: "uni-audio-info"};
+const _hoisted_5$2 = {class: "uni-audio-name"};
+const _hoisted_6$2 = {class: "uni-audio-author"};
+function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1685,7 +2110,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$d, [
+    createVNode("div", _hoisted_1$e, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1695,17 +2120,72 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$6, [
-        createVNode("div", _hoisted_3$2, toDisplayString($data.currentTime), 1),
-        createVNode("div", _hoisted_4$2, [
-          createVNode("div", _hoisted_5$1, toDisplayString($props.name), 1),
-          createVNode("div", _hoisted_6$1, toDisplayString($props.author), 1)
+      createVNode("div", _hoisted_2$7, [
+        createVNode("div", _hoisted_3$3, toDisplayString($data.currentTime), 1),
+        createVNode("div", _hoisted_4$3, [
+          createVNode("div", _hoisted_5$2, toDisplayString($props.name), 1),
+          createVNode("div", _hoisted_6$2, toDisplayString($props.author), 1)
         ])
       ])
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$o.render = _sfc_render$n;
+_sfc_main$p.render = _sfc_render$o;
+var index$3 = defineComponent({
+  name: "Button",
+  props: {
+    hoverClass: {
+      type: String,
+      default: "button-hover"
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    id: {
+      type: String,
+      default: ""
+    },
+    hoverStopPropagation: {
+      type: Boolean,
+      default: false
+    },
+    hoverStartTime: {
+      type: [Number, String],
+      default: 20
+    },
+    hoverStayTime: {
+      type: [Number, String],
+      default: 70
+    },
+    formType: {
+      type: String,
+      default: "",
+      validator(value) {
+        return !!~["", "submit", "reset"].indexOf(value);
+      }
+    },
+    openType: {
+      type: String,
+      default: ""
+    }
+  },
+  data() {
+    return {
+      clickFunction: null
+    };
+  },
+  setup(props, {
+    slots
+  }) {
+    return () => createVNode("uni-button", null, [slots.default && slots.default()]);
+  },
+  methods: {},
+  listeners: {
+    "label-click": "_onClick",
+    "@label-click": "_onClick"
+  }
+});
 const pixelRatio = function() {
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
@@ -1859,7 +2339,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$n = {
+const _sfc_main$o = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -2355,20 +2835,20 @@ const _sfc_main$n = {
     }
   }
 };
-const _hoisted_1$c = {
+const _hoisted_1$d = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
-const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$6 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$c, null, 512),
-    createVNode("div", _hoisted_2$5, [
+    createVNode("canvas", _hoisted_1$d, null, 512),
+    createVNode("div", _hoisted_2$6, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
@@ -2377,8 +2857,8 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$n.render = _sfc_render$m;
-const _sfc_main$m = {
+_sfc_main$o.render = _sfc_render$n;
+const _sfc_main$n = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -2454,12 +2934,12 @@ const _sfc_main$m = {
     }
   }
 };
-const _hoisted_1$b = {class: "uni-checkbox-wrapper"};
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$c = {class: "uni-checkbox-wrapper"};
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$b, [
+    createVNode("div", _hoisted_1$c, [
       createVNode("div", {
         class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
         style: {color: $props.color}
@@ -2468,9 +2948,9 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$m.render = _sfc_render$l;
+_sfc_main$n.render = _sfc_render$m;
 var index_vue_vue_type_style_index_0_lang$b = "\nuni-checkbox-group[hidden] {\r\n        display: none;\n}\r\n";
-const _sfc_main$l = {
+const _sfc_main$m = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -2536,12 +3016,12 @@ const _sfc_main$l = {
     }
   }
 };
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$l.render = _sfc_render$k;
+_sfc_main$m.render = _sfc_render$l;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -2926,7 +3406,7 @@ function register(Quill) {
 }
 var editor_css_vue_type_style_index_0_src_lang = ".ql-container {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  -webkit-user-select: text;\n  user-select: text;\n  outline: none;\n  overflow: hidden;\n  width: 100%;\n  height: 200px;\n  min-height: 200px;\n}\n.ql-container[hidden] {\n  display: none;\n}\n.ql-container .ql-editor {\n  position: relative;\n  font-size: inherit;\n  line-height: inherit;\n  font-family: inherit;\n  min-height: inherit;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-tap-highlight-color: transparent;\n  -webkit-touch-callout: none;\n  -webkit-overflow-scrolling: touch;\n}\n.ql-container .ql-editor::-webkit-scrollbar {\n  width: 0 !important;\n}\n.ql-container .ql-editor.scroll-disabled {\n  overflow: hidden;\n}\n.ql-container .ql-image-overlay {\n  display: flex;\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px dashed #ccc;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  user-select: none;\n}\n.ql-container .ql-image-overlay .ql-image-size {\n  position: absolute;\n  padding: 4px 8px;\n  text-align: center;\n  background-color: #fff;\n  color: #888;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  opacity: 0.8;\n  right: 4px;\n  top: 4px;\n  font-size: 12px;\n  display: inline-block;\n  width: auto;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar {\n  position: relative;\n  text-align: center;\n  box-sizing: border-box;\n  background: #000;\n  border-radius: 5px;\n  color: #fff;\n  font-size: 0;\n  min-height: 24px;\n  z-index: 100;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span {\n  display: inline-block;\n  cursor: pointer;\n  padding: 5px;\n  font-size: 12px;\n  border-right: 1px solid #fff;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span:last-child {\n  border-right: 0;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span.triangle-up {\n  padding: 0;\n  position: absolute;\n  top: -12px;\n  left: 50%;\n  transform: translatex(-50%);\n  width: 0;\n  height: 0;\n  border-width: 6px;\n  border-style: solid;\n  border-color: transparent transparent black transparent;\n}\n.ql-container .ql-image-overlay .ql-image-handle {\n  position: absolute;\n  height: 12px;\n  width: 12px;\n  border-radius: 50%;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  background: #fff;\n}\n.ql-container img {\n  display: inline-block;\n  max-width: 100%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n.ql-editor {\n  box-sizing: border-box;\n  height: 100%;\n  outline: none;\n  overflow-y: auto;\n  tab-size: 4;\n  -moz-tab-size: 4;\n  text-align: left;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n}\n.ql-editor > * {\n  cursor: text;\n}\n.ql-editor p,\n.ql-editor ol,\n.ql-editor ul,\n.ql-editor pre,\n.ql-editor blockquote,\n.ql-editor h1,\n.ql-editor h2,\n.ql-editor h3,\n.ql-editor h4,\n.ql-editor h5,\n.ql-editor h6 {\n  margin: 0;\n  padding: 0;\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol > li,\n.ql-editor ul > li {\n  list-style-type: none;\n}\n.ql-editor ul > li::before {\n  content: '\\2022';\n}\n.ql-editor ul[data-checked=true],\n.ql-editor ul[data-checked=false] {\n  pointer-events: none;\n}\n.ql-editor ul[data-checked=true] > li *,\n.ql-editor ul[data-checked=false] > li * {\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before,\n.ql-editor ul[data-checked=false] > li::before {\n  color: #777;\n  cursor: pointer;\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before {\n  content: '\\2611';\n}\n.ql-editor ul[data-checked=false] > li::before {\n  content: '\\2610';\n}\n.ql-editor li::before {\n  display: inline-block;\n  white-space: nowrap;\n  width: 2em;\n}\n.ql-editor ol li {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n.ql-editor ol li:before {\n  content: counter(list-0, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-increment: list-1;\n}\n.ql-editor ol li.ql-indent-1:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-increment: list-2;\n}\n.ql-editor ol li.ql-indent-2:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-increment: list-3;\n}\n.ql-editor ol li.ql-indent-3:before {\n  content: counter(list-3, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-increment: list-4;\n}\n.ql-editor ol li.ql-indent-4:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-increment: list-5;\n}\n.ql-editor ol li.ql-indent-5:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-increment: list-6;\n}\n.ql-editor ol li.ql-indent-6:before {\n  content: counter(list-6, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-increment: list-7;\n}\n.ql-editor ol li.ql-indent-7:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-increment: list-8;\n}\n.ql-editor ol li.ql-indent-8:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-reset: list-9;\n}\n.ql-editor ol li.ql-indent-9 {\n  counter-increment: list-9;\n}\n.ql-editor ol li.ql-indent-9:before {\n  content: counter(list-9, decimal) '. ';\n}\n.ql-editor .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n.ql-editor .ql-align-center {\n  text-align: center;\n}\n.ql-editor .ql-align-justify {\n  text-align: justify;\n}\n.ql-editor .ql-align-right {\n  text-align: right;\n}\n.ql-editor.ql-blank::before {\n  color: rgba(0, 0, 0, 0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  pointer-events: none;\n  position: absolute;\n}\n.ql-container.ql-disabled .ql-editor ul[data-checked] > li::before {\n  pointer-events: none;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n";
 var index_vue_vue_type_style_index_1_lang = "\n";
-const _sfc_main$k = {
+const _sfc_main$l = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -3248,15 +3728,15 @@ const _sfc_main$k = {
     }
   }
 };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$k.render = _sfc_render$j;
+_sfc_main$l.render = _sfc_render$k;
 var index_vue_vue_type_style_index_0_lang$a = "\r\n";
-const _sfc_main$j = {
+const _sfc_main$k = {
   name: "Form",
   mixins: [listeners],
   data() {
@@ -3297,14 +3777,14 @@ const _sfc_main$j = {
     }
   }
 };
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-form", _ctx.$attrs, [
     createVNode("span", null, [
       renderSlot(_ctx.$slots, "default")
     ])
   ], 16);
 }
-_sfc_main$j.render = _sfc_render$i;
+_sfc_main$k.render = _sfc_render$j;
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -3370,7 +3850,7 @@ var index$2 = defineComponent({
   }
 });
 var index_vue_vue_type_style_index_0_lang$9 = "\n@keyframes once-show {\nfrom {\n    top: 0;\n}\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
-const _sfc_main$i = {
+const _sfc_main$j = {
   name: "ResizeSensor",
   props: {
     initial: {
@@ -3506,6 +3986,14 @@ function getBaseSystemInfo() {
     pixelRatio: window.devicePixelRatio,
     windowWidth
   };
+}
+function operateVideoPlayer(videoId, vm, type, data) {
+  const pageId = vm.$page.id;
+  UniServiceJSBridge.publishHandler(pageId + "-video-" + videoId, {
+    videoId,
+    type,
+    data
+  }, pageId);
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var lookup = new Uint8Array(256);
@@ -4044,6 +4532,56 @@ function getCurrentPageVm() {
   const len = pages.length;
   const page = pages[len - 1];
   return page && page.$vm;
+}
+const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
+class VideoContext {
+  constructor(id2, vm) {
+    this.id = id2;
+    this.vm = vm;
+  }
+  play() {
+    operateVideoPlayer(this.id, this.vm, "play");
+  }
+  pause() {
+    operateVideoPlayer(this.id, this.vm, "pause");
+  }
+  stop() {
+    operateVideoPlayer(this.id, this.vm, "stop");
+  }
+  seek(position) {
+    operateVideoPlayer(this.id, this.vm, "seek", {
+      position
+    });
+  }
+  sendDanmu(args) {
+    operateVideoPlayer(this.id, this.vm, "sendDanmu", args);
+  }
+  playbackRate(rate) {
+    if (!~RATES.indexOf(rate)) {
+      rate = 1;
+    }
+    operateVideoPlayer(this.id, this.vm, "playbackRate", {
+      rate
+    });
+  }
+  requestFullScreen(args = {}) {
+    operateVideoPlayer(this.id, this.vm, "requestFullScreen", args);
+  }
+  exitFullScreen() {
+    operateVideoPlayer(this.id, this.vm, "exitFullScreen");
+  }
+  showStatusBar() {
+    operateVideoPlayer(this.id, this.vm, "showStatusBar");
+  }
+  hideStatusBar() {
+    operateVideoPlayer(this.id, this.vm, "hideStatusBar");
+  }
+}
+function createVideoContext(id2, context) {
+  if (context) {
+    return new VideoContext(id2, context);
+  }
+  return new VideoContext(id2, getCurrentPageVm());
 }
 const defaultOptions = {
   thresholds: [0],
@@ -4983,7 +5521,7 @@ function removeIntersectionObserver({reqId, component}, _pageId) {
     delete $el.__io[reqId];
   }
 }
-const _sfc_main$h = {
+const _sfc_main$i = {
   name: "Image",
   props: {
     src: {
@@ -5079,7 +5617,7 @@ const _sfc_main$h = {
     }
   },
   components: {
-    ResizeSensor: _sfc_main$i
+    ResizeSensor: _sfc_main$j
   },
   mounted() {
     this.availHeight = this.$el.style.height || "";
@@ -5137,7 +5675,7 @@ const _sfc_main$h = {
     }
   }
 };
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-image", _ctx.$attrs, [
     createVNode("div", {
@@ -5152,10 +5690,10 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$h.render = _sfc_render$h;
+_sfc_main$i.render = _sfc_render$i;
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$g = {
+const _sfc_main$h = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -5333,16 +5871,16 @@ const _sfc_main$g = {
     }
   }
 };
-const _hoisted_1$a = {
+const _hoisted_1$b = {
   ref: "wrapper",
   class: "uni-input-wrapper"
 };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-input", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$a, [
+    createVNode("div", _hoisted_1$b, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -5373,9 +5911,9 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$g.render = _sfc_render$g;
+_sfc_main$h.render = _sfc_render$h;
 var index_vue_vue_type_style_index_0_lang$8 = "\n.uni-label-pointer {\r\n  cursor: pointer;\n}\r\n";
-const _sfc_main$f = {
+const _sfc_main$g = {
   name: "Label",
   mixins: [emitter],
   props: {
@@ -5406,7 +5944,7 @@ const _sfc_main$f = {
     }
   }
 };
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-label", mergeProps({
     class: {"uni-label-pointer": $options.pointer}
   }, _ctx.$attrs, {
@@ -5415,7 +5953,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$f.render = _sfc_render$f;
+_sfc_main$g.render = _sfc_render$g;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -5882,7 +6420,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$e = {
+const _sfc_main$f = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -6434,14 +6972,14 @@ const _sfc_main$e = {
     }
   }
 };
-function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$e.render = _sfc_render$e;
+_sfc_main$f.render = _sfc_render$f;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -6449,7 +6987,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$d = {
+const _sfc_main$e = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -6522,7 +7060,7 @@ const _sfc_main$d = {
     }
   }
 };
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -6539,13 +7077,13 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$d.render = _sfc_render$d;
+_sfc_main$e.render = _sfc_render$e;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const _sfc_main$c = {
+const _sfc_main$d = {
   name: "Progress",
   props: {
     percent: {
@@ -6642,11 +7180,11 @@ const _sfc_main$c = {
     }
   }
 };
-const _hoisted_1$9 = {
+const _hoisted_1$a = {
   key: 0,
   class: "uni-progress-info"
 };
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-progress", mergeProps({class: "uni-progress"}, _ctx.$attrs), [
     createVNode("div", {
       style: $options.outerBarStyle,
@@ -6657,12 +7195,12 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-progress-inner-bar"
       }, null, 4)
     ], 4),
-    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$9, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
+    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$a, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
   ], 16);
 }
-_sfc_main$c.render = _sfc_render$c;
+_sfc_main$d.render = _sfc_render$d;
 var index_vue_vue_type_style_index_0_lang$6 = '\nuni-radio {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-radio[hidden] {\r\n		display: none;\n}\nuni-radio[disabled] {\r\n		cursor: not-allowed;\n}\nuni-radio .uni-radio-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-radio .uni-radio-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		margin-right: 5px;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #ffffff;\r\n		border-radius: 50%;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\n}\nuni-radio:not([disabled]) .uni-radio-input:hover {\r\n		border-color: #007aff;\n}\nuni-radio .uni-radio-input.uni-radio-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: #ffffff;\r\n		font-size: 18px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled {\r\n		background-color: #E1E1E1;\r\n		border-color: #D1D1D1;\n}\nuni-radio .uni-radio-input.uni-radio-input-disabled:before {\r\n		color: #ADADAD;\n}\nuni-radio-group {\r\n		display: block;\n}\r\n';
-const _sfc_main$b = {
+const _sfc_main$c = {
   name: "Radio",
   mixins: [emitter, listeners],
   props: {
@@ -6743,12 +7281,12 @@ const _sfc_main$b = {
     }
   }
 };
-const _hoisted_1$8 = {class: "uni-radio-wrapper"};
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$9 = {class: "uni-radio-wrapper"};
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$8, [
+    createVNode("div", _hoisted_1$9, [
       createVNode("div", {
         class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
         style: $data.radioChecked ? $options.checkedStyle : ""
@@ -6757,9 +7295,9 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$b.render = _sfc_render$b;
+_sfc_main$c.render = _sfc_render$c;
 var index_vue_vue_type_style_index_0_lang$5 = "\nuni-radio-group[hidden] {\r\n		display: none;\n}\r\n";
-const _sfc_main$a = {
+const _sfc_main$b = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
   props: {
@@ -6843,12 +7381,12 @@ const _sfc_main$a = {
     }
   }
 };
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$a.render = _sfc_render$a;
+_sfc_main$b.render = _sfc_render$b;
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -7056,7 +7594,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$9 = {
+const _sfc_main$a = {
   name: "RichText",
   props: {
     nodes: {
@@ -7085,13 +7623,13 @@ const _sfc_main$9 = {
     }
   }
 };
-const _hoisted_1$7 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$8 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$7
+    _hoisted_1$8
   ], 16);
 }
-_sfc_main$9.render = _sfc_render$9;
+_sfc_main$a.render = _sfc_render$a;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -7763,8 +8301,8 @@ var scroller = {
     }
   }
 };
-const passiveOptions = passive(true);
-const _sfc_main$8 = {
+const passiveOptions$1 = passive(true);
+const _sfc_main$9 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -7955,20 +8493,20 @@ const _sfc_main$8 = {
         self.$trigger("refresherabort", event2, {});
       }
     };
-    this.$refs.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.$refs.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
+    this.$refs.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions$1);
+    this.$refs.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions$1);
     this.$refs.main.addEventListener("scroll", this.__handleScroll, passive(false));
-    this.$refs.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
+    this.$refs.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions$1);
   },
   activated() {
     this.scrollY && (this.$refs.main.scrollTop = this.lastScrollTop);
     this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft);
   },
   beforeDestroy() {
-    this.$refs.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.$refs.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
+    this.$refs.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions$1);
+    this.$refs.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions$1);
     this.$refs.main.removeEventListener("scroll", this.__handleScroll, passive(false));
-    this.$refs.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
+    this.$refs.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions$1);
   },
   methods: {
     scrollTo: function(t2, n) {
@@ -8172,32 +8710,32 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$6 = {
+const _hoisted_1$7 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
-const _hoisted_2$4 = {
+const _hoisted_2$5 = {
   ref: "content",
   class: "uni-scroll-view-content"
 };
-const _hoisted_3$1 = {
+const _hoisted_3$2 = {
   key: 0,
   class: "uni-scroll-view-refresh"
 };
-const _hoisted_4$1 = {class: "uni-scroll-view-refresh-inner"};
-const _hoisted_5 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
-const _hoisted_6 = /* @__PURE__ */ createVNode("path", {
+const _hoisted_4$2 = {class: "uni-scroll-view-refresh-inner"};
+const _hoisted_5$1 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
+const _hoisted_6$1 = /* @__PURE__ */ createVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
 }, null, -1);
-const _hoisted_7 = {
+const _hoisted_7$1 = {
   key: 1,
   class: "uni-scroll-view-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
-const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
+const _hoisted_8$1 = /* @__PURE__ */ createVNode("circle", {
   cx: "50",
   cy: "50",
   r: "20",
@@ -8205,9 +8743,9 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$6, [
+    createVNode("div", _hoisted_1$7, [
       createVNode("div", {
         ref: "main",
         style: {
@@ -8216,7 +8754,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
         },
         class: "uni-scroll-view"
       }, [
-        createVNode("div", _hoisted_2$4, [
+        createVNode("div", _hoisted_2$5, [
           $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
@@ -8226,8 +8764,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
             },
             class: "uni-scroll-view-refresher"
           }, [
-            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$1, [
-              createVNode("div", _hoisted_4$1, [
+            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$2, [
+              createVNode("div", _hoisted_4$2, [
                 $data.refreshState == "pulling" ? (openBlock(), createBlock("svg", {
                   key: 0,
                   style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
@@ -8237,11 +8775,11 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
                   height: "24",
                   viewBox: "0 0 24 24"
                 }, [
-                  _hoisted_5,
-                  _hoisted_6
+                  _hoisted_5$1,
+                  _hoisted_6$1
                 ], 4)) : createCommentVNode("", true),
-                $data.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_7, [
-                  _hoisted_8
+                $data.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_7$1, [
+                  _hoisted_8$1
                 ])) : createCommentVNode("", true)
               ])
             ])) : createCommentVNode("", true),
@@ -8253,8 +8791,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$8.render = _sfc_render$8;
-const _sfc_main$7 = {
+_sfc_main$9.render = _sfc_render$9;
+const _sfc_main$8 = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
   props: {
@@ -8417,14 +8955,14 @@ const _sfc_main$7 = {
     }
   }
 };
-const _hoisted_1$5 = {class: "uni-slider-wrapper"};
-const _hoisted_2$3 = {class: "uni-slider-tap-area"};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$6 = {class: "uni-slider-wrapper"};
+const _hoisted_2$4 = {class: "uni-slider-tap-area"};
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$5, [
-      createVNode("div", _hoisted_2$3, [
+    createVNode("div", _hoisted_1$6, [
+      createVNode("div", _hoisted_2$4, [
         createVNode("div", {
           style: $options.setBgColor,
           class: "uni-slider-handle-wrapper"
@@ -8451,9 +8989,9 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$8.render = _sfc_render$8;
 var index_vue_vue_type_style_index_0_lang$4 = "\nuni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
-const _sfc_main$6 = {
+const _sfc_main$7 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -8474,14 +9012,14 @@ const _sfc_main$6 = {
     }
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$7.render = _sfc_render$7;
 var index_vue_vue_type_style_index_0_lang$3 = '\nuni-switch {\r\n		-webkit-tap-highlight-color: transparent;\r\n		display: inline-block;\r\n		cursor: pointer;\n}\nuni-switch[hidden] {\r\n		display: none;\n}\nuni-switch[disabled] {\r\n		cursor: not-allowed;\n}\nuni-switch .uni-switch-wrapper {\r\n		display: -webkit-inline-flex;\r\n		display: inline-flex;\r\n		-webkit-align-items: center;\r\n		align-items: center;\r\n		vertical-align: middle;\n}\nuni-switch .uni-switch-input {\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		position: relative;\r\n		width: 52px;\r\n		height: 32px;\r\n		margin-right: 5px;\r\n		border: 1px solid #DFDFDF;\r\n		outline: 0;\r\n		border-radius: 16px;\r\n		box-sizing: border-box;\r\n		background-color: #DFDFDF;\r\n		transition: background-color 0.1s, border 0.1s;\n}\nuni-switch[disabled] .uni-switch-input {\r\n		opacity: .7;\n}\nuni-switch .uni-switch-input:before {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 50px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FDFDFD;\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input:after {\r\n		content: " ";\r\n		position: absolute;\r\n		top: 0;\r\n		left: 0;\r\n		width: 30px;\r\n		height: 30px;\r\n		border-radius: 15px;\r\n		background-color: #FFFFFF;\r\n		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\r\n		transition: -webkit-transform 0.3s;\r\n		transition: transform 0.3s;\r\n		transition: transform 0.3s, -webkit-transform 0.3s;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked {\r\n		border-color: #007aff;\r\n		background-color: #007aff;\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:before {\r\n		-webkit-transform: scale(0);\r\n		transform: scale(0);\n}\nuni-switch .uni-switch-input.uni-switch-input-checked:after {\r\n		-webkit-transform: translateX(20px);\r\n		transform: translateX(20px);\n}\nuni-switch .uni-checkbox-input {\r\n		margin-right: 5px;\r\n		-webkit-appearance: none;\r\n		appearance: none;\r\n		outline: 0;\r\n		border: 1px solid #D1D1D1;\r\n		background-color: #FFFFFF;\r\n		border-radius: 3px;\r\n		width: 22px;\r\n		height: 22px;\r\n		position: relative;\r\n		color: #007aff;\n}\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\r\n		border-color: #007aff;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-checked:before {\r\n		font: normal normal normal 14px/1 "uni";\r\n		content: "\\EA08";\r\n		color: inherit;\r\n		font-size: 22px;\r\n		position: absolute;\r\n		top: 50%;\r\n		left: 50%;\r\n		transform: translate(-50%, -48%) scale(0.73);\r\n		-webkit-transform: translate(-50%, -48%) scale(0.73);\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled {\r\n		background-color: #E1E1E1;\n}\nuni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {\r\n		color: #ADADAD;\n}\r\n';
-const _sfc_main$5 = {
+const _sfc_main$6 = {
   name: "Switch",
   mixins: [emitter, listeners],
   props: {
@@ -8559,12 +9097,12 @@ const _sfc_main$5 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-switch-wrapper"};
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$5 = {class: "uni-switch-wrapper"};
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$4, [
+    createVNode("div", _hoisted_1$5, [
       withDirectives(createVNode("div", {
         class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
         style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
@@ -8580,7 +9118,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$6.render = _sfc_render$6;
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
@@ -8649,7 +9187,7 @@ var index$1 = defineComponent({
 });
 var index_vue_vue_type_style_index_0_lang$2 = "\nuni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  -webkit-text-fill-color: currentcolor;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n";
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   name: "Textarea",
   mixins: [baseInput],
   props: {
@@ -8870,15 +9408,15 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-textarea-wrapper"};
-const _hoisted_2$2 = {class: "uni-textarea-compute"};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$4 = {class: "uni-textarea-wrapper"};
+const _hoisted_2$3 = {class: "uni-textarea-compute"};
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-textarea", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$4, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -8892,7 +9430,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-textarea-line",
         textContent: toDisplayString(" ")
       }, null, 8, ["textContent"]),
-      createVNode("div", _hoisted_2$2, [
+      createVNode("div", _hoisted_2$3, [
         (openBlock(true), createBlock(Fragment, null, renderList($options.valueCompute, (item, index2) => {
           return openBlock(), createBlock("div", {
             key: index2,
@@ -8924,16 +9462,16 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16);
 }
-_sfc_main$4.render = _sfc_render$4;
-const _sfc_main$3 = {
+_sfc_main$5.render = _sfc_render$5;
+const _sfc_main$4 = {
   name: "View",
   mixins: [hover],
   listeners: {
     "label-click": "clickHandler"
   }
 };
-const _hoisted_1$2 = {key: 1};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$3 = {key: 1};
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return _ctx.hoverClass && _ctx.hoverClass !== "none" ? (openBlock(), createBlock("uni-view", {
     key: 0,
     class: [_ctx.hovering ? _ctx.hoverClass : ""],
@@ -8942,9 +9480,777 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel && _ctx._hoverTouchCancel(...args))
   }, [
     renderSlot(_ctx.$slots, "default")
-  ], 34)) : (openBlock(), createBlock("uni-view", _hoisted_1$2, [
+  ], 34)) : (openBlock(), createBlock("uni-view", _hoisted_1$3, [
     renderSlot(_ctx.$slots, "default")
   ]));
+}
+_sfc_main$4.render = _sfc_render$4;
+function normalizeEvent(componentId, vm) {
+  return vm.$page.id + "-" + vm.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + componentId;
+}
+function addSubscribe(componentId, vm, callback) {
+  UniViewJSBridge.subscribe(normalizeEvent(componentId, vm), ({type, data}) => {
+    callback(type, data);
+  });
+}
+function removeSubscribe(componentId, vm) {
+  UniViewJSBridge.unsubscribe(normalizeEvent(componentId, vm));
+}
+function useSubscribe(callback) {
+  const instance2 = getCurrentInstance().proxy;
+  onMounted(() => {
+    addSubscribe(instance2.id, instance2, callback);
+    watch(() => instance2.id, (value, oldValue) => {
+      addSubscribe(value, instance2, callback);
+      removeSubscribe(oldValue, instance2);
+    });
+  });
+  onBeforeMount(() => {
+    removeSubscribe(instance2.id, instance2);
+  });
+}
+const passiveOptions = passive(false);
+const GestureType = {
+  NONE: "none",
+  STOP: "stop",
+  VOLUME: "volume",
+  PROGRESS: "progress"
+};
+const _sfc_main$3 = {
+  name: "Video",
+  filters: {
+    time(val) {
+      val = val > 0 && val < Infinity ? val : 0;
+      let h = Math.floor(val / 3600);
+      let m = Math.floor(val % 3600 / 60);
+      let s = Math.floor(val % 3600 % 60);
+      h = (h < 10 ? "0" : "") + h;
+      m = (m < 10 ? "0" : "") + m;
+      s = (s < 10 ? "0" : "") + s;
+      let str = m + ":" + s;
+      if (h !== "00") {
+        str = h + ":" + str;
+      }
+      return str;
+    }
+  },
+  props: {
+    id: {
+      type: String,
+      default: ""
+    },
+    src: {
+      type: String,
+      default: ""
+    },
+    duration: {
+      type: [Number, String],
+      default: ""
+    },
+    controls: {
+      type: [Boolean, String],
+      default: true
+    },
+    danmuList: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    danmuBtn: {
+      type: [Boolean, String],
+      default: false
+    },
+    enableDanmu: {
+      type: [Boolean, String],
+      default: false
+    },
+    autoplay: {
+      type: [Boolean, String],
+      default: false
+    },
+    loop: {
+      type: [Boolean, String],
+      default: false
+    },
+    muted: {
+      type: [Boolean, String],
+      default: false
+    },
+    objectFit: {
+      type: String,
+      default: "contain"
+    },
+    poster: {
+      type: String,
+      default: ""
+    },
+    direction: {
+      type: [String, Number],
+      default: ""
+    },
+    showProgress: {
+      type: Boolean,
+      default: true
+    },
+    initialTime: {
+      type: [String, Number],
+      default: 0
+    },
+    showFullscreenBtn: {
+      type: [Boolean, String],
+      default: true
+    },
+    pageGesture: {
+      type: [Boolean, String],
+      default: false
+    },
+    enableProgressGesture: {
+      type: [Boolean, String],
+      default: true
+    },
+    showPlayBtn: {
+      type: [Boolean, String],
+      default: true
+    },
+    showCenterPlayBtn: {
+      type: [Boolean, String],
+      default: true
+    }
+  },
+  data() {
+    return {
+      start: false,
+      playing: false,
+      currentTime: 0,
+      durationTime: 0,
+      progress: 0,
+      touching: false,
+      enableDanmuSync: Boolean(this.enableDanmu),
+      controlsVisible: true,
+      fullscreen: false,
+      controlsTouching: false,
+      touchStartOrigin: {
+        x: 0,
+        y: 0
+      },
+      gestureType: GestureType.NONE,
+      currentTimeOld: 0,
+      currentTimeNew: 0,
+      volumeOld: null,
+      volumeNew: null,
+      buffered: 0,
+      isSafari: /^Apple/.test(navigator.vendor)
+    };
+  },
+  computed: {
+    centerPlayBtnShow() {
+      return this.showCenterPlayBtn && !this.start;
+    },
+    controlsShow() {
+      return !this.centerPlayBtnShow && this.controls && this.controlsVisible;
+    },
+    autoHideContorls() {
+      return this.controlsShow && this.playing && !this.controlsTouching;
+    },
+    srcSync() {
+      return getRealPath(this.src);
+    }
+  },
+  watch: {
+    enableDanmuSync(val) {
+      this.$emit("update:enableDanmu", val);
+    },
+    autoHideContorls(val) {
+      if (val) {
+        this.autoHideStart();
+      } else {
+        this.autoHideEnd();
+      }
+    },
+    srcSync(val) {
+      this.playing = false;
+      this.currentTime = 0;
+    },
+    currentTime() {
+      this.updateProgress();
+    },
+    duration() {
+      this.updateProgress();
+    },
+    buffered(buffered) {
+      if (buffered !== 0) {
+        this.$trigger("progress", {}, {
+          buffered
+        });
+      }
+    }
+  },
+  setup() {
+    const {t: t2} = useI18n();
+    const vm = getCurrentInstance().proxy;
+    useSubscribe((type, data) => {
+      const methods = ["play", "pause", "seek", "sendDanmu", "playbackRate", "requestFullScreen", "exitFullScreen"];
+      let options;
+      switch (type) {
+        case "seek":
+          options = data.position;
+          break;
+        case "sendDanmu":
+          options = data;
+          break;
+        case "playbackRate":
+          options = data.rate;
+          break;
+      }
+      if (methods.indexOf(type) >= 0) {
+        vm[type](options);
+      }
+    });
+    return {
+      $$t: t2
+    };
+  },
+  created() {
+    this.otherData = {
+      danmuList: [],
+      danmuIndex: {
+        time: 0,
+        index: -1
+      },
+      hideTiming: null
+    };
+    const danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []));
+    danmuList.sort(function(a2, b) {
+      return (a2.time || 0) - (a2.time || 0);
+    });
+  },
+  mounted() {
+    const self = this;
+    let originX;
+    let originY;
+    let moveOnce = true;
+    let originProgress;
+    const ball = this.$refs.ball;
+    ball.addEventListener("touchstart", (event2) => {
+      this.controlsTouching = true;
+      const toucher = event2.targetTouches[0];
+      originX = toucher.pageX;
+      originY = toucher.pageY;
+      originProgress = this.progress;
+      moveOnce = true;
+      this.touching = true;
+      ball.addEventListener("touchmove", touchmove2, passiveOptions);
+    });
+    function touchmove2(event2) {
+      const toucher = event2.targetTouches[0];
+      const pageX = toucher.pageX;
+      const pageY = toucher.pageY;
+      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
+        touchend();
+        return;
+      }
+      moveOnce = false;
+      const w = self.$refs.progress.offsetWidth;
+      let progress = originProgress + (pageX - originX) / w * 100;
+      if (progress < 0) {
+        progress = 0;
+      } else if (progress > 100) {
+        progress = 100;
+      }
+      self.progress = progress;
+      event2.preventDefault();
+      event2.stopPropagation();
+    }
+    function touchend(event2) {
+      self.controlsTouching = false;
+      if (self.touching) {
+        ball.removeEventListener("touchmove", touchmove2, passiveOptions);
+        if (!moveOnce) {
+          event2.preventDefault();
+          event2.stopPropagation();
+          self.seek(self.$refs.video.duration * self.progress / 100);
+        }
+        self.touching = false;
+      }
+    }
+    ball.addEventListener("touchend", touchend);
+    ball.addEventListener("touchcancel", touchend);
+  },
+  beforeDestroy() {
+    this.triggerFullscreen(false);
+    clearTimeout(this.otherData.hideTiming);
+  },
+  methods: {
+    trigger() {
+      if (this.playing) {
+        this.$refs.video.pause();
+      } else {
+        this.$refs.video.play();
+      }
+    },
+    play() {
+      this.start = true;
+      this.$refs.video.play();
+    },
+    pause() {
+      this.$refs.video.pause();
+    },
+    seek(position) {
+      position = Number(position);
+      if (typeof position === "number" && !isNaN(position)) {
+        this.$refs.video.currentTime = position;
+      }
+    },
+    clickProgress(event2) {
+      const $progress = this.$refs.progress;
+      let element = event2.target;
+      let x = event2.offsetX;
+      while (element !== $progress) {
+        x += element.offsetLeft;
+        element = element.parentNode;
+      }
+      const w = $progress.offsetWidth;
+      let progress = 0;
+      if (x >= 0 && x <= w) {
+        progress = x / w;
+        this.seek(this.$refs.video.duration * progress);
+      }
+    },
+    triggerDanmu() {
+      this.enableDanmuSync = !this.enableDanmuSync;
+    },
+    playDanmu(danmu) {
+      const p2 = document.createElement("p");
+      p2.className = "uni-video-danmu-item";
+      p2.innerText = danmu.text;
+      let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
+      p2.setAttribute("style", style);
+      this.$refs.danmu.appendChild(p2);
+      setTimeout(function() {
+        style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
+        p2.setAttribute("style", style);
+        setTimeout(function() {
+          p2.remove();
+        }, 4e3);
+      }, 17);
+    },
+    sendDanmu(danmu) {
+      const otherData = this.otherData;
+      otherData.danmuList.splice(otherData.danmuIndex.index + 1, 0, {
+        text: String(danmu.text),
+        color: danmu.color,
+        time: this.$refs.video.currentTime || 0
+      });
+    },
+    playbackRate(rate) {
+      this.$refs.video.playbackRate = rate;
+    },
+    triggerFullscreen(val) {
+      const container = this.$refs.container;
+      const video = this.$refs.video;
+      let mockFullScreen;
+      if (val) {
+        if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!this.isSafari || this.userInteract)) {
+          container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
+        } else if (video.webkitEnterFullScreen) {
+          video.webkitEnterFullScreen();
+        } else {
+          mockFullScreen = true;
+          container.remove();
+          container.classList.add("uni-video-type-fullscreen");
+          document.body.appendChild(container);
+        }
+      } else {
+        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else if (document.webkitFullscreenElement) {
+            document.webkitExitFullscreen();
+          }
+        } else if (video.webkitExitFullScreen) {
+          video.webkitExitFullScreen();
+        } else {
+          mockFullScreen = true;
+          container.remove();
+          container.classList.remove("uni-video-type-fullscreen");
+          this.$el.appendChild(container);
+        }
+      }
+      if (mockFullScreen) {
+        this.emitFullscreenChange(val);
+      }
+    },
+    onFullscreenChange($event, webkit) {
+      if (webkit && document.fullscreenEnabled) {
+        return;
+      }
+      this.emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
+    },
+    emitFullscreenChange(val) {
+      this.fullscreen = val;
+      this.$trigger("fullscreenchange", {}, {
+        fullScreen: val,
+        direction: "vertical"
+      });
+    },
+    requestFullScreen() {
+      this.triggerFullscreen(true);
+    },
+    exitFullScreen() {
+      this.triggerFullscreen(false);
+    },
+    onDurationChange({target}) {
+      this.durationTime = target.duration;
+    },
+    onLoadedMetadata($event) {
+      const initialTime = Number(this.initialTime) || 0;
+      const video = $event.target;
+      if (initialTime > 0) {
+        video.currentTime = initialTime;
+      }
+      this.$trigger("loadedmetadata", $event, {
+        width: video.videoWidth,
+        height: video.videoHeight,
+        duration: video.duration
+      });
+      this.onProgress($event);
+    },
+    onProgress($event) {
+      const video = $event.target;
+      const buffered = video.buffered;
+      if (buffered.length) {
+        this.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+      }
+    },
+    onWaiting($event) {
+      this.$trigger("waiting", $event, {});
+    },
+    onVideoError($event) {
+      this.playing = false;
+      this.$trigger("error", $event, {});
+    },
+    onPlay($event) {
+      this.start = true;
+      this.playing = true;
+      this.$trigger("play", $event, {});
+    },
+    onPause($event) {
+      this.playing = false;
+      this.$trigger("pause", $event, {});
+    },
+    onEnded($event) {
+      this.playing = false;
+      this.$trigger("ended", $event, {});
+    },
+    onTimeUpdate($event) {
+      const video = $event.target;
+      const otherData = this.otherData;
+      const currentTime = this.currentTime = video.currentTime;
+      const oldDanmuIndex = otherData.danmuIndex;
+      const danmuIndex = {
+        time: currentTime,
+        index: oldDanmuIndex.index
+      };
+      const danmuList = otherData.danmuList;
+      if (currentTime > oldDanmuIndex.time) {
+        for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
+          const element = danmuList[index2];
+          if (currentTime >= (element.time || 0)) {
+            danmuIndex.index = index2;
+            if (this.playing && this.enableDanmuSync) {
+              this.playDanmu(element);
+            }
+          } else {
+            break;
+          }
+        }
+      } else if (currentTime < oldDanmuIndex.time) {
+        for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
+          const element = danmuList[index2];
+          if (currentTime <= (element.time || 0)) {
+            danmuIndex.index = index2 - 1;
+          } else {
+            break;
+          }
+        }
+      }
+      otherData.danmuIndex = danmuIndex;
+      this.$trigger("timeupdate", $event, {
+        currentTime,
+        duration: video.duration
+      });
+    },
+    triggerControls() {
+      this.controlsVisible = !this.controlsVisible;
+    },
+    touchstart(event2) {
+      const toucher = event2.targetTouches[0];
+      this.touchStartOrigin = {
+        x: toucher.pageX,
+        y: toucher.pageY
+      };
+      this.gestureType = GestureType.NONE;
+      this.volumeOld = null;
+      this.currentTimeOld = this.currentTimeNew = 0;
+    },
+    touchmove(event2) {
+      function stop() {
+        event2.stopPropagation();
+        event2.preventDefault();
+      }
+      if (this.fullscreen) {
+        stop();
+      }
+      const gestureType = this.gestureType;
+      if (gestureType === GestureType.STOP) {
+        return;
+      }
+      const toucher = event2.targetTouches[0];
+      const pageX = toucher.pageX;
+      const pageY = toucher.pageY;
+      const origin = this.touchStartOrigin;
+      if (gestureType === GestureType.PROGRESS) {
+        this.changeProgress(pageX - origin.x);
+      } else if (gestureType === GestureType.VOLUME) {
+        this.changeVolume(pageY - origin.y);
+      }
+      if (gestureType !== GestureType.NONE) {
+        return;
+      }
+      if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
+        if (!this.enableProgressGesture) {
+          this.gestureType = GestureType.STOP;
+          return;
+        }
+        this.gestureType = GestureType.PROGRESS;
+        this.currentTimeOld = this.currentTimeNew = this.$refs.video.currentTime;
+        if (!this.fullscreen) {
+          stop();
+        }
+      } else {
+        if (!this.pageGesture) {
+          this.gestureType = GestureType.STOP;
+          return;
+        }
+        this.gestureType = GestureType.VOLUME;
+        this.volumeOld = this.$refs.video.volume;
+        if (!this.fullscreen) {
+          stop();
+        }
+      }
+    },
+    touchend(event2) {
+      if (this.gestureType !== GestureType.NONE && this.gestureType !== GestureType.STOP) {
+        event2.stopPropagation();
+        event2.preventDefault();
+      }
+      if (this.gestureType === GestureType.PROGRESS && this.currentTimeOld !== this.currentTimeNew) {
+        this.$refs.video.currentTime = this.currentTimeNew;
+      }
+      this.gestureType = GestureType.NONE;
+    },
+    changeProgress(x) {
+      const duration = this.$refs.video.duration;
+      let currentTimeNew = x / 600 * duration + this.currentTimeOld;
+      if (currentTimeNew < 0) {
+        currentTimeNew = 0;
+      } else if (currentTimeNew > duration) {
+        currentTimeNew = duration;
+      }
+      this.currentTimeNew = currentTimeNew;
+    },
+    changeVolume(y) {
+      const valueOld = this.volumeOld;
+      let value;
+      if (typeof valueOld === "number") {
+        value = valueOld - y / 200;
+        if (value < 0) {
+          value = 0;
+        } else if (value > 1) {
+          value = 1;
+        }
+        this.$refs.video.volume = value;
+        this.volumeNew = value;
+      }
+    },
+    autoHideStart() {
+      this.otherData.hideTiming = setTimeout(() => {
+        this.controlsVisible = false;
+      }, 3e3);
+    },
+    autoHideEnd() {
+      const otherData = this.otherData;
+      if (otherData.hideTiming) {
+        clearTimeout(otherData.hideTiming);
+        otherData.hideTiming = null;
+      }
+    },
+    updateProgress() {
+      if (!this.touching) {
+        this.progress = this.currentTime / this.durationTime * 100;
+      }
+    }
+  }
+};
+const _hoisted_1$2 = {class: "uni-video-controls"};
+const _hoisted_2$2 = {class: "uni-video-current-time"};
+const _hoisted_3$1 = {class: "uni-video-progress"};
+const _hoisted_4$1 = /* @__PURE__ */ createVNode("div", {class: "uni-video-inner"}, null, -1);
+const _hoisted_5 = {class: "uni-video-duration"};
+const _hoisted_6 = {
+  ref: "danmu",
+  style: {"z-index": "0"},
+  class: "uni-video-danmu"
+};
+const _hoisted_7 = {class: "uni-video-cover-duration"};
+const _hoisted_8 = {class: "uni-video-toast-title"};
+const _hoisted_9 = /* @__PURE__ */ createVNode("svg", {
+  class: "uni-video-toast-icon",
+  width: "200px",
+  height: "200px",
+  viewBox: "0 0 1024 1024",
+  version: "1.1",
+  xmlns: "http://www.w3.org/2000/svg"
+}, [
+  /* @__PURE__ */ createVNode("path", {d: "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"})
+], -1);
+const _hoisted_10 = {class: "uni-video-toast-value"};
+const _hoisted_11 = {class: "uni-video-toast-volume-grids"};
+const _hoisted_12 = {class: "uni-video-toast-title"};
+const _hoisted_13 = {class: "uni-video-slots"};
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createBlock("uni-video", mergeProps({id: $props.id}, toHandlers(_ctx.$listeners)), [
+    createVNode("div", {
+      ref: "container",
+      class: "uni-video-container",
+      onTouchstart: _cache[22] || (_cache[22] = (...args) => $options.touchstart && $options.touchstart(...args)),
+      onTouchend: _cache[23] || (_cache[23] = (...args) => $options.touchend && $options.touchend(...args)),
+      onTouchmove: _cache[24] || (_cache[24] = (...args) => $options.touchmove && $options.touchmove(...args)),
+      onFullscreenchange: _cache[25] || (_cache[25] = withModifiers((...args) => $options.onFullscreenChange && $options.onFullscreenChange(...args), ["stop"])),
+      onWebkitfullscreenchange: _cache[26] || (_cache[26] = withModifiers(($event) => $options.onFullscreenChange($event, true), ["stop"]))
+    }, [
+      createVNode("video", mergeProps({
+        ref: "video",
+        style: {objectFit: $props.objectFit},
+        muted: $props.muted,
+        loop: $props.loop,
+        src: $options.srcSync,
+        poster: $props.poster,
+        autoplay: $props.autoplay
+      }, _ctx.$attrs, {
+        class: "uni-video-video",
+        "webkit-playsinline": "",
+        playsinline: "",
+        onClick: _cache[1] || (_cache[1] = (...args) => $options.triggerControls && $options.triggerControls(...args)),
+        onDurationchange: _cache[2] || (_cache[2] = (...args) => $options.onDurationChange && $options.onDurationChange(...args)),
+        onLoadedmetadata: _cache[3] || (_cache[3] = (...args) => $options.onLoadedMetadata && $options.onLoadedMetadata(...args)),
+        onProgress: _cache[4] || (_cache[4] = (...args) => $options.onProgress && $options.onProgress(...args)),
+        onWaiting: _cache[5] || (_cache[5] = (...args) => $options.onWaiting && $options.onWaiting(...args)),
+        onError: _cache[6] || (_cache[6] = (...args) => $options.onVideoError && $options.onVideoError(...args)),
+        onPlay: _cache[7] || (_cache[7] = (...args) => $options.onPlay && $options.onPlay(...args)),
+        onPause: _cache[8] || (_cache[8] = (...args) => $options.onPause && $options.onPause(...args)),
+        onEnded: _cache[9] || (_cache[9] = (...args) => $options.onEnded && $options.onEnded(...args)),
+        onTimeupdate: _cache[10] || (_cache[10] = (...args) => $options.onTimeUpdate && $options.onTimeUpdate(...args)),
+        onWebkitbeginfullscreen: _cache[11] || (_cache[11] = ($event) => $options.emitFullscreenChange(true)),
+        onX5videoenterfullscreen: _cache[12] || (_cache[12] = ($event) => $options.emitFullscreenChange(true)),
+        onWebkitendfullscreen: _cache[13] || (_cache[13] = ($event) => $options.emitFullscreenChange(false)),
+        onX5videoexitfullscreen: _cache[14] || (_cache[14] = ($event) => $options.emitFullscreenChange(false))
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay"]),
+      withDirectives(createVNode("div", {
+        class: "uni-video-bar uni-video-bar-full",
+        onClick: _cache[19] || (_cache[19] = withModifiers(() => {
+        }, ["stop"]))
+      }, [
+        createVNode("div", _hoisted_1$2, [
+          withDirectives(createVNode("div", {
+            class: [{"uni-video-control-button-play": !$data.playing, "uni-video-control-button-pause": $data.playing}, "uni-video-control-button"],
+            onClick: _cache[15] || (_cache[15] = withModifiers((...args) => $options.trigger && $options.trigger(...args), ["stop"]))
+          }, null, 2), [
+            [vShow, $props.showPlayBtn]
+          ]),
+          createVNode("div", _hoisted_2$2, toDisplayString($data.currentTime | _ctx.time), 1),
+          createVNode("div", {
+            ref: "progress",
+            class: "uni-video-progress-container",
+            onClick: _cache[16] || (_cache[16] = withModifiers(($event) => $options.clickProgress($event), ["stop"]))
+          }, [
+            createVNode("div", _hoisted_3$1, [
+              createVNode("div", {
+                style: {width: $data.buffered + "%"},
+                class: "uni-video-progress-buffered"
+              }, null, 4),
+              createVNode("div", {
+                ref: "ball",
+                style: {left: $data.progress + "%"},
+                class: "uni-video-ball"
+              }, [
+                _hoisted_4$1
+              ], 4)
+            ])
+          ], 512),
+          createVNode("div", _hoisted_5, toDisplayString(($props.duration || $data.durationTime) | _ctx.time), 1)
+        ]),
+        $props.danmuBtn ? (openBlock(), createBlock("div", {
+          key: 0,
+          class: [{"uni-video-danmu-button-active": $data.enableDanmuSync}, "uni-video-danmu-button"],
+          onClick: _cache[17] || (_cache[17] = withModifiers((...args) => $options.triggerDanmu && $options.triggerDanmu(...args), ["stop"]))
+        }, toDisplayString($setup.$$t("uni.video.danmu")), 3)) : createCommentVNode("", true),
+        withDirectives(createVNode("div", {
+          class: [{"uni-video-type-fullscreen": $data.fullscreen}, "uni-video-fullscreen"],
+          onClick: _cache[18] || (_cache[18] = withModifiers(($event) => $options.triggerFullscreen(!$data.fullscreen), ["stop"]))
+        }, null, 2), [
+          [vShow, $props.showFullscreenBtn]
+        ])
+      ], 512), [
+        [vShow, $options.controlsShow]
+      ]),
+      withDirectives(createVNode("div", _hoisted_6, null, 512), [
+        [vShow, $data.start && $data.enableDanmuSync]
+      ]),
+      $options.centerPlayBtnShow ? (openBlock(), createBlock("div", {
+        key: 0,
+        class: "uni-video-cover",
+        onClick: _cache[21] || (_cache[21] = withModifiers(() => {
+        }, ["stop"]))
+      }, [
+        createVNode("div", {
+          class: "uni-video-cover-play-button",
+          onClick: _cache[20] || (_cache[20] = withModifiers((...args) => $options.play && $options.play(...args), ["stop"]))
+        }),
+        createVNode("p", _hoisted_7, toDisplayString(($props.duration || $data.durationTime) | _ctx.time), 1)
+      ])) : createCommentVNode("", true),
+      createVNode("div", {
+        class: [{"uni-video-toast-volume": $data.gestureType === "volume"}, "uni-video-toast"]
+      }, [
+        createVNode("div", _hoisted_8, toDisplayString($setup.$$t("uni.video.volume")), 1),
+        _hoisted_9,
+        createVNode("div", _hoisted_10, [
+          createVNode("div", {
+            style: {width: $data.volumeNew * 100 + "%"},
+            class: "uni-video-toast-value-content"
+          }, [
+            createVNode("div", _hoisted_11, [
+              (openBlock(), createBlock(Fragment, null, renderList(10, (item, index2) => {
+                return createVNode("div", {
+                  key: index2,
+                  class: "uni-video-toast-volume-grids-item"
+                });
+              }), 64))
+            ])
+          ], 4)
+        ])
+      ], 2),
+      createVNode("div", {
+        class: [{"uni-video-toast-progress": $data.gestureType == "progress"}, "uni-video-toast"]
+      }, [
+        createVNode("div", _hoisted_12, toDisplayString($data.currentTimeNew | _ctx.time) + " / " + toDisplayString($data.durationTime | _ctx.time), 1)
+      ], 2),
+      createVNode("div", _hoisted_13, [
+        renderSlot(_ctx.$slots, "default")
+      ])
+    ], 544)
+  ], 16, ["id"]);
 }
 _sfc_main$3.render = _sfc_render$3;
 const UniViewJSBridge$1 = extend(ViewJSBridge, {
@@ -9300,6 +10606,7 @@ var api = /* @__PURE__ */ Object.freeze({
   base64ToArrayBuffer,
   createIntersectionObserver,
   createSelectorQuery,
+  createVideoContext,
   canIUse,
   makePhoneCall,
   getSystemInfo,
@@ -9546,7 +10853,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$g, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$h, {
     focus: autoFocus,
     disabled,
     style: {
@@ -9977,438 +11284,24 @@ function createPageBodyVNode(ctx) {
     _: 3
   });
 }
-const isObject = (val) => val !== null && typeof val === "object";
-class BaseFormatter {
-  constructor() {
-    this._caches = Object.create(null);
-  }
-  interpolate(message, values) {
-    if (!values) {
-      return [message];
-    }
-    let tokens = this._caches[message];
-    if (!tokens) {
-      tokens = parse(message);
-      this._caches[message] = tokens;
-    }
-    return compile(tokens, values);
-  }
-}
-const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format) {
-  const tokens = [];
-  let position = 0;
-  let text2 = "";
-  while (position < format.length) {
-    let char = format[position++];
-    if (char === "{") {
-      if (text2) {
-        tokens.push({type: "text", value: text2});
-      }
-      text2 = "";
-      let sub = "";
-      char = format[position++];
-      while (char !== void 0 && char !== "}") {
-        sub += char;
-        char = format[position++];
-      }
-      const isClosed = char === "}";
-      const type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
-      tokens.push({value: sub, type});
-    } else if (char === "%") {
-      if (format[position] !== "{") {
-        text2 += char;
-      }
-    } else {
-      text2 += char;
-    }
-  }
-  text2 && tokens.push({type: "text", value: text2});
-  return tokens;
-}
-function compile(tokens, values) {
-  const compiled = [];
-  let index2 = 0;
-  const mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-  if (mode === "unknown") {
-    return compiled;
-  }
-  while (index2 < tokens.length) {
-    const token = tokens[index2];
-    switch (token.type) {
-      case "text":
-        compiled.push(token.value);
-        break;
-      case "list":
-        compiled.push(values[parseInt(token.value, 10)]);
-        break;
-      case "named":
-        if (mode === "named") {
-          compiled.push(values[token.value]);
-        }
-        break;
-    }
-    index2++;
-  }
-  return compiled;
-}
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const defaultFormatter = new BaseFormatter();
-function include(str, parts) {
-  return !!parts.find((part) => str.indexOf(part) !== -1);
-}
-function startsWith(str, parts) {
-  return parts.find((part) => str.indexOf(part) === 0);
-}
-function normalizeLocale(locale, messages2) {
-  if (!locale) {
-    return;
-  }
-  locale = locale.trim().replace(/_/g, "-");
-  if (messages2[locale]) {
-    return locale;
-  }
-  locale = locale.toLowerCase();
-  if (locale.indexOf("zh") === 0) {
-    if (locale.indexOf("-hans") !== -1) {
-      return "zh-Hans";
-    }
-    if (locale.indexOf("-hant") !== -1) {
-      return "zh-Hant";
-    }
-    if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
-      return "zh-Hant";
-    }
-    return "zh-Hans";
-  }
-  const lang = startsWith(locale, ["en", "fr", "es"]);
-  if (lang) {
-    return lang;
-  }
-}
-class I18n {
-  constructor({locale, fallbackLocale: fallbackLocale2, messages: messages2, watcher, formater}) {
-    this.locale = "en";
-    this.fallbackLocale = "en";
-    this.message = {};
-    this.messages = {};
-    this.watchers = [];
-    if (fallbackLocale2) {
-      this.fallbackLocale = fallbackLocale2;
-    }
-    this.formater = formater || defaultFormatter;
-    this.messages = messages2;
-    this.setLocale(locale);
-    if (watcher) {
-      this.watchLocale(watcher);
-    }
-  }
-  setLocale(locale) {
-    const oldLocale = this.locale;
-    this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-    this.message = this.messages[this.locale];
-    this.watchers.forEach((watcher) => {
-      watcher(this.locale, oldLocale);
-    });
-  }
-  getLocale() {
-    return this.locale;
-  }
-  watchLocale(fn) {
-    const index2 = this.watchers.push(fn) - 1;
-    return () => {
-      this.watchers.splice(index2, 1);
-    };
-  }
-  mergeLocaleMessage(locale, message) {
-    if (this.messages[locale]) {
-      Object.assign(this.messages[locale], message);
-    } else {
-      this.messages[locale] = message;
-    }
-  }
-  t(key, locale, values) {
-    let message = this.message;
-    if (typeof locale === "string") {
-      locale = normalizeLocale(locale, this.messages);
-      locale && (message = this.messages[locale]);
-    } else {
-      values = locale;
-    }
-    if (!hasOwn(message, key)) {
-      console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
-      return key;
-    }
-    return this.formater.interpolate(message[key], values).join("");
-  }
-}
-function initLocaleWatcher(appVm2, i18n2) {
-  appVm2.$i18n && appVm2.$i18n.vm.$watch("locale", (newLocale) => {
-    i18n2.setLocale(newLocale);
-  }, {
-    immediate: true
-  });
-}
-function getDefaultLocale() {
-  if (typeof navigator !== "undefined") {
-    return navigator.userLanguage || navigator.language;
-  }
-  if (typeof plus !== "undefined") {
-    return plus.os.language;
-  }
-  return uni.getSystemInfoSync().language;
-}
-function initVueI18n(messages2, fallbackLocale2 = "en", locale) {
-  const i18n2 = new I18n({
-    locale: locale || fallbackLocale2,
-    fallbackLocale: fallbackLocale2,
-    messages: messages2
-  });
-  let t2 = (key, values) => {
-    if (typeof getApp !== "function") {
-      t2 = function(key2, values2) {
-        return i18n2.t(key2, values2);
-      };
-    } else {
-      const appVm2 = getApp().$vm;
-      if (!appVm2.$t || !appVm2.$i18n) {
-        if (!locale) {
-          i18n2.setLocale(getDefaultLocale());
-        }
-        t2 = function(key2, values2) {
-          return i18n2.t(key2, values2);
-        };
-      } else {
-        initLocaleWatcher(appVm2, i18n2);
-        t2 = function(key2, values2) {
-          const $i18n = appVm2.$i18n;
-          const silentTranslationWarn = $i18n.silentTranslationWarn;
-          $i18n.silentTranslationWarn = true;
-          const msg = appVm2.$t(key2, values2);
-          $i18n.silentTranslationWarn = silentTranslationWarn;
-          if (msg !== key2) {
-            return msg;
-          }
-          return i18n2.t(key2, $i18n.locale, values2);
-        };
-      }
-    }
-    return t2(key, values);
-  };
-  return {
-    t(key, values) {
-      return t2(key, values);
-    },
-    getLocale() {
-      return i18n2.getLocale();
-    },
-    setLocale(newLocale) {
-      return i18n2.setLocale(newLocale);
-    },
-    mixin: {
-      beforeCreate() {
-        const unwatch = i18n2.watchLocale(() => {
-          this.$forceUpdate();
-        });
-        this.$once("hook:beforeDestroy", function() {
-          unwatch();
-        });
-      },
-      methods: {
-        $$t(key, values) {
-          return t2(key, values);
-        }
-      }
-    }
-  };
-}
-var en = {
-  "uni.app.quit": "Press back button again to exit",
-  "uni.async.error": "The connection timed out, click the screen to try again.",
-  "uni.showActionSheet.cancel": "Cancel",
-  "uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
-  "uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
-  "uni.showModal.cancel": "Cancel",
-  "uni.showModal.confirm": "OK",
-  "uni.chooseImage.cancel": "Cancel",
-  "uni.chooseImage.sourceType.album": "Album",
-  "uni.chooseImage.sourceType.camera": "Camera",
-  "uni.chooseVideo.cancel": "Cancel",
-  "uni.chooseVideo.sourceType.album": "Album",
-  "uni.chooseVideo.sourceType.camera": "Camera",
-  "uni.previewImage.cancel": "Cancel",
-  "uni.previewImage.button.save": "Save Image",
-  "uni.previewImage.save.success": "Saved successfully",
-  "uni.previewImage.save.fail": "Save failed",
-  "uni.setClipboardData.success": "Content copied",
-  "uni.scanCode.title": "Scan code",
-  "uni.scanCode.album": "Album",
-  "uni.scanCode.fail": "Recognition failure",
-  "uni.scanCode.flash.on": "Tap to turn light on",
-  "uni.scanCode.flash.off": "Tap to turn light off",
-  "uni.startSoterAuthentication.authContent": "Fingerprint recognition",
-  "uni.picker.done": "Done",
-  "uni.picker.cancel": "Cancel",
-  "uni.video.danmu": "Danmu",
-  "uni.video.volume": "Volume",
-  "uni.button.feedback.title": "feedback",
-  "uni.button.feedback.send": "send"
-};
-var es = {
-  "uni.app.quit": "Pulse otra vez para salir",
-  "uni.async.error": "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo.",
-  "uni.showActionSheet.cancel": "Cancelar",
-  "uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
-  "uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
-  "uni.showModal.cancel": "Cancelar",
-  "uni.showModal.confirm": "OK",
-  "uni.chooseImage.cancel": "Cancelar",
-  "uni.chooseImage.sourceType.album": "\xC1lbum",
-  "uni.chooseImage.sourceType.camera": "C\xE1mara",
-  "uni.chooseVideo.cancel": "Cancelar",
-  "uni.chooseVideo.sourceType.album": "\xC1lbum",
-  "uni.chooseVideo.sourceType.camera": "C\xE1mara",
-  "uni.previewImage.cancel": "Cancelar",
-  "uni.previewImage.button.save": "Guardar imagen",
-  "uni.previewImage.save.success": "Guardado exitosamente",
-  "uni.previewImage.save.fail": "Error al guardar",
-  "uni.setClipboardData.success": "Contenido copiado",
-  "uni.scanCode.title": "C\xF3digo de escaneo",
-  "uni.scanCode.album": "\xC1lbum",
-  "uni.scanCode.fail": "\xC9chec de la reconnaissance",
-  "uni.scanCode.flash.on": "Toque para encender la luz",
-  "uni.scanCode.flash.off": "Toque para apagar la luz",
-  "uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
-  "uni.picker.done": "OK",
-  "uni.picker.cancel": "Cancelar",
-  "uni.video.danmu": "Danmu",
-  "uni.video.volume": "Volumen",
-  "uni.button.feedback.title": "realimentaci\xF3n",
-  "uni.button.feedback.send": "enviar"
-};
-var fr = {
-  "uni.app.quit": "Appuyez \xE0 nouveau pour quitter l'application",
-  "uni.async.error": "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer.",
-  "uni.showActionSheet.cancel": "Annuler",
-  "uni.showToast.unpaired": "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast",
-  "uni.showLoading.unpaired": "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading",
-  "uni.showModal.cancel": "Annuler",
-  "uni.showModal.confirm": "OK",
-  "uni.chooseImage.cancel": "Annuler",
-  "uni.chooseImage.sourceType.album": "Album",
-  "uni.chooseImage.sourceType.camera": "Cam\xE9ra",
-  "uni.chooseVideo.cancel": "Annuler",
-  "uni.chooseVideo.sourceType.album": "Album",
-  "uni.chooseVideo.sourceType.camera": "Cam\xE9ra",
-  "uni.previewImage.cancel": "Annuler",
-  "uni.previewImage.button.save": "Guardar imagen",
-  "uni.previewImage.save.success": "Enregistr\xE9 avec succ\xE8s",
-  "uni.previewImage.save.fail": "\xC9chec de la sauvegarde",
-  "uni.setClipboardData.success": "Contenu copi\xE9",
-  "uni.scanCode.title": "Code d\u2019analyse",
-  "uni.scanCode.album": "Album",
-  "uni.scanCode.fail": "Fallo de reconocimiento",
-  "uni.scanCode.flash.on": "Appuyez pour activer l'\xE9clairage",
-  "uni.scanCode.flash.off": "Appuyez pour d\xE9sactiver l'\xE9clairage",
-  "uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
-  "uni.picker.done": "OK",
-  "uni.picker.cancel": "Annuler",
-  "uni.video.danmu": "Danmu",
-  "uni.video.volume": "Le Volume",
-  "uni.button.feedback.title": "retour d'information",
-  "uni.button.feedback.send": "envoyer"
-};
-var zhHans = {
-  "uni.app.quit": "\u518D\u6309\u4E00\u6B21\u9000\u51FA\u5E94\u7528",
-  "uni.async.error": "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5",
-  "uni.showActionSheet.cancel": "\u53D6\u6D88",
-  "uni.showToast.unpaired": "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528",
-  "uni.showLoading.unpaired": "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528",
-  "uni.showModal.cancel": "\u53D6\u6D88",
-  "uni.showModal.confirm": "\u786E\u5B9A",
-  "uni.chooseImage.cancel": "\u53D6\u6D88",
-  "uni.chooseImage.sourceType.album": "\u4ECE\u76F8\u518C\u9009\u62E9",
-  "uni.chooseImage.sourceType.camera": "\u62CD\u6444",
-  "uni.chooseVideo.cancel": "\u53D6\u6D88",
-  "uni.chooseVideo.sourceType.album": "\u4ECE\u76F8\u518C\u9009\u62E9",
-  "uni.chooseVideo.sourceType.camera": "\u62CD\u6444",
-  "uni.previewImage.cancel": "\u53D6\u6D88",
-  "uni.previewImage.button.save": "\u4FDD\u5B58\u56FE\u50CF",
-  "uni.previewImage.save.success": "\u4FDD\u5B58\u56FE\u50CF\u5230\u76F8\u518C\u6210\u529F",
-  "uni.previewImage.save.fail": "\u4FDD\u5B58\u56FE\u50CF\u5230\u76F8\u518C\u5931\u8D25",
-  "uni.setClipboardData.success": "\u5185\u5BB9\u5DF2\u590D\u5236",
-  "uni.scanCode.title": "\u626B\u7801",
-  "uni.scanCode.album": "\u76F8\u518C",
-  "uni.scanCode.fail": "\u8BC6\u522B\u5931\u8D25",
-  "uni.scanCode.flash.on": "\u8F7B\u89E6\u7167\u4EAE",
-  "uni.scanCode.flash.off": "\u8F7B\u89E6\u5173\u95ED",
-  "uni.startSoterAuthentication.authContent": "\u6307\u7EB9\u8BC6\u522B\u4E2D...",
-  "uni.picker.done": "\u5B8C\u6210",
-  "uni.picker.cancel": "\u53D6\u6D88",
-  "uni.video.danmu": "\u5F39\u5E55",
-  "uni.video.volume": "\u97F3\u91CF",
-  "uni.button.feedback.title": "\u95EE\u9898\u53CD\u9988",
-  "uni.button.feedback.send": "\u53D1\u9001"
-};
-var zhHant = {
-  "uni.app.quit": "\u518D\u6309\u4E00\u6B21\u9000\u51FA\u61C9\u7528",
-  "uni.async.error": "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66",
-  "uni.showActionSheet.cancel": "\u53D6\u6D88",
-  "uni.showToast.unpaired": "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528",
-  "uni.showLoading.unpaired": "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528",
-  "uni.showModal.cancel": "\u53D6\u6D88",
-  "uni.showModal.confirm": "\u78BA\u5B9A",
-  "uni.chooseImage.cancel": "\u53D6\u6D88",
-  "uni.chooseImage.sourceType.album": "\u5F9E\u76F8\u518A\u9078\u64C7",
-  "uni.chooseImage.sourceType.camera": "\u62CD\u651D",
-  "uni.chooseVideo.cancel": "\u53D6\u6D88",
-  "uni.chooseVideo.sourceType.album": "\u5F9E\u76F8\u518A\u9078\u64C7",
-  "uni.chooseVideo.sourceType.camera": "\u62CD\u651D",
-  "uni.previewImage.cancel": "\u53D6\u6D88",
-  "uni.previewImage.button.save": "\u4FDD\u5B58\u5716\u50CF",
-  "uni.previewImage.save.success": "\u4FDD\u5B58\u5716\u50CF\u5230\u76F8\u518A\u6210\u529F",
-  "uni.previewImage.save.fail": "\u4FDD\u5B58\u5716\u50CF\u5230\u76F8\u518A\u5931\u6557",
-  "uni.setClipboardData.success": "\u5167\u5BB9\u5DF2\u5FA9\u5236",
-  "uni.scanCode.title": "\u6383\u78BC",
-  "uni.scanCode.album": "\u76F8\u518A",
-  "uni.scanCode.fail": "\u8B58\u5225\u5931\u6557",
-  "uni.scanCode.flash.on": "\u8F15\u89F8\u7167\u4EAE",
-  "uni.scanCode.flash.off": "\u8F15\u89F8\u95DC\u9589",
-  "uni.startSoterAuthentication.authContent": "\u6307\u7D0B\u8B58\u5225\u4E2D...",
-  "uni.picker.done": "\u5B8C\u6210",
-  "uni.picker.cancel": "\u53D6\u6D88",
-  "uni.video.danmu": "\u5F48\u5E55",
-  "uni.video.volume": "\u97F3\u91CF",
-  "uni.button.feedback.title": "\u554F\u984C\u53CD\u994B",
-  "uni.button.feedback.send": "\u767C\u9001"
-};
-const messages = {
-  en,
-  es,
-  fr,
-  "zh-Hans": zhHans,
-  "zh-Hant": zhHant
-};
-const fallbackLocale = "en";
-const i18n = initVueI18n(messages, fallbackLocale);
-const i18nMixin = i18n.mixin;
-var index_vue_vue_type_style_index_0_lang$1 = "\n.uni-async-error {\r\n		position: absolute;\r\n		left: 0;\r\n		right: 0;\r\n		top: 0;\r\n		bottom: 0;\r\n		color: #999;\r\n		padding: 100px 10px;\r\n		text-align: center;\n}\r\n";
+var index_vue_vue_type_style_index_0_lang$1 = "\n.uni-async-error {\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  top: 0;\r\n  bottom: 0;\r\n  color: #999;\r\n  padding: 100px 10px;\r\n  text-align: center;\n}\r\n";
 const _sfc_main$1 = {
   name: "AsyncError",
-  mixins: [i18nMixin],
-  methods: {
-    _onClick() {
-      window.location.reload();
-    }
+  setup() {
+    const {t: t2} = useI18n();
+    return {
+      $$t: t2,
+      reload() {
+        window.location.reload();
+      }
+    };
   }
 };
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("div", {
     class: "uni-async-error",
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }, toDisplayString(_ctx.$$t("uni.async.error")), 1);
+    onClick: _cache[1] || (_cache[1] = (...args) => $setup.reload && $setup.reload(...args))
+  }, toDisplayString($setup.$$t("uni.async.error")), 1);
 }
 _sfc_main$1.render = _sfc_render$1;
 var index_vue_vue_type_style_index_0_lang = "\n.uni-async-loading {\n    box-sizing: border-box;\r\n		width: 100%;\r\n		padding: 50px;\r\n		text-align: center;\n}\n.uni-async-loading .uni-loading {\r\n		width: 30px;\r\n		height: 30px;\n}\r\n";
@@ -10423,4 +11316,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$o as Audio, _sfc_main$n as Canvas, _sfc_main$m as Checkbox, _sfc_main$l as CheckboxGroup, _sfc_main$k as Editor, _sfc_main$j as Form, index$2 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$1 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, openDocument, index$3 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, request, switchTab, uni$1 as uni, upx2px};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$p as Audio, index$3 as Button, _sfc_main$o as Canvas, _sfc_main$n as Checkbox, _sfc_main$m as CheckboxGroup, _sfc_main$l as Editor, _sfc_main$k as Form, index$2 as Icon, _sfc_main$i as Image, _sfc_main$h as Input, _sfc_main$g as Label, _sfc_main$f as MovableView, _sfc_main$e as Navigator, index as PageComponent, _sfc_main$d as Progress, _sfc_main$c as Radio, _sfc_main$b as RadioGroup, _sfc_main$j as ResizeSensor, _sfc_main$a as RichText, _sfc_main$9 as ScrollView, _sfc_main$8 as Slider, _sfc_main$7 as SwiperItem, _sfc_main$6 as Switch, index$1 as Text, _sfc_main$5 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, _sfc_main$4 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, openDocument, index$4 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, request, switchTab, uni$1 as uni, upx2px, useSubscribe};

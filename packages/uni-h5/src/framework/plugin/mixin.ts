@@ -14,6 +14,11 @@ export function initMixin(app: App) {
         this.$callHook('onLoad', {})
         this.__isVisible = true
         this.$callHook('onShow')
+      } else {
+        // TODO 待优化
+        if (this.$parent) {
+          this.$page = this.$parent.$page
+        }
       }
     },
     mounted() {

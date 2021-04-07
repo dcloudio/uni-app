@@ -1,5 +1,5 @@
 import Audio from './audio/index.vue'
-// import Button from './button/index.vue'
+import Button from './button/index'
 import Canvas from './canvas/index.vue'
 import Checkbox from './checkbox/index.vue'
 import CheckboxGroup from './checkbox-group/index.vue'
@@ -29,7 +29,7 @@ import Textarea from './textarea/index.vue'
 import View from './view/index.vue'
 export {
   Audio,
-  //   Button,
+  Button,
   Canvas,
   Checkbox,
   CheckboxGroup,

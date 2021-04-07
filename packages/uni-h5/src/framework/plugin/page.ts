@@ -65,6 +65,7 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
 
 export function initPage(vm: ComponentPublicInstance) {
   const route = vm.$route
+  ;(vm as any).$vm = vm
   ;(vm as any).$page = initPublicPage(route)
   currentPagesMap.set(vm.$page.id, (vm as unknown) as Page.PageInstance)
 }

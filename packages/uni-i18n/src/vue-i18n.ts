@@ -75,6 +75,7 @@ export function initVueI18n(
     return t(key, values)
   }
   return {
+    i18n,
     t(key: string, values?: Record<string, unknown> | Array<unknown>) {
       return t(key, values)
     },

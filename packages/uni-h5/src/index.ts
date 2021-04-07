@@ -12,6 +12,7 @@ import plugin from './framework/plugin'
 export { plugin }
 
 export * from '@dcloudio/uni-components'
+export * from './view/components'
 
 export * from './view/bridge'
 
