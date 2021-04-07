@@ -6,9 +6,9 @@ import {
 
 export const makePhoneCall = defineAsyncApi<typeof uni.makePhoneCall>(
   API_MAKE_PHONE_CALL,
-  ({ phoneNumber }) => {
+  ({ phoneNumber }, { resolve }) => {
     window.location.href = `tel:${phoneNumber}`
-    return Promise.resolve()
+    return resolve()
   },
   MakePhoneCallProtocol
 )

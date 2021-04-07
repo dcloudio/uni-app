@@ -7779,11 +7779,6 @@ function promisify(fn) {
     }));
   };
 }
-const API_TYPE_ON = 0;
-const API_TYPE_OFF = 1;
-const API_TYPE_TASK = 2;
-const API_TYPE_SYNC = 3;
-const API_TYPE_ASYNC = 4;
 function formatApiArgs(args, options) {
   const params = args[0];
   if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
@@ -7835,10 +7830,7 @@ function wrapperSyncApi(fn) {
   return (...args) => fn.apply(null, args);
 }
 function wrapperAsyncApi(name, fn, options) {
-  return (args) => {
-    const id2 = createAsyncApiCallback(name, args, options);
-    fn(args).then((res) => invokeSuccess(id2, name, res)).catch((err) => invokeFail(id2, name, err));
-  };
+  return wrapperTaskApi(name, fn, options);
 }
 function wrapperApi(fn, name, protocol, options) {
   return function(...args) {
@@ -7852,33 +7844,19 @@ function wrapperApi(fn, name, protocol, options) {
   };
 }
 function defineOnApi(name, fn, options) {
-  return defineApi(API_TYPE_ON, name, fn, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
+  return wrapperApi(wrapperOnApi(name, fn), name, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
 }
 function defineOffApi(name, fn, options) {
-  return defineApi(API_TYPE_OFF, name, fn, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
+  return wrapperApi(wrapperOffApi(name, fn), name, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
 }
 function defineTaskApi(name, fn, protocol, options) {
-  return promisify(defineApi(API_TYPE_TASK, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(wrapperApi(wrapperTaskApi(name, fn), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 function defineSyncApi(name, fn, protocol, options) {
-  return defineApi(API_TYPE_SYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+  return wrapperApi(wrapperSyncApi(fn), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
 }
 function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(defineApi(API_TYPE_ASYNC, name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function defineApi(type, name, fn, protocol, options) {
-  switch (type) {
-    case API_TYPE_ON:
-      return wrapperApi(wrapperOnApi(name, fn), name, protocol, options);
-    case API_TYPE_OFF:
-      return wrapperApi(wrapperOffApi(name, fn), name, protocol, options);
-    case API_TYPE_TASK:
-      return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options);
-    case API_TYPE_SYNC:
-      return wrapperApi(wrapperSyncApi(fn), name, protocol, options);
-    case API_TYPE_ASYNC:
-      return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol, options);
-  }
+  return promisify(wrapperApi(wrapperAsyncApi(name, fn, options), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
 const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
@@ -8419,9 +8397,9 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
   }
   return true;
 }, CanIUseProtocol);
-const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}) => {
+const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}, {resolve}) => {
   window.location.href = `tel:${phoneNumber}`;
-  return Promise.resolve();
+  return resolve();
 }, MakePhoneCallProtocol);
 const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const pixelRatio2 = window.devicePixelRatio;
@@ -8523,8 +8501,8 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     }
   };
 });
-const getSystemInfo = defineAsyncApi("getSystemInfo", () => {
-  return Promise.resolve(getSystemInfoSync());
+const getSystemInfo = defineAsyncApi("getSystemInfo", (_args, {resolve}) => {
+  return resolve(getSystemInfoSync());
 });
 const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
 function networkListener() {
@@ -8556,7 +8534,7 @@ const offNetworkStatusChange = defineOffApi("offNetworkStatusChange", () => {
     window.removeEventListener("online", networkListener);
   }
 });
-const getNetworkType = defineAsyncApi("getNetworkType", () => {
+const getNetworkType = defineAsyncApi("getNetworkType", (_args, {resolve}) => {
   const connection = getConnection();
   let networkType = "unknown";
   if (connection) {
@@ -8569,30 +8547,28 @@ const getNetworkType = defineAsyncApi("getNetworkType", () => {
   } else if (navigator.onLine === false) {
     networkType = "none";
   }
-  return Promise.resolve({networkType});
+  return resolve({networkType});
 });
-const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}) => {
+const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) => {
   window.open(filePath);
-  return Promise.resolve();
+  return resolve();
 }, OpenDocumentProtocol);
 function _getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}) => {
+const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject}) => {
   const img = new Image();
-  return new Promise((resolve, reject) => {
-    img.onload = function() {
-      resolve({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
-      });
-    };
-    img.onerror = function() {
-      reject();
-    };
-    img.src = src;
-  });
+  img.onload = function() {
+    resolve({
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+      path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
+    });
+  };
+  img.onerror = function() {
+    reject();
+  };
+  img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
 const request = defineTaskApi(API_REQUEST, ({
   url,
@@ -8713,7 +8689,7 @@ function parseHeaders(headers) {
   });
   return headersObject;
 }
-const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}) => new Promise((resolve, reject) => {
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   const vm = getCurrentPageVm();
   if (vm && vm.$callHook("onBackPress") === true) {
@@ -8723,8 +8699,8 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}) => new Promise(
     return reject("onBackPress");
   }
   getApp().$router.go(-delta);
-  resolve();
-}), NavigateBackProtocol, NavigateBackOptions);
+  return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
 function navigate(type, url) {
   const router = getApp().$router;
   return new Promise((resolve, reject) => {
@@ -8740,10 +8716,10 @@ function navigate(type, url) {
     });
   });
 }
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, ({url}) => navigate(API_NAVIGATE_TO, url), NavigateToProtocol, NavigateToOptions);
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}) => navigate(API_REDIRECT_TO, url), RedirectToProtocol, RedirectToOptions);
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}) => navigate(API_RE_LAUNCH, url), ReLaunchProtocol, ReLaunchOptions);
-const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}) => navigate(API_SWITCH_TAB, url), SwitchTabProtocol, SwitchTabOptions);
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, ({url}, {resolve, reject}) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => navigate(API_REDIRECT_TO, url).then(resolve).catch(reject), RedirectToProtocol, RedirectToOptions);
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => navigate(API_RE_LAUNCH, url).then(resolve).catch(reject), ReLaunchProtocol, ReLaunchOptions);
+const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => navigate(API_SWITCH_TAB, url).then(resolve).catch(reject), SwitchTabProtocol, SwitchTabOptions);
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",

@@ -51,7 +51,7 @@ export const offNetworkStatusChange = defineOffApi<
 
 export const getNetworkType = defineAsyncApi<typeof uni.getNetworkType>(
   'getNetworkType',
-  () => {
+  (_args, { resolve }) => {
     const connection = getConnection()
     let networkType = 'unknown'
     if (connection) {
@@ -64,6 +64,6 @@ export const getNetworkType = defineAsyncApi<typeof uni.getNetworkType>(
     } else if (navigator.onLine === false) {
       networkType = 'none'
     }
-    return Promise.resolve({ networkType })
+    return resolve({ networkType })
   }
 )

@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isObject, capitalize, toRawType, makeMap, isPlainObject, isFunction, extend, isPromise, isString } from '@vue/shared';
+import { isArray, hasOwn, isObject, capitalize, toRawType, makeMap, isPlainObject, isPromise, isFunction, isString } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
     const errMsg = `${name}:fail ${msg}`;
@@ -140,115 +140,6 @@ function isBoolean(...args) {
     return args.some((elem) => elem.toLowerCase() === 'boolean');
 }
 
-function tryCatch(fn) {
-    return function () {
-        try {
-            return fn.apply(fn, arguments);
-        }
-        catch (e) {
-            // TODO
-            console.error(e);
-        }
-    };
-}
-
-let invokeCallbackId = 1;
-const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback, keepAlive = false) {
-    invokeCallbacks[id] = {
-        name,
-        keepAlive,
-        callback,
-    };
-    return id;
-}
-// onNativeEventReceive((event,data)=>{}) 需要两个参数，目前写死最多两个参数
-function invokeCallback(id, res, extras) {
-    if (typeof id === 'number') {
-        const opts = invokeCallbacks[id];
-        if (opts) {
-            if (!opts.keepAlive) {
-                delete invokeCallbacks[id];
-            }
-            return opts.callback(res, extras);
-        }
-    }
-    return res;
-}
-function findInvokeCallbackByName(name) {
-    for (const key in invokeCallbacks) {
-        if (invokeCallbacks[key].name === name) {
-            return true;
-        }
-    }
-    return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-    for (const key in invokeCallbacks) {
-        const item = invokeCallbacks[key];
-        if (item.callback === callback && item.name === name) {
-            delete invokeCallbacks[key];
-        }
-    }
-}
-function offKeepAliveApiCallback(name) {
-    UniServiceJSBridge.off('api.' + name);
-}
-function onKeepAliveApiCallback(name) {
-    UniServiceJSBridge.on('api.' + name, (res) => {
-        for (const key in invokeCallbacks) {
-            const opts = invokeCallbacks[key];
-            if (opts.name === name) {
-                opts.callback(res);
-            }
-        }
-    });
-}
-function createKeepAliveApiCallback(name, callback) {
-    return addInvokeCallback(invokeCallbackId++, name, callback, true);
-}
-function getApiCallbacks(args) {
-    const apiCallbacks = {};
-    for (const name in args) {
-        const fn = args[name];
-        if (isFunction(fn)) {
-            apiCallbacks[name] = tryCatch(fn);
-            delete args[name];
-        }
-    }
-    return apiCallbacks;
-}
-function normalizeErrMsg(errMsg, name) {
-    if (!errMsg || errMsg.indexOf(':fail') === -1) {
-        return name + ':ok';
-    }
-    return name + errMsg.substring(errMsg.indexOf(':fail'));
-}
-function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-    if (!isPlainObject(args)) {
-        args = {};
-    }
-    const { success, fail, complete } = getApiCallbacks(args);
-    const hasSuccess = isFunction(success);
-    const hasFail = isFunction(fail);
-    const hasComplete = isFunction(complete);
-    const callbackId = invokeCallbackId++;
-    addInvokeCallback(callbackId, name, (res) => {
-        res = res || {};
-        res.errMsg = normalizeErrMsg(res.errMsg, name);
-        isFunction(beforeAll) && beforeAll(res);
-        if (res.errMsg === name + ':ok') {
-            isFunction(beforeSuccess) && beforeSuccess(res);
-            hasSuccess && success(res);
-        }
-        else {
-            hasFail && fail(res);
-        }
-        hasComplete && complete(res);
-    });
-    return callbackId;
-}
-
 function handlePromise(promise) {
     if (__UNI_FEATURE_PROMISE__) {
         return promise
@@ -260,11 +151,6 @@ function handlePromise(promise) {
     return promise;
 }
 
-const API_TYPE_ON = 0;
-const API_TYPE_OFF = 1;
-const API_TYPE_TASK = 2;
-const API_TYPE_SYNC = 3;
-const API_TYPE_ASYNC = 4;
 function formatApiArgs(args, options) {
     const params = args[0];
     if (!options ||
@@ -277,54 +163,8 @@ function formatApiArgs(args, options) {
     });
     return args;
 }
-function wrapperOnApi(name, fn) {
-    return (callback) => {
-        // 是否是首次调用on,如果是首次，需要初始化onMethod监听
-        const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-        createKeepAliveApiCallback(name, callback);
-        if (isFirstInvokeOnApi) {
-            onKeepAliveApiCallback(name);
-            fn();
-        }
-    };
-}
-function wrapperOffApi(name, fn) {
-    return (callback) => {
-        name = name.replace('off', 'on');
-        removeKeepAliveApiCallback(name, callback);
-        // 是否还存在监听，若已不存在，则移除onMethod监听
-        const hasInvokeOnApi = findInvokeCallbackByName(name);
-        if (!hasInvokeOnApi) {
-            offKeepAliveApiCallback(name);
-            fn();
-        }
-    };
-}
-function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
-}
-function invokeFail(id, name, err) {
-    return invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') });
-}
-function wrapperTaskApi(name, fn, options) {
-    return (args) => {
-        const id = createAsyncApiCallback(name, args, options);
-        return fn(args, {
-            resolve: (res) => invokeSuccess(id, name, res),
-            reject: (err) => invokeFail(id, name, err),
-        });
-    };
-}
 function wrapperSyncApi(fn) {
     return (...args) => fn.apply(null, args);
-}
-function wrapperAsyncApi(name, fn, options) {
-    return (args) => {
-        const id = createAsyncApiCallback(name, args, options);
-        fn(args)
-            .then((res) => invokeSuccess(id, name, res))
-            .catch((err) => invokeFail(id, name, err));
-    };
 }
 function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
@@ -338,21 +178,7 @@ function wrapperApi(fn, name, protocol, options) {
     };
 }
 function defineSyncApi(name, fn, protocol, options) {
-    return defineApi(API_TYPE_SYNC, name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
-}
-function defineApi(type, name, fn, protocol, options) {
-    switch (type) {
-        case API_TYPE_ON:
-            return wrapperApi(wrapperOnApi(name, fn), name, protocol, options);
-        case API_TYPE_OFF:
-            return wrapperApi(wrapperOffApi(name, fn), name, protocol, options);
-        case API_TYPE_TASK:
-            return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options);
-        case API_TYPE_SYNC:
-            return wrapperApi(wrapperSyncApi(fn), name, protocol, options);
-        case API_TYPE_ASYNC:
-            return wrapperApi(wrapperAsyncApi(name, fn, options), name, protocol, options);
-    }
+    return wrapperApi(wrapperSyncApi(fn), name, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
 }
 
 function getBaseSystemInfo() {

@@ -8,7 +8,8 @@ import { navigate } from './utils'
 
 export const redirectTo = defineAsyncApi<typeof uni.redirectTo>(
   API_REDIRECT_TO,
-  ({ url }) => navigate(API_REDIRECT_TO, url),
+  ({ url }, { resolve, reject }) =>
+    navigate(API_REDIRECT_TO, url).then(resolve).catch(reject),
   RedirectToProtocol,
   RedirectToOptions
 )

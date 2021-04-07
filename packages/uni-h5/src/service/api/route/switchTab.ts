@@ -8,7 +8,8 @@ import { navigate } from './utils'
 
 export const switchTab = defineAsyncApi<typeof uni.switchTab>(
   API_SWITCH_TAB,
-  ({ url }) => navigate(API_SWITCH_TAB, url),
+  ({ url }, { resolve, reject }) =>
+    navigate(API_SWITCH_TAB, url).then(resolve).catch(reject),
   SwitchTabProtocol,
   SwitchTabOptions
 )

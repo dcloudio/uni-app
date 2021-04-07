@@ -8,7 +8,8 @@ import { navigate } from './utils'
 
 export const reLaunch = defineAsyncApi<typeof uni.reLaunch>(
   API_RE_LAUNCH,
-  ({ url }) => navigate(API_RE_LAUNCH, url),
+  ({ url }, { resolve, reject }) =>
+    navigate(API_RE_LAUNCH, url).then(resolve).catch(reject),
   ReLaunchProtocol,
   ReLaunchOptions
 )

@@ -11,20 +11,6 @@ import {
   removeKeepAliveApiCallback,
 } from './callback'
 import { promisify } from './promise'
-
-export const API_TYPE_ON = 0
-export const API_TYPE_OFF = 1
-export const API_TYPE_TASK = 2
-export const API_TYPE_SYNC = 3
-export const API_TYPE_ASYNC = 4
-
-type API_TYPES =
-  | typeof API_TYPE_ON
-  | typeof API_TYPE_OFF
-  | typeof API_TYPE_TASK
-  | typeof API_TYPE_SYNC
-  | typeof API_TYPE_ASYNC
-
 interface AsyncMethodOptionLike {
   success?: (...args: any[]) => void
 }
@@ -131,17 +117,8 @@ function wrapperSyncApi(fn: Function) {
   return (...args: any[]) => fn.apply(null, args)
 }
 
-function wrapperAsyncApi(
-  name: string,
-  fn: (args: unknown) => Promise<unknown>,
-  options?: ApiOptions
-) {
-  return (args: Record<string, any>) => {
-    const id = createAsyncApiCallback(name, args, options)
-    fn(args)
-      .then((res) => invokeSuccess(id, name, res))
-      .catch((err) => invokeFail(id, name, err))
-  }
+function wrapperAsyncApi(name: string, fn: Function, options?: ApiOptions) {
+  return wrapperTaskApi(name, fn, options)
 }
 
 function wrapperApi(
@@ -166,10 +143,9 @@ export function defineOnApi<T extends Function>(
   fn: () => void,
   options?: ApiOptions
 ) {
-  return (defineApi(
-    API_TYPE_ON,
+  return (wrapperApi(
+    wrapperOnApi(name, fn),
     name,
-    fn,
     __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
     options
   ) as unknown) as T
@@ -180,10 +156,9 @@ export function defineOffApi<T extends Function>(
   fn: () => void,
   options?: ApiOptions
 ) {
-  return (defineApi(
-    API_TYPE_OFF,
+  return (wrapperApi(
+    wrapperOffApi(name, fn),
     name,
-    fn,
     __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
     options
   ) as unknown) as T
@@ -194,7 +169,7 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   fn: (
     args: Omit<P, 'success' | 'fail' | 'complete'>,
     res: {
-      resolve: (res: AsyncApiRes<P>) => void
+      resolve: (res?: AsyncApiRes<P>) => void
       reject: (err?: string) => void
     }
   ) => ReturnType<T>,
@@ -202,7 +177,12 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   options?: ApiOptions
 ) {
   return (promisify(
-    defineApi(API_TYPE_TASK, name, fn, __DEV__ ? protocol : undefined, options)
+    wrapperApi(
+      wrapperTaskApi(name, fn),
+      name,
+      __DEV__ ? protocol : undefined,
+      options
+    )
   ) as unknown) as T
 }
 
@@ -212,10 +192,9 @@ export function defineSyncApi<T extends Function>(
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
-  return (defineApi(
-    API_TYPE_SYNC,
+  return (wrapperApi(
+    wrapperSyncApi(fn),
     name,
-    fn,
     __DEV__ ? protocol : undefined,
     options
   ) as unknown) as T
@@ -224,38 +203,21 @@ export function defineSyncApi<T extends Function>(
 export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   name: string,
   fn: (
-    args: Omit<P, 'success' | 'fail' | 'complete'>
-  ) => Promise<AsyncApiRes<P> | void>,
+    args: Omit<P, 'success' | 'fail' | 'complete'>,
+    res: {
+      resolve: (res?: AsyncApiRes<P>) => void
+      reject: (err?: string) => void
+    }
+  ) => void,
   protocol?: ApiProtocols,
   options?: ApiOptions
 ) {
   return promisify(
-    defineApi(API_TYPE_ASYNC, name, fn, __DEV__ ? protocol : undefined, options)
+    wrapperApi(
+      wrapperAsyncApi(name, fn as any, options),
+      name,
+      __DEV__ ? protocol : undefined,
+      options
+    )
   ) as AsyncApi<P>
-}
-
-function defineApi(
-  type: API_TYPES,
-  name: string,
-  fn: Function,
-  protocol?: ApiProtocols,
-  options?: ApiOptions
-) {
-  switch (type) {
-    case API_TYPE_ON:
-      return wrapperApi(wrapperOnApi(name, fn), name, protocol, options)
-    case API_TYPE_OFF:
-      return wrapperApi(wrapperOffApi(name, fn), name, protocol, options)
-    case API_TYPE_TASK:
-      return wrapperApi(wrapperTaskApi(name, fn), name, protocol, options)
-    case API_TYPE_SYNC:
-      return wrapperApi(wrapperSyncApi(fn), name, protocol, options)
-    case API_TYPE_ASYNC:
-      return wrapperApi(
-        wrapperAsyncApi(name, fn as any, options),
-        name,
-        protocol,
-        options
-      )
-  }
 }
