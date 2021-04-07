@@ -1,7 +1,27 @@
-import { extend } from '@vue/shared'
-
+import { ComponentPublicInstance } from 'vue'
+import { extend, isFunction } from '@vue/shared'
+import {
+  addIntersectionObserver,
+  removeIntersectionObserver,
+} from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
 import { getCurrentPageVm } from '../../helpers/utils'
+import { RequestComponentObserverOptions } from '../../helpers/requestComponentObserver'
+
+export interface AddIntersectionObserverArgs {
+  reqId: number
+  component: ComponentPublicInstance
+  options: ServiceIntersectionObserverOptions
+  callback: WechatMiniprogram.IntersectionObserverObserveCallback
+}
+
+export interface RemoveIntersectionObserverArgs {
+  reqId: number
+  component: ComponentPublicInstance
+}
+
+type ServiceIntersectionObserverOptions = UniApp.CreateIntersectionObserverOptions &
+  RequestComponentObserverOptions
 
 const defaultOptions = {
   thresholds: [0],
@@ -9,122 +29,79 @@ const defaultOptions = {
   observeAll: false,
 }
 
-interface Margins {
-  bottom?: number
-  left?: number
-  right?: number
-  top?: number
-}
-
-interface RelativeInfo {
-  selector: string
-  margins: Margins
-}
-
-type ObserveResultCallback = (result: UniApp.ObserveResult) => void
-
-interface requestComponentObserver {
-  reqId: number
-  reqEnd: boolean
-  res: UniApp.ObserveResult
-}
+const MARGINS = ['top', 'right', 'bottom', 'left']
 
 let reqComponentObserverId = 1
 
-const reqComponentObserverCallbacks: Record<number, ObserveResultCallback> = {}
-
-export const API_CREATE_INTERSECTION_OBSERVER = 'createIntersectionObserver'
-
-UniServiceJSBridge.subscribe(
-  'requestComponentObserver',
-  ({ reqId, reqEnd, res }: requestComponentObserver) => {
-    const callback = reqComponentObserverCallbacks[reqId]
-    if (callback) {
-      if (reqEnd) {
-        return delete reqComponentObserverCallbacks[reqId]
-      }
-      callback(res)
-    }
-  }
-)
-
+function normalizeRootMargin(margins: WechatMiniprogram.Margins = {}) {
+  return MARGINS.map(
+    (name) =>
+      `${Number(margins[name as keyof WechatMiniprogram.Margins]) || 0}px`
+  ).join(' ')
+}
 class ServiceIntersectionObserver {
   private _reqId?: number
-  private _options: UniApp.CreateIntersectionObserverOptions
-  private _component: any
   private _pageId: number
-
-  private _relativeInfo: RelativeInfo[]
-
+  private _component: ComponentPublicInstance
+  private _options: ServiceIntersectionObserverOptions
   constructor(
-    component: any,
+    component: ComponentPublicInstance,
     options: UniApp.CreateIntersectionObserverOptions
   ) {
-    this._pageId = component.$page.id
-    this._component = component._$id || component // app-plus 平台传输_$id
-    this._options = extend({}, defaultOptions, options || {})
-    this._relativeInfo = []
+    this._pageId = component.$page && component.$page.id
+    this._component = component
+    this._options = extend({}, defaultOptions, options)
   }
 
-  relativeTo(selector: string, margins: Margins) {
-    if (this._reqId) {
-      throw new Error(
-        'Relative nodes cannot be added after "observe" call in IntersectionObserver'
-      )
-    }
-    this._relativeInfo.push({
-      selector,
-      margins,
-    })
+  relativeTo(selector: string, margins?: WechatMiniprogram.Margins) {
+    this._options.relativeToSelector = selector
+    this._options.rootMargin = normalizeRootMargin(margins)
     return this
   }
 
-  relativeToViewport(margins: Margins) {
-    return this.relativeTo((null as unknown) as string, margins)
+  relativeToViewport(margins?: WechatMiniprogram.Margins) {
+    this._options.relativeToSelector = undefined
+    this._options.rootMargin = normalizeRootMargin(margins)
+    return this
   }
 
-  observe(selector: string, callback: ObserveResultCallback) {
-    if (typeof callback !== 'function') {
+  observe(
+    selector: string,
+    callback: WechatMiniprogram.IntersectionObserverObserveCallback
+  ) {
+    if (!isFunction(callback)) {
       return
     }
-    if (this._reqId) {
-      throw new Error(
-        '"observe" call can be only called once in IntersectionObserver'
-      )
-    }
-
+    this._options.selector = selector
     this._reqId = reqComponentObserverId++
-    reqComponentObserverCallbacks[this._reqId] = callback
-
-    UniServiceJSBridge.publishHandler(
-      'addIntersectionObserver',
+    addIntersectionObserver(
       {
-        selector,
         reqId: this._reqId,
         component: this._component,
         options: this._options,
-        relativeInfo: this._relativeInfo,
+        callback,
       },
       this._pageId
     )
   }
 
   disconnect() {
-    UniServiceJSBridge.publishHandler(
-      'removeIntersectionObserver',
-      {
-        reqId: this._reqId,
-      },
-      this._pageId
-    )
+    this._reqId &&
+      removeIntersectionObserver(
+        { reqId: this._reqId, component: this._component },
+        this._pageId
+      )
   }
 }
-
 export const createIntersectionObserver = defineSyncApi<
   typeof uni.createIntersectionObserver
->(API_CREATE_INTERSECTION_OBSERVER, (context?, options?) => {
-  if (!context) {
-    context = getCurrentPageVm()
+>('createIntersectionObserver', (context?, options?) => {
+  if (context && !context.$page) {
+    options = context
+    context = null
   }
-  return new ServiceIntersectionObserver(context, options)
+  if (context) {
+    return new ServiceIntersectionObserver(context, options)
+  }
+  return new ServiceIntersectionObserver(getCurrentPageVm(), options)
 })

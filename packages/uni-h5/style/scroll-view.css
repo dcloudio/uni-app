@@ -1,0 +1,90 @@
+uni-scroll-view {
+  display: block;
+  width: 100%;
+}
+
+uni-scroll-view[hidden] {
+  display: none;
+}
+
+.uni-scroll-view {
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
+  height: 100%;
+  max-height: inherit;
+}
+
+.uni-scroll-view-content {
+  width: 100%;
+  height: 100%;
+}
+
+.uni-scroll-view-refresher {
+  position: relative;
+  overflow: hidden;
+}
+
+.uni-scroll-view-refresh {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-scroll-view-refresh-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),
+    0 1px 4px rgba(0, 0, 0, 0.117647);
+}
+
+.uni-scroll-view-refresh__spinner {
+  transform-origin: center center;
+  animation: uni-scroll-view-refresh-rotate 2s linear infinite;
+}
+
+.uni-scroll-view-refresh__spinner > circle {
+  stroke: currentColor;
+  stroke-linecap: round;
+  animation: uni-scroll-view-refresh-dash 2s linear infinite;
+}
+
+@keyframes uni-scroll-view-refresh-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes uni-scroll-view-refresh-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}

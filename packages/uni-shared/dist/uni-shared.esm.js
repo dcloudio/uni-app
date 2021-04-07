@@ -1,22 +1,11 @@
-import { isPlainObject, isHTMLTag, isSVGTag } from '@vue/shared';
+import { isHTMLTag, isSVGTag, isPlainObject } from '@vue/shared';
 
-const NAVBAR_HEIGHT = 44;
-const TABBAR_HEIGHT = 50;
-const RESPONSIVE_MIN_WIDTH = 768;
-const COMPONENT_NAME_PREFIX = 'VUni';
-const PRIMARY_COLOR = '#007aff';
-
-function debounce(fn, delay) {
-    let timeout;
-    const newFn = function () {
-        clearTimeout(timeout);
-        const timerFn = () => fn.apply(this, arguments);
-        timeout = setTimeout(timerFn, delay);
-    };
-    newFn.cancel = function () {
-        clearTimeout(timeout);
-    };
-    return newFn;
+function passive(passive) {
+    return { passive };
+}
+function normalizeDataset(el) {
+    // TODO
+    return JSON.parse(JSON.stringify(el.dataset || {}));
 }
 
 function plusReady(callback) {
@@ -27,26 +16,6 @@ function plusReady(callback) {
         return callback();
     }
     document.addEventListener('plusready', callback);
-}
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
 }
 
 const BUILT_IN_TAGS = [
@@ -124,4 +93,43 @@ function isNativeTag(tag) {
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, plusReady, stringifyQuery };
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+
+function debounce(fn, delay) {
+    let timeout;
+    const newFn = function () {
+        clearTimeout(timeout);
+        const timerFn = () => fn.apply(this, arguments);
+        timeout = setTimeout(timerFn, delay);
+    };
+    newFn.cancel = function () {
+        clearTimeout(timeout);
+    };
+    return newFn;
+}
+
+const NAVBAR_HEIGHT = 44;
+const TABBAR_HEIGHT = 50;
+const RESPONSIVE_MIN_WIDTH = 768;
+const COMPONENT_NAME_PREFIX = 'VUni';
+const PRIMARY_COLOR = '#007aff';
+
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, passive, plusReady, stringifyQuery };

@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 
-import { getWindowOffset } from '../helpers/getWindowOffset'
+import { getWindowOffset } from '../../helpers/getWindowOffset'
 
 export function findUniTarget($event: Event, $el: HTMLElement): HTMLElement {
   let target = $event.target as HTMLElement

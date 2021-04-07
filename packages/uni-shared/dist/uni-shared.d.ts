@@ -20,6 +20,12 @@ export declare function isNativeTag(tag: string): boolean;
 
 export declare const NAVBAR_HEIGHT = 44;
 
+export declare function normalizeDataset(el: Element): any;
+
+export declare function passive(passive: boolean): {
+    passive: boolean;
+};
+
 export declare function plusReady(callback: () => void): void;
 
 export declare const PRIMARY_COLOR = "#007aff";

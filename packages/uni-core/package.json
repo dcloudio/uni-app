@@ -1,13 +1,13 @@
 {
   "private": true,
-  "name": "@dcloudio/uni-view",
+  "name": "@dcloudio/uni-core",
   "version": "3.0.0",
-  "description": "@dcloudio/uni-view",
+  "description": "@dcloudio/uni-core",
   "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
-    "directory": "packages/uni-view"
+    "directory": "packages/uni-core"
   },
   "license": "Apache-2.0",
   "bugs": {

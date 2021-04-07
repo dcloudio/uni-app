@@ -41,7 +41,8 @@
   },
   "devDependencies": {
     "@types/mime": "^2.0.3",
-    "@types/sass": "^1.16.0"
+    "@types/sass": "^1.16.0",
+    "@vue/compiler-sfc": "^3.0.11"
   },
   "uni-app": {
     "compilerVersion": "3.1.2"

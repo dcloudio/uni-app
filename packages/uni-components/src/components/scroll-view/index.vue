@@ -19,10 +19,7 @@
             }"
             class="uni-scroll-view-refresher"
           >
-            <div
-              v-if="refresherDefaultStyle !== 'none'"
-              class="uni-scroll-view-refresh"
-            >
+            <div v-if="refresherDefaultStyle !== 'none'" class="uni-scroll-view-refresh">
               <div class="uni-scroll-view-refresh-inner">
                 <svg
                   v-if="refreshState == 'pulling'"
@@ -65,10 +62,12 @@
   </uni-scroll-view>
 </template>
 <script>
+import { passive } from '@dcloudio/uni-shared'
+
 import scroller from '../../mixins/scroller/index'
 import { disableScrollBounce } from '../../helpers/disable-scroll-bounce'
 
-const passiveOptions = { passive: true }
+const passiveOptions = passive(true)
 // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
 
@@ -185,14 +184,14 @@ export default {
     this._scrollTopChanged(this.scrollTopNumber)
     this._scrollLeftChanged(this.scrollLeftNumber)
     this._scrollIntoViewChanged(this.scrollIntoView)
-    this.__handleScroll = function (e) {
+    this.__handleScroll = function(e) {
       event.preventDefault()
       event.stopPropagation()
       self._handleScroll.bind(self, event)()
     }
     var touchStart = null
     var needStop = null
-    this.__handleTouchMove = function (event) {
+    this.__handleTouchMove = function(event) {
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
       var main = self.$refs.main
@@ -255,7 +254,7 @@ export default {
       }
     }
 
-    this.__handleTouchStart = function (event) {
+    this.__handleTouchStart = function(event) {
       if (event.touches.length === 1) {
         disableScrollBounce({
           disable: true,
@@ -274,7 +273,7 @@ export default {
         }
       }
     }
-    this.__handleTouchEnd = function (event) {
+    this.__handleTouchEnd = function(event) {
       touchStart = null
       disableScrollBounce({
         disable: false,
@@ -296,9 +295,7 @@ export default {
       this.__handleTouchMove,
       passiveOptions
     )
-    this.$refs.main.addEventListener('scroll', this.__handleScroll, {
-      passive: false,
-    })
+    this.$refs.main.addEventListener('scroll', this.__handleScroll, passive(false))
     this.$refs.main.addEventListener(
       'touchend',
       this.__handleTouchEnd,
@@ -321,9 +318,7 @@ export default {
       this.__handleTouchMove,
       passiveOptions
     )
-    this.$refs.main.removeEventListener('scroll', this.__handleScroll, {
-      passive: false,
-    })
+    this.$refs.main.removeEventListener('scroll', this.__handleScroll, passive(false))
     this.$refs.main.removeEventListener(
       'touchend',
       this.__handleTouchEnd,
@@ -331,13 +326,13 @@ export default {
     )
   },
   methods: {
-    scrollTo: function (t, n) {
+    scrollTo: function(t, n) {
       var i = this.$refs.main
       t < 0
         ? (t = 0)
         : n === 'x' && t > i.scrollWidth - i.offsetWidth
-        ? (t = i.scrollWidth - i.offsetWidth)
-        : n === 'y' &&
+          ? (t = i.scrollWidth - i.offsetWidth)
+          : n === 'y' &&
           t > i.scrollHeight - i.offsetHeight &&
           (t = i.scrollHeight - i.offsetHeight)
       var r = 0
@@ -381,7 +376,7 @@ export default {
         this.$refs.content.style.webkitTransform = o
       }
     },
-    _handleTrack: function ($event) {
+    _handleTrack: function($event) {
       if ($event.detail.state === 'start') {
         this._x = $event.detail.x
         this._y = $event.detail.y
@@ -394,7 +389,7 @@ export default {
       if (this._noBubble === null && this.scrollY) {
         if (
           Math.abs(this._y - $event.detail.y) /
-            Math.abs(this._x - $event.detail.x) >
+          Math.abs(this._x - $event.detail.x) >
           1
         ) {
           this._noBubble = true
@@ -405,7 +400,7 @@ export default {
       if (this._noBubble === null && this.scrollX) {
         if (
           Math.abs(this._x - $event.detail.x) /
-            Math.abs(this._y - $event.detail.y) >
+          Math.abs(this._y - $event.detail.y) >
           1
         ) {
           this._noBubble = true
@@ -419,7 +414,7 @@ export default {
         $event.stopPropagation()
       }
     },
-    _handleScroll: function ($event) {
+    _handleScroll: function($event) {
       if (!($event.timeStamp - this._lastScrollTime < 20)) {
         this._lastScrollTime = $event.timeStamp
         const target = $event.target
@@ -444,9 +439,9 @@ export default {
           }
           if (
             target.scrollTop +
-              target.offsetHeight +
-              this.lowerThresholdNumber >=
-              target.scrollHeight &&
+            target.offsetHeight +
+            this.lowerThresholdNumber >=
+            target.scrollHeight &&
             this.lastScrollTop - target.scrollTop < 0 &&
             $event.timeStamp - this.lastScrollToLowerTime > 200
           ) {
@@ -469,9 +464,9 @@ export default {
           }
           if (
             target.scrollLeft +
-              target.offsetWidth +
-              this.lowerThresholdNumber >=
-              target.scrollWidth &&
+            target.offsetWidth +
+            this.lowerThresholdNumber >=
+            target.scrollWidth &&
             this.lastScrollLeft - target.scrollLeft < 0 &&
             $event.timeStamp - this.lastScrollToLowerTime > 200
           ) {
@@ -485,7 +480,7 @@ export default {
         this.lastScrollLeft = target.scrollLeft
       }
     },
-    _scrollTopChanged: function (val) {
+    _scrollTopChanged: function(val) {
       if (this.scrollY) {
         if (this._innerSetScrollTop) {
           this._innerSetScrollTop = false
@@ -498,7 +493,7 @@ export default {
         }
       }
     },
-    _scrollLeftChanged: function (val) {
+    _scrollLeftChanged: function(val) {
       if (this.scrollX) {
         if (this._innerSetScrollLeft) {
           this._innerSetScrollLeft = false
@@ -511,7 +506,7 @@ export default {
         }
       }
     },
-    _scrollIntoViewChanged: function (val) {
+    _scrollIntoViewChanged: function(val) {
       if (val) {
         if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
           console.group('scroll-into-view="' + val + '" 有误')
@@ -546,7 +541,7 @@ export default {
         }
       }
     },
-    _transitionEnd: function (val, type) {
+    _transitionEnd: function(val, type) {
       this.$refs.content.style.transition = ''
       this.$refs.content.style.webkitTransition = ''
       this.$refs.content.style.transform = ''
@@ -591,95 +586,3 @@ export default {
   },
 }
 </script>
-<style>
-uni-scroll-view {
-  display: block;
-  width: 100%;
-}
-
-uni-scroll-view[hidden] {
-  display: none;
-}
-
-.uni-scroll-view {
-  position: relative;
-  -webkit-overflow-scrolling: touch;
-  width: 100%;
-  /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
-  height: 100%;
-  max-height: inherit;
-}
-
-.uni-scroll-view-content {
-  width: 100%;
-  height: 100%;
-}
-
-.uni-scroll-view-refresher {
-  position: relative;
-  overflow: hidden;
-}
-
-.uni-scroll-view-refresh {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.uni-scroll-view-refresh-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),
-    0 1px 4px rgba(0, 0, 0, 0.117647);
-}
-
-.uni-scroll-view-refresh__spinner {
-  transform-origin: center center;
-  animation: uni-scroll-view-refresh-rotate 2s linear infinite;
-}
-
-.uni-scroll-view-refresh__spinner > circle {
-  stroke: currentColor;
-  stroke-linecap: round;
-  animation: uni-scroll-view-refresh-dash 2s linear infinite;
-}
-
-@keyframes uni-scroll-view-refresh-rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes uni-scroll-view-refresh-dash {
-  0% {
-    stroke-dasharray: 1, 200;
-    stroke-dashoffset: 0;
-  }
-
-  50% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -35px;
-  }
-
-  100% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -124px;
-  }
-}
-</style>

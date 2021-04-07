@@ -27,8 +27,8 @@ export { initMocks, initComponentInstance } from './runtime/componentInstance'
 export { handleEvent } from './runtime/componentEvents'
 export { $createComponent, $destroyComponent } from './runtime/component'
 export {
-  initVueIds,
   initRefs,
+  initVueIds,
   initWxsCallMethods,
   findVmByVueId,
 } from './runtime/util'

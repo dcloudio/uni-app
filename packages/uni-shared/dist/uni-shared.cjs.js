@@ -4,23 +4,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
-const NAVBAR_HEIGHT = 44;
-const TABBAR_HEIGHT = 50;
-const RESPONSIVE_MIN_WIDTH = 768;
-const COMPONENT_NAME_PREFIX = 'VUni';
-const PRIMARY_COLOR = '#007aff';
-
-function debounce(fn, delay) {
-    let timeout;
-    const newFn = function () {
-        clearTimeout(timeout);
-        const timerFn = () => fn.apply(this, arguments);
-        timeout = setTimeout(timerFn, delay);
-    };
-    newFn.cancel = function () {
-        clearTimeout(timeout);
-    };
-    return newFn;
+function passive(passive) {
+    return { passive };
+}
+function normalizeDataset(el) {
+    // TODO
+    return JSON.parse(JSON.stringify(el.dataset || {}));
 }
 
 function plusReady(callback) {
@@ -31,26 +20,6 @@ function plusReady(callback) {
         return callback();
     }
     document.addEventListener('plusready', callback);
-}
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (shared.isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
 }
 
 const BUILT_IN_TAGS = [
@@ -128,6 +97,45 @@ function isNativeTag(tag) {
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (shared.isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+
+function debounce(fn, delay) {
+    let timeout;
+    const newFn = function () {
+        clearTimeout(timeout);
+        const timerFn = () => fn.apply(this, arguments);
+        timeout = setTimeout(timerFn, delay);
+    };
+    newFn.cancel = function () {
+        clearTimeout(timeout);
+    };
+    return newFn;
+}
+
+const NAVBAR_HEIGHT = 44;
+const TABBAR_HEIGHT = 50;
+const RESPONSIVE_MIN_WIDTH = 768;
+const COMPONENT_NAME_PREFIX = 'VUni';
+const PRIMARY_COLOR = '#007aff';
+
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
@@ -141,5 +149,7 @@ exports.debounce = debounce;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
 exports.isNativeTag = isNativeTag;
+exports.normalizeDataset = normalizeDataset;
+exports.passive = passive;
 exports.plusReady = plusReady;
 exports.stringifyQuery = stringifyQuery;

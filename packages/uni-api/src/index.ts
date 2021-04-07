@@ -38,3 +38,4 @@ export { getCurrentPageVm } from './helpers/utils'
 
 export { handlePromise } from './helpers/api/promise'
 export { invokeApi, wrapperReturnValue } from './helpers/interceptor'
+export { requestComponentObserver } from './helpers/requestComponentObserver'

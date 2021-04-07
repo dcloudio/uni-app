@@ -1,4 +1,9 @@
+import { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
+
+export function findElem(vm: ComponentPublicInstance) {
+  return vm.$el
+}
 
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/

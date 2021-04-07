@@ -145,11 +145,11 @@ function resolveManifestFeature(
   options: VitePluginUniResolvedOptions
 ): ManifestFeatures {
   const features: ManifestFeatures = {
-    wx: true,
-    wxs: true, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
-    promise: false, // 是否启用旧版本的 promise 支持（即返回[err,res]的格式）
-    longpress: true, // 是否启用longpress
-    routerMode: '"hash"', // 启用的 router 类型（uni-h5/src/framework/plugin/router）
+    wx: false,
+    wxs: true,
+    promise: false,
+    longpress: true,
+    routerMode: '"hash"',
   }
   const manifest = parse(
     fs.readFileSync(path.join(options.inputDir, 'manifest.json'), 'utf8')

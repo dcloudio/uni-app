@@ -1,8 +1,5 @@
 <template>
-  <uni-video
-    :id="id"
-    v-on="$listeners"
-  >
+  <uni-video :id="id" v-on="$listeners">
     <div
       ref="container"
       class="uni-video-container"
@@ -10,11 +7,11 @@
       @touchend="touchend"
       @touchmove="touchmove"
       @fullscreenchange.stop="onFullscreenChange"
-      @webkitfullscreenchange.stop="onFullscreenChange($event,true)"
+      @webkitfullscreenchange.stop="onFullscreenChange($event, true)"
     >
       <video
         ref="video"
-        :style="{objectFit:objectFit}"
+        :style="{ objectFit: objectFit }"
         :muted="muted"
         :loop="loop"
         :src="srcSync"
@@ -39,85 +36,49 @@
         @webkitendfullscreen="emitFullscreenChange(false)"
         @x5videoexitfullscreen="emitFullscreenChange(false)"
       />
-      <div
-        v-show="controlsShow"
-        class="uni-video-bar uni-video-bar-full"
-        @click.stop
-      >
+      <div v-show="controlsShow" class="uni-video-bar uni-video-bar-full" @click.stop>
         <div class="uni-video-controls">
           <div
             v-show="showPlayBtn"
-            :class="{'uni-video-control-button-play':!playing,'uni-video-control-button-pause':playing}"
+            :class="{ 'uni-video-control-button-play': !playing, 'uni-video-control-button-pause': playing }"
             class="uni-video-control-button"
             @click.stop="trigger"
           />
-          <div class="uni-video-current-time">
-            {{ currentTime|time }}
-          </div>
+          <div class="uni-video-current-time">{{ currentTime | time }}</div>
           <div
             ref="progress"
             class="uni-video-progress-container"
             @click.stop="clickProgress($event)"
           >
             <div class="uni-video-progress">
-              <div
-                :style="{width:buffered+'%'}"
-                class="uni-video-progress-buffered"
-              />
-              <div
-                ref="ball"
-                :style="{left:progress+'%'}"
-                class="uni-video-ball"
-              >
+              <div :style="{ width: buffered + '%' }" class="uni-video-progress-buffered" />
+              <div ref="ball" :style="{ left: progress + '%' }" class="uni-video-ball">
                 <div class="uni-video-inner" />
               </div>
             </div>
           </div>
-          <div class="uni-video-duration">
-            {{ (duration||durationTime)|time }}
-          </div>
+          <div class="uni-video-duration">{{ (duration || durationTime) | time }}</div>
         </div>
         <div
           v-if="danmuBtn"
-          :class="{'uni-video-danmu-button-active':enableDanmuSync}"
+          :class="{ 'uni-video-danmu-button-active': enableDanmuSync }"
           class="uni-video-danmu-button"
           @click.stop="triggerDanmu"
-        >
-          {{ $$t("uni.video.danmu") }}
-        </div>
+        >{{ $$t("uni.video.danmu") }}</div>
         <div
           v-show="showFullscreenBtn"
-          :class="{'uni-video-type-fullscreen':fullscreen}"
+          :class="{ 'uni-video-type-fullscreen': fullscreen }"
           class="uni-video-fullscreen"
           @click.stop="triggerFullscreen(!fullscreen)"
         />
       </div>
-      <div
-        v-show="start&&enableDanmuSync"
-        ref="danmu"
-        style="z-index: 0;"
-        class="uni-video-danmu"
-      />
-      <div
-        v-if="centerPlayBtnShow"
-        class="uni-video-cover"
-        @click.stop
-      >
-        <div
-          class="uni-video-cover-play-button"
-          @click.stop="play"
-        />
-        <p class="uni-video-cover-duration">
-          {{ (duration||durationTime)|time }}
-        </p>
+      <div v-show="start && enableDanmuSync" ref="danmu" style="z-index: 0;" class="uni-video-danmu" />
+      <div v-if="centerPlayBtnShow" class="uni-video-cover" @click.stop>
+        <div class="uni-video-cover-play-button" @click.stop="play" />
+        <p class="uni-video-cover-duration">{{ (duration || durationTime) | time }}</p>
       </div>
-      <div
-        :class="{'uni-video-toast-volume':gestureType==='volume'}"
-        class="uni-video-toast"
-      >
-        <div class="uni-video-toast-title">
-          {{ $$t("uni.video.volume") }}
-        </div>
+      <div :class="{ 'uni-video-toast-volume': gestureType === 'volume' }" class="uni-video-toast">
+        <div class="uni-video-toast-title">{{ $$t("uni.video.volume") }}</div>
         <svg
           class="uni-video-toast-icon"
           width="200px"
@@ -131,10 +92,7 @@
           />
         </svg>
         <div class="uni-video-toast-value">
-          <div
-            :style="{width:volumeNew*100+'%'}"
-            class="uni-video-toast-value-content"
-          >
+          <div :style="{ width: volumeNew * 100 + '%' }" class="uni-video-toast-value-content">
             <div class="uni-video-toast-volume-grids">
               <div
                 v-for="(item,index) in 10"
@@ -145,13 +103,8 @@
           </div>
         </div>
       </div>
-      <div
-        :class="{'uni-video-toast-progress':gestureType=='progress'}"
-        class="uni-video-toast"
-      >
-        <div class="uni-video-toast-title">
-          {{ currentTimeNew|time }} / {{ durationTime|time }}
-        </div>
+      <div :class="{ 'uni-video-toast-progress': gestureType == 'progress' }" class="uni-video-toast">
+        <div class="uni-video-toast-title">{{ currentTimeNew | time }} / {{ durationTime | time }}</div>
       </div>
       <div class="uni-video-slots">
         <slot />
@@ -160,20 +113,19 @@
   </uni-video>
 </template>
 <script>
+
+import {
+  passive
+} from '@dcloudio/uni-shared'
 import {
   subscriber,
   interact
 } from 'uni-mixins'
 import {
-  supportsPassive
-} from 'uni-shared'
-import {
   i18nMixin
 } from 'uni-core/helpers/i18n'
 
-const passiveOptions = supportsPassive ? {
-  passive: false
-} : false
+const passiveOptions = passive(false)
 
 const GestureType = {
   NONE: 'none',
@@ -185,7 +137,7 @@ const GestureType = {
 export default {
   name: 'Video',
   filters: {
-    time (val) {
+    time(val) {
       val = val > 0 && val < Infinity ? val : 0
       let h = Math.floor(val / 3600)
       let m = Math.floor(val % 3600 / 60)
@@ -220,7 +172,7 @@ export default {
     },
     danmuList: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     },
@@ -285,7 +237,7 @@ export default {
       default: true
     }
   },
-  data () {
+  data() {
     return {
       start: false,
       playing: false,
@@ -311,41 +263,41 @@ export default {
     }
   },
   computed: {
-    centerPlayBtnShow () {
+    centerPlayBtnShow() {
       return this.showCenterPlayBtn && !this.start
     },
-    controlsShow () {
+    controlsShow() {
       return !this.centerPlayBtnShow && this.controls && this.controlsVisible
     },
-    autoHideContorls () {
+    autoHideContorls() {
       return this.controlsShow && this.playing && !this.controlsTouching
     },
-    srcSync () {
+    srcSync() {
       return this.$getRealPath(this.src)
     }
   },
   watch: {
-    enableDanmuSync (val) {
+    enableDanmuSync(val) {
       this.$emit('update:enableDanmu', val)
     },
-    autoHideContorls (val) {
+    autoHideContorls(val) {
       if (val) {
         this.autoHideStart()
       } else {
         this.autoHideEnd()
       }
     },
-    srcSync (val) {
+    srcSync(val) {
       this.playing = false
       this.currentTime = 0
     },
-    currentTime () {
+    currentTime() {
       this.updateProgress()
     },
-    duration () {
+    duration() {
       this.updateProgress()
     },
-    buffered (buffered) {
+    buffered(buffered) {
       if (buffered !== 0) {
         this.$trigger('progress', {}, {
           buffered
@@ -353,7 +305,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.otherData = {
       danmuList: [],
       danmuIndex: {
@@ -363,11 +315,11 @@ export default {
       hideTiming: null
     }
     const danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []))
-    danmuList.sort(function (a, b) {
+    danmuList.sort(function(a, b) {
       return (a.time || 0) - (a.time || 0)
     })
   },
-  mounted () {
+  mounted() {
     const self = this
     let originX
     let originY
@@ -385,7 +337,7 @@ export default {
       ball.addEventListener('touchmove', touchmove, passiveOptions)
     })
 
-    function touchmove (event) {
+    function touchmove(event) {
       const toucher = event.targetTouches[0]
       const pageX = toucher.pageX
       const pageY = toucher.pageY
@@ -406,7 +358,7 @@ export default {
       event.stopPropagation()
     }
 
-    function touchend (event) {
+    function touchend(event) {
       self.controlsTouching = false
       if (self.touching) {
         ball.removeEventListener('touchmove', touchmove, passiveOptions)
@@ -421,12 +373,12 @@ export default {
     ball.addEventListener('touchend', touchend)
     ball.addEventListener('touchcancel', touchend)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.triggerFullscreen(false)
     clearTimeout(this.otherData.hideTiming)
   },
   methods: {
-    _handleSubscribe ({
+    _handleSubscribe({
       type,
       data = {}
     }) {
@@ -447,27 +399,27 @@ export default {
         this[type](options)
       }
     },
-    trigger () {
+    trigger() {
       if (this.playing) {
         this.$refs.video.pause()
       } else {
         this.$refs.video.play()
       }
     },
-    play () {
+    play() {
       this.start = true
       this.$refs.video.play()
     },
-    pause () {
+    pause() {
       this.$refs.video.pause()
     },
-    seek (position) {
+    seek(position) {
       position = Number(position)
       if (typeof position === 'number' && !isNaN(position)) {
         this.$refs.video.currentTime = position
       }
     },
-    clickProgress (event) {
+    clickProgress(event) {
       const $progress = this.$refs.progress
       let element = event.target
       let x = event.offsetX
@@ -482,25 +434,25 @@ export default {
         this.seek(this.$refs.video.duration * progress)
       }
     },
-    triggerDanmu () {
+    triggerDanmu() {
       this.enableDanmuSync = !this.enableDanmuSync
     },
-    playDanmu (danmu) {
+    playDanmu(danmu) {
       const p = document.createElement('p')
       p.className = 'uni-video-danmu-item'
       p.innerText = danmu.text
       let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`
       p.setAttribute('style', style)
       this.$refs.danmu.appendChild(p)
-      setTimeout(function () {
+      setTimeout(function() {
         style += 'left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);'
         p.setAttribute('style', style)
-        setTimeout(function () {
+        setTimeout(function() {
           p.remove()
         }, 4000)
       }, 17)
     },
-    sendDanmu (danmu) {
+    sendDanmu(danmu) {
       const otherData = this.otherData
       otherData.danmuList.splice(otherData.danmuIndex.index + 1, 0, {
         text: String(danmu.text),
@@ -508,10 +460,10 @@ export default {
         time: this.$refs.video.currentTime || 0
       })
     },
-    playbackRate (rate) {
+    playbackRate(rate) {
       this.$refs.video.playbackRate = rate
     },
-    triggerFullscreen (val) {
+    triggerFullscreen(val) {
       const container = this.$refs.container
       const video = this.$refs.video
       let mockFullScreen
@@ -546,29 +498,29 @@ export default {
         this.emitFullscreenChange(val)
       }
     },
-    onFullscreenChange ($event, webkit) {
+    onFullscreenChange($event, webkit) {
       if (webkit && document.fullscreenEnabled) {
         return
       }
       this.emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement))
     },
-    emitFullscreenChange (val) {
+    emitFullscreenChange(val) {
       this.fullscreen = val
       this.$trigger('fullscreenchange', {}, {
         fullScreen: val,
         direction: 'vertical'
       })
     },
-    requestFullScreen () {
+    requestFullScreen() {
       this.triggerFullscreen(true)
     },
-    exitFullScreen () {
+    exitFullScreen() {
       this.triggerFullscreen(false)
     },
-    onDurationChange ({ target }) {
+    onDurationChange({ target }) {
       this.durationTime = target.duration
     },
-    onLoadedMetadata ($event) {
+    onLoadedMetadata($event) {
       const initialTime = Number(this.initialTime) || 0
       const video = $event.target
       if (initialTime > 0) {
@@ -581,34 +533,34 @@ export default {
       })
       this.onProgress($event)
     },
-    onProgress ($event) {
+    onProgress($event) {
       const video = $event.target
       const buffered = video.buffered
       if (buffered.length) {
         this.buffered = buffered.end(buffered.length - 1) / video.duration * 100
       }
     },
-    onWaiting ($event) {
+    onWaiting($event) {
       this.$trigger('waiting', $event, {})
     },
-    onVideoError ($event) {
+    onVideoError($event) {
       this.playing = false
       this.$trigger('error', $event, {})
     },
-    onPlay ($event) {
+    onPlay($event) {
       this.start = true
       this.playing = true
       this.$trigger('play', $event, {})
     },
-    onPause ($event) {
+    onPause($event) {
       this.playing = false
       this.$trigger('pause', $event, {})
     },
-    onEnded ($event) {
+    onEnded($event) {
       this.playing = false
       this.$trigger('ended', $event, {})
     },
-    onTimeUpdate ($event) {
+    onTimeUpdate($event) {
       const video = $event.target
       const otherData = this.otherData
       const currentTime = this.currentTime = video.currentTime
@@ -646,10 +598,10 @@ export default {
         duration: video.duration
       })
     },
-    triggerControls () {
+    triggerControls() {
       this.controlsVisible = !this.controlsVisible
     },
-    touchstart (event) {
+    touchstart(event) {
       const toucher = event.targetTouches[0]
       this.touchStartOrigin = {
         x: toucher.pageX,
@@ -659,8 +611,8 @@ export default {
       this.volumeOld = null
       this.currentTimeOld = this.currentTimeNew = 0
     },
-    touchmove (event) {
-      function stop () {
+    touchmove(event) {
+      function stop() {
         event.stopPropagation()
         event.preventDefault()
       }
@@ -705,7 +657,7 @@ export default {
         }
       }
     },
-    touchend (event) {
+    touchend(event) {
       if (this.gestureType !== GestureType.NONE && this.gestureType !== GestureType.STOP) {
         event.stopPropagation()
         event.preventDefault()
@@ -715,7 +667,7 @@ export default {
       }
       this.gestureType = GestureType.NONE
     },
-    changeProgress (x) {
+    changeProgress(x) {
       const duration = this.$refs.video.duration
       let currentTimeNew = x / 600 * duration + this.currentTimeOld
       if (currentTimeNew < 0) {
@@ -725,7 +677,7 @@ export default {
       }
       this.currentTimeNew = currentTimeNew
     },
-    changeVolume (y) {
+    changeVolume(y) {
       const valueOld = this.volumeOld
       let value
       if (typeof valueOld === 'number') {
@@ -739,19 +691,19 @@ export default {
         this.volumeNew = value
       }
     },
-    autoHideStart () {
+    autoHideStart() {
       this.otherData.hideTiming = setTimeout(() => {
         this.controlsVisible = false
       }, 3000)
     },
-    autoHideEnd () {
+    autoHideEnd() {
       const otherData = this.otherData
       if (otherData.hideTiming) {
         clearTimeout(otherData.hideTiming)
         otherData.hideTiming = null
       }
     },
-    updateProgress () {
+    updateProgress() {
       if (!this.touching) {
         this.progress = this.currentTime / this.durationTime * 100
       }
