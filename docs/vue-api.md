@@ -66,6 +66,25 @@
 
 
 
+## 生命周期钩子
+
+
+|生命周期钩子	|描述	|H5	|App端|微信小程序	|说明				|
+| --			| --	| --|--		|--			| --				|
+|beforeCreate		| 在实例初始化之后被调用 [详情](https://cn.vuejs.org/v2/api/#beforeCreate)	|√	|√		| √			|	|
+|created	| 在实例创建完成后被立即调用 [详情](https://cn.vuejs.org/v2/api/#created)	|√	| √		| √			|	|
+|beforeMount		| 在挂载开始之前被调用 [详情](https://cn.vuejs.org/v2/api/#beforeMount)|√	| √|√	|		|
+|mounted	| 挂载到实例上去之后调用 [详情](https://cn.vuejs.org/v2/api/#mounted) 注意：此处并不能确定子组件被全部挂载，如果需要子组件完全挂载之后在执行操作可以使用$nextTick	[详情](https://cn.vuejs.org/v2/api/#Vue-nextTick)	|√	| √		| √	| |
+|beforeUpdate	| 数据更新时调用，发生在虚拟 DOM 打补丁之前 [详情](https://cn.vuejs.org/v2/api/#beforeUpdate)|√	|√		| √			|	|
+|updated		| 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子 [详情](https://cn.vuejs.org/v2/api/#updated)|√	|√		| √		|	|
+|activated	| 被 keep-alive 缓存的组件激活时调用 [详情](https://cn.vuejs.org/v2/api/#activated)	|√	| √		| x	| |
+|deactivated		| 被 keep-alive 缓存的组件停用时调用 [详情](https://cn.vuejs.org/v2/api/#deactivated)	|√	| √		| x		|		|
+|beforeDestroy		| 实例销毁之前调用。在这一步，实例仍然完全可用 [详情](https://cn.vuejs.org/v2/api/#beforeDestroy)	|√	|√		| √		|	|
+|destroyed	| Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁 [详情](https://cn.vuejs.org/v2/api/#destroyed)	|√	| √		| √		|	|
+|errorCaptured	| 当捕获一个来自子孙组件的错误时被调用 [详情](https://cn.vuejs.org/v2/api/#errorCaptured)	|√	| √	| √	|	|
+
+
+
 
 ## 实例属性
 
