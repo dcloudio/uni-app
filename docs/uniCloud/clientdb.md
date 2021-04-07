@@ -1149,8 +1149,13 @@ schema里描述好后，查询就变的特别简单。
 get({
   getTree: {
     limitLevel: 10, // 最大查询层级（不包含当前层级），可以省略默认10级，最大15，最小1
-    startWith: "parent_code==''"  // 第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询
+    startWith: "parent_code=='' || parent_code==null"  // 第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询
   }
+})
+
+// 使用getTree时上述参数可以简写为以下写法
+get({
+  getTree: true
 })
 ```
 

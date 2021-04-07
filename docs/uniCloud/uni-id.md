@@ -89,8 +89,8 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 **uni_modules版**
 
 1. HBuilderX 3.1.0+
-2. 插件市场导入`uni-id`公用模块uni_modules版本，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
-3. 修改公用模块`uni-id`下的`config.json`内所需参数（请参考下面config.json的说明）
+2. 插件市场导入`uni-id`公用模块uni_modules版本，HBuilderX会自动导入依赖的`uni-config-center`，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
+3. 在`uni-config-center`公用模块下创建`uni-id`目录，在创建的uni-id目录下再创建`config.json`文件配置uni-id所需参数（请参考下面config.json的说明）
 4. 在`cloudfunctions/common`下上传`uni-id`模块
 5. 在要使用`uni-id`的云函数右键选择`管理公共模块依赖`添加`uni-id`到云函数
 6. 创建`uni-id-users`、`opendb-verify-codes`集合（opendb-verify-codes是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
