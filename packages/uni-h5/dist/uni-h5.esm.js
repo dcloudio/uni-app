@@ -103,16 +103,16 @@ function initBridge(namespace) {
   const emitter2 = new E();
   return extend(emitter2, {
     subscribe(event2, callback) {
-      return emitter2.on(`${namespace}.${event2}`, callback);
+      emitter2.on(`${namespace}.${event2}`, callback);
     },
     unsubscribe(event2, callback) {
-      return emitter2.off(`${namespace}.${event2}`, callback);
+      emitter2.off(`${namespace}.${event2}`, callback);
     },
     subscribeHandler(event2, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
         console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event2}, ${JSON.stringify(args)}, ${pageId}`);
       }
-      return emitter2.emit(`${namespace}.${event2}`, args, pageId);
+      emitter2.emit(`${namespace}.${event2}`, args, pageId);
     }
   });
 }
@@ -8024,7 +8024,7 @@ const defaultOptions = {
 let reqComponentObserverId = 1;
 const reqComponentObserverCallbacks = {};
 const API_CREATE_INTERSECTION_OBSERVER = "createIntersectionObserver";
-ServiceJSBridge.subscribe("requestComponentObserver", ({reqId, reqEnd, res}) => {
+UniServiceJSBridge.subscribe("requestComponentObserver", ({reqId, reqEnd, res}) => {
   const callback = reqComponentObserverCallbacks[reqId];
   if (callback) {
     if (reqEnd) {

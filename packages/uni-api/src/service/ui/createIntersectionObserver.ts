@@ -1,7 +1,5 @@
 import { extend } from '@vue/shared'
 
-import { ServiceJSBridge } from '@dcloudio/uni-core'
-
 import { defineSyncApi } from '../../helpers/api'
 import { getCurrentPageVm } from '../../helpers/utils'
 
@@ -37,7 +35,7 @@ const reqComponentObserverCallbacks: Record<number, ObserveResultCallback> = {}
 
 export const API_CREATE_INTERSECTION_OBSERVER = 'createIntersectionObserver'
 
-ServiceJSBridge.subscribe(
+UniServiceJSBridge.subscribe(
   'requestComponentObserver',
   ({ reqId, reqEnd, res }: requestComponentObserver) => {
     const callback = reqComponentObserverCallbacks[reqId]

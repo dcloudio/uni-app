@@ -13,7 +13,7 @@ import {
   getScreenWidth,
   getWindowWidth,
   getScreenHeight,
-} from '../../../platform/getBaseSystemInfo'
+} from '../base/getBaseSystemInfo'
 
 /**
  * 获取系统信息-同步
