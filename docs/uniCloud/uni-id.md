@@ -1518,6 +1518,12 @@ exports.main = async function(event,context) {
 - 登录成功之后应持久化存储token、token过期时间，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
 - App端获取code不可直接调用`uni.login`，详细用法可以看下面示例
 
+**APP微信登录详细配置流程**
+
+1. 在manifest.json内配置微信登录用appid
+2. **打包**并**使用**自定义基座（注意一定要在manifest.json填写微信appid后再制作自定义基座），[自定义基座使用说明](https://ask.dcloud.net.cn/article/35115)
+3. 在uni-id的config.json内app-plus对应的微信登录信息内配置appid和appsecret
+
 **参数说明**
 
 | 字段				| 类型	| 必填| 说明																																																														|
