@@ -273,6 +273,10 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state) {
   if (!fallbackNodes || t.isNullLiteral(fallbackNodes)) {
     return slotNode
   }
+  // 支付宝小程序默认插槽为 $default
+  if (state.options.platform.name === 'mp-alipay') {
+    slotName = slotName === 'default' ? '$default' : slotName
+  }
   const prefix = state.options.platform.directive
   return [{
     type: 'block',
