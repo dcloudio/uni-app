@@ -748,7 +748,7 @@ db.collection('book')
 详见：[https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=page](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db?id=page)
 
 
-### 字段过滤@field
+### 字段过滤field@field
 
 查询时可以使用field方法指定返回字段，在`<uni-clientDB>`组件中也支持field属性。不使用field方法时会返回所有字段
 
@@ -792,7 +792,7 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
   .get()
 ```
 
-### 字段别名@alias
+### 字段别名as@alias
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
 
@@ -845,7 +845,7 @@ db.collection('order,book')
 - 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
 - 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
 
-### 字段运算@operator
+### 各种字段运算方法@operator
 
 自`HBuilderX 3.1.0`起，clientDB支持在云端数据库对字段进行一定的操作运算之后再返回，详细可用的方法列表请参考：[数据库运算方法](uniCloud/clientdb.md?id=aggregate-operator)
 
