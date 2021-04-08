@@ -90,7 +90,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 
 1. HBuilderX 3.1.0+
 2. 插件市场导入`uni-id`公用模块uni_modules版本，HBuilderX会自动导入依赖的`uni-config-center`，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
-3. 在`uni-config-center`公用模块下创建`uni-id`目录，在创建的uni-id目录下再创建`config.json`文件配置uni-id所需参数（请参考下面config.json的说明）
+3. 在`uni-config-center`公用模块下创建`uni-id`目录，在创建的uni-id目录下再创建`config.json`文件配置uni-id所需参数（请参考下面config.json的说明），**注意：如果HBuilderX版本低于3.1.8，批量上传云函数及公共模块后需要单独再上传一次uni-id**
 4. 在`cloudfunctions/common`下上传`uni-id`模块
 5. 在要使用`uni-id`的云函数右键选择`管理公共模块依赖`添加`uni-id`到云函数
 6. 创建`uni-id-users`、`opendb-verify-codes`集合（opendb-verify-codes是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
@@ -111,7 +111,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 注意：
 
 - **config.json是一个标准json文件，不支持注释**
-- 如果不希望使用config.json初始化而是想自行传入参数，可以使用`init`方法[uniID.init](/uniCloud/uni-id?id=init)
+- 如果不希望使用config.json初始化而是想自行传入参数（一般不推荐这么做），可以使用`init`方法[uniID.init](/uniCloud/uni-id?id=init)
 
 > 在云函数URL化的场景无法获取客户端平台信息，可以在调用uni-id相关接口之前（推荐在云函数入口）通过修改context.PLATFORM手动传入客户端平台信息
 
@@ -1230,28 +1230,28 @@ exports.main = async function(event,context) {
 
 **参数说明**
 
-| 字段				| 类型	| 必填| 说明																																																	|
-| ---					| ---		| ---	| ---																																																		|
-| access_token			| String| 是	|uni.login登录成功后，返回的`access_token`参数
-| openid				| String| 是	|uni.login登录成功后，返回的`openid`参数			|
-| type				| String| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
-| password		|String	| 否	|密码，type为`register`时生效																																						|
-| inviteCode	|String	| 否	|邀请人的邀请码，type为`register`时生效																																	|
-| myInviteCode|String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
-| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
+| 字段					| 类型		| 必填| 说明																																																	|
+| ---						| ---			| ---	| ---																																																		|
+| access_token	| String	| 是	|uni.login登录成功后，返回的`access_token`参数																													|
+| openid				| String	| 是	|uni.login登录成功后，返回的`openid`参数																																|
+| type					| String	| 否	|指定操作类型，可选值为`login`、`register`，不传此参数时表现为手机号已注册则登录，手机号未注册则进行注册|
+| password			|String		| 否	|密码，type为`register`时生效																																						|
+| inviteCode		|String		| 否	|邀请人的邀请码，type为`register`时生效																																	|
+| myInviteCode	|String		| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																										|
+| needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用													|
 
 **响应参数**
 
 | 字段				| 类型	| 说明																		|
 | ---					| ---		| ---																			|
 | code				| Number| 错误码，0表示成功												|
-| message					| String|详细信息																|
+| message			| String|详细信息																	|
 | uid					| String|用户`uid`																|
 | type				| String|操作类型，`login`为登录、`register`为注册|
-| mobile		| String|登录者手机号							|
-| userInfo		| Object|用户全部信息								|
-| token				| String|登录成功之后返回的`token`信息							|
-| tokenExpired| String|`token`过期时间														|
+| mobile			| String|登录者手机号															|
+| userInfo		| Object|用户全部信息															|
+| token				| String|登录成功之后返回的`token`信息						|
+| tokenExpired| String|`token`过期时间													|
 
 **示例代码**
 
@@ -1277,17 +1277,22 @@ exports.main = async function(event,context) {
 
 **mobileInfo**参数说明
 
-| 字段	| 类型	| 必填| 说明																																			|
-| ---		| ---		| ---	| ---																																				|
-| uid		| String| 是	|用户Id，可以通过checkToken返回																							|
-| mobile| String| 是	|用户手机号																																	|
-| code	| String| 否	|验证码，为兼容旧版逻辑此参数不填写时不会进行验证码校验，而是直接绑定手机号	|
+| 字段				| 类型	| 必填| 说明																																			|
+| ---					| ---		| ---	| ---																																				|
+| uid					| String| 是	|用户Id，可以通过checkToken返回																							|
+| mobile			| String| 否	|用户手机号																																	|
+| code				| String| 否	|验证码，为兼容旧版逻辑此参数不填写时不会进行验证码校验，而是直接绑定手机号	|
+| access_token| String| 否	|uni.login登录成功后，返回的`access_token`参数															|
+| openid			| String| 否	|uni.login登录成功后，返回的`openid`参数																		|
+| type				| String| 否	|通过何种方式绑定手机号，sms（手机号验证码）、univerify（一键登录），默认sms|
+
+type为sms时mobile、code必传，type为univerify时access_token、openid必传
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
+| 字段		| 类型	| 必填| 说明						|
+| ---			| ---		| ---	| ---							|
+| code		| Number| 是	|错误码，0表示成功|
 | message	| String| 是	|详细信息					|
 
 **示例代码**
@@ -2910,7 +2915,7 @@ uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到
 从插件市场导入支持uni_modules的uni-id，会自动安装依赖的uni-config-center到uni_modules内。如果此前并没有使用uni-config-center可以直接将uni-id的config.json移至`uni-config-center/uni-id/config.json`即可（可以参照插件市场的uni-id示例项目）
 
 - uni-id会优先使用uni-config-center内添加的配置
-- 如果批量上传后报“请在公用模块uni-id的config.json或init方法中内添加配置项”，请重新上传一次`uni-config-center`
+- 如果批量上传后报“请在公用模块uni-id的config.json或init方法中内添加配置项”，请重新上传一次`uni-id`
 
 # FAQ
 
