@@ -4,7 +4,7 @@ import Canvas from './canvas/index.vue'
 import Checkbox from './checkbox/index.vue'
 import CheckboxGroup from './checkbox-group/index.vue'
 import Editor from './editor/index.vue'
-import Form from './form/index.vue'
+import Form from './form/index'
 import Icon from './icon/index'
 import Image from './image/index.vue'
 import Input from './input/index.vue'
@@ -26,7 +26,7 @@ import SwiperItem from './swiper-item/index.vue'
 import Switch from './switch/index.vue'
 import Text from './text/index'
 import Textarea from './textarea/index.vue'
-import View from './view/index.vue'
+import View from './view/index'
 export {
   Audio,
   Button,

@@ -1,12 +1,6 @@
 <template>
-  <uni-input
-    @change.stop
-    v-bind="$attrs"
-  >
-    <div
-      ref="wrapper"
-      class="uni-input-wrapper"
-    >
+  <uni-input @change.stop v-bind="$attrs">
+    <div ref="wrapper" class="uni-input-wrapper">
       <div
         v-show="!(composing || valueSync.length)"
         ref="placeholder"
@@ -31,11 +25,13 @@
         @compositionstart="_onComposition"
         @compositionend="_onComposition"
         @keyup.stop="_onKeyup"
-      >
+      />
     </div>
   </uni-input>
 </template>
 <script>
+import { getCurrentInstance } from 'vue'
+import { useFormField } from '../../helpers/useFormField'
 import {
   baseInput
 } from '../../mixins'
@@ -86,7 +82,7 @@ export default {
       default: 'done'
     }
   },
-  data () {
+  data() {
     return {
       composing: false,
       wrapperHeight: 0,
@@ -94,7 +90,7 @@ export default {
     }
   },
   computed: {
-    inputType: function () {
+    inputType: function() {
       let type = ''
       switch (this.type) {
         case 'text':
@@ -113,31 +109,28 @@ export default {
       }
       return this.password ? 'password' : type
     },
-    step () {
+    step() {
       // 处理部分设备中无法输入小数点的问题
       return ~NUMBER_TYPES.indexOf(this.type) ? '0.000000000000000001' : ''
     }
   },
   watch: {
-    focus (val) {
+    focus(val) {
       this.$refs.input && this.$refs.input[val ? 'focus' : 'blur']()
     },
-    maxlength (value) {
+    maxlength(value) {
       const realValue = this.valueSync.slice(0, parseInt(value, 10))
       realValue !== this.valueSync && (this.valueSync = realValue)
     }
   },
-  created () {
-    this.$dispatch('Form', 'uni-form-group-update', {
-      type: 'add',
-      vm: this
-    })
+  setup() {
+    useFormField('name', 'valueSync')
   },
-  mounted () {
+  mounted() {
     if (this.confirmType === 'search') {
       const formElem = document.createElement('form')
       formElem.action = ''
-      formElem.onsubmit = function () {
+      formElem.onsubmit = function() {
         return false
       }
       formElem.className = 'uni-input-form'
@@ -145,32 +138,30 @@ export default {
       this.$refs.wrapper.appendChild(formElem)
     }
 
-    let $vm = this
-    while ($vm) {
-      const scopeId = $vm.$options._scopeId
-      if (scopeId) {
-        this.$refs.placeholder.setAttribute(scopeId, '')
-      }
-      $vm = $vm.$parent
+    const instance = getCurrentInstance()
+    if (instance && instance.vnode.scopeId) {
+      this.$refs.placeholder.setAttribute(instance.vnode.scopeId, '')
     }
+    // let $vm = this
+    // while ($vm) {
+    //   const scopeId = $vm.$options._scopeId
+    //   if (scopeId) {
+    //     this.$refs.placeholder.setAttribute(scopeId, '')
+    //   }
+    //   $vm = $vm.$parent
+    // }
 
     this.initKeyboard(this.$refs.input)
   },
-  beforeDestroy () {
-    this.$dispatch('Form', 'uni-form-group-update', {
-      type: 'remove',
-      vm: this
-    })
-  },
   methods: {
-    _onKeyup ($event) {
+    _onKeyup($event) {
       if ($event.keyCode === 13) {
         this.$trigger('confirm', $event, {
           value: $event.target.value
         })
       }
     },
-    _onInput ($event) {
+    _onInput($event) {
       if (this.composing) {
         return
       }
@@ -201,27 +192,27 @@ export default {
         value: this.valueSync
       })
     },
-    _onFocus ($event) {
+    _onFocus($event) {
       this.$trigger('focus', $event, {
         value: $event.target.value
       })
     },
-    _onBlur ($event) {
+    _onBlur($event) {
       this.$trigger('blur', $event, {
         value: $event.target.value
       })
     },
-    _onComposition ($event) {
+    _onComposition($event) {
       if ($event.type === 'compositionstart') {
         this.composing = true
       } else {
         this.composing = false
       }
     },
-    _resetFormData () {
+    _resetFormData() {
       this.valueSync = ''
     },
-    _getFormData () {
+    _getFormData() {
       return this.name ? {
         value: this.valueSync,
         key: this.name

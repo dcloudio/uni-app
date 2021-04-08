@@ -7,6 +7,7 @@ export function createResolve(
   return {
     alias: {
       '@': options.inputDir,
+      '~@': options.inputDir, // src: url('~@/static/uni.ttf') format('truetype');
       vue: '@dcloudio/uni-h5-vue',
     },
   }

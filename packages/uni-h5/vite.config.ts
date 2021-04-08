@@ -80,10 +80,11 @@ export default defineConfig({
       plugins: [
         replace({
           values: {
-            createOnApi: `/*#__PURE__*/ createOnApi`,
-            createTaskApi: `/*#__PURE__*/ createTaskApi`,
-            createSyncApi: `/*#__PURE__*/ createSyncApi`,
-            createAsyncApi: `/*#__PURE__*/ createAsyncApi`,
+            defineOnApi: `/*#__PURE__*/ defineOnApi`,
+            defineOffApi: `/*#__PURE__*/ defineOffApi`,
+            defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
+            defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
+            defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
           },
           preventAssignment: true,
         }),
