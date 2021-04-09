@@ -1620,11 +1620,63 @@ function initEventChannel$1 () {
   };
 }
 
+function initScopedSlotsParams () {
+  const center = {};
+  const parents = {};
+
+  Vue.prototype.$hasScopedSlotsParams = function (vueId) {
+    const has = center[vueId];
+    if (!has) {
+      parents[vueId] = this;
+      this.$on('hook:destory', () => {
+        delete parents[vueId];
+      });
+    }
+    return has
+  };
+
+  Vue.prototype.$getScopedSlotsParams = function (vueId, name, key) {
+    const data = center[vueId];
+    if (data) {
+      const object = data[name] || {};
+      return key ? object[key] : object
+    } else {
+      parents[vueId] = this;
+      this.$on('hook:destory', () => {
+        delete parents[vueId];
+      });
+    }
+  };
+
+  Vue.prototype.$setScopedSlotsParams = function (name, value) {
+    const vueId = this.$options.propsData.vueId;
+    const object = center[vueId] = center[vueId] || {};
+    object[name] = value;
+    if (parents[vueId]) {
+      parents[vueId].$forceUpdate();
+    }
+  };
+
+  Vue.mixin({
+    destroyed () {
+      const propsData = this.$options.propsData;
+      const vueId = propsData && propsData.vueId;
+      if (vueId) {
+        delete center[vueId];
+        delete parents[vueId];
+      }
+    }
+  });
+}
+
 function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
   initEventChannel$1();
+  {
+    initScopedSlotsParams();
+  }
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store;
   }
