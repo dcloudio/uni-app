@@ -1205,23 +1205,26 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 #### 快速上手schema2code生成“通讯录”
 > 成品演示地址:[http://contacts-demo.dcloud.net.cn/](http://contacts-demo.dcloud.net.cn/)
 
-- 方式1：在HBuilderX中操作
-1. 项目根目录的 `uniCloud/database/xxx.schema.json`  文件上点击右键，或者在已打开的 Schema 编辑器点击右键 
-2. 右键菜单上方找到 `schema2code` 并点击。如果没有该菜单，请在插件市场安装插件：[https://ext.dcloud.net.cn/plugin?id=4684](https://ext.dcloud.net.cn/plugin?id=4684)
-  ![](https://img-cdn-aliyun.dcloud.net.cn/stream/plugin_screens/571cd2c0-9845-11eb-80c5-e7a70b59c751_1.png?v=1617870971)
-3. 弹出一个对话框 `schema2code`，选择要导出的项目类型（uni-app用户端项目还是admin管理端项目），以及表字段名（去掉不需要在前端展现或编辑的字段）
-4. 点击对话框右下角的确定按钮，将执行导入动作，如果导入的文件和工程中的文件有差异将弹出文件对比框，继续操作并确认导入
-
-
-- 方式2：在uniCloud web控制台操作
+##### 首先创建“带schema的通讯录”数据表
 1. 登录 [uniCloud控制台](https://unicloud.dcloud.net.cn)，选中“云数据库”
 2. 点击新建数据表
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/1ef863ed-d919-46f3-bd01-6092f2ed1e21.jpg)
 3. 使用[OpenDB](https://gitee.com/dcloud/opendb)表模板创建： `opendb-contacts` 通讯录表
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/0e2ee195-05ae-4445-af41-45c41b2da70a.jpg)
-4. 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
+
+##### schema2code有两种方式
+- 方式1：在HBuilderX中操作
+1.1 下载刚刚创建的通讯录表的schema
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/c2ea33f4-8619-41a6-bd14-5f9ce044985d.jpg)
+1.2 项目根目录的 `uniCloud/database/opendb-contacts.schema.json`  文件上点击右键，或者在已打开的 Schema 编辑器点击右键.如果没有该菜单，请在插件市场安装插件：[https://ext.dcloud.net.cn/plugin?id=4684](https://ext.dcloud.net.cn/plugin?id=4684) 
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/82f69a99-c652-4cbc-a96b-1cfbe3d40529.jpg)
+1.3 弹出一个对话框 `schema2code`，选择要导出的项目类型（uni-app用户端项目还是admin管理端项目），以及表字段名（去掉不需要在前端展现或编辑的字段）
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/fb49118b-364e-412b-9900-f275803cce37.jpg)
+1.4 点击对话框右下角的确定按钮，将执行导入动作，如果导入的文件和工程中的文件有差异将弹出文件对比框，继续操作并确认导入
+- 方式2：在uniCloud web控制台操作
+2.1 选中刚创建好的数据表`opendb-contacts`，点击进入表结构schema界面，点击按钮 “schema2code”
   ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3f93a350-2d13-4b8e-afb6-7dc367437b49.jpg)
-5. 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
+2.2 点击“导入HBuilderX”或“下载zip”按钮，将生成的代码合并到自己的项目中
   ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/ba87a6b0-1519-11eb-81ea-f115fe74321c.png)
 
 上图每个区域的解释如下：
@@ -1261,7 +1264,7 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 **全程演示视频**：
 </br>
 <video style="width:50vw;height:28vw;" id="video" preload="none" controls="controls"
-	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2aa9292a-5559-4070-aad8-a41e31cb3e35.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2aa9292a-5559-4070-aad8-a41e31cb3e35.mp4"></video>
+	poster="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/a04e1d03-6d9f-43bf-a74b-80e9a5c31d7f.mp4?x-oss-process=video/snapshot,t_1000,f_jpg" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/a04e1d03-6d9f-43bf-a74b-80e9a5c31d7f.mp4"></video>
 
 
 
