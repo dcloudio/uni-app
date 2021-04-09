@@ -97,6 +97,8 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 |enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。|
 |enumType|String|字段值枚举类型，可选值tree。设为tree时，代表enum里的数据为树形结构。此时schema2code可生成多级级联选择组件|
 |arrayType|String|数组项类型，bsonType="array" 时有效，HBuilderX 3.1.0+ 支持，具体见下表arrayType可用类型|
+|fileMediaType|String|文件类型，可选值 all&#124;image&#124;video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件，详情参考[文件上传示例](https://uniapp.dcloud.net.cn/uniCloud/schema?id=filepicker)  HBuilderX 3.1.0+ 支持|
+|fileExtName|String|文件扩展名过滤，多个用 "," 分割，例如: jpg,png，HBuilderX 3.1.0+ 支持|
 |maximum|number|如果bsonType为数字时，可接受的最大值|
 |exclusiveMaximum|boolean|是否排除 maximum|
 |minimum|number|如果bsonType为数字时，可接受的最小值|
@@ -1590,6 +1592,31 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 
 > HBuilderX 3.1.0+ 支持
 
+单个文件上传示例
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": [],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "image": {
+        "bsonType": "file",
+        "title": "图片",
+        "description": "图片",
+        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
+      }
+    }
+  }
+}
+```
+
+多个文件上传示例
+
 ```json
 {
   "schema": {
@@ -1604,14 +1631,13 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
         "title": "图片",
         "description": "图片",
         "arrayType": "file",
-        "fileMediaType":"image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
-        "fileExtName":"jpg,png", // 扩展名过滤，多个用 , 分割
-        "maxLength": 3, // 限制最大数量
+        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
+        "maxLength": 3 // 限制最大数量
       }
     }
   }
 }
-
 ```
 
 上传后的file对象
