@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isArray, hasOwn as hasOwn$1, isString, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, hyphenate} from "@vue/shared";
-import {injectHook, createVNode, reactive, inject, provide, computed, nextTick, defineComponent, onRenderTriggered, watch, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, getCurrentInstance, onBeforeUnmount, withModifiers, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, onBeforeMount} from "vue";
-import {passive, NAVBAR_HEIGHT, getLen, COMPONENT_NAME_PREFIX, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
+import {injectHook, createVNode, reactive, inject, provide, computed, nextTick, defineComponent, watch, withDirectives, vShow, withCtx, openBlock, createBlock, KeepAlive, resolveDynamicComponent, resolveComponent, onMounted, ref, mergeProps, toDisplayString, toHandlers, renderSlot, createCommentVNode, getCurrentInstance, onBeforeUnmount, withModifiers, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, onBeforeMount} from "vue";
+import {passive, NAVBAR_HEIGHT, removeLeadingSlash, getLen, COMPONENT_NAME_PREFIX, plusReady, debounce, PRIMARY_COLOR} from "@dcloudio/uni-shared";
 import {createRouter, createWebHistory, createWebHashHistory, useRoute, RouterView, isNavigationFailure} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -1365,21 +1365,16 @@ function createPageState(type) {
 function isPage(vm) {
   return vm.$options.mpType === "page";
 }
-function normalizeRoute(path) {
-  if (path.indexOf("/") === 0) {
-    return path.substr(1);
-  }
-  return path;
-}
 function initPublicPage(route) {
   if (!route) {
-    const {path} = __uniRoutes[0];
-    return {id, path, route: path.substr(1), fullPath: path};
+    const {path: path2} = __uniRoutes[0];
+    return {id, path: path2, route: path2.substr(1), fullPath: path2};
   }
+  const {path} = route;
   return {
     id,
-    path: route.path,
-    route: normalizeRoute(route.path),
+    path,
+    route: removeLeadingSlash(path),
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {},
     meta: usePageMeta()
@@ -2493,7 +2488,16 @@ const SetTabBarItemProtocol = extend({
     type: String
   }
 }, IndexProtocol);
-const SetTabBarItemOptions = IndexOptions;
+const SetTabBarItemOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: extend({
+    pagePath(value, params) {
+      if (value) {
+        params.pagePath = removeLeadingSlash(value);
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
 const SetTabBarStyleProtocol = {
   color: {
     type: String
@@ -2516,6 +2520,7 @@ const SetTabBarStyleProtocol = {
 };
 const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
 const SetTabBarStyleOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: {
     backgroundImage(value, params) {
       if (value && !GRADIENT_RE.test(value)) {
@@ -2549,6 +2554,7 @@ const SetTabBarBadgeProtocol = extend({
   }
 }, IndexProtocol);
 const SetTabBarBadgeOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: extend({
     text(value, params) {
       if (getLen(value) >= 4) {
@@ -3159,9 +3165,6 @@ var TabBar = /* @__PURE__ */ defineComponent({
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
-    onRenderTriggered(() => {
-      debugger;
-    });
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
       return createVNode("uni-tabbar", {
@@ -11074,6 +11077,35 @@ const navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({url}, {reso
 const redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => navigate(API_REDIRECT_TO, url).then(resolve).catch(reject), RedirectToProtocol, RedirectToOptions);
 const reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => navigate(API_RE_LAUNCH, url).then(resolve).catch(reject), ReLaunchProtocol, ReLaunchOptions);
 const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => navigate(API_SWITCH_TAB, url).then(resolve).catch(reject), SwitchTabProtocol, SwitchTabOptions);
+const setTabBarItemProps = ["text", "iconPath", "selectedIconPath"];
+const setTabBarStyleProps = [
+  "color",
+  "selectedColor",
+  "backgroundColor",
+  "borderStyle"
+];
+const setTabBarBadgeProps = ["badge", "redDot"];
+function setProperties(item, props, propsData) {
+  props.forEach(function(name) {
+    if (hasOwn$1(propsData, name)) {
+      item[name] = propsData[name];
+    }
+  });
+}
+function normalizeRoute(index2, oldPagePath, newPagePath) {
+  const oldTabBarRoute = __uniRoutes.find((item) => item.meta.route === oldPagePath);
+  if (oldTabBarRoute) {
+    const {meta} = oldTabBarRoute;
+    delete meta.tabBarIndex;
+    meta.isQuit = meta.isTabBar = false;
+  }
+  const newTabBarRoute = __uniRoutes.find((item) => item.meta.route === newPagePath);
+  if (newTabBarRoute) {
+    const {meta} = newTabBarRoute;
+    meta.tabBarIndex = index2;
+    meta.isQuit = meta.isTabBar = false;
+  }
+}
 function setTabBar(type, args, resolve) {
   const tabBar2 = useTabBar();
   switch (type) {
@@ -11082,13 +11114,47 @@ function setTabBar(type, args, resolve) {
       break;
     case "hideTabBar":
       tabBar2.shown = false;
+      break;
+    case "setTabBarItem":
+      const {index: index2} = args;
+      const tabBarItem = tabBar2.list[index2];
+      const oldPagePath = tabBarItem.pagePath;
+      setProperties(tabBarItem, setTabBarItemProps, args);
+      const {pagePath} = args;
+      if (pagePath && pagePath !== oldPagePath) {
+        normalizeRoute(index2, oldPagePath, pagePath);
+      }
+      break;
+    case "setTabBarStyle":
+      setProperties(tabBar2, setTabBarStyleProps, args);
+      break;
+    case "showTabBarRedDot":
+      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+        badge: "",
+        redDot: true
+      });
+      break;
+    case "setTabBarBadge":
+      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+        badge: args.text,
+        redDot: true
+      });
+      break;
+    case "hideTabBarRedDot":
+    case "removeTabBarBadge":
+      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+        badge: "",
+        redDot: false
+      });
+      break;
   }
   resolve();
 }
 const setTabBarItem = /* @__PURE__ */ defineAsyncApi("setTabBarItem", (args, {resolve}) => {
   setTabBar("setTabBarItem", args, resolve);
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
-const setTabBarStyle = /* @__PURE__ */ defineAsyncApi("setTabBarStyle", () => {
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi("setTabBarStyle", (args, {resolve}) => {
+  setTabBar("setTabBarStyle", args, resolve);
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
 const hideTabBar = /* @__PURE__ */ defineAsyncApi("hideTabBar", (args, {resolve}) => {
   setTabBar("hideTabBar", args, resolve);
@@ -11096,13 +11162,17 @@ const hideTabBar = /* @__PURE__ */ defineAsyncApi("hideTabBar", (args, {resolve}
 const showTabBar = /* @__PURE__ */ defineAsyncApi("showTabBar", (args, {resolve}) => {
   setTabBar("showTabBar", args, resolve);
 }, ShowTabBarProtocol);
-const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi("hideTabBarRedDot", () => {
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi("hideTabBarRedDot", (args, {resolve}) => {
+  setTabBar("hideTabBarRedDot", args, resolve);
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi("showTabBarRedDot", () => {
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi("showTabBarRedDot", (args, {resolve}) => {
+  setTabBar("showTabBarRedDot", args, resolve);
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi("removeTabBarBadge", () => {
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi("removeTabBarBadge", (args, {resolve}) => {
+  setTabBar("removeTabBarBadge", args, resolve);
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-const setTabBarBadge = /* @__PURE__ */ defineAsyncApi("setTabBarBadge", () => {
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi("setTabBarBadge", (args, {resolve}) => {
+  setTabBar("setTabBarBadge", args, resolve);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,

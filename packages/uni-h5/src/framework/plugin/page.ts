@@ -6,6 +6,7 @@ import {
   ComponentPublicInstance,
 } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
+import { removeLeadingSlash } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 
 const SEP = '$$'
@@ -41,22 +42,16 @@ export function isPage(vm: ComponentPublicInstance) {
   return vm.$options.mpType === 'page'
 }
 
-function normalizeRoute(path: string) {
-  if (path.indexOf('/') === 0) {
-    return path.substr(1)
-  }
-  return path
-}
-
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
   if (!route) {
     const { path } = __uniRoutes[0]
     return { id, path, route: path.substr(1), fullPath: path }
   }
+  const { path } = route
   return {
     id,
-    path: route.path,
-    route: normalizeRoute(route.path),
+    path: path,
+    route: removeLeadingSlash(path),
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {}, // $route.query
     meta: usePageMeta(),

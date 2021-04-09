@@ -132,6 +132,7 @@ declare namespace UniApp {
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id: number
+    route: string
     isNVue?: boolean
     isQuit?: boolean
     isEntry?: boolean

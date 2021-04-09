@@ -15,9 +15,6 @@ export default /*#__PURE__*/ defineComponent({
     const tabBar = useTabBar()!
     const onSwitchTab = useSwitchTab(useRoute(), tabBar)
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
-    onRenderTriggered(() => {
-      debugger
-    })
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab)
       return (

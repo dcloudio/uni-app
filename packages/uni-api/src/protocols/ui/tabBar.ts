@@ -2,6 +2,7 @@ import { extend } from '@vue/shared'
 import { getLen } from '@dcloudio/uni-shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { getCurrentPageMeta } from '@dcloudio/uni-core'
+import { removeLeadingSlash } from '@dcloudio/uni-shared'
 
 import { ApiOptions, ApiProtocol } from '../type'
 
@@ -46,7 +47,19 @@ export const SetTabBarItemProtocol: ApiProtocol = extend(
   IndexProtocol
 )
 
-export const SetTabBarItemOptions: ApiOptions = IndexOptions
+export const SetTabBarItemOptions: ApiOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: extend(
+    {
+      pagePath(value, params) {
+        if (value) {
+          params.pagePath = removeLeadingSlash(value)
+        }
+      },
+    } as ApiOptions['formatArgs'],
+    IndexOptions.formatArgs
+  ),
+}
 
 export const SetTabBarStyleProtocol: ApiProtocol = {
   color: {
@@ -70,6 +83,7 @@ export const SetTabBarStyleProtocol: ApiProtocol = {
 }
 const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/
 export const SetTabBarStyleOptions: ApiOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: {
     backgroundImage(value, params) {
       if (value && !GRADIENT_RE.test(value)) {
@@ -111,6 +125,7 @@ export const SetTabBarBadgeProtocol: ApiProtocol = extend(
 )
 
 export const SetTabBarBadgeOptions: ApiOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: extend(
     {
       text(value, params) {

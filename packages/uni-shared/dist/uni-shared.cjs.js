@@ -100,6 +100,9 @@ const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
+function removeLeadingSlash(str) {
+    return str.indexOf('/') === 0 ? str.substr(1) : str;
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -157,4 +160,5 @@ exports.isNativeTag = isNativeTag;
 exports.normalizeDataset = normalizeDataset;
 exports.passive = passive;
 exports.plusReady = plusReady;
+exports.removeLeadingSlash = removeLeadingSlash;
 exports.stringifyQuery = stringifyQuery;
