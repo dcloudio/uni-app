@@ -304,7 +304,7 @@ function traverseRenderSlot (callExprNode, state) {
   const slotName = callExprNode.arguments[0].value
 
   let deleteSlotName = false // 标记是否组件 slot 手动指定了 name="default"
-  if (callExprNode.arguments.length > 2) { // 作用域插槽
+  if (!state.options.betterScopedSlots && callExprNode.arguments.length > 2) { // 作用域插槽
     const props = {}
     callExprNode.arguments[2].properties.forEach(property => {
       props[property.key.value] = genCode(property.value)
@@ -369,7 +369,7 @@ function traverseResolveScopedSlots (callExprNode, state) {
     })
     const slotName = keyProperty.value.value
     const returnExprNodes = fnProperty.value.body.body[0].argument
-    if (!proxyProperty) {
+    if (!state.options.betterScopedSlots && !proxyProperty) {
       const resourcePath = state.options.resourcePath
       const ownerName = path.basename(resourcePath, path.extname(resourcePath))
 
