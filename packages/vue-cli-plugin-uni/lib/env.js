@@ -258,6 +258,10 @@ if (platformOptions.usingComponents === true) {
   }
 }
 
+if (platformOptions.betterScopedSlots) {
+  process.env.BETTER_SCOPED_SLOTS = true
+}
+
 if (
   process.env.UNI_USING_COMPONENTS ||
   process.env.UNI_PLATFORM === 'h5'

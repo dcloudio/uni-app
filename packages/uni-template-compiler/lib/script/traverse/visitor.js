@@ -6,6 +6,8 @@ const {
   METHOD_RENDER_LIST,
   METHOD_BUILT_IN,
   METHOD_RESOLVE_FILTER,
+  METHOD_RENDER_SLOT,
+  METHOD_RESOLVE_SCOPED_SLOTS,
   IDENTIFIER_FILTER,
   IDENTIFIER_METHOD,
   IDENTIFIER_GLOBAL
@@ -26,6 +28,8 @@ const traverseData = require('./data')
 const traverseRenderList = require('./render-list')
 
 const getMemberExpr = require('./member-expr')
+const getRenderSlot = require('./render-slot')
+const getResolveScopedSlots = require('./resolve-scoped-slots')
 
 function addStaticClass (path, staticClass) {
   const dataPath = path.get('arguments.1')
@@ -217,6 +221,12 @@ module.exports = {
                 this
               )
             )
+          } else if (this.options.betterScopedSlots) {
+            if (methodName === METHOD_RESOLVE_SCOPED_SLOTS) {
+              getResolveScopedSlots(path, this)
+            } else if (methodName === METHOD_RENDER_SLOT) {
+              getRenderSlot(path, this)
+            }
           }
           break
       }
