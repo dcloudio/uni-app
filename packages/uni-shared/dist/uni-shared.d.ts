@@ -12,6 +12,8 @@ export declare function debounce(fn: Function, delay: number): {
     cancel(): void;
 };
 
+export declare function getLen(str?: string): number;
+
 export declare function isBuiltInComponent(tag: string): boolean;
 
 export declare function isCustomElement(tag: string): boolean;

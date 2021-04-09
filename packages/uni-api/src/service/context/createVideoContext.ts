@@ -1,6 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
+import { getCurrentPageVm } from '@dcloudio/uni-core'
 import { operateVideoPlayer } from '@dcloudio/uni-platform'
-import { getCurrentPageVm } from '../../helpers/utils'
 
 const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0]
 
@@ -69,5 +69,5 @@ export function createVideoContext(
   if (context) {
     return new VideoContext(id, context)
   }
-  return new VideoContext(id, getCurrentPageVm())
+  return new VideoContext(id, getCurrentPageVm()!)
 }

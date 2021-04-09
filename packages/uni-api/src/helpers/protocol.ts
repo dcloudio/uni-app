@@ -2,6 +2,7 @@ import {
   hasOwn,
   makeMap,
   isArray,
+  isString,
   isObject,
   toRawType,
   capitalize,
@@ -69,7 +70,7 @@ function validateProtocol(
       protocol[key],
       !hasOwn(data, key)
     )
-    if (errMsg) {
+    if (isString(errMsg)) {
       return validateProtocolFail(name, errMsg)
     }
   }
@@ -133,10 +134,8 @@ function validateProp(
     }
   }
   // custom validator
-  if (validator && !validator(value)) {
-    return (
-      'Invalid args: custom validator check failed for args "' + name + '".'
-    )
+  if (validator) {
+    return validator(value)
   }
 }
 

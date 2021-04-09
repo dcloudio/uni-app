@@ -17,6 +17,8 @@ export * from './route/redirectTo'
 export * from './route/reLaunch'
 export * from './route/switchTab'
 
+export * from './ui/tabBar'
+
 export {
   upx2px,
   addInterceptor,
@@ -27,4 +29,5 @@ export {
   createIntersectionObserver,
   createSelectorQuery,
   createVideoContext,
+  onTabBarMidButtonTap,
 } from '@dcloudio/uni-api'

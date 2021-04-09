@@ -1,4 +1,7 @@
 import {
+  watch,
+  computed,
+  ComputedRef,
   withCtx,
   KeepAlive,
   openBlock,
@@ -8,13 +11,15 @@ import {
   resolveComponent,
   ConcreteComponent,
   resolveDynamicComponent,
+  SetupContext,
 } from 'vue'
 
-import { RouteLocationNormalizedLoaded, RouterView, useRoute } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
+
+import { useTabBar } from '../../../plugin/state'
+import { useKeepAliveRoute } from '../../../plugin/page'
 
 import TabBar from '../tabBar'
-
-import { useKeepAliveRoute } from '../../../plugin/page'
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
@@ -24,14 +29,14 @@ export default defineComponent({
     onChange: Function,
   },
   emits: ['change'],
-  setup() {
-    const route = (__UNI_FEATURE_TABBAR__ &&
-      useRoute()) as RouteLocationNormalizedLoaded
+  setup(props, { emit }) {
     const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
       useKeepAliveRoute()) as KeepAliveRoute
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow()
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow()
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow()
+    const showTabBar = (__UNI_FEATURE_TABBAR__ &&
+      useShowTabBar(emit)) as ComputedRef<boolean>
     return () => {
       const layoutTsx = createLayoutTsx(
         keepAliveRoute,
@@ -39,7 +44,7 @@ export default defineComponent({
         leftWindow,
         rightWindow
       )
-      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(route)
+      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar)
       if (!tabBarTsx) {
         return layoutTsx
       }
@@ -82,8 +87,19 @@ function createLayoutTsx(
   )
 }
 
-function createTabBarTsx(route: RouteLocationNormalizedLoaded) {
-  return <TabBar v-show={route.meta.isTabBar} />
+function useShowTabBar(emit: SetupContext['emit']) {
+  const route = useRoute()
+  const tabBar = useTabBar()!
+  // TODO meida query
+  const showTabBar = computed(() => route.meta.isTabBar && tabBar.shown)
+  watch(showTabBar, (value) => {
+    emit('change', 'showTabBar', value)
+  })
+  return showTabBar
+}
+
+function createTabBarTsx(showTabBar: ComputedRef<boolean>) {
+  return <TabBar v-show={showTabBar.value} />
 }
 
 function createPageVNode() {

@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isObject, capitalize, toRawType, makeMap, isPlainObject, isPromise, isFunction, isString } from '@vue/shared';
+import { isArray, hasOwn, isString, isObject, capitalize, toRawType, makeMap, isPlainObject, isPromise, isFunction } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
     const errMsg = `${name}:fail ${msg}`;
@@ -12,7 +12,7 @@ function validateProtocolFail(name, msg) {
 function validateProtocol(name, data, protocol) {
     for (const key in protocol) {
         const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
-        if (errMsg) {
+        if (isString(errMsg)) {
             return validateProtocolFail(name, errMsg);
         }
     }
@@ -65,8 +65,8 @@ function validateProp(name, value, prop, isAbsent) {
         }
     }
     // custom validator
-    if (validator && !validator(value)) {
-        return ('Invalid args: custom validator check failed for args "' + name + '".');
+    if (validator) {
+        return validator(value);
     }
 }
 const isSimpleType = /*#__PURE__*/ makeMap('String,Number,Boolean,Function,Symbol');
@@ -170,7 +170,13 @@ function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
         if ((process.env.NODE_ENV !== 'production')) {
             const errMsg = validateProtocols(name, args, protocol);
-            if (errMsg) {
+            if (isString(errMsg)) {
+                return errMsg;
+            }
+        }
+        if (options && options.beforeInvoke) {
+            const errMsg = options.beforeInvoke(args);
+            if (isString(errMsg)) {
                 return errMsg;
             }
         }

@@ -22,6 +22,7 @@ declare var __UNI_FEATURE_ROUTER_MODE__: 'hash' | 'history'
 
 declare var __UNI_FEATURE_PAGES__: boolean
 declare var __UNI_FEATURE_TABBAR__: boolean
+declare var __UNI_FEATURE_TABBAR_MIDBUTTON__: boolean
 declare var __UNI_FEATURE_TOPWINDOW__: boolean
 declare var __UNI_FEATURE_LEFTWINDOW__: boolean
 declare var __UNI_FEATURE_RIGHTWINDOW__: boolean

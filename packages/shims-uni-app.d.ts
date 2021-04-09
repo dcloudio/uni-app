@@ -40,6 +40,7 @@ declare namespace UniApp {
       request: number
       uploadFile: number
     }
+    tabBar?: TabBarOptions
   }
 
   interface UniRoute {
@@ -162,12 +163,49 @@ declare namespace UniApp {
     subpackages?: PagesJsonSubpackagesOptions[]
     subPackages?: PagesJsonSubpackagesOptions[]
     globalStyle: PagesJsonPageStyle
-    tabBar?: {
-      list: []
-    }
+    tabBar?: TabBarOptions
     topWindow?: PagesJsonWindowOptions
     leftWindow?: PagesJsonWindowOptions
     rightWindow?: PagesJsonWindowOptions
+  }
+
+  interface TabBarItemBaseOptions {
+    pagePath: string
+    text: string
+    iconPath?: string
+    selectedIconPath?: string
+    redDot?: boolean
+    badge?: string
+  }
+
+  interface TabBarNormalItemOptions extends TabBarItemBaseOptions {
+    type: 'normal'
+  }
+  interface TabBarMidButtonOptions extends TabBarItemBaseOptions {
+    type: 'midButton'
+    width?: string
+    height?: string
+    iconWidth?: string
+    backgroundImage?: string
+  }
+
+  type TabBarItemOptions = TabBarNormalItemOptions | TabBarMidButtonOptions
+
+  interface TabBarOptions {
+    position?: 'bottom' | 'top'
+    color: string
+    selectedColor: string
+    backgroundColor: string
+    borderStyle?: 'black' | 'white'
+    list: TabBarItemOptions[]
+    blurEffect?: 'none' | 'dark' | 'extralight' | 'light'
+    fontSize?: string
+    iconWidth?: string
+    spacing?: string
+    height?: string
+    midButton?: TabBarMidButtonOptions
+    selectedIndex?: number
+    shown: boolean
   }
 
   type OnApiLike = (callback: (result: unknown) => void) => void
@@ -206,7 +244,7 @@ declare namespace UniApp {
      */
     invokeOnCallback<T extends OnApiLike>(
       name: string,
-      res: Parameters<Parameters<T>[0]>[0]
+      res?: Parameters<Parameters<T>[0]>[0]
     ): void
     /**
      * 订阅 View 的自定义事件，回调函数会接收所有传入事件触发函数的额外参数。

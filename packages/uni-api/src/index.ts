@@ -6,6 +6,7 @@ export * from './service/context/createVideoContext'
 
 export * from './service/ui/createIntersectionObserver'
 export * from './service/ui/createSelectorQuery'
+export * from './service/ui/tabBar'
 
 // protocols
 export * from './protocols/base/canIUse'
@@ -27,6 +28,7 @@ export * from './protocols/network/request'
 
 export * from './protocols/route/route'
 
+export * from './protocols/ui/tabBar'
 // helpers
 export {
   defineOnApi,
@@ -35,8 +37,6 @@ export {
   defineSyncApi,
   defineAsyncApi,
 } from './helpers/api'
-
-export { getCurrentPageVm } from './helpers/utils'
 
 export { handlePromise } from './helpers/api/promise'
 export { invokeApi, wrapperReturnValue } from './helpers/interceptor'

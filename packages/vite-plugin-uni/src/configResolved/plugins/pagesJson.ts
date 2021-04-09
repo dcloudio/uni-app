@@ -105,6 +105,9 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_NAVIGATIONBAR__) {
     cssFiles.push('@dcloudio/uni-h5/style/pageHead.css')
   }
+  if (define.__UNI_FEATURE_TABBAR__) {
+    cssFiles.push('@dcloudio/uni-h5/style/tabBar.css')
+  }
   if (define.__UNI_FEATURE_NVUE__) {
     cssFiles.push('@dcloudio/uni-h5/style/nvue.css')
   }
@@ -151,6 +154,7 @@ function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
     let windowTop = 0
     const meta = Object.assign(
       {
+        route: pageOptions.path,
         isQuit: isEntry || isTabBar ? true : undefined,
         isEntry,
         isTabBar,
@@ -159,11 +163,6 @@ function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
       },
       pageOptions.style
     )
-
-    if (isEntry) {
-      ;(meta as any).route = pageOptions.path
-    }
-
     return {
       name,
       path: pageOptions.path,

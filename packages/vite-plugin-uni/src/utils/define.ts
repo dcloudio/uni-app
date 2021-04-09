@@ -11,6 +11,7 @@ interface PagesFeatures {
   nvue: boolean
   pages: boolean
   tabBar: boolean
+  tabBarMidButton: boolean
   topWindow: boolean
   leftWindow: boolean
   rightWindow: boolean
@@ -46,6 +47,7 @@ function resolvePagesFeature(
     nvue: true,
     pages: true,
     tabBar: true,
+    tabBarMidButton: true,
     topWindow: false,
     leftWindow: false,
     rightWindow: false,
@@ -72,6 +74,10 @@ function resolvePagesFeature(
   }
   if (!(tabBar && tabBar.list && tabBar.list.length)) {
     features.tabBar = false
+    features.tabBarMidButton = false
+  }
+  if (features.tabBar && !tabBar!.midButton) {
+    features.tabBarMidButton = false
   }
   if (topWindow && topWindow.path) {
     features.topWindow = true
@@ -177,6 +183,7 @@ export function getFeatures(
     nvue,
     pages,
     tabBar,
+    tabBarMidButton,
     promise,
     longpress,
     routerMode,
@@ -203,6 +210,7 @@ export function getFeatures(
     __UNI_FEATURE_ROUTER_MODE__: routerMode, // 路由模式
     __UNI_FEATURE_PAGES__: pages, // 是否多页面
     __UNI_FEATURE_TABBAR__: tabBar, // 是否包含tabBar
+    __UNI_FEATURE_TABBAR_MIDBUTTON__: tabBarMidButton, // 是否包含midButton
     __UNI_FEATURE_TOPWINDOW__: topWindow, // 是否包含topWindow
     __UNI_FEATURE_LEFTWINDOW__: leftWindow, // 是否包含leftWindow
     __UNI_FEATURE_RIGHTWINDOW__: rightWindow, // 是否包含rightWindow

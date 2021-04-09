@@ -1,7 +1,8 @@
 import path from 'path'
 import slash from 'slash'
-import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { parseJson } from '@dcloudio/uni-cli-shared'
+import { TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 
 export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   let pagesJson: UniApp.PagesJson = {
@@ -26,6 +27,15 @@ export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   normalizePages(pagesJson.pages, platform)
   // globalStyle
   pagesJson.globalStyle = normalizePageStyle(pagesJson.globalStyle!, platform)
+  // tabBar
+  if (pagesJson.tabBar) {
+    const tabBar = normalizeTabBar(pagesJson.tabBar!)
+    if (tabBar) {
+      pagesJson.tabBar = tabBar
+    } else {
+      delete pagesJson.tabBar
+    }
+  }
   return pagesJson
 }
 
@@ -179,6 +189,69 @@ function normalizeNavigationBarSearchInput(
     },
     searchInput
   )
+}
+
+const DEFAULT_TAB_BAR: Partial<UniApp.TabBarOptions> = {
+  position: 'bottom',
+  color: '#999',
+  selectedColor: '#007aff',
+  borderStyle: 'black',
+  blurEffect: 'none',
+  fontSize: '10px',
+  iconWidth: '24px',
+  spacing: '3px',
+  height: TABBAR_HEIGHT + 'px',
+}
+
+function normalizeTabBar(tabBar: UniApp.TabBarOptions) {
+  const { list, midButton } = tabBar
+  if (!list || !list.length) {
+    return
+  }
+  tabBar = extend({}, DEFAULT_TAB_BAR, tabBar)
+  const len = list.length
+  if (len % 2 === 0 && isPlainObject(midButton)) {
+    list.splice(
+      Math.floor(len / 2),
+      0,
+      extend(
+        {
+          type: 'midButton',
+          width: '50px',
+          height: '50px',
+          iconWidth: '24px',
+        },
+        midButton
+      )
+    )
+  } else {
+    delete tabBar.midButton
+  }
+  list.forEach((item) => {
+    if (item.iconPath) {
+      item.iconPath = normalizeFilepath(item.iconPath)
+    }
+    if (item.selectedIconPath) {
+      item.selectedIconPath = normalizeFilepath(item.selectedIconPath)
+    }
+    if (item.type === 'midButton' && item.backgroundImage) {
+      item.backgroundImage = normalizeFilepath(item.backgroundImage)
+    }
+  })
+  tabBar.selectedIndex = 0
+  tabBar.shown = true
+  return tabBar
+}
+const SCHEME_RE = /^([a-z-]+:)?\/\//i
+const DATA_RE = /^data:.*,.*/
+function normalizeFilepath(filepath: string) {
+  if (
+    !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
+    filepath.indexOf('/') !== 0
+  ) {
+    return '/' + filepath
+  }
+  return filepath
 }
 
 const platforms = ['h5', 'app-plus', 'mp-', 'quickapp']

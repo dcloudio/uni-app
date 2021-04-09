@@ -1,4 +1,4 @@
-import { extend, isPlainObject } from '@vue/shared'
+import { extend, isString, isPlainObject } from '@vue/shared'
 import { ApiOptions, ApiProtocols } from '../../protocols/type'
 import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
@@ -130,7 +130,13 @@ function wrapperApi(
   return function (...args: any[]) {
     if (__DEV__) {
       const errMsg = validateProtocols(name!, args, protocol)
-      if (errMsg) {
+      if (isString(errMsg)) {
+        return errMsg
+      }
+    }
+    if (options && options.beforeInvoke) {
+      const errMsg = options.beforeInvoke(args)
+      if (isString(errMsg)) {
         return errMsg
       }
     }

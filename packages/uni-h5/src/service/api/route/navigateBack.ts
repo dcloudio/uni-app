@@ -1,7 +1,7 @@
+import { invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_BACK,
   defineAsyncApi,
-  getCurrentPageVm,
   NavigateBackOptions,
   NavigateBackProtocol,
 } from '@dcloudio/uni-api'
@@ -10,8 +10,7 @@ export const navigateBack = defineAsyncApi<typeof uni.navigateBack>(
   API_NAVIGATE_BACK,
   ({ delta }, { resolve, reject }) => {
     let canBack = true
-    const vm = getCurrentPageVm()
-    if (vm && vm.$callHook('onBackPress') === true) {
+    if (invokeHook('onBackPress') === true) {
       canBack = false
     }
     if (!canBack) {

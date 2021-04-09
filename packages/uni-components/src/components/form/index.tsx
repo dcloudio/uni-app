@@ -17,7 +17,7 @@ interface UniFormFieldCtx {
 
 export default defineComponent({
   name: 'Form',
-  setup(props, { slots, emit }) {
+  setup(_props, { slots, emit }) {
     provideForm(emit)
     return () => (
       <uni-form>

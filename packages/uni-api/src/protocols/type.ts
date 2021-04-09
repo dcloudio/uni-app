@@ -10,17 +10,18 @@ type ProtocolMethod<T, TConstructor = any> = T extends (...args: any) => any
   : never
 type ProtocolType<T> = ProtocolConstructor<T> | ProtocolConstructor<T>[]
 
-type Validator = (value: any, params: Record<string, any>) => void
+type ApiArgsValidator = (value: any, params: Record<string, any>) => void
 export interface ApiProtocol {
   [name: string]: ProtocolOptions
 }
 
 export type ApiProtocols = ApiProtocol | ProtocolOptions[]
 export interface ApiOptions {
+  beforeInvoke?: (args: unknown) => boolean | void | string
   beforeAll?: (res: unknown) => void
   beforeSuccess?: (res: unknown) => void
   formatArgs?: {
-    [name: string]: Validator
+    [name: string]: ApiArgsValidator
   }
 }
 

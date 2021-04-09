@@ -6,7 +6,7 @@ import { PolySymbol, rpx2px } from '@dcloudio/uni-core'
 
 import safeAreaInsets from 'safe-area-insets'
 
-const pageMetaKey = PolySymbol(__DEV__ ? 'pageMeta' : 'pm')
+const pageMetaKey = PolySymbol(__DEV__ ? 'UniPageMeta' : 'upm')
 
 export function usePageMeta() {
   return inject<UniApp.PageRouteMeta>(pageMetaKey)!

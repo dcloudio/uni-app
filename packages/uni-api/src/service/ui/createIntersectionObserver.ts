@@ -1,11 +1,11 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend, isFunction } from '@vue/shared'
+import { getCurrentPageVm } from '@dcloudio/uni-core'
 import {
   addIntersectionObserver,
   removeIntersectionObserver,
 } from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
-import { getCurrentPageVm } from '../../helpers/utils'
 import { RequestComponentObserverOptions } from '../../helpers/requestComponentObserver'
 
 export interface AddIntersectionObserverArgs {
@@ -103,5 +103,5 @@ export const createIntersectionObserver = defineSyncApi<
   if (context) {
     return new ServiceIntersectionObserver(context, options)
   }
-  return new ServiceIntersectionObserver(getCurrentPageVm(), options)
+  return new ServiceIntersectionObserver(getCurrentPageVm()!, options)
 })
