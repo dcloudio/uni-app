@@ -337,6 +337,20 @@ function traverseRenderSlot (callExprNode, state) {
 }
 
 function traverseResolveScopedSlots (callExprNode, state) {
+  function single (children, slotName, ignore) {
+    if (Array.isArray(children) && children.length === 1) {
+      const child = children[0]
+      if (!child.type) {
+        return
+      }
+      if (ignore.includes(child.type)) {
+        return single(child.children, slotName, ignore)
+      }
+      child.attr = child.attr || {}
+      child.attr.slot = slotName
+      return true
+    }
+  }
   return callExprNode.arguments[0].elements.map(slotNode => {
     let keyProperty = false
     let fnProperty = false
@@ -383,14 +397,18 @@ function traverseResolveScopedSlots (callExprNode, state) {
         state
       )
     }
-    const node = {
-      type: 'view',
+    const children = normalizeChildren(traverseExpr(returnExprNodes, state))
+    // 除百度、字节外其他小程序仅默认插槽可以支持多个节点
+    if (single(children, slotName, ['template', 'block'])) {
+      return children[0]
+    }
+    return {
+      type: 'block',
       attr: {
         slot: slotName
       },
-      children: normalizeChildren(traverseExpr(returnExprNodes, state))
+      children
     }
-    return node
   })
 }
 
