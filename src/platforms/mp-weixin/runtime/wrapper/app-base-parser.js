@@ -95,7 +95,9 @@ export default function parseBaseApp (vm, {
   initRefs
 }) {
   initEventChannel()
-  initScopedSlotsParams()
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-kuaishou' || __PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu') {
+    initScopedSlotsParams()
+  }
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store
   }
