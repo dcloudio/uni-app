@@ -46,7 +46,7 @@ class ServiceIntersectionObserver {
   private _options: ServiceIntersectionObserverOptions
   constructor(
     component: ComponentPublicInstance,
-    options: UniApp.CreateIntersectionObserverOptions
+    options?: UniApp.CreateIntersectionObserverOptions
   ) {
     this._pageId = component.$page && component.$page.id
     this._component = component

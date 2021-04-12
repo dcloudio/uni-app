@@ -85,8 +85,7 @@ export const HideTabBarProtocol: ApiProtocol<API_TYPE_HIDE_TAB_BAR> = {
 
 export const API_SHOW_TAB_BAR = 'showTabBar'
 export type API_TYPE_SHOW_TAB_BAR = typeof uni.showTabBar
-// TODO uni.showTabBar 的 animation 应该是可选,
-export const ShowTabBarProtocol: ApiProtocol<API_TYPE_HIDE_TAB_BAR> = HideTabBarProtocol
+export const ShowTabBarProtocol: ApiProtocol<API_TYPE_SHOW_TAB_BAR> = HideTabBarProtocol
 
 export const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot'
 export type API_TYPE_HIDE_TAB_BAR_RED_DOT = typeof uni.hideTabBarRedDot

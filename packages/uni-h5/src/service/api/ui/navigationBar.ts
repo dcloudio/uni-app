@@ -1,6 +1,5 @@
-import { defineAsyncApi } from '@dcloudio/uni-api'
-import { getCurrentPageMeta } from '@dcloudio/uni-core'
 import {
+  defineAsyncApi,
   API_SET_NAVIGATION_BAR_COLOR,
   API_SET_NAVIGATION_BAR_TITLE,
   API_SHOW_NAVIGATION_BAR_LOADING,
@@ -12,7 +11,8 @@ import {
   SetNavigationBarColorOptions,
   SetNavigationBarColorProtocol,
   SetNavigationBarTitleProtocol,
-} from 'packages/uni-api/src/protocols/ui/navigationBar'
+} from '@dcloudio/uni-api'
+import { getCurrentPageMeta } from '@dcloudio/uni-core'
 
 function setNavigationBar(
   pageMeta: UniApp.PageRouteMeta | undefined,
@@ -65,6 +65,7 @@ function setNavigationBar(
 
       break
   }
+  resolve()
 }
 
 export const setNavigationBarColor = defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_COLOR>(

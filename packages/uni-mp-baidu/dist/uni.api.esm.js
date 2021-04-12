@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
-    console.warn(`${name}:fail ${msg}`);
+    console.warn(`${name}: ${msg}`);
 }
 function validateProtocol(name, data, protocol) {
     for (const key in protocol) {

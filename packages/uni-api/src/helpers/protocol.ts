@@ -53,7 +53,7 @@ export function elemsInArray(
 }
 
 function validateProtocolFail(name: string, msg: string) {
-  console.warn(`${name}:fail ${msg}`)
+  console.warn(`${name}: ${msg}`)
 }
 
 function validateProtocol(

@@ -1488,7 +1488,7 @@ function elemInArray(str, arr) {
   return str;
 }
 function validateProtocolFail(name, msg) {
-  console.warn(`${name}:fail ${msg}`);
+  console.warn(`${name}: ${msg}`);
 }
 function validateProtocol(name, data, protocol) {
   for (const key in protocol) {
@@ -2436,6 +2436,46 @@ function createNormalizeUrl(type) {
     }
   };
 }
+const FRONT_COLORS = ["#ffffff", "#000000"];
+const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const SetNavigationBarColorOptions = {
+  formatArgs: {
+    animation(animation, params) {
+      if (!animation) {
+        animation = {duration: 0, timingFunc: "linear"};
+      }
+      params.animation = {
+        duration: animation.duration || 0,
+        timingFunc: animation.timingFunc || "linear"
+      };
+    }
+  }
+};
+const SetNavigationBarColorProtocol = {
+  frontColor: {
+    type: String,
+    required: true,
+    validator(frontColor) {
+      if (FRONT_COLORS.indexOf(frontColor) === -1) {
+        return `invalid frontColor "${frontColor}"`;
+      }
+    }
+  },
+  backgroundColor: {
+    type: String,
+    required: true
+  },
+  animation: Object
+};
+const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+const SetNavigationBarTitleProtocol = {
+  title: {
+    type: String,
+    required: true
+  }
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
+const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
 const IndexProtocol = {
   index: {
     type: Number,
@@ -11045,6 +11085,49 @@ const navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({url}, {reso
 const redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => navigate(API_REDIRECT_TO, url).then(resolve).catch(reject), RedirectToProtocol, RedirectToOptions);
 const reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => navigate(API_RE_LAUNCH, url).then(resolve).catch(reject), ReLaunchProtocol, ReLaunchOptions);
 const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => navigate(API_SWITCH_TAB, url).then(resolve).catch(reject), SwitchTabProtocol, SwitchTabOptions);
+function setNavigationBar(pageMeta, type, args, resolve, reject) {
+  if (!pageMeta) {
+    return reject("page not found");
+  }
+  const {navigationBar} = pageMeta;
+  switch (type) {
+    case API_SET_NAVIGATION_BAR_COLOR:
+      const {frontColor, backgroundColor, animation} = args;
+      const {duration, timingFunc} = animation;
+      if (frontColor) {
+        navigationBar.titleColor = frontColor === "#000000" ? "#000" : "#fff";
+      }
+      if (backgroundColor) {
+        navigationBar.backgroundColor = backgroundColor;
+      }
+      navigationBar.duration = duration + "ms";
+      navigationBar.timingFunc = timingFunc;
+      break;
+    case API_SHOW_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = true;
+      break;
+    case API_HIDE_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = false;
+      break;
+    case API_SET_NAVIGATION_BAR_TITLE:
+      const {title} = args;
+      navigationBar.titleText = title;
+      break;
+  }
+  resolve();
+}
+const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, {resolve, reject}) => {
+  setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_COLOR, args, resolve, reject);
+}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
+  setNavigationBar(getCurrentPageMeta(), API_SHOW_NAVIGATION_BAR_LOADING, args, resolve, reject);
+});
+const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
+  setNavigationBar(getCurrentPageMeta(), API_HIDE_NAVIGATION_BAR_LOADING, args, resolve, reject);
+});
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
+  setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
+}, SetNavigationBarTitleProtocol);
 const setTabBarItemProps = ["text", "iconPath", "selectedIconPath"];
 const setTabBarStyleProps = [
   "color",
@@ -11174,6 +11257,10 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
+  setNavigationBarColor,
+  showNavigationBarLoading,
+  hideNavigationBarLoading,
+  setNavigationBarTitle,
   setTabBarItem,
   setTabBarStyle,
   hideTabBar,
@@ -11876,4 +11963,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setTabBarBadge, setTabBarItem, setTabBarStyle, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, upx2px, useSubscribe};

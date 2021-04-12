@@ -17,6 +17,7 @@ export * from './route/redirectTo'
 export * from './route/reLaunch'
 export * from './route/switchTab'
 
+export * from './ui/navigationBar'
 export * from './ui/tabBar'
 
 export {

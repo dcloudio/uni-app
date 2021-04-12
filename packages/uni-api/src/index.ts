@@ -28,6 +28,7 @@ export * from './protocols/network/request'
 
 export * from './protocols/route/route'
 
+export * from './protocols/ui/navigationBar'
 export * from './protocols/ui/tabBar'
 // helpers
 export {

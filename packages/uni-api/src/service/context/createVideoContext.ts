@@ -71,8 +71,8 @@ export const createVideoContext = defineSyncApi<API_TYPE_CREATE_VIDEO_CONTEXT>(
   API_CREATE_VIDEO_CONTEXT,
   (id, context) => {
     if (context) {
-      return new VideoContext(id, context) as any
+      return new VideoContext(id, context)
     }
-    return new VideoContext(id, getCurrentPageVm()!) as any
+    return new VideoContext(id, getCurrentPageVm()!)
   }
 )
