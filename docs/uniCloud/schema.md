@@ -1042,7 +1042,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   "permission": {
     "read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
     "create": false, // 禁止新增数据记录（admin权限用户不受限）
-    "update": false, // 禁止更新数据（admin权限用户不受限）
+    "update": 'updateuser' in auth.permission, // 权限标记为updateuser的用户，和admin管理员，可以更新数据，其他人无权更新数据
     "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
@@ -1086,6 +1086,14 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 forceDefaultValue属于数据校验的范畴，在数据插入时生效，但是如果配置forceDefaultValue为`{"$env": "uid"}`也会进行用户身份的校验，未登录用户不可插入数据。
 
 例如在news表新增一条记录，权限需求是“未登录用户不能创建新闻”，其实不需要在news表的create权限里写`auth.uid != null`。只需把news表的uid字段的forceDefaultValue设为`"$env": "uid"`，create权限配置为true即可，未登录用户自然无法创建。当然实际使用时你可能需要更复杂的权限，直接使用true作为权限规则时务必注意
+
+**permission和role的使用注意**
+
+在schema中使用uni-id的permission和role，首先需要在uniCloud admin中创建好权限，然后创建角色并给该角色分配权限，最后创建用户并授权角色。
+
+这样用户登录后，uniCloud会自动分析它的permission和role，在schema里编写的关于permission和role的限制也可以一一对应上，进行有效管理。
+
+admin中创建权限、角色和用户授权，另见[文档](/uniCloud/admin?id=mutiladmin)
 
 **变量action的说明**
 
