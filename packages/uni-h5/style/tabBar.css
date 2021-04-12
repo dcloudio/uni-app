@@ -129,3 +129,31 @@ uni-tabbar {
   bottom: 0;
   background-size: 100% 100%;
 }
+
+.uni-app--showtabbar uni-page-wrapper {
+  display: block;
+  height: calc(100% - var(--tab-bar-height));
+  height: calc(100% - var(--tab-bar-height) - constant(safe-area-inset-bottom));
+  height: calc(100% - var(--tab-bar-height) - env(safe-area-inset-bottom));
+}
+.uni-app--showtabbar uni-page-wrapper::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: var(--tab-bar-height);
+  height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+}
+.uni-app--showtabbar
+  uni-page-head[uni-page-head-type='default']
+  ~ uni-page-wrapper {
+  height: calc(100% - 44px - var(--tab-bar-height));
+  height: calc(
+    100% - 44px - constant(safe-area-inset-top) - var(--tab-bar-height) -
+      constant(safe-area-inset-bottom)
+  );
+  height: calc(
+    100% - 44px - env(safe-area-inset-top) - var(--tab-bar-height) -
+      env(safe-area-inset-bottom)
+  );
+}

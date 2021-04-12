@@ -11126,7 +11126,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     src: getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
-const CSS_VARS = ["--status-bar-height", "--top-window-height", "--window-left", "--window-right", "--window-margin"];
+const CSS_VARS = ["--status-bar-height", "--top-window-height", "--window-left", "--window-right", "--window-margin", "--tab-bar-height"];
 var index$1 = defineComponent({
   name: "Layout",
   setup(props, {
@@ -11138,7 +11138,7 @@ var index$1 = defineComponent({
     __UNI_FEATURE_TOPWINDOW__ && useTopWindow();
     __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow();
     __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow();
-    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar(emit);
+    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
     const clazz = useAppClass(showTabBar2);
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute);
@@ -11186,9 +11186,7 @@ function useShowTabBar(emit) {
   const route = useRoute();
   const tabBar2 = useTabBar();
   const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
-  watch(showTabBar2, (value) => {
-    emit("change", "showTabBar", value);
-  });
+  updateCssVar("--tab-bar-height", tabBar2.height);
   return showTabBar2;
 }
 function createTabBarTsx(showTabBar2) {

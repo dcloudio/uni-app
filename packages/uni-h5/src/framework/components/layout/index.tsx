@@ -31,6 +31,7 @@ const CSS_VARS = [
   '--window-left',
   '--window-right',
   '--window-margin',
+  '--tab-bar-height',
 ]
 
 export default defineComponent({
@@ -125,9 +126,7 @@ function useShowTabBar(emit: SetupContext<['change']>['emit']) {
   const tabBar = useTabBar()!
   // TODO meida query
   const showTabBar = computed(() => route.meta.isTabBar && tabBar.shown)
-  watch(showTabBar, (value) => {
-    emit('change', 'showTabBar', value)
-  })
+  updateCssVar('--tab-bar-height', tabBar.height!)
   return showTabBar
 }
 
