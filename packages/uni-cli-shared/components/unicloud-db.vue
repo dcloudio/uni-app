@@ -126,6 +126,10 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    exceptForeignKey: {
+      type: String,
+      default: ''
+    },
     loadtime: {
       type: String,
       default: 'auto'
@@ -477,6 +481,9 @@ export default {
       }
       if (this.field) {
         db = db.field(this.field)
+      }
+      if (this.exceptForeignKey) {
+        db = db.exceptForeignKey(this.exceptForeignKey)
       }
       if (this.groupby) {
         db = db.groupBy(this.groupby)
