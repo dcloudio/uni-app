@@ -25,6 +25,11 @@ const pageMode = {
   add: 'add',
   replace: 'replace'
 }
+const loadMode = {
+  auto: 'auto',
+  onready: 'onready',
+  manual: 'manual'
+}
 
 const attrs = [
   'pageCurrent',
@@ -90,7 +95,7 @@ export default {
       default: false
     },
     gettree: {
-      type: [Boolean, String],
+      type: [Boolean, String, Object],
       default: false
     },
     gettreepath: {
@@ -116,6 +121,14 @@ export default {
     distinct: {
       type: [Boolean, String],
       default: false
+    },
+    pageIndistinct: {
+      type: [Boolean, String],
+      default: false
+    },
+    loadtime: {
+      type: String,
+      default: 'auto'
     },
     manual: {
       type: Boolean,
@@ -146,6 +159,10 @@ export default {
       })
       return al
     }, (newValue, oldValue) => {
+      if (this.loadtime === loadMode.manual) {
+        return
+      }
+
       this.paginationInternal.size = this.pageSize
 
       let needReset = false
@@ -206,7 +223,7 @@ export default {
     }
     // #endif
 
-    if (!this.manual) {
+    if (!this.manual && this.loadtime === loadMode.auto) {
       this.loadData()
     }
   },
