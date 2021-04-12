@@ -2,6 +2,7 @@ import { hasOwn } from '@vue/shared'
 
 import {
   API_CAN_I_USE,
+  API_TYPE_CAN_I_USE,
   CanIUseProtocol,
   defineSyncApi,
 } from '@dcloudio/uni-api'
@@ -29,7 +30,7 @@ const SCHEMA_CSS = {
   'css.backdrop-filter': cssBackdropFilter,
 }
 
-export const canIUse = defineSyncApi<typeof uni.canIUse>(
+export const canIUse = defineSyncApi<API_TYPE_CAN_I_USE>(
   API_CAN_I_USE,
   (schema: string) => {
     if (hasOwn(SCHEMA_CSS, schema)) {

@@ -1,17 +1,16 @@
-import { HTTP_METHODS } from '../../helpers/protocol'
-import { ApiOptions, ApiProtocol } from '../type'
-
-export const ConnectSocketOptions: ApiOptions = {
+import { elemInArray, HTTP_METHODS } from '../../helpers/protocol'
+export const API_CONNECT_SOCKET = 'connectSocket'
+export type API_TYPE_CONNECT_SOCKET = typeof uni.connectSocket
+export const ConnectSocketOptions: ApiOptions<API_TYPE_CONNECT_SOCKET> = {
   formatArgs: {
     header(value, params) {
       params.header = value || {}
     },
     method(value, params) {
-      value = (value || '').toUpperCase()
-      if (!HTTP_METHODS[value as keyof typeof HTTP_METHODS]) {
-        value = HTTP_METHODS.GET
-      }
-      params.method = value
+      params.method = elemInArray(
+        (value || '').toUpperCase(),
+        HTTP_METHODS
+      ) as any
     },
     protocols(protocols, params) {
       if (typeof protocols === 'string') {
@@ -21,7 +20,7 @@ export const ConnectSocketOptions: ApiOptions = {
   },
 }
 
-export const ConnectSocketProtocol: ApiProtocol = {
+export const ConnectSocketProtocol: ApiProtocol<API_TYPE_CONNECT_SOCKET> = {
   url: {
     type: String,
     required: true,
@@ -29,23 +28,20 @@ export const ConnectSocketProtocol: ApiProtocol = {
   header: {
     type: Object,
   },
-  method: {
-    type: String,
-  },
-  protocols: {
-    type: [Array, String], // 微信文档虽然写的是数组，但是可以正常传递字符串
-  },
+  method: String as any,
+  protocols: [Array, String] as any,
 }
-export const sendSocketMessage = {
-  data: {
-    type: [String, ArrayBuffer],
-  },
+
+export const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage'
+export type API_TYPE_SEND_SOCKET_MESSAGE = typeof uni.sendSocketMessage
+
+export const sendSocketMessage: ApiProtocol<API_TYPE_SEND_SOCKET_MESSAGE> = {
+  data: [String, ArrayBuffer],
 }
-export const closeSocket = {
-  code: {
-    type: Number,
-  },
-  reason: {
-    type: String,
-  },
+
+export const API_CLOSE_SOCKET = 'closeSocket'
+export type API_TYPE_CLOSE_SOCKET = typeof uni.closeSocket
+export const closeSocket: ApiProtocol<API_TYPE_CLOSE_SOCKET> = {
+  code: Number,
+  reason: String,
 }

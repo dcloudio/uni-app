@@ -1,6 +1,6 @@
-import { ApiOptions, ApiProtocol } from '../type'
-
-export const DownloadFileOptions: ApiOptions = {
+export const API_DOWNLOAD_FILE = 'downloadFile'
+export type API_TYPE_DOWNLOAD_FILE = typeof uni.downloadFile
+export const DownloadFileOptions: ApiOptions<API_TYPE_DOWNLOAD_FILE> = {
   formatArgs: {
     header(value, params) {
       params.header = value || {}
@@ -8,12 +8,10 @@ export const DownloadFileOptions: ApiOptions = {
   },
 }
 
-export const DownloadFileProtocol: ApiProtocol = {
+export const DownloadFileProtocol: ApiProtocol<API_TYPE_DOWNLOAD_FILE> = {
   url: {
     type: String,
     required: true,
   },
-  header: {
-    type: Object,
-  },
+  header: Object,
 }

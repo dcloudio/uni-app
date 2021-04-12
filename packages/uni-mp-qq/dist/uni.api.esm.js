@@ -1,19 +1,13 @@
-import { isArray, hasOwn, isString, isObject, capitalize, toRawType, makeMap, isPlainObject, isPromise, isFunction } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
-    const errMsg = `${name}:fail ${msg}`;
-    {
-        console.error(errMsg);
-    }
-    return {
-        errMsg,
-    };
+    console.warn(`${name}:fail ${msg}`);
 }
 function validateProtocol(name, data, protocol) {
     for (const key in protocol) {
         const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
         if (isString(errMsg)) {
-            return validateProtocolFail(name, errMsg);
+            validateProtocolFail(name, errMsg);
         }
     }
 }
@@ -21,36 +15,35 @@ function validateProtocols(name, args, protocol) {
     if (!protocol) {
         return;
     }
-    if (isArray(protocol)) {
-        const len = protocol.length;
-        const argsLen = args.length;
-        for (let i = 0; i < len; i++) {
-            const opts = protocol[i];
-            const data = Object.create(null);
-            if (argsLen > i) {
-                data[opts.name] = args[i];
-            }
-            const errMsg = validateProtocol(name, data, { [opts.name]: opts });
-            if (errMsg) {
-                return errMsg;
-            }
-        }
-        return;
+    if (!isArray(protocol)) {
+        return validateProtocol(name, args[0] || Object.create(null), protocol);
     }
-    return validateProtocol(name, args[0] || Object.create(null), protocol);
+    const len = protocol.length;
+    const argsLen = args.length;
+    for (let i = 0; i < len; i++) {
+        const opts = protocol[i];
+        const data = Object.create(null);
+        if (argsLen > i) {
+            data[opts.name] = args[i];
+        }
+        validateProtocol(name, data, { [opts.name]: opts });
+    }
 }
 function validateProp(name, value, prop, isAbsent) {
+    if (!isPlainObject(prop)) {
+        prop = { type: prop };
+    }
     const { type, required, validator } = prop;
     // required!
     if (required && isAbsent) {
         return 'Missing required args: "' + name + '"';
     }
     // missing but optional
-    if (value == null && !prop.required) {
+    if (value == null && !required) {
         return;
     }
     // type check
-    if (type != null && type !== true) {
+    if (type != null) {
         let isValid = false;
         const types = isArray(type) ? type : [type];
         const expectedTypes = [];
@@ -169,10 +162,7 @@ function wrapperSyncApi(fn) {
 function wrapperApi(fn, name, protocol, options) {
     return function (...args) {
         if ((process.env.NODE_ENV !== 'production')) {
-            const errMsg = validateProtocols(name, args, protocol);
-            if (isString(errMsg)) {
-                return errMsg;
-            }
+            validateProtocols(name, args, protocol);
         }
         if (options && options.beforeInvoke) {
             const errMsg = options.beforeInvoke(args);

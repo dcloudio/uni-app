@@ -8,11 +8,11 @@ import {
   ArrayBufferToBase64Protocol,
   API_BASE64_TO_ARRAY_BUFFER,
   API_ARRAY_BUFFER_TO_BASE64,
+  API_TYPE_BASE64_TO_ARRAY_BUFFER,
+  API_TYPE_ARRAY_BUFFER_TO_BASE64,
 } from '../../protocols/base/base64'
 
-export const base64ToArrayBuffer = defineSyncApi<
-  typeof uni.base64ToArrayBuffer
->(
+export const base64ToArrayBuffer = defineSyncApi<API_TYPE_BASE64_TO_ARRAY_BUFFER>(
   API_BASE64_TO_ARRAY_BUFFER,
   (base64) => {
     return decode(base64) as ArrayBuffer
@@ -20,9 +20,7 @@ export const base64ToArrayBuffer = defineSyncApi<
   Base64ToArrayBufferProtocol
 )
 
-export const arrayBufferToBase64 = defineSyncApi<
-  typeof uni.arrayBufferToBase64
->(
+export const arrayBufferToBase64 = defineSyncApi<API_TYPE_ARRAY_BUFFER_TO_BASE64>(
   API_ARRAY_BUFFER_TO_BASE64,
   (arrayBuffer) => {
     return encode(arrayBuffer) as string

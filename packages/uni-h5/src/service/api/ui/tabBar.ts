@@ -1,5 +1,21 @@
 import { hasOwn } from '@vue/shared'
 import {
+  API_HIDE_TAB_BAR,
+  API_HIDE_TAB_BAR_RED_DOT,
+  API_REMOVE_TAB_BAR_BADGE,
+  API_SET_TAB_BAR_BADGE,
+  API_SET_TAB_BAR_ITEM,
+  API_SET_TAB_BAR_STYLE,
+  API_SHOW_TAB_BAR,
+  API_SHOW_TAB_BAR_RED_DOT,
+  API_TYPE_HIDE_TAB_BAR,
+  API_TYPE_HIDE_TAB_BAR_RED_DOT,
+  API_TYPE_REMOVE_TAB_BAR_BADGE,
+  API_TYPE_SET_TAB_BAR_BADGE,
+  API_TYPE_SET_TAB_BAR_ITEM,
+  API_TYPE_SET_TAB_BAR_STYLE,
+  API_TYPE_SHOW_TAB_BAR,
+  API_TYPE_SHOW_TAB_BAR_RED_DOT,
   defineAsyncApi,
   HideTabBarProtocol,
   HideTabBarRedDotOptions,
@@ -68,13 +84,13 @@ function setTabBar(
 ) {
   const tabBar = useTabBar()!
   switch (type) {
-    case 'showTabBar':
+    case API_SHOW_TAB_BAR:
       tabBar.shown = true
       break
-    case 'hideTabBar':
+    case API_HIDE_TAB_BAR:
       tabBar.shown = false
       break
-    case 'setTabBarItem':
+    case API_SET_TAB_BAR_ITEM:
       const { index } = args
       const tabBarItem = tabBar.list[index]
       const oldPagePath = tabBarItem.pagePath
@@ -84,23 +100,23 @@ function setTabBar(
         normalizeRoute(index, oldPagePath, pagePath)
       }
       break
-    case 'setTabBarStyle':
+    case API_SET_TAB_BAR_STYLE:
       setProperties(tabBar, setTabBarStyleProps, args)
       break
-    case 'showTabBarRedDot':
+    case API_SHOW_TAB_BAR_RED_DOT:
       setProperties(tabBar.list[args.index], setTabBarBadgeProps, {
         badge: '',
         redDot: true,
       })
       break
-    case 'setTabBarBadge':
+    case API_SET_TAB_BAR_BADGE:
       setProperties(tabBar.list[args.index], setTabBarBadgeProps, {
         badge: args.text,
         redDot: true,
       })
       break
-    case 'hideTabBarRedDot':
-    case 'removeTabBarBadge':
+    case API_HIDE_TAB_BAR_RED_DOT:
+    case API_REMOVE_TAB_BAR_BADGE:
       setProperties(tabBar.list[args.index], setTabBarBadgeProps, {
         badge: '',
         redDot: false,
@@ -110,70 +126,70 @@ function setTabBar(
   resolve()
 }
 
-export const setTabBarItem = defineAsyncApi<typeof uni.setTabBarItem>(
-  'setTabBarItem',
+export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
+  API_SET_TAB_BAR_ITEM,
   (args, { resolve }) => {
-    setTabBar('setTabBarItem', args, resolve)
+    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve)
   },
   SetTabBarItemProtocol,
   SetTabBarItemOptions
 )
 
-export const setTabBarStyle = defineAsyncApi<typeof uni.setTabBarStyle>(
-  'setTabBarStyle',
+export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
+  API_SET_TAB_BAR_STYLE,
   (args, { resolve }) => {
-    setTabBar('setTabBarStyle', args, resolve)
+    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve)
   },
   SetTabBarStyleProtocol,
   SetTabBarStyleOptions
 )
 
-export const hideTabBar = defineAsyncApi<typeof uni.hideTabBar>(
-  'hideTabBar',
+export const hideTabBar = defineAsyncApi<API_TYPE_HIDE_TAB_BAR>(
+  API_HIDE_TAB_BAR,
   (args, { resolve }) => {
-    setTabBar('hideTabBar', args, resolve)
+    setTabBar(API_HIDE_TAB_BAR, args, resolve)
   },
   HideTabBarProtocol
 )
 
-export const showTabBar = defineAsyncApi<typeof uni.showTabBar>(
-  'showTabBar',
+export const showTabBar = defineAsyncApi<API_TYPE_SHOW_TAB_BAR>(
+  API_SHOW_TAB_BAR,
   (args, { resolve }) => {
-    setTabBar('showTabBar', args, resolve)
+    setTabBar(API_SHOW_TAB_BAR, args, resolve)
   },
   ShowTabBarProtocol
 )
-export const hideTabBarRedDot = defineAsyncApi<typeof uni.hideTabBarRedDot>(
-  'hideTabBarRedDot',
+export const hideTabBarRedDot = defineAsyncApi<API_TYPE_HIDE_TAB_BAR_RED_DOT>(
+  API_HIDE_TAB_BAR_RED_DOT,
   (args, { resolve }) => {
-    setTabBar('hideTabBarRedDot', args, resolve)
+    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve)
   },
   HideTabBarRedDotProtocol,
   HideTabBarRedDotOptions
 )
 
-export const showTabBarRedDot = defineAsyncApi<typeof uni.showTabBarRedDot>(
-  'showTabBarRedDot',
+export const showTabBarRedDot = defineAsyncApi<API_TYPE_SHOW_TAB_BAR_RED_DOT>(
+  API_SHOW_TAB_BAR_RED_DOT,
   (args, { resolve }) => {
-    setTabBar('showTabBarRedDot', args, resolve)
+    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve)
   },
   ShowTabBarRedDotProtocol,
   ShowTabBarRedDotOptions
 )
 
-export const removeTabBarBadge = defineAsyncApi<typeof uni.removeTabBarBadge>(
-  'removeTabBarBadge',
+export const removeTabBarBadge = defineAsyncApi<API_TYPE_REMOVE_TAB_BAR_BADGE>(
+  API_REMOVE_TAB_BAR_BADGE,
   (args, { resolve }) => {
-    setTabBar('removeTabBarBadge', args, resolve)
+    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve)
   },
   RemoveTabBarBadgeProtocol,
   RemoveTabBarBadgeOptions
 )
 
-export const setTabBarBadge = defineAsyncApi<typeof uni.setTabBarBadge>(
-  'setTabBarBadge',
+export const setTabBarBadge = defineAsyncApi<API_TYPE_SET_TAB_BAR_BADGE>(
+  API_SET_TAB_BAR_BADGE,
   (args, { resolve }) => {
-    setTabBar('setTabBarBadge', args, resolve)
+    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve)
   },
   SetTabBarBadgeProtocol,
   SetTabBarBadgeOptions

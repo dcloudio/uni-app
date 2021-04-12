@@ -41,6 +41,7 @@ declare namespace UniApp {
       uploadFile: number
     }
     tabBar?: TabBarOptions
+    subPackages?: { root: string }[]
   }
 
   interface UniRoute {

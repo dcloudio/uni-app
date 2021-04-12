@@ -1,5 +1,3 @@
-import { ProtocolOptions } from '../type'
-
 const validator: ProtocolOptions<String>[] = [
   {
     name: 'id',
@@ -7,10 +5,20 @@ const validator: ProtocolOptions<String>[] = [
     required: true,
   },
 ]
-
+export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
+export type API_TYPE_CREATE_AUDIO_CONTEXT = typeof uni.createAudioContext
 export const CreateAudioContextProtocol = validator
+
+export const API_CREATE_VIDEO_CONTEXT = 'createVideoContext'
+export type API_TYPE_CREATE_VIDEO_CONTEXT = typeof uni.createVideoContext
 export const CreateVideoContextProtocol = validator
+
+export const API_CREATE_MAP_CONTEXT = 'createMapContext'
+export type API_TYPE_CREATE_MAP_CONTEXT = typeof uni.createMapContext
 export const CreateMapContextProtocol = validator
+
+export const API_CREATE_CANVAS_CONTEXT = 'createCanvasContext'
+export type API_TYPE_CREATE_CANVAS_CONTEXT = typeof uni.createCanvasContext
 export const CreateCanvasContextProtocol: ProtocolOptions<String | Object>[] = [
   {
     name: 'canvasId',

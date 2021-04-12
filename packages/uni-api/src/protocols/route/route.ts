@@ -1,6 +1,5 @@
 import { extend } from '@vue/shared'
 import { getRealRoute } from '@dcloudio/uni-core'
-import { ApiOptions, ApiProtocol } from '../type'
 import { encodeQueryString } from './encodeQueryString'
 
 const ANIMATION_IN = [
@@ -27,7 +26,7 @@ const ANIMATION_OUT = [
   'none',
 ]
 
-const BaseRouteProtocol: ApiProtocol = {
+const BaseRouteProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = {
   url: {
     type: String,
     required: true,
@@ -35,21 +34,26 @@ const BaseRouteProtocol: ApiProtocol = {
 }
 
 export const API_NAVIGATE_TO = 'navigateTo'
+export type API_TYPE_NAVIGATE_TO = typeof uni.navigateTo
 export const API_REDIRECT_TO = 'redirectTo'
+export type API_TYPE_REDIRECT_TO = typeof uni.redirectTo
 export const API_RE_LAUNCH = 'reLaunch'
+export type API_TYPE_RE_LAUNCH = typeof uni.reLaunch
 export const API_SWITCH_TAB = 'switchTab'
+export type API_TYPE_SWITCH_TAB = typeof uni.switchTab
 export const API_NAVIGATE_BACK = 'navigateBack'
-
+export type API_TYPE_NAVIGATE_BACK = typeof uni.navigateBack
 export const API_PRELOAD_PAGE = 'preloadPage'
+export type API_TYPE_PRELOAD_PAGE = typeof uni.preloadPage
 export const API_UN_PRELOAD_PAGE = 'unPreloadPage'
-
-export const NavigateToProtocol: ApiProtocol = extend(
+export type API_TYPE_UN_PRELOAD_PAGE = typeof uni.unPreloadPage
+export const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = extend(
   {},
   BaseRouteProtocol,
   createAnimationProtocol(ANIMATION_IN)
 )
 
-export const NavigateBackProtocol: ApiProtocol = extend(
+export const NavigateBackProtocol: ApiProtocol<API_TYPE_NAVIGATE_BACK> = extend(
   {
     delta: {
       type: Number,
@@ -68,24 +72,24 @@ export const PreloadPageProtocol = BaseRouteProtocol
 
 export const UnPreloadPageProtocol = BaseRouteProtocol
 
-export const NavigateToOptions: ApiOptions = /*#__PURE__*/ createRouteOptions(
+export const NavigateToOptions: ApiOptions<API_TYPE_NAVIGATE_TO> = /*#__PURE__*/ createRouteOptions(
   API_NAVIGATE_TO
 )
-export const RedirectToOptions: ApiOptions = /*#__PURE__*/ createRouteOptions(
+export const RedirectToOptions: ApiOptions<API_TYPE_REDIRECT_TO> = /*#__PURE__*/ createRouteOptions(
   API_REDIRECT_TO
 )
-export const ReLaunchOptions: ApiOptions = /*#__PURE__*/ createRouteOptions(
+export const ReLaunchOptions: ApiOptions<API_TYPE_RE_LAUNCH> = /*#__PURE__*/ createRouteOptions(
   API_RE_LAUNCH
 )
-export const SwitchTabOptions: ApiOptions = /*#__PURE__*/ createRouteOptions(
+export const SwitchTabOptions: ApiOptions<API_TYPE_SWITCH_TAB> = /*#__PURE__*/ createRouteOptions(
   API_SWITCH_TAB
 )
 
-export const NavigateBackOptions: ApiOptions = {
+export const NavigateBackOptions: ApiOptions<API_TYPE_NAVIGATE_BACK> = {
   formatArgs: {
-    delta(delta, params) {
-      delta = parseInt(delta) || 1
-      params.delta = Math.min(getCurrentPages().length - 1, delta)
+    delta(value, params) {
+      value = parseInt(value + '') || 1
+      params.delta = Math.min(getCurrentPages().length - 1, value)
     },
   },
 }
@@ -93,8 +97,8 @@ export const NavigateBackOptions: ApiOptions = {
 function createAnimationProtocol(animationTypes: string[]) {
   return {
     animationType: {
-      type: String,
-      validator(type: string) {
+      type: String as any,
+      validator(type?: string) {
         if (type && animationTypes.indexOf(type) === -1) {
           return (
             '`' +
@@ -118,7 +122,7 @@ function beforeRoute() {
   navigatorLock = ''
 }
 
-function createRouteOptions(type: string): ApiOptions {
+function createRouteOptions(type: string): ApiOptions<API_TYPE_NAVIGATE_TO> {
   return {
     formatArgs: {
       url: createNormalizeUrl(type),

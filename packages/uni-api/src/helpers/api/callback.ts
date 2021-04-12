@@ -1,5 +1,4 @@
 import { isFunction, isPlainObject } from '@vue/shared'
-import { ApiOptions } from '../../protocols/type'
 
 import { tryCatch } from './catch'
 
@@ -114,7 +113,7 @@ export function normalizeErrMsg(errMsg: string, name: string) {
 export function createAsyncApiCallback(
   name: string,
   args: Record<string, any> = {},
-  { beforeAll, beforeSuccess }: ApiOptions = {}
+  { beforeAll, beforeSuccess }: ApiOptions<any> = {}
 ) {
   if (!isPlainObject(args)) {
     args = {}

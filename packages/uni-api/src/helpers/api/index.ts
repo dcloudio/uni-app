@@ -1,5 +1,4 @@
 import { extend, isString, isPlainObject } from '@vue/shared'
-import { ApiOptions, ApiProtocols } from '../../protocols/type'
 import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
   invokeCallback,
@@ -11,51 +10,11 @@ import {
   removeKeepAliveApiCallback,
 } from './callback'
 import { promisify } from './promise'
-interface AsyncMethodOptionLike {
-  success?: (...args: any[]) => void
-}
 
-type PromisifySuccessResult<P, R> = P extends {
-  success: any
-}
-  ? void
-  : P extends { fail: any }
-  ? void
-  : P extends { complete: any }
-  ? void
-  : Promise<R>
-
-type TaskApiLike = (args: any) => any
-
-type AsyncApiLike = (args: any) => Promise<unknown> | void
-
-type AsyncApiOptions<T extends AsyncApiLike> = Parameters<T>[0]
-
-type AsyncApiRes<T extends AsyncMethodOptionLike> = Parameters<
-  Exclude<T['success'], undefined>
->[0]
-
-type AsyncApiRequired<T extends AsyncMethodOptionLike> = <P extends T>(
-  args: P
-) => PromisifySuccessResult<P, AsyncApiRes<T>>
-
-type AsyncApiOptional<T extends AsyncMethodOptionLike> = <P extends T>(
-  args?: P
-) => PromisifySuccessResult<P, AsyncApiRes<T>>
-
-interface AsyncApiOptionalOptions {
-  success?: any
-  fail?: any
-  complete?: any
-}
-
-type AsyncApi<
-  T extends AsyncMethodOptionLike
-> = AsyncApiOptionalOptions extends T
-  ? AsyncApiOptional<T>
-  : AsyncApiRequired<T>
-
-function formatApiArgs(args: any[], options?: ApiOptions) {
+function formatApiArgs<T extends ApiLike>(
+  args: any[],
+  options?: ApiOptions<T>
+) {
   const params = args[0]
   if (
     !options ||
@@ -65,7 +24,7 @@ function formatApiArgs(args: any[], options?: ApiOptions) {
   }
   const formatArgs = options.formatArgs!
   Object.keys(formatArgs).forEach((name) => {
-    formatArgs[name](args[0][name], params)
+    formatArgs[name]!(args[0][name], params)
   })
   return args
 }
@@ -103,7 +62,11 @@ function invokeFail(id: number, name: string, err: string) {
   return invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') })
 }
 
-function wrapperTaskApi(name: string, fn: Function, options?: ApiOptions) {
+function wrapperTaskApi<T extends ApiLike>(
+  name: string,
+  fn: Function,
+  options?: ApiOptions<T>
+) {
   return (args: Record<string, any>) => {
     const id = createAsyncApiCallback(name, args, options)
     return fn(args, {
@@ -117,22 +80,23 @@ function wrapperSyncApi(fn: Function) {
   return (...args: any[]) => fn.apply(null, args)
 }
 
-function wrapperAsyncApi(name: string, fn: Function, options?: ApiOptions) {
+function wrapperAsyncApi<T extends ApiLike>(
+  name: string,
+  fn: Function,
+  options?: ApiOptions<T>
+) {
   return wrapperTaskApi(name, fn, options)
 }
 
-function wrapperApi(
+function wrapperApi<T extends ApiLike>(
   fn: Function,
   name?: string,
-  protocol?: ApiProtocols,
-  options?: ApiOptions
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
 ) {
   return function (...args: any[]) {
     if (__DEV__) {
-      const errMsg = validateProtocols(name!, args, protocol)
-      if (isString(errMsg)) {
-        return errMsg
-      }
+      validateProtocols(name!, args, protocol)
     }
     if (options && options.beforeInvoke) {
       const errMsg = options.beforeInvoke(args)
@@ -140,14 +104,14 @@ function wrapperApi(
         return errMsg
       }
     }
-    return fn.apply(null, formatApiArgs(args, options))
+    return fn.apply(null, formatApiArgs<T>(args, options))
   }
 }
 
-export function defineOnApi<T extends Function>(
+export function defineOnApi<T extends ApiLike>(
   name: string,
   fn: () => void,
-  options?: ApiOptions
+  options?: ApiOptions<T>
 ) {
   return (wrapperApi(
     wrapperOnApi(name, fn),
@@ -157,10 +121,10 @@ export function defineOnApi<T extends Function>(
   ) as unknown) as T
 }
 
-export function defineOffApi<T extends Function>(
+export function defineOffApi<T extends ApiLike>(
   name: string,
   fn: () => void,
-  options?: ApiOptions
+  options?: ApiOptions<T>
 ) {
   return (wrapperApi(
     wrapperOffApi(name, fn),
@@ -179,8 +143,8 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
       reject: (err?: string) => void
     }
   ) => ReturnType<T>,
-  protocol?: ApiProtocols,
-  options?: ApiOptions
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
 ) {
   return (promisify(
     wrapperApi(
@@ -192,13 +156,13 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   ) as unknown) as T
 }
 
-export function defineSyncApi<T extends Function>(
+export function defineSyncApi<T extends ApiLike>(
   name: string,
   fn: T,
-  protocol?: ApiProtocols,
-  options?: ApiOptions
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
 ) {
-  return (wrapperApi(
+  return (wrapperApi<T>(
     wrapperSyncApi(fn),
     name,
     __DEV__ ? protocol : undefined,
@@ -215,8 +179,8 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
       reject: (err?: string) => void
     }
   ) => void,
-  protocol?: ApiProtocols,
-  options?: ApiOptions
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
 ) {
   return promisify(
     wrapperApi(

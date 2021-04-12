@@ -1,30 +1,25 @@
-import { ApiProtocol, ApiOptions } from '../type'
+export const API_GET_LOCATION = 'getLocation'
+export type API_TYPE_GET_LOCATION = typeof uni.getLocation
 
-const coordTypes = {
-  WGS84: 'WGS84',
-  GCJ02: 'GCJ02',
-}
+const coordTypes = ['WGS84', 'GCJ02']
 
-export const GetLocationOptions: ApiOptions = {
+export const GetLocationOptions: ApiOptions<API_TYPE_GET_LOCATION> = {
   formatArgs: {
     type(value, params) {
       value = (value || '').toUpperCase()
-      let type = coordTypes[value as keyof typeof coordTypes]
-      if (!type) {
-        type = coordTypes.WGS84
+      if (coordTypes.indexOf(value) === -1) {
+        params.type = coordTypes[0]
+      } else {
+        params.type = value
       }
-      params.type = type
+    },
+    altitude(value, params) {
+      params.altitude = value ? value : false
     },
   },
 }
 
-export const GetLocationProtocol: ApiProtocol = {
-  type: {
-    type: String,
-    default: coordTypes.WGS84,
-  },
-  altitude: {
-    type: Boolean,
-    default: false,
-  },
+export const GetLocationProtocol: ApiProtocol<API_TYPE_GET_LOCATION> = {
+  type: String,
+  altitude: Boolean,
 }

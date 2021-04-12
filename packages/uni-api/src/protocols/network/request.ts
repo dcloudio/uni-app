@@ -1,20 +1,8 @@
 import { hasOwn, isPlainObject } from '@vue/shared'
-import { ApiOptions, ApiProtocol } from '../type'
+import { elemInArray, HTTP_METHODS } from '../../helpers/protocol'
 
 export const API_REQUEST = 'request'
-
-const METHOD = [
-  'GET',
-  'OPTIONS',
-  'HEAD',
-  'POST',
-  'PUT',
-  'DELETE',
-  'TRACE',
-  'CONNECT',
-]
-
-const DEFAULT_METHOD = 'GET'
+export type API_TYPE_REQUEST = typeof uni.request
 
 const dataType = {
   JSON: 'json',
@@ -54,9 +42,9 @@ function stringifyQuery(url: string, data: Record<string, any>) {
   return url + (query ? '?' + query : '') + (hash ? '#' + hash : '')
 }
 
-export const RequestProtocol: ApiProtocol = {
+export const RequestProtocol: ApiProtocol<API_TYPE_REQUEST> = {
   method: {
-    type: String,
+    type: String as any,
   },
   data: {
     type: [Object, String, Array, ArrayBuffer],
@@ -79,20 +67,20 @@ export const RequestProtocol: ApiProtocol = {
   },
 }
 
-export const RequestOptions: ApiOptions = {
+export const RequestOptions: ApiOptions<API_TYPE_REQUEST> = {
   formatArgs: {
     method(value, params) {
-      params.method = (value || '').toUpperCase()
-      if (METHOD.indexOf(params.method) === -1) {
-        params.method = DEFAULT_METHOD
-      }
+      params.method = elemInArray(
+        (value || '').toUpperCase(),
+        HTTP_METHODS
+      ) as any
     },
     data(value, params) {
       params.data = value || ''
     },
     url(value, params) {
       if (
-        params.method === DEFAULT_METHOD &&
+        params.method === HTTP_METHODS[0] &&
         isPlainObject(params.data) &&
         Object.keys(params.data).length
       ) {
@@ -102,7 +90,7 @@ export const RequestOptions: ApiOptions = {
     },
     header(value, params) {
       const header = (params.header = value || {})
-      if (params.method !== DEFAULT_METHOD) {
+      if (params.method !== HTTP_METHODS[0]) {
         if (
           !Object.keys(header).find(
             (key) => key.toLowerCase() === 'content-type'

@@ -1,15 +1,16 @@
-import { ApiProtocol, ApiOptions } from '../type'
+export const API_OPEN_LOCATION = 'openLocation'
+export type API_TYPE_OPEN_LOCATION = typeof uni.openLocation
 
-export const OpenLocationOptions: ApiOptions = {
+export const OpenLocationOptions: ApiOptions<API_TYPE_OPEN_LOCATION> = {
   formatArgs: {
-    type(value, params) {
-      value = Math.floor(value)
+    scale(value, params) {
+      value = Math.floor(value!)
       params.scale = value >= 5 && value <= 18 ? value : 18
     },
   },
 }
 
-export const OpenLocationProtocol: ApiProtocol = {
+export const OpenLocationProtocol: ApiProtocol<API_TYPE_OPEN_LOCATION> = {
   latitude: {
     type: Number,
     required: true,
@@ -18,14 +19,7 @@ export const OpenLocationProtocol: ApiProtocol = {
     type: Number,
     required: true,
   },
-  scale: {
-    type: Number,
-    default: 18,
-  },
-  name: {
-    type: String,
-  },
-  address: {
-    type: String,
-  },
+  scale: Number,
+  name: String,
+  address: String,
 }

@@ -1,6 +1,11 @@
 import { ComponentPublicInstance } from 'vue'
 import { getCurrentPageVm } from '@dcloudio/uni-core'
 import { operateVideoPlayer } from '@dcloudio/uni-platform'
+import { defineSyncApi } from '../../helpers/api'
+import {
+  API_CREATE_VIDEO_CONTEXT,
+  API_TYPE_CREATE_VIDEO_CONTEXT,
+} from '../../protocols/context/context'
 
 const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0]
 
@@ -24,7 +29,7 @@ export class VideoContext {
     operateVideoPlayer(this.id, this.vm, 'stop')
   }
 
-  seek(position: number) {
+  seek(position?: number) {
     operateVideoPlayer(this.id, this.vm, 'seek', {
       position,
     })
@@ -62,12 +67,12 @@ export class VideoContext {
   }
 }
 
-export function createVideoContext(
-  id: string,
-  context: ComponentPublicInstance
-) {
-  if (context) {
-    return new VideoContext(id, context)
+export const createVideoContext = defineSyncApi<API_TYPE_CREATE_VIDEO_CONTEXT>(
+  API_CREATE_VIDEO_CONTEXT,
+  (id, context) => {
+    if (context) {
+      return new VideoContext(id, context) as any
+    }
+    return new VideoContext(id, getCurrentPageVm()!) as any
   }
-  return new VideoContext(id, getCurrentPageVm()!)
-}
+)

@@ -1464,6 +1464,16 @@ function decode(base64) {
   }
   return arraybuffer;
 }
+const HTTP_METHODS = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
 const API_TYPE_ON_PROTOCOLS = [
   {
     name: "callback",
@@ -1471,20 +1481,20 @@ const API_TYPE_ON_PROTOCOLS = [
     required: true
   }
 ];
-function validateProtocolFail(name, msg) {
-  const errMsg = `${name}:fail ${msg}`;
-  {
-    console.error(errMsg);
+function elemInArray(str, arr) {
+  if (arr.indexOf(str) === -1) {
+    return arr[0];
   }
-  return {
-    errMsg
-  };
+  return str;
+}
+function validateProtocolFail(name, msg) {
+  console.warn(`${name}:fail ${msg}`);
 }
 function validateProtocol(name, data, protocol) {
   for (const key in protocol) {
     const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
     if (isString(errMsg)) {
-      return validateProtocolFail(name, errMsg);
+      validateProtocolFail(name, errMsg);
     }
   }
 }
@@ -1492,33 +1502,32 @@ function validateProtocols(name, args, protocol) {
   if (!protocol) {
     return;
   }
-  if (isArray(protocol)) {
-    const len = protocol.length;
-    const argsLen = args.length;
-    for (let i2 = 0; i2 < len; i2++) {
-      const opts = protocol[i2];
-      const data = Object.create(null);
-      if (argsLen > i2) {
-        data[opts.name] = args[i2];
-      }
-      const errMsg = validateProtocol(name, data, {[opts.name]: opts});
-      if (errMsg) {
-        return errMsg;
-      }
-    }
-    return;
+  if (!isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol);
   }
-  return validateProtocol(name, args[0] || Object.create(null), protocol);
+  const len = protocol.length;
+  const argsLen = args.length;
+  for (let i2 = 0; i2 < len; i2++) {
+    const opts = protocol[i2];
+    const data = Object.create(null);
+    if (argsLen > i2) {
+      data[opts.name] = args[i2];
+    }
+    validateProtocol(name, data, {[opts.name]: opts});
+  }
 }
 function validateProp(name, value, prop, isAbsent) {
+  if (!isPlainObject(prop)) {
+    prop = {type: prop};
+  }
   const {type, required, validator} = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
-  if (value == null && !prop.required) {
+  if (value == null && !required) {
     return;
   }
-  if (type != null && type !== true) {
+  if (type != null) {
     let isValid = false;
     const types = isArray(type) ? type : [type];
     const expectedTypes = [];
@@ -1781,10 +1790,7 @@ function wrapperAsyncApi(name, fn, options) {
 function wrapperApi(fn, name, protocol, options) {
   return function(...args) {
     if (process.env.NODE_ENV !== "production") {
-      const errMsg = validateProtocols(name, args, protocol);
-      if (isString(errMsg)) {
-        return errMsg;
-      }
+      validateProtocols(name, args, protocol);
     }
     if (options && options.beforeInvoke) {
       const errMsg = options.beforeInvoke(args);
@@ -1811,7 +1817,6 @@ function defineAsyncApi(name, fn, protocol, options) {
   return promisify(wrapperApi(wrapperAsyncApi(name, fn, options), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
-const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
 const Base64ToArrayBufferProtocol = [
   {
     name: "base64",
@@ -1819,6 +1824,7 @@ const Base64ToArrayBufferProtocol = [
     required: true
   }
 ];
+const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
 const ArrayBufferToBase64Protocol = [
   {
     name: "arrayBuffer",
@@ -2046,6 +2052,7 @@ const promiseInterceptor = {
     });
   }
 };
+const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
 const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
 class VideoContext {
   constructor(id2, vm) {
@@ -2090,12 +2097,12 @@ class VideoContext {
     operateVideoPlayer(this.id, this.vm, "hideStatusBar");
   }
 }
-function createVideoContext(id2, context) {
+const createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
   if (context) {
     return new VideoContext(id2, context);
   }
   return new VideoContext(id2, getCurrentPageVm());
-}
+});
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -2164,15 +2171,7 @@ const CanIUseProtocol = [
 ];
 const API_MAKE_PHONE_CALL = "makePhoneCall";
 const MakePhoneCallProtocol = {
-  phoneNumber: {
-    type: String,
-    required: true,
-    validator(phoneNumber) {
-      if (!phoneNumber) {
-        return "parameter error: parameter.phoneNumber should not be empty String;";
-      }
-    }
-  }
+  phoneNumber: String
 };
 const API_OPEN_DOCUMENT = "openDocument";
 const OpenDocumentProtocol = {
@@ -2180,9 +2179,7 @@ const OpenDocumentProtocol = {
     type: String,
     required: true
   },
-  fileType: {
-    type: String
-  }
+  fileType: String
 };
 const API_GET_IMAGE_INFO = "getImageInfo";
 const GetImageInfoOptions = {
@@ -2199,17 +2196,6 @@ const GetImageInfoProtocol = {
   }
 };
 const API_REQUEST = "request";
-const METHOD = [
-  "GET",
-  "OPTIONS",
-  "HEAD",
-  "POST",
-  "PUT",
-  "DELETE",
-  "TRACE",
-  "CONNECT"
-];
-const DEFAULT_METHOD = "GET";
 const dataType = {
   JSON: "json"
 };
@@ -2269,22 +2255,19 @@ const RequestProtocol = {
 const RequestOptions = {
   formatArgs: {
     method(value, params) {
-      params.method = (value || "").toUpperCase();
-      if (METHOD.indexOf(params.method) === -1) {
-        params.method = DEFAULT_METHOD;
-      }
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
     },
     data(value, params) {
       params.data = value || "";
     },
     url(value, params) {
-      if (params.method === DEFAULT_METHOD && isPlainObject(params.data) && Object.keys(params.data).length) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
         params.url = stringifyQuery(value, params.data);
       }
     },
     header(value, params) {
       const header = params.header = value || {};
-      if (params.method !== DEFAULT_METHOD) {
+      if (params.method !== HTTP_METHODS[0]) {
         if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
           header["Content-Type"] = "application/json";
         }
@@ -2373,9 +2356,9 @@ const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
 const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
 const NavigateBackOptions = {
   formatArgs: {
-    delta(delta, params) {
-      delta = parseInt(delta) || 1;
-      params.delta = Math.min(getCurrentPages().length - 1, delta);
+    delta(value, params) {
+      value = parseInt(value + "") || 1;
+      params.delta = Math.min(getCurrentPages().length - 1, value);
     }
   }
 };
@@ -2474,19 +2457,12 @@ const IndexOptions = {
     }
   }
 };
+const API_SET_TAB_BAR_ITEM = "setTabBarItem";
 const SetTabBarItemProtocol = extend({
-  text: {
-    type: String
-  },
-  iconPath: {
-    type: String
-  },
-  selectedIconPath: {
-    type: String
-  },
-  pagePath: {
-    type: String
-  }
+  text: String,
+  iconPath: String,
+  selectedIconPath: String,
+  pagePath: String
 }, IndexProtocol);
 const SetTabBarItemOptions = {
   beforeInvoke: IndexOptions.beforeInvoke,
@@ -2498,25 +2474,14 @@ const SetTabBarItemOptions = {
     }
   }, IndexOptions.formatArgs)
 };
+const API_SET_TAB_BAR_STYLE = "setTabBarStyle";
 const SetTabBarStyleProtocol = {
-  color: {
-    type: String
-  },
-  selectedColor: {
-    type: String
-  },
-  backgroundColor: {
-    type: String
-  },
-  backgroundImage: {
-    type: String
-  },
-  backgroundRepeat: {
-    type: String
-  },
-  borderStyle: {
-    type: String
-  }
+  color: String,
+  selectedColor: String,
+  backgroundColor: String,
+  backgroundImage: String,
+  backgroundRepeat: String,
+  borderStyle: String
 };
 const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
 const SetTabBarStyleOptions = {
@@ -2534,19 +2499,22 @@ const SetTabBarStyleOptions = {
     }
   }
 };
+const API_HIDE_TAB_BAR = "hideTabBar";
 const HideTabBarProtocol = {
-  animation: {
-    type: Boolean,
-    default: false
-  }
+  animation: Boolean
 };
+const API_SHOW_TAB_BAR = "showTabBar";
 const ShowTabBarProtocol = HideTabBarProtocol;
+const API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
 const HideTabBarRedDotProtocol = IndexProtocol;
 const HideTabBarRedDotOptions = IndexOptions;
+const API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
 const ShowTabBarRedDotProtocol = IndexProtocol;
 const ShowTabBarRedDotOptions = IndexOptions;
+const API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
 const RemoveTabBarBadgeProtocol = IndexProtocol;
 const RemoveTabBarBadgeOptions = IndexOptions;
+const API_SET_TAB_BAR_BADGE = "setTabBarBadge";
 const SetTabBarBadgeProtocol = extend({
   text: {
     type: String,
@@ -10911,7 +10879,7 @@ const openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({filePat
   window.open(filePath);
   return resolve();
 }, OpenDocumentProtocol);
-function _getServiceAddress() {
+function getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
 const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject}) => {
@@ -10920,7 +10888,7 @@ const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({src}, 
     resolve({
       width: img.naturalWidth,
       height: img.naturalHeight,
-      path: src.indexOf("/") === 0 ? _getServiceAddress() + src : src
+      path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
     });
   };
   img.onerror = function() {
@@ -11109,13 +11077,13 @@ function normalizeRoute(index2, oldPagePath, newPagePath) {
 function setTabBar(type, args, resolve) {
   const tabBar2 = useTabBar();
   switch (type) {
-    case "showTabBar":
+    case API_SHOW_TAB_BAR:
       tabBar2.shown = true;
       break;
-    case "hideTabBar":
+    case API_HIDE_TAB_BAR:
       tabBar2.shown = false;
       break;
-    case "setTabBarItem":
+    case API_SET_TAB_BAR_ITEM:
       const {index: index2} = args;
       const tabBarItem = tabBar2.list[index2];
       const oldPagePath = tabBarItem.pagePath;
@@ -11125,23 +11093,23 @@ function setTabBar(type, args, resolve) {
         normalizeRoute(index2, oldPagePath, pagePath);
       }
       break;
-    case "setTabBarStyle":
+    case API_SET_TAB_BAR_STYLE:
       setProperties(tabBar2, setTabBarStyleProps, args);
       break;
-    case "showTabBarRedDot":
+    case API_SHOW_TAB_BAR_RED_DOT:
       setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
         badge: "",
         redDot: true
       });
       break;
-    case "setTabBarBadge":
+    case API_SET_TAB_BAR_BADGE:
       setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
         badge: args.text,
         redDot: true
       });
       break;
-    case "hideTabBarRedDot":
-    case "removeTabBarBadge":
+    case API_HIDE_TAB_BAR_RED_DOT:
+    case API_REMOVE_TAB_BAR_BADGE:
       setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
         badge: "",
         redDot: false
@@ -11150,29 +11118,29 @@ function setTabBar(type, args, resolve) {
   }
   resolve();
 }
-const setTabBarItem = /* @__PURE__ */ defineAsyncApi("setTabBarItem", (args, {resolve}) => {
-  setTabBar("setTabBarItem", args, resolve);
+const setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, {resolve}) => {
+  setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
-const setTabBarStyle = /* @__PURE__ */ defineAsyncApi("setTabBarStyle", (args, {resolve}) => {
-  setTabBar("setTabBarStyle", args, resolve);
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, {resolve}) => {
+  setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
-const hideTabBar = /* @__PURE__ */ defineAsyncApi("hideTabBar", (args, {resolve}) => {
-  setTabBar("hideTabBar", args, resolve);
+const hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, {resolve}) => {
+  setTabBar(API_HIDE_TAB_BAR, args, resolve);
 }, HideTabBarProtocol);
-const showTabBar = /* @__PURE__ */ defineAsyncApi("showTabBar", (args, {resolve}) => {
-  setTabBar("showTabBar", args, resolve);
+const showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, {resolve}) => {
+  setTabBar(API_SHOW_TAB_BAR, args, resolve);
 }, ShowTabBarProtocol);
-const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi("hideTabBarRedDot", (args, {resolve}) => {
-  setTabBar("hideTabBarRedDot", args, resolve);
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, {resolve}) => {
+  setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi("showTabBarRedDot", (args, {resolve}) => {
-  setTabBar("showTabBarRedDot", args, resolve);
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, {resolve}) => {
+  setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi("removeTabBarBadge", (args, {resolve}) => {
-  setTabBar("removeTabBarBadge", args, resolve);
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, {resolve}) => {
+  setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-const setTabBarBadge = /* @__PURE__ */ defineAsyncApi("setTabBarBadge", (args, {resolve}) => {
-  setTabBar("setTabBarBadge", args, resolve);
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, {resolve}) => {
+  setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,

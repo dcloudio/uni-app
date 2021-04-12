@@ -1,5 +1,3 @@
-import { ProtocolOptions } from '../type'
-
 export const $on: ProtocolOptions<String | Array<String> | Function>[] = [
   {
     name: 'event',

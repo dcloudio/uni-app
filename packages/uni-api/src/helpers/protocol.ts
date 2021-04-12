@@ -6,28 +6,22 @@ import {
   isObject,
   toRawType,
   capitalize,
+  isPlainObject,
 } from '@vue/shared'
-
-import {
-  ApiProtocol,
-  ApiProtocols,
-  ProtocolConstructor,
-  ProtocolOptions,
-} from '../protocols/type'
 
 export const CHOOSE_SIZE_TYPES = ['original', 'compressed']
 export const CHOOSE_SOURCE_TYPES = ['album', 'camera']
 
-export const HTTP_METHODS = {
-  OPTIONS: 'OPTIONS',
-  GET: 'GET',
-  HEAD: 'HEAD',
-  POST: 'POST',
-  PUT: 'PUT',
-  DELETE: 'DELETE',
-  TRACE: 'TRACE',
-  CONNECT: 'CONNECT',
-}
+export const HTTP_METHODS = [
+  'GET',
+  'OPTIONS',
+  'HEAD',
+  'POST',
+  'PUT',
+  'DELETE',
+  'TRACE',
+  'CONNECT',
+]
 
 export const API_TYPE_ON_PROTOCOLS = [
   {
@@ -37,7 +31,17 @@ export const API_TYPE_ON_PROTOCOLS = [
   },
 ]
 
-export function normalizeStrArray(strArr: string[], optionalVal: string[]) {
+export function elemInArray(str: string, arr: string[]) {
+  if (arr.indexOf(str) === -1) {
+    return arr[0]
+  }
+  return str
+}
+
+export function elemsInArray(
+  strArr: string[] | string | undefined,
+  optionalVal: string[]
+) {
   if (
     !isArray(strArr) ||
     strArr.length === 0 ||
@@ -49,29 +53,23 @@ export function normalizeStrArray(strArr: string[], optionalVal: string[]) {
 }
 
 function validateProtocolFail(name: string, msg: string) {
-  const errMsg = `${name}:fail ${msg}`
-  if (!__TEST__) {
-    console.error(errMsg)
-  }
-  return {
-    errMsg,
-  }
+  console.warn(`${name}:fail ${msg}`)
 }
 
 function validateProtocol(
   name: string,
   data: Record<string, any>,
-  protocol?: ApiProtocol
+  protocol?: ApiProtocol<any>
 ) {
   for (const key in protocol) {
     const errMsg = validateProp(
       key,
       data[key],
-      protocol[key],
+      protocol[key as keyof typeof protocol],
       !hasOwn(data, key)
     )
     if (isString(errMsg)) {
-      return validateProtocolFail(name, errMsg)
+      validateProtocolFail(name, errMsg)
     }
   }
 }
@@ -79,47 +77,46 @@ function validateProtocol(
 export function validateProtocols(
   name: string,
   args: any[],
-  protocol?: ApiProtocols
+  protocol?: ApiProtocols<any>
 ) {
   if (!protocol) {
     return
   }
-  if (isArray(protocol)) {
-    const len = protocol.length
-    const argsLen = args.length
-    for (let i = 0; i < len; i++) {
-      const opts = protocol[i]
-      const data = Object.create(null)
-      if (argsLen > i) {
-        data[opts.name!] = args[i]
-      }
-      const errMsg = validateProtocol(name, data, { [opts.name!]: opts })
-      if (errMsg) {
-        return errMsg
-      }
-    }
-    return
+  if (!isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol)
   }
-  return validateProtocol(name, args[0] || Object.create(null), protocol)
+  const len = protocol.length
+  const argsLen = args.length
+  for (let i = 0; i < len; i++) {
+    const opts = protocol[i]
+    const data = Object.create(null)
+    if (argsLen > i) {
+      data[opts.name!] = args[i]
+    }
+    validateProtocol(name, data, { [opts.name!]: opts })
+  }
 }
 
 function validateProp(
   name: string,
   value: unknown,
-  prop: ProtocolOptions,
+  prop: ProtocolOptions | ProtocolType<any>,
   isAbsent: boolean
 ) {
-  const { type, required, validator } = prop
+  if (!isPlainObject(prop)) {
+    prop = { type: prop }
+  }
+  const { type, required, validator } = prop as ProtocolOptions
   // required!
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"'
   }
   // missing but optional
-  if (value == null && !prop.required) {
+  if (value == null && !required) {
     return
   }
   // type check
-  if (type != null && type !== true) {
+  if (type != null) {
     let isValid = false
     const types = isArray(type) ? type : [type]
     const expectedTypes = []
