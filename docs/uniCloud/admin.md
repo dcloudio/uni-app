@@ -299,7 +299,7 @@ admin 提供了两个内置方法，方便在页面中鉴定登录用户权限�
 2. 在左侧菜单的角色管理里，新增角色“普通成员”，标识为“member”，绑定上面的“查询信息”权限
 3. 在左侧菜单的用户管理里，添加用户，然后给用户赋予角色“普通成员”
 4. 在左侧菜单的菜单管理里，找到菜单“用户管理”，点修改，在权限列表里勾选“查询信息”，也就是有查询信息权限的人，可以看到本菜单
-5. 在uni-id-users.schema.json中设置新角色的权限，将permission下的read节点配置为`"read": "'readmember' in auth.permission"`。改动后记得上传发布到uniCloud
+5. 在uni-id-users.schema.json中设置新角色的权限，将permission下的read节点配置为`"read": "'read' in auth.permission"`。改动后记得上传发布到uniCloud
 
 
 ### 新增页面
