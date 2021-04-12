@@ -9,15 +9,12 @@ uni-slider[hidden] {
 }
 
 .uni-slider-wrapper {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
   align-items: center;
   min-height: 16px;
 }
 
 .uni-slider-tap-area {
-  -webkit-flex: 1;
   flex: 1;
   padding: 8px 0;
 }
@@ -73,6 +70,7 @@ uni-slider[hidden] {
 }
 
 .uni-slider-value {
+  width: 3ch;
   color: #888;
   font-size: 14px;
   margin-left: 1em;

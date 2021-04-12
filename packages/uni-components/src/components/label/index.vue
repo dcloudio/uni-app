@@ -44,8 +44,3 @@ export default {
   }
 }
 </script>
-<style>
-.uni-label-pointer {
-  cursor: pointer;
-}
-</style>

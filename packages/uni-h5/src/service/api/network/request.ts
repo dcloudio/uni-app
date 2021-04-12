@@ -1,3 +1,4 @@
+import { hasOwn } from '@vue/shared'
 import {
   API_REQUEST,
   API_TYPE_REQUEST,
@@ -5,7 +6,6 @@ import {
   RequestOptions,
   RequestProtocol,
 } from '@dcloudio/uni-api'
-import { hasOwn } from '@vue/shared'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,

@@ -1,8 +1,10 @@
 {
-  "private": true,
   "name": "@dcloudio/uni-components",
   "version": "3.0.0",
   "description": "@dcloudio/uni-components",
+  "files": [
+    "style"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

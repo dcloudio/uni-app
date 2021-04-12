@@ -98,24 +98,24 @@ function normalizePageIdentifier(path: string) {
 
 function generateCssCode(config: ResolvedConfig) {
   const define = config.define! as FEATURE_DEFINES
-  const cssFiles = ['@dcloudio/uni-h5/style/base.css']
+  const cssFiles = ['@dcloudio/uni-h5/style/framework/base.css']
   if (define.__UNI_FEATURE_PAGES__) {
-    cssFiles.push('@dcloudio/uni-h5/style/layout.css')
+    cssFiles.push('@dcloudio/uni-h5/style/framework/layout.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR__) {
-    cssFiles.push('@dcloudio/uni-h5/style/pageHead.css')
+    cssFiles.push('@dcloudio/uni-h5/style/framework/pageHead.css')
   }
   if (define.__UNI_FEATURE_TABBAR__) {
-    cssFiles.push('@dcloudio/uni-h5/style/tabBar.css')
+    cssFiles.push('@dcloudio/uni-h5/style/framework/tabBar.css')
   }
   if (define.__UNI_FEATURE_NVUE__) {
-    cssFiles.push('@dcloudio/uni-h5/style/nvue.css')
+    cssFiles.push('@dcloudio/uni-h5/style/framework/nvue.css')
   }
   if (define.__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    cssFiles.push('@dcloudio/uni-h5/style/pageRefresh.css')
+    cssFiles.push('@dcloudio/uni-h5/style/framework/pageRefresh.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
-    cssFiles.push('@dcloudio/uni-h5/style/input.css')
+    cssFiles.push('@dcloudio/uni-components/style/input.css')
   }
   return cssFiles.map((file) => `import '${file}'`).join('\n')
 }

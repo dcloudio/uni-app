@@ -1,0 +1,55 @@
+uni-radio {
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  cursor: pointer;
+}
+
+uni-radio[hidden] {
+  display: none;
+}
+
+uni-radio[disabled] {
+  cursor: not-allowed;
+}
+
+.uni-radio-wrapper {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.uni-radio-input {
+  appearance: none;
+  margin-right: 5px;
+  outline: 0;
+  border: 1px solid #d1d1d1;
+  background-color: #ffffff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  position: relative;
+}
+
+uni-radio:not([disabled]) .uni-radio-input:hover {
+  border-color: #007aff;
+}
+
+.uni-radio-input.uni-radio-input-checked:before {
+  font: normal normal normal 14px/1 'uni';
+  content: '\EA08';
+  color: #ffffff;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%) scale(0.73);
+}
+
+.uni-radio-input.uni-radio-input-disabled {
+  background-color: #e1e1e1;
+  border-color: #d1d1d1;
+}
+
+.uni-radio-input.uni-radio-input-disabled:before {
+  color: #adadad;
+}

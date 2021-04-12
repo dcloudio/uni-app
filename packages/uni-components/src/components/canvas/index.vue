@@ -574,19 +574,3 @@ export default {
   }
 }
 </script>
-<style>
-uni-canvas {
-  width: 300px;
-  height: 150px;
-  display: block;
-  position: relative;
-}
-
-uni-canvas > canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-</style>

@@ -30,9 +30,7 @@ uni-button:after {
   top: 0;
   left: 0;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
   box-sizing: border-box;
   border-radius: 10px;
@@ -183,7 +181,6 @@ uni-button[loading]:before {
   width: 18px;
   height: 18px;
   vertical-align: middle;
-  -webkit-animation: uni-loading 1s steps(12, end) infinite;
   animation: uni-loading 1s steps(12, end) infinite;
   background-size: 100%;
 }

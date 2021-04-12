@@ -1,0 +1,7 @@
+uni-checkbox-group {
+  display: block;
+}
+
+uni-checkbox-group[hidden] {
+  display: none;
+}

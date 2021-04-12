@@ -94,9 +94,3 @@ export default {
   }
 }
 </script>
-
-<style>
-	uni-radio-group[hidden] {
-		display: none;
-	}
-</style>

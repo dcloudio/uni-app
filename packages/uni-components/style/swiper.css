@@ -1,0 +1,85 @@
+uni-swiper {
+  display: block;
+  height: 150px;
+}
+
+uni-swiper[hidden] {
+  display: none;
+}
+
+.uni-swiper-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+}
+
+.uni-swiper-slides {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.uni-swiper-slide-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.uni-swiper-dots {
+  position: absolute;
+  font-size: 0;
+}
+
+.uni-swiper-dots-horizontal {
+  left: 50%;
+  bottom: 10px;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(-50%, 0);
+}
+
+.uni-swiper-dots-horizontal .uni-swiper-dot {
+  margin-right: 8px;
+}
+
+.uni-swiper-dots-horizontal .uni-swiper-dot:last-child {
+  margin-right: 0;
+}
+
+.uni-swiper-dots-vertical {
+  right: 10px;
+  top: 50%;
+  text-align: right;
+  transform: translate(0, -50%);
+}
+
+.uni-swiper-dots-vertical .uni-swiper-dot {
+  display: block;
+  margin-bottom: 9px;
+}
+
+.uni-swiper-dots-vertical .uni-swiper-dot:last-child {
+  margin-bottom: 0;
+}
+
+.uni-swiper-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  cursor: pointer;
+  transition-property: background-color;
+  transition-timing-function: ease;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+}
+
+.uni-swiper-dot-active {
+  background-color: #000000;
+}

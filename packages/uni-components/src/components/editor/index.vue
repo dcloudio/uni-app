@@ -341,7 +341,3 @@ export default {
   }
 }
 </script>
-
-<style src="./editor.css"></style>
-<style>
-</style>

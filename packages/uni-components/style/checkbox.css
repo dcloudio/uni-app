@@ -1,7 +1,3 @@
-uni-checkbox-group {
-  display: block;
-}
-
 uni-checkbox {
   -webkit-tap-highlight-color: transparent;
   display: inline-block;
@@ -17,16 +13,13 @@ uni-checkbox[disabled] {
 }
 
 .uni-checkbox-wrapper {
-  display: -webkit-inline-flex;
   display: inline-flex;
-  -webkit-align-items: center;
   align-items: center;
   vertical-align: middle;
 }
 
 .uni-checkbox-input {
   margin-right: 5px;
-  -webkit-appearance: none;
   appearance: none;
   outline: 0;
   border: 1px solid #d1d1d1;
@@ -53,7 +46,6 @@ uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -48%) scale(0.73);
-  -webkit-transform: translate(-50%, -48%) scale(0.73);
 }
 
 .uni-checkbox-input.uni-checkbox-input-disabled {
@@ -62,4 +54,8 @@ uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
 
 .uni-checkbox-input.uni-checkbox-input-disabled:before {
   color: #adadad;
+}
+
+uni-checkbox-group {
+  display: block;
 }

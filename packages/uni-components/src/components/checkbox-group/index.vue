@@ -76,9 +76,3 @@ export default {
   }
 }
 </script>
-
-<style>
-    uni-checkbox-group[hidden] {
-        display: none;
-    }
-</style>

@@ -51,12 +51,12 @@ uni-input[hidden] {
 }
 
 .uni-input-input {
+  position: relative;
   display: block;
   height: 100%;
   background: none;
   color: inherit;
   opacity: 1;
-  -webkit-text-fill-color: currentcolor;
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
@@ -72,10 +72,15 @@ uni-input[hidden] {
 
 .uni-input-input::-webkit-outer-spin-button,
 .uni-input-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 .uni-input-input[type='number'] {
   -moz-appearance: textfield;
+}
+
+.uni-input-input:disabled {
+  /* 用于重置iOS14以下禁用状态文字颜色 */
+  -webkit-text-fill-color: currentcolor;
 }

@@ -122,19 +122,3 @@ export default {
   }
 }
 </script>
-<style>
-uni-picker-view {
-  display: block;
-}
-
-uni-picker-view .uni-picker-view-wrapper {
-  display: flex;
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-}
-
-uni-picker-view[hidden] {
-  display: none;
-}
-</style>

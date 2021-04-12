@@ -1,7 +1,5 @@
 uni-progress {
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
   align-items: center;
 }
 
@@ -10,7 +8,6 @@ uni-progress[hidden] {
 }
 
 .uni-progress-bar {
-  -webkit-flex: 1;
   flex: 1;
 }
 

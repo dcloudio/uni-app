@@ -636,18 +636,3 @@ export default {
   }
 }
 </script>
-<style>
-uni-movable-view {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  top: 0px;
-  left: 0px;
-  position: absolute;
-  cursor: grab;
-}
-
-uni-movable-view[hidden] {
-  display: none;
-}
-</style>

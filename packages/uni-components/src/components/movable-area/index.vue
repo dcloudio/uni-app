@@ -169,15 +169,3 @@ export default {
   }
 }
 </script>
-<style>
-uni-movable-area {
-  display: block;
-  position: relative;
-  width: 10px;
-  height: 10px;
-}
-
-uni-movable-area[hidden] {
-  display: none;
-}
-</style>

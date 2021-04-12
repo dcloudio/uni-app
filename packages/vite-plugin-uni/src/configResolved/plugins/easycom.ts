@@ -9,8 +9,41 @@ import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 import { debugEasycom, matchEasycom } from '../../utils'
 
-const COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
-const COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
+const BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style/'
+const H5_COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
+const H5_COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
+
+const baseComponents = [
+  'audio',
+  'button',
+  'canvas',
+  'checkbox',
+  'checkbox-group',
+  'editor',
+  'form',
+  'icon',
+  'image',
+  'input',
+  'label',
+  'movable-area',
+  'movable-view',
+  'navigator',
+  'picker-view',
+  'picker-view-column',
+  'progress',
+  'radio',
+  'radio-group',
+  'resize-sensor',
+  'rich-text',
+  'scroll-view',
+  'slider',
+  'swiper',
+  'swiper-item',
+  'switch',
+  'text',
+  'textarea',
+  'view',
+]
 
 export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
@@ -60,11 +93,19 @@ function addBuiltInImportDeclaration(
   local: string,
   name: string
 ) {
-  importDeclarations.push(`import '${COMPONENTS_STYLE_PATH + name + '.css'}';`)
+  if (baseComponents.includes(name)) {
+    importDeclarations.push(
+      `import '${BASE_COMPONENTS_STYLE_PATH + name + '.css'}';`
+    )
+  } else {
+    importDeclarations.push(
+      `import '${H5_COMPONENTS_STYLE_PATH + name + '.css'}';`
+    )
+  }
   return addImportDeclaration(
     importDeclarations,
     local,
-    COMPONENTS_PATH,
+    H5_COMPONENTS_PATH,
     capitalize(camelize(name))
   )
 }
