@@ -8,7 +8,6 @@ import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
 import { InjectOptions, uniInjectPlugin } from './inject'
 
-import { uniAppVuePlugin } from './appVue'
 import { uniMainJsPlugin } from './mainJs'
 import { uniPagesJsonPlugin } from './pagesJson'
 import { uniManifestJsonPlugin } from './manifestJson'
@@ -86,7 +85,6 @@ export function resolvePlugins(
     0,
     'pre'
   )
-  addPlugin(plugins, uniAppVuePlugin(options), 1, 'pre')
   addPlugin(plugins, uniMainJsPlugin(options), 1, 'pre')
   addPlugin(plugins, uniPagesJsonPlugin(config, options), 1, 'pre')
   addPlugin(plugins, uniManifestJsonPlugin(options), 1, 'pre')

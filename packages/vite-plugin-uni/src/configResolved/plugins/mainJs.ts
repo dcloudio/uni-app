@@ -13,7 +13,7 @@ export function uniMainJsPlugin(options: VitePluginUniResolvedOptions): Plugin {
     transform(code, id) {
       if (id === mainJsPath || id === mainTsPath) {
         return {
-          code: `import { plugin } from '@dcloudio/uni-h5';import '${pagesJsonJsPath}';function createApp(rootComponent,rootProps){rootComponent && (rootComponent.mpType = 'app');return createVueApp(rootComponent, rootProps).use(plugin)};${code.replace(
+          code: `import { openBlock, createBlock } from 'vue';import { plugin,LayoutComponent } from '@dcloudio/uni-h5';import '${pagesJsonJsPath}';function createApp(rootComponent,rootProps){rootComponent && (rootComponent.mpType = 'app',rootComponent.render = ()=>(openBlock(),createBlock(LayoutComponent)));return createVueApp(rootComponent, rootProps).use(plugin)};${code.replace(
             'createApp',
             'createVueApp'
           )}`,

@@ -12,24 +12,32 @@ import {
   ConcreteComponent,
   resolveDynamicComponent,
   SetupContext,
+  onMounted,
+  ref,
 } from 'vue'
 
 import { RouterView, useRoute } from 'vue-router'
 
-import { useTabBar } from '../../../plugin/state'
-import { useKeepAliveRoute } from '../../../plugin/page'
+import { useTabBar } from '../../plugin/state'
+import { useKeepAliveRoute } from '../../plugin/page'
 
-import TabBar from '../tabBar'
+import TabBar from './tabBar'
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
+const CSS_VARS = [
+  '--status-bar-height',
+  '--top-window-height',
+  '--window-left',
+  '--window-right',
+  '--window-margin',
+]
+
 export default defineComponent({
   name: 'Layout',
-  props: {
-    onChange: Function,
-  },
-  emits: ['change'],
   setup(props, { emit }) {
+    useCssVar()
+    useAppLifecycle()
     const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
       useKeepAliveRoute()) as KeepAliveRoute
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow()
@@ -37,6 +45,7 @@ export default defineComponent({
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow()
     const showTabBar = (__UNI_FEATURE_TABBAR__ &&
       useShowTabBar(emit)) as ComputedRef<boolean>
+    const clazz = useAppClass(showTabBar)
     return () => {
       const layoutTsx = createLayoutTsx(
         keepAliveRoute,
@@ -45,13 +54,37 @@ export default defineComponent({
         rightWindow
       )
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar)
-      if (!tabBarTsx) {
-        return layoutTsx
-      }
-      return [layoutTsx, tabBarTsx]
+      return <uni-app class={clazz.value}>{[layoutTsx, tabBarTsx]}</uni-app>
     }
   },
 })
+import { updateCssVar } from '../../../helpers/dom'
+
+function useCssVar() {
+  CSS_VARS.forEach((name) => updateCssVar(name, '0px'))
+}
+
+function useAppLifecycle() {
+  onMounted(() => {
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') {
+        UniServiceJSBridge.emit('onAppEnterForeground')
+      } else {
+        UniServiceJSBridge.emit('onAppEnterBackground')
+      }
+    })
+  })
+}
+
+function useAppClass(showTabBar?: ComputedRef<boolean>) {
+  const showMaxWidth = ref(false)
+  return computed(() => {
+    return {
+      'uni-app--showtabbar': showTabBar && showTabBar.value,
+      'uni-app--maxwidth': showMaxWidth.value,
+    }
+  })
+}
 
 function createLayoutTsx(
   keepAliveRoute: KeepAliveRoute,
@@ -87,7 +120,7 @@ function createLayoutTsx(
   )
 }
 
-function useShowTabBar(emit: SetupContext['emit']) {
+function useShowTabBar(emit: SetupContext<['change']>['emit']) {
   const route = useRoute()
   const tabBar = useTabBar()!
   // TODO meida query
