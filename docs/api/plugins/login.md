@@ -109,6 +109,7 @@ uni.login({
 |en|英文|
 
 **注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
+**注意：**微信小程序最新的调整中，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据。
 
 **success 返回参数说明**
 
@@ -165,6 +166,66 @@ uni.login({
 #### App端集成其他登录SDK如支付宝、淘宝、facebook登录的说明
 1. [支付宝登录](https://ext.dcloud.net.cn/search?q=%E6%94%AF%E4%BB%98%E5%AE%9D%E7%99%BB%E9%99%86)、[淘宝登录](https://ext.dcloud.net.cn/search?q=%E7%99%BE%E5%B7%9D)、[抖音登录](https://ext.dcloud.net.cn/search?q=%E6%8A%96%E9%9F%B3%E7%99%BB%E5%BD%95)、[facebook登录](https://ext.dcloud.net.cn/search?q=facebook%E7%99%BB%E5%BD%95)等在插件市场均已有插件，还有[sharesdk](https://ext.dcloud.net.cn/search?q=sharesdk)等专业集成多家登录分享的插件。
 2. 也可以内嵌web-view组件，使用web登录模式集成这些三方登录
+
+
+### uni.getUserProfile(OBJECT)
+
+获取用户信息。每次请求都会弹出授权窗口，用户同意后返回 userInfo。
+
+
+
+**平台差异说明**
+
+|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|x|x|√|x|x|x|x|
+
+**注意：** 该API仅支持微信小程序端，微信小程序更新了获取用户信息的方式（详见[《微信小程序公告》](https://developers.weixin.qq.com/community/develop/doc/000cacfa20ce88df04cb468bc52801?highLine=getUserProfile%253Afail)）。每次点击触发该API均会弹出授权窗口，用户授权后可成功获取用户信息。
+
+**OBJECT 参数说明**
+
+|参数名|类型|必填|说明|平台差异说明|
+|:-|:-|:-|:-|:-|:-|
+
+|desc|String|是|声明获取用户个人信息后的用途，不超过30个字符|
+|lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
+|success|Function|否|接口调用成功的回调||
+|fail|Function|否|接口调用失败的回调函数||
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
+
+**lang 值说明**
+
+|值|说明|
+|:-|:-|
+|zh_CN|简体中文|
+|zh_TW|繁体中文|
+|en|英文|
+
+**注意：**可以使用 if(uni.getUserProfile) 判断uni.getUserProfile是否可用。
+
+**success 返回参数说明**
+
+|参数|类型|说明|平台差异说明(仅支持微信小程序)|
+|:-|:-|:-|微信小程序|
+|userInfo|OBJECT|用户信息对象|微信小程序|
+|rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。|微信小程序|
+|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。|微信小程序|
+|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。|微信小程序|
+|iv|String|加密算法的初始向量，详细见加密数据解密算法。|微信小程序|
+|cloudID|String|敏感数据对应的云 ID，开通云开发的小程序才会返回，可通过云调用直接获取开放数据，详细见云调用直接获取开放数据|微信小程序|
+|errMsg|String|描述信息|&nbsp;|
+
+**userInfo 参数说明**
+
+|参数|类型|说明|平台差异说明(仅支持微信小程序)|
+|:-|:-|:-||
+|nickName|String|用户昵称||
+|gender|Number|用户性别||
+|country|String|用户所在国家||
+|province|String|用户所在省份||
+|city|String|用户所在城市||
+|avatarUrl|String|用户头像|&nbsp;|
+
 
 ### uni.preLogin(OBJECT)
 预登录。
