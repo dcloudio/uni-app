@@ -4,6 +4,12 @@ export const isAndroid = /android/i.test(ua)
 
 export const isIOS = /iphone|ipad|ipod/i.test(ua)
 
+export const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i)
+
+export const isMac = /Macintosh|Mac/i.test(ua)
+
+export const isLinux = /Linux|X11/i.test(ua)
+
 export function getScreenFix() {
   return (
     /^Apple/.test(navigator.vendor) && typeof window.orientation === 'number'
