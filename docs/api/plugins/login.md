@@ -108,8 +108,7 @@ uni.login({
 |zh_TW|繁体中文|
 |en|英文|
 
-**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
-**注意：**微信小程序最新的调整中，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据，建议改用 uni.getUserProfile 。
+**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。在微信小程序最新的调整中，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据，建议改用 uni.getUserProfile 。
 
 **success 返回参数说明**
 
