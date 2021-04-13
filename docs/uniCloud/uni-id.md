@@ -378,6 +378,38 @@ function hasPermission(token, permission) {
 
 ## 基础功能
 
+### 创建uni-id实例@create-instance
+
+> uni-id 3.0.7及以上版本
+
+用法：`uniID.createInstance(Object CreateInstanceParams);`
+
+CreateInstanceParams内可以传入云函数context
+
+```js
+// 云函数代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+  const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
+    context: context,
+    config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
+  })
+  payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
+  if (payload.code) {
+  	return payload
+  }
+	const res = await uniIDIns.updateUser({
+    uid: payload.uid,
+    nickname: 'user nickname'
+  })
+	return res
+}
+```
+
+**为什么需要自行创建uni-id实例**
+
+默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
+
 ### 用户注册 @register
 
 用法`uniID.register(Object RegisterParams)`
@@ -1004,38 +1036,6 @@ exports.main = async function(event,context) {
 	return res
 }
 ```
-
-### 创建uni-id实例@create-instance
-
-> uni-id 3.0.7及以上版本
-
-用法：`uniID.createInstance(Object CreateInstanceParams);`
-
-CreateInstanceParams内可以传入云函数context，**主要用于在单实例多并发的场景**
-
-```js
-// 云函数代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-  const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
-    context: context,
-    config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
-  })
-  payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
-  if (payload.code) {
-  	return payload
-  }
-	const res = await uniIDIns.updateUser({
-    uid: payload.uid,
-    nickname: 'user nickname'
-  })
-	return res
-}
-```
-
-**为什么需要自行创建uni-id实例**
-
-默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
 
 ## 手机号码
 

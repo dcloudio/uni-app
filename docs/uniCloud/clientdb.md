@@ -574,7 +574,7 @@ db.collection('order')
 
 ### 查询记录过滤，where条件@where
 
-jql对查询条件进行了简化，开发者可以使用`where('a==1||b==2')`来表示字段`a等于1或字段b等于2`。如果不适用jql语法，上述条件需要写成下面这种形式
+jql对查询条件进行了简化，开发者可以使用`where('a==1||b==2')`来表示字段`a等于1或字段b等于2`。如果不使用jql语法，上述条件需要写成下面这种形式
 
 ```js
 const db = uniCloud.database()
