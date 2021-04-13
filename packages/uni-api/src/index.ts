@@ -25,6 +25,7 @@ export * from './protocols/media/chooseVideo'
 export * from './protocols/media/getImageInfo'
 
 export * from './protocols/network/request'
+export * from './protocols/network/downloadFile'
 
 export * from './protocols/route/route'
 

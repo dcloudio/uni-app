@@ -10,6 +10,7 @@ export * from './file/openDocument'
 export * from './media/getImageInfo'
 
 export * from './network/request'
+export * from './network/downloadFile'
 
 export * from './route/navigateBack'
 export * from './route/navigateTo'

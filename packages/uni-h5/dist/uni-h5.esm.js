@@ -4734,6 +4734,22 @@ const RequestOptions = {
     }
   }
 };
+const API_DOWNLOAD_FILE = "downloadFile";
+const DownloadFileOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    }
+  }
+};
+const DownloadFileProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  timeout: Number
+};
 function encodeQueryString(url) {
   if (typeof url !== "string") {
     return url;
@@ -10653,6 +10669,114 @@ function parseHeaders(headers) {
   });
   return headersObject;
 }
+const files = {};
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn$1(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+class DownloadTask {
+  constructor(xhr) {
+    this._callbacks = [];
+    this._xhr = xhr;
+  }
+  onProgressUpdate(callback) {
+    if (typeof callback !== "function") {
+      return;
+    }
+    this._callbacks.push(callback);
+  }
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      this._callbacks.splice(index2, 1);
+    }
+  }
+  abort() {
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({
+  url,
+  header,
+  timeout = __uniConfig.networkTimeout.downloadFile
+}, {resolve, reject}) => {
+  var timer;
+  var xhr = new XMLHttpRequest();
+  var downloadTask = new DownloadTask(xhr);
+  xhr.open("GET", url, true);
+  Object.keys(header).forEach((key) => {
+    xhr.setRequestHeader(key, header[key]);
+  });
+  xhr.responseType = "blob";
+  xhr.onload = function() {
+    clearTimeout(timer);
+    const statusCode = xhr.status;
+    const blob = this.response;
+    let filename;
+    const contentDisposition = xhr.getResponseHeader("content-disposition");
+    if (contentDisposition) {
+      const res = contentDisposition.match(/filename="?(\S+)"?\b/);
+      if (res) {
+        filename = res[1];
+      }
+    }
+    blob.name = filename || getFileName(url);
+    resolve({
+      statusCode,
+      tempFilePath: fileToUrl(blob)
+    });
+  };
+  xhr.onabort = function() {
+    clearTimeout(timer);
+    reject("abort");
+  };
+  xhr.onerror = function() {
+    clearTimeout(timer);
+    reject("error");
+  };
+  xhr.onprogress = function(event2) {
+    downloadTask._callbacks.forEach((callback) => {
+      var totalBytesWritten = event2.loaded;
+      var totalBytesExpectedToWrite = event2.total;
+      var progress = Math.round(totalBytesWritten / totalBytesExpectedToWrite * 100);
+      callback({
+        progress,
+        totalBytesWritten,
+        totalBytesExpectedToWrite
+      });
+    });
+  };
+  xhr.send();
+  timer = setTimeout(function() {
+    xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+    downloadTask.abort();
+    reject("timeout");
+  }, timeout);
+  return downloadTask;
+}, DownloadFileProtocol, DownloadFileOptions);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -10857,6 +10981,7 @@ var api = /* @__PURE__ */ Object.freeze({
   openDocument,
   getImageInfo,
   request,
+  downloadFile,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -11914,4 +12039,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$5 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$6 as Form, index$4 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, index$1 as LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$3 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$2 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$5 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$6 as Form, index$4 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, index$1 as LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$3 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$2 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, upx2px, useSubscribe};

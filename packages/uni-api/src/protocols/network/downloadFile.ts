@@ -14,4 +14,5 @@ export const DownloadFileProtocol: ApiProtocol<API_TYPE_DOWNLOAD_FILE> = {
     required: true,
   },
   header: Object,
+  timeout: Number,
 }
