@@ -76,7 +76,10 @@ interface FileLike extends Blob {
  * @param {string} type
  * @return {File}
  */
-export function blobToFile(blob: Blob | Uint8Array | File, type: string): File {
+export function blobToFile(
+  blob: Blob | Uint8Array | File,
+  type?: string
+): File {
   let file: File | FileLike
   if (blob instanceof File) {
     file = blob

@@ -4750,6 +4750,31 @@ const DownloadFileProtocol = {
   header: Object,
   timeout: Number
 };
+const API_UPLOAD_FILE = "uploadFile";
+const UploadFileOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    },
+    formData(value, params) {
+      params.formData = value || {};
+    }
+  }
+};
+const UploadFileProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  files: {
+    type: Array
+  },
+  filePath: String,
+  name: String,
+  header: Object,
+  formData: Object,
+  timeout: Number
+};
 function encodeQueryString(url) {
   if (typeof url !== "string") {
     return url;
@@ -10670,10 +10695,65 @@ function parseHeaders(headers) {
   return headersObject;
 }
 const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
 function getFileName(url) {
   url = url.split("#")[0].split("?")[0];
   const array = url.split("/");
   return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
 }
 function fileToUrl(file) {
   for (const key in files) {
@@ -10718,11 +10798,7 @@ class DownloadTask {
     throw new Error("Method not implemented.");
   }
 }
-const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({
-  url,
-  header,
-  timeout = __uniConfig.networkTimeout.downloadFile
-}, {resolve, reject}) => {
+const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({url, header, timeout = __uniConfig.networkTimeout.downloadFile}, {resolve, reject}) => {
   var timer;
   var xhr = new XMLHttpRequest();
   var downloadTask = new DownloadTask(xhr);
@@ -10755,7 +10831,7 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({
   };
   xhr.onerror = function() {
     clearTimeout(timer);
-    reject("error");
+    reject();
   };
   xhr.onprogress = function(event2) {
     downloadTask._callbacks.forEach((callback) => {
@@ -10777,6 +10853,119 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({
   }, timeout);
   return downloadTask;
 }, DownloadFileProtocol, DownloadFileOptions);
+class UploadTask {
+  constructor(xhr) {
+    this._callbacks = [];
+    this._xhr = xhr;
+  }
+  onProgressUpdate(callback) {
+    if (typeof callback !== "function") {
+      return;
+    }
+    this._callbacks.push(callback);
+  }
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      this._callbacks.splice(index2, 1);
+    }
+  }
+  abort() {
+    this._isAbort = true;
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
+  url,
+  file,
+  filePath,
+  name,
+  files: files2,
+  header,
+  formData,
+  timeout = __uniConfig.networkTimeout.uploadFile
+}, {resolve, reject}) => {
+  var uploadTask = new UploadTask();
+  if (!Array.isArray(files2) || !files2.length) {
+    files2 = [
+      {
+        name,
+        file,
+        uri: filePath
+      }
+    ];
+  }
+  function upload(realFiles) {
+    var xhr = new XMLHttpRequest();
+    var form = new FormData();
+    var timer;
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
+    Object.values(files2).forEach(({name: name2}, index2) => {
+      const file2 = realFiles[index2];
+      form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
+    });
+    xhr.open("POST", url);
+    Object.keys(header).forEach((key) => {
+      xhr.setRequestHeader(key, header[key]);
+    });
+    xhr.upload.onprogress = function(event2) {
+      uploadTask._callbacks.forEach((callback) => {
+        var totalBytesSent = event2.loaded;
+        var totalBytesExpectedToSend = event2.total;
+        var progress = Math.round(totalBytesSent / totalBytesExpectedToSend * 100);
+        callback({
+          progress,
+          totalBytesSent,
+          totalBytesExpectedToSend
+        });
+      });
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject();
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort");
+    };
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      resolve({
+        statusCode,
+        data: xhr.responseText || xhr.response
+      });
+    };
+    if (!uploadTask._isAbort) {
+      timer = setTimeout(function() {
+        xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+        uploadTask.abort();
+        reject("timeout");
+      }, timeout);
+      xhr.send(form);
+      uploadTask._xhr = xhr;
+    } else {
+      reject("abort");
+    }
+  }
+  Promise.all(files2.map(({file: file2, uri}) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri))).then(upload).catch(() => {
+    setTimeout(() => {
+      reject("file error");
+    }, 0);
+  });
+  return uploadTask;
+}, UploadFileProtocol, UploadFileOptions);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -10982,6 +11171,7 @@ var api = /* @__PURE__ */ Object.freeze({
   getImageInfo,
   request,
   downloadFile,
+  uploadFile,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -12039,4 +12229,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$5 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$6 as Form, index$4 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, index$1 as LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$3 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$2 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$5 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$6 as Form, index$4 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, index$1 as LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$3 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$2 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};
