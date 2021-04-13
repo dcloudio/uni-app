@@ -1,10 +1,16 @@
 import { App } from 'vue'
-import { Router, RouterOptions, RouteRecordRaw } from 'vue-router'
+import {
+  Router,
+  RouterOptions,
+  RouteRecordRaw,
+  RouterHistory,
+} from 'vue-router'
 import {
   createRouter,
   createWebHistory,
   createWebHashHistory,
 } from 'vue-router'
+import { removeCurrentPages } from './page'
 
 export function initRouter(app: App) {
   app.use(createAppRouter(createRouter(createRouterOptions())))
@@ -39,5 +45,10 @@ function initHistory() {
     __UNI_FEATURE_ROUTER_MODE__ === 'history'
       ? createWebHistory()
       : createWebHashHistory()
+  history.listen((_to, _from, info) => {
+    if (info.direction === 'back') {
+      removeCurrentPages(Math.abs(info.delta))
+    }
+  })
   return history
 }

@@ -275,7 +275,7 @@ function createGetter(isReadonly = false, shallow = false) {
         return res;
     };
 }
-const set = /*#__PURE__*/ createSetter();
+const set$1 = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
@@ -325,7 +325,7 @@ function ownKeys(target) {
 }
 const mutableHandlers = {
     get,
-    set,
+    set: set$1,
     deleteProperty,
     has,
     ownKeys
@@ -407,7 +407,7 @@ function add(value) {
     }
     return this;
 }
-function set$1(key, value) {
+function set$1$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
     const { has, get } = getProto(target);
@@ -527,7 +527,7 @@ const mutableInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1,
+    set: set$1$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, false)
@@ -541,7 +541,7 @@ const shallowInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1,
+    set: set$1$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, true)
@@ -6713,7 +6713,7 @@ function createDuplicateChecker() {
     };
 }
 let shouldCacheAccess = true;
-function applyOptions(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
+function applyOptions$1(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
     const { 
     // composition
     mixins, extends: extendsOptions, 
@@ -6746,7 +6746,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     }
     // extending a base component...
     if (extendsOptions) {
-        applyOptions(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
+        applyOptions$1(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
     }
     // local mixins
     if (mixins) {
@@ -6982,6 +6982,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
         }
     }
 }
+// fixed by xxxxxx
 function callSyncHook(name, type, options, instance, globalMixins) {
     for (let i = 0; i < globalMixins.length; i++) {
         callHookWithMixinAndExtends(name, type, globalMixins[i], instance);
@@ -7005,7 +7006,7 @@ function callHookWithMixinAndExtends(name, type, options, instance) {
 }
 function applyMixins(instance, mixins, deferredData, deferredWatch, deferredProvide) {
     for (let i = 0; i < mixins.length; i++) {
-        applyOptions(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
+        applyOptions$1(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
     }
 }
 function resolveData(instance, dataFn, publicThis) {
@@ -7606,7 +7607,7 @@ function finishComponentSetup(instance, isSSR) {
     if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
         pauseTracking();
-        applyOptions(instance, Component);
+        applyOptions$1(instance, Component);
         resetTracking();
         currentInstance = null;
     }
@@ -9404,18 +9405,61 @@ const compile$1 = () => {
     }
 };
 
+function applyOptions(options, instance, publicThis) {
+    Object.keys(options).forEach((name) => {
+        if (name.indexOf('on') === 0) {
+            const hook = options[name];
+            if (isFunction(hook)) {
+                injectHook(name, hook.bind(publicThis), instance);
+            }
+        }
+    });
+}
+
+function set(target, key, val) {
+    return (target[key] = val);
+}
+function hasHook(name) {
+    const hooks = this.$[name];
+    if (hooks && hooks.length) {
+        return true;
+    }
+    return false;
+}
+function callHook(name, args) {
+    const hooks = this.$[name];
+    let ret;
+    if (hooks) {
+        for (let i = 0; i < hooks.length; i++) {
+            ret = hooks[i](args);
+        }
+    }
+    return ret;
+}
+
+function errorHandler(err, instance, info) {
+    if (!instance) {
+        throw err;
+    }
+    const appInstance = instance.$.appContext.$appInstance;
+    if (!appInstance) {
+        throw err;
+    }
+    appInstance.$callHook('onError', err, info);
+}
+
 // @ts-ignore
 const createHook = (lifecycle) => (hook, target) => 
 // post-create lifecycle registrations are noops during SSR
 !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 const onShow = /*#__PURE__*/ createHook("onShow" /* ON_SHOW */);
 const onHide = /*#__PURE__*/ createHook("onHide" /* ON_HIDE */);
-const onLaunch = /*#__PURE__*/ createHook("onLaunch" /* ON_LAUCH */);
+const onLaunch = /*#__PURE__*/ createHook("onLaunch" /* ON_LAUNCH */);
 const onError = /*#__PURE__*/ createHook("onError" /* ON_ERROR */);
 const onThemeChange = /*#__PURE__*/ createHook("onThemeChange" /* ON_THEME_CHANGE */);
 const onPageNotFound = /*#__PURE__*/ createHook("onPageNotFound" /* ON_PAGE_NOT_FOUND */);
 const onUnhandledRejection = /*#__PURE__*/ createHook("onUnhandledRejection" /* ON_UNHANDLE_REJECTION */);
-const onLoad = /*#__PURE__*/ createHook("onLoad" /* ON_LOAD */);
+// export const onLoad = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LOAD)
 const onReady = /*#__PURE__*/ createHook("onReady" /* ON_READY */);
 const onUnload = /*#__PURE__*/ createHook("onUnload" /* ON_UNLOAD */);
 const onResize = /*#__PURE__*/ createHook("onResize" /* ON_RESIZE */);
@@ -9433,4 +9477,18 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook("onNavigation
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook("onNavigationBarSearchInputConfirmed" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */);
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHook, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
+function initApp(app) {
+    const appConfig = app._context.config;
+    if (isFunction(app._component.onError)) {
+        appConfig.errorHandler = errorHandler;
+    }
+    const globalProperties = appConfig.globalProperties;
+    globalProperties.$hasHook = hasHook;
+    globalProperties.$callHook = callHook;
+    if (__VUE_OPTIONS_API__) {
+        globalProperties.$set = set;
+        globalProperties.$applyOptions = applyOptions;
+    }
+}
+
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callSyncHook, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHook, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initApp, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };

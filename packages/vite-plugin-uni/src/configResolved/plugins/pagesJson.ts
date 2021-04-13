@@ -63,8 +63,9 @@ function parsePagesJson(
   const cssCode = generateCssCode(config)
 
   return `
+import { extend } from '@vue/shared'  
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
+import { setupPage, PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
 ${cssCode}
 ${uniConfigCode}
@@ -123,20 +124,23 @@ function generateCssCode(config: ResolvedConfig) {
 function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
   return `const ${normalizePageIdentifier(
     pageOptions.path
-  )} = defineAsyncComponent({
- loader: () => import('./${pageOptions.path}.vue?mpType=page'),
- loadingComponent: AsyncLoadingComponent,
- errorComponent: AsyncErrorComponent,
- delay: async.delay,
- timeout: async.timeout,
- suspensible: async.suspensible
-})`
+  )} = defineAsyncComponent(extend({loader:()=>import('./${
+    pageOptions.path
+  }.vue?mpType=page').then(comp=>setupPage(comp))},AsyncComponentOptions))`
 }
 
 function generatePagesDefineCode(pagesJson: UniApp.PagesJson) {
-  return pagesJson.pages
-    .map((pageOptions) => generatePageDefineCode(pageOptions))
-    .join('\n')
+  const { pages } = pagesJson
+  return (
+    `const AsyncComponentOptions = {
+  loadingComponent: AsyncLoadingComponent,
+  errorComponent: AsyncErrorComponent,
+  delay: async.delay,
+  timeout: async.timeout,
+  suspensible: async.suspensible
+}
+` + pages.map((pageOptions) => generatePageDefineCode(pageOptions)).join('\n')
+  )
 }
 
 function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
@@ -176,11 +180,7 @@ function generatePageRoute({ name, path, meta }: PageRouteOptions) {
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{
-    render() {
-      return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(${name})]), _: 1 /* STABLE */}))
-    }
-  },
+  component:{render(){return renderPage(${name})}},
   meta: ${JSON.stringify(meta)}
 }`
 }
@@ -190,7 +190,11 @@ function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
 }
 
 function generateRoutes(pagesJson: UniApp.PagesJson) {
-  return `window.__uniRoutes=[${[
+  return `
+function renderPage(component){
+  return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, { ref: "page" }, null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
+}
+window.__uniRoutes=[${[
     ...generatePagesRoute(normalizePagesRoute(pagesJson)),
   ].join(',')}]`
 }

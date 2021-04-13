@@ -11,7 +11,7 @@ import { usePageMeta } from './provide'
 
 const SEP = '$$'
 
-const currentPagesMap = new Map<number, Page.PageInstance>()
+const currentPagesMap = new Map<string, Page.PageInstance>()
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -24,6 +24,19 @@ function pruneCurrentPages() {
 export function getCurrentPages(isAll: boolean = false) {
   pruneCurrentPages() // TODO 目前页面unmounted时机较晚，前一个页面onShow里边调用getCurrentPages，可能还会获取到上一个准备被销毁的页面
   return [...currentPagesMap.values()]
+}
+
+export function removeCurrentPages(delta: number = -1) {
+  const keys = [...currentPagesMap.keys()]
+  const start = keys.length - 1
+  const end = start - delta
+  for (let i = start; i > end; i--) {
+    const routeKey = keys[i]
+    const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+    pageVm.$.__isUnload = true
+    pageVm.$callHook('onUnload')
+    currentPagesMap.delete(routeKey)
+  }
 }
 
 let id = (history.state && history.state.__id__) || 1
@@ -62,13 +75,20 @@ export function initPage(vm: ComponentPublicInstance) {
   const route = vm.$route
   ;(vm as any).$vm = vm
   ;(vm as any).$page = initPublicPage(route)
-  currentPagesMap.set(vm.$page.id, (vm as unknown) as Page.PageInstance)
+  currentPagesMap.set(
+    normalizeRouteKey(route.path, vm.$page.id),
+    (vm as unknown) as Page.PageInstance
+  )
+}
+
+function normalizeRouteKey(path: string, id: number) {
+  return path + SEP + id
 }
 
 export function useKeepAliveRoute() {
   const route = useRoute()
-  const routeKey = computed(
-    () => route.fullPath + SEP + (history.state.__id__ || 1)
+  const routeKey = computed(() =>
+    normalizeRouteKey(route.path, history.state.__id__ || 1)
   )
   return {
     routeKey,
@@ -100,6 +120,10 @@ const routeCache: KeepAliveCache = {
     pageCacheMap.set(key, value)
   },
   delete(key) {
+    const vnode = pageCacheMap.get(key)
+    if (!vnode) {
+      return
+    }
     pageCacheMap.delete(key)
   },
   forEach(fn) {

@@ -6,6 +6,8 @@ import { applyOptions } from './componentOptions'
 import { set, hasHook, callHook } from './componentInstance'
 import { errorHandler } from './appConfig'
 
+export * from './apiLifecycle'
+
 export function initApp(app: App) {
   const appConfig = app._context.config
   if (isFunction((app._component as any).onError)) {

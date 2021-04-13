@@ -7,7 +7,7 @@ export const enum UniLifecycleHooks {
   ON_SHOW = 'onShow',
   ON_HIDE = 'onHide',
   //App
-  ON_LAUCH = 'onLaunch',
+  ON_LAUNCH = 'onLaunch',
   ON_ERROR = 'onError',
   ON_THEME_CHANGE = 'onThemeChange',
   ON_PAGE_NOT_FOUND = 'onPageNotFound',
@@ -44,7 +44,7 @@ export const createHook = <T extends Function = () => any>(
 export const onShow = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_SHOW)
 export const onHide = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_HIDE)
 
-export const onLaunch = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LAUCH)
+export const onLaunch = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LAUNCH)
 export const onError = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_ERROR)
 export const onThemeChange = /*#__PURE__*/ createHook(
   UniLifecycleHooks.ON_THEME_CHANGE
@@ -56,7 +56,7 @@ export const onUnhandledRejection = /*#__PURE__*/ createHook(
   UniLifecycleHooks.ON_UNHANDLE_REJECTION
 )
 
-export const onLoad = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LOAD)
+// export const onLoad = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LOAD)
 export const onReady = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_READY)
 export const onUnload = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_UNLOAD)
 

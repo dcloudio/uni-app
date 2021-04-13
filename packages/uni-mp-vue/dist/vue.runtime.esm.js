@@ -4082,6 +4082,35 @@ function errorHandler(err, instance, info) {
     appInstance.$callHook('onError', err, info);
 }
 
+// @ts-ignore
+const createHook = (lifecycle) => (hook, target) => 
+// post-create lifecycle registrations are noops during SSR
+!isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+const onShow = /*#__PURE__*/ createHook("onShow" /* ON_SHOW */);
+const onHide = /*#__PURE__*/ createHook("onHide" /* ON_HIDE */);
+const onLaunch = /*#__PURE__*/ createHook("onLaunch" /* ON_LAUNCH */);
+const onError = /*#__PURE__*/ createHook("onError" /* ON_ERROR */);
+const onThemeChange = /*#__PURE__*/ createHook("onThemeChange" /* ON_THEME_CHANGE */);
+const onPageNotFound = /*#__PURE__*/ createHook("onPageNotFound" /* ON_PAGE_NOT_FOUND */);
+const onUnhandledRejection = /*#__PURE__*/ createHook("onUnhandledRejection" /* ON_UNHANDLE_REJECTION */);
+// export const onLoad = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LOAD)
+const onReady = /*#__PURE__*/ createHook("onReady" /* ON_READY */);
+const onUnload = /*#__PURE__*/ createHook("onUnload" /* ON_UNLOAD */);
+const onResize = /*#__PURE__*/ createHook("onResize" /* ON_RESIZE */);
+const onBackPress = /*#__PURE__*/ createHook("onBackPress" /* ON_BACK_PRESS */);
+const onPageScroll = /*#__PURE__*/ createHook("onPageScroll" /* ON_PAGE_SCROLL */);
+const onTabItemTap = /*#__PURE__*/ createHook("onTabItemTap" /* ON_TAB_ITEM_TAP */);
+const onReachBottom = /*#__PURE__*/ createHook("onReachBottom" /* ON_REACH_BOTTOM */);
+const onPullDownRefresh = /*#__PURE__*/ createHook("onPullDownRefresh" /* ON_PULL_DOWN_REFRESH */);
+const onShareTimeline = /*#__PURE__*/ createHook("onShareTimeline" /* ON_SHARE_TIMELINE */);
+const onAddToFavorites = /*#__PURE__*/ createHook("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
+const onShareAppMessage = /*#__PURE__*/ createHook("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
+const onNavigationBarButtonTap = /*#__PURE__*/ createHook("onNavigationBarButtonTap" /* ON_NAVIGATION_BAR_BUTTON_TAP */);
+const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED */);
+const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook("onNavigationBarSearchInputClicked" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED */);
+const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook("onNavigationBarSearchInputConfirmed" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */);
+const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
+
 function initApp(app) {
     const appConfig = app._context.config;
     if (isFunction(app._component.onError)) {
@@ -4119,38 +4148,9 @@ var plugin = {
     },
 };
 
-// @ts-ignore
-const createHook = (lifecycle) => (hook, target) => 
-// post-create lifecycle registrations are noops during SSR
-!isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-const onShow = /*#__PURE__*/ createHook("onShow" /* ON_SHOW */);
-const onHide = /*#__PURE__*/ createHook("onHide" /* ON_HIDE */);
-const onLaunch = /*#__PURE__*/ createHook("onLaunch" /* ON_LAUCH */);
-const onError = /*#__PURE__*/ createHook("onError" /* ON_ERROR */);
-const onThemeChange = /*#__PURE__*/ createHook("onThemeChange" /* ON_THEME_CHANGE */);
-const onPageNotFound = /*#__PURE__*/ createHook("onPageNotFound" /* ON_PAGE_NOT_FOUND */);
-const onUnhandledRejection = /*#__PURE__*/ createHook("onUnhandledRejection" /* ON_UNHANDLE_REJECTION */);
-const onLoad = /*#__PURE__*/ createHook("onLoad" /* ON_LOAD */);
-const onReady = /*#__PURE__*/ createHook("onReady" /* ON_READY */);
-const onUnload = /*#__PURE__*/ createHook("onUnload" /* ON_UNLOAD */);
-const onResize = /*#__PURE__*/ createHook("onResize" /* ON_RESIZE */);
-const onBackPress = /*#__PURE__*/ createHook("onBackPress" /* ON_BACK_PRESS */);
-const onPageScroll = /*#__PURE__*/ createHook("onPageScroll" /* ON_PAGE_SCROLL */);
-const onTabItemTap = /*#__PURE__*/ createHook("onTabItemTap" /* ON_TAB_ITEM_TAP */);
-const onReachBottom = /*#__PURE__*/ createHook("onReachBottom" /* ON_REACH_BOTTOM */);
-const onPullDownRefresh = /*#__PURE__*/ createHook("onPullDownRefresh" /* ON_PULL_DOWN_REFRESH */);
-const onShareTimeline = /*#__PURE__*/ createHook("onShareTimeline" /* ON_SHARE_TIMELINE */);
-const onAddToFavorites = /*#__PURE__*/ createHook("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
-const onShareAppMessage = /*#__PURE__*/ createHook("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
-const onNavigationBarButtonTap = /*#__PURE__*/ createHook("onNavigationBarButtonTap" /* ON_NAVIGATION_BAR_BUTTON_TAP */);
-const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED */);
-const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook("onNavigationBarSearchInputClicked" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED */);
-const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook("onNavigationBarSearchInputConfirmed" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */);
-const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
-
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
 
-export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createHook, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives };
+export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createHook, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives };

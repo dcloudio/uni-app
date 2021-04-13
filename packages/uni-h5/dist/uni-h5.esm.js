@@ -1,7 +1,7 @@
-import {isFunction, extend, isPlainObject, isString, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, getCurrentInstance, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, onMounted, watch, onBeforeMount, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {isFunction, extend, isPlainObject, invokeArrayFns, isString, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
+import {injectHook, isInSSRComponentSetup, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {passive, NAVBAR_HEIGHT, removeLeadingSlash, plusReady, debounce, PRIMARY_COLOR, getLen} from "@dcloudio/uni-shared";
-import {createRouter, createWebHistory, createWebHashHistory, useRoute, isNavigationFailure, RouterView} from "vue-router";
+import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -42,6 +42,57 @@ function errorHandler(err, instance2, info) {
   }
   appInstance.$callHook("onError", err, info);
 }
+var UniLifecycleHooks;
+(function(UniLifecycleHooks2) {
+  UniLifecycleHooks2["ON_SHOW"] = "onShow";
+  UniLifecycleHooks2["ON_HIDE"] = "onHide";
+  UniLifecycleHooks2["ON_LAUNCH"] = "onLaunch";
+  UniLifecycleHooks2["ON_ERROR"] = "onError";
+  UniLifecycleHooks2["ON_THEME_CHANGE"] = "onThemeChange";
+  UniLifecycleHooks2["ON_PAGE_NOT_FOUND"] = "onPageNotFound";
+  UniLifecycleHooks2["ON_UNHANDLE_REJECTION"] = "onUnhandledRejection";
+  UniLifecycleHooks2["ON_LOAD"] = "onLoad";
+  UniLifecycleHooks2["ON_READY"] = "onReady";
+  UniLifecycleHooks2["ON_UNLOAD"] = "onUnload";
+  UniLifecycleHooks2["ON_RESIZE"] = "onResize";
+  UniLifecycleHooks2["ON_BACK_PRESS"] = "onBackPress";
+  UniLifecycleHooks2["ON_PAGE_SCROLL"] = "onPageScroll";
+  UniLifecycleHooks2["ON_TAB_ITEM_TAP"] = "onTabItemTap";
+  UniLifecycleHooks2["ON_REACH_BOTTOM"] = "onReachBottom";
+  UniLifecycleHooks2["ON_PULL_DOWN_REFRESH"] = "onPullDownRefresh";
+  UniLifecycleHooks2["ON_SHARE_TIMELINE"] = "onShareTimeline";
+  UniLifecycleHooks2["ON_ADD_TO_FAVORITES"] = "onAddToFavorites";
+  UniLifecycleHooks2["ON_SHARE_APP_MESSAGE"] = "onShareAppMessage";
+  UniLifecycleHooks2["ON_NAVIGATION_BAR_BUTTON_TAP"] = "onNavigationBarButtonTap";
+  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED"] = "onNavigationBarSearchInputClicked";
+  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED"] = "onNavigationBarSearchInputChanged";
+  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED"] = "onNavigationBarSearchInputConfirmed";
+  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED"] = "onNavigationBarSearchInputFocusChanged";
+})(UniLifecycleHooks || (UniLifecycleHooks = {}));
+const createHook = (lifecycle) => (hook, target) => !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_SHOW);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_HIDE);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_LAUNCH);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_ERROR);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_THEME_CHANGE);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_PAGE_NOT_FOUND);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_UNHANDLE_REJECTION);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_READY);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_UNLOAD);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_RESIZE);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_BACK_PRESS);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_PAGE_SCROLL);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_TAB_ITEM_TAP);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_REACH_BOTTOM);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_PULL_DOWN_REFRESH);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_SHARE_TIMELINE);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_ADD_TO_FAVORITES);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_SHARE_APP_MESSAGE);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_BUTTON_TAP);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
+/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 function initApp$1(app) {
   const appConfig = app._context.config;
   if (isFunction(app._component.onError)) {
@@ -1223,41 +1274,6 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-function initRouter(app) {
-  app.use(createAppRouter(createRouter(createRouterOptions())));
-}
-const scrollBehavior = (to, from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  }
-};
-function createRouterOptions() {
-  return {
-    history: initHistory(),
-    strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
-  };
-}
-function createAppRouter(router) {
-  return router;
-}
-function initHistory() {
-  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
-  return history2;
-}
-let appVm;
-function getApp$1() {
-  return appVm;
-}
-function isApp(vm) {
-  return vm.$options.mpType === "app";
-}
-function initApp(vm) {
-  appVm = vm;
-  appVm.$vm = vm;
-  appVm.globalData = appVm.$options.globalData || {};
-}
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
   return inject(pageMetaKey);
@@ -1360,15 +1376,24 @@ function getCurrentPages$1(isAll = false) {
   pruneCurrentPages();
   return [...currentPagesMap.values()];
 }
+function removeCurrentPages(delta = -1) {
+  const keys = [...currentPagesMap.keys()];
+  const start = keys.length - 1;
+  const end = start - delta;
+  for (let i2 = start; i2 > end; i2--) {
+    const routeKey = keys[i2];
+    const pageVm = currentPagesMap.get(routeKey);
+    pageVm.$.__isUnload = true;
+    pageVm.$callHook("onUnload");
+    currentPagesMap.delete(routeKey);
+  }
+}
 let id = history.state && history.state.__id__ || 1;
 function createPageState(type) {
   return {
     __id__: ++id,
     __type__: type
   };
-}
-function isPage(vm) {
-  return vm.$options.mpType === "page";
 }
 function initPublicPage(route) {
   if (!route) {
@@ -1389,11 +1414,14 @@ function initPage(vm) {
   const route = vm.$route;
   vm.$vm = vm;
   vm.$page = initPublicPage(route);
-  currentPagesMap.set(vm.$page.id, vm);
+  currentPagesMap.set(normalizeRouteKey(route.path, vm.$page.id), vm);
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
 }
 function useKeepAliveRoute() {
   const route = useRoute();
-  const routeKey = computed(() => route.fullPath + SEP + (history.state.__id__ || 1));
+  const routeKey = computed(() => normalizeRouteKey(route.path, history.state.__id__ || 1));
   return {
     routeKey,
     routeCache
@@ -1409,6 +1437,10 @@ const routeCache = {
     pageCacheMap.set(key, value);
   },
   delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
     pageCacheMap.delete(key);
   },
   forEach(fn) {
@@ -1429,58 +1461,120 @@ function pruneRouteCache(key) {
     }
   });
 }
-function initMixin(app) {
-  app.mixin({
-    created() {
-      this.__isApp = isApp(this);
-      this.__isPage = !this.__isApp && isPage(this);
-      if (this.__isApp) {
-        initApp(this);
-      } else if (this.__isPage) {
-        initPage(this);
-        this.$callHook("onLoad", {});
-        this.__isVisible = true;
-        this.$callHook("onShow");
-      } else {
-        if (this.$parent) {
-          this.$page = this.$parent.$page;
-        }
-      }
-    },
-    mounted() {
-      if (this.__isPage) {
-        this.$callHook("onReady");
-      }
-    },
-    beforeActivate() {
-      if (this.__isPage && !this.__isVisible) {
-        this.$callHook("onShow");
-      }
-    },
-    beforeDeactivate() {
-      if (this.__isPage) {
-        this.__isVisible = false;
-        this.$callHook("onHide");
-      }
-    },
-    beforeUnmount() {
-      if (this.__isPage) {
-        this.$callHook("onUnload");
-      }
+function initRouter(app) {
+  app.use(createAppRouter(createRouter(createRouterOptions())));
+}
+const scrollBehavior = (to, from, savedPosition) => {
+  if (savedPosition) {
+    return savedPosition;
+  }
+};
+function createRouterOptions() {
+  return {
+    history: initHistory(),
+    strict: !!__uniConfig.router.strict,
+    routes: __uniRoutes,
+    scrollBehavior
+  };
+}
+function createAppRouter(router) {
+  return router;
+}
+function initHistory() {
+  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
+  history2.listen((_to, _from, info) => {
+    if (info.direction === "back") {
+      removeCurrentPages(Math.abs(info.delta));
     }
   });
+  return history2;
 }
-var index$7 = {
+var index$6 = {
   install(app) {
     initApp$1(app);
     initView(app);
     initService(app);
-    initMixin(app);
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
   }
 };
+let appVm;
+function getApp$1() {
+  return appVm;
+}
+function initApp(vm) {
+  appVm = vm;
+  appVm.$vm = vm;
+  appVm.globalData = appVm.$options.globalData || {};
+}
+function wrapperComponentSetup(comp, {init: init2, setup, after}) {
+  const oldSetup = comp.setup;
+  comp.setup = (props, ctx) => {
+    const instance2 = getCurrentInstance();
+    init2(instance2.proxy);
+    setup(instance2);
+    if (oldSetup) {
+      return oldSetup(props, ctx);
+    }
+  };
+  after && after(comp);
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    wrapperComponentSetup(comp.default, options);
+  } else {
+    wrapperComponentSetup(comp, options);
+  }
+  return comp;
+}
+function setupPage(comp) {
+  return setupComponent(comp, {
+    init: initPage,
+    setup(instance2) {
+      onBeforeMount(() => {
+        const {onLoad, onShow} = instance2;
+        onLoad && invokeArrayFns(onLoad);
+        instance2.__isVisible = true;
+        onShow && invokeArrayFns(onShow);
+      });
+      onMounted(() => {
+        const {onReady} = instance2;
+        onReady && invokeArrayFns(onReady);
+      });
+      onBeforeActivate(() => {
+        if (!instance2.__isVisible) {
+          instance2.__isVisible = true;
+          const {onShow} = instance2;
+          onShow && invokeArrayFns(onShow);
+        }
+      });
+      onBeforeDeactivate(() => {
+        if (instance2.__isVisible && !instance2.__isUnload) {
+          instance2.__isVisible = false;
+          const {onHide} = instance2;
+          onHide && invokeArrayFns(onHide);
+        }
+      });
+    }
+  });
+}
+function setupApp(comp) {
+  return setupComponent(comp, {
+    init: initApp,
+    setup(instance2) {
+      onBeforeMount(() => {
+        const {onLaunch, onShow} = instance2;
+        onLaunch && invokeArrayFns(onLaunch);
+        onShow && invokeArrayFns(onShow);
+      });
+    },
+    after(comp2) {
+      comp2.mpType = "app";
+      comp2.render = () => (openBlock(), createBlock(LayoutComponent));
+    }
+  });
+}
 function broadcast(componentName, eventName, ...params) {
   const children = this.$children;
   const len = children.length;
@@ -2091,7 +2185,7 @@ function useBooleanAttr(props, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$6 = defineComponent({
+var index$5 = defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -2128,7 +2222,7 @@ function provideForm(emit) {
   });
   return fields;
 }
-var index$5 = defineComponent({
+var index$4 = defineComponent({
   name: "Button",
   props: {
     id: {
@@ -3791,7 +3885,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$4 = defineComponent({
+var index$3 = defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -3926,6 +4020,9 @@ function getRealPath(filePath) {
 const ua = navigator.userAgent;
 const isAndroid = /android/i.test(ua);
 const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
+const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /Macintosh|Mac/i.test(ua);
+const isLinux = /Linux|X11/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -9262,7 +9359,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$3 = defineComponent({
+var index$2 = defineComponent({
   name: "Text",
   props: {
     selectable: {
@@ -9588,7 +9685,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$4.render = _sfc_render$4;
-var index$2 = defineComponent({
+var index$1 = defineComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props, {
@@ -10465,6 +10562,56 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
       if (!other) {
         model = info.trim();
         break;
+      }
+    }
+  } else if (isWindows || isMac || isLinux) {
+    model = "PC";
+    osname = "PC";
+    osversion = "0";
+    let osversionFind = ua.match(/\((.+?)\)/)[1];
+    if (isWindows) {
+      osname = "Windows";
+      switch (isWindows[1]) {
+        case "5.1":
+          osversion = "XP";
+          break;
+        case "6.0":
+          osversion = "Vista";
+          break;
+        case "6.1":
+          osversion = "7";
+          break;
+        case "6.2":
+          osversion = "8";
+          break;
+        case "6.3":
+          osversion = "8.1";
+          break;
+        case "10.0":
+          osversion = "10";
+          break;
+      }
+      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
+      if (framework) {
+        osversion += ` x${framework[1]}`;
+      }
+    } else if (isMac) {
+      osname = "Mac";
+      osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      if (osversion) {
+        osversion = osversion[1].replace(/_/g, ".");
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = "Linux";
+      osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (osversion) {
+        osversion = osversion[1];
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
       }
     }
   } else {
@@ -11430,7 +11577,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 const CSS_VARS = ["--status-bar-height", "--top-window-height", "--window-left", "--window-right", "--window-margin", "--tab-bar-height"];
-var index$1 = defineComponent({
+var LayoutComponent = defineComponent({
   name: "Layout",
   setup(props, {
     emit
@@ -12229,4 +12376,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$5 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$6 as Form, index$4 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, index$1 as LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$3 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$2 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};
