@@ -13,7 +13,7 @@ export const uploadFile = {
     type: String,
     validator (value, params) {
       if (value) {
-        params.type = getRealPath(value)
+        params.filePath = getRealPath(value)
       }
     }
   },
