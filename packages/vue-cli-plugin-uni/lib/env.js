@@ -105,23 +105,18 @@ if (process.env.NODE_ENV === 'production') { // 发行模式,不启用 cache
   delete process.env.UNI_USING_CACHE
 }
 
-global.uniModules = []
-try {
-  global.uniModules = fs
-    .readdirSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules'))
-    .filter(module =>
-      fs.existsSync(
-        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, 'package.json')
-      )
-    )
-} catch (e) {}
-
 const {
   normalizePath,
   isSupportSubPackages,
   runByHBuilderX,
   getPagesJson
 } = require('@dcloudio/uni-cli-shared')
+
+const {
+  initUniModules
+} = require('@dcloudio/uni-cli-shared/lib/uni_modules')
+
+initUniModules()
 
 const pagesJsonObj = getPagesJson()
 // 读取分包

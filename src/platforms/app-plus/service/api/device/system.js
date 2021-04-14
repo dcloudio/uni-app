@@ -86,7 +86,7 @@ export function getSystemInfo () {
     windowHeight,
     statusBarHeight,
     language: plus.os.language,
-    system: plus.os.version,
+    system: `${platform} ${plus.os.version}`,
     version: plus.runtime.innerVersion,
     fontSizeSetting: '',
     platform,
