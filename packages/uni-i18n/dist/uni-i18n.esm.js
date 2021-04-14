@@ -96,6 +96,11 @@ function compile(tokens, values) {
     return compiled;
 }
 
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty.call(val, key);
 const defaultFormatter = new BaseFormatter();
@@ -116,25 +121,25 @@ function normalizeLocale(locale, messages) {
     locale = locale.toLowerCase();
     if (locale.indexOf('zh') === 0) {
         if (locale.indexOf('-hans') !== -1) {
-            return 'zh-Hans';
+            return LOCALE_ZH_HANS;
         }
         if (locale.indexOf('-hant') !== -1) {
-            return 'zh-Hant';
+            return LOCALE_ZH_HANT;
         }
         if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-            return 'zh-Hant';
+            return LOCALE_ZH_HANT;
         }
-        return 'zh-Hans';
+        return LOCALE_ZH_HANS;
     }
-    const lang = startsWith(locale, ['en', 'fr', 'es']);
+    const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
     if (lang) {
         return lang;
     }
 }
 class I18n {
     constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-        this.locale = 'en';
-        this.fallbackLocale = 'en';
+        this.locale = LOCALE_EN;
+        this.fallbackLocale = LOCALE_EN;
         this.message = {};
         this.messages = {};
         this.watchers = [];
@@ -142,7 +147,7 @@ class I18n {
             this.fallbackLocale = fallbackLocale;
         }
         this.formater = formater || defaultFormatter;
-        this.messages = messages;
+        this.messages = messages || {};
         this.setLocale(locale);
         if (watcher) {
             this.watchLocale(watcher);
@@ -165,7 +170,7 @@ class I18n {
             this.watchers.splice(index, 1);
         };
     }
-    mergeLocaleMessage(locale, message) {
+    add(locale, message) {
         if (this.messages[locale]) {
             Object.assign(this.messages[locale], message);
         }
@@ -208,7 +213,7 @@ function getDefaultLocale() {
     }
     return uni.getSystemInfoSync().language;
 }
-function initVueI18n(messages, fallbackLocale = 'en', locale) {
+function initVueI18n(messages = {}, fallbackLocale = LOCALE_EN, locale) {
     const i18n = new I18n({
         locale: locale || fallbackLocale,
         fallbackLocale,
@@ -256,28 +261,16 @@ function initVueI18n(messages, fallbackLocale = 'en', locale) {
         t(key, values) {
             return t(key, values);
         },
+        add(locale, message) {
+            return i18n.add(locale, message);
+        },
         getLocale() {
             return i18n.getLocale();
         },
         setLocale(newLocale) {
             return i18n.setLocale(newLocale);
         },
-        mixin: {
-            beforeCreate() {
-                const unwatch = i18n.watchLocale(() => {
-                    this.$forceUpdate();
-                });
-                this.$once('hook:beforeDestroy', function () {
-                    unwatch();
-                });
-            },
-            methods: {
-                $$t(key, values) {
-                    return t(key, values);
-                },
-            },
-        },
     };
 }
 
-export { I18n, initVueI18n };
+export { I18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, initVueI18n };

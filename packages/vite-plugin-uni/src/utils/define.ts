@@ -27,6 +27,11 @@ interface ManifestFeatures {
   promise: boolean
   longpress: boolean
   routerMode: '"hash"' | '"history"'
+  i18nEn: boolean
+  i18nEs: boolean
+  i18nFr: boolean
+  i18nZhHans: boolean
+  i18nZhHant: boolean
 }
 
 function resolveProjectFeature(
@@ -156,6 +161,11 @@ function resolveManifestFeature(
     promise: false,
     longpress: true,
     routerMode: '"hash"',
+    i18nEn: true,
+    i18nEs: true,
+    i18nFr: true,
+    i18nZhHans: true,
+    i18nZhHant: true,
   }
   const manifest = parse(
     fs.readFileSync(path.join(options.inputDir, 'manifest.json'), 'utf8')
@@ -167,7 +177,29 @@ function resolveManifestFeature(
   ) {
     features.routerMode = '"history"'
   }
-  // TODO manifest.json features
+  const platform = manifest[options.platform] || {}
+  const manifestFeatures = platform.features
+  if (manifestFeatures) {
+    const { i18n } = manifestFeatures
+    if (isArray(i18n)) {
+      if (!i18n.includes('en')) {
+        features.i18nEn = false
+      }
+      if (!i18n.includes('es')) {
+        features.i18nEs = false
+      }
+      if (!i18n.includes('fr')) {
+        features.i18nFr = false
+      }
+      if (!i18n.includes('zh-Hans')) {
+        features.i18nZhHans = false
+      }
+      if (!i18n.includes('zh-Hant')) {
+        features.i18nZhHant = false
+      }
+    }
+  }
+  // TODO other features
   return features
 }
 
@@ -181,6 +213,11 @@ export function getFeatures(
     wx,
     wxs,
     nvue,
+    i18nEn,
+    i18nEs,
+    i18nFr,
+    i18nZhHans,
+    i18nZhHant,
     pages,
     tabBar,
     tabBarMidButton,
@@ -205,6 +242,11 @@ export function getFeatures(
     __UNI_FEATURE_WXS__: wxs, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
     __UNI_FEATURE_PROMISE__: promise, // 是否启用旧版本的 promise 支持（即返回[err,res]的格式）,默认返回标准
     __UNI_FEATURE_LONGPRESS__: longpress, // 是否启用longpress
+    __UNI_FEATURE_I18N_EN__: i18nEn, // 是否启用en
+    __UNI_FEATURE_I18N_ES__: i18nEs, // 是否启用es
+    __UNI_FEATURE_I18N_FR__: i18nFr, // 是否启用fr
+    __UNI_FEATURE_I18N_ZH_HANS__: i18nZhHans, // 是否启用zh_Hans
+    __UNI_FEATURE_I18N_ZH_HANT__: i18nZhHant, // 是否启用zh_Hant
     // 以下特性，编译器已自动识别是否需要启用
     __UNI_FEATURE_NVUE__: nvue, // 是否启用nvue
     __UNI_FEATURE_ROUTER_MODE__: routerMode, // 路由模式

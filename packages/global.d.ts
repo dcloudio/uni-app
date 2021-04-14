@@ -32,6 +32,11 @@ declare var __UNI_FEATURE_NAVIGATIONBAR__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: boolean
 declare var __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: boolean
+declare var __UNI_FEATURE_I18N_EN__: boolean
+declare var __UNI_FEATURE_I18N_ES__: boolean
+declare var __UNI_FEATURE_I18N_FR__: boolean
+declare var __UNI_FEATURE_I18N_ZH_HANS__: boolean
+declare var __UNI_FEATURE_I18N_ZH_HANT__: boolean
 // TODO
 declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig

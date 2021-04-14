@@ -31,6 +31,7 @@ export * from './protocols/network/uploadFile'
 export * from './protocols/route/route'
 
 export * from './protocols/ui/navigationBar'
+export * from './protocols/ui/popup'
 export * from './protocols/ui/tabBar'
 // helpers
 export {

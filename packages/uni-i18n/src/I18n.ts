@@ -1,7 +1,18 @@
 import BaseFormatter from './format'
 
+export const LOCALE_ZH_HANS = 'zh-Hans'
+export const LOCALE_ZH_HANT = 'zh-Hant'
+export const LOCALE_EN = 'en'
+export const LOCALE_FR = 'fr'
+export const LOCALE_ES = 'es'
+
 // 中文 (简体)，中文 (繁體)，英语，法语，西班牙语
-export type BuiltInLocale = 'zh-Hans' | 'zh-Hant' | 'en' | 'fr' | 'es'
+export type BuiltInLocale =
+  | typeof LOCALE_ZH_HANS
+  | typeof LOCALE_ZH_HANT
+  | typeof LOCALE_EN
+  | typeof LOCALE_FR
+  | typeof LOCALE_ES
 
 export type LocaleMessages = {
   [name in BuiltInLocale]?: Record<string, string>
@@ -22,7 +33,7 @@ export type LocaleWatcher = (
 export interface I18nOptions {
   locale: BuiltInLocale
   fallbackLocale?: BuiltInLocale
-  messages: LocaleMessages
+  messages?: LocaleMessages
   formater?: Formatter
   watcher?: LocaleWatcher
 }
@@ -54,25 +65,25 @@ function normalizeLocale(
   locale = locale.toLowerCase()
   if (locale.indexOf('zh') === 0) {
     if (locale.indexOf('-hans') !== -1) {
-      return 'zh-Hans'
+      return LOCALE_ZH_HANS
     }
     if (locale.indexOf('-hant') !== -1) {
-      return 'zh-Hant'
+      return LOCALE_ZH_HANT
     }
     if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-      return 'zh-Hant'
+      return LOCALE_ZH_HANT
     }
-    return 'zh-Hans'
+    return LOCALE_ZH_HANS
   }
-  const lang = startsWith(locale, ['en', 'fr', 'es'])
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES])
   if (lang) {
     return lang as BuiltInLocale
   }
 }
 
 export class I18n {
-  private locale: BuiltInLocale = 'en'
-  private fallbackLocale: BuiltInLocale = 'en'
+  private locale: BuiltInLocale = LOCALE_EN
+  private fallbackLocale: BuiltInLocale = LOCALE_EN
   private message: Record<string, string> = {}
   private messages: LocaleMessages = {}
   private watchers: LocaleWatcher[] = []
@@ -88,7 +99,7 @@ export class I18n {
       this.fallbackLocale = fallbackLocale
     }
     this.formater = formater || defaultFormatter
-    this.messages = messages
+    this.messages = messages || {}
     this.setLocale(locale)
     if (watcher) {
       this.watchLocale(watcher)
@@ -111,7 +122,7 @@ export class I18n {
       this.watchers.splice(index, 1)
     }
   }
-  mergeLocaleMessage(locale: BuiltInLocale, message: Record<string, string>) {
+  add(locale: BuiltInLocale, message: Record<string, string>) {
     if (this.messages[locale]) {
       Object.assign(this.messages[locale], message)
     } else {

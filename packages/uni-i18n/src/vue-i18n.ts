@@ -1,4 +1,4 @@
-import { I18n, BuiltInLocale, LocaleMessages } from './I18n'
+import { I18n, BuiltInLocale, LocaleMessages, LOCALE_EN } from './I18n'
 
 type Interpolate = (
   key: string,
@@ -30,8 +30,8 @@ function getDefaultLocale() {
 }
 
 export function initVueI18n(
-  messages: LocaleMessages,
-  fallbackLocale: BuiltInLocale = 'en',
+  messages: LocaleMessages = {},
+  fallbackLocale: BuiltInLocale = LOCALE_EN,
   locale?: BuiltInLocale
 ) {
   const i18n = new I18n({
@@ -79,26 +79,14 @@ export function initVueI18n(
     t(key: string, values?: Record<string, unknown> | Array<unknown>) {
       return t(key, values)
     },
+    add(locale: BuiltInLocale, message: Record<string, string>) {
+      return i18n.add(locale, message)
+    },
     getLocale() {
       return i18n.getLocale()
     },
     setLocale(newLocale: BuiltInLocale) {
       return i18n.setLocale(newLocale)
-    },
-    mixin: {
-      beforeCreate() {
-        const unwatch = i18n.watchLocale(() => {
-          ;(this as any).$forceUpdate()
-        })
-        ;(this as any).$once('hook:beforeDestroy', function () {
-          unwatch()
-        })
-      },
-      methods: {
-        $$t(key: string, values?: any) {
-          return t(key, values)
-        },
-      },
     },
   }
 }

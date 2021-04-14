@@ -1,4 +1,10 @@
-import { extend, isString, isPlainObject } from '@vue/shared'
+import {
+  extend,
+  hasOwn,
+  isString,
+  isFunction,
+  isPlainObject,
+} from '@vue/shared'
 import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
 import {
   invokeCallback,
@@ -24,7 +30,15 @@ function formatApiArgs<T extends ApiLike>(
   }
   const formatArgs = options.formatArgs!
   Object.keys(formatArgs).forEach((name) => {
-    formatArgs[name]!(args[0][name], params)
+    const formatterOrDefaultValue = formatArgs[name]!
+    if (isFunction(formatterOrDefaultValue)) {
+      formatterOrDefaultValue(args[0][name], params)
+    } else {
+      // defaultValue
+      if (!hasOwn(params, name)) {
+        params[name] = formatterOrDefaultValue
+      }
+    }
   })
   return args
 }

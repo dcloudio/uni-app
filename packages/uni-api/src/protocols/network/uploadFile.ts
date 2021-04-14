@@ -2,10 +2,10 @@ export const API_UPLOAD_FILE = 'uploadFile'
 export type API_TYPE_UPLOAD_FILE = typeof uni.uploadFile
 export const UploadFileOptions: ApiOptions<API_TYPE_UPLOAD_FILE> = {
   formatArgs: {
-    header(value, params) {
+    header(value: Record<string, any>, params: Record<string, any>) {
       params.header = value || {}
     },
-    formData(value, params) {
+    formData(value: Record<string, any>, params: Record<string, any>) {
       params.formData = value || {}
     },
   },
@@ -16,9 +16,7 @@ export const UploadFileProtocol: ApiProtocol<API_TYPE_UPLOAD_FILE> = {
     type: String,
     required: true,
   },
-  files: {
-    type: Array,
-  },
+  files: Array,
   filePath: String,
   name: String,
   header: Object,

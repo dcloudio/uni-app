@@ -15,9 +15,10 @@
 </style>
 <script>
 import {
-  useI18n
+  useI18n,
+  initI18nAsyncMsgs
 } from '@dcloudio/uni-core'
-
+initI18nAsyncMsgs()
 export default {
   name: 'AsyncError',
   setup() {

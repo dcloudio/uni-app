@@ -43,28 +43,16 @@ function stringifyQuery(url: string, data: Record<string, any>) {
 }
 
 export const RequestProtocol: ApiProtocol<API_TYPE_REQUEST> = {
-  method: {
-    type: String as any,
-  },
-  data: {
-    type: [Object, String, Array, ArrayBuffer],
-  },
+  method: String as any,
+  data: [Object, String, Array, ArrayBuffer],
   url: {
     type: String,
     required: true,
   },
-  header: {
-    type: Object,
-  },
-  dataType: {
-    type: String,
-  },
-  responseType: {
-    type: String,
-  },
-  withCredentials: {
-    type: Boolean,
-  },
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean,
 }
 
 export const RequestOptions: ApiOptions<API_TYPE_REQUEST> = {
@@ -88,7 +76,7 @@ export const RequestOptions: ApiOptions<API_TYPE_REQUEST> = {
         params.url = stringifyQuery(value, params.data)
       }
     },
-    header(value, params) {
+    header(value: Record<string, any>, params: Record<string, any>) {
       const header = (params.header = value || {})
       if (params.method !== HTTP_METHODS[0]) {
         if (

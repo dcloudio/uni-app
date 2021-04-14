@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, invokeArrayFns, isString, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, isInSSRComponentSetup, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {passive, NAVBAR_HEIGHT, removeLeadingSlash, plusReady, debounce, PRIMARY_COLOR, getLen} from "@dcloudio/uni-shared";
+import {passive, NAVBAR_HEIGHT, removeLeadingSlash, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -104,6 +104,300 @@ function initApp$1(app) {
   {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;
+  }
+}
+const isObject = (val) => val !== null && typeof val === "object";
+class BaseFormatter {
+  constructor() {
+    this._caches = Object.create(null);
+  }
+  interpolate(message, values) {
+    if (!values) {
+      return [message];
+    }
+    let tokens = this._caches[message];
+    if (!tokens) {
+      tokens = parse(message);
+      this._caches[message] = tokens;
+    }
+    return compile(tokens, values);
+  }
+}
+const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+function parse(format) {
+  const tokens = [];
+  let position = 0;
+  let text2 = "";
+  while (position < format.length) {
+    let char = format[position++];
+    if (char === "{") {
+      if (text2) {
+        tokens.push({type: "text", value: text2});
+      }
+      text2 = "";
+      let sub = "";
+      char = format[position++];
+      while (char !== void 0 && char !== "}") {
+        sub += char;
+        char = format[position++];
+      }
+      const isClosed = char === "}";
+      const type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
+      tokens.push({value: sub, type});
+    } else if (char === "%") {
+      if (format[position] !== "{") {
+        text2 += char;
+      }
+    } else {
+      text2 += char;
+    }
+  }
+  text2 && tokens.push({type: "text", value: text2});
+  return tokens;
+}
+function compile(tokens, values) {
+  const compiled = [];
+  let index2 = 0;
+  const mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
+  if (mode === "unknown") {
+    return compiled;
+  }
+  while (index2 < tokens.length) {
+    const token = tokens[index2];
+    switch (token.type) {
+      case "text":
+        compiled.push(token.value);
+        break;
+      case "list":
+        compiled.push(values[parseInt(token.value, 10)]);
+        break;
+      case "named":
+        if (mode === "named") {
+          compiled.push(values[token.value]);
+        }
+        break;
+    }
+    index2++;
+  }
+  return compiled;
+}
+const LOCALE_ZH_HANS = "zh-Hans";
+const LOCALE_ZH_HANT = "zh-Hant";
+const LOCALE_EN = "en";
+const LOCALE_FR = "fr";
+const LOCALE_ES = "es";
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+const defaultFormatter = new BaseFormatter();
+function include(str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1);
+}
+function startsWith(str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0);
+}
+function normalizeLocale(locale, messages) {
+  if (!locale) {
+    return;
+  }
+  locale = locale.trim().replace(/_/g, "-");
+  if (messages[locale]) {
+    return locale;
+  }
+  locale = locale.toLowerCase();
+  if (locale.indexOf("zh") === 0) {
+    if (locale.indexOf("-hans") !== -1) {
+      return LOCALE_ZH_HANS;
+    }
+    if (locale.indexOf("-hant") !== -1) {
+      return LOCALE_ZH_HANT;
+    }
+    if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
+      return LOCALE_ZH_HANT;
+    }
+    return LOCALE_ZH_HANS;
+  }
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  if (lang) {
+    return lang;
+  }
+}
+class I18n {
+  constructor({locale, fallbackLocale, messages, watcher, formater}) {
+    this.locale = LOCALE_EN;
+    this.fallbackLocale = LOCALE_EN;
+    this.message = {};
+    this.messages = {};
+    this.watchers = [];
+    if (fallbackLocale) {
+      this.fallbackLocale = fallbackLocale;
+    }
+    this.formater = formater || defaultFormatter;
+    this.messages = messages || {};
+    this.setLocale(locale);
+    if (watcher) {
+      this.watchLocale(watcher);
+    }
+  }
+  setLocale(locale) {
+    const oldLocale = this.locale;
+    this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+    this.message = this.messages[this.locale];
+    this.watchers.forEach((watcher) => {
+      watcher(this.locale, oldLocale);
+    });
+  }
+  getLocale() {
+    return this.locale;
+  }
+  watchLocale(fn) {
+    const index2 = this.watchers.push(fn) - 1;
+    return () => {
+      this.watchers.splice(index2, 1);
+    };
+  }
+  add(locale, message) {
+    if (this.messages[locale]) {
+      Object.assign(this.messages[locale], message);
+    } else {
+      this.messages[locale] = message;
+    }
+  }
+  t(key, locale, values) {
+    let message = this.message;
+    if (typeof locale === "string") {
+      locale = normalizeLocale(locale, this.messages);
+      locale && (message = this.messages[locale]);
+    } else {
+      values = locale;
+    }
+    if (!hasOwn(message, key)) {
+      console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
+      return key;
+    }
+    return this.formater.interpolate(message[key], values).join("");
+  }
+}
+function initLocaleWatcher(appVm2, i18n2) {
+  appVm2.$i18n && appVm2.$i18n.vm.$watch("locale", (newLocale) => {
+    i18n2.setLocale(newLocale);
+  }, {
+    immediate: true
+  });
+}
+function getDefaultLocale() {
+  if (typeof navigator !== "undefined") {
+    return navigator.userLanguage || navigator.language;
+  }
+  if (typeof plus !== "undefined") {
+    return plus.os.language;
+  }
+  return uni.getSystemInfoSync().language;
+}
+function initVueI18n(messages = {}, fallbackLocale = LOCALE_EN, locale) {
+  const i18n2 = new I18n({
+    locale: locale || fallbackLocale,
+    fallbackLocale,
+    messages
+  });
+  let t2 = (key, values) => {
+    if (typeof getApp !== "function") {
+      t2 = function(key2, values2) {
+        return i18n2.t(key2, values2);
+      };
+    } else {
+      const appVm2 = getApp().$vm;
+      if (!appVm2.$t || !appVm2.$i18n) {
+        if (!locale) {
+          i18n2.setLocale(getDefaultLocale());
+        }
+        t2 = function(key2, values2) {
+          return i18n2.t(key2, values2);
+        };
+      } else {
+        initLocaleWatcher(appVm2, i18n2);
+        t2 = function(key2, values2) {
+          const $i18n = appVm2.$i18n;
+          const silentTranslationWarn = $i18n.silentTranslationWarn;
+          $i18n.silentTranslationWarn = true;
+          const msg = appVm2.$t(key2, values2);
+          $i18n.silentTranslationWarn = silentTranslationWarn;
+          if (msg !== key2) {
+            return msg;
+          }
+          return i18n2.t(key2, $i18n.locale, values2);
+        };
+      }
+    }
+    return t2(key, values);
+  };
+  return {
+    i18n: i18n2,
+    t(key, values) {
+      return t2(key, values);
+    },
+    add(locale2, message) {
+      return i18n2.add(locale2, message);
+    },
+    getLocale() {
+      return i18n2.getLocale();
+    },
+    setLocale(newLocale) {
+      return i18n2.setLocale(newLocale);
+    }
+  };
+}
+const i18n$1 = initVueI18n();
+function useI18n() {
+  return i18n$1;
+}
+const i18n = useI18n();
+function normalizeMessages(namespace, messages) {
+  return Object.keys(messages).reduce((res, name) => {
+    res[namespace + name] = messages[name];
+    return res;
+  }, {});
+}
+function initI18nAsyncMsgs() {
+  const name = "uni.async.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {
+      error: "The connection timed out, click the screen to try again."
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {
+      error: "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+    }));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {
+      error: "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"}));
+  }
+}
+function initI18nShowModalMsgs() {
+  const name = "uni.showModal.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {cancel: "Cancel", confirm: "OK"}));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {cancel: "Cancelar", confirm: "OK"}));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {cancel: "Annuler", confirm: "OK"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {cancel: "\u53D6\u6D88", confirm: "\u786E\u5B9A"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A"}));
   }
 }
 function E() {
@@ -822,426 +1116,6 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
       fill: color
     }, null, 8, ["d", "fill"])
   ], 8, ["width", "height"]);
-}
-const isObject = (val) => val !== null && typeof val === "object";
-class BaseFormatter {
-  constructor() {
-    this._caches = Object.create(null);
-  }
-  interpolate(message, values) {
-    if (!values) {
-      return [message];
-    }
-    let tokens = this._caches[message];
-    if (!tokens) {
-      tokens = parse(message);
-      this._caches[message] = tokens;
-    }
-    return compile(tokens, values);
-  }
-}
-const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format) {
-  const tokens = [];
-  let position = 0;
-  let text2 = "";
-  while (position < format.length) {
-    let char = format[position++];
-    if (char === "{") {
-      if (text2) {
-        tokens.push({type: "text", value: text2});
-      }
-      text2 = "";
-      let sub = "";
-      char = format[position++];
-      while (char !== void 0 && char !== "}") {
-        sub += char;
-        char = format[position++];
-      }
-      const isClosed = char === "}";
-      const type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
-      tokens.push({value: sub, type});
-    } else if (char === "%") {
-      if (format[position] !== "{") {
-        text2 += char;
-      }
-    } else {
-      text2 += char;
-    }
-  }
-  text2 && tokens.push({type: "text", value: text2});
-  return tokens;
-}
-function compile(tokens, values) {
-  const compiled = [];
-  let index2 = 0;
-  const mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-  if (mode === "unknown") {
-    return compiled;
-  }
-  while (index2 < tokens.length) {
-    const token = tokens[index2];
-    switch (token.type) {
-      case "text":
-        compiled.push(token.value);
-        break;
-      case "list":
-        compiled.push(values[parseInt(token.value, 10)]);
-        break;
-      case "named":
-        if (mode === "named") {
-          compiled.push(values[token.value]);
-        }
-        break;
-    }
-    index2++;
-  }
-  return compiled;
-}
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const defaultFormatter = new BaseFormatter();
-function include(str, parts) {
-  return !!parts.find((part) => str.indexOf(part) !== -1);
-}
-function startsWith(str, parts) {
-  return parts.find((part) => str.indexOf(part) === 0);
-}
-function normalizeLocale(locale, messages2) {
-  if (!locale) {
-    return;
-  }
-  locale = locale.trim().replace(/_/g, "-");
-  if (messages2[locale]) {
-    return locale;
-  }
-  locale = locale.toLowerCase();
-  if (locale.indexOf("zh") === 0) {
-    if (locale.indexOf("-hans") !== -1) {
-      return "zh-Hans";
-    }
-    if (locale.indexOf("-hant") !== -1) {
-      return "zh-Hant";
-    }
-    if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
-      return "zh-Hant";
-    }
-    return "zh-Hans";
-  }
-  const lang = startsWith(locale, ["en", "fr", "es"]);
-  if (lang) {
-    return lang;
-  }
-}
-class I18n {
-  constructor({locale, fallbackLocale: fallbackLocale2, messages: messages2, watcher, formater}) {
-    this.locale = "en";
-    this.fallbackLocale = "en";
-    this.message = {};
-    this.messages = {};
-    this.watchers = [];
-    if (fallbackLocale2) {
-      this.fallbackLocale = fallbackLocale2;
-    }
-    this.formater = formater || defaultFormatter;
-    this.messages = messages2;
-    this.setLocale(locale);
-    if (watcher) {
-      this.watchLocale(watcher);
-    }
-  }
-  setLocale(locale) {
-    const oldLocale = this.locale;
-    this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-    this.message = this.messages[this.locale];
-    this.watchers.forEach((watcher) => {
-      watcher(this.locale, oldLocale);
-    });
-  }
-  getLocale() {
-    return this.locale;
-  }
-  watchLocale(fn) {
-    const index2 = this.watchers.push(fn) - 1;
-    return () => {
-      this.watchers.splice(index2, 1);
-    };
-  }
-  mergeLocaleMessage(locale, message) {
-    if (this.messages[locale]) {
-      Object.assign(this.messages[locale], message);
-    } else {
-      this.messages[locale] = message;
-    }
-  }
-  t(key, locale, values) {
-    let message = this.message;
-    if (typeof locale === "string") {
-      locale = normalizeLocale(locale, this.messages);
-      locale && (message = this.messages[locale]);
-    } else {
-      values = locale;
-    }
-    if (!hasOwn(message, key)) {
-      console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
-      return key;
-    }
-    return this.formater.interpolate(message[key], values).join("");
-  }
-}
-function initLocaleWatcher(appVm2, i18n2) {
-  appVm2.$i18n && appVm2.$i18n.vm.$watch("locale", (newLocale) => {
-    i18n2.setLocale(newLocale);
-  }, {
-    immediate: true
-  });
-}
-function getDefaultLocale() {
-  if (typeof navigator !== "undefined") {
-    return navigator.userLanguage || navigator.language;
-  }
-  if (typeof plus !== "undefined") {
-    return plus.os.language;
-  }
-  return uni.getSystemInfoSync().language;
-}
-function initVueI18n(messages2, fallbackLocale2 = "en", locale) {
-  const i18n2 = new I18n({
-    locale: locale || fallbackLocale2,
-    fallbackLocale: fallbackLocale2,
-    messages: messages2
-  });
-  let t2 = (key, values) => {
-    if (typeof getApp !== "function") {
-      t2 = function(key2, values2) {
-        return i18n2.t(key2, values2);
-      };
-    } else {
-      const appVm2 = getApp().$vm;
-      if (!appVm2.$t || !appVm2.$i18n) {
-        if (!locale) {
-          i18n2.setLocale(getDefaultLocale());
-        }
-        t2 = function(key2, values2) {
-          return i18n2.t(key2, values2);
-        };
-      } else {
-        initLocaleWatcher(appVm2, i18n2);
-        t2 = function(key2, values2) {
-          const $i18n = appVm2.$i18n;
-          const silentTranslationWarn = $i18n.silentTranslationWarn;
-          $i18n.silentTranslationWarn = true;
-          const msg = appVm2.$t(key2, values2);
-          $i18n.silentTranslationWarn = silentTranslationWarn;
-          if (msg !== key2) {
-            return msg;
-          }
-          return i18n2.t(key2, $i18n.locale, values2);
-        };
-      }
-    }
-    return t2(key, values);
-  };
-  return {
-    i18n: i18n2,
-    t(key, values) {
-      return t2(key, values);
-    },
-    getLocale() {
-      return i18n2.getLocale();
-    },
-    setLocale(newLocale) {
-      return i18n2.setLocale(newLocale);
-    },
-    mixin: {
-      beforeCreate() {
-        const unwatch = i18n2.watchLocale(() => {
-          this.$forceUpdate();
-        });
-        this.$once("hook:beforeDestroy", function() {
-          unwatch();
-        });
-      },
-      methods: {
-        $$t(key, values) {
-          return t2(key, values);
-        }
-      }
-    }
-  };
-}
-var en = {
-  "uni.app.quit": "Press back button again to exit",
-  "uni.async.error": "The connection timed out, click the screen to try again.",
-  "uni.showActionSheet.cancel": "Cancel",
-  "uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
-  "uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
-  "uni.showModal.cancel": "Cancel",
-  "uni.showModal.confirm": "OK",
-  "uni.chooseImage.cancel": "Cancel",
-  "uni.chooseImage.sourceType.album": "Album",
-  "uni.chooseImage.sourceType.camera": "Camera",
-  "uni.chooseVideo.cancel": "Cancel",
-  "uni.chooseVideo.sourceType.album": "Album",
-  "uni.chooseVideo.sourceType.camera": "Camera",
-  "uni.previewImage.cancel": "Cancel",
-  "uni.previewImage.button.save": "Save Image",
-  "uni.previewImage.save.success": "Saved successfully",
-  "uni.previewImage.save.fail": "Save failed",
-  "uni.setClipboardData.success": "Content copied",
-  "uni.scanCode.title": "Scan code",
-  "uni.scanCode.album": "Album",
-  "uni.scanCode.fail": "Recognition failure",
-  "uni.scanCode.flash.on": "Tap to turn light on",
-  "uni.scanCode.flash.off": "Tap to turn light off",
-  "uni.startSoterAuthentication.authContent": "Fingerprint recognition",
-  "uni.picker.done": "Done",
-  "uni.picker.cancel": "Cancel",
-  "uni.video.danmu": "Danmu",
-  "uni.video.volume": "Volume",
-  "uni.button.feedback.title": "feedback",
-  "uni.button.feedback.send": "send"
-};
-var es = {
-  "uni.app.quit": "Pulse otra vez para salir",
-  "uni.async.error": "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo.",
-  "uni.showActionSheet.cancel": "Cancelar",
-  "uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
-  "uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
-  "uni.showModal.cancel": "Cancelar",
-  "uni.showModal.confirm": "OK",
-  "uni.chooseImage.cancel": "Cancelar",
-  "uni.chooseImage.sourceType.album": "\xC1lbum",
-  "uni.chooseImage.sourceType.camera": "C\xE1mara",
-  "uni.chooseVideo.cancel": "Cancelar",
-  "uni.chooseVideo.sourceType.album": "\xC1lbum",
-  "uni.chooseVideo.sourceType.camera": "C\xE1mara",
-  "uni.previewImage.cancel": "Cancelar",
-  "uni.previewImage.button.save": "Guardar imagen",
-  "uni.previewImage.save.success": "Guardado exitosamente",
-  "uni.previewImage.save.fail": "Error al guardar",
-  "uni.setClipboardData.success": "Contenido copiado",
-  "uni.scanCode.title": "C\xF3digo de escaneo",
-  "uni.scanCode.album": "\xC1lbum",
-  "uni.scanCode.fail": "\xC9chec de la reconnaissance",
-  "uni.scanCode.flash.on": "Toque para encender la luz",
-  "uni.scanCode.flash.off": "Toque para apagar la luz",
-  "uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
-  "uni.picker.done": "OK",
-  "uni.picker.cancel": "Cancelar",
-  "uni.video.danmu": "Danmu",
-  "uni.video.volume": "Volumen",
-  "uni.button.feedback.title": "realimentaci\xF3n",
-  "uni.button.feedback.send": "enviar"
-};
-var fr = {
-  "uni.app.quit": "Appuyez \xE0 nouveau pour quitter l'application",
-  "uni.async.error": "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer.",
-  "uni.showActionSheet.cancel": "Annuler",
-  "uni.showToast.unpaired": "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast",
-  "uni.showLoading.unpaired": "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading",
-  "uni.showModal.cancel": "Annuler",
-  "uni.showModal.confirm": "OK",
-  "uni.chooseImage.cancel": "Annuler",
-  "uni.chooseImage.sourceType.album": "Album",
-  "uni.chooseImage.sourceType.camera": "Cam\xE9ra",
-  "uni.chooseVideo.cancel": "Annuler",
-  "uni.chooseVideo.sourceType.album": "Album",
-  "uni.chooseVideo.sourceType.camera": "Cam\xE9ra",
-  "uni.previewImage.cancel": "Annuler",
-  "uni.previewImage.button.save": "Guardar imagen",
-  "uni.previewImage.save.success": "Enregistr\xE9 avec succ\xE8s",
-  "uni.previewImage.save.fail": "\xC9chec de la sauvegarde",
-  "uni.setClipboardData.success": "Contenu copi\xE9",
-  "uni.scanCode.title": "Code d\u2019analyse",
-  "uni.scanCode.album": "Album",
-  "uni.scanCode.fail": "Fallo de reconocimiento",
-  "uni.scanCode.flash.on": "Appuyez pour activer l'\xE9clairage",
-  "uni.scanCode.flash.off": "Appuyez pour d\xE9sactiver l'\xE9clairage",
-  "uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
-  "uni.picker.done": "OK",
-  "uni.picker.cancel": "Annuler",
-  "uni.video.danmu": "Danmu",
-  "uni.video.volume": "Le Volume",
-  "uni.button.feedback.title": "retour d'information",
-  "uni.button.feedback.send": "envoyer"
-};
-var zhHans = {
-  "uni.app.quit": "\u518D\u6309\u4E00\u6B21\u9000\u51FA\u5E94\u7528",
-  "uni.async.error": "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5",
-  "uni.showActionSheet.cancel": "\u53D6\u6D88",
-  "uni.showToast.unpaired": "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528",
-  "uni.showLoading.unpaired": "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528",
-  "uni.showModal.cancel": "\u53D6\u6D88",
-  "uni.showModal.confirm": "\u786E\u5B9A",
-  "uni.chooseImage.cancel": "\u53D6\u6D88",
-  "uni.chooseImage.sourceType.album": "\u4ECE\u76F8\u518C\u9009\u62E9",
-  "uni.chooseImage.sourceType.camera": "\u62CD\u6444",
-  "uni.chooseVideo.cancel": "\u53D6\u6D88",
-  "uni.chooseVideo.sourceType.album": "\u4ECE\u76F8\u518C\u9009\u62E9",
-  "uni.chooseVideo.sourceType.camera": "\u62CD\u6444",
-  "uni.previewImage.cancel": "\u53D6\u6D88",
-  "uni.previewImage.button.save": "\u4FDD\u5B58\u56FE\u50CF",
-  "uni.previewImage.save.success": "\u4FDD\u5B58\u56FE\u50CF\u5230\u76F8\u518C\u6210\u529F",
-  "uni.previewImage.save.fail": "\u4FDD\u5B58\u56FE\u50CF\u5230\u76F8\u518C\u5931\u8D25",
-  "uni.setClipboardData.success": "\u5185\u5BB9\u5DF2\u590D\u5236",
-  "uni.scanCode.title": "\u626B\u7801",
-  "uni.scanCode.album": "\u76F8\u518C",
-  "uni.scanCode.fail": "\u8BC6\u522B\u5931\u8D25",
-  "uni.scanCode.flash.on": "\u8F7B\u89E6\u7167\u4EAE",
-  "uni.scanCode.flash.off": "\u8F7B\u89E6\u5173\u95ED",
-  "uni.startSoterAuthentication.authContent": "\u6307\u7EB9\u8BC6\u522B\u4E2D...",
-  "uni.picker.done": "\u5B8C\u6210",
-  "uni.picker.cancel": "\u53D6\u6D88",
-  "uni.video.danmu": "\u5F39\u5E55",
-  "uni.video.volume": "\u97F3\u91CF",
-  "uni.button.feedback.title": "\u95EE\u9898\u53CD\u9988",
-  "uni.button.feedback.send": "\u53D1\u9001"
-};
-var zhHant = {
-  "uni.app.quit": "\u518D\u6309\u4E00\u6B21\u9000\u51FA\u61C9\u7528",
-  "uni.async.error": "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66",
-  "uni.showActionSheet.cancel": "\u53D6\u6D88",
-  "uni.showToast.unpaired": "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528",
-  "uni.showLoading.unpaired": "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528",
-  "uni.showModal.cancel": "\u53D6\u6D88",
-  "uni.showModal.confirm": "\u78BA\u5B9A",
-  "uni.chooseImage.cancel": "\u53D6\u6D88",
-  "uni.chooseImage.sourceType.album": "\u5F9E\u76F8\u518A\u9078\u64C7",
-  "uni.chooseImage.sourceType.camera": "\u62CD\u651D",
-  "uni.chooseVideo.cancel": "\u53D6\u6D88",
-  "uni.chooseVideo.sourceType.album": "\u5F9E\u76F8\u518A\u9078\u64C7",
-  "uni.chooseVideo.sourceType.camera": "\u62CD\u651D",
-  "uni.previewImage.cancel": "\u53D6\u6D88",
-  "uni.previewImage.button.save": "\u4FDD\u5B58\u5716\u50CF",
-  "uni.previewImage.save.success": "\u4FDD\u5B58\u5716\u50CF\u5230\u76F8\u518A\u6210\u529F",
-  "uni.previewImage.save.fail": "\u4FDD\u5B58\u5716\u50CF\u5230\u76F8\u518A\u5931\u6557",
-  "uni.setClipboardData.success": "\u5167\u5BB9\u5DF2\u5FA9\u5236",
-  "uni.scanCode.title": "\u6383\u78BC",
-  "uni.scanCode.album": "\u76F8\u518A",
-  "uni.scanCode.fail": "\u8B58\u5225\u5931\u6557",
-  "uni.scanCode.flash.on": "\u8F15\u89F8\u7167\u4EAE",
-  "uni.scanCode.flash.off": "\u8F15\u89F8\u95DC\u9589",
-  "uni.startSoterAuthentication.authContent": "\u6307\u7D0B\u8B58\u5225\u4E2D...",
-  "uni.picker.done": "\u5B8C\u6210",
-  "uni.picker.cancel": "\u53D6\u6D88",
-  "uni.video.danmu": "\u5F48\u5E55",
-  "uni.video.volume": "\u97F3\u91CF",
-  "uni.button.feedback.title": "\u554F\u984C\u53CD\u994B",
-  "uni.button.feedback.send": "\u767C\u9001"
-};
-const messages = {
-  en,
-  es,
-  fr,
-  "zh-Hans": zhHans,
-  "zh-Hant": zhHant
-};
-const fallbackLocale = "en";
-const i18n = /* @__PURE__ */ initVueI18n(messages, fallbackLocale);
-function useI18n() {
-  return i18n;
 }
 function getRealRoute(fromRoute, toRoute) {
   if (!toRoute) {
@@ -3850,11 +3724,11 @@ const CANCEL_COLOR = "#f43530";
 const ICONS = {
   success: {
     d: ICON_PATH_SUCCESS,
-    c: PRIMARY_COLOR
+    c: PRIMARY_COLOR$1
   },
   success_no_circle: {
     d: ICON_PATH_SUCCESS_NO_CIRCLE,
-    c: PRIMARY_COLOR
+    c: PRIMARY_COLOR$1
   },
   info: {
     d: ICON_PATH_INFO,
@@ -3874,7 +3748,7 @@ const ICONS = {
   },
   download: {
     d: ICON_PATH_DOWNLOAD,
-    c: PRIMARY_COLOR
+    c: PRIMARY_COLOR$1
   },
   search: {
     d: ICON_PATH_SEARCH,
@@ -4372,7 +4246,14 @@ function formatApiArgs(args, options) {
   }
   const formatArgs = options.formatArgs;
   Object.keys(formatArgs).forEach((name) => {
-    formatArgs[name](args[0][name], params);
+    const formatterOrDefaultValue = formatArgs[name];
+    if (isFunction(formatterOrDefaultValue)) {
+      formatterOrDefaultValue(args[0][name], params);
+    } else {
+      if (!hasOwn$1(params, name)) {
+        params[name] = formatterOrDefaultValue;
+      }
+    }
   });
   return args;
 }
@@ -4776,28 +4657,16 @@ function stringifyQuery(url, data) {
   return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
 }
 const RequestProtocol = {
-  method: {
-    type: String
-  },
-  data: {
-    type: [Object, String, Array, ArrayBuffer]
-  },
+  method: String,
+  data: [Object, String, Array, ArrayBuffer],
   url: {
     type: String,
     required: true
   },
-  header: {
-    type: Object
-  },
-  dataType: {
-    type: String
-  },
-  responseType: {
-    type: String
-  },
-  withCredentials: {
-    type: Boolean
-  }
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean
 };
 const RequestOptions = {
   formatArgs: {
@@ -4863,9 +4732,7 @@ const UploadFileProtocol = {
     type: String,
     required: true
   },
-  files: {
-    type: Array
-  },
+  files: Array,
   filePath: String,
   name: String,
   header: Object,
@@ -5064,6 +4931,96 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+const PRIMARY_COLOR = "#007aff";
+const API_SHOW_MODAL = "showModal";
+const {t: t$1} = useI18n();
+const ShowModalProtocol = {
+  title: String,
+  content: String,
+  showCancel: Boolean,
+  cancelText: String,
+  cancelColor: String,
+  confirmText: String,
+  confirmColor: String
+};
+let isInitI18nShowModalMsgs = false;
+const ShowModalOptions = {
+  beforeInvoke() {
+    if (isInitI18nShowModalMsgs) {
+      return;
+    }
+    isInitI18nShowModalMsgs = true;
+    initI18nShowModalMsgs();
+  },
+  formatArgs: {
+    title: "",
+    content: "",
+    showCancel: true,
+    cancelText(_value, params) {
+      if (!hasOwn$1(params, "cancelText")) {
+        params.cancelText = t$1("uni.showModal.cancel");
+      }
+    },
+    cancelColor: "#000",
+    confirmText(_value, params) {
+      if (!hasOwn$1(params, "confirmText")) {
+        params.confirmText = t$1("uni.showModal.confirm");
+      }
+    },
+    confirmColor: PRIMARY_COLOR
+  }
+};
+const API_SHOW_TOAST = "showToast";
+const ShowToastProtocol = {
+  title: String,
+  icon: String,
+  image: String,
+  duration: Number,
+  mask: Boolean
+};
+const ShowToastOptions = {
+  formatArgs: {
+    title: "",
+    icon(value, params) {
+      if (["success", "loading", "none"].indexOf(value) === -1) {
+        params.icon = "success";
+      }
+    },
+    image(value, params) {
+      if (value) {
+        params.image = getRealPath(value);
+      }
+    },
+    duration: 1500,
+    mask: false
+  }
+};
+const API_SHOW_LOADING = "showLoading";
+const ShowLoadingProtocol = {
+  title: String,
+  mask: Boolean
+};
+const ShowLoadingOptions = {
+  formatArgs: {
+    title: "",
+    mask: false
+  }
+};
+const API_SHOW_ACTION_SHEET = "showActionSheet";
+const ShowActionSheetProtocol = {
+  itemList: {
+    type: Array,
+    required: true
+  },
+  itemColor: String
+};
+const ShowActionSheetOptions = {
+  formatArgs: {
+    itemColor: "#000"
+  }
+};
+const API_HIDE_TOAST = "hideToast";
+const API_HIDE_LOADING = "hideLoading";
 const IndexProtocol = {
   index: {
     type: Number,
@@ -11186,6 +11143,18 @@ const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGAT
 const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
+const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, () => {
+}, ShowModalProtocol, ShowModalOptions);
+const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, () => {
+}, ShowToastProtocol, ShowToastOptions);
+const hideToast = /* @__PURE__ */ defineAsyncApi(API_HIDE_TOAST, () => {
+});
+const showLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_LOADING, () => {
+}, ShowLoadingProtocol, ShowLoadingOptions);
+const hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, () => {
+});
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, () => {
+}, ShowActionSheetProtocol, ShowActionSheetOptions);
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -11328,6 +11297,12 @@ var api = /* @__PURE__ */ Object.freeze({
   showNavigationBarLoading,
   hideNavigationBarLoading,
   setNavigationBarTitle,
+  showModal,
+  showToast,
+  hideToast,
+  showLoading,
+  hideLoading,
+  showActionSheet,
   setTabBarItem,
   setTabBarStyle,
   hideTabBar,
@@ -12345,6 +12320,7 @@ function createPageBodyVNode(ctx) {
   });
 }
 var index_vue_vue_type_style_index_0_lang$1 = "\n.uni-async-error {\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  top: 0;\r\n  bottom: 0;\r\n  color: #999;\r\n  padding: 100px 10px;\r\n  text-align: center;\n}\r\n";
+initI18nAsyncMsgs();
 const _sfc_main$1 = {
   name: "AsyncError",
   setup() {
@@ -12376,4 +12352,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showNavigationBarLoading, showTabBar, showTabBarRedDot, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};

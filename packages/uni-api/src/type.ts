@@ -22,7 +22,7 @@ interface ApiOptions<T extends ApiLike, P = AsyncApiOptions<T>> {
   beforeAll?: (res: unknown) => void
   beforeSuccess?: (res: unknown) => void
   formatArgs?: {
-    [K in keyof P]?: ApiArgsValidator<P[K], P>
+    [K in keyof P]?: ApiArgsValidator<P[K], P> | P[K]
   }
 }
 

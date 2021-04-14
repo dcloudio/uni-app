@@ -1,8 +1,12 @@
 import { defineComponent, inject } from 'vue'
-import { useI18n } from '@dcloudio/uni-core'
+import { useI18n, initI18nButtonMsgs } from '@dcloudio/uni-core'
 import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniFormCtx, uniFormKey } from '../form'
+
+if (__PLATFORM__ === 'app-plus') {
+  initI18nButtonMsgs()
+}
 
 export default defineComponent({
   name: 'Button',

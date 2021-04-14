@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -152,7 +152,16 @@ function formatApiArgs(args, options) {
     }
     const formatArgs = options.formatArgs;
     Object.keys(formatArgs).forEach((name) => {
-        formatArgs[name](args[0][name], params);
+        const formatterOrDefaultValue = formatArgs[name];
+        if (isFunction(formatterOrDefaultValue)) {
+            formatterOrDefaultValue(args[0][name], params);
+        }
+        else {
+            // defaultValue
+            if (!hasOwn(params, name)) {
+                params[name] = formatterOrDefaultValue;
+            }
+        }
     });
     return args;
 }
