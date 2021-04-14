@@ -179,6 +179,7 @@
 |transition-group	| 作为多个元素/组件的过渡效果 [详情](https://cn.vuejs.org/v2/api/#transition-group) 	|√	| x	| x		|		|
 |keep-alive	| 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们 [详情](https://cn.vuejs.org/v2/api/#keep-alive) 	|√	|x	| x		|		|	
 |slot	| 作为组件模板之中的内容分发插槽 [详情](https://cn.vuejs.org/v2/api/#slot) 	|√	| √	| √		|	-	|
+|template	| 并不是一个组件，它仅仅是一个包装元素，不会在页面中做任何渲染，只接受控制属性 [详情](https://uniapp.dcloud.io/component/vue-component?id=template) 	|√	| √	| √		|	-	|
 
 
 
