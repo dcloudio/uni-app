@@ -389,6 +389,8 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 ### JQL联表查询@lookup
 
+> clientDB将于2021年4月26日优化联表查询策略，详情参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
+
 `JQL`提供了更简单的联表查询方案。不需要学习join、lookup等复杂方法。
 
 只需在db schema中，将两个表的关联字段建立映射关系，就可以把2个表当做一个虚拟表来直接查询。
@@ -563,11 +565,27 @@ db.collection('order')
 
 二维关系型数据库做不到这种设计。`jql`充分利用了json文档型数据库的特点，动态嵌套数据，实现了这个简化的联表查询方案。
 
-不止是2个表，3个、4个表也可以通过这种方式查询。
+不止是2个表，3个、4个表也可以通过这种方式查询，多表场景下只能使用副表与主表之间的关联关系（foreignKey），不可使用副表与副表之间的关联关系。
+
+不止js，`<unicloud-db>`组件也支持所有`jql`功能，包括联表查询。
+
+#### 手动指定使用的foreignKey@lookup-foreign-key
+
+如果存在多个foreignKey且只希望部分生效，可以使用foreignKey来指定要使用的foreignKey
+
+> 2021年4月26日前此方法仅用于兼容clientDB联表查询策略调整前后的写法，在此日期后更新的clientDB（上传schema、uni-id均会触发更新）才会有指定foreignKey的功能
+
+```js
+db.collection('comment,user')
+.where('comment_id=="1-1"')
+.field('content,sender,receiver{name}')
+.foreignKey('comment.receiver') // 仅使用comment表内receiver字段下的foreignKey进行主表和副表之间的关联
+.get()
+```
 
 **注意**
 
-- field参数字符串内没有冒号，{}为联表查询标志
+- field参数字符串内没有冒号
 - 联表查询时关联字段会被替换成被关联表的内容，因此不可在where内使用关联字段作为条件。举个例子，在上面的示例，`where({book_id:"1"})`，但是可以使用`where({'book_id._id':"1"})`
 - 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 - 各个表的_id字段会默认带上，即使没有指定返回
