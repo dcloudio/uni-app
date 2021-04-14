@@ -113,7 +113,7 @@ uni.login({
 **success 返回参数说明**
 
 |参数|类型|说明|平台差异说明|
-|:-|:-|:-||
+|:-|:-|:-|:-|
 |userInfo|OBJECT|用户信息对象||
 |rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。||
 |signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。|微信小程序、字节跳动小程序|
@@ -124,7 +124,7 @@ uni.login({
 **userInfo 参数说明**
 
 |参数|类型|说明|平台差异说明|
-|:-|:-|:-||
+|:-|:-|:-|:-|
 |nickName|String|用户昵称||
 |openId|String|该服务商唯一用户标识|App|
 |avatarUrl|String|用户头像|&nbsp;|
