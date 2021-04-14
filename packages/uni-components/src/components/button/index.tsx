@@ -45,7 +45,10 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
-    const uniForm = inject<UniFormCtx>(uniFormKey)
+    const uniForm = inject<UniFormCtx>(
+      uniFormKey,
+      (false as unknown) as UniFormCtx
+    )
     const { hovering, binding } = useHover(props)
     const { t } = useI18n()
     function onClick() {

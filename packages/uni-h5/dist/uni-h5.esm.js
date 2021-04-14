@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, invokeArrayFns, isString, hasOwn as hasOwn$1, hyphenate, isArray, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, isInSSRComponentSetup, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {passive, NAVBAR_HEIGHT, removeLeadingSlash, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -42,57 +42,6 @@ function errorHandler(err, instance2, info) {
   }
   appInstance.$callHook("onError", err, info);
 }
-var UniLifecycleHooks;
-(function(UniLifecycleHooks2) {
-  UniLifecycleHooks2["ON_SHOW"] = "onShow";
-  UniLifecycleHooks2["ON_HIDE"] = "onHide";
-  UniLifecycleHooks2["ON_LAUNCH"] = "onLaunch";
-  UniLifecycleHooks2["ON_ERROR"] = "onError";
-  UniLifecycleHooks2["ON_THEME_CHANGE"] = "onThemeChange";
-  UniLifecycleHooks2["ON_PAGE_NOT_FOUND"] = "onPageNotFound";
-  UniLifecycleHooks2["ON_UNHANDLE_REJECTION"] = "onUnhandledRejection";
-  UniLifecycleHooks2["ON_LOAD"] = "onLoad";
-  UniLifecycleHooks2["ON_READY"] = "onReady";
-  UniLifecycleHooks2["ON_UNLOAD"] = "onUnload";
-  UniLifecycleHooks2["ON_RESIZE"] = "onResize";
-  UniLifecycleHooks2["ON_BACK_PRESS"] = "onBackPress";
-  UniLifecycleHooks2["ON_PAGE_SCROLL"] = "onPageScroll";
-  UniLifecycleHooks2["ON_TAB_ITEM_TAP"] = "onTabItemTap";
-  UniLifecycleHooks2["ON_REACH_BOTTOM"] = "onReachBottom";
-  UniLifecycleHooks2["ON_PULL_DOWN_REFRESH"] = "onPullDownRefresh";
-  UniLifecycleHooks2["ON_SHARE_TIMELINE"] = "onShareTimeline";
-  UniLifecycleHooks2["ON_ADD_TO_FAVORITES"] = "onAddToFavorites";
-  UniLifecycleHooks2["ON_SHARE_APP_MESSAGE"] = "onShareAppMessage";
-  UniLifecycleHooks2["ON_NAVIGATION_BAR_BUTTON_TAP"] = "onNavigationBarButtonTap";
-  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED"] = "onNavigationBarSearchInputClicked";
-  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED"] = "onNavigationBarSearchInputChanged";
-  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED"] = "onNavigationBarSearchInputConfirmed";
-  UniLifecycleHooks2["ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED"] = "onNavigationBarSearchInputFocusChanged";
-})(UniLifecycleHooks || (UniLifecycleHooks = {}));
-const createHook = (lifecycle) => (hook, target) => !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_SHOW);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_HIDE);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_LAUNCH);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_ERROR);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_THEME_CHANGE);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_PAGE_NOT_FOUND);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_UNHANDLE_REJECTION);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_READY);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_UNLOAD);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_RESIZE);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_BACK_PRESS);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_PAGE_SCROLL);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_TAB_ITEM_TAP);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_REACH_BOTTOM);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_PULL_DOWN_REFRESH);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_SHARE_TIMELINE);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_ADD_TO_FAVORITES);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_SHARE_APP_MESSAGE);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_BUTTON_TAP);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
-/* @__PURE__ */ createHook(UniLifecycleHooks.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 function initApp$1(app) {
   const appConfig = app._context.config;
   if (isFunction(app._component.onError)) {
@@ -2136,7 +2085,7 @@ var index$4 = defineComponent({
   setup(props, {
     slots
   }) {
-    const uniForm = inject(uniFormKey);
+    const uniForm = inject(uniFormKey, false);
     const {
       hovering,
       binding
@@ -5908,7 +5857,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
 }
 _sfc_main$h.render = _sfc_render$h;
 function useFormField(nameKey, valueKey) {
-  const uniForm = inject(uniFormKey);
+  const uniForm = inject(uniFormKey, false);
   if (!uniForm) {
     return;
   }
@@ -11567,7 +11516,7 @@ var TabBar = /* @__PURE__ */ defineComponent({
   }
 });
 function useSwitchTab(route, tabBar2) {
-  watch(route, () => {
+  watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
@@ -11577,8 +11526,6 @@ function useSwitchTab(route, tabBar2) {
       }
       tabBar2.selectedIndex = index2;
     }
-  }, {
-    immediate: true
   });
   return (tabBarItem, index2) => {
     const {

@@ -1,0 +1,8 @@
+{
+  "input": {
+    "src/index.ts": ["dist/uni-app.esm.js"]
+  },
+  "compilerOptions": {
+    "declaration": true
+  }
+}

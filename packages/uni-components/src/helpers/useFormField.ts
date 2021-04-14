@@ -1,8 +1,11 @@
-import { getCurrentInstance, inject, onBeforeUnmount, withScopeId } from 'vue'
+import { getCurrentInstance, inject, onBeforeUnmount } from 'vue'
 import { UniFormCtx, uniFormKey } from '../components/form'
 
 export function useFormField(nameKey: string, valueKey: string) {
-  const uniForm = inject<UniFormCtx>(uniFormKey)
+  const uniForm = inject<UniFormCtx>(
+    uniFormKey,
+    (false as unknown) as UniFormCtx // remove warning
+  )
   if (!uniForm) {
     return
   }

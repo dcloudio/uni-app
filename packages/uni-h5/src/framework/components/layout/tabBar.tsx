@@ -1,4 +1,4 @@
-import { watch, computed, defineComponent, onRenderTriggered } from 'vue'
+import { watchEffect, computed, defineComponent } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook } from '@dcloudio/uni-core'
 import {
@@ -34,23 +34,17 @@ function useSwitchTab(
   route: RouteLocationNormalizedLoaded,
   tabBar: UniApp.TabBarOptions
 ) {
-  watch(
-    route,
-    () => {
-      const meta = route.meta
-      if (meta.isTabBar) {
-        const pagePath = meta.route
-        const index = tabBar.list.findIndex(
-          (item) => item.pagePath === pagePath
-        )
-        if (index === -1) {
-          return
-        }
-        tabBar.selectedIndex = index
+  watchEffect(() => {
+    const meta = route.meta
+    if (meta.isTabBar) {
+      const pagePath = meta.route
+      const index = tabBar.list.findIndex((item) => item.pagePath === pagePath)
+      if (index === -1) {
+        return
       }
-    },
-    { immediate: true }
-  )
+      tabBar.selectedIndex = index
+    }
+  })
   return (tabBarItem: UniApp.TabBarItemOptions, index: number) => {
     const { type } = tabBarItem
     return () => {

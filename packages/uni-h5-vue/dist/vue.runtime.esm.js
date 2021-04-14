@@ -275,7 +275,7 @@ function createGetter(isReadonly = false, shallow = false) {
         return res;
     };
 }
-const set$1 = /*#__PURE__*/ createSetter();
+const set = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
@@ -325,7 +325,7 @@ function ownKeys(target) {
 }
 const mutableHandlers = {
     get,
-    set: set$1,
+    set,
     deleteProperty,
     has,
     ownKeys
@@ -407,7 +407,7 @@ function add(value) {
     }
     return this;
 }
-function set$1$1(key, value) {
+function set$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
     const { has, get } = getProto(target);
@@ -527,7 +527,7 @@ const mutableInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1$1,
+    set: set$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, false)
@@ -541,7 +541,7 @@ const shallowInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1$1,
+    set: set$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, true)
@@ -2860,17 +2860,17 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
                 ));
     }
 }
-const createHook$1 = (lifecycle) => (hook, target = currentInstance) => 
+const createHook = (lifecycle) => (hook, target = currentInstance) => 
 // post-create lifecycle registrations are noops during SSR
 !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-const onBeforeMount = createHook$1("bm" /* BEFORE_MOUNT */);
-const onMounted = createHook$1("m" /* MOUNTED */);
-const onBeforeUpdate = createHook$1("bu" /* BEFORE_UPDATE */);
-const onUpdated = createHook$1("u" /* UPDATED */);
-const onBeforeUnmount = createHook$1("bum" /* BEFORE_UNMOUNT */);
-const onUnmounted = createHook$1("um" /* UNMOUNTED */);
-const onRenderTriggered = createHook$1("rtg" /* RENDER_TRIGGERED */);
-const onRenderTracked = createHook$1("rtc" /* RENDER_TRACKED */);
+const onBeforeMount = createHook("bm" /* BEFORE_MOUNT */);
+const onMounted = createHook("m" /* MOUNTED */);
+const onBeforeUpdate = createHook("bu" /* BEFORE_UPDATE */);
+const onUpdated = createHook("u" /* UPDATED */);
+const onBeforeUnmount = createHook("bum" /* BEFORE_UNMOUNT */);
+const onUnmounted = createHook("um" /* UNMOUNTED */);
+const onRenderTriggered = createHook("rtg" /* RENDER_TRIGGERED */);
+const onRenderTracked = createHook("rtc" /* RENDER_TRACKED */);
 const onErrorCaptured = (hook, target = currentInstance) => {
     injectHook("ec" /* ERROR_CAPTURED */, hook, target);
 };
@@ -6713,7 +6713,7 @@ function createDuplicateChecker() {
     };
 }
 let shouldCacheAccess = true;
-function applyOptions$1(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
+function applyOptions(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
     const { 
     // composition
     mixins, extends: extendsOptions, 
@@ -6746,7 +6746,7 @@ function applyOptions$1(instance, options, deferredData = [], deferredWatch = []
     }
     // extending a base component...
     if (extendsOptions) {
-        applyOptions$1(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
+        applyOptions(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
     }
     // local mixins
     if (mixins) {
@@ -7005,7 +7005,7 @@ function callHookWithMixinAndExtends(name, type, options, instance) {
 }
 function applyMixins(instance, mixins, deferredData, deferredWatch, deferredProvide) {
     for (let i = 0; i < mixins.length; i++) {
-        applyOptions$1(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
+        applyOptions(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
     }
 }
 function resolveData(instance, dataFn, publicThis) {
@@ -7606,7 +7606,7 @@ function finishComponentSetup(instance, isSSR) {
     if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
         pauseTracking();
-        applyOptions$1(instance, Component);
+        applyOptions(instance, Component);
         resetTracking();
         currentInstance = null;
     }
@@ -9404,90 +9404,4 @@ const compile$1 = () => {
     }
 };
 
-function applyOptions(options, instance, publicThis) {
-    Object.keys(options).forEach((name) => {
-        if (name.indexOf('on') === 0) {
-            const hook = options[name];
-            if (isFunction(hook)) {
-                injectHook(name, hook.bind(publicThis), instance);
-            }
-        }
-    });
-}
-
-function set(target, key, val) {
-    return (target[key] = val);
-}
-function hasHook(name) {
-    const hooks = this.$[name];
-    if (hooks && hooks.length) {
-        return true;
-    }
-    return false;
-}
-function callHook(name, args) {
-    const hooks = this.$[name];
-    let ret;
-    if (hooks) {
-        for (let i = 0; i < hooks.length; i++) {
-            ret = hooks[i](args);
-        }
-    }
-    return ret;
-}
-
-function errorHandler(err, instance, info) {
-    if (!instance) {
-        throw err;
-    }
-    const appInstance = instance.$.appContext.$appInstance;
-    if (!appInstance) {
-        throw err;
-    }
-    appInstance.$callHook('onError', err, info);
-}
-
-// @ts-ignore
-const createHook = (lifecycle) => (hook, target) => 
-// post-create lifecycle registrations are noops during SSR
-!isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-const onShow = /*#__PURE__*/ createHook("onShow" /* ON_SHOW */);
-const onHide = /*#__PURE__*/ createHook("onHide" /* ON_HIDE */);
-const onLaunch = /*#__PURE__*/ createHook("onLaunch" /* ON_LAUNCH */);
-const onError = /*#__PURE__*/ createHook("onError" /* ON_ERROR */);
-const onThemeChange = /*#__PURE__*/ createHook("onThemeChange" /* ON_THEME_CHANGE */);
-const onPageNotFound = /*#__PURE__*/ createHook("onPageNotFound" /* ON_PAGE_NOT_FOUND */);
-const onUnhandledRejection = /*#__PURE__*/ createHook("onUnhandledRejection" /* ON_UNHANDLE_REJECTION */);
-// export const onLoad = /*#__PURE__*/ createHook(UniLifecycleHooks.ON_LOAD)
-const onReady = /*#__PURE__*/ createHook("onReady" /* ON_READY */);
-const onUnload = /*#__PURE__*/ createHook("onUnload" /* ON_UNLOAD */);
-const onResize = /*#__PURE__*/ createHook("onResize" /* ON_RESIZE */);
-const onBackPress = /*#__PURE__*/ createHook("onBackPress" /* ON_BACK_PRESS */);
-const onPageScroll = /*#__PURE__*/ createHook("onPageScroll" /* ON_PAGE_SCROLL */);
-const onTabItemTap = /*#__PURE__*/ createHook("onTabItemTap" /* ON_TAB_ITEM_TAP */);
-const onReachBottom = /*#__PURE__*/ createHook("onReachBottom" /* ON_REACH_BOTTOM */);
-const onPullDownRefresh = /*#__PURE__*/ createHook("onPullDownRefresh" /* ON_PULL_DOWN_REFRESH */);
-const onShareTimeline = /*#__PURE__*/ createHook("onShareTimeline" /* ON_SHARE_TIMELINE */);
-const onAddToFavorites = /*#__PURE__*/ createHook("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
-const onShareAppMessage = /*#__PURE__*/ createHook("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
-const onNavigationBarButtonTap = /*#__PURE__*/ createHook("onNavigationBarButtonTap" /* ON_NAVIGATION_BAR_BUTTON_TAP */);
-const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED */);
-const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook("onNavigationBarSearchInputClicked" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED */);
-const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook("onNavigationBarSearchInputConfirmed" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */);
-const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
-
-function initApp(app) {
-    const appConfig = app._context.config;
-    if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = errorHandler;
-    }
-    const globalProperties = appConfig.globalProperties;
-    globalProperties.$hasHook = hasHook;
-    globalProperties.$callHook = callHook;
-    if (__VUE_OPTIONS_API__) {
-        globalProperties.$set = set;
-        globalProperties.$applyOptions = applyOptions;
-    }
-}
-
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHook, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initApp, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };

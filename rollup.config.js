@@ -67,6 +67,7 @@ function createConfig(entryFile, output, plugins = []) {
   hasTSChecked = true
 
   const external = [
+    'vue',
     '@vue/shared',
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.peerDependencies || {}),

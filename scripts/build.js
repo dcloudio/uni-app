@@ -45,6 +45,7 @@ async function build(target) {
   const types =
     target === 'uni-shared' ||
     target === 'uni-i18n' ||
+    target === 'uni-app' ||
     target === 'uni-cli-shared' ||
     (buildTypes && pkg.types)
   // if building a specific format, do not remove dist.
