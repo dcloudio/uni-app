@@ -14,7 +14,7 @@
 
 
 
-### template
+#### template
 
 `uni-app` 支持在 `template` 模板中嵌套 `<template/>` 和 `<block/>`，用来进行 [列表渲染](https://uniapp.dcloud.io/vue-basics?id=listrendering) 和 [条件渲染](https://uniapp.dcloud.io/vue-basics?id=condition)。
 
@@ -52,6 +52,7 @@
             }
         }
     }
+</script> 
 ```
 
 
@@ -67,7 +68,8 @@
 
 
 
-### transition
+
+#### transition
 
 `<transition>` 元素作为单个元素/组件的过渡效果。`<transition>` 只会把过渡效果应用到其包裹的内容上，而不会额外渲染 DOM 元素，也不会出现在可被检查的组件层级中。[详见](https://cn.vuejs.org/v2/api/#transition)
 
@@ -80,8 +82,8 @@
 
 
 
-### transition-group
 
+#### transition-group
 
 `<transition-group>` 元素作为多个元素/组件的过渡效果。`<transition-group>` 渲染一个真实的 DOM 元素。默认渲染 `<span>`，可以通过 tag attribute 配置哪个元素应该被渲染。[详见](https://cn.vuejs.org/v2/api/#transition-group)
 
@@ -95,8 +97,8 @@
 
 
 
-### keep-alive
 
+#### keep-alive
 
 `<keep-alive>` 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 `<transition>` 相似，`<keep-alive>` 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在组件的父组件链中。[详见](https://cn.vuejs.org/v2/api/#keep-alive)
 
@@ -109,8 +111,7 @@
 
 
 
-### slot
-
+#### slot
 
 `<slot>` 元素作为组件模板之中的内容分发插槽。`<slot>` 元素自身将被替换。[插槽](https://uniapp.dcloud.io/vue-components?id=%e6%8f%92%e6%a7%bd)。
 
@@ -122,8 +123,4 @@
 |App|H5	|微信小程序	|支付宝小程序	|百度小程序	|字节跳动小程序	|QQ小程序	|快应用	|360小程序	|
 |:-:|:-:|:-:		|:-:			|:-:		|:-:			|:-:		|:-:	|:-:		|
 |√	|√	|√			|√				|√			|√				|√			|√		|√			|
-
-
-
-
 
