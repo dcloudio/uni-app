@@ -113,7 +113,7 @@ export function usePageRefresh(refreshRef: Ref) {
     refreshControllerElemStyle.transform = 'translate3d(-50%, ' + y + 'px, 0)'
   }
 
-  function onTouchstart(ev: TouchEvent) {
+  function onTouchstartPassive(ev: TouchEvent) {
     const touch = ev.changedTouches[0]
     touchId = touch.identifier
     startY = touch.pageY
@@ -124,7 +124,7 @@ export function usePageRefresh(refreshRef: Ref) {
     }
   }
 
-  function onTouchmove(ev: TouchEvent) {
+  function onTouchmovePassive(ev: TouchEvent) {
     if (!canRefresh) {
       return
     }
@@ -258,8 +258,8 @@ export function usePageRefresh(refreshRef: Ref) {
   }
 
   return {
-    onTouchstart,
-    onTouchmove,
+    onTouchstartPassive,
+    onTouchmovePassive,
     onTouchend,
     onTouchcancel: onTouchend,
   }

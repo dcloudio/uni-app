@@ -3,7 +3,7 @@ export const API_CONNECT_SOCKET = 'connectSocket'
 export type API_TYPE_CONNECT_SOCKET = typeof uni.connectSocket
 export const ConnectSocketOptions: ApiOptions<API_TYPE_CONNECT_SOCKET> = {
   formatArgs: {
-    header(value, params) {
+    header(value: Record<string, any>, params: Record<string, any>) {
       params.header = value || {}
     },
     method(value, params) {

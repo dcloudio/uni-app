@@ -54,7 +54,7 @@ function parsePagesJson(
   options: VitePluginUniResolvedOptions
 ) {
   const pagesJson = normalizePagesJson(jsonStr, options.platform)
-  const definePagesCode = generatePagesDefineCode(pagesJson)
+  const definePagesCode = generatePagesDefineCode(pagesJson, config)
   const uniRoutesCode = generateRoutes(pagesJson)
   const uniConfigCode = generateConfig(pagesJson, options)
   const manifestJsonPath = slash(
@@ -129,7 +129,18 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
   }.vue?mpType=page').then(comp=>setupPage(comp))},AsyncComponentOptions))`
 }
 
-function generatePagesDefineCode(pagesJson: UniApp.PagesJson) {
+function generatePagesDefineCode(
+  pagesJson: UniApp.PagesJson,
+  config: ResolvedConfig
+) {
+  const define = config.define! as FEATURE_DEFINES
+  if (!define.__UNI_FEATURE_PAGES__) {
+    // single page
+    const pagePath = pagesJson.pages[0].path
+    return `import {default as ${normalizePageIdentifier(
+      pagePath
+    )}} from './${pagePath}.vue?mpType=page'`
+  }
   const { pages } = pagesJson
   return (
     `const AsyncComponentOptions = {

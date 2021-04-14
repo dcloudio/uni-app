@@ -1286,9 +1286,10 @@ function initPublicPage(route) {
 }
 function initPage(vm) {
   const route = vm.$route;
+  const page = initPublicPage(route);
   vm.$vm = vm;
-  vm.$page = initPublicPage(route);
-  currentPagesMap.set(normalizeRouteKey(route.path, vm.$page.id), vm);
+  vm.$page = page;
+  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
 }
 function normalizeRouteKey(path, id2) {
   return path + SEP + id2;
@@ -2006,7 +2007,7 @@ function useHover(props) {
       }, parseInt(props.hoverStayTime));
     });
   }
-  function onTouchstart(evt) {
+  function onTouchstartPassive(evt) {
     if (evt._hoverPropagationStopped) {
       return;
     }
@@ -2041,7 +2042,7 @@ function useHover(props) {
   return {
     hovering,
     binding: {
-      onTouchstart,
+      onTouchstartPassive,
       onTouchend,
       onTouchcancel
     }
@@ -12387,7 +12388,7 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
     refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
   }
-  function onTouchstart(ev) {
+  function onTouchstartPassive(ev) {
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
@@ -12397,7 +12398,7 @@ function usePageRefresh(refreshRef) {
       canRefresh = true;
     }
   }
-  function onTouchmove(ev) {
+  function onTouchmovePassive(ev) {
     if (!canRefresh) {
       return;
     }
@@ -12500,8 +12501,8 @@ function usePageRefresh(refreshRef) {
     const timeout = setTimeout(restoreTransitionEnd, 350);
   }
   return {
-    onTouchstart,
-    onTouchmove,
+    onTouchstartPassive,
+    onTouchmovePassive,
     onTouchend,
     onTouchcancel: onTouchend
   };

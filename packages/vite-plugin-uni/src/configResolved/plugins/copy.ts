@@ -18,7 +18,7 @@ export function uniCopyPlugin({
       {
         src: path.resolve(inputDir, 'uni_modules/*/' + PUBLIC_DIR),
         dest: outputDir,
-        rename: (name, extension, fullPath) => {
+        rename: (_name, _extension, fullPath) => {
           return path.relative(inputDir, fullPath)
         },
       },

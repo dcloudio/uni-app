@@ -40,7 +40,7 @@ export function useHover(props: UseHoverOptions) {
       }, parseInt(props.hoverStayTime as string))
     })
   }
-  function onTouchstart(evt: TouchEvent) {
+  function onTouchstartPassive(evt: TouchEvent) {
     // TODO detect scrolling
     if ((evt as any)._hoverPropagationStopped) {
       return
@@ -77,7 +77,7 @@ export function useHover(props: UseHoverOptions) {
   return {
     hovering,
     binding: {
-      onTouchstart,
+      onTouchstartPassive,
       onTouchend,
       onTouchcancel,
     },

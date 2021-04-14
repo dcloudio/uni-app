@@ -87,7 +87,7 @@ export function resolvePlugins(
   )
   addPlugin(plugins, uniMainJsPlugin(options), 1, 'pre')
   addPlugin(plugins, uniPagesJsonPlugin(config, options), 1, 'pre')
-  addPlugin(plugins, uniManifestJsonPlugin(options), 1, 'pre')
+  addPlugin(plugins, uniManifestJsonPlugin(config, options), 1, 'pre')
 
   addPlugin(
     plugins,
