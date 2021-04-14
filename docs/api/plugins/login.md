@@ -108,7 +108,8 @@ uni.login({
 |zh_TW|繁体中文|
 |en|英文|
 
-**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。在微信小程序最新的调整中，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据，建议改用 uni.getUserProfile 。
+**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
+**注意：**微信小程序最新的调整中，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据。
 
 **success 返回参数说明**
 
@@ -205,13 +206,13 @@ uni.login({
 **success 返回参数说明**
 
 |参数|类型|说明|平台差异说明(仅支持微信小程序)|
-|:-|:-|:-|微信小程序|
-|userInfo|OBJECT|用户信息对象|微信小程序|
-|rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。|微信小程序|
-|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。|微信小程序|
-|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。|微信小程序|
-|iv|String|加密算法的初始向量，详细见加密数据解密算法。|微信小程序|
-|cloudID|String|敏感数据对应的云 ID，开通云开发的小程序才会返回，可通过云调用直接获取开放数据，详细见云调用直接获取开放数据|微信小程序|
+|:-|:-|:-||
+|userInfo|OBJECT|用户信息对象||
+|rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。||
+|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。||
+|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。||
+|iv|String|加密算法的初始向量，详细见加密数据解密算法。||
+|cloudID|String|敏感数据对应的云 ID，开通云开发的小程序才会返回，可通过云调用直接获取开放数据，详细见云调用直接获取开放数据||
 |errMsg|String|描述信息|&nbsp;|
 
 **userInfo 参数说明**
