@@ -145,7 +145,7 @@ exports.main = async (event, context) => {
 	"tokenSecret": "tokenSecret-demo", // 生成token所用的密钥，注意修改为自己的，使用一个较长的字符串即可
 	"tokenExpiresIn": 7200, // 全平台token过期时间，未指定过期时间的平台会使用此值
 	"tokenExpiresThreshold": 600, // 新增于uni-id 1.1.7版本，checkToken时如果token有效期小于此值则自动获取新token，请注意将新token返回给前端保存，如果不配置此参数则不开启自动获取新token功能
-	"bindTokenToDevice": true, // 是否将token和设备绑定，设置为true会进行ua校验，默认为true
+	"bindTokenToDevice": false, // 是否将token和设备绑定，设置为true会进行ua校验，uni-id 3.0.12前默认为true，3.0.12及以后版本默认调整为false
 	"passwordErrorLimit": 6, // 密码错误最大重试次数
 	"passwordErrorRetryTime": 3600, // 密码错误重试次数超限之后的冻结时间
 	"autoSetInviteCode": false, // 是否在用户注册时自动设置邀请码，默认不自动设置
@@ -1271,7 +1271,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-### 绑定手机号
+### 绑定手机号@bind-mobile
 
 用法：`uniID.bindMobile(Object BindMobileParams)`
 
