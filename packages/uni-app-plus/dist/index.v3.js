@@ -251,7 +251,8 @@ var serviceContext = (function () {
 
   const ad = [
     'createRewardedVideoAd',
-    'createFullScreenVideoAd'
+    'createFullScreenVideoAd',
+    'createInterstitialAd'
   ];
 
   const apis = [
@@ -2246,7 +2247,7 @@ var serviceContext = (function () {
       type: String,
       validator (value, params) {
         if (value) {
-          params.type = getRealPath(value);
+          params.filePath = getRealPath(value);
         }
       }
     },
@@ -6063,7 +6064,7 @@ var serviceContext = (function () {
       windowHeight,
       statusBarHeight,
       language: plus.os.language,
-      system: plus.os.version,
+      system: `${platform} ${plus.os.version}`,
       version: plus.runtime.innerVersion,
       fontSizeSetting: '',
       platform,
@@ -10004,7 +10005,7 @@ var serviceContext = (function () {
     let currentSize = 0;
     for (let index = 0; index < length; index++) {
       const key = plus.storage.key(index);
-      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+      if (key !== STORAGE_KEYS && (key.indexOf(STORAGE_DATA_TYPE) < 0 || key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length)) {
         const value = plus.storage.getItem(key);
         currentSize += key.length + value.length;
         keys.push(key);
@@ -10553,8 +10554,7 @@ var serviceContext = (function () {
     callbackId,
     data
   }, pageId) => {
-    const { adpid, width, count } = data;
-    getAdData(adpid, width, count, (res) => {
+    getAdData(data, (res) => {
       operateAdView(pageId, callbackId, 'success', res);
     }, (err) => {
       operateAdView(pageId, callbackId, 'fail', err);
@@ -10563,7 +10563,8 @@ var serviceContext = (function () {
 
   const _adDataCache = {};
 
-  function getAdData (adpid, width, count, onsuccess, onerror) {
+  function getAdData (data, onsuccess, onerror) {
+    const { adpid, width } = data;
     const key = adpid + '-' + width;
     const adDataList = _adDataCache[key];
     if (adDataList && adDataList.length > 0) {
@@ -10572,11 +10573,7 @@ var serviceContext = (function () {
     }
 
     plus.ad.getAds(
-      {
-        adpid,
-        count,
-        width
-      },
+      data,
       (res) => {
         const list = res.ads;
         onsuccess(list.splice(0, 1)[0]);
@@ -10617,6 +10614,7 @@ var serviceContext = (function () {
 
       this._preload = options.preload !== undefined ? options.preload : true;
       this._isLoad = false;
+      this._isLoading = false;
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
@@ -10625,6 +10623,7 @@ var serviceContext = (function () {
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
+        this._isLoading = false;
         this._lastLoadTime = Date.now();
         this._dispatchEvent('load', {});
 
@@ -10634,6 +10633,8 @@ var serviceContext = (function () {
         }
       });
       rewardAd.onClose((e) => {
+        this._isLoad = false;
+        this._isLoading = false;
         if (this._preload) {
           this._loadAd();
         }
@@ -10643,6 +10644,7 @@ var serviceContext = (function () {
         this._dispatchEvent('verify', { isValid: e.isValid });
       });
       rewardAd.onError((e) => {
+        this._isLoading = false;
         const { code, message } = e;
         const data = { code: code, errMsg: message };
         this._adError = message;
@@ -10671,18 +10673,25 @@ var serviceContext = (function () {
 
     load () {
       return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
         if (this._isLoad) {
           resolve();
           return
         }
-        this._loadPromiseResolve = resolve;
-        this._loadPromiseReject = reject;
         this._loadAd();
       })
     }
 
     show () {
       return new Promise((resolve, reject) => {
+        if (this._isLoading) {
+          return
+        }
+
         const provider = this.getProvider();
         if (provider === ProviderType.CSJ && this.isExpired) {
           this._isLoad = false;
@@ -10711,6 +10720,7 @@ var serviceContext = (function () {
 
     _loadAd () {
       this._isLoad = false;
+      this._isLoading = true;
       this._rewardAd.load();
     }
 
@@ -10832,6 +10842,122 @@ var serviceContext = (function () {
 
   function createFullScreenVideoAd (options) {
     return new FullScreenVideoAd(options)
+  }
+
+  const eventNames$2 = [
+    'load',
+    'close',
+    'error',
+    'adClicked'
+  ];
+
+  class InterstitialAd {
+    constructor (options = {}) {
+      const _callbacks = this._callbacks = {};
+      eventNames$2.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._isLoad = false;
+      this._isLoading = false;
+      this._adError = '';
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+
+      const ad = this._ad = plus.ad.createInterstitialAd(options);
+      ad.onLoad((e) => {
+        this._isLoad = true;
+        this._isLoading = false;
+        this._dispatchEvent('load', {});
+
+        if (this._loadPromiseResolve != null) {
+          this._loadPromiseResolve();
+          this._loadPromiseResolve = null;
+        }
+      });
+      ad.onClose((e) => {
+        this._isLoad = false;
+        this._isLoading = false;
+        this._dispatchEvent('close', {});
+      });
+      ad.onError((e) => {
+        this._isLoading = false;
+
+        const { code, message } = e;
+        const data = { code: code, errMsg: message };
+        this._adError = message;
+
+        this._dispatchEvent('error', data);
+
+        if (this._loadPromiseReject != null) {
+          this._loadPromiseReject(data);
+          this._loadPromiseReject = null;
+        }
+      });
+      ad.onAdClicked((e) => {
+        this._dispatchEvent('adClicked', {});
+      });
+    }
+
+    load () {
+      return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
+        if (this._isLoad) {
+          resolve();
+          return
+        }
+        this._loadAd();
+      })
+    }
+
+    show () {
+      return new Promise((resolve, reject) => {
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoad) {
+          this._ad.show();
+          resolve();
+        } else {
+          reject(new Error(this._adError));
+        }
+      })
+    }
+
+    getProvider () {
+      return this._ad.getProvider()
+    }
+
+    destroy () {
+      this._ad.destroy();
+    }
+
+    _loadAd () {
+      this._isLoad = false;
+      this._isLoading = true;
+      this._ad.load();
+    }
+
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createInterstitialAd (options) {
+    return new InterstitialAd(options)
   }
 
   var api = /*#__PURE__*/Object.freeze({
@@ -10995,7 +11121,8 @@ var serviceContext = (function () {
     showTabBar: showTabBar$2,
     requestComponentInfo: requestComponentInfo$2,
     createRewardedVideoAd: createRewardedVideoAd,
-    createFullScreenVideoAd: createFullScreenVideoAd
+    createFullScreenVideoAd: createFullScreenVideoAd,
+    createInterstitialAd: createInterstitialAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -11031,7 +11158,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames$2 = [
+  const eventNames$3 = [
     'canplay',
     'play',
     'pause',
@@ -11044,7 +11171,7 @@ var serviceContext = (function () {
     'waiting'
   ];
   const callbacks$5 = {};
-  eventNames$2.forEach(name => {
+  eventNames$3.forEach(name => {
     callbacks$5[name] = [];
   });
 
@@ -11163,7 +11290,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$2.forEach(item => {
+  eventNames$3.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$5[item].push(callback);
@@ -19064,7 +19191,7 @@ var serviceContext = (function () {
     EditorContext: EditorContext
   });
 
-  const eventNames$3 = [
+  const eventNames$4 = [
     'canplay',
     'play',
     'pause',
@@ -19129,7 +19256,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames$3.forEach(name => {
+      eventNames$4.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props$1.forEach(item => {
@@ -19189,7 +19316,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$3.forEach(item => {
+  eventNames$4.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
@@ -20992,10 +21119,15 @@ var serviceContext = (function () {
       });
     });
 
+    let keyboardHeightChange = 0;
     plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
-      publish('onKeyboardHeightChange', {
-        height: event.height
-      });
+      // 安卓设备首次获取高度为 0
+      if (keyboardHeightChange !== event.height) {
+        keyboardHeightChange = event.height;
+        publish('onKeyboardHeightChange', {
+          height: keyboardHeightChange
+        });
+      }
     });
 
     globalEvent.addEventListener('uistylechange', function (event) {
