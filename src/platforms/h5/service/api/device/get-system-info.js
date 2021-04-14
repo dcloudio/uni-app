@@ -24,6 +24,10 @@ const isMac = /Macintosh|Mac/i.test(ua)
  */
 const isLinux = /Linux|X11/i.test(ua)
 /**
+ * 是否是iPadOS
+ */
+const isIPadOS = isMac && navigator.maxTouchPoints > 0
+/**
  * 获取系统信息-同步
  */
 export function getSystemInfoSync () {
@@ -81,6 +85,10 @@ export function getSystemInfoSync () {
         break
       }
     }
+  } else if (isIPadOS) {
+    model = 'iPad'
+    osname = 'iPadOS'
+    osversion = window.BigInt ? '14' : '13'
   } else if (isWindows || isMac || isLinux) {
     model = 'PC'
     const osversionFind = ua.match(/\((.+?)\)/)[1]
