@@ -60,12 +60,13 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |groupby|String|对数据进行分组，HBuilderX3.1.0+|
 |group-field|String|对数据进行分组统计|
 |distinct|Boolean|是否对数据查询结果中重复的记录进行去重，默认值false，HBuilderX3.1.0+|
+|loadtime|String|加载数据时机，默认auto，可选值 auto&#124;onready&#124;manual,[详情](/uniCloud/unicloud-db?id=loadtime) HBuilderX3.1.10+|
 |@load|EventHandle|成功回调。联网返回结果后，若希望先修改下数据再渲染界面，则在本方法里对data进行修改|
 |@error|EventHandle|失败回调|
 
 TODO：暂不支持in子查询功能。后续会补充
 
-注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`)除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
+注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`) 和 (`loadtime="manual"`) 除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
 
 
 **示例**
@@ -200,6 +201,15 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 ```html
 <unicloud-db orderby="createTime1 asc,createTime2 desc"></unicloud-db>
 ```
+
+
+## loadtime@loadtime
+
+|值|类型|描述|
+|:-|:-|:-|
+|auto|String|页面就绪后或属性变化后加载数据，默认为auto|
+|onready|String|页面就绪后不自动加载数据，属性变化后加载。适合在onready中接收上个页面的参数作为where条件时。|
+|manual|String|手动模式，不自动加载数据。如果涉及到分页，需要先手动修改当前页，在调用加载数据|
 
 
 
