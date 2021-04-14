@@ -1,10 +1,5 @@
 import { App } from 'vue'
-import {
-  Router,
-  RouterOptions,
-  RouteRecordRaw,
-  RouterHistory,
-} from 'vue-router'
+import { Router, RouterOptions, RouteRecordRaw } from 'vue-router'
 import {
   createRouter,
   createWebHistory,
@@ -17,8 +12,8 @@ export function initRouter(app: App) {
 }
 
 const scrollBehavior: RouterOptions['scrollBehavior'] = (
-  to,
-  from,
+  _to,
+  _from,
   savedPosition
 ) => {
   if (savedPosition) {

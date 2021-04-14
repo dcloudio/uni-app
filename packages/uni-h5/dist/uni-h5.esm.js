@@ -1464,7 +1464,7 @@ function pruneRouteCache(key) {
 function initRouter(app) {
   app.use(createAppRouter(createRouter(createRouterOptions())));
 }
-const scrollBehavior = (to, from, savedPosition) => {
+const scrollBehavior = (_to, _from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
   }
