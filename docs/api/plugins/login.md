@@ -91,7 +91,7 @@ uni.login({
 **OBJECT 参数说明**
 
 |参数名|类型|必填|说明|平台差异说明|
-|:-|:-|:-|:-|:-|:-|
+|:-|:-|:-|:-|:-|
 |provider|String|否|登录服务提供商，通过 uni.getProvider 获取||
 |withCredentials|Boolean|否|是否带上登录态信息。|微信小程序、字节跳动小程序|
 |lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
@@ -108,8 +108,7 @@ uni.login({
 |zh_TW|繁体中文|
 |en|英文|
 
-**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。
-**注意：**微信小程序最新的调整中，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据。
+**注意：**在小程序 withCredentials 为 true 时或是在 App 调用 uni.getUserInfo，要求此前有调用过 uni.login 且登录态尚未过期。微信基础库2.10.4版本对用户信息相关接口进行了调整，使用 uni.getUserInfo 获取得到的 userInfo 为匿名数据，建议使用 uni.getUserProfile 获取用户信息。
 
 **success 返回参数说明**
 
@@ -176,22 +175,22 @@ uni.login({
 
 **平台差异说明**
 
-|App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
+|App|H5|微信小程序（基础库2.10.4）|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |x|x|√|x|x|x|x|
 
-**注意：** 该API仅支持微信小程序端，微信小程序更新了获取用户信息的方式（详见[《微信小程序公告》](https://developers.weixin.qq.com/community/develop/doc/000cacfa20ce88df04cb468bc52801?highLine=getUserProfile%253Afail)）。每次点击触发该API均会弹出授权窗口，用户授权后可成功获取用户信息。
+**注意：** 该API仅支持微信小程序端，微信小程序调整了相关接口（详见[《小程序登录、用户信息相关接口调整说明》](https://developers.weixin.qq.com/community/develop/doc/000cacfa20ce88df04cb468bc52801?highLine=getUserProfile%253Afail)）。每次触发 uni.getUserProfile 均会弹出授权窗口，用户授权后可成功获取用户信息。
 
 **OBJECT 参数说明**
 
-|参数名|类型|必填|说明|平台差异说明|
-|:-|:-|:-|:-|:-|:-|
+|参数名|类型|必填|说明|
+|:-|:-|:-|:-|
 
 |desc|String|是|声明获取用户个人信息后的用途，不超过30个字符|
-|lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|微信小程序|
-|success|Function|否|接口调用成功的回调||
-|fail|Function|否|接口调用失败的回调函数||
-|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|&nbsp;|
+|lang|String|否|指定返回用户信息的语言，默认为 en。更多值请参考下面的说明。|
+|success|Function|否|接口调用成功的回调|
+|fail|Function|否|接口调用失败的回调函数|
+|complete|Function|否|接口调用结束的回调函数（调用成功、失败都会执行）|
 
 **lang 值说明**
 
@@ -217,14 +216,31 @@ uni.login({
 
 **userInfo 参数说明**
 
-|参数|类型|说明|平台差异说明(仅支持微信小程序)|
+|参数|类型|说明|平台差异说明（仅支持微信小程序）|
 |:-|:-|:-||
 |nickName|String|用户昵称||
+|avatarUrl|String|用户头像|&nbsp;|
 |gender|Number|用户性别||
 |country|String|用户所在国家||
 |province|String|用户所在省份||
 |city|String|用户所在城市||
-|avatarUrl|String|用户头像|&nbsp;|
+|language|String|显示 country，province，city 所用的语言||
+
+**gender 的合法值**
+
+|值|说明|
+|:-|:-|
+|0|未知|
+|1|男性|
+|2|女性|
+
+**language 的合法值**
+
+|值|说明|
+|:-|:-|
+|en|英文|
+|zh_CN|简体中文|
+|zh_TW|繁体中文|
 
 
 ### uni.preLogin(OBJECT)
