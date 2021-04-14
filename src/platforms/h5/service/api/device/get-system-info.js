@@ -88,7 +88,7 @@ export function getSystemInfoSync () {
   } else if (isIPadOS) {
     model = 'iPad'
     osname = 'iPadOS'
-    osversion = window.BigInt ? '14' : '13'
+    osversion = typeof window.BigInt === 'function' ? '14' : '13'
   } else if (isWindows || isMac || isLinux) {
     model = 'PC'
     const osversionFind = ua.match(/\((.+?)\)/)[1]
