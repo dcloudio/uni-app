@@ -573,7 +573,7 @@ db.collection('order')
 
 如果存在多个foreignKey且只希望部分生效，可以使用foreignKey来指定要使用的foreignKey
 
-> 2021年4月26日前此方法仅用于兼容clientDB联表查询策略调整前后的写法，在此日期后更新的clientDB（上传schema、uni-id均会触发更新）才会有指定foreignKey的功能
+> 2021年4月26日前此方法仅用于兼容clientDB联表查询策略调整前后的写法，在此日期后更新的clientDB（上传schema、uni-id均会触发更新）才会有指定foreignKey的功能，关于此次调整请参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
 
 ```js
 db.collection('comment,user')
