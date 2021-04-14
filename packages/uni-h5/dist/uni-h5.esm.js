@@ -4551,6 +4551,13 @@ const API_MAKE_PHONE_CALL = "makePhoneCall";
 const MakePhoneCallProtocol = {
   phoneNumber: String
 };
+const API_GET_FILE_INFO = "getFileInfo";
+const GetFileInfoProtocol = {
+  filePath: {
+    type: String,
+    required: true
+  }
+};
 const API_OPEN_DOCUMENT = "openDocument";
 const OpenDocumentProtocol = {
   filePath: {
@@ -10644,6 +10651,89 @@ const getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, 
   }
   return resolve({networkType});
 });
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn$1(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, reject}) => {
+  urlToFile(filePath).then((res) => {
+    resolve({
+      size: res.size
+    });
+  }).catch((err) => {
+    reject(String(err));
+  });
+}, GetFileInfoProtocol);
 const openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) => {
   window.open(filePath);
   return resolve();
@@ -10783,80 +10873,6 @@ function parseHeaders(headers) {
     headersObject[find[1]] = find[2];
   });
   return headersObject;
-}
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, {type});
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn$1(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
 }
 class DownloadTask {
   constructor(xhr) {
@@ -11446,6 +11462,7 @@ var api = /* @__PURE__ */ Object.freeze({
   onNetworkStatusChange,
   offNetworkStatusChange,
   getNetworkType,
+  getFileInfo,
   openDocument,
   getImageInfo,
   request,
@@ -12520,4 +12537,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};

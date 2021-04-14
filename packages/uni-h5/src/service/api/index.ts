@@ -5,6 +5,7 @@ export * from './device/getSystemInfo'
 export * from './device/getSystemInfoSync'
 export * from './device/network'
 
+export * from './file/getFileInfo'
 export * from './file/openDocument'
 
 export * from './media/getImageInfo'
