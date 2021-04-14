@@ -126,7 +126,7 @@ export default {
       type: [Boolean, String],
       default: false
     },
-    exceptForeignKey: {
+    foreignKey: {
       type: String,
       default: ''
     },
@@ -482,8 +482,8 @@ export default {
       if (this.field) {
         db = db.field(this.field)
       }
-      if (this.exceptForeignKey) {
-        db = db.exceptForeignKey(this.exceptForeignKey)
+      if (this.foreignKey) {
+        db = db.foreignKey(this.foreignKey)
       }
       if (this.groupby) {
         db = db.groupBy(this.groupby)
