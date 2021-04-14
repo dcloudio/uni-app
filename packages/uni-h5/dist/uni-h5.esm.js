@@ -4739,6 +4739,42 @@ const UploadFileProtocol = {
   formData: Object,
   timeout: Number
 };
+const API_CONNECT_SOCKET = "connectSocket";
+const ConnectSocketOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    },
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    protocols(protocols, params) {
+      if (typeof protocols === "string") {
+        params.protocols = [protocols];
+      }
+    }
+  }
+};
+const ConnectSocketProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  header: {
+    type: Object
+  },
+  method: String,
+  protocols: [Array, String]
+};
+const API_SEND_SOCKET_MESSAGE = "sendSocketMessage";
+const SendSocketMessageProtocol = {
+  data: [String, ArrayBuffer]
+};
+const API_CLOSE_SOCKET = "closeSocket";
+const CloseSocketProtocol = {
+  code: Number,
+  reason: String
+};
 function encodeQueryString(url) {
   if (typeof url !== "string") {
     return url;
@@ -11070,6 +11106,183 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
   });
   return uploadTask;
 }, UploadFileProtocol, UploadFileOptions);
+const socketTasks = [];
+const globalEvent = {
+  open: "",
+  close: "",
+  error: "",
+  message: ""
+};
+class SocketTask {
+  constructor(url, protocols, callback) {
+    this._callbacks = {
+      open: [],
+      close: [],
+      error: [],
+      message: []
+    };
+    let error;
+    try {
+      const webSocket = this._webSocket = new WebSocket(url, protocols);
+      webSocket.binaryType = "arraybuffer";
+      const eventNames = ["open", "close", "error", "message"];
+      eventNames.forEach((name) => {
+        this._callbacks[name] = [];
+        webSocket.addEventListener(name, (event2) => {
+          const res = name === "message" ? {
+            data: event2.data
+          } : {};
+          this._callbacks[name].forEach((callback2) => {
+            try {
+              callback2(res);
+            } catch (e2) {
+              console.error(`thirdScriptError
+${e2};at socketTask.on${capitalize(name)} callback function
+`, e2);
+            }
+          });
+          if (this === socketTasks[0] && globalEvent[name]) {
+            UniServiceJSBridge.invokeOnCallback(globalEvent[name], res);
+          }
+          if (name === "error" || name === "close") {
+            const index2 = socketTasks.indexOf(this);
+            if (index2 >= 0) {
+              socketTasks.splice(index2, 1);
+            }
+          }
+        });
+      });
+      const propertys = [
+        "CLOSED",
+        "CLOSING",
+        "CONNECTING",
+        "OPEN",
+        "readyState"
+      ];
+      propertys.forEach((property) => {
+        Object.defineProperty(this, property, {
+          get() {
+            return webSocket[property];
+          }
+        });
+      });
+    } catch (e2) {
+      error = e2;
+    }
+    callback && callback(error, this);
+  }
+  send(options) {
+    const data = (options || {}).data;
+    const ws = this._webSocket;
+    try {
+      if (ws.readyState !== ws.OPEN) {
+        throw new Error("SocketTask.readyState is not OPEN");
+      }
+      ws.send(data);
+      this._callback(options, "sendSocketMessage:ok");
+    } catch (error) {
+      this._callback(options, `sendSocketMessage:fail ${error}`);
+    }
+  }
+  close(options = {}) {
+    const ws = this._webSocket;
+    try {
+      const code = options.code || 1e3;
+      const reason = options.reason;
+      if (typeof reason === "string") {
+        ws.close(code, reason);
+      } else {
+        ws.close(code);
+      }
+      this._callback(options, "closeSocket:ok");
+    } catch (error) {
+      this._callback(options, `closeSocket:fail ${error}`);
+    }
+  }
+  _callback({
+    success,
+    fail,
+    complete
+  } = {}, errMsg) {
+    const data = {
+      errMsg
+    };
+    if (/:ok$/.test(errMsg)) {
+      if (typeof success === "function") {
+        success(data);
+      }
+    } else {
+      if (typeof fail === "function") {
+        fail(data);
+      }
+    }
+    if (typeof complete === "function") {
+      complete(data);
+    }
+  }
+  onOpen(callback) {
+    this._callbacks.open.push(callback);
+  }
+  onMessage(callback) {
+    this._callbacks.message.push(callback);
+  }
+  onError(callback) {
+    this._callbacks.error.push(callback);
+  }
+  onClose(callback) {
+    this._callbacks.close.push(callback);
+  }
+}
+const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({url, protocols}, {resolve, reject}) => {
+  return new SocketTask(url, protocols, (error, socketTask) => {
+    if (error) {
+      reject(error.toString());
+      return;
+    }
+    socketTasks.push(socketTask);
+    resolve();
+  });
+}, ConnectSocketProtocol, ConnectSocketOptions);
+function callSocketTask(socketTask, method, option, resolve, reject) {
+  const fn = socketTask[method];
+  if (typeof fn === "function") {
+    fn.call(socketTask, Object.assign({}, option, {
+      success() {
+        resolve();
+      },
+      fail({errMsg}) {
+        reject(errMsg.replace("sendSocketMessage:fail ", ""));
+      },
+      complete: void 0
+    }));
+  }
+}
+const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, {resolve, reject}) => {
+  const socketTask = socketTasks[0];
+  if (socketTask && socketTask.readyState === socketTask.OPEN) {
+    callSocketTask(socketTask, "send", options, resolve, reject);
+  } else {
+    reject("WebSocket is not connected");
+  }
+}, SendSocketMessageProtocol);
+const closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, {resolve, reject}) => {
+  const socketTask = socketTasks[0];
+  if (socketTask) {
+    callSocketTask(socketTask, "send", options, resolve, reject);
+  } else {
+    reject("WebSocket is not connected");
+  }
+}, CloseSocketProtocol);
+function on(event2) {
+  const api2 = `onSocket${capitalize(event2)}`;
+  return /* @__PURE__ */ defineOnApi(api2, () => {
+    globalEvent[event2] = api2;
+  });
+}
+const onSocketOpen = on("open");
+const onSocketError = on("error");
+const onSocketMessage = on("message");
+const onSocketClose = on("close");
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -11288,6 +11501,13 @@ var api = /* @__PURE__ */ Object.freeze({
   request,
   downloadFile,
   uploadFile,
+  connectSocket,
+  sendSocketMessage,
+  closeSocket,
+  onSocketOpen,
+  onSocketError,
+  onSocketMessage,
+  onSocketClose,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -12352,4 +12572,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, useSubscribe};

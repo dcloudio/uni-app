@@ -35,13 +35,13 @@ export const ConnectSocketProtocol: ApiProtocol<API_TYPE_CONNECT_SOCKET> = {
 export const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage'
 export type API_TYPE_SEND_SOCKET_MESSAGE = typeof uni.sendSocketMessage
 
-export const sendSocketMessage: ApiProtocol<API_TYPE_SEND_SOCKET_MESSAGE> = {
+export const SendSocketMessageProtocol: ApiProtocol<API_TYPE_SEND_SOCKET_MESSAGE> = {
   data: [String, ArrayBuffer],
 }
 
 export const API_CLOSE_SOCKET = 'closeSocket'
 export type API_TYPE_CLOSE_SOCKET = typeof uni.closeSocket
-export const closeSocket: ApiProtocol<API_TYPE_CLOSE_SOCKET> = {
+export const CloseSocketProtocol: ApiProtocol<API_TYPE_CLOSE_SOCKET> = {
   code: Number,
   reason: String,
 }

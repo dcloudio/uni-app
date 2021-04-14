@@ -12,6 +12,7 @@ export * from './media/getImageInfo'
 export * from './network/request'
 export * from './network/downloadFile'
 export * from './network/uploadFile'
+export * from './network/socket'
 
 export * from './route/navigateBack'
 export * from './route/navigateTo'
