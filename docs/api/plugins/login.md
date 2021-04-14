@@ -205,15 +205,15 @@ uni.login({
 
 **success 返回参数说明**
 
-|参数|类型|说明|平台差异说明(仅支持微信小程序)|
-|:-|:-|:-||
-|userInfo|OBJECT|用户信息对象||
-|rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。||
-|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。||
-|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。||
-|iv|String|加密算法的初始向量，详细见加密数据解密算法。||
-|cloudID|String|敏感数据对应的云 ID，开通云开发的小程序才会返回，可通过云调用直接获取开放数据，详细见云调用直接获取开放数据||
-|errMsg|String|描述信息|&nbsp;|
+|参数|类型|说明|
+|:-|:-|:-|
+|userInfo|OBJECT|用户信息对象|
+|rawData|String|不包括敏感信息的原始数据字符串，用于计算签名。|
+|signature|String|使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。|
+|encryptedData|String|包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法。|
+|iv|String|加密算法的初始向量，详细见加密数据解密算法。|
+|cloudID|String|敏感数据对应的云 ID，开通云开发的小程序才会返回，可通过云调用直接获取开放数据，详细见云调用直接获取开放数据|
+|errMsg|String|描述信息|
 
 **userInfo 参数说明**
 
