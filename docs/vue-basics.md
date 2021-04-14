@@ -272,22 +272,22 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 ```html
 <template>
     <view>
-        <view>{{ number + 1 }}</view>
-	<view>{{ ok ? 'YES' : 'NO' }}</view>
-        <!-- 把一个字符串分割成字符串数组,颠倒其元素的顺序,把数组中的所有元素放入一个字符串 -->
-	<view>{{ message.split('').reverse().join('') }}</view>
+      <view>{{ number + 1 }}</view>
+      <view>{{ ok ? 'YES' : 'NO' }}</view>
+      <!-- 把一个字符串分割成字符串数组,颠倒其元素的顺序,把数组中的所有元素放入一个字符串 -->
+      <view>{{ message.split('').reverse().join('') }}</view>
     </view>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-                number:1,
-		ok:true,
-		message: 'Hello Vue!'
-            }
-        }
+  export default {
+    data() {
+      return {
+        number:1,
+        ok:true,
+        message: 'Hello Vue!'
+      }
     }
+  }
 </script>
 ```
 
@@ -295,27 +295,27 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 ```html
 <template>
-    <view>
-	<view v-for="(item,index) in 10">
-		<!-- 通过%运算符求余数，实现隔行换色的效果 -->
-		<view :class="'list-' + index%2">{{index%2}}</view>
-	</view>
+  <view>
+      <view v-for="(item,index) in 10">
+      <!-- 通过%运算符求余数，实现隔行换色的效果 -->
+      <view :class="'list-' + index%2">{{index%2}}</view>
     </view>
+  </view>
 </template>
 <script>
-    export default {
-        data() {
-            return { }
-        }
+  export default {
+    data() {
+      return { }
     }
+  }
 </script>
 <style>
-    .list-0{
-	background-color: #aaaaff;
-    }
-    .list-1{
-	background-color: #ffaa7f;
-    }
+  .list-0{
+    background-color: #aaaaff;
+  }
+  .list-1{
+    background-color: #ffaa7f;
+  }
 </style>
 ```
 
@@ -325,22 +325,22 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 ```html
 <template>
-    <view>
-	<!-- 这是语句，不是表达式 -->
-	<view>{{ var a = 1 }}</view>
-	<!-- 流控制也不会生效，请使用三元表达式 -->
-	<view>{{ if (ok) { return message } }}</view>
-    </view>
+  <view>
+    <!-- 这是语句，不是表达式 -->
+    <view>{{ var a = 1 }}</view>
+    <!-- 流控制也不会生效，请使用三元表达式 -->
+    <view>{{ if (ok) { return message } }}</view>
+  </view>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-		ok:true,
-		message: 'Hello Vue!'
-            }
-        }
+  export default {
+    data() {
+      return {
+        ok:true,
+        message: 'Hello Vue!'
+      }
     }
+  }
 </script>
 ```
 
@@ -371,11 +371,6 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 > - `Intl`
 > 
 > 你不应该在模板表达式中试图访问用户定义的全局变量。
-
-
-
-
-
 
 
 

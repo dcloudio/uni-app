@@ -1,4 +1,5 @@
 * [组件概述](component/)
+* [vue组件](component/vue-component.md)
 * 视图容器
   * [view](component/view.md)
   * [scroll-view](component/scroll-view.md)
