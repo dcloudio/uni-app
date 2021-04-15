@@ -11,6 +11,10 @@ import {
   getEventChannel
 } from 'uni-helpers/navigate-to'
 
+import {
+  uniIdMixin
+} from 'uni-shared'
+
 const hooks = [
   'onShow',
   'onHide',
@@ -101,6 +105,7 @@ export default function parseBaseApp (vm, {
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store
   }
+  uniIdMixin(Vue)
 
   Vue.prototype.mpHost = __PLATFORM__
 
