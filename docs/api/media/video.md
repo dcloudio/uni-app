@@ -241,7 +241,7 @@ export default {
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|x|x|2.11.0+|x|x|x|x|
+|3.1.10+|3.1.10+|2.11.0+|x|x|x|x|
 
 **OBJECT 参数说明**
 
@@ -254,16 +254,16 @@ export default {
 
 **success 返回参数说明**
 
-|参数名			|类型		|说明								|
-|:-					|:-			|:-									|
-|orientation|string	|画面方向						|
-|type				|string	|视频格式						|
-|duration		|number	|视频长度						|
-|size				|number	|视频大小，单位 kB	|
-|height			|number	|视频的长，单位 px	|
-|width			|number	|视频的宽，单位 px	|
-|fps				|number	|视频帧率						|
-|bitrate		|number	|视频码率，单位 kbps|
+|参数名			|类型		|说明								|平台差异说明|
+|:-					|:-			|:-									||
+|orientation|string	|画面方向						|微信小程序|
+|type				|string	|视频格式						|微信小程序|
+|duration		|number	|视频长度						|微信小程序、App、H5|
+|size				|number	|视频大小，单位 kB	|微信小程序、App、H5|
+|height			|number	|视频的长，单位 px	|微信小程序、App、H5|
+|width			|number	|视频的宽，单位 px	|微信小程序、App、H5|
+|fps				|number	|视频帧率						|微信小程序、App|
+|bitrate		|number	|视频码率，单位 kbps|微信小程序|
 
 **res.orientation参数说明**
 
