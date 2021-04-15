@@ -9,10 +9,7 @@ type ProtocolMethod<T, TConstructor = any> = T extends (...args: any) => any
   : never
 type ProtocolType<T> = ProtocolConstructor<T> | ProtocolConstructor<T>[]
 
-type ApiArgsValidator<T, P> = (
-  value: T,
-  params: P
-) => boolean | undefined | string
+type ApiArgsValidator<T, P> = (value: T, params: P) => boolean | string | void
 
 type ApiProtocol<T extends ApiLike, P = AsyncApiOptions<T>> = {
   [K in keyof P]: ProtocolType<P[K]> | ProtocolOptions<P[K]>
@@ -33,7 +30,7 @@ interface ProtocolOptions<T = any> {
   name?: string
   type?: ProtocolType<T>
   required?: boolean
-  validator?(value: T): boolean | undefined | string
+  validator?(value: T): boolean | void | string
 }
 
 interface AsyncMethodOptionLike {
