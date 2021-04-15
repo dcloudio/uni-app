@@ -5,7 +5,7 @@
 
 > 由于苹果iOS 13系统版本安全升级，微信SDK1.8.6版本要求支持Universal Links方式跳转，以便进行合法性校验，提升安全性。更多详情请参考[微信官方说明](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/iOS.html)
 
-###### 大白话：以前你的APP要打开其他APP是[通过URLScheme](http://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.launchApplication)实现，后来苹果提出用Https链接来启动，手机上对应的app（已安装），更方便与web-app的无缝对接。微信响应了这个方案。所以大家开发的APP无论是微信登陆、微信支付，还是微信分享等一切会跳转到微信，再跳回来的场景，需要提供这个链接。要不然你的应用打开了微信，微信就打不开你的应用。
+大白话：以前你的APP要打开其他APP是[通过URLScheme](http://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.launchApplication)实现，后来苹果提出用Https链接来启动，手机上对应的app（已安装），更方便与web-app的无缝对接。微信响应了这个方案。所以大家开发的APP无论是微信登陆、微信支付，还是微信分享等一切会跳转到微信，再跳回来的场景，需要提供这个链接。要不然你的应用打开了微信，微信就打不开你的应用。
 
 如果不配置通用链接，使用新版本HX提交云端打包会失败，提示以下错误信息：
 ```javascript
@@ -14,7 +14,7 @@ Error message:
 Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 ```
 
-###### 传统方式配置通用链接需要:
+传统方式配置通用链接需要:
 1. 在苹果开发者中心：开启Associated Domains服务
 2. 获取相关参数，手动创建apple-app-site-association文件
 3. 部署apple-app-site-association文件到自己的云服务器，配置SSL证书解析域名
@@ -24,7 +24,7 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 
 其中需要注意的细节较多，且调试起来困难繁琐，困扰了大量开发者。
 
-##### 现在通过HbuilderX（3.1.9版起）云打包，支持自动生成apple-app-site-association文件，并自动托管到：自带cdn、ssl等服务的“免费”的云服务空间[uniCloud的前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，自动完成manifest.json中的相关配置。用自动化技术替代了，如上所示传统方式令人苦恼的（2-5）4个步骤；只需如下三步直接搞定通用链接。
+现在通过HbuilderX（3.1.9版起）云打包，支持自动生成apple-app-site-association文件，并自动托管到：自带cdn、ssl等服务的“免费”的云服务空间[uniCloud的前端网页托管](https://uniapp.dcloud.io/uniCloud/hosting)，自动完成manifest.json中的相关配置。用自动化技术替代了，如上所示传统方式令人苦恼的（2-5）4个步骤；只需如下三步直接搞定通用链接。
 #### 第一步：开启Associated Domains服务
 登录[苹果开发者网站](https://developer.apple.com/)，在“Certificates, Identifiers & Profiles”页面选择“Identifiers”中选择对应的App ID，确保开启Associated Domains服务
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2eae9f97-2c4a-4dc8-97e8-e665b0c660e1.png)
