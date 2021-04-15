@@ -123,6 +123,7 @@
   * [支付](api/plugins/payment.md)
   * [推送](api/plugins/push.md)
   * [语音](api/plugins/voice.md)
+  * [一键生成iOS通用链接](api/plugins/universal-links.md)
 * [uniCloud](api/uniCloud.md)
 * 平台扩展
   * [App原生插件](api/extend/native-plugin.md)
