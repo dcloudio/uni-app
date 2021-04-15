@@ -5,7 +5,7 @@
 
 > 由于苹果iOS 13系统版本安全升级，微信SDK1.8.6版本要求支持Universal Links方式跳转，以便进行合法性校验，提升安全性。更多详情请参考[微信官方说明](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/iOS.html)
 
-#### 大白话：以前你的APP要打开其他APP是[通过URLScheme](http://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.launchApplication)实现，后来苹果提出用Https链接来启动，手机上对应的app（已安装），更方便与web-app的无缝对接。微信响应了这个方案。所以大家开发的APP无论是微信登陆、微信支付，还是微信分享等一切会跳转到微信，再跳回来的场景，需要提供这个链接。要不然你的应用打开了微信，微信就打不开你的应用。
+##### 大白话：以前你的APP要打开其他APP是[通过URLScheme](http://www.html5plus.org/doc/zh_cn/runtime.html#plus.runtime.launchApplication)实现，后来苹果提出用Https链接来启动，手机上对应的app（已安装），更方便与web-app的无缝对接。微信响应了这个方案。所以大家开发的APP无论是微信登陆、微信支付，还是微信分享等一切会跳转到微信，再跳回来的场景，需要提供这个链接。要不然你的应用打开了微信，微信就打不开你的应用。
 
 如果不配置通用链接，使用新版本HX提交云端打包会失败，提示以下错误信息：
 ```javascript
@@ -28,6 +28,7 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 ### 第一步：开启Associated Domains服务
 登录[苹果开发者网站](https://developer.apple.com/)，在“Certificates, Identifiers & Profiles”页面选择“Identifiers”中选择对应的App ID，确保开启Associated Domains服务
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/2eae9f97-2c4a-4dc8-97e8-e665b0c660e1.png)
+
 **开启Associated Domains服务后需要重新生成profile文件，提交云端打包时使用**
 
 
@@ -36,25 +37,27 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 点击如图所示【自动生成】
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/ea2b1e04-a858-4626-b3fa-bd4ddddd0c3b.jpg)
 * 注意您必须先开通“uniCloud(阿里云版)云服务空间和开通前端网页托管”[详情](https://ask.dcloud.net.cn/article/38951) ,按提示完成操作即可。
+
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/53e0141e-d2d4-496a-b0f2-2359005c0c4e.jpg)
-* 注意：通用链接默认域名仅供测试使用，访问频次限制60次/分钟，请勿在正式发行的项目中使用。绑定域名教程详情：[https://uniapp.dcloud.io/uniCloud/hosting?id=domain](https://uniapp.dcloud.io/uniCloud/hosting?id=domain)
+* 注意：通用链接默认域名仅供测试使用，访问频次限制60次/分钟，请勿在正式发行的项目中使用。
+* 如何绑定自己的域名详情：[https://uniapp.dcloud.io/uniCloud/hosting?id=domain](https://uniapp.dcloud.io/uniCloud/hosting?id=domain)
+
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/1e081fdd-27b2-4c0b-8985-7d59756ed313.jpg)
 
 
 ### 第三步：在微信开放平台配置通用链接
 打开微信[开发平台](https://open.weixin.qq.com/)，在“管理中心”页面的“移动应用”下找到已经申请的应用（没有申请应用请点击“创建移动应用”新建应用），点击“查看”打开应用详情页面。
 在“开发信息”栏后点击修改，在“iOS应用”下的“Universal Links”项中配置应用的通用链接，如下图所示：
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/292ccd28-699d-4399-b38b-ff3da2983b12.png)
+![](https://img-cdn-tc.dcloud.net.cn/uploads/article/20191008/e933f7ef8ff078bf05e28a24efee74bd.png)
 
 至此，就已经完成了通用链接的配置全过程，云打包后生效。
 
-
 #### 其他相关
-** 客户端处理通用链接。 **
+##### 客户端处理通用链接。
 可通过5+ API的plus.runtime.launcher判断应用启动来源，如果其值为"uniLink"则表示通过通用链接启动应。这时可通过5+ API的plus.runtime.arguments获取启动参数，通用链接启动的情况将返回完整的通用链接地址。
 例：HBuilderX中自带的默认真机运行基座HBuilderX注册的通用链接:[https://demo.dcloud.net.cn/ulink/](https://demo.dcloud.net.cn/ulink/)
 
-** 通用链接生成原理：**
+##### 通用链接生成原理：
 1. 选择云空间获取云空间的默认/自定义域名
 2. 按提前制定的规范（uni-universallinks/DCloud appid）拼接URL
 3. 根据现有参数自动生成通用链接相关参数到manifest.json
