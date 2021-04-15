@@ -28,6 +28,10 @@ export function getCurrentPages(isAll: boolean = false) {
   return [...currentPagesMap.values()]
 }
 
+export function removeAllCurrentPages() {
+  removeCurrentPages(getCurrentPages(true).length, true)
+}
+
 export function removeCurrentPages(
   delta: number = 1,
   removeRouteCaches = false
@@ -58,11 +62,6 @@ export function createPageState(type: NavigateType) {
     __id__: ++id,
     __type__: type,
   }
-}
-
-export function isPage(vm: ComponentPublicInstance) {
-  // @dcloudio/vite-plugin-uni/src/configResolved/plugins/pageVue.ts
-  return vm.$options.mpType === 'page'
 }
 
 function initPublicPage(route: RouteLocationNormalizedLoaded) {

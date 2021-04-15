@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {passive, invokeArrayFns, NAVBAR_HEIGHT, removeLeadingSlash, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen} from "@dcloudio/uni-shared";
+import {passive, invokeArrayFns, NAVBAR_HEIGHT, removeLeadingSlash, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen, updateElementStyle} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -1101,8 +1101,9 @@ function normalizePageMeta(pageMeta) {
   navigationBar.backButton = pageMeta.isQuit ? false : true;
   navigationBar.titleColor = navigationBar.titleColor || "#fff";
   navigationBar.backgroundColor = navigationBar.backgroundColor || "#F7F7F7";
-  if (__UNI_FEATURE_PAGES__) {
-    if (history.state && history.state.__type__ === "redirectTo" && getCurrentPages().length === 0) {
+  if (__UNI_FEATURE_PAGES__ && history.state) {
+    const type = history.state.__type__;
+    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
       pageMeta.isEntry = true;
       pageMeta.isQuit = true;
     }
@@ -1159,6 +1160,9 @@ function pruneCurrentPages() {
 function getCurrentPages$1(isAll = false) {
   pruneCurrentPages();
   return [...currentPagesMap.values()];
+}
+function removeAllCurrentPages() {
+  removeCurrentPages(getCurrentPages$1(true).length, true);
 }
 function removeCurrentPages(delta = 1, removeRouteCaches = false) {
   const keys = [...currentPagesMap.keys()];
@@ -3731,6 +3735,7 @@ const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
 const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i);
 const isMac = /Macintosh|Mac/i.test(ua);
 const isLinux = /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -3803,6 +3808,7 @@ function decode(base64) {
   }
   return arraybuffer;
 }
+const CHOOSE_SOURCE_TYPES = ["album", "camera"];
 const HTTP_METHODS = [
   "GET",
   "OPTIONS",
@@ -3814,10 +3820,16 @@ const HTTP_METHODS = [
   "CONNECT"
 ];
 function elemInArray(str, arr) {
-  if (arr.indexOf(str) === -1) {
+  if (!str || arr.indexOf(str) === -1) {
     return arr[0];
   }
   return str;
+}
+function elemsInArray(strArr, optionalVal) {
+  if (!isArray(strArr) || strArr.length === 0 || strArr.find((val) => optionalVal.indexOf(val) === -1)) {
+    return optionalVal;
+  }
+  return strArr;
 }
 function validateProtocolFail(name, msg) {
   console.warn(`${name}: ${msg}`);
@@ -4498,6 +4510,40 @@ const GetLocationProtocol = {
   type: String,
   altitude: Boolean
 };
+const API_CHOOSE_FILE = "chooseFile";
+const CHOOSE_MEDIA_TYPE = [
+  "all",
+  "image",
+  "video"
+];
+const ChooseFileOptions = {
+  formatArgs: {
+    count(count, params) {
+      if (!count || count <= 0) {
+        params.count = 100;
+      }
+    },
+    sourceType(sourceType, params) {
+      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+    },
+    type(type, params) {
+      params.type = elemInArray(type, CHOOSE_MEDIA_TYPE);
+    },
+    extension(extension, params) {
+      if (extension instanceof Array && extension.length === 0) {
+        return "param extension should not be empty.";
+      }
+      if (!extension)
+        params.extension = [""];
+    }
+  }
+};
+const ChooseFileProtocol = {
+  count: Number,
+  sourceType: Array,
+  type: String,
+  extension: Array
+};
 const API_GET_IMAGE_INFO = "getImageInfo";
 const GetImageInfoOptions = {
   formatArgs: {
@@ -4771,6 +4817,9 @@ function createRouteOptions(type) {
 }
 function createNormalizeUrl(type) {
   return function normalizeUrl(url, params) {
+    if (!url) {
+      return `Missing required args: "url"`;
+    }
     url = getRealRoute(url);
     const pagePath = url.split("?")[0];
     if (url === "/") {
@@ -10447,6 +10496,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
         break;
       }
     }
+  } else if (isIPadOS) {
+    model = "iPad";
+    osname = "iOS";
+    osversion = typeof window.BigInt === "function" ? "14.0" : "13.0";
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
@@ -10734,6 +10787,142 @@ const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject
   };
   img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
+const MIMEType = {
+  image: {
+    jpg: "jpeg",
+    jpe: "jpeg",
+    pbm: "x-portable-bitmap",
+    pgm: "x-portable-graymap",
+    pnm: "x-portable-anymap",
+    ppm: "x-portable-pixmap",
+    psd: "vnd.adobe.photoshop",
+    pic: "x-pict",
+    rgb: "x-rgb",
+    svg: "svg+xml",
+    svgz: "svg+xml",
+    tif: "tiff",
+    xif: "vnd.xiff",
+    wbmp: "vnd.wap.wbmp",
+    wdp: "vnd.ms-photo",
+    xbm: "x-xbitmap",
+    ico: "x-icon"
+  },
+  video: {
+    "3g2": "3gpp2",
+    "3gp": "3gpp",
+    avi: "x-msvideo",
+    f4v: "x-f4v",
+    flv: "x-flv",
+    jpgm: "jpm",
+    jpgv: "jpeg",
+    m1v: "mpeg",
+    m2v: "mpeg",
+    mpe: "mpeg",
+    mpg: "mpeg",
+    mpg4: "mpeg",
+    m4v: "x-m4v",
+    mkv: "x-matroska",
+    mov: "quicktime",
+    qt: "quicktime",
+    movie: "x-sgi-movie",
+    mp4v: "mp4",
+    ogv: "ogg",
+    smv: "x-smv",
+    wm: "x-ms-wm",
+    wmv: "x-ms-wmv",
+    wmx: "x-ms-wmx",
+    wvx: "x-ms-wvx"
+  }
+};
+const ALL = "all";
+function isWXEnv() {
+  const ua2 = window.navigator.userAgent.toLowerCase();
+  const matchUA = ua2.match(/MicroMessenger/i);
+  return !!(matchUA && matchUA[0] === "micromessenger");
+}
+function _createInput({
+  count,
+  sourceType,
+  type,
+  extension
+}) {
+  const inputEl = document.createElement("input");
+  inputEl.type = "file";
+  updateElementStyle(inputEl, {
+    position: "absolute",
+    visibility: "hidden",
+    zIndex: "-999",
+    width: "0",
+    height: "0",
+    top: "0",
+    left: "0"
+  });
+  inputEl.accept = extension.map((item) => {
+    if (type !== ALL) {
+      const MIMEKey = item.replace(".", "");
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
+    } else {
+      if (isWXEnv()) {
+        return ".";
+      }
+      return item.indexOf(".") === 0 ? item : `.${item}`;
+    }
+  }).join(",");
+  if (count && count > 1) {
+    inputEl.multiple = true;
+  }
+  if (type !== ALL && sourceType instanceof Array && sourceType.length === 1 && sourceType[0] === "camera") {
+    inputEl.setAttribute("capture", "camera");
+  }
+  return inputEl;
+}
+let fileInput = null;
+const chooseFile = defineAsyncApi(API_CHOOSE_FILE, ({
+  count,
+  sourceType,
+  type,
+  extension
+}, {resolve, reject}) => {
+  if (fileInput) {
+    document.body.removeChild(fileInput);
+    fileInput = null;
+  }
+  fileInput = _createInput({
+    count,
+    sourceType,
+    type,
+    extension
+  });
+  document.body.appendChild(fileInput);
+  fileInput.addEventListener("change", function(event2) {
+    const eventTarget = event2.target;
+    const tempFiles = [];
+    if (eventTarget && eventTarget.files) {
+      const fileCount = eventTarget.files.length;
+      for (let i2 = 0; i2 < fileCount; i2++) {
+        const file = eventTarget.files[i2];
+        let filePath;
+        Object.defineProperty(file, "path", {
+          get() {
+            filePath = filePath || fileToUrl(file);
+            return filePath;
+          }
+        });
+        if (i2 < count)
+          tempFiles.push(file);
+      }
+    }
+    const res = {
+      errMsg: "chooseFile:ok",
+      get tempFilePaths() {
+        return tempFiles.map(({path}) => path);
+      },
+      tempFiles
+    };
+    resolve(res);
+  });
+  fileInput.click();
+}, ChooseFileProtocol, ChooseFileOptions);
 const request = defineTaskApi(API_REQUEST, ({
   url,
   data,
@@ -11348,7 +11537,10 @@ const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) =>
   removeCurrentPages(1, true);
   return navigate(API_REDIRECT_TO, url).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => navigate(API_RE_LAUNCH, url).then(resolve).catch(reject), ReLaunchProtocol, ReLaunchOptions);
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => {
+  removeAllCurrentPages();
+  return navigate(API_RE_LAUNCH, url).then(resolve).catch(reject);
+}, ReLaunchProtocol, ReLaunchOptions);
 const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => navigate(API_SWITCH_TAB, url).then(resolve).catch(reject), SwitchTabProtocol, SwitchTabOptions);
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
@@ -11540,6 +11732,7 @@ var api = /* @__PURE__ */ Object.freeze({
   getFileInfo,
   openDocument,
   getImageInfo,
+  chooseFile,
   request,
   downloadFile,
   uploadFile,
@@ -12604,4 +12797,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offNetworkStatusChange, onAccelerometerChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, stopAccelerometer, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offNetworkStatusChange, onAccelerometerChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, stopAccelerometer, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};

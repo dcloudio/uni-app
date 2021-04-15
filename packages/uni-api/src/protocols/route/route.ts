@@ -133,6 +133,9 @@ function createRouteOptions(type: string): ApiOptions<API_TYPE_NAVIGATE_TO> {
 
 function createNormalizeUrl(type: string) {
   return function normalizeUrl(url: string, params: Record<string, any>) {
+    if (!url) {
+      return `Missing required args: "url"`
+    }
     // 格式化为绝对路径路由
     url = getRealRoute(url)
     const pagePath = url.split('?')[0]

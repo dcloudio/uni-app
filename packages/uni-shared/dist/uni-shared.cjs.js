@@ -110,6 +110,11 @@ const invokeArrayFns = (fns, arg) => {
     }
     return ret;
 };
+function updateElementStyle(element, styles) {
+    for (const attrName in styles) {
+        element.style[attrName] = styles[attrName];
+    }
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -237,3 +242,4 @@ exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
 exports.stringifyQuery = stringifyQuery;
+exports.updateElementStyle = updateElementStyle;

@@ -81,11 +81,11 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   navigationBar.titleColor = navigationBar.titleColor || '#fff'
   navigationBar.backgroundColor = navigationBar.backgroundColor || '#F7F7F7'
 
-  if (__UNI_FEATURE_PAGES__) {
+  if (__UNI_FEATURE_PAGES__ && history.state) {
     // 首页执行了redirectTo
+    const type = history.state.__type__
     if (
-      history.state &&
-      history.state.__type__ === 'redirectTo' &&
+      (type === 'redirectTo' || type === 'reLaunch') &&
       getCurrentPages().length === 0
     ) {
       pageMeta.isEntry = true

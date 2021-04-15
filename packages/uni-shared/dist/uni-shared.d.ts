@@ -66,4 +66,6 @@ export declare const TABBAR_HEIGHT = 50;
 
 export declare const TAGS: string[];
 
+export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
+
 export { }
