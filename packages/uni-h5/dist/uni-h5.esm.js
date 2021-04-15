@@ -4474,6 +4474,10 @@ const API_ON_ACCELEROMETER = "onAccelerometer";
 const API_OFF_ACCELEROMETER = "offAccelerometer";
 const API_START_ACCELEROMETER = "startAccelerometer";
 const API_STOP_ACCELEROMETER = "stopAccelerometer";
+const API_ON_COMPASS = "onCompass";
+const API_OFF_COMPASS = "offCompass";
+const API_START_COMPASS = "startCompass";
+const API_STOP_COMPASS = "stopCompass";
 const API_GET_FILE_INFO = "getFileInfo";
 const GetFileInfoProtocol = {
   filePath: {
@@ -10637,7 +10641,7 @@ const getNetworkType = defineAsyncApi("getNetworkType", (_args, {resolve}) => {
   }
   return resolve({networkType});
 });
-let listener = null;
+let listener$1 = null;
 const onAccelerometerChange = defineOnApi(API_ON_ACCELEROMETER, () => {
   startAccelerometer();
 });
@@ -10649,7 +10653,7 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
     reject();
   }
   function addEventListener() {
-    listener = function(event2) {
+    listener$1 = function(event2) {
       const acceleration = event2.acceleration || event2.accelerationIncludingGravity;
       UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
         x: acceleration && acceleration.x || 0,
@@ -10657,9 +10661,9 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
         z: acceleration && acceleration.z || 0
       });
     };
-    window.addEventListener("devicemotion", listener, false);
+    window.addEventListener("devicemotion", listener$1, false);
   }
-  if (!listener) {
+  if (!listener$1) {
     if (DeviceMotionEvent.requestPermission) {
       DeviceMotionEvent.requestPermission().then((res) => {
         if (res === "granted") {
@@ -10677,8 +10681,53 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
   }
 });
 const stopAccelerometer = defineAsyncApi(API_STOP_ACCELEROMETER, (_, {resolve}) => {
+  if (listener$1) {
+    window.removeEventListener("devicemotion", listener$1, false);
+    listener$1 = null;
+  }
+  resolve();
+});
+let listener = null;
+const onCompassChange = defineOnApi(API_ON_COMPASS, () => {
+  startCompass();
+});
+const offCompassChange = defineOnApi(API_OFF_COMPASS, () => {
+  stopCompass();
+});
+const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) => {
+  if (!window.DeviceOrientationEvent) {
+    reject();
+  }
+  function addEventListener() {
+    listener = function(event2) {
+      const direction2 = 360 - (event2.alpha !== null ? event2.alpha : 360);
+      UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
+        direction: direction2
+      });
+    };
+    window.addEventListener("deviceorientation", listener, false);
+  }
+  if (!listener) {
+    if (DeviceOrientationEvent.requestPermission) {
+      DeviceOrientationEvent.requestPermission().then((res) => {
+        if (res === "granted") {
+          addEventListener();
+          resolve();
+        } else {
+          reject(`${res}`);
+        }
+      }).catch((error) => {
+        reject(`${error}`);
+      });
+      return;
+    }
+    addEventListener();
+  }
+  return {};
+});
+const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
   if (listener) {
-    window.removeEventListener("devicemotion", listener, false);
+    window.removeEventListener("deviceorientation", listener, false);
     listener = null;
   }
   resolve();
@@ -11729,6 +11778,10 @@ var api = /* @__PURE__ */ Object.freeze({
   offAccelerometerChange,
   startAccelerometer,
   stopAccelerometer,
+  onCompassChange,
+  offCompassChange,
+  startCompass,
+  stopCompass,
   getFileInfo,
   openDocument,
   getImageInfo,
@@ -12797,4 +12850,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offNetworkStatusChange, onAccelerometerChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, stopAccelerometer, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
