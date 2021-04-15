@@ -36,7 +36,7 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 打开项目的manifest.json文件，在“(App) SDK配置”项中的微信登录（微信分享、微信支付）下的“iOS平台通用链接（Universal Links）”中，
 点击如图所示【自动生成】
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/ea2b1e04-a858-4626-b3fa-bd4ddddd0c3b.jpg)
-* 注意您必须先开通“uniCloud(阿里云版)云服务空间和开通前端网页托管”[详情](https://ask.dcloud.net.cn/article/38951) ,按提示完成操作即可。
+* 注意您必须先开通"uniCloud(阿里云版)云服务空间和开通前端网页托管"[点此查看开通教程](https://ask.dcloud.net.cn/article/38951),按提示完成操作即可。
 
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/53e0141e-d2d4-496a-b0f2-2359005c0c4e.jpg)
 * 注意：通用链接默认域名仅供测试使用，访问频次限制60次/分钟，请勿在正式发行的项目中使用。
