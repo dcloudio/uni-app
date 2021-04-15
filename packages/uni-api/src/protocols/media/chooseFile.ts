@@ -15,7 +15,7 @@ const CHOOSE_MEDIA_TYPE: API_TYPE_CHOOSE_FILE_OPTIONS['type'][] = [
 export const ChooseFileOptions: ApiOptions<API_TYPE_CHOOSE_FILE> = {
   formatArgs: {
     count(count, params) {
-      if (count! <= 0) {
+      if (!count || count <= 0) {
         params.count = 100
       }
     },

@@ -10,6 +10,7 @@ export * from './file/getFileInfo'
 export * from './file/openDocument'
 
 export * from './media/getImageInfo'
+export * from './media/chooseFile'
 
 export * from './network/request'
 export * from './network/downloadFile'
