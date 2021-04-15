@@ -5998,6 +5998,7 @@ var serviceContext = (function () {
   function getSystemInfo () {
     const platform = plus.os.name.toLowerCase();
     const ios = platform === 'ios';
+    const isAndroid = platform === 'android';
     const {
       screenWidth,
       screenHeight
@@ -6064,7 +6065,7 @@ var serviceContext = (function () {
       windowHeight,
       statusBarHeight,
       language: plus.os.language,
-      system: `${platform} ${plus.os.version}`,
+      system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
       version: plus.runtime.innerVersion,
       fontSizeSetting: '',
       platform,
