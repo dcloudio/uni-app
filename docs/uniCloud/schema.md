@@ -1042,7 +1042,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
   "permission": {
     "read": "doc.status==true", // 任何用户都可以读status字段的值为true的记录，其他记录不可读
     "create": false, // 禁止新增数据记录（admin权限用户不受限）
-    "update": 'updateuser' in auth.permission, // 权限标记为updateuser的用户，和admin管理员，可以更新数据，其他人无权更新数据
+    "update": "'updateuser' in auth.permission", // 权限标记为updateuser的用户，和admin管理员，可以更新数据，其他人无权更新数据
     "delete": false // 禁止删除数据（admin权限用户不受限）
   },
   "properties": {
