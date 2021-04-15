@@ -4,6 +4,7 @@ export * from './device/makePhoneCall'
 export * from './device/getSystemInfo'
 export * from './device/getSystemInfoSync'
 export * from './device/network'
+export * from './device/accelerometer'
 
 export * from './file/getFileInfo'
 export * from './file/openDocument'
