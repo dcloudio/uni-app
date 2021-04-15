@@ -67,7 +67,7 @@ import { extend } from '@vue/shared'
 import { ${
     config.define!.__UNI_FEATURE_PAGES__ ? 'defineAsyncComponent, ' : ''
   }resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { setupPage, PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
+import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
 ${cssCode}
 ${uniConfigCode}
@@ -128,7 +128,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pageOptions.path
   )} = defineAsyncComponent(extend({loader:()=>import('./${
     pageOptions.path
-  }.vue?mpType=page').then(comp=>setupPage(comp))},AsyncComponentOptions))`
+  }.vue?mpType=page')},AsyncComponentOptions))`
 }
 
 function generatePagesDefineCode(

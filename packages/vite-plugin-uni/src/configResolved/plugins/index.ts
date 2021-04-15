@@ -106,7 +106,7 @@ export function resolvePlugins(
     uniEasycomPlugin(Object.assign(uniEasycomPluginOptions, options)),
     'vite:vue'
   )
-  addPlugin(plugins, uniPageVuePlugin({ command }), 'vite:vue')
+  addPlugin(plugins, uniPageVuePlugin(options), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
   if (command === 'build') {

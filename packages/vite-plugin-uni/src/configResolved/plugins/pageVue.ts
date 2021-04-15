@@ -1,16 +1,21 @@
 import fs from 'fs'
-import { Plugin, ResolvedConfig } from 'vite'
+import path from 'path'
+import slash from 'slash'
+import debug from 'debug'
+import { Plugin } from 'vite'
 import { parseVueRequest } from '@dcloudio/uni-cli-shared'
+import { VitePluginUniResolvedOptions } from '../..'
 
-export function uniPageVuePlugin({
-  command,
-}: {
-  command: ResolvedConfig['command']
-}): Plugin {
+const debugPageVue = debug('uni:page-vue')
+
+export function uniPageVuePlugin(
+  options: VitePluginUniResolvedOptions
+): Plugin {
+  const appVuePath = slash(path.resolve(options.inputDir, 'App.vue'))
   return {
     name: 'vite:uni-page-vue',
     load(id) {
-      if (command === 'build') {
+      if (options.command === 'build') {
         const { filename, query } = parseVueRequest(id)
         if (query.mpType === 'page') {
           return fs.readFileSync(filename, 'utf8')
@@ -18,9 +23,20 @@ export function uniPageVuePlugin({
       }
     },
     transform(code, id) {
-      const { query } = parseVueRequest(id)
+      const { filename, query } = parseVueRequest(id)
+      if (filename === appVuePath && !query.vue) {
+        debugPageVue(filename)
+        return (
+          code +
+          `;import {setupApp} from '@dcloudio/uni-h5';setupApp(_sfc_main);`
+        )
+      }
       if (query.mpType === 'page') {
-        return code + `;_sfc_main.mpType='page'`
+        debugPageVue(filename)
+        return (
+          code +
+          `;import {setupPage} from '@dcloudio/uni-h5';setupPage(_sfc_main);`
+        )
       }
     },
   }
