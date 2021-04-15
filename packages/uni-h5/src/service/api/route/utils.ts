@@ -4,7 +4,7 @@ import { createPageState } from '../../../framework/plugin/page'
 export function navigate(
   type: 'navigateTo' | 'redirectTo' | 'reLaunch' | 'switchTab',
   url: string
-): Promise<void> {
+): Promise<undefined> {
   const router = getApp().$router as Router
   return new Promise((resolve, reject) => {
     router[type === 'navigateTo' ? 'push' : 'replace']({
@@ -15,7 +15,7 @@ export function navigate(
       if (isNavigationFailure(failure)) {
         return reject(failure.message)
       }
-      return resolve()
+      return resolve(undefined)
     })
   })
 }

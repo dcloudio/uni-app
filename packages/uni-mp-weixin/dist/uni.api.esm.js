@@ -148,13 +148,18 @@ function formatApiArgs(args, options) {
     const params = args[0];
     if (!options ||
         (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
-        return args;
+        return;
     }
     const formatArgs = options.formatArgs;
-    Object.keys(formatArgs).forEach((name) => {
+    const keys = Object.keys(formatArgs);
+    for (let i = 0; i < keys.length; i++) {
+        const name = keys[i];
         const formatterOrDefaultValue = formatArgs[name];
         if (isFunction(formatterOrDefaultValue)) {
-            formatterOrDefaultValue(args[0][name], params);
+            const errMsg = formatterOrDefaultValue(args[0][name], params);
+            if (isString(errMsg)) {
+                return errMsg;
+            }
         }
         else {
             // defaultValue
@@ -162,28 +167,34 @@ function formatApiArgs(args, options) {
                 params[name] = formatterOrDefaultValue;
             }
         }
-    });
-    return args;
+    }
 }
-function wrapperSyncApi(fn) {
-    return (...args) => fn.apply(null, args);
+function beforeInvokeApi(name, args, protocol, options) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        validateProtocols(name, args, protocol);
+    }
+    if (options && options.beforeInvoke) {
+        const errMsg = options.beforeInvoke(args);
+        if (isString(errMsg)) {
+            return errMsg;
+        }
+    }
+    const errMsg = formatApiArgs(args, options);
+    if (errMsg) {
+        return errMsg;
+    }
 }
-function wrapperApi(fn, name, protocol, options) {
-    return function (...args) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            validateProtocols(name, args, protocol);
+function wrapperSyncApi(name, fn, protocol, options) {
+    return (...args) => {
+        const errMsg = beforeInvokeApi(name, args, protocol, options);
+        if (errMsg) {
+            throw new Error(errMsg);
         }
-        if (options && options.beforeInvoke) {
-            const errMsg = options.beforeInvoke(args);
-            if (isString(errMsg)) {
-                return errMsg;
-            }
-        }
-        return fn.apply(null, formatApiArgs(args, options));
+        return fn.apply(null, args);
     };
 }
 function defineSyncApi(name, fn, protocol, options) {
-    return wrapperApi(wrapperSyncApi(fn), name, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
 }
 
 function getBaseSystemInfo() {

@@ -23,14 +23,6 @@ export const HTTP_METHODS = [
   'CONNECT',
 ]
 
-export const API_TYPE_ON_PROTOCOLS = [
-  {
-    name: 'callback',
-    type: Function,
-    required: true,
-  },
-]
-
 export function elemInArray(str: string, arr: string[]) {
   if (arr.indexOf(str) === -1) {
     return arr[0]

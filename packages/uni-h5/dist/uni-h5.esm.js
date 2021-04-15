@@ -1,7 +1,7 @@
-import {isFunction, isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, extend, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
+import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {removeLeadingSlash, getLen, passive, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1} from "@dcloudio/uni-shared";
-import {useRoute as useRoute$1, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
+import {passive, invokeArrayFns, NAVBAR_HEIGHT, removeLeadingSlash, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen} from "@dcloudio/uni-shared";
+import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -244,1897 +244,7 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     }
   };
 }
-function findElem(vm) {
-  return vm.$el;
-}
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-function addBase(filePath) {
-  const base = __uniConfig.router.base;
-  if (!base) {
-    return filePath;
-  }
-  if (base !== "/") {
-    if (("/" + filePath).indexOf(base) === 0) {
-      return "/" + filePath;
-    }
-  }
-  return base + filePath;
-}
-function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
-  }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.substr(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
-  }
-  return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /android/i.test(ua);
-const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
-const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /Macintosh|Mac/i.test(ua);
-const isLinux = /Linux|X11/i.test(ua);
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
-  return {
-    platform: isIOS$1 ? "ios" : "other",
-    language: navigator.language,
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
-}
-function operateVideoPlayer(videoId, vm, type, data) {
-  const pageId = vm.$page.id;
-  UniServiceJSBridge.publishHandler(pageId + "-video-" + videoId, {
-    videoId,
-    type,
-    data
-  }, pageId);
-}
-var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var lookup = new Uint8Array(256);
-for (var i$1 = 0; i$1 < chars.length; i$1++) {
-  lookup[chars.charCodeAt(i$1)] = i$1;
-}
-function encode$1(arraybuffer) {
-  var bytes = new Uint8Array(arraybuffer), i2, len = bytes.length, base64 = "";
-  for (i2 = 0; i2 < len; i2 += 3) {
-    base64 += chars[bytes[i2] >> 2];
-    base64 += chars[(bytes[i2] & 3) << 4 | bytes[i2 + 1] >> 4];
-    base64 += chars[(bytes[i2 + 1] & 15) << 2 | bytes[i2 + 2] >> 6];
-    base64 += chars[bytes[i2 + 2] & 63];
-  }
-  if (len % 3 === 2) {
-    base64 = base64.substring(0, base64.length - 1) + "=";
-  } else if (len % 3 === 1) {
-    base64 = base64.substring(0, base64.length - 2) + "==";
-  }
-  return base64;
-}
-function decode(base64) {
-  var bufferLength = base64.length * 0.75, len = base64.length, i2, p2 = 0, encoded1, encoded2, encoded3, encoded4;
-  if (base64[base64.length - 1] === "=") {
-    bufferLength--;
-    if (base64[base64.length - 2] === "=") {
-      bufferLength--;
-    }
-  }
-  var arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
-  for (i2 = 0; i2 < len; i2 += 4) {
-    encoded1 = lookup[base64.charCodeAt(i2)];
-    encoded2 = lookup[base64.charCodeAt(i2 + 1)];
-    encoded3 = lookup[base64.charCodeAt(i2 + 2)];
-    encoded4 = lookup[base64.charCodeAt(i2 + 3)];
-    bytes[p2++] = encoded1 << 2 | encoded2 >> 4;
-    bytes[p2++] = (encoded2 & 15) << 4 | encoded3 >> 2;
-    bytes[p2++] = (encoded3 & 3) << 6 | encoded4 & 63;
-  }
-  return arraybuffer;
-}
-const HTTP_METHODS = [
-  "GET",
-  "OPTIONS",
-  "HEAD",
-  "POST",
-  "PUT",
-  "DELETE",
-  "TRACE",
-  "CONNECT"
-];
-const API_TYPE_ON_PROTOCOLS = [
-  {
-    name: "callback",
-    type: Function,
-    required: true
-  }
-];
-function elemInArray(str, arr) {
-  if (arr.indexOf(str) === -1) {
-    return arr[0];
-  }
-  return str;
-}
-function validateProtocolFail(name, msg) {
-  console.warn(`${name}: ${msg}`);
-}
-function validateProtocol(name, data, protocol) {
-  for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
-    if (isString(errMsg)) {
-      validateProtocolFail(name, errMsg);
-    }
-  }
-}
-function validateProtocols(name, args, protocol) {
-  if (!protocol) {
-    return;
-  }
-  if (!isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol);
-  }
-  const len = protocol.length;
-  const argsLen = args.length;
-  for (let i2 = 0; i2 < len; i2++) {
-    const opts = protocol[i2];
-    const data = Object.create(null);
-    if (argsLen > i2) {
-      data[opts.name] = args[i2];
-    }
-    validateProtocol(name, data, {[opts.name]: opts});
-  }
-}
-function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject(prop)) {
-    prop = {type: prop};
-  }
-  const {type, required, validator} = prop;
-  if (required && isAbsent) {
-    return 'Missing required args: "' + name + '"';
-  }
-  if (value == null && !required) {
-    return;
-  }
-  if (type != null) {
-    let isValid = false;
-    const types = isArray(type) ? type : [type];
-    const expectedTypes = [];
-    for (let i2 = 0; i2 < types.length && !isValid; i2++) {
-      const {valid, expectedType} = assertType(value, types[i2]);
-      expectedTypes.push(expectedType || "");
-      isValid = valid;
-    }
-    if (!isValid) {
-      return getInvalidTypeMessage(name, value, expectedTypes);
-    }
-  }
-  if (validator) {
-    return validator(value);
-  }
-}
-const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
-function assertType(value, type) {
-  let valid;
-  const expectedType = getType(type);
-  if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
-      valid = value instanceof type;
-    }
-  } else if (expectedType === "Object") {
-    valid = isObject$1(value);
-  } else if (expectedType === "Array") {
-    valid = isArray(value);
-  } else {
-    {
-      valid = value instanceof type;
-    }
-  }
-  return {
-    valid,
-    expectedType
-  };
-}
-function getInvalidTypeMessage(name, value, expectedTypes) {
-  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
-  const expectedType = expectedTypes[0];
-  const receivedType = toRawType(value);
-  const expectedValue = styleValue(value, expectedType);
-  const receivedValue = styleValue(value, receivedType);
-  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-    message += ` with value ${expectedValue}`;
-  }
-  message += `, got ${receivedType} `;
-  if (isExplicable(receivedType)) {
-    message += `with value ${receivedValue}.`;
-  }
-  return message;
-}
-function getType(ctor) {
-  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : "";
-}
-function styleValue(value, type) {
-  if (type === "String") {
-    return `"${value}"`;
-  } else if (type === "Number") {
-    return `${Number(value)}`;
-  } else {
-    return `${value}`;
-  }
-}
-function isExplicable(type) {
-  const explicitTypes = ["string", "number", "boolean"];
-  return explicitTypes.some((elem) => type.toLowerCase() === elem);
-}
-function isBoolean(...args) {
-  return args.some((elem) => elem.toLowerCase() === "boolean");
-}
-function tryCatch(fn) {
-  return function() {
-    try {
-      return fn.apply(fn, arguments);
-    } catch (e2) {
-      console.error(e2);
-    }
-  };
-}
-let invokeCallbackId = 1;
-const invokeCallbacks = {};
-function addInvokeCallback(id2, name, callback, keepAlive = false) {
-  invokeCallbacks[id2] = {
-    name,
-    keepAlive,
-    callback
-  };
-  return id2;
-}
-function invokeCallback(id2, res, extras) {
-  if (typeof id2 === "number") {
-    const opts = invokeCallbacks[id2];
-    if (opts) {
-      if (!opts.keepAlive) {
-        delete invokeCallbacks[id2];
-      }
-      return opts.callback(res, extras);
-    }
-  }
-  return res;
-}
-function findInvokeCallbackByName(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      return true;
-    }
-  }
-  return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-  for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
-}
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
-    for (const key in invokeCallbacks) {
-      const opts = invokeCallbacks[key];
-      if (opts.name === name) {
-        opts.callback(res);
-      }
-    }
-  });
-}
-function createKeepAliveApiCallback(name, callback) {
-  return addInvokeCallback(invokeCallbackId++, name, callback, true);
-}
-const API_SUCCESS = "success";
-const API_FAIL = "fail";
-const API_COMPLETE = "complete";
-function getApiCallbacks(args) {
-  const apiCallbacks = {};
-  for (const name in args) {
-    const fn = args[name];
-    if (isFunction(fn)) {
-      apiCallbacks[name] = tryCatch(fn);
-      delete args[name];
-    }
-  }
-  return apiCallbacks;
-}
-function normalizeErrMsg(errMsg, name) {
-  if (!errMsg || errMsg.indexOf(":fail") === -1) {
-    return name + ":ok";
-  }
-  return name + errMsg.substring(errMsg.indexOf(":fail"));
-}
-function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
-  if (!isPlainObject(args)) {
-    args = {};
-  }
-  const {success, fail, complete} = getApiCallbacks(args);
-  const hasSuccess = isFunction(success);
-  const hasFail = isFunction(fail);
-  const hasComplete = isFunction(complete);
-  const callbackId = invokeCallbackId++;
-  addInvokeCallback(callbackId, name, (res) => {
-    res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
-    isFunction(beforeAll) && beforeAll(res);
-    if (res.errMsg === name + ":ok") {
-      isFunction(beforeSuccess) && beforeSuccess(res);
-      hasSuccess && success(res);
-    } else {
-      hasFail && fail(res);
-    }
-    hasComplete && complete(res);
-  });
-  return callbackId;
-}
-const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
-function hasCallback(args) {
-  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
-    return true;
-  }
-  return false;
-}
-function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
-  return promise;
-}
-function promisify(fn) {
-  return (args = {}) => {
-    if (hasCallback(args)) {
-      return fn(args);
-    }
-    return handlePromise(new Promise((resolve, reject) => {
-      fn(Object.assign(args, {success: resolve, fail: reject}));
-    }));
-  };
-}
-function formatApiArgs(args, options) {
-  const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
-    return args;
-  }
-  const formatArgs = options.formatArgs;
-  Object.keys(formatArgs).forEach((name) => {
-    const formatterOrDefaultValue = formatArgs[name];
-    if (isFunction(formatterOrDefaultValue)) {
-      formatterOrDefaultValue(args[0][name], params);
-    } else {
-      if (!hasOwn$1(params, name)) {
-        params[name] = formatterOrDefaultValue;
-      }
-    }
-  });
-  return args;
-}
-function wrapperOnApi(name, fn) {
-  return (callback) => {
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback);
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name);
-      fn();
-    }
-  };
-}
-function wrapperOffApi(name, fn) {
-  return (callback) => {
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    const hasInvokeOnApi = findInvokeCallbackByName(name);
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
-      fn();
-    }
-  };
-}
-function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
-}
-function invokeFail(id2, name, err) {
-  return invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
-}
-function wrapperTaskApi(name, fn, options) {
-  return (args) => {
-    const id2 = createAsyncApiCallback(name, args, options);
-    return fn(args, {
-      resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (err) => invokeFail(id2, name, err)
-    });
-  };
-}
-function wrapperSyncApi(fn) {
-  return (...args) => fn.apply(null, args);
-}
-function wrapperAsyncApi(name, fn, options) {
-  return wrapperTaskApi(name, fn, options);
-}
-function wrapperApi(fn, name, protocol, options) {
-  return function(...args) {
-    if (process.env.NODE_ENV !== "production") {
-      validateProtocols(name, args, protocol);
-    }
-    if (options && options.beforeInvoke) {
-      const errMsg = options.beforeInvoke(args);
-      if (isString(errMsg)) {
-        return errMsg;
-      }
-    }
-    return fn.apply(null, formatApiArgs(args, options));
-  };
-}
-function defineOnApi(name, fn, options) {
-  return wrapperApi(wrapperOnApi(name, fn), name, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
-}
-function defineOffApi(name, fn, options) {
-  return wrapperApi(wrapperOffApi(name, fn), name, process.env.NODE_ENV !== "production" ? API_TYPE_ON_PROTOCOLS : void 0, options);
-}
-function defineTaskApi(name, fn, protocol, options) {
-  return promisify(wrapperApi(wrapperTaskApi(name, fn), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function defineSyncApi(name, fn, protocol, options) {
-  return wrapperApi(wrapperSyncApi(fn), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
-}
-function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(wrapperApi(wrapperAsyncApi(name, fn, options), name, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
-const Base64ToArrayBufferProtocol = [
-  {
-    name: "base64",
-    type: String,
-    required: true
-  }
-];
-const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
-const ArrayBufferToBase64Protocol = [
-  {
-    name: "arrayBuffer",
-    type: [ArrayBuffer, Uint8Array],
-    required: true
-  }
-];
-const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
-  return decode(base64);
-}, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
-  return encode$1(arrayBuffer);
-}, ArrayBufferToBase64Protocol);
-const API_UPX2PX = "upx2px";
-const Upx2pxProtocol = [
-  {
-    name: "upx",
-    type: [Number, String],
-    required: true
-  }
-];
-const EPS = 1e-4;
-const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
-let deviceWidth = 0;
-let deviceDPR = 0;
-function checkDeviceWidth() {
-  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
-  deviceWidth = windowWidth;
-  deviceDPR = pixelRatio2;
-  isIOS = platform === "ios";
-}
-const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  if (deviceWidth === 0) {
-    checkDeviceWidth();
-  }
-  number = Number(number);
-  if (number === 0) {
-    return 0;
-  }
-  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
-  if (result < 0) {
-    result = -result;
-  }
-  result = Math.floor(result + EPS);
-  if (result === 0) {
-    if (deviceDPR === 1 || !isIOS) {
-      result = 1;
-    } else {
-      result = 0.5;
-    }
-  }
-  return number < 0 ? -result : result;
-}, Upx2pxProtocol);
-var HOOKS;
-(function(HOOKS2) {
-  HOOKS2["INVOKE"] = "invoke";
-  HOOKS2["SUCCESS"] = "success";
-  HOOKS2["FAIL"] = "fail";
-  HOOKS2["COMPLETE"] = "complete";
-  HOOKS2["RETURN_VALUE"] = "returnValue";
-})(HOOKS || (HOOKS = {}));
-const globalInterceptors = {};
-const scopedInterceptors = {};
-const API_ADD_INTERCEPTOR = "addInterceptor";
-const API_REMOVE_INTERCEPTOR = "removeInterceptor";
-const AddInterceptorProtocol = [
-  {
-    name: "method",
-    type: [String, Object],
-    required: true
-  }
-];
-const RemoveInterceptorProtocol = AddInterceptorProtocol;
-function mergeInterceptorHook(interceptors, interceptor) {
-  Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
-      interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
-    }
-  });
-}
-function removeInterceptorHook(interceptors, interceptor) {
-  if (!interceptors || !interceptor) {
-    return;
-  }
-  Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
-      removeHook(interceptors[hook], interceptor[hook]);
-    }
-  });
-}
-function mergeHook(parentVal, childVal) {
-  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
-  return res ? dedupeHooks(res) : res;
-}
-function dedupeHooks(hooks) {
-  const res = [];
-  for (let i2 = 0; i2 < hooks.length; i2++) {
-    if (res.indexOf(hooks[i2]) === -1) {
-      res.push(hooks[i2]);
-    }
-  }
-  return res;
-}
-function removeHook(hooks, hook) {
-  if (!hooks) {
-    return;
-  }
-  const index2 = hooks.indexOf(hook);
-  if (index2 !== -1) {
-    hooks.splice(index2, 1);
-  }
-}
-const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string" && isPlainObject(interceptor)) {
-    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
-  } else if (isPlainObject(method)) {
-    mergeInterceptorHook(globalInterceptors, method);
-  }
-}, AddInterceptorProtocol);
-const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string") {
-    if (isPlainObject(interceptor)) {
-      removeInterceptorHook(scopedInterceptors[method], interceptor);
-    } else {
-      delete scopedInterceptors[method];
-    }
-  } else if (isPlainObject(method)) {
-    removeInterceptorHook(globalInterceptors, method);
-  }
-}, RemoveInterceptorProtocol);
-const promiseInterceptor = {
-  returnValue(res) {
-    if (!isPromise(res)) {
-      return res;
-    }
-    return res.then((res2) => {
-      return res2[1];
-    }).catch((res2) => {
-      return res2[0];
-    });
-  }
-};
-const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
-const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
-class VideoContext {
-  constructor(id2, vm) {
-    this.id = id2;
-    this.vm = vm;
-  }
-  play() {
-    operateVideoPlayer(this.id, this.vm, "play");
-  }
-  pause() {
-    operateVideoPlayer(this.id, this.vm, "pause");
-  }
-  stop() {
-    operateVideoPlayer(this.id, this.vm, "stop");
-  }
-  seek(position) {
-    operateVideoPlayer(this.id, this.vm, "seek", {
-      position
-    });
-  }
-  sendDanmu(args) {
-    operateVideoPlayer(this.id, this.vm, "sendDanmu", args);
-  }
-  playbackRate(rate) {
-    if (!~RATES.indexOf(rate)) {
-      rate = 1;
-    }
-    operateVideoPlayer(this.id, this.vm, "playbackRate", {
-      rate
-    });
-  }
-  requestFullScreen(args = {}) {
-    operateVideoPlayer(this.id, this.vm, "requestFullScreen", args);
-  }
-  exitFullScreen() {
-    operateVideoPlayer(this.id, this.vm, "exitFullScreen");
-  }
-  showStatusBar() {
-    operateVideoPlayer(this.id, this.vm, "showStatusBar");
-  }
-  hideStatusBar() {
-    operateVideoPlayer(this.id, this.vm, "hideStatusBar");
-  }
-}
-const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
-  if (context) {
-    return new VideoContext(id2, context);
-  }
-  return new VideoContext(id2, getCurrentPageVm());
-});
-const defaultOptions = {
-  thresholds: [0],
-  initialRatio: 0,
-  observeAll: false
-};
-const MARGINS = ["top", "right", "bottom", "left"];
-let reqComponentObserverId = 1;
-function normalizeRootMargin(margins = {}) {
-  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
-}
-class ServiceIntersectionObserver {
-  constructor(component, options) {
-    this._pageId = component.$page && component.$page.id;
-    this._component = component;
-    this._options = extend({}, defaultOptions, options);
-  }
-  relativeTo(selector, margins) {
-    this._options.relativeToSelector = selector;
-    this._options.rootMargin = normalizeRootMargin(margins);
-    return this;
-  }
-  relativeToViewport(margins) {
-    this._options.relativeToSelector = void 0;
-    this._options.rootMargin = normalizeRootMargin(margins);
-    return this;
-  }
-  observe(selector, callback) {
-    if (!isFunction(callback)) {
-      return;
-    }
-    this._options.selector = selector;
-    this._reqId = reqComponentObserverId++;
-    addIntersectionObserver({
-      reqId: this._reqId,
-      component: this._component,
-      options: this._options,
-      callback
-    }, this._pageId);
-  }
-  disconnect() {
-    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
-  }
-}
-const createIntersectionObserver$1 = defineSyncApi("createIntersectionObserver", (context, options) => {
-  if (context && !context.$page) {
-    options = context;
-    context = null;
-  }
-  if (context) {
-    return new ServiceIntersectionObserver(context, options);
-  }
-  return new ServiceIntersectionObserver(getCurrentPageVm(), options);
-});
-const createSelectorQuery$1 = () => {
-};
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const onTabBarMidButtonTap = defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
-});
-const API_CAN_I_USE = "canIUse";
-const CanIUseProtocol = [
-  {
-    name: "schema",
-    type: String,
-    required: true
-  }
-];
-const API_MAKE_PHONE_CALL = "makePhoneCall";
-const MakePhoneCallProtocol = {
-  phoneNumber: String
-};
-const API_GET_FILE_INFO = "getFileInfo";
-const GetFileInfoProtocol = {
-  filePath: {
-    type: String,
-    required: true
-  }
-};
-const API_OPEN_DOCUMENT = "openDocument";
-const OpenDocumentProtocol = {
-  filePath: {
-    type: String,
-    required: true
-  },
-  fileType: String
-};
-const API_GET_IMAGE_INFO = "getImageInfo";
-const GetImageInfoOptions = {
-  formatArgs: {
-    src(src, params) {
-      params.src = getRealPath(src);
-    }
-  }
-};
-const GetImageInfoProtocol = {
-  src: {
-    type: String,
-    required: true
-  }
-};
-const API_REQUEST = "request";
-const dataType = {
-  JSON: "json"
-};
-const RESPONSE_TYPE = ["text", "arraybuffer"];
-const DEFAULT_RESPONSE_TYPE = "text";
-const encode = encodeURIComponent;
-function stringifyQuery(url, data) {
-  let str = url.split("#");
-  const hash = str[1] || "";
-  str = str[0].split("?");
-  let query = str[1] || "";
-  url = str[0];
-  const search = query.split("&").filter((item) => item);
-  const params = {};
-  search.forEach((item) => {
-    const part = item.split("=");
-    params[part[0]] = part[1];
-  });
-  for (const key in data) {
-    if (hasOwn$1(data, key)) {
-      let v2 = data[key];
-      if (typeof v2 === "undefined" || v2 === null) {
-        v2 = "";
-      } else if (isPlainObject(v2)) {
-        v2 = JSON.stringify(v2);
-      }
-      params[encode(key)] = encode(v2);
-    }
-  }
-  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
-  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
-}
-const RequestProtocol = {
-  method: String,
-  data: [Object, String, Array, ArrayBuffer],
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  dataType: String,
-  responseType: String,
-  withCredentials: Boolean
-};
-const RequestOptions = {
-  formatArgs: {
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    data(value, params) {
-      params.data = value || "";
-    },
-    url(value, params) {
-      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
-        params.url = stringifyQuery(value, params.data);
-      }
-    },
-    header(value, params) {
-      const header = params.header = value || {};
-      if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
-          header["Content-Type"] = "application/json";
-        }
-      }
-    },
-    dataType(value, params) {
-      params.dataType = (value || dataType.JSON).toLowerCase();
-    },
-    responseType(value, params) {
-      params.responseType = (value || "").toLowerCase();
-      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-        params.responseType = DEFAULT_RESPONSE_TYPE;
-      }
-    }
-  }
-};
-const API_DOWNLOAD_FILE = "downloadFile";
-const DownloadFileOptions = {
-  formatArgs: {
-    header(value, params) {
-      params.header = value || {};
-    }
-  }
-};
-const DownloadFileProtocol = {
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  timeout: Number
-};
-const API_UPLOAD_FILE = "uploadFile";
-const UploadFileOptions = {
-  formatArgs: {
-    header(value, params) {
-      params.header = value || {};
-    },
-    formData(value, params) {
-      params.formData = value || {};
-    }
-  }
-};
-const UploadFileProtocol = {
-  url: {
-    type: String,
-    required: true
-  },
-  files: Array,
-  filePath: String,
-  name: String,
-  header: Object,
-  formData: Object,
-  timeout: Number
-};
-const API_CONNECT_SOCKET = "connectSocket";
-const ConnectSocketOptions = {
-  formatArgs: {
-    header(value, params) {
-      params.header = value || {};
-    },
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    protocols(protocols, params) {
-      if (typeof protocols === "string") {
-        params.protocols = [protocols];
-      }
-    }
-  }
-};
-const ConnectSocketProtocol = {
-  url: {
-    type: String,
-    required: true
-  },
-  header: {
-    type: Object
-  },
-  method: String,
-  protocols: [Array, String]
-};
-const API_SEND_SOCKET_MESSAGE = "sendSocketMessage";
-const SendSocketMessageProtocol = {
-  data: [String, ArrayBuffer]
-};
-const API_CLOSE_SOCKET = "closeSocket";
-const CloseSocketProtocol = {
-  code: Number,
-  reason: String
-};
-function encodeQueryString(url) {
-  if (typeof url !== "string") {
-    return url;
-  }
-  const index2 = url.indexOf("?");
-  if (index2 === -1) {
-    return url;
-  }
-  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
-  if (!query) {
-    return url;
-  }
-  url = url.substr(0, index2);
-  const params = [];
-  query.split("&").forEach((param) => {
-    const parts = param.replace(/\+/g, " ").split("=");
-    const key = parts.shift();
-    const val = parts.length > 0 ? parts.join("=") : "";
-    params.push(key + "=" + encodeURIComponent(val));
-  });
-  return params.length ? url + "?" + params.join("&") : url;
-}
-const ANIMATION_IN = [
-  "slide-in-right",
-  "slide-in-left",
-  "slide-in-top",
-  "slide-in-bottom",
-  "fade-in",
-  "zoom-out",
-  "zoom-fade-out",
-  "pop-in",
-  "none"
-];
-const ANIMATION_OUT = [
-  "slide-out-right",
-  "slide-out-left",
-  "slide-out-top",
-  "slide-out-bottom",
-  "fade-out",
-  "zoom-in",
-  "zoom-fade-in",
-  "pop-out",
-  "none"
-];
-const BaseRouteProtocol = {
-  url: {
-    type: String,
-    required: true
-  }
-};
-const API_NAVIGATE_TO = "navigateTo";
-const API_REDIRECT_TO = "redirectTo";
-const API_RE_LAUNCH = "reLaunch";
-const API_SWITCH_TAB = "switchTab";
-const API_NAVIGATE_BACK = "navigateBack";
-const API_PRELOAD_PAGE = "preloadPage";
-const API_UN_PRELOAD_PAGE = "unPreloadPage";
-const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
-const NavigateBackProtocol = /* @__PURE__ */ extend({
-  delta: {
-    type: Number
-  }
-}, createAnimationProtocol(ANIMATION_OUT));
-const RedirectToProtocol = BaseRouteProtocol;
-const ReLaunchProtocol = BaseRouteProtocol;
-const SwitchTabProtocol = BaseRouteProtocol;
-const NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
-const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
-const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
-const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
-const NavigateBackOptions = {
-  formatArgs: {
-    delta(value, params) {
-      value = parseInt(value + "") || 1;
-      params.delta = Math.min(getCurrentPages().length - 1, value);
-    }
-  }
-};
-function createAnimationProtocol(animationTypes) {
-  return {
-    animationType: {
-      type: String,
-      validator(type) {
-        if (type && animationTypes.indexOf(type) === -1) {
-          return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
-        }
-      }
-    },
-    animationDuration: {
-      type: Number
-    }
-  };
-}
-let navigatorLock;
-function beforeRoute() {
-  navigatorLock = "";
-}
-function createRouteOptions(type) {
-  return {
-    formatArgs: {
-      url: createNormalizeUrl(type)
-    },
-    beforeAll: beforeRoute
-  };
-}
-function createNormalizeUrl(type) {
-  return function normalizeUrl(url, params) {
-    url = getRealRoute(url);
-    const pagePath = url.split("?")[0];
-    if (url === "/") {
-      url = __uniRoutes[0].path;
-    }
-    const routeOptions = __uniRoutes.find(({path}) => path === pagePath);
-    if (!routeOptions) {
-      return "page `" + url + "` is not found";
-    }
-    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
-      if (routeOptions.meta.isTabBar) {
-        return `can not ${type} a tabbar page`;
-      }
-    } else if (type === API_SWITCH_TAB) {
-      if (!routeOptions.meta.isTabBar) {
-        return "can not switch to no-tabBar page";
-      }
-    }
-    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
-      url = pagePath;
-    }
-    if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.path, "/");
-    }
-    params.url = encodeQueryString(url);
-    if (type === API_UN_PRELOAD_PAGE) {
-      return;
-    } else if (type === API_PRELOAD_PAGE) {
-      if (routeOptions.meta.isTabBar) {
-        const pages = getCurrentPages(true);
-        const tabBarPagePath = routeOptions.path.substr(1);
-        if (pages.find((page) => page.route === tabBarPagePath)) {
-          return "tabBar page `" + tabBarPagePath + "` already exists";
-        }
-      }
-      return;
-    }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
-      return `${navigatorLock} locked`;
-    }
-    if (__uniConfig.ready) {
-      navigatorLock = url;
-    }
-  };
-}
-const FRONT_COLORS = ["#ffffff", "#000000"];
-const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
-const SetNavigationBarColorOptions = {
-  formatArgs: {
-    animation(animation, params) {
-      if (!animation) {
-        animation = {duration: 0, timingFunc: "linear"};
-      }
-      params.animation = {
-        duration: animation.duration || 0,
-        timingFunc: animation.timingFunc || "linear"
-      };
-    }
-  }
-};
-const SetNavigationBarColorProtocol = {
-  frontColor: {
-    type: String,
-    required: true,
-    validator(frontColor) {
-      if (FRONT_COLORS.indexOf(frontColor) === -1) {
-        return `invalid frontColor "${frontColor}"`;
-      }
-    }
-  },
-  backgroundColor: {
-    type: String,
-    required: true
-  },
-  animation: Object
-};
-const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
-const SetNavigationBarTitleProtocol = {
-  title: {
-    type: String,
-    required: true
-  }
-};
-const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
-const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-const PRIMARY_COLOR = "#007aff";
-const API_SHOW_MODAL = "showModal";
-const {t: t$1} = useI18n();
-const ShowModalProtocol = {
-  title: String,
-  content: String,
-  showCancel: Boolean,
-  cancelText: String,
-  cancelColor: String,
-  confirmText: String,
-  confirmColor: String
-};
-let isInitI18nShowModalMsgs = false;
-const ShowModalOptions = {
-  beforeInvoke() {
-    if (isInitI18nShowModalMsgs) {
-      return;
-    }
-    isInitI18nShowModalMsgs = true;
-    initI18nShowModalMsgs();
-  },
-  formatArgs: {
-    title: "",
-    content: "",
-    showCancel: true,
-    cancelText(_value, params) {
-      if (!hasOwn$1(params, "cancelText")) {
-        params.cancelText = t$1("uni.showModal.cancel");
-      }
-    },
-    cancelColor: "#000",
-    confirmText(_value, params) {
-      if (!hasOwn$1(params, "confirmText")) {
-        params.confirmText = t$1("uni.showModal.confirm");
-      }
-    },
-    confirmColor: PRIMARY_COLOR
-  }
-};
-const API_SHOW_TOAST = "showToast";
-const ShowToastProtocol = {
-  title: String,
-  icon: String,
-  image: String,
-  duration: Number,
-  mask: Boolean
-};
-const ShowToastOptions = {
-  formatArgs: {
-    title: "",
-    icon(value, params) {
-      if (["success", "loading", "none"].indexOf(value) === -1) {
-        params.icon = "success";
-      }
-    },
-    image(value, params) {
-      if (value) {
-        params.image = getRealPath(value);
-      }
-    },
-    duration: 1500,
-    mask: false
-  }
-};
-const API_SHOW_LOADING = "showLoading";
-const ShowLoadingProtocol = {
-  title: String,
-  mask: Boolean
-};
-const ShowLoadingOptions = {
-  formatArgs: {
-    title: "",
-    mask: false
-  }
-};
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  itemColor: String
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
-  }
-};
-const API_HIDE_TOAST = "hideToast";
-const API_HIDE_LOADING = "hideLoading";
-const IndexProtocol = {
-  index: {
-    type: Number,
-    required: true
-  }
-};
-const IndexOptions = {
-  beforeInvoke() {
-    const pageMeta = getCurrentPageMeta();
-    if (pageMeta && !pageMeta.isTabBar) {
-      return "not TabBar page";
-    }
-  },
-  formatArgs: {
-    index(value) {
-      if (!__uniConfig.tabBar.list[value]) {
-        return "tabbar item not found";
-      }
-    }
-  }
-};
-const API_SET_TAB_BAR_ITEM = "setTabBarItem";
-const SetTabBarItemProtocol = /* @__PURE__ */ extend({
-  text: String,
-  iconPath: String,
-  selectedIconPath: String,
-  pagePath: String
-}, IndexProtocol);
-const SetTabBarItemOptions = {
-  beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: /* @__PURE__ */ extend({
-    pagePath(value, params) {
-      if (value) {
-        params.pagePath = removeLeadingSlash(value);
-      }
-    }
-  }, IndexOptions.formatArgs)
-};
-const API_SET_TAB_BAR_STYLE = "setTabBarStyle";
-const SetTabBarStyleProtocol = {
-  color: String,
-  selectedColor: String,
-  backgroundColor: String,
-  backgroundImage: String,
-  backgroundRepeat: String,
-  borderStyle: String
-};
-const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
-const SetTabBarStyleOptions = {
-  beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: {
-    backgroundImage(value, params) {
-      if (value && !GRADIENT_RE.test(value)) {
-        params.backgroundImage = getRealPath(value);
-      }
-    },
-    borderStyle(value, params) {
-      if (value) {
-        params.borderStyle = value === "white" ? "white" : "black";
-      }
-    }
-  }
-};
-const API_HIDE_TAB_BAR = "hideTabBar";
-const HideTabBarProtocol = {
-  animation: Boolean
-};
-const API_SHOW_TAB_BAR = "showTabBar";
-const ShowTabBarProtocol = HideTabBarProtocol;
-const API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
-const HideTabBarRedDotProtocol = IndexProtocol;
-const HideTabBarRedDotOptions = IndexOptions;
-const API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
-const ShowTabBarRedDotProtocol = IndexProtocol;
-const ShowTabBarRedDotOptions = IndexOptions;
-const API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
-const RemoveTabBarBadgeProtocol = IndexProtocol;
-const RemoveTabBarBadgeOptions = IndexOptions;
-const API_SET_TAB_BAR_BADGE = "setTabBarBadge";
-const SetTabBarBadgeProtocol = /* @__PURE__ */ extend({
-  text: {
-    type: String,
-    required: true
-  }
-}, IndexProtocol);
-const SetTabBarBadgeOptions = {
-  beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: /* @__PURE__ */ extend({
-    text(value, params) {
-      if (getLen(value) >= 4) {
-        params.text = "...";
-      }
-    }
-  }, IndexOptions.formatArgs)
-};
-const initIntersectionObserverPolyfill = function() {
-  if (typeof window !== "object") {
-    return;
-  }
-  if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype) {
-    if (!("isIntersecting" in window.IntersectionObserverEntry.prototype)) {
-      Object.defineProperty(window.IntersectionObserverEntry.prototype, "isIntersecting", {
-        get: function() {
-          return this.intersectionRatio > 0;
-        }
-      });
-    }
-    return;
-  }
-  function getFrameElement(doc) {
-    try {
-      return doc.defaultView && doc.defaultView.frameElement || null;
-    } catch (e2) {
-      return null;
-    }
-  }
-  var document2 = function(startDoc) {
-    var doc = startDoc;
-    var frame = getFrameElement(doc);
-    while (frame) {
-      doc = frame.ownerDocument;
-      frame = getFrameElement(doc);
-    }
-    return doc;
-  }(window.document);
-  var registry = [];
-  var crossOriginUpdater = null;
-  var crossOriginRect = null;
-  function IntersectionObserverEntry(entry) {
-    this.time = entry.time;
-    this.target = entry.target;
-    this.rootBounds = ensureDOMRect(entry.rootBounds);
-    this.boundingClientRect = ensureDOMRect(entry.boundingClientRect);
-    this.intersectionRect = ensureDOMRect(entry.intersectionRect || getEmptyRect());
-    this.isIntersecting = !!entry.intersectionRect;
-    var targetRect = this.boundingClientRect;
-    var targetArea = targetRect.width * targetRect.height;
-    var intersectionRect = this.intersectionRect;
-    var intersectionArea = intersectionRect.width * intersectionRect.height;
-    if (targetArea) {
-      this.intersectionRatio = Number((intersectionArea / targetArea).toFixed(4));
-    } else {
-      this.intersectionRatio = this.isIntersecting ? 1 : 0;
-    }
-  }
-  function IntersectionObserver2(callback, opt_options) {
-    var options = opt_options || {};
-    if (typeof callback != "function") {
-      throw new Error("callback must be a function");
-    }
-    if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
-      throw new Error("root must be a Document or Element");
-    }
-    this._checkForIntersections = throttle2(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
-    this._callback = callback;
-    this._observationTargets = [];
-    this._queuedEntries = [];
-    this._rootMarginValues = this._parseRootMargin(options.rootMargin);
-    this.thresholds = this._initThresholds(options.threshold);
-    this.root = options.root || null;
-    this.rootMargin = this._rootMarginValues.map(function(margin) {
-      return margin.value + margin.unit;
-    }).join(" ");
-    this._monitoringDocuments = [];
-    this._monitoringUnsubscribes = [];
-  }
-  IntersectionObserver2.prototype.THROTTLE_TIMEOUT = 100;
-  IntersectionObserver2.prototype.POLL_INTERVAL = null;
-  IntersectionObserver2.prototype.USE_MUTATION_OBSERVER = true;
-  IntersectionObserver2._setupCrossOriginUpdater = function() {
-    if (!crossOriginUpdater) {
-      crossOriginUpdater = function(boundingClientRect, intersectionRect) {
-        if (!boundingClientRect || !intersectionRect) {
-          crossOriginRect = getEmptyRect();
-        } else {
-          crossOriginRect = convertFromParentRect(boundingClientRect, intersectionRect);
-        }
-        registry.forEach(function(observer) {
-          observer._checkForIntersections();
-        });
-      };
-    }
-    return crossOriginUpdater;
-  };
-  IntersectionObserver2._resetCrossOriginUpdater = function() {
-    crossOriginUpdater = null;
-    crossOriginRect = null;
-  };
-  IntersectionObserver2.prototype.observe = function(target) {
-    var isTargetAlreadyObserved = this._observationTargets.some(function(item) {
-      return item.element == target;
-    });
-    if (isTargetAlreadyObserved) {
-      return;
-    }
-    if (!(target && target.nodeType == 1)) {
-      throw new Error("target must be an Element");
-    }
-    this._registerInstance();
-    this._observationTargets.push({element: target, entry: null});
-    this._monitorIntersections(target.ownerDocument);
-    this._checkForIntersections();
-  };
-  IntersectionObserver2.prototype.unobserve = function(target) {
-    this._observationTargets = this._observationTargets.filter(function(item) {
-      return item.element != target;
-    });
-    this._unmonitorIntersections(target.ownerDocument);
-    if (this._observationTargets.length == 0) {
-      this._unregisterInstance();
-    }
-  };
-  IntersectionObserver2.prototype.disconnect = function() {
-    this._observationTargets = [];
-    this._unmonitorAllIntersections();
-    this._unregisterInstance();
-  };
-  IntersectionObserver2.prototype.takeRecords = function() {
-    var records = this._queuedEntries.slice();
-    this._queuedEntries = [];
-    return records;
-  };
-  IntersectionObserver2.prototype._initThresholds = function(opt_threshold) {
-    var threshold = opt_threshold || [0];
-    if (!Array.isArray(threshold))
-      threshold = [threshold];
-    return threshold.sort().filter(function(t2, i2, a2) {
-      if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
-        throw new Error("threshold must be a number between 0 and 1 inclusively");
-      }
-      return t2 !== a2[i2 - 1];
-    });
-  };
-  IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
-    var marginString = opt_rootMargin || "0px";
-    var margins = marginString.split(/\s+/).map(function(margin) {
-      var parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
-      if (!parts) {
-        throw new Error("rootMargin must be specified in pixels or percent");
-      }
-      return {value: parseFloat(parts[1]), unit: parts[2]};
-    });
-    margins[1] = margins[1] || margins[0];
-    margins[2] = margins[2] || margins[0];
-    margins[3] = margins[3] || margins[1];
-    return margins;
-  };
-  IntersectionObserver2.prototype._monitorIntersections = function(doc) {
-    var win = doc.defaultView;
-    if (!win) {
-      return;
-    }
-    if (this._monitoringDocuments.indexOf(doc) != -1) {
-      return;
-    }
-    var callback = this._checkForIntersections;
-    var monitoringInterval = null;
-    var domObserver = null;
-    if (this.POLL_INTERVAL) {
-      monitoringInterval = win.setInterval(callback, this.POLL_INTERVAL);
-    } else {
-      addEvent(win, "resize", callback, true);
-      addEvent(doc, "scroll", callback, true);
-      if (this.USE_MUTATION_OBSERVER && "MutationObserver" in win) {
-        domObserver = new win.MutationObserver(callback);
-        domObserver.observe(doc, {
-          attributes: true,
-          childList: true,
-          characterData: true,
-          subtree: true
-        });
-      }
-    }
-    this._monitoringDocuments.push(doc);
-    this._monitoringUnsubscribes.push(function() {
-      var win2 = doc.defaultView;
-      if (win2) {
-        if (monitoringInterval) {
-          win2.clearInterval(monitoringInterval);
-        }
-        removeEvent(win2, "resize", callback, true);
-      }
-      removeEvent(doc, "scroll", callback, true);
-      if (domObserver) {
-        domObserver.disconnect();
-      }
-    });
-    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    if (doc != rootDoc) {
-      var frame = getFrameElement(doc);
-      if (frame) {
-        this._monitorIntersections(frame.ownerDocument);
-      }
-    }
-  };
-  IntersectionObserver2.prototype._unmonitorIntersections = function(doc) {
-    var index2 = this._monitoringDocuments.indexOf(doc);
-    if (index2 == -1) {
-      return;
-    }
-    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    var hasDependentTargets = this._observationTargets.some(function(item) {
-      var itemDoc = item.element.ownerDocument;
-      if (itemDoc == doc) {
-        return true;
-      }
-      while (itemDoc && itemDoc != rootDoc) {
-        var frame2 = getFrameElement(itemDoc);
-        itemDoc = frame2 && frame2.ownerDocument;
-        if (itemDoc == doc) {
-          return true;
-        }
-      }
-      return false;
-    });
-    if (hasDependentTargets) {
-      return;
-    }
-    var unsubscribe = this._monitoringUnsubscribes[index2];
-    this._monitoringDocuments.splice(index2, 1);
-    this._monitoringUnsubscribes.splice(index2, 1);
-    unsubscribe();
-    if (doc != rootDoc) {
-      var frame = getFrameElement(doc);
-      if (frame) {
-        this._unmonitorIntersections(frame.ownerDocument);
-      }
-    }
-  };
-  IntersectionObserver2.prototype._unmonitorAllIntersections = function() {
-    var unsubscribes = this._monitoringUnsubscribes.slice(0);
-    this._monitoringDocuments.length = 0;
-    this._monitoringUnsubscribes.length = 0;
-    for (var i2 = 0; i2 < unsubscribes.length; i2++) {
-      unsubscribes[i2]();
-    }
-  };
-  IntersectionObserver2.prototype._checkForIntersections = function() {
-    if (!this.root && crossOriginUpdater && !crossOriginRect) {
-      return;
-    }
-    var rootIsInDom = this._rootIsInDom();
-    var rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect();
-    this._observationTargets.forEach(function(item) {
-      var target = item.element;
-      var targetRect = getBoundingClientRect(target);
-      var rootContainsTarget = this._rootContainsTarget(target);
-      var oldEntry = item.entry;
-      var intersectionRect = rootIsInDom && rootContainsTarget && this._computeTargetAndRootIntersection(target, targetRect, rootRect);
-      var rootBounds = null;
-      if (!this._rootContainsTarget(target)) {
-        rootBounds = getEmptyRect();
-      } else if (!crossOriginUpdater || this.root) {
-        rootBounds = rootRect;
-      }
-      var newEntry = item.entry = new IntersectionObserverEntry({
-        time: now(),
-        target,
-        boundingClientRect: targetRect,
-        rootBounds,
-        intersectionRect
-      });
-      if (!oldEntry) {
-        this._queuedEntries.push(newEntry);
-      } else if (rootIsInDom && rootContainsTarget) {
-        if (this._hasCrossedThreshold(oldEntry, newEntry)) {
-          this._queuedEntries.push(newEntry);
-        }
-      } else {
-        if (oldEntry && oldEntry.isIntersecting) {
-          this._queuedEntries.push(newEntry);
-        }
-      }
-    }, this);
-    if (this._queuedEntries.length) {
-      this._callback(this.takeRecords(), this);
-    }
-  };
-  IntersectionObserver2.prototype._computeTargetAndRootIntersection = function(target, targetRect, rootRect) {
-    if (window.getComputedStyle(target).display == "none")
-      return;
-    var intersectionRect = targetRect;
-    var parent = getParentNode(target);
-    var atRoot = false;
-    while (!atRoot && parent) {
-      var parentRect = null;
-      var parentComputedStyle = parent.nodeType == 1 ? window.getComputedStyle(parent) : {};
-      if (parentComputedStyle.display == "none")
-        return null;
-      if (parent == this.root || parent.nodeType == 9) {
-        atRoot = true;
-        if (parent == this.root || parent == document2) {
-          if (crossOriginUpdater && !this.root) {
-            if (!crossOriginRect || crossOriginRect.width == 0 && crossOriginRect.height == 0) {
-              parent = null;
-              parentRect = null;
-              intersectionRect = null;
-            } else {
-              parentRect = crossOriginRect;
-            }
-          } else {
-            parentRect = rootRect;
-          }
-        } else {
-          var frame = getParentNode(parent);
-          var frameRect = frame && getBoundingClientRect(frame);
-          var frameIntersect = frame && this._computeTargetAndRootIntersection(frame, frameRect, rootRect);
-          if (frameRect && frameIntersect) {
-            parent = frame;
-            parentRect = convertFromParentRect(frameRect, frameIntersect);
-          } else {
-            parent = null;
-            intersectionRect = null;
-          }
-        }
-      } else {
-        var doc = parent.ownerDocument;
-        if (parent != doc.body && parent != doc.documentElement && parentComputedStyle.overflow != "visible") {
-          parentRect = getBoundingClientRect(parent);
-        }
-      }
-      if (parentRect) {
-        intersectionRect = computeRectIntersection(parentRect, intersectionRect);
-      }
-      if (!intersectionRect)
-        break;
-      parent = parent && getParentNode(parent);
-    }
-    return intersectionRect;
-  };
-  IntersectionObserver2.prototype._getRootRect = function() {
-    var rootRect;
-    if (this.root && !isDoc(this.root)) {
-      rootRect = getBoundingClientRect(this.root);
-    } else {
-      var doc = isDoc(this.root) ? this.root : document2;
-      var html = doc.documentElement;
-      var body = doc.body;
-      rootRect = {
-        top: 0,
-        left: 0,
-        right: html.clientWidth || body.clientWidth,
-        width: html.clientWidth || body.clientWidth,
-        bottom: html.clientHeight || body.clientHeight,
-        height: html.clientHeight || body.clientHeight
-      };
-    }
-    return this._expandRectByRootMargin(rootRect);
-  };
-  IntersectionObserver2.prototype._expandRectByRootMargin = function(rect) {
-    var margins = this._rootMarginValues.map(function(margin, i2) {
-      return margin.unit == "px" ? margin.value : margin.value * (i2 % 2 ? rect.width : rect.height) / 100;
-    });
-    var newRect = {
-      top: rect.top - margins[0],
-      right: rect.right + margins[1],
-      bottom: rect.bottom + margins[2],
-      left: rect.left - margins[3]
-    };
-    newRect.width = newRect.right - newRect.left;
-    newRect.height = newRect.bottom - newRect.top;
-    return newRect;
-  };
-  IntersectionObserver2.prototype._hasCrossedThreshold = function(oldEntry, newEntry) {
-    var oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1;
-    var newRatio = newEntry.isIntersecting ? newEntry.intersectionRatio || 0 : -1;
-    if (oldRatio === newRatio)
-      return;
-    for (var i2 = 0; i2 < this.thresholds.length; i2++) {
-      var threshold = this.thresholds[i2];
-      if (threshold == oldRatio || threshold == newRatio || threshold < oldRatio !== threshold < newRatio) {
-        return true;
-      }
-    }
-  };
-  IntersectionObserver2.prototype._rootIsInDom = function() {
-    return !this.root || containsDeep(document2, this.root);
-  };
-  IntersectionObserver2.prototype._rootContainsTarget = function(target) {
-    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    return containsDeep(rootDoc, target) && (!this.root || rootDoc == target.ownerDocument);
-  };
-  IntersectionObserver2.prototype._registerInstance = function() {
-    if (registry.indexOf(this) < 0) {
-      registry.push(this);
-    }
-  };
-  IntersectionObserver2.prototype._unregisterInstance = function() {
-    var index2 = registry.indexOf(this);
-    if (index2 != -1)
-      registry.splice(index2, 1);
-  };
-  function now() {
-    return window.performance && performance.now && performance.now();
-  }
-  function throttle2(fn, timeout) {
-    var timer = null;
-    return function() {
-      if (!timer) {
-        timer = setTimeout(function() {
-          fn();
-          timer = null;
-        }, timeout);
-      }
-    };
-  }
-  function addEvent(node, event2, fn, opt_useCapture) {
-    if (typeof node.addEventListener == "function") {
-      node.addEventListener(event2, fn, opt_useCapture || false);
-    } else if (typeof node.attachEvent == "function") {
-      node.attachEvent("on" + event2, fn);
-    }
-  }
-  function removeEvent(node, event2, fn, opt_useCapture) {
-    if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event2, fn, opt_useCapture || false);
-    } else if (typeof node.detatchEvent == "function") {
-      node.detatchEvent("on" + event2, fn);
-    }
-  }
-  function computeRectIntersection(rect1, rect2) {
-    var top = Math.max(rect1.top, rect2.top);
-    var bottom = Math.min(rect1.bottom, rect2.bottom);
-    var left = Math.max(rect1.left, rect2.left);
-    var right = Math.min(rect1.right, rect2.right);
-    var width = right - left;
-    var height = bottom - top;
-    return width >= 0 && height >= 0 && {
-      top,
-      bottom,
-      left,
-      right,
-      width,
-      height
-    } || null;
-  }
-  function getBoundingClientRect(el) {
-    var rect;
-    try {
-      rect = el.getBoundingClientRect();
-    } catch (err) {
-    }
-    if (!rect)
-      return getEmptyRect();
-    if (!(rect.width && rect.height)) {
-      rect = {
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        left: rect.left,
-        width: rect.right - rect.left,
-        height: rect.bottom - rect.top
-      };
-    }
-    return rect;
-  }
-  function getEmptyRect() {
-    return {
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      width: 0,
-      height: 0
-    };
-  }
-  function ensureDOMRect(rect) {
-    if (!rect || "x" in rect) {
-      return rect;
-    }
-    return {
-      top: rect.top,
-      y: rect.top,
-      bottom: rect.bottom,
-      left: rect.left,
-      x: rect.left,
-      right: rect.right,
-      width: rect.width,
-      height: rect.height
-    };
-  }
-  function convertFromParentRect(parentBoundingRect, parentIntersectionRect) {
-    var top = parentIntersectionRect.top - parentBoundingRect.top;
-    var left = parentIntersectionRect.left - parentBoundingRect.left;
-    return {
-      top,
-      left,
-      height: parentIntersectionRect.height,
-      width: parentIntersectionRect.width,
-      bottom: top + parentIntersectionRect.height,
-      right: left + parentIntersectionRect.width
-    };
-  }
-  function containsDeep(parent, child) {
-    var node = child;
-    while (node) {
-      if (node == parent)
-        return true;
-      node = getParentNode(node);
-    }
-    return false;
-  }
-  function getParentNode(node) {
-    var parent = node.parentNode;
-    if (node.nodeType == 9 && node != document2) {
-      return getFrameElement(node);
-    }
-    if (parent && parent.assignedSlot) {
-      parent = parent.assignedSlot.parentNode;
-    }
-    if (parent && parent.nodeType == 11 && parent.host) {
-      return parent.host;
-    }
-    return parent;
-  }
-  function isDoc(node) {
-    return node && node.nodeType === 9;
-  }
-  window.IntersectionObserver = IntersectionObserver2;
-  window.IntersectionObserverEntry = IntersectionObserverEntry;
-};
-function normalizeRect(rect) {
-  const {bottom, height, left, right, top, width} = rect || {};
-  return {
-    bottom,
-    height,
-    left,
-    right,
-    top,
-    width
-  };
-}
-function requestComponentObserver($el, options, callback) {
-  initIntersectionObserverPolyfill();
-  const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
-  const intersectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entrie) => {
-      callback({
-        intersectionRatio: entrie.intersectionRatio,
-        intersectionRect: normalizeRect(entrie.intersectionRect),
-        boundingClientRect: normalizeRect(entrie.boundingClientRect),
-        relativeRect: normalizeRect(entrie.rootBounds),
-        time: Date.now()
-      });
-    });
-  }, {
-    root,
-    rootMargin: options.rootMargin,
-    threshold: options.thresholds
-  });
-  if (options.observeAll) {
-    intersectionObserver.USE_MUTATION_OBSERVER = true;
-    const nodeList = $el.querySelectorAll(options.selector);
-    for (let i2 = 0; i2 < nodeList.length; i2++) {
-      intersectionObserver.observe(nodeList[i2]);
-    }
-  } else {
-    intersectionObserver.USE_MUTATION_OBSERVER = false;
-    const el = $el.querySelector(options.selector);
-    if (!el) {
-      console.warn(`Node ${options.selector} is not found. Intersection observer will not trigger.`);
-    } else {
-      intersectionObserver.observe(el);
-    }
-  }
-  return intersectionObserver;
-}
-function addIntersectionObserver({reqId, component, options, callback}, _pageId) {
-  const $el = findElem(component);
-  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
-}
-function removeIntersectionObserver({reqId, component}, _pageId) {
-  const $el = findElem(component);
-  const intersectionObserver = $el.__io && $el.__io[reqId];
-  if (intersectionObserver) {
-    intersectionObserver.disconnect();
-    delete $el.__io[reqId];
-  }
-}
-const i18n$1 = initVueI18n(getBaseSystemInfo().language);
+const i18n$1 = initVueI18n();
 function useI18n() {
   return i18n$1;
 }
@@ -2416,14 +526,14 @@ function attrChange(attr2) {
         style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
-      callbacks.forEach(function(callback) {
+      callbacks$1.forEach(function(callback) {
         callback(style);
       });
     }, 0);
   }
   changeAttrs.push(attr2);
 }
-var callbacks = [];
+var callbacks$1 = [];
 function onChange(callback) {
   if (!getSupport()) {
     return;
@@ -2432,13 +542,13 @@ function onChange(callback) {
     init();
   }
   if (typeof callback === "function") {
-    callbacks.push(callback);
+    callbacks$1.push(callback);
   }
 }
 function offChange(callback) {
-  var index2 = callbacks.indexOf(callback);
+  var index2 = callbacks$1.indexOf(callback);
   if (index2 >= 0) {
-    callbacks.splice(index2, 1);
+    callbacks$1.splice(index2, 1);
   }
 }
 var safeAreaInsets = {
@@ -2794,10 +904,10 @@ function querySelectorAll(vm, selector) {
   }
   return [];
 }
-function createSelectorQuery() {
+function createSelectorQuery$1() {
   return uni.createSelectorQuery().in(this);
 }
-function createIntersectionObserver(options) {
+function createIntersectionObserver$1(options) {
   return uni.createIntersectionObserver(this, options);
 }
 function selectComponent(selector) {
@@ -2809,8 +919,8 @@ function selectAllComponents(selector) {
 var wxInstance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
-  createSelectorQuery,
-  createIntersectionObserver,
+  createSelectorQuery: createSelectorQuery$1,
+  createIntersectionObserver: createIntersectionObserver$1,
   selectComponent,
   selectAllComponents
 });
@@ -2953,7 +1063,7 @@ function providePageMeta() {
 }
 function initPageMeta() {
   if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute$1().meta)))));
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute().meta)))));
   }
   return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[0].meta)))));
 }
@@ -3089,7 +1199,7 @@ function normalizeRouteKey(path, id2) {
   return path + SEP + id2;
 }
 function useKeepAliveRoute() {
-  const route = useRoute$1();
+  const route = useRoute();
   const routeKey = computed(() => normalizeRouteKey(route.path, history.state.__id__ || 1));
   return {
     routeKey,
@@ -3246,6 +1356,7 @@ function setupPage(comp) {
   });
 }
 function setupApp(comp) {
+  useI18n().setLocale(navigator.language);
   return setupComponent(comp, {
     init: initApp,
     setup(instance2) {
@@ -5564,6 +3675,1919 @@ const _sfc_main$i = {
     ]);
   }
 };
+function findElem(vm) {
+  return vm.$el;
+}
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+function addBase(filePath) {
+  const base = __uniConfig.router.base;
+  if (!base) {
+    return filePath;
+  }
+  if (base !== "/") {
+    if (("/" + filePath).indexOf(base) === 0) {
+      return "/" + filePath;
+    }
+  }
+  return base + filePath;
+}
+function getRealPath(filePath) {
+  if (__uniConfig.router.base === "./") {
+    filePath = filePath.replace(/^\.\/static\//, "/static/");
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.substr(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+  }
+  return filePath;
+}
+const ua = navigator.userAgent;
+const isAndroid = /android/i.test(ua);
+const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
+const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /Macintosh|Mac/i.test(ua);
+const isLinux = /Linux|X11/i.test(ua);
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
+  return {
+    platform: isIOS$1 ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function operateVideoPlayer(videoId, vm, type, data) {
+  const pageId = vm.$page.id;
+  UniServiceJSBridge.publishHandler(pageId + "-video-" + videoId, {
+    videoId,
+    type,
+    data
+  }, pageId);
+}
+var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var lookup = new Uint8Array(256);
+for (var i$1 = 0; i$1 < chars.length; i$1++) {
+  lookup[chars.charCodeAt(i$1)] = i$1;
+}
+function encode$1(arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer), i2, len = bytes.length, base64 = "";
+  for (i2 = 0; i2 < len; i2 += 3) {
+    base64 += chars[bytes[i2] >> 2];
+    base64 += chars[(bytes[i2] & 3) << 4 | bytes[i2 + 1] >> 4];
+    base64 += chars[(bytes[i2 + 1] & 15) << 2 | bytes[i2 + 2] >> 6];
+    base64 += chars[bytes[i2 + 2] & 63];
+  }
+  if (len % 3 === 2) {
+    base64 = base64.substring(0, base64.length - 1) + "=";
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + "==";
+  }
+  return base64;
+}
+function decode(base64) {
+  var bufferLength = base64.length * 0.75, len = base64.length, i2, p2 = 0, encoded1, encoded2, encoded3, encoded4;
+  if (base64[base64.length - 1] === "=") {
+    bufferLength--;
+    if (base64[base64.length - 2] === "=") {
+      bufferLength--;
+    }
+  }
+  var arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
+  for (i2 = 0; i2 < len; i2 += 4) {
+    encoded1 = lookup[base64.charCodeAt(i2)];
+    encoded2 = lookup[base64.charCodeAt(i2 + 1)];
+    encoded3 = lookup[base64.charCodeAt(i2 + 2)];
+    encoded4 = lookup[base64.charCodeAt(i2 + 3)];
+    bytes[p2++] = encoded1 << 2 | encoded2 >> 4;
+    bytes[p2++] = (encoded2 & 15) << 4 | encoded3 >> 2;
+    bytes[p2++] = (encoded3 & 3) << 6 | encoded4 & 63;
+  }
+  return arraybuffer;
+}
+const HTTP_METHODS = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
+function elemInArray(str, arr) {
+  if (arr.indexOf(str) === -1) {
+    return arr[0];
+  }
+  return str;
+}
+function validateProtocolFail(name, msg) {
+  console.warn(`${name}: ${msg}`);
+}
+function validateProtocol(name, data, protocol) {
+  for (const key in protocol) {
+    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
+    if (isString(errMsg)) {
+      validateProtocolFail(name, errMsg);
+    }
+  }
+}
+function validateProtocols(name, args, protocol) {
+  if (!protocol) {
+    return;
+  }
+  if (!isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol);
+  }
+  const len = protocol.length;
+  const argsLen = args.length;
+  for (let i2 = 0; i2 < len; i2++) {
+    const opts = protocol[i2];
+    const data = Object.create(null);
+    if (argsLen > i2) {
+      data[opts.name] = args[i2];
+    }
+    validateProtocol(name, data, {[opts.name]: opts});
+  }
+}
+function validateProp(name, value, prop, isAbsent) {
+  if (!isPlainObject(prop)) {
+    prop = {type: prop};
+  }
+  const {type, required, validator} = prop;
+  if (required && isAbsent) {
+    return 'Missing required args: "' + name + '"';
+  }
+  if (value == null && !required) {
+    return;
+  }
+  if (type != null) {
+    let isValid = false;
+    const types = isArray(type) ? type : [type];
+    const expectedTypes = [];
+    for (let i2 = 0; i2 < types.length && !isValid; i2++) {
+      const {valid, expectedType} = assertType(value, types[i2]);
+      expectedTypes.push(expectedType || "");
+      isValid = valid;
+    }
+    if (!isValid) {
+      return getInvalidTypeMessage(name, value, expectedTypes);
+    }
+  }
+  if (validator) {
+    return validator(value);
+  }
+}
+const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
+function assertType(value, type) {
+  let valid;
+  const expectedType = getType(type);
+  if (isSimpleType(expectedType)) {
+    const t2 = typeof value;
+    valid = t2 === expectedType.toLowerCase();
+    if (!valid && t2 === "object") {
+      valid = value instanceof type;
+    }
+  } else if (expectedType === "Object") {
+    valid = isObject$1(value);
+  } else if (expectedType === "Array") {
+    valid = isArray(value);
+  } else {
+    {
+      valid = value instanceof type;
+    }
+  }
+  return {
+    valid,
+    expectedType
+  };
+}
+function getInvalidTypeMessage(name, value, expectedTypes) {
+  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
+  const expectedType = expectedTypes[0];
+  const receivedType = toRawType(value);
+  const expectedValue = styleValue(value, expectedType);
+  const receivedValue = styleValue(value, receivedType);
+  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+    message += ` with value ${expectedValue}`;
+  }
+  message += `, got ${receivedType} `;
+  if (isExplicable(receivedType)) {
+    message += `with value ${receivedValue}.`;
+  }
+  return message;
+}
+function getType(ctor) {
+  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+  return match ? match[1] : "";
+}
+function styleValue(value, type) {
+  if (type === "String") {
+    return `"${value}"`;
+  } else if (type === "Number") {
+    return `${Number(value)}`;
+  } else {
+    return `${value}`;
+  }
+}
+function isExplicable(type) {
+  const explicitTypes = ["string", "number", "boolean"];
+  return explicitTypes.some((elem) => type.toLowerCase() === elem);
+}
+function isBoolean(...args) {
+  return args.some((elem) => elem.toLowerCase() === "boolean");
+}
+function tryCatch(fn) {
+  return function() {
+    try {
+      return fn.apply(fn, arguments);
+    } catch (e2) {
+      console.error(e2);
+    }
+  };
+}
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id2, name, callback, keepAlive = false) {
+  invokeCallbacks[id2] = {
+    name,
+    keepAlive,
+    callback
+  };
+  return id2;
+}
+function invokeCallback(id2, res, extras) {
+  if (typeof id2 === "number") {
+    const opts = invokeCallbacks[id2];
+    if (opts) {
+      if (!opts.keepAlive) {
+        delete invokeCallbacks[id2];
+      }
+      return opts.callback(res, extras);
+    }
+  }
+  return res;
+}
+function findInvokeCallbackByName(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name) {
+  UniServiceJSBridge.off("api." + name);
+}
+function onKeepAliveApiCallback(name) {
+  UniServiceJSBridge.on("api." + name, (res) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
+  });
+}
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
+const API_SUCCESS = "success";
+const API_FAIL = "fail";
+const API_COMPLETE = "complete";
+function getApiCallbacks(args) {
+  const apiCallbacks = {};
+  for (const name in args) {
+    const fn = args[name];
+    if (isFunction(fn)) {
+      apiCallbacks[name] = tryCatch(fn);
+      delete args[name];
+    }
+  }
+  return apiCallbacks;
+}
+function normalizeErrMsg(errMsg, name) {
+  if (!errMsg || errMsg.indexOf(":fail") === -1) {
+    return name + ":ok";
+  }
+  return name + errMsg.substring(errMsg.indexOf(":fail"));
+}
+function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
+  if (!isPlainObject(args)) {
+    args = {};
+  }
+  const {success, fail, complete} = getApiCallbacks(args);
+  const hasSuccess = isFunction(success);
+  const hasFail = isFunction(fail);
+  const hasComplete = isFunction(complete);
+  const callbackId = invokeCallbackId++;
+  addInvokeCallback(callbackId, name, (res) => {
+    res = res || {};
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    isFunction(beforeAll) && beforeAll(res);
+    if (res.errMsg === name + ":ok") {
+      isFunction(beforeSuccess) && beforeSuccess(res);
+      hasSuccess && success(res);
+    } else {
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  return callbackId;
+}
+const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
+function hasCallback(args) {
+  if (isPlainObject(args) && callbacks.find((cb) => isFunction(args[cb]))) {
+    return true;
+  }
+  return false;
+}
+function handlePromise(promise) {
+  if (__UNI_FEATURE_PROMISE__) {
+    return promise.then((data) => {
+      return [null, data];
+    }).catch((err) => [err]);
+  }
+  return promise;
+}
+function promisify(fn) {
+  return (args = {}) => {
+    if (hasCallback(args)) {
+      return fn(args);
+    }
+    return handlePromise(new Promise((resolve, reject) => {
+      fn(Object.assign(args, {success: resolve, fail: reject}));
+    }));
+  };
+}
+function formatApiArgs(args, options) {
+  const params = args[0];
+  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+    return;
+  }
+  const formatArgs = options.formatArgs;
+  const keys = Object.keys(formatArgs);
+  for (let i2 = 0; i2 < keys.length; i2++) {
+    const name = keys[i2];
+    const formatterOrDefaultValue = formatArgs[name];
+    if (isFunction(formatterOrDefaultValue)) {
+      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      if (isString(errMsg)) {
+        return errMsg;
+      }
+    } else {
+      if (!hasOwn$1(params, name)) {
+        params[name] = formatterOrDefaultValue;
+      }
+    }
+  }
+}
+function invokeSuccess(id2, name, res) {
+  return invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
+}
+function invokeFail(id2, name, err) {
+  return invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
+}
+function beforeInvokeApi(name, args, protocol, options) {
+  if (process.env.NODE_ENV !== "production") {
+    validateProtocols(name, args, protocol);
+  }
+  if (options && options.beforeInvoke) {
+    const errMsg2 = options.beforeInvoke(args);
+    if (isString(errMsg2)) {
+      return errMsg2;
+    }
+  }
+  const errMsg = formatApiArgs(args, options);
+  if (errMsg) {
+    return errMsg;
+  }
+}
+function checkCallback(callback) {
+  if (!isFunction(callback)) {
+    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+  }
+}
+function wrapperOnApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    name = name.replace("off", "on");
+    removeKeepAliveApiCallback(name, callback);
+    const hasInvokeOnApi = findInvokeCallbackByName(name);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+  return (args) => {
+    const id2 = createAsyncApiCallback(name, args, options);
+    const errMsg = beforeInvokeApi(name, [args], protocol, options);
+    if (errMsg) {
+      return invokeFail(id2, name, errMsg);
+    }
+    return fn(args, {
+      resolve: (res) => invokeSuccess(id2, name, res),
+      reject: (err) => invokeFail(id2, name, err)
+    });
+  };
+}
+function wrapperSyncApi(name, fn, protocol, options) {
+  return (...args) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
+function wrapperAsyncApi(name, fn, protocol, options) {
+  return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineOnApi(name, fn, options) {
+  return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+  return wrapperOffApi(name, fn, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
+const Base64ToArrayBufferProtocol = [
+  {
+    name: "base64",
+    type: String,
+    required: true
+  }
+];
+const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
+const ArrayBufferToBase64Protocol = [
+  {
+    name: "arrayBuffer",
+    type: [ArrayBuffer, Uint8Array],
+    required: true
+  }
+];
+const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
+  return decode(base64);
+}, Base64ToArrayBufferProtocol);
+const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
+  return encode$1(arrayBuffer);
+}, ArrayBufferToBase64Protocol);
+const API_UPX2PX = "upx2px";
+const Upx2pxProtocol = [
+  {
+    name: "upx",
+    type: [Number, String],
+    required: true
+  }
+];
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+function checkDeviceWidth() {
+  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
+  deviceWidth = windowWidth;
+  deviceDPR = pixelRatio2;
+  isIOS = platform === "ios";
+}
+const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+  if (deviceWidth === 0) {
+    checkDeviceWidth();
+  }
+  number = Number(number);
+  if (number === 0) {
+    return 0;
+  }
+  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
+    if (deviceDPR === 1 || !isIOS) {
+      result = 1;
+    } else {
+      result = 0.5;
+    }
+  }
+  return number < 0 ? -result : result;
+}, Upx2pxProtocol);
+var HOOKS;
+(function(HOOKS2) {
+  HOOKS2["INVOKE"] = "invoke";
+  HOOKS2["SUCCESS"] = "success";
+  HOOKS2["FAIL"] = "fail";
+  HOOKS2["COMPLETE"] = "complete";
+  HOOKS2["RETURN_VALUE"] = "returnValue";
+})(HOOKS || (HOOKS = {}));
+const globalInterceptors = {};
+const scopedInterceptors = {};
+const API_ADD_INTERCEPTOR = "addInterceptor";
+const API_REMOVE_INTERCEPTOR = "removeInterceptor";
+const AddInterceptorProtocol = [
+  {
+    name: "method",
+    type: [String, Object],
+    required: true
+  }
+];
+const RemoveInterceptorProtocol = AddInterceptorProtocol;
+function mergeInterceptorHook(interceptors, interceptor) {
+  Object.keys(interceptor).forEach((hook) => {
+    if (isFunction(interceptor[hook])) {
+      interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
+    }
+  });
+}
+function removeInterceptorHook(interceptors, interceptor) {
+  if (!interceptors || !interceptor) {
+    return;
+  }
+  Object.keys(interceptor).forEach((hook) => {
+    if (isFunction(interceptor[hook])) {
+      removeHook(interceptors[hook], interceptor[hook]);
+    }
+  });
+}
+function mergeHook(parentVal, childVal) {
+  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
+  return res ? dedupeHooks(res) : res;
+}
+function dedupeHooks(hooks) {
+  const res = [];
+  for (let i2 = 0; i2 < hooks.length; i2++) {
+    if (res.indexOf(hooks[i2]) === -1) {
+      res.push(hooks[i2]);
+    }
+  }
+  return res;
+}
+function removeHook(hooks, hook) {
+  if (!hooks) {
+    return;
+  }
+  const index2 = hooks.indexOf(hook);
+  if (index2 !== -1) {
+    hooks.splice(index2, 1);
+  }
+}
+const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+  if (typeof method === "string" && isPlainObject(interceptor)) {
+    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
+  } else if (isPlainObject(method)) {
+    mergeInterceptorHook(globalInterceptors, method);
+  }
+}, AddInterceptorProtocol);
+const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+  if (typeof method === "string") {
+    if (isPlainObject(interceptor)) {
+      removeInterceptorHook(scopedInterceptors[method], interceptor);
+    } else {
+      delete scopedInterceptors[method];
+    }
+  } else if (isPlainObject(method)) {
+    removeInterceptorHook(globalInterceptors, method);
+  }
+}, RemoveInterceptorProtocol);
+const promiseInterceptor = {
+  returnValue(res) {
+    if (!isPromise(res)) {
+      return res;
+    }
+    return res.then((res2) => {
+      return res2[1];
+    }).catch((res2) => {
+      return res2[0];
+    });
+  }
+};
+const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
+const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
+class VideoContext {
+  constructor(id2, vm) {
+    this.id = id2;
+    this.vm = vm;
+  }
+  play() {
+    operateVideoPlayer(this.id, this.vm, "play");
+  }
+  pause() {
+    operateVideoPlayer(this.id, this.vm, "pause");
+  }
+  stop() {
+    operateVideoPlayer(this.id, this.vm, "stop");
+  }
+  seek(position) {
+    operateVideoPlayer(this.id, this.vm, "seek", {
+      position
+    });
+  }
+  sendDanmu(args) {
+    operateVideoPlayer(this.id, this.vm, "sendDanmu", args);
+  }
+  playbackRate(rate) {
+    if (!~RATES.indexOf(rate)) {
+      rate = 1;
+    }
+    operateVideoPlayer(this.id, this.vm, "playbackRate", {
+      rate
+    });
+  }
+  requestFullScreen(args = {}) {
+    operateVideoPlayer(this.id, this.vm, "requestFullScreen", args);
+  }
+  exitFullScreen() {
+    operateVideoPlayer(this.id, this.vm, "exitFullScreen");
+  }
+  showStatusBar() {
+    operateVideoPlayer(this.id, this.vm, "showStatusBar");
+  }
+  hideStatusBar() {
+    operateVideoPlayer(this.id, this.vm, "hideStatusBar");
+  }
+}
+const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
+  if (context) {
+    return new VideoContext(id2, context);
+  }
+  return new VideoContext(id2, getCurrentPageVm());
+});
+const defaultOptions = {
+  thresholds: [0],
+  initialRatio: 0,
+  observeAll: false
+};
+const MARGINS = ["top", "right", "bottom", "left"];
+let reqComponentObserverId = 1;
+function normalizeRootMargin(margins = {}) {
+  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
+}
+class ServiceIntersectionObserver {
+  constructor(component, options) {
+    this._pageId = component.$page && component.$page.id;
+    this._component = component;
+    this._options = extend({}, defaultOptions, options);
+  }
+  relativeTo(selector, margins) {
+    this._options.relativeToSelector = selector;
+    this._options.rootMargin = normalizeRootMargin(margins);
+    return this;
+  }
+  relativeToViewport(margins) {
+    this._options.relativeToSelector = void 0;
+    this._options.rootMargin = normalizeRootMargin(margins);
+    return this;
+  }
+  observe(selector, callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._options.selector = selector;
+    this._reqId = reqComponentObserverId++;
+    addIntersectionObserver({
+      reqId: this._reqId,
+      component: this._component,
+      options: this._options,
+      callback
+    }, this._pageId);
+  }
+  disconnect() {
+    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
+  }
+}
+const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (context, options) => {
+  if (context && !context.$page) {
+    options = context;
+    context = null;
+  }
+  if (context) {
+    return new ServiceIntersectionObserver(context, options);
+  }
+  return new ServiceIntersectionObserver(getCurrentPageVm(), options);
+});
+const createSelectorQuery = () => {
+};
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const onTabBarMidButtonTap = defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
+});
+const API_CAN_I_USE = "canIUse";
+const CanIUseProtocol = [
+  {
+    name: "schema",
+    type: String,
+    required: true
+  }
+];
+const API_MAKE_PHONE_CALL = "makePhoneCall";
+const MakePhoneCallProtocol = {
+  phoneNumber: String
+};
+const API_GET_FILE_INFO = "getFileInfo";
+const GetFileInfoProtocol = {
+  filePath: {
+    type: String,
+    required: true
+  }
+};
+const API_OPEN_DOCUMENT = "openDocument";
+const OpenDocumentProtocol = {
+  filePath: {
+    type: String,
+    required: true
+  },
+  fileType: String
+};
+const API_GET_IMAGE_INFO = "getImageInfo";
+const GetImageInfoOptions = {
+  formatArgs: {
+    src(src, params) {
+      params.src = getRealPath(src);
+    }
+  }
+};
+const GetImageInfoProtocol = {
+  src: {
+    type: String,
+    required: true
+  }
+};
+const API_REQUEST = "request";
+const dataType = {
+  JSON: "json"
+};
+const RESPONSE_TYPE = ["text", "arraybuffer"];
+const DEFAULT_RESPONSE_TYPE = "text";
+const encode = encodeURIComponent;
+function stringifyQuery(url, data) {
+  let str = url.split("#");
+  const hash = str[1] || "";
+  str = str[0].split("?");
+  let query = str[1] || "";
+  url = str[0];
+  const search = query.split("&").filter((item) => item);
+  const params = {};
+  search.forEach((item) => {
+    const part = item.split("=");
+    params[part[0]] = part[1];
+  });
+  for (const key in data) {
+    if (hasOwn$1(data, key)) {
+      let v2 = data[key];
+      if (typeof v2 === "undefined" || v2 === null) {
+        v2 = "";
+      } else if (isPlainObject(v2)) {
+        v2 = JSON.stringify(v2);
+      }
+      params[encode(key)] = encode(v2);
+    }
+  }
+  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
+  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
+}
+const RequestProtocol = {
+  method: String,
+  data: [Object, String, Array, ArrayBuffer],
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean
+};
+const RequestOptions = {
+  formatArgs: {
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    data(value, params) {
+      params.data = value || "";
+    },
+    url(value, params) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
+        params.url = stringifyQuery(value, params.data);
+      }
+    },
+    header(value, params) {
+      const header = params.header = value || {};
+      if (params.method !== HTTP_METHODS[0]) {
+        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+          header["Content-Type"] = "application/json";
+        }
+      }
+    },
+    dataType(value, params) {
+      params.dataType = (value || dataType.JSON).toLowerCase();
+    },
+    responseType(value, params) {
+      params.responseType = (value || "").toLowerCase();
+      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+        params.responseType = DEFAULT_RESPONSE_TYPE;
+      }
+    }
+  }
+};
+const API_DOWNLOAD_FILE = "downloadFile";
+const DownloadFileOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    }
+  }
+};
+const DownloadFileProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  timeout: Number
+};
+const API_UPLOAD_FILE = "uploadFile";
+const UploadFileOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    },
+    formData(value, params) {
+      params.formData = value || {};
+    }
+  }
+};
+const UploadFileProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  files: Array,
+  filePath: String,
+  name: String,
+  header: Object,
+  formData: Object,
+  timeout: Number
+};
+const API_CONNECT_SOCKET = "connectSocket";
+const ConnectSocketOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    },
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    protocols(protocols, params) {
+      if (typeof protocols === "string") {
+        params.protocols = [protocols];
+      }
+    }
+  }
+};
+const ConnectSocketProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  header: {
+    type: Object
+  },
+  method: String,
+  protocols: [Array, String]
+};
+const API_SEND_SOCKET_MESSAGE = "sendSocketMessage";
+const SendSocketMessageProtocol = {
+  data: [String, ArrayBuffer]
+};
+const API_CLOSE_SOCKET = "closeSocket";
+const CloseSocketProtocol = {
+  code: Number,
+  reason: String
+};
+function encodeQueryString(url) {
+  if (typeof url !== "string") {
+    return url;
+  }
+  const index2 = url.indexOf("?");
+  if (index2 === -1) {
+    return url;
+  }
+  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  if (!query) {
+    return url;
+  }
+  url = url.substr(0, index2);
+  const params = [];
+  query.split("&").forEach((param) => {
+    const parts = param.replace(/\+/g, " ").split("=");
+    const key = parts.shift();
+    const val = parts.length > 0 ? parts.join("=") : "";
+    params.push(key + "=" + encodeURIComponent(val));
+  });
+  return params.length ? url + "?" + params.join("&") : url;
+}
+const ANIMATION_IN = [
+  "slide-in-right",
+  "slide-in-left",
+  "slide-in-top",
+  "slide-in-bottom",
+  "fade-in",
+  "zoom-out",
+  "zoom-fade-out",
+  "pop-in",
+  "none"
+];
+const ANIMATION_OUT = [
+  "slide-out-right",
+  "slide-out-left",
+  "slide-out-top",
+  "slide-out-bottom",
+  "fade-out",
+  "zoom-in",
+  "zoom-fade-in",
+  "pop-out",
+  "none"
+];
+const BaseRouteProtocol = {
+  url: {
+    type: String,
+    required: true
+  }
+};
+const API_NAVIGATE_TO = "navigateTo";
+const API_REDIRECT_TO = "redirectTo";
+const API_RE_LAUNCH = "reLaunch";
+const API_SWITCH_TAB = "switchTab";
+const API_NAVIGATE_BACK = "navigateBack";
+const API_PRELOAD_PAGE = "preloadPage";
+const API_UN_PRELOAD_PAGE = "unPreloadPage";
+const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateBackProtocol = /* @__PURE__ */ extend({
+  delta: {
+    type: Number
+  }
+}, createAnimationProtocol(ANIMATION_OUT));
+const RedirectToProtocol = BaseRouteProtocol;
+const ReLaunchProtocol = BaseRouteProtocol;
+const SwitchTabProtocol = BaseRouteProtocol;
+const NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
+const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
+const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
+const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
+const NavigateBackOptions = {
+  formatArgs: {
+    delta(value, params) {
+      value = parseInt(value + "") || 1;
+      params.delta = Math.min(getCurrentPages().length - 1, value);
+    }
+  }
+};
+function createAnimationProtocol(animationTypes) {
+  return {
+    animationType: {
+      type: String,
+      validator(type) {
+        if (type && animationTypes.indexOf(type) === -1) {
+          return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
+        }
+      }
+    },
+    animationDuration: {
+      type: Number
+    }
+  };
+}
+let navigatorLock;
+function beforeRoute() {
+  navigatorLock = "";
+}
+function createRouteOptions(type) {
+  return {
+    formatArgs: {
+      url: createNormalizeUrl(type)
+    },
+    beforeAll: beforeRoute
+  };
+}
+function createNormalizeUrl(type) {
+  return function normalizeUrl(url, params) {
+    url = getRealRoute(url);
+    const pagePath = url.split("?")[0];
+    if (url === "/") {
+      url = __uniRoutes[0].path;
+    }
+    const routeOptions = __uniRoutes.find(({path}) => path === pagePath);
+    if (!routeOptions) {
+      return "page `" + url + "` is not found";
+    }
+    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+      if (routeOptions.meta.isTabBar) {
+        return `can not ${type} a tabbar page`;
+      }
+    } else if (type === API_SWITCH_TAB) {
+      if (!routeOptions.meta.isTabBar) {
+        return "can not switch to no-tabBar page";
+      }
+    }
+    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
+      url = pagePath;
+    }
+    if (routeOptions.meta.isEntry) {
+      url = url.replace(routeOptions.path, "/");
+    }
+    params.url = encodeQueryString(url);
+    if (type === API_UN_PRELOAD_PAGE) {
+      return;
+    } else if (type === API_PRELOAD_PAGE) {
+      if (routeOptions.meta.isTabBar) {
+        const pages = getCurrentPages(true);
+        const tabBarPagePath = routeOptions.path.substr(1);
+        if (pages.find((page) => page.route === tabBarPagePath)) {
+          return "tabBar page `" + tabBarPagePath + "` already exists";
+        }
+      }
+      return;
+    }
+    if (navigatorLock === url && params.openType !== "appLaunch") {
+      return `${navigatorLock} locked`;
+    }
+    if (__uniConfig.ready) {
+      navigatorLock = url;
+    }
+  };
+}
+const FRONT_COLORS = ["#ffffff", "#000000"];
+const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const SetNavigationBarColorOptions = {
+  formatArgs: {
+    animation(animation, params) {
+      if (!animation) {
+        animation = {duration: 0, timingFunc: "linear"};
+      }
+      params.animation = {
+        duration: animation.duration || 0,
+        timingFunc: animation.timingFunc || "linear"
+      };
+    }
+  }
+};
+const SetNavigationBarColorProtocol = {
+  frontColor: {
+    type: String,
+    required: true,
+    validator(frontColor) {
+      if (FRONT_COLORS.indexOf(frontColor) === -1) {
+        return `invalid frontColor "${frontColor}"`;
+      }
+    }
+  },
+  backgroundColor: {
+    type: String,
+    required: true
+  },
+  animation: Object
+};
+const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+const SetNavigationBarTitleProtocol = {
+  title: {
+    type: String,
+    required: true
+  }
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
+const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+const PRIMARY_COLOR = "#007aff";
+const API_SHOW_MODAL = "showModal";
+const ShowModalProtocol = {
+  title: String,
+  content: String,
+  showCancel: Boolean,
+  cancelText: String,
+  cancelColor: String,
+  confirmText: String,
+  confirmColor: String
+};
+let isInitI18nShowModalMsgs = false;
+const ShowModalOptions = {
+  beforeInvoke() {
+    if (isInitI18nShowModalMsgs) {
+      return;
+    }
+    isInitI18nShowModalMsgs = true;
+    initI18nShowModalMsgs();
+  },
+  formatArgs: {
+    title: "",
+    content: "",
+    showCancel: true,
+    cancelText(_value, params) {
+      if (!hasOwn$1(params, "cancelText")) {
+        const {t: t2} = useI18n();
+        params.cancelText = t2("uni.showModal.cancel");
+      }
+    },
+    cancelColor: "#000",
+    confirmText(_value, params) {
+      if (!hasOwn$1(params, "confirmText")) {
+        const {t: t2} = useI18n();
+        params.confirmText = t2("uni.showModal.confirm");
+      }
+    },
+    confirmColor: PRIMARY_COLOR
+  }
+};
+const API_SHOW_TOAST = "showToast";
+const ShowToastProtocol = {
+  title: String,
+  icon: String,
+  image: String,
+  duration: Number,
+  mask: Boolean
+};
+const ShowToastOptions = {
+  formatArgs: {
+    title: "",
+    icon(value, params) {
+      if (["success", "loading", "none"].indexOf(value) === -1) {
+        params.icon = "success";
+      }
+    },
+    image(value, params) {
+      if (value) {
+        params.image = getRealPath(value);
+      }
+    },
+    duration: 1500,
+    mask: false
+  }
+};
+const API_SHOW_LOADING = "showLoading";
+const ShowLoadingProtocol = {
+  title: String,
+  mask: Boolean
+};
+const ShowLoadingOptions = {
+  formatArgs: {
+    title: "",
+    mask: false
+  }
+};
+const API_SHOW_ACTION_SHEET = "showActionSheet";
+const ShowActionSheetProtocol = {
+  itemList: {
+    type: Array,
+    required: true
+  },
+  itemColor: String
+};
+const ShowActionSheetOptions = {
+  formatArgs: {
+    itemColor: "#000"
+  }
+};
+const API_HIDE_TOAST = "hideToast";
+const API_HIDE_LOADING = "hideLoading";
+const IndexProtocol = {
+  index: {
+    type: Number,
+    required: true
+  }
+};
+const IndexOptions = {
+  beforeInvoke() {
+    const pageMeta = getCurrentPageMeta();
+    if (pageMeta && !pageMeta.isTabBar) {
+      return "not TabBar page";
+    }
+  },
+  formatArgs: {
+    index(value) {
+      if (!__uniConfig.tabBar.list[value]) {
+        return "tabbar item not found";
+      }
+    }
+  }
+};
+const API_SET_TAB_BAR_ITEM = "setTabBarItem";
+const SetTabBarItemProtocol = /* @__PURE__ */ extend({
+  text: String,
+  iconPath: String,
+  selectedIconPath: String,
+  pagePath: String
+}, IndexProtocol);
+const SetTabBarItemOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: /* @__PURE__ */ extend({
+    pagePath(value, params) {
+      if (value) {
+        params.pagePath = removeLeadingSlash(value);
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
+const API_SET_TAB_BAR_STYLE = "setTabBarStyle";
+const SetTabBarStyleProtocol = {
+  color: String,
+  selectedColor: String,
+  backgroundColor: String,
+  backgroundImage: String,
+  backgroundRepeat: String,
+  borderStyle: String
+};
+const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
+const SetTabBarStyleOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: {
+    backgroundImage(value, params) {
+      if (value && !GRADIENT_RE.test(value)) {
+        params.backgroundImage = getRealPath(value);
+      }
+    },
+    borderStyle(value, params) {
+      if (value) {
+        params.borderStyle = value === "white" ? "white" : "black";
+      }
+    }
+  }
+};
+const API_HIDE_TAB_BAR = "hideTabBar";
+const HideTabBarProtocol = {
+  animation: Boolean
+};
+const API_SHOW_TAB_BAR = "showTabBar";
+const ShowTabBarProtocol = HideTabBarProtocol;
+const API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
+const HideTabBarRedDotProtocol = IndexProtocol;
+const HideTabBarRedDotOptions = IndexOptions;
+const API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
+const ShowTabBarRedDotProtocol = IndexProtocol;
+const ShowTabBarRedDotOptions = IndexOptions;
+const API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
+const RemoveTabBarBadgeProtocol = IndexProtocol;
+const RemoveTabBarBadgeOptions = IndexOptions;
+const API_SET_TAB_BAR_BADGE = "setTabBarBadge";
+const SetTabBarBadgeProtocol = /* @__PURE__ */ extend({
+  text: {
+    type: String,
+    required: true
+  }
+}, IndexProtocol);
+const SetTabBarBadgeOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: /* @__PURE__ */ extend({
+    text(value, params) {
+      if (getLen(value) >= 4) {
+        params.text = "...";
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
+const initIntersectionObserverPolyfill = function() {
+  if (typeof window !== "object") {
+    return;
+  }
+  if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype) {
+    if (!("isIntersecting" in window.IntersectionObserverEntry.prototype)) {
+      Object.defineProperty(window.IntersectionObserverEntry.prototype, "isIntersecting", {
+        get: function() {
+          return this.intersectionRatio > 0;
+        }
+      });
+    }
+    return;
+  }
+  function getFrameElement(doc) {
+    try {
+      return doc.defaultView && doc.defaultView.frameElement || null;
+    } catch (e2) {
+      return null;
+    }
+  }
+  var document2 = function(startDoc) {
+    var doc = startDoc;
+    var frame = getFrameElement(doc);
+    while (frame) {
+      doc = frame.ownerDocument;
+      frame = getFrameElement(doc);
+    }
+    return doc;
+  }(window.document);
+  var registry = [];
+  var crossOriginUpdater = null;
+  var crossOriginRect = null;
+  function IntersectionObserverEntry(entry) {
+    this.time = entry.time;
+    this.target = entry.target;
+    this.rootBounds = ensureDOMRect(entry.rootBounds);
+    this.boundingClientRect = ensureDOMRect(entry.boundingClientRect);
+    this.intersectionRect = ensureDOMRect(entry.intersectionRect || getEmptyRect());
+    this.isIntersecting = !!entry.intersectionRect;
+    var targetRect = this.boundingClientRect;
+    var targetArea = targetRect.width * targetRect.height;
+    var intersectionRect = this.intersectionRect;
+    var intersectionArea = intersectionRect.width * intersectionRect.height;
+    if (targetArea) {
+      this.intersectionRatio = Number((intersectionArea / targetArea).toFixed(4));
+    } else {
+      this.intersectionRatio = this.isIntersecting ? 1 : 0;
+    }
+  }
+  function IntersectionObserver2(callback, opt_options) {
+    var options = opt_options || {};
+    if (typeof callback != "function") {
+      throw new Error("callback must be a function");
+    }
+    if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
+      throw new Error("root must be a Document or Element");
+    }
+    this._checkForIntersections = throttle2(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
+    this._callback = callback;
+    this._observationTargets = [];
+    this._queuedEntries = [];
+    this._rootMarginValues = this._parseRootMargin(options.rootMargin);
+    this.thresholds = this._initThresholds(options.threshold);
+    this.root = options.root || null;
+    this.rootMargin = this._rootMarginValues.map(function(margin) {
+      return margin.value + margin.unit;
+    }).join(" ");
+    this._monitoringDocuments = [];
+    this._monitoringUnsubscribes = [];
+  }
+  IntersectionObserver2.prototype.THROTTLE_TIMEOUT = 100;
+  IntersectionObserver2.prototype.POLL_INTERVAL = null;
+  IntersectionObserver2.prototype.USE_MUTATION_OBSERVER = true;
+  IntersectionObserver2._setupCrossOriginUpdater = function() {
+    if (!crossOriginUpdater) {
+      crossOriginUpdater = function(boundingClientRect, intersectionRect) {
+        if (!boundingClientRect || !intersectionRect) {
+          crossOriginRect = getEmptyRect();
+        } else {
+          crossOriginRect = convertFromParentRect(boundingClientRect, intersectionRect);
+        }
+        registry.forEach(function(observer) {
+          observer._checkForIntersections();
+        });
+      };
+    }
+    return crossOriginUpdater;
+  };
+  IntersectionObserver2._resetCrossOriginUpdater = function() {
+    crossOriginUpdater = null;
+    crossOriginRect = null;
+  };
+  IntersectionObserver2.prototype.observe = function(target) {
+    var isTargetAlreadyObserved = this._observationTargets.some(function(item) {
+      return item.element == target;
+    });
+    if (isTargetAlreadyObserved) {
+      return;
+    }
+    if (!(target && target.nodeType == 1)) {
+      throw new Error("target must be an Element");
+    }
+    this._registerInstance();
+    this._observationTargets.push({element: target, entry: null});
+    this._monitorIntersections(target.ownerDocument);
+    this._checkForIntersections();
+  };
+  IntersectionObserver2.prototype.unobserve = function(target) {
+    this._observationTargets = this._observationTargets.filter(function(item) {
+      return item.element != target;
+    });
+    this._unmonitorIntersections(target.ownerDocument);
+    if (this._observationTargets.length == 0) {
+      this._unregisterInstance();
+    }
+  };
+  IntersectionObserver2.prototype.disconnect = function() {
+    this._observationTargets = [];
+    this._unmonitorAllIntersections();
+    this._unregisterInstance();
+  };
+  IntersectionObserver2.prototype.takeRecords = function() {
+    var records = this._queuedEntries.slice();
+    this._queuedEntries = [];
+    return records;
+  };
+  IntersectionObserver2.prototype._initThresholds = function(opt_threshold) {
+    var threshold = opt_threshold || [0];
+    if (!Array.isArray(threshold))
+      threshold = [threshold];
+    return threshold.sort().filter(function(t2, i2, a2) {
+      if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
+        throw new Error("threshold must be a number between 0 and 1 inclusively");
+      }
+      return t2 !== a2[i2 - 1];
+    });
+  };
+  IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
+    var marginString = opt_rootMargin || "0px";
+    var margins = marginString.split(/\s+/).map(function(margin) {
+      var parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
+      if (!parts) {
+        throw new Error("rootMargin must be specified in pixels or percent");
+      }
+      return {value: parseFloat(parts[1]), unit: parts[2]};
+    });
+    margins[1] = margins[1] || margins[0];
+    margins[2] = margins[2] || margins[0];
+    margins[3] = margins[3] || margins[1];
+    return margins;
+  };
+  IntersectionObserver2.prototype._monitorIntersections = function(doc) {
+    var win = doc.defaultView;
+    if (!win) {
+      return;
+    }
+    if (this._monitoringDocuments.indexOf(doc) != -1) {
+      return;
+    }
+    var callback = this._checkForIntersections;
+    var monitoringInterval = null;
+    var domObserver = null;
+    if (this.POLL_INTERVAL) {
+      monitoringInterval = win.setInterval(callback, this.POLL_INTERVAL);
+    } else {
+      addEvent(win, "resize", callback, true);
+      addEvent(doc, "scroll", callback, true);
+      if (this.USE_MUTATION_OBSERVER && "MutationObserver" in win) {
+        domObserver = new win.MutationObserver(callback);
+        domObserver.observe(doc, {
+          attributes: true,
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      }
+    }
+    this._monitoringDocuments.push(doc);
+    this._monitoringUnsubscribes.push(function() {
+      var win2 = doc.defaultView;
+      if (win2) {
+        if (monitoringInterval) {
+          win2.clearInterval(monitoringInterval);
+        }
+        removeEvent(win2, "resize", callback, true);
+      }
+      removeEvent(doc, "scroll", callback, true);
+      if (domObserver) {
+        domObserver.disconnect();
+      }
+    });
+    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
+    if (doc != rootDoc) {
+      var frame = getFrameElement(doc);
+      if (frame) {
+        this._monitorIntersections(frame.ownerDocument);
+      }
+    }
+  };
+  IntersectionObserver2.prototype._unmonitorIntersections = function(doc) {
+    var index2 = this._monitoringDocuments.indexOf(doc);
+    if (index2 == -1) {
+      return;
+    }
+    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
+    var hasDependentTargets = this._observationTargets.some(function(item) {
+      var itemDoc = item.element.ownerDocument;
+      if (itemDoc == doc) {
+        return true;
+      }
+      while (itemDoc && itemDoc != rootDoc) {
+        var frame2 = getFrameElement(itemDoc);
+        itemDoc = frame2 && frame2.ownerDocument;
+        if (itemDoc == doc) {
+          return true;
+        }
+      }
+      return false;
+    });
+    if (hasDependentTargets) {
+      return;
+    }
+    var unsubscribe = this._monitoringUnsubscribes[index2];
+    this._monitoringDocuments.splice(index2, 1);
+    this._monitoringUnsubscribes.splice(index2, 1);
+    unsubscribe();
+    if (doc != rootDoc) {
+      var frame = getFrameElement(doc);
+      if (frame) {
+        this._unmonitorIntersections(frame.ownerDocument);
+      }
+    }
+  };
+  IntersectionObserver2.prototype._unmonitorAllIntersections = function() {
+    var unsubscribes = this._monitoringUnsubscribes.slice(0);
+    this._monitoringDocuments.length = 0;
+    this._monitoringUnsubscribes.length = 0;
+    for (var i2 = 0; i2 < unsubscribes.length; i2++) {
+      unsubscribes[i2]();
+    }
+  };
+  IntersectionObserver2.prototype._checkForIntersections = function() {
+    if (!this.root && crossOriginUpdater && !crossOriginRect) {
+      return;
+    }
+    var rootIsInDom = this._rootIsInDom();
+    var rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect();
+    this._observationTargets.forEach(function(item) {
+      var target = item.element;
+      var targetRect = getBoundingClientRect(target);
+      var rootContainsTarget = this._rootContainsTarget(target);
+      var oldEntry = item.entry;
+      var intersectionRect = rootIsInDom && rootContainsTarget && this._computeTargetAndRootIntersection(target, targetRect, rootRect);
+      var rootBounds = null;
+      if (!this._rootContainsTarget(target)) {
+        rootBounds = getEmptyRect();
+      } else if (!crossOriginUpdater || this.root) {
+        rootBounds = rootRect;
+      }
+      var newEntry = item.entry = new IntersectionObserverEntry({
+        time: now(),
+        target,
+        boundingClientRect: targetRect,
+        rootBounds,
+        intersectionRect
+      });
+      if (!oldEntry) {
+        this._queuedEntries.push(newEntry);
+      } else if (rootIsInDom && rootContainsTarget) {
+        if (this._hasCrossedThreshold(oldEntry, newEntry)) {
+          this._queuedEntries.push(newEntry);
+        }
+      } else {
+        if (oldEntry && oldEntry.isIntersecting) {
+          this._queuedEntries.push(newEntry);
+        }
+      }
+    }, this);
+    if (this._queuedEntries.length) {
+      this._callback(this.takeRecords(), this);
+    }
+  };
+  IntersectionObserver2.prototype._computeTargetAndRootIntersection = function(target, targetRect, rootRect) {
+    if (window.getComputedStyle(target).display == "none")
+      return;
+    var intersectionRect = targetRect;
+    var parent = getParentNode(target);
+    var atRoot = false;
+    while (!atRoot && parent) {
+      var parentRect = null;
+      var parentComputedStyle = parent.nodeType == 1 ? window.getComputedStyle(parent) : {};
+      if (parentComputedStyle.display == "none")
+        return null;
+      if (parent == this.root || parent.nodeType == 9) {
+        atRoot = true;
+        if (parent == this.root || parent == document2) {
+          if (crossOriginUpdater && !this.root) {
+            if (!crossOriginRect || crossOriginRect.width == 0 && crossOriginRect.height == 0) {
+              parent = null;
+              parentRect = null;
+              intersectionRect = null;
+            } else {
+              parentRect = crossOriginRect;
+            }
+          } else {
+            parentRect = rootRect;
+          }
+        } else {
+          var frame = getParentNode(parent);
+          var frameRect = frame && getBoundingClientRect(frame);
+          var frameIntersect = frame && this._computeTargetAndRootIntersection(frame, frameRect, rootRect);
+          if (frameRect && frameIntersect) {
+            parent = frame;
+            parentRect = convertFromParentRect(frameRect, frameIntersect);
+          } else {
+            parent = null;
+            intersectionRect = null;
+          }
+        }
+      } else {
+        var doc = parent.ownerDocument;
+        if (parent != doc.body && parent != doc.documentElement && parentComputedStyle.overflow != "visible") {
+          parentRect = getBoundingClientRect(parent);
+        }
+      }
+      if (parentRect) {
+        intersectionRect = computeRectIntersection(parentRect, intersectionRect);
+      }
+      if (!intersectionRect)
+        break;
+      parent = parent && getParentNode(parent);
+    }
+    return intersectionRect;
+  };
+  IntersectionObserver2.prototype._getRootRect = function() {
+    var rootRect;
+    if (this.root && !isDoc(this.root)) {
+      rootRect = getBoundingClientRect(this.root);
+    } else {
+      var doc = isDoc(this.root) ? this.root : document2;
+      var html = doc.documentElement;
+      var body = doc.body;
+      rootRect = {
+        top: 0,
+        left: 0,
+        right: html.clientWidth || body.clientWidth,
+        width: html.clientWidth || body.clientWidth,
+        bottom: html.clientHeight || body.clientHeight,
+        height: html.clientHeight || body.clientHeight
+      };
+    }
+    return this._expandRectByRootMargin(rootRect);
+  };
+  IntersectionObserver2.prototype._expandRectByRootMargin = function(rect) {
+    var margins = this._rootMarginValues.map(function(margin, i2) {
+      return margin.unit == "px" ? margin.value : margin.value * (i2 % 2 ? rect.width : rect.height) / 100;
+    });
+    var newRect = {
+      top: rect.top - margins[0],
+      right: rect.right + margins[1],
+      bottom: rect.bottom + margins[2],
+      left: rect.left - margins[3]
+    };
+    newRect.width = newRect.right - newRect.left;
+    newRect.height = newRect.bottom - newRect.top;
+    return newRect;
+  };
+  IntersectionObserver2.prototype._hasCrossedThreshold = function(oldEntry, newEntry) {
+    var oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1;
+    var newRatio = newEntry.isIntersecting ? newEntry.intersectionRatio || 0 : -1;
+    if (oldRatio === newRatio)
+      return;
+    for (var i2 = 0; i2 < this.thresholds.length; i2++) {
+      var threshold = this.thresholds[i2];
+      if (threshold == oldRatio || threshold == newRatio || threshold < oldRatio !== threshold < newRatio) {
+        return true;
+      }
+    }
+  };
+  IntersectionObserver2.prototype._rootIsInDom = function() {
+    return !this.root || containsDeep(document2, this.root);
+  };
+  IntersectionObserver2.prototype._rootContainsTarget = function(target) {
+    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
+    return containsDeep(rootDoc, target) && (!this.root || rootDoc == target.ownerDocument);
+  };
+  IntersectionObserver2.prototype._registerInstance = function() {
+    if (registry.indexOf(this) < 0) {
+      registry.push(this);
+    }
+  };
+  IntersectionObserver2.prototype._unregisterInstance = function() {
+    var index2 = registry.indexOf(this);
+    if (index2 != -1)
+      registry.splice(index2, 1);
+  };
+  function now() {
+    return window.performance && performance.now && performance.now();
+  }
+  function throttle2(fn, timeout) {
+    var timer = null;
+    return function() {
+      if (!timer) {
+        timer = setTimeout(function() {
+          fn();
+          timer = null;
+        }, timeout);
+      }
+    };
+  }
+  function addEvent(node, event2, fn, opt_useCapture) {
+    if (typeof node.addEventListener == "function") {
+      node.addEventListener(event2, fn, opt_useCapture || false);
+    } else if (typeof node.attachEvent == "function") {
+      node.attachEvent("on" + event2, fn);
+    }
+  }
+  function removeEvent(node, event2, fn, opt_useCapture) {
+    if (typeof node.removeEventListener == "function") {
+      node.removeEventListener(event2, fn, opt_useCapture || false);
+    } else if (typeof node.detatchEvent == "function") {
+      node.detatchEvent("on" + event2, fn);
+    }
+  }
+  function computeRectIntersection(rect1, rect2) {
+    var top = Math.max(rect1.top, rect2.top);
+    var bottom = Math.min(rect1.bottom, rect2.bottom);
+    var left = Math.max(rect1.left, rect2.left);
+    var right = Math.min(rect1.right, rect2.right);
+    var width = right - left;
+    var height = bottom - top;
+    return width >= 0 && height >= 0 && {
+      top,
+      bottom,
+      left,
+      right,
+      width,
+      height
+    } || null;
+  }
+  function getBoundingClientRect(el) {
+    var rect;
+    try {
+      rect = el.getBoundingClientRect();
+    } catch (err) {
+    }
+    if (!rect)
+      return getEmptyRect();
+    if (!(rect.width && rect.height)) {
+      rect = {
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        left: rect.left,
+        width: rect.right - rect.left,
+        height: rect.bottom - rect.top
+      };
+    }
+    return rect;
+  }
+  function getEmptyRect() {
+    return {
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      width: 0,
+      height: 0
+    };
+  }
+  function ensureDOMRect(rect) {
+    if (!rect || "x" in rect) {
+      return rect;
+    }
+    return {
+      top: rect.top,
+      y: rect.top,
+      bottom: rect.bottom,
+      left: rect.left,
+      x: rect.left,
+      right: rect.right,
+      width: rect.width,
+      height: rect.height
+    };
+  }
+  function convertFromParentRect(parentBoundingRect, parentIntersectionRect) {
+    var top = parentIntersectionRect.top - parentBoundingRect.top;
+    var left = parentIntersectionRect.left - parentBoundingRect.left;
+    return {
+      top,
+      left,
+      height: parentIntersectionRect.height,
+      width: parentIntersectionRect.width,
+      bottom: top + parentIntersectionRect.height,
+      right: left + parentIntersectionRect.width
+    };
+  }
+  function containsDeep(parent, child) {
+    var node = child;
+    while (node) {
+      if (node == parent)
+        return true;
+      node = getParentNode(node);
+    }
+    return false;
+  }
+  function getParentNode(node) {
+    var parent = node.parentNode;
+    if (node.nodeType == 9 && node != document2) {
+      return getFrameElement(node);
+    }
+    if (parent && parent.assignedSlot) {
+      parent = parent.assignedSlot.parentNode;
+    }
+    if (parent && parent.nodeType == 11 && parent.host) {
+      return parent.host;
+    }
+    return parent;
+  }
+  function isDoc(node) {
+    return node && node.nodeType === 9;
+  }
+  window.IntersectionObserver = IntersectionObserver2;
+  window.IntersectionObserverEntry = IntersectionObserverEntry;
+};
+function normalizeRect(rect) {
+  const {bottom, height, left, right, top, width} = rect || {};
+  return {
+    bottom,
+    height,
+    left,
+    right,
+    top,
+    width
+  };
+}
+function requestComponentObserver($el, options, callback) {
+  initIntersectionObserverPolyfill();
+  const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
+  const intersectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entrie) => {
+      callback({
+        intersectionRatio: entrie.intersectionRatio,
+        intersectionRect: normalizeRect(entrie.intersectionRect),
+        boundingClientRect: normalizeRect(entrie.boundingClientRect),
+        relativeRect: normalizeRect(entrie.rootBounds),
+        time: Date.now()
+      });
+    });
+  }, {
+    root,
+    rootMargin: options.rootMargin,
+    threshold: options.thresholds
+  });
+  if (options.observeAll) {
+    intersectionObserver.USE_MUTATION_OBSERVER = true;
+    const nodeList = $el.querySelectorAll(options.selector);
+    for (let i2 = 0; i2 < nodeList.length; i2++) {
+      intersectionObserver.observe(nodeList[i2]);
+    }
+  } else {
+    intersectionObserver.USE_MUTATION_OBSERVER = false;
+    const el = $el.querySelector(options.selector);
+    if (!el) {
+      console.warn(`Node ${options.selector} is not found. Intersection observer will not trigger.`);
+    } else {
+      intersectionObserver.observe(el);
+    }
+  }
+  return intersectionObserver;
+}
+function addIntersectionObserver({reqId, component, options, callback}, _pageId) {
+  const $el = findElem(component);
+  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
+}
+function removeIntersectionObserver({reqId, component}, _pageId) {
+  const $el = findElem(component);
+  const intersectionObserver = $el.__io && $el.__io[reqId];
+  if (intersectionObserver) {
+    intersectionObserver.disconnect();
+    delete $el.__io[reqId];
+  }
+}
 const _sfc_main$h = {
   name: "Image",
   props: {
@@ -11116,10 +11140,10 @@ function on(event2) {
     globalEvent[event2] = api2;
   });
 }
-const onSocketOpen = /* @__PURE__ */ on("open");
-const onSocketError = /* @__PURE__ */ on("error");
-const onSocketMessage = /* @__PURE__ */ on("message");
-const onSocketClose = /* @__PURE__ */ on("close");
+const onSocketOpen = on("open");
+const onSocketError = on("error");
+const onSocketMessage = on("message");
+const onSocketClose = on("close");
 const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -11142,7 +11166,7 @@ function navigate(type, url) {
       if (isNavigationFailure(failure)) {
         return reject(failure.message);
       }
-      return resolve();
+      return resolve(void 0);
     });
   });
 }
@@ -11318,8 +11342,8 @@ var api = /* @__PURE__ */ Object.freeze({
   promiseInterceptor,
   arrayBufferToBase64,
   base64ToArrayBuffer,
-  createIntersectionObserver: createIntersectionObserver$1,
-  createSelectorQuery: createSelectorQuery$1,
+  createIntersectionObserver,
+  createSelectorQuery,
   createVideoContext,
   onTabBarMidButtonTap,
   cssVar,
@@ -11380,7 +11404,7 @@ var TabBar = /* @__PURE__ */ defineComponent({
   name: "TabBar",
   setup() {
     const tabBar2 = useTabBar();
-    const onSwitchTab = useSwitchTab(useRoute$1(), tabBar2);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar2);
     const {
       style,
       borderStyle,
@@ -11652,7 +11676,7 @@ function createLayoutTsx(keepAliveRoute, topWindow, leftWindow, rightWindow) {
   return createVNode("uni-layout", null, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])]);
 }
 function useShowTabBar(emit) {
-  const route = useRoute$1();
+  const route = useRoute();
   const tabBar2 = useTabBar();
   const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
   updateCssVar("--tab-bar-height", tabBar2.height);
@@ -12395,4 +12419,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver$1 as createIntersectionObserver, createSelectorQuery$1 as createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};

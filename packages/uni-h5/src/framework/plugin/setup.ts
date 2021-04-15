@@ -11,6 +11,9 @@ import {
   onBeforeDeactivate,
   onBeforeMount,
 } from 'vue'
+import { useRoute } from 'vue-router'
+import { useI18n } from '@dcloudio/uni-core'
+import { BuiltInLocale } from '@dcloudio/uni-i18n'
 import { parseQuery, decodedQuery } from '@dcloudio/uni-shared'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
@@ -100,6 +103,8 @@ export function setupPage(comp: any) {
 }
 
 export function setupApp(comp: any) {
+  // 根据当前平台语言初始化i18n
+  useI18n().setLocale(navigator.language as BuiltInLocale)
   return setupComponent(comp, {
     init: initApp,
     setup(instance) {

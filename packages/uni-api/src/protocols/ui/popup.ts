@@ -5,8 +5,6 @@ import { getRealPath } from '@dcloudio/uni-platform'
 export const API_SHOW_MODAL = 'showModal'
 export type API_TYPE_SHOW_MODAL = typeof uni.showModal
 
-const { t } = useI18n()
-
 export const ShowModalProtocol: ApiProtocol<API_TYPE_SHOW_MODAL> = {
   title: String,
   content: String,
@@ -32,12 +30,14 @@ export const ShowModalOptions: ApiOptions<API_TYPE_SHOW_MODAL> = {
     showCancel: true,
     cancelText(_value, params) {
       if (!hasOwn(params, 'cancelText')) {
+        const { t } = useI18n()
         params.cancelText = t('uni.showModal.cancel')
       }
     },
     cancelColor: '#000',
     confirmText(_value, params) {
       if (!hasOwn(params, 'confirmText')) {
+        const { t } = useI18n()
         params.confirmText = t('uni.showModal.confirm')
       }
     },

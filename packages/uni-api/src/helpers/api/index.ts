@@ -5,7 +5,7 @@ import {
   isFunction,
   isPlainObject,
 } from '@vue/shared'
-import { API_TYPE_ON_PROTOCOLS, validateProtocols } from '../protocol'
+import { validateProtocols } from '../protocol'
 import {
   invokeCallback,
   createAsyncApiCallback,
@@ -26,44 +26,23 @@ function formatApiArgs<T extends ApiLike>(
     !options ||
     (!isPlainObject(options.formatArgs) && isPlainObject(params))
   ) {
-    return args
+    return
   }
   const formatArgs = options.formatArgs!
-  Object.keys(formatArgs).forEach((name) => {
+  const keys = Object.keys(formatArgs)
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i]
     const formatterOrDefaultValue = formatArgs[name]!
     if (isFunction(formatterOrDefaultValue)) {
-      formatterOrDefaultValue(args[0][name], params)
+      const errMsg = formatterOrDefaultValue(args[0][name], params)
+      if (isString(errMsg)) {
+        return errMsg
+      }
     } else {
       // defaultValue
       if (!hasOwn(params, name)) {
         params[name] = formatterOrDefaultValue
       }
-    }
-  })
-  return args
-}
-
-function wrapperOnApi(name: string, fn: Function) {
-  return (callback: Function) => {
-    // 是否是首次调用on,如果是首次，需要初始化onMethod监听
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name)
-    createKeepAliveApiCallback(name, callback)
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name)
-      fn()
-    }
-  }
-}
-
-function wrapperOffApi(name: string, fn: Function) {
-  return (callback: Function) => {
-    name = name.replace('off', 'on')
-    removeKeepAliveApiCallback(name, callback)
-    // 是否还存在监听，若已不存在，则移除onMethod监听
-    const hasInvokeOnApi = findInvokeCallbackByName(name)
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name)
-      fn()
     }
   }
 }
@@ -76,13 +55,89 @@ function invokeFail(id: number, name: string, err: string) {
   return invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') })
 }
 
-function wrapperTaskApi<T extends ApiLike>(
+function beforeInvokeApi<T extends ApiLike>(
+  name: string,
+  args: any[],
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
+) {
+  if (__DEV__) {
+    validateProtocols(name!, args, protocol)
+  }
+  if (options && options.beforeInvoke) {
+    const errMsg = options.beforeInvoke(args)
+    if (isString(errMsg)) {
+      return errMsg
+    }
+  }
+  const errMsg = formatApiArgs<T>(args, options)
+  if (errMsg) {
+    return errMsg
+  }
+}
+
+function checkCallback(callback: Function) {
+  if (!isFunction(callback)) {
+    throw new Error(
+      'Invalid args: type check failed for args "callback". Expected Function'
+    )
+  }
+}
+function wrapperOnApi<T extends ApiLike>(
   name: string,
   fn: Function,
   options?: ApiOptions<T>
 ) {
+  return (callback: Function) => {
+    checkCallback(callback)
+    const errMsg = beforeInvokeApi(name, [callback], undefined, options)
+    if (errMsg) {
+      throw new Error(errMsg)
+    }
+    // 是否是首次调用on,如果是首次，需要初始化onMethod监听
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name)
+    createKeepAliveApiCallback(name, callback)
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name)
+      fn()
+    }
+  }
+}
+
+function wrapperOffApi<T extends ApiLike>(
+  name: string,
+  fn: Function,
+  options?: ApiOptions<T>
+) {
+  return (callback: Function) => {
+    checkCallback(callback)
+    const errMsg = beforeInvokeApi(name, [callback], undefined, options)
+    if (errMsg) {
+      throw new Error(errMsg)
+    }
+    name = name.replace('off', 'on')
+    removeKeepAliveApiCallback(name, callback)
+    // 是否还存在监听，若已不存在，则移除onMethod监听
+    const hasInvokeOnApi = findInvokeCallbackByName(name)
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name)
+      fn()
+    }
+  }
+}
+
+function wrapperTaskApi<T extends ApiLike>(
+  name: string,
+  fn: Function,
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
+) {
   return (args: Record<string, any>) => {
     const id = createAsyncApiCallback(name, args, options)
+    const errMsg = beforeInvokeApi(name, [args], protocol, options)
+    if (errMsg) {
+      return invokeFail(id, name, errMsg)
+    }
     return fn(args, {
       resolve: (res: unknown) => invokeSuccess(id, name, res),
       reject: (err: string) => invokeFail(id, name, err),
@@ -90,36 +145,28 @@ function wrapperTaskApi<T extends ApiLike>(
   }
 }
 
-function wrapperSyncApi(fn: Function) {
-  return (...args: any[]) => fn.apply(null, args)
+function wrapperSyncApi<T extends ApiLike>(
+  name: string,
+  fn: Function,
+  protocol?: ApiProtocols<T>,
+  options?: ApiOptions<T>
+) {
+  return (...args: any[]) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options)
+    if (errMsg) {
+      throw new Error(errMsg)
+    }
+    return fn.apply(null, args)
+  }
 }
 
 function wrapperAsyncApi<T extends ApiLike>(
   name: string,
   fn: Function,
-  options?: ApiOptions<T>
-) {
-  return wrapperTaskApi(name, fn, options)
-}
-
-function wrapperApi<T extends ApiLike>(
-  fn: Function,
-  name?: string,
   protocol?: ApiProtocols<T>,
   options?: ApiOptions<T>
 ) {
-  return function (...args: any[]) {
-    if (__DEV__) {
-      validateProtocols(name!, args, protocol)
-    }
-    if (options && options.beforeInvoke) {
-      const errMsg = options.beforeInvoke(args)
-      if (isString(errMsg)) {
-        return errMsg
-      }
-    }
-    return fn.apply(null, formatApiArgs<T>(args, options))
-  }
+  return wrapperTaskApi(name, fn, protocol, options)
 }
 
 export function defineOnApi<T extends ApiLike>(
@@ -127,12 +174,7 @@ export function defineOnApi<T extends ApiLike>(
   fn: () => void,
   options?: ApiOptions<T>
 ) {
-  return (wrapperApi(
-    wrapperOnApi(name, fn),
-    name,
-    __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
-    options
-  ) as unknown) as T
+  return (wrapperOnApi(name, fn, options) as unknown) as T
 }
 
 export function defineOffApi<T extends ApiLike>(
@@ -140,12 +182,7 @@ export function defineOffApi<T extends ApiLike>(
   fn: () => void,
   options?: ApiOptions<T>
 ) {
-  return (wrapperApi(
-    wrapperOffApi(name, fn),
-    name,
-    __DEV__ ? API_TYPE_ON_PROTOCOLS : undefined,
-    options
-  ) as unknown) as T
+  return (wrapperOffApi(name, fn, options) as unknown) as T
 }
 
 export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
@@ -161,12 +198,7 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   options?: ApiOptions<T>
 ) {
   return (promisify(
-    wrapperApi(
-      wrapperTaskApi(name, fn),
-      name,
-      __DEV__ ? protocol : undefined,
-      options
-    )
+    wrapperTaskApi(name, fn, __DEV__ ? protocol : undefined, options)
   ) as unknown) as T
 }
 
@@ -176,9 +208,9 @@ export function defineSyncApi<T extends ApiLike>(
   protocol?: ApiProtocols<T>,
   options?: ApiOptions<T>
 ) {
-  return (wrapperApi<T>(
-    wrapperSyncApi(fn),
+  return (wrapperSyncApi(
     name,
+    fn,
     __DEV__ ? protocol : undefined,
     options
   ) as unknown) as T
@@ -197,11 +229,6 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   options?: ApiOptions<T>
 ) {
   return promisify(
-    wrapperApi(
-      wrapperAsyncApi(name, fn as any, options),
-      name,
-      __DEV__ ? protocol : undefined,
-      options
-    )
+    wrapperAsyncApi(name, fn as any, __DEV__ ? protocol : undefined, options)
   ) as AsyncApi<P>
 }

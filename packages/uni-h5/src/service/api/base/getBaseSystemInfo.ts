@@ -53,7 +53,6 @@ export function getBaseSystemInfo() {
   )
   return {
     platform: isIOS ? 'ios' : 'other',
-    language: navigator.language,
     pixelRatio: window.devicePixelRatio,
     windowWidth,
   }
