@@ -25,16 +25,20 @@ export function chooseVideo ({
 
   function successCallback (tempFilePath = '') {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
-    const compressVideo = compressed ? plus.zip.compressVideo : function (_, callback) {
-      callback({ tempFilePath })
-    }
+    const compressVideo = compressed ? new Promise((resolve) => {
+      plus.zip.compressVideo({
+        src: tempFilePath,
+        dst
+      }, ({ tempFilePath }) => {
+        resolve(tempFilePath)
+      }, () => {
+        resolve(tempFilePath)
+      })
+    }) : Promise.resolve()
     if (compressed) {
       plus.nativeUI.showWaiting()
     }
-    compressVideo({
-      src: tempFilePath,
-      dst
-    }, ({ tempFilePath }) => {
+    compressVideo.then(tempFilePath => {
       if (compressed) {
         plus.nativeUI.closeWaiting()
       }
@@ -53,9 +57,6 @@ export function chooseVideo ({
         },
         errorCallback
       })
-    }, error => {
-      plus.nativeUI.closeWaiting()
-      errorCallback(error)
     })
   }
 
