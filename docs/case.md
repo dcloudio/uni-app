@@ -642,8 +642,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **拾阅草堂：**网络小说。[微信小程序码](https://user-images.githubusercontent.com/12842804/61346867-371ccc00-a88d-11e9-8386-18e27677869c.png)
 
-**千家找房：**二手房、新房买卖租赁平台。各大应用商城搜索“千家找房”下载APP、[H5](https://m.allqj.com)、[微信小程序二维码](https://user-images.githubusercontent.com/31872878/62843602-a3081e00-bced-11e9-8a2d-3f997be6cacf.png)
-
 **坤典智慧农场：**体验农村种植、养殖的生活，足不出户就可以租地种植自己的蔬菜了，养殖鸡鸭牛羊，通过视频远程查看。[iOS码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)、[Android码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)、[微信小程序码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)、[H5码](https://user-images.githubusercontent.com/29654065/63156422-3cfdfc80-c047-11e9-8c41-23d298279466.jpg)
 
 **指动全城：**一个为宝宝选择好产品的线上渠道。[App和小程序通用链接](https://m3w.cn/__uni__6020544)
