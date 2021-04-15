@@ -1,6 +1,6 @@
 ### 插屏广告
 
-支持多种规格尺寸，支持GIF、图片、图文、动态创意；插屏广告与信息流或横幅广告相比展现尺寸更大，同样能够满足您对大量曝光和用户转化的需求。
+插屏广告组件是由客户端原生的图片、文本、视频控件组成的；插屏广告与信息流或横幅广告相比展现尺寸更大，同样能够满足您对大量曝光和用户转化的需求。
 
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/5dc1ce6b-b786-4175-aec5-dd2ab4a5e34c.png)
 
@@ -41,6 +41,35 @@
 HBuilder 基座的测试广告位 `adpid` 为 `1111111113`
 
 
+### 广告创建
+
+插屏广告组件默认是隐藏的，因此可以提前创建，以提前初始化组件。开发者可以在页面的 onReady 事件回调中创建广告实例，并在该页面的生命周期内重复调用该广告实例。
+
+
+### 显示/隐藏
+
+插屏广告组件默认是隐藏的，开发者需要调用 InterstitialAd.show() 进行显示。如果广告拉取失败或触发频率限制，InterstitialAd.show() 方法会返回一个rejected Promise，开发者可自行监听错误信息
+
+```js
+interstitialAd.show().catch((err) => {
+  console.error(err)
+})
+```
+
+用户可以主动关闭插屏广告。开发者不可控制插屏广告组件的隐藏。
+
+
+### 监听用户关闭广告
+
+如果广告被关闭，通过 InterstitialAd.onClose() 注册的回调函数会执行，回调函数没有参数传递。
+
+```js
+interstitialAd.onClose(res => {
+    console.log('插屏 广告关闭')
+})
+```
+
+
 示例代码
 
 ```html
@@ -72,16 +101,18 @@ HBuilder 基座的测试广告位 `adpid` 为 `1111111113`
       createInterstitialAd() {
         var interstitialAd = this.interstitialAd = uni.createInterstitialAd(this.adOption);
         interstitialAd.onLoad(() => {
-          // 广告数据加载成功
+          // 广告加载成功
           this.loading = false;
+          console.log("插屏 广告加载成功");
         });
         interstitialAd.onClose(() => {
           // 用户点击了关闭或返回键(仅Android有返回键)
-          console.log("onClose");
+          console.log("插屏 广告关闭");
         });
         interstitialAd.onError((err) => {
           // 广告数据加载失败
           this.loading = false;
+          console.log("插屏 广告加载失败");
         });
 
         // 广告实例创建成功后默认会执行一次 load，加载广告数据
@@ -146,3 +177,8 @@ HBuilder 基座的测试广告位 `adpid` 为 `1111111113`
 `InterstitialAd.offClose(function callback)`
 
 取消监听插屏广告关闭事件
+
+
+### 注意事项
+
+在插屏广告展示过程中如果快速切换页面，可能会出现插屏广告展示在非调用页面的情况，如有需要请在页面切换完成后进行插屏广告展示。
