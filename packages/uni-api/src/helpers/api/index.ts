@@ -15,6 +15,7 @@ import {
   createKeepAliveApiCallback,
   removeKeepAliveApiCallback,
 } from './callback'
+import type { CALLBACK_TYPES } from './callback'
 import { promisify } from './promise'
 
 function formatApiArgs<T extends ApiLike>(
@@ -219,7 +220,7 @@ export function defineSyncApi<T extends ApiLike>(
 export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   name: string,
   fn: (
-    args: Omit<P, 'success' | 'fail' | 'complete'>,
+    args: Omit<P, CALLBACK_TYPES>,
     res: {
       resolve: (res?: AsyncApiRes<P>) => void
       reject: (err?: string) => void

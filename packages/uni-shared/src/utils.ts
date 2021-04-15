@@ -13,3 +13,12 @@ export const invokeArrayFns = (fns: Function[], arg?: any) => {
   }
   return ret
 }
+
+export function updateElementStyle(
+  element: HTMLElement,
+  styles: Partial<CSSStyleDeclaration>
+) {
+  for (const attrName in styles) {
+    element.style[attrName] = styles[attrName]!
+  }
+}

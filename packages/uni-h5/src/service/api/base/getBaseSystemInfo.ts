@@ -10,6 +10,8 @@ export const isMac = /Macintosh|Mac/i.test(ua)
 
 export const isLinux = /Linux|X11/i.test(ua)
 
+export const isIPadOS = isMac && navigator.maxTouchPoints > 0
+
 export function getScreenFix() {
   return (
     /^Apple/.test(navigator.vendor) && typeof window.orientation === 'number'

@@ -81,7 +81,10 @@ export const API_SUCCESS = 'success'
 export const API_FAIL = 'fail'
 export const API_COMPLETE = 'complete'
 
-type CALLBACK_TYPES = typeof API_SUCCESS | typeof API_FAIL | typeof API_COMPLETE
+export type CALLBACK_TYPES =
+  | typeof API_SUCCESS
+  | typeof API_FAIL
+  | typeof API_COMPLETE
 
 type ApiCallbacks = {
   [key in CALLBACK_TYPES]?: Function

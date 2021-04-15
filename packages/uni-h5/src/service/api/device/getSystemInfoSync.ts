@@ -11,6 +11,7 @@ import {
   isWindows,
   isMac,
   isLinux,
+  isIPadOS,
   isLandscape,
   getScreenFix,
   getScreenWidth,
@@ -88,6 +89,10 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
           break
         }
       }
+    } else if (isIPadOS) {
+      model = 'iPad'
+      osname = 'iOS'
+      osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
     } else if (isWindows || isMac || isLinux) {
       model = 'PC'
       osname = 'PC'

@@ -23,8 +23,8 @@ export const HTTP_METHODS = [
   'CONNECT',
 ]
 
-export function elemInArray(str: string, arr: string[]) {
-  if (arr.indexOf(str) === -1) {
+export function elemInArray<T = string>(str: T, arr: T[]) {
+  if (!str || arr.indexOf(str) === -1) {
     return arr[0]
   }
   return str

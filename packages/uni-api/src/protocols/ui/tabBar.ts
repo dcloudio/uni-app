@@ -1,8 +1,7 @@
 import { extend } from '@vue/shared'
-import { getLen } from '@dcloudio/uni-shared'
+import { getLen, removeLeadingSlash } from '@dcloudio/uni-shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { getCurrentPageMeta } from '@dcloudio/uni-core'
-import { removeLeadingSlash } from '@dcloudio/uni-shared'
 
 const IndexProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_ITEM> = {
   index: {
