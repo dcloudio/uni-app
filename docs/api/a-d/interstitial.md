@@ -43,40 +43,69 @@ HBuilder 基座的测试广告位 `adpid` 为 `1111111113`
 
 示例代码
 
-```js
-<script>
-	export default {
-		data() {
-			return {
-				title: '插屏广告',
-				loading: false
-			}
-		},
-		onReady() {
-			this.showAd();
-		},
-		methods: {
-			showAd() {
-				const adOption = {
-					adpid: '1111111113' // HBuilder基座的测试广告位
-				};
-				let interstitialAd = uni.createInterstitialAd(adOption);
-				interstitialAd.onLoad(() => {
-					this.loading = false;
-					interstitialAd.show();
-				});
-				interstitialAd.onClose((res) => {
-				});
-				interstitialAd.onError((err) => {
-					this.loading = false;
-				});
-				interstitialAd.load();
-				this.loading = true;
-			}
-		}
-	}
-</script>
+```html
+<template>
+  <view>
+    <view>
+      <button :loading="loading" :disabled="loading" type="primary" @click="showInterstitialAd">显示广告</button>
+    </view>
+  </view>
+</template>
 
+<script>
+  export default {
+    data() {
+      return {
+        title: '插屏广告',
+        loading: false
+      }
+    },
+    onReady() {
+      this.adOption = {
+        adpid: '1111111113' // HBuilder基座的测试广告位
+      };
+
+      // 创建广告实例
+      this.createInterstitialAd();
+    },
+    methods: {
+      createInterstitialAd() {
+        var interstitialAd = this.interstitialAd = uni.createInterstitialAd(this.adOption);
+        interstitialAd.onLoad(() => {
+          // 广告数据加载成功
+          this.loading = false;
+        });
+        interstitialAd.onClose(() => {
+          // 用户点击了关闭或返回键(仅Android有返回键)
+          console.log("onClose");
+        });
+        interstitialAd.onError((err) => {
+          // 广告数据加载失败
+          this.loading = false;
+        });
+
+        // 广告实例创建成功后默认会执行一次 load，加载广告数据
+        // 如果界面有 显示广告 按钮个，需要先禁用掉，防止用户点击，等待广告数据加载成功后在放开
+        this.loading = true;
+      },
+      showInterstitialAd() {
+        // 调用 interstitialAd.show()，如果数据正在加载中不会显示广告，加载成功后才显示
+        // 在数据没有加载成功时，需要防止用户频繁点击显示广告
+        if (this.loading == true) {
+          return
+        }
+        this.loading = true;
+        this.interstitialAd.show().then(() => {
+          this.loading = false;
+        });
+      }
+    },
+    onUnload() {
+      // 页面关闭后销毁实例
+      this.interstitialAd.destroy()
+    }
+  }
+</script>
 ```
 
 
