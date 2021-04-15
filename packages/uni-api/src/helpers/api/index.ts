@@ -189,7 +189,7 @@ export function defineOffApi<T extends ApiLike>(
 export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   name: string,
   fn: (
-    args: Omit<P, 'success' | 'fail' | 'complete'>,
+    args: Omit<P, CALLBACK_TYPES>,
     res: {
       resolve: (res?: AsyncApiRes<P>) => void
       reject: (err?: string) => void
