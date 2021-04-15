@@ -15,6 +15,8 @@ export * from './network/downloadFile'
 export * from './network/uploadFile'
 export * from './network/socket'
 
+export * from './location/getLocation'
+
 export * from './route/navigateBack'
 export * from './route/navigateTo'
 export * from './route/redirectTo'

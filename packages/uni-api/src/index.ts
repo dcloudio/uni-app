@@ -30,6 +30,8 @@ export * from './protocols/network/downloadFile'
 export * from './protocols/network/uploadFile'
 export * from './protocols/network/socket'
 
+export * from './protocols/location/getLocation'
+
 export * from './protocols/route/route'
 
 export * from './protocols/ui/navigationBar'

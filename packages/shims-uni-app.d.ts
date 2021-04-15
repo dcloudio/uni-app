@@ -42,6 +42,7 @@ declare namespace UniApp {
     }
     tabBar?: TabBarOptions
     subPackages?: { root: string }[]
+    qqMapKey?: string
   }
 
   interface UniRoute {

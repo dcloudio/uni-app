@@ -4460,6 +4460,27 @@ const OpenDocumentProtocol = {
   },
   fileType: String
 };
+const API_GET_LOCATION = "getLocation";
+const coordTypes = ["WGS84", "GCJ02"];
+const GetLocationOptions = {
+  formatArgs: {
+    type(value, params) {
+      value = (value || "").toUpperCase();
+      if (coordTypes.indexOf(value) === -1) {
+        params.type = coordTypes[0];
+      } else {
+        params.type = value;
+      }
+    },
+    altitude(value, params) {
+      params.altitude = value ? value : false;
+    }
+  }
+};
+const GetLocationProtocol = {
+  type: String,
+  altitude: Boolean
+};
 const API_GET_IMAGE_INFO = "getImageInfo";
 const GetImageInfoOptions = {
   formatArgs: {
@@ -11140,10 +11161,99 @@ function on(event2) {
     globalEvent[event2] = api2;
   });
 }
-const onSocketOpen = on("open");
-const onSocketError = on("error");
-const onSocketMessage = on("message");
-const onSocketClose = on("close");
+const onSocketOpen = /* @__PURE__ */ on("open");
+const onSocketError = /* @__PURE__ */ on("error");
+const onSocketMessage = /* @__PURE__ */ on("message");
+const onSocketClose = /* @__PURE__ */ on("close");
+function getJSONP(url, options, success, error) {
+  var js = document.createElement("script");
+  var callbackKey = options.callback || "callback";
+  var callbackName = "__callback" + Date.now();
+  var timeout = options.timeout || 3e4;
+  var timing;
+  function end() {
+    clearTimeout(timing);
+    delete window[callbackName];
+    js.remove();
+  }
+  window[callbackName] = (res) => {
+    if (typeof success === "function") {
+      success(res);
+    }
+    end();
+  };
+  js.onerror = () => {
+    if (typeof error === "function") {
+      error();
+    }
+    end();
+  };
+  timing = setTimeout(function() {
+    if (typeof error === "function") {
+      error();
+    }
+    end();
+  }, timeout);
+  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
+  document.body.appendChild(js);
+}
+const getLocation = defineAsyncApi(API_GET_LOCATION, ({type, altitude}, {resolve, reject}) => {
+  const key = __uniConfig.qqMapKey;
+  new Promise((resolve2, reject2) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((res) => resolve2(res.coords), reject2, {
+        enableHighAccuracy: altitude,
+        timeout: 1e3 * 100
+      });
+    } else {
+      reject2(new Error("device nonsupport geolocation"));
+    }
+  }).catch(() => {
+    return new Promise((resolve2, reject2) => {
+      getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${key}`, {
+        callback: "callback"
+      }, (res) => {
+        if ("result" in res && res.result.location) {
+          const location2 = res.result.location;
+          resolve2({
+            latitude: location2.lat,
+            longitude: location2.lng
+          }, true);
+        } else {
+          reject2(new Error(res.message || JSON.stringify(res)));
+        }
+      }, () => reject2(new Error("network error")));
+    });
+  }).then((coords, skip) => {
+    if (type && type.toUpperCase() === "WGS84" || skip) {
+      return coords;
+    }
+    return new Promise((resolve2) => {
+      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+        callback: "cb"
+      }, (res) => {
+        if ("detail" in res && "points" in res.detail && res.detail.points.length) {
+          const location2 = res.detail.points[0];
+          resolve2(Object.assign({}, coords, {
+            longitude: location2.lng,
+            latitude: location2.lat
+          }));
+        } else {
+          resolve2(coords);
+        }
+      }, () => resolve2(coords));
+    });
+  }).then((coords) => {
+    resolve(Object.assign({}, coords, {
+      speed: coords.altitude || 0,
+      altitude: coords.altitude || 0,
+      verticalAccuracy: coords.altitudeAccuracy || 0,
+      horizontalAccuracy: coords.accuracy || 0
+    }));
+  }).catch((error) => {
+    reject(error.message);
+  });
+}, GetLocationProtocol, GetLocationOptions);
 const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -11370,6 +11480,7 @@ var api = /* @__PURE__ */ Object.freeze({
   onSocketError,
   onSocketMessage,
   onSocketClose,
+  getLocation,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -12419,4 +12530,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offNetworkStatusChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
