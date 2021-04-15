@@ -262,10 +262,10 @@ function on(event: eventName) {
   })
 }
 
-export const onSocketOpen = on('open')
+export const onSocketOpen = /*#__PURE__*/ on('open')
 
-export const onSocketError = on('error')
+export const onSocketError = /*#__PURE__*/ on('error')
 
-export const onSocketMessage = on('message')
+export const onSocketMessage = /*#__PURE__*/ on('message')
 
-export const onSocketClose = on('close')
+export const onSocketClose = /*#__PURE__*/ on('close')
