@@ -72,4 +72,5 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 
 ##### 常见问题
 1. 如何验证通用链接已经生效，有什么表现或者测试方案
+
 答：你可以将通用链接输入到iphone自带Safari浏览器中，下拉即可看到通用链接对应到应用名称和一个打开按钮，点击按钮即可直接在浏览器打开对应的APP。详情：[点此查看演示视频](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/4e920b86-0f67-45ac-81f6-6b97f87ff0ae.mp4)
