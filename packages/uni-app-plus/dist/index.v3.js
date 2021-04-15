@@ -6628,7 +6628,7 @@ var serviceContext = (function () {
 
   function compressImage$1 (tempFilePath) {
     const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       plus.nativeUI.showWaiting();
       plus.zip.compressImage({
         src: tempFilePath,
@@ -6637,9 +6637,9 @@ var serviceContext = (function () {
       }, () => {
         plus.nativeUI.closeWaiting();
         resolve(dstPath);
-      }, (error) => {
+      }, () => {
         plus.nativeUI.closeWaiting();
-        reject(error);
+        resolve(tempFilePath);
       });
     })
   }
@@ -6746,16 +6746,20 @@ var serviceContext = (function () {
 
     function successCallback (tempFilePath = '') {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-      const compressVideo = compressed ? plus.zip.compressVideo : function (_, callback) {
-        callback({ tempFilePath });
-      };
+      const compressVideo = compressed ? new Promise((resolve) => {
+        plus.zip.compressVideo({
+          src: tempFilePath,
+          dst
+        }, ({ tempFilePath }) => {
+          resolve(tempFilePath);
+        }, () => {
+          resolve(tempFilePath);
+        });
+      }) : Promise.resolve();
       if (compressed) {
         plus.nativeUI.showWaiting();
       }
-      compressVideo({
-        src: tempFilePath,
-        dst
-      }, ({ tempFilePath }) => {
+      compressVideo.then(tempFilePath => {
         if (compressed) {
           plus.nativeUI.closeWaiting();
         }
@@ -6774,9 +6778,6 @@ var serviceContext = (function () {
           },
           errorCallback
         });
-      }, error => {
-        plus.nativeUI.closeWaiting();
-        errorCallback(error);
       });
     }
 
@@ -10737,15 +10738,22 @@ var serviceContext = (function () {
     return new RewardedVideoAd(options)
   }
 
+  const eventTypes = {
+    load: 'load',
+    close: 'close',
+    error: 'error',
+    adClicked: 'adClicked'
+  };
+
   const eventNames$1 = [
-    'load',
-    'close',
-    'error',
-    'adClicked'
+    eventTypes.load,
+    eventTypes.close,
+    eventTypes.error,
+    eventTypes.adClicked
   ];
 
-  class FullScreenVideoAd {
-    constructor (options = {}) {
+  class AdBase {
+    constructor (adInstance, options) {
       const _callbacks = this._callbacks = {};
       eventNames$1.forEach(item => {
         _callbacks[item] = [];
@@ -10755,80 +10763,123 @@ var serviceContext = (function () {
         };
       });
 
-      this._isLoad = false;
+      this._preload = options.preload !== undefined ? options.preload : false;
+
+      this._isLoaded = false;
+      this._isLoading = false;
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
-      this._lastLoadTime = 0;
+      this._showPromiseResolve = null;
+      this._showPromiseReject = null;
 
-      const ad = this._ad = plus.ad.createFullScreenVideoAd(options);
+      const ad = this._ad = adInstance;
       ad.onLoad((e) => {
-        this._isLoad = true;
-        this._lastLoadTime = Date.now();
-        this._dispatchEvent('load', {});
+        this._isLoaded = true;
+        this._isLoading = false;
+        this._dispatchEvent(eventTypes.load, {});
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
           this._loadPromiseResolve = null;
         }
+        if (this._showPromiseResolve != null) {
+          this._showPromiseResolve();
+          this._showPromiseResolve = null;
+          this._showAd();
+        }
       });
       ad.onClose((e) => {
-        this._isLoad = false;
-        this._dispatchEvent('close', { isEnded: e.isEnded });
+        this._isLoaded = false;
+        this._isLoading = false;
+        this._dispatchEvent(eventTypes.close, { isEnded: e.isEnded });
+
+        if (this._preload === true) {
+          this._loadAd();
+        }
       });
       ad.onError((e) => {
-        const { code, message } = e;
-        const data = { code: code, errMsg: message };
-        this._adError = message;
-        if (code === -5008) {
-          this._isLoad = false;
-        }
-        this._dispatchEvent('error', data);
+        this._isLoading = false;
+
+        const data = {
+          code: e.code,
+          errMsg: e.message
+        };
+
+        this._adError = data;
+
+        this._dispatchEvent(eventTypes.error, data);
+
+        const promiseError = new Error(JSON.stringify(this._adError));
+        promiseError.code = e.code;
+        promiseError.errMsg = e.message;
 
         if (this._loadPromiseReject != null) {
-          this._loadPromiseReject(data);
+          this._loadPromiseReject(promiseError);
           this._loadPromiseReject = null;
         }
+
+        if (this._showPromiseReject != null) {
+          this._showPromiseReject(promiseError);
+          this._showPromiseReject = null;
+        }
       });
-      ad.onAdClicked((e) => {
-        this._dispatchEvent('adClicked', {});
+      ad.onAdClicked && ad.onAdClicked((e) => {
+        this._dispatchEvent(eventTypes.adClicked, {});
       });
     }
 
     load () {
       return new Promise((resolve, reject) => {
-        if (this._isLoad) {
-          resolve();
-          return
-        }
         this._loadPromiseResolve = resolve;
         this._loadPromiseReject = reject;
-        this._loadAd();
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoaded) {
+          resolve();
+        } else {
+          this._loadAd();
+        }
       })
     }
 
     show () {
       return new Promise((resolve, reject) => {
-        if (this._isLoad) {
-          this._ad.show();
+        this._showPromiseResolve = resolve;
+        this._showPromiseReject = reject;
+
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoaded) {
+          this._showAd();
           resolve();
         } else {
-          reject(new Error(this._adError));
+          this._loadAd();
         }
       })
-    }
-
-    getProvider () {
-      return this._ad.getProvider()
     }
 
     destroy () {
       this._ad.destroy();
     }
 
+    getProvider () {
+      return this._ad.getProvider()
+    }
+
     _loadAd () {
-      this._isLoad = false;
+      this._adError = '';
+      this._isLoaded = false;
+      this._isLoading = true;
       this._ad.load();
+    }
+
+    _showAd () {
+      this._ad.show();
     }
 
     _dispatchEvent (name, data) {
@@ -10837,6 +10888,12 @@ var serviceContext = (function () {
           callback(data || {});
         }
       });
+    }
+  }
+
+  class FullScreenVideoAd extends AdBase {
+    constructor (options = {}) {
+      super(plus.ad.createFullScreenVideoAd(options), options);
     }
   }
 
@@ -10844,115 +10901,11 @@ var serviceContext = (function () {
     return new FullScreenVideoAd(options)
   }
 
-  const eventNames$2 = [
-    'load',
-    'close',
-    'error',
-    'adClicked'
-  ];
-
-  class InterstitialAd {
+  class InterstitialAd extends AdBase {
     constructor (options = {}) {
-      const _callbacks = this._callbacks = {};
-      eventNames$2.forEach(item => {
-        _callbacks[item] = [];
-        const name = item[0].toUpperCase() + item.substr(1);
-        this[`on${name}`] = function (callback) {
-          _callbacks[item].push(callback);
-        };
-      });
+      super(plus.ad.createInterstitialAd(options), options);
 
-      this._isLoad = false;
-      this._isLoading = false;
-      this._adError = '';
-      this._loadPromiseResolve = null;
-      this._loadPromiseReject = null;
-
-      const ad = this._ad = plus.ad.createInterstitialAd(options);
-      ad.onLoad((e) => {
-        this._isLoad = true;
-        this._isLoading = false;
-        this._dispatchEvent('load', {});
-
-        if (this._loadPromiseResolve != null) {
-          this._loadPromiseResolve();
-          this._loadPromiseResolve = null;
-        }
-      });
-      ad.onClose((e) => {
-        this._isLoad = false;
-        this._isLoading = false;
-        this._dispatchEvent('close', {});
-      });
-      ad.onError((e) => {
-        this._isLoading = false;
-
-        const { code, message } = e;
-        const data = { code: code, errMsg: message };
-        this._adError = message;
-
-        this._dispatchEvent('error', data);
-
-        if (this._loadPromiseReject != null) {
-          this._loadPromiseReject(data);
-          this._loadPromiseReject = null;
-        }
-      });
-      ad.onAdClicked((e) => {
-        this._dispatchEvent('adClicked', {});
-      });
-    }
-
-    load () {
-      return new Promise((resolve, reject) => {
-        this._loadPromiseResolve = resolve;
-        this._loadPromiseReject = reject;
-        if (this._isLoading) {
-          return
-        }
-        if (this._isLoad) {
-          resolve();
-          return
-        }
-        this._loadAd();
-      })
-    }
-
-    show () {
-      return new Promise((resolve, reject) => {
-        if (this._isLoading) {
-          return
-        }
-
-        if (this._isLoad) {
-          this._ad.show();
-          resolve();
-        } else {
-          reject(new Error(this._adError));
-        }
-      })
-    }
-
-    getProvider () {
-      return this._ad.getProvider()
-    }
-
-    destroy () {
-      this._ad.destroy();
-    }
-
-    _loadAd () {
-      this._isLoad = false;
-      this._isLoading = true;
-      this._ad.load();
-    }
-
-    _dispatchEvent (name, data) {
-      this._callbacks[name].forEach(callback => {
-        if (typeof callback === 'function') {
-          callback(data || {});
-        }
-      });
+      this.load();
     }
   }
 
@@ -11158,7 +11111,7 @@ var serviceContext = (function () {
     return page && page.$page.id
   }
 
-  const eventNames$3 = [
+  const eventNames$2 = [
     'canplay',
     'play',
     'pause',
@@ -11171,7 +11124,7 @@ var serviceContext = (function () {
     'waiting'
   ];
   const callbacks$5 = {};
-  eventNames$3.forEach(name => {
+  eventNames$2.forEach(name => {
     callbacks$5[name] = [];
   });
 
@@ -11290,7 +11243,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$3.forEach(item => {
+  eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
       callbacks$5[item].push(callback);
@@ -19191,7 +19144,7 @@ var serviceContext = (function () {
     EditorContext: EditorContext
   });
 
-  const eventNames$4 = [
+  const eventNames$3 = [
     'canplay',
     'play',
     'pause',
@@ -19256,7 +19209,7 @@ var serviceContext = (function () {
       this.id = id;
       this._callbacks = {};
       this._options = {};
-      eventNames$4.forEach(name => {
+      eventNames$3.forEach(name => {
         this._callbacks[name.toLowerCase()] = [];
       });
       props$1.forEach(item => {
@@ -19316,7 +19269,7 @@ var serviceContext = (function () {
     }
   }
 
-  eventNames$4.forEach(item => {
+  eventNames$3.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     item = item.toLowerCase();
     InnerAudioContext.prototype[`on${name}`] = function (callback) {
