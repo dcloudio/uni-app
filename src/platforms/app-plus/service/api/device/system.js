@@ -13,11 +13,11 @@ import { getStatusbarHeight } from 'uni-platform/helpers/status-bar'
 
 import deviceId from 'uni-platform/helpers/uuid'
 
-export function getSystemInfoSync() {
+export function getSystemInfoSync () {
   return callApiSync(getSystemInfo, Object.create(null), 'getSystemInfo', 'getSystemInfoSync')
 }
 
-export function getSystemInfo() {
+export function getSystemInfo () {
   const platform = plus.os.name.toLowerCase()
   const ios = platform === 'ios'
   const isAndroid = platform === 'android'
