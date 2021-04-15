@@ -9,6 +9,7 @@ import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 import { invokeHook } from '@dcloudio/uni-core'
 import { removeLeadingSlash } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
+import { NavigateType } from '../../service/api/route/utils'
 
 const SEP = '$$'
 
@@ -23,11 +24,14 @@ function pruneCurrentPages() {
 }
 
 export function getCurrentPages(isAll: boolean = false) {
-  pruneCurrentPages() // TODO 目前页面unmounted时机较晚，前一个页面onShow里边调用getCurrentPages，可能还会获取到上一个准备被销毁的页面
+  pruneCurrentPages()
   return [...currentPagesMap.values()]
 }
 
-export function removeCurrentPages(delta: number = -1) {
+export function removeCurrentPages(
+  delta: number = 1,
+  removeRouteCaches = false
+) {
   const keys = [...currentPagesMap.keys()]
   const start = keys.length - 1
   const end = start - delta
@@ -37,14 +41,19 @@ export function removeCurrentPages(delta: number = -1) {
     pageVm.$.__isUnload = true
     invokeHook(pageVm, 'onUnload')
     currentPagesMap.delete(routeKey)
+    if (removeRouteCaches) {
+      const vnode = pageCacheMap.get(routeKey)
+      if (vnode) {
+        pageCacheMap.delete(routeKey)
+        routeCache.pruneCacheEntry!(vnode)
+      }
+    }
   }
 }
 
 let id = (history.state && history.state.__id__) || 1
 
-export function createPageState(
-  type: 'navigateTo' | 'redirectTo' | 'reLaunch' | 'switchTab'
-) {
+export function createPageState(type: NavigateType) {
   return {
     __id__: ++id,
     __type__: type,

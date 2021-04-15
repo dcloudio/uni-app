@@ -1101,6 +1101,12 @@ function normalizePageMeta(pageMeta) {
   navigationBar.backButton = pageMeta.isQuit ? false : true;
   navigationBar.titleColor = navigationBar.titleColor || "#fff";
   navigationBar.backgroundColor = navigationBar.backgroundColor || "#F7F7F7";
+  if (__UNI_FEATURE_PAGES__) {
+    if (history.state && history.state.__type__ === "redirectTo" && getCurrentPages().length === 0) {
+      pageMeta.isEntry = true;
+      pageMeta.isQuit = true;
+    }
+  }
   return pageMeta;
 }
 const sheetsMap = new Map();
@@ -1154,7 +1160,7 @@ function getCurrentPages$1(isAll = false) {
   pruneCurrentPages();
   return [...currentPagesMap.values()];
 }
-function removeCurrentPages(delta = -1) {
+function removeCurrentPages(delta = 1, removeRouteCaches = false) {
   const keys = [...currentPagesMap.keys()];
   const start = keys.length - 1;
   const end = start - delta;
@@ -1164,6 +1170,13 @@ function removeCurrentPages(delta = -1) {
     pageVm.$.__isUnload = true;
     invokeHook(pageVm, "onUnload");
     currentPagesMap.delete(routeKey);
+    if (removeRouteCaches) {
+      const vnode = pageCacheMap.get(routeKey);
+      if (vnode) {
+        pageCacheMap.delete(routeKey);
+        routeCache.pruneCacheEntry(vnode);
+      }
+    }
   }
 }
 let id = history.state && history.state.__id__ || 1;
@@ -11281,7 +11294,10 @@ function navigate(type, url) {
   });
 }
 const navigateTo = defineAsyncApi(API_NAVIGATE_TO, ({url}, {resolve, reject}) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => navigate(API_REDIRECT_TO, url).then(resolve).catch(reject), RedirectToProtocol, RedirectToOptions);
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => {
+  removeCurrentPages(1, true);
+  return navigate(API_REDIRECT_TO, url).then(resolve).catch(reject);
+}, RedirectToProtocol, RedirectToOptions);
 const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => navigate(API_RE_LAUNCH, url).then(resolve).catch(reject), ReLaunchProtocol, ReLaunchOptions);
 const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => navigate(API_SWITCH_TAB, url).then(resolve).catch(reject), SwitchTabProtocol, SwitchTabOptions);
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
@@ -11958,7 +11974,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && usePageHeadSearchInput();
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && usePageHeadTransparent(headRef, navigationBar);
     return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar) : null;
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(pageMeta) : null;
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
@@ -11982,8 +11998,12 @@ var PageHead = /* @__PURE__ */ defineComponent({
     };
   }
 });
-function createBackButtonTsx(navigationBar) {
-  if (navigationBar.backButton) {
+function createBackButtonTsx(pageMeta) {
+  const {
+    navigationBar,
+    isQuit
+  } = pageMeta;
+  if (navigationBar.backButton && !isQuit) {
     return createVNode("div", {
       class: "uni-page-head-btn",
       onClick: onPageHeadBackButton
@@ -12487,7 +12507,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 }
 var index = defineComponent({
   name: "Page",
-  setup(props, ctx) {
+  setup(_props, ctx) {
     const {navigationBar} = providePageMeta();
     return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }

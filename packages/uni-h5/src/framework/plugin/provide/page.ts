@@ -80,5 +80,17 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   navigationBar.backButton = pageMeta.isQuit ? false : true
   navigationBar.titleColor = navigationBar.titleColor || '#fff'
   navigationBar.backgroundColor = navigationBar.backgroundColor || '#F7F7F7'
+
+  if (__UNI_FEATURE_PAGES__) {
+    // 首页执行了redirectTo
+    if (
+      history.state &&
+      history.state.__type__ === 'redirectTo' &&
+      getCurrentPages().length === 0
+    ) {
+      pageMeta.isEntry = true
+      pageMeta.isQuit = true
+    }
+  }
   return pageMeta
 }

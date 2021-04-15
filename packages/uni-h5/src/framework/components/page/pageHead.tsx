@@ -48,7 +48,7 @@ export default /*#__PURE__*/ defineComponent({
     return () => {
       // 单页面无需back按钮
       const backButtonTsx = __UNI_FEATURE_PAGES__
-        ? createBackButtonTsx(navigationBar)
+        ? createBackButtonTsx(pageMeta)
         : null
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
         ? createButtonsTsx(buttons.left)
@@ -82,8 +82,9 @@ export default /*#__PURE__*/ defineComponent({
   },
 })
 
-function createBackButtonTsx(navigationBar: UniApp.PageNavigationBar) {
-  if (navigationBar.backButton) {
+function createBackButtonTsx(pageMeta: UniApp.PageRouteMeta) {
+  const { navigationBar, isQuit } = pageMeta
+  if (navigationBar.backButton && !isQuit) {
     return (
       <div class="uni-page-head-btn" onClick={onPageHeadBackButton}>
         {createSvgIconVNode(
