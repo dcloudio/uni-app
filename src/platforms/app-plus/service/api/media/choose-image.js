@@ -30,7 +30,7 @@ function getFileInfo (filePath) {
 
 function compressImage (tempFilePath) {
   const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     plus.nativeUI.showWaiting()
     plus.zip.compressImage({
       src: tempFilePath,
@@ -39,9 +39,9 @@ function compressImage (tempFilePath) {
     }, () => {
       plus.nativeUI.closeWaiting()
       resolve(dstPath)
-    }, (error) => {
+    }, () => {
       plus.nativeUI.closeWaiting()
-      reject(error)
+      resolve(tempFilePath)
     })
   })
 }
