@@ -6,6 +6,7 @@ import {
   ComponentPublicInstance,
 } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
+import { invokeHook } from '@dcloudio/uni-core'
 import { removeLeadingSlash } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 
@@ -34,7 +35,7 @@ export function removeCurrentPages(delta: number = -1) {
     const routeKey = keys[i]
     const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
     pageVm.$.__isUnload = true
-    pageVm.$callHook('onUnload')
+    invokeHook(pageVm, 'onUnload')
     currentPagesMap.delete(routeKey)
   }
 }

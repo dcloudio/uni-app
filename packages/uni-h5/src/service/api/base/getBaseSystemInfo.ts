@@ -43,7 +43,7 @@ export function getWindowWidth(screenWidth: number) {
 }
 
 /**
- * 简易版systemInfo，主要为upx2px服务
+ * 简易版systemInfo，主要为upx2px,i18n服务
  * @returns
  */
 export function getBaseSystemInfo() {
@@ -53,6 +53,7 @@ export function getBaseSystemInfo() {
   )
   return {
     platform: isIOS ? 'ios' : 'other',
+    language: navigator.language,
     pixelRatio: window.devicePixelRatio,
     windowWidth,
   }

@@ -163,7 +163,7 @@ function assertType(
   } else if (expectedType === 'Array') {
     valid = isArray(value)
   } else {
-    if (__PLATFORM__ === 'app-plus') {
+    if (__PLATFORM__ === 'app') {
       // App平台ArrayBuffer等参数跨实例传输，无法通过 instanceof 识别
       valid = value instanceof type || toRawType(value) === getType(type)
     } else {

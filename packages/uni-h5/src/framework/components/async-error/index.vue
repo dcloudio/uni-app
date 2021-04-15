@@ -18,7 +18,7 @@ import {
   useI18n,
   initI18nAsyncMsgs
 } from '@dcloudio/uni-core'
-initI18nAsyncMsgs()
+/*#__PURE__*/ initI18nAsyncMsgs()
 export default {
   name: 'AsyncError',
   setup() {

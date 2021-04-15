@@ -64,7 +64,9 @@ function parsePagesJson(
 
   return `
 import { extend } from '@vue/shared'  
-import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
+import { ${
+    config.define!.__UNI_FEATURE_PAGES__ ? 'defineAsyncComponent, ' : ''
+  }resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { setupPage, PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
 ${cssCode}

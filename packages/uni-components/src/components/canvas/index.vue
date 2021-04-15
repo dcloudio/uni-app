@@ -1,21 +1,10 @@
 <template>
-  <uni-canvas
-    :canvas-id="canvasId"
-    :disable-scroll="disableScroll"
-    v-on="_listeners"
-  >
-    <canvas
-      ref="canvas"
-      width="300"
-      height="150"
-    />
+  <uni-canvas :canvas-id="canvasId" :disable-scroll="disableScroll" v-on="_listeners">
+    <canvas ref="canvas" width="300" height="150" />
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
       <slot />
     </div>
-    <v-uni-resize-sensor
-      ref="sensor"
-      @resize="_resize"
-    />
+    <v-uni-resize-sensor ref="sensor" @resize="_resize" />
   </uni-canvas>
 </template>
 <script>
@@ -25,16 +14,19 @@ import {
 
 import {
   pixelRatio,
-  wrapper
+  wrapper,
+  initHidpi
 } from '../../helpers/hidpi'
 
-function resolveColor (color) {
+/*#__PURE__*/ initHidpi()
+
+function resolveColor(color) {
   color = color.slice(0)
   color[3] = color[3] / 255
   return 'rgba(' + color.join(',') + ')'
 }
 
-function processTouches (target, touches) {
+function processTouches(target, touches) {
   return ([]).map.call(touches, (touch) => {
     var boundingClientRect = target.getBoundingClientRect()
     return {
@@ -46,7 +38,7 @@ function processTouches (target, touches) {
 }
 
 var tempCanvas
-function getTempCanvas (width = 0, height = 0) {
+function getTempCanvas(width = 0, height = 0) {
   if (!tempCanvas) {
     tempCanvas = document.createElement('canvas')
   }
@@ -68,16 +60,16 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       actionsWaiting: false
     }
   },
   computed: {
-    id () {
+    id() {
       return this.canvasId
     },
-    _listeners () {
+    _listeners() {
       var $listeners = Object.assign({}, this.$listeners)
       var events = ['touchstart', 'touchmove', 'touchend']
       events.forEach(event => {
@@ -100,22 +92,22 @@ export default {
       return $listeners
     }
   },
-  created () {
+  created() {
     this._actionsDefer = []
     this._images = {}
   },
-  mounted () {
+  mounted() {
     this._resize({
       width: this.$refs.sensor.$el.offsetWidth,
       height: this.$refs.sensor.$el.offsetHeight
     })
   },
-  beforeDestroy () {
+  beforeDestroy() {
     const canvas = this.$refs.canvas
     canvas.height = canvas.width = 0
   },
   methods: {
-    _handleSubscribe ({
+    _handleSubscribe({
       type,
       data = {}
     }) {
@@ -124,7 +116,7 @@ export default {
         method(data)
       }
     },
-    _resize () {
+    _resize() {
       var canvas = this.$refs.canvas
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d')
@@ -135,10 +127,10 @@ export default {
         wrapper(this.$refs.canvas)
       }
     },
-    _touchmove (event) {
+    _touchmove(event) {
       event.preventDefault()
     },
-    actionsChanged ({
+    actionsChanged({
       actions,
       reserve,
       callbackId
@@ -176,7 +168,7 @@ export default {
               color = resolveColor(data[1])
             } else if (data[0] === 'linear') {
               const LinearGradient = c2d.createLinearGradient(...data[1])
-              data[2].forEach(function (data2) {
+              data[2].forEach(function(data2) {
                 const offset = data2[0]
                 const color = resolveColor(data2[1])
                 LinearGradient.addColorStop(offset, color)
@@ -187,7 +179,7 @@ export default {
               const y = data[1][1]
               const r = data[1][2]
               const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r)
-              data[2].forEach(function (data2) {
+              data[2].forEach(function(data2) {
                 const offset = data2[0]
                 const color = resolveColor(data2[1])
                 LinearGradient.addColorStop(offset, color)
@@ -195,7 +187,7 @@ export default {
               color = LinearGradient
             } else if (data[0] === 'pattern') {
               const loaded = this.checkImageLoaded(data[1], actions.slice(index + 1), callbackId,
-                function (image) {
+                function(image) {
                   if (image) {
                     c2d[method1] = c2d.createPattern(image, data[2])
                   }
@@ -210,7 +202,7 @@ export default {
             c2d[method1] = data[0] / 255
           } else if (method1 === 'shadow') {
             var _ = ['shadowOffsetX', 'shadowOffsetY', 'shadowBlur', 'shadowColor']
-            data.forEach(function (color_, method_) {
+            data.forEach(function(color_, method_) {
               c2d[_[method_]] = _[method_] === 'shadowColor' ? resolveColor(color_) : color_
             })
           } else {
@@ -235,19 +227,19 @@ export default {
         } else if (method === 'fillPath' || method === 'strokePath') {
           method = method.replace(/Path/, '')
           c2d.beginPath()
-          data.forEach(function (data_) {
+          data.forEach(function(data_) {
             c2d[data_.method].apply(c2d, data_.data)
           })
           c2d[method]()
         } else if (method === 'fillText') {
           c2d.fillText.apply(c2d, data)
         } else if (method === 'drawImage') {
-          var A = (function () {
+          var A = (function() {
             var dataArray = [...data]
             var url = dataArray[0]
             var otherData = dataArray.slice(1)
             self._images = self._images || {}
-            if (!self.checkImageLoaded(url, actions.slice(index + 1), callbackId, function (
+            if (!self.checkImageLoaded(url, actions.slice(index + 1), callbackId, function(
               image) {
               if (image) {
                 c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)],
@@ -260,7 +252,7 @@ export default {
           }
         } else {
           if (method === 'clip') {
-            data.forEach(function (data_) {
+            data.forEach(function(data_) {
               c2d[data_.method].apply(c2d, data_.data)
             })
             c2d.clip()
@@ -278,9 +270,9 @@ export default {
         }, this.$page.id)
       }
     },
-    preloadImage: function (actions) {
+    preloadImage: function(actions) {
       var self = this
-      actions.forEach(function (action) {
+      actions.forEach(function(action) {
         var method = action.method
         var data = action.data
         var src = ''
@@ -299,28 +291,28 @@ export default {
         /**
          * 加载图像
          */
-        function loadImage () {
+        function loadImage() {
           self._images[src] = new Image()
-          self._images[src].onload = function () {
+          self._images[src].onload = function() {
             self._images[src].ready = true
           }
           /**
            * 从Blob加载
            * @param {Blob} blob
            */
-          function loadBlob (blob) {
+          function loadBlob(blob) {
             self._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob)
           }
           /**
            * 从本地文件加载
            * @param {string} path 文件路径
            */
-          function loadFile (path) {
+          function loadFile(path) {
             var bitmap = new plus.nativeObj.Bitmap('bitmap' + Date.now())
-            bitmap.load(path, function () {
+            bitmap.load(path, function() {
               self._images[src].src = bitmap.toBase64Data()
               bitmap.clear()
-            }, function () {
+            }, function() {
               bitmap.clear()
               console.error('preloadImage error')
             })
@@ -329,11 +321,11 @@ export default {
            * 从网络加载
            * @param {string} url 文件地址
            */
-          function loadUrl (url) {
-            function plusDownload () {
+          function loadUrl(url) {
+            function plusDownload() {
               plus.downloader.createDownload(url, {
                 filename: '_doc/uniapp_temp/download/'
-              }, function (d, status) {
+              }, function(d, status) {
                 if (status === 200) {
                   loadFile(d.filename)
                 } else {
@@ -344,12 +336,12 @@ export default {
             var xhr = new XMLHttpRequest()
             xhr.open('GET', url, true)
             xhr.responseType = 'blob'
-            xhr.onload = function () {
+            xhr.onload = function() {
               if (this.status === 200) {
                 loadBlob(this.response)
               }
             }
-            xhr.onerror = window.plus ? plusDownload : function () {
+            xhr.onerror = window.plus ? plusDownload : function() {
               self._images[src].src = src
             }
             xhr.send()
@@ -371,7 +363,7 @@ export default {
         }
       })
     },
-    checkImageLoaded: function (src, actions, callbackId, fn) {
+    checkImageLoaded: function(src, actions, callbackId, fn) {
       var self = this
       var image = this._images[src]
       if (image.ready) {
@@ -380,7 +372,7 @@ export default {
       } else {
         this._actionsDefer.unshift([actions, true])
         this.actionsWaiting = true
-        image.onload = function () {
+        image.onload = function() {
           image.ready = true
           fn(image)
           self.actionsWaiting = false
@@ -398,7 +390,7 @@ export default {
         return false
       }
     },
-    getImageData ({
+    getImageData({
       x = 0,
       y = 0,
       width,
@@ -468,7 +460,7 @@ export default {
         }, this.$page.id)
       }
     },
-    putImageData ({
+    putImageData({
       data,
       x,
       y,
@@ -501,7 +493,7 @@ export default {
         }
       }, this.$page.id)
     },
-    getDataUrl ({
+    getDataUrl({
       x = 0,
       y = 0,
       width,

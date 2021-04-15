@@ -59,7 +59,7 @@ const ICONS = {
   },
 }
 
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'Icon',
   props: {
     type: {

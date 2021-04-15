@@ -34,7 +34,7 @@ function normalizeText(text: string, { space, decode }: DecodeOptions) {
     .replace(/&apos;/g, "'")
 }
 
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'Text',
   props: {
     selectable: {

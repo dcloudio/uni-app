@@ -84,10 +84,10 @@ function normalizePageStyle(
 ) {
   if (pageStyle) {
     if (platform === 'h5') {
-      Object.assign(pageStyle, pageStyle['app-plus'] || {})
+      Object.assign(pageStyle, pageStyle['app'] || {})
     }
     Object.assign(pageStyle, pageStyle[platform] || {})
-    if (['h5', 'app-plus'].includes(platform)) {
+    if (['h5', 'app'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
     }
     return removePlatformStyle(pageStyle)
@@ -254,7 +254,7 @@ function normalizeFilepath(filepath: string) {
   return filepath
 }
 
-const platforms = ['h5', 'app-plus', 'mp-', 'quickapp']
+const platforms = ['h5', 'app', 'mp-', 'quickapp']
 
 function removePlatformStyle(pageStyle: UniApp.PagesJsonPageStyle) {
   Object.keys(pageStyle).forEach((name) => {

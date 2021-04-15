@@ -12,7 +12,20 @@ export declare function debounce(fn: Function, delay: number): {
     cancel(): void;
 };
 
+/**
+ * Decode text using `decodeURIComponent`. Returns the original text if it
+ * fails.
+ *
+ * @param text - string to decode
+ * @returns decoded string
+ */
+export declare function decode(text: string | number): string;
+
+export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
+
 export declare function getLen(str?: string): number;
+
+export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
 export declare function isBuiltInComponent(tag: string): boolean;
 
@@ -24,9 +37,20 @@ export declare const NAVBAR_HEIGHT = 44;
 
 export declare function normalizeDataset(el: Element): any;
 
+/**
+ * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
+ * @internal
+ *
+ * @param search - search string to parse
+ * @returns a query object
+ */
+export declare function parseQuery(search: string): Record<string, any>;
+
 export declare function passive(passive: boolean): {
     passive: boolean;
 };
+
+export declare const PLUS_RE: RegExp;
 
 export declare function plusReady(callback: () => void): void;
 

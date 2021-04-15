@@ -1,4 +1,5 @@
 import { ComponentPublicInstance } from 'vue'
+import { invokeArrayFns } from '@dcloudio/uni-shared'
 
 export function set(target: any, key: string | number, val: unknown) {
   return (target[key] = val)
@@ -18,11 +19,5 @@ export function callHook(
   args?: unknown
 ) {
   const hooks = (this.$ as any)[name]
-  let ret
-  if (hooks) {
-    for (let i = 0; i < hooks.length; i++) {
-      ret = hooks[i](args)
-    }
-  }
-  return ret
+  return hooks && invokeArrayFns(hooks, args)
 }

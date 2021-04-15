@@ -58,7 +58,7 @@ export function normalizeEvent(
     stopPropagation() {},
   }
 
-  if (__PLATFORM__ === 'app-plus' && currentTarget) {
+  if (__PLATFORM__ === 'app' && currentTarget) {
     const nid = currentTarget.getAttribute('_i')
     ;(ret as any).options = {
       nid,

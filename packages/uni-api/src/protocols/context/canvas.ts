@@ -50,7 +50,7 @@ export type API_TYPE_CANVAS_PUT_IMAGE_DATA = typeof uni.canvasPutImageData
 
 export const CanvasPutImageDataOptions = CanvasGetImageDataOptions
 
-export const CanvasPutImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_PUT_IMAGE_DATA> = extend(
+export const CanvasPutImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_PUT_IMAGE_DATA> = /*#__PURE__*/ extend(
   {
     data: {
       type: Uint8ClampedArray as any,

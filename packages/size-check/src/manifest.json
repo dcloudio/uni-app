@@ -6,7 +6,7 @@
   "versionCode": "100",
   "transformPx": false,
   /* 5+App特有相关 */
-  "app-plus": {
+  "app": {
     "usingComponents": true,
     "nvueStyleCompiler": "uni-app",
     "compilerVersion": 3,

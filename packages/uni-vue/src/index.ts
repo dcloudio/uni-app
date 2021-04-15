@@ -11,8 +11,11 @@ export function initApp(app: App) {
     appConfig.errorHandler = errorHandler
   }
   const globalProperties = appConfig.globalProperties
-  globalProperties.$hasHook = hasHook
-  globalProperties.$callHook = callHook
+  if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
+    // 小程序，待重构，不再挂靠全局
+    globalProperties.$hasHook = hasHook
+    globalProperties.$callHook = callHook
+  }
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions

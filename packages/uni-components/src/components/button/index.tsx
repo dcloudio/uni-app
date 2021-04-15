@@ -4,11 +4,11 @@ import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniFormCtx, uniFormKey } from '../form'
 
-if (__PLATFORM__ === 'app-plus') {
-  initI18nButtonMsgs()
+if (__PLATFORM__ === 'app') {
+  /*#__PURE__*/ initI18nButtonMsgs()
 }
 
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'Button',
   props: {
     id: {
@@ -67,7 +67,7 @@ export default defineComponent({
         }
         return
       }
-      if (__PLATFORM__ === 'app-plus' && props.openType === 'feedback') {
+      if (__PLATFORM__ === 'app' && props.openType === 'feedback') {
         openFeedback(
           t('uni.button.feedback.title'),
           t('uni.button.feedback.send')

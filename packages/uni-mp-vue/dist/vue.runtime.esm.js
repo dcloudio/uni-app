@@ -1,4 +1,4 @@
-import { isFunction, isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns, makeMap, isSet, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
+import { isFunction, isString, isSymbol, extend, isMap, isObject, toRawType, def, isArray, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
 import { injectHook as injectHook$1 } from 'vue';
 
@@ -13,6 +13,14 @@ function applyOptions$1(options, instance, publicThis) {
     });
 }
 
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+
 function set$2(target, key, val) {
     return (target[key] = val);
 }
@@ -25,24 +33,49 @@ function hasHook(name) {
 }
 function callHook(name, args) {
     const hooks = this.$[name];
-    let ret;
-    if (hooks) {
-        for (let i = 0; i < hooks.length; i++) {
-            ret = hooks[i](args);
-        }
+    return hooks && invokeArrayFns(hooks, args);
+}
+
+function getCurrentPage() {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    if (len) {
+        return pages[len - 1];
     }
-    return ret;
+}
+function getCurrentPageVm() {
+    const page = getCurrentPage();
+    if (page) {
+        return page.$vm;
+    }
+}
+function invokeHook(vm, name, args) {
+    if (isString(vm)) {
+        args = name;
+        name = vm;
+        vm = getCurrentPageVm();
+    }
+    if (!vm) {
+        return;
+    }
+    const hooks = vm.$[name];
+    return hooks && invokeArrayFns(hooks, args);
 }
 
 function errorHandler(err, instance, info) {
     if (!instance) {
         throw err;
     }
-    const appInstance = instance.$.appContext.$appInstance;
-    if (!appInstance) {
+    const app = getApp();
+    if (!app || !app.$vm) {
         throw err;
     }
-    appInstance.$callHook('onError', err, info);
+    if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
+        app.$vm.$callHook('onError', err, info);
+    }
+    else {
+        invokeHook(app.$vm, 'onError', err);
+    }
 }
 
 function initApp(app) {
@@ -51,8 +84,11 @@ function initApp(app) {
         appConfig.errorHandler = errorHandler;
     }
     const globalProperties = appConfig.globalProperties;
-    globalProperties.$hasHook = hasHook;
-    globalProperties.$callHook = callHook;
+    if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
+        // 小程序，待重构，不再挂靠全局
+        globalProperties.$hasHook = hasHook;
+        globalProperties.$callHook = callHook;
+    }
     if (__VUE_OPTIONS_API__) {
         globalProperties.$set = set$2;
         globalProperties.$applyOptions = applyOptions$1;
@@ -4032,8 +4068,8 @@ const prodEffectOptions = {
 function createDevEffectOptions(instance) {
     return {
         scheduler: queueJob,
-        onTrack: instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0,
-        onTrigger: instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0
+        onTrack: instance.rtc ? e => invokeArrayFns$1(instance.rtc, e) : void 0,
+        onTrigger: instance.rtg ? e => invokeArrayFns$1(instance.rtg, e) : void 0
     };
 }
 function setupRenderEffect(instance) {
@@ -4049,7 +4085,7 @@ function setupRenderEffect(instance) {
             const { bu, u } = instance;
             // beforeUpdate hook
             if (bu) {
-                invokeArrayFns(bu);
+                invokeArrayFns$1(bu);
             }
             patch(instance);
             // updated hook
@@ -4063,7 +4099,7 @@ function unmountComponent(instance) {
     const { bum, effects, update, um } = instance;
     // beforeUnmount hook
     if (bum) {
-        invokeArrayFns(bum);
+        invokeArrayFns$1(bum);
     }
     if (effects) {
         for (let i = 0; i < effects.length; i++) {

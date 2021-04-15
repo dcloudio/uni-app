@@ -2,11 +2,14 @@ import path from 'path'
 import slash from 'slash'
 import { UserConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '..'
+import { FEATURE_DEFINES } from '../utils'
 
 export function createBuild(
-  options: VitePluginUniResolvedOptions
+  options: VitePluginUniResolvedOptions,
+  features: FEATURE_DEFINES
 ): UserConfig['build'] {
   return {
+    polyfillDynamicImport: features.__UNI_FEATURE_PAGES__,
     rollupOptions: {
       output: {
         chunkFileNames(chunkInfo) {

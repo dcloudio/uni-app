@@ -28,7 +28,7 @@ const IndexOptions: ApiOptions<API_TYPE_REMOVE_TAB_BAR_BADGE> = {
 }
 export const API_SET_TAB_BAR_ITEM = 'setTabBarItem'
 export type API_TYPE_SET_TAB_BAR_ITEM = typeof uni.setTabBarItem
-export const SetTabBarItemProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_ITEM> = extend(
+export const SetTabBarItemProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_ITEM> = /*#__PURE__*/ extend(
   {
     text: String,
     iconPath: String,
@@ -40,7 +40,7 @@ export const SetTabBarItemProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_ITEM> = ext
 
 export const SetTabBarItemOptions: ApiOptions<API_TYPE_SET_TAB_BAR_ITEM> = {
   beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: extend(
+  formatArgs: /*#__PURE__*/ extend(
     {
       pagePath(value, params) {
         if (value) {
@@ -104,7 +104,7 @@ export const RemoveTabBarBadgeOptions: ApiOptions<API_TYPE_REMOVE_TAB_BAR_BADGE>
 
 export const API_SET_TAB_BAR_BADGE = 'setTabBarBadge'
 export type API_TYPE_SET_TAB_BAR_BADGE = typeof uni.setTabBarBadge
-export const SetTabBarBadgeProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_BADGE> = extend(
+export const SetTabBarBadgeProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_BADGE> = /*#__PURE__*/ extend(
   {
     text: {
       type: String,
@@ -115,7 +115,7 @@ export const SetTabBarBadgeProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_BADGE> = e
 )
 export const SetTabBarBadgeOptions: ApiOptions<API_TYPE_SET_TAB_BAR_BADGE> = {
   beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: extend(
+  formatArgs: /*#__PURE__*/ extend(
     {
       text(value, params) {
         if (getLen(value) >= 4) {

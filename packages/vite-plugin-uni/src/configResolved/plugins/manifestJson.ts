@@ -68,9 +68,9 @@ export function uniManifestJsonPlugin(
           defaultQQMapKey
 
         const flexDirection =
-          (manifest['app-plus'] &&
-            manifest['app-plus'].nvue &&
-            manifest['app-plus'].nvue['flex-direction']) ||
+          (manifest['app'] &&
+            manifest['app'].nvue &&
+            manifest['app'].nvue['flex-direction']) ||
           'column'
 
         return {

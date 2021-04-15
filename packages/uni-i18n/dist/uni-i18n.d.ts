@@ -29,7 +29,7 @@ export declare interface I18nOptions {
     watcher?: LocaleWatcher;
 }
 
-export declare function initVueI18n(messages?: LocaleMessages, fallbackLocale?: BuiltInLocale, locale?: BuiltInLocale): {
+export declare function initVueI18n(locale?: BuiltInLocale, messages?: LocaleMessages, fallbackLocale?: BuiltInLocale): {
     i18n: I18n;
     t(key: string, values?: Record<string, unknown> | unknown[] | undefined): string;
     add(locale: BuiltInLocale, message: Record<string, string>): void;

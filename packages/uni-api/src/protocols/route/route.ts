@@ -47,13 +47,13 @@ export const API_PRELOAD_PAGE = 'preloadPage'
 export type API_TYPE_PRELOAD_PAGE = typeof uni.preloadPage
 export const API_UN_PRELOAD_PAGE = 'unPreloadPage'
 export type API_TYPE_UN_PRELOAD_PAGE = typeof uni.unPreloadPage
-export const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = extend(
+export const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = /*#__PURE__*/ extend(
   {},
   BaseRouteProtocol,
   createAnimationProtocol(ANIMATION_IN)
 )
 
-export const NavigateBackProtocol: ApiProtocol<API_TYPE_NAVIGATE_BACK> = extend(
+export const NavigateBackProtocol: ApiProtocol<API_TYPE_NAVIGATE_BACK> = /*#__PURE__*/ extend(
   {
     delta: {
       type: Number,
@@ -177,7 +177,7 @@ function createNormalizeUrl(type: string) {
     if (type === API_UN_PRELOAD_PAGE) {
       return
     } else if (type === API_PRELOAD_PAGE) {
-      if (__PLATFORM__ === 'app-plus') {
+      if (__PLATFORM__ === 'app') {
         if (!routeOptions.meta.isNVue) {
           return 'can not preload vue page'
         }

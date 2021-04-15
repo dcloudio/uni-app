@@ -103,6 +103,13 @@ function getLen(str = '') {
 function removeLeadingSlash(str) {
     return str.indexOf('/') === 0 ? str.substr(1) : str;
 }
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -122,6 +129,69 @@ function stringifyQuery(obj, encodeStr = encode) {
             .join('&')
         : null;
     return res ? `?${res}` : '';
+}
+/**
+ * Decode text using `decodeURIComponent`. Returns the original text if it
+ * fails.
+ *
+ * @param text - string to decode
+ * @returns decoded string
+ */
+function decode(text) {
+    try {
+        return decodeURIComponent('' + text);
+    }
+    catch (err) { }
+    return '' + text;
+}
+function decodedQuery(query = {}) {
+    const decodedQuery = {};
+    Object.keys(query).forEach((name) => {
+        try {
+            decodedQuery[name] = decode(query[name]);
+        }
+        catch (e) {
+            decodedQuery[name] = query[name];
+        }
+    });
+    return decodedQuery;
+}
+const PLUS_RE = /\+/g; // %2B
+/**
+ * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
+ * @internal
+ *
+ * @param search - search string to parse
+ * @returns a query object
+ */
+function parseQuery(search) {
+    const query = {};
+    // avoid creating an object with an empty key and empty value
+    // because of split('&')
+    if (search === '' || search === '?')
+        return query;
+    const hasLeadingIM = search[0] === '?';
+    const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
+    for (let i = 0; i < searchParams.length; ++i) {
+        // pre decode the + into space
+        const searchParam = searchParams[i].replace(PLUS_RE, ' ');
+        // allow the = character
+        let eqPos = searchParam.indexOf('=');
+        let key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
+        let value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
+        if (key in query) {
+            // an extra variable for ts types
+            let currentValue = query[key];
+            if (!Array.isArray(currentValue)) {
+                currentValue = query[key] = [currentValue];
+            }
+            currentValue.push(value);
+        }
+        else {
+            query[key] = value;
+        }
+    }
+    return query;
 }
 
 function debounce(fn, delay) {
@@ -148,16 +218,21 @@ exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
+exports.PLUS_RE = PLUS_RE;
 exports.PRIMARY_COLOR = PRIMARY_COLOR;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.debounce = debounce;
+exports.decode = decode;
+exports.decodedQuery = decodedQuery;
 exports.getLen = getLen;
+exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
 exports.isNativeTag = isNativeTag;
 exports.normalizeDataset = normalizeDataset;
+exports.parseQuery = parseQuery;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;

@@ -170,6 +170,10 @@ function resolveManifestFeature(
   const manifest = parse(
     fs.readFileSync(path.join(options.inputDir, 'manifest.json'), 'utf8')
   )
+  if (options.command === 'build') {
+    // TODO 需要预编译一遍？
+    features.wxs = false
+  }
   if (
     manifest.h5 &&
     manifest.h5.router &&

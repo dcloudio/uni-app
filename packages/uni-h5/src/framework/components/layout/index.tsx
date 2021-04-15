@@ -35,9 +35,8 @@ const CSS_VARS = [
 
 export default defineComponent({
   name: 'Layout',
-  setup(props, { emit }) {
+  setup(_props, { emit }) {
     useCssVar()
-    useAppLifecycle()
     const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
       useKeepAliveRoute()) as KeepAliveRoute
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow()
@@ -62,18 +61,6 @@ import { updateCssVar } from '../../../helpers/dom'
 
 function useCssVar() {
   CSS_VARS.forEach((name) => updateCssVar(name, '0px'))
-}
-
-function useAppLifecycle() {
-  onMounted(() => {
-    document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') {
-        UniServiceJSBridge.emit('onAppEnterForeground')
-      } else {
-        UniServiceJSBridge.emit('onAppEnterBackground')
-      }
-    })
-  })
 }
 
 function useAppClass(showTabBar?: ComputedRef<boolean>) {

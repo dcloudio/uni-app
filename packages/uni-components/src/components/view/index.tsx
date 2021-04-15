@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 
 import { hoverProps, useHover } from '../../helpers/useHover'
 
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'View',
   props: extend({}, hoverProps),
   setup(props, { slots }) {

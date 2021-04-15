@@ -18,21 +18,21 @@ function initLocaleWatcher(appVm: any, i18n: I18n) {
     )
 }
 
-function getDefaultLocale() {
-  if (typeof navigator !== 'undefined') {
-    return (navigator as any).userLanguage || navigator.language
-  }
-  if (typeof plus !== 'undefined') {
-    // TODO 待调整为最新的获取语言代码
-    return plus.os.language
-  }
-  return uni.getSystemInfoSync().language
-}
+// function getDefaultLocale() {
+//   if (typeof navigator !== 'undefined') {
+//     return (navigator as any).userLanguage || navigator.language
+//   }
+//   if (typeof plus !== 'undefined') {
+//     // TODO 待调整为最新的获取语言代码
+//     return plus.os.language
+//   }
+//   return uni.getSystemInfoSync().language
+// }
 
 export function initVueI18n(
+  locale: BuiltInLocale = LOCALE_EN,
   messages: LocaleMessages = {},
-  fallbackLocale: BuiltInLocale = LOCALE_EN,
-  locale?: BuiltInLocale
+  fallbackLocale: BuiltInLocale = LOCALE_EN
 ) {
   const i18n = new I18n({
     locale: locale || fallbackLocale,
@@ -41,7 +41,7 @@ export function initVueI18n(
   })
   let t: Interpolate = (key, values) => {
     if (typeof getApp !== 'function') {
-      // app-plus view
+      // app view
       /* eslint-disable no-func-assign */
       t = function (key, values) {
         return i18n.t(key, values)
@@ -49,9 +49,9 @@ export function initVueI18n(
     } else {
       const appVm = getApp().$vm
       if (!appVm.$t || !appVm.$i18n) {
-        if (!locale) {
-          i18n.setLocale(getDefaultLocale())
-        }
+        // if (!locale) {
+        //   i18n.setLocale(getDefaultLocale())
+        // }
         /* eslint-disable no-func-assign */
         t = function (key, values) {
           return i18n.t(key, values)
