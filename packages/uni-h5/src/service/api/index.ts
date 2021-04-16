@@ -13,6 +13,7 @@ export * from './file/getFileInfo'
 export * from './file/openDocument'
 
 export * from './media/getImageInfo'
+export * from './media/getVideoInfo'
 export * from './media/chooseFile'
 export * from './media/chooseImage'
 export * from './media/chooseVideo'

@@ -29,6 +29,7 @@ export * from './protocols/media/chooseImage'
 export * from './protocols/media/chooseVideo'
 export * from './protocols/media/chooseFile'
 export * from './protocols/media/getImageInfo'
+export * from './protocols/media/getVideoInfo'
 
 export * from './protocols/network/request'
 export * from './protocols/network/downloadFile'
