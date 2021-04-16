@@ -524,6 +524,8 @@ uniCloud.callFunction({
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission）。`uni-id 3.0.0`起，如果配置`"removePermissionAndRoleFromToken": false`此选项不再生效	|
 | queryField	| Array| 否	|指定从哪些字段中比对username（传入参数均为username），不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
 
+> 如果希望使用queryField来允许用户同时使用多种方式登录，需要注意必须限制用户注册用户名不为邮箱格式且不为手机号格式，uni-id内部并未做出此类限制
+
 **响应参数**
 
 | 字段				| 类型	| 必填| 说明											|
