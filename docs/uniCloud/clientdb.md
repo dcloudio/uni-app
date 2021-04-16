@@ -2852,6 +2852,50 @@ res = {
 }
 ```
 
+**注意**
+
+运算方法中仅数据库字段可以直接去除引号作为变量书写，其他字符串仍要写成字符串形式
+
+例：
+
+数据库内有以下数据：
+
+```js
+{
+  "_id": 1,
+  "sales": [ 1.32, 6.93, 2.48, 2.82, 5.74 ]
+}
+{
+  "_id": 2,
+  "sales": [ 2.97, 7.13, 1.58, 6.37, 3.69 ]
+}
+```
+
+云函数内对以下数据中的sales字段取整
+
+```js
+const db = uniCloud.database()
+const $ = db.command.aggregate
+let res = await db.collection('stats').aggregate()
+  .project({
+    truncated: $.map({
+      input: '$sales',
+      as: 'num',
+      in: $.trunc('$$num'),
+    })
+  })
+  .end()
+```
+
+clientDB JQL语法内同样功能的实现
+
+```js
+const db = uniCloud.database()
+const res = await db.collection('stats')
+.field('map(sales,"num",trunc("$$num")) as truncated')
+.get()
+```
+
 ### 分组运算方法@accumulator
 
 分组运算方法是专用于统计汇总的数据库运算方法。它也是数据库的方法，而不是js的方法。
