@@ -21,16 +21,17 @@ exports.main = async (event, context) => {
 'use strict';
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
-  ...
+  //...
   //context中可获取客户端调用的上下文
+  let clientIP = context.CLIENTIP // 客户端ip信息
+  let clientUA = context.CLIENTUA // 客户端user-agent
+  let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
+  // 以下四个属性只有使用uni-app以callFunction方式调用才能获取
   let os = context.OS //客户端操作系统，返回值：android、ios	等
   let platform = context.PLATFORM //运行平台，返回值为 mp-weixin、app-plus等
   let appid = context.APPID // manifest.json中配置的appid
-  let clientIP = context.CLIENTIP // 客户端ip信息
-  let clientUA = context.CLIENTUA // 客户端user-agent
   let deviceId = context.DEVICEID // 客户端标识，新增于HBuilderX 3.1.0，同uni-app客户端getSystemInfo接口获取的deviceId
-  let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
-	... //其它业务代码
+	//... //其它业务代码
 }
 ```
 
@@ -69,7 +70,52 @@ exports.main = async (event, context) => {
 |uniCloud.logger			|云函数中打印日志到uniCloud日志记录系统（非HBuilderX控制台）[详情](uniCloud/cf-logger)	|
 |uniCloud.sendSms()			|发送短信 [详见](uniCloud/send-sms.md)													|
 
-	
+
+## 特殊属性
+
+**注意：下面所有的“客户端”均是相对于云函数而言，如果你使用自己的服务器调用云函数此时客户端是指你的服务器**
+
+### 获取客户端IP@clientip
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let clientIP = context.CLIENTIP // 客户端ip信息
+}
+```
+
+### 获取客户端user-agent@client-user-agent
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let clientUA = context.CLIENTUA // 客户端ip信息
+}
+```
+
+### 获取服务空间信息@context-space-info
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let spaceInfo = context.SPACEINFO // 当前环境信息 {spaceId:'xxx',provider:'tencent'}
+}
+```
+
+### 其他客户端信息@client-info
+
+**以下四个属性只有使用uni-app以callFunction方式调用才能获取**
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let os = context.OS //客户端操作系统，返回值：android、ios	等
+  let platform = context.PLATFORM //运行平台，返回值为 mp-weixin、app-plus等
+  let appid = context.APPID // manifest.json中配置的appid
+  let deviceId = context.DEVICEID // 客户端标识，新增于HBuilderX 3.1.0，同uni-app客户端getSystemInfo接口获取的deviceId
+}
+```
+
 ## 访问数据库
 
 云函数中支持访问本服务空间下的数据库，调用方式详见[规范](uniCloud/cf-database.md)
@@ -212,7 +258,7 @@ uniCloud.callFunction({
 
 ## 云函数中调用云函数@callbyfunction
 
-用法同客户端调用云函数，不支持callback形式。**云函数本地运行时使用callFunction会调用云端的云函数而不是本地云函数**
+用法同客户端调用云函数，不支持callback形式。**云函数本地运行时使用callFunction会调用云端的云函数而不是本地云函数，连接本地云函数调试时云函数内的callFunction会调用本地云函数**
 
 #### 请求参数
 
