@@ -19,7 +19,7 @@ export const getImageInfo = defineAsyncApi<API_TYPE_GET_IMAGE_INFO>(
         width: img.naturalWidth,
         height: img.naturalHeight,
         path: src.indexOf('/') === 0 ? getServiceAddress() + src : src,
-      } as UniApp.GetImageInfoSuccessData) // orientation和type是可选的，但GetImageInfoSuccessData定义的不对，暂时强制转换
+      })
     }
     img.onerror = function () {
       reject()

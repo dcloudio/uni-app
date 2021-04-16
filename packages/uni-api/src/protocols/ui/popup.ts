@@ -1,5 +1,5 @@
 import { hasOwn } from '@vue/shared'
-import { useI18n, initI18nShowModalMsgs } from '@dcloudio/uni-core'
+import { useI18n, initI18nShowModalMsgsOnce } from '@dcloudio/uni-core'
 import { PRIMARY_COLOR } from '@dcloudio//uni-shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 export const API_SHOW_MODAL = 'showModal'
@@ -14,15 +14,11 @@ export const ShowModalProtocol: ApiProtocol<API_TYPE_SHOW_MODAL> = {
   confirmText: String,
   confirmColor: String,
 }
-let isInitI18nShowModalMsgs = false
+
 export const ShowModalOptions: ApiOptions<API_TYPE_SHOW_MODAL> = {
   beforeInvoke() {
     // dynamic init (tree shaking)
-    if (isInitI18nShowModalMsgs) {
-      return
-    }
-    isInitI18nShowModalMsgs = true
-    initI18nShowModalMsgs()
+    initI18nShowModalMsgsOnce()
   },
   formatArgs: {
     title: '',

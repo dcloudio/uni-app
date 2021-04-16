@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {passive, invokeArrayFns, NAVBAR_HEIGHT, removeLeadingSlash, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen, updateElementStyle} from "@dcloudio/uni-shared";
+import {once, passive, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -151,6 +151,9 @@ class I18n {
   setLocale(locale) {
     const oldLocale = this.locale;
     this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+    if (!this.messages[this.locale]) {
+      this.messages[this.locale] = {};
+    }
     this.message = this.messages[this.locale];
     this.watchers.forEach((watcher) => {
       watcher(this.locale, oldLocale);
@@ -262,7 +265,31 @@ function normalizeMessages(namespace, messages) {
     return res;
   }, {});
 }
-function initI18nShowModalMsgs() {
+const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.async.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {
+      error: "The connection timed out, click the screen to try again."
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {
+      error: "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+    }));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {
+      error: "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"}));
+  }
+});
+const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showModal.";
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(LOCALE_EN, normalizeMessages(name, {cancel: "Cancel", confirm: "OK"}));
@@ -279,7 +306,7 @@ function initI18nShowModalMsgs() {
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A"}));
   }
-}
+});
 function E() {
 }
 E.prototype = {
@@ -1143,49 +1170,54 @@ function pruneCurrentPages() {
     }
   });
 }
-function getCurrentPages$1(isAll = false) {
-  pruneCurrentPages();
-  return [...currentPagesMap.values()];
+function getCurrentPagesMap() {
+  return currentPagesMap;
 }
-function removeAllCurrentPages() {
-  removeCurrentPages(getCurrentPages$1(true).length, true);
-}
-function removeCurrentPages(delta = 1, removeRouteCaches = false) {
-  const keys = [...currentPagesMap.keys()];
-  const start = keys.length - 1;
-  const end = start - delta;
-  for (let i2 = start; i2 > end; i2--) {
-    const routeKey = keys[i2];
-    const pageVm = currentPagesMap.get(routeKey);
-    pageVm.$.__isUnload = true;
-    invokeHook(pageVm, "onUnload");
-    currentPagesMap.delete(routeKey);
-    if (removeRouteCaches) {
-      const vnode = pageCacheMap.get(routeKey);
-      if (vnode) {
-        pageCacheMap.delete(routeKey);
-        routeCache.pruneCacheEntry(vnode);
+function getCurrentPages$1() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.$page.meta.isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
       }
+    } else {
+      curPages.push(page);
     }
   }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, "onUnload");
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
 }
 let id = history.state && history.state.__id__ || 1;
-function createPageState(type) {
+function createPageState(type, __id__) {
   return {
-    __id__: ++id,
+    __id__: __id__ || ++id,
     __type__: type
   };
 }
 function initPublicPage(route) {
   if (!route) {
-    const {path: path2} = __uniRoutes[0];
-    return {id, path: path2, route: path2.substr(1), fullPath: path2};
+    const {path: path2, alias} = __uniRoutes[0];
+    return {id, path: path2, route: alias.substr(1), fullPath: path2};
   }
   const {path} = route;
   return {
     id,
     path,
-    route: removeLeadingSlash(path),
+    route: route.meta.route,
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {},
     meta: usePageMeta()
@@ -1237,6 +1269,12 @@ function pruneRouteCache(key) {
   routeCache.forEach((vnode, key2) => {
     const cPageId = parseInt(key2.split(SEP)[1]);
     if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__) {
+        const {component} = vnode;
+        if (component && component.refs.page && component.refs.page.$page.meta.isTabBar) {
+          return;
+        }
+      }
       routeCache.delete(key2);
       routeCache.pruneCacheEntry(vnode);
       nextTick(() => pruneCurrentPages());
@@ -1261,6 +1299,15 @@ function createRouterOptions() {
 }
 function createAppRouter(router) {
   return router;
+}
+function removeCurrentPages(delta = 1) {
+  const keys = getCurrentPages$1();
+  const start = keys.length - 1;
+  const end = start - delta;
+  for (let i2 = start; i2 > end; i2--) {
+    const page = keys[i2].$page;
+    removePage(normalizeRouteKey(page.path, page.id), false);
+  }
 }
 function initHistory() {
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory() : createWebHashHistory();
@@ -1331,6 +1378,9 @@ function setupPage(comp) {
     init: initPage,
     setup(instance) {
       const route = usePageRoute();
+      if (route.meta.isTabBar) {
+        instance.__isActive = true;
+      }
       onBeforeMount(() => {
         const {onLoad, onShow} = instance;
         onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
@@ -4457,6 +4507,8 @@ const API_ON_COMPASS = "onCompass";
 const API_OFF_COMPASS = "offCompass";
 const API_START_COMPASS = "startCompass";
 const API_STOP_COMPASS = "stopCompass";
+const API_VIBRATE_SHORT = "vibrateShort";
+const API_VIBRATE_LONG = "vibrateLong";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -4913,10 +4965,7 @@ function createNormalizeUrl(type) {
     }
     url = getRealRoute(url);
     const pagePath = url.split("?")[0];
-    if (url === "/") {
-      url = __uniRoutes[0].path;
-    }
-    const routeOptions = __uniRoutes.find(({path}) => path === pagePath);
+    const routeOptions = __uniRoutes.find(({path, alias}) => path === pagePath || alias === pagePath);
     if (!routeOptions) {
       return "page `" + url + "` is not found";
     }
@@ -4933,7 +4982,7 @@ function createNormalizeUrl(type) {
       url = pagePath;
     }
     if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.path, "/");
+      url = url.replace(routeOptions.alias, "/");
     }
     params.url = encodeQueryString(url);
     if (type === API_UN_PRELOAD_PAGE) {
@@ -5007,14 +5056,9 @@ const ShowModalProtocol = {
   confirmText: String,
   confirmColor: String
 };
-let isInitI18nShowModalMsgs = false;
 const ShowModalOptions = {
   beforeInvoke() {
-    if (isInitI18nShowModalMsgs) {
-      return;
-    }
-    isInitI18nShowModalMsgs = true;
-    initI18nShowModalMsgs();
+    initI18nShowModalMsgsOnce();
   },
   formatArgs: {
     title: "",
@@ -10822,6 +10866,21 @@ const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
   }
   resolve();
 });
+const _isSupport = !!window.navigator.vibrate;
+const vibrateShort = defineAsyncApi(API_VIBRATE_SHORT, (args, {resolve, reject}) => {
+  if (_isSupport && window.navigator.vibrate(15)) {
+    resolve();
+  } else {
+    reject("vibrateLong:fail");
+  }
+});
+const vibrateLong = defineAsyncApi(API_VIBRATE_LONG, (args, {resolve, reject}) => {
+  if (_isSupport && window.navigator.vibrate(400)) {
+    resolve();
+  } else {
+    reject("vibrateLong:fail");
+  }
+});
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
@@ -11903,13 +11962,13 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, rejec
   getApp().$router.go(-delta);
   return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
-function navigate(type, url) {
+function navigate(type, url, __id__) {
   const router = getApp().$router;
   return new Promise((resolve, reject) => {
     router[type === "navigateTo" ? "push" : "replace"]({
       path: url,
       force: true,
-      state: createPageState(type)
+      state: createPageState(type, __id__)
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
         return reject(failure.message);
@@ -11919,15 +11978,60 @@ function navigate(type, url) {
   });
 }
 const navigateTo = defineAsyncApi(API_NAVIGATE_TO, ({url}, {resolve, reject}) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = page.$page;
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
 const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => {
-  removeCurrentPages(1, true);
-  return navigate(API_REDIRECT_TO, url).then(resolve).catch(reject);
+  return removeLastPage(), navigate(API_REDIRECT_TO, url).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
 const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => {
-  removeAllCurrentPages();
-  return navigate(API_RE_LAUNCH, url).then(resolve).catch(reject);
+  return removeAllPages(), navigate(API_RE_LAUNCH, url).then(resolve).catch(reject);
 }, ReLaunchProtocol, ReLaunchOptions);
-const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => navigate(API_SWITCH_TAB, url).then(resolve).catch(reject), SwitchTabProtocol, SwitchTabOptions);
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    const pageMeta = page.$page.meta;
+    if (!pageMeta.isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$page.meta.isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, "onHide");
+  }
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = page.$page;
+    if ($page.path === url) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
+  return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
+}, SwitchTabProtocol, SwitchTabOptions);
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
     return reject("page not found");
@@ -12119,6 +12223,8 @@ var api = /* @__PURE__ */ Object.freeze({
   offCompassChange,
   startCompass,
   stopCompass,
+  vibrateShort,
+  vibrateLong,
   setStorageSync,
   setStorage,
   getStorageSync,
@@ -13172,6 +13278,7 @@ var index_vue_vue_type_style_index_0_lang$1 = "\n.uni-async-error {\r\n  positio
 const _sfc_main$1 = {
   name: "AsyncError",
   setup() {
+    initI18nAsyncMsgsOnce();
     const {t: t2} = useI18n();
     return {
       $$t: t2,
@@ -13200,4 +13307,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe, vibrateLong, vibrateShort};

@@ -42,6 +42,7 @@ function generateI18nCode(namespace, modules) {
     `
 // This file is created by scripts/i18n.js
 // Do not modify this file!!!!!!!!!
+import { once } from '@dcloudio/uni-shared'
 import {
     LOCALE_EN,
     LOCALE_ES,
@@ -68,12 +69,14 @@ import {
 }
 
 function generateI18nModuleCode(namespace, name, localeMessages) {
-  return `export function initI18n${capitalize(name)}Msgs() {
+  return `export const initI18n${capitalize(
+    name
+  )}MsgsOnce = /*#__PURE__*/ once(()=> {
   const name = '${namespace}.${name}.'      
 ${Object.keys(localeMessages)
   .map((locale) => generateI18nModuleLocaleCode(locale, localeMessages[locale]))
   .join('')}
-}
+})
 `
 }
 

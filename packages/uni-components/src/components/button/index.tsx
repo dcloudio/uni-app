@@ -1,12 +1,8 @@
 import { defineComponent, inject } from 'vue'
-import { useI18n, initI18nButtonMsgs } from '@dcloudio/uni-core'
+import { useI18n, initI18nButtonMsgsOnce } from '@dcloudio/uni-core'
 import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniFormCtx, uniFormKey } from '../form'
-
-if (__PLATFORM__ === 'app') {
-  /*#__PURE__*/ initI18nButtonMsgs()
-}
 
 export default /*#__PURE__*/ defineComponent({
   name: 'Button',
@@ -45,6 +41,9 @@ export default /*#__PURE__*/ defineComponent({
     },
   },
   setup(props, { slots }) {
+    if (__PLATFORM__ === 'app') {
+      initI18nButtonMsgsOnce()
+    }
     const uniForm = inject<UniFormCtx>(
       uniFormKey,
       (false as unknown) as UniFormCtx

@@ -22,3 +22,14 @@ export function updateElementStyle(
     element.style[attrName] = styles[attrName]!
   }
 }
+
+export function once(fn: (...args: any[]) => any, ctx: unknown = null) {
+  let res: any
+  return (...args: any[]) => {
+    if (fn) {
+      res = fn.apply(ctx, args)
+      fn = null as any
+    }
+    return res
+  }
+}

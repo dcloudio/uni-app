@@ -4,10 +4,10 @@ import {
   computed,
   ConcreteComponent,
   ComponentPublicInstance,
+  ComponentInternalInstance,
 } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 import { invokeHook } from '@dcloudio/uni-core'
-import { removeLeadingSlash } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import { NavigateType } from '../../service/api/route/utils'
 
@@ -23,57 +23,60 @@ function pruneCurrentPages() {
   })
 }
 
-export function getCurrentPages(isAll: boolean = false) {
-  pruneCurrentPages()
-  return [...currentPagesMap.values()]
+export function getCurrentPagesMap() {
+  return currentPagesMap
 }
 
-export function removeAllCurrentPages() {
-  removeCurrentPages(getCurrentPages(true).length, true)
-}
-
-export function removeCurrentPages(
-  delta: number = 1,
-  removeRouteCaches = false
-) {
-  const keys = [...currentPagesMap.keys()]
-  const start = keys.length - 1
-  const end = start - delta
-  for (let i = start; i > end; i--) {
-    const routeKey = keys[i]
-    const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
-    pageVm.$.__isUnload = true
-    invokeHook(pageVm, 'onUnload')
-    currentPagesMap.delete(routeKey)
-    if (removeRouteCaches) {
-      const vnode = pageCacheMap.get(routeKey)
-      if (vnode) {
-        pageCacheMap.delete(routeKey)
-        routeCache.pruneCacheEntry!(vnode)
+export function getCurrentPages() {
+  const curPages: Page.PageInstance[] = []
+  const pages = currentPagesMap.values()
+  for (const page of pages) {
+    if (page.$page.meta.isTabBar) {
+      if ((page as ComponentPublicInstance).$.__isActive) {
+        curPages.push(page)
       }
+    } else {
+      curPages.push(page)
     }
   }
+  return curPages
+}
+
+function removeRouteCache(routeKey: string) {
+  const vnode = pageCacheMap.get(routeKey)
+  if (vnode) {
+    pageCacheMap.delete(routeKey)
+    routeCache.pruneCacheEntry!(vnode)
+  }
+}
+
+export function removePage(routeKey: string, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  pageVm.$.__isUnload = true
+  invokeHook(pageVm, 'onUnload')
+  currentPagesMap.delete(routeKey)
+  removeRouteCaches && removeRouteCache(routeKey)
 }
 
 let id = (history.state && history.state.__id__) || 1
 
-export function createPageState(type: NavigateType) {
+export function createPageState(type: NavigateType, __id__?: number) {
   return {
-    __id__: ++id,
+    __id__: __id__ || ++id,
     __type__: type,
   }
 }
 
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
   if (!route) {
-    const { path } = __uniRoutes[0]
-    return { id, path, route: path.substr(1), fullPath: path }
+    const { path, alias } = __uniRoutes[0]
+    return { id, path, route: alias!.substr(1), fullPath: path }
   }
   const { path } = route
   return {
     id,
     path: path,
-    route: removeLeadingSlash(path),
+    route: route.meta.route,
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {}, // $route.query
     meta: usePageMeta(),
@@ -91,7 +94,7 @@ export function initPage(vm: ComponentPublicInstance) {
   )
 }
 
-function normalizeRouteKey(path: string, id: number) {
+export function normalizeRouteKey(path: string, id: number) {
   return path + SEP + id
 }
 
@@ -149,6 +152,17 @@ function pruneRouteCache(key: string) {
   routeCache.forEach((vnode, key) => {
     const cPageId = parseInt((key as string).split(SEP)[1])
     if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__) {
+        // tabBar keep alive
+        const { component } = vnode
+        if (
+          component &&
+          component.refs.page &&
+          (component.refs.page as ComponentPublicInstance).$page.meta.isTabBar
+        ) {
+          return
+        }
+      }
       routeCache.delete(key)
       routeCache.pruneCacheEntry!(vnode)
       nextTick(() => pruneCurrentPages())

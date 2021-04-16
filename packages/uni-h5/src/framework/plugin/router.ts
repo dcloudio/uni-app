@@ -5,7 +5,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from 'vue-router'
-import { removeCurrentPages } from './page'
+import { getCurrentPages, normalizeRouteKey, removePage } from './page'
 
 export function initRouter(app: App) {
   app.use(createAppRouter(createRouter(createRouterOptions())))
@@ -33,6 +33,16 @@ function createRouterOptions(): RouterOptions {
 
 function createAppRouter(router: Router) {
   return router
+}
+
+function removeCurrentPages(delta: number = 1) {
+  const keys = getCurrentPages()
+  const start = keys.length - 1
+  const end = start - delta
+  for (let i = start; i > end; i--) {
+    const page = keys[i].$page
+    removePage(normalizeRouteKey(page.path, page.id), false)
+  }
 }
 
 function initHistory() {

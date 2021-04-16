@@ -111,6 +111,16 @@ function updateElementStyle(element, styles) {
         element.style[attrName] = styles[attrName];
     }
 }
+function once(fn, ctx = null) {
+    let res;
+    return (...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    };
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -214,4 +224,4 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, once, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };

@@ -140,11 +140,9 @@ function createNormalizeUrl(type: string) {
     url = getRealRoute(url)
     const pagePath = url.split('?')[0]
     // 匹配路由是否存在
-    if (url === '/') {
-      // 首页
-      url = __uniRoutes[0].path
-    }
-    const routeOptions = __uniRoutes.find(({ path }) => path === pagePath)
+    const routeOptions = __uniRoutes.find(
+      ({ path, alias }) => path === pagePath || alias === pagePath
+    )
 
     if (!routeOptions) {
       return 'page `' + url + '` is not found'
@@ -172,7 +170,7 @@ function createNormalizeUrl(type: string) {
 
     // 首页自动格式化为`/`
     if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.path, '/')
+      url = url.replace(routeOptions.alias!, '/')
     }
 
     // 参数格式化

@@ -1,5 +1,6 @@
 // This file is created by scripts/i18n.js
 // Do not modify this file!!!!!!!!!
+import { once } from '@dcloudio/uni-shared'
 import {
   LOCALE_EN,
   LOCALE_ES,
@@ -18,7 +19,7 @@ function normalizeMessages(
     return res
   }, {})
 }
-export function initI18nAppMsgs() {
+export const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.app.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -52,8 +53,8 @@ export function initI18nAppMsgs() {
       normalizeMessages(name, { quit: '再按一次退出應用' })
     )
   }
-}
-export function initI18nAsyncMsgs() {
+})
+export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.async.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -92,8 +93,8 @@ export function initI18nAsyncMsgs() {
       normalizeMessages(name, { error: '連接服務器超時，點擊屏幕重試' })
     )
   }
-}
-export function initI18nShowActionSheetMsgs() {
+})
+export const initI18nShowActionSheetMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showActionSheet.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel' }))
@@ -110,8 +111,8 @@ export function initI18nShowActionSheetMsgs() {
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消' }))
   }
-}
-export function initI18nShowToastMsgs() {
+})
+export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showToast.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -154,8 +155,8 @@ export function initI18nShowToastMsgs() {
       })
     )
   }
-}
-export function initI18nShowLoadingMsgs() {
+})
+export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showLoading.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -199,8 +200,8 @@ export function initI18nShowLoadingMsgs() {
       })
     )
   }
-}
-export function initI18nShowModalMsgs() {
+})
+export const initI18nShowModalMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showModal.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -232,8 +233,8 @@ export function initI18nShowModalMsgs() {
       normalizeMessages(name, { cancel: '取消', confirm: '確定' })
     )
   }
-}
-export function initI18nChooseImageMsgs() {
+})
+export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.chooseImage.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -285,8 +286,8 @@ export function initI18nChooseImageMsgs() {
       })
     )
   }
-}
-export function initI18nChooseVideoMsgs() {
+})
+export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.chooseVideo.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -338,8 +339,8 @@ export function initI18nChooseVideoMsgs() {
       })
     )
   }
-}
-export function initI18nPreviewImageMsgs() {
+})
+export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.previewImage.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -396,8 +397,8 @@ export function initI18nPreviewImageMsgs() {
       })
     )
   }
-}
-export function initI18nSetClipboardDataMsgs() {
+})
+export const initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.setClipboardData.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(LOCALE_EN, normalizeMessages(name, { success: 'Content copied' }))
@@ -417,8 +418,8 @@ export function initI18nSetClipboardDataMsgs() {
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { success: '內容已復制' }))
   }
-}
-export function initI18nScanCodeMsgs() {
+})
+export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.scanCode.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -480,45 +481,47 @@ export function initI18nScanCodeMsgs() {
       })
     )
   }
-}
-export function initI18nStartSoterAuthenticationMsgs() {
-  const name = 'uni.startSoterAuthentication.'
-  if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
-      LOCALE_EN,
-      normalizeMessages(name, { authContent: 'Fingerprint recognition' })
-    )
+})
+export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
+  () => {
+    const name = 'uni.startSoterAuthentication.'
+    if (__UNI_FEATURE_I18N_EN__) {
+      i18n.add(
+        LOCALE_EN,
+        normalizeMessages(name, { authContent: 'Fingerprint recognition' })
+      )
+    }
+    if (__UNI_FEATURE_I18N_ES__) {
+      i18n.add(
+        LOCALE_ES,
+        normalizeMessages(name, {
+          authContent: 'Reconocimiento de huellas dactilares',
+        })
+      )
+    }
+    if (__UNI_FEATURE_I18N_FR__) {
+      i18n.add(
+        LOCALE_FR,
+        normalizeMessages(name, {
+          authContent: "Reconnaissance de l'empreinte digitale",
+        })
+      )
+    }
+    if (__UNI_FEATURE_I18N_ZH_HANS__) {
+      i18n.add(
+        LOCALE_ZH_HANS,
+        normalizeMessages(name, { authContent: '指纹识别中...' })
+      )
+    }
+    if (__UNI_FEATURE_I18N_ZH_HANT__) {
+      i18n.add(
+        LOCALE_ZH_HANT,
+        normalizeMessages(name, { authContent: '指紋識別中...' })
+      )
+    }
   }
-  if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
-      LOCALE_ES,
-      normalizeMessages(name, {
-        authContent: 'Reconocimiento de huellas dactilares',
-      })
-    )
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
-      LOCALE_FR,
-      normalizeMessages(name, {
-        authContent: "Reconnaissance de l'empreinte digitale",
-      })
-    )
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, { authContent: '指纹识别中...' })
-    )
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, { authContent: '指紋識別中...' })
-    )
-  }
-}
-export function initI18nPickerMsgs() {
+)
+export const initI18nPickerMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.picker.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -550,8 +553,8 @@ export function initI18nPickerMsgs() {
       normalizeMessages(name, { done: '完成', cancel: '取消' })
     )
   }
-}
-export function initI18nVideoMsgs() {
+})
+export const initI18nVideoMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.video.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -583,8 +586,8 @@ export function initI18nVideoMsgs() {
       normalizeMessages(name, { danmu: '彈幕', volume: '音量' })
     )
   }
-}
-export function initI18nButtonMsgs() {
+})
+export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.button.'
   if (__UNI_FEATURE_I18N_EN__) {
     i18n.add(
@@ -631,4 +634,4 @@ export function initI18nButtonMsgs() {
       })
     )
   }
-}
+})

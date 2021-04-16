@@ -37,6 +37,8 @@ export declare const NAVBAR_HEIGHT = 44;
 
 export declare function normalizeDataset(el: Element): any;
 
+export declare function once(fn: (...args: any[]) => any, ctx?: unknown): (...args: any[]) => any;
+
 /**
  * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
  * @internal

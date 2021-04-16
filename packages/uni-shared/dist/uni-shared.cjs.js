@@ -115,6 +115,16 @@ function updateElementStyle(element, styles) {
         element.style[attrName] = styles[attrName];
     }
 }
+function once(fn, ctx = null) {
+    let res;
+    return (...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    };
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -237,6 +247,7 @@ exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
 exports.isNativeTag = isNativeTag;
 exports.normalizeDataset = normalizeDataset;
+exports.once = once;
 exports.parseQuery = parseQuery;
 exports.passive = passive;
 exports.plusReady = plusReady;

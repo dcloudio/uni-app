@@ -72,6 +72,10 @@ export function setupPage(comp: any) {
     init: initPage,
     setup(instance) {
       const route = usePageRoute()
+      if (route.meta.isTabBar) {
+        //初始化时，状态肯定是激活
+        instance.__isActive = true
+      }
       onBeforeMount(() => {
         const { onLoad, onShow } = instance
         onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))

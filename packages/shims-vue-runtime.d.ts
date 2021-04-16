@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
   interface ComponentInternalInstance extends UniLifecycleHookInstance {
     __isUnload: boolean
     __isVisible: boolean
+    __isActive?: boolean // tabBar
   }
 
   export const callSyncHook: (

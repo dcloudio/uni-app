@@ -108,6 +108,10 @@ export class I18n {
   setLocale(locale: string) {
     const oldLocale = this.locale
     this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale
+    if (!this.messages[this.locale]) {
+      // 可能初始化时不存在
+      this.messages[this.locale] = {}
+    }
     this.message = this.messages[this.locale]!
     this.watchers.forEach((watcher) => {
       watcher(this.locale, oldLocale)
