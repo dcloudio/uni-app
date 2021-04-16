@@ -52,25 +52,25 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 
 至此，就已经完成了通用链接的配置全过程，云打包后生效。
 
-##### 其他相关
-###### 客户端处理通用链接。
+#### 其他相关
+##### 客户端处理通用链接。
 可通过5+ API的plus.runtime.launcher判断应用启动来源，如果其值为"uniLink"则表示通过通用链接启动应。这时可通过5+ API的plus.runtime.arguments获取启动参数，通用链接启动的情况将返回完整的通用链接地址。
 例：HBuilderX中自带的默认真机运行基座HBuilderX注册的通用链接:[https://demo.dcloud.net.cn/ulink/](https://demo.dcloud.net.cn/ulink/)
 
-###### 通用链接生成原理：
+##### 通用链接生成原理：
 1. 选择云空间获取云空间的默认/自定义域名
 2. 按提前制定的规范（uni-universallinks/DCloud appid）拼接URL
 3. 根据现有参数自动生成通用链接相关参数到manifest.json
 4. 发起云打包时读取证书的profile文件生成apple-app-site-association并部署到前面选定的云空间根目录的.well-known目录下(请勿删除该文件，否则通用链接将失效)
 
-##### 注意事项：
+###### 注意事项：
 - 通用链接指向的路径可以为空，他只是一种信息传递方式。可以简单地理解为：通过解析URL的“/”后的参数到apple-app-site-association中找到指定的包名并唤醒对应的APP
 - 通用链接内容保存在manifest.json中"云打包后生效"，被手机读取的时机是应用被安装的时候。如果你的通用链接内容有变化，你需要重新提交云打包，并重新安装一次应用才能生效
 - 通用链接最终托管在服务端，如有变动注意缓存的清理，例如尝试重启手机等操作
 
 >如果你是本地离线打包或者由于某种原因你需要用传统的方式：私有化部署服务器来托管apple-app-site-association文件创建通用链接。你仍然可以通过手动配置manifest.json实现。详情：[https://ask.dcloud.net.cn/article/36393#unilink](https://ask.dcloud.net.cn/article/36393#unilink)
 
-#### 常见问题
+##### 常见问题
 1. 如何验证通用链接已经生效，有什么表现或者测试方案
 
 	你可以将通用链接输入到iphone自带Safari浏览器中，下拉即可看到通用链接对应到应用名称和一个打开按钮，点击按钮即可直接在浏览器打开对应的APP。详情：[点此查看演示视频](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/4e920b86-0f67-45ac-81f6-6b97f87ff0ae.mp4)
