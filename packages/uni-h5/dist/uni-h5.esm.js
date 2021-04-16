@@ -577,7 +577,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
@@ -585,10 +585,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function findUniTarget($event, $el) {
@@ -1074,7 +1074,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.height = rpx2px(refreshOptions.height);
       refreshOptions.range = rpx2px(refreshOptions.range);
@@ -3794,6 +3794,7 @@ function decode(base64) {
   }
   return arraybuffer;
 }
+const CHOOSE_SIZE_TYPES = ["original", "compressed"];
 const CHOOSE_SOURCE_TYPES = ["album", "camera"];
 const HTTP_METHODS = [
   "GET",
@@ -4491,6 +4492,60 @@ const GetLocationOptions = {
 const GetLocationProtocol = {
   type: String,
   altitude: Boolean
+};
+const API_CHOOSE_IMAGE = "chooseImage";
+const ChooseImageOptions = {
+  formatArgs: {
+    count(value, params) {
+      if (!value || value <= 0) {
+        params.count = 9;
+      }
+    },
+    sizeType(sizeType, params) {
+      params.sizeType = elemsInArray(sizeType, CHOOSE_SIZE_TYPES);
+    },
+    sourceType(sourceType, params) {
+      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+    },
+    extension(extension, params) {
+      if (extension instanceof Array && extension.length === 0) {
+        return "param extension should not be empty.";
+      }
+      if (!extension)
+        params.extension = [""];
+    }
+  }
+};
+const ChooseImageProtocol = {
+  count: Number,
+  sizeType: [Array, String],
+  sourceType: Array,
+  extension: Array
+};
+const API_CHOOSE_VIDEO = "chooseVideo";
+const ChooseVideoOptions = {
+  formatArgs: {
+    sourceType(sourceType, params) {
+      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+    },
+    compressed: true,
+    maxDuration: 60,
+    camera: "back",
+    extension(extension, params) {
+      if (extension instanceof Array && extension.length === 0) {
+        return "param extension should not be empty.";
+      }
+      if (!extension)
+        params.extension = [""];
+    }
+  }
+};
+const ChooseVideoProtocol = {
+  sourceType: Array,
+  compressed: Boolean,
+  maxDuration: Number,
+  camera: String,
+  extension: Array
 };
 const API_CHOOSE_FILE = "chooseFile";
 const CHOOSE_MEDIA_TYPE = [
@@ -10426,7 +10481,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -10539,12 +10594,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -10564,10 +10619,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -10787,6 +10842,11 @@ function fileToUrl(file) {
   files[url] = file;
   return url;
 }
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
 const getFileInfo = defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, reject}) => {
   urlToFile(filePath).then((res) => {
     resolve({
@@ -10943,7 +11003,6 @@ const chooseFile = defineAsyncApi(API_CHOOSE_FILE, ({
       }
     }
     const res = {
-      errMsg: "chooseFile:ok",
       get tempFilePaths() {
         return tempFiles.map(({path}) => path);
       },
@@ -10953,6 +11012,105 @@ const chooseFile = defineAsyncApi(API_CHOOSE_FILE, ({
   });
   fileInput.click();
 }, ChooseFileProtocol, ChooseFileOptions);
+let imageInput = null;
+const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({
+  count,
+  sourceType,
+  extension
+}, {resolve, reject}) => {
+  if (imageInput) {
+    document.body.removeChild(imageInput);
+    imageInput = null;
+  }
+  imageInput = _createInput({
+    count,
+    sourceType,
+    extension,
+    type: "image"
+  });
+  document.body.appendChild(imageInput);
+  imageInput.addEventListener("change", function(event2) {
+    const eventTarget = event2.target;
+    const tempFiles = [];
+    if (eventTarget && eventTarget.files) {
+      const fileCount = eventTarget.files.length;
+      for (let i2 = 0; i2 < fileCount; i2++) {
+        const file = eventTarget.files[i2];
+        let filePath;
+        Object.defineProperty(file, "path", {
+          get() {
+            filePath = filePath || fileToUrl(file);
+            return filePath;
+          }
+        });
+        if (i2 < count)
+          tempFiles.push(file);
+      }
+    }
+    const res = {
+      get tempFilePaths() {
+        return tempFiles.map(({path}) => path);
+      },
+      tempFiles
+    };
+    resolve(res);
+  });
+  imageInput.click();
+}, ChooseImageProtocol, ChooseImageOptions);
+let videoInput = null;
+const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {resolve, reject}) => {
+  if (videoInput) {
+    document.body.removeChild(videoInput);
+    videoInput = null;
+  }
+  videoInput = _createInput({
+    sourceType,
+    extension,
+    type: "video"
+  });
+  document.body.appendChild(videoInput);
+  videoInput.addEventListener("change", function(event2) {
+    const eventTarget = event2.target;
+    const file = eventTarget.files[0];
+    let filePath = "";
+    const callbackResult = {
+      tempFilePath: filePath,
+      tempFile: file,
+      size: file.size,
+      duration: 0,
+      width: 0,
+      height: 0,
+      name: file.name
+    };
+    Object.defineProperty(callbackResult, "tempFilePath", {
+      get() {
+        filePath = filePath || fileToUrl(this.tempFile);
+        return filePath;
+      }
+    });
+    const video = document.createElement("video");
+    if (video.onloadedmetadata !== void 0) {
+      const filePath2 = fileToUrl(file);
+      video.onloadedmetadata = function() {
+        revokeObjectURL(filePath2);
+        resolve(Object.assign(callbackResult, {
+          duration: video.duration || 0,
+          width: video.videoWidth || 0,
+          height: video.videoHeight || 0
+        }));
+      };
+      setTimeout(() => {
+        video.onloadedmetadata = null;
+        revokeObjectURL(filePath2);
+        resolve(callbackResult);
+      }, 300);
+      video.src = filePath2;
+    } else {
+      resolve(callbackResult);
+    }
+  });
+  videoInput.click();
+}, ChooseVideoProtocol, ChooseVideoOptions);
 const request = defineTaskApi(API_REQUEST, ({
   url,
   data,
@@ -11767,6 +11925,8 @@ var api = /* @__PURE__ */ Object.freeze({
   openDocument,
   getImageInfo,
   chooseFile,
+  chooseImage,
+  chooseVideo,
   request,
   downloadFile,
   uploadFile,
@@ -12831,4 +12991,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};

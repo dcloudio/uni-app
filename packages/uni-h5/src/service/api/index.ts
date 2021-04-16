@@ -12,6 +12,8 @@ export * from './file/openDocument'
 
 export * from './media/getImageInfo'
 export * from './media/chooseFile'
+export * from './media/chooseImage'
+export * from './media/chooseVideo'
 
 export * from './network/request'
 export * from './network/downloadFile'

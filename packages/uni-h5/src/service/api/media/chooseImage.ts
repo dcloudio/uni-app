@@ -1,8 +1,8 @@
-//#region imp functions
+//#region functions
 import {
-  API_CHOOSE_FILE,
-  ChooseFileOptions,
-  ChooseFileProtocol,
+  API_CHOOSE_IMAGE,
+  ChooseImageProtocol,
+  ChooseImageOptions,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { fileToUrl } from '../../../helpers/file'
@@ -10,40 +10,39 @@ import _createInput from './createInput'
 //#endregion
 
 //#region types
-import type { API_TYPE_CHOOSE_FILE } from '@dcloudio/uni-api'
-type CallBackResultType = AsyncApiRes<AsyncApiOptions<API_TYPE_CHOOSE_FILE>>
-type TempFile = UniApp.ChooseFileSuccessCallbackResultFile
+import type { API_TYPE_CHOOSE_IMAGE } from '@dcloudio/uni-api'
+type CallBackResult = AsyncApiRes<AsyncApiOptions<API_TYPE_CHOOSE_IMAGE>>
+type TempFile = UniApp.ChooseImageSuccessCallbackResultFile
 //#endregion
 
-let fileInput: HTMLInputElement = null as any
+let imageInput: HTMLInputElement = null as any
 
-export const chooseFile = defineAsyncApi<API_TYPE_CHOOSE_FILE>(
-  API_CHOOSE_FILE,
+export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
+  API_CHOOSE_IMAGE,
   (
     {
-      // sizeType,
       count,
+      // sizeType,
       sourceType,
-      type,
       extension,
     },
     { resolve, reject }
   ) => {
     // TODO handle sizeType 尝试通过 canvas 压缩
-    if (fileInput) {
-      document.body.removeChild(fileInput)
-      fileInput = null as any
-    }
 
-    fileInput = _createInput({
+    if (imageInput) {
+      document.body.removeChild(imageInput)
+      imageInput = null as any
+    }
+    imageInput = _createInput({
       count,
       sourceType,
-      type,
       extension,
+      type: 'image',
     })
-    document.body.appendChild(fileInput)
+    document.body.appendChild(imageInput)
 
-    fileInput.addEventListener('change', function (event: Event) {
+    imageInput.addEventListener('change', function (event) {
       const eventTarget = event.target as HTMLInputElement
 
       const tempFiles: TempFile[] = []
@@ -53,6 +52,7 @@ export const chooseFile = defineAsyncApi<API_TYPE_CHOOSE_FILE>(
         for (let i = 0; i < fileCount; i++) {
           const file = eventTarget.files[i]
           let filePath: string
+
           Object.defineProperty(file, 'path', {
             get() {
               filePath = filePath || fileToUrl(file)
@@ -63,7 +63,7 @@ export const chooseFile = defineAsyncApi<API_TYPE_CHOOSE_FILE>(
         }
       }
 
-      const res: CallBackResultType = {
+      const res: CallBackResult = {
         get tempFilePaths() {
           return tempFiles.map(({ path }) => path)
         },
@@ -75,8 +75,8 @@ export const chooseFile = defineAsyncApi<API_TYPE_CHOOSE_FILE>(
       // TODO 用户取消选择时，触发 fail，目前尚未找到合适的方法。
     })
 
-    fileInput.click()
+    imageInput.click()
   },
-  ChooseFileProtocol,
-  ChooseFileOptions
+  ChooseImageProtocol,
+  ChooseImageOptions
 )
