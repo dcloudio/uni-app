@@ -10629,6 +10629,7 @@ const offAccelerometerChange = defineOnApi(API_OFF_ACCELEROMETER, () => {
 const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve, reject}) => {
   if (!window.DeviceMotionEvent) {
     reject();
+    return;
   }
   function addEventListener() {
     listener$1 = function(event2) {
@@ -10657,6 +10658,7 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
     }
     addEventListener();
   }
+  resolve();
 });
 const stopAccelerometer = defineAsyncApi(API_STOP_ACCELEROMETER, (_, {resolve}) => {
   if (listener$1) {
@@ -10675,6 +10677,7 @@ const offCompassChange = defineOnApi(API_OFF_COMPASS, () => {
 const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) => {
   if (!window.DeviceOrientationEvent) {
     reject();
+    return;
   }
   function addEventListener() {
     listener = function(event2) {
@@ -10701,7 +10704,7 @@ const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) =>
     }
     addEventListener();
   }
-  return {};
+  resolve();
 });
 const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
   if (listener) {

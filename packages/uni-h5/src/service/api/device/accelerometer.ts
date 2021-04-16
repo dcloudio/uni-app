@@ -29,6 +29,7 @@ export const startAccelerometer = <API_TYPE_START_ACCELEROMETER>(
   defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
     if (!window.DeviceMotionEvent) {
       reject()
+      return
     }
     function addEventListener() {
       listener = function (event: DeviceMotionEvent) {
@@ -60,6 +61,7 @@ export const startAccelerometer = <API_TYPE_START_ACCELEROMETER>(
       }
       addEventListener()
     }
+    resolve()
   })
 )
 

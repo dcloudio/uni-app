@@ -29,6 +29,7 @@ export const startCompass = <API_TYPE_START_COMPASS>(
   defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
     if (!window.DeviceOrientationEvent) {
       reject()
+      return
     }
     function addEventListener() {
       listener = function (event) {
@@ -58,7 +59,7 @@ export const startCompass = <API_TYPE_START_COMPASS>(
       }
       addEventListener()
     }
-    return {}
+    resolve()
   })
 )
 
