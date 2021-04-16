@@ -5,6 +5,7 @@
   * [uni.arrayBufferToBase64](api/arrayBufferToBase64?id=arraybuffertobase64)
   * [生命周期](api/lifecycle.md)
   * [应用级事件](api/application.md)
+  * [拦截器](api/interceptor.md)
 * 网络
   * [发起请求](api/request/request.md)
   * [上传、下载](api/request/network-file.md)
