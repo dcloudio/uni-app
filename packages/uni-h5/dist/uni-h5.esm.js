@@ -577,7 +577,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
@@ -585,10 +585,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function findUniTarget($event, $el) {
@@ -1074,7 +1074,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.height = rpx2px(refreshOptions.height);
       refreshOptions.range = rpx2px(refreshOptions.range);
@@ -4457,6 +4457,46 @@ const API_ON_COMPASS = "onCompass";
 const API_OFF_COMPASS = "offCompass";
 const API_START_COMPASS = "startCompass";
 const API_STOP_COMPASS = "stopCompass";
+const API_GET_STORAGE = "getStorage";
+const GetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  }
+};
+const API_GET_STORAGE_SYNC = "getStorageSync";
+const GetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  }
+];
+const API_SET_STORAGE = "setStorage";
+const SetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  },
+  data: {
+    required: true
+  }
+};
+const API_SET_STORAGE_SYNC = "setStorageSync";
+const SetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  },
+  {
+    name: "data",
+    required: true
+  }
+];
+const API_REMOVE_STORAGE = "removeStorage";
+const RemoveStorageProtocol = GetStorageProtocol;
+const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
 const API_GET_FILE_INFO = "getFileInfo";
 const GetFileInfoProtocol = {
   filePath: {
@@ -10481,7 +10521,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -10594,12 +10634,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -10619,10 +10659,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -10767,6 +10807,116 @@ const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
     listener = null;
   }
   resolve();
+});
+const STORAGE_KEYS = "uni-storage-keys";
+function parseValue(value) {
+  const types = ["object", "string", "number", "boolean", "undefined"];
+  try {
+    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const type = object.type;
+    if (types.indexOf(type) >= 0) {
+      const keys = Object.keys(object);
+      if (keys.length === 2 && "data" in object) {
+        if (typeof object.data === type) {
+          return object.data;
+        }
+        if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
+          return new Date(object.data);
+        }
+      } else if (keys.length === 1) {
+        return "";
+      }
+    }
+  } catch (error) {
+  }
+}
+const setStorageSync = defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
+  const type = typeof data;
+  const value = type === "string" ? data : JSON.stringify({
+    type,
+    data
+  });
+  localStorage.setItem(key, value);
+}, SetStorageSyncProtocol);
+const setStorage = defineAsyncApi(API_SET_STORAGE, ({key, data}, {resolve, reject}) => {
+  try {
+    setStorageSync(key, data);
+    resolve();
+  } catch (error) {
+    reject(error.message);
+  }
+}, SetStorageProtocol);
+function getStorageOrigin(key) {
+  const value = localStorage && localStorage.getItem(key);
+  if (typeof value !== "string") {
+    throw new Error("data not found");
+  }
+  let data = value;
+  try {
+    const object = JSON.parse(value);
+    const result = parseValue(object);
+    if (result !== void 0) {
+      data = result;
+    }
+  } catch (error) {
+  }
+  return data;
+}
+const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
+  try {
+    return getStorageOrigin(key);
+  } catch (error) {
+    return "";
+  }
+}, GetStorageSyncProtocol);
+const getStorage = defineAsyncApi(API_GET_STORAGE, ({key}, {resolve, reject}) => {
+  try {
+    const data = getStorageOrigin(key);
+    resolve({
+      data
+    });
+  } catch (error) {
+    reject(error.message);
+  }
+}, GetStorageProtocol);
+const removeStorageSync = defineSyncApi(API_REMOVE_STORAGE, (key) => {
+  if (localStorage) {
+    localStorage.removeItem(key);
+  }
+}, RemoveStorageSyncProtocol);
+const removeStorage = defineAsyncApi(API_REMOVE_STORAGE, ({key}, {resolve}) => {
+  removeStorageSync(key);
+  resolve();
+}, RemoveStorageProtocol);
+const clearStorageSync = defineSyncApi("clearStorageSync", () => {
+  if (localStorage) {
+    localStorage.clear();
+  }
+});
+const clearStorage = defineAsyncApi("clearStorage", (_, {resolve}) => {
+  clearStorageSync();
+  resolve();
+});
+const getStorageInfoSync = defineSyncApi("getStorageInfoSync", () => {
+  const length = localStorage && localStorage.length || 0;
+  const keys = [];
+  let currentSize = 0;
+  for (let index2 = 0; index2 < length; index2++) {
+    const key = localStorage.key(index2);
+    const value = localStorage.getItem(key) || "";
+    currentSize += key.length + value.length;
+    if (key !== STORAGE_KEYS) {
+      keys.push(key);
+    }
+  }
+  return {
+    keys,
+    currentSize: Math.ceil(currentSize * 2 / 1024),
+    limitSize: Number.MAX_VALUE
+  };
+});
+const getStorageInfo = defineAsyncApi("getStorageInfo", (_, {resolve}) => {
+  resolve(getStorageInfoSync());
 });
 const files = {};
 function urlToFile(url, local) {
@@ -11921,6 +12071,16 @@ var api = /* @__PURE__ */ Object.freeze({
   offCompassChange,
   startCompass,
   stopCompass,
+  setStorageSync,
+  setStorage,
+  getStorageSync,
+  getStorage,
+  removeStorageSync,
+  removeStorage,
+  clearStorageSync,
+  clearStorage,
+  getStorageInfoSync,
+  getStorageInfo,
   getFileInfo,
   openDocument,
   getImageInfo,
@@ -12991,4 +13151,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe};

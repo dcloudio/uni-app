@@ -7,6 +7,8 @@ export * from './device/network'
 export * from './device/accelerometer'
 export * from './device/compass'
 
+export * from './storage/storage'
+
 export * from './file/getFileInfo'
 export * from './file/openDocument'
 

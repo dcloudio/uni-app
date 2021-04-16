@@ -16,6 +16,8 @@ export * from './protocols/device/setClipboardData'
 export * from './protocols/device/accelerometer'
 export * from './protocols/device/compass'
 
+export * from './protocols/storage/storage'
+
 export * from './protocols/file/getFileInfo'
 export * from './protocols/file/openDocument'
 
