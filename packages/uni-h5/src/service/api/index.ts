@@ -6,6 +6,7 @@ export * from './device/getSystemInfoSync'
 export * from './device/network'
 export * from './device/accelerometer'
 export * from './device/compass'
+export * from './device/vibrate'
 
 export * from './storage/storage'
 

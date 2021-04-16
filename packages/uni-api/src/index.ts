@@ -15,6 +15,7 @@ export * from './protocols/device/makePhoneCall'
 export * from './protocols/device/setClipboardData'
 export * from './protocols/device/accelerometer'
 export * from './protocols/device/compass'
+export * from './protocols/device/vibrate'
 
 export * from './protocols/storage/storage'
 
