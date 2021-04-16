@@ -22,7 +22,7 @@
     * 小程序平台：在各自的小程序管理后台操作。
 2. 申请广告位id
 在各位后台申请广告位id
-3. App端打包后生效，打包时必须选择要集成的广告SDK（优量汇、穿山甲、快手）。
+3. App端打包后生效，打包时必须选择要集成的广告SDK（优量汇、穿山甲）。
 
 ### 语法
 
@@ -101,7 +101,6 @@ interstitialAd.onClose(res => {
       createInterstitialAd() {
         var interstitialAd = this.interstitialAd = uni.createInterstitialAd(this.adOption);
         interstitialAd.onLoad(() => {
-          // 广告加载成功
           this.loading = false;
           console.log("插屏 广告加载成功");
         });
@@ -110,13 +109,12 @@ interstitialAd.onClose(res => {
           console.log("插屏 广告关闭");
         });
         interstitialAd.onError((err) => {
-          // 广告数据加载失败
           this.loading = false;
           console.log("插屏 广告加载失败");
         });
 
         // 广告实例创建成功后默认会执行一次 load，加载广告数据
-        // 如果界面有 显示广告 按钮个，需要先禁用掉，防止用户点击，等待广告数据加载成功后在放开
+        // 如果界面有 "显示广告" 按钮，需要先禁用掉，防止用户点击，等待广告数据加载成功后在放开
         this.loading = true;
       },
       showInterstitialAd() {
