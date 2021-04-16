@@ -12,6 +12,22 @@ const isAndroid = /android/i.test(ua)
  */
 const isIOS = /iphone|ipad|ipod/i.test(ua)
 /**
+ * 是否是Windows设备
+ */
+const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i)
+/**
+ * 是否是Mac设备
+ */
+const isMac = /Macintosh|Mac/i.test(ua)
+/**
+ * 是否是Linux设备
+ */
+const isLinux = /Linux|X11/i.test(ua)
+/**
+ * 是否是iPadOS
+ */
+const isIPadOS = isMac && navigator.maxTouchPoints > 0
+/**
  * 获取系统信息-同步
  */
 export function getSystemInfoSync () {
@@ -67,6 +83,65 @@ export function getSystemInfoSync () {
       if (!other) {
         model = info.trim()
         break
+      }
+    }
+  } else if (isIPadOS) {
+    model = 'iPad'
+    osname = 'iOS'
+    osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
+  } else if (isWindows || isMac || isLinux) {
+    model = 'PC'
+    const osversionFind = ua.match(/\((.+?)\)/)[1]
+
+    if (isWindows) {
+      osname = 'Windows'
+      osversion = ''
+      switch (isWindows[1]) {
+        case '5.1':
+          osversion = 'XP'
+          break
+        case '6.0':
+          osversion = 'Vista'
+          break
+        case '6.1':
+          osversion = '7'
+          break
+        case '6.2':
+          osversion = '8'
+          break
+        case '6.3':
+          osversion = '8.1'
+          break
+        case '10.0':
+          osversion = '10'
+          break
+      }
+
+      const framework = osversionFind.match(/[Win|WOW]([\d]+)/)
+      if (framework) {
+        osversion += ` x${framework[1]}`
+      }
+    } else if (isMac) {
+      osname = 'Mac'
+      osversion = osversionFind.match(/Mac OS X (.+)/) || ''
+
+      if (osversion) {
+        osversion = osversion[1].replace(/_/g, '.')
+        // '10_15_7' or '10.16; rv:86.0'
+        if (osversion.indexOf(';') !== -1) {
+          osversion = osversion.split(';')[0]
+        }
+      }
+    } else if (isLinux) {
+      osname = 'Linux'
+      osversion = osversionFind.match(/Linux (.*)/) || ''
+
+      if (osversion) {
+        osversion = osversion[1]
+        // 'x86_64' or 'x86_64; rv:79.0'
+        if (osversion.indexOf(';') !== -1) {
+          osversion = osversion.split(';')[0]
+        }
       }
     }
   } else {

@@ -65,7 +65,8 @@ module.exports = function (content, map) {
     const filterModules = parseFilterModules(params && params['filter-modules'])
     Object.assign(vueLoaderOptions.options.compilerOptions, {
       mp: {
-        platform: process.env.UNI_PLATFORM
+        platform: process.env.UNI_PLATFORM,
+        betterScopedSlots: process.env.BETTER_SCOPED_SLOTS
       },
       filterModules,
       filterTagName,

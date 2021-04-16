@@ -28,7 +28,8 @@ module.exports = (api, options) => {
       '--minimize': 'Tell webpack to minimize the bundle using the TerserPlugin.',
       '--auto-host': 'specify automator host',
       '--auto-port': 'specify automator port',
-      '--subpackage': 'specify subpackage'
+      '--subpackage': 'specify subpackage',
+      '--plugin': 'specify plugin'
     }
   }, async (args) => {
     for (const key in defaults) {
@@ -40,6 +41,16 @@ module.exports = (api, options) => {
     const platforms = ['mp-weixin', 'mp-qq', 'mp-baidu', 'mp-alipay', 'mp-toutiao']
     if (args.subpackage && platforms.includes(process.env.UNI_PLATFORM)) {
       process.env.UNI_SUBPACKGE = args.subpackage
+    }
+
+    if (args.plugin) {
+      if (process.env.UNI_PLATFORM === 'mp-weixin') {
+        process.env.UNI_MP_PLUGIN = args.plugin
+        analysisPluginDir()
+      } else {
+        console.error('编译到小程序插件只支持微信小程序')
+        process.exit(0)
+      }
     }
 
     require('./util').initAutomator(args)
@@ -190,4 +201,53 @@ async function build (args, api, options) {
 
 module.exports.defaultModes = {
   'uni-build': process.env.NODE_ENV
+}
+
+/**
+ * 编译到微信小程序插件 文件校验
+ */
+function analysisPluginDir () {
+  const fs = require('fs-extra')
+
+  // plugin.json 是否存在
+  const pluginJsonName = 'plugin.json'
+  const pluginJsonPath = path.resolve(process.env.UNI_INPUT_DIR, pluginJsonName)
+
+  if (!fs.pathExistsSync(pluginJsonPath)) {
+    console.error(`${pluginJsonName}文件不存在，请检查后重试`)
+    process.exit(0)
+  }
+
+  const pluginJson = require(pluginJsonPath)
+
+  // index.js 入口文件是否存在
+  process.env.UNI_MP_PLUGIN_MAIN = pluginJson.main
+  const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
+  const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
+
+  if (UNI_MP_PLUGIN_MAIN && !fs.pathExistsSync(mainFilePath)) {
+    console.error(`${UNI_MP_PLUGIN_MAIN}入口文件不存在，请检查后重试`)
+    process.exit(0)
+  }
+
+  // 目前编译到小程序插件，需要在 pages.json 中配置页面，在main.js中引入使用一下组件，因此先不做一下校验
+  // 配置的路径是否存在
+  /* const pages = pluginJson.pages || {}
+  const publicComponents = pluginJson.publicComponents || {}
+  const allFilesPath = Object.values(pages).map(item => item + '.vue').concat(Object.values(publicComponents).map(item => item + '.vue'))
+  const inexistenceFiles = []
+  if (allFilesPath.length) {
+    allFilesPath.forEach(pagePath => {
+      const curentPageAbsolutePath = path.resolve(process.env.UNI_INPUT_DIR, pagePath)
+      if (!fs.pathExistsSync(curentPageAbsolutePath)) {
+        inexistenceFiles.push(curentPageAbsolutePath)
+      }
+    })
+  }
+  if (inexistenceFiles.length) {
+    inexistenceFiles.forEach(path => {
+      console.error(`${path}文件不存在，请检查后重试`)
+    })
+    process.exit(0)
+  } */
 }

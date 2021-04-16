@@ -237,16 +237,28 @@ describe('mp:compiler-extra', () => {
 
     assertCodegen(
       '<component1 v-slot>text</component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>text</view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block>text</block></component1>'
     )
 
     assertCodegen(
       '<component1 v-slot:default>text<text>123213</text></component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>text<text>123213</text></view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block>text<text>123213</text></block></component1>'
     )
     assertCodegen(
       '<component1><template v-slot:left><text></text></template><template v-slot:right><text></text></template></component1>',
-      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'left\',\'right\']}}"><view slot="left"><text></text></view><view slot="right"><text></text></view></component1>'
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'left\',\'right\']}}"><text slot="left"></text><text slot="right"></text></component1>'
+    )
+    assertCodegen(
+      '<component1><view>view1</view><view>view2</view></component1>',
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><view>view1</view><view>view2</view></component1>'
+    )
+    assertCodegen(
+      '<component1><template v-slot><view>view1</view><view>view2</view><template></component1>',
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><view>view1</view><view>view2</view></block></component1>'
+    )
+    assertCodegen(
+      '<component1><template v-slot:test><view>view1</view><view>view2</view><template></component1>',
+      '<component1 vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'test\']}}"><view slot="test"><view>view1</view><view>view2</view></view></component1>'
     )
     assertCodegen(
       `<my-component>
@@ -258,7 +270,7 @@ describe('mp:compiler-extra', () => {
         <p>Here's some contact info</p>
       </template>
     </my-component>`,
-      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\',\'header\',\'footer\']}}"><view slot="header"><view class="_h1">Here might be a page title</view></view><view slot="footer"><view class="_p">Here\'s some contact info</view></view><view class="_p">A paragraph for the main content.</view></my-component>'
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\',\'header\',\'footer\']}}"><view class="_h1" slot="header">Here might be a page title</view><view class="_p" slot="footer">Here\'s some contact info</view><view class="_p">A paragraph for the main content.</view></my-component>'
     )
   })
 
@@ -739,8 +751,8 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<view v-if="test1(key)&&test2(key)">{{getValue(key)}}</view>',
-      '<block wx:if="{{$root.m0&&$root.m1}}"><view>{{$root.m2}}</view></block>',
-      'with(this){var m0=test1(key);var m1=test2(key);var m2=m0&&m1?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2}})}'
+      '<block wx:if="{{$root.m0}}"><view>{{$root.m1}}</view></block>',
+      'with(this){var m0=test1(key)&&test2(key);var m1=m0?getValue(key):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}'
     )
     assertCodegen(
       '<view v-for="(item,index) in list" :key="index"><view v-if="item">{{getValue(item)}}</view></view>',

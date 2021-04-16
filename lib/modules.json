@@ -58,8 +58,10 @@
     "uni.chooseFile": true,
     "uni.previewImage": true,
     "uni.getImageInfo": true,
+    "uni.getVideoInfo": true,
     "uni.saveImageToPhotosAlbum": true,
     "uni.compressImage": true,
+    "uni.compressVideo": true,
     "uni.getRecorderManager": true,
     "uni.getBackgroundAudioManager": true,
     "uni.createInnerAudioContext": true,
@@ -221,6 +223,7 @@
   "title": "广告",
   "apiList": {
     "uni.createRewardedVideoAd": true,
-    "uni.createFullScreenVideoAd": true
+    "uni.createFullScreenVideoAd": true,
+    "uni.'createInterstitialAd'": true
   }
 }]

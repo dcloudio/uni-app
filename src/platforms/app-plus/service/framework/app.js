@@ -93,10 +93,15 @@ function initGlobalListeners () {
     })
   })
 
+  let keyboardHeightChange = 0
   plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
-    publish('onKeyboardHeightChange', {
-      height: event.height
-    })
+    // 安卓设备首次获取高度为 0
+    if (keyboardHeightChange !== event.height) {
+      keyboardHeightChange = event.height
+      publish('onKeyboardHeightChange', {
+        height: keyboardHeightChange
+      })
+    }
   })
 
   globalEvent.addEventListener('uistylechange', function (event) {

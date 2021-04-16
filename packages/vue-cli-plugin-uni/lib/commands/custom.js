@@ -30,7 +30,9 @@ module.exports = function custom (argv) {
   service.run(command, {
     watch: process.env.NODE_ENV === 'development',
     minimize: process.env.UNI_MINIMIZE === 'true',
-    clean: false
+    clean: false,
+    subpackage: argv.subpackage,
+    plugin: argv.plugin
   }).catch(err => {
     console.error(err)
     process.exit(1)

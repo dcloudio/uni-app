@@ -1,4 +1,5 @@
 import { updateElementStyle } from 'uni-shared'
+import MIMEType from './MIMEType'
 const ALL = '*'
 
 function isWXEnv () {
@@ -24,16 +25,20 @@ export default function ({ count, sourceType, type, extension }) {
     left: 0
   })
 
+  /**
+   * 选择文件
+   * chooseFile 使用后缀名
+   * chooseImage、chooseVideo 使用MIME类型
+   */
   inputEl.accept = extension.map(item => {
     if (type !== ALL) {
-      // 剔除.拼接在type后
-      return `${type}/${item.replace('.', '')}`
+      const MIMEKey = item.replace('.', '')
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`
     } else {
       // 在微信环境里，'.jpeg,.png' 会提示没有应用可执行此操作
       if (isWXEnv()) {
         return '.'
       }
-      // 在后缀前方加上.
       return item.indexOf('.') === 0 ? item : `.${item}`
     }
   }).join(',')

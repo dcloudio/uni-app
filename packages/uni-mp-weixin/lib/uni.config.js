@@ -27,7 +27,8 @@ module.exports = {
       'theme.json',
       'sitemap.json',
       'ext.json',
-      'custom-tab-bar'
+      'custom-tab-bar',
+      'plugin.json'
     ]
     const workers = platformOptions.workers
     workers && copyOptions.push(workers)

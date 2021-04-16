@@ -9,15 +9,19 @@ const files = {}
 /**
  * 从url读取File
  * @param {string} url
+ * @param {boolean} local
  * @param {Promise}
  */
-export function urlToFile (url) {
+export function urlToFile (url, local) {
   var file = files[url]
   if (file) {
     return Promise.resolve(file)
   }
   if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
     return Promise.resolve(base64ToFile(url))
+  }
+  if (local) {
+    return Promise.reject(new Error('not find'))
   }
   return new Promise((resolve, reject) => {
     var xhr = new XMLHttpRequest()

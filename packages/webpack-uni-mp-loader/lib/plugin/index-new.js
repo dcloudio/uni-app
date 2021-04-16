@@ -65,12 +65,45 @@ function addSubPackagesRequire (compilation) {
   })
 }
 
+function addMPPluginRequire (compilation) {
+  // 编译到小程序插件 特殊处理入口文件
+  if (process.env.UNI_MP_PLUGIN) {
+    const assetsKeys = Object.keys(compilation.assets)
+    assetsKeys.forEach(name => {
+      if (name === process.env.UNI_MP_PLUGIN_MAIN) {
+        const modules = compilation.modules
+
+        const mainFilePath = path.resolve(process.env.UNI_INPUT_DIR, process.env.UNI_MP_PLUGIN_MAIN).replace(/\\/g, '/')
+
+        const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === mainFilePath).id
+
+        const newlineIndex = compilation.assets[name].source().lastIndexOf('\n')
+
+        const source = compilation.assets[name].source().substring(0, newlineIndex) +
+        `\nmodule.exports = wx.__webpack_require_${process.env.UNI_MP_PLUGIN.replace('-', '_')}__(${uniModuleId});\n` +
+        compilation.assets[name].source().substring(newlineIndex + 1)
+
+        compilation.assets[name] = {
+          size () {
+            return Buffer.byteLength(source, 'utf8')
+          },
+          source () {
+            return source
+          }
+        }
+      }
+    })
+  }
+}
+
 class WebpackUniMPPlugin {
   apply (compiler) {
     if (!process.env.UNI_USING_NATIVE && !process.env.UNI_USING_V3_NATIVE) {
       compiler.hooks.emit.tapPromise('webpack-uni-mp-emit', compilation => {
         return new Promise((resolve, reject) => {
           addSubPackagesRequire(compilation)
+
+          addMPPluginRequire(compilation)
 
           generateJson(compilation)
 

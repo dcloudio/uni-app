@@ -8,8 +8,13 @@ import {
 
 import {
   isPage,
-  initRelation
+  initRelation,
+  mocks
 } from './util'
+
+import {
+  initMocks
+} from 'uni-wrapper/util'
 
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
 
@@ -52,6 +57,7 @@ export default function parseComponent (vueOptions) {
     if (!this.$vm) {
       oldAttached.call(this)
     } else {
+      initMocks(this.$vm, mocks)
       this.__fixInitData && this.__fixInitData()
     }
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）

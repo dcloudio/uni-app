@@ -56,6 +56,7 @@ const attrs = [
   'pageGesture',
   'enableProgressGesture',
   'showPlayBtn',
+  'enablePlayGesture',
   'showCenterPlayBtn',
   'showLoading',
   'codec',
@@ -142,6 +143,10 @@ export default {
       default: true
     },
     showPlayBtn: {
+      type: [Boolean, String],
+      default: true
+    },
+    enablePlayGesture: {
       type: [Boolean, String],
       default: true
     },

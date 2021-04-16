@@ -55,6 +55,12 @@ describe('mp:compiler-mp-alipay', () => {
       }
     )
   })
+  it('generate slot fallback content', () => {
+    assertCodegen(
+      '<view><slot>slot</slot></view>',
+      '<view><block a:if="{{$slots.$default}}"><slot></slot></block><block a:else>slot</block></view>'
+    )
+  })
   it('generate default slot', () => {
     assertCodegen(
       '<component1>text</component1>',

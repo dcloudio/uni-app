@@ -1,6 +1,11 @@
 <template>
   <uni-rich-text v-on="$listeners">
-    <div />
+    <div ref="content">
+      <v-uni-resize-sensor
+        ref="sensor"
+        @resize="_updateView()"
+      />
+    </div>
   </uni-rich-text>
 </template>
 <script>
@@ -27,12 +32,20 @@ export default {
   },
   methods: {
     _renderNodes (nodes) {
+      if (!this._isMounted) {
+        return
+      }
       if (typeof nodes === 'string') {
         nodes = parseHtml(nodes)
       }
       const nodeList = parseNodes(nodes, document.createDocumentFragment())
-      this.$el.firstChild.innerHTML = ''
-      this.$el.firstChild.appendChild(nodeList)
+      nodeList.appendChild(this.$refs.sensor.$el)
+      const content = this.$refs.content
+      content.innerHTML = ''
+      content.appendChild(nodeList)
+    },
+    _updateView () {
+      window.dispatchEvent(new CustomEvent('updateview'))
     }
   }
 }

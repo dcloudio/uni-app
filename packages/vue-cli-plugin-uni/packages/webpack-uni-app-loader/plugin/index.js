@@ -1,6 +1,9 @@
 const {
   initAutoImportScanComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
+const {
+  initUniModules
+} = require('@dcloudio/uni-cli-shared/lib/uni_modules')
 
 let compiling = false
 
@@ -37,6 +40,8 @@ class WebpackUniAppPlugin {
       if (fileName && typeof fileName === 'string') {
         if (fileName.indexOf('.vue') !== -1 || fileName.indexOf('.nvue') !== -1) {
           if (process.UNI_AUTO_SCAN_COMPONENTS) {
+            // TODO 需要处理copy webpack
+            initUniModules()
             initAutoImportScanComponents()
           }
         }
