@@ -8,7 +8,7 @@ import {
   LOCALE_ZH_HANT,
 } from '@dcloudio/uni-i18n'
 import { useI18n } from './useI18n'
-const i18n = useI18n()
+const i18n = /*#__PURE__*/ useI18n()
 function normalizeMessages(
   namespace: string,
   messages: Record<string, string>

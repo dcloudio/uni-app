@@ -55,32 +55,36 @@ function mergePageMeta(pageMeta: UniApp.PageRouteMeta) {
 }
 
 function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
-  const { enablePullDownRefresh, navigationBar } = pageMeta
-  if (enablePullDownRefresh) {
-    const refreshOptions = Object.assign(
-      {
-        support: true,
-        color: '#2BD009',
-        style: 'circle',
-        height: 70,
-        range: 150,
-        offset: 0,
-      },
-      pageMeta.refreshOptions || {}
-    )
-    let offset = rpx2px(refreshOptions.offset)
-    const { type } = navigationBar
-    if (type !== 'transparent' && type !== 'none') {
-      offset += NAVBAR_HEIGHT + safeAreaInsets.top
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta
+    if (enablePullDownRefresh) {
+      const refreshOptions = Object.assign(
+        {
+          support: true,
+          color: '#2BD009',
+          style: 'circle',
+          height: 70,
+          range: 150,
+          offset: 0,
+        },
+        pageMeta.refreshOptions || {}
+      )
+      let offset = rpx2px(refreshOptions.offset)
+      const { type } = navigationBar
+      if (type !== 'transparent' && type !== 'none') {
+        offset += NAVBAR_HEIGHT + safeAreaInsets.top
+      }
+      refreshOptions.height = rpx2px(refreshOptions.height)
+      refreshOptions.range = rpx2px(refreshOptions.range)
+      pageMeta.refreshOptions = refreshOptions
     }
-    refreshOptions.height = rpx2px(refreshOptions.height)
-    refreshOptions.range = rpx2px(refreshOptions.range)
-    pageMeta.refreshOptions = refreshOptions
   }
-  navigationBar.backButton = pageMeta.isQuit ? false : true
-  navigationBar.titleColor = navigationBar.titleColor || '#fff'
-  navigationBar.backgroundColor = navigationBar.backgroundColor || '#F7F7F7'
-
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const { navigationBar } = pageMeta
+    navigationBar.backButton = pageMeta.isQuit ? false : true
+    navigationBar.titleColor = navigationBar.titleColor || '#fff'
+    navigationBar.backgroundColor = navigationBar.backgroundColor || '#F7F7F7'
+  }
   if (__UNI_FEATURE_PAGES__ && history.state) {
     // 首页执行了redirectTo
     const type = history.state.__type__

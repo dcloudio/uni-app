@@ -1,3 +1,3 @@
 import { initBridge } from '../../helpers/bridge'
 
-export const ViewJSBridge = initBridge('view')
+export const ViewJSBridge = /*#__PURE__*/ initBridge('view')

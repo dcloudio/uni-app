@@ -1,12 +1,17 @@
 import { isArray, isFunction, isPromise } from '@vue/shared'
 
-export enum HOOKS {
-  INVOKE = 'invoke',
-  SUCCESS = 'success',
-  FAIL = 'fail',
-  COMPLETE = 'complete',
-  RETURN_VALUE = 'returnValue',
-}
+const HOOK_INVOKE = 'invoke'
+const HOOK_SUCCESS = 'success'
+const HOOK_FAIL = 'fail'
+const HOOK_COMPLETE = 'complete'
+const HOOK_RETURN_VALUE = 'returnValue'
+
+export type HOOKS =
+  | typeof HOOK_INVOKE
+  | typeof HOOK_SUCCESS
+  | typeof HOOK_FAIL
+  | typeof HOOK_COMPLETE
+  | typeof HOOK_RETURN_VALUE
 
 export type Interceptor = { [P in HOOKS]?: Function }
 
@@ -54,8 +59,8 @@ function wrapperOptions(
   interceptors: Interceptors,
   options: Record<string, any> = {}
 ) {
-  ;[HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach((name) => {
-    const hooks = interceptors[name]
+  ;[HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
+    const hooks = interceptors[name as HOOKS]
     if (!isArray(hooks)) {
       return
     }

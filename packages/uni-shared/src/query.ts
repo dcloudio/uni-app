@@ -1,4 +1,4 @@
-import { isPlainObject } from '@vue/shared'
+import { isPlainObject, isArray } from '@vue/shared'
 
 const encode = encodeURIComponent
 export function stringifyQuery(obj?: Record<string, any>, encodeStr = encode) {
@@ -71,7 +71,7 @@ export function parseQuery(search: string) {
     if (key in query) {
       // an extra variable for ts types
       let currentValue = query[key]
-      if (!Array.isArray(currentValue)) {
+      if (!isArray(currentValue)) {
         currentValue = query[key] = [currentValue]
       }
       currentValue.push(value)

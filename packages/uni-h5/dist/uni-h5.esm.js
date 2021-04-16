@@ -2,12 +2,12 @@ import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArr
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {passive, invokeArrayFns, NAVBAR_HEIGHT, removeLeadingSlash, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, getLen, updateElementStyle} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
-function applyOptions(options, instance2, publicThis) {
+function applyOptions(options, instance, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hook = options[name];
       if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance2);
+        injectHook(name, hook.bind(publicThis), instance);
       }
     }
   });
@@ -244,11 +244,18 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     }
   };
 }
-const i18n$1 = initVueI18n();
+let i18n$1;
 function useI18n() {
+  if (!i18n$1) {
+    let language;
+    {
+      language = navigator.language;
+    }
+    i18n$1 = initVueI18n(language);
+  }
   return i18n$1;
 }
-const i18n = useI18n();
+const i18n = /* @__PURE__ */ useI18n();
 function normalizeMessages(namespace, messages) {
   return Object.keys(messages).reduce((res, name) => {
     res[namespace + name] = messages[name];
@@ -334,7 +341,7 @@ function initBridge(namespace) {
     }
   });
 }
-const ViewJSBridge = initBridge("view");
+const ViewJSBridge = /* @__PURE__ */ initBridge("view");
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = passive(true);
@@ -572,24 +579,16 @@ var safeAreaInsets = {
 };
 var out = safeAreaInsets;
 function getWindowOffset() {
-  if (uni.canIUse("css.var")) {
-    const style = document.documentElement.style;
-    const top = parseInt(style.getPropertyValue("--window-top"));
-    const bottom = parseInt(style.getPropertyValue("--window-bottom"));
-    const left = parseInt(style.getPropertyValue("--window-left"));
-    const right = parseInt(style.getPropertyValue("--window-right"));
-    return {
-      top: top ? top + out.top : 0,
-      bottom: bottom ? bottom + out.bottom : 0,
-      left: left ? left + out.left : 0,
-      right: right ? right + out.right : 0
-    };
-  }
+  const style = document.documentElement.style;
+  const top = parseInt(style.getPropertyValue("--window-top"));
+  const bottom = parseInt(style.getPropertyValue("--window-bottom"));
+  const left = parseInt(style.getPropertyValue("--window-left"));
+  const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function findUniTarget($event, $el) {
@@ -683,23 +682,6 @@ function normalizeTouchList(touches) {
   }
   return [];
 }
-function $trigger(name, $event, detail) {
-  const target = this.$el;
-  this.$emit(name, normalizeEvent$1(name, $event, detail, target, target));
-}
-function $handleEvent($event) {
-  if ($event instanceof Event) {
-    const target = findUniTarget($event, this.$el);
-    return normalizeEvent$1($event.type, $event, {}, target || $event.target, $event.currentTarget);
-  }
-  return $event;
-}
-var instance = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module",
-  $trigger,
-  $handleEvent
-});
 const CLASS_RE = /^\s+|\s+$/g;
 const WXS_CLASS_RE = /\s+/;
 function getWxsClsArr(clsArr, classList, isAdd) {
@@ -850,18 +832,18 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
     return vm.$el.__wxsComponentDescriptor;
   }
 }
-function getComponentDescriptor(instance2, isOwnerInstance) {
-  return createComponentDescriptor(instance2 || this, isOwnerInstance);
+function getComponentDescriptor(instance, isOwnerInstance) {
+  return createComponentDescriptor(instance || this, isOwnerInstance);
 }
 function handleWxsEvent($event) {
   if (!($event instanceof Event)) {
     return $event;
   }
   const currentTarget = $event.currentTarget;
-  const instance2 = currentTarget && currentTarget.__vue__ && getComponentDescriptor.call(this, currentTarget.__vue__, false);
+  const instance = currentTarget && currentTarget.__vue__ && getComponentDescriptor.call(this, currentTarget.__vue__, false);
   const $origEvent = $event;
   $event = normalizeEvent$1($origEvent.type, $origEvent, {}, findUniTarget($origEvent, this.$el) || $origEvent.target, $origEvent.currentTarget);
-  $event.instance = instance2;
+  $event.instance = instance;
   $event.preventDefault = function() {
     return $origEvent.preventDefault();
   };
@@ -871,7 +853,6 @@ function handleWxsEvent($event) {
 }
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
-  extend(globalProperties, instance);
   if (__UNI_FEATURE_WXS__) {
     globalProperties.getComponentDescriptor = getComponentDescriptor;
     Object.defineProperty(globalProperties, "$ownerInstance", {
@@ -1029,8 +1010,8 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
+function errorHandler(err, instance, info) {
+  if (!instance) {
     throw err;
   }
   const app = getApp();
@@ -1079,28 +1060,33 @@ function mergePageMeta(pageMeta) {
   return res;
 }
 function normalizePageMeta(pageMeta) {
-  const {enablePullDownRefresh, navigationBar} = pageMeta;
-  if (enablePullDownRefresh) {
-    const refreshOptions = Object.assign({
-      support: true,
-      color: "#2BD009",
-      style: "circle",
-      height: 70,
-      range: 150,
-      offset: 0
-    }, pageMeta.refreshOptions || {});
-    let offset = rpx2px(refreshOptions.offset);
-    const {type} = navigationBar;
-    if (type !== "transparent" && type !== "none") {
-      offset += NAVBAR_HEIGHT + out.top;
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const {enablePullDownRefresh, navigationBar} = pageMeta;
+    if (enablePullDownRefresh) {
+      const refreshOptions = Object.assign({
+        support: true,
+        color: "#2BD009",
+        style: "circle",
+        height: 70,
+        range: 150,
+        offset: 0
+      }, pageMeta.refreshOptions || {});
+      let offset = rpx2px(refreshOptions.offset);
+      const {type} = navigationBar;
+      if (type !== "transparent" && type !== "none") {
+        offset += NAVBAR_HEIGHT + out.top;
+      }
+      refreshOptions.height = rpx2px(refreshOptions.height);
+      refreshOptions.range = rpx2px(refreshOptions.range);
+      pageMeta.refreshOptions = refreshOptions;
     }
-    refreshOptions.height = rpx2px(refreshOptions.height);
-    refreshOptions.range = rpx2px(refreshOptions.range);
-    pageMeta.refreshOptions = refreshOptions;
   }
-  navigationBar.backButton = pageMeta.isQuit ? false : true;
-  navigationBar.titleColor = navigationBar.titleColor || "#fff";
-  navigationBar.backgroundColor = navigationBar.backgroundColor || "#F7F7F7";
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const {navigationBar} = pageMeta;
+    navigationBar.backButton = pageMeta.isQuit ? false : true;
+    navigationBar.titleColor = navigationBar.titleColor || "#fff";
+    navigationBar.backgroundColor = navigationBar.backgroundColor || "#F7F7F7";
+  }
   if (__UNI_FEATURE_PAGES__ && history.state) {
     const type = history.state.__type__;
     if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
@@ -1323,9 +1309,9 @@ function usePageRoute() {
 function wrapperComponentSetup(comp, {init: init2, setup, after}) {
   const oldSetup = comp.setup;
   comp.setup = (props, ctx) => {
-    const instance2 = getCurrentInstance();
-    init2(instance2.proxy);
-    setup(instance2);
+    const instance = getCurrentInstance();
+    init2(instance.proxy);
+    setup(instance);
     if (oldSetup) {
       return oldSetup(props, ctx);
     }
@@ -1343,29 +1329,29 @@ function setupComponent(comp, options) {
 function setupPage(comp) {
   return setupComponent(comp, {
     init: initPage,
-    setup(instance2) {
+    setup(instance) {
       const route = usePageRoute();
       onBeforeMount(() => {
-        const {onLoad, onShow} = instance2;
+        const {onLoad, onShow} = instance;
         onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
-        instance2.__isVisible = true;
+        instance.__isVisible = true;
         onShow && invokeArrayFns$1(onShow);
       });
       onMounted(() => {
-        const {onReady} = instance2;
+        const {onReady} = instance;
         onReady && invokeArrayFns$1(onReady);
       });
       onBeforeActivate(() => {
-        if (!instance2.__isVisible) {
-          instance2.__isVisible = true;
-          const {onShow} = instance2;
+        if (!instance.__isVisible) {
+          instance.__isVisible = true;
+          const {onShow} = instance;
           onShow && invokeArrayFns$1(onShow);
         }
       });
       onBeforeDeactivate(() => {
-        if (instance2.__isVisible && !instance2.__isUnload) {
-          instance2.__isVisible = false;
-          const {onHide} = instance2;
+        if (instance.__isVisible && !instance.__isUnload) {
+          instance.__isVisible = false;
+          const {onHide} = instance;
           onHide && invokeArrayFns$1(onHide);
         }
       });
@@ -1373,13 +1359,12 @@ function setupPage(comp) {
   });
 }
 function setupApp(comp) {
-  useI18n().setLocale(navigator.language);
   return setupComponent(comp, {
     init: initApp,
-    setup(instance2) {
+    setup(instance) {
       const route = usePageRoute();
       onBeforeMount(() => {
-        const {onLaunch, onShow} = instance2;
+        const {onLaunch, onShow} = instance;
         onLaunch && invokeArrayFns$1(onLaunch, {
           path: route.meta.route,
           query: decodedQuery(route.query),
@@ -2094,6 +2079,7 @@ var index$4 = /* @__PURE__ */ defineComponent({
       hovering,
       binding
     } = useHover(props);
+    useI18n();
     function onClick() {
       if (props.disabled) {
         return;
@@ -4260,14 +4246,6 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
   }
   return number < 0 ? -result : result;
 }, Upx2pxProtocol);
-var HOOKS;
-(function(HOOKS2) {
-  HOOKS2["INVOKE"] = "invoke";
-  HOOKS2["SUCCESS"] = "success";
-  HOOKS2["FAIL"] = "fail";
-  HOOKS2["COMPLETE"] = "complete";
-  HOOKS2["RETURN_VALUE"] = "returnValue";
-})(HOOKS || (HOOKS = {}));
 const globalInterceptors = {};
 const scopedInterceptors = {};
 const API_ADD_INTERCEPTOR = "addInterceptor";
@@ -5854,14 +5832,14 @@ function useFormField(nameKey, valueKey) {
   if (!uniForm) {
     return;
   }
-  const instance2 = getCurrentInstance();
+  const instance = getCurrentInstance();
   const ctx = {
     submit() {
-      const proxy = instance2.proxy;
+      const proxy = instance.proxy;
       return [proxy[nameKey], proxy[valueKey]];
     },
     reset() {
-      instance2.proxy[valueKey] = "";
+      instance.proxy[valueKey] = "";
     }
   };
   uniForm.addField(ctx);
@@ -5969,9 +5947,9 @@ const _sfc_main$g = {
       formElem.appendChild(this.$refs.input);
       this.$refs.wrapper.appendChild(formElem);
     }
-    const instance2 = getCurrentInstance();
-    if (instance2 && instance2.vnode.scopeId) {
-      this.$refs.placeholder.setAttribute(instance2.vnode.scopeId, "");
+    const instance = getCurrentInstance();
+    if (instance && instance.vnode.scopeId) {
+      this.$refs.placeholder.setAttribute(instance.vnode.scopeId, "");
     }
     this.initKeyboard(this.$refs.input);
   },
@@ -9654,16 +9632,16 @@ function removeSubscribe(componentId, vm) {
   UniViewJSBridge.unsubscribe(normalizeEvent(componentId, vm));
 }
 function useSubscribe(callback) {
-  const instance2 = getCurrentInstance().proxy;
+  const instance = getCurrentInstance().proxy;
   onMounted(() => {
-    addSubscribe(instance2.id, instance2, callback);
-    watch(() => instance2.id, (value, oldValue) => {
-      addSubscribe(value, instance2, callback);
-      removeSubscribe(oldValue, instance2);
+    addSubscribe(instance.id, instance, callback);
+    watch(() => instance.id, (value, oldValue) => {
+      addSubscribe(value, instance, callback);
+      removeSubscribe(oldValue, instance);
     });
   });
   onBeforeMount(() => {
-    removeSubscribe(instance2.id, instance2);
+    removeSubscribe(instance.id, instance);
   });
 }
 const passiveOptions = passive(false);

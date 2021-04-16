@@ -187,7 +187,7 @@ function parseQuery(search) {
         if (key in query) {
             // an extra variable for ts types
             let currentValue = query[key];
-            if (!Array.isArray(currentValue)) {
+            if (!shared.isArray(currentValue)) {
                 currentValue = query[key] = [currentValue];
             }
             currentValue.push(value);

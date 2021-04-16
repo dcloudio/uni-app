@@ -245,14 +245,9 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
 
-var HOOKS;
-(function (HOOKS) {
-    HOOKS["INVOKE"] = "invoke";
-    HOOKS["SUCCESS"] = "success";
-    HOOKS["FAIL"] = "fail";
-    HOOKS["COMPLETE"] = "complete";
-    HOOKS["RETURN_VALUE"] = "returnValue";
-})(HOOKS || (HOOKS = {}));
+const HOOK_SUCCESS = 'success';
+const HOOK_FAIL = 'fail';
+const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
 function wrapperHook(hook) {
@@ -288,7 +283,7 @@ function queue(hooks, data) {
     });
 }
 function wrapperOptions(interceptors, options = {}) {
-    [HOOKS.SUCCESS, HOOKS.FAIL, HOOKS.COMPLETE].forEach((name) => {
+    [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
         const hooks = interceptors[name];
         if (!isArray(hooks)) {
             return;

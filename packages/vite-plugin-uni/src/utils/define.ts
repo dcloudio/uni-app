@@ -173,6 +173,7 @@ function resolveManifestFeature(
   if (options.command === 'build') {
     // TODO 需要预编译一遍？
     features.wxs = false
+    features.longpress = false
   }
   if (
     manifest.h5 &&

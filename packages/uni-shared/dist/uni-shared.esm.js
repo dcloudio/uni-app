@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, isPlainObject } from '@vue/shared';
+import { isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
 
 function passive(passive) {
     return { passive };
@@ -183,7 +183,7 @@ function parseQuery(search) {
         if (key in query) {
             // an extra variable for ts types
             let currentValue = query[key];
-            if (!Array.isArray(currentValue)) {
+            if (!isArray(currentValue)) {
                 currentValue = query[key] = [currentValue];
             }
             currentValue.push(value);
