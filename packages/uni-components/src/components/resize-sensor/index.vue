@@ -1,3 +1,14 @@
+<template>
+  <uni-resize-sensor @animationstart.once="update">
+    <div @scroll="update">
+      <div></div>
+    </div>
+    <div @scroll="update">
+      <div></div>
+    </div>
+  </uni-resize-sensor>
+</template>
+
 <script>
 export default {
   name: 'ResizeSensor',
@@ -7,6 +18,7 @@ export default {
       default: false
     }
   },
+  emits: ['resize'],
   data: function () {
     return {
       size: {
@@ -51,28 +63,5 @@ export default {
       this.reset()
     }
   },
-  render: function (create) {
-    return create('uni-resize-sensor', {
-      on: {
-        '~animationstart': this.update
-      }
-    }, [
-      create('div', {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create('div')
-      ]),
-      create('div', {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create('div')
-      ])
-    ])
-  }
 }
-
 </script>

@@ -627,7 +627,7 @@ function findUniTarget($event, $el) {
   }
   return target;
 }
-function normalizeDataset(dataset = {}) {
+function normalizeDataset$1(dataset = {}) {
   const result = JSON.parse(JSON.stringify(dataset));
   return result;
 }
@@ -649,8 +649,8 @@ function normalizeEvent$1(name, $event, detail = {}, target, currentTarget) {
     type: detail.type || name,
     timeStamp: $event.timeStamp || 0,
     detail,
-    target: normalizeTarget(target, detail),
-    currentTarget: normalizeTarget(currentTarget),
+    target: normalizeTarget$1(target, detail),
+    currentTarget: normalizeTarget$1(currentTarget),
     touches: normalizeTouchList($event.touches),
     changedTouches: normalizeTouchList($event.changedTouches),
     preventDefault() {
@@ -675,7 +675,7 @@ function normalizeClickEvent($event) {
 function isClickEvent(val, name) {
   return name === "click";
 }
-function normalizeTarget(target, detail) {
+function normalizeTarget$1(target, detail) {
   if (!target) {
     target = {};
   }
@@ -683,7 +683,7 @@ function normalizeTarget(target, detail) {
     id: target.id,
     offsetLeft: target.offsetLeft,
     offsetTop: target.offsetTop,
-    dataset: normalizeDataset(target.dataset)
+    dataset: normalizeDataset$1(target.dataset)
   };
   if (detail) {
     extend(res, detail);
@@ -1927,13 +1927,13 @@ const _sfc_main$n = {
     }
   }
 };
-const _hoisted_1$d = {class: "uni-audio-default"};
-const _hoisted_2$7 = {class: "uni-audio-right"};
+const _hoisted_1$e = {class: "uni-audio-default"};
+const _hoisted_2$8 = {class: "uni-audio-right"};
 const _hoisted_3$3 = {class: "uni-audio-time"};
 const _hoisted_4$3 = {class: "uni-audio-info"};
 const _hoisted_5$2 = {class: "uni-audio-name"};
 const _hoisted_6$2 = {class: "uni-audio-author"};
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1943,7 +1943,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$d, [
+    createVNode("div", _hoisted_1$e, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1953,7 +1953,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$7, [
+      createVNode("div", _hoisted_2$8, [
         createVNode("div", _hoisted_3$3, toDisplayString($data.currentTime), 1),
         createVNode("div", _hoisted_4$3, [
           createVNode("div", _hoisted_5$2, toDisplayString($props.name), 1),
@@ -1963,7 +1963,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$n.render = _sfc_render$m;
+_sfc_main$n.render = _sfc_render$n;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -2694,20 +2694,20 @@ const _sfc_main$m = {
     }
   }
 };
-const _hoisted_1$c = {
+const _hoisted_1$d = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
-const _hoisted_2$6 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$7 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$c, null, 512),
-    createVNode("div", _hoisted_2$6, [
+    createVNode("canvas", _hoisted_1$d, null, 512),
+    createVNode("div", _hoisted_2$7, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
@@ -2716,7 +2716,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$m.render = _sfc_render$l;
+_sfc_main$m.render = _sfc_render$m;
 const _sfc_main$l = {
   name: "Checkbox",
   mixins: [emitter, listeners],
@@ -2793,12 +2793,12 @@ const _sfc_main$l = {
     }
   }
 };
-const _hoisted_1$b = {class: "uni-checkbox-wrapper"};
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$c = {class: "uni-checkbox-wrapper"};
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$b, [
+    createVNode("div", _hoisted_1$c, [
       createVNode("div", {
         class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
         style: {color: $props.color}
@@ -2807,7 +2807,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$l.render = _sfc_render$k;
+_sfc_main$l.render = _sfc_render$l;
 const _sfc_main$k = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
@@ -2874,12 +2874,12 @@ const _sfc_main$k = {
     }
   }
 };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$k.render = _sfc_render$j;
+_sfc_main$k.render = _sfc_render$k;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3584,13 +3584,13 @@ const _sfc_main$j = {
     }
   }
 };
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$j.render = _sfc_render$i;
+_sfc_main$j.render = _sfc_render$j;
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -3663,6 +3663,7 @@ const _sfc_main$i = {
       default: false
     }
   },
+  emits: ["resize"],
   data: function() {
     return {
       size: {
@@ -3704,30 +3705,27 @@ const _sfc_main$i = {
       this.size.height = this.$el.offsetHeight;
       this.reset();
     }
-  },
-  render: function(create) {
-    return create("uni-resize-sensor", {
-      on: {
-        "~animationstart": this.update
-      }
-    }, [
-      create("div", {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create("div")
-      ]),
-      create("div", {
-        on: {
-          scroll: this.update
-        }
-      }, [
-        create("div")
-      ])
-    ]);
   }
 };
+const _hoisted_1$b = /* @__PURE__ */ createVNode("div", null, null, -1);
+const _hoisted_2$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createBlock("uni-resize-sensor", {
+    onAnimationstartOnce: _cache[3] || (_cache[3] = (...args) => $options.update && $options.update(...args))
+  }, [
+    createVNode("div", {
+      onScroll: _cache[1] || (_cache[1] = (...args) => $options.update && $options.update(...args))
+    }, [
+      _hoisted_1$b
+    ], 32),
+    createVNode("div", {
+      onScroll: _cache[2] || (_cache[2] = (...args) => $options.update && $options.update(...args))
+    }, [
+      _hoisted_2$6
+    ], 32)
+  ], 32);
+}
+_sfc_main$i.render = _sfc_render$i;
 function findElem(vm) {
   return vm.$el;
 }
@@ -9816,6 +9814,35 @@ function useSubscribe(callback) {
     removeSubscribe(instance.id, instance);
   });
 }
+function useCustomEvent(ref2, emit) {
+  return (name, evt, detail) => {
+    emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+  };
+}
+function normalizeDataset(el) {
+  return el.dataset;
+}
+function normalizeTarget(el) {
+  const {id: id2, tagName, offsetTop, offsetLeft} = el;
+  return {
+    id: id2,
+    tagName,
+    dataset: normalizeDataset(el),
+    offsetTop,
+    offsetLeft
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  const evt = {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+  return evt;
+}
 const passiveOptions = passive(false);
 const GestureType = {
   NONE: "none",
@@ -13326,4 +13353,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
