@@ -3,6 +3,7 @@ import {
   API_GET_FILE_INFO,
   API_TYPE_GET_FILE_INFO,
   GetFileInfoProtocol,
+  GetFileInfoOptions,
 } from '@dcloudio/uni-api'
 import { urlToFile } from '../../../helpers/file'
 
@@ -20,5 +21,6 @@ export const getFileInfo = defineAsyncApi<API_TYPE_GET_FILE_INFO>(
         reject(String(err))
       })
   },
-  GetFileInfoProtocol
+  GetFileInfoProtocol,
+  GetFileInfoOptions
 )

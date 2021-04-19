@@ -4550,6 +4550,13 @@ const API_REMOVE_STORAGE = "removeStorage";
 const RemoveStorageProtocol = GetStorageProtocol;
 const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
 const API_GET_FILE_INFO = "getFileInfo";
+const GetFileInfoOptions = {
+  formatArgs: {
+    filePath(filePath, params) {
+      params.filePath = getRealPath(filePath);
+    }
+  }
+};
 const GetFileInfoProtocol = {
   filePath: {
     type: String,
@@ -4557,6 +4564,13 @@ const GetFileInfoProtocol = {
   }
 };
 const API_OPEN_DOCUMENT = "openDocument";
+const OpenDocumentOptions = {
+  formatArgs: {
+    filePath(filePath, params) {
+      params.filePath = getRealPath(filePath);
+    }
+  }
+};
 const OpenDocumentProtocol = {
   filePath: {
     type: String,
@@ -4797,6 +4811,11 @@ const DownloadFileProtocol = {
 const API_UPLOAD_FILE = "uploadFile";
 const UploadFileOptions = {
   formatArgs: {
+    filePath(filePath, params) {
+      if (filePath) {
+        params.filePath = getRealPath(filePath);
+      }
+    },
     header(value, params) {
       params.header = value || {};
     },
@@ -11078,11 +11097,11 @@ const getFileInfo = defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, rej
   }).catch((err) => {
     reject(String(err));
   });
-}, GetFileInfoProtocol);
+}, GetFileInfoProtocol, GetFileInfoOptions);
 const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) => {
   window.open(filePath);
   return resolve();
-}, OpenDocumentProtocol);
+}, OpenDocumentProtocol, OpenDocumentOptions);
 function getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }

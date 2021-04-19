@@ -3,6 +3,7 @@ import {
   API_TYPE_OPEN_DOCUMENT,
   defineAsyncApi,
   OpenDocumentProtocol,
+  OpenDocumentOptions,
 } from '@dcloudio/uni-api'
 
 export const openDocument = defineAsyncApi<API_TYPE_OPEN_DOCUMENT>(
@@ -11,5 +12,6 @@ export const openDocument = defineAsyncApi<API_TYPE_OPEN_DOCUMENT>(
     window.open(filePath)
     return resolve()
   },
-  OpenDocumentProtocol
+  OpenDocumentProtocol,
+  OpenDocumentOptions
 )
