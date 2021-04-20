@@ -3693,11 +3693,11 @@ function getRealPath(filePath) {
   return filePath;
 }
 const ua = navigator.userAgent;
-const isAndroid = /android/i.test(ua);
-const isIOS$1 = /iphone|ipad|ipod/i.test(ua);
-const isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /Macintosh|Mac/i.test(ua);
-const isLinux = /Linux|X11/i.test(ua);
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
@@ -3732,10 +3732,13 @@ function operateVideoPlayer(videoId, vm, type, data) {
   }, pageId);
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var lookup = new Uint8Array(256);
-for (var i$1 = 0; i$1 < chars.length; i$1++) {
-  lookup[chars.charCodeAt(i$1)] = i$1;
-}
+var lookup = /* @__PURE__ */ function() {
+  const lookup2 = new Uint8Array(256);
+  for (var i2 = 0; i2 < chars.length; i2++) {
+    lookup2[chars.charCodeAt(i2)] = i2;
+  }
+  return lookup2;
+}();
 function encode$1(arraybuffer) {
   var bytes = new Uint8Array(arraybuffer), i2, len = bytes.length, base64 = "";
   for (i2 = 0; i2 < len; i2 += 3) {
@@ -5765,10 +5768,9 @@ function normalizeDataset(el) {
   return el.dataset;
 }
 function normalizeTarget(el) {
-  const {id: id2, tagName, offsetTop, offsetLeft} = el;
+  const {id: id2, offsetTop, offsetLeft} = el;
   return {
     id: id2,
-    tagName,
     dataset: normalizeDataset(el),
     offsetTop,
     offsetLeft
@@ -13348,7 +13350,7 @@ var PageBody = defineComponent({
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
     const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
     return () => {
-      const pageRefreshTsx = createPageRefreshTsx(refreshRef, pageMeta);
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
       return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
     };
   }

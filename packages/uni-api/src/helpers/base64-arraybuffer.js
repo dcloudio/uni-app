@@ -11,10 +11,13 @@
 var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
 // Use a lookup table to find the index.
-var lookup = new Uint8Array(256)
-for (var i = 0; i < chars.length; i++) {
-  lookup[chars.charCodeAt(i)] = i
-}
+var lookup = /*#__PURE__*/ (function () {
+  const lookup = new Uint8Array(256)
+  for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i
+  }
+  return lookup
+})()
 
 export function encode(arraybuffer) {
   var bytes = new Uint8Array(arraybuffer),

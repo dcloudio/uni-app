@@ -21,7 +21,9 @@ export default defineComponent({
         : null
 
     return () => {
-      const pageRefreshTsx = createPageRefreshTsx(refreshRef, pageMeta)
+      const pageRefreshTsx =
+        __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
+        createPageRefreshTsx(refreshRef, pageMeta)
       return (
         <>
           {pageRefreshTsx}
