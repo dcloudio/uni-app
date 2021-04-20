@@ -1,5 +1,7 @@
 export * from './base/canIUse'
 
+export * from './context/createInnerAudioContext'
+
 export * from './device/makePhoneCall'
 export * from './device/getSystemInfo'
 export * from './device/getSystemInfoSync'
@@ -12,6 +14,8 @@ export * from './storage/storage'
 
 export * from './file/getFileInfo'
 export * from './file/openDocument'
+
+export * from './keyboard/keyboard'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'

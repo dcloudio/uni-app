@@ -604,7 +604,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
@@ -612,10 +612,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function findUniTarget($event, $el) {
@@ -1101,7 +1101,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.height = rpx2px(refreshOptions.height);
       refreshOptions.range = rpx2px(refreshOptions.range);
@@ -1640,7 +1640,7 @@ var subscriber = {
     }
   }
 };
-function hideKeyboard() {
+function hideKeyboard$1() {
   document.activeElement.blur();
 }
 function iosHideKeyboard() {
@@ -1680,7 +1680,7 @@ var keyboard = {
     initKeyboard(el) {
       el.addEventListener("focus", () => {
         this.hideKeyboardTemp = function() {
-          hideKeyboard();
+          hideKeyboard$1();
         };
         UniViewJSBridge.subscribe("hideKeyboard", this.hideKeyboardTemp);
         document.addEventListener("click", iosHideKeyboard, false);
@@ -4309,6 +4309,7 @@ const promiseInterceptor = {
   }
 };
 const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
+const API_CREATE_INNER_AUDIO_CONTEXT = "createInnerAudioContext";
 const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
 class VideoContext {
   constructor(id2, vm) {
@@ -4508,6 +4509,7 @@ const OpenDocumentProtocol = {
   },
   fileType: String
 };
+const API_HIDE_KEYBOARD = "hideKeyboard";
 const API_GET_LOCATION = "getLocation";
 const coordTypes = ["WGS84", "GCJ02"];
 const GetLocationOptions = {
@@ -10663,6 +10665,156 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
   }
   return true;
 }, CanIUseProtocol);
+const innerAudioContextEventNames = [
+  "onCanplay",
+  "onPlay",
+  "onPause",
+  "onStop",
+  "onEnded",
+  "onTimeUpdate",
+  "onError",
+  "onWaiting",
+  "onSeeking",
+  "onSeeked"
+];
+const innerAudioContextOffEventNames = [
+  "offCanplay",
+  "offPlay",
+  "offPause",
+  "offStop",
+  "offEnded",
+  "offTimeUpdate",
+  "offError",
+  "offWaiting",
+  "offSeeking",
+  "offSeeked"
+];
+const propertys = [
+  "src",
+  "autoplay",
+  "loop",
+  "duration",
+  "currentTime",
+  "paused",
+  "volume"
+];
+class InnerAudioContext {
+  constructor() {
+    this._src = "";
+    var audio = this._audio = new Audio();
+    this._stoping = false;
+    propertys.forEach((property) => {
+      Object.defineProperty(this, property, {
+        set: property === "src" ? (src) => {
+          audio.src = getRealPath(src);
+          this._src = src;
+          return src;
+        } : (val) => {
+          audio.setAttribute(property, val);
+          return val;
+        },
+        get: property === "src" ? () => {
+          return this._src;
+        } : () => {
+          return audio[property];
+        }
+      });
+    });
+    this.startTime = 0;
+    Object.defineProperty(this, "obeyMuteSwitch", {
+      set: () => false,
+      get: () => false
+    });
+    Object.defineProperty(this, "buffered", {
+      set: () => false,
+      get() {
+        var buffered = audio.buffered;
+        if (buffered.length) {
+          return buffered.end(buffered.length - 1);
+        } else {
+          return 0;
+        }
+      }
+    });
+    this._events = {};
+    innerAudioContextEventNames.forEach((eventName) => {
+      this._events[eventName] = [];
+    });
+    audio.addEventListener("loadedmetadata", () => {
+      var startTime = Number(this.startTime) || 0;
+      if (startTime > 0) {
+        audio.currentTime = startTime;
+      }
+    });
+    var eventNames = [
+      "canplay",
+      "play",
+      "pause",
+      "ended",
+      "timeUpdate",
+      "error",
+      "waiting",
+      "seeking",
+      "seeked"
+    ];
+    var stopEventNames = ["canplay", "pause", "seeking", "seeked", "timeUpdate"];
+    eventNames.forEach((eventName) => {
+      audio.addEventListener(eventName.toLowerCase(), () => {
+        if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
+          return;
+        }
+        const EventName = `on${eventName.substr(0, 1).toUpperCase()}${eventName.substr(1)}`;
+        this._events[EventName].forEach((callback) => {
+          callback();
+        });
+      }, false);
+    });
+  }
+  play() {
+    this._stoping = false;
+    this._audio.play();
+  }
+  pause() {
+    this._audio.pause();
+  }
+  stop() {
+    this._stoping = true;
+    this._audio.pause();
+    this._audio.currentTime = 0;
+    this._events.onStop.forEach((callback) => {
+      callback();
+    });
+  }
+  seek(position) {
+    this._stoping = false;
+    position = Number(position);
+    if (typeof position === "number" && !isNaN(position)) {
+      this._audio.currentTime = position;
+    }
+  }
+  destroy() {
+    this.stop();
+  }
+}
+innerAudioContextEventNames.forEach((eventName) => {
+  InnerAudioContext.prototype[eventName] = function(callback) {
+    if (typeof callback === "function") {
+      this._events[eventName].push(callback);
+    }
+  };
+});
+innerAudioContextOffEventNames.forEach((eventName) => {
+  InnerAudioContext.prototype[eventName] = function(callback) {
+    var handle = this._events[eventName.replace("off", "on")];
+    var index2 = handle.indexOf(callback);
+    if (index2 >= 0) {
+      handle.splice(index2, 1);
+    }
+  };
+});
+const createInnerAudioContext = defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
+  return new InnerAudioContext();
+});
 const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}, {resolve}) => {
   window.location.href = `tel:${phoneNumber}`;
   return resolve();
@@ -10676,7 +10828,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -10789,12 +10941,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -10814,10 +10966,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -11180,6 +11332,13 @@ const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) =
   window.open(filePath);
   return resolve();
 }, OpenDocumentProtocol, OpenDocumentOptions);
+const hideKeyboard = defineAsyncApi(API_HIDE_KEYBOARD, (args, {resolve, reject}) => {
+  const activeElement = document.activeElement;
+  if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
+    activeElement.blur();
+    resolve();
+  }
+});
 function getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
@@ -11828,14 +11987,14 @@ ${e2};at socketTask.on${capitalize(name)} callback function
           }
         });
       });
-      const propertys = [
+      const propertys2 = [
         "CLOSED",
         "CLOSING",
         "CONNECTING",
         "OPEN",
         "readyState"
       ];
-      propertys.forEach((property) => {
+      propertys2.forEach((property) => {
         Object.defineProperty(this, property, {
           get() {
             return webSocket[property];
@@ -12306,6 +12465,7 @@ var api = /* @__PURE__ */ Object.freeze({
   cssConstant,
   cssBackdropFilter,
   canIUse,
+  createInnerAudioContext,
   makePhoneCall,
   getSystemInfo,
   getSystemInfoSync,
@@ -12334,6 +12494,7 @@ var api = /* @__PURE__ */ Object.freeze({
   getStorageInfo,
   getFileInfo,
   openDocument,
+  hideKeyboard,
   getImageInfo,
   getVideoInfo,
   chooseFile,
@@ -13404,4 +13565,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};

@@ -30,3 +30,6 @@ export const CreateCanvasContextProtocol: ProtocolOptions<String | Object>[] = [
     type: Object,
   },
 ]
+
+export const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext'
+export type API_TYPE_CREATEE_INNER_AUDIO_CONTEXT = typeof uni.createInnerAudioContext

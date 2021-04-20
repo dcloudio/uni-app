@@ -11,6 +11,8 @@ export * from './service/ui/tabBar'
 // protocols
 export * from './protocols/base/canIUse'
 
+export * from './protocols/context/context'
+
 export * from './protocols/device/makePhoneCall'
 export * from './protocols/device/setClipboardData'
 export * from './protocols/device/accelerometer'
@@ -21,6 +23,8 @@ export * from './protocols/storage/storage'
 
 export * from './protocols/file/getFileInfo'
 export * from './protocols/file/openDocument'
+
+export * from './protocols/keyboard/keyboard'
 
 export * from './protocols/location/chooseLocation'
 export * from './protocols/location/getLocation'
