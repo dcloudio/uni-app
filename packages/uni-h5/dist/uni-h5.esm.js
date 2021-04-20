@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, createCommentVNode, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, Fragment, renderList, vModelText, watch, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createCommentVNode, createTextVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance, publicThis) {
@@ -1318,7 +1318,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$6 = {
+var index$7 = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -1355,12 +1355,12 @@ function usePageRoute() {
 }
 function wrapperComponentSetup(comp, {init: init2, setup, after}) {
   const oldSetup = comp.setup;
-  comp.setup = (props, ctx) => {
+  comp.setup = (props2, ctx) => {
     const instance = getCurrentInstance();
     init2(instance.proxy);
     setup(instance);
     if (oldSetup) {
-      return oldSetup(props, ctx);
+      return oldSetup(props2, ctx);
     }
   };
   after && after(comp);
@@ -1808,7 +1808,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$n = {
+const _sfc_main$m = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1933,7 +1933,7 @@ const _hoisted_3$3 = {class: "uni-audio-time"};
 const _hoisted_4$3 = {class: "uni-audio-info"};
 const _hoisted_5$2 = {class: "uni-audio-name"};
 const _hoisted_6$2 = {class: "uni-audio-author"};
-function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1963,7 +1963,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$n.render = _sfc_render$n;
+_sfc_main$m.render = _sfc_render$m;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -1982,7 +1982,7 @@ const hoverProps = {
     default: 400
   }
 };
-function useHover(props) {
+function useHover(props2) {
   const hovering = ref(false);
   let hoverTouch = false;
   let hoverStartTimer;
@@ -1992,20 +1992,20 @@ function useHover(props) {
       clearTimeout(hoverStayTimer);
       hoverStayTimer = setTimeout(() => {
         hovering.value = false;
-      }, parseInt(props.hoverStayTime));
+      }, parseInt(props2.hoverStayTime));
     });
   }
   function onTouchstartPassive(evt) {
     if (evt._hoverPropagationStopped) {
       return;
     }
-    if (!props.hoverClass || props.hoverClass === "none" || props.disabled) {
+    if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
       return;
     }
     if (evt.touches.length > 1) {
       return;
     }
-    if (props.hoverStopPropagation) {
+    if (props2.hoverStopPropagation) {
       evt._hoverPropagationStopped = true;
     }
     hoverTouch = true;
@@ -2014,7 +2014,7 @@ function useHover(props) {
       if (!hoverTouch) {
         hoverReset();
       }
-    }, parseInt(props.hoverStartTime));
+    }, parseInt(props2.hoverStartTime));
   }
   function onTouchend() {
     hoverTouch = false;
@@ -2036,19 +2036,19 @@ function useHover(props) {
     }
   };
 }
-function useBooleanAttr(props, keys) {
+function useBooleanAttr(props2, keys) {
   if (isString(keys)) {
     keys = [keys];
   }
   return keys.reduce((res, key) => {
-    if (props[key]) {
+    if (props2[key]) {
       res[key] = true;
     }
     return res;
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$5 = /* @__PURE__ */ defineComponent({
+var index$6 = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -2085,7 +2085,7 @@ function provideForm(emit) {
   });
   return fields;
 }
-var index$4 = /* @__PURE__ */ defineComponent({
+var index$5 = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -2121,20 +2121,20 @@ var index$4 = /* @__PURE__ */ defineComponent({
       default: ""
     }
   },
-  setup(props, {
+  setup(props2, {
     slots
   }) {
     const uniForm = inject(uniFormKey, false);
     const {
       hovering,
       binding
-    } = useHover(props);
+    } = useHover(props2);
     useI18n();
     function onClick() {
-      if (props.disabled) {
+      if (props2.disabled) {
         return;
       }
-      const formType = props.formType;
+      const formType = props2.formType;
       if (formType) {
         if (!uniForm) {
           return;
@@ -2148,8 +2148,8 @@ var index$4 = /* @__PURE__ */ defineComponent({
       }
     }
     return () => {
-      const hoverClass = props.hoverClass;
-      const booleanAttrs = useBooleanAttr(props, "disabled");
+      const hoverClass = props2.hoverClass;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-button", mergeProps({
           onClick,
@@ -2198,7 +2198,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$m = {
+const _sfc_main$l = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -2700,7 +2700,7 @@ const _hoisted_1$d = {
   height: "150"
 };
 const _hoisted_2$7 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
@@ -2716,8 +2716,8 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$m.render = _sfc_render$m;
-const _sfc_main$l = {
+_sfc_main$l.render = _sfc_render$l;
+const _sfc_main$k = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -2794,7 +2794,7 @@ const _sfc_main$l = {
   }
 };
 const _hoisted_1$c = {class: "uni-checkbox-wrapper"};
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
@@ -2807,8 +2807,8 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$l.render = _sfc_render$l;
-const _sfc_main$k = {
+_sfc_main$k.render = _sfc_render$k;
+const _sfc_main$j = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -2874,12 +2874,12 @@ const _sfc_main$k = {
     }
   }
 };
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$k.render = _sfc_render$k;
+_sfc_main$j.render = _sfc_render$j;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3262,7 +3262,7 @@ function register(Quill) {
   Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
   Quill.register(options, true);
 }
-const _sfc_main$j = {
+const _sfc_main$i = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -3584,13 +3584,13 @@ const _sfc_main$j = {
     }
   }
 };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$j.render = _sfc_render$j;
+_sfc_main$i.render = _sfc_render$i;
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -3633,7 +3633,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$3 = /* @__PURE__ */ defineComponent({
+var index$4 = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -3650,82 +3650,11 @@ var index$3 = /* @__PURE__ */ defineComponent({
       default: ""
     }
   },
-  setup(props) {
-    const path = computed(() => ICONS[props.type]);
-    return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props.color || path.value.c, rpx2px(props.size))]);
+  setup(props2) {
+    const path = computed(() => ICONS[props2.type]);
+    return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
   }
 });
-const _sfc_main$i = {
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  emits: ["resize"],
-  data: function() {
-    return {
-      size: {
-        width: -1,
-        height: -1
-      }
-    };
-  },
-  watch: {
-    size: {
-      deep: true,
-      handler: function(size) {
-        this.$emit("resize", Object.assign({}, size));
-      }
-    }
-  },
-  mounted: function() {
-    if (this.initial === true) {
-      this.$nextTick(this.update);
-    }
-    if (this.$el.offsetParent !== this.$el.parentNode) {
-      this.$el.parentNode.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      this.reset();
-    }
-  },
-  methods: {
-    reset: function() {
-      var expand = this.$el.firstChild;
-      var shrink = this.$el.lastChild;
-      expand.scrollLeft = 1e5;
-      expand.scrollTop = 1e5;
-      shrink.scrollLeft = 1e5;
-      shrink.scrollTop = 1e5;
-    },
-    update: function() {
-      this.size.width = this.$el.offsetWidth;
-      this.size.height = this.$el.offsetHeight;
-      this.reset();
-    }
-  }
-};
-const _hoisted_1$b = /* @__PURE__ */ createVNode("div", null, null, -1);
-const _hoisted_2$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-resize-sensor", {
-    onAnimationstartOnce: _cache[3] || (_cache[3] = (...args) => $options.update && $options.update(...args))
-  }, [
-    createVNode("div", {
-      onScroll: _cache[1] || (_cache[1] = (...args) => $options.update && $options.update(...args))
-    }, [
-      _hoisted_1$b
-    ], 32),
-    createVNode("div", {
-      onScroll: _cache[2] || (_cache[2] = (...args) => $options.update && $options.update(...args))
-    }, [
-      _hoisted_2$6
-    ], 32)
-  ], 32);
-}
-_sfc_main$i.render = _sfc_render$i;
 function findElem(vm) {
   return vm.$el;
 }
@@ -5827,176 +5756,330 @@ function removeIntersectionObserver({reqId, component}, _pageId) {
     delete $el.__io[reqId];
   }
 }
+function useCustomEvent(ref2, emit) {
+  return (name, evt, detail) => {
+    emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+  };
+}
+function normalizeDataset(el) {
+  return el.dataset;
+}
+function normalizeTarget(el) {
+  const {id: id2, tagName, offsetTop, offsetLeft} = el;
+  return {
+    id: id2,
+    tagName,
+    dataset: normalizeDataset(el),
+    offsetTop,
+    offsetLeft
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  const evt = {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+  return evt;
+}
 const _sfc_main$h = {
-  name: "Image",
+  name: "ResizeSensor",
   props: {
-    src: {
-      type: String,
-      default: ""
-    },
-    mode: {
-      type: String,
-      default: "scaleToFill"
-    },
-    lazyLoad: {
+    initial: {
       type: [Boolean, String],
       default: false
     }
   },
-  data() {
+  emits: ["resize"],
+  data: function() {
     return {
-      originalWidth: 0,
-      originalHeight: 0,
-      availHeight: ""
+      size: {
+        width: -1,
+        height: -1
+      }
     };
   },
-  computed: {
-    ratio() {
-      return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0;
-    },
-    realImagePath() {
-      return getRealPath(this.src);
-    },
-    modeStyle() {
-      let size = "auto";
-      let position = "";
-      const repeat = "no-repeat";
-      switch (this.mode) {
-        case "aspectFit":
-          size = "contain";
-          position = "center center";
-          break;
-        case "aspectFill":
-          size = "cover";
-          position = "center center";
-          break;
-        case "widthFix":
-          size = "100% 100%";
-          break;
-        case "top":
-          position = "center top";
-          break;
-        case "bottom":
-          position = "center bottom";
-          break;
-        case "center":
-          position = "center center";
-          break;
-        case "left":
-          position = "left center";
-          break;
-        case "right":
-          position = "right center";
-          break;
-        case "top left":
-          position = "left top";
-          break;
-        case "top right":
-          position = "right top";
-          break;
-        case "bottom left":
-          position = "left bottom";
-          break;
-        case "bottom right":
-          position = "right bottom";
-          break;
-        default:
-          size = "100% 100%";
-          position = "0% 0%";
-          break;
-      }
-      return `background-position:${position};background-size:${size};background-repeat:${repeat};`;
-    }
-  },
   watch: {
-    src(newValue, oldValue) {
-      this._setContentImage();
-      this._loadImage();
-    },
-    mode(newValue, oldValue) {
-      if (oldValue === "widthFix") {
-        this.$el.style.height = this.availHeight;
-      }
-      if (newValue === "widthFix" && this.ratio) {
-        this._fixSize();
+    size: {
+      deep: true,
+      handler: function(size) {
+        this.$emit("resize", Object.assign({}, size));
       }
     }
   },
-  components: {
-    ResizeSensor: _sfc_main$i
-  },
-  mounted() {
-    this.availHeight = this.$el.style.height || "";
-    this._setContentImage();
-    if (!this.realImagePath) {
-      return;
+  mounted: function() {
+    if (this.initial === true) {
+      this.$nextTick(this.update);
     }
-    this._loadImage();
+    if (this.$el.offsetParent !== this.$el.parentNode) {
+      this.$el.parentNode.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      this.reset();
+    }
   },
   methods: {
-    _resize() {
-      if (this.mode === "widthFix") {
-        this._fixSize();
-      }
+    reset: function() {
+      var expand = this.$el.firstChild;
+      var shrink = this.$el.lastChild;
+      expand.scrollLeft = 1e5;
+      expand.scrollTop = 1e5;
+      shrink.scrollLeft = 1e5;
+      shrink.scrollTop = 1e5;
     },
-    _fixSize() {
-      const elWidth = this._getWidth();
-      if (elWidth) {
-        let height = elWidth / this.ratio;
-        if (typeof navigator && navigator.vendor === "Google Inc." && height > 10) {
-          height = Math.round(height / 2) * 2;
-        }
-        this.$el.style.height = height + "px";
-      }
-    },
-    _setContentImage() {
-      this.$refs.content.style.backgroundImage = this.src ? `url("${this.realImagePath}")` : "none";
-    },
-    _loadImage() {
-      const _self = this;
-      const img = new Image();
-      img.onload = function($event) {
-        _self.originalWidth = this.width;
-        _self.originalHeight = this.height;
-        if (_self.mode === "widthFix") {
-          _self._fixSize();
-        }
-        _self.$trigger("load", $event, {
-          width: this.width,
-          height: this.height
-        });
-      };
-      img.onerror = function($event) {
-        _self.$trigger("error", $event, {
-          errMsg: `GET ${_self.src} 404 (Not Found)`
-        });
-      };
-      img.src = this.realImagePath;
-    },
-    _getWidth() {
-      const computedStyle = window.getComputedStyle(this.$el);
-      const borderWidth = (parseFloat(computedStyle.borderLeftWidth, 10) || 0) + (parseFloat(computedStyle.borderRightWidth, 10) || 0);
-      const paddingWidth = (parseFloat(computedStyle.paddingLeft, 10) || 0) + (parseFloat(computedStyle.paddingRight, 10) || 0);
-      return this.$el.offsetWidth - borderWidth - paddingWidth;
+    update: function() {
+      this.size.width = this.$el.offsetWidth;
+      this.size.height = this.$el.offsetHeight;
+      this.reset();
     }
   }
 };
+const _hoisted_1$b = /* @__PURE__ */ createVNode("div", null, null, -1);
+const _hoisted_2$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
 function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_ResizeSensor = resolveComponent("ResizeSensor");
-  return openBlock(), createBlock("uni-image", _ctx.$attrs, [
+  return openBlock(), createBlock("uni-resize-sensor", {
+    onAnimationstartOnce: _cache[3] || (_cache[3] = (...args) => $options.update && $options.update(...args))
+  }, [
     createVNode("div", {
-      ref: "content",
-      style: $options.modeStyle
-    }, null, 4),
-    createVNode("img", {src: $options.realImagePath}, null, 8, ["src"]),
-    $props.mode === "widthFix" ? (openBlock(), createBlock(_component_ResizeSensor, {
-      key: 0,
-      ref: "sensor",
-      onResize: $options._resize
-    }, null, 8, ["onResize"])) : createCommentVNode("", true)
-  ], 16);
+      onScroll: _cache[1] || (_cache[1] = (...args) => $options.update && $options.update(...args))
+    }, [
+      _hoisted_1$b
+    ], 32),
+    createVNode("div", {
+      onScroll: _cache[2] || (_cache[2] = (...args) => $options.update && $options.update(...args))
+    }, [
+      _hoisted_2$6
+    ], 32)
+  ], 32);
 }
 _sfc_main$h.render = _sfc_render$h;
+const props = {
+  src: {
+    type: String,
+    default: ""
+  },
+  mode: {
+    type: String,
+    default: "scaleToFill"
+  },
+  lazyLoad: {
+    type: [Boolean, String],
+    default: false
+  },
+  draggable: {
+    type: Boolean,
+    default: true
+  }
+};
+const FIX_MODES = {
+  widthFix: ["width", "height"],
+  heightFix: ["height", "width"]
+};
+const IMAGE_MODES = {
+  aspectFit: ["center center", "contain"],
+  aspectFill: ["center center", "cover"],
+  widthFix: [, "100% 100%"],
+  heightFix: [, "100% 100%"],
+  top: ["center top"],
+  bottom: ["center bottom"],
+  center: ["center center"],
+  left: ["left center"],
+  right: ["right center"],
+  "top left": ["left top"],
+  "top right": ["right top"],
+  "bottom left": ["left bottom"],
+  "bottom right": ["right bottom"]
+};
+var index$3 = /* @__PURE__ */ defineComponent({
+  name: "Image",
+  props,
+  setup(props2, {
+    emit
+  }) {
+    const rootRef = ref(null);
+    const state = useImageState(rootRef, props2);
+    const trigger = useCustomEvent(rootRef, emit);
+    const {
+      fixSize,
+      resetSize
+    } = useImageSize(rootRef, props2, state);
+    useImageLoader(state, {
+      trigger,
+      fixSize,
+      resetSize
+    });
+    return () => {
+      const {
+        mode
+      } = props2;
+      const {
+        imgSrc,
+        modeStyle
+      } = state;
+      return createVNode("uni-image", {
+        ref: rootRef
+      }, [createVNode("div", {
+        style: modeStyle
+      }, null, 4), imgSrc && createVNode("img", {
+        src: imgSrc,
+        draggable: props2.draggable
+      }, null, 8, ["src", "draggable"]), FIX_MODES[mode] && createVNode(_sfc_main$h, {
+        onResize: fixSize
+      }, null, 8, ["onResize"])], 512);
+    };
+  }
+});
+function useImageState(rootRef, props2) {
+  const imgSrc = ref("");
+  const modeStyleRef = computed(() => {
+    let size = "auto";
+    let position = "";
+    const opts = IMAGE_MODES[props2.mode];
+    if (!opts) {
+      position = "0% 0%";
+      size = "100% 100%";
+    } else {
+      opts[0] && (position = opts[0]);
+      opts[1] && (size = opts[1]);
+    }
+    const srcVal = imgSrc.value;
+    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
+  });
+  const state = reactive({
+    rootEl: rootRef,
+    src: computed(() => getRealPath(props2.src)),
+    origWidth: 0,
+    origHeight: 0,
+    origStyle: {
+      width: "",
+      height: ""
+    },
+    modeStyle: modeStyleRef,
+    imgSrc
+  });
+  onMounted(() => {
+    const rootEl = rootRef.value;
+    const style = rootEl.style;
+    state.origWidth = Number(style.width) || 0;
+    state.origHeight = Number(style.height) || 0;
+  });
+  return state;
+}
+function useImageLoader(state, {
+  trigger,
+  fixSize,
+  resetSize
+}) {
+  let img;
+  const loadImage = (src) => {
+    if (!src) {
+      resetImage();
+      resetSize();
+      return;
+    }
+    if (!img) {
+      img = new Image();
+    }
+    img.onload = (evt) => {
+      const {
+        width,
+        height
+      } = img;
+      state.origWidth = width;
+      state.origHeight = height;
+      state.imgSrc = src;
+      fixSize();
+      resetImage();
+      trigger("load", evt, {
+        width,
+        height
+      });
+    };
+    img.onerror = (evt) => {
+      const {
+        src: src2
+      } = state;
+      state.origWidth = 0;
+      state.origHeight = 0;
+      state.imgSrc = "";
+      resetImage();
+      trigger("error", evt, {
+        errMsg: `GET ${src2} 404 (Not Found)`
+      });
+    };
+    img.src = src;
+  };
+  const resetImage = () => {
+    if (img) {
+      img.onload = null;
+      img.onerror = null;
+      img = null;
+    }
+  };
+  watch(() => state.src, (value) => loadImage(value));
+  onMounted(() => loadImage(state.src));
+  onBeforeUnmount(() => resetImage());
+}
+const isChrome = navigator.vendor === "Google Inc.";
+function fixNumber(num) {
+  if (isChrome && num > 10) {
+    num = Math.round(num / 2) * 2;
+  }
+  return num;
+}
+function useImageSize(rootRef, props2, state) {
+  const fixSize = () => {
+    const {
+      mode
+    } = props2;
+    const names = FIX_MODES[mode];
+    if (!names) {
+      return;
+    }
+    const {
+      origWidth,
+      origHeight
+    } = state;
+    const ratio = origWidth && origHeight ? origWidth / origHeight : 0;
+    if (!ratio) {
+      return;
+    }
+    const rootEl = rootRef.value;
+    const rect = rootEl.getBoundingClientRect();
+    const value = rect[names[0]];
+    if (value) {
+      rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
+    }
+  };
+  const resetSize = () => {
+    const {
+      style
+    } = rootRef.value;
+    const {
+      origStyle: {
+        width,
+        height
+      }
+    } = state;
+    style.width = width;
+    style.height = height;
+  };
+  watch(() => props2.mode, (value, oldValue) => {
+    if (FIX_MODES[oldValue]) {
+      resetSize();
+    }
+    if (FIX_MODES[value]) {
+      fixSize();
+    }
+  });
+  return {
+    fixSize,
+    resetSize
+  };
+}
 function useFormField(nameKey, valueKey) {
   const uniForm = inject(uniFormKey, false);
   if (!uniForm) {
@@ -9459,7 +9542,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
       default: false
     }
   },
-  setup(props, {
+  setup(props2, {
     slots
   }) {
     return () => {
@@ -9471,8 +9554,8 @@ var index$2 = /* @__PURE__ */ defineComponent({
             const len = lines.length - 1;
             lines.forEach((text2, index2) => {
               children.push(createTextVNode(normalizeText(text2, {
-                space: props.space,
-                decode: props.decode
+                space: props2.space,
+                decode: props2.decode
               })));
               if (index2 !== len) {
                 children.push(createVNode("br"));
@@ -9487,7 +9570,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
         });
       }
       return createVNode("uni-text", {
-        selectable: props.selectable
+        selectable: props2.selectable
       }, [createVNode("span", null, [children])], 8, ["selectable"]);
     };
   }
@@ -9772,15 +9855,15 @@ _sfc_main$4.render = _sfc_render$4;
 var index$1 = /* @__PURE__ */ defineComponent({
   name: "View",
   props: extend({}, hoverProps),
-  setup(props, {
+  setup(props2, {
     slots
   }) {
     const {
       hovering,
       binding
-    } = useHover(props);
+    } = useHover(props2);
     return () => {
-      const hoverClass = props.hoverClass;
+      const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-view", mergeProps({
           class: hovering.value ? hoverClass : ""
@@ -9813,35 +9896,6 @@ function useSubscribe(callback) {
   onBeforeMount(() => {
     removeSubscribe(instance.id, instance);
   });
-}
-function useCustomEvent(ref2, emit) {
-  return (name, evt, detail) => {
-    emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-  };
-}
-function normalizeDataset(el) {
-  return el.dataset;
-}
-function normalizeTarget(el) {
-  const {id: id2, tagName, offsetTop, offsetLeft} = el;
-  return {
-    id: id2,
-    tagName,
-    dataset: normalizeDataset(el),
-    offsetTop,
-    offsetLeft
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  const evt = {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-  return evt;
 }
 const passiveOptions = passive(false);
 const GestureType = {
@@ -12148,8 +12202,8 @@ const setTabBarStyleProps = [
   "borderStyle"
 ];
 const setTabBarBadgeProps = ["badge", "redDot"];
-function setProperties(item, props, propsData) {
-  props.forEach(function(name) {
+function setProperties(item, props2, propsData) {
+  props2.forEach(function(name) {
     if (hasOwn$1(propsData, name)) {
       item[name] = propsData[name];
     }
@@ -13289,7 +13343,7 @@ function usePageRefresh(refreshRef) {
 }
 var PageBody = defineComponent({
   name: "PageBody",
-  setup(props, ctx) {
+  setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
     const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
@@ -13353,4 +13407,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$n as Audio, index$4 as Button, _sfc_main$m as Canvas, _sfc_main$l as Checkbox, _sfc_main$k as CheckboxGroup, _sfc_main$j as Editor, index$5 as Form, index$3 as Icon, _sfc_main$h as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$i as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$6 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$m as Audio, index$5 as Button, _sfc_main$l as Canvas, _sfc_main$k as Checkbox, _sfc_main$j as CheckboxGroup, _sfc_main$i as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, _sfc_main$h as ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};

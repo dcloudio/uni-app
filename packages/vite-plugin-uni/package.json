@@ -36,8 +36,8 @@
   "peerDependencies": {
     "@dcloudio/uni-cli-shared": "^3.0.0",
     "@dcloudio/uni-shared": "^3.0.0",
-    "@vue/shared": "^3.0.10",
-    "vite": "^2.1.5"
+    "@vue/shared": "^3.0.11",
+    "vite": "^2.2.1"
   },
   "devDependencies": {
     "@types/mime": "^2.0.3",

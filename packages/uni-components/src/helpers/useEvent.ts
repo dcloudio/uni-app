@@ -1,8 +1,12 @@
 import { Ref, SetupContext } from 'vue'
 
 type EventDetail = Record<string, any>
+export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 
-export function useCustomEvent(ref: Ref, emit: SetupContext['emit']) {
+export function useCustomEvent(
+  ref: Ref<HTMLElement | null>,
+  emit: SetupContext['emit']
+) {
   return (name: string, evt: Event, detail?: EventDetail) => {
     emit(
       name,
@@ -16,10 +20,9 @@ function normalizeDataset(el: HTMLElement) {
 }
 
 function normalizeTarget(el: HTMLElement): WechatMiniprogram.Target {
-  const { id, tagName, offsetTop, offsetLeft } = el
+  const { id, offsetTop, offsetLeft } = el
   return {
     id,
-    tagName,
     dataset: normalizeDataset(el),
     offsetTop,
     offsetLeft,
