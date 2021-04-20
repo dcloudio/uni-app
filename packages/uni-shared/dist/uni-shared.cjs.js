@@ -11,6 +11,15 @@ function normalizeDataset(el) {
     // TODO
     return JSON.parse(JSON.stringify(el.dataset || {}));
 }
+function normalizeTarget(el) {
+    const { id, offsetTop, offsetLeft } = el;
+    return {
+        id,
+        dataset: normalizeDataset(el),
+        offsetTop,
+        offsetLeft,
+    };
+}
 
 function plusReady(callback) {
     if (typeof callback !== 'function') {
@@ -247,6 +256,7 @@ exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
 exports.isNativeTag = isNativeTag;
 exports.normalizeDataset = normalizeDataset;
+exports.normalizeTarget = normalizeTarget;
 exports.once = once;
 exports.parseQuery = parseQuery;
 exports.passive = passive;

@@ -1,4 +1,5 @@
 import { Ref, SetupContext } from 'vue'
+import { normalizeTarget } from '@dcloudio/uni-shared'
 
 type EventDetail = Record<string, any>
 export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
@@ -15,33 +16,18 @@ export function useCustomEvent(
   }
 }
 
-function normalizeDataset(el: HTMLElement) {
-  return el.dataset
-}
-
-function normalizeTarget(el: HTMLElement): WechatMiniprogram.Target {
-  const { id, offsetTop, offsetLeft } = el
-  return {
-    id,
-    dataset: normalizeDataset(el),
-    offsetTop,
-    offsetLeft,
-  }
-}
-
 function normalizeCustomEvent(
   name: string,
   domEvt: Event,
   el: HTMLElement,
   detail: EventDetail
-) {
+): WechatMiniprogram.CustomEvent {
   const target = normalizeTarget(el)
-  const evt: WechatMiniprogram.CustomEvent = {
+  return {
     type: detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
     detail,
   }
-  return evt
 }

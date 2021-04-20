@@ -1,6 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
 import { isFunction, isPlainObject } from '@vue/shared'
-import { normalizeEvent, findUniTarget } from './componentEvents'
+// import { normalizeEvent, findUniTarget } from './componentEvents'
 
 interface WxsElement extends HTMLElement {
   __wxsStyle: Record<string, string>
@@ -213,28 +213,28 @@ export function getComponentDescriptor(
   return createComponentDescriptor(instance || this, isOwnerInstance)
 }
 
-export function handleWxsEvent(this: ComponentPublicInstance, $event: Event) {
-  if (!($event instanceof Event)) {
-    return $event
-  }
-  const currentTarget = $event.currentTarget as WxsElement
-  const instance =
-    currentTarget &&
-    currentTarget.__vue__ &&
-    getComponentDescriptor.call(this, currentTarget.__vue__, false)
-  const $origEvent = $event
-  $event = normalizeEvent(
-    $origEvent.type,
-    $origEvent,
-    {},
-    findUniTarget($origEvent, this.$el) || $origEvent.target,
-    $origEvent.currentTarget as HTMLElement
-  ) as Event
-  ;($event as any).instance = instance
-  $event.preventDefault = function () {
-    return $origEvent.preventDefault()
-  }
-  $event.stopPropagation = function () {
-    return $origEvent.stopPropagation()
-  }
-}
+// export function handleWxsEvent(this: ComponentPublicInstance, $event: Event) {
+//   if (!($event instanceof Event)) {
+//     return $event
+//   }
+//   const currentTarget = $event.currentTarget as WxsElement
+//   const instance =
+//     currentTarget &&
+//     currentTarget.__vue__ &&
+//     getComponentDescriptor.call(this, currentTarget.__vue__, false)
+//   const $origEvent = $event
+//   $event = normalizeEvent(
+//     $origEvent.type,
+//     $origEvent,
+//     {},
+//     findUniTarget($origEvent, this.$el) || $origEvent.target,
+//     $origEvent.currentTarget as HTMLElement
+//   ) as Event
+//   ;($event as any).instance = instance
+//   $event.preventDefault = function () {
+//     return $origEvent.preventDefault()
+//   }
+//   $event.stopPropagation = function () {
+//     return $origEvent.stopPropagation()
+//   }
+// }

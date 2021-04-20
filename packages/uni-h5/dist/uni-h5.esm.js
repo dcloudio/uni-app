@@ -1,13 +1,13 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createCommentVNode, createTextVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle} from "@dcloudio/uni-shared";
+import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
-function applyOptions(options, instance, publicThis) {
+function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hook = options[name];
       if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance);
+        injectHook(name, hook.bind(publicThis), instance2);
       }
     }
   });
@@ -604,7 +604,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
@@ -612,103 +612,81 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
-function findUniTarget($event, $el) {
-  let target = $event.target;
-  for (; target && target !== $el; target = target.parentNode) {
-    if (target.tagName && target.tagName.indexOf("UNI-") === 0) {
-      break;
-    }
+const isClickEvent = (val) => val.type === "click";
+const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
+function $normalizeNativeEvent(evt) {
+  const {currentTarget} = evt;
+  if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
+    return evt;
   }
-  return target;
-}
-function normalizeDataset$1(dataset = {}) {
-  const result = JSON.parse(JSON.stringify(dataset));
-  return result;
-}
-function normalizeEvent$1(name, $event, detail = {}, target, currentTarget) {
-  if ($event._processed) {
-    $event.type = detail.type || name;
-    return $event;
+  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
+    return evt;
   }
-  if (isClickEvent($event, name)) {
-    const {top} = getWindowOffset();
-    detail = {
-      x: $event.x,
-      y: $event.y - top
-    };
-    normalizeClickEvent($event);
-  }
-  const ret = {
-    _processed: true,
-    type: detail.type || name,
-    timeStamp: $event.timeStamp || 0,
-    detail,
-    target: normalizeTarget$1(target, detail),
-    currentTarget: normalizeTarget$1(currentTarget),
-    touches: normalizeTouchList($event.touches),
-    changedTouches: normalizeTouchList($event.changedTouches),
-    preventDefault() {
-    },
-    stopPropagation() {
-    }
-  };
-  return ret;
-}
-function normalizeClickEvent($event) {
-  $event.touches = $event.changedTouches = [
-    {
-      force: 1,
-      identifier: 0,
-      clientX: $event.clientX,
-      clientY: $event.clientY,
-      pageX: $event.pageX,
-      pageY: $event.pageY
-    }
-  ];
-}
-function isClickEvent(val, name) {
-  return name === "click";
-}
-function normalizeTarget$1(target, detail) {
-  if (!target) {
-    target = {};
-  }
-  const res = {
-    id: target.id,
-    offsetLeft: target.offsetLeft,
-    offsetTop: target.offsetTop,
-    dataset: normalizeDataset$1(target.dataset)
-  };
-  if (detail) {
-    extend(res, detail);
+  const res = createNativeEvent(evt);
+  if (isClickEvent(evt)) {
+    normalizeClickEvent(res, evt);
+  } else if (isMouseEvent(evt)) {
+    normalizeMouseEvent(res, evt);
   }
   return res;
 }
-function normalizeTouchList(touches) {
-  if (touches && touches instanceof TouchList) {
-    const res = [];
-    const {top} = getWindowOffset();
-    for (let i2 = 0; i2 < touches.length; i2++) {
-      const touch = touches[i2];
-      res.push({
-        identifier: touch.identifier,
-        pageX: touch.pageX,
-        pageY: touch.pageY - top,
-        clientX: touch.clientX,
-        clientY: touch.clientY - top,
-        force: touch.force || 0
-      });
+function createNativeEvent(evt) {
+  const {type, timeStamp, currentTarget} = evt;
+  const target = normalizeTarget(currentTarget);
+  return {
+    type,
+    timeStamp,
+    target,
+    detail: {},
+    currentTarget: target,
+    preventDefault() {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
+      }
+      return evt.preventDefault();
+    },
+    stopPropagation() {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("stopPropagation is only supported in h5, use `.stop` instead.");
+      }
+      return evt.stopPropagation();
     }
-    return res;
-  }
-  return [];
+  };
 }
+function normalizeClickEvent(evt, mouseEvt) {
+  const {x, y} = mouseEvt;
+  const {top} = getWindowOffset();
+  evt.detail = {x, y: y - top};
+  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
+}
+function normalizeMouseEvent(evt, mouseEvt) {
+  const {top} = getWindowOffset();
+  evt.pageX = mouseEvt.pageX;
+  evt.pageY = mouseEvt.pageY - top;
+  evt.clientX = mouseEvt.clientX;
+  evt.clientY = mouseEvt.clientY - top;
+}
+function createTouchEvent(evt) {
+  return {
+    force: 1,
+    identifier: 0,
+    clientX: evt.clientX,
+    clientY: evt.clientY,
+    pageX: evt.pageX,
+    pageY: evt.pageY
+  };
+}
+var instance = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  $normalizeNativeEvent
+});
 const CLASS_RE = /^\s+|\s+$/g;
 const WXS_CLASS_RE = /\s+/;
 function getWxsClsArr(clsArr, classList, isAdd) {
@@ -859,27 +837,12 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
     return vm.$el.__wxsComponentDescriptor;
   }
 }
-function getComponentDescriptor(instance, isOwnerInstance) {
-  return createComponentDescriptor(instance || this, isOwnerInstance);
-}
-function handleWxsEvent($event) {
-  if (!($event instanceof Event)) {
-    return $event;
-  }
-  const currentTarget = $event.currentTarget;
-  const instance = currentTarget && currentTarget.__vue__ && getComponentDescriptor.call(this, currentTarget.__vue__, false);
-  const $origEvent = $event;
-  $event = normalizeEvent$1($origEvent.type, $origEvent, {}, findUniTarget($origEvent, this.$el) || $origEvent.target, $origEvent.currentTarget);
-  $event.instance = instance;
-  $event.preventDefault = function() {
-    return $origEvent.preventDefault();
-  };
-  $event.stopPropagation = function() {
-    return $origEvent.stopPropagation();
-  };
+function getComponentDescriptor(instance2, isOwnerInstance) {
+  return createComponentDescriptor(instance2 || this, isOwnerInstance);
 }
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
+  extend(globalProperties, instance);
   if (__UNI_FEATURE_WXS__) {
     globalProperties.getComponentDescriptor = getComponentDescriptor;
     Object.defineProperty(globalProperties, "$ownerInstance", {
@@ -887,7 +850,6 @@ function initAppConfig$1(appConfig) {
         return this.$getComponentDescriptor(this);
       }
     });
-    globalProperties.$handleWxsEvent = handleWxsEvent;
   }
 }
 function initView(app) {
@@ -1037,8 +999,8 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-function errorHandler(err, instance, info) {
-  if (!instance) {
+function errorHandler(err, instance2, info) {
+  if (!instance2) {
     throw err;
   }
   const app = getApp();
@@ -1101,7 +1063,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.height = rpx2px(refreshOptions.height);
       refreshOptions.range = rpx2px(refreshOptions.range);
@@ -1356,9 +1318,9 @@ function usePageRoute() {
 function wrapperComponentSetup(comp, {init: init2, setup, after}) {
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
-    const instance = getCurrentInstance();
-    init2(instance.proxy);
-    setup(instance);
+    const instance2 = getCurrentInstance();
+    init2(instance2.proxy);
+    setup(instance2);
     if (oldSetup) {
       return oldSetup(props2, ctx);
     }
@@ -1376,32 +1338,32 @@ function setupComponent(comp, options) {
 function setupPage(comp) {
   return setupComponent(comp, {
     init: initPage,
-    setup(instance) {
+    setup(instance2) {
       const route = usePageRoute();
       if (route.meta.isTabBar) {
-        instance.__isActive = true;
+        instance2.__isActive = true;
       }
       onBeforeMount(() => {
-        const {onLoad, onShow} = instance;
+        const {onLoad, onShow} = instance2;
         onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
-        instance.__isVisible = true;
+        instance2.__isVisible = true;
         onShow && invokeArrayFns$1(onShow);
       });
       onMounted(() => {
-        const {onReady} = instance;
+        const {onReady} = instance2;
         onReady && invokeArrayFns$1(onReady);
       });
       onBeforeActivate(() => {
-        if (!instance.__isVisible) {
-          instance.__isVisible = true;
-          const {onShow} = instance;
+        if (!instance2.__isVisible) {
+          instance2.__isVisible = true;
+          const {onShow} = instance2;
           onShow && invokeArrayFns$1(onShow);
         }
       });
       onBeforeDeactivate(() => {
-        if (instance.__isVisible && !instance.__isUnload) {
-          instance.__isVisible = false;
-          const {onHide} = instance;
+        if (instance2.__isVisible && !instance2.__isUnload) {
+          instance2.__isVisible = false;
+          const {onHide} = instance2;
           onHide && invokeArrayFns$1(onHide);
         }
       });
@@ -1411,10 +1373,10 @@ function setupPage(comp) {
 function setupApp(comp) {
   return setupComponent(comp, {
     init: initApp,
-    setup(instance) {
+    setup(instance2) {
       const route = usePageRoute();
       onBeforeMount(() => {
-        const {onLaunch, onShow} = instance;
+        const {onLaunch, onShow} = instance2;
         onLaunch && invokeArrayFns$1(onLaunch, {
           path: route.meta.route,
           query: decodedQuery(route.query),
@@ -5766,28 +5728,15 @@ function useCustomEvent(ref2, emit) {
     emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
   };
 }
-function normalizeDataset(el) {
-  return el.dataset;
-}
-function normalizeTarget(el) {
-  const {id: id2, offsetTop, offsetLeft} = el;
-  return {
-    id: id2,
-    dataset: normalizeDataset(el),
-    offsetTop,
-    offsetLeft
-  };
-}
 function normalizeCustomEvent(name, domEvt, el, detail) {
   const target = normalizeTarget(el);
-  const evt = {
+  return {
     type: detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
     detail
   };
-  return evt;
 }
 var ResizeSensor = /* @__PURE__ */ defineComponent({
   name: "ResizeSensor",
@@ -6087,14 +6036,14 @@ function useFormField(nameKey, valueKey) {
   if (!uniForm) {
     return;
   }
-  const instance = getCurrentInstance();
+  const instance2 = getCurrentInstance();
   const ctx = {
     submit() {
-      const proxy = instance.proxy;
+      const proxy = instance2.proxy;
       return [proxy[nameKey], proxy[valueKey]];
     },
     reset() {
-      instance.proxy[valueKey] = "";
+      instance2.proxy[valueKey] = "";
     }
   };
   uniForm.addField(ctx);
@@ -6202,9 +6151,9 @@ const _sfc_main$g = {
       formElem.appendChild(this.$refs.input);
       this.$refs.wrapper.appendChild(formElem);
     }
-    const instance = getCurrentInstance();
-    if (instance && instance.vnode.scopeId) {
-      this.$refs.placeholder.setAttribute(instance.vnode.scopeId, "");
+    const instance2 = getCurrentInstance();
+    if (instance2 && instance2.vnode.scopeId) {
+      this.$refs.placeholder.setAttribute(instance2.vnode.scopeId, "");
     }
     this.initKeyboard(this.$refs.input);
   },
@@ -9884,16 +9833,16 @@ function removeSubscribe(componentId, vm) {
   UniViewJSBridge.unsubscribe(normalizeEvent(componentId, vm));
 }
 function useSubscribe(callback) {
-  const instance = getCurrentInstance().proxy;
+  const instance2 = getCurrentInstance().proxy;
   onMounted(() => {
-    addSubscribe(instance.id, instance, callback);
-    watch(() => instance.id, (value, oldValue) => {
-      addSubscribe(value, instance, callback);
-      removeSubscribe(oldValue, instance);
+    addSubscribe(instance2.id, instance2, callback);
+    watch(() => instance2.id, (value, oldValue) => {
+      addSubscribe(value, instance2, callback);
+      removeSubscribe(oldValue, instance2);
     });
   });
   onBeforeMount(() => {
-    removeSubscribe(instance.id, instance);
+    removeSubscribe(instance2.id, instance2);
   });
 }
 const passiveOptions = passive(false);
@@ -10828,7 +10777,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -10941,12 +10890,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -10966,10 +10915,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });

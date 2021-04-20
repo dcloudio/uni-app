@@ -1,13 +1,13 @@
 import { AppConfig } from 'vue'
-// import { extend } from '@vue/shared'
+import { extend } from '@vue/shared'
 
-// import * as instance from './componentInstance'
+import * as instance from './componentInstance'
 
-import { getComponentDescriptor, handleWxsEvent } from './componentWxs'
+import { getComponentDescriptor } from './componentWxs'
 
 export function initAppConfig(appConfig: AppConfig) {
   const globalProperties = appConfig.globalProperties
-  // extend(globalProperties, instance)
+  extend(globalProperties, instance)
   if (__UNI_FEATURE_WXS__) {
     globalProperties.getComponentDescriptor = getComponentDescriptor
     Object.defineProperty(globalProperties, '$ownerInstance', {
@@ -15,6 +15,6 @@ export function initAppConfig(appConfig: AppConfig) {
         return this.$getComponentDescriptor(this)
       },
     })
-    globalProperties.$handleWxsEvent = handleWxsEvent
+    // globalProperties.$handleWxsEvent = handleWxsEvent
   }
 }

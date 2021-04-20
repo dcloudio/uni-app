@@ -37,6 +37,13 @@ export declare const NAVBAR_HEIGHT = 44;
 
 export declare function normalizeDataset(el: Element): any;
 
+export declare function normalizeTarget(el: HTMLElement): {
+    id: string;
+    dataset: any;
+    offsetTop: number;
+    offsetLeft: number;
+};
+
 export declare function once(fn: (...args: any[]) => any, ctx?: unknown): (...args: any[]) => any;
 
 /**

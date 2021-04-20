@@ -8396,7 +8396,10 @@ function createInvoker(initialValue, instance) {
         // AFTER it was attached.
         const timeStamp = e.timeStamp || _getNow();
         if (timeStamp >= invoker.attached - 1) {
-            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [e]);
+            // fixed by xxxxxx
+            const proxy = instance && instance.proxy;
+            const normalizeNativeEvent = proxy && proxy.$normalizeNativeEvent;
+            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [normalizeNativeEvent ? normalizeNativeEvent(e) : e]);
         }
     };
     invoker.value = initialValue;

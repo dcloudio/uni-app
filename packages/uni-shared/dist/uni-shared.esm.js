@@ -7,6 +7,15 @@ function normalizeDataset(el) {
     // TODO
     return JSON.parse(JSON.stringify(el.dataset || {}));
 }
+function normalizeTarget(el) {
+    const { id, offsetTop, offsetLeft } = el;
+    return {
+        id,
+        dataset: normalizeDataset(el),
+        offsetTop,
+        offsetLeft,
+    };
+}
 
 function plusReady(callback) {
     if (typeof callback !== 'function') {
@@ -224,4 +233,4 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, once, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };
