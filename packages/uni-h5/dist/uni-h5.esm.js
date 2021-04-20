@@ -1171,9 +1171,16 @@ function createPageState(type, __id__) {
   };
 }
 function initPublicPage(route) {
-  if (!route) {
+  if (!__UNI_FEATURE_PAGES__) {
     const {path: path2, alias} = __uniRoutes[0];
-    return {id, path: path2, route: alias.substr(1), fullPath: path2};
+    return {
+      id,
+      path: path2,
+      route: alias.substr(1),
+      fullPath: path2,
+      options: {},
+      meta: usePageMeta()
+    };
   }
   const {path} = route;
   return {

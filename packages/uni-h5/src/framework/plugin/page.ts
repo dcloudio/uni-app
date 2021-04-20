@@ -68,9 +68,16 @@ export function createPageState(type: NavigateType, __id__?: number) {
 }
 
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
-  if (!route) {
+  if (!__UNI_FEATURE_PAGES__) {
     const { path, alias } = __uniRoutes[0]
-    return { id, path, route: alias!.substr(1), fullPath: path }
+    return {
+      id,
+      path,
+      route: alias!.substr(1),
+      fullPath: path,
+      options: {},
+      meta: usePageMeta(),
+    }
   }
   const { path } = route
   return {
