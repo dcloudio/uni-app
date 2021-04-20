@@ -35,7 +35,6 @@ const props = {
 type ImageProps = ExtractPropTypes<typeof props>
 type ImageState = ReturnType<typeof useImageState>
 type FixSize = ReturnType<typeof useImageSize>['fixSize']
-type ResetSize = ReturnType<typeof useImageSize>['resetSize']
 
 const FIX_MODES = {
   widthFix: ['width', 'height'],
@@ -64,11 +63,10 @@ export default /*#__PURE__*/ defineComponent({
     const rootRef = ref<HTMLElement | null>(null)
     const state = useImageState(rootRef, props)
     const trigger = useCustomEvent(rootRef, emit)
-    const { fixSize, resetSize } = useImageSize(rootRef, props, state)
+    const { fixSize } = useImageSize(rootRef, props, state)
     useImageLoader(state, {
       trigger,
       fixSize,
-      resetSize,
     })
     return () => {
       const { mode } = props
@@ -127,20 +125,21 @@ function useImageLoader(
   {
     trigger,
     fixSize,
-    resetSize,
   }: {
     fixSize: FixSize
-    resetSize: ResetSize
     trigger: CustomEventTrigger
   }
 ) {
   let img: HTMLImageElement | null
+  const setState = (width = 0, height = 0, imgSrc = '') => {
+    state.origWidth = width
+    state.origHeight = height
+    state.imgSrc = imgSrc
+  }
   const loadImage = (src: string) => {
     if (!src) {
       resetImage()
-      state.origWidth = 0
-      state.origHeight = 0
-      state.imgSrc = ''
+      setState()
       // 与微信小程序保持一致，保留之前样式
       // resetSize()
       return
@@ -150,9 +149,7 @@ function useImageLoader(
     }
     img.onload = (evt) => {
       const { width, height } = img!
-      state.origWidth = width
-      state.origHeight = height
-      state.imgSrc = src
+      setState(width, height, src)
       fixSize()
       resetImage()
       trigger('load', evt, {
@@ -161,13 +158,10 @@ function useImageLoader(
       })
     }
     img.onerror = (evt) => {
-      const { src } = state
-      state.origWidth = 0
-      state.origHeight = 0
-      state.imgSrc = ''
+      setState()
       resetImage()
       trigger('error', evt as Event, {
-        errMsg: `GET ${src} 404 (Not Found)`,
+        errMsg: `GET ${state.src} 404 (Not Found)`,
       })
     }
     img.src = src

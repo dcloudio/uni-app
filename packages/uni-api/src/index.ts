@@ -45,6 +45,8 @@ export * from './protocols/location/getLocation'
 
 export * from './protocols/route/route'
 
+export * from './protocols/ui/loadFontFace'
+export * from './protocols/ui/pageScrollTo'
 export * from './protocols/ui/navigationBar'
 export * from './protocols/ui/popup'
 export * from './protocols/ui/tabBar'

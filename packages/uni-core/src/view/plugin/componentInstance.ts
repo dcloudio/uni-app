@@ -10,6 +10,7 @@ export function $normalizeNativeEvent(
   this: ComponentPublicInstance,
   evt: Event
 ) {
+  // TODO 目前内置组件，也会进入以下处理逻辑，是否有影响？
   const { currentTarget } = evt
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt
@@ -24,6 +25,10 @@ export function $normalizeNativeEvent(
     normalizeClickEvent((res as unknown) as WechatMiniprogram.Touch, evt)
   } else if (__PLATFORM__ === 'h5' && isMouseEvent(evt)) {
     normalizeMouseEvent((res as unknown) as WechatMiniprogram.Touch, evt)
+  } else if (evt instanceof TouchEvent) {
+    const { top } = getWindowOffset()
+    ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
+    ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
   }
 
   return res
@@ -84,4 +89,20 @@ function createTouchEvent(evt: MouseEvent) {
     pageX: evt.pageX,
     pageY: evt.pageY,
   }
+}
+
+function normalizeTouchEvent(touches: TouchList, top: number) {
+  const res = []
+  for (let i = 0; i < touches.length; i++) {
+    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i]
+    res.push({
+      identifier,
+      pageX,
+      pageY: pageY - top,
+      clientX: clientX,
+      clientY: clientY - top,
+      force: force || 0,
+    })
+  }
+  return res
 }

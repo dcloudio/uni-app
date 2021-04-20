@@ -16,6 +16,31 @@ function normalizeTarget(el) {
         offsetLeft,
     };
 }
+function addFont(family, source, desc) {
+    const fonts = document.fonts;
+    if (fonts) {
+        const fontFace = new FontFace(family, source, desc);
+        return fontFace.load().then(() => {
+            fonts.add(fontFace);
+        });
+    }
+    return new Promise((resolve) => {
+        const style = document.createElement('style');
+        const values = [];
+        if (desc) {
+            const { style, weight, stretch, unicodeRange, variant, featureSettings, } = desc;
+            style && values.push(`font-style:${style}`);
+            weight && values.push(`font-weight:${weight}`);
+            stretch && values.push(`font-stretch:${stretch}`);
+            unicodeRange && values.push(`unicode-range:${unicodeRange}`);
+            variant && values.push(`font-variant:${variant}`);
+            featureSettings && values.push(`font-feature-settings:${featureSettings}`);
+        }
+        style.innerText = `@font-face{font-family:"${family}";src:${source};${values.join(';')}}`;
+        document.head.appendChild(style);
+        resolve();
+    });
+}
 
 function plusReady(callback) {
     if (typeof callback !== 'function') {
@@ -233,4 +258,4 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, addFont, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };

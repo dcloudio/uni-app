@@ -1,3 +1,6 @@
+import { FontFaceDescriptors } from 'css-font-loading-module';
+
+export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
 
 export declare const BUILT_IN_TAGS: string[];
 

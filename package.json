@@ -42,6 +42,7 @@
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-replace": "^2.3.4",
     "@size-limit/preset-app": "^4.10.1",
+    "@types/css-font-loading-module": "^0.0.4",
     "@types/debug": "^4.1.5",
     "@types/es-module-lexer": "^0.3.0",
     "@types/fs-extra": "^9.0.6",

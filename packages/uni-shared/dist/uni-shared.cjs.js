@@ -20,6 +20,31 @@ function normalizeTarget(el) {
         offsetLeft,
     };
 }
+function addFont(family, source, desc) {
+    const fonts = document.fonts;
+    if (fonts) {
+        const fontFace = new FontFace(family, source, desc);
+        return fontFace.load().then(() => {
+            fonts.add(fontFace);
+        });
+    }
+    return new Promise((resolve) => {
+        const style = document.createElement('style');
+        const values = [];
+        if (desc) {
+            const { style, weight, stretch, unicodeRange, variant, featureSettings, } = desc;
+            style && values.push(`font-style:${style}`);
+            weight && values.push(`font-weight:${weight}`);
+            stretch && values.push(`font-stretch:${stretch}`);
+            unicodeRange && values.push(`unicode-range:${unicodeRange}`);
+            variant && values.push(`font-variant:${variant}`);
+            featureSettings && values.push(`font-feature-settings:${featureSettings}`);
+        }
+        style.innerText = `@font-face{font-family:"${family}";src:${source};${values.join(';')}}`;
+        document.head.appendChild(style);
+        resolve();
+    });
+}
 
 function plusReady(callback) {
     if (typeof callback !== 'function') {
@@ -247,6 +272,7 @@ exports.PRIMARY_COLOR = PRIMARY_COLOR;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
+exports.addFont = addFont;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;

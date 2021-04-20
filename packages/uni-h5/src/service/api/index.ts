@@ -36,6 +36,7 @@ export * from './route/redirectTo'
 export * from './route/reLaunch'
 export * from './route/switchTab'
 
+export * from './ui/loadFontFace'
 export * from './ui/navigationBar'
 export * from './ui/popup'
 export * from './ui/tabBar'

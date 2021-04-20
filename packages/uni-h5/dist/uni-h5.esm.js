@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createCommentVNode, createTextVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle} from "@dcloudio/uni-shared";
+import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle, addFont} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -633,6 +633,10 @@ function $normalizeNativeEvent(evt) {
     normalizeClickEvent(res, evt);
   } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res, evt);
+  } else if (evt instanceof TouchEvent) {
+    const {top} = getWindowOffset();
+    res.touches = normalizeTouchEvent(evt.touches, top);
+    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
   return res;
 }
@@ -681,6 +685,21 @@ function createTouchEvent(evt) {
     pageX: evt.pageX,
     pageY: evt.pageY
   };
+}
+function normalizeTouchEvent(touches, top) {
+  const res = [];
+  for (let i2 = 0; i2 < touches.length; i2++) {
+    const {identifier, pageX, pageY, clientX, clientY, force} = touches[i2];
+    res.push({
+      identifier,
+      pageX,
+      pageY: pageY - top,
+      clientX,
+      clientY: clientY - top,
+      force: force || 0
+    });
+  }
+  return res;
 }
 var instance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
@@ -4925,6 +4944,18 @@ function createNormalizeUrl(type) {
     }
   };
 }
+const API_LOAD_FONT_FACE = "loadFontFace";
+const LoadFontFaceProtocol = {
+  family: {
+    type: String,
+    required: true
+  },
+  source: {
+    type: String,
+    required: true
+  },
+  desc: Object
+};
 const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const SetNavigationBarColorOptions = {
@@ -5861,13 +5892,11 @@ var index$3 = /* @__PURE__ */ defineComponent({
     const state = useImageState(rootRef, props2);
     const trigger = useCustomEvent(rootRef, emit);
     const {
-      fixSize,
-      resetSize
+      fixSize
     } = useImageSize(rootRef, props2, state);
     useImageLoader(state, {
       trigger,
-      fixSize,
-      resetSize
+      fixSize
     });
     return () => {
       const {
@@ -5928,16 +5957,18 @@ function useImageState(rootRef, props2) {
 }
 function useImageLoader(state, {
   trigger,
-  fixSize,
-  resetSize
+  fixSize
 }) {
   let img;
+  const setState = (width = 0, height = 0, imgSrc = "") => {
+    state.origWidth = width;
+    state.origHeight = height;
+    state.imgSrc = imgSrc;
+  };
   const loadImage = (src) => {
     if (!src) {
       resetImage();
-      state.origWidth = 0;
-      state.origHeight = 0;
-      state.imgSrc = "";
+      setState();
       return;
     }
     if (!img) {
@@ -5948,9 +5979,7 @@ function useImageLoader(state, {
         width,
         height
       } = img;
-      state.origWidth = width;
-      state.origHeight = height;
-      state.imgSrc = src;
+      setState(width, height, src);
       fixSize();
       resetImage();
       trigger("load", evt, {
@@ -5959,15 +5988,10 @@ function useImageLoader(state, {
       });
     };
     img.onerror = (evt) => {
-      const {
-        src: src2
-      } = state;
-      state.origWidth = 0;
-      state.origHeight = 0;
-      state.imgSrc = "";
+      setState();
       resetImage();
       trigger("error", evt, {
-        errMsg: `GET ${src2} 404 (Not Found)`
+        errMsg: `GET ${state.src} 404 (Not Found)`
       });
     };
     img.src = src;
@@ -12246,6 +12270,13 @@ function getTabBarPageId(url) {
 const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
+const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
+  addFont(family, source, desc).then(() => {
+    resolve();
+  }).catch((err) => {
+    reject(`loadFontFace:fail ${err}`);
+  });
+}, LoadFontFaceProtocol);
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
     return reject("page not found");
@@ -12474,6 +12505,7 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
+  loadFontFace,
   setNavigationBarColor,
   showNavigationBarLoading,
   hideNavigationBarLoading,
@@ -13523,4 +13555,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
