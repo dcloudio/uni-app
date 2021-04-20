@@ -16,6 +16,7 @@
 
 |参数名		|类型	|必填	|说明															|
 |:-:		|:-:	|:-:	|:-:															|
+|appid		|String	|是		|DCloud appid，可以在项目manifest.json内看到		|
 |smsKey		|String	|是		|调用短信接口的密钥key，从 dev.dcloud.net.cn/uniSms 后台获取		|
 |smsSecret	|String	|是		|调用短信接口的密钥secret，从 dev.dcloud.net.cn/uniSms 后台获取	|
 |phone		|String	|是		|发送目标手机号，暂仅支持中国大陆手机号，不能填写多个手机号|
@@ -125,6 +126,7 @@
 exports.main = async (event, context) => {
   try {
     const res = await uniCloud.sendSms({
+      appid: '__UNI__xxxxxxx',
       smsKey: '****************',
       smsSecret: '****************',
       phone: '188********',
