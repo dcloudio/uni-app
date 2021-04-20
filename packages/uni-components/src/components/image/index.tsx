@@ -106,7 +106,7 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
   })
   const state = reactive({
     rootEl: rootRef,
-    src: computed(() => getRealPath(props.src)),
+    src: computed(() => (props.src ? getRealPath(props.src) : '')),
     origWidth: 0,
     origHeight: 0,
     origStyle: { width: '', height: '' },
@@ -138,7 +138,11 @@ function useImageLoader(
   const loadImage = (src: string) => {
     if (!src) {
       resetImage()
-      resetSize()
+      state.origWidth = 0
+      state.origHeight = 0
+      state.imgSrc = ''
+      // 与微信小程序保持一致，保留之前样式
+      // resetSize()
       return
     }
     if (!img) {
@@ -214,6 +218,9 @@ function useImageSize(
     if (value) {
       rootEl.style[names[1] as 'height' | 'width'] =
         fixNumber(value / ratio) + 'px'
+    }
+    if (__PLATFORM__ === 'app') {
+      window.dispatchEvent(new CustomEvent('updateview'))
     }
   }
   const resetSize = () => {

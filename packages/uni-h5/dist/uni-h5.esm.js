@@ -5908,7 +5908,7 @@ function useImageState(rootRef, props2) {
   });
   const state = reactive({
     rootEl: rootRef,
-    src: computed(() => getRealPath(props2.src)),
+    src: computed(() => props2.src ? getRealPath(props2.src) : ""),
     origWidth: 0,
     origHeight: 0,
     origStyle: {
@@ -5935,7 +5935,9 @@ function useImageLoader(state, {
   const loadImage = (src) => {
     if (!src) {
       resetImage();
-      resetSize();
+      state.origWidth = 0;
+      state.origHeight = 0;
+      state.imgSrc = "";
       return;
     }
     if (!img) {
