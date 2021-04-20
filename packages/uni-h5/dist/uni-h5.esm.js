@@ -5830,12 +5830,12 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
     useResizeSensorLifecycle(rootRef, props2, update, reset);
     return () => createVNode("uni-resize-sensor", {
       ref: rootRef,
-      onAnimationstart: update
+      onAnimationstartOnce: update
     }, [createVNode("div", {
       onScroll: update
     }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
       onScroll: update
-    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstart"]);
+    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
   }
 });
 function useResizeSensorUpdate(rootRef, emit, reset) {

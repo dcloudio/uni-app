@@ -26,7 +26,7 @@ export default /*#__PURE__*/ defineComponent({
     const update = useResizeSensorUpdate(rootRef, emit, reset)
     useResizeSensorLifecycle(rootRef, props, update, reset)
     return () => (
-      <uni-resize-sensor ref={rootRef} onAnimationstart={update}>
+      <uni-resize-sensor ref={rootRef} onAnimationstartOnce={update}>
         <div onScroll={update}>
           <div />
         </div>
