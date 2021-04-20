@@ -187,9 +187,9 @@ export default {
     })
   },
   mounted () {
-    this._resize({
-      height: this.$refs.sensor.$el.offsetHeight
-    })
+    // this._resize({
+    //   height: this.$refs.sensor.$el.offsetHeight
+    // })
 
     let $vm = this
     while ($vm) {

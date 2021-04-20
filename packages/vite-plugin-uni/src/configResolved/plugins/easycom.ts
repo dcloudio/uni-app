@@ -45,6 +45,17 @@ const baseComponents = [
   'view',
 ]
 
+const resizeComponents = [
+  'canvas',
+  'image',
+  'movable-area',
+  'picker-view',
+  'picker-view-column',
+  'rich-text',
+  'textarea',
+  'web-view',
+]
+
 export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
@@ -93,6 +104,11 @@ function addBuiltInImportDeclaration(
   local: string,
   name: string
 ) {
+  if (resizeComponents.includes(name)) {
+    importDeclarations.push(
+      `import '${BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'}';`
+    )
+  }
   if (baseComponents.includes(name)) {
     importDeclarations.push(
       `import '${BASE_COMPONENTS_STYLE_PATH + name + '.css'}';`

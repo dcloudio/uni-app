@@ -11,7 +11,7 @@ import {
 } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
-import ResizeSensor from '../resize-sensor/index.vue'
+import ResizeSensor from '../resize-sensor/index'
 
 const props = {
   src: {
