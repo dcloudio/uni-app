@@ -295,3 +295,56 @@ exports.main = async function(event){
   ![设置授权服务空间](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b3c234a7-e514-4b14-b33d-e7322130bd7d.jpg)
 
 5. 点击第4步弹出界面的`保存按钮`以及第3步的`保存权限设置`按钮
+
+### 如何使用promise/async/await@promise
+
+uniCloud客户端callFunction及数据库相关接口会返回Promise类型结果，请参考以下写法使用：
+
+```html
+// index.vue
+<template>
+  <view class="content">
+    <button type="default" @click="testThen">promise+then</button>
+    <button type="default" @click="testAwait">async+await</button>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {}
+    },
+    methods: {
+      testThen() {
+        uniCloud.callFunction({
+          name: 'test'
+        }).then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.error(err)
+        })
+      },
+      async testAwait() {
+        const res = await uniCloud.callFunction({
+          name: 'test'
+        })
+        console.log(res)
+
+        // 如需捕获错误需使用如下写法
+        // try {
+        //   const res = await uniCloud.callFunction({
+        //     name: 'test'
+        //   })
+        //   console.log(res)
+        // } catch (err) {
+        //   console.error(err)
+        // }
+
+      }
+    }
+  }
+</script>
+
+<style>
+</style>
+```
