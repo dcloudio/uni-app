@@ -72,6 +72,9 @@ export declare function removeLeadingSlash(str: string): string;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 
+declare function scrollTo_2(scrollTop: number | string, duration: number): void;
+export { scrollTo_2 as scrollTo }
+
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
 export declare const TABBAR_HEIGHT = 50;

@@ -1,4 +1,5 @@
 import { FontFaceDescriptors } from 'css-font-loading-module'
+import { isString } from '@vue/shared'
 
 export function passive(passive: boolean) {
   return { passive }
@@ -56,4 +57,39 @@ export function addFont(
     document.head.appendChild(style)
     resolve()
   })
+}
+
+export function scrollTo(scrollTop: number | string, duration: number) {
+  if (isString(scrollTop)) {
+    const el = document.querySelector(scrollTop)
+    if (el) {
+      scrollTop = el.getBoundingClientRect().top + window.pageYOffset
+    }
+  }
+  if (scrollTop < 0) {
+    scrollTop = 0
+  }
+  const documentElement = document.documentElement
+  const { clientHeight, scrollHeight } = documentElement
+  scrollTop = Math.min(scrollTop as number, scrollHeight - clientHeight)
+  if (duration === 0) {
+    // 部分浏览器（比如微信）中 scrollTop 的值需要通过 document.body 来控制
+    documentElement.scrollTop = document.body.scrollTop = scrollTop
+    return
+  }
+  if (window.scrollY === scrollTop) {
+    return
+  }
+  const scrollTo = (duration: number) => {
+    if (duration <= 0) {
+      window.scrollTo(0, scrollTop as number)
+      return
+    }
+    const distaince = (scrollTop as number) - window.scrollY
+    requestAnimationFrame(function () {
+      window.scrollTo(0, window.scrollY + (distaince / duration) * 10)
+      scrollTo(duration - 10)
+    })
+  }
+  scrollTo(duration)
 }

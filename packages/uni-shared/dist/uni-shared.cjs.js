@@ -45,6 +45,40 @@ function addFont(family, source, desc) {
         resolve();
     });
 }
+function scrollTo(scrollTop, duration) {
+    if (shared.isString(scrollTop)) {
+        const el = document.querySelector(scrollTop);
+        if (el) {
+            scrollTop = el.getBoundingClientRect().top + window.pageYOffset;
+        }
+    }
+    if (scrollTop < 0) {
+        scrollTop = 0;
+    }
+    const documentElement = document.documentElement;
+    const { clientHeight, scrollHeight } = documentElement;
+    scrollTop = Math.min(scrollTop, scrollHeight - clientHeight);
+    if (duration === 0) {
+        // 部分浏览器（比如微信）中 scrollTop 的值需要通过 document.body 来控制
+        documentElement.scrollTop = document.body.scrollTop = scrollTop;
+        return;
+    }
+    if (window.scrollY === scrollTop) {
+        return;
+    }
+    const scrollTo = (duration) => {
+        if (duration <= 0) {
+            window.scrollTo(0, scrollTop);
+            return;
+        }
+        const distaince = scrollTop - window.scrollY;
+        requestAnimationFrame(function () {
+            window.scrollTo(0, window.scrollY + (distaince / duration) * 10);
+            scrollTo(duration - 10);
+        });
+    };
+    scrollTo(duration);
+}
 
 function plusReady(callback) {
     if (typeof callback !== 'function') {
@@ -288,5 +322,6 @@ exports.parseQuery = parseQuery;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
+exports.scrollTo = scrollTo;
 exports.stringifyQuery = stringifyQuery;
 exports.updateElementStyle = updateElementStyle;

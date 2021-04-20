@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
+import { isString, isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
 
 function passive(passive) {
     return { passive };
@@ -40,6 +40,40 @@ function addFont(family, source, desc) {
         document.head.appendChild(style);
         resolve();
     });
+}
+function scrollTo(scrollTop, duration) {
+    if (isString(scrollTop)) {
+        const el = document.querySelector(scrollTop);
+        if (el) {
+            scrollTop = el.getBoundingClientRect().top + window.pageYOffset;
+        }
+    }
+    if (scrollTop < 0) {
+        scrollTop = 0;
+    }
+    const documentElement = document.documentElement;
+    const { clientHeight, scrollHeight } = documentElement;
+    scrollTop = Math.min(scrollTop, scrollHeight - clientHeight);
+    if (duration === 0) {
+        // 部分浏览器（比如微信）中 scrollTop 的值需要通过 document.body 来控制
+        documentElement.scrollTop = document.body.scrollTop = scrollTop;
+        return;
+    }
+    if (window.scrollY === scrollTop) {
+        return;
+    }
+    const scrollTo = (duration) => {
+        if (duration <= 0) {
+            window.scrollTo(0, scrollTop);
+            return;
+        }
+        const distaince = scrollTop - window.scrollY;
+        requestAnimationFrame(function () {
+            window.scrollTo(0, window.scrollY + (distaince / duration) * 10);
+            scrollTo(duration - 10);
+        });
+    };
+    scrollTo(duration);
 }
 
 function plusReady(callback) {
@@ -258,4 +292,4 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, addFont, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, addFont, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, scrollTo, stringifyQuery, updateElementStyle };

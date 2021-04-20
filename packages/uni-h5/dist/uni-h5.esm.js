@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createCommentVNode, createTextVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle, addFont} from "@dcloudio/uni-shared";
+import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -4955,6 +4955,20 @@ const LoadFontFaceProtocol = {
     required: true
   },
   desc: Object
+};
+const API_PAGE_SCROLL_TO = "pageScrollTo";
+const PageScrollToProtocol = {
+  scrollTop: Number,
+  selector: String,
+  duration: Number
+};
+const DEFAULT_DURATION = 300;
+const PageScrollToOptions = {
+  formatArgs: {
+    duration(value, params) {
+      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
+    }
+  }
 };
 const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
@@ -12320,6 +12334,10 @@ const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING,
 const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
+const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, ({scrollTop, selector, duration}, {resolve}) => {
+  scrollTo(selector || scrollTop || 0, duration);
+  resolve();
+}, PageScrollToProtocol, PageScrollToOptions);
 const showModal = defineAsyncApi(API_SHOW_MODAL, () => {
 }, ShowModalProtocol, ShowModalOptions);
 const showToast = defineAsyncApi(API_SHOW_TOAST, () => {
@@ -12510,6 +12528,7 @@ var api = /* @__PURE__ */ Object.freeze({
   showNavigationBarLoading,
   hideNavigationBarLoading,
   setNavigationBarTitle,
+  pageScrollTo,
   showModal,
   showToast,
   hideToast,
@@ -13555,4 +13574,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
