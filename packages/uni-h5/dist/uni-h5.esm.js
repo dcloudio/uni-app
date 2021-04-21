@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, isString, invokeArrayFns as invokeArrayFns$1, hyphenate, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise} from "@vue/shared";
-import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createCommentVNode, createTextVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, removeLeadingSlash, getLen, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -604,7 +604,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
@@ -612,10 +612,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const isClickEvent = (val) => val.type === "click";
@@ -1097,7 +1097,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1323,7 +1323,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$7 = {
+var index$8 = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -1813,7 +1813,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$l = {
+const _sfc_main$k = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1932,13 +1932,13 @@ const _sfc_main$l = {
     }
   }
 };
-const _hoisted_1$d = {class: "uni-audio-default"};
+const _hoisted_1$c = {class: "uni-audio-default"};
 const _hoisted_2$7 = {class: "uni-audio-right"};
 const _hoisted_3$3 = {class: "uni-audio-time"};
 const _hoisted_4$3 = {class: "uni-audio-info"};
 const _hoisted_5$2 = {class: "uni-audio-name"};
 const _hoisted_6$2 = {class: "uni-audio-author"};
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1948,7 +1948,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$d, [
+    createVNode("div", _hoisted_1$c, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1968,7 +1968,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$l.render = _sfc_render$l;
+_sfc_main$k.render = _sfc_render$k;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -2053,7 +2053,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$6 = /* @__PURE__ */ defineComponent({
+var index$7 = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -2090,7 +2090,7 @@ function provideForm(emit) {
   });
   return fields;
 }
-var index$5 = /* @__PURE__ */ defineComponent({
+var index$6 = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -2203,7 +2203,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$k = {
+const _sfc_main$j = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -2699,19 +2699,19 @@ const _sfc_main$k = {
     }
   }
 };
-const _hoisted_1$c = {
+const _hoisted_1$b = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$6 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$c, null, 512),
+    createVNode("canvas", _hoisted_1$b, null, 512),
     createVNode("div", _hoisted_2$6, [
       renderSlot(_ctx.$slots, "default")
     ]),
@@ -2721,8 +2721,8 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$k.render = _sfc_render$k;
-const _sfc_main$j = {
+_sfc_main$j.render = _sfc_render$j;
+const _sfc_main$i = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -2798,12 +2798,12 @@ const _sfc_main$j = {
     }
   }
 };
-const _hoisted_1$b = {class: "uni-checkbox-wrapper"};
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$a = {class: "uni-checkbox-wrapper"};
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$b, [
+    createVNode("div", _hoisted_1$a, [
       createVNode("div", {
         class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
         style: {color: $props.color}
@@ -2812,8 +2812,8 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$j.render = _sfc_render$j;
-const _sfc_main$i = {
+_sfc_main$i.render = _sfc_render$i;
+const _sfc_main$h = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -2879,12 +2879,12 @@ const _sfc_main$i = {
     }
   }
 };
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$i.render = _sfc_render$i;
+_sfc_main$h.render = _sfc_render$h;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3267,7 +3267,7 @@ function register(Quill) {
   Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
   Quill.register(options, true);
 }
-const _sfc_main$h = {
+const _sfc_main$g = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -3589,13 +3589,13 @@ const _sfc_main$h = {
     }
   }
 };
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$h.render = _sfc_render$h;
+_sfc_main$g.render = _sfc_render$g;
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -3638,7 +3638,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$4 = /* @__PURE__ */ defineComponent({
+var index$5 = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -5878,7 +5878,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props = {
+const props$1 = {
   src: {
     type: String,
     default: ""
@@ -5915,9 +5915,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$3 = /* @__PURE__ */ defineComponent({
+var index$4 = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props,
+  props: props$1,
   setup(props2, {
     emit
   }) {
@@ -6119,7 +6119,7 @@ function useFormField(nameKey, valueKey) {
 }
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$g = {
+const _sfc_main$f = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -6284,16 +6284,16 @@ const _sfc_main$g = {
     }
   }
 };
-const _hoisted_1$a = {
+const _hoisted_1$9 = {
   ref: "wrapper",
   class: "uni-input-wrapper"
 };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-input", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$a, [
+    createVNode("div", _hoisted_1$9, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -6324,8 +6324,8 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$g.render = _sfc_render$g;
-const _sfc_main$f = {
+_sfc_main$f.render = _sfc_render$f;
+const _sfc_main$e = {
   name: "Label",
   mixins: [emitter],
   props: {
@@ -6356,7 +6356,7 @@ const _sfc_main$f = {
     }
   }
 };
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-label", mergeProps({
     class: {"uni-label-pointer": $options.pointer}
   }, _ctx.$attrs, {
@@ -6365,7 +6365,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$f.render = _sfc_render$f;
+_sfc_main$e.render = _sfc_render$e;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -6831,7 +6831,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$e = {
+const _sfc_main$d = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7383,14 +7383,14 @@ const _sfc_main$e = {
     }
   }
 };
-function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$e.render = _sfc_render$e;
+_sfc_main$d.render = _sfc_render$d;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7398,7 +7398,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$d = {
+const _sfc_main$c = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -7471,7 +7471,7 @@ const _sfc_main$d = {
     }
   }
 };
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -7488,128 +7488,133 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$d.render = _sfc_render$d;
+_sfc_main$c.render = _sfc_render$c;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const _sfc_main$c = {
-  name: "Progress",
-  props: {
-    percent: {
-      type: [Number, String],
-      default: 0,
-      validator(value) {
-        return !isNaN(parseFloat(value, 10));
-      }
-    },
-    showInfo: {
-      type: [Boolean, String],
-      default: false
-    },
-    strokeWidth: {
-      type: [Number, String],
-      default: 6,
-      validator(value) {
-        return !isNaN(parseFloat(value, 10));
-      }
-    },
-    color: {
-      type: String,
-      default: VALUES.activeColor
-    },
-    activeColor: {
-      type: String,
-      default: VALUES.activeColor
-    },
-    backgroundColor: {
-      type: String,
-      default: VALUES.backgroundColor
-    },
-    active: {
-      type: [Boolean, String],
-      default: false
-    },
-    activeMode: {
-      type: String,
-      default: VALUES.activeMode
+const props = {
+  percent: {
+    type: [Number, String],
+    default: 0,
+    validator(value) {
+      return !isNaN(parseFloat(value));
     }
   },
-  data() {
-    return {
-      currentPercent: 0,
-      strokeTimer: 0,
-      lastPercent: 0
-    };
+  showInfo: {
+    type: [Boolean, String],
+    default: false
   },
-  computed: {
-    outerBarStyle() {
-      return `background-color: ${this.backgroundColor}; height: ${this.strokeWidth}px;`;
-    },
-    innerBarStyle() {
-      let backgroundColor = "";
-      if (this.color !== VALUES.activeColor && this.activeColor === VALUES.activeColor) {
-        backgroundColor = this.color;
-      } else {
-        backgroundColor = this.activeColor;
-      }
-      return `width: ${this.currentPercent}%;background-color: ${backgroundColor}`;
-    },
-    realPercent() {
-      let realValue = parseFloat(this.percent, 10);
-      realValue < 0 && (realValue = 0);
-      realValue > 100 && (realValue = 100);
-      return realValue;
+  strokeWidth: {
+    type: [Number, String],
+    default: 6,
+    validator(value) {
+      return !isNaN(parseFloat(value));
     }
   },
-  watch: {
-    realPercent(newValue, oldValue) {
-      this.strokeTimer && clearInterval(this.strokeTimer);
-      this.lastPercent = oldValue || 0;
-      this._activeAnimation();
-    }
+  color: {
+    type: String,
+    default: VALUES.activeColor
   },
-  created() {
-    this._activeAnimation();
+  activeColor: {
+    type: String,
+    default: VALUES.activeColor
   },
-  methods: {
-    _activeAnimation() {
-      if (this.active) {
-        this.currentPercent = this.activeMode === VALUES.activeMode ? 0 : this.lastPercent;
-        this.strokeTimer = setInterval(() => {
-          if (this.currentPercent + 1 > this.realPercent) {
-            this.currentPercent = this.realPercent;
-            this.strokeTimer && clearInterval(this.strokeTimer);
-          } else {
-            this.currentPercent += 1;
-          }
-        }, 30);
-      } else {
-        this.currentPercent = this.realPercent;
-      }
+  backgroundColor: {
+    type: String,
+    default: VALUES.backgroundColor
+  },
+  active: {
+    type: [Boolean, String],
+    default: false
+  },
+  activeMode: {
+    type: String,
+    default: VALUES.activeMode
+  },
+  duration: {
+    type: [Number, String],
+    default: 30,
+    validator(value) {
+      return !isNaN(parseFloat(value));
     }
   }
 };
-const _hoisted_1$9 = {
-  key: 0,
-  class: "uni-progress-info"
-};
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-progress", mergeProps({class: "uni-progress"}, _ctx.$attrs), [
-    createVNode("div", {
-      style: $options.outerBarStyle,
-      class: "uni-progress-bar"
-    }, [
-      createVNode("div", {
-        style: $options.innerBarStyle,
+var index$3 = defineComponent({
+  name: "Progress",
+  props,
+  setup(props2, {
+    attrs: attrs2
+  }) {
+    const state = useProgressState(props2);
+    _activeAnimation(state, props2);
+    watch(() => state.realPercent, (newValue, oldValue) => {
+      state.strokeTimer && clearInterval(state.strokeTimer);
+      state.lastPercent = oldValue || 0;
+      _activeAnimation(state, props2);
+    });
+    return () => {
+      const {
+        showInfo
+      } = props2;
+      const {
+        outerBarStyle,
+        innerBarStyle,
+        currentPercent
+      } = state;
+      return createVNode("uni-progress", {
+        class: "uni-progress"
+      }, [createVNode("div", {
+        style: outerBarStyle,
+        class: "uni-progress-bar"
+      }, [createVNode("div", {
+        style: innerBarStyle,
         class: "uni-progress-inner-bar"
-      }, null, 4)
-    ], 4),
-    $props.showInfo ? (openBlock(), createBlock("p", _hoisted_1$9, toDisplayString($data.currentPercent) + "% ", 1)) : createCommentVNode("", true)
-  ], 16);
+      }, null, 4)], 4), showInfo ? createVNode("p", {
+        class: "uni-progress-info"
+      }, [currentPercent, createTextVNode("%")]) : ""]);
+    };
+  }
+});
+function useProgressState(props2) {
+  const currentPercent = ref(0);
+  const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
+  const innerBarStyle = computed(() => {
+    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
+  });
+  const realPercent = computed(() => {
+    let realValue = parseFloat(props2.percent);
+    realValue < 0 && (realValue = 0);
+    realValue > 100 && (realValue = 100);
+    return realValue;
+  });
+  const state = reactive({
+    outerBarStyle,
+    innerBarStyle,
+    realPercent,
+    currentPercent,
+    strokeTimer: 0,
+    lastPercent: 0
+  });
+  return state;
 }
-_sfc_main$c.render = _sfc_render$c;
+function _activeAnimation(state, props2) {
+  if (props2.active) {
+    state.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state.lastPercent;
+    state.strokeTimer = setInterval(() => {
+      if (state.currentPercent + 1 > state.realPercent) {
+        state.currentPercent = state.realPercent;
+        state.strokeTimer && clearInterval(state.strokeTimer);
+      } else {
+        state.currentPercent += 1;
+      }
+    }, parseFloat(props2.duration));
+  } else {
+    state.currentPercent = state.realPercent;
+  }
+}
 const _sfc_main$b = {
   name: "Radio",
   mixins: [emitter, listeners],
@@ -10843,7 +10848,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -10956,12 +10961,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -10981,10 +10986,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -13139,7 +13144,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$g, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$f, {
     focus: autoFocus,
     disabled,
     style: {
@@ -13601,4 +13606,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$k as Audio, index$6 as Button, _sfc_main$j as Canvas, _sfc_main$i as Checkbox, _sfc_main$h as CheckboxGroup, _sfc_main$g as Editor, index$7 as Form, index$5 as Icon, index$4 as Image, _sfc_main$f as Input, _sfc_main$e as Label, LayoutComponent, _sfc_main$d as MovableView, _sfc_main$c as Navigator, index as PageComponent, index$3 as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$8 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};

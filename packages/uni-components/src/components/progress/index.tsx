@@ -86,7 +86,7 @@ export default defineComponent({
       const { outerBarStyle, innerBarStyle, currentPercent } = state
 
       return (
-        <uni-progress class="uni-progress" {...attrs}>
+        <uni-progress class="uni-progress">
           <div style={outerBarStyle} class="uni-progress-bar">
             <div style={innerBarStyle} class="uni-progress-inner-bar" />
           </div>
