@@ -9,5 +9,8 @@
         "replacement": "@dcloudio/uni-mp-vue/lib/vue.runtime.esm.js"
       }
     ]
+  },
+  "replacements": {
+    "__PLATFORM__": "\"mp-weixin\""
   }
 }

@@ -6,9 +6,9 @@ export function operateVideoPlayer(
   type: string,
   data?: unknown
 ) {
-  const pageId = vm.$page.id
+  const pageId = vm.$root!.$page.id
   UniServiceJSBridge.publishHandler(
-    pageId + '-video-' + videoId,
+    'video.' + videoId,
     {
       videoId,
       type,

@@ -1,4 +1,4 @@
-import { invokeArrayFns } from '@vue/shared'
+import { extend, invokeArrayFns } from '@vue/shared'
 import {
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -19,7 +19,7 @@ import { initPage } from './page'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
-  setup: (instance: ComponentInternalInstance) => void
+  setup: (instance: ComponentInternalInstance) => Record<string, any>
   after?: (comp: DefineComponent) => void
 }
 
@@ -50,9 +50,9 @@ function wrapperComponentSetup(
   comp.setup = (props, ctx) => {
     const instance = getCurrentInstance()!
     init(instance.proxy!)
-    setup(instance)
+    const query = setup(instance)
     if (oldSetup) {
-      return oldSetup(props, ctx)
+      return oldSetup(query, ctx)
     }
   }
   after && after(comp)
@@ -71,6 +71,7 @@ export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance) {
+      instance.root = instance // 组件root指向页面
       const route = usePageRoute()
       if (route.meta.isTabBar) {
         //初始化时，状态肯定是激活
@@ -100,6 +101,7 @@ export function setupPage(comp: any) {
           onHide && invokeArrayFns(onHide)
         }
       })
+      return route.query
     },
   })
 }
@@ -128,6 +130,7 @@ export function setupApp(comp: any) {
           }
         })
       })
+      return route.query
     },
     after(comp) {
       comp.mpType = 'app'

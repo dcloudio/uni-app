@@ -1,4 +1,4 @@
-import { isFunction, isString, isSymbol, extend, isMap, isObject, toRawType, def, isArray, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
+import { isFunction, isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
 import { injectHook as injectHook$1 } from 'vue';
 
@@ -36,41 +36,6 @@ function callHook(name, args) {
     return hooks && invokeArrayFns(hooks, args);
 }
 
-function getCurrentPage() {
-    const pages = getCurrentPages();
-    const len = pages.length;
-    if (len) {
-        return pages[len - 1];
-    }
-}
-function getCurrentPageVm() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$vm;
-    }
-}
-function invokeHook(vm, name, args) {
-    if (isString(vm)) {
-        args = name;
-        name = vm;
-        vm = getCurrentPageVm();
-    }
-    else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
-        if (page) {
-            vm = page.$vm;
-        }
-        else {
-            vm = getCurrentPageVm();
-        }
-    }
-    if (!vm) {
-        return;
-    }
-    const hooks = vm.$[name];
-    return hooks && invokeArrayFns(hooks, args);
-}
-
 function errorHandler(err, instance, info) {
     if (!instance) {
         throw err;
@@ -79,11 +44,8 @@ function errorHandler(err, instance, info) {
     if (!app || !app.$vm) {
         throw err;
     }
-    if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
+    {
         app.$vm.$callHook('onError', err, info);
-    }
-    else {
-        invokeHook(app.$vm, 'onError', err);
     }
 }
 
@@ -93,7 +55,7 @@ function initApp(app) {
         appConfig.errorHandler = errorHandler;
     }
     const globalProperties = appConfig.globalProperties;
-    if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
+    {
         // 小程序，待重构，不再挂靠全局
         globalProperties.$hasHook = hasHook;
         globalProperties.$callHook = callHook;

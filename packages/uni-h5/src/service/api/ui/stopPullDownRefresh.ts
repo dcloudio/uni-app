@@ -9,7 +9,7 @@ export const stopPullDownRefresh = defineAsyncApi<API_TYPE_STOP_PULL_DOWN_REFRES
   API_STOP_PULL_DOWN_REFRESH,
   (_args, { resolve }) => {
     UniServiceJSBridge.publishHandler(
-      'stopPullDownRefresh',
+      API_STOP_PULL_DOWN_REFRESH,
       {},
       getCurrentPageId()
     )

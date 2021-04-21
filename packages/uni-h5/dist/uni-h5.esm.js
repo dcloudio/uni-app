@@ -604,7 +604,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 function getWindowOffset() {
   const style = document.documentElement.style;
   const top = parseInt(style.getPropertyValue("--window-top"));
@@ -612,10 +612,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 const isClickEvent = (val) => val.type === "click";
@@ -1097,7 +1097,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1363,9 +1363,9 @@ function wrapperComponentSetup(comp, {init: init2, setup, after}) {
   comp.setup = (props2, ctx) => {
     const instance2 = getCurrentInstance();
     init2(instance2.proxy);
-    setup(instance2);
+    const query = setup(instance2);
     if (oldSetup) {
-      return oldSetup(props2, ctx);
+      return oldSetup(query, ctx);
     }
   };
   after && after(comp);
@@ -1382,6 +1382,7 @@ function setupPage(comp) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance2) {
+      instance2.root = instance2;
       const route = usePageRoute();
       if (route.meta.isTabBar) {
         instance2.__isActive = true;
@@ -1410,6 +1411,7 @@ function setupPage(comp) {
           onHide && invokeArrayFns$1(onHide);
         }
       });
+      return route.query;
     }
   });
 }
@@ -1436,6 +1438,7 @@ function setupApp(comp) {
           }
         });
       });
+      return route.query;
     },
     after(comp2) {
       comp2.mpType = "app";
@@ -3729,8 +3732,8 @@ function getBaseSystemInfo() {
   };
 }
 function operateVideoPlayer(videoId, vm, type, data) {
-  const pageId = vm.$page.id;
-  UniServiceJSBridge.publishHandler(pageId + "-video-" + videoId, {
+  const pageId = vm.$root.$page.id;
+  UniServiceJSBridge.publishHandler("video." + videoId, {
     videoId,
     type,
     data
@@ -9892,28 +9895,44 @@ var index$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-function normalizeEvent(componentId, vm) {
-  return vm.$page.id + "-" + vm.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + componentId;
+function normalizeEvent(pageId, vm, id2) {
+  if (!id2) {
+    id2 = vm.id;
+  }
+  if (!id2) {
+    return;
+  }
+  return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
 }
-function addSubscribe(componentId, vm, callback) {
-  UniViewJSBridge.subscribe(normalizeEvent(componentId, vm), ({type, data}) => {
+function addSubscribe(name, callback) {
+  if (!name) {
+    return;
+  }
+  UniViewJSBridge.subscribe(name, ({type, data}) => {
     callback(type, data);
   });
 }
-function removeSubscribe(componentId, vm) {
-  UniViewJSBridge.unsubscribe(normalizeEvent(componentId, vm));
+function removeSubscribe(name) {
+  if (!name) {
+    return;
+  }
+  UniViewJSBridge.unsubscribe(name);
 }
-function useSubscribe(callback) {
-  const instance2 = getCurrentInstance().proxy;
+function useSubscribe(callback, name) {
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const pageId = name ? 0 : vm.$root.$page.id;
   onMounted(() => {
-    addSubscribe(instance2.id, instance2, callback);
-    watch(() => instance2.id, (value, oldValue) => {
-      addSubscribe(value, instance2, callback);
-      removeSubscribe(oldValue, instance2);
-    });
+    addSubscribe(name || normalizeEvent(pageId, vm), callback);
+    if (!name) {
+      watch(() => instance2.id, (value, oldValue) => {
+        addSubscribe(normalizeEvent(pageId, vm, value), callback);
+        removeSubscribe(normalizeEvent(pageId, vm, oldValue));
+      });
+    }
   });
-  onBeforeMount(() => {
-    removeSubscribe(instance2.id, instance2);
+  onBeforeUnmount(() => {
+    removeSubscribe(name || normalizeEvent(pageId, vm));
   });
 }
 const passiveOptions = passive(false);
@@ -10086,11 +10105,6 @@ const _sfc_main$3 = {
       this.updateProgress();
     },
     buffered(buffered) {
-      if (buffered !== 0) {
-        this.$trigger("progress", {}, {
-          buffered
-        });
-      }
     }
   },
   setup() {
@@ -10848,7 +10862,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -10961,12 +10975,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -10986,10 +11000,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -12375,11 +12389,11 @@ const hideLoading = defineAsyncApi(API_HIDE_LOADING, () => {
 const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, () => {
 }, ShowActionSheetProtocol, ShowActionSheetOptions);
 const startPullDownRefresh = defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, {resolve}) => {
-  UniServiceJSBridge.publishHandler("startPullDownRefresh", {}, getCurrentPageId());
+  UniServiceJSBridge.publishHandler(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
 const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {resolve}) => {
-  UniServiceJSBridge.publishHandler("stopPullDownRefresh", {}, getCurrentPageId());
+  UniServiceJSBridge.publishHandler(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
 let tabBar;
@@ -13362,31 +13376,31 @@ function usePageRefresh(refreshRef) {
   let refreshControllerElem;
   let refreshControllerElemStyle;
   let refreshInnerElemStyle;
+  useSubscribe(() => {
+    if (!state) {
+      state = REFRESHING;
+      addClass();
+      setTimeout(() => {
+        refreshing();
+      }, 50);
+    }
+  }, id2 + "." + API_START_PULL_DOWN_REFRESH);
+  useSubscribe(() => {
+    if (state === REFRESHING) {
+      removeClass();
+      state = RESTORING;
+      addClass();
+      restoring(() => {
+        removeClass();
+        state = distance = offset = null;
+      });
+    }
+  }, id2 + "." + API_STOP_PULL_DOWN_REFRESH);
   onMounted(() => {
     refreshContainerElem = refreshRef.value.$el;
     refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
     refreshControllerElemStyle = refreshControllerElem.style;
     refreshInnerElemStyle = refreshControllerElem.querySelector(".uni-page-refresh-inner").style;
-    UniViewJSBridge.subscribe(id2 + ".startPullDownRefresh", () => {
-      if (!state) {
-        state = REFRESHING;
-        addClass();
-        setTimeout(() => {
-          refreshing();
-        }, 50);
-      }
-    });
-    UniViewJSBridge.subscribe(id2 + ".stopPullDownRefresh", () => {
-      if (state === REFRESHING) {
-        removeClass();
-        state = RESTORING;
-        addClass();
-        restoring(() => {
-          removeClass();
-          state = distance = offset = null;
-        });
-      }
-    });
   });
   let touchId;
   let startY;

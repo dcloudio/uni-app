@@ -1,5 +1,10 @@
 import { onMounted, Ref } from 'vue'
 import { invokeHook } from '@dcloudio/uni-core'
+import {
+  API_START_PULL_DOWN_REFRESH,
+  API_STOP_PULL_DOWN_REFRESH,
+} from '@dcloudio/uni-api'
+import { useSubscribe } from '@dcloudio/uni-components'
 import { usePageMeta } from '../../../plugin/provide'
 
 function processDeltaY(
@@ -33,6 +38,27 @@ export function usePageRefresh(refreshRef: Ref) {
   let refreshControllerElem: HTMLDivElement
   let refreshControllerElemStyle: CSSStyleDeclaration
   let refreshInnerElemStyle: CSSStyleDeclaration
+  useSubscribe(() => {
+    if (!state) {
+      state = REFRESHING
+      addClass()
+      setTimeout(() => {
+        refreshing()
+      }, 50)
+    }
+  }, id + '.' + API_START_PULL_DOWN_REFRESH)
+  useSubscribe(() => {
+    if (state === REFRESHING) {
+      removeClass()
+      state = RESTORING
+      addClass()
+
+      restoring(() => {
+        removeClass()
+        state = distance = offset = null
+      })
+    }
+  }, id + '.' + API_STOP_PULL_DOWN_REFRESH)
   onMounted(() => {
     refreshContainerElem = refreshRef.value.$el
     refreshControllerElem = refreshContainerElem.querySelector(
@@ -42,29 +68,6 @@ export function usePageRefresh(refreshRef: Ref) {
     refreshInnerElemStyle = (refreshControllerElem.querySelector(
       '.uni-page-refresh-inner'
     ) as HTMLDivElement).style
-    // uni.startPullDownRefresh
-    UniViewJSBridge.subscribe(id + '.startPullDownRefresh', () => {
-      if (!state) {
-        state = REFRESHING
-        addClass()
-        setTimeout(() => {
-          refreshing()
-        }, 50)
-      }
-    })
-    // uni.stopPullDownRefresh
-    UniViewJSBridge.subscribe(id + '.stopPullDownRefresh', () => {
-      if (state === REFRESHING) {
-        removeClass()
-        state = RESTORING
-        addClass()
-
-        restoring(() => {
-          removeClass()
-          state = distance = offset = null
-        })
-      }
-    })
   })
   let touchId: number | null
   let startY: number

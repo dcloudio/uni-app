@@ -1,51 +1,64 @@
 import {
   watch,
   onMounted,
-  onBeforeMount,
+  onBeforeUnmount,
   getCurrentInstance,
   ComponentPublicInstance,
 } from 'vue'
 
-function normalizeEvent(componentId: string, vm: ComponentPublicInstance) {
-  return (
-    vm.$page.id +
-    '-' +
-    vm.$options.name!.replace(/VUni([A-Z])/, '$1').toLowerCase() +
-    '-' +
-    componentId
-  )
+function normalizeEvent(
+  pageId: number,
+  vm: ComponentPublicInstance,
+  id?: string
+) {
+  if (!id) {
+    id = (vm as any).id
+  }
+  if (!id) {
+    return
+  }
+  return pageId + '.' + vm.$options.name!.toLowerCase() + '.' + id
 }
 
-function addSubscribe(
-  componentId: string,
-  vm: ComponentPublicInstance,
-  callback: Function
-) {
+function addSubscribe(name: string, callback: Function) {
+  if (!name) {
+    return
+  }
   UniViewJSBridge.subscribe(
-    normalizeEvent(componentId, vm),
+    name,
     ({ type, data }: { type: string; data: unknown }) => {
       callback(type, data)
     }
   )
 }
 
-function removeSubscribe(componentId: string, vm: ComponentPublicInstance) {
-  UniViewJSBridge.unsubscribe(normalizeEvent(componentId, vm))
+function removeSubscribe(name: string) {
+  if (!name) {
+    return
+  }
+  UniViewJSBridge.unsubscribe(name)
 }
 
-export function useSubscribe(callback: (type: string, data: unknown) => void) {
-  const instance = getCurrentInstance()!.proxy!
+export function useSubscribe(
+  callback: (type: string, data: unknown) => void,
+  name?: string
+) {
+  const instance = getCurrentInstance()!
+  const vm = instance.proxy!
+  const pageId = name ? 0 : vm.$root!.$page.id
   onMounted(() => {
-    addSubscribe((instance as any).id, instance, callback)
-    watch(
-      () => (instance as any).id,
-      (value, oldValue) => {
-        addSubscribe(value, instance, callback)
-        removeSubscribe(oldValue, instance)
-      }
-    )
+    addSubscribe(name || normalizeEvent(pageId, vm)!, callback)
+    if (!name) {
+      watch(
+        () => (instance as any).id,
+        (value, oldValue) => {
+          addSubscribe(normalizeEvent(pageId, vm, value)!, callback)
+          removeSubscribe(normalizeEvent(pageId, vm, oldValue)!)
+        }
+      )
+    }
   })
-  onBeforeMount(() => {
-    removeSubscribe((instance as any).id, instance)
+  onBeforeUnmount(() => {
+    removeSubscribe(name || normalizeEvent(pageId, vm)!)
   })
 }
