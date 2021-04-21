@@ -1,5 +1,5 @@
-import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
-import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate, isSymbol, isMap, isGloballyWhitelisted, isIntegerKey, hasChanged, remove, EMPTY_OBJ, isOn, isModelListener, camelize, isSpecialBooleanAttr, NOOP, isSet} from "@vue/shared";
+import {injectHook as injectHook$1, createVNode, inject, provide, reactive as reactive$1, computed, nextTick as nextTick$1, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount as onBeforeUnmount$1, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, removeLeadingSlash, getLen, parseQuery, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -7,12 +7,12 @@ function applyOptions(options, instance2, publicThis) {
     if (name.indexOf("on") === 0) {
       const hook = options[name];
       if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance2);
+        injectHook$1(name, hook.bind(publicThis), instance2);
       }
     }
   });
 }
-function set(target, key, val) {
+function set$2(target, key, val) {
   return target[key] = val;
 }
 const isObject = (val) => val !== null && typeof val === "object";
@@ -307,6 +307,24 @@ const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A"}));
   }
 });
+const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.video.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {danmu: "Danmu", volume: "Volume"}));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {danmu: "Danmu", volume: "Volumen"}));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {danmu: "Danmu", volume: "Le Volume"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF"}));
+  }
+});
 function E() {
 }
 E.prototype = {
@@ -420,7 +438,7 @@ function initLongPress() {
   window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
 }
 var attrs = ["top", "left", "right", "bottom"];
-var inited;
+var inited$1;
 var elementComputedStyle = {};
 var support;
 function getSupport() {
@@ -443,7 +461,7 @@ function init() {
     });
     return;
   }
-  function setStyle(el, style2) {
+  function setStyle2(el, style2) {
     var elStyle = el.style;
     Object.keys(style2).forEach(function(key) {
       var val = style2[key];
@@ -485,15 +503,15 @@ function init() {
       overflow: "hidden",
       paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
     };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
+    setStyle2(a1, aStyle);
+    setStyle2(a2, aStyle);
+    setStyle2(a1Children, {
       transition: "0s",
       animation: "none",
       width: "400px",
       height: "400px"
     });
-    setStyle(a2Children, {
+    setStyle2(a2Children, {
       transition: "0s",
       animation: "none",
       width: "250%",
@@ -528,7 +546,7 @@ function init() {
     });
   }
   var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
+  setStyle2(parentDiv, {
     position: "absolute",
     left: "0",
     top: "0",
@@ -543,10 +561,10 @@ function init() {
   });
   document.body.appendChild(parentDiv);
   parentReady();
-  inited = true;
+  inited$1 = true;
 }
 function getAttr(attr2) {
-  if (!inited) {
+  if (!inited$1) {
     init();
   }
   return elementComputedStyle[attr2];
@@ -572,7 +590,7 @@ function onChange(callback) {
   if (!getSupport()) {
     return;
   }
-  if (!inited) {
+  if (!inited$1) {
     init();
   }
   if (typeof callback === "function") {
@@ -991,7 +1009,7 @@ function initService(app) {
 function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
-function rpx2px(str) {
+function rpx2px$1(str) {
   if (typeof str === "string") {
     const res = parseInt(str) || 0;
     if (str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1) {
@@ -1010,10 +1028,10 @@ const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
+function createSvgIconVNode(path, color = "#000", size2 = 27) {
   return createVNode("svg", {
-    width: size,
-    height: size,
+    width: size2,
+    height: size2,
     viewBox: "0 0 32 32"
   }, [
     createVNode("path", {
@@ -1081,7 +1099,7 @@ function initApp$1(app) {
   }
   const globalProperties = appConfig.globalProperties;
   {
-    globalProperties.$set = set;
+    globalProperties.$set = set$2;
     globalProperties.$applyOptions = applyOptions;
   }
 }
@@ -1096,9 +1114,9 @@ function providePageMeta(id2) {
 }
 function initPageMeta(id2) {
   if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
+    return reactive$1(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
   }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
+  return reactive$1(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
 }
 const PAGE_META_KEYS = [
   "navigationBar",
@@ -1123,14 +1141,14 @@ function normalizePageMeta(pageMeta) {
         range: 150,
         offset: 0
       }, pageMeta.refreshOptions || {});
-      let offset = rpx2px(refreshOptions.offset);
+      let offset = rpx2px$1(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
         offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
+      refreshOptions.height = rpx2px$1(refreshOptions.height);
+      refreshOptions.range = rpx2px$1(refreshOptions.range);
       pageMeta.refreshOptions = refreshOptions;
     }
   }
@@ -1311,7 +1329,7 @@ function pruneRouteCache(key) {
       }
       routeCache.delete(key2);
       routeCache.pruneCacheEntry(vnode);
-      nextTick(() => pruneCurrentPages());
+      nextTick$1(() => pruneCurrentPages());
     }
   });
 }
@@ -1352,7 +1370,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$8 = {
+var index$9 = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -1374,7 +1392,7 @@ function initApp(vm) {
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(__uniConfig.tabBar);
+    tabBar = __uniConfig.tabBar && reactive$1(__uniConfig.tabBar);
   }
   return tabBar;
 }
@@ -2954,21 +2972,21 @@ const initIntersectionObserverPolyfill = function() {
     }
     return;
   }
-  function getFrameElement(doc) {
+  function getFrameElement(doc2) {
     try {
-      return doc.defaultView && doc.defaultView.frameElement || null;
+      return doc2.defaultView && doc2.defaultView.frameElement || null;
     } catch (e2) {
       return null;
     }
   }
   var document2 = function(startDoc) {
-    var doc = startDoc;
-    var frame = getFrameElement(doc);
+    var doc2 = startDoc;
+    var frame = getFrameElement(doc2);
     while (frame) {
-      doc = frame.ownerDocument;
-      frame = getFrameElement(doc);
+      doc2 = frame.ownerDocument;
+      frame = getFrameElement(doc2);
     }
-    return doc;
+    return doc2;
   }(window.document);
   var registry = [];
   var crossOriginUpdater = null;
@@ -3092,12 +3110,12 @@ const initIntersectionObserverPolyfill = function() {
     margins[3] = margins[3] || margins[1];
     return margins;
   };
-  IntersectionObserver2.prototype._monitorIntersections = function(doc) {
-    var win = doc.defaultView;
+  IntersectionObserver2.prototype._monitorIntersections = function(doc2) {
+    var win = doc2.defaultView;
     if (!win) {
       return;
     }
-    if (this._monitoringDocuments.indexOf(doc) != -1) {
+    if (this._monitoringDocuments.indexOf(doc2) != -1) {
       return;
     }
     var callback = this._checkForIntersections;
@@ -3107,10 +3125,10 @@ const initIntersectionObserverPolyfill = function() {
       monitoringInterval = win.setInterval(callback, this.POLL_INTERVAL);
     } else {
       addEvent(win, "resize", callback, true);
-      addEvent(doc, "scroll", callback, true);
+      addEvent(doc2, "scroll", callback, true);
       if (this.USE_MUTATION_OBSERVER && "MutationObserver" in win) {
         domObserver = new win.MutationObserver(callback);
-        domObserver.observe(doc, {
+        domObserver.observe(doc2, {
           attributes: true,
           childList: true,
           characterData: true,
@@ -3118,43 +3136,43 @@ const initIntersectionObserverPolyfill = function() {
         });
       }
     }
-    this._monitoringDocuments.push(doc);
+    this._monitoringDocuments.push(doc2);
     this._monitoringUnsubscribes.push(function() {
-      var win2 = doc.defaultView;
+      var win2 = doc2.defaultView;
       if (win2) {
         if (monitoringInterval) {
           win2.clearInterval(monitoringInterval);
         }
         removeEvent(win2, "resize", callback, true);
       }
-      removeEvent(doc, "scroll", callback, true);
+      removeEvent(doc2, "scroll", callback, true);
       if (domObserver) {
         domObserver.disconnect();
       }
     });
     var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    if (doc != rootDoc) {
-      var frame = getFrameElement(doc);
+    if (doc2 != rootDoc) {
+      var frame = getFrameElement(doc2);
       if (frame) {
         this._monitorIntersections(frame.ownerDocument);
       }
     }
   };
-  IntersectionObserver2.prototype._unmonitorIntersections = function(doc) {
-    var index2 = this._monitoringDocuments.indexOf(doc);
+  IntersectionObserver2.prototype._unmonitorIntersections = function(doc2) {
+    var index2 = this._monitoringDocuments.indexOf(doc2);
     if (index2 == -1) {
       return;
     }
     var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
     var hasDependentTargets = this._observationTargets.some(function(item) {
       var itemDoc = item.element.ownerDocument;
-      if (itemDoc == doc) {
+      if (itemDoc == doc2) {
         return true;
       }
       while (itemDoc && itemDoc != rootDoc) {
         var frame2 = getFrameElement(itemDoc);
         itemDoc = frame2 && frame2.ownerDocument;
-        if (itemDoc == doc) {
+        if (itemDoc == doc2) {
           return true;
         }
       }
@@ -3167,8 +3185,8 @@ const initIntersectionObserverPolyfill = function() {
     this._monitoringDocuments.splice(index2, 1);
     this._monitoringUnsubscribes.splice(index2, 1);
     unsubscribe();
-    if (doc != rootDoc) {
-      var frame = getFrameElement(doc);
+    if (doc2 != rootDoc) {
+      var frame = getFrameElement(doc2);
       if (frame) {
         this._unmonitorIntersections(frame.ownerDocument);
       }
@@ -3261,8 +3279,8 @@ const initIntersectionObserverPolyfill = function() {
           }
         }
       } else {
-        var doc = parent.ownerDocument;
-        if (parent != doc.body && parent != doc.documentElement && parentComputedStyle.overflow != "visible") {
+        var doc2 = parent.ownerDocument;
+        if (parent != doc2.body && parent != doc2.documentElement && parentComputedStyle.overflow != "visible") {
           parentRect = getBoundingClientRect(parent);
         }
       }
@@ -3280,9 +3298,9 @@ const initIntersectionObserverPolyfill = function() {
     if (this.root && !isDoc(this.root)) {
       rootRect = getBoundingClientRect(this.root);
     } else {
-      var doc = isDoc(this.root) ? this.root : document2;
-      var html = doc.documentElement;
-      var body = doc.body;
+      var doc2 = isDoc(this.root) ? this.root : document2;
+      var html = doc2.documentElement;
+      var body = doc2.body;
       rootRect = {
         top: 0,
         left: 0,
@@ -4040,7 +4058,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$k = {
+const _sfc_main$j = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4159,13 +4177,13 @@ const _sfc_main$k = {
     }
   }
 };
-const _hoisted_1$c = {class: "uni-audio-default"};
-const _hoisted_2$7 = {class: "uni-audio-right"};
-const _hoisted_3$3 = {class: "uni-audio-time"};
-const _hoisted_4$3 = {class: "uni-audio-info"};
-const _hoisted_5$2 = {class: "uni-audio-name"};
-const _hoisted_6$2 = {class: "uni-audio-author"};
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$b = {class: "uni-audio-default"};
+const _hoisted_2$6 = {class: "uni-audio-right"};
+const _hoisted_3$2 = {class: "uni-audio-time"};
+const _hoisted_4$2 = {class: "uni-audio-info"};
+const _hoisted_5$1 = {class: "uni-audio-name"};
+const _hoisted_6$1 = {class: "uni-audio-author"};
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4175,7 +4193,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$c, [
+    createVNode("div", _hoisted_1$b, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4185,17 +4203,17 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$7, [
-        createVNode("div", _hoisted_3$3, toDisplayString($data.currentTime), 1),
-        createVNode("div", _hoisted_4$3, [
-          createVNode("div", _hoisted_5$2, toDisplayString($props.name), 1),
-          createVNode("div", _hoisted_6$2, toDisplayString($props.author), 1)
+      createVNode("div", _hoisted_2$6, [
+        createVNode("div", _hoisted_3$2, toDisplayString($data.currentTime), 1),
+        createVNode("div", _hoisted_4$2, [
+          createVNode("div", _hoisted_5$1, toDisplayString($props.name), 1),
+          createVNode("div", _hoisted_6$1, toDisplayString($props.author), 1)
         ])
       ])
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$k.render = _sfc_render$k;
+_sfc_main$j.render = _sfc_render$j;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4280,7 +4298,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$7 = /* @__PURE__ */ defineComponent({
+var index$8 = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -4317,7 +4335,7 @@ function provideForm(emit) {
   });
   return fields;
 }
-var index$6 = /* @__PURE__ */ defineComponent({
+var index$7 = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4430,7 +4448,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$j = {
+const _sfc_main$i = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -4926,20 +4944,20 @@ const _sfc_main$j = {
     }
   }
 };
-const _hoisted_1$b = {
+const _hoisted_1$a = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
-const _hoisted_2$6 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$b, null, 512),
-    createVNode("div", _hoisted_2$6, [
+    createVNode("canvas", _hoisted_1$a, null, 512),
+    createVNode("div", _hoisted_2$5, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
@@ -4948,8 +4966,8 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$j.render = _sfc_render$j;
-const _sfc_main$i = {
+_sfc_main$i.render = _sfc_render$i;
+const _sfc_main$h = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -5025,12 +5043,12 @@ const _sfc_main$i = {
     }
   }
 };
-const _hoisted_1$a = {class: "uni-checkbox-wrapper"};
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$9 = {class: "uni-checkbox-wrapper"};
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$a, [
+    createVNode("div", _hoisted_1$9, [
       createVNode("div", {
         class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
         style: {color: $props.color}
@@ -5039,8 +5057,8 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$i.render = _sfc_render$i;
-const _sfc_main$h = {
+_sfc_main$h.render = _sfc_render$h;
+const _sfc_main$g = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -5106,12 +5124,12 @@ const _sfc_main$h = {
     }
   }
 };
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$h.render = _sfc_render$h;
+_sfc_main$g.render = _sfc_render$g;
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -5494,7 +5512,7 @@ function register(Quill) {
   Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
   Quill.register(options, true);
 }
-const _sfc_main$g = {
+const _sfc_main$f = {
   name: "Editor",
   mixins: [subscriber, emitter, keyboard],
   props: {
@@ -5816,13 +5834,13 @@ const _sfc_main$g = {
     }
   }
 };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-editor", mergeProps({
     id: $props.id,
     class: "ql-container"
   }, _ctx.$attrs), null, 16, ["id"]);
 }
-_sfc_main$g.render = _sfc_render$g;
+_sfc_main$f.render = _sfc_render$f;
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -5865,7 +5883,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$5 = /* @__PURE__ */ defineComponent({
+var index$6 = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -5884,7 +5902,7 @@ var index$5 = /* @__PURE__ */ defineComponent({
   },
   setup(props2) {
     const path = computed(() => ICONS[props2.type]);
-    return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
+    return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px$1(props2.size))]);
   }
 });
 function useCustomEvent(ref2, emit) {
@@ -5915,9 +5933,9 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
     emit
   }) {
     const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    const reset2 = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit, reset2);
+    useResizeSensorLifecycle(rootRef, props2, update, reset2);
     return () => createVNode("uni-resize-sensor", {
       ref: rootRef,
       onAnimationstartOnce: update
@@ -5928,20 +5946,20 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
     }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
   }
 });
-function useResizeSensorUpdate(rootRef, emit, reset) {
-  const size = reactive({
+function useResizeSensorUpdate(rootRef, emit, reset2) {
+  const size2 = reactive$1({
     width: -1,
     height: -1
   });
-  watch(() => extend({}, size), (value) => emit("resize", value));
+  watch(() => extend({}, size2), (value) => emit("resize", value));
   return () => {
     const {
       offsetWidth,
       offsetHeight
     } = rootRef.value;
-    size.width = offsetWidth;
-    size.height = offsetHeight;
-    reset();
+    size2.width = offsetWidth;
+    size2.height = offsetHeight;
+    reset2();
   };
 }
 function useResizeSensorReset(rootRef) {
@@ -5956,22 +5974,22 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollTop = 1e5;
   };
 }
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  onActivated(reset);
+function useResizeSensorLifecycle(rootRef, props2, update, reset2) {
+  onActivated(reset2);
   onMounted(() => {
     if (props2.initial) {
-      nextTick(update);
+      nextTick$1(update);
     }
     const rootEl = rootRef.value;
     if (rootEl.offsetParent !== rootEl.parentElement) {
       rootEl.parentElement.style.position = "relative";
     }
     if (!("AnimationEvent" in window)) {
-      reset();
+      reset2();
     }
   });
 }
-const props$1 = {
+const props$2 = {
   src: {
     type: String,
     default: ""
@@ -6008,20 +6026,20 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$4 = /* @__PURE__ */ defineComponent({
+var index$5 = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$1,
+  props: props$2,
   setup(props2, {
     emit
   }) {
     const rootRef = ref(null);
     const state = useImageState(rootRef, props2);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger2 = useCustomEvent(rootRef, emit);
     const {
       fixSize
     } = useImageSize(rootRef, props2, state);
     useImageLoader(state, {
-      trigger,
+      trigger: trigger2,
       fixSize
     });
     return () => {
@@ -6048,20 +6066,20 @@ var index$4 = /* @__PURE__ */ defineComponent({
 function useImageState(rootRef, props2) {
   const imgSrc = ref("");
   const modeStyleRef = computed(() => {
-    let size = "auto";
+    let size2 = "auto";
     let position = "";
     const opts = IMAGE_MODES[props2.mode];
     if (!opts) {
       position = "0% 0%";
-      size = "100% 100%";
+      size2 = "100% 100%";
     } else {
       opts[0] && (position = opts[0]);
-      opts[1] && (size = opts[1]);
+      opts[1] && (size2 = opts[1]);
     }
     const srcVal = imgSrc.value;
-    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
+    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size2};background-repeat:no-repeat;`;
   });
-  const state = reactive({
+  const state = reactive$1({
     rootEl: rootRef,
     src: computed(() => props2.src ? getRealPath(props2.src) : ""),
     origWidth: 0,
@@ -6082,7 +6100,7 @@ function useImageState(rootRef, props2) {
   return state;
 }
 function useImageLoader(state, {
-  trigger,
+  trigger: trigger2,
   fixSize
 }) {
   let img;
@@ -6108,7 +6126,7 @@ function useImageLoader(state, {
       setState(width, height, src);
       fixSize();
       resetImage();
-      trigger("load", evt, {
+      trigger2("load", evt, {
         width,
         height
       });
@@ -6116,7 +6134,7 @@ function useImageLoader(state, {
     img.onerror = (evt) => {
       setState();
       resetImage();
-      trigger("error", evt, {
+      trigger2("error", evt, {
         errMsg: `GET ${state.src} 404 (Not Found)`
       });
     };
@@ -6131,7 +6149,7 @@ function useImageLoader(state, {
   };
   watch(() => state.src, (value) => loadImage(value));
   onMounted(() => loadImage(state.src));
-  onBeforeUnmount(() => resetImage());
+  onBeforeUnmount$1(() => resetImage());
 }
 const isChrome = navigator.vendor === "Google Inc.";
 function fixNumber(num) {
@@ -6206,13 +6224,13 @@ function useFormField(nameKey, valueKey) {
     }
   };
   uniForm.addField(ctx);
-  onBeforeUnmount(() => {
+  onBeforeUnmount$1(() => {
     uniForm.removeField(ctx);
   });
 }
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$f = {
+const _sfc_main$e = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -6377,16 +6395,16 @@ const _sfc_main$f = {
     }
   }
 };
-const _hoisted_1$9 = {
+const _hoisted_1$8 = {
   ref: "wrapper",
   class: "uni-input-wrapper"
 };
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-input", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$9, [
+    createVNode("div", _hoisted_1$8, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -6417,8 +6435,8 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$f.render = _sfc_render$f;
-const _sfc_main$e = {
+_sfc_main$e.render = _sfc_render$e;
+const _sfc_main$d = {
   name: "Label",
   mixins: [emitter],
   props: {
@@ -6449,7 +6467,7 @@ const _sfc_main$e = {
     }
   }
 };
-function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-label", mergeProps({
     class: {"uni-label-pointer": $options.pointer}
   }, _ctx.$attrs, {
@@ -6458,7 +6476,7 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$e.render = _sfc_render$e;
+_sfc_main$d.render = _sfc_render$d;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -6874,12 +6892,12 @@ function _requestAnimationFrame(e2) {
     });
   }
 }
-function p(t2, n) {
+function p$1(t2, n) {
   if (t2 === n) {
     return 0;
   }
   var i2 = t2.offsetLeft;
-  return t2.offsetParent ? i2 += p(t2.offsetParent, n) : 0;
+  return t2.offsetParent ? i2 += p$1(t2.offsetParent, n) : 0;
 }
 function f(t2, n) {
   if (t2 === n) {
@@ -6924,7 +6942,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$d = {
+const _sfc_main$c = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7320,7 +7338,7 @@ const _sfc_main$d = {
       this._updateOldScale(scale);
     },
     _updateOffset: function() {
-      this._offset.x = p(this.$el, this.$parent.$el);
+      this._offset.x = p$1(this.$el, this.$parent.$el);
       this._offset.y = f(this.$el, this.$parent.$el);
     },
     _updateWH: function(scale) {
@@ -7476,14 +7494,14 @@ const _sfc_main$d = {
     }
   }
 };
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$d.render = _sfc_render$d;
+_sfc_main$c.render = _sfc_render$c;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7491,7 +7509,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$c = {
+const _sfc_main$b = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -7564,7 +7582,7 @@ const _sfc_main$c = {
     }
   }
 };
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -7581,13 +7599,13 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$c.render = _sfc_render$c;
+_sfc_main$b.render = _sfc_render$b;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props = {
+const props$1 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7634,9 +7652,9 @@ const props = {
     }
   }
 };
-var index$3 = /* @__PURE__ */ defineComponent({
+var index$4 = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props,
+  props: props$1,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -7681,7 +7699,7 @@ function useProgressState(props2) {
     realValue > 100 && (realValue = 100);
     return realValue;
   });
-  const state = reactive({
+  const state = reactive$1({
     outerBarStyle,
     innerBarStyle,
     realPercent,
@@ -7706,7 +7724,7 @@ function _activeAnimation(state, props2) {
     state.currentPercent = state.realPercent;
   }
 }
-const _sfc_main$b = {
+const _sfc_main$a = {
   name: "Radio",
   mixins: [emitter, listeners],
   props: {
@@ -7787,12 +7805,12 @@ const _sfc_main$b = {
     }
   }
 };
-const _hoisted_1$8 = {class: "uni-radio-wrapper"};
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$7 = {class: "uni-radio-wrapper"};
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$8, [
+    createVNode("div", _hoisted_1$7, [
       createVNode("div", {
         class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
         style: $data.radioChecked ? $options.checkedStyle : ""
@@ -7801,8 +7819,8 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$b.render = _sfc_render$b;
-const _sfc_main$a = {
+_sfc_main$a.render = _sfc_render$a;
+const _sfc_main$9 = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
   props: {
@@ -7886,12 +7904,12 @@ const _sfc_main$a = {
     }
   }
 };
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$a.render = _sfc_render$a;
+_sfc_main$9.render = _sfc_render$9;
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -8099,7 +8117,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$9 = {
+const _sfc_main$8 = {
   name: "RichText",
   props: {
     nodes: {
@@ -8128,13 +8146,13 @@ const _sfc_main$9 = {
     }
   }
 };
-const _hoisted_1$7 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$7
+    _hoisted_1$6
   ], 16);
 }
-_sfc_main$9.render = _sfc_render$9;
+_sfc_main$8.render = _sfc_render$8;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -8807,7 +8825,7 @@ var scroller = {
   }
 };
 const passiveOptions$1 = passive(true);
-const _sfc_main$8 = {
+const _sfc_main$7 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -9215,32 +9233,32 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$6 = {
+const _hoisted_1$5 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
-const _hoisted_2$5 = {
+const _hoisted_2$4 = {
   ref: "content",
   class: "uni-scroll-view-content"
 };
-const _hoisted_3$2 = {
+const _hoisted_3$1 = {
   key: 0,
   class: "uni-scroll-view-refresh"
 };
-const _hoisted_4$2 = {class: "uni-scroll-view-refresh-inner"};
-const _hoisted_5$1 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
-const _hoisted_6$1 = /* @__PURE__ */ createVNode("path", {
+const _hoisted_4$1 = {class: "uni-scroll-view-refresh-inner"};
+const _hoisted_5 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
+const _hoisted_6 = /* @__PURE__ */ createVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
 }, null, -1);
-const _hoisted_7$1 = {
+const _hoisted_7 = {
   key: 1,
   class: "uni-scroll-view-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
-const _hoisted_8$1 = /* @__PURE__ */ createVNode("circle", {
+const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   cx: "50",
   cy: "50",
   r: "20",
@@ -9248,9 +9266,9 @@ const _hoisted_8$1 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$6, [
+    createVNode("div", _hoisted_1$5, [
       createVNode("div", {
         ref: "main",
         style: {
@@ -9259,7 +9277,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
         },
         class: "uni-scroll-view"
       }, [
-        createVNode("div", _hoisted_2$5, [
+        createVNode("div", _hoisted_2$4, [
           $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
@@ -9269,8 +9287,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
             },
             class: "uni-scroll-view-refresher"
           }, [
-            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$2, [
-              createVNode("div", _hoisted_4$2, [
+            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_3$1, [
+              createVNode("div", _hoisted_4$1, [
                 $data.refreshState == "pulling" ? (openBlock(), createBlock("svg", {
                   key: 0,
                   style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
@@ -9280,11 +9298,11 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
                   height: "24",
                   viewBox: "0 0 24 24"
                 }, [
-                  _hoisted_5$1,
-                  _hoisted_6$1
+                  _hoisted_5,
+                  _hoisted_6
                 ], 4)) : createCommentVNode("", true),
-                $data.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_7$1, [
-                  _hoisted_8$1
+                $data.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_7, [
+                  _hoisted_8
                 ])) : createCommentVNode("", true)
               ])
             ])) : createCommentVNode("", true),
@@ -9296,8 +9314,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$8.render = _sfc_render$8;
-const _sfc_main$7 = {
+_sfc_main$7.render = _sfc_render$7;
+const _sfc_main$6 = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
   props: {
@@ -9460,14 +9478,14 @@ const _sfc_main$7 = {
     }
   }
 };
-const _hoisted_1$5 = {class: "uni-slider-wrapper"};
-const _hoisted_2$4 = {class: "uni-slider-tap-area"};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$4 = {class: "uni-slider-wrapper"};
+const _hoisted_2$3 = {class: "uni-slider-tap-area"};
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$5, [
-      createVNode("div", _hoisted_2$4, [
+    createVNode("div", _hoisted_1$4, [
+      createVNode("div", _hoisted_2$3, [
         createVNode("div", {
           style: $options.setBgColor,
           class: "uni-slider-handle-wrapper"
@@ -9494,8 +9512,8 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
-const _sfc_main$6 = {
+_sfc_main$6.render = _sfc_render$6;
+const _sfc_main$5 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -9516,13 +9534,13 @@ const _sfc_main$6 = {
     }
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$6.render = _sfc_render$6;
-const _sfc_main$5 = {
+_sfc_main$5.render = _sfc_render$5;
+const _sfc_main$4 = {
   name: "Switch",
   mixins: [emitter, listeners],
   props: {
@@ -9600,12 +9618,12 @@ const _sfc_main$5 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-switch-wrapper"};
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$3 = {class: "uni-switch-wrapper"};
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$4, [
+    createVNode("div", _hoisted_1$3, [
       withDirectives(createVNode("div", {
         class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
         style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
@@ -9621,7 +9639,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$4.render = _sfc_render$4;
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
@@ -9639,7 +9657,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$2 = /* @__PURE__ */ defineComponent({
+var index$3 = /* @__PURE__ */ defineComponent({
   name: "Text",
   props: {
     selectable: {
@@ -9689,7 +9707,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
   }
 });
 const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "Textarea",
   mixins: [baseInput],
   props: {
@@ -9907,15 +9925,15 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-textarea-wrapper"};
-const _hoisted_2$3 = {class: "uni-textarea-compute"};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$2 = {class: "uni-textarea-wrapper"};
+const _hoisted_2$2 = {class: "uni-textarea-compute"};
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-textarea", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
   }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$2, [
       withDirectives(createVNode("div", {
         ref: "placeholder",
         style: $props.placeholderStyle,
@@ -9929,7 +9947,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-textarea-line",
         textContent: toDisplayString(" ")
       }, null, 8, ["textContent"]),
-      createVNode("div", _hoisted_2$3, [
+      createVNode("div", _hoisted_2$2, [
         (openBlock(true), createBlock(Fragment, null, renderList($options.valueCompute, (item, index2) => {
           return openBlock(), createBlock("div", {
             key: index2,
@@ -9961,8 +9979,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16);
 }
-_sfc_main$4.render = _sfc_render$4;
-var index$1 = /* @__PURE__ */ defineComponent({
+_sfc_main$3.render = _sfc_render$3;
+var index$2 = /* @__PURE__ */ defineComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -10019,758 +10037,2320 @@ function useSubscribe(callback, name) {
       });
     }
   });
-  onBeforeUnmount(() => {
+  onBeforeUnmount$1(() => {
     removeSubscribe(name || normalizeEvent(pageId, vm));
   });
 }
 function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
-  onBeforeUnmount(() => UniViewJSBridge.off(name));
+  onBeforeUnmount$1(() => UniViewJSBridge.off(name));
 }
-const passiveOptions = passive(false);
-const GestureType = {
-  NONE: "none",
-  STOP: "stop",
-  VOLUME: "volume",
-  PROGRESS: "progress"
-};
-const _sfc_main$3 = {
-  name: "Video",
-  filters: {
-    time(val) {
-      val = val > 0 && val < Infinity ? val : 0;
-      let h = Math.floor(val / 3600);
-      let m = Math.floor(val % 3600 / 60);
-      let s = Math.floor(val % 3600 % 60);
-      h = (h < 10 ? "0" : "") + h;
-      m = (m < 10 ? "0" : "") + m;
-      s = (s < 10 ? "0" : "") + s;
-      let str = m + ":" + s;
-      if (h !== "00") {
-        str = h + ":" + str;
-      }
-      return str;
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    src: {
-      type: String,
-      default: ""
-    },
-    duration: {
-      type: [Number, String],
-      default: ""
-    },
-    controls: {
-      type: [Boolean, String],
-      default: true
-    },
-    danmuList: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
-    danmuBtn: {
-      type: [Boolean, String],
-      default: false
-    },
-    enableDanmu: {
-      type: [Boolean, String],
-      default: false
-    },
-    autoplay: {
-      type: [Boolean, String],
-      default: false
-    },
-    loop: {
-      type: [Boolean, String],
-      default: false
-    },
-    muted: {
-      type: [Boolean, String],
-      default: false
-    },
-    objectFit: {
-      type: String,
-      default: "contain"
-    },
-    poster: {
-      type: String,
-      default: ""
-    },
-    direction: {
-      type: [String, Number],
-      default: ""
-    },
-    showProgress: {
-      type: Boolean,
-      default: true
-    },
-    initialTime: {
-      type: [String, Number],
-      default: 0
-    },
-    showFullscreenBtn: {
-      type: [Boolean, String],
-      default: true
-    },
-    pageGesture: {
-      type: [Boolean, String],
-      default: false
-    },
-    enableProgressGesture: {
-      type: [Boolean, String],
-      default: true
-    },
-    showPlayBtn: {
-      type: [Boolean, String],
-      default: true
-    },
-    showCenterPlayBtn: {
-      type: [Boolean, String],
-      default: true
-    }
-  },
-  data() {
-    return {
-      start: false,
-      playing: false,
-      currentTime: 0,
-      durationTime: 0,
-      progress: 0,
-      touching: false,
-      enableDanmuSync: Boolean(this.enableDanmu),
-      controlsVisible: true,
-      fullscreen: false,
-      controlsTouching: false,
-      touchStartOrigin: {
-        x: 0,
-        y: 0
-      },
-      gestureType: GestureType.NONE,
-      currentTimeOld: 0,
-      currentTimeNew: 0,
-      volumeOld: null,
-      volumeNew: null,
-      buffered: 0,
-      isSafari: /^Apple/.test(navigator.vendor)
-    };
-  },
-  computed: {
-    centerPlayBtnShow() {
-      return this.showCenterPlayBtn && !this.start;
-    },
-    controlsShow() {
-      return !this.centerPlayBtnShow && this.controls && this.controlsVisible;
-    },
-    autoHideContorls() {
-      return this.controlsShow && this.playing && !this.controlsTouching;
-    },
-    srcSync() {
-      return getRealPath(this.src);
-    }
-  },
-  watch: {
-    enableDanmuSync(val) {
-      this.$emit("update:enableDanmu", val);
-    },
-    autoHideContorls(val) {
-      if (val) {
-        this.autoHideStart();
-      } else {
-        this.autoHideEnd();
-      }
-    },
-    srcSync(val) {
-      this.playing = false;
-      this.currentTime = 0;
-    },
-    currentTime() {
-      this.updateProgress();
-    },
-    duration() {
-      this.updateProgress();
-    },
-    buffered(buffered) {
-      if (buffered !== 0) {
-        this.$trigger("progress", {}, {
-          buffered
+const passiveOptions = passive(true);
+const states = [];
+let userInteract = 0;
+let inited;
+function addInteractListener(vm) {
+  if (!inited) {
+    const eventNames = [
+      "touchstart",
+      "touchmove",
+      "touchend",
+      "mousedown",
+      "mouseup"
+    ];
+    eventNames.forEach((eventName) => {
+      document.addEventListener(eventName, function() {
+        states.forEach((vm2) => {
+          vm2.userAction = true;
+          userInteract++;
+          setTimeout(() => {
+            userInteract--;
+            if (!userInteract) {
+              vm2.userAction = false;
+            }
+          }, 0);
         });
+      }, passiveOptions);
+    });
+    inited = true;
+  }
+  states.push(vm);
+}
+function removeInteractListener(vm) {
+  const index2 = states.indexOf(vm);
+  if (index2 >= 0) {
+    states.splice(index2, 1);
+  }
+}
+function useUserAction() {
+  const state = reactive$1({
+    userAction: false
+  });
+  onMounted(() => {
+    addInteractListener(state);
+  });
+  onBeforeUnmount$1(() => {
+    removeInteractListener(state);
+  });
+  return {
+    state
+  };
+}
+const targetMap = new WeakMap();
+const effectStack = [];
+let activeEffect;
+const ITERATE_KEY = Symbol("");
+const MAP_KEY_ITERATE_KEY = Symbol("");
+function isEffect(fn) {
+  return fn && fn._isEffect === true;
+}
+function effect(fn, options = EMPTY_OBJ) {
+  if (isEffect(fn)) {
+    fn = fn.raw;
+  }
+  const effect2 = createReactiveEffect(fn, options);
+  if (!options.lazy) {
+    effect2();
+  }
+  return effect2;
+}
+function stop(effect2) {
+  if (effect2.active) {
+    cleanup(effect2);
+    if (effect2.options.onStop) {
+      effect2.options.onStop();
+    }
+    effect2.active = false;
+  }
+}
+let uid = 0;
+function createReactiveEffect(fn, options) {
+  const effect2 = function reactiveEffect() {
+    if (!effect2.active) {
+      return options.scheduler ? void 0 : fn();
+    }
+    if (!effectStack.includes(effect2)) {
+      cleanup(effect2);
+      try {
+        enableTracking();
+        effectStack.push(effect2);
+        activeEffect = effect2;
+        return fn();
+      } finally {
+        effectStack.pop();
+        resetTracking();
+        activeEffect = effectStack[effectStack.length - 1];
       }
     }
-  },
-  setup() {
-    const {t: t2} = useI18n();
-    const vm = getCurrentInstance().proxy;
-    useSubscribe((type, data) => {
-      const methods = ["play", "pause", "seek", "sendDanmu", "playbackRate", "requestFullScreen", "exitFullScreen"];
-      let options;
-      switch (type) {
-        case "seek":
-          options = data.position;
-          break;
-        case "sendDanmu":
-          options = data;
-          break;
-        case "playbackRate":
-          options = data.rate;
-          break;
-      }
-      if (methods.indexOf(type) >= 0) {
-        vm[type](options);
+  };
+  effect2.id = uid++;
+  effect2.allowRecurse = !!options.allowRecurse;
+  effect2._isEffect = true;
+  effect2.active = true;
+  effect2.raw = fn;
+  effect2.deps = [];
+  effect2.options = options;
+  return effect2;
+}
+function cleanup(effect2) {
+  const {deps} = effect2;
+  if (deps.length) {
+    for (let i2 = 0; i2 < deps.length; i2++) {
+      deps[i2].delete(effect2);
+    }
+    deps.length = 0;
+  }
+}
+let shouldTrack = true;
+const trackStack = [];
+function pauseTracking() {
+  trackStack.push(shouldTrack);
+  shouldTrack = false;
+}
+function enableTracking() {
+  trackStack.push(shouldTrack);
+  shouldTrack = true;
+}
+function resetTracking() {
+  const last = trackStack.pop();
+  shouldTrack = last === void 0 ? true : last;
+}
+function track(target, type, key) {
+  if (!shouldTrack || activeEffect === void 0) {
+    return;
+  }
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    targetMap.set(target, depsMap = new Map());
+  }
+  let dep = depsMap.get(key);
+  if (!dep) {
+    depsMap.set(key, dep = new Set());
+  }
+  if (!dep.has(activeEffect)) {
+    dep.add(activeEffect);
+    activeEffect.deps.push(dep);
+  }
+}
+function trigger(target, type, key, newValue, oldValue, oldTarget) {
+  const depsMap = targetMap.get(target);
+  if (!depsMap) {
+    return;
+  }
+  const effects = new Set();
+  const add2 = (effectsToAdd) => {
+    if (effectsToAdd) {
+      effectsToAdd.forEach((effect2) => {
+        if (effect2 !== activeEffect || effect2.allowRecurse) {
+          effects.add(effect2);
+        }
+      });
+    }
+  };
+  if (type === "clear") {
+    depsMap.forEach(add2);
+  } else if (key === "length" && isArray(target)) {
+    depsMap.forEach((dep, key2) => {
+      if (key2 === "length" || key2 >= newValue) {
+        add2(dep);
       }
     });
+  } else {
+    if (key !== void 0) {
+      add2(depsMap.get(key));
+    }
+    switch (type) {
+      case "add":
+        if (!isArray(target)) {
+          add2(depsMap.get(ITERATE_KEY));
+          if (isMap(target)) {
+            add2(depsMap.get(MAP_KEY_ITERATE_KEY));
+          }
+        } else if (isIntegerKey(key)) {
+          add2(depsMap.get("length"));
+        }
+        break;
+      case "delete":
+        if (!isArray(target)) {
+          add2(depsMap.get(ITERATE_KEY));
+          if (isMap(target)) {
+            add2(depsMap.get(MAP_KEY_ITERATE_KEY));
+          }
+        }
+        break;
+      case "set":
+        if (isMap(target)) {
+          add2(depsMap.get(ITERATE_KEY));
+        }
+        break;
+    }
+  }
+  const run = (effect2) => {
+    if (effect2.options.scheduler) {
+      effect2.options.scheduler(effect2);
+    } else {
+      effect2();
+    }
+  };
+  effects.forEach(run);
+}
+const isNonTrackableKeys = /* @__PURE__ */ makeMap$1(`__proto__,__v_isRef,__isVue`);
+const builtInSymbols = new Set(Object.getOwnPropertyNames(Symbol).map((key) => Symbol[key]).filter(isSymbol));
+const get = /* @__PURE__ */ createGetter();
+const shallowGet = /* @__PURE__ */ createGetter(false, true);
+const readonlyGet = /* @__PURE__ */ createGetter(true);
+const shallowReadonlyGet = /* @__PURE__ */ createGetter(true, true);
+const arrayInstrumentations = {};
+["includes", "indexOf", "lastIndexOf"].forEach((key) => {
+  const method = Array.prototype[key];
+  arrayInstrumentations[key] = function(...args) {
+    const arr = toRaw(this);
+    for (let i2 = 0, l = this.length; i2 < l; i2++) {
+      track(arr, "get", i2 + "");
+    }
+    const res = method.apply(arr, args);
+    if (res === -1 || res === false) {
+      return method.apply(arr, args.map(toRaw));
+    } else {
+      return res;
+    }
+  };
+});
+["push", "pop", "shift", "unshift", "splice"].forEach((key) => {
+  const method = Array.prototype[key];
+  arrayInstrumentations[key] = function(...args) {
+    pauseTracking();
+    const res = method.apply(this, args);
+    resetTracking();
+    return res;
+  };
+});
+function createGetter(isReadonly2 = false, shallow = false) {
+  return function get2(target, key, receiver) {
+    if (key === "__v_isReactive") {
+      return !isReadonly2;
+    } else if (key === "__v_isReadonly") {
+      return isReadonly2;
+    } else if (key === "__v_raw" && receiver === (isReadonly2 ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target)) {
+      return target;
+    }
+    const targetIsArray = isArray(target);
+    if (!isReadonly2 && targetIsArray && hasOwn$1(arrayInstrumentations, key)) {
+      return Reflect.get(arrayInstrumentations, key, receiver);
+    }
+    const res = Reflect.get(target, key, receiver);
+    if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
+      return res;
+    }
+    if (!isReadonly2) {
+      track(target, "get", key);
+    }
+    if (shallow) {
+      return res;
+    }
+    if (isRef(res)) {
+      const shouldUnwrap = !targetIsArray || !isIntegerKey(key);
+      return shouldUnwrap ? res.value : res;
+    }
+    if (isObject$1(res)) {
+      return isReadonly2 ? readonly(res) : reactive(res);
+    }
+    return res;
+  };
+}
+const set = /* @__PURE__ */ createSetter();
+const shallowSet = /* @__PURE__ */ createSetter(true);
+function createSetter(shallow = false) {
+  return function set2(target, key, value, receiver) {
+    const oldValue = target[key];
+    if (!shallow) {
+      value = toRaw(value);
+      if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+        oldValue.value = value;
+        return true;
+      }
+    }
+    const hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn$1(target, key);
+    const result = Reflect.set(target, key, value, receiver);
+    if (target === toRaw(receiver)) {
+      if (!hadKey) {
+        trigger(target, "add", key, value);
+      } else if (hasChanged(value, oldValue)) {
+        trigger(target, "set", key, value);
+      }
+    }
+    return result;
+  };
+}
+function deleteProperty(target, key) {
+  const hadKey = hasOwn$1(target, key);
+  target[key];
+  const result = Reflect.deleteProperty(target, key);
+  if (result && hadKey) {
+    trigger(target, "delete", key, void 0);
+  }
+  return result;
+}
+function has(target, key) {
+  const result = Reflect.has(target, key);
+  if (!isSymbol(key) || !builtInSymbols.has(key)) {
+    track(target, "has", key);
+  }
+  return result;
+}
+function ownKeys(target) {
+  track(target, "iterate", isArray(target) ? "length" : ITERATE_KEY);
+  return Reflect.ownKeys(target);
+}
+const mutableHandlers = {
+  get,
+  set,
+  deleteProperty,
+  has,
+  ownKeys
+};
+const readonlyHandlers = {
+  get: readonlyGet,
+  set(target, key) {
+    return true;
+  },
+  deleteProperty(target, key) {
+    return true;
+  }
+};
+extend({}, mutableHandlers, {
+  get: shallowGet,
+  set: shallowSet
+});
+extend({}, readonlyHandlers, {
+  get: shallowReadonlyGet
+});
+const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
+const toShallow = (value) => value;
+const getProto = (v2) => Reflect.getPrototypeOf(v2);
+function get$1(target, key, isReadonly2 = false, isShallow = false) {
+  target = target["__v_raw"];
+  const rawTarget = toRaw(target);
+  const rawKey = toRaw(key);
+  if (key !== rawKey) {
+    !isReadonly2 && track(rawTarget, "get", key);
+  }
+  !isReadonly2 && track(rawTarget, "get", rawKey);
+  const {has: has2} = getProto(rawTarget);
+  const wrap = isShallow ? toShallow : isReadonly2 ? toReadonly : toReactive;
+  if (has2.call(rawTarget, key)) {
+    return wrap(target.get(key));
+  } else if (has2.call(rawTarget, rawKey)) {
+    return wrap(target.get(rawKey));
+  }
+}
+function has$1(key, isReadonly2 = false) {
+  const target = this["__v_raw"];
+  const rawTarget = toRaw(target);
+  const rawKey = toRaw(key);
+  if (key !== rawKey) {
+    !isReadonly2 && track(rawTarget, "has", key);
+  }
+  !isReadonly2 && track(rawTarget, "has", rawKey);
+  return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
+}
+function size(target, isReadonly2 = false) {
+  target = target["__v_raw"];
+  !isReadonly2 && track(toRaw(target), "iterate", ITERATE_KEY);
+  return Reflect.get(target, "size", target);
+}
+function add(value) {
+  value = toRaw(value);
+  const target = toRaw(this);
+  const proto = getProto(target);
+  const hadKey = proto.has.call(target, value);
+  if (!hadKey) {
+    target.add(value);
+    trigger(target, "add", value, value);
+  }
+  return this;
+}
+function set$1(key, value) {
+  value = toRaw(value);
+  const target = toRaw(this);
+  const {has: has2, get: get2} = getProto(target);
+  let hadKey = has2.call(target, key);
+  if (!hadKey) {
+    key = toRaw(key);
+    hadKey = has2.call(target, key);
+  }
+  const oldValue = get2.call(target, key);
+  target.set(key, value);
+  if (!hadKey) {
+    trigger(target, "add", key, value);
+  } else if (hasChanged(value, oldValue)) {
+    trigger(target, "set", key, value);
+  }
+  return this;
+}
+function deleteEntry(key) {
+  const target = toRaw(this);
+  const {has: has2, get: get2} = getProto(target);
+  let hadKey = has2.call(target, key);
+  if (!hadKey) {
+    key = toRaw(key);
+    hadKey = has2.call(target, key);
+  }
+  get2 ? get2.call(target, key) : void 0;
+  const result = target.delete(key);
+  if (hadKey) {
+    trigger(target, "delete", key, void 0);
+  }
+  return result;
+}
+function clear() {
+  const target = toRaw(this);
+  const hadItems = target.size !== 0;
+  const result = target.clear();
+  if (hadItems) {
+    trigger(target, "clear", void 0, void 0);
+  }
+  return result;
+}
+function createForEach(isReadonly2, isShallow) {
+  return function forEach(callback, thisArg) {
+    const observed = this;
+    const target = observed["__v_raw"];
+    const rawTarget = toRaw(target);
+    const wrap = isShallow ? toShallow : isReadonly2 ? toReadonly : toReactive;
+    !isReadonly2 && track(rawTarget, "iterate", ITERATE_KEY);
+    return target.forEach((value, key) => {
+      return callback.call(thisArg, wrap(value), wrap(key), observed);
+    });
+  };
+}
+function createIterableMethod(method, isReadonly2, isShallow) {
+  return function(...args) {
+    const target = this["__v_raw"];
+    const rawTarget = toRaw(target);
+    const targetIsMap = isMap(rawTarget);
+    const isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
+    const isKeyOnly = method === "keys" && targetIsMap;
+    const innerIterator = target[method](...args);
+    const wrap = isShallow ? toShallow : isReadonly2 ? toReadonly : toReactive;
+    !isReadonly2 && track(rawTarget, "iterate", isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
     return {
-      $$t: t2
-    };
-  },
-  created() {
-    this.otherData = {
-      danmuList: [],
-      danmuIndex: {
-        time: 0,
-        index: -1
+      next() {
+        const {value, done} = innerIterator.next();
+        return done ? {value, done} : {
+          value: isPair ? [wrap(value[0]), wrap(value[1])] : wrap(value),
+          done
+        };
       },
-      hideTiming: null
+      [Symbol.iterator]() {
+        return this;
+      }
     };
-    const danmuList = this.otherData.danmuList = JSON.parse(JSON.stringify(this.danmuList || []));
-    danmuList.sort(function(a2, b) {
-      return (a2.time || 0) - (a2.time || 0);
-    });
+  };
+}
+function createReadonlyMethod(type) {
+  return function(...args) {
+    return type === "delete" ? false : this;
+  };
+}
+const mutableInstrumentations = {
+  get(key) {
+    return get$1(this, key);
   },
-  mounted() {
-    const self = this;
+  get size() {
+    return size(this);
+  },
+  has: has$1,
+  add,
+  set: set$1,
+  delete: deleteEntry,
+  clear,
+  forEach: createForEach(false, false)
+};
+const shallowInstrumentations = {
+  get(key) {
+    return get$1(this, key, false, true);
+  },
+  get size() {
+    return size(this);
+  },
+  has: has$1,
+  add,
+  set: set$1,
+  delete: deleteEntry,
+  clear,
+  forEach: createForEach(false, true)
+};
+const readonlyInstrumentations = {
+  get(key) {
+    return get$1(this, key, true);
+  },
+  get size() {
+    return size(this, true);
+  },
+  has(key) {
+    return has$1.call(this, key, true);
+  },
+  add: createReadonlyMethod("add"),
+  set: createReadonlyMethod("set"),
+  delete: createReadonlyMethod("delete"),
+  clear: createReadonlyMethod("clear"),
+  forEach: createForEach(true, false)
+};
+const shallowReadonlyInstrumentations = {
+  get(key) {
+    return get$1(this, key, true, true);
+  },
+  get size() {
+    return size(this, true);
+  },
+  has(key) {
+    return has$1.call(this, key, true);
+  },
+  add: createReadonlyMethod("add"),
+  set: createReadonlyMethod("set"),
+  delete: createReadonlyMethod("delete"),
+  clear: createReadonlyMethod("clear"),
+  forEach: createForEach(true, true)
+};
+const iteratorMethods = ["keys", "values", "entries", Symbol.iterator];
+iteratorMethods.forEach((method) => {
+  mutableInstrumentations[method] = createIterableMethod(method, false, false);
+  readonlyInstrumentations[method] = createIterableMethod(method, true, false);
+  shallowInstrumentations[method] = createIterableMethod(method, false, true);
+  shallowReadonlyInstrumentations[method] = createIterableMethod(method, true, true);
+});
+function createInstrumentationGetter(isReadonly2, shallow) {
+  const instrumentations = shallow ? isReadonly2 ? shallowReadonlyInstrumentations : shallowInstrumentations : isReadonly2 ? readonlyInstrumentations : mutableInstrumentations;
+  return (target, key, receiver) => {
+    if (key === "__v_isReactive") {
+      return !isReadonly2;
+    } else if (key === "__v_isReadonly") {
+      return isReadonly2;
+    } else if (key === "__v_raw") {
+      return target;
+    }
+    return Reflect.get(hasOwn$1(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
+  };
+}
+const mutableCollectionHandlers = {
+  get: createInstrumentationGetter(false, false)
+};
+const readonlyCollectionHandlers = {
+  get: createInstrumentationGetter(true, false)
+};
+const reactiveMap = new WeakMap();
+const shallowReactiveMap = new WeakMap();
+const readonlyMap = new WeakMap();
+const shallowReadonlyMap = new WeakMap();
+function targetTypeMap(rawType) {
+  switch (rawType) {
+    case "Object":
+    case "Array":
+      return 1;
+    case "Map":
+    case "Set":
+    case "WeakMap":
+    case "WeakSet":
+      return 2;
+    default:
+      return 0;
+  }
+}
+function getTargetType(value) {
+  return value["__v_skip"] || !Object.isExtensible(value) ? 0 : targetTypeMap(toRawType(value));
+}
+function reactive(target) {
+  if (target && target["__v_isReadonly"]) {
+    return target;
+  }
+  return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers, reactiveMap);
+}
+function readonly(target) {
+  return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
+}
+function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
+  if (!isObject$1(target)) {
+    return target;
+  }
+  if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
+    return target;
+  }
+  const existingProxy = proxyMap.get(target);
+  if (existingProxy) {
+    return existingProxy;
+  }
+  const targetType = getTargetType(target);
+  if (targetType === 0) {
+    return target;
+  }
+  const proxy = new Proxy(target, targetType === 2 ? collectionHandlers : baseHandlers);
+  proxyMap.set(target, proxy);
+  return proxy;
+}
+function isReactive(value) {
+  if (isReadonly(value)) {
+    return isReactive(value["__v_raw"]);
+  }
+  return !!(value && value["__v_isReactive"]);
+}
+function isReadonly(value) {
+  return !!(value && value["__v_isReadonly"]);
+}
+function toRaw(observed) {
+  return observed && toRaw(observed["__v_raw"]) || observed;
+}
+function isRef(r) {
+  return Boolean(r && r.__v_isRef === true);
+}
+function callWithErrorHandling(fn, instance2, type, args) {
+  let res;
+  try {
+    res = args ? fn(...args) : fn();
+  } catch (err) {
+    handleError(err, instance2, type);
+  }
+  return res;
+}
+function callWithAsyncErrorHandling(fn, instance2, type, args) {
+  if (isFunction(fn)) {
+    const res = callWithErrorHandling(fn, instance2, type, args);
+    if (res && isPromise(res)) {
+      res.catch((err) => {
+        handleError(err, instance2, type);
+      });
+    }
+    return res;
+  }
+  const values = [];
+  for (let i2 = 0; i2 < fn.length; i2++) {
+    values.push(callWithAsyncErrorHandling(fn[i2], instance2, type, args));
+  }
+  return values;
+}
+function handleError(err, instance2, type, throwInDev = true) {
+  const contextVNode = instance2 ? instance2.vnode : null;
+  if (instance2) {
+    let cur = instance2.parent;
+    const exposedInstance = instance2.proxy;
+    const errorInfo = type;
+    while (cur) {
+      const errorCapturedHooks = cur.ec;
+      if (errorCapturedHooks) {
+        for (let i2 = 0; i2 < errorCapturedHooks.length; i2++) {
+          if (errorCapturedHooks[i2](err, exposedInstance, errorInfo) === false) {
+            return;
+          }
+        }
+      }
+      cur = cur.parent;
+    }
+    const appErrorHandler = instance2.appContext.config.errorHandler;
+    if (appErrorHandler) {
+      callWithErrorHandling(appErrorHandler, null, 10, [err, exposedInstance, errorInfo]);
+      return;
+    }
+  }
+  logError(err, type, contextVNode, throwInDev);
+}
+function logError(err, type, contextVNode, throwInDev = true) {
+  {
+    console.error(err);
+  }
+}
+let isFlushing = false;
+let isFlushPending = false;
+const queue = [];
+let flushIndex = 0;
+const pendingPreFlushCbs = [];
+let activePreFlushCbs = null;
+let preFlushIndex = 0;
+const pendingPostFlushCbs = [];
+let activePostFlushCbs = null;
+let postFlushIndex = 0;
+const resolvedPromise = Promise.resolve();
+let currentFlushPromise = null;
+let currentPreFlushParentJob = null;
+const RECURSION_LIMIT = 100;
+function nextTick(fn) {
+  const p2 = currentFlushPromise || resolvedPromise;
+  return fn ? p2.then(this ? fn.bind(this) : fn) : p2;
+}
+function findInsertionIndex(job) {
+  let start = flushIndex + 1;
+  let end = queue.length;
+  const jobId = getId(job);
+  while (start < end) {
+    const middle = start + end >>> 1;
+    const middleJobId = getId(queue[middle]);
+    middleJobId < jobId ? start = middle + 1 : end = middle;
+  }
+  return start;
+}
+function queueJob(job) {
+  if ((!queue.length || !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) && job !== currentPreFlushParentJob) {
+    const pos = findInsertionIndex(job);
+    if (pos > -1) {
+      queue.splice(pos, 0, job);
+    } else {
+      queue.push(job);
+    }
+    queueFlush();
+  }
+}
+function queueFlush() {
+  if (!isFlushing && !isFlushPending) {
+    isFlushPending = true;
+    currentFlushPromise = resolvedPromise.then(flushJobs);
+  }
+}
+function queueCb(cb, activeQueue, pendingQueue, index2) {
+  if (!isArray(cb)) {
+    if (!activeQueue || !activeQueue.includes(cb, cb.allowRecurse ? index2 + 1 : index2)) {
+      pendingQueue.push(cb);
+    }
+  } else {
+    pendingQueue.push(...cb);
+  }
+  queueFlush();
+}
+function queuePreFlushCb(cb) {
+  queueCb(cb, activePreFlushCbs, pendingPreFlushCbs, preFlushIndex);
+}
+function queuePostFlushCb(cb) {
+  queueCb(cb, activePostFlushCbs, pendingPostFlushCbs, postFlushIndex);
+}
+function flushPreFlushCbs(seen, parentJob = null) {
+  if (pendingPreFlushCbs.length) {
+    currentPreFlushParentJob = parentJob;
+    activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
+    pendingPreFlushCbs.length = 0;
+    for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
+      activePreFlushCbs[preFlushIndex]();
+    }
+    activePreFlushCbs = null;
+    preFlushIndex = 0;
+    currentPreFlushParentJob = null;
+    flushPreFlushCbs(seen, parentJob);
+  }
+}
+function flushPostFlushCbs(seen) {
+  if (pendingPostFlushCbs.length) {
+    const deduped = [...new Set(pendingPostFlushCbs)];
+    pendingPostFlushCbs.length = 0;
+    if (activePostFlushCbs) {
+      activePostFlushCbs.push(...deduped);
+      return;
+    }
+    activePostFlushCbs = deduped;
+    activePostFlushCbs.sort((a2, b) => getId(a2) - getId(b));
+    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
+      activePostFlushCbs[postFlushIndex]();
+    }
+    activePostFlushCbs = null;
+    postFlushIndex = 0;
+  }
+}
+const getId = (job) => job.id == null ? Infinity : job.id;
+function flushJobs(seen) {
+  isFlushPending = false;
+  isFlushing = true;
+  flushPreFlushCbs(seen);
+  queue.sort((a2, b) => getId(a2) - getId(b));
+  try {
+    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
+      const job = queue[flushIndex];
+      if (job) {
+        if (false)
+          ;
+        callWithErrorHandling(job, null, 14);
+      }
+    }
+  } finally {
+    flushIndex = 0;
+    queue.length = 0;
+    flushPostFlushCbs();
+    isFlushing = false;
+    currentFlushPromise = null;
+    if (queue.length || pendingPostFlushCbs.length) {
+      flushJobs(seen);
+    }
+  }
+}
+function checkRecursiveUpdates(seen, fn) {
+  if (!seen.has(fn)) {
+    seen.set(fn, 1);
+  } else {
+    const count = seen.get(fn);
+    if (count > RECURSION_LIMIT) {
+      throw new Error(`Maximum recursive updates exceeded. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.`);
+    } else {
+      seen.set(fn, count + 1);
+    }
+  }
+}
+function queueEffectWithSuspense(fn, suspense) {
+  if (suspense && suspense.pendingBranch) {
+    if (isArray(fn)) {
+      suspense.effects.push(...fn);
+    } else {
+      suspense.effects.push(fn);
+    }
+  } else {
+    queuePostFlushCb(fn);
+  }
+}
+function injectHook(type, hook, target = currentInstance, prepend = false) {
+  if (target) {
+    const hooks = target[type] || (target[type] = []);
+    const wrappedHook = hook.__weh || (hook.__weh = (...args) => {
+      if (target.isUnmounted) {
+        return;
+      }
+      pauseTracking();
+      setCurrentInstance(target);
+      const res = callWithAsyncErrorHandling(hook, target, type, args);
+      setCurrentInstance(null);
+      resetTracking();
+      return res;
+    });
+    if (prepend) {
+      hooks.unshift(wrappedHook);
+    } else {
+      hooks.push(wrappedHook);
+    }
+    return wrappedHook;
+  }
+}
+const createHook = (lifecycle) => (hook, target = currentInstance) => injectHook(lifecycle, hook, target);
+const onBeforeUnmount = createHook("bum");
+const INITIAL_WATCHER_VALUE = {};
+function doWatch(source, cb, {immediate, deep, flush, onTrack, onTrigger} = EMPTY_OBJ, instance2 = currentInstance) {
+  let getter;
+  let forceTrigger = false;
+  if (isRef(source)) {
+    getter = () => source.value;
+    forceTrigger = !!source._shallow;
+  } else if (isReactive(source)) {
+    getter = () => source;
+    deep = true;
+  } else if (isArray(source)) {
+    getter = () => source.map((s) => {
+      if (isRef(s)) {
+        return s.value;
+      } else if (isReactive(s)) {
+        return traverse(s);
+      } else if (isFunction(s)) {
+        return callWithErrorHandling(s, instance2, 2, [
+          instance2 && instance2.proxy
+        ]);
+      } else
+        ;
+    });
+  } else if (isFunction(source)) {
+    if (cb) {
+      getter = () => callWithErrorHandling(source, instance2, 2, [
+        instance2 && instance2.proxy
+      ]);
+    } else {
+      getter = () => {
+        if (instance2 && instance2.isUnmounted) {
+          return;
+        }
+        if (cleanup2) {
+          cleanup2();
+        }
+        return callWithAsyncErrorHandling(source, instance2, 3, [onInvalidate]);
+      };
+    }
+  } else {
+    getter = NOOP;
+  }
+  if (cb && deep) {
+    const baseGetter = getter;
+    getter = () => traverse(baseGetter());
+  }
+  let cleanup2;
+  let onInvalidate = (fn) => {
+    cleanup2 = runner.options.onStop = () => {
+      callWithErrorHandling(fn, instance2, 4);
+    };
+  };
+  let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE;
+  const job = () => {
+    if (!runner.active) {
+      return;
+    }
+    if (cb) {
+      const newValue = runner();
+      if (deep || forceTrigger || hasChanged(newValue, oldValue)) {
+        if (cleanup2) {
+          cleanup2();
+        }
+        callWithAsyncErrorHandling(cb, instance2, 3, [
+          newValue,
+          oldValue === INITIAL_WATCHER_VALUE ? void 0 : oldValue,
+          onInvalidate
+        ]);
+        oldValue = newValue;
+      }
+    } else {
+      runner();
+    }
+  };
+  job.allowRecurse = !!cb;
+  let scheduler;
+  if (flush === "sync") {
+    scheduler = job;
+  } else if (flush === "post") {
+    scheduler = () => queuePostRenderEffect(job, instance2 && instance2.suspense);
+  } else {
+    scheduler = () => {
+      if (!instance2 || instance2.isMounted) {
+        queuePreFlushCb(job);
+      } else {
+        job();
+      }
+    };
+  }
+  const runner = effect(getter, {
+    lazy: true,
+    onTrack,
+    onTrigger,
+    scheduler
+  });
+  recordInstanceBoundEffect(runner, instance2);
+  if (cb) {
+    if (immediate) {
+      job();
+    } else {
+      oldValue = runner();
+    }
+  } else if (flush === "post") {
+    queuePostRenderEffect(runner, instance2 && instance2.suspense);
+  } else {
+    runner();
+  }
+  return () => {
+    stop(runner);
+    if (instance2) {
+      remove(instance2.effects, runner);
+    }
+  };
+}
+function instanceWatch(source, cb, options) {
+  const publicThis = this.proxy;
+  const getter = isString(source) ? () => publicThis[source] : source.bind(publicThis);
+  return doWatch(getter, cb.bind(publicThis), options, this);
+}
+function traverse(value, seen = new Set()) {
+  if (!isObject$1(value) || seen.has(value)) {
+    return value;
+  }
+  seen.add(value);
+  if (isRef(value)) {
+    traverse(value.value, seen);
+  } else if (isArray(value)) {
+    for (let i2 = 0; i2 < value.length; i2++) {
+      traverse(value[i2], seen);
+    }
+  } else if (isSet(value) || isMap(value)) {
+    value.forEach((v2) => {
+      traverse(v2, seen);
+    });
+  } else {
+    for (const key in value) {
+      traverse(value[key], seen);
+    }
+  }
+  return value;
+}
+const queuePostRenderEffect = queueEffectWithSuspense;
+function resolveMergedOptions(instance2) {
+  const raw = instance2.type;
+  const {__merged, mixins, extends: extendsOptions} = raw;
+  if (__merged)
+    return __merged;
+  const globalMixins = instance2.appContext.mixins;
+  if (!globalMixins.length && !mixins && !extendsOptions)
+    return raw;
+  const options = {};
+  globalMixins.forEach((m) => mergeOptions(options, m, instance2));
+  mergeOptions(options, raw, instance2);
+  return raw.__merged = options;
+}
+function mergeOptions(to, from, instance2) {
+  const strats = instance2.appContext.config.optionMergeStrategies;
+  const {mixins, extends: extendsOptions} = from;
+  extendsOptions && mergeOptions(to, extendsOptions, instance2);
+  mixins && mixins.forEach((m) => mergeOptions(to, m, instance2));
+  for (const key in from) {
+    if (strats && hasOwn$1(strats, key)) {
+      to[key] = strats[key](to[key], from[key], instance2.proxy, key);
+    } else {
+      to[key] = from[key];
+    }
+  }
+}
+const getPublicInstance = (i2) => {
+  if (!i2)
+    return null;
+  if (isStatefulComponent(i2))
+    return i2.exposed ? i2.exposed : i2.proxy;
+  return getPublicInstance(i2.parent);
+};
+const publicPropertiesMap = extend(Object.create(null), {
+  $: (i2) => i2,
+  $el: (i2) => i2.vnode.el,
+  $data: (i2) => i2.data,
+  $props: (i2) => i2.props,
+  $attrs: (i2) => i2.attrs,
+  $slots: (i2) => i2.slots,
+  $refs: (i2) => i2.refs,
+  $parent: (i2) => getPublicInstance(i2.parent),
+  $root: (i2) => getPublicInstance(i2.root),
+  $emit: (i2) => i2.emit,
+  $options: (i2) => resolveMergedOptions(i2),
+  $forceUpdate: (i2) => () => queueJob(i2.update),
+  $nextTick: (i2) => nextTick.bind(i2.proxy),
+  $watch: (i2) => instanceWatch.bind(i2)
+});
+const PublicInstanceProxyHandlers = {
+  get({_: instance2}, key) {
+    const {ctx, setupState, data, props: props2, accessCache, type, appContext} = instance2;
+    if (key === "__v_skip") {
+      return true;
+    }
+    let normalizedProps;
+    if (key[0] !== "$") {
+      const n = accessCache[key];
+      if (n !== void 0) {
+        switch (n) {
+          case 0:
+            return setupState[key];
+          case 1:
+            return data[key];
+          case 3:
+            return ctx[key];
+          case 2:
+            return props2[key];
+        }
+      } else if (setupState !== EMPTY_OBJ && hasOwn$1(setupState, key)) {
+        accessCache[key] = 0;
+        return setupState[key];
+      } else if (data !== EMPTY_OBJ && hasOwn$1(data, key)) {
+        accessCache[key] = 1;
+        return data[key];
+      } else if ((normalizedProps = instance2.propsOptions[0]) && hasOwn$1(normalizedProps, key)) {
+        accessCache[key] = 2;
+        return props2[key];
+      } else if (ctx !== EMPTY_OBJ && hasOwn$1(ctx, key)) {
+        accessCache[key] = 3;
+        return ctx[key];
+      } else {
+        accessCache[key] = 4;
+      }
+    }
+    const publicGetter = publicPropertiesMap[key];
+    let cssModule, globalProperties;
+    if (publicGetter) {
+      if (key === "$attrs") {
+        track(instance2, "get", key);
+      }
+      return publicGetter(instance2);
+    } else if ((cssModule = type.__cssModules) && (cssModule = cssModule[key])) {
+      return cssModule;
+    } else if (ctx !== EMPTY_OBJ && hasOwn$1(ctx, key)) {
+      accessCache[key] = 3;
+      return ctx[key];
+    } else if (globalProperties = appContext.config.globalProperties, hasOwn$1(globalProperties, key)) {
+      return globalProperties[key];
+    } else
+      ;
+  },
+  set({_: instance2}, key, value) {
+    const {data, setupState, ctx} = instance2;
+    if (setupState !== EMPTY_OBJ && hasOwn$1(setupState, key)) {
+      setupState[key] = value;
+    } else if (data !== EMPTY_OBJ && hasOwn$1(data, key)) {
+      data[key] = value;
+    } else if (hasOwn$1(instance2.props, key)) {
+      return false;
+    }
+    if (key[0] === "$" && key.slice(1) in instance2) {
+      return false;
+    } else {
+      {
+        ctx[key] = value;
+      }
+    }
+    return true;
+  },
+  has({_: {data, setupState, accessCache, ctx, appContext, propsOptions}}, key) {
+    let normalizedProps;
+    return accessCache[key] !== void 0 || data !== EMPTY_OBJ && hasOwn$1(data, key) || setupState !== EMPTY_OBJ && hasOwn$1(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn$1(normalizedProps, key) || hasOwn$1(ctx, key) || hasOwn$1(publicPropertiesMap, key) || hasOwn$1(appContext.config.globalProperties, key);
+  }
+};
+extend({}, PublicInstanceProxyHandlers, {
+  get(target, key) {
+    if (key === Symbol.unscopables) {
+      return;
+    }
+    return PublicInstanceProxyHandlers.get(target, key, target);
+  },
+  has(_, key) {
+    const has2 = key[0] !== "_" && !isGloballyWhitelisted(key);
+    return has2;
+  }
+});
+let currentInstance = null;
+const setCurrentInstance = (instance2) => {
+  currentInstance = instance2;
+};
+function isStatefulComponent(instance2) {
+  return instance2.vnode.shapeFlag & 4;
+}
+function recordInstanceBoundEffect(effect2, instance2 = currentInstance) {
+  if (instance2) {
+    (instance2.effects || (instance2.effects = [])).push(effect2);
+  }
+}
+const svgNS = "http://www.w3.org/2000/svg";
+const doc = typeof document !== "undefined" ? document : null;
+let tempContainer;
+let tempSVGContainer;
+const nodeOps = {
+  insert: (child, parent, anchor) => {
+    parent.insertBefore(child, anchor || null);
+  },
+  remove: (child) => {
+    const parent = child.parentNode;
+    if (parent) {
+      parent.removeChild(child);
+    }
+  },
+  createElement: (tag, isSVG, is, props2) => {
+    const el = isSVG ? doc.createElementNS(svgNS, tag) : doc.createElement(tag, is ? {is} : void 0);
+    if (tag === "select" && props2 && props2.multiple != null) {
+      el.setAttribute("multiple", props2.multiple);
+    }
+    return el;
+  },
+  createText: (text2) => doc.createTextNode(text2),
+  createComment: (text2) => doc.createComment(text2),
+  setText: (node, text2) => {
+    node.nodeValue = text2;
+  },
+  setElementText: (el, text2) => {
+    el.textContent = text2;
+  },
+  parentNode: (node) => node.parentNode,
+  nextSibling: (node) => node.nextSibling,
+  querySelector: (selector) => doc.querySelector(selector),
+  setScopeId(el, id2) {
+    el.setAttribute(id2, "");
+  },
+  cloneNode(el) {
+    const cloned = el.cloneNode(true);
+    if (`_value` in el) {
+      cloned._value = el._value;
+    }
+    return cloned;
+  },
+  insertStaticContent(content, parent, anchor, isSVG) {
+    const temp = isSVG ? tempSVGContainer || (tempSVGContainer = doc.createElementNS(svgNS, "svg")) : tempContainer || (tempContainer = doc.createElement("div"));
+    temp.innerHTML = content;
+    const first = temp.firstChild;
+    let node = first;
+    let last = node;
+    while (node) {
+      last = node;
+      nodeOps.insert(node, parent, anchor);
+      node = temp.firstChild;
+    }
+    return [first, last];
+  }
+};
+function patchClass(el, value, isSVG) {
+  if (value == null) {
+    value = "";
+  }
+  if (isSVG) {
+    el.setAttribute("class", value);
+  } else {
+    const transitionClasses = el._vtc;
+    if (transitionClasses) {
+      value = (value ? [value, ...transitionClasses] : [...transitionClasses]).join(" ");
+    }
+    el.className = value;
+  }
+}
+function patchStyle(el, prev, next) {
+  const style2 = el.style;
+  if (!next) {
+    el.removeAttribute("style");
+  } else if (isString(next)) {
+    if (prev !== next) {
+      const current = style2.display;
+      style2.cssText = normalizeRpx(next);
+      if ("_vod" in el) {
+        style2.display = current;
+      }
+    }
+  } else {
+    for (const key in next) {
+      setStyle(style2, key, next[key]);
+    }
+    if (prev && !isString(prev)) {
+      for (const key in prev) {
+        if (next[key] == null) {
+          setStyle(style2, key, "");
+        }
+      }
+    }
+  }
+}
+const importantRE = /\s*!important$/;
+function setStyle(style2, name, val) {
+  if (isArray(val)) {
+    val.forEach((v2) => setStyle(style2, name, v2));
+  } else {
+    val = normalizeRpx(val);
+    if (name.startsWith("--")) {
+      style2.setProperty(name, val);
+    } else {
+      const prefixed = autoPrefix(style2, name);
+      if (importantRE.test(val)) {
+        style2.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
+      } else {
+        style2[prefixed] = val;
+      }
+    }
+  }
+}
+const prefixes = ["Webkit", "Moz", "ms"];
+const prefixCache = {};
+function autoPrefix(style2, rawName) {
+  const cached = prefixCache[rawName];
+  if (cached) {
+    return cached;
+  }
+  let name = camelize(rawName);
+  if (name !== "filter" && name in style2) {
+    return prefixCache[rawName] = name;
+  }
+  name = capitalize(name);
+  for (let i2 = 0; i2 < prefixes.length; i2++) {
+    const prefixed = prefixes[i2] + name;
+    if (prefixed in style2) {
+      return prefixCache[rawName] = prefixed;
+    }
+  }
+  return rawName;
+}
+const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
+const normalizeRpx = (val) => {
+  if (isString(val)) {
+    return val.replace(rpxRE, (a2, b) => {
+      return rpx2px(b) + "px";
+    });
+  }
+  return val;
+};
+const xlinkNS = "http://www.w3.org/1999/xlink";
+function patchAttr(el, key, value, isSVG) {
+  if (isSVG && key.startsWith("xlink:")) {
+    if (value == null) {
+      el.removeAttributeNS(xlinkNS, key.slice(6, key.length));
+    } else {
+      el.setAttributeNS(xlinkNS, key, value);
+    }
+  } else {
+    const isBoolean2 = isSpecialBooleanAttr(key);
+    if (value == null || isBoolean2 && value === false) {
+      el.removeAttribute(key);
+    } else {
+      el.setAttribute(key, isBoolean2 ? "" : value);
+    }
+  }
+}
+function patchDOMProp(el, key, value, prevChildren, parentComponent, parentSuspense, unmountChildren) {
+  if (key === "innerHTML" || key === "textContent") {
+    if (prevChildren) {
+      unmountChildren(prevChildren, parentComponent, parentSuspense);
+    }
+    el[key] = value == null ? "" : value;
+    return;
+  }
+  if (key === "value" && el.tagName !== "PROGRESS") {
+    el._value = value;
+    const newValue = value == null ? "" : value;
+    if (el.value !== newValue) {
+      el.value = newValue;
+    }
+    return;
+  }
+  if (value === "" || value == null) {
+    const type = typeof el[key];
+    if (value === "" && type === "boolean") {
+      el[key] = true;
+      return;
+    } else if (value == null && type === "string") {
+      el[key] = "";
+      el.removeAttribute(key);
+      return;
+    } else if (type === "number") {
+      el[key] = 0;
+      el.removeAttribute(key);
+      return;
+    }
+  }
+  try {
+    el[key] = value;
+  } catch (e2) {
+  }
+}
+let _getNow = Date.now;
+if (typeof document !== "undefined" && _getNow() > document.createEvent("Event").timeStamp) {
+  _getNow = () => performance.now();
+}
+let cachedNow = 0;
+const p = Promise.resolve();
+const reset = () => {
+  cachedNow = 0;
+};
+const getNow = () => cachedNow || (p.then(reset), cachedNow = _getNow());
+function addEventListener(el, event2, handler, options) {
+  el.addEventListener(event2, handler, options);
+}
+function removeEventListener(el, event2, handler, options) {
+  el.removeEventListener(event2, handler, options);
+}
+function patchEvent(el, rawName, prevValue, nextValue, instance2 = null) {
+  const invokers = el._vei || (el._vei = {});
+  const existingInvoker = invokers[rawName];
+  if (nextValue && existingInvoker) {
+    existingInvoker.value = nextValue;
+  } else {
+    const [name, options] = parseName(rawName);
+    if (nextValue) {
+      const invoker = invokers[rawName] = createInvoker(nextValue, instance2);
+      addEventListener(el, name, invoker, options);
+    } else if (existingInvoker) {
+      removeEventListener(el, name, existingInvoker, options);
+      invokers[rawName] = void 0;
+    }
+  }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseName(name) {
+  let options;
+  if (optionsModifierRE.test(name)) {
+    options = {};
+    let m;
+    while (m = name.match(optionsModifierRE)) {
+      name = name.slice(0, name.length - m[0].length);
+      options[m[0].toLowerCase()] = true;
+    }
+  }
+  return [hyphenate(name.slice(2)), options];
+}
+function createInvoker(initialValue, instance2) {
+  const invoker = (e2) => {
+    const timeStamp = e2.timeStamp || _getNow();
+    if (timeStamp >= invoker.attached - 1) {
+      const proxy = instance2 && instance2.proxy;
+      const normalizeNativeEvent = proxy && proxy.$normalizeNativeEvent;
+      callWithAsyncErrorHandling(patchStopImmediatePropagation(e2, invoker.value), instance2, 5, [normalizeNativeEvent ? normalizeNativeEvent(e2) : e2]);
+    }
+  };
+  invoker.value = initialValue;
+  invoker.attached = getNow();
+  return invoker;
+}
+function patchStopImmediatePropagation(e2, value) {
+  if (isArray(value)) {
+    const originalStop = e2.stopImmediatePropagation;
+    e2.stopImmediatePropagation = () => {
+      originalStop.call(e2);
+      e2._stopped = true;
+    };
+    return value.map((fn) => (e3) => !e3._stopped && fn(e3));
+  } else {
+    return value;
+  }
+}
+const nativeOnRE = /^on[a-z]/;
+const forcePatchProp = (_, key) => key === "value";
+const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
+  switch (key) {
+    case "class":
+      patchClass(el, nextValue, isSVG);
+      break;
+    case "style":
+      patchStyle(el, prevValue, nextValue);
+      break;
+    default:
+      if (isOn(key)) {
+        if (!isModelListener(key)) {
+          patchEvent(el, key, prevValue, nextValue, parentComponent);
+        }
+      } else if (shouldSetAsProp(el, key, nextValue, isSVG)) {
+        patchDOMProp(el, key, nextValue, prevChildren, parentComponent, parentSuspense, unmountChildren);
+      } else {
+        if (key === "true-value") {
+          el._trueValue = nextValue;
+        } else if (key === "false-value") {
+          el._falseValue = nextValue;
+        }
+        patchAttr(el, key, nextValue, isSVG);
+      }
+      break;
+  }
+};
+function shouldSetAsProp(el, key, value, isSVG) {
+  if (isSVG) {
+    if (key === "innerHTML") {
+      return true;
+    }
+    if (key in el && nativeOnRE.test(key) && isFunction(value)) {
+      return true;
+    }
+    return false;
+  }
+  if (key === "spellcheck" || key === "draggable") {
+    return false;
+  }
+  if (key === "form") {
+    return false;
+  }
+  if (key === "list" && el.tagName === "INPUT") {
+    return false;
+  }
+  if (key === "type" && el.tagName === "TEXTAREA") {
+    return false;
+  }
+  if (nativeOnRE.test(key) && isString(value)) {
+    return false;
+  }
+  return key in el;
+}
+extend({patchProp, forcePatchProp}, nodeOps);
+function formatTime(val) {
+  val = val > 0 && val < Infinity ? val : 0;
+  const h = Math.floor(val / 3600);
+  const m = Math.floor(val % 3600 / 60);
+  const s = Math.floor(val % 3600 % 60);
+  const hStr = (h < 10 ? "0" : "") + h;
+  const mStr = (m < 10 ? "0" : "") + m;
+  const sStr = (s < 10 ? "0" : "") + s;
+  let str = mStr + ":" + sStr;
+  if (hStr !== "00") {
+    str = hStr + ":" + str;
+  }
+  return str;
+}
+function useGesture(props2, videoRef, fullscreenState) {
+  const state = reactive$1({
+    gestureType: "none",
+    volumeOld: 0,
+    volumeNew: 0,
+    currentTimeOld: 0,
+    currentTimeNew: 0
+  });
+  const touchStartOrigin = {
+    x: 0,
+    y: 0
+  };
+  function onTouchstart(event2) {
+    const toucher = event2.targetTouches[0];
+    touchStartOrigin.x = toucher.pageX;
+    touchStartOrigin.y = toucher.pageY;
+    state.gestureType = "none";
+    state.volumeOld = 0;
+    state.currentTimeOld = state.currentTimeNew = 0;
+  }
+  function onTouchmove(event2) {
+    function stop2() {
+      event2.stopPropagation();
+      event2.preventDefault();
+    }
+    if (fullscreenState.fullscreen) {
+      stop2();
+    }
+    const gestureType = state.gestureType;
+    if (gestureType === "stop") {
+      return;
+    }
+    const toucher = event2.targetTouches[0];
+    const pageX = toucher.pageX;
+    const pageY = toucher.pageY;
+    const origin = touchStartOrigin;
+    const video = videoRef.value;
+    if (gestureType === "progress") {
+      changeProgress(pageX - origin.x);
+    } else if (gestureType === "volume") {
+      changeVolume(pageY - origin.y);
+    }
+    if (gestureType !== "none") {
+      return;
+    }
+    if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
+      if (!props2.enableProgressGesture) {
+        state.gestureType = "stop";
+        return;
+      }
+      state.gestureType = "progress";
+      state.currentTimeOld = state.currentTimeNew = video.currentTime;
+      if (!fullscreenState.fullscreen) {
+        stop2();
+      }
+    } else {
+      if (!props2.pageGesture) {
+        state.gestureType = "stop";
+        return;
+      }
+      state.gestureType = "volume";
+      state.volumeOld = video.volume;
+      if (!fullscreenState.fullscreen) {
+        stop2();
+      }
+    }
+  }
+  function onTouchend(event2) {
+    const video = videoRef.value;
+    if (state.gestureType !== "none" && state.gestureType !== "stop") {
+      event2.stopPropagation();
+      event2.preventDefault();
+    }
+    if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
+      video.currentTime = state.currentTimeNew;
+    }
+    state.gestureType = "none";
+  }
+  function changeProgress(x) {
+    const video = videoRef.value;
+    const duration = video.duration;
+    let currentTimeNew = x / 600 * duration + state.currentTimeOld;
+    if (currentTimeNew < 0) {
+      currentTimeNew = 0;
+    } else if (currentTimeNew > duration) {
+      currentTimeNew = duration;
+    }
+    state.currentTimeNew = currentTimeNew;
+  }
+  function changeVolume(y) {
+    const video = videoRef.value;
+    const valueOld = state.volumeOld;
+    let value;
+    if (typeof valueOld === "number") {
+      value = valueOld - y / 200;
+      if (value < 0) {
+        value = 0;
+      } else if (value > 1) {
+        value = 1;
+      }
+      video.volume = value;
+      state.volumeNew = value;
+    }
+  }
+  return {
+    state,
+    onTouchstart,
+    onTouchmove,
+    onTouchend
+  };
+}
+function useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef) {
+  const state = reactive$1({
+    fullscreen: false
+  });
+  const isSafari = /^Apple/.test(navigator.vendor);
+  function onFullscreenChange($event, webkit) {
+    if (webkit && document.fullscreenEnabled) {
+      return;
+    }
+    emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
+  }
+  function emitFullscreenChange(val) {
+    state.fullscreen = val;
+    trigger2("fullscreenchange", {}, {
+      fullScreen: val,
+      direction: "vertical"
+    });
+  }
+  function toggleFullscreen(val) {
+    const root = rootRef.value;
+    const container = containerRef.value;
+    const video = videoRef.value;
+    let mockFullScreen;
+    if (val) {
+      if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!isSafari || userActionState.userAction)) {
+        container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
+      } else if (video.webkitEnterFullScreen) {
+        video.webkitEnterFullScreen();
+      } else {
+        mockFullScreen = true;
+        container.remove();
+        container.classList.add("uni-video-type-fullscreen");
+        document.body.appendChild(container);
+      }
+    } else {
+      if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (document.webkitFullscreenElement) {
+          document.webkitExitFullscreen();
+        }
+      } else if (video.webkitExitFullScreen) {
+        video.webkitExitFullScreen();
+      } else {
+        mockFullScreen = true;
+        container.remove();
+        container.classList.remove("uni-video-type-fullscreen");
+        root.appendChild(container);
+      }
+    }
+    if (mockFullScreen) {
+      emitFullscreenChange(val);
+    }
+  }
+  function requestFullScreen() {
+    toggleFullscreen(true);
+  }
+  function exitFullScreen() {
+    toggleFullscreen(false);
+  }
+  onBeforeUnmount(exitFullScreen);
+  return {
+    state,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  };
+}
+function useVideo(props2, attrs2, trigger2) {
+  const videoRef = ref(null);
+  const src = computed(() => getRealPath(props2.src));
+  const state = reactive$1({
+    start: false,
+    src,
+    playing: false,
+    currentTime: 0,
+    duration: 0,
+    progress: 0,
+    buffered: 0
+  });
+  watch(() => src.value, () => {
+    state.playing = false;
+    state.currentTime = 0;
+  });
+  watch(() => state.buffered, (buffered) => {
+    trigger2("progress", {}, {
+      buffered
+    });
+  });
+  const videoAttrs = computed(() => {
+    const ignore = ["style", "class"];
+    const obj = {};
+    for (const key in attrs2) {
+      if (!(ignore.includes(key) || /^on[A-Z]+/.test(key))) {
+        obj[key] = attrs2[key];
+      }
+    }
+    return obj;
+  });
+  function onDurationChange({
+    target
+  }) {
+    state.duration = target.duration;
+  }
+  function onLoadedMetadata($event) {
+    const initialTime = Number(props2.initialTime) || 0;
+    const video = $event.target;
+    if (initialTime > 0) {
+      video.currentTime = initialTime;
+    }
+    trigger2("loadedmetadata", $event, {
+      width: video.videoWidth,
+      height: video.videoHeight,
+      duration: video.duration
+    });
+    onProgress($event);
+  }
+  function onProgress($event) {
+    const video = $event.target;
+    const buffered = video.buffered;
+    if (buffered.length) {
+      state.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+    }
+  }
+  function onWaiting($event) {
+    trigger2("waiting", $event, {});
+  }
+  function onVideoError($event) {
+    state.playing = false;
+    trigger2("error", $event, {});
+  }
+  function onPlay($event) {
+    state.start = true;
+    state.playing = true;
+    trigger2("play", $event, {});
+  }
+  function onPause($event) {
+    state.playing = false;
+    trigger2("pause", $event, {});
+  }
+  function onEnded($event) {
+    state.playing = false;
+    trigger2("ended", $event, {});
+  }
+  function onTimeUpdate($event) {
+    const video = $event.target;
+    const currentTime = state.currentTime = video.currentTime;
+    trigger2("timeupdate", $event, {
+      currentTime,
+      duration: video.duration
+    });
+  }
+  function toggle() {
+    const video = videoRef.value;
+    if (state.playing) {
+      video.pause();
+    } else {
+      video.play();
+    }
+  }
+  function play() {
+    const video = videoRef.value;
+    state.start = true;
+    video.play();
+  }
+  function pause() {
+    const video = videoRef.value;
+    video.pause();
+  }
+  function seek(position) {
+    const video = videoRef.value;
+    position = Number(position);
+    if (typeof position === "number" && !isNaN(position)) {
+      video.currentTime = position;
+    }
+  }
+  function playbackRate(rate) {
+    const video = videoRef.value;
+    video.playbackRate = rate;
+  }
+  return {
+    videoRef,
+    videoAttrs,
+    state,
+    play,
+    pause,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  };
+}
+function useControls(props2, videoState, seek) {
+  const progressRef = ref(null);
+  const ballRef = ref(null);
+  const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
+  const controlsVisible = ref(true);
+  const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
+  const state = reactive$1({
+    touching: false,
+    controlsTouching: false,
+    centerPlayBtnShow,
+    controlsShow,
+    controlsVisible
+  });
+  function clickProgress(event2) {
+    const $progress = progressRef.value;
+    let element = event2.target;
+    let x = event2.offsetX;
+    while (element && element !== $progress) {
+      x += element.offsetLeft;
+      element = element.parentNode;
+    }
+    const w = $progress.offsetWidth;
+    let progress = 0;
+    if (x >= 0 && x <= w) {
+      progress = x / w;
+      seek(videoState.duration * progress);
+    }
+  }
+  function toggleControls() {
+    state.controlsVisible = !state.controlsVisible;
+  }
+  let hideTiming;
+  function autoHideStart() {
+    hideTiming = setTimeout(() => {
+      state.controlsVisible = false;
+    }, 3e3);
+  }
+  function autoHideEnd() {
+    if (hideTiming) {
+      clearTimeout(hideTiming);
+      hideTiming = null;
+    }
+  }
+  onBeforeUnmount(() => {
+    if (hideTiming) {
+      clearTimeout(hideTiming);
+    }
+  });
+  watch(() => state.controlsShow && videoState.playing && !state.controlsTouching, (val) => {
+    if (val) {
+      autoHideStart();
+    } else {
+      autoHideEnd();
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props2.duration;
+  }], function updateProgress() {
+    if (!state.touching) {
+      videoState.progress = videoState.currentTime / videoState.duration * 100;
+    }
+  });
+  onMounted(() => {
+    const passiveOptions2 = passive(false);
     let originX;
     let originY;
     let moveOnce = true;
     let originProgress;
-    const ball = this.$refs.ball;
-    ball.addEventListener("touchstart", (event2) => {
-      this.controlsTouching = true;
-      const toucher = event2.targetTouches[0];
-      originX = toucher.pageX;
-      originY = toucher.pageY;
-      originProgress = this.progress;
-      moveOnce = true;
-      this.touching = true;
-      ball.addEventListener("touchmove", touchmove2, passiveOptions);
-    });
+    const ball = ballRef.value;
     function touchmove2(event2) {
       const toucher = event2.targetTouches[0];
       const pageX = toucher.pageX;
       const pageY = toucher.pageY;
       if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend();
+        touchend(event2);
         return;
       }
       moveOnce = false;
-      const w = self.$refs.progress.offsetWidth;
+      const progressEl = progressRef.value;
+      const w = progressEl.offsetWidth;
       let progress = originProgress + (pageX - originX) / w * 100;
       if (progress < 0) {
         progress = 0;
       } else if (progress > 100) {
         progress = 100;
       }
-      self.progress = progress;
+      videoState.progress = progress;
       event2.preventDefault();
       event2.stopPropagation();
     }
     function touchend(event2) {
-      self.controlsTouching = false;
-      if (self.touching) {
-        ball.removeEventListener("touchmove", touchmove2, passiveOptions);
+      state.controlsTouching = false;
+      if (state.touching) {
+        ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
         if (!moveOnce) {
           event2.preventDefault();
           event2.stopPropagation();
-          self.seek(self.$refs.video.duration * self.progress / 100);
+          seek(videoState.duration * videoState.progress / 100);
         }
-        self.touching = false;
+        state.touching = false;
       }
     }
+    ball.addEventListener("touchstart", (event2) => {
+      state.controlsTouching = true;
+      const toucher = event2.targetTouches[0];
+      originX = toucher.pageX;
+      originY = toucher.pageY;
+      originProgress = videoState.progress;
+      moveOnce = true;
+      state.touching = true;
+      ball.addEventListener("touchmove", touchmove2, passiveOptions2);
+    });
     ball.addEventListener("touchend", touchend);
     ball.addEventListener("touchcancel", touchend);
-  },
-  beforeDestroy() {
-    this.triggerFullscreen(false);
-    clearTimeout(this.otherData.hideTiming);
-  },
-  methods: {
-    trigger() {
-      if (this.playing) {
-        this.$refs.video.pause();
-      } else {
-        this.$refs.video.play();
-      }
-    },
-    play() {
-      this.start = true;
-      this.$refs.video.play();
-    },
-    pause() {
-      this.$refs.video.pause();
-    },
-    seek(position) {
-      position = Number(position);
-      if (typeof position === "number" && !isNaN(position)) {
-        this.$refs.video.currentTime = position;
-      }
-    },
-    clickProgress(event2) {
-      const $progress = this.$refs.progress;
-      let element = event2.target;
-      let x = event2.offsetX;
-      while (element !== $progress) {
-        x += element.offsetLeft;
-        element = element.parentNode;
-      }
-      const w = $progress.offsetWidth;
-      let progress = 0;
-      if (x >= 0 && x <= w) {
-        progress = x / w;
-        this.seek(this.$refs.video.duration * progress);
-      }
-    },
-    triggerDanmu() {
-      this.enableDanmuSync = !this.enableDanmuSync;
-    },
-    playDanmu(danmu) {
-      const p2 = document.createElement("p");
-      p2.className = "uni-video-danmu-item";
-      p2.innerText = danmu.text;
-      let style2 = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
-      p2.setAttribute("style", style2);
-      this.$refs.danmu.appendChild(p2);
-      setTimeout(function() {
-        style2 += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
-        p2.setAttribute("style", style2);
-        setTimeout(function() {
-          p2.remove();
-        }, 4e3);
-      }, 17);
-    },
-    sendDanmu(danmu) {
-      const otherData = this.otherData;
-      otherData.danmuList.splice(otherData.danmuIndex.index + 1, 0, {
-        text: String(danmu.text),
-        color: danmu.color,
-        time: this.$refs.video.currentTime || 0
-      });
-    },
-    playbackRate(rate) {
-      this.$refs.video.playbackRate = rate;
-    },
-    triggerFullscreen(val) {
-      const container = this.$refs.container;
-      const video = this.$refs.video;
-      let mockFullScreen;
-      if (val) {
-        if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!this.isSafari || this.userInteract)) {
-          container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
-        } else if (video.webkitEnterFullScreen) {
-          video.webkitEnterFullScreen();
+  });
+  return {
+    state,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideStart,
+    autoHideEnd
+  };
+}
+function useDanmu(props2, videoState) {
+  const danmuRef = ref(null);
+  const state = reactive$1({
+    enable: Boolean(props2.enableDanmu)
+  });
+  let danmuIndex = {
+    time: 0,
+    index: -1
+  };
+  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  danmuList.sort(function(a2, b) {
+    return (a2.time || 0) - (b.time || 0);
+  });
+  function toggleDanmu() {
+    state.enable = !state.enable;
+  }
+  function updateDanmu(event2) {
+    const video = event2.target;
+    const currentTime = video.currentTime;
+    const oldDanmuIndex = danmuIndex;
+    const newDanmuIndex = {
+      time: currentTime,
+      index: oldDanmuIndex.index
+    };
+    if (currentTime > oldDanmuIndex.time) {
+      for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
+        const element = danmuList[index2];
+        if (currentTime >= (element.time || 0)) {
+          newDanmuIndex.index = index2;
+          if (videoState.playing && state.enable) {
+            playDanmu(element);
+          }
         } else {
-          mockFullScreen = true;
-          container.remove();
-          container.classList.add("uni-video-type-fullscreen");
-          document.body.appendChild(container);
+          break;
         }
-      } else {
-        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
-          if (document.fullscreenElement) {
-            document.exitFullscreen();
-          } else if (document.webkitFullscreenElement) {
-            document.webkitExitFullscreen();
-          }
-        } else if (video.webkitExitFullScreen) {
-          video.webkitExitFullScreen();
+      }
+    } else if (currentTime < oldDanmuIndex.time) {
+      for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
+        const element = danmuList[index2];
+        if (currentTime <= (element.time || 0)) {
+          newDanmuIndex.index = index2 - 1;
         } else {
-          mockFullScreen = true;
-          container.remove();
-          container.classList.remove("uni-video-type-fullscreen");
-          this.$el.appendChild(container);
+          break;
         }
-      }
-      if (mockFullScreen) {
-        this.emitFullscreenChange(val);
-      }
-    },
-    onFullscreenChange($event, webkit) {
-      if (webkit && document.fullscreenEnabled) {
-        return;
-      }
-      this.emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
-    },
-    emitFullscreenChange(val) {
-      this.fullscreen = val;
-      this.$trigger("fullscreenchange", {}, {
-        fullScreen: val,
-        direction: "vertical"
-      });
-    },
-    requestFullScreen() {
-      this.triggerFullscreen(true);
-    },
-    exitFullScreen() {
-      this.triggerFullscreen(false);
-    },
-    onDurationChange({target}) {
-      this.durationTime = target.duration;
-    },
-    onLoadedMetadata($event) {
-      const initialTime = Number(this.initialTime) || 0;
-      const video = $event.target;
-      if (initialTime > 0) {
-        video.currentTime = initialTime;
-      }
-      this.$trigger("loadedmetadata", $event, {
-        width: video.videoWidth,
-        height: video.videoHeight,
-        duration: video.duration
-      });
-      this.onProgress($event);
-    },
-    onProgress($event) {
-      const video = $event.target;
-      const buffered = video.buffered;
-      if (buffered.length) {
-        this.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
-      }
-    },
-    onWaiting($event) {
-      this.$trigger("waiting", $event, {});
-    },
-    onVideoError($event) {
-      this.playing = false;
-      this.$trigger("error", $event, {});
-    },
-    onPlay($event) {
-      this.start = true;
-      this.playing = true;
-      this.$trigger("play", $event, {});
-    },
-    onPause($event) {
-      this.playing = false;
-      this.$trigger("pause", $event, {});
-    },
-    onEnded($event) {
-      this.playing = false;
-      this.$trigger("ended", $event, {});
-    },
-    onTimeUpdate($event) {
-      const video = $event.target;
-      const otherData = this.otherData;
-      const currentTime = this.currentTime = video.currentTime;
-      const oldDanmuIndex = otherData.danmuIndex;
-      const danmuIndex = {
-        time: currentTime,
-        index: oldDanmuIndex.index
-      };
-      const danmuList = otherData.danmuList;
-      if (currentTime > oldDanmuIndex.time) {
-        for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
-          const element = danmuList[index2];
-          if (currentTime >= (element.time || 0)) {
-            danmuIndex.index = index2;
-            if (this.playing && this.enableDanmuSync) {
-              this.playDanmu(element);
-            }
-          } else {
-            break;
-          }
-        }
-      } else if (currentTime < oldDanmuIndex.time) {
-        for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
-          const element = danmuList[index2];
-          if (currentTime <= (element.time || 0)) {
-            danmuIndex.index = index2 - 1;
-          } else {
-            break;
-          }
-        }
-      }
-      otherData.danmuIndex = danmuIndex;
-      this.$trigger("timeupdate", $event, {
-        currentTime,
-        duration: video.duration
-      });
-    },
-    triggerControls() {
-      this.controlsVisible = !this.controlsVisible;
-    },
-    touchstart(event2) {
-      const toucher = event2.targetTouches[0];
-      this.touchStartOrigin = {
-        x: toucher.pageX,
-        y: toucher.pageY
-      };
-      this.gestureType = GestureType.NONE;
-      this.volumeOld = null;
-      this.currentTimeOld = this.currentTimeNew = 0;
-    },
-    touchmove(event2) {
-      function stop() {
-        event2.stopPropagation();
-        event2.preventDefault();
-      }
-      if (this.fullscreen) {
-        stop();
-      }
-      const gestureType = this.gestureType;
-      if (gestureType === GestureType.STOP) {
-        return;
-      }
-      const toucher = event2.targetTouches[0];
-      const pageX = toucher.pageX;
-      const pageY = toucher.pageY;
-      const origin = this.touchStartOrigin;
-      if (gestureType === GestureType.PROGRESS) {
-        this.changeProgress(pageX - origin.x);
-      } else if (gestureType === GestureType.VOLUME) {
-        this.changeVolume(pageY - origin.y);
-      }
-      if (gestureType !== GestureType.NONE) {
-        return;
-      }
-      if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
-        if (!this.enableProgressGesture) {
-          this.gestureType = GestureType.STOP;
-          return;
-        }
-        this.gestureType = GestureType.PROGRESS;
-        this.currentTimeOld = this.currentTimeNew = this.$refs.video.currentTime;
-        if (!this.fullscreen) {
-          stop();
-        }
-      } else {
-        if (!this.pageGesture) {
-          this.gestureType = GestureType.STOP;
-          return;
-        }
-        this.gestureType = GestureType.VOLUME;
-        this.volumeOld = this.$refs.video.volume;
-        if (!this.fullscreen) {
-          stop();
-        }
-      }
-    },
-    touchend(event2) {
-      if (this.gestureType !== GestureType.NONE && this.gestureType !== GestureType.STOP) {
-        event2.stopPropagation();
-        event2.preventDefault();
-      }
-      if (this.gestureType === GestureType.PROGRESS && this.currentTimeOld !== this.currentTimeNew) {
-        this.$refs.video.currentTime = this.currentTimeNew;
-      }
-      this.gestureType = GestureType.NONE;
-    },
-    changeProgress(x) {
-      const duration = this.$refs.video.duration;
-      let currentTimeNew = x / 600 * duration + this.currentTimeOld;
-      if (currentTimeNew < 0) {
-        currentTimeNew = 0;
-      } else if (currentTimeNew > duration) {
-        currentTimeNew = duration;
-      }
-      this.currentTimeNew = currentTimeNew;
-    },
-    changeVolume(y) {
-      const valueOld = this.volumeOld;
-      let value;
-      if (typeof valueOld === "number") {
-        value = valueOld - y / 200;
-        if (value < 0) {
-          value = 0;
-        } else if (value > 1) {
-          value = 1;
-        }
-        this.$refs.video.volume = value;
-        this.volumeNew = value;
-      }
-    },
-    autoHideStart() {
-      this.otherData.hideTiming = setTimeout(() => {
-        this.controlsVisible = false;
-      }, 3e3);
-    },
-    autoHideEnd() {
-      const otherData = this.otherData;
-      if (otherData.hideTiming) {
-        clearTimeout(otherData.hideTiming);
-        otherData.hideTiming = null;
-      }
-    },
-    updateProgress() {
-      if (!this.touching) {
-        this.progress = this.currentTime / this.durationTime * 100;
       }
     }
+    danmuIndex = newDanmuIndex;
+  }
+  function playDanmu(danmu) {
+    const p2 = document.createElement("p");
+    p2.className = "uni-video-danmu-item";
+    p2.innerText = danmu.text;
+    let style2 = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
+    p2.setAttribute("style", style2);
+    const danmuEl = danmuRef.value;
+    danmuEl.appendChild(p2);
+    setTimeout(function() {
+      style2 += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
+      p2.setAttribute("style", style2);
+      setTimeout(function() {
+        p2.remove();
+      }, 4e3);
+    }, 17);
+  }
+  function sendDanmu(danmu) {
+    danmuList.splice(danmuIndex.index + 1, 0, {
+      text: String(danmu.text),
+      color: danmu.color,
+      time: videoState.currentTime || 0
+    });
+  }
+  return {
+    state,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  };
+}
+function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+  const methods = {
+    play,
+    pause,
+    seek,
+    sendDanmu,
+    playbackRate,
+    requestFullScreen,
+    exitFullScreen
+  };
+  useSubscribe((type, data) => {
+    let options;
+    switch (type) {
+      case "seek":
+        options = data.position;
+        break;
+      case "sendDanmu":
+        options = data;
+        break;
+      case "playbackRate":
+        options = data.rate;
+        break;
+    }
+    if (type in methods) {
+      methods[type](options);
+    }
+  });
+}
+const props = {
+  id: {
+    type: String,
+    default: ""
+  },
+  src: {
+    type: String,
+    default: ""
+  },
+  duration: {
+    type: [Number, String],
+    default: ""
+  },
+  controls: {
+    type: [Boolean, String],
+    default: true
+  },
+  danmuList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  danmuBtn: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableDanmu: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  loop: {
+    type: [Boolean, String],
+    default: false
+  },
+  muted: {
+    type: [Boolean, String],
+    default: false
+  },
+  objectFit: {
+    type: String,
+    default: "contain"
+  },
+  poster: {
+    type: String,
+    default: ""
+  },
+  direction: {
+    type: [String, Number],
+    default: ""
+  },
+  showProgress: {
+    type: Boolean,
+    default: true
+  },
+  initialTime: {
+    type: [String, Number],
+    default: 0
+  },
+  showFullscreenBtn: {
+    type: [Boolean, String],
+    default: true
+  },
+  pageGesture: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableProgressGesture: {
+    type: [Boolean, String],
+    default: true
+  },
+  showPlayBtn: {
+    type: [Boolean, String],
+    default: true
+  },
+  showCenterPlayBtn: {
+    type: [Boolean, String],
+    default: true
   }
 };
-const _hoisted_1$2 = {class: "uni-video-controls"};
-const _hoisted_2$2 = {class: "uni-video-current-time"};
-const _hoisted_3$1 = {class: "uni-video-progress"};
-const _hoisted_4$1 = /* @__PURE__ */ createVNode("div", {class: "uni-video-inner"}, null, -1);
-const _hoisted_5 = {class: "uni-video-duration"};
-const _hoisted_6 = {
-  ref: "danmu",
-  style: {"z-index": "0"},
-  class: "uni-video-danmu"
-};
-const _hoisted_7 = {class: "uni-video-cover-duration"};
-const _hoisted_8 = {class: "uni-video-toast-title"};
-const _hoisted_9 = /* @__PURE__ */ createVNode("svg", {
-  class: "uni-video-toast-icon",
-  width: "200px",
-  height: "200px",
-  viewBox: "0 0 1024 1024",
-  version: "1.1",
-  xmlns: "http://www.w3.org/2000/svg"
-}, [
-  /* @__PURE__ */ createVNode("path", {d: "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"})
-], -1);
-const _hoisted_10 = {class: "uni-video-toast-value"};
-const _hoisted_11 = {class: "uni-video-toast-volume-grids"};
-const _hoisted_12 = {class: "uni-video-toast-title"};
-const _hoisted_13 = {class: "uni-video-slots"};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-video", mergeProps({id: $props.id}, toHandlers(_ctx.$listeners)), [
-    createVNode("div", {
-      ref: "container",
-      class: "uni-video-container",
-      onTouchstart: _cache[22] || (_cache[22] = (...args) => $options.touchstart && $options.touchstart(...args)),
-      onTouchend: _cache[23] || (_cache[23] = (...args) => $options.touchend && $options.touchend(...args)),
-      onTouchmove: _cache[24] || (_cache[24] = (...args) => $options.touchmove && $options.touchmove(...args)),
-      onFullscreenchange: _cache[25] || (_cache[25] = withModifiers((...args) => $options.onFullscreenChange && $options.onFullscreenChange(...args), ["stop"])),
-      onWebkitfullscreenchange: _cache[26] || (_cache[26] = withModifiers(($event) => $options.onFullscreenChange($event, true), ["stop"]))
-    }, [
-      createVNode("video", mergeProps({
-        ref: "video",
-        style: {objectFit: $props.objectFit},
-        muted: $props.muted,
-        loop: $props.loop,
-        src: $options.srcSync,
-        poster: $props.poster,
-        autoplay: $props.autoplay
-      }, _ctx.$attrs, {
+var index$1 = /* @__PURE__ */ defineComponent({
+  name: "Video",
+  props,
+  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
+  setup(props2, {
+    emit,
+    attrs: attrs2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const containerRef = ref(null);
+    const trigger2 = useCustomEvent(rootRef, emit);
+    const {
+      state: userActionState
+    } = useUserAction();
+    const {
+      t: t2
+    } = useI18n();
+    initI18nVideoMsgsOnce();
+    const {
+      videoRef,
+      videoAttrs,
+      state: videoState,
+      play,
+      pause,
+      seek,
+      playbackRate,
+      toggle,
+      onDurationChange,
+      onLoadedMetadata,
+      onProgress,
+      onWaiting,
+      onVideoError,
+      onPlay,
+      onPause,
+      onEnded,
+      onTimeUpdate
+    } = useVideo(props2, attrs2, trigger2);
+    const {
+      state: danmuState,
+      danmuRef,
+      updateDanmu,
+      toggleDanmu,
+      sendDanmu
+    } = useDanmu(props2, videoState);
+    const {
+      state: fullscreenState,
+      onFullscreenChange,
+      emitFullscreenChange,
+      toggleFullscreen,
+      requestFullScreen,
+      exitFullScreen
+    } = useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef);
+    const {
+      state: gestureState,
+      onTouchstart,
+      onTouchend,
+      onTouchmove
+    } = useGesture(props2, videoRef, fullscreenState);
+    const {
+      state: controlsState,
+      progressRef,
+      ballRef,
+      clickProgress,
+      toggleControls
+    } = useControls(props2, videoState, seek);
+    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    return () => {
+      return createVNode("uni-video", {
+        ref: rootRef,
+        id: props2.id
+      }, [createVNode("div", {
+        ref: containerRef,
+        class: "uni-video-container",
+        onTouchstart,
+        onTouchend,
+        onTouchmove,
+        onFullscreenchange: withModifiers(onFullscreenChange, ["stop"]),
+        onWebkitfullscreenchange: withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+      }, [createVNode("video", mergeProps({
+        ref: videoRef,
+        style: {
+          "object-fit": props2.objectFit
+        },
+        muted: !!props2.muted,
+        loop: !!props2.loop,
+        src: videoState.src,
+        poster: props2.poster,
+        autoplay: !!props2.autoplay
+      }, videoAttrs.value, {
         class: "uni-video-video",
-        "webkit-playsinline": "",
-        playsinline: "",
-        onClick: _cache[1] || (_cache[1] = (...args) => $options.triggerControls && $options.triggerControls(...args)),
-        onDurationchange: _cache[2] || (_cache[2] = (...args) => $options.onDurationChange && $options.onDurationChange(...args)),
-        onLoadedmetadata: _cache[3] || (_cache[3] = (...args) => $options.onLoadedMetadata && $options.onLoadedMetadata(...args)),
-        onProgress: _cache[4] || (_cache[4] = (...args) => $options.onProgress && $options.onProgress(...args)),
-        onWaiting: _cache[5] || (_cache[5] = (...args) => $options.onWaiting && $options.onWaiting(...args)),
-        onError: _cache[6] || (_cache[6] = (...args) => $options.onVideoError && $options.onVideoError(...args)),
-        onPlay: _cache[7] || (_cache[7] = (...args) => $options.onPlay && $options.onPlay(...args)),
-        onPause: _cache[8] || (_cache[8] = (...args) => $options.onPause && $options.onPause(...args)),
-        onEnded: _cache[9] || (_cache[9] = (...args) => $options.onEnded && $options.onEnded(...args)),
-        onTimeupdate: _cache[10] || (_cache[10] = (...args) => $options.onTimeUpdate && $options.onTimeUpdate(...args)),
-        onWebkitbeginfullscreen: _cache[11] || (_cache[11] = ($event) => $options.emitFullscreenChange(true)),
-        onX5videoenterfullscreen: _cache[12] || (_cache[12] = ($event) => $options.emitFullscreenChange(true)),
-        onWebkitendfullscreen: _cache[13] || (_cache[13] = ($event) => $options.emitFullscreenChange(false)),
-        onX5videoexitfullscreen: _cache[14] || (_cache[14] = ($event) => $options.emitFullscreenChange(false))
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay"]),
-      withDirectives(createVNode("div", {
+        "webkit-playsinline": true,
+        playsinline: true,
+        onClick: toggleControls,
+        onDurationchange: onDurationChange,
+        onLoadedmetadata: onLoadedMetadata,
+        onProgress,
+        onWaiting,
+        onError: onVideoError,
+        onPlay,
+        onPause,
+        onEnded,
+        onTimeupdate: (event2) => {
+          onTimeUpdate(event2);
+          updateDanmu(event2);
+        },
+        onWebkitbeginfullscreen: () => emitFullscreenChange(true),
+        onX5videoenterfullscreen: () => emitFullscreenChange(true),
+        onWebkitendfullscreen: () => emitFullscreenChange(false),
+        onX5videoexitfullscreen: () => emitFullscreenChange(false)
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
         class: "uni-video-bar uni-video-bar-full",
-        onClick: _cache[19] || (_cache[19] = withModifiers(() => {
-        }, ["stop"]))
-      }, [
-        createVNode("div", _hoisted_1$2, [
-          withDirectives(createVNode("div", {
-            class: [{"uni-video-control-button-play": !$data.playing, "uni-video-control-button-pause": $data.playing}, "uni-video-control-button"],
-            onClick: _cache[15] || (_cache[15] = withModifiers((...args) => $options.trigger && $options.trigger(...args), ["stop"]))
-          }, null, 2), [
-            [vShow, $props.showPlayBtn]
-          ]),
-          createVNode("div", _hoisted_2$2, toDisplayString($data.currentTime | _ctx.time), 1),
-          createVNode("div", {
-            ref: "progress",
-            class: "uni-video-progress-container",
-            onClick: _cache[16] || (_cache[16] = withModifiers(($event) => $options.clickProgress($event), ["stop"]))
-          }, [
-            createVNode("div", _hoisted_3$1, [
-              createVNode("div", {
-                style: {width: $data.buffered + "%"},
-                class: "uni-video-progress-buffered"
-              }, null, 4),
-              createVNode("div", {
-                ref: "ball",
-                style: {left: $data.progress + "%"},
-                class: "uni-video-ball"
-              }, [
-                _hoisted_4$1
-              ], 4)
-            ])
-          ], 512),
-          createVNode("div", _hoisted_5, toDisplayString(($props.duration || $data.durationTime) | _ctx.time), 1)
-        ]),
-        $props.danmuBtn ? (openBlock(), createBlock("div", {
-          key: 0,
-          class: [{"uni-video-danmu-button-active": $data.enableDanmuSync}, "uni-video-danmu-button"],
-          onClick: _cache[17] || (_cache[17] = withModifiers((...args) => $options.triggerDanmu && $options.triggerDanmu(...args), ["stop"]))
-        }, toDisplayString($setup.$$t("uni.video.danmu")), 3)) : createCommentVNode("", true),
-        withDirectives(createVNode("div", {
-          class: [{"uni-video-type-fullscreen": $data.fullscreen}, "uni-video-fullscreen"],
-          onClick: _cache[18] || (_cache[18] = withModifiers(($event) => $options.triggerFullscreen(!$data.fullscreen), ["stop"]))
-        }, null, 2), [
-          [vShow, $props.showFullscreenBtn]
-        ])
-      ], 512), [
-        [vShow, $options.controlsShow]
-      ]),
-      withDirectives(createVNode("div", _hoisted_6, null, 512), [
-        [vShow, $data.start && $data.enableDanmuSync]
-      ]),
-      $options.centerPlayBtnShow ? (openBlock(), createBlock("div", {
-        key: 0,
+        onClick: withModifiers(() => {
+        }, ["stop"])
+      }, [createVNode("div", {
+        class: "uni-video-controls"
+      }, [withDirectives(createVNode("div", {
+        class: {
+          "uni-video-control-button": true,
+          "uni-video-control-button-play": !videoState.playing,
+          "uni-video-control-button-pause": videoState.playing
+        },
+        onClick: withModifiers(toggle, ["stop"])
+      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
+        class: "uni-video-current-time"
+      }, [formatTime(videoState.currentTime)]), createVNode("div", {
+        ref: progressRef,
+        class: "uni-video-progress-container",
+        onClick: withModifiers(clickProgress, ["stop"])
+      }, [createVNode("div", {
+        class: "uni-video-progress"
+      }, [createVNode("div", {
+        style: {
+          width: videoState.buffered + "%"
+        },
+        class: "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        ref: ballRef,
+        style: {
+          left: videoState.progress + "%"
+        },
+        class: "uni-video-ball"
+      }, [createVNode("div", {
+        class: "uni-video-inner"
+      }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
+        class: "uni-video-duration"
+      }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
+        class: {
+          "uni-video-danmu-button": true,
+          "uni-video-danmu-button-active": danmuState.enable
+        },
+        onClick: withModifiers(toggleDanmu, ["stop"])
+      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+        class: {
+          "uni-video-fullscreen": true,
+          "uni-video-type-fullscreen": fullscreenState.fullscreen
+        },
+        onClick: withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
+        ref: danmuRef,
+        style: "z-index: 0;",
+        class: "uni-video-danmu"
+      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
         class: "uni-video-cover",
-        onClick: _cache[21] || (_cache[21] = withModifiers(() => {
-        }, ["stop"]))
-      }, [
-        createVNode("div", {
-          class: "uni-video-cover-play-button",
-          onClick: _cache[20] || (_cache[20] = withModifiers((...args) => $options.play && $options.play(...args), ["stop"]))
-        }),
-        createVNode("p", _hoisted_7, toDisplayString(($props.duration || $data.durationTime) | _ctx.time), 1)
-      ])) : createCommentVNode("", true),
-      createVNode("div", {
-        class: [{"uni-video-toast-volume": $data.gestureType === "volume"}, "uni-video-toast"]
-      }, [
-        createVNode("div", _hoisted_8, toDisplayString($setup.$$t("uni.video.volume")), 1),
-        _hoisted_9,
-        createVNode("div", _hoisted_10, [
-          createVNode("div", {
-            style: {width: $data.volumeNew * 100 + "%"},
-            class: "uni-video-toast-value-content"
-          }, [
-            createVNode("div", _hoisted_11, [
-              (openBlock(), createBlock(Fragment, null, renderList(10, (item, index2) => {
-                return createVNode("div", {
-                  key: index2,
-                  class: "uni-video-toast-volume-grids-item"
-                });
-              }), 64))
-            ])
-          ], 4)
-        ])
-      ], 2),
-      createVNode("div", {
-        class: [{"uni-video-toast-progress": $data.gestureType == "progress"}, "uni-video-toast"]
-      }, [
-        createVNode("div", _hoisted_12, toDisplayString($data.currentTimeNew | _ctx.time) + " / " + toDisplayString($data.durationTime | _ctx.time), 1)
-      ], 2),
-      createVNode("div", _hoisted_13, [
-        renderSlot(_ctx.$slots, "default")
-      ])
-    ], 544)
-  ], 16, ["id"]);
-}
-_sfc_main$3.render = _sfc_render$3;
+        onClick: withModifiers(() => {
+        }, ["stop"])
+      }, [createVNode("div", {
+        class: "uni-video-cover-play-button",
+        onClick: withModifiers(play, ["stop"])
+      }, null, 8, ["onClick"]), createVNode("p", {
+        class: "uni-video-cover-duration"
+      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+        class: {
+          "uni-video-toast": true,
+          "uni-video-toast-volume": gestureState.gestureType === "volume"
+        }
+      }, [createVNode("div", {
+        class: "uni-video-toast-title"
+      }, [t2("uni.video.volume")]), createVNode("svg", {
+        class: "uni-video-toast-icon",
+        width: "200px",
+        height: "200px",
+        viewBox: "0 0 1024 1024",
+        version: "1.1",
+        xmlns: "http://www.w3.org/2000/svg"
+      }, [createVNode("path", {
+        d: "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+      }, null)]), createVNode("div", {
+        class: "uni-video-toast-value"
+      }, [createVNode("div", {
+        style: {
+          width: gestureState.volumeNew * 100 + "%"
+        },
+        class: "uni-video-toast-value-content"
+      }, [createVNode("div", {
+        class: "uni-video-toast-volume-grids"
+      }, [renderList(10, () => createVNode("div", {
+        class: "uni-video-toast-volume-grids-item"
+      }, null))])], 4)])], 2), createVNode("div", {
+        class: {
+          "uni-video-toast": true,
+          "uni-video-toast-progress": gestureState.gestureType === "progress"
+        }
+      }, [createVNode("div", {
+        class: "uni-video-toast-title"
+      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+        class: "uni-video-slots"
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
+    };
+  }
+});
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event2, args, pageId) {
     window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
@@ -11144,7 +12724,7 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
     reject();
     return;
   }
-  function addEventListener() {
+  function addEventListener2() {
     listener$1 = function(event2) {
       const acceleration = event2.acceleration || event2.accelerationIncludingGravity;
       UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
@@ -11159,7 +12739,7 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
     if (DeviceMotionEvent.requestPermission) {
       DeviceMotionEvent.requestPermission().then((res) => {
         if (res === "granted") {
-          addEventListener();
+          addEventListener2();
           resolve();
         } else {
           reject(`${res}`);
@@ -11169,7 +12749,7 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
       });
       return;
     }
-    addEventListener();
+    addEventListener2();
   }
   resolve();
 });
@@ -11192,7 +12772,7 @@ const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) =>
     reject();
     return;
   }
-  function addEventListener() {
+  function addEventListener2() {
     listener = function(event2) {
       const direction2 = 360 - (event2.alpha !== null ? event2.alpha : 360);
       UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
@@ -11205,7 +12785,7 @@ const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) =>
     if (DeviceOrientationEvent.requestPermission) {
       DeviceOrientationEvent.requestPermission().then((res) => {
         if (res === "granted") {
-          addEventListener();
+          addEventListener2();
           resolve();
         } else {
           reject(`${res}`);
@@ -11215,7 +12795,7 @@ const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) =>
       });
       return;
     }
-    addEventListener();
+    addEventListener2();
   }
   resolve();
 });
@@ -13241,7 +14821,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(_sfc_main$f, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(_sfc_main$e, {
     disabled: true,
     style: {
       color
@@ -13252,7 +14832,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: "uni-page-head-search-input",
     "confirm-type": "search",
     onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(_sfc_main$f, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(_sfc_main$e, {
     focus: autoFocus,
     style: {
       color
@@ -13750,4 +15330,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$k as Audio, index$6 as Button, _sfc_main$j as Canvas, _sfc_main$i as Checkbox, _sfc_main$h as CheckboxGroup, _sfc_main$g as Editor, index$7 as Form, index$5 as Icon, index$4 as Image, _sfc_main$f as Input, _sfc_main$e as Label, LayoutComponent, _sfc_main$d as MovableView, _sfc_main$c as Navigator, index as PageComponent, index$3 as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$8 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$j as Audio, index$7 as Button, _sfc_main$i as Canvas, _sfc_main$h as Checkbox, _sfc_main$g as CheckboxGroup, _sfc_main$f as Editor, index$8 as Form, index$6 as Icon, index$5 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$4 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$3 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$1 as Video, index$2 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$9 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, usePageRoute, useSubscribe, useUserAction, vibrateLong, vibrateShort};

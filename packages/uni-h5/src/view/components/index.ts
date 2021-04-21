@@ -1,3 +1,3 @@
-import Video from './video/index.vue'
+import Video from './video/index'
 
 export { Video }
