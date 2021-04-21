@@ -64,10 +64,10 @@ const props = {
 type ProgressProps = ExtractPropTypes<typeof props>
 type ProgerssState = ReturnType<typeof useProgressState>
 
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'Progress',
   props,
-  setup(props, { attrs }) {
+  setup(props) {
     const state = useProgressState(props)
 
     _activeAnimation(state, props)
