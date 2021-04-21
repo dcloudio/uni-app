@@ -1,6 +1,6 @@
-import { watchEffect, computed, defineComponent } from 'vue'
+import { watch, watchEffect, computed, defineComponent } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
-import { invokeHook } from '@dcloudio/uni-core'
+import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
   API_ON_TAB_BAR_MID_BUTTON_TAP,
   OnTabBarMidButtonTap,
@@ -8,11 +8,13 @@ import {
 import { getRealPath } from '../../../platform'
 import { useTabBar } from '../../plugin/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
+import { normalizeWindowBottom } from '../../../helpers/cssVar'
 
 export default /*#__PURE__*/ defineComponent({
   name: 'TabBar',
   setup() {
     const tabBar = useTabBar()!
+    useTabBarCssVar(tabBar)
     const onSwitchTab = useSwitchTab(useRoute(), tabBar)
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
     return () => {
@@ -29,6 +31,19 @@ export default /*#__PURE__*/ defineComponent({
     }
   },
 })
+
+function useTabBarCssVar(tabBar: UniApp.TabBarOptions) {
+  watch(
+    () => tabBar.shown,
+    (value) => {
+      updatePageCssVar({
+        '--window-bottom': normalizeWindowBottom(
+          value ? parseInt(tabBar.height!) : 0
+        ),
+      })
+    }
+  )
+}
 
 function useSwitchTab(
   route: RouteLocationNormalizedLoaded,

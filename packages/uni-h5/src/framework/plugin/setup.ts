@@ -1,4 +1,4 @@
-import { extend, invokeArrayFns } from '@vue/shared'
+import { invokeArrayFns } from '@vue/shared'
 import {
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -11,11 +11,13 @@ import {
   onBeforeDeactivate,
   onBeforeMount,
 } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { parseQuery, decodedQuery } from '@dcloudio/uni-shared'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage } from './page'
+import { usePageMeta } from './provide'
+import { updateCurPageCssVar } from '../../helpers/cssVar'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
@@ -36,9 +38,11 @@ export function usePageRoute() {
       url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
     )
   }
+  const { meta } = __uniRoutes[0]
   return {
-    meta: __uniRoutes[0].meta,
+    meta,
     query: query,
+    path: '/' + meta.route,
   }
 }
 
@@ -67,6 +71,10 @@ function setupComponent(comp: any, options: SetupComponentOptions) {
   return comp
 }
 
+function onPageShow(pageMeta: UniApp.PageRouteMeta) {
+  updateCurPageCssVar(pageMeta)
+}
+
 export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
@@ -77,8 +85,10 @@ export function setupPage(comp: any) {
         //初始化时，状态肯定是激活
         instance.__isActive = true
       }
+      const pageMeta = usePageMeta()
       onBeforeMount(() => {
         const { onLoad, onShow } = instance
+        onPageShow(pageMeta)
         onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
         instance.__isVisible = true
         onShow && invokeArrayFns(onShow)
@@ -89,6 +99,7 @@ export function setupPage(comp: any) {
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {
+          onPageShow(pageMeta)
           instance.__isVisible = true
           const { onShow } = instance
           onShow && invokeArrayFns(onShow)
@@ -111,16 +122,23 @@ export function setupApp(comp: any) {
     init: initApp,
     setup(instance) {
       const route = usePageRoute()
-      onBeforeMount(() => {
+      const onLaunch = () => {
         const { onLaunch, onShow } = instance
-        onLaunch &&
-          invokeArrayFns(onLaunch, {
-            path: route.meta.route,
-            query: decodedQuery(route.query),
-            scene: 1001,
-          })
-        onShow && invokeArrayFns(onShow)
-      })
+        const path = route.path.substr(1)
+        const launchOptions = {
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query),
+          scene: 1001,
+        }
+        onLaunch && invokeArrayFns(onLaunch, launchOptions)
+        onShow && invokeArrayFns(onShow, launchOptions)
+      }
+      if (__UNI_FEATURE_PAGES__) {
+        // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
+        useRouter().isReady().then(onLaunch)
+      } else {
+        onBeforeMount(onLaunch)
+      }
       onMounted(() => {
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') {
