@@ -2,7 +2,11 @@ import { computed, defineComponent, Ref, ref } from 'vue'
 import { isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { ICON_PATH_SEARCH, createSvgIconVNode } from '@dcloudio/uni-core'
+import {
+  ICON_PATH_SEARCH,
+  createSvgIconVNode,
+  invokeHook,
+} from '@dcloudio/uni-core'
 import { usePageMeta } from '../../plugin/provide'
 import {
   usePageHeadTransparent,
@@ -37,14 +41,16 @@ export default /*#__PURE__*/ defineComponent({
     const headRef = ref(null)
     const pageMeta = usePageMeta()
     const navigationBar = pageMeta.navigationBar
-    UniServiceJSBridge.emit('onNavigationBarChange', navigationBar.titleText)
+    // UniServiceJSBridge.emit('onNavigationBarChange', navigationBar.titleText)
     const { clazz, style } = usePageHead(navigationBar)
     const buttons = (__UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ &&
       usePageHeadButtons(navigationBar)) as PageHeadButtons
     const searchInput = (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ &&
-      usePageHeadSearchInput(navigationBar)) as PageHeadSearchInput
+      navigationBar.searchInput &&
+      usePageHeadSearchInput(pageMeta)) as PageHeadSearchInput
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ &&
-      usePageHeadTransparent(headRef, navigationBar)
+      navigationBar.type === 'transparent'
+    usePageHeadTransparent(headRef, pageMeta)
     return () => {
       // 单页面无需back按钮
       const backButtonTsx = __UNI_FEATURE_PAGES__
@@ -161,7 +167,16 @@ function createPageHeadTitleTextTsx({
 
 function createPageHeadSearchInputTsx(
   navigationBar: UniApp.PageNavigationBar,
-  { text, focus, composing, onBlur, onFocus, onInput }: PageHeadSearchInput
+  {
+    text,
+    focus,
+    composing,
+    onBlur,
+    onFocus,
+    onInput,
+    onKeyup,
+    onClick,
+  }: PageHeadSearchInput
 ) {
   const {
     color,
@@ -191,17 +206,28 @@ function createPageHeadSearchInputTsx(
         </div>
         {text.value || composing.value ? '' : placeholder}
       </div>
-      <Input
-        focus={autoFocus}
-        disabled={disabled}
-        style={{ color }}
-        placeholder-style={{ color: placeholderColor }}
-        class="uni-page-head-search-input"
-        confirm-type="search"
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onInput={onInput}
-      />
+      {disabled ? (
+        <Input
+          disabled={true}
+          style={{ color }}
+          placeholder-style={{ color: placeholderColor }}
+          class="uni-page-head-search-input"
+          confirm-type="search"
+          onClick={onClick}
+        />
+      ) : (
+        <Input
+          focus={autoFocus}
+          style={{ color }}
+          placeholder-style={{ color: placeholderColor }}
+          class="uni-page-head-search-input"
+          confirm-type="search"
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onInput={onInput}
+          onKeyup={onKeyup}
+        />
+      )}
     </div>
   )
 }
@@ -329,27 +355,45 @@ function usePageHeadButton(
   }
 }
 
-interface PageHeadSearchInput {
-  focus: Ref<boolean>
-  text: Ref<string>
-  composing: Ref<boolean>
-  onFocus: () => void
-  onBlur: () => void
-  onInput: (evt: { detail: { value: string } }) => void
-}
+type PageHeadSearchInput = ReturnType<typeof usePageHeadSearchInput>
 
-function usePageHeadSearchInput(navigationBar: UniApp.PageNavigationBar) {
+function usePageHeadSearchInput({
+  id,
+  navigationBar: { searchInput },
+}: UniApp.PageRouteMeta) {
   const focus = ref(false)
   const text = ref('')
   const composing = ref(false)
-  function onFocus() {
+  const { disabled } = searchInput!
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id, 'onNavigationBarSearchInputClicked')
+    }
+    return {
+      focus,
+      text,
+      composing,
+      onClick,
+    }
+  }
+  const onFocus = () => {
     focus.value = true
+    invokeHook(id, 'onNavigationBarSearchInputFocusChanged', { focus: true })
   }
-  function onBlur() {
+  const onBlur = () => {
     focus.value = false
+    invokeHook(id, 'onNavigationBarSearchInputFocusChanged', { focus: false })
   }
-  function onInput(evt: { detail: { value: string } }) {
+  const onInput = (evt: { detail: { value: string } }) => {
     text.value = evt.detail.value
+    invokeHook(id, 'onNavigationBarSearchInputChanged', { text: text.value })
+  }
+  const onKeyup = (evt: KeyboardEvent) => {
+    if (evt.key === 'Enter' || evt.keyCode === 13) {
+      invokeHook(id, 'onNavigationBarSearchInputConfirmed', {
+        text: text.value,
+      })
+    }
   }
   return {
     focus,
@@ -358,5 +402,6 @@ function usePageHeadSearchInput(navigationBar: UniApp.PageNavigationBar) {
     onFocus,
     onBlur,
     onInput,
+    onKeyup,
   }
 }

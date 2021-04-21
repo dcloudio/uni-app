@@ -57,7 +57,7 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
   removeRouteCaches && removeRouteCache(routeKey)
 }
 
-let id = (history.state && history.state.__id__) || 1
+let id = /*#__PURE__*/ (() => (history.state && history.state.__id__) || 1)()
 
 export function createPageState(type: NavigateType, __id__?: number) {
   return {

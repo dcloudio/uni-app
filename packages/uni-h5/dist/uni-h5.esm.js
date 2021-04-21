@@ -1198,7 +1198,7 @@ function removePage(routeKey, removeRouteCaches = true) {
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
 }
-let id = history.state && history.state.__id__ || 1;
+let id = /* @__PURE__ */ (() => history.state && history.state.__id__ || 1)();
 function createPageState(type, __id__) {
   return {
     __id__: __id__ || ++id,
@@ -7544,12 +7544,10 @@ const props = {
     }
   }
 };
-var index$3 = defineComponent({
+var index$3 = /* @__PURE__ */ defineComponent({
   name: "Progress",
   props,
-  setup(props2, {
-    attrs: attrs2
-  }) {
+  setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
     watch(() => state.realPercent, (newValue, oldValue) => {
@@ -9935,6 +9933,10 @@ function useSubscribe(callback, name) {
     removeSubscribe(name || normalizeEvent(pageId, vm));
   });
 }
+function useOn(name, callback) {
+  onMounted(() => UniViewJSBridge.on(name, callback));
+  onBeforeUnmount(() => UniViewJSBridge.off(name));
+}
 const passiveOptions = passive(false);
 const GestureType = {
   NONE: "none",
@@ -10105,6 +10107,11 @@ const _sfc_main$3 = {
       this.updateProgress();
     },
     buffered(buffered) {
+      if (buffered !== 0) {
+        this.$trigger("progress", {}, {
+          buffered
+        });
+      }
     }
   },
   setup() {
@@ -12968,54 +12975,58 @@ function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const {r, g: g2, b} = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;
 }
-function usePageHeadTransparent(headRef, {titleColor, coverage, backgroundColor}) {
+function usePageHeadTransparent(headRef, {
+  id: id2,
+  navigationBar: {titleColor, coverage, backgroundColor}
+}) {
   let A = 0;
   const rgb = computed(() => hexToRgba(backgroundColor));
   const offset = parseInt(coverage);
+  let titleElem;
+  let transparentElemStyle;
+  const iconElemsStyles = [];
+  const borderRadiusElemsStyles = [];
+  const oldColors = [];
   onMounted(() => {
     const $el = headRef.value;
-    const transparentElemStyle = $el.style;
-    const titleElem = $el.querySelector(".uni-page-head__title");
+    transparentElemStyle = $el.style;
+    titleElem = $el.querySelector(".uni-page-head__title");
     const borderRadiusElems = $el.querySelectorAll(".uni-page-head-btn");
     const iconElems = $el.querySelectorAll(".uni-btn-icon");
-    const iconElemsStyles = [];
     for (let i2 = 0; i2 < iconElems.length; i2++) {
       iconElemsStyles.push(iconElems[i2].style);
     }
-    const oldColors = [];
-    const borderRadiusElemsStyles = [];
     for (let i2 = 0; i2 < borderRadiusElems.length; i2++) {
       const borderRadiusElem = borderRadiusElems[i2];
       oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
       borderRadiusElemsStyles.push(borderRadiusElem.style);
     }
-    A = 0;
-    UniViewJSBridge.on("onPageScroll", ({scrollTop}) => {
-      const alpha = Math.min(scrollTop / offset, 1);
-      if (alpha === 1 && A === 1) {
-        return;
-      }
-      if (alpha > 0.5 && A <= 0.5) {
-        iconElemsStyles.forEach(function(iconElemStyle) {
-          iconElemStyle.color = titleColor;
-        });
-      } else if (alpha <= 0.5 && A > 0.5) {
-        iconElemsStyles.forEach(function(iconElemStyle) {
-          iconElemStyle.color = "#fff";
-        });
-      }
-      A = alpha;
-      if (titleElem) {
-        titleElem.style.opacity = alpha;
-      }
-      const bg = rgb.value;
-      transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
-      borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
-        const oldColor = oldColors[index2];
-        const rgba = oldColor.match(/[\d+\.]+/g);
-        rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
-        borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
+  });
+  useOn(id2 + ".onPageScroll", ({scrollTop}) => {
+    const alpha = Math.min(scrollTop / offset, 1);
+    if (alpha === 1 && A === 1) {
+      return;
+    }
+    if (alpha > 0.5 && A <= 0.5) {
+      iconElemsStyles.forEach(function(iconElemStyle) {
+        iconElemStyle.color = titleColor;
       });
+    } else if (alpha <= 0.5 && A > 0.5) {
+      iconElemsStyles.forEach(function(iconElemStyle) {
+        iconElemStyle.color = "#fff";
+      });
+    }
+    A = alpha;
+    if (titleElem) {
+      titleElem.style.opacity = alpha;
+    }
+    const bg = rgb.value;
+    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
+    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
+      const oldColor = oldColors[index2];
+      const rgba = oldColor.match(/[\d+\.]+/g);
+      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
+      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
     });
   });
 }
@@ -13036,14 +13047,14 @@ var PageHead = /* @__PURE__ */ defineComponent({
     const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = pageMeta.navigationBar;
-    UniServiceJSBridge.emit("onNavigationBarChange", navigationBar.titleText);
     const {
       clazz,
       style
     } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(navigationBar);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && usePageHeadSearchInput();
-    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && usePageHeadTransparent(headRef, navigationBar);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent";
+    usePageHeadTransparent(headRef, pageMeta);
     return () => {
       const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(pageMeta) : null;
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
@@ -13131,7 +13142,9 @@ function createPageHeadSearchInputTsx(navigationBar, {
   composing,
   onBlur,
   onFocus,
-  onInput
+  onInput,
+  onKeyup,
+  onClick
 }) {
   const {
     color,
@@ -13158,9 +13171,19 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), createVNode(_sfc_main$f, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(_sfc_main$f, {
+    disabled: true,
+    style: {
+      color
+    },
+    "placeholder-style": {
+      color: placeholderColor
+    },
+    class: "uni-page-head-search-input",
+    "confirm-type": "search",
+    onClick
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(_sfc_main$f, {
     focus: autoFocus,
-    disabled,
     style: {
       color
     },
@@ -13171,8 +13194,9 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "confirm-type": "search",
     onFocus,
     onBlur,
-    onInput
-  }, null, 8, ["focus", "disabled", "style", "placeholder-style", "onFocus", "onBlur", "onInput"])], 4);
+    onInput,
+    onKeyup
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -13278,26 +13302,62 @@ function usePageHeadButton(btn, isTransparent) {
     iconStyle
   };
 }
-function usePageHeadSearchInput(navigationBar) {
+function usePageHeadSearchInput({
+  id: id2,
+  navigationBar: {
+    searchInput
+  }
+}) {
   const focus = ref(false);
   const text2 = ref("");
   const composing = ref(false);
-  function onFocus() {
+  const {
+    disabled
+  } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, "onNavigationBarSearchInputClicked");
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
     focus.value = true;
-  }
-  function onBlur() {
+    invokeHook(id2, "onNavigationBarSearchInputFocusChanged", {
+      focus: true
+    });
+  };
+  const onBlur = () => {
     focus.value = false;
-  }
-  function onInput(evt) {
+    invokeHook(id2, "onNavigationBarSearchInputFocusChanged", {
+      focus: false
+    });
+  };
+  const onInput = (evt) => {
     text2.value = evt.detail.value;
-  }
+    invokeHook(id2, "onNavigationBarSearchInputChanged", {
+      text: text2.value
+    });
+  };
+  const onKeyup = (evt) => {
+    if (evt.key === "Enter" || evt.keyCode === 13) {
+      invokeHook(id2, "onNavigationBarSearchInputConfirmed", {
+        text: text2.value
+      });
+    }
+  };
   return {
     focus,
     text: text2,
     composing,
     onFocus,
     onBlur,
-    onInput
+    onInput,
+    onKeyup
   };
 }
 var _sfc_main$2 = {
@@ -13620,4 +13680,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$k as Audio, index$6 as Button, _sfc_main$j as Canvas, _sfc_main$i as Checkbox, _sfc_main$h as CheckboxGroup, _sfc_main$g as Editor, index$7 as Form, index$5 as Icon, index$4 as Image, _sfc_main$f as Input, _sfc_main$e as Label, LayoutComponent, _sfc_main$d as MovableView, _sfc_main$c as Navigator, index as PageComponent, index$3 as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$8 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$k as Audio, index$6 as Button, _sfc_main$j as Canvas, _sfc_main$i as Checkbox, _sfc_main$h as CheckboxGroup, _sfc_main$g as Editor, index$7 as Form, index$5 as Icon, index$4 as Image, _sfc_main$f as Input, _sfc_main$e as Label, LayoutComponent, _sfc_main$d as MovableView, _sfc_main$c as Navigator, index as PageComponent, index$3 as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$8 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, usePageRoute, useSubscribe, vibrateLong, vibrateShort};

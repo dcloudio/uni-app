@@ -62,3 +62,8 @@ export function useSubscribe(
     removeSubscribe(name || normalizeEvent(pageId, vm)!)
   })
 }
+
+export function useOn(name: string, callback: (...args: any[]) => any) {
+  onMounted(() => UniViewJSBridge.on(name, callback))
+  onBeforeUnmount(() => UniViewJSBridge.off(name))
+}
