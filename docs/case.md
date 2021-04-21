@@ -517,11 +517,9 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **安咕在家早教：**0-6岁宝宝能力跟踪发展工具，[iOS](https://itunes.apple.com/cn/app/%E5%AE%89%E5%92%95%E5%9C%A8%E5%AE%B6%E6%97%A9%E6%95%99/id1455168710?mt=8)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.angubaby.earlyeduhome)、微信小程序搜索“安咕在家早教”。
 
 **批改网（5+App）：**智能批改，辅助英文教与学，[Android](http://sj.qq.com/myapp/detail.htm?apkName=org.pigai.allround)、[iOS](https://itunes.apple.com/cn/app/id1158628103)
-<!-- 
-**加减号：**专业健身健身App，[Android和iOS](https://www.jvhv.com/wap/pages/index/download/download)、[H5](https://www.jvhv.com)。
 
 **弈客围棋（5+App）：**Appstore体育分类排名前100的棋友App。[iOS](https://apps.apple.com/cn/app/yi-ke-wei-qi-quan-qiu-yi-wan/id988682022)
- -->
+
 **新疆包邮：**新疆网民的专属导购APP。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.h5415379.wux)、[iOS](https://apps.apple.com/cn/app/%E6%96%B0%E7%96%86%E5%8C%85%E9%82%AE/id1433935701)
 
 **蓝鲸鱼旧物回收：** 微信、支付宝搜索“蓝鲸鱼旧物回收”
@@ -533,8 +531,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **差旅管家：** 商旅管理系统，[Android](http://a.app.qq.com/o/simple.jsp?pkgname=com.ceekee.steward)、[iOS](https://itunes.apple.com/cn/app/%E5%B7%AE%E6%97%85%E7%AE%A1%E5%AE%B6-%E4%BC%81%E4%B8%9A%E5%95%86%E6%97%85%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/id1353696740?mt=8)
 
 **易学啦：**易学啦致力于为中学生提供免费的学习资料和更科学的学习方法和技巧。[App码](//m3w.cn/__uni__4af5e77)
-
-**小情绪：**一款随时随地分享您的心情及图片的应用。[App和小程序通用码](//m3w.cn/__uni__2d73605)
 
 **纸塘日记：**一款简约的记录生活的应用。[App码和小程序通用码](//m3w.cn/__uni__55a7b4e)
 
@@ -548,9 +544,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **壹恒出行：**共享汽车，APP内线上找到距离你最近的网点或汽车，[iOS](https://itunes.apple.com/cn/app/%E5%A3%B9%E6%81%92%E5%87%BA%E8%A1%8C/id1455172086?mt=8)、[Android](http://appstore.huawei.com/app/C100659807)
 
-**肆台：**看见世界，让世界看见（使用 nvue 实现的新闻 App）。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.sitai.zlstyle)
-
-**萤火e券：**一个会省钱的购物app。[Android](http://m3w.cn/yheq)
+**萤火e券：**一个会省钱的购物app。[App、H5、小程序通用链接](http://m3w.cn/yheq)
 
 **卷优网：**淘宝天猫优惠券，千万别错过。[Android](http://m3w.cn/jyw)
 
@@ -559,10 +553,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **品悦尚购：**为所有爱美的人提供优质的产品，贴心的服务。[App及微信小程序通用链接](http://m3w.cn/zsg)
 
 **蚂蚁宝充电：**海德龙新能源充电桩服务。使用微信或App扫码，均能快速充电。微信小程序搜索“蚂蚁宝充电”。
-
-**云省购：**导购App，集淘宝、天猫、京东等电商购物平台的优惠信息，让用户花更少的钱买同样的商品。[Android及H5](http://m3w.cn/yunshenggou)
-
-**品聚：**以艺术品为主体的高品质综合性交易平台，[Android和iOS](http://ibuying.com/download)。
 
 **寻寓租房：**一个便捷省事的租房APP，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.xunyu.io)。
 
@@ -585,8 +575,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **要补贴网：**专注于补贴资讯的网站平台，[H5](https://www.yaobutie.com/h5/)、微信小程序搜索“要补贴网”。
 
 **转门面网：**出租转让招商、开店选址、经营策略首选转门面网。[iOS、Android统一发布页](http://m3w.cn/zmmw)
-
-**品沉浮 • 醉一生：**评鉴好茶，[H5](https://tea.skycto.com)。
 
 **闪招：**主推校园应届毕业生就业和为用人单位提供就业人才，[Android](http://appstore.huawei.com/app/C100671609)。
 
@@ -653,8 +641,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **小米手环4自定义表盘软件：** [Android](https://www.coolapk.com/apk/tech.pingx.watchface)、[H5](http://watchface.pingx.tech/h5/)
 
 **斗豆侠：**购物App。[iOS](https://apps.apple.com/cn/app/id1395120441)、[Android](https://obs.myhwclouds.com/vipbean/xgyx_guns/APK/yq.apk)
-
-**RUCY：**衣着搭配。[Android](https://appstore.huawei.com/app/C101136185)、[iOS](https://apps.apple.com/cn/app/rucy/id1479275199)
 
 **BookChat：**通用电子书应用。[iOS](https://apps.apple.com/cn/app/id1481932361)、[Android](https://www.pgyer.com/bookchat-app)
 
