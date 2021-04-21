@@ -43,14 +43,18 @@ export default /*#__PURE__*/ defineComponent({
     const navigationBar = pageMeta.navigationBar
     // UniServiceJSBridge.emit('onNavigationBarChange', navigationBar.titleText)
     const { clazz, style } = usePageHead(navigationBar)
+
     const buttons = (__UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ &&
       usePageHeadButtons(navigationBar)) as PageHeadButtons
+
     const searchInput = (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ &&
       navigationBar.searchInput &&
       usePageHeadSearchInput(pageMeta)) as PageHeadSearchInput
+
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ &&
-      navigationBar.type === 'transparent'
-    usePageHeadTransparent(headRef, pageMeta)
+      navigationBar.type === 'transparent' &&
+      usePageHeadTransparent(headRef, pageMeta)
+
     return () => {
       // 单页面无需back按钮
       const backButtonTsx = __UNI_FEATURE_PAGES__
