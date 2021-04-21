@@ -15,7 +15,9 @@ import { providePageMeta } from '../../plugin/provide'
 export default defineComponent({
   name: 'Page',
   setup(_props, ctx) {
-    const { navigationBar } = providePageMeta()
+    const { navigationBar } = providePageMeta(
+      (history.state && history.state.__id__) || 1
+    )
     return () =>
       createVNode(
         'uni-page',

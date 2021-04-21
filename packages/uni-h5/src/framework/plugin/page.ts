@@ -4,7 +4,6 @@ import {
   computed,
   ConcreteComponent,
   ComponentPublicInstance,
-  ComponentInternalInstance,
 } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 import { invokeHook } from '@dcloudio/uni-core'
@@ -68,25 +67,26 @@ export function createPageState(type: NavigateType, __id__?: number) {
 }
 
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
+  const meta = usePageMeta()
   if (!__UNI_FEATURE_PAGES__) {
     const { path, alias } = __uniRoutes[0]
     return {
-      id,
+      id: meta.id,
       path,
       route: alias!.substr(1),
       fullPath: path,
       options: {},
-      meta: usePageMeta(),
+      meta,
     }
   }
   const { path } = route
   return {
-    id,
+    id: meta.id,
     path: path,
     route: route.meta.route,
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {}, // $route.query
-    meta: usePageMeta(),
+    meta,
   }
 }
 

@@ -12,19 +12,22 @@ export function usePageMeta() {
   return inject<UniApp.PageRouteMeta>(pageMetaKey)!
 }
 
-export function providePageMeta() {
-  const pageMeta = initPageMeta()
+export function providePageMeta(id: number) {
+  const pageMeta = initPageMeta(id)
   provide(pageMetaKey, pageMeta)
   return pageMeta
 }
 
-function initPageMeta() {
+function initPageMeta(id: number) {
   if (__UNI_FEATURE_PAGES__) {
     return reactive<UniApp.PageRouteMeta>(
       normalizePageMeta(
         JSON.parse(
           JSON.stringify(
-            mergePageMeta((useRoute().meta as unknown) as UniApp.PageRouteMeta)
+            mergePageMeta(
+              id,
+              (useRoute().meta as unknown) as UniApp.PageRouteMeta
+            )
           )
         )
       )
@@ -32,7 +35,7 @@ function initPageMeta() {
   }
   return reactive<UniApp.PageRouteMeta>(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[0].meta)))
+      JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))
     )
   )
 }
@@ -42,8 +45,8 @@ const PAGE_META_KEYS: ['navigationBar', 'refreshOptions'] = [
   'refreshOptions',
 ]
 
-function mergePageMeta(pageMeta: UniApp.PageRouteMeta) {
-  const res = Object.assign({}, __uniConfig.globalStyle, pageMeta)
+function mergePageMeta(id: number, pageMeta: UniApp.PageRouteMeta) {
+  const res = Object.assign({ id }, __uniConfig.globalStyle, pageMeta)
   PAGE_META_KEYS.forEach((name) => {
     ;(res as any)[name] = Object.assign(
       {},
@@ -74,6 +77,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
       if (type !== 'transparent' && type !== 'none') {
         offset += NAVBAR_HEIGHT + safeAreaInsets.top
       }
+      refreshOptions.offset = offset
       refreshOptions.height = rpx2px(refreshOptions.height)
       refreshOptions.range = rpx2px(refreshOptions.range)
       pageMeta.refreshOptions = refreshOptions

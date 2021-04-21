@@ -40,6 +40,8 @@ export * from './ui/loadFontFace'
 export * from './ui/navigationBar'
 export * from './ui/pageScrollTo'
 export * from './ui/popup'
+export * from './ui/startPullDownRefresh'
+export * from './ui/stopPullDownRefresh'
 export * from './ui/tabBar'
 
 export {

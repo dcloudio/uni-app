@@ -55,6 +55,15 @@ function invokeHook(vm, name, args) {
         name = vm;
         vm = getCurrentPageVm();
     }
+    else if (typeof vm === 'number') {
+        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        if (page) {
+            vm = page.$vm;
+        }
+        else {
+            vm = getCurrentPageVm();
+        }
+    }
     if (!vm) {
         return;
     }

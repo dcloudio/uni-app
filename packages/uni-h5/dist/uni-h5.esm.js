@@ -625,7 +625,8 @@ function $normalizeNativeEvent(evt) {
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt;
   }
-  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
+  const {tagName} = currentTarget;
+  if (tagName.indexOf("UNI-") !== 0 || tagName === "UNI-PAGE-WRAPPER") {
     return evt;
   }
   const res = createNativeEvent(evt);
@@ -914,8 +915,8 @@ var wxInstance = /* @__PURE__ */ Object.freeze({
   selectAllComponents
 });
 function initAppConfig(appConfig) {
-  const globalProperties = appConfig.globalProperties;
   if (__UNI_FEATURE_WX__) {
+    const globalProperties = appConfig.globalProperties;
     extend(globalProperties, wxInstance);
   }
 }
@@ -935,6 +936,13 @@ function getCurrentPageMeta() {
     return page.$page.meta;
   }
 }
+function getCurrentPageId() {
+  const meta = getCurrentPageMeta();
+  if (meta) {
+    return meta.id;
+  }
+  return -1;
+}
 function getCurrentPageVm() {
   const page = getCurrentPage();
   if (page) {
@@ -946,6 +954,13 @@ function invokeHook(vm, name, args) {
     args = name;
     name = vm;
     vm = getCurrentPageVm();
+  } else if (typeof vm === "number") {
+    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    if (page) {
+      vm = page.$vm;
+    } else {
+      vm = getCurrentPageVm();
+    }
   }
   if (!vm) {
     return;
@@ -1045,23 +1060,23 @@ const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageM
 function usePageMeta() {
   return inject(pageMetaKey);
 }
-function providePageMeta() {
-  const pageMeta = initPageMeta();
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
   provide(pageMetaKey, pageMeta);
   return pageMeta;
 }
-function initPageMeta() {
+function initPageMeta(id2) {
   if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(useRoute().meta)))));
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
   }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(__uniRoutes[0].meta)))));
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
 }
 const PAGE_META_KEYS = [
   "navigationBar",
   "refreshOptions"
 ];
-function mergePageMeta(pageMeta) {
-  const res = Object.assign({}, __uniConfig.globalStyle, pageMeta);
+function mergePageMeta(id2, pageMeta) {
+  const res = Object.assign({id: id2}, __uniConfig.globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
     res[name] = Object.assign({}, __uniConfig.globalStyle[name] || {}, pageMeta[name] || {});
   });
@@ -1084,6 +1099,7 @@ function normalizePageMeta(pageMeta) {
       if (type !== "transparent" && type !== "none") {
         offset += NAVBAR_HEIGHT + out.top;
       }
+      refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
       refreshOptions.range = rpx2px(refreshOptions.range);
       pageMeta.refreshOptions = refreshOptions;
@@ -1190,25 +1206,26 @@ function createPageState(type, __id__) {
   };
 }
 function initPublicPage(route) {
+  const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
     const {path: path2, alias} = __uniRoutes[0];
     return {
-      id,
+      id: meta.id,
       path: path2,
       route: alias.substr(1),
       fullPath: path2,
       options: {},
-      meta: usePageMeta()
+      meta
     };
   }
   const {path} = route;
   return {
-    id,
+    id: meta.id,
     path,
     route: route.meta.route,
     fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
     options: {},
-    meta: usePageMeta()
+    meta
   };
 }
 function initPage(vm) {
@@ -5096,6 +5113,8 @@ const ShowActionSheetOptions = {
 };
 const API_HIDE_TOAST = "hideToast";
 const API_HIDE_LOADING = "hideLoading";
+const API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
+const API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
 const IndexProtocol = {
   index: {
     type: Number,
@@ -12350,6 +12369,14 @@ const hideLoading = defineAsyncApi(API_HIDE_LOADING, () => {
 });
 const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, () => {
 }, ShowActionSheetProtocol, ShowActionSheetOptions);
+const startPullDownRefresh = defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, {resolve}) => {
+  UniServiceJSBridge.publishHandler("startPullDownRefresh", {}, getCurrentPageId());
+  resolve();
+});
+const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {resolve}) => {
+  UniServiceJSBridge.publishHandler("stopPullDownRefresh", {}, getCurrentPageId());
+  resolve();
+});
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -12535,6 +12562,8 @@ var api = /* @__PURE__ */ Object.freeze({
   showLoading,
   hideLoading,
   showActionSheet,
+  startPullDownRefresh,
+  stopPullDownRefresh,
   setTabBarItem,
   setTabBarStyle,
   hideTabBar,
@@ -12547,7 +12576,7 @@ var api = /* @__PURE__ */ Object.freeze({
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
   publishHandler(event2, args, pageId) {
-    window.UniViewJSBridge.subscribeHandler(event2, args, pageId);
+    UniViewJSBridge.subscribeHandler(pageId + "." + event2, args, pageId);
   }
 });
 var TabBar = /* @__PURE__ */ defineComponent({
@@ -13333,7 +13362,7 @@ function usePageRefresh(refreshRef) {
     refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
     refreshControllerElemStyle = refreshControllerElem.style;
     refreshInnerElemStyle = refreshControllerElem.querySelector(".uni-page-refresh-inner").style;
-    UniServiceJSBridge.on(id2 + ".startPullDownRefresh", () => {
+    UniViewJSBridge.subscribe(id2 + ".startPullDownRefresh", () => {
       if (!state) {
         state = REFRESHING;
         addClass();
@@ -13342,7 +13371,7 @@ function usePageRefresh(refreshRef) {
         }, 50);
       }
     });
-    UniServiceJSBridge.on(id2 + ".stopPullDownRefresh", () => {
+    UniViewJSBridge.subscribe(id2 + ".stopPullDownRefresh", () => {
       if (state === REFRESHING) {
         removeClass();
         state = RESTORING;
@@ -13358,8 +13387,8 @@ function usePageRefresh(refreshRef) {
   let startY;
   let canRefresh;
   let state;
-  let distance;
-  let offset;
+  let distance = null;
+  let offset = null;
   function toggleClass(type) {
     if (!state) {
       return;
@@ -13399,7 +13428,7 @@ function usePageRefresh(refreshRef) {
       canRefresh = true;
     }
   }
-  function onTouchmovePassive(ev) {
+  function onTouchmove(ev) {
     if (!canRefresh) {
       return;
     }
@@ -13414,9 +13443,7 @@ function usePageRefresh(refreshRef) {
     if (deltaY < 0 && !state) {
       return;
     }
-    if (ev.cancelable) {
-      ev.preventDefault();
-    }
+    ev.preventDefault();
     if (distance === null) {
       offset = deltaY;
       state = PULLING;
@@ -13478,12 +13505,12 @@ function usePageRefresh(refreshRef) {
     }
   }
   function refreshing() {
-    if (refreshControllerElem) {
+    if (!refreshControllerElem) {
       return;
     }
     refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
     refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
-    UniServiceJSBridge.emit("onPullDownRefresh", {}, id2);
+    invokeHook(id2, "onPullDownRefresh");
   }
   function restoring(callback) {
     if (!refreshControllerElem) {
@@ -13503,7 +13530,7 @@ function usePageRefresh(refreshRef) {
   }
   return {
     onTouchstartPassive,
-    onTouchmovePassive,
+    onTouchmove,
     onTouchend,
     onTouchcancel: onTouchend
   };
@@ -13531,7 +13558,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 var index = defineComponent({
   name: "Page",
   setup(_props, ctx) {
-    const {navigationBar} = providePageMeta();
+    const {navigationBar} = providePageMeta(history.state && history.state.__id__ || 1);
     return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
@@ -13574,4 +13601,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, stopAccelerometer, stopCompass, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$l as Audio, index$5 as Button, _sfc_main$k as Canvas, _sfc_main$j as Checkbox, _sfc_main$i as CheckboxGroup, _sfc_main$h as Editor, index$6 as Form, index$4 as Icon, index$3 as Image, _sfc_main$g as Input, _sfc_main$f as Label, LayoutComponent, _sfc_main$e as MovableView, _sfc_main$d as Navigator, index as PageComponent, _sfc_main$c as Progress, _sfc_main$b as Radio, _sfc_main$a as RadioGroup, ResizeSensor, _sfc_main$9 as RichText, _sfc_main$8 as ScrollView, _sfc_main$7 as Slider, _sfc_main$6 as SwiperItem, _sfc_main$5 as Switch, index$2 as Text, _sfc_main$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, _sfc_main$3 as Video, index$1 as View, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$7 as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, usePageRoute, useSubscribe, vibrateLong, vibrateShort};

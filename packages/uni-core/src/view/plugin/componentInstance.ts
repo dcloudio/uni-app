@@ -10,12 +10,14 @@ export function $normalizeNativeEvent(
   this: ComponentPublicInstance,
   evt: Event
 ) {
-  // TODO 目前内置组件，也会进入以下处理逻辑，是否有影响？
+  // TODO 目前内置组件底层实现，也会进入以下处理逻辑，可能会有影响
   const { currentTarget } = evt
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt
   }
-  if (currentTarget.tagName.indexOf('UNI-') !== 0) {
+  const { tagName } = currentTarget
+  if (tagName.indexOf('UNI-') !== 0 || tagName === 'UNI-PAGE-WRAPPER') {
+    // TODO 下拉刷新事件返回原始event，目前硬编码，后续换其他方案解决
     return evt
   }
 

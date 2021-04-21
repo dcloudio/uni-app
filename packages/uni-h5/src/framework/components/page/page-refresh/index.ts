@@ -1,4 +1,5 @@
 import { onMounted, Ref } from 'vue'
+import { invokeHook } from '@dcloudio/uni-core'
 import { usePageMeta } from '../../../plugin/provide'
 
 function processDeltaY(
@@ -41,8 +42,8 @@ export function usePageRefresh(refreshRef: Ref) {
     refreshInnerElemStyle = (refreshControllerElem.querySelector(
       '.uni-page-refresh-inner'
     ) as HTMLDivElement).style
-
-    UniServiceJSBridge.on(id + '.startPullDownRefresh', () => {
+    // uni.startPullDownRefresh
+    UniViewJSBridge.subscribe(id + '.startPullDownRefresh', () => {
       if (!state) {
         state = REFRESHING
         addClass()
@@ -51,8 +52,8 @@ export function usePageRefresh(refreshRef: Ref) {
         }, 50)
       }
     })
-
-    UniServiceJSBridge.on(id + '.stopPullDownRefresh', () => {
+    // uni.stopPullDownRefresh
+    UniViewJSBridge.subscribe(id + '.stopPullDownRefresh', () => {
       if (state === REFRESHING) {
         removeClass()
         state = RESTORING
@@ -76,8 +77,8 @@ export function usePageRefresh(refreshRef: Ref) {
     | typeof RESTORING
     | null
 
-  let distance: number | null
-  let offset: number | null
+  let distance: number | null = null
+  let offset: number | null = null
 
   function toggleClass(type: 'add' | 'remove') {
     if (!state) {
@@ -124,7 +125,7 @@ export function usePageRefresh(refreshRef: Ref) {
     }
   }
 
-  function onTouchmovePassive(ev: TouchEvent) {
+  function onTouchmove(ev: TouchEvent) {
     if (!canRefresh) {
       return
     }
@@ -141,9 +142,7 @@ export function usePageRefresh(refreshRef: Ref) {
       return
     }
 
-    if (ev.cancelable) {
-      ev.preventDefault()
-    }
+    ev.preventDefault()
 
     if (distance === null) {
       offset = deltaY
@@ -222,14 +221,13 @@ export function usePageRefresh(refreshRef: Ref) {
   }
 
   function refreshing() {
-    if (refreshControllerElem) {
+    if (!refreshControllerElem) {
       return
     }
     refreshControllerElemStyle.transition = '-webkit-transform 0.2s'
     refreshControllerElemStyle.transform =
       'translate3d(-50%, ' + height + 'px, 0)'
-    // Service 执行 refresh
-    UniServiceJSBridge.emit('onPullDownRefresh', {}, id)
+    invokeHook(id, 'onPullDownRefresh')
   }
 
   function restoring(callback: Function) {
@@ -259,7 +257,7 @@ export function usePageRefresh(refreshRef: Ref) {
 
   return {
     onTouchstartPassive,
-    onTouchmovePassive,
+    onTouchmove,
     onTouchend,
     onTouchcancel: onTouchend,
   }
