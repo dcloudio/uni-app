@@ -10,7 +10,7 @@ import {
 
 import PageHead from './pageHead'
 import PageBody from './pageBody'
-import { providePageMeta } from '../../plugin/provide'
+import { providePageMeta } from '../../setup/provide'
 
 export default defineComponent({
   name: 'Page',

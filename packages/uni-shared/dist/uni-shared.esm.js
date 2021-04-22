@@ -288,8 +288,9 @@ function debounce(fn, delay) {
 
 const NAVBAR_HEIGHT = 44;
 const TABBAR_HEIGHT = 50;
+const ON_REACH_BOTTOM_DISTANCE = 50;
 const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, addFont, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, addFont, debounce, decode, decodedQuery, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, scrollTo, stringifyQuery, updateElementStyle };

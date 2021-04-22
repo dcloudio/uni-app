@@ -128,9 +128,11 @@ declare namespace UniApp {
   }
 
   interface PagesJsonPageStyle extends PagesJsonPagePlatformStyle {
+    disableScroll?: boolean
     enablePullDownRefresh?: boolean
     navigationBar: PageNavigationBar
     refreshOptions?: PageRefreshOptions
+    onReachBottomDistance?: number
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id: number

@@ -1,7 +1,7 @@
 import { reactive, provide, inject } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { NAVBAR_HEIGHT } from '@dcloudio/uni-shared'
+import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
 import { PolySymbol, rpx2px } from '@dcloudio/uni-core'
 
 import safeAreaInsets from 'safe-area-insets'
@@ -17,7 +17,26 @@ export function providePageMeta(id: number) {
   provide(pageMetaKey, pageMeta)
   return pageMeta
 }
-
+export function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return useRoute()
+  }
+  const url = location.href
+  const searchPos = url.indexOf('?')
+  const hashPos = url.indexOf('#', searchPos > -1 ? searchPos : 0)
+  let query = {}
+  if (searchPos > -1) {
+    query = parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
+    )
+  }
+  const { meta } = __uniRoutes[0]
+  return {
+    meta,
+    query: query,
+    path: '/' + meta.route,
+  }
+}
 function initPageMeta(id: number) {
   if (__UNI_FEATURE_PAGES__) {
     return reactive<UniApp.PageRouteMeta>(

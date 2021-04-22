@@ -1,2 +1,2 @@
-export { getApp } from './plugin/app'
-export { getCurrentPages } from './plugin/page'
+export { getApp } from './setup/app'
+export { getCurrentPages } from './setup/page'

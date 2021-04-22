@@ -6,7 +6,7 @@ import {
   OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
 import { getRealPath } from '../../../platform'
-import { useTabBar } from '../../plugin/state'
+import { useTabBar } from '../../setup/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
 import { normalizeWindowBottom } from '../../../helpers/cssVar'
 

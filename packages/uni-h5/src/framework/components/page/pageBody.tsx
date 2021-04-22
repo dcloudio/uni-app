@@ -1,6 +1,6 @@
 import { ref, renderSlot, defineComponent, Ref } from 'vue'
 
-import { usePageMeta } from '../../plugin/provide'
+import { usePageMeta } from '../../setup/provide'
 
 import PageRefresh from './page-refresh/component.vue'
 

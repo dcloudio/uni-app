@@ -1,22 +1,14 @@
-import { ComponentPublicInstance } from '@vue/runtime-core'
-import { getCurrentPage, invokeHook } from './page'
+import { getPageVmById, invokeHook } from './page'
 
 export function initSubscribe() {
-  UniServiceJSBridge.on('onAppEnterForeground', () => {
-    const page = getCurrentPage()
-    const showOptions = {
-      path: '',
-      query: {},
+  UniServiceJSBridge.subscribe('onPageScroll', createPageEvent('onPageScroll'))
+}
+
+function createPageEvent(name: string) {
+  return (args: unknown, pageId: number) => {
+    const vm = getPageVmById(pageId)
+    if (vm) {
+      invokeHook(vm, name, args)
     }
-    if (page) {
-      showOptions.path = page.$page.route
-      showOptions.query = page.$page.options
-    }
-    invokeHook(getApp() as ComponentPublicInstance, 'onShow', showOptions)
-    invokeHook(page as ComponentPublicInstance, 'onShow')
-  })
-  UniServiceJSBridge.on('onAppEnterBackground', () => {
-    invokeHook(getApp() as ComponentPublicInstance, 'onHide')
-    invokeHook(getCurrentPage() as ComponentPublicInstance, 'onHide')
-  })
+  }
 }

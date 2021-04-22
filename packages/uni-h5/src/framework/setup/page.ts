@@ -4,11 +4,19 @@ import {
   computed,
   ConcreteComponent,
   ComponentPublicInstance,
+  ComponentInternalInstance,
 } from 'vue'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
-import { invokeHook } from '@dcloudio/uni-core'
+import {
+  invokeHook,
+  disableScrollListener,
+  createScrollListener,
+  CreateScrollListenerOptions,
+} from '@dcloudio/uni-core'
+import { ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import { NavigateType } from '../../service/api/route/utils'
+import { updateCurPageCssVar } from '../../helpers/cssVar'
 
 const SEP = '$$'
 
@@ -175,4 +183,68 @@ function pruneRouteCache(key: string) {
       nextTick(() => pruneCurrentPages())
     }
   })
+}
+
+export function onPageShow(
+  instance: ComponentInternalInstance,
+  pageMeta: UniApp.PageRouteMeta
+) {
+  updateCurPageCssVar(pageMeta)
+  initPageScrollListener(instance, pageMeta)
+}
+
+let curScrollListener: (evt: Event) => any
+function initPageScrollListener(
+  instance: ComponentInternalInstance,
+  pageMeta: UniApp.PageRouteMeta
+) {
+  document.removeEventListener('touchmove', disableScrollListener)
+  if (curScrollListener) {
+    document.removeEventListener('scroll', curScrollListener)
+  }
+  if (pageMeta.disableScroll) {
+    return document.addEventListener('touchmove', disableScrollListener)
+  }
+  const { onPageScroll, onReachBottom } = instance
+  const navigationBarTransparent = pageMeta.navigationBar.type === 'transparent'
+  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
+    return
+  }
+  const opts: CreateScrollListenerOptions = {}
+  const pageId = instance.proxy!.$page.id
+  if (onPageScroll || navigationBarTransparent) {
+    opts.onPageScroll = createOnPageScroll(
+      pageId,
+      onPageScroll,
+      navigationBarTransparent
+    )
+  }
+  if (onReachBottom) {
+    opts.onReachBottomDistance =
+      pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
+    opts.onReachBottom = () =>
+      UniViewJSBridge.publishHandler('onReachBottom', {}, pageId)
+  }
+  curScrollListener = createScrollListener(opts)
+  // 避免监听太早，直接触发了 scroll
+  requestAnimationFrame(() =>
+    document.addEventListener('scroll', curScrollListener)
+  )
+}
+
+function createOnPageScroll(
+  pageId: number,
+  onPageScroll: unknown,
+  navigationBarTransparent: boolean
+) {
+  return (scrollTop: number) => {
+    if (onPageScroll) {
+      UniViewJSBridge.publishHandler('onPageScroll', { scrollTop }, pageId)
+    }
+    if (navigationBarTransparent) {
+      UniViewJSBridge.emit(pageId + '.onPageScroll', {
+        scrollTop,
+      })
+    }
+  }
 }

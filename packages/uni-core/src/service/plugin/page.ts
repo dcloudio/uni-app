@@ -2,6 +2,17 @@ import { isString } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
 import { invokeArrayFns } from '@dcloudio/uni-shared'
 
+export function getPageById(id: number) {
+  return getCurrentPages().find((page) => page.$page.id === id)
+}
+
+export function getPageVmById(id: number) {
+  const page = getPageById(id)
+  if (page) {
+    return (page as any).$vm as ComponentPublicInstance
+  }
+}
+
 export function getCurrentPage() {
   const pages = getCurrentPages()
   const len = pages.length

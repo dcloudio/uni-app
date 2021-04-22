@@ -17,8 +17,8 @@ import {
 
 import { RouterView, useRoute } from 'vue-router'
 
-import { useTabBar } from '../../plugin/state'
-import { useKeepAliveRoute } from '../../plugin/page'
+import { useTabBar } from '../../setup/state'
+import { useKeepAliveRoute } from '../../setup/page'
 
 import TabBar from './tabBar'
 

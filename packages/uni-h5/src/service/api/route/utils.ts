@@ -1,5 +1,5 @@
 import { isNavigationFailure, Router } from 'vue-router'
-import { createPageState } from '../../../framework/plugin/page'
+import { createPageState } from '../../../framework/setup/page'
 
 export type NavigateType =
   | 'navigateTo'

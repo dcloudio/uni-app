@@ -11,39 +11,17 @@ import {
   onBeforeDeactivate,
   onBeforeMount,
 } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { parseQuery, decodedQuery } from '@dcloudio/uni-shared'
+import { useRouter } from 'vue-router'
+import { decodedQuery } from '@dcloudio/uni-shared'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
-import { initPage } from './page'
-import { usePageMeta } from './provide'
-import { updateCurPageCssVar } from '../../helpers/cssVar'
+import { initPage, onPageShow } from './page'
+import { usePageMeta, usePageRoute } from './provide'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any>
   after?: (comp: DefineComponent) => void
-}
-
-export function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return useRoute()
-  }
-  const url = location.href
-  const searchPos = url.indexOf('?')
-  const hashPos = url.indexOf('#', searchPos > -1 ? searchPos : 0)
-  let query = {}
-  if (searchPos > -1) {
-    query = parseQuery(
-      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
-    )
-  }
-  const { meta } = __uniRoutes[0]
-  return {
-    meta,
-    query: query,
-    path: '/' + meta.route,
-  }
 }
 
 function wrapperComponentSetup(
@@ -71,10 +49,6 @@ function setupComponent(comp: any, options: SetupComponentOptions) {
   return comp
 }
 
-function onPageShow(pageMeta: UniApp.PageRouteMeta) {
-  updateCurPageCssVar(pageMeta)
-}
-
 export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
@@ -88,7 +62,7 @@ export function setupPage(comp: any) {
       const pageMeta = usePageMeta()
       onBeforeMount(() => {
         const { onLoad, onShow } = instance
-        onPageShow(pageMeta)
+        onPageShow(instance, pageMeta)
         onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
         instance.__isVisible = true
         onShow && invokeArrayFns(onShow)
@@ -99,7 +73,7 @@ export function setupPage(comp: any) {
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {
-          onPageShow(pageMeta)
+          onPageShow(instance, pageMeta)
           instance.__isVisible = true
           const { onShow } = instance
           onShow && invokeArrayFns(onShow)

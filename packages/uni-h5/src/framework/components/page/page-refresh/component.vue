@@ -36,7 +36,7 @@
   </uni-page-refresh>
 </template>
 <script lang="ts">
-import { usePageMeta } from '../../../plugin/provide'
+import { usePageMeta } from '../../../setup/provide'
 export default {
   name: 'PageRefresh',
   setup() {

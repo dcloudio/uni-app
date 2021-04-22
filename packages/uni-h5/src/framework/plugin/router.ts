@@ -5,7 +5,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from 'vue-router'
-import { getCurrentPages, normalizeRouteKey, removePage } from './page'
+import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
 
 export function initRouter(app: App) {
   app.use(createAppRouter(createRouter(createRouterOptions())))

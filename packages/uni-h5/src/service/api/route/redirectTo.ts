@@ -6,7 +6,7 @@ import {
   RedirectToProtocol,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { removePage, normalizeRouteKey } from '../../../framework/plugin/page'
+import { removePage, normalizeRouteKey } from '../../../framework/setup/page'
 import { navigate } from './utils'
 
 function removeLastPage() {

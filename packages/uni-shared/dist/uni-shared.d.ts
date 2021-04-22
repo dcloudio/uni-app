@@ -47,6 +47,8 @@ export declare function normalizeTarget(el: HTMLElement): {
     offsetLeft: number;
 };
 
+export declare const ON_REACH_BOTTOM_DISTANCE = 50;
+
 export declare function once(fn: (...args: any[]) => any, ctx?: unknown): (...args: any[]) => any;
 
 /**

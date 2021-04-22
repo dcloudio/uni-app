@@ -7,7 +7,7 @@ import {
   createSvgIconVNode,
   invokeHook,
 } from '@dcloudio/uni-core'
-import { usePageMeta } from '../../plugin/provide'
+import { usePageMeta } from '../../setup/provide'
 import {
   usePageHeadTransparent,
   usePageHeadTransparentBackgroundColor,

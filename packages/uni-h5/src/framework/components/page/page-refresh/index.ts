@@ -5,7 +5,7 @@ import {
   API_STOP_PULL_DOWN_REFRESH,
 } from '@dcloudio/uni-api'
 import { useSubscribe } from '@dcloudio/uni-components'
-import { usePageMeta } from '../../../plugin/provide'
+import { usePageMeta } from '../../../setup/provide'
 
 function processDeltaY(
   ev: TouchEvent,

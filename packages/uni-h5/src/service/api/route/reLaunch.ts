@@ -5,7 +5,7 @@ import {
   ReLaunchOptions,
   ReLaunchProtocol,
 } from '@dcloudio/uni-api'
-import { getCurrentPagesMap, removePage } from '../../../framework/plugin/page'
+import { getCurrentPagesMap, removePage } from '../../../framework/setup/page'
 import { navigate } from './utils'
 
 function removeAllPages() {

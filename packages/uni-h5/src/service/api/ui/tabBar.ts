@@ -32,7 +32,7 @@ import {
   ShowTabBarRedDotOptions,
   ShowTabBarRedDotProtocol,
 } from '@dcloudio/uni-api'
-import { useTabBar } from '../../../framework/plugin/state'
+import { useTabBar } from '../../../framework/setup/state'
 const setTabBarItemProps = ['text', 'iconPath', 'selectedIconPath']
 const setTabBarStyleProps = [
   'color',

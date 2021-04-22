@@ -1,6 +1,6 @@
 export { default as plugin } from './framework/plugin'
 
-export * from './framework/plugin/setup'
+export * from './framework/setup'
 
 export * from '@dcloudio/uni-components'
 export * from './view/components'

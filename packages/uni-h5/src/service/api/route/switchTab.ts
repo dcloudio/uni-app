@@ -7,7 +7,7 @@ import {
   SwitchTabProtocol,
 } from '@dcloudio/uni-api'
 import { getCurrentPageVm, invokeHook } from '@dcloudio/uni-core'
-import { getCurrentPagesMap, removePage } from '../../../framework/plugin/page'
+import { getCurrentPagesMap, removePage } from '../../../framework/setup/page'
 import { navigate } from './utils'
 
 function removeNonTabBarPages() {
