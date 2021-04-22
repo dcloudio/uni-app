@@ -1064,9 +1064,11 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
     }, null, 8, ["d", "fill"])
   ], 8, ["width", "height"]);
 }
-const onTouchmovePrevent = withModifiers(() => {
-}, ["prevent"]);
-const onTouchmoveStop = withModifiers(() => {
+const onTouchmovePrevent = /* @__PURE__ */ withModifiers(() => {
+}, [
+  "prevent"
+]);
+const onTouchmoveStop = /* @__PURE__ */ withModifiers(() => {
 }, ["stop"]);
 function disableScrollListener(evt) {
   evt.preventDefault();
@@ -12761,9 +12763,9 @@ function useKeyboard() {
 }
 const VNODE_MASK = /* @__PURE__ */ createVNode("div", {class: "uni-mask"}, null, -1);
 function createRootApp(component, rootState, callback) {
+  const onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(defineComponent({
     setup() {
-      const onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
       return () => (openBlock(), createBlock(component, mergeProps({
         onClose
       }, rootState)));

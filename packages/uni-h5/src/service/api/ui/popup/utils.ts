@@ -25,12 +25,12 @@ export function createRootApp(
   rootState: Record<string, any>,
   callback: (...args: any[]) => void
 ) {
+  const onClose = (...args: any[]) => (
+    (rootState.visible = false), callback.apply(null, args)
+  )
   return createApp(
     defineComponent({
       setup() {
-        const onClose = (...args: any[]) => (
-          (rootState.visible = false), callback.apply(null, args)
-        )
         return () => (
           openBlock(),
           createBlock(
