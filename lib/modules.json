@@ -206,6 +206,7 @@
     "uni.login": true,
     "uni.checkSession": true,
     "uni.getUserInfo": true,
+    "uni.getUserProfile": true,
     "uni.share": true,
     "uni.showShareMenu": true,
     "uni.hideShareMenu": true,
