@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
 import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, onUnmounted, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, plusReady, debounce, PRIMARY_COLOR as PRIMARY_COLOR$1, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
+import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, plusReady, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -2627,6 +2627,8 @@ function createNormalizeUrl(type) {
     }
   };
 }
+const API_HIDE_LOADING = "hideLoading";
+const API_HIDE_TOAST = "hideToast";
 const API_LOAD_FONT_FACE = "loadFontFace";
 const LoadFontFaceProtocol = {
   family: {
@@ -2638,20 +2640,6 @@ const LoadFontFaceProtocol = {
     required: true
   },
   desc: Object
-};
-const API_PAGE_SCROLL_TO = "pageScrollTo";
-const PageScrollToProtocol = {
-  scrollTop: Number,
-  selector: String,
-  duration: Number
-};
-const DEFAULT_DURATION = 300;
-const PageScrollToOptions = {
-  formatArgs: {
-    duration(value, params) {
-      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
-    }
-  }
 };
 const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
@@ -2693,7 +2681,44 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-const PRIMARY_COLOR = "#007aff";
+const API_PAGE_SCROLL_TO = "pageScrollTo";
+const PageScrollToProtocol = {
+  scrollTop: Number,
+  selector: String,
+  duration: Number
+};
+const DEFAULT_DURATION = 300;
+const PageScrollToOptions = {
+  formatArgs: {
+    duration(value, params) {
+      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
+    }
+  }
+};
+const API_SHOW_ACTION_SHEET = "showActionSheet";
+const ShowActionSheetProtocol = {
+  itemList: {
+    type: Array,
+    required: true
+  },
+  itemColor: String
+};
+const ShowActionSheetOptions = {
+  formatArgs: {
+    itemColor: "#000"
+  }
+};
+const API_SHOW_LOADING = "showLoading";
+const ShowLoadingProtocol = {
+  title: String,
+  mask: Boolean
+};
+const ShowLoadingOptions = {
+  formatArgs: {
+    title: "",
+    mask: false
+  }
+};
 const API_SHOW_MODAL = "showModal";
 const ShowModalProtocol = {
   title: String,
@@ -2753,32 +2778,6 @@ const ShowToastOptions = {
     mask: false
   }
 };
-const API_SHOW_LOADING = "showLoading";
-const ShowLoadingProtocol = {
-  title: String,
-  mask: Boolean
-};
-const ShowLoadingOptions = {
-  formatArgs: {
-    title: "",
-    mask: false
-  }
-};
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  itemColor: String
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
-  }
-};
-const API_HIDE_TOAST = "hideToast";
-const API_HIDE_LOADING = "hideLoading";
 const API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
 const API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
 const IndexProtocol = {
@@ -5981,11 +5980,11 @@ const CANCEL_COLOR = "#f43530";
 const ICONS = {
   success: {
     d: ICON_PATH_SUCCESS,
-    c: PRIMARY_COLOR$1
+    c: PRIMARY_COLOR
   },
   success_no_circle: {
     d: ICON_PATH_SUCCESS_NO_CIRCLE,
-    c: PRIMARY_COLOR$1
+    c: PRIMARY_COLOR
   },
   info: {
     d: ICON_PATH_INFO,
@@ -6005,7 +6004,7 @@ const ICONS = {
   },
   download: {
     d: ICON_PATH_DOWNLOAD,
-    c: PRIMARY_COLOR$1
+    c: PRIMARY_COLOR
   },
   search: {
     d: ICON_PATH_SEARCH,
