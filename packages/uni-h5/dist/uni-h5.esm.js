@@ -1254,9 +1254,11 @@ function normalizePageMeta(pageMeta) {
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
     const {navigationBar} = pageMeta;
+    const {titleSize, titleColor, backgroundColor} = navigationBar;
     navigationBar.backButton = pageMeta.isQuit ? false : true;
-    navigationBar.titleColor = navigationBar.titleColor || "#fff";
-    navigationBar.backgroundColor = navigationBar.backgroundColor || "#F7F7F7";
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
   }
   if (__UNI_FEATURE_PAGES__ && history.state) {
     const type = history.state.__type__;
@@ -13568,21 +13570,26 @@ function createPageHeadBdTsx(navigationBar, searchInput) {
   return createPageHeadSearchInputTsx(navigationBar, searchInput);
 }
 function createPageHeadTitleTextTsx({
+  type,
   loading,
+  titleSize,
   titleText,
   titleImage
 }) {
   return createVNode("div", {
     class: "uni-page-head-bd"
   }, [createVNode("div", {
-    style: "{fontSize:titleSize,opacity:type==='transparent'?0:1}",
+    style: {
+      fontSize: titleSize,
+      opacity: type === "transparent" ? 0 : 1
+    },
     class: "uni-page-head__title"
   }, [loading ? createVNode("i", {
     class: "uni-loading"
   }, null) : titleImage ? createVNode("img", {
     src: titleImage,
     class: "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText])]);
+  }, null, 8, ["src"]) : titleText], 4)]);
 }
 function createPageHeadSearchInputTsx(navigationBar, {
   text: text2,

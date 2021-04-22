@@ -104,9 +104,11 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
     const { navigationBar } = pageMeta
+    const { titleSize, titleColor, backgroundColor } = navigationBar
     navigationBar.backButton = pageMeta.isQuit ? false : true
-    navigationBar.titleColor = navigationBar.titleColor || '#fff'
-    navigationBar.backgroundColor = navigationBar.backgroundColor || '#F7F7F7'
+    navigationBar.titleSize = titleSize || '16px'
+    navigationBar.titleColor = titleColor || '#fff'
+    navigationBar.backgroundColor = backgroundColor || '#F7F7F7'
   }
   if (__UNI_FEATURE_PAGES__ && history.state) {
     // 首页执行了redirectTo

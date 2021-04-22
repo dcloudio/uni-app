@@ -92,6 +92,7 @@ declare namespace UniApp {
 
   interface PageNavigationBar {
     type?: 'default' | 'transparent' | 'float' | 'none'
+    titleSize?: string
     titleText?: string
     titleImage?: string
     titleColor?: '#000' | '#fff'

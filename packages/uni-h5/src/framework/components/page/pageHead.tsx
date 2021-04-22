@@ -147,14 +147,16 @@ function createPageHeadBdTsx(
 }
 
 function createPageHeadTitleTextTsx({
+  type,
   loading,
+  titleSize,
   titleText,
   titleImage,
 }: UniApp.PageNavigationBar) {
   return (
     <div class="uni-page-head-bd">
       <div
-        style="{fontSize:titleSize,opacity:type==='transparent'?0:1}"
+        style={{ fontSize: titleSize, opacity: type === 'transparent' ? 0 : 1 }}
         class="uni-page-head__title"
       >
         {loading ? (
