@@ -13502,7 +13502,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
       clazz,
       style: style2
     } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
     return () => {
@@ -13544,6 +13544,7 @@ function createBackButtonTsx(pageMeta) {
 }
 function createButtonsTsx(btns) {
   return btns.map(({
+    onClick,
     btnClass,
     btnStyle,
     btnText,
@@ -13555,12 +13556,13 @@ function createButtonsTsx(btns) {
       key: index2,
       class: btnClass,
       style: btnStyle,
+      onClick,
       "badge-text": badgeText
     }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : createVNode("i", {
       class: "uni-btn-icon",
       style: iconStyle,
       innerHTML: btnText
-    }, null, 12, ["innerHTML"])], 14, ["badge-text"]);
+    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
   });
 }
 function createPageHeadBdTsx(navigationBar, searchInput) {
@@ -13696,7 +13698,10 @@ function usePageHead(navigationBar) {
     style: style2
   };
 }
-function usePageHeadButtons(navigationBar) {
+function usePageHeadButtons({
+  id: id2,
+  navigationBar
+}) {
   const left = [];
   const right = [];
   const {
@@ -13708,7 +13713,7 @@ function usePageHeadButtons(navigationBar) {
     } = navigationBar;
     const isTransparent = type === "transparent";
     const fonts = Object.create(null);
-    buttons.forEach((btn) => {
+    buttons.forEach((btn, index2) => {
       if (btn.fontSrc && !btn.fontFamily) {
         const fontSrc = getRealPath(btn.fontSrc);
         let fontFamily = fonts[fontSrc];
@@ -13719,7 +13724,7 @@ function usePageHeadButtons(navigationBar) {
         }
         btn.fontFamily = fontFamily;
       }
-      const pageHeadBtn = usePageHeadButton(btn, isTransparent);
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
       if (btn.float === "left") {
         left.push(pageHeadBtn);
       } else {
@@ -13732,7 +13737,7 @@ function usePageHeadButtons(navigationBar) {
     right
   };
 }
-function usePageHeadButton(btn, isTransparent) {
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
   const iconStyle = {
     color: btn.color,
     fontSize: btn.fontSize,
@@ -13754,7 +13759,12 @@ function usePageHeadButton(btn, isTransparent) {
     btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text,
     btnIconPath: ICON_PATHS[btn.type],
     badgeText: btn.badgeText,
-    iconStyle
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, "onNavigationBarButtonTap", extend({
+        index: index2
+      }, btn));
+    }
   };
 }
 function usePageHeadSearchInput({

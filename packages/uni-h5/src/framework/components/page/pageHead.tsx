@@ -1,5 +1,5 @@
 import { computed, defineComponent, ref } from 'vue'
-import { isArray } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
@@ -45,7 +45,7 @@ export default /*#__PURE__*/ defineComponent({
     const { clazz, style } = usePageHead(navigationBar)
 
     const buttons = (__UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ &&
-      usePageHeadButtons(navigationBar)) as PageHeadButtons
+      usePageHeadButtons(pageMeta)) as PageHeadButtons
 
     const searchInput = (__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ &&
       navigationBar.searchInput &&
@@ -112,7 +112,15 @@ function createBackButtonTsx(pageMeta: UniApp.PageRouteMeta) {
 function createButtonsTsx(btns: PageHeadButton[]) {
   return btns.map(
     (
-      { btnClass, btnStyle, btnText, btnIconPath, badgeText, iconStyle },
+      {
+        onClick,
+        btnClass,
+        btnStyle,
+        btnText,
+        btnIconPath,
+        badgeText,
+        iconStyle,
+      },
       index
     ) => {
       return (
@@ -120,6 +128,7 @@ function createButtonsTsx(btns: PageHeadButton[]) {
           key={index}
           class={btnClass}
           style={btnStyle}
+          onClick={onClick}
           badge-text={badgeText}
         >
           {btnIconPath ? (
@@ -283,21 +292,10 @@ function usePageHead(navigationBar: UniApp.PageNavigationBar) {
   }
 }
 
-interface PageHeadButton {
-  btnClass: UniApp.ClassObj
-  btnStyle: UniApp.StyleObj
-  btnText: string
-  btnIconPath?: string
-  badgeText?: string
-  iconStyle: UniApp.StyleObj
-}
+type PageHeadButton = ReturnType<typeof usePageHeadButton>
+type PageHeadButtons = ReturnType<typeof usePageHeadButtons>
 
-interface PageHeadButtons {
-  left: PageHeadButton[]
-  right: PageHeadButton[]
-}
-
-function usePageHeadButtons(navigationBar: UniApp.PageNavigationBar) {
+function usePageHeadButtons({ id, navigationBar }: UniApp.PageRouteMeta) {
   const left: PageHeadButton[] = []
   const right: PageHeadButton[] = []
   const { buttons } = navigationBar
@@ -305,7 +303,7 @@ function usePageHeadButtons(navigationBar: UniApp.PageNavigationBar) {
     const { type } = navigationBar
     const isTransparent = type === 'transparent'
     const fonts = Object.create(null)
-    buttons.forEach((btn) => {
+    buttons.forEach((btn, index) => {
       if (btn.fontSrc && !btn.fontFamily) {
         const fontSrc = getRealPath(btn.fontSrc)
         let fontFamily = fonts[fontSrc]
@@ -319,7 +317,7 @@ function usePageHeadButtons(navigationBar: UniApp.PageNavigationBar) {
         }
         btn.fontFamily = fontFamily
       }
-      const pageHeadBtn = usePageHeadButton(btn, isTransparent)
+      const pageHeadBtn = usePageHeadButton(id, index, btn, isTransparent)
       if (btn.float === 'left') {
         left.push(pageHeadBtn)
       } else {
@@ -331,6 +329,8 @@ function usePageHeadButtons(navigationBar: UniApp.PageNavigationBar) {
 }
 
 function usePageHeadButton(
+  pageId: number,
+  index: number,
   btn: UniApp.PageNavigationBarButton,
   isTransparent: boolean
 ) {
@@ -358,6 +358,9 @@ function usePageHeadButton(
     btnIconPath: ICON_PATHS[btn.type],
     badgeText: btn.badgeText,
     iconStyle,
+    onClick() {
+      invokeHook(pageId, 'onNavigationBarButtonTap', extend({ index }, btn))
+    },
   }
 }
 
