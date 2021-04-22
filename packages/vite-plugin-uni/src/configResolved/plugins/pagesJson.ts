@@ -5,7 +5,13 @@ import { Plugin, ResolvedConfig } from 'vite'
 import { parse } from 'jsonc-parser'
 import { camelize, capitalize } from '@vue/shared'
 import { VitePluginUniResolvedOptions } from '../..'
-import { FEATURE_DEFINES, normalizePagesJson } from '../../utils'
+import {
+  BASE_COMPONENTS_STYLE_PATH,
+  FEATURE_DEFINES,
+  H5_API_STYLE_PATH,
+  H5_FRAMEWORK_STYLE_PATH,
+  normalizePagesJson,
+} from '../../utils'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
 
@@ -60,7 +66,7 @@ function parsePagesJson(
   const manifestJsonPath = slash(
     path.resolve(options.inputDir, 'manifest.json.js')
   )
-  const cssCode = generateCssCode(config)
+  const cssCode = generateCssCode(config, options)
 
   return `
 import { extend } from '@vue/shared'  
@@ -99,26 +105,34 @@ function normalizePageIdentifier(path: string) {
   return capitalize(camelize(path.replace(/\//g, '-')))
 }
 
-function generateCssCode(config: ResolvedConfig) {
+function generateCssCode(
+  config: ResolvedConfig,
+  options: VitePluginUniResolvedOptions
+) {
   const define = config.define! as FEATURE_DEFINES
-  const cssFiles = ['@dcloudio/uni-h5/style/framework/base.css']
+  const cssFiles = [H5_FRAMEWORK_STYLE_PATH + 'base.css']
   if (define.__UNI_FEATURE_PAGES__) {
-    cssFiles.push('@dcloudio/uni-h5/style/framework/layout.css')
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'layout.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR__) {
-    cssFiles.push('@dcloudio/uni-h5/style/framework/pageHead.css')
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')
   }
   if (define.__UNI_FEATURE_TABBAR__) {
-    cssFiles.push('@dcloudio/uni-h5/style/framework/tabBar.css')
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'tabBar.css')
   }
   if (define.__UNI_FEATURE_NVUE__) {
-    cssFiles.push('@dcloudio/uni-h5/style/framework/nvue.css')
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'nvue.css')
   }
   if (define.__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    cssFiles.push('@dcloudio/uni-h5/style/framework/pageRefresh.css')
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageRefresh.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
-    cssFiles.push('@dcloudio/uni-components/style/input.css')
+    cssFiles.push(BASE_COMPONENTS_STYLE_PATH + 'input.css')
+  }
+  if (options.command === 'serve') {
+    cssFiles.push(H5_API_STYLE_PATH + 'modal.css')
+    cssFiles.push(H5_API_STYLE_PATH + 'toast.css')
+    cssFiles.push(H5_API_STYLE_PATH + 'action-sheet.css')
   }
   return cssFiles.map((file) => `import '${file}'`).join('\n')
 }

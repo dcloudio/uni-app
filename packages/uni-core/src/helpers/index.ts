@@ -1,5 +1,6 @@
 export * from './util'
 export * from './icon'
+export * from './event'
 export * from './scroll'
 export * from './getRealRoute'
 export * from './updateCssVar'

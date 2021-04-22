@@ -1,6 +1,6 @@
-import { FilterPattern } from '@rollup/pluginutils'
 import debug from 'debug'
 import { Plugin, ResolvedConfig } from 'vite'
+import { FilterPattern } from '@rollup/pluginutils'
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
@@ -55,6 +55,12 @@ const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [APP_VUE_RE, UNI_H5_RE],
 }
 
+const API_STYLES = {
+  showModal: 'modal',
+  showToast: 'toast',
+  showActionSheet: 'action-sheet',
+}
+
 const uniInjectPluginOptions: Partial<InjectOptions> = {
   exclude: [...COMMON_EXCLUDE],
   'uni.': '@dcloudio/uni-h5',
@@ -62,6 +68,18 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
   getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
   UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],
   UniViewJSBridge: ['@dcloudio/uni-h5', 'UniViewJSBridge'],
+  callback(imports, mod) {
+    const style =
+      mod[0] === '@dcloudio/uni-h5' &&
+      API_STYLES[mod[1] as keyof typeof API_STYLES]
+    if (!style) {
+      return
+    }
+    const hash = `${mod[0]}.${mod[1]}`
+    if (!imports.has(hash)) {
+      imports.set(hash, `import '@dcloudio/uni-h5/style/api/${style}.css';`)
+    }
+  },
 }
 
 export function resolvePlugins(

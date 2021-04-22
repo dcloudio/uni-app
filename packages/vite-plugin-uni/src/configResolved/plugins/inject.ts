@@ -40,6 +40,7 @@ type Injectment = string | [string, string]
 
 export interface InjectOptions extends UniPluginFilterOptions {
   sourceMap?: boolean
+  callback?: (imports: Map<any, any>, mod: [string, string]) => void
   [str: string]:
     | Injectment
     | InjectOptions['include']
@@ -60,6 +61,7 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
   delete modules.exclude
   delete modules.sourceMap
   delete modules.devServer
+  delete modules.callback
 
   const modulesMap = new Map<string, string | [string, string]>()
   const namespaceModulesMap = new Map<string, string | [string, string]>()
@@ -83,6 +85,7 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
   )
   const EXTNAMES = EXTNAME_JS.concat(EXTNAME_VUE)
   const sourceMap = options.sourceMap !== false
+  const callback = options.callback
   return {
     name: 'vite:uni-inject',
     transform(code, id) {
@@ -154,6 +157,7 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
                 hash,
                 `import { ${mod[1]} as ${importLocalName} } from '${mod[0]}';`
               )
+              callback && callback(newImports, mod)
             }
           }
 

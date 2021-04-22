@@ -7,11 +7,14 @@ import { isBuiltInComponent } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
-import { debugEasycom, matchEasycom } from '../../utils'
+import {
+  H5_COMPONENTS_STYLE_PATH,
+  BASE_COMPONENTS_STYLE_PATH,
+  debugEasycom,
+  matchEasycom,
+} from '../../utils'
 
-const BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style/'
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
-const H5_COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
 
 const baseComponents = [
   'audio',

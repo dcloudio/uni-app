@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
-import {injectHook, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withModifiers, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, onUnmounted, watchEffect, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, createVNode, withModifiers, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, onUnmounted, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, plusReady, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -1064,6 +1064,10 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
     }, null, 8, ["d", "fill"])
   ], 8, ["width", "height"]);
 }
+const onTouchmovePrevent = withModifiers(() => {
+}, ["prevent"]);
+const onTouchmoveStop = withModifiers(() => {
+}, ["stop"]);
 function disableScrollListener(evt) {
   evt.preventDefault();
 }
@@ -2627,8 +2631,6 @@ function createNormalizeUrl(type) {
     }
   };
 }
-const API_HIDE_LOADING = "hideLoading";
-const API_HIDE_TOAST = "hideToast";
 const API_LOAD_FONT_FACE = "loadFontFace";
 const LoadFontFaceProtocol = {
   family: {
@@ -2695,30 +2697,6 @@ const PageScrollToOptions = {
     }
   }
 };
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  itemColor: String
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
-  }
-};
-const API_SHOW_LOADING = "showLoading";
-const ShowLoadingProtocol = {
-  title: String,
-  mask: Boolean
-};
-const ShowLoadingOptions = {
-  formatArgs: {
-    title: "",
-    mask: false
-  }
-};
 const API_SHOW_MODAL = "showModal";
 const ShowModalProtocol = {
   title: String,
@@ -2751,31 +2729,6 @@ const ShowModalOptions = {
       }
     },
     confirmColor: PRIMARY_COLOR
-  }
-};
-const API_SHOW_TOAST = "showToast";
-const ShowToastProtocol = {
-  title: String,
-  icon: String,
-  image: String,
-  duration: Number,
-  mask: Boolean
-};
-const ShowToastOptions = {
-  formatArgs: {
-    title: "",
-    icon(value, params) {
-      if (["success", "loading", "none"].indexOf(value) === -1) {
-        params.icon = "success";
-      }
-    },
-    image(value, params) {
-      if (value) {
-        params.image = getRealPath(value);
-      }
-    },
-    duration: 1500,
-    mask: false
   }
 };
 const API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
@@ -6121,7 +6074,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$3 = {
+const props$4 = {
   src: {
     type: String,
     default: ""
@@ -6160,7 +6113,7 @@ const IMAGE_MODES = {
 };
 var index$6 = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$3,
+  props: props$4,
   setup(props2, {
     emit
   }) {
@@ -7737,7 +7690,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$2 = {
+const props$3 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7786,7 +7739,7 @@ const props$2 = {
 };
 var index$5 = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$2,
+  props: props$3,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -10787,7 +10740,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   });
 }
-const props$1 = {
+const props$2 = {
   id: {
     type: String,
     default: ""
@@ -10873,7 +10826,7 @@ const props$1 = {
 };
 var index$2 = /* @__PURE__ */ defineComponent({
   name: "Video",
-  props: props$1,
+  props: props$2,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit,
@@ -11082,7 +11035,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props = {
+const props$1 = {
   src: {
     type: String,
     default: ""
@@ -11092,7 +11045,7 @@ const props = {
 };
 var index$1 = /* @__PURE__ */ defineComponent({
   name: "WebView",
-  props,
+  props: props$1,
   setup(props2) {
     const rootRef = ref(null);
     const iframe = document.createElement("iframe");
@@ -12778,6 +12731,178 @@ function getTabBarPageId(url) {
 const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  enter: ["Enter"]
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
+    if (res) {
+      key.value = res;
+    }
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode("div", {class: "uni-mask"}, null, -1);
+function createRootApp(component, rootState, callback) {
+  return createApp(defineComponent({
+    setup() {
+      const onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+      return () => (openBlock(), createBlock(component, mergeProps({
+        onClose
+      }, rootState)));
+    }
+  }));
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const {key, disable} = useKeyboard();
+  watch(() => props2.visible, (value) => visible.value = value);
+  watch(() => visible.value, (value) => disable.value = !value);
+  watchEffect(() => {
+    const {value} = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
+const props = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#007aff"
+  },
+  visible: {
+    type: Boolean
+  }
+};
+var modal = /* @__PURE__ */ defineComponent({
+  props,
+  setup(props2, {
+    emit
+  }) {
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit("close", "cancel"));
+    const confirm = () => (close(), emit("close", "confirm"));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: confirm
+    });
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor
+      } = props2;
+      return createVNode(Transition, {
+        name: "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          onTouchmove: onTouchmovePrevent
+        }, [VNODE_MASK, createVNode("div", {
+          class: "uni-modal"
+        }, [title && createVNode("div", {
+          class: "uni-modal__hd"
+        }, [createVNode("strong", {
+          class: "uni-modal__title",
+          textContent: title
+        }, null, 8, ["textContent"])]), createVNode("div", {
+          class: "uni-modal__bd",
+          onTouchmove: onTouchmoveStop,
+          textContent: content
+        }, null, 40, ["onTouchmove", "textContent"]), createVNode("div", {
+          class: "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          style: {
+            color: props2.cancelColor
+          },
+          class: "uni-modal__btn uni-modal__btn_default",
+          onClick: cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          style: {
+            color: confirmColor
+          },
+          class: "uni-modal__btn uni-modal__btn_primary",
+          onClick: confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+let showModalState;
+let currentShowModalResolve;
+function onModalClose(type) {
+  currentShowModalResolve && currentShowModalResolve({
+    confirm: type === "confirm",
+    cancel: type === "cancel"
+  });
+}
+const showModal = defineAsyncApi(API_SHOW_MODAL, (args, {resolve}) => {
+  currentShowModalResolve = resolve;
+  if (!showModalState) {
+    showModalState = reactive(args);
+    nextTick(() => createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")));
+  } else {
+    extend(showModalState, args);
+  }
+  showModalState.visible = true;
+}, ShowModalProtocol, ShowModalOptions);
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {
     resolve();
@@ -12832,18 +12957,6 @@ const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, ({scrollTop, selector, d
   scrollTo(selector || scrollTop || 0, duration);
   resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-const showModal = defineAsyncApi(API_SHOW_MODAL, () => {
-}, ShowModalProtocol, ShowModalOptions);
-const showToast = defineAsyncApi(API_SHOW_TOAST, () => {
-}, ShowToastProtocol, ShowToastOptions);
-const hideToast = defineAsyncApi(API_HIDE_TOAST, () => {
-});
-const showLoading = defineAsyncApi(API_SHOW_LOADING, () => {
-}, ShowLoadingProtocol, ShowLoadingOptions);
-const hideLoading = defineAsyncApi(API_HIDE_LOADING, () => {
-});
-const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, () => {
-}, ShowActionSheetProtocol, ShowActionSheetOptions);
 const startPullDownRefresh = defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, {resolve}) => {
   UniServiceJSBridge.publishHandler(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
@@ -13018,18 +13131,13 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
+  showModal,
   loadFontFace,
   setNavigationBarColor,
   showNavigationBarLoading,
   hideNavigationBarLoading,
   setNavigationBarTitle,
   pageScrollTo,
-  showModal,
-  showToast,
-  hideToast,
-  showLoading,
-  hideLoading,
-  showActionSheet,
   startPullDownRefresh,
   stopPullDownRefresh,
   setTabBarItem,
@@ -14144,4 +14252,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$j as Audio, index$8 as Button, _sfc_main$i as Canvas, _sfc_main$h as Checkbox, _sfc_main$g as CheckboxGroup, _sfc_main$f as Editor, index$9 as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$a as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$j as Audio, index$8 as Button, _sfc_main$i as Canvas, _sfc_main$h as Checkbox, _sfc_main$g as CheckboxGroup, _sfc_main$f as Editor, index$9 as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$a as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
