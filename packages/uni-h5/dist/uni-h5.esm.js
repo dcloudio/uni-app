@@ -1013,8 +1013,9 @@ function onAppEnterBackground() {
   invokeHook(getApp(), "onHide");
   invokeHook(getCurrentPage(), "onHide");
 }
+const SUBSCRIBE_LIFECYCLE_HOOKS = ["onPageScroll", "onReachBottom"];
 function initSubscribe() {
-  UniServiceJSBridge.subscribe("onPageScroll", createPageEvent("onPageScroll"));
+  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
 }
 function createPageEvent(name) {
   return (args, pageId) => {
@@ -3500,7 +3501,7 @@ function getCurrentPages$1() {
   const curPages = [];
   const pages = currentPagesMap.values();
   for (const page of pages) {
-    if (page.$page.meta.isTabBar) {
+    if (page.__isTabBar) {
       if (page.$.__isActive) {
         curPages.push(page);
       }
@@ -3559,6 +3560,7 @@ function initPage(vm) {
   const page = initPublicPage(route);
   vm.$vm = vm;
   vm.$page = page;
+  vm.__isTabBar = page.meta.isTabBar;
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
 }
 function normalizeRouteKey(path, id2) {
@@ -3592,6 +3594,18 @@ const routeCache = {
     pageCacheMap.forEach(fn);
   }
 };
+function isTabBarVNode(vnode) {
+  if (!hasOwn$1(vnode, "__isTabBar")) {
+    const {component} = vnode;
+    if (component && component.refs.page) {
+      const vm = component.refs.page;
+      if (vm.$page) {
+        vnode.__isTabBar = vm.__isTabBar;
+      }
+    }
+  }
+  return vnode.__isTabBar;
+}
 function pruneRouteCache(key) {
   const pageId = parseInt(key.split(SEP)[1]);
   if (!pageId) {
@@ -3600,11 +3614,8 @@ function pruneRouteCache(key) {
   routeCache.forEach((vnode, key2) => {
     const cPageId = parseInt(key2.split(SEP)[1]);
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__) {
-        const {component} = vnode;
-        if (component && component.refs.page && component.refs.page.$page.meta.isTabBar) {
-          return;
-        }
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
       }
       routeCache.delete(key2);
       routeCache.pruneCacheEntry(vnode);

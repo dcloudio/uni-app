@@ -6,6 +6,7 @@ import {
   ComponentPublicInstance,
   ComponentInternalInstance,
 } from 'vue'
+import { hasOwn } from '@vue/shared'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 import {
   invokeHook,
@@ -38,7 +39,7 @@ export function getCurrentPages() {
   const curPages: Page.PageInstance[] = []
   const pages = currentPagesMap.values()
   for (const page of pages) {
-    if (page.$page.meta.isTabBar) {
+    if ((page as ComponentPublicInstance).__isTabBar) {
       if ((page as ComponentPublicInstance).$.__isActive) {
         curPages.push(page)
       }
@@ -103,6 +104,7 @@ export function initPage(vm: ComponentPublicInstance) {
   const page = initPublicPage(route)
   ;(vm as any).$vm = vm
   ;(vm as any).$page = page
+  vm.__isTabBar = page.meta.isTabBar!
   currentPagesMap.set(
     normalizeRouteKey(page.path, page.id),
     (vm as unknown) as Page.PageInstance
@@ -159,6 +161,19 @@ const routeCache: KeepAliveCache = {
   },
 }
 
+function isTabBarVNode(vnode: VNode): boolean {
+  if (!hasOwn(vnode, '__isTabBar')) {
+    const { component } = vnode
+    if (component && component.refs.page) {
+      const vm = component.refs.page as ComponentPublicInstance
+      if (vm.$page) {
+        ;(vnode as any).__isTabBar = vm.__isTabBar
+      }
+    }
+  }
+  return (vnode as any).__isTabBar
+}
+
 function pruneRouteCache(key: string) {
   const pageId = parseInt(key.split(SEP)[1])
   if (!pageId) {
@@ -167,16 +182,9 @@ function pruneRouteCache(key: string) {
   routeCache.forEach((vnode, key) => {
     const cPageId = parseInt((key as string).split(SEP)[1])
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
         // tabBar keep alive
-        const { component } = vnode
-        if (
-          component &&
-          component.refs.page &&
-          (component.refs.page as ComponentPublicInstance).$page.meta.isTabBar
-        ) {
-          return
-        }
+        return
       }
       routeCache.delete(key)
       routeCache.pruneCacheEntry!(vnode)

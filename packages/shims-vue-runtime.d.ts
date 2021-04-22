@@ -3,6 +3,7 @@ import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $page: Page.PageInstance['$page']
+    __isTabBar: boolean
   }
 
   type LifecycleHook = Function[] | null

@@ -1,7 +1,11 @@
 import { getPageVmById, invokeHook } from './page'
 
+const SUBSCRIBE_LIFECYCLE_HOOKS = ['onPageScroll', 'onReachBottom']
+
 export function initSubscribe() {
-  UniServiceJSBridge.subscribe('onPageScroll', createPageEvent('onPageScroll'))
+  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) =>
+    UniServiceJSBridge.subscribe(name, createPageEvent(name))
+  )
 }
 
 function createPageEvent(name: string) {
