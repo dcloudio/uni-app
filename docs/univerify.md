@@ -165,50 +165,50 @@ uni.login({
 univerifyStyle 数据结构：
 
 ```json
-{
-  "fullScreen": true, // 是否全屏显示，true表示全屏模式，false表示非全屏模式，默认值为false。
-  "backgroundColor": "#ffffff",  // 授权页面背景颜色，默认值：#ffffff  
-  "backgroundImage": "bg.png",  // 背景图片，仅在全屏模式下生效
-  "icon": {  
-      "path": "static/xxx.png" // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo   
-  },  
-  "phoneNum": {  
-      "color": "#000000",  // 手机号文字颜色 默认值：#000000   
-  },  
-  "slogan": {  
-      "color": "#8a8b90",  //  slogan 字体颜色 默认值：#8a8b90  
-  },  
-  "authButton": {  
-      "normalColor": "#3479f5", // 授权按钮正常状态背景颜色 默认值：#3479f5  
-      "highlightColor": "#2861c5",  // 授权按钮按下状态背景颜色 默认值：#2861c5（仅ios支持）  
-      "disabledColor": "#73aaf5",  // 授权按钮不可点击时背景颜色 默认值：#73aaf5（仅ios支持）  
-      "textColor": "#ffffff",  // 授权按钮文字颜色 默认值：#ffffff  
-      "title": "本机号码一键登录" // 授权按钮文案 默认值：“本机号码一键登录”  
-  },  
-  "otherLoginButton": {  
-      "visible": "true", // 是否显示其他登录按钮，默认值：true  
-      "normalColor": "#f8f8f8", // 其他登录按钮正常状态背景颜色 默认值：#f8f8f8  
-      "highlightColor": "#dedede", // 其他登录按钮按下状态背景颜色 默认值：#dedede  
-      "textColor": "#000000", // 其他登录按钮文字颜色 默认值：#000000  
-      "title": "其他登录方式", // 其他登录方式按钮文字 默认值：“其他登录方式”  
-      "borderWidth": "1px",  // 边框宽度 默认值：1px（仅ios支持）  
-      "borderColor": "#c5c5c5"  //边框颜色 默认值： #c5c5c5（仅ios支持）  
-  },  
-  "privacyTerms": {  
-      "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true   
-      "textColor": "#8a8b90", // 文字颜色 默认值：#8a8b90  
-      "termsColor": "#1d4788", //  协议文字颜色 默认值： #1d4788  
-      "prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”  
-      "suffix": "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”  
-      "fontSize":12, // 隐私协议文字大小 (仅android 支持)
-      "privacyItems": [  
-          // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效  
-          {  
-              "url": "https://", // 点击跳转的协议详情页面  
-              "title": "用户服务协议" // 协议名称  
-          }  
-      ]  
-  }  
+{  
+    "fullScreen": "false", // 是否全屏显示，默认值： "false"
+    "backgroundColor": "#ffffff",  // 授权页面背景颜色，默认值：#ffffff
+    "backgroundImage": "", // 全屏显示的背景图片，默认值："" （仅支持本地图片，只有全屏显示时支持）  
+    "icon": {  
+        "path": "static/xxx.png" // 自定义显示在授权框中的logo，仅支持本地图片 默认显示App logo   
+    },  
+    "phoneNum": {  
+        "color": "#202020"  // 手机号文字颜色 默认值：#202020  
+    },  
+    "slogan": {  
+        "color": "#BBBBBB"  //  slogan 字体颜色 默认值：#BBBBBB  
+    },  
+    "authButton": {  
+        "normalColor": "#3479f5", // 授权按钮正常状态背景颜色 默认值：#3479f5  
+        "highlightColor": "#2861c5",  // 授权按钮按下状态背景颜色 默认值：#2861c5（仅ios支持）  
+        "disabledColor": "#73aaf5",  // 授权按钮不可点击时背景颜色 默认值：#73aaf5（仅ios支持）  
+        "textColor": "#ffffff",  // 授权按钮文字颜色 默认值：#ffffff  
+        "title": "本机号码一键登录", // 授权按钮文案 默认值：“本机号码一键登录”  
+        "borderRadius": "24px"	// 授权按钮圆角 默认值："24px" （按钮高度的一半）
+    },  
+    "otherLoginButton": {  
+        "visible": "true", // 是否显示其他登录按钮，默认值：true  
+        "normalColor": "", // 其他登录按钮正常状态背景颜色 默认值：透明 
+        "highlightColor": "", // 其他登录按钮按下状态背景颜色 默认值：透明 
+        "textColor": "#656565", // 其他登录按钮文字颜色 默认值：#656565  
+        "title": "其他登录方式", // 其他登录方式按钮文字 默认值：“其他登录方式”  
+        "borderColor": "",  //边框颜色 默认值：透明（仅iOS支持）  
+        "borderRadius": "0px" // 其他登录按钮圆角 默认值："0px" 
+    },  
+    "privacyTerms": {  
+        "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true   
+        "textColor": "#BBBBBB", // 文字颜色 默认值：#BBBBBB  
+        "termsColor": "#5496E3", //  协议文字颜色 默认值： #5496E3  
+        "prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”  
+        "suffix": "并使用本机号码登录", // 条款后的文案 默认值：“并使用本机号码登录”  
+        "privacyItems": [  
+            // 自定义协议条款，最大支持2个，需要同时设置url和title. 否则不生效  
+            {  
+                "url": "https://", // 点击跳转的协议详情页面  
+                "title": "用户服务协议" // 协议名称  
+            }  
+        ]  
+    }
 }
 ```
 
