@@ -9,6 +9,7 @@ import {
   onMounted,
   SetupContext,
   renderList,
+  onBeforeUnmount,
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
 import { useI18n, initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
@@ -16,7 +17,6 @@ import { getRealPath } from '@dcloudio/uni-platform'
 import { useSubscribe } from '@dcloudio/uni-components'
 import { useCustomEvent } from '@dcloudio/uni-components'
 import { useUserAction } from '@dcloudio/uni-components'
-import { onBeforeUnmount } from '@dcloudio/uni-h5-vue/src'
 
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type UserActionState = ReturnType<typeof useUserAction>['state']
