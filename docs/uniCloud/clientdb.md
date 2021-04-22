@@ -592,6 +592,8 @@ db.collection('comment,user')
 
 ### 查询记录过滤，where条件@where
 
+> 代码块`dbget`
+
 jql对查询条件进行了简化，开发者可以使用`where('a==1||b==2')`来表示字段`a等于1或字段b等于2`。如果不使用jql语法，上述条件需要写成下面这种形式
 
 ```js
@@ -1922,6 +1924,8 @@ const res = await db.collection('score')
 
 ### 新增数据记录add
 
+> 代码块`dbadd`
+
 获取到db的表对象后，通过`add`方法新增数据记录。
 
 方法：collection.add(data)
@@ -2005,6 +2009,9 @@ db.collection("user")
 
 
 ### 删除数据记录remove
+
+> 代码块`dbremove`
+
 获取到db的表对象，然后指定要删除的记录，通过remove方法删除。
 
 注意：如果是非admin账户删除数据，需要在数据库中待操作表的`db schema`中要配置permission权限，赋予delete为true。
@@ -2079,6 +2086,8 @@ db.collection("table1")
 ```
 
 ### 更新数据记录update
+
+> 代码块`dbupdate`
 
 获取到db的表对象，然后指定要更新的记录，通过update方法更新。
 

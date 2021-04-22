@@ -1012,9 +1012,11 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 
 **注意**
 
+- `auth.xxx`均由uni-id提供，依赖于[uni-id公共模块](uniCloud/uni-id.md)
+- `doc.xxx`表示将要查询/修改/删除的每条数据，如果将要访问的数据不满足permission规则将会拒绝执行
 - `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
 - 如果想支持使用多个`action`的用法，可以通过`"'actionRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含名为`actionRequired`的action
-- doc是有客户端条件里面提取的变量，因此create权限内不可使用doc变量，建议使用forceDefaultValue或自定义校验函数实现插入数据的校验。
+- doc是由客户端条件里面提取的变量，可以理解为将要访问的数据，因此create权限内不可使用doc变量，建议使用forceDefaultValue或自定义校验函数实现插入数据的校验。
 
 **权限规则内可以使用的运算符**
 
