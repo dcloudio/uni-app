@@ -1,4 +1,4 @@
-import { onTouchmovePrevent, onTouchmoveStop } from '@dcloudio/uni-core'
+import { onEventPrevent, onEventStop } from '@dcloudio/uni-core'
 import { Transition, defineComponent, ExtractPropTypes } from 'vue'
 import { usePopup, VNODE_MASK } from './utils'
 
@@ -51,7 +51,7 @@ export default /*#__PURE__*/ defineComponent({
       const { title, content, showCancel, confirmText, confirmColor } = props
       return (
         <Transition name="uni-fade">
-          <uni-modal v-show={visible.value} onTouchmove={onTouchmovePrevent}>
+          <uni-modal v-show={visible.value} onTouchmove={onEventPrevent}>
             {VNODE_MASK}
             <div class="uni-modal">
               {title && (
@@ -61,7 +61,7 @@ export default /*#__PURE__*/ defineComponent({
               )}
               <div
                 class="uni-modal__bd"
-                onTouchmove={onTouchmoveStop}
+                onTouchmovePassive={onEventStop}
                 v-text={content}
               ></div>
               <div class="uni-modal__ft">

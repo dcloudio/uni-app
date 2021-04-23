@@ -623,11 +623,9 @@ var safeAreaInsets = {
   offChange
 };
 var out = safeAreaInsets;
-const onTouchmovePrevent = /* @__PURE__ */ withModifiers(() => {
-}, [
-  "prevent"
-]);
-const onTouchmoveStop = /* @__PURE__ */ withModifiers(() => {
+const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
+}, ["prevent"]);
+const onEventStop = /* @__PURE__ */ withModifiers(() => {
 }, ["stop"]);
 function getWindowOffset() {
   const style2 = document.documentElement.style;
@@ -12848,7 +12846,7 @@ var modal = /* @__PURE__ */ defineComponent({
         name: "uni-fade"
       }, {
         default: () => [withDirectives(createVNode("uni-modal", {
-          onTouchmove: onTouchmovePrevent
+          onTouchmove: onEventPrevent
         }, [VNODE_MASK, createVNode("div", {
           class: "uni-modal"
         }, [title && createVNode("div", {
@@ -12858,9 +12856,9 @@ var modal = /* @__PURE__ */ defineComponent({
           textContent: title
         }, null, 8, ["textContent"])]), createVNode("div", {
           class: "uni-modal__bd",
-          onTouchmove: onTouchmoveStop,
+          onTouchmovePassive: onEventStop,
           textContent: content
-        }, null, 40, ["onTouchmove", "textContent"]), createVNode("div", {
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
           class: "uni-modal__ft"
         }, [showCancel && createVNode("div", {
           style: {
@@ -12891,11 +12889,11 @@ const showModal = defineAsyncApi(API_SHOW_MODAL, (args, {resolve}) => {
   currentShowModalResolve = resolve;
   if (!showModalState) {
     showModalState = reactive(args);
-    nextTick(() => createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")));
+    nextTick(() => (createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")), nextTick(() => showModalState.visible = true)));
   } else {
     extend(showModalState, args);
+    showModalState.visible = true;
   }
-  showModalState.visible = true;
 }, ShowModalProtocol, ShowModalOptions);
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {

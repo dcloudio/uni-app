@@ -31,15 +31,18 @@ export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
     if (!showModalState) {
       showModalState = reactive(args as ModalProps)
       // 异步执行，避免干扰 getCurrentInstance
-      nextTick(() =>
-        createRootApp(modal, showModalState, onModalClose).mount(
-          ensureRoot('u-a-m')
+      nextTick(
+        () => (
+          createRootApp(modal, showModalState, onModalClose).mount(
+            ensureRoot('u-a-m')
+          ), //下一帧执行，确保首次显示时有动画效果
+          nextTick(() => (showModalState.visible = true))
         )
       )
     } else {
       extend(showModalState, args)
+      showModalState.visible = true
     }
-    showModalState.visible = true
   },
   ShowModalProtocol,
   ShowModalOptions

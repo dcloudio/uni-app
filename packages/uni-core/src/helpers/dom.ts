@@ -1,10 +1,8 @@
 import { withModifiers } from 'vue'
 import safeAreaInsets from 'safe-area-insets'
 
-export const onTouchmovePrevent = /*#__PURE__*/ withModifiers(() => {}, [
-  'prevent',
-])
-export const onTouchmoveStop = /*#__PURE__*/ withModifiers(() => {}, ['stop'])
+export const onEventPrevent = /*#__PURE__*/ withModifiers(() => {}, ['prevent'])
+export const onEventStop = /*#__PURE__*/ withModifiers(() => {}, ['stop'])
 
 export function getWindowOffset() {
   const style = document.documentElement.style
