@@ -3515,8 +3515,10 @@ function normalizeRouteKey(path, id2) {
 function useKeepAliveRoute() {
   const route = useRoute();
   const routeKey = computed(() => normalizeRouteKey(route.path, history.state.__id__ || 1));
+  const isTabBar = computed(() => route.meta.isTabBar);
   return {
     routeKey,
+    isTabBar,
     routeCache
   };
 }
@@ -3541,16 +3543,7 @@ const routeCache = {
   }
 };
 function isTabBarVNode(vnode) {
-  if (!hasOwn$1(vnode, "__isTabBar")) {
-    const {component} = vnode;
-    if (component && component.refs.page) {
-      const vm = component.refs.page;
-      if (vm.$page) {
-        vnode.__isTabBar = vm.__isTabBar;
-      }
-    }
-  }
-  return vnode.__isTabBar;
+  return vnode.props.type === "tabBar";
 }
 function pruneRouteCache(key) {
   const pageId = parseInt(key.split(SEP)[1]);
@@ -3570,8 +3563,32 @@ function pruneRouteCache(key) {
   });
 }
 function onPageShow(instance2, pageMeta) {
+  updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   initPageScrollListener(instance2, pageMeta);
+}
+function onPageReady(instance2) {
+  const scopeId = getScopeId(instance2);
+  scopeId && updateCurPageBodyScopeId(scopeId);
+}
+function updateCurPageBodyScopeId(scopeId) {
+  const pageBodyEl = document.querySelector("uni-page-body");
+  if (pageBodyEl) {
+    pageBodyEl.setAttribute(scopeId, "");
+  } else if (process.env.NODE_ENV !== "production") {
+    console.warn("uni-page-body not found");
+  }
+}
+function getScopeId(instance2) {
+  return instance2.type.__scopeId;
+}
+let curScopeId;
+function updateBodyScopeId(instance2) {
+  const scopeId = getScopeId(instance2);
+  const {body} = document;
+  curScopeId && body.removeAttribute(curScopeId);
+  scopeId && body.setAttribute(scopeId, "");
+  curScopeId = scopeId;
 }
 let curScrollListener;
 function initPageScrollListener(instance2, pageMeta) {
@@ -3698,13 +3715,14 @@ function setupPage(comp) {
       }
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
-        const {onLoad, onShow} = instance2;
         onPageShow(instance2, pageMeta);
+        const {onLoad, onShow} = instance2;
         onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
         instance2.__isVisible = true;
         onShow && invokeArrayFns$1(onShow);
       });
       onMounted(() => {
+        onPageReady(instance2);
         const {onReady} = instance2;
         onReady && invokeArrayFns$1(onReady);
       });
@@ -12698,14 +12716,13 @@ function removeNonTabBarPages() {
   const keys = pagesMap.keys();
   for (const routeKey of keys) {
     const page = pagesMap.get(routeKey);
-    const pageMeta = page.$page.meta;
-    if (!pageMeta.isTabBar) {
+    if (!page.__isTabBar) {
       removePage(routeKey);
     } else {
       page.$.__isActive = false;
     }
   }
-  if (curTabBarPageVm.$page.meta.isTabBar) {
+  if (curTabBarPageVm.__isTabBar) {
     curTabBarPageVm.$.__isVisible = false;
     invokeHook(curTabBarPageVm, "onHide");
   }
@@ -13447,15 +13464,20 @@ function createTabBarTsx(showTabBar2) {
 function createPageVNode() {
   return createVNode(__uniRoutes[0].component);
 }
-function createRouterViewVNode(keepAliveRoute) {
+function createRouterViewVNode({
+  routeKey,
+  isTabBar,
+  routeCache: routeCache2
+}) {
   return createVNode(RouterView, null, {
     default: withCtx(({
       Component
     }) => [(openBlock(), createBlock(KeepAlive, {
       matchBy: "key",
-      cache: keepAliveRoute.routeCache
+      cache: routeCache2
     }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
-      key: keepAliveRoute.routeKey.value
+      type: isTabBar.value ? "tabBar" : "",
+      key: routeKey.value
     }))], 1032, ["cache"]))]),
     _: 1
   });

@@ -6,7 +6,6 @@ import {
   ComponentPublicInstance,
   ComponentInternalInstance,
 } from 'vue'
-import { hasOwn } from '@vue/shared'
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
 import {
   invokeHook,
@@ -120,8 +119,10 @@ export function useKeepAliveRoute() {
   const routeKey = computed(() =>
     normalizeRouteKey(route.path, history.state.__id__ || 1)
   )
+  const isTabBar = computed(() => route.meta.isTabBar)
   return {
     routeKey,
+    isTabBar,
     routeCache,
   }
 }
@@ -162,16 +163,7 @@ const routeCache: KeepAliveCache = {
 }
 
 function isTabBarVNode(vnode: VNode): boolean {
-  if (!hasOwn(vnode, '__isTabBar')) {
-    const { component } = vnode
-    if (component && component.refs.page) {
-      const vm = component.refs.page as ComponentPublicInstance
-      if (vm.$page) {
-        ;(vnode as any).__isTabBar = vm.__isTabBar
-      }
-    }
-  }
-  return (vnode as any).__isTabBar
+  return vnode.props!.type === 'tabBar'
 }
 
 function pruneRouteCache(key: string) {
@@ -197,8 +189,36 @@ export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
+  updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   initPageScrollListener(instance, pageMeta)
+}
+
+export function onPageReady(instance: ComponentInternalInstance) {
+  const scopeId = getScopeId(instance)
+  scopeId && updateCurPageBodyScopeId(scopeId)
+}
+
+function updateCurPageBodyScopeId(scopeId: string) {
+  const pageBodyEl = document.querySelector('uni-page-body')
+  if (pageBodyEl) {
+    pageBodyEl.setAttribute(scopeId, '')
+  } else if (__DEV__) {
+    console.warn('uni-page-body not found')
+  }
+}
+
+function getScopeId(instance: ComponentInternalInstance) {
+  return (instance.type as any).__scopeId
+}
+
+let curScopeId: string
+function updateBodyScopeId(instance: ComponentInternalInstance) {
+  const scopeId = getScopeId(instance)
+  const { body } = document
+  curScopeId && body.removeAttribute(curScopeId!)
+  scopeId && body.setAttribute(scopeId, '')
+  curScopeId = scopeId!
 }
 
 let curScrollListener: (evt: Event) => any

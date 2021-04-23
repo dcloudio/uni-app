@@ -19,14 +19,13 @@ function removeNonTabBarPages() {
   const keys = pagesMap.keys()
   for (const routeKey of keys) {
     const page = pagesMap.get(routeKey) as ComponentPublicInstance
-    const pageMeta = page.$page.meta
-    if (!pageMeta.isTabBar) {
+    if (!page.__isTabBar) {
       removePage(routeKey)
     } else {
       page.$.__isActive = false
     }
   }
-  if (curTabBarPageVm.$page.meta.isTabBar) {
+  if (curTabBarPageVm.__isTabBar) {
     curTabBarPageVm.$.__isVisible = false
     invokeHook(curTabBarPageVm, 'onHide')
   }

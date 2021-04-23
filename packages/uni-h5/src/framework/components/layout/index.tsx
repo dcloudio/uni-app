@@ -118,19 +118,22 @@ function createPageVNode() {
   return createVNode(__uniRoutes[0].component)
 }
 
-function createRouterViewVNode(
-  keepAliveRoute: ReturnType<typeof useKeepAliveRoute>
-) {
+function createRouterViewVNode({
+  routeKey,
+  isTabBar,
+  routeCache,
+}: ReturnType<typeof useKeepAliveRoute>) {
   return createVNode(RouterView, null, {
     default: withCtx(({ Component }: { Component: unknown }) => [
       (openBlock(),
       createBlock(
         KeepAlive,
-        { matchBy: 'key', cache: keepAliveRoute.routeCache },
+        { matchBy: 'key', cache: routeCache },
         [
           (openBlock(),
           createBlock(resolveDynamicComponent(Component), {
-            key: keepAliveRoute.routeKey.value,
+            type: isTabBar.value ? 'tabBar' : '',
+            key: routeKey.value,
           })),
         ],
         1032 /* PROPS, DYNAMIC_SLOTS */,

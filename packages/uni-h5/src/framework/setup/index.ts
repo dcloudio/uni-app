@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import { decodedQuery } from '@dcloudio/uni-shared'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
-import { initPage, onPageShow } from './page'
+import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
 
 interface SetupComponentOptions {
@@ -61,13 +61,14 @@ export function setupPage(comp: any) {
       }
       const pageMeta = usePageMeta()
       onBeforeMount(() => {
-        const { onLoad, onShow } = instance
         onPageShow(instance, pageMeta)
+        const { onLoad, onShow } = instance
         onLoad && invokeArrayFns(onLoad, decodedQuery(route.query))
         instance.__isVisible = true
         onShow && invokeArrayFns(onShow)
       })
       onMounted(() => {
+        onPageReady(instance)
         const { onReady } = instance
         onReady && invokeArrayFns(onReady)
       })

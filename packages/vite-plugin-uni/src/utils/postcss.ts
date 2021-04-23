@@ -1,4 +1,5 @@
-import { Rule, Declaration, Plugin } from 'postcss'
+import { extend } from '@vue/shared'
+import { rule, Rule, Declaration, Plugin } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
   isBuiltInComponent,
@@ -6,30 +7,73 @@ import {
 } from '@dcloudio/uni-shared'
 
 interface UniAppCssProcessorOptions {
-  page?: boolean
-  unit: string // 目标单位，默认rem
-  unitRatio: number // 单位转换比例，默认10/320
-  unitPrecision: number // 单位精度，默认5
+  page?: string
+  unit?: string // 目标单位，默认rem
+  unitRatio?: number // 单位转换比例，默认10/320
+  unitPrecision?: number // 单位精度，默认5
 }
 
 const defaultUniAppCssProcessorOptions = {
-  page: false,
+  page: 'body',
   unit: 'rem',
   unitRatio: 10 / 320,
   unitPrecision: 5,
 }
 
-function transform(selector: selectorParser.Node) {
-  if (selector.type === 'tag' && isBuiltInComponent(selector.value)) {
-    selector.value = COMPONENT_SELECTOR_PREFIX + selector.value
+const BG_PROPS = [
+  'background',
+  'background-clip',
+  'background-color',
+  'background-image',
+  'background-origin',
+  'background-position',
+  'background-repeat',
+  'background-size',
+  'background-attachment',
+]
+
+function transform(
+  selector: selectorParser.Node,
+  opts: UniAppCssProcessorOptions,
+  state: { bg: boolean }
+) {
+  if (selector.type !== 'tag') {
+    return
+  }
+  const { value } = selector
+  if (isBuiltInComponent(value)) {
+    selector.value = COMPONENT_SELECTOR_PREFIX + value
+  } else if (value === 'page') {
+    const { page } = opts
+    if (!page) {
+      return
+    }
+    selector.value = page
+    if (page !== 'body') {
+      state.bg = true
+    }
+  }
+}
+
+function createBodyBackgroundRule(origRule: Rule) {
+  const bgDecls: Declaration[] = []
+  origRule.walkDecls((decl) => {
+    if (BG_PROPS.indexOf(decl.prop) !== -1) {
+      bgDecls.push(decl.clone())
+    }
+  })
+  if (bgDecls.length) {
+    origRule.after(rule({ selector: 'body' }).append(bgDecls))
   }
 }
 
 function walkRules(opts: UniAppCssProcessorOptions) {
   return (rule: Rule) => {
+    const state = { bg: false }
     rule.selector = selectorParser((selectors) =>
-      selectors.walk((selector) => transform(selector))
+      selectors.walk((selector) => transform(selector, opts, state))
     ).processSync(rule.selector)
+    state.bg && createBodyBackgroundRule(rule)
   }
 }
 
@@ -44,7 +88,7 @@ function toFixed(number: number, precision: number) {
   return (Math.round(wholeNumber / 10) * 10) / multiplier
 }
 
-function walkDecls(opts: UniAppCssProcessorOptions) {
+function walkDecls(opts: Required<UniAppCssProcessorOptions>) {
   return (decl: Declaration) => {
     const { value } = decl
     if (value.indexOf('rpx') === -1 && value.indexOf('upx') === -1) {
@@ -61,18 +105,14 @@ function walkDecls(opts: UniAppCssProcessorOptions) {
 }
 
 export const uniapp = (opts?: UniAppCssProcessorOptions) => {
-  const options = Object.assign(
-    {},
-    defaultUniAppCssProcessorOptions,
-    opts || {}
-  )
+  const options = extend({}, defaultUniAppCssProcessorOptions, opts || {})
   return {
     postcssPlugin: 'uni-app',
     prepare() {
       return {
         OnceExit(root) {
-          root.walkRules(walkRules(options))
           root.walkDecls(walkDecls(options))
+          root.walkRules(walkRules(options))
         },
       }
     },

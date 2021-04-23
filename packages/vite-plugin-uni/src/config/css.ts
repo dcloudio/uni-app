@@ -4,11 +4,14 @@ import { VitePluginUniResolvedOptions } from '..'
 import { uniapp } from '../utils'
 
 export function createCss(
-  _options: VitePluginUniResolvedOptions
+  options: VitePluginUniResolvedOptions
 ): UserConfig['css'] {
   return {
     postcss: {
-      plugins: [uniapp(), autoprefixer()],
+      plugins: [
+        uniapp({ page: options.platform === 'h5' ? 'uni-page-body' : 'body' }),
+        autoprefixer(),
+      ],
     },
     preprocessorOptions: {
       scss: {},

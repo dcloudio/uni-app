@@ -49,6 +49,7 @@ export default /*#__PURE__*/ defineComponent({
     })
     return () => {
       const { title, content, showCancel, confirmText, confirmColor } = props
+      // TODO vue3 似乎有bug，不指定passive时，应该默认加上passive:false，否则浏览器会报警告，先看看vue3 会不会修复，若不修复，可以考虑手动addEventListener
       return (
         <Transition name="uni-fade">
           <uni-modal v-show={visible.value} onTouchmove={onEventPrevent}>
