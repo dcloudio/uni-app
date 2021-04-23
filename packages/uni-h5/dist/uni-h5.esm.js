@@ -6017,7 +6017,7 @@ const props$5 = {
     default: false
   }
 };
-var index$8 = defineComponent({
+var index$8 = /* @__PURE__ */ defineComponent({
   name: "Editor",
   props: props$5,
   setup(props2, {

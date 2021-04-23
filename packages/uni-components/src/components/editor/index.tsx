@@ -456,7 +456,7 @@ const props = {
     default: false,
   },
 }
-export default defineComponent({
+export default /*#__PURE__*/ defineComponent({
   name: 'Editor',
   props,
   setup(props, { emit }) {
