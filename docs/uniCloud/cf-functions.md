@@ -89,7 +89,7 @@ exports.main = async (event, context) => {
 ```js
 'use strict';
 exports.main = async (event, context) => {
-  let clientUA = context.CLIENTUA // 客户端ip信息
+  let clientUA = context.CLIENTUA // 客户端user-agent信息
 }
 ```
 
