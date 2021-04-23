@@ -1,9 +1,10 @@
+import QuillClass from 'quill'
 import { hyphenate } from '@vue/shared'
 
-export default function(Quill) {
+export default function (Quill: typeof QuillClass) {
   const { Scope, Attributor } = Quill.import('parchment')
   const config = {
-    scope: Scope.INLINE
+    scope: Scope.INLINE,
   }
   const font = [
     'font',
@@ -11,10 +12,10 @@ export default function(Quill) {
     'fontStyle',
     'fontVariant',
     'fontWeight',
-    'fontFamily'
+    'fontFamily',
   ]
-  const result = {}
-  font.forEach(name => {
+  const result: Record<string, any> = {}
+  font.forEach((name) => {
     result[`formats/${name}`] = new Attributor.Style(
       name,
       hyphenate(name),

@@ -1,4 +1,6 @@
-export default function(Quill) {
+import QuillClass from 'quill'
+
+export default function (Quill: typeof QuillClass) {
   const Image = Quill.import('formats/image')
   const ATTRIBUTES = [
     'alt',
@@ -6,19 +8,23 @@ export default function(Quill) {
     'width',
     'data-custom',
     'class',
-    'data-local'
+    'data-local',
   ]
-  Image.sanitize = url => url
-  Image.formats = function formats(domNode) {
-    return ATTRIBUTES.reduce(function(formats, attribute) {
+  Image.sanitize = (url: string) => url
+  Image.formats = function formats(domNode: Element) {
+    return ATTRIBUTES.reduce(function (
+      formats: Record<string, any>,
+      attribute
+    ) {
       if (domNode.hasAttribute(attribute)) {
         formats[attribute] = domNode.getAttribute(attribute)
       }
       return formats
-    }, {})
+    },
+    {})
   }
   const format = Image.prototype.format
-  Image.prototype.format = function(name, value) {
+  Image.prototype.format = function (name: string, value: string) {
     if (ATTRIBUTES.indexOf(name) > -1) {
       if (value) {
         this.domNode.setAttribute(name, value)

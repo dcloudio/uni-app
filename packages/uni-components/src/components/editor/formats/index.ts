@@ -1,3 +1,5 @@
+import QuillClass from 'quill'
+
 import divider from './divider'
 import ins from './ins'
 import align from './align'
@@ -9,7 +11,7 @@ import font from './font'
 import text from './text'
 import image from './image'
 
-export function register(Quill) {
+export function register(Quill: typeof QuillClass) {
   const formats = {
     divider,
     ins,
@@ -20,9 +22,11 @@ export function register(Quill) {
     box,
     font,
     text,
-    image
+    image,
   }
   const options = {}
-  Object.values(formats).forEach(value => Object.assign(options, value(Quill)))
+  Object.values(formats).forEach((value) =>
+    Object.assign(options, value(Quill))
+  )
   Quill.register(options, true)
 }

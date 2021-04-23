@@ -1,10 +1,12 @@
-export default function(Quill) {
+import QuillClass from 'quill'
+
+export default function (Quill: typeof QuillClass) {
   const Parchment = Quill.import('parchment')
   const Container = Quill.import('blots/container')
   const ListItem = Quill.import('formats/list/item')
 
   class List extends Container {
-    static create(value) {
+    static create(value: string) {
       const tagName = value === 'ordered' ? 'OL' : 'UL'
       const node = super.create(tagName)
       if (value === 'checked' || value === 'unchecked') {
@@ -13,7 +15,7 @@ export default function(Quill) {
       return node
     }
 
-    static formats(domNode) {
+    static formats(domNode: HTMLElement) {
       if (domNode.tagName === 'OL') return 'ordered'
       if (domNode.tagName === 'UL') {
         if (domNode.hasAttribute('data-checked')) {
@@ -27,10 +29,10 @@ export default function(Quill) {
       return undefined
     }
 
-    constructor(domNode) {
+    constructor(domNode: HTMLElement) {
       super(domNode)
-      const listEventHandler = e => {
-        if (e.target.parentNode !== domNode) return
+      const listEventHandler = (e: Event) => {
+        if ((e.target as HTMLElement).parentNode !== domNode) return
         const format = this.statics.formats(domNode)
         const blot = Parchment.find(e.target)
         if (format === 'checked') {
@@ -43,7 +45,7 @@ export default function(Quill) {
       domNode.addEventListener('click', listEventHandler)
     }
 
-    format(name, value) {
+    format(name: string, value: string) {
       if (this.children.length > 0) {
         this.children.tail.format(name, value)
       }
@@ -54,7 +56,7 @@ export default function(Quill) {
       return { [this.statics.blotName]: this.statics.formats(this.domNode) }
     }
 
-    insertBefore(blot, ref) {
+    insertBefore(blot: any, ref: any) {
       if (blot instanceof ListItem) {
         super.insertBefore(blot, ref)
       } else {
@@ -64,7 +66,7 @@ export default function(Quill) {
       }
     }
 
-    optimize(context) {
+    optimize(context: any) {
       super.optimize(context)
       const next = this.next
       if (
@@ -80,7 +82,7 @@ export default function(Quill) {
       }
     }
 
-    replace(target) {
+    replace(target: any) {
       if (target.statics.blotName !== this.statics.blotName) {
         const item = Parchment.create(this.statics.defaultChild)
         target.moveChildren(item)
@@ -96,6 +98,6 @@ export default function(Quill) {
   List.allowedChildren = [ListItem]
 
   return {
-    'formats/list': List
+    'formats/list': List,
   }
 }

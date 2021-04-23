@@ -3665,7 +3665,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$a = {
+var index$b = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -3988,7 +3988,7 @@ var subscriber = {
 function hideKeyboard$1() {
   document.activeElement.blur();
 }
-function iosHideKeyboard() {
+function iosHideKeyboard$1() {
 }
 var keyboard = {
   name: "Keyboard",
@@ -4028,7 +4028,7 @@ var keyboard = {
           hideKeyboard$1();
         };
         UniViewJSBridge.subscribe("hideKeyboard", this.hideKeyboardTemp);
-        document.addEventListener("click", iosHideKeyboard, false);
+        document.addEventListener("click", iosHideKeyboard$1, false);
       });
       el.addEventListener("blur", this.onKeyboardHide.bind(this));
     },
@@ -4083,7 +4083,7 @@ var keyboard = {
     },
     onKeyboardHide() {
       UniViewJSBridge.unsubscribe("hideKeyboard", this.hideKeyboardTemp);
-      document.removeEventListener("click", iosHideKeyboard, false);
+      document.removeEventListener("click", iosHideKeyboard$1, false);
       if (String(navigator.vendor).indexOf("Apple") === 0) {
         document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
       }
@@ -4153,7 +4153,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$j = {
+const _sfc_main$i = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4278,7 +4278,7 @@ const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4308,7 +4308,7 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$j.render = _sfc_render$j;
+_sfc_main$i.render = _sfc_render$i;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4393,7 +4393,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -4430,7 +4430,7 @@ function provideForm(emit) {
   });
   return fields;
 }
-var index$8 = /* @__PURE__ */ defineComponent({
+var index$9 = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4543,7 +4543,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$i = {
+const _sfc_main$h = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -5045,7 +5045,7 @@ const _hoisted_1$a = {
   height: "150"
 };
 const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
@@ -5061,8 +5061,8 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$i.render = _sfc_render$i;
-const _sfc_main$h = {
+_sfc_main$h.render = _sfc_render$h;
+const _sfc_main$g = {
   name: "Checkbox",
   mixins: [emitter, listeners],
   props: {
@@ -5139,7 +5139,7 @@ const _sfc_main$h = {
   }
 };
 const _hoisted_1$9 = {class: "uni-checkbox-wrapper"};
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
@@ -5152,8 +5152,8 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$h.render = _sfc_render$h;
-const _sfc_main$g = {
+_sfc_main$g.render = _sfc_render$g;
+const _sfc_main$f = {
   name: "CheckboxGroup",
   mixins: [emitter, listeners],
   props: {
@@ -5219,12 +5219,51 @@ const _sfc_main$g = {
     }
   }
 };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$g.render = _sfc_render$g;
+_sfc_main$f.render = _sfc_render$f;
+function useCustomEvent(ref2, emit) {
+  return (name, evt, detail) => {
+    emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
+let resetTimer;
+function iosHideKeyboard() {
+}
+function useKeyboard$1(props2, elRef, trigger) {
+  function initKeyboard(el) {
+    el.addEventListener("focus", () => {
+      clearTimeout(resetTimer);
+      document.addEventListener("click", iosHideKeyboard, false);
+    });
+    const onKeyboardHide = () => {
+      document.removeEventListener("click", iosHideKeyboard, false);
+      if (String(navigator.vendor).indexOf("Apple") === 0) {
+        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
+      }
+    };
+    el.addEventListener("blur", () => {
+      onKeyboardHide();
+    });
+  }
+  onMounted(() => {
+    const el = elRef.value;
+    initKeyboard(el);
+  });
+}
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -5607,335 +5646,396 @@ function register(Quill) {
   Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
   Quill.register(options, true);
 }
-const _sfc_main$f = {
-  name: "Editor",
-  mixins: [subscriber, emitter, keyboard],
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    readOnly: {
-      type: [Boolean, String],
-      default: false
-    },
-    placeholder: {
-      type: String,
-      default: ""
-    },
-    showImgSize: {
-      type: [Boolean, String],
-      default: false
-    },
-    showImgToolbar: {
-      type: [Boolean, String],
-      default: false
-    },
-    showImgResize: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data() {
-    return {
-      quillReady: false
+const scripts = {};
+function loadScript(globalName, src, callback) {
+  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
+  if (globalObject) {
+    callback();
+    return;
+  }
+  let callbacks2 = scripts[src];
+  if (!callbacks2) {
+    callbacks2 = scripts[src] = [];
+    const script = document.createElement("script");
+    script.src = src;
+    document.body.appendChild(script);
+    script.onload = function() {
+      callbacks2.forEach((callback2) => callback2());
+      delete scripts[src];
     };
-  },
-  computed: {},
-  watch: {
-    readOnly(value) {
-      if (this.quillReady) {
-        const quill = this.quill;
-        quill.enable(!value);
-        if (!value) {
-          quill.blur();
+  }
+  callbacks2.push(callback);
+}
+function useQuill(props2, rootRef, trigger) {
+  let quillReady;
+  let skipMatcher;
+  let quill;
+  watch(() => props2.readOnly, (value) => {
+    if (quillReady) {
+      quill.enable(!value);
+      if (!value) {
+        quill.blur();
+      }
+    }
+  });
+  watch(() => props2.placeholder, (value) => {
+    if (quillReady) {
+      quill.root.setAttribute("data-placeholder", value);
+    }
+  });
+  function html2delta(html) {
+    const tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
+    let content = "";
+    let disable;
+    HTMLParser(html, {
+      start: function(tag, attrs2, unary) {
+        if (!tags.includes(tag)) {
+          disable = !unary;
+          return;
         }
-      }
-    },
-    placeholder(value) {
-      if (this.quillReady) {
-        this.quill.root.setAttribute("data-placeholder", value);
-      }
-    }
-  },
-  mounted() {
-    const imageResizeModules = [];
-    if (this.showImgSize) {
-      imageResizeModules.push("DisplaySize");
-    }
-    if (this.showImgToolbar) {
-      imageResizeModules.push("Toolbar");
-    }
-    if (this.showImgResize) {
-      imageResizeModules.push("Resize");
-    }
-    this.loadQuill(() => {
-      if (imageResizeModules.length) {
-        this.loadImageResizeModule(() => {
-          this.initQuill(imageResizeModules);
-        });
-      } else {
-        this.initQuill(imageResizeModules);
+        disable = false;
+        const arrts = attrs2.map(({
+          name,
+          value
+        }) => `${name}="${value}"`).join(" ");
+        const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
+        content += start;
+      },
+      end: function(tag) {
+        if (!disable) {
+          content += `</${tag}>`;
+        }
+      },
+      chars: function(text2) {
+        if (!disable) {
+          content += text2;
+        }
       }
     });
-  },
-  methods: {
-    _handleSubscribe({
-      type,
-      data
-    }) {
-      const {options, callbackId} = data;
-      const quill = this.quill;
-      const Quill = window.Quill;
-      let res;
-      let range;
-      let errMsg;
-      if (this.quillReady) {
-        switch (type) {
-          case "format":
-            {
-              let {name = "", value = false} = options;
-              range = quill.getSelection(true);
-              let format = quill.getFormat(range)[name] || false;
-              if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
-                value = !format;
-              } else if (name === "direction") {
-                value = value === "rtl" && format ? false : value;
-                const align2 = quill.getFormat(range).align;
-                if (value === "rtl" && !align2) {
-                  quill.format("align", "right", Quill.sources.USER);
-                } else if (!value && align2 === "right") {
-                  quill.format("align", false, Quill.sources.USER);
-                }
-              } else if (name === "indent") {
-                const rtl = quill.getFormat(range).direction === "rtl";
-                value = value === "+1";
-                if (rtl) {
-                  value = !value;
-                }
-                value = value ? "+1" : "-1";
-              } else {
-                if (name === "list") {
-                  value = value === "check" ? "unchecked" : value;
-                  format = format === "checked" ? "unchecked" : format;
-                }
-                value = format && format !== (value || false) || !format && value ? value : !format;
-              }
-              quill.format(name, value, Quill.sources.USER);
-            }
-            break;
-          case "insertDivider":
-            range = quill.getSelection(true);
-            quill.insertText(range.index, "\n", Quill.sources.USER);
-            quill.insertEmbed(range.index + 1, "divider", true, Quill.sources.USER);
-            quill.setSelection(range.index + 2, Quill.sources.SILENT);
-            break;
-          case "insertImage":
-            {
-              range = quill.getSelection(true);
-              const {src = "", alt = "", width = "", height = "", extClass = "", data: data2 = {}} = options;
-              const path = this.$getRealPath(src);
-              quill.insertEmbed(range.index, "image", path, Quill.sources.USER);
-              const local = /^(file|blob):/.test(path) ? path : false;
-              quill.formatText(range.index, 1, "data-local", local);
-              quill.formatText(range.index, 1, "alt", alt);
-              quill.formatText(range.index, 1, "width", width);
-              quill.formatText(range.index, 1, "height", height);
-              quill.formatText(range.index, 1, "class", extClass);
-              quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
-              quill.setSelection(range.index + 1, Quill.sources.SILENT);
-            }
-            break;
-          case "insertText":
-            {
-              range = quill.getSelection(true);
-              const {text: text2 = ""} = options;
-              quill.insertText(range.index, text2, Quill.sources.USER);
-              quill.setSelection(range.index + text2.length, 0, Quill.sources.SILENT);
-            }
-            break;
-          case "setContents":
-            {
-              const {delta, html} = options;
-              if (typeof delta === "object") {
-                quill.setContents(delta, Quill.sources.SILENT);
-              } else if (typeof html === "string") {
-                quill.setContents(this.html2delta(html), Quill.sources.SILENT);
-              } else {
-                errMsg = "contents is missing";
-              }
-            }
-            break;
-          case "getContents":
-            res = this.getContents();
-            break;
-          case "clear":
-            quill.setContents([]);
-            break;
-          case "removeFormat":
-            {
-              range = quill.getSelection(true);
-              const parchment = Quill.import("parchment");
-              if (range.length) {
-                quill.removeFormat(range, Quill.sources.USER);
-              } else {
-                Object.keys(quill.getFormat(range)).forEach((key) => {
-                  if (parchment.query(key, parchment.Scope.INLINE)) {
-                    quill.format(key, false);
-                  }
-                });
-              }
-            }
-            break;
-          case "undo":
-            quill.history.undo();
-            break;
-          case "redo":
-            quill.history.redo();
-            break;
-        }
-        this.updateStatus(range);
-      } else {
-        errMsg = "not ready";
-      }
-      if (callbackId) {
-        UniViewJSBridge.publishHandler("onEditorMethodCallback", {
-          callbackId,
-          data: Object.assign({}, res, {
-            errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
-          })
-        }, this.$page.id);
-      }
-    },
-    loadQuill(callback) {
-      if (typeof window.Quill === "function") {
-        if (typeof callback === "function") {
-          callback();
-        }
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = window.plus ? "./__uniappquill.js" : "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-      document.body.appendChild(script);
-      script.onload = callback;
-    },
-    loadImageResizeModule(callback) {
-      if (typeof window.ImageResize === "function") {
-        if (typeof callback === "function") {
-          callback();
-        }
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = window.plus ? "./__uniappquillimageresize.js" : "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-      document.body.appendChild(script);
-      script.onload = callback;
-    },
-    initQuill(imageResizeModules) {
-      const Quill = window.Quill;
-      register(Quill);
-      const options = {
-        toolbar: false,
-        readOnly: this.readOnly,
-        placeholder: this.placeholder,
-        modules: {}
-      };
-      if (imageResizeModules.length) {
-        Quill.register("modules/ImageResize", window.ImageResize.default);
-        options.modules.ImageResize = {
-          modules: imageResizeModules
-        };
-      }
-      const quill = this.quill = new Quill(this.$el, options);
-      const $el = quill.root;
-      const events = ["focus", "blur", "input"];
-      events.forEach((name) => {
-        $el.addEventListener(name, ($event) => {
-          if (name === "input") {
-            $event.stopPropagation();
-          } else {
-            this.$trigger(name, $event, this.getContents());
-          }
-        });
-      });
-      quill.on(Quill.events.TEXT_CHANGE, () => {
-        this.$trigger("input", {}, this.getContents());
-      });
-      quill.on(Quill.events.SELECTION_CHANGE, this.updateStatus.bind(this));
-      quill.on(Quill.events.SCROLL_OPTIMIZE, () => {
-        const range = quill.selection.getRange()[0];
-        this.updateStatus(range);
-      });
-      quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-        if (this.skipMatcher) {
-          return delta;
-        }
-        delta.ops = delta.ops.filter(({insert}) => typeof insert === "string").map(({insert}) => ({insert}));
-        return delta;
-      });
-      this.initKeyboard($el);
-      this.quillReady = true;
-      this.$trigger("ready", event, {});
-    },
-    getContents() {
-      const quill = this.quill;
-      const html = quill.root.innerHTML;
-      const text2 = quill.getText();
-      const delta = quill.getContents();
-      return {
-        html,
-        text: text2,
-        delta
-      };
-    },
-    html2delta(html) {
-      const tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
-      let content = "";
-      let disable;
-      HTMLParser(html, {
-        start: function(tag, attrs2, unary) {
-          if (!tags.includes(tag)) {
-            disable = !unary;
-            return;
-          }
-          disable = false;
-          const arrts = attrs2.map(({name, value}) => `${name}="${value}"`).join(" ");
-          const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
-          content += start;
-        },
-        end: function(tag) {
-          if (!disable) {
-            content += `</${tag}>`;
-          }
-        },
-        chars: function(text2) {
-          if (!disable) {
-            content += text2;
-          }
-        }
-      });
-      this.skipMatcher = true;
-      const delta = this.quill.clipboard.convert(content);
-      this.skipMatcher = false;
-      return delta;
-    },
-    updateStatus(range) {
-      const status = range ? this.quill.getFormat(range) : {};
-      const keys = Object.keys(status);
-      if (keys.length !== Object.keys(this.__status || {}).length || keys.find((key) => status[key] !== this.__status[key])) {
-        this.__status = status;
-        this.$trigger("statuschange", {}, status);
-      }
+    skipMatcher = true;
+    const delta = quill.clipboard.convert(content);
+    skipMatcher = false;
+    return delta;
+  }
+  function getContents() {
+    const html = quill.root.innerHTML;
+    const text2 = quill.getText();
+    const delta = quill.getContents();
+    return {
+      html,
+      text: text2,
+      delta
+    };
+  }
+  let oldStatus = {};
+  function updateStatus(range) {
+    const status = range ? quill.getFormat(range) : {};
+    const keys = Object.keys(status);
+    if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
+      oldStatus = status;
+      trigger("statuschange", {}, status);
     }
   }
-};
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-editor", mergeProps({
-    id: $props.id,
-    class: "ql-container"
-  }, _ctx.$attrs), null, 16, ["id"]);
+  function initQuill(imageResizeModules) {
+    const Quill = window.Quill;
+    register(Quill);
+    const options = {
+      toolbar: false,
+      readOnly: props2.readOnly,
+      placeholder: props2.placeholder
+    };
+    if (imageResizeModules.length) {
+      Quill.register("modules/ImageResize", window.ImageResize.default);
+      options.modules = {
+        ImageResize: {
+          modules: imageResizeModules
+        }
+      };
+    }
+    const rootEl = rootRef.value;
+    quill = new Quill(rootEl, options);
+    const $el = quill.root;
+    const events = ["focus", "blur", "input"];
+    events.forEach((name) => {
+      $el.addEventListener(name, ($event) => {
+        if (name === "input") {
+          $event.stopPropagation();
+        } else {
+          trigger(name, $event, getContents());
+        }
+      });
+    });
+    quill.on("text-change", () => {
+      trigger("input", {}, getContents());
+    });
+    quill.on("selection-change", updateStatus);
+    quill.on("scroll-optimize", () => {
+      const range = quill.selection.getRange()[0];
+      updateStatus(range);
+    });
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      if (skipMatcher) {
+        return delta;
+      }
+      if (delta.ops) {
+        delta.ops = delta.ops.filter(({
+          insert
+        }) => typeof insert === "string").map(({
+          insert
+        }) => ({
+          insert
+        }));
+      }
+      return delta;
+    });
+    quillReady = true;
+    trigger("ready", {}, {});
+  }
+  onMounted(() => {
+    const imageResizeModules = [];
+    if (props2.showImgSize) {
+      imageResizeModules.push("DisplaySize");
+    }
+    if (props2.showImgToolbar) {
+      imageResizeModules.push("Toolbar");
+    }
+    if (props2.showImgResize) {
+      imageResizeModules.push("Resize");
+    }
+    const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
+    loadScript(window.Quill, quillSrc, () => {
+      if (imageResizeModules.length) {
+        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
+        loadScript(window.ImageResize, imageResizeSrc, () => {
+          initQuill(imageResizeModules);
+        });
+      } else {
+        initQuill(imageResizeModules);
+      }
+    });
+  });
+  useSubscribe((type, data) => {
+    const {
+      options,
+      callbackId
+    } = data;
+    let res;
+    let range;
+    let errMsg;
+    if (quillReady) {
+      const Quill = window.Quill;
+      switch (type) {
+        case "format":
+          {
+            let {
+              name = "",
+              value = false
+            } = options;
+            range = quill.getSelection(true);
+            let format = quill.getFormat(range)[name] || false;
+            if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
+              value = !format;
+            } else if (name === "direction") {
+              value = value === "rtl" && format ? false : value;
+              const align2 = quill.getFormat(range).align;
+              if (value === "rtl" && !align2) {
+                quill.format("align", "right", "user");
+              } else if (!value && align2 === "right") {
+                quill.format("align", false, "user");
+              }
+            } else if (name === "indent") {
+              const rtl = quill.getFormat(range).direction === "rtl";
+              value = value === "+1";
+              if (rtl) {
+                value = !value;
+              }
+              value = value ? "+1" : "-1";
+            } else {
+              if (name === "list") {
+                value = value === "check" ? "unchecked" : value;
+                format = format === "checked" ? "unchecked" : format;
+              }
+              value = format && format !== (value || false) || !format && value ? value : !format;
+            }
+            quill.format(name, value, "user");
+          }
+          break;
+        case "insertDivider":
+          range = quill.getSelection(true);
+          quill.insertText(range.index, "\n", "user");
+          quill.insertEmbed(range.index + 1, "divider", true, "user");
+          quill.setSelection(range.index + 2, 0, "silent");
+          break;
+        case "insertImage":
+          {
+            range = quill.getSelection(true);
+            const {
+              src = "",
+              alt = "",
+              width = "",
+              height = "",
+              extClass = "",
+              data: data2 = {}
+            } = options;
+            const path = getRealPath(src);
+            quill.insertEmbed(range.index, "image", path, "user");
+            const local = /^(file|blob):/.test(path) ? path : false;
+            quill.formatText(range.index, 1, "data-local", local);
+            quill.formatText(range.index, 1, "alt", alt);
+            quill.formatText(range.index, 1, "width", width);
+            quill.formatText(range.index, 1, "height", height);
+            quill.formatText(range.index, 1, "class", extClass);
+            quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
+            quill.setSelection(range.index + 1, 0, "silent");
+          }
+          break;
+        case "insertText":
+          {
+            range = quill.getSelection(true);
+            const {
+              text: text2 = ""
+            } = options;
+            quill.insertText(range.index, text2, "user");
+            quill.setSelection(range.index + text2.length, 0, "silent");
+          }
+          break;
+        case "setContents":
+          {
+            const {
+              delta,
+              html
+            } = options;
+            if (typeof delta === "object") {
+              quill.setContents(delta, "silent");
+            } else if (typeof html === "string") {
+              quill.setContents(html2delta(html), "silent");
+            } else {
+              errMsg = "contents is missing";
+            }
+          }
+          break;
+        case "getContents":
+          res = getContents();
+          break;
+        case "clear":
+          quill.setText("");
+          break;
+        case "removeFormat":
+          {
+            range = quill.getSelection(true);
+            const parchment = Quill.import("parchment");
+            if (range.length) {
+              quill.removeFormat(range.index, range.length, "user");
+            } else {
+              Object.keys(quill.getFormat(range)).forEach((key) => {
+                if (parchment.query(key, parchment.Scope.INLINE)) {
+                  quill.format(key, false);
+                }
+              });
+            }
+          }
+          break;
+        case "undo":
+          quill.history.undo();
+          break;
+        case "redo":
+          quill.history.redo();
+          break;
+        case "blur":
+          quill.blur();
+          break;
+        case "getSelectionText":
+          range = quill.selection.savedRange;
+          res = {
+            text: ""
+          };
+          if (range && range.length !== 0) {
+            res.text = quill.getText(range.index, range.length);
+          }
+          break;
+        case "scrollIntoView":
+          quill.scrollIntoView();
+          break;
+      }
+      updateStatus(range);
+    } else {
+      errMsg = "not ready";
+    }
+    if (callbackId) {
+      UniViewJSBridge.publishHandler("onEditorMethodCallback", {
+        callbackId,
+        data: Object.assign({}, res, {
+          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
+        })
+      });
+    }
+  });
 }
-_sfc_main$f.render = _sfc_render$f;
+const props$5 = {
+  id: {
+    type: String,
+    default: ""
+  },
+  readOnly: {
+    type: [Boolean, String],
+    default: false
+  },
+  placeholder: {
+    type: String,
+    default: ""
+  },
+  showImgSize: {
+    type: [Boolean, String],
+    default: false
+  },
+  showImgToolbar: {
+    type: [Boolean, String],
+    default: false
+  },
+  showImgResize: {
+    type: [Boolean, String],
+    default: false
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  cursorSpacing: {
+    type: [Number, String],
+    default: 0
+  },
+  showConfirmBar: {
+    type: [Boolean, String],
+    default: "auto"
+  },
+  adjustPosition: {
+    type: [Boolean, String],
+    default: true
+  },
+  autoBlur: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var index$8 = defineComponent({
+  name: "Editor",
+  props: props$5,
+  setup(props2, {
+    emit
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit);
+    useQuill(props2, rootRef, trigger);
+    useKeyboard$1(props2, rootRef);
+    return () => {
+      return createVNode("uni-editor", {
+        ref: rootRef,
+        id: props2.id,
+        class: "ql-container"
+      }, null, 8, ["id"]);
+    };
+  }
+});
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -6000,21 +6100,6 @@ var index$7 = /* @__PURE__ */ defineComponent({
     return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
   }
 });
-function useCustomEvent(ref2, emit) {
-  return (name, evt, detail) => {
-    emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-}
 var ResizeSensor = /* @__PURE__ */ defineComponent({
   name: "ResizeSensor",
   props: {
@@ -14270,4 +14355,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$j as Audio, index$8 as Button, _sfc_main$i as Canvas, _sfc_main$h as Checkbox, _sfc_main$g as CheckboxGroup, _sfc_main$f as Editor, index$9 as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$a as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$i as Audio, index$9 as Button, _sfc_main$h as Canvas, _sfc_main$g as Checkbox, _sfc_main$f as CheckboxGroup, index$8 as Editor, index$a as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$b as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};

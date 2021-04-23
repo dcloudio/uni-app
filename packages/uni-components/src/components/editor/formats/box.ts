@@ -1,26 +1,27 @@
+import QuillClass from 'quill'
 import { hyphenate } from '@vue/shared'
 
-export default function(Quill) {
+export default function (Quill: typeof QuillClass) {
   const { Scope, Attributor } = Quill.import('parchment')
   const config = {
-    scope: Scope.BLOCK
+    scope: Scope.BLOCK,
   }
   const margin = [
     'margin',
     'marginTop',
     'marginBottom',
     'marginLeft',
-    'marginRight'
+    'marginRight',
   ]
   const padding = [
     'padding',
     'paddingTop',
     'paddingBottom',
     'paddingLeft',
-    'paddingRight'
+    'paddingRight',
   ]
-  const result = {}
-  margin.concat(padding).forEach(name => {
+  const result: Record<string, any> = {}
+  margin.concat(padding).forEach((name) => {
     result[`formats/${name}`] = new Attributor.Style(
       name,
       hyphenate(name),
