@@ -289,6 +289,62 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"}));
   }
 });
+const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.showToast.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {
+      unpaired: "Please note showToast must be paired with hideToast"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {
+      unpaired: "Tenga en cuenta que showToast debe estar emparejado con hideToast"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {
+      unpaired: "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {
+      unpaired: "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {
+      unpaired: "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+    }));
+  }
+});
+const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.showLoading.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {
+      unpaired: "Please note showLoading must be paired with hideLoading"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {
+      unpaired: "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {
+      unpaired: "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {
+      unpaired: "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+    }));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {
+      unpaired: "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+    }));
+  }
+});
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showModal.";
   if (__UNI_FEATURE_I18N_EN__) {
@@ -622,7 +678,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -634,10 +690,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1277,7 +1333,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -2623,6 +2679,8 @@ function createNormalizeUrl(type) {
     }
   };
 }
+const API_HIDE_LOADING = "hideLoading";
+const API_HIDE_TOAST = "hideToast";
 const API_LOAD_FONT_FACE = "loadFontFace";
 const LoadFontFaceProtocol = {
   family: {
@@ -2689,6 +2747,17 @@ const PageScrollToOptions = {
     }
   }
 };
+const API_SHOW_LOADING = "showLoading";
+const ShowLoadingProtocol = {
+  title: String,
+  mask: Boolean
+};
+const ShowLoadingOptions = {
+  formatArgs: {
+    title: "",
+    mask: false
+  }
+};
 const API_SHOW_MODAL = "showModal";
 const ShowModalProtocol = {
   title: String,
@@ -2721,6 +2790,36 @@ const ShowModalOptions = {
       }
     },
     confirmColor: PRIMARY_COLOR
+  }
+};
+const API_SHOW_TOAST = "showToast";
+const SHOW_TOAST_ICON = [
+  "success",
+  "loading",
+  "none"
+];
+const ShowToastProtocol = {
+  title: String,
+  icon: String,
+  image: String,
+  duration: Number,
+  mask: Boolean
+};
+const ShowToastOptions = {
+  formatArgs: {
+    title: "",
+    icon(type, params) {
+      params.icon = elemInArray(type, SHOW_TOAST_ICON);
+    },
+    image(value, params) {
+      if (value) {
+        params.image = getRealPath(value);
+      } else {
+        params.image = "";
+      }
+    },
+    duration: 1500,
+    mask: false
   }
 };
 const API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
@@ -5971,7 +6070,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$5 = {
+const props$6 = {
   id: {
     type: String,
     default: ""
@@ -6019,7 +6118,7 @@ const props$5 = {
 };
 var index$8 = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$5,
+  props: props$6,
   setup(props2, {
     emit
   }) {
@@ -6169,7 +6268,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$4 = {
+const props$5 = {
   src: {
     type: String,
     default: ""
@@ -6208,7 +6307,7 @@ const IMAGE_MODES = {
 };
 var index$6 = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$4,
+  props: props$5,
   setup(props2, {
     emit
   }) {
@@ -7785,7 +7884,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$3 = {
+const props$4 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7834,7 +7933,7 @@ const props$3 = {
 };
 var index$5 = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$3,
+  props: props$4,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -10835,7 +10934,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   });
 }
-const props$2 = {
+const props$3 = {
   id: {
     type: String,
     default: ""
@@ -10921,7 +11020,7 @@ const props$2 = {
 };
 var index$2 = /* @__PURE__ */ defineComponent({
   name: "Video",
-  props: props$2,
+  props: props$3,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit,
@@ -11130,7 +11229,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$1 = {
+const props$2 = {
   src: {
     type: String,
     default: ""
@@ -11140,7 +11239,7 @@ const props$1 = {
 };
 var index$1 = /* @__PURE__ */ defineComponent({
   name: "WebView",
-  props: props$1,
+  props: props$2,
   setup(props2) {
     const rootRef = ref(null);
     const iframe = document.createElement("iframe");
@@ -11366,7 +11465,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -11479,12 +11578,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11504,10 +11603,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -12891,7 +12990,7 @@ function usePopup(props2, {
   });
   return visible;
 }
-const props = {
+const props$1 = {
   title: {
     type: String,
     default: ""
@@ -12925,7 +13024,7 @@ const props = {
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
-  props,
+  props: props$1,
   setup(props2, {
     emit
   }) {
@@ -12997,6 +13096,152 @@ const showModal = defineAsyncApi(API_SHOW_MODAL, (args, {resolve}) => {
     showModalState.visible = true;
   }
 }, ShowModalProtocol, ShowModalOptions);
+const props = {
+  title: {
+    type: String,
+    default: ""
+  },
+  icon: {
+    default: "success",
+    validator(value) {
+      return SHOW_TOAST_ICON.indexOf(value) !== -1;
+    }
+  },
+  image: {
+    type: String,
+    default: ""
+  },
+  duration: {
+    type: Number,
+    default: 1500
+  },
+  mask: {
+    type: Boolean,
+    default: false
+  },
+  visible: {
+    type: Boolean
+  }
+};
+var Toast = /* @__PURE__ */ defineComponent({
+  name: "Toast",
+  props,
+  setup(props2) {
+    const {
+      iconClass
+    } = useToastState(props2);
+    const visible = usePopup(props2, {});
+    return () => {
+      const {
+        mask,
+        duration,
+        title,
+        image: image2
+      } = props2;
+      return createVNode(Transition, {
+        name: "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-toast", {
+          "data-duration": duration
+        }, [mask ? createVNode("div", {
+          class: "uni-mask",
+          style: "background: transparent;",
+          onTouchmove: withModifiers(() => {
+          }, ["prevent"])
+        }, null, 40, ["onTouchmove"]) : "", !image2 && !iconClass ? createVNode("div", {
+          class: "uni-sample-toast"
+        }, [createVNode("p", {
+          class: "uni-simple-toast__text"
+        }, [title])]) : createVNode("div", {
+          class: "uni-toast"
+        }, [image2 ? createVNode("img", {
+          src: image2,
+          class: "uni-toast__icon"
+        }, null, 8, ["src"]) : createVNode("i", {
+          class: [iconClass, "uni-icon_toast"]
+        }, null, 2), createVNode("p", {
+          class: "uni-toast__content"
+        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+function useToastState(props2) {
+  const iconClass = computed(() => props2.icon === "success" ? "uni-icon-success-no-circle" : props2.icon === "loading" ? "uni-loading" : "");
+  return {
+    iconClass
+  };
+}
+let showToastState;
+let showType = "";
+let timeoutId;
+function createToast(args) {
+  if (!showToastState) {
+    showToastState = reactive(args);
+    nextTick(() => {
+      createRootApp(Toast, showToastState, () => {
+      }).mount(ensureRoot("u-a-t"));
+    });
+  } else {
+    extend(showToastState, args);
+  }
+  setTimeout(() => {
+    showToastState.visible = true;
+  }, 10);
+  watchEffect(() => {
+    if (showToastState.visible) {
+      timeoutId && clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        hidePopup("onHideToast");
+      }, showToastState.duration);
+    }
+  });
+}
+const showToast = defineAsyncApi(API_SHOW_TOAST, (args, {resolve, reject}) => {
+  initI18nShowToastMsgsOnce();
+  createToast(args);
+  showType = "onShowToast";
+  resolve();
+}, ShowToastProtocol, ShowToastOptions);
+const showLoadingDefaultState = {
+  icon: "loading",
+  duration: 1e8,
+  image: ""
+};
+const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, {resolve, reject}) => {
+  extend(args, showLoadingDefaultState);
+  initI18nShowLoadingMsgsOnce();
+  createToast(args);
+  showType = "onShowLoading";
+  resolve();
+}, ShowLoadingProtocol, ShowLoadingOptions);
+const hideToast = defineAsyncApi(API_HIDE_TOAST, (args, {resolve, reject}) => {
+  hidePopup("onHideToast");
+  resolve();
+});
+const hideLoading = defineAsyncApi(API_HIDE_LOADING, (args, {resolve, reject}) => {
+  hidePopup("onHideLoading");
+  resolve();
+});
+const hidePopup = (type) => {
+  const {t: t2} = useI18n();
+  if (!showType) {
+    return;
+  }
+  let warnMsg = "";
+  if (type === "onHideToast" && showType !== "onShowToast") {
+    warnMsg = t2("uni.showToast.unpaired");
+  } else if (type === "onHideLoading" && showType !== "onShowLoading") {
+    warnMsg = t2("uni.showLoading.unpaired");
+  }
+  if (warnMsg) {
+    return console.warn(warnMsg);
+  }
+  showType = "";
+  setTimeout(() => {
+    showToastState.visible = false;
+  }, 10);
+};
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {
     resolve();
@@ -13226,6 +13471,10 @@ var api = /* @__PURE__ */ Object.freeze({
   reLaunch,
   switchTab,
   showModal,
+  showToast,
+  showLoading,
+  hideToast,
+  hideLoading,
   loadFontFace,
   setNavigationBarColor,
   showNavigationBarLoading,
@@ -14355,4 +14604,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$i as Audio, index$9 as Button, _sfc_main$h as Canvas, _sfc_main$g as Checkbox, _sfc_main$f as CheckboxGroup, index$8 as Editor, index$a as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$b as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$i as Audio, index$9 as Button, _sfc_main$h as Canvas, _sfc_main$g as Checkbox, _sfc_main$f as CheckboxGroup, index$8 as Editor, index$a as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$b as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
