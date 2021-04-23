@@ -2,7 +2,6 @@ import {
   ref,
   withCtx,
   computed,
-  onMounted,
   ComputedRef,
   KeepAlive,
   openBlock,
@@ -17,6 +16,7 @@ import {
 
 import { RouterView, useRoute } from 'vue-router'
 
+import { updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
 import { useKeepAliveRoute } from '../../setup/page'
 
@@ -24,19 +24,18 @@ import TabBar from './tabBar'
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
-const CSS_VARS = [
-  '--status-bar-height',
-  '--top-window-height',
-  '--window-left',
-  '--window-right',
-  '--window-margin',
-  '--tab-bar-height',
-]
-
+const DEFAULT_CSS_VAR_VALUE = '0px'
+updateCssVar({
+  '--status-bar-height': DEFAULT_CSS_VAR_VALUE,
+  '--top-window-height': DEFAULT_CSS_VAR_VALUE,
+  '--window-left': DEFAULT_CSS_VAR_VALUE,
+  '--window-right': DEFAULT_CSS_VAR_VALUE,
+  '--window-margin': DEFAULT_CSS_VAR_VALUE,
+  '--tab-bar-height': DEFAULT_CSS_VAR_VALUE,
+})
 export default defineComponent({
   name: 'Layout',
   setup(_props, { emit }) {
-    useCssVar()
     const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
       useKeepAliveRoute()) as KeepAliveRoute
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow()
@@ -57,11 +56,6 @@ export default defineComponent({
     }
   },
 })
-import { updateCssVar } from '../../../helpers/dom'
-
-function useCssVar() {
-  CSS_VARS.forEach((name) => updateCssVar(name, '0px'))
-}
 
 function useAppClass(showTabBar?: ComputedRef<boolean>) {
   const showMaxWidth = ref(false)

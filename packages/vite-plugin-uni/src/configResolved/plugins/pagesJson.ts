@@ -33,7 +33,7 @@ export function uniPagesJsonPlugin(
       if (id.endsWith(PAGES_JSON_JS)) {
         return {
           code:
-            registerGlobalCode +
+            (config.define!.__UNI_FEATURE_RPX__ ? registerGlobalCode : '') +
             (options.command === 'serve' ? registerDevServerGlobalCode : '') +
             parsePagesJson(code, config, options),
           map: { mappings: '' },

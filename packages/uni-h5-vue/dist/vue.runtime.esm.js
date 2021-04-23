@@ -8236,6 +8236,10 @@ function autoPrefix(style, rawName) {
 // upx,rpx
 const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
 const normalizeRpx = (val) => {
+    // @ts-ignore
+    if (typeof rpx2px !== 'function') {
+        return val;
+    }
     if (isString(val)) {
         return val.replace(rpxRE, (a, b) => {
             // @ts-ignore
@@ -8398,7 +8402,7 @@ function createInvoker(initialValue, instance) {
         if (timeStamp >= invoker.attached - 1) {
             // fixed by xxxxxx
             const proxy = instance && instance.proxy;
-            const normalizeNativeEvent = proxy && proxy.$normalizeNativeEvent;
+            const normalizeNativeEvent = proxy && proxy.$nne;
             callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [normalizeNativeEvent ? normalizeNativeEvent(e) : e]);
         }
     };

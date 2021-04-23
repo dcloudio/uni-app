@@ -1,15 +1,12 @@
 import { ComponentPublicInstance } from 'vue'
 import { normalizeTarget } from '@dcloudio/uni-shared'
-import { getWindowOffset } from '../../helpers/getWindowOffset'
+import { getWindowOffset } from '../../helpers'
 
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0
-
-export function $normalizeNativeEvent(
-  this: ComponentPublicInstance,
-  evt: Event
-) {
+// normalizeNativeEvent
+export function $nne(this: ComponentPublicInstance, evt: Event) {
   // TODO 目前内置组件底层实现，也会进入以下处理逻辑，可能会有影响
   const { currentTarget } = evt
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {

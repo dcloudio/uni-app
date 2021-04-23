@@ -24,6 +24,7 @@ interface PagesFeatures {
 interface ManifestFeatures {
   wx: boolean
   wxs: boolean
+  rpx: boolean
   promise: boolean
   longpress: boolean
   routerMode: '"hash"' | '"history"'
@@ -158,6 +159,7 @@ function resolveManifestFeature(
   const features: ManifestFeatures = {
     wx: false,
     wxs: true,
+    rpx: true,
     promise: false,
     longpress: true,
     routerMode: '"hash"',
@@ -217,6 +219,7 @@ export function getFeatures(
   const {
     wx,
     wxs,
+    rpx,
     nvue,
     i18nEn,
     i18nEs,
@@ -245,6 +248,7 @@ export function getFeatures(
   return {
     __UNI_FEATURE_WX__: wx, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）
     __UNI_FEATURE_WXS__: wxs, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
+    __UNI_FEATURE_RPX__: rpx, // 是否启用运行时 rpx 支持
     __UNI_FEATURE_PROMISE__: promise, // 是否启用旧版本的 promise 支持（即返回[err,res]的格式）,默认返回标准
     __UNI_FEATURE_LONGPRESS__: longpress, // 是否启用longpress
     __UNI_FEATURE_I18N_EN__: i18nEn, // 是否启用en

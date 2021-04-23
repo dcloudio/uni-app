@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
-import {injectHook, createVNode, withModifiers, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, onUnmounted, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, onUnmounted, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, plusReady, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -623,6 +623,12 @@ var safeAreaInsets = {
   offChange
 };
 var out = safeAreaInsets;
+const onTouchmovePrevent = /* @__PURE__ */ withModifiers(() => {
+}, [
+  "prevent"
+]);
+const onTouchmoveStop = /* @__PURE__ */ withModifiers(() => {
+}, ["stop"]);
 function getWindowOffset() {
   const style2 = document.documentElement.style;
   const top = parseInt(style2.getPropertyValue("--window-top"));
@@ -636,9 +642,170 @@ function getWindowOffset() {
     right: right ? right + out.right : 0
   };
 }
+const style = document.documentElement.style;
+function updateCssVar(cssVars) {
+  Object.keys(cssVars).forEach((name) => {
+    style.setProperty(name, cssVars[name]);
+  });
+}
+function updatePageCssVar(cssVars) {
+  return updateCssVar(cssVars);
+}
+const sheetsMap = new Map();
+function updateStyle(id2, content) {
+  let style2 = sheetsMap.get(id2);
+  if (style2 && !(style2 instanceof HTMLStyleElement)) {
+    removeStyle(id2);
+    style2 = void 0;
+  }
+  if (!style2) {
+    style2 = document.createElement("style");
+    style2.setAttribute("type", "text/css");
+    style2.innerHTML = content;
+    document.head.appendChild(style2);
+  } else {
+    style2.innerHTML = content;
+  }
+  sheetsMap.set(id2, style2);
+}
+function removeStyle(id2) {
+  let style2 = sheetsMap.get(id2);
+  if (style2) {
+    if (style2 instanceof CSSStyleSheet) {
+      document.adoptedStyleSheets.indexOf(style2);
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style2);
+    } else {
+      document.head.removeChild(style2);
+    }
+    sheetsMap.delete(id2);
+  }
+}
+function PolySymbol(name) {
+  return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
+}
+function rpx2px(str) {
+  if (typeof str === "string") {
+    const res = parseInt(str) || 0;
+    if (str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1) {
+      return uni.upx2px(res);
+    }
+    return res;
+  }
+  return str;
+}
+const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
+const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
+const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
+const ICON_PATH_INFO = "M15.808 0.128q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.176 3.776-2.176 8.16 0 4.224 2.176 7.872 2.080 3.552 5.632 5.632 3.648 2.176 7.872 2.176 4.384 0 8.16-2.176 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.416-2.176-8.16-2.112-3.616-5.728-5.728-3.744-2.176-8.16-2.176zM16.864 23.776q0 0.064-0.064 0.064h-1.568q-0.096 0-0.096-0.064l-0.256-11.328q0-0.064 0.064-0.064h2.112q0.096 0 0.064 0.064l-0.256 11.328zM16 10.88q-0.576 0-0.976-0.4t-0.4-0.96 0.4-0.96 0.976-0.4 0.976 0.4 0.4 0.96-0.4 0.96-0.976 0.4z";
+const ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
+const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
+const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
+const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
+function createSvgIconVNode(path, color = "#000", size = 27) {
+  return createVNode("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 32 32"
+  }, [
+    createVNode("path", {
+      d: path,
+      fill: color
+    }, null, 8, ["d", "fill"])
+  ], 8, ["width", "height"]);
+}
+function disableScrollListener(evt) {
+  evt.preventDefault();
+}
+let testReachBottomTimer;
+let lastScrollHeight = 0;
+function createScrollListener({
+  onPageScroll,
+  onReachBottom,
+  onReachBottomDistance
+}) {
+  let ticking = false;
+  let hasReachBottom = false;
+  let reachBottomLocking = true;
+  const isReachBottom = () => {
+    const {scrollHeight} = document.documentElement;
+    const windowHeight = window.innerHeight;
+    const scrollY = window.scrollY;
+    const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
+    const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
+    if (isBottom && (!hasReachBottom || heightChanged)) {
+      lastScrollHeight = scrollHeight;
+      hasReachBottom = true;
+      return true;
+    }
+    if (!isBottom && hasReachBottom) {
+      hasReachBottom = false;
+    }
+    return false;
+  };
+  const trigger = () => {
+    onPageScroll && onPageScroll(window.pageYOffset);
+    function testReachBottom() {
+      if (isReachBottom()) {
+        onReachBottom && onReachBottom();
+        reachBottomLocking = false;
+        setTimeout(function() {
+          reachBottomLocking = true;
+        }, 350);
+        return true;
+      }
+    }
+    if (onReachBottom && reachBottomLocking) {
+      if (testReachBottom())
+        ;
+      else {
+        testReachBottomTimer = setTimeout(testReachBottom, 300);
+      }
+    }
+    ticking = false;
+  };
+  return function onScroll() {
+    clearTimeout(testReachBottomTimer);
+    if (!ticking) {
+      requestAnimationFrame(trigger);
+    }
+    ticking = true;
+  };
+}
+function getRealRoute(fromRoute, toRoute) {
+  if (!toRoute) {
+    toRoute = fromRoute;
+    if (toRoute.indexOf("/") === 0) {
+      return toRoute;
+    }
+    const pages = getCurrentPages();
+    if (pages.length) {
+      fromRoute = pages[pages.length - 1].$page.route;
+    } else {
+      fromRoute = "";
+    }
+  } else {
+    if (toRoute.indexOf("/") === 0) {
+      return toRoute;
+    }
+  }
+  if (toRoute.indexOf("./") === 0) {
+    return getRealRoute(fromRoute, toRoute.substr(2));
+  }
+  const toRouteArray = toRoute.split("/");
+  const toRouteLength = toRouteArray.length;
+  let i2 = 0;
+  for (; i2 < toRouteLength && toRouteArray[i2] === ".."; i2++) {
+  }
+  toRouteArray.splice(0, i2);
+  toRoute = toRouteArray.join("/");
+  const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
+  fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
+  return "/" + fromRouteArray.concat(toRouteArray).join("/");
+}
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
-function $normalizeNativeEvent(evt) {
+function $nne(evt) {
   const {currentTarget} = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt;
@@ -723,7 +890,7 @@ function normalizeTouchEvent(touches, top) {
 var instance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
-  $normalizeNativeEvent
+  $nne
 });
 const CLASS_RE = /^\s+|\s+$/g;
 const WXS_CLASS_RE = /\s+/;
@@ -1030,144 +1197,6 @@ function initService(app) {
   initSubscribe();
   initAppConfig(app._context.config);
 }
-function PolySymbol(name) {
-  return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
-}
-function rpx2px(str) {
-  if (typeof str === "string") {
-    const res = parseInt(str) || 0;
-    if (str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1) {
-      return uni.upx2px(res);
-    }
-    return res;
-  }
-  return str;
-}
-const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
-const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
-const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
-const ICON_PATH_INFO = "M15.808 0.128q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.176 3.776-2.176 8.16 0 4.224 2.176 7.872 2.080 3.552 5.632 5.632 3.648 2.176 7.872 2.176 4.384 0 8.16-2.176 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.416-2.176-8.16-2.112-3.616-5.728-5.728-3.744-2.176-8.16-2.176zM16.864 23.776q0 0.064-0.064 0.064h-1.568q-0.096 0-0.096-0.064l-0.256-11.328q0-0.064 0.064-0.064h2.112q0.096 0 0.064 0.064l-0.256 11.328zM16 10.88q-0.576 0-0.976-0.4t-0.4-0.96 0.4-0.96 0.976-0.4 0.976 0.4 0.4 0.96-0.4 0.96-0.976 0.4z";
-const ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
-const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
-const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
-const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
-  return createVNode("svg", {
-    width: size,
-    height: size,
-    viewBox: "0 0 32 32"
-  }, [
-    createVNode("path", {
-      d: path,
-      fill: color
-    }, null, 8, ["d", "fill"])
-  ], 8, ["width", "height"]);
-}
-const onTouchmovePrevent = /* @__PURE__ */ withModifiers(() => {
-}, [
-  "prevent"
-]);
-const onTouchmoveStop = /* @__PURE__ */ withModifiers(() => {
-}, ["stop"]);
-function disableScrollListener(evt) {
-  evt.preventDefault();
-}
-let testReachBottomTimer;
-let lastScrollHeight = 0;
-function createScrollListener({
-  onPageScroll,
-  onReachBottom,
-  onReachBottomDistance
-}) {
-  let ticking = false;
-  let hasReachBottom = false;
-  let reachBottomLocking = true;
-  const isReachBottom = () => {
-    const {scrollHeight} = document.documentElement;
-    const windowHeight = window.innerHeight;
-    const scrollY = window.scrollY;
-    const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
-    const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
-    if (isBottom && (!hasReachBottom || heightChanged)) {
-      lastScrollHeight = scrollHeight;
-      hasReachBottom = true;
-      return true;
-    }
-    if (!isBottom && hasReachBottom) {
-      hasReachBottom = false;
-    }
-    return false;
-  };
-  const trigger = () => {
-    onPageScroll && onPageScroll(window.pageYOffset);
-    function testReachBottom() {
-      if (isReachBottom()) {
-        onReachBottom && onReachBottom();
-        reachBottomLocking = false;
-        setTimeout(function() {
-          reachBottomLocking = true;
-        }, 350);
-        return true;
-      }
-    }
-    if (onReachBottom && reachBottomLocking) {
-      if (testReachBottom())
-        ;
-      else {
-        testReachBottomTimer = setTimeout(testReachBottom, 300);
-      }
-    }
-    ticking = false;
-  };
-  return function onScroll() {
-    clearTimeout(testReachBottomTimer);
-    if (!ticking) {
-      requestAnimationFrame(trigger);
-    }
-    ticking = true;
-  };
-}
-function getRealRoute(fromRoute, toRoute) {
-  if (!toRoute) {
-    toRoute = fromRoute;
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
-    const pages = getCurrentPages();
-    if (pages.length) {
-      fromRoute = pages[pages.length - 1].$page.route;
-    } else {
-      fromRoute = "";
-    }
-  } else {
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
-  }
-  if (toRoute.indexOf("./") === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2));
-  }
-  const toRouteArray = toRoute.split("/");
-  const toRouteLength = toRouteArray.length;
-  let i2 = 0;
-  for (; i2 < toRouteLength && toRouteArray[i2] === ".."; i2++) {
-  }
-  toRouteArray.splice(0, i2);
-  toRoute = toRouteArray.join("/");
-  const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
-  fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
-  return "/" + fromRouteArray.concat(toRouteArray).join("/");
-}
-const style = document.documentElement.style;
-function updateCssVar$1(cssVars) {
-  Object.keys(cssVars).forEach((name) => {
-    style.setProperty(name, cssVars[name]);
-  });
-}
-function updatePageCssVar(cssVars) {
-  return updateCssVar$1(cssVars);
-}
 function errorHandler(err, instance2, info) {
   if (!instance2) {
     throw err;
@@ -1274,43 +1303,6 @@ function normalizePageMeta(pageMeta) {
     }
   }
   return pageMeta;
-}
-const sheetsMap = new Map();
-function updateStyle(id2, content) {
-  let style2 = sheetsMap.get(id2);
-  if (style2 && !(style2 instanceof HTMLStyleElement)) {
-    removeStyle(id2);
-    style2 = void 0;
-  }
-  if (!style2) {
-    style2 = document.createElement("style");
-    style2.setAttribute("type", "text/css");
-    style2.innerHTML = content;
-    document.head.appendChild(style2);
-  } else {
-    style2.innerHTML = content;
-  }
-  sheetsMap.set(id2, style2);
-}
-function removeStyle(id2) {
-  let style2 = sheetsMap.get(id2);
-  if (style2) {
-    if (style2 instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style2);
-      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style2);
-    } else {
-      document.head.removeChild(style2);
-    }
-    sheetsMap.delete(id2);
-  }
-}
-const documentElement = document.documentElement;
-let styleObj;
-function updateCssVar(name, value) {
-  if (!styleObj) {
-    styleObj = documentElement.style;
-  }
-  styleObj.setProperty(name, value);
 }
 PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
@@ -13396,13 +13388,20 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     src: getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
-const CSS_VARS = ["--status-bar-height", "--top-window-height", "--window-left", "--window-right", "--window-margin", "--tab-bar-height"];
+const DEFAULT_CSS_VAR_VALUE = "0px";
+updateCssVar({
+  "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
+  "--top-window-height": DEFAULT_CSS_VAR_VALUE,
+  "--window-left": DEFAULT_CSS_VAR_VALUE,
+  "--window-right": DEFAULT_CSS_VAR_VALUE,
+  "--window-margin": DEFAULT_CSS_VAR_VALUE,
+  "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
+});
 var LayoutComponent = defineComponent({
   name: "Layout",
   setup(_props, {
     emit
   }) {
-    useCssVar();
     const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
     __UNI_FEATURE_TOPWINDOW__ && useTopWindow();
     __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow();
@@ -13418,9 +13417,6 @@ var LayoutComponent = defineComponent({
     };
   }
 });
-function useCssVar() {
-  CSS_VARS.forEach((name) => updateCssVar(name, "0px"));
-}
 function useAppClass(showTabBar2) {
   const showMaxWidth = ref(false);
   return computed(() => {
