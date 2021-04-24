@@ -1105,7 +1105,9 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (isCustomMPEvent) {
         return [event]
       }
-      return event.detail.__args__ || event.detail
+      // 兼容 event.detail 不一定是数组
+      const detail = Array.isArray(event.detail) ? event.detail : [event.detail];
+      return event.detail.__args__ || detail
     }
   }
 
