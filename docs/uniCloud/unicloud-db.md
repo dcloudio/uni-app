@@ -607,7 +607,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 // field 属性 查询book表返回book表内的title、book表内的author、order表内的quantity
 <template>
   <view>
-    <unicloud-db v-slot:default="{data, loading, error, options}" collection="order,book" where="'book.title == "三国演义"'" field="book{title,author},quantity">
+    <unicloud-db v-slot:default="{data, loading, error, options}" collection="order,book" where="'book_id.title == "三国演义"'" field="book_id{title,author},quantity">
       <view>
 		  <view v-for="(item, index) in data" :key="index" class="list-item">
 		    {{ item.name}}
