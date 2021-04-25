@@ -13,8 +13,8 @@
 
 |参数|说明|平台差异说明|
 |:-|:-|:-|
-|brand|手机品牌|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
-|model|手机型号||
+|brand|设备品牌|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
+|model|设备型号|全平台支持。H5（3.1.10+）新增`PC`|
 |pixelRatio|设备像素比||
 |screenWidth|屏幕宽度||
 |screenHeight|屏幕高度||
@@ -35,7 +35,7 @@
 |app|当前运行的客户端|支付宝小程序|
 |cacheLocation|上一次缓存的位置信息|百度小程序|
 |system|操作系统名称及版本，如Android 10||
-|platform|客户端平台，值域为：`ios`、`android`||
+|platform|客户端平台，值域为：`ios`、`android`、`mac（3.1.10+）`、`windows（3.1.10+）`、`linux（3.1.10+）`||
 |fontSizeSetting|用户字体大小设置。以“我-设置-通用-字体大小”中的设置为准，单位：px|微信小程序、支付宝小程序、百度小程序、QQ小程序|
 |SDKVersion|客户端基础库版本|支付宝小程序和H5不支持|
 |swanNativeVersion|宿主平台版本号|百度小程序|
@@ -106,8 +106,8 @@ uni.getSystemInfo({
 
 |参数|说明|平台差异说明|
 |:-|:-|:-|
-|brand|手机品牌|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
-|model|手机型号||
+|brand|设备品牌|App、微信小程序、百度小程序、字节跳动小程序、QQ小程序|
+|model|设备型号|全平台支持。H5（3.1.10+）新增`PC`|
 |pixelRatio|设备像素比||
 |screenWidth|屏幕宽度||
 |screenHeight|屏幕高度||
@@ -128,7 +128,7 @@ uni.getSystemInfo({
 |app|当前运行的客户端|支付宝小程序|
 |cacheLocation|上一次缓存的位置信息|百度小程序|
 |system|操作系统版本||
-|platform|客户端平台，值域为：`ios`、`android`||
+|platform|客户端平台，值域为：`ios`、`android`、`mac（3.1.10+）`、`windows（3.1.10+）`、`linux（3.1.10+）`||
 |fontSizeSetting|用户字体大小设置。以“我-设置-通用-字体大小”中的设置为准，单位：px|微信小程序、支付宝小程序、百度小程序、QQ小程序|
 |SDKVersion|客户端基础库版本|支付宝小程序和H5不支持|
 |swanNativeVersion|宿主平台版本号|百度小程序|
