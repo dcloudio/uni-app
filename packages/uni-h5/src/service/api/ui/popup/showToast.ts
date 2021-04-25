@@ -1,3 +1,4 @@
+//#region Functions
 import { reactive, nextTick, watchEffect } from 'vue'
 import { extend } from '@vue/shared'
 import {
@@ -13,18 +14,17 @@ import {
 } from '@dcloudio/uni-api'
 import Toast, { ToastProps } from './toast'
 import { ensureRoot, createRootApp } from './utils'
-import {
-  useI18n,
-  initI18nShowLoadingMsgsOnce,
-  initI18nShowToastMsgsOnce,
-} from '@dcloudio/uni-core'
+import { useI18n } from '@dcloudio/uni-core'
+//#endregion
 
+//#region Type
 import type {
   API_TYPE_SHOW_LOADING,
   API_TYPE_HIDE_TOAST,
   API_TYPE_HIDE_LOADING,
   API_TYPE_SHOW_TOAST,
 } from '@dcloudio/uni-api'
+//#endregion
 
 let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
@@ -52,6 +52,8 @@ function createToast(args: ToastProps) {
       timeoutId = setTimeout(() => {
         hidePopup('onHideToast')
       }, showToastState.duration)
+    } else {
+      timeoutId && clearTimeout(timeoutId)
     }
   })
 }
@@ -59,7 +61,6 @@ function createToast(args: ToastProps) {
 export const showToast = defineAsyncApi<API_TYPE_SHOW_TOAST>(
   API_SHOW_TOAST,
   (args, { resolve, reject }) => {
-    initI18nShowToastMsgsOnce()
     createToast(args as ToastProps)
     showType = 'onShowToast'
     resolve()
@@ -78,7 +79,6 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   API_SHOW_LOADING,
   (args, { resolve, reject }) => {
     extend(args, showLoadingDefaultState)
-    initI18nShowLoadingMsgsOnce()
     createToast(args as ToastProps)
     showType = 'onShowLoading'
     resolve()

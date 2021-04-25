@@ -2,12 +2,21 @@ import {
   Transition,
   defineComponent,
   ExtractPropTypes,
-  withModifiers,
   computed,
+  createVNode,
 } from 'vue'
 import { SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import type { API_TYPE_SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import { usePopup } from './utils'
+import {
+  onEventPrevent,
+  createSvgIconVNode,
+  ICON_PATH_SUCCESS_NO_CIRCLE,
+} from '@dcloudio/uni-core'
+import {
+  initI18nShowToastMsgsOnce,
+  initI18nShowLoadingMsgsOnce,
+} from '@dcloudio/uni-core'
 
 const props = {
   title: {
@@ -36,6 +45,7 @@ const props = {
     type: Boolean,
   },
 }
+const ToastIconClassName = 'uni-toast__icon'
 
 export type ToastProps = ExtractPropTypes<typeof props>
 
@@ -43,7 +53,9 @@ export default /*#__PURE__*/ defineComponent({
   name: 'Toast',
   props,
   setup(props) {
-    const { iconClass } = useToastState(props)
+    initI18nShowToastMsgsOnce()
+    initI18nShowLoadingMsgsOnce()
+    const { Icon } = useToastIcon(props)
     const visible = usePopup(props, {})
 
     return () => {
@@ -55,21 +67,21 @@ export default /*#__PURE__*/ defineComponent({
               <div
                 class="uni-mask"
                 style="background: transparent;"
-                onTouchmove={withModifiers(() => {}, ['prevent'])}
+                onTouchmove={onEventPrevent}
               />
             ) : (
               ''
             )}
-            {!image && !iconClass ? (
+            {!image && !Icon.value ? (
               <div class="uni-sample-toast">
                 <p class="uni-simple-toast__text">{title}</p>
               </div>
             ) : (
               <div class="uni-toast">
                 {image ? (
-                  <img src={image} class="uni-toast__icon" />
+                  <img src={image} class={ToastIconClassName} />
                 ) : (
-                  <i class={iconClass} class="uni-icon_toast" />
+                  Icon.value
                 )}
                 <p class="uni-toast__content">{title}</p>
               </div>
@@ -81,16 +93,18 @@ export default /*#__PURE__*/ defineComponent({
   },
 })
 
-function useToastState(props: ToastProps) {
-  const iconClass = computed(() =>
-    props.icon === 'success'
-      ? 'uni-icon-success-no-circle'
-      : props.icon === 'loading'
-      ? 'uni-loading'
-      : ''
+function useToastIcon(props: ToastProps) {
+  const Icon = computed(() =>
+    props.icon === 'success' ? (
+      createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 38), {
+        class: ToastIconClassName,
+      })
+    ) : props.icon === 'loading' ? (
+      <i class={ToastIconClassName} class="uni-loading"></i>
+    ) : null
   )
 
   return {
-    iconClass,
+    Icon,
   }
 }

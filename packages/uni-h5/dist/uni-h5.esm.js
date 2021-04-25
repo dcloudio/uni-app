@@ -13123,13 +13123,16 @@ const props = {
     type: Boolean
   }
 };
+const toastIconClassName = "uni-toast__icon";
 var Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
   props,
   setup(props2) {
+    initI18nShowToastMsgsOnce();
+    initI18nShowLoadingMsgsOnce();
     const {
-      iconClass
-    } = useToastState(props2);
+      Icon
+    } = useToastIcon(props2);
     const visible = usePopup(props2, {});
     return () => {
       const {
@@ -13146,9 +13149,8 @@ var Toast = /* @__PURE__ */ defineComponent({
         }, [mask ? createVNode("div", {
           class: "uni-mask",
           style: "background: transparent;",
-          onTouchmove: withModifiers(() => {
-          }, ["prevent"])
-        }, null, 40, ["onTouchmove"]) : "", !image2 && !iconClass ? createVNode("div", {
+          onTouchmove: onEventPrevent
+        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
           class: "uni-sample-toast"
         }, [createVNode("p", {
           class: "uni-simple-toast__text"
@@ -13156,20 +13158,22 @@ var Toast = /* @__PURE__ */ defineComponent({
           class: "uni-toast"
         }, [image2 ? createVNode("img", {
           src: image2,
-          class: "uni-toast__icon"
-        }, null, 8, ["src"]) : createVNode("i", {
-          class: [iconClass, "uni-icon_toast"]
-        }, null, 2), createVNode("p", {
+          class: toastIconClassName
+        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
           class: "uni-toast__content"
         }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
       });
     };
   }
 });
-function useToastState(props2) {
-  const iconClass = computed(() => props2.icon === "success" ? "uni-icon-success-no-circle" : props2.icon === "loading" ? "uni-loading" : "");
+function useToastIcon(props2) {
+  const Icon = computed(() => props2.icon === "success" ? createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
+    class: toastIconClassName
+  }) : props2.icon === "loading" ? createVNode("i", {
+    class: [toastIconClassName, "uni-loading"]
+  }, null, 2) : null);
   return {
-    iconClass
+    Icon
   };
 }
 let showToastState;
@@ -13194,11 +13198,12 @@ function createToast(args) {
       timeoutId = setTimeout(() => {
         hidePopup("onHideToast");
       }, showToastState.duration);
+    } else {
+      timeoutId && clearTimeout(timeoutId);
     }
   });
 }
 const showToast = defineAsyncApi(API_SHOW_TOAST, (args, {resolve, reject}) => {
-  initI18nShowToastMsgsOnce();
   createToast(args);
   showType = "onShowToast";
   resolve();
@@ -13210,7 +13215,6 @@ const showLoadingDefaultState = {
 };
 const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, {resolve, reject}) => {
   extend(args, showLoadingDefaultState);
-  initI18nShowLoadingMsgsOnce();
   createToast(args);
   showType = "onShowLoading";
   resolve();
