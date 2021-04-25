@@ -26,11 +26,11 @@
 
 提供一个名为`uni-id`的公共模块，该模块封装了一系列API，包括注册、登录、修改密码、设置头像等。
 
-示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。
+示例工程中还提供了一个`user-center`的云函数，演示在云函数中如何调用`uni-id`公共模块。推荐使用[云端一体登录插件](https://ext.dcloud.net.cn/plugin?id=13)
 
 3.前端调用
 
-前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。
+前端示例通过callfunction调用云函数`user-center`，在注册和登录时保存token。在这个[云端一体登录插件](https://ext.dcloud.net.cn/plugin?id=13)里，有完整的登录、注册、修改密码等前后端代码示例。[详见](https://ext.dcloud.net.cn/plugin?id=13)
 
 uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-app 2.7.13+版本）。在云函数的event中可直接拿到`uni-id`的token。也就是说开发者无需自己管理token了。
 
@@ -71,7 +71,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 
 2.邮箱验证集成
 
-邮箱验证，DCloud暂无计划开发，有需求的开发者欢迎提供pr。
+发送邮件验证邮箱真实性，DCloud暂无计划开发，有需求的开发者欢迎提供pr。
 
 3.活体检测
 
@@ -371,6 +371,8 @@ function hasPermission(token, permission) {
   return checkTokenRes.permission.includes(permission)
 }
 ```
+
+注意：**在uniCloud admin中，封装了可视化的用户、权限、角色的管理，新增删除修改均支持。**无需自己维护。[详见](https://uniapp.dcloud.net.cn/uniCloud/admin?id=mutiladmin)
 
 # uni-id的API列表@api
 
