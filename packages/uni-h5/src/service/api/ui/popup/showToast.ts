@@ -24,11 +24,15 @@ import type {
   API_TYPE_HIDE_LOADING,
   API_TYPE_SHOW_TOAST,
 } from '@dcloudio/uni-api'
+import { once } from '@dcloudio/uni-shared'
 //#endregion
 
 let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
 let timeoutId: number
+const onHidePopupOnce = once(() => {
+  UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
+})
 
 function createToast(args: ToastProps) {
   if (!showToastState) {
@@ -56,6 +60,8 @@ function createToast(args: ToastProps) {
       timeoutId && clearTimeout(timeoutId)
     }
   })
+
+  onHidePopupOnce()
 }
 
 export const showToast = defineAsyncApi<API_TYPE_SHOW_TOAST>(
@@ -103,7 +109,7 @@ export const hideLoading = defineAsyncApi<API_TYPE_HIDE_LOADING>(
   }
 )
 
-const hidePopup = (type: 'onHideToast' | 'onHideLoading' | 'onHidePopup') => {
+function hidePopup(type: 'onHideToast' | 'onHideLoading' | 'onHidePopup') {
   const { t } = useI18n()
   if (!showType) {
     return
@@ -123,7 +129,3 @@ const hidePopup = (type: 'onHideToast' | 'onHideLoading' | 'onHidePopup') => {
     showToastState.visible = false
   }, 10)
 }
-
-setTimeout(() => {
-  UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
-}, 0)

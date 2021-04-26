@@ -84,7 +84,10 @@ export default /*#__PURE__*/ defineComponent({
       return (
         <uni-checkbox disabled={disabled} onClick={_onClick}>
           <div class="uni-checkbox-wrapper">
-            <div class="uni-checkbox-input">
+            <div
+              class="uni-checkbox-input"
+              class={{ 'uni-checkbox-input-disabled': disabled }}
+            >
               {checkboxChecked.value
                 ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, color, 16)
                 : ''}

@@ -5419,8 +5419,10 @@ var index$9 = /* @__PURE__ */ defineComponent({
       }, [createVNode("div", {
         class: "uni-checkbox-wrapper"
       }, [createVNode("div", {
-        class: "uni-checkbox-input"
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, color, 16) : ""]), slots.default && slots.default()])], 8, ["disabled", "onClick"]);
+        class: ["uni-checkbox-input", {
+          "uni-checkbox-input-disabled": disabled
+        }]
+      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, color, 16) : ""], 2), slots.default && slots.default()])], 8, ["disabled", "onClick"]);
     };
   }
 });
@@ -13250,6 +13252,9 @@ function useToastIcon(props2) {
 let showToastState;
 let showType = "";
 let timeoutId;
+const onHidePopupOnce = once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
+});
 function createToast(args) {
   if (!showToastState) {
     showToastState = reactive(args);
@@ -13273,6 +13278,7 @@ function createToast(args) {
       timeoutId && clearTimeout(timeoutId);
     }
   });
+  onHidePopupOnce();
 }
 const showToast = defineAsyncApi(API_SHOW_TOAST, (args, {resolve, reject}) => {
   createToast(args);
@@ -13298,7 +13304,7 @@ const hideLoading = defineAsyncApi(API_HIDE_LOADING, (args, {resolve, reject}) =
   hidePopup("onHideLoading");
   resolve();
 });
-const hidePopup = (type) => {
+function hidePopup(type) {
   const {t: t2} = useI18n();
   if (!showType) {
     return;
@@ -13316,10 +13322,7 @@ const hidePopup = (type) => {
   setTimeout(() => {
     showToastState.visible = false;
   }, 10);
-};
-setTimeout(() => {
-  UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
-}, 0);
+}
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {
     resolve();
