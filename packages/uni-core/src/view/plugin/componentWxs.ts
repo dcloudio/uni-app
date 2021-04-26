@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
-import { isFunction, isPlainObject } from '@vue/shared'
+import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
+import { isBuiltInComponent } from '@dcloudio/uni-shared'
 // import { normalizeEvent, findUniTarget } from './componentEvents'
 
 interface WxsElement extends HTMLElement {
@@ -192,7 +193,7 @@ function createComponentDescriptor(
     isOwnerInstance &&
     vm &&
     vm.$options.name &&
-    vm.$options.name.indexOf('VUni') === 0
+    isBuiltInComponent(hyphenate(vm.$options.name))
   ) {
     // ownerInstance 内置组件需要使用父 vm
     vm = vm.$parent!
@@ -206,11 +207,10 @@ function createComponentDescriptor(
 }
 
 export function getComponentDescriptor(
-  this: ComponentPublicInstance,
   instance: ComponentPublicInstance,
   isOwnerInstance: boolean
 ) {
-  return createComponentDescriptor(instance || this, isOwnerInstance)
+  return createComponentDescriptor(instance, isOwnerInstance)
 }
 
 // export function handleWxsEvent(this: ComponentPublicInstance, $event: Event) {

@@ -8424,9 +8424,32 @@ function patchStopImmediatePropagation(e, value) {
     }
 }
 
+function patchWxs(el, rawName, nextValue, instance = null) {
+    if (!el.__wxsWatches) {
+        el.__wxsWatches = {};
+    }
+    if (!nextValue) {
+        return el.__wxsWatches[rawName] && el.__wxsWatches[rawName]();
+    }
+    if (!el.__wxsWatches[rawName] && instance && instance.proxy) {
+        const proxy = instance.proxy;
+        const name = rawName.split(':')[1];
+        el.__wxsWatches[rawName] = proxy.$watch(() => instance.attrs[name], (value, oldValue) => {
+            // TODO ownerInstance,instance
+            nextValue(value, oldValue, proxy.$gcd(proxy, true), proxy.$gcd(proxy, true));
+        }, {
+            deep: true
+        });
+    }
+}
+
 const nativeOnRE = /^on[a-z]/;
 const forcePatchProp = (_, key) => key === 'value';
 const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
+    // @ts-expect-error fixed by xxxxxx
+    if (__UNI_FEATURE_WXS__ && key.indexOf('change:') === 0) {
+        patchWxs(el, key, nextValue, parentComponent);
+    }
     switch (key) {
         // special
         case 'class':

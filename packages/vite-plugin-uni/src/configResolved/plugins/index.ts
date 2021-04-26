@@ -15,6 +15,8 @@ import { uniPageVuePlugin } from './pageVue'
 import { uniCopyPlugin } from './copy'
 import { uniStaticPlugin } from './static'
 import { uniCssScopedPlugin } from './cssScoped'
+import { uniRenderjsPlugin } from './renderjs'
+import { uniPreVuePlugin } from './preVue'
 
 const debugPlugin = debug('uni:plugin')
 
@@ -28,14 +30,13 @@ const UNI_H5_RE = /@dcloudio\/uni-h5/
 const COMMON_EXCLUDE = [
   /pages\.json\.js$/,
   /manifest\.json\.js$/,
-  /vue&type=/,
   /vite\//,
   /\/@vue\//,
   /\/vue-router\//,
   /\/vuex\//,
   /@dcloudio\/uni-h5-vue/,
   /@dcloudio\/uni-shared/,
-  /\.html$/,
+  /@dcloudio\/uni-components\/style/,
 ]
 
 const APP_VUE_RE = /App.vue$/
@@ -112,6 +113,9 @@ export function initPlugins(
     uniPreCssPlugin(Object.assign(uniPreCssPluginOptions, options)),
     'vite:css'
   )
+  addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')
+  addPlugin(plugins, uniRenderjsPlugin(), 'vite:vue')
+
   if (command === 'build') {
     addPlugin(
       plugins,

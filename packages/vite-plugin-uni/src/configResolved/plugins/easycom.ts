@@ -68,7 +68,10 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
         return
       }
       const { filename, query } = parseVueRequest(id)
-      if (query.vue || !EXTNAME_VUE.includes(path.extname(filename))) {
+      if (
+        query.type !== 'template' &&
+        (query.vue || !EXTNAME_VUE.includes(path.extname(filename)))
+      ) {
         return
       }
       debugEasycom(id)

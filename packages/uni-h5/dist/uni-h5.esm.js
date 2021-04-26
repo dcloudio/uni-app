@@ -1,6 +1,6 @@
-import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
+import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
 import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent, Fragment} from "vue";
-import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
+import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -1087,7 +1087,7 @@ class ComponentDescriptor {
   }
 }
 function createComponentDescriptor(vm, isOwnerInstance = true) {
-  if (isOwnerInstance && vm && vm.$options.name && vm.$options.name.indexOf("VUni") === 0) {
+  if (isOwnerInstance && vm && vm.$options.name && isBuiltInComponent(hyphenate(vm.$options.name))) {
     vm = vm.$parent;
   }
   if (vm && vm.$el) {
@@ -1098,18 +1098,13 @@ function createComponentDescriptor(vm, isOwnerInstance = true) {
   }
 }
 function getComponentDescriptor(instance2, isOwnerInstance) {
-  return createComponentDescriptor(instance2 || this, isOwnerInstance);
+  return createComponentDescriptor(instance2, isOwnerInstance);
 }
 function initAppConfig$1(appConfig) {
   const globalProperties = appConfig.globalProperties;
   extend(globalProperties, instance);
   if (__UNI_FEATURE_WXS__) {
-    globalProperties.getComponentDescriptor = getComponentDescriptor;
-    Object.defineProperty(globalProperties, "$ownerInstance", {
-      get() {
-        return this.$getComponentDescriptor(this);
-      }
-    });
+    globalProperties.$gcd = getComponentDescriptor;
   }
 }
 function initView(app) {
@@ -13144,7 +13139,7 @@ function useToastIcon(props2) {
 let showToastState;
 let showType = "";
 let timeoutId;
-const onHidePopupOnce = once(() => {
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
 });
 function createToast(args) {

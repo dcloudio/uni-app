@@ -30,7 +30,7 @@ import { once } from '@dcloudio/uni-shared'
 let showToastState: ToastProps
 let showType: 'onShowToast' | 'onShowLoading' | '' = ''
 let timeoutId: number
-const onHidePopupOnce = once(() => {
+const onHidePopupOnce = /*#__PURE__*/ once(() => {
   UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
 })
 

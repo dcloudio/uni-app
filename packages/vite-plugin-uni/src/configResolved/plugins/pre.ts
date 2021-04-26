@@ -26,11 +26,12 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
         return code
       }
       const { filename, query } = parseVueRequest(id)
-      if (query.vue) {
+      if (query.vue && query.type !== 'template') {
         return code
       }
       const extname = path.extname(filename)
-      const isHtml = PRE_HTML_EXTNAME.includes(extname)
+      const isHtml =
+        query.type === 'template' || PRE_HTML_EXTNAME.includes(extname)
       const isJs = PRE_JS_EXTNAME.includes(extname)
       const isPre = isHtml || isJs
       if (isPre) {
@@ -49,8 +50,8 @@ export function uniPrePlugin(options: UniPluginFilterOptions): Plugin {
       // 读取sourcemap时，需要移除?mpType=page等参数，否则读取不到提示文件不存在
       const map = this.getCombinedSourcemap()
       if (map) {
-        map.sources = map.sources.map((source) =>
-          source.replace('?mpType=page', '')
+        map.sources = map.sources.map(
+          (source) => parseVueRequest(source).filename
         )
       }
       return {
