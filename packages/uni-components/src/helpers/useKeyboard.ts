@@ -1,4 +1,4 @@
-import { Ref, onMounted } from 'vue'
+import { Ref, watch } from 'vue'
 import { CustomEventTrigger } from './useEvent'
 import { plusReady } from '@dcloudio/uni-shared'
 
@@ -101,14 +101,34 @@ interface KeyboardState {
   softinputNavBar?: any
 }
 
-export function useKeyboard(
-  props: {
-    disabled: any
-    cursorSpacing: number | string
-    autoBlur: any
-    adjustPosition: any
-    showConfirmBar: any
+export const props = {
+  cursorSpacing: {
+    type: [Number, String],
+    default: 0,
   },
+  showConfirmBar: {
+    type: [Boolean, String],
+    default: 'auto',
+  },
+  adjustPosition: {
+    type: [Boolean, String],
+    default: true,
+  },
+  autoBlur: {
+    type: [Boolean, String],
+    default: false,
+  },
+}
+
+export const emit = ['keyboardheightchange']
+
+interface Props extends Record<keyof typeof props, any> {
+  disabled?: any
+  readOnly?: any
+}
+
+export function useKeyboard(
+  props: Props,
   elRef: Ref<HTMLElement | null>,
   trigger: CustomEventTrigger
 ) {
@@ -157,14 +177,19 @@ export function useKeyboard(
     if (__PLATFORM__ === 'app') {
       // 安卓单独隐藏键盘后点击输入框不会触发 focus 事件
       el.addEventListener('click', () => {
-        if (!props.disabled && focus && keyboardHeight === 0) {
+        if (
+          !props.disabled &&
+          !props.readOnly &&
+          focus &&
+          keyboardHeight === 0
+        ) {
           setSoftinputTemporary(props, el)
         }
       })
       if (!isAndroid && parseInt(osVersion) < 12) {
         // iOS12 以下系统 focus 事件设置较迟，改在 touchstart 设置
         el.addEventListener('touchstart', () => {
-          if (!props.disabled && !focus) {
+          if (!props.disabled && !props.readOnly && !focus) {
             setSoftinputTemporary(props, el)
           }
         })
@@ -205,8 +230,8 @@ export function useKeyboard(
       onKeyboardHide()
     })
   }
-  onMounted(() => {
-    const el = elRef.value as HTMLElement
-    initKeyboard(el)
-  })
+  watch(
+    () => elRef.value,
+    (el) => initKeyboard(el as HTMLElement)
+  )
 }

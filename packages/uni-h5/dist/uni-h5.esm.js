@@ -1,6 +1,6 @@
 import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, plusReady, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
+import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent, Fragment} from "vue";
+import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -678,7 +678,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -690,10 +690,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1334,7 +1334,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3765,7 +3765,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$e = {
+var index$f = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -4085,118 +4085,15 @@ var subscriber = {
     }
   }
 };
-function hideKeyboard$1() {
-  document.activeElement.blur();
-}
-function iosHideKeyboard$1() {
-}
-var keyboard = {
-  name: "Keyboard",
-  props: {
-    cursorSpacing: {
-      type: [Number, String],
-      default: 0
-    },
-    showConfirmBar: {
-      type: [Boolean, String],
-      default: "auto"
-    },
-    adjustPosition: {
-      type: Boolean,
-      default: true
-    }
-  },
-  watch: {
-    focus(val) {
-      if (val && false) {
-        this.showSoftKeybord();
-      }
-    }
-  },
-  mounted() {
-    if (this.autoFocus || this.focus) {
-      this.showSoftKeybord();
-    }
-  },
-  beforeDestroy() {
-    this.onKeyboardHide();
-  },
-  methods: {
-    initKeyboard(el) {
-      el.addEventListener("focus", () => {
-        this.hideKeyboardTemp = function() {
-          hideKeyboard$1();
-        };
-        UniViewJSBridge.subscribe("hideKeyboard", this.hideKeyboardTemp);
-        document.addEventListener("click", iosHideKeyboard$1, false);
-      });
-      el.addEventListener("blur", this.onKeyboardHide.bind(this));
-    },
-    showSoftKeybord() {
-      plusReady(() => {
-        plus.key.showSoftKeybord();
-      });
-    },
-    setSoftinputTemporary() {
-      plusReady(() => {
-        const currentWebview = plus.webview.currentWebview();
-        const style2 = currentWebview.getStyle() || {};
-        const rect = this.$el.getBoundingClientRect();
-        currentWebview.setSoftinputTemporary && currentWebview.setSoftinputTemporary({
-          mode: style2.softinputMode === "adjustResize" ? "adjustResize" : this.adjustPosition ? "adjustPan" : "nothing",
-          position: {
-            top: rect.top,
-            height: rect.height + (Number(this.cursorSpacing) || 0)
-          }
-        });
-      });
-    },
-    setSoftinputNavBar() {
-      if (this.showConfirmBar === "auto") {
-        delete this.__softinputNavBar;
-        return;
-      }
-      plusReady(() => {
-        const currentWebview = plus.webview.currentWebview();
-        const {softinputNavBar} = currentWebview.getStyle() || {};
-        const showConfirmBar = softinputNavBar !== "none";
-        if (showConfirmBar !== this.showConfirmBar) {
-          this.__softinputNavBar = softinputNavBar || "auto";
-          currentWebview.setStyle({
-            softinputNavBar: this.showConfirmBar ? "auto" : "none"
-          });
-        } else {
-          delete this.__softinputNavBar;
-        }
-      });
-    },
-    resetSoftinputNavBar() {
-      const softinputNavBar = this.__softinputNavBar;
-      if (softinputNavBar) {
-        plusReady(() => {
-          const currentWebview = plus.webview.currentWebview();
-          currentWebview.setStyle({
-            softinputNavBar
-          });
-        });
-      }
-    },
-    onKeyboardHide() {
-      UniViewJSBridge.unsubscribe("hideKeyboard", this.hideKeyboardTemp);
-      document.removeEventListener("click", iosHideKeyboard$1, false);
-      if (String(navigator.vendor).indexOf("Apple") === 0) {
-        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
-      }
-    }
-  }
-};
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
+  let waitCallback;
   const newFn = function(...arg) {
     const now = Date.now();
     clearTimeout(timeout);
-    const waitCallback = () => {
+    waitCallback = () => {
+      waitCallback = null;
       last = now;
       fn.apply(this, arg);
     };
@@ -4208,52 +4105,15 @@ function throttle(fn, wait) {
   };
   newFn.cancel = function() {
     clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
   };
   return newFn;
 }
-var baseInput = {
-  name: "BaseInput",
-  mixins: [emitter, keyboard],
-  model: {
-    prop: "value",
-    event: "update:value"
-  },
-  props: {
-    value: {
-      type: [String, Number],
-      default: ""
-    }
-  },
-  data() {
-    return {
-      valueSync: this._getValueString(this.value)
-    };
-  },
-  created() {
-    const valueChange = this.__valueChange = debounce((val) => {
-      this.valueSync = this._getValueString(val);
-    }, 100);
-    this.$watch("value", valueChange);
-    this.__triggerInput = throttle(($event, detail) => {
-      this.$emit("update:value", detail.value);
-      this.$trigger("input", $event, detail);
-    }, 100);
-    this.$triggerInput = ($event, detail) => {
-      this.__valueChange.cancel();
-      this.__triggerInput($event, detail);
-    };
-  },
-  beforeDestroy() {
-    this.__valueChange.cancel();
-    this.__triggerInput.cancel();
-  },
-  methods: {
-    _getValueString(value) {
-      return value === null ? "" : String(value);
-    }
-  }
-};
-const _sfc_main$f = {
+const _sfc_main$d = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4372,13 +4232,13 @@ const _sfc_main$f = {
     }
   }
 };
-const _hoisted_1$a = {class: "uni-audio-default"};
-const _hoisted_2$6 = {class: "uni-audio-right"};
+const _hoisted_1$8 = {class: "uni-audio-default"};
+const _hoisted_2$5 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4388,7 +4248,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$a, [
+    createVNode("div", _hoisted_1$8, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4398,7 +4258,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$6, [
+      createVNode("div", _hoisted_2$5, [
         createVNode("div", _hoisted_3$2, toDisplayString($data.currentTime), 1),
         createVNode("div", _hoisted_4$2, [
           createVNode("div", _hoisted_5$1, toDisplayString($props.name), 1),
@@ -4408,7 +4268,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$f.render = _sfc_render$f;
+_sfc_main$d.render = _sfc_render$d;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4493,17 +4353,17 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$d = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
-    emit
+    emit: emit2
   }) {
-    provideForm(emit);
+    provideForm(emit2);
     return () => createVNode("uni-form", null, [createVNode("span", null, [slots.default && slots.default()])]);
   }
 });
-function provideForm(emit) {
+function provideForm(emit2) {
   const fields = [];
   provide(uniFormKey, {
     addField(field) {
@@ -4513,7 +4373,7 @@ function provideForm(emit) {
       fields.splice(fields.indexOf(field), 1);
     },
     submit() {
-      emit("submit", {
+      emit2("submit", {
         detail: {
           value: fields.reduce((res, field) => {
             if (field.submit) {
@@ -4527,12 +4387,12 @@ function provideForm(emit) {
     },
     reset() {
       fields.forEach((field) => field.reset && field.reset());
-      emit("reset");
+      emit2("reset");
     }
   });
   return fields;
 }
-var index$c = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4645,7 +4505,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$e = {
+const _sfc_main$c = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -5141,20 +5001,20 @@ const _sfc_main$e = {
     }
   }
 };
-const _hoisted_1$9 = {
+const _hoisted_1$7 = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
-const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$4 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$9, null, 512),
-    createVNode("div", _hoisted_2$5, [
+    createVNode("canvas", _hoisted_1$7, null, 512),
+    createVNode("div", _hoisted_2$4, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
@@ -5163,7 +5023,7 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$e.render = _sfc_render$e;
+_sfc_main$c.render = _sfc_render$c;
 function useListeners(props2, listeners2) {
   _addListeners(props2.id, listeners2);
   watch(() => props2.id, (newId, oldId) => {
@@ -5220,9 +5080,9 @@ function _removeListeners(id2, listeners2, watch2) {
     }
   });
 }
-function useCustomEvent(ref2, emit) {
+function useCustomEvent(ref2, emit2) {
   return (name, evt, detail) => {
-    emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
@@ -5236,21 +5096,21 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$9 = {
+const props$d = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$b = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$9,
+  props: props$d,
   setup(props2, {
-    emit,
+    emit: emit2,
     slots
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit2);
     useProvideCheckGroup(props2, trigger);
     return () => {
       return createVNode("uni-checkbox-group", {
@@ -5295,17 +5155,17 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$8 = {
+const props$c = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var index$b = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$8,
+  props: props$c,
   setup(props2, {
-    emit,
+    emit: emit2,
     slots
   }) {
     const instance2 = getCurrentInstance();
@@ -5353,7 +5213,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$7 = {
+const props$b = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5375,9 +5235,9 @@ const props$7 = {
     default: ""
   }
 };
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$7,
+  props: props$b,
   setup(props2, {
     slots
   }) {
@@ -5456,6 +5316,25 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
+const props$a = {
+  cursorSpacing: {
+    type: [Number, String],
+    default: 0
+  },
+  showConfirmBar: {
+    type: [Boolean, String],
+    default: "auto"
+  },
+  adjustPosition: {
+    type: [Boolean, String],
+    default: true
+  },
+  autoBlur: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
     el.addEventListener("focus", () => {
@@ -5472,10 +5351,7 @@ function useKeyboard$1(props2, elRef, trigger) {
       onKeyboardHide();
     });
   }
-  onMounted(() => {
-    const el = elRef.value;
-    initKeyboard(el);
-  });
+  watch(() => elRef.value, (el) => initKeyboard(el));
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -6184,7 +6060,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$6 = {
+const props$9 = {
   id: {
     type: String,
     default: ""
@@ -6230,14 +6106,14 @@ const props$6 = {
     default: false
   }
 };
-var index$8 = /* @__PURE__ */ defineComponent({
+var index$9 = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$6,
+  props: props$9,
   setup(props2, {
-    emit
+    emit: emit2
   }) {
     const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit2);
     useQuill(props2, rootRef, trigger);
     useKeyboard$1(props2, rootRef);
     return () => {
@@ -6291,7 +6167,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$7 = /* @__PURE__ */ defineComponent({
+var index$8 = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -6323,11 +6199,11 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
   },
   emits: ["resize"],
   setup(props2, {
-    emit
+    emit: emit2
   }) {
     const rootRef = ref(null);
     const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit, reset);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
     useResizeSensorLifecycle(rootRef, props2, update, reset);
     return () => createVNode("uni-resize-sensor", {
       ref: rootRef,
@@ -6339,12 +6215,12 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
     }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
   }
 });
-function useResizeSensorUpdate(rootRef, emit, reset) {
+function useResizeSensorUpdate(rootRef, emit2, reset) {
   const size = reactive({
     width: -1,
     height: -1
   });
-  watch(() => extend({}, size), (value) => emit("resize", value));
+  watch(() => extend({}, size), (value) => emit2("resize", value));
   return () => {
     const {
       offsetWidth,
@@ -6382,7 +6258,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$5 = {
+const props$8 = {
   src: {
     type: String,
     default: ""
@@ -6419,15 +6295,15 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$6 = /* @__PURE__ */ defineComponent({
+var index$7 = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$5,
+  props: props$8,
   setup(props2, {
-    emit
+    emit: emit2
   }) {
     const rootRef = ref(null);
     const state = useImageState(rootRef, props2);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit2);
     const {
       fixSize
     } = useImageSize(rootRef, props2, state);
@@ -6601,7 +6477,79 @@ function useImageSize(rootRef, props2, state) {
     resetSize
   };
 }
-function useFormField(nameKey, valueKey) {
+const passiveOptions$1 = passive(true);
+const states = [];
+let userInteract = 0;
+let inited;
+function addInteractListener(vm) {
+  if (!inited) {
+    const eventNames = [
+      "touchstart",
+      "touchmove",
+      "touchend",
+      "mousedown",
+      "mouseup"
+    ];
+    eventNames.forEach((eventName) => {
+      document.addEventListener(eventName, function() {
+        states.forEach((vm2) => {
+          vm2.userAction = true;
+          userInteract++;
+          setTimeout(() => {
+            userInteract--;
+            if (!userInteract) {
+              vm2.userAction = false;
+            }
+          }, 0);
+        });
+      }, passiveOptions$1);
+    });
+    inited = true;
+  }
+  states.push(vm);
+}
+function removeInteractListener(vm) {
+  const index2 = states.indexOf(vm);
+  if (index2 >= 0) {
+    states.splice(index2, 1);
+  }
+}
+function useUserAction() {
+  const state = reactive({
+    userAction: false
+  });
+  onMounted(() => {
+    addInteractListener(state);
+  });
+  onBeforeUnmount(() => {
+    removeInteractListener(state);
+  });
+  return {
+    state
+  };
+}
+function useScopedAttrs() {
+  const state = reactive({
+    attrs: {}
+  });
+  onMounted(() => {
+    let vm = getCurrentInstance().proxy;
+    while (vm) {
+      const $options = vm.$options;
+      const scopeId = $options.__scopeId;
+      if (scopeId) {
+        const attrs2 = {};
+        attrs2[scopeId] = "";
+        state.attrs = attrs2;
+      }
+      vm = vm.$parent;
+    }
+  });
+  return {
+    state
+  };
+}
+function useFormField(nameKey, value) {
   const uniForm = inject(uniFormKey, false);
   if (!uniForm) {
     return;
@@ -6610,10 +6558,17 @@ function useFormField(nameKey, valueKey) {
   const ctx = {
     submit() {
       const proxy = instance2.proxy;
-      return [proxy[nameKey], proxy[valueKey]];
+      return [
+        proxy[nameKey],
+        typeof value === "string" ? proxy[value] : value.value
+      ];
     },
     reset() {
-      instance2.proxy[valueKey] = "";
+      if (typeof value === "string") {
+        instance2.proxy[value] = "";
+      } else {
+        value.value = "";
+      }
     }
   };
   uniForm.addField(ctx);
@@ -6621,214 +6576,361 @@ function useFormField(nameKey, valueKey) {
     uniForm.removeField(ctx);
   });
 }
-const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
-const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$d = {
-  name: "Input",
-  mixins: [baseInput],
-  props: {
-    name: {
-      type: String,
-      default: ""
-    },
-    type: {
-      type: String,
-      default: "text"
-    },
-    password: {
-      type: [Boolean, String],
-      default: false
-    },
-    placeholder: {
-      type: String,
-      default: ""
-    },
-    placeholderStyle: {
-      type: String,
-      default: ""
-    },
-    placeholderClass: {
-      type: String,
-      default: "input-placeholder"
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    maxlength: {
-      type: [Number, String],
-      default: 140
-    },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
-    confirmType: {
-      type: String,
-      default: "done"
+function getValueString(value) {
+  return value === null ? "" : String(value);
+}
+const props$7 = /* @__PURE__ */ Object.assign({}, {
+  name: {
+    type: String,
+    default: ""
+  },
+  value: {
+    type: [String, Number],
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoFocus: {
+    type: [Boolean, String],
+    default: false
+  },
+  focus: {
+    type: [Boolean, String],
+    default: false
+  },
+  cursor: {
+    type: [Number, String],
+    default: -1
+  },
+  selectionStart: {
+    type: [Number, String],
+    default: -1
+  },
+  selectionEnd: {
+    type: [Number, String],
+    default: -1
+  },
+  type: {
+    type: String,
+    default: "text"
+  },
+  password: {
+    type: [Boolean, String],
+    default: false
+  },
+  placeholder: {
+    type: String,
+    default: ""
+  },
+  placeholderStyle: {
+    type: String,
+    default: ""
+  },
+  placeholderClass: {
+    type: String,
+    default: ""
+  },
+  maxlength: {
+    type: [Number, String],
+    default: 140
+  },
+  confirmType: {
+    type: String,
+    default: "done"
+  }
+}, props$a);
+const emit = ["input", "focus", "blur", ...emit$1];
+function useBase(props2, rootRef, emit2) {
+  const fieldRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const selectionStart = computed(() => {
+    const selectionStart2 = Number(props2.selectionStart);
+    return isNaN(selectionStart2) ? -1 : selectionStart2;
+  });
+  const selectionEnd = computed(() => {
+    const selectionEnd2 = Number(props2.selectionEnd);
+    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
+  });
+  const cursor = computed(() => {
+    const cursor2 = Number(props2.cursor);
+    return isNaN(cursor2) ? -1 : cursor2;
+  });
+  const maxlength = computed(() => {
+    var maxlength2 = Number(props2.maxlength);
+    return isNaN(maxlength2) ? 140 : maxlength2;
+  });
+  const value = getValueString(props2.value);
+  const state = reactive({
+    value,
+    valueOrigin: value,
+    maxlength,
+    focus: props2.focus,
+    composing: false,
+    selectionStart,
+    selectionEnd,
+    cursor
+  });
+  watch(() => state.focus, (val) => emit2("update:focus", val));
+  watch(() => state.maxlength, (val) => state.value = state.value.slice(0, val));
+  return {
+    fieldRef,
+    state,
+    trigger
+  };
+}
+function useValueSync(props2, state, emit2, trigger) {
+  const valueChangeFn = debounce((val) => {
+    state.value = getValueString(val);
+  }, 100);
+  watch(() => props2.value, valueChangeFn);
+  const triggerInputFn = throttle((event2, detail) => {
+    emit2("update:value", detail.value);
+    trigger("input", event2, detail);
+  }, 100);
+  const triggerInput = (event2, detail, force) => {
+    valueChangeFn.cancel();
+    triggerInputFn(event2, detail);
+    if (force) {
+      triggerInputFn.flush();
     }
-  },
-  data() {
-    return {
-      composing: false,
-      wrapperHeight: 0,
-      cachedValue: ""
-    };
-  },
-  computed: {
-    inputType: function() {
-      let type = "";
-      switch (this.type) {
-        case "text":
-          this.confirmType === "search" && (type = "search");
-          break;
-        case "idcard":
-          type = "text";
-          break;
-        case "digit":
-          type = "number";
-          break;
-        default:
-          type = ~INPUT_TYPES.indexOf(this.type) ? this.type : "text";
-          break;
-      }
-      return this.password ? "password" : type;
-    },
-    step() {
-      return ~NUMBER_TYPES.indexOf(this.type) ? "0.000000000000000001" : "";
+  };
+  onBeforeMount(() => {
+    valueChangeFn.cancel();
+    triggerInputFn.cancel();
+  });
+  return {
+    trigger,
+    triggerInput
+  };
+}
+function useAutoFocus(props2, fieldRef) {
+  useUserAction();
+  const needFocus = computed(() => props2.autoFocus || props2.focus);
+  function focus() {
+    if (!needFocus.value) {
+      return;
     }
-  },
-  watch: {
-    focus(val) {
-      this.$refs.input && this.$refs.input[val ? "focus" : "blur"]();
-    },
-    maxlength(value) {
-      const realValue = this.valueSync.slice(0, parseInt(value, 10));
-      realValue !== this.valueSync && (this.valueSync = realValue);
+    const field = fieldRef.value;
+    if (!field || false) {
+      setTimeout(focus, 100);
+      return;
     }
-  },
-  setup() {
-    useFormField("name", "valueSync");
-  },
-  mounted() {
-    if (this.confirmType === "search") {
-      const formElem = document.createElement("form");
-      formElem.action = "";
-      formElem.onsubmit = function() {
-        return false;
-      };
-      formElem.className = "uni-input-form";
-      formElem.appendChild(this.$refs.input);
-      this.$refs.wrapper.appendChild(formElem);
-    }
-    const instance2 = getCurrentInstance();
-    if (instance2 && instance2.vnode.scopeId) {
-      this.$refs.placeholder.setAttribute(instance2.vnode.scopeId, "");
-    }
-    this.initKeyboard(this.$refs.input);
-  },
-  methods: {
-    _onKeyup($event) {
-      if ($event.keyCode === 13) {
-        this.$trigger("confirm", $event, {
-          value: $event.target.value
-        });
-      }
-    },
-    _onInput($event) {
-      if (this.composing) {
-        return;
-      }
-      if (~NUMBER_TYPES.indexOf(this.type)) {
-        if (this.$refs.input.validity && !this.$refs.input.validity.valid) {
-          $event.target.value = this.cachedValue;
-          this.valueSync = $event.target.value;
-          return;
-        } else {
-          this.cachedValue = this.valueSync;
-        }
-      }
-      if (this.inputType === "number") {
-        const maxlength = parseInt(this.maxlength, 10);
-        if (maxlength > 0 && $event.target.value.length > maxlength) {
-          $event.target.value = $event.target.value.slice(0, maxlength);
-          this.valueSync = $event.target.value;
-          return;
-        }
-      }
-      this.$triggerInput($event, {
-        value: this.valueSync
-      });
-    },
-    _onFocus($event) {
-      this.$trigger("focus", $event, {
-        value: $event.target.value
-      });
-    },
-    _onBlur($event) {
-      this.$trigger("blur", $event, {
-        value: $event.target.value
-      });
-    },
-    _onComposition($event) {
-      if ($event.type === "compositionstart") {
-        this.composing = true;
-      } else {
-        this.composing = false;
-      }
-    },
-    _resetFormData() {
-      this.valueSync = "";
-    },
-    _getFormData() {
-      return this.name ? {
-        value: this.valueSync,
-        key: this.name
-      } : {};
+    {
+      field.focus();
     }
   }
-};
-const _hoisted_1$8 = {
-  ref: "wrapper",
-  class: "uni-input-wrapper"
-};
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-input", mergeProps({
-    onChange: _cache[8] || (_cache[8] = withModifiers(() => {
-    }, ["stop"]))
-  }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$8, [
-      withDirectives(createVNode("div", {
-        ref: "placeholder",
-        style: $props.placeholderStyle,
-        class: [$props.placeholderClass, "uni-input-placeholder"],
-        textContent: toDisplayString($props.placeholder)
-      }, null, 14, ["textContent"]), [
-        [vShow, !($data.composing || _ctx.valueSync.length)]
-      ]),
-      withDirectives(createVNode("input", {
-        ref: "input",
-        "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.valueSync = $event),
-        disabled: $props.disabled,
-        type: $options.inputType,
-        maxlength: $props.maxlength,
-        step: $options.step,
-        autofocus: $props.focus,
+  function blur() {
+    const field = fieldRef.value;
+    if (field) {
+      field.blur();
+    }
+  }
+  watch(() => props2.focus, (value) => {
+    if (value) {
+      focus();
+    } else {
+      blur();
+    }
+  });
+  onMounted(() => {
+    if (needFocus.value) {
+      focus();
+    }
+  });
+}
+function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
+  function checkSelection() {
+    const field = fieldRef.value;
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1) {
+      field.selectionStart = state.selectionStart;
+      field.selectionEnd = state.selectionEnd;
+    }
+  }
+  function checkCursor() {
+    const field = fieldRef.value;
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1) {
+      field.selectionEnd = field.selectionStart = state.cursor;
+    }
+  }
+  function initField() {
+    const field = fieldRef.value;
+    const onFocus = function(event2) {
+      state.focus = true;
+      trigger("focus", event2, {
+        value: state.value
+      });
+      checkSelection();
+      checkCursor();
+    };
+    const onInput = function(event2, force) {
+      event2.stopPropagation();
+      if (typeof beforeInput === "function" && beforeInput(event2, state) === false) {
+        return;
+      }
+      state.value = field.value;
+      if (!state.composing) {
+        triggerInput(event2, {
+          value: field.value,
+          cursor: field.selectionEnd
+        }, force);
+      }
+    };
+    const onBlur = function(event2) {
+      if (state.composing) {
+        state.composing = false;
+        onInput(event2, true);
+      }
+      state.focus = false;
+      trigger("blur", event2, {
+        value: state.value,
+        cursor: event2.target.selectionEnd
+      });
+    };
+    field.addEventListener("change", (event2) => event2.stopPropagation());
+    field.addEventListener("focus", onFocus);
+    field.addEventListener("blur", onBlur);
+    field.addEventListener("input", onInput);
+    field.addEventListener("compositionstart", (event2) => {
+      event2.stopPropagation();
+      state.composing = true;
+    });
+    field.addEventListener("compositionend", (event2) => {
+      event2.stopPropagation();
+      if (state.composing) {
+        state.composing = false;
+        onInput(event2);
+      }
+    });
+  }
+  watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
+  watch(() => state.cursor, checkCursor);
+  watch(() => fieldRef.value, initField);
+}
+function useField(props2, rootRef, emit2, beforeInput) {
+  const {fieldRef, state, trigger} = useBase(props2, rootRef, emit2);
+  const {triggerInput} = useValueSync(props2, state, emit2, trigger);
+  useAutoFocus(props2, fieldRef);
+  useKeyboard$1(props2, fieldRef);
+  const {state: scopedAttrsState} = useScopedAttrs();
+  useFormField("name", state);
+  useEvent(fieldRef, state, trigger, triggerInput, beforeInput);
+  const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
+  return {
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    trigger
+  };
+}
+const props$6 = /* @__PURE__ */ Object.assign({}, props$7, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  }
+});
+var Input = /* @__PURE__ */ defineComponent({
+  name: "Input",
+  props: props$6,
+  emit: ["confirm", ...emit],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
+    const type = computed(() => {
+      let type2 = "";
+      switch (props2.type) {
+        case "text":
+          if (props2.confirmType === "search") {
+            type2 = "search";
+          }
+          break;
+        case "idcard":
+          type2 = "text";
+          break;
+        case "digit":
+          type2 = "number";
+          break;
+        default:
+          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          break;
+      }
+      return props2.password ? "password" : type2;
+    });
+    const valid = ref(true);
+    const rootRef = ref(null);
+    const {
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger
+    } = useField(props2, rootRef, emit2, (event2, state2) => {
+      const input = event2.target;
+      if (NUMBER_TYPES.includes(props2.type)) {
+        valid.value = input.validity && input.validity.valid;
+        state2.value;
+      }
+      if (type.value === "number") {
+        const maxlength = state2.maxlength;
+        if (maxlength > 0 && input.value.length > maxlength) {
+          input.value = input.value.slice(0, maxlength);
+          state2.value = input.value;
+          return false;
+        }
+      }
+    });
+    const NUMBER_TYPES = ["number", "digit"];
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
+    function onKeyUpEnter(event2) {
+      if (event2.key !== "Enter") {
+        return;
+      }
+      event2.stopPropagation();
+      trigger("confirm", event2, {
+        value: event2.target.value
+      });
+    }
+    return () => {
+      let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
+        ref: fieldRef,
+        value: state.value,
+        tabindex: "-1",
+        readonly: !!props2.disabled,
+        type: type.value,
+        maxlength: state.maxlength,
+        step: step.value,
+        class: "uni-input-input",
+        onFocus: (event2) => event2.target.blur()
+      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+        ref: fieldRef,
+        value: state.value,
+        disabled: !!props2.disabled,
+        type: type.value,
+        maxlength: state.maxlength,
+        step: step.value,
+        enterkeyhint: props2.confirmType,
         class: "uni-input-input",
         autocomplete: "off",
-        onFocus: _cache[2] || (_cache[2] = (...args) => $options._onFocus && $options._onFocus(...args)),
-        onBlur: _cache[3] || (_cache[3] = (...args) => $options._onBlur && $options._onBlur(...args)),
-        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._onInput && $options._onInput(...args), ["stop"])),
-        onCompositionstart: _cache[5] || (_cache[5] = (...args) => $options._onComposition && $options._onComposition(...args)),
-        onCompositionend: _cache[6] || (_cache[6] = (...args) => $options._onComposition && $options._onComposition(...args)),
-        onKeyup: _cache[7] || (_cache[7] = withModifiers((...args) => $options._onKeyup && $options._onKeyup(...args), ["stop"]))
-      }, null, 40, ["disabled", "type", "maxlength", "step", "autofocus"]), [
-        [vModelDynamic, _ctx.valueSync]
-      ])
-    ], 512)
-  ], 16);
-}
-_sfc_main$d.render = _sfc_render$d;
+        onKeyup: onKeyUpEnter
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
+      return createVNode("uni-input", {
+        ref: rootRef
+      }, [createVNode("div", {
+        class: "uni-input-wrapper"
+      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-input-placeholder", props2.placeholderClass]
+      }), [props2.placeholder], 16), [[vShow, !(state.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
+        action: "",
+        onSubmit: () => false,
+        class: "uni-input-form"
+      }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+    };
+  }
+});
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -7294,7 +7396,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$c = {
+const _sfc_main$b = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7846,14 +7948,14 @@ const _sfc_main$c = {
     }
   }
 };
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$c.render = _sfc_render$c;
+_sfc_main$b.render = _sfc_render$b;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7861,7 +7963,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$b = {
+const _sfc_main$a = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -7934,7 +8036,7 @@ const _sfc_main$b = {
     }
   }
 };
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -7951,13 +8053,13 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$b.render = _sfc_render$b;
+_sfc_main$a.render = _sfc_render$a;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$4 = {
+const props$5 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -8004,9 +8106,9 @@ const props$4 = {
     }
   }
 };
-var index$5 = /* @__PURE__ */ defineComponent({
+var index$6 = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$4,
+  props: props$5,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -8076,7 +8178,7 @@ function _activeAnimation(state, props2) {
     state.currentPercent = state.realPercent;
   }
 }
-const _sfc_main$a = {
+const _sfc_main$9 = {
   name: "Radio",
   mixins: [emitter, listeners],
   props: {
@@ -8157,12 +8259,12 @@ const _sfc_main$a = {
     }
   }
 };
-const _hoisted_1$7 = {class: "uni-radio-wrapper"};
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$6 = {class: "uni-radio-wrapper"};
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$7, [
+    createVNode("div", _hoisted_1$6, [
       createVNode("div", {
         class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
         style: $data.radioChecked ? $options.checkedStyle : ""
@@ -8171,8 +8273,8 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$a.render = _sfc_render$a;
-const _sfc_main$9 = {
+_sfc_main$9.render = _sfc_render$9;
+const _sfc_main$8 = {
   name: "RadioGroup",
   mixins: [emitter, listeners],
   props: {
@@ -8256,12 +8358,12 @@ const _sfc_main$9 = {
     }
   }
 };
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-radio-group", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$9.render = _sfc_render$9;
+_sfc_main$8.render = _sfc_render$8;
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -8469,7 +8571,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$8 = {
+const _sfc_main$7 = {
   name: "RichText",
   props: {
     nodes: {
@@ -8498,13 +8600,13 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$6 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$5 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$6
+    _hoisted_1$5
   ], 16);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$7.render = _sfc_render$7;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -9176,8 +9278,8 @@ var scroller = {
     }
   }
 };
-const passiveOptions$1 = passive(true);
-const _sfc_main$7 = {
+const passiveOptions = passive(true);
+const _sfc_main$6 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -9368,20 +9470,20 @@ const _sfc_main$7 = {
         self.$trigger("refresherabort", event2, {});
       }
     };
-    this.$refs.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions$1);
-    this.$refs.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions$1);
+    this.$refs.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
+    this.$refs.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
     this.$refs.main.addEventListener("scroll", this.__handleScroll, passive(false));
-    this.$refs.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions$1);
+    this.$refs.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
   },
   activated() {
     this.scrollY && (this.$refs.main.scrollTop = this.lastScrollTop);
     this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft);
   },
   beforeDestroy() {
-    this.$refs.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions$1);
-    this.$refs.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions$1);
+    this.$refs.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
+    this.$refs.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
     this.$refs.main.removeEventListener("scroll", this.__handleScroll, passive(false));
-    this.$refs.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions$1);
+    this.$refs.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
   },
   methods: {
     scrollTo: function(t2, n) {
@@ -9585,11 +9687,11 @@ const _sfc_main$7 = {
     }
   }
 };
-const _hoisted_1$5 = {
+const _hoisted_1$4 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
-const _hoisted_2$4 = {
+const _hoisted_2$3 = {
   ref: "content",
   class: "uni-scroll-view-content"
 };
@@ -9618,9 +9720,9 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$5, [
+    createVNode("div", _hoisted_1$4, [
       createVNode("div", {
         ref: "main",
         style: {
@@ -9629,7 +9731,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
         },
         class: "uni-scroll-view"
       }, [
-        createVNode("div", _hoisted_2$4, [
+        createVNode("div", _hoisted_2$3, [
           $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
@@ -9666,8 +9768,8 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
-const _sfc_main$6 = {
+_sfc_main$6.render = _sfc_render$6;
+const _sfc_main$5 = {
   name: "Slider",
   mixins: [emitter, listeners, touchtrack],
   props: {
@@ -9830,14 +9932,14 @@ const _sfc_main$6 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-slider-wrapper"};
-const _hoisted_2$3 = {class: "uni-slider-tap-area"};
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$3 = {class: "uni-slider-wrapper"};
+const _hoisted_2$2 = {class: "uni-slider-tap-area"};
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$4, [
-      createVNode("div", _hoisted_2$3, [
+    createVNode("div", _hoisted_1$3, [
+      createVNode("div", _hoisted_2$2, [
         createVNode("div", {
           style: $options.setBgColor,
           class: "uni-slider-handle-wrapper"
@@ -9864,8 +9966,8 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$6.render = _sfc_render$6;
-const _sfc_main$5 = {
+_sfc_main$5.render = _sfc_render$5;
+const _sfc_main$4 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -9886,13 +9988,13 @@ const _sfc_main$5 = {
     }
   }
 };
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
-const _sfc_main$4 = {
+_sfc_main$4.render = _sfc_render$4;
+const _sfc_main$3 = {
   name: "Switch",
   mixins: [emitter, listeners],
   props: {
@@ -9970,12 +10072,12 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-switch-wrapper"};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$2 = {class: "uni-switch-wrapper"};
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
     onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
   }), [
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$2, [
       withDirectives(createVNode("div", {
         class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
         style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
@@ -9991,7 +10093,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["disabled"]);
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$3.render = _sfc_render$3;
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
@@ -10009,7 +10111,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$4 = /* @__PURE__ */ defineComponent({
+var index$5 = /* @__PURE__ */ defineComponent({
   name: "Text",
   props: {
     selectable: {
@@ -10058,280 +10160,140 @@ var index$4 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-const _sfc_main$3 = {
+const props$4 = /* @__PURE__ */ Object.assign({}, props$7, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  autoHeight: {
+    type: [Boolean, String],
+    default: false
+  },
+  confirmType: {
+    type: String,
+    default: ""
+  }
+});
+var index$4 = /* @__PURE__ */ defineComponent({
   name: "Textarea",
-  mixins: [baseInput],
-  props: {
-    name: {
-      type: String,
-      default: ""
-    },
-    maxlength: {
-      type: [Number, String],
-      default: 140
-    },
-    placeholder: {
-      type: String,
-      default: ""
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
-    autoFocus: {
-      type: [Boolean, String],
-      default: false
-    },
-    placeholderClass: {
-      type: String,
-      default: "textarea-placeholder"
-    },
-    placeholderStyle: {
-      type: String,
-      default: ""
-    },
-    autoHeight: {
-      type: [Boolean, String],
-      default: false
-    },
-    cursor: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionStart: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionEnd: {
-      type: [Number, String],
-      default: -1
-    }
-  },
-  data() {
-    return {
-      valueComposition: "",
-      composition: false,
-      focusSync: this.focus,
-      height: 0,
-      focusChangeSource: "",
-      fixMargin: String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
-    };
-  },
-  computed: {
-    maxlengthNumber() {
-      var maxlength = Number(this.maxlength);
-      return isNaN(maxlength) ? 140 : maxlength;
-    },
-    cursorNumber() {
-      var cursor = Number(this.cursor);
-      return isNaN(cursor) ? -1 : cursor;
-    },
-    selectionStartNumber() {
-      var selectionStart = Number(this.selectionStart);
-      return isNaN(selectionStart) ? -1 : selectionStart;
-    },
-    selectionEndNumber() {
-      var selectionEnd = Number(this.selectionEnd);
-      return isNaN(selectionEnd) ? -1 : selectionEnd;
-    },
-    valueCompute() {
-      return (this.composition ? this.valueComposition : this.valueSync).split("\n");
-    }
-  },
-  watch: {
-    focus(val) {
-      if (val) {
-        this.focusChangeSource = "focus";
-        if (this.$refs.textarea) {
-          this.$refs.textarea.focus();
-        }
-      } else {
-        if (this.$refs.textarea) {
-          this.$refs.textarea.blur();
-        }
-      }
-    },
-    focusSync(val) {
-      this.$emit("update:focus", val);
-      this._checkSelection();
-      this._checkCursor();
-    },
-    cursorNumber() {
-      this._checkCursor();
-    },
-    selectionStartNumber() {
-      this._checkSelection();
-    },
-    selectionEndNumber() {
-      this._checkSelection();
-    },
-    height(height) {
-      let lineHeight = parseFloat(getComputedStyle(this.$el).lineHeight);
+  props: props$4,
+  emit: ["confirm", "linechange", ...emit],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const {
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger
+    } = useField(props2, rootRef, emit2);
+    const valueCompute = computed(() => state.value.split("\n"));
+    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const heightRef = ref(0);
+    const lineRef = ref(null);
+    watch(() => heightRef.value, (height) => {
+      const el = rootRef.value;
+      const lineEl = lineRef.value;
+      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
       if (isNaN(lineHeight)) {
-        lineHeight = this.$refs.line.offsetHeight;
+        lineHeight = lineEl.offsetHeight;
       }
       var lineCount = Math.round(height / lineHeight);
-      this.$trigger("linechange", {}, {
+      trigger("linechange", {}, {
         height,
         heightRpx: 750 / window.innerWidth * height,
         lineCount
       });
-      if (this.autoHeight) {
-        this.$el.style.height = this.height + "px";
+      if (props2.autoHeight) {
+        el.style.height = height + "px";
       }
-    }
-  },
-  created() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
     });
-  },
-  mounted() {
-    let $vm = this;
-    while ($vm) {
-      const scopeId = $vm.$options._scopeId;
-      if (scopeId) {
-        this.$refs.placeholder.setAttribute(scopeId, "");
-      }
-      $vm = $vm.$parent;
+    function onResize({
+      height
+    }) {
+      heightRef.value = height;
     }
-    this.initKeyboard(this.$refs.textarea);
-  },
-  beforeDestroy() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
-  },
-  methods: {
-    _focus: function($event) {
-      this.focusSync = true;
-      this.$trigger("focus", $event, {
-        value: this.valueSync
+    function confirm(event2) {
+      trigger("confirm", event2, {
+        value: state.value
       });
-    },
-    _checkSelection() {
-      if (this.focusSync && !this.focusChangeSource && this.selectionStartNumber > -1 && this.selectionEndNumber > -1) {
-        this.$refs.textarea.selectionStart = this.selectionStartNumber;
-        this.$refs.textarea.selectionEnd = this.selectionEndNumber;
-      }
-    },
-    _checkCursor() {
-      if (this.focusSync && (this.focusChangeSource === "focus" || !this.focusChangeSource && this.selectionStartNumber < 0 && this.selectionEndNumber < 0) && this.cursorNumber > -1) {
-        this.$refs.textarea.selectionEnd = this.$refs.textarea.selectionStart = this.cursorNumber;
-      }
-    },
-    _blur: function($event) {
-      this.focusSync = false;
-      this.$trigger("blur", $event, {
-        value: this.valueSync,
-        cursor: this.$refs.textarea.selectionEnd
-      });
-    },
-    _compositionstart($event) {
-      this.composition = true;
-    },
-    _compositionend($event) {
-      this.composition = false;
-    },
-    _confirm($event) {
-      this.$trigger("confirm", $event, {
-        value: this.valueSync
-      });
-    },
-    _linechange($event) {
-      this.$trigger("linechange", $event, {
-        value: this.valueSync
-      });
-    },
-    _touchstart() {
-      this.focusChangeSource = "touch";
-    },
-    _resize({height}) {
-      this.height = height;
-    },
-    _input($event) {
-      if (this.composition) {
-        this.valueComposition = $event.target.value;
+    }
+    function onKeyDownEnter(event2) {
+      if (event2.key !== "Enter") {
         return;
       }
-      this.$triggerInput($event, {
-        value: this.valueSync,
-        cursor: this.$refs.textarea.selectionEnd
-      });
-    },
-    _getFormData() {
-      return {
-        value: this.valueSync,
-        key: this.name
-      };
-    },
-    _resetFormData() {
-      this.valueSync = "";
+      if (isDone.value) {
+        event2.preventDefault();
+      }
     }
+    function onKeyUpEnter(event2) {
+      if (event2.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        confirm(event2);
+        const textarea = event2.target;
+        textarea.blur();
+      }
+    }
+    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
+    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+    return () => {
+      let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        ref: fieldRef,
+        value: state.value,
+        tabindex: "-1",
+        readonly: !!props2.disabled,
+        maxlength: state.maxlength,
+        class: {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        style: {
+          overflowY: props2.autoHeight ? "hidden" : "auto"
+        },
+        onFocus: (event2) => event2.target.blur()
+      }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        ref: fieldRef,
+        value: state.value,
+        disabled: !!props2.disabled,
+        maxlength: state.maxlength,
+        enterkeyhint: props2.confirmType,
+        class: {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        style: {
+          overflowY: props2.autoHeight ? "hidden" : "auto"
+        },
+        onKeydown: onKeyDownEnter,
+        onKeyup: onKeyUpEnter
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
+      return createVNode("uni-textarea", {
+        ref: rootRef
+      }, [createVNode("div", {
+        class: "uni-textarea-wrapper"
+      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-textarea-placeholder", props2.placeholderClass]
+      }), [props2.placeholder], 16), [[vShow, !state.value.length]]), createVNode("div", {
+        ref: lineRef,
+        class: "uni-textarea-line"
+      }, [" "], 512), createVNode("div", {
+        class: "uni-textarea-compute"
+      }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
+        initial: true,
+        onResize
+      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+        action: "",
+        onSubmit: () => false,
+        class: "uni-input-form"
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+    };
   }
-};
-const _hoisted_1$2 = {class: "uni-textarea-wrapper"};
-const _hoisted_2$2 = {class: "uni-textarea-compute"};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
-  return openBlock(), createBlock("uni-textarea", mergeProps({
-    onChange: _cache[8] || (_cache[8] = withModifiers(() => {
-    }, ["stop"]))
-  }, _ctx.$attrs), [
-    createVNode("div", _hoisted_1$2, [
-      withDirectives(createVNode("div", {
-        ref: "placeholder",
-        style: $props.placeholderStyle,
-        class: [$props.placeholderClass, "uni-textarea-placeholder"],
-        textContent: toDisplayString($props.placeholder)
-      }, null, 14, ["textContent"]), [
-        [vShow, !($data.composition || _ctx.valueSync.length)]
-      ]),
-      createVNode("div", {
-        ref: "line",
-        class: "uni-textarea-line",
-        textContent: toDisplayString(" ")
-      }, null, 8, ["textContent"]),
-      createVNode("div", _hoisted_2$2, [
-        (openBlock(true), createBlock(Fragment, null, renderList($options.valueCompute, (item, index2) => {
-          return openBlock(), createBlock("div", {
-            key: index2,
-            textContent: toDisplayString(item.trim() ? item : ".")
-          }, null, 8, ["textContent"]);
-        }), 128)),
-        createVNode(_component_v_uni_resize_sensor, {
-          ref: "sensor",
-          onResize: $options._resize
-        }, null, 8, ["onResize"])
-      ]),
-      withDirectives(createVNode("textarea", {
-        ref: "textarea",
-        "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.valueSync = $event),
-        disabled: $props.disabled,
-        maxlength: $options.maxlengthNumber,
-        autofocus: $props.autoFocus || $props.focus,
-        class: [{"uni-textarea-textarea-fix-margin": $data.fixMargin}, "uni-textarea-textarea"],
-        style: {"overflow-y": $props.autoHeight ? "hidden" : "auto"},
-        onCompositionstart: _cache[2] || (_cache[2] = (...args) => $options._compositionstart && $options._compositionstart(...args)),
-        onCompositionend: _cache[3] || (_cache[3] = (...args) => $options._compositionend && $options._compositionend(...args)),
-        onInput: _cache[4] || (_cache[4] = withModifiers((...args) => $options._input && $options._input(...args), ["stop"])),
-        onFocus: _cache[5] || (_cache[5] = (...args) => $options._focus && $options._focus(...args)),
-        onBlur: _cache[6] || (_cache[6] = (...args) => $options._blur && $options._blur(...args)),
-        onTouchstartPassive: _cache[7] || (_cache[7] = (...args) => $options._touchstart && $options._touchstart(...args))
-      }, null, 46, ["disabled", "maxlength", "autofocus"]), [
-        [vModelText, _ctx.valueSync]
-      ])
-    ])
-  ], 16);
-}
-_sfc_main$3.render = _sfc_render$3;
+});
 var index$3 = /* @__PURE__ */ defineComponent({
   name: "View",
   props: extend({}, hoverProps),
@@ -10396,57 +10358,6 @@ function useSubscribe(callback, name) {
 function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
-}
-const passiveOptions = passive(true);
-const states = [];
-let userInteract = 0;
-let inited;
-function addInteractListener(vm) {
-  if (!inited) {
-    const eventNames = [
-      "touchstart",
-      "touchmove",
-      "touchend",
-      "mousedown",
-      "mouseup"
-    ];
-    eventNames.forEach((eventName) => {
-      document.addEventListener(eventName, function() {
-        states.forEach((vm2) => {
-          vm2.userAction = true;
-          userInteract++;
-          setTimeout(() => {
-            userInteract--;
-            if (!userInteract) {
-              vm2.userAction = false;
-            }
-          }, 0);
-        });
-      }, passiveOptions);
-    });
-    inited = true;
-  }
-  states.push(vm);
-}
-function removeInteractListener(vm) {
-  const index2 = states.indexOf(vm);
-  if (index2 >= 0) {
-    states.splice(index2, 1);
-  }
-}
-function useUserAction() {
-  const state = reactive({
-    userAction: false
-  });
-  onMounted(() => {
-    addInteractListener(state);
-  });
-  onBeforeUnmount(() => {
-    removeInteractListener(state);
-  });
-  return {
-    state
-  };
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -11096,13 +11007,13 @@ var index$2 = /* @__PURE__ */ defineComponent({
   props: props$3,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
-    emit,
+    emit: emit2,
     attrs: attrs2,
     slots
   }) {
     const rootRef = ref(null);
     const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit);
+    const trigger = useCustomEvent(rootRef, emit2);
     const {
       state: userActionState
     } = useUserAction();
@@ -11538,7 +11449,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -11651,12 +11562,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11676,10 +11587,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -13099,11 +13010,11 @@ const props$1 = {
 var modal = /* @__PURE__ */ defineComponent({
   props: props$1,
   setup(props2, {
-    emit
+    emit: emit2
   }) {
     const close = () => visible.value = false;
-    const cancel = () => (close(), emit("close", "cancel"));
-    const confirm = () => (close(), emit("close", "confirm"));
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm"));
     const visible = usePopup(props2, {
       onEsc: cancel,
       onEnter: confirm
@@ -13830,7 +13741,7 @@ updateCssVar({
 var LayoutComponent = defineComponent({
   name: "Layout",
   setup(_props, {
-    emit
+    emit: emit2
   }) {
     const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
     __UNI_FEATURE_TOPWINDOW__ && useTopWindow();
@@ -13866,7 +13777,7 @@ function createLayoutTsx(keepAliveRoute, topWindow, leftWindow, rightWindow) {
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx() : null;
   return createVNode("uni-layout", null, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])]);
 }
-function useShowTabBar(emit) {
+function useShowTabBar(emit2) {
   const route = useRoute();
   const tabBar2 = useTabBar();
   const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
@@ -14168,7 +14079,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(_sfc_main$d, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
     disabled: true,
     style: {
       color
@@ -14179,7 +14090,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: "uni-page-head-search-input",
     "confirm-type": "search",
     onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(_sfc_main$d, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
     focus: autoFocus,
     style: {
       color
@@ -14685,4 +14596,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$f as Audio, index$c as Button, _sfc_main$e as Canvas, index$9 as Checkbox, index$b as CheckboxGroup, index$8 as Editor, index$d as Form, index$7 as Icon, index$6 as Image, _sfc_main$d as Input, index$a as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$e as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$d as Audio, index$d as Button, _sfc_main$c as Canvas, index$a as Checkbox, index$c as CheckboxGroup, index$9 as Editor, index$e as Form, index$8 as Icon, index$7 as Image, Input, index$b as Label, LayoutComponent, _sfc_main$b as MovableView, _sfc_main$a as Navigator, index as PageComponent, index$6 as Progress, _sfc_main$9 as Radio, _sfc_main$8 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$f as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
