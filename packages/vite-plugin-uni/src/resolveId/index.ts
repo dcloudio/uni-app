@@ -10,6 +10,11 @@ export function createResolveId(
   _options: VitePluginUniResolvedOptions
 ): Plugin['resolveId'] {
   return function (id) {
+    if (id.startsWith('@dcloudio/') || id.startsWith('@vue/')) {
+      return require.resolve(id, {
+        paths: [process.env.UNI_CLI_CONTEXT!],
+      })
+    }
     if (VUES.includes(id)) {
       debugResolve(id)
       return '@dcloudio/uni-h5-vue'

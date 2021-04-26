@@ -82,7 +82,7 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
   },
 }
 
-export function resolvePlugins(
+export function initPlugins(
   config: ResolvedConfig,
   options: VitePluginUniResolvedOptions
 ) {

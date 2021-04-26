@@ -5,6 +5,7 @@
   },
   "include": [
     "src",
+    "../shims-node.d.ts",
     "../shims-uni-app.d.ts",
     "../../node_modules/postcss/lib/postcss.d.ts"
   ]

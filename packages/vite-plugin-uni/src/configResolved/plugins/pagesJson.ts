@@ -69,7 +69,7 @@ function parsePagesJson(
   const cssCode = generateCssCode(config, options)
 
   return `
-import { extend } from '@vue/shared'  
+import { extend } from '@vue/shared/dist/shared.esm-bundler.js'  
 import { ${
     config.define!.__UNI_FEATURE_PAGES__ ? 'defineAsyncComponent, ' : ''
   }resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'

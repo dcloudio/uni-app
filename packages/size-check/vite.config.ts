@@ -12,9 +12,9 @@ export default {
       entry: path.resolve(__dirname, 'src/main.ts'),
       formats: ['es'],
     },
-    // minify: false,
+    minify: false,
     rollupOptions: {
-      // external: ['vue', '@vue/shared'],
+      external: ['vue', '@vue/shared'],
       // output: {
       //   entryFileNames: `assets/[name].js`,
       //   chunkFileNames: `assets/[name].js`,
