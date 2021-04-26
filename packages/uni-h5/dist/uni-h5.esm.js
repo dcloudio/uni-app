@@ -6060,7 +6060,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$9 = {
+const props$9 = Object.assign({}, props$a, {
   id: {
     type: String,
     default: ""
@@ -6084,31 +6084,12 @@ const props$9 = {
   showImgResize: {
     type: [Boolean, String],
     default: false
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  cursorSpacing: {
-    type: [Number, String],
-    default: 0
-  },
-  showConfirmBar: {
-    type: [Boolean, String],
-    default: "auto"
-  },
-  adjustPosition: {
-    type: [Boolean, String],
-    default: true
-  },
-  autoBlur: {
-    type: [Boolean, String],
-    default: false
   }
-};
+});
 var index$9 = /* @__PURE__ */ defineComponent({
   name: "Editor",
   props: props$9,
+  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
   }) {

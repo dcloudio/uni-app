@@ -8,7 +8,11 @@ import QuillClass, {
 import { useSubscribe } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
-import { useKeyboard } from '../../helpers/useKeyboard'
+import {
+  props as keyboardProps,
+  emit as keyboardEmit,
+  useKeyboard,
+} from '../../helpers/useKeyboard'
 import HTMLParser from '../../helpers/html-parser'
 import * as formats from './formats'
 import loadScript from './load-script'
@@ -410,7 +414,7 @@ function useQuill(
   })
 }
 
-const props = {
+const props = Object.assign({}, keyboardProps, {
   id: {
     type: String,
     default: '',
@@ -435,30 +439,12 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
-  disabled: {
-    type: [Boolean, String],
-    default: false,
-  },
-  cursorSpacing: {
-    type: [Number, String],
-    default: 0,
-  },
-  showConfirmBar: {
-    type: [Boolean, String],
-    default: 'auto',
-  },
-  adjustPosition: {
-    type: [Boolean, String],
-    default: true,
-  },
-  autoBlur: {
-    type: [Boolean, String],
-    default: false,
-  },
-}
+})
+
 export default /*#__PURE__*/ defineComponent({
   name: 'Editor',
   props,
+  emit: ['ready', 'focus', 'blur', 'input', 'statuschange', ...keyboardEmit],
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent(rootRef, emit)
