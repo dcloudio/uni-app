@@ -1,4 +1,4 @@
-DCloud有**800万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**12亿**。是开发者数量和案例最丰富的多端开发框架。
+DCloud有**800万**开发者，[uni统计](https://tongji.dcloud.net.cn/)手机端月活**12亿+**。是开发者数量和案例最丰富的多端开发框架。
 
 欢迎知名开发商[提交案例](https://github.com/dcloudio/uni-app/issues/6)或接入[uni统计](https://tongji.dcloud.net.cn/)。
 
@@ -269,6 +269,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **极米：** [极米官方app](https://sj.qq.com/myapp/detail.htm?apkName=com.xgimi.zhushou&info=FB45015C23ACF368D22855D6C4964312)、[官网H5版](https://m.xgimi.com/)、微信小程序搜索“极米官方商城”、微信小程序搜索“极米care+”售后服务宣传
 
+**货拉拉：** App部分栏目使用uni小程序sdk。
+
+**叮咚买菜：** 微信小程序搜索 “叮咚买菜”、[公众号H5](http://wx.m.ddxq.mobi/#/)
+
 <!-- **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml) -->
 
 #### SaaS服务商
@@ -374,9 +378,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 <!-- **上海闵行区委党务公开网：**[H5（有UA限制）](http://dj.mhdw.gov.cn/djwx/) -->
 
+**粤苗：** 广东省疾病预防控制中心疫苗预约管理 [官网app下载](http://cdcp.gd.gov.cn/ggwsfwxx/content/post_3146600.html)
+
 **广东省工会：**粤工惠，广东工友服务App，[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gdftu.ygh)、[iOS](https://apps.apple.com/cn/app/id1464193434) 、微信小程序搜索“粤工惠”
 
 **广东省广州民政局：**[微信H5](https://wxpt.gzmz.gov.cn/ydzw-wx/#/pagesA/login/index)
+
+**广东省共青团：** [12355.net](https://12355.net)
 
 **广州市公安局南沙区分局：** 微警[微信H5](https://ns.weijing.gov.cn/wechat-app/)
 
@@ -504,15 +512,25 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **五粮液：** 内部管理系统
 
-#### html5游戏
+**全家超市** App部分页面使用uni-app制作
+
+#### 游戏
 
 **信任的进化：** 曾Taptap首页推荐的益智小游戏。[Android](http://sj.qq.com/myapp/detail.htm?apkName=com.xuangames.xrdjh)、[iOS](https://itunes.apple.com/cn/app/%E4%BF%A1%E4%BB%BB%E7%9A%84%E8%BF%9B%E5%8C%96-%E5%90%88%E4%BD%9C%E8%87%AA%E7%A7%81%E7%9A%84%E5%9F%BA%E5%9B%A0/id1290206167?mt=8)
 
 **出发吧！冒险家：** 曾Taptap首页推荐的冒险游戏。[Android](https://www.seagame.com/mxj/android1.apk)、[iOS](https://apps.apple.com/cn/app/id1367825240)
 
+**萌猫合成：** 网赚类合成游戏 [App](https://ext.dcloud.net.cn/plugin?id=4095)
+
+**有奖猜歌：** 猜歌有奖，激励视频变现 [App](https://ext.dcloud.net.cn/plugin?id=4826)
+
 #### 创业公司
 
 **Crimaster犯罪大师：**火爆的全球推理侦探专属社区。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.ultron.crimaster)、[iOS](https://apps.apple.com/cn/app/crimaster%E7%8A%AF%E7%BD%AA%E5%A4%A7%E5%B8%88/id1501701702)
+
+**宝贝听听：** 腾讯投资的创业公司，中国最大的儿童有声早教平台。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.kunpeng.babyting&info=A20D77EAD610031E8F8C6D1A16135ADD)、[iOS](https://apps.apple.com/cn/app/%E5%AE%9D%E8%B4%9D%E5%90%AC%E5%90%AC%E6%95%85%E4%BA%8B%E4%B9%A6-%E5%84%BF%E7%AB%A5%E7%9D%A1%E5%89%8D%E6%95%85%E4%BA%8B%E5%84%BF%E6%AD%8C%E5%A4%A7%E5%85%A8/id480111612)、微信小程序搜索“宝贝听听”
+
+**本地宝：** 本地宝（bendibao.com）是领先的便民信息服务平台。[官网App下载](http://www.bendibao.com/app/pc.html)、微信小程序搜索“本地宝”
 
 **仓鼠团：** 囤好货到仓鼠,仓鼠团您身边的购物助手。[App通用链接](http://m3w.cn/cst)
 
@@ -521,8 +539,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **批改网（5+App）：**智能批改，辅助英文教与学，[Android](http://sj.qq.com/myapp/detail.htm?apkName=org.pigai.allround)、[iOS](https://itunes.apple.com/cn/app/id1158628103)
 
 **弈客围棋（5+App）：**Appstore体育分类排名前100的棋友App。[iOS](https://apps.apple.com/cn/app/yi-ke-wei-qi-quan-qiu-yi-wan/id988682022)
-
-**新疆包邮：**新疆网民的专属导购APP。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.h5415379.wux)、[iOS](https://apps.apple.com/cn/app/%E6%96%B0%E7%96%86%E5%8C%85%E9%82%AE/id1433935701)
 
 **蓝鲸鱼旧物回收：** 微信、支付宝搜索“蓝鲸鱼旧物回收”
 
@@ -545,6 +561,14 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **美缝之家：**让美缝贴心完美，用心便是最好。[App、微信小程序、百度小程序通用链接](http://m3w.cn/mfzj)
 
 **壹恒出行：**共享汽车，APP内线上找到距离你最近的网点或汽车，[iOS](https://itunes.apple.com/cn/app/%E5%A3%B9%E6%81%92%E5%87%BA%E8%A1%8C/id1455172086?mt=8)、[Android](http://appstore.huawei.com/app/C100659807)
+
+**律师来电：** 专业法律咨询，[H5](https://www.lvshilaidian.com)
+
+**魔叮：** 建筑制图众包平台，[H5](https://www.emoding.com)
+
+**就爱肚皮舞** 肚皮舞专业社区，[Android及iOS](http://www.92dpw.com/m.php?module=down)
+
+**新疆包邮：**新疆网民的专属导购APP。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.h5415379.wux)、[iOS](https://apps.apple.com/cn/app/%E6%96%B0%E7%96%86%E5%8C%85%E9%82%AE/id1433935701)
 
 **萤火e券：**一个会省钱的购物app。[App、H5、小程序通用链接](http://m3w.cn/yheq)
 
@@ -585,12 +609,6 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **门面帮：**转门面网移动办公软件，服务门面转让求租一站式服务，[Android](http://cs.zhuanmenmian.com/menmianbang.apk)、[iOS](https://itunes.apple.com/cn/app/%E9%97%A8%E9%9D%A2%E5%B8%AE/id1278250751?mt=8)。
 
 **大象优车：**为车商创造价值。[iOS](https://apps.apple.com/cn/app/%E5%A4%A7%E8%B1%A1%E4%BC%98%E8%BD%A6-%E4%B8%BA%E8%BD%A6%E5%95%86%E5%88%9B%E9%80%A0%E4%BB%B7%E5%80%BC/id1461035002)、[Android](http://a.app.qq.com/o/simple.jsp?pkgname=com.daxiangauto.apps)
-
-**律师来电：** 专业法律咨询，[H5](https://www.lvshilaidian.com)
-
-**魔叮：** 建筑制图众包平台，[H5](https://www.emoding.com)
-
-**就爱肚皮舞** 肚皮舞专业社区，[Android及iOS](http://www.92dpw.com/m.php?module=down)
 
 **优加：** 微商分销，[Android](http://a.app.qq.com/o/simple.jsp?pkgname=com.king.youplus)
 
