@@ -11,8 +11,8 @@ export interface UniFormCtx {
 }
 
 interface UniFormFieldCtx {
-  submit: () => [string, any]
-  reset: () => void
+  submit?: () => [string, any]
+  reset?: () => void
 }
 
 export default /*#__PURE__*/ defineComponent({
@@ -40,15 +40,17 @@ function provideForm(emit: SetupContext['emit']) {
       emit('submit', {
         detail: {
           value: fields.reduce((res, field) => {
-            const [name, value] = field.submit()
-            name && (res[name] = value)
+            if (field.submit) {
+              const [name, value] = field.submit()
+              name && (res[name] = value)
+            }
             return res
           }, Object.create(null)),
         },
       })
     },
     reset() {
-      fields.forEach((field) => field.reset())
+      fields.forEach((field) => field.reset && field.reset())
       emit('reset')
     },
   })

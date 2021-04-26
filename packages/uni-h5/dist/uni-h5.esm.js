@@ -1,5 +1,5 @@
 import {isFunction, extend, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onActivated, onBeforeUnmount, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, onUnmounted, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, vModelDynamic, createTextVNode, createCommentVNode, Fragment, renderList, vModelText, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, plusReady, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -678,7 +678,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -690,10 +690,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -857,6 +857,7 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
+const TempSkipComponents = ["UNI-CHECKBOX", "UNI-LABEL"];
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
 function $nne(evt) {
@@ -865,7 +866,7 @@ function $nne(evt) {
     return evt;
   }
   const {tagName} = currentTarget;
-  if (tagName.indexOf("UNI-") !== 0 || tagName === "UNI-PAGE-WRAPPER") {
+  if (tagName.indexOf("UNI-") !== 0 || tagName === "UNI-PAGE-WRAPPER" || TempSkipComponents.indexOf(tagName) !== -1) {
     return evt;
   }
   const res = createNativeEvent(evt);
@@ -1333,7 +1334,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3764,7 +3765,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$b = {
+var index$e = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -4252,7 +4253,7 @@ var baseInput = {
     }
   }
 };
-const _sfc_main$i = {
+const _sfc_main$f = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4371,13 +4372,13 @@ const _sfc_main$i = {
     }
   }
 };
-const _hoisted_1$b = {class: "uni-audio-default"};
+const _hoisted_1$a = {class: "uni-audio-default"};
 const _hoisted_2$6 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4387,7 +4388,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$b, [
+    createVNode("div", _hoisted_1$a, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4407,7 +4408,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$i.render = _sfc_render$i;
+_sfc_main$f.render = _sfc_render$f;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4492,7 +4493,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$a = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -4515,21 +4516,23 @@ function provideForm(emit) {
       emit("submit", {
         detail: {
           value: fields.reduce((res, field) => {
-            const [name, value] = field.submit();
-            name && (res[name] = value);
+            if (field.submit) {
+              const [name, value] = field.submit();
+              name && (res[name] = value);
+            }
             return res;
           }, Object.create(null))
         }
       });
     },
     reset() {
-      fields.forEach((field) => field.reset());
+      fields.forEach((field) => field.reset && field.reset());
       emit("reset");
     }
   });
   return fields;
 }
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4642,7 +4645,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$h = {
+const _sfc_main$e = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -5138,19 +5141,19 @@ const _sfc_main$h = {
     }
   }
 };
-const _hoisted_1$a = {
+const _hoisted_1$9 = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$5 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$a, null, 512),
+    createVNode("canvas", _hoisted_1$9, null, 512),
     createVNode("div", _hoisted_2$5, [
       renderSlot(_ctx.$slots, "default")
     ]),
@@ -5160,170 +5163,63 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$h.render = _sfc_render$h;
-const _sfc_main$g = {
-  name: "Checkbox",
-  mixins: [emitter, listeners],
-  props: {
-    checked: {
-      type: [Boolean, String],
-      default: false
-    },
-    id: {
-      type: String,
-      default: ""
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    color: {
-      type: String,
-      default: "#007aff"
-    },
-    value: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      checkboxChecked: this.checked,
-      checkboxValue: this.value
-    };
-  },
-  watch: {
-    checked(val) {
-      this.checkboxChecked = val;
-    },
-    value(val) {
-      this.checkboxValue = val;
-    }
-  },
-  listeners: {
-    "label-click": "_onClick",
-    "@label-click": "_onClick"
-  },
-  created() {
-    this.$dispatch("CheckboxGroup", "uni-checkbox-group-update", {
-      type: "add",
-      vm: this
-    });
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
-    });
-  },
-  beforeDestroy() {
-    this.$dispatch("CheckboxGroup", "uni-checkbox-group-update", {
-      type: "remove",
-      vm: this
-    });
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
-  },
-  methods: {
-    _onClick($event) {
-      if (this.disabled) {
-        return;
-      }
-      this.checkboxChecked = !this.checkboxChecked;
-      this.$dispatch("CheckboxGroup", "uni-checkbox-change", $event);
-    },
-    _resetFormData() {
-      this.checkboxChecked = false;
-    }
-  }
-};
-const _hoisted_1$9 = {class: "uni-checkbox-wrapper"};
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-checkbox", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    createVNode("div", _hoisted_1$9, [
-      createVNode("div", {
-        class: [[$data.checkboxChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
-        style: {color: $props.color}
-      }, null, 6),
-      renderSlot(_ctx.$slots, "default")
-    ])
-  ], 16, ["disabled"]);
+_sfc_main$e.render = _sfc_render$e;
+function useListeners(props2, listeners2) {
+  _addListeners(props2.id, listeners2);
+  watch(() => props2.id, (newId, oldId) => {
+    _removeListeners(oldId, listeners2, true);
+    _addListeners(newId, listeners2, true);
+  });
+  onUnmounted(() => {
+    _removeListeners(props2.id, listeners2);
+  });
 }
-_sfc_main$g.render = _sfc_render$g;
-const _sfc_main$f = {
-  name: "CheckboxGroup",
-  mixins: [emitter, listeners],
-  props: {
-    name: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      checkboxList: []
-    };
-  },
-  listeners: {
-    "@checkbox-change": "_changeHandler",
-    "@checkbox-group-update": "_checkboxGroupUpdateHandler"
-  },
-  created() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
-    });
-  },
-  beforeDestroy() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
-  },
-  methods: {
-    _changeHandler($event) {
-      const value = [];
-      this.checkboxList.forEach((vm) => {
-        if (vm.checkboxChecked) {
-          value.push(vm.value);
-        }
-      });
-      this.$trigger("change", $event, {
-        value
-      });
-    },
-    _checkboxGroupUpdateHandler($event) {
-      if ($event.type === "add") {
-        this.checkboxList.push($event.vm);
-      } else {
-        const index2 = this.checkboxList.indexOf($event.vm);
-        this.checkboxList.splice(index2, 1);
-      }
-    },
-    _getFormData() {
-      const data = {};
-      if (this.name !== "") {
-        const value = [];
-        this.checkboxList.forEach((vm) => {
-          if (vm.checkboxChecked) {
-            value.push(vm.value);
-          }
-        });
-        data.value = value;
-        data.key = this.name;
-      }
-      return data;
-    }
+function _addListeners(id2, listeners2, watch2) {
+  var _a;
+  const $page = (_a = getCurrentInstance().proxy) == null ? void 0 : _a.$page;
+  if (watch2 && !id2) {
+    return;
   }
-};
-function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-checkbox-group", _ctx.$attrs, [
-    renderSlot(_ctx.$slots, "default")
-  ], 16);
+  if (!isPlainObject(listeners2)) {
+    return;
+  }
+  Object.keys(listeners2).forEach((name) => {
+    if (watch2) {
+      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+        UniViewJSBridge.on(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+      }
+    } else {
+      if (name.indexOf("uni-") === 0) {
+        UniViewJSBridge.on(name, listeners2[name]);
+      } else if (id2) {
+        UniViewJSBridge.on(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+      }
+    }
+  });
 }
-_sfc_main$f.render = _sfc_render$f;
+function _removeListeners(id2, listeners2, watch2) {
+  var _a;
+  const $page = (_a = getCurrentInstance().proxy) == null ? void 0 : _a.$page;
+  if (watch2 && !id2) {
+    return;
+  }
+  if (!isPlainObject(listeners2)) {
+    return;
+  }
+  Object.keys(listeners2).forEach((name) => {
+    if (watch2) {
+      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+        UniViewJSBridge.off(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+      }
+    } else {
+      if (name.indexOf("uni-") === 0) {
+        UniViewJSBridge.off(name, listeners2[name]);
+      } else if (id2) {
+        UniViewJSBridge.off(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+      }
+    }
+  });
+}
 function useCustomEvent(ref2, emit) {
   return (name, evt, detail) => {
     emit(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
@@ -5337,6 +5233,222 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     target,
     currentTarget: target,
     detail
+  };
+}
+const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+const props$9 = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+var index$b = /* @__PURE__ */ defineComponent({
+  name: "CheckboxGroup",
+  props: props$9,
+  setup(props2, {
+    emit,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit);
+    useProvideCheckGroup(props2, trigger);
+    return () => {
+      return createVNode("uni-checkbox-group", {
+        ref: rootRef
+      }, [slots.default && slots.default()], 512);
+    };
+  }
+});
+function useProvideCheckGroup(props2, trigger) {
+  const fields = [];
+  const getFieldsValue = () => fields.reduce((res, field) => {
+    if (field.value.checkboxChecked) {
+      res.push(field.value.value);
+    }
+    return res;
+  }, new Array());
+  provide(uniCheckGroupKey, {
+    addField(field) {
+      fields.push(field);
+    },
+    removeField(field) {
+      fields.splice(fields.indexOf(field), 1);
+    },
+    checkboxChange($event) {
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
+    }
+  });
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data.push(props2.name, getFieldsValue());
+        }
+        return data;
+      }
+    });
+  }
+  return getFieldsValue;
+}
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+const props$8 = {
+  for: {
+    type: String,
+    default: ""
+  }
+};
+var index$a = /* @__PURE__ */ defineComponent({
+  name: "Label",
+  props: props$8,
+  setup(props2, {
+    emit,
+    slots
+  }) {
+    const instance2 = getCurrentInstance();
+    const vm = instance2.proxy;
+    const pageId = vm.$root.$page.id;
+    const handlers = useProvideLabel();
+    const pointer = computed(() => props2.for || slots.default && slots.default.length);
+    const _onClick = ($event) => {
+      const EventTarget = $event.target;
+      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
+      if (!stopPropagation) {
+        stopPropagation = /^uni-(checkbox|radio|switch|button|svg)$/i.test(EventTarget.tagName);
+      }
+      if (!stopPropagation) {
+        stopPropagation = /^(svg|path)$/i.test(EventTarget.tagName);
+      }
+      if (stopPropagation) {
+        return;
+      }
+      if (props2.for) {
+        UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
+      } else {
+        handlers.forEach((handler) => {
+          handler($event, true);
+        });
+      }
+    };
+    return () => createVNode("uni-label", {
+      class: {
+        "uni-label-pointer": pointer
+      },
+      onClick: _onClick
+    }, [slots.default && slots.default()], 10, ["onClick"]);
+  }
+});
+function useProvideLabel() {
+  const handlers = [];
+  provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
+const props$7 = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  value: {
+    type: String,
+    default: ""
+  }
+};
+var index$9 = /* @__PURE__ */ defineComponent({
+  name: "Checkbox",
+  props: props$7,
+  setup(props2, {
+    slots
+  }) {
+    const checkboxChecked = ref(props2.checked);
+    const checkboxValue = ref(props2.value);
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      checkboxChecked.value = newChecked;
+      checkboxValue.value = newModelValue;
+    });
+    const reset = () => {
+      checkboxChecked.value = false;
+    };
+    const {
+      uniCheckGroup,
+      uniLabel
+    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      checkboxChecked.value = !checkboxChecked.value;
+      uniCheckGroup && uniCheckGroup.checkboxChange($event);
+    };
+    uniLabel.addHandler(_onClick);
+    onBeforeUnmount(() => {
+      uniLabel.removeHandler(_onClick);
+    });
+    useListeners(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        disabled,
+        color
+      } = props2;
+      return createVNode("uni-checkbox", {
+        disabled,
+        onClick: _onClick
+      }, [createVNode("div", {
+        class: "uni-checkbox-wrapper"
+      }, [createVNode("div", {
+        class: "uni-checkbox-input"
+      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, color, 16) : ""]), slots.default && slots.default()])], 8, ["disabled", "onClick"]);
+    };
+  }
+});
+function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
+  const filed = computed(() => ({
+    checkboxChecked: Boolean(checkboxChecked.value),
+    value: checkboxValue.value
+  }));
+  const formField = {
+    reset
+  };
+  const uniCheckGroup = inject(uniCheckGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(filed);
+  }
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = inject(uniLabelKey, false);
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(filed);
+    uniForm && uniForm.addField(formField);
+  });
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel
   };
 }
 let resetTimer;
@@ -6509,7 +6621,7 @@ function useFormField(nameKey, valueKey) {
 }
 const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
 const NUMBER_TYPES = ["number", "digit"];
-const _sfc_main$e = {
+const _sfc_main$d = {
   name: "Input",
   mixins: [baseInput],
   props: {
@@ -6678,7 +6790,7 @@ const _hoisted_1$8 = {
   ref: "wrapper",
   class: "uni-input-wrapper"
 };
-function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-input", mergeProps({
     onChange: _cache[8] || (_cache[8] = withModifiers(() => {
     }, ["stop"]))
@@ -6712,47 +6824,6 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
         [vModelDynamic, _ctx.valueSync]
       ])
     ], 512)
-  ], 16);
-}
-_sfc_main$e.render = _sfc_render$e;
-const _sfc_main$d = {
-  name: "Label",
-  mixins: [emitter],
-  props: {
-    for: {
-      type: String,
-      default: ""
-    }
-  },
-  computed: {
-    pointer() {
-      return this.for || this.$slots.default && this.$slots.default.length;
-    }
-  },
-  methods: {
-    _onClick($event) {
-      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test($event.target.className);
-      if (!stopPropagation) {
-        stopPropagation = /^uni-(checkbox|radio|switch|button)$/i.test($event.target.tagName);
-      }
-      if (stopPropagation) {
-        return;
-      }
-      if (this.for) {
-        UniViewJSBridge.emit("uni-label-click-" + this.$page.id + "-" + this.for, $event, true);
-      } else {
-        this.$broadcast(["Checkbox", "Radio", "Switch", "Button"], "uni-label-click", $event, true);
-      }
-    }
-  }
-};
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-label", mergeProps({
-    class: {"uni-label-pointer": $options.pointer}
-  }, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    renderSlot(_ctx.$slots, "default")
   ], 16);
 }
 _sfc_main$d.render = _sfc_render$d;
@@ -11465,7 +11536,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -11578,12 +11649,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11603,10 +11674,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -13246,6 +13317,9 @@ const hidePopup = (type) => {
     showToastState.visible = false;
   }, 10);
 };
+setTimeout(() => {
+  UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
+}, 0);
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {
     resolve();
@@ -14091,7 +14165,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(_sfc_main$e, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(_sfc_main$d, {
     disabled: true,
     style: {
       color
@@ -14102,7 +14176,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: "uni-page-head-search-input",
     "confirm-type": "search",
     onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(_sfc_main$e, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(_sfc_main$d, {
     focus: autoFocus,
     style: {
       color
@@ -14608,4 +14682,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$i as Audio, index$9 as Button, _sfc_main$h as Canvas, _sfc_main$g as Checkbox, _sfc_main$f as CheckboxGroup, index$8 as Editor, index$a as Form, index$7 as Icon, index$6 as Image, _sfc_main$e as Input, _sfc_main$d as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$b as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$f as Audio, index$c as Button, _sfc_main$e as Canvas, index$9 as Checkbox, index$b as CheckboxGroup, index$8 as Editor, index$d as Form, index$7 as Icon, index$6 as Image, _sfc_main$d as Input, index$a as Label, LayoutComponent, _sfc_main$c as MovableView, _sfc_main$b as Navigator, index as PageComponent, index$5 as Progress, _sfc_main$a as Radio, _sfc_main$9 as RadioGroup, ResizeSensor, _sfc_main$8 as RichText, _sfc_main$7 as ScrollView, _sfc_main$6 as Slider, _sfc_main$5 as SwiperItem, _sfc_main$4 as Switch, index$4 as Text, _sfc_main$3 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$e as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};

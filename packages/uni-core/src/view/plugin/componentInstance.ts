@@ -2,6 +2,8 @@ import { ComponentPublicInstance } from 'vue'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '../../helpers'
 
+// TODO 临时跳过内置组件事件处理
+const TempSkipComponents = ['UNI-CHECKBOX', 'UNI-LABEL']
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0
@@ -13,7 +15,11 @@ export function $nne(this: ComponentPublicInstance, evt: Event) {
     return evt
   }
   const { tagName } = currentTarget
-  if (tagName.indexOf('UNI-') !== 0 || tagName === 'UNI-PAGE-WRAPPER') {
+  if (
+    tagName.indexOf('UNI-') !== 0 ||
+    tagName === 'UNI-PAGE-WRAPPER' ||
+    TempSkipComponents.indexOf(tagName) !== -1
+  ) {
     // TODO 下拉刷新事件返回原始event，目前硬编码，后续换其他方案解决
     return evt
   }

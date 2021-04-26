@@ -27,25 +27,14 @@ uni-checkbox[disabled] {
   border-radius: 3px;
   width: 22px;
   height: 22px;
+  line-height: 25px;
+  text-align: center;
   position: relative;
 }
 
+uni-checkbox[disabled='false'] .uni-checkbox-input:hover,
 uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
   border-color: #007aff;
-}
-
-.uni-checkbox-input.uni-checkbox-input-checked {
-  color: #007aff;
-}
-
-.uni-checkbox-input.uni-checkbox-input-checked:before {
-  font: normal normal normal 14px/1 'uni';
-  content: '\EA08';
-  font-size: 22px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -48%) scale(0.73);
 }
 
 .uni-checkbox-input.uni-checkbox-input-disabled {

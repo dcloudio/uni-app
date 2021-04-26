@@ -103,7 +103,7 @@ export const hideLoading = defineAsyncApi<API_TYPE_HIDE_LOADING>(
   }
 )
 
-const hidePopup = (type: 'onHideToast' | 'onHideLoading') => {
+const hidePopup = (type: 'onHideToast' | 'onHideLoading' | 'onHidePopup') => {
   const { t } = useI18n()
   if (!showType) {
     return
@@ -123,3 +123,7 @@ const hidePopup = (type: 'onHideToast' | 'onHideLoading') => {
     showToastState.visible = false
   }, 10)
 }
+
+setTimeout(() => {
+  UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
+}, 0)
