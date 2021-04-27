@@ -499,6 +499,7 @@ const db = uniCloud.database()
 db.collection('order,book') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
   .where('book_id.title == "三国演义"') // 查询order表内书名为“三国演义”的订单
   .field('book_id{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
+  // 2021年4月28日10点起，上面field方法不再推荐使用（仍支持），推荐改为此写法：field('book_id.title,book_id.author,quantity')
   .get()
   .then(res => {
     console.log(res);
@@ -522,21 +523,51 @@ db.collection('order')
       book_id: '$book_id'
     },
     pipeline: $.pipeline()
-    // 此match方法内的条件会和book表对应的权限规则进行校验，{status: 'OnSell'}会参与校验，整个expr方法转化成一个不与任何条件产生交集的特别表达式。这里如果将dbCmd.and换成dbCmd.or会校验不通过
-    .match(dbCmd.expr(
+      .match(dbCmd.expr(
         $.eq(['$_id', '$$book_id'])
       ))
-    .done()
-    as: 'book'
+      .project({
+        title: true,
+        author: true
+      })
+      .done()
+    as: 'book_id'
   })
   .match({
     book: {
       title: '三国演义'
     }
   })
+  .project({
+    book_id: true,
+    quantity: true
+  })
+  .end()
+
+// 如果在云函数内还可以使用以下写法
+const db = uniCloud.database()
+const dbCmd = db.command
+const $ = dbCmd.aggregate
+db.collection('order')
+  .aggregate()
+  .lookup({
+    from: 'book',
+    localField: 'book_id',
+    foreignField: '_id',
+    as: 'book_id'
+  })
+  .match({
+    book: {
+      title: '三国演义'
+    }
+  })
+  .project({
+    'book_id.title': true,
+    'book_id.author': true,
+    quantity: true
+  })
   .end()
 ```
-
 
 上述查询会返回如下结果，可以看到书籍信息被嵌入到order表的book_id字段下，成为子节点。同时根据where条件设置，只返回书名为三国演义的订单记录。
 
@@ -573,12 +604,12 @@ db.collection('order')
 
 如果存在多个foreignKey且只希望部分生效，可以使用foreignKey来指定要使用的foreignKey
 
-> 2021年4月26日前此方法仅用于兼容clientDB联表查询策略调整前后的写法，在此日期后更新的clientDB（上传schema、uni-id均会触发更新）才会有指定foreignKey的功能，关于此次调整请参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
+> 2021年4月28日10点前此方法仅用于兼容clientDB联表查询策略调整前后的写法，在此日期后更新的clientDB（上传schema、uni-id均会触发更新）才会有指定foreignKey的功能，关于此次调整请参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
 
 ```js
 db.collection('comment,user')
 .where('comment_id=="1-1"')
-.field('content,sender,receiver{name}')
+.field('content,sender,receiver.name') // 本次调整
 .foreignKey('comment.receiver') // 仅使用comment表内receiver字段下的foreignKey进行主表和副表之间的关联
 .get()
 ```
@@ -813,6 +844,8 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
 ```
 
 ### 字段别名as@alias
+
+> field不使用`{}`进行字段过滤时（以下面示例为例`.field('book_id.title,book_id.author,quantity as order_quantity')`，此写法于2021年4月28日起支持）副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
 
