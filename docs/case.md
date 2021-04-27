@@ -222,9 +222,9 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 #### 互联网公司
 
-**华为荣耀：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
+**华为：** 荣耀商城。微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
 
-**华为大学：** [华为大学H5版](https://developer.huaweiuniversity.com/m/)
+**华为：** [华为大学H5版](https://developer.huaweiuniversity.com/m/)
 
 **字节跳动：** 抖音小游戏中心。
 
@@ -232,9 +232,11 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **快手：** 微信小程序搜索“快手短视频”、App中搜索“快手每日一答”
 
-**腾讯医生：** 微信小程序搜索“腾讯医生”、[h5](https://doctor.baike.qq.com/) 
+**腾讯医生：** 微信小程序搜索“腾讯医生”、[H5](https://doctor.baike.qq.com/) 
 
-**腾讯企业邮箱：** [h5](https://exmail.qq.com/qy_mina_logic/uniapp/h5)
+**腾讯企业邮箱：** [H5](https://exmail.qq.com/qy_mina_logic/uniapp/h5)
+
+**腾讯手游助手：** [H5](https://bbs.syzs.qq.com/)
 
 **腾讯地图：** App内穿梭线路栏目
 
@@ -242,7 +244,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
 
-**vivo：** vivo利用uni-app打造悟空中台，悟空中台介绍[详见](https://mp.weixin.qq.com/s/oGX4XSm8F4fa1ocLdpyqlA)
+**vivo技术中台：** vivo利用uni-app打造悟空中台，悟空中台介绍[详见](https://mp.weixin.qq.com/s/oGX4XSm8F4fa1ocLdpyqlA)
 
 **vivo官方商城：**微信小程序搜索"vivo"，支付宝搜索 "vivo"
 
@@ -267,7 +269,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **开源中国：** 微信小程序搜索“osc+”、百度小程序搜索“开源中国社区”
 
-**网易藏宝阁：** 部分栏目使用uni小程序sdk实现。[App下载](https://cbg.163.com/app/)
+**网易藏宝阁：** [uni小程序SDK](https://nativesupport.dcloud.net.cn)案例，部分栏目做成小程序形态。[App下载](https://cbg.163.com/app/)
 
 **联想集团官方小程序：** 微信小程序搜索 “联想集团”
 
@@ -291,6 +293,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **智联招聘：** WeTalk智能问答系统，[H5](https://special.zhaopin.com/h5/2020/sh/dhzc061717/)
 
+**金山：** WPS智能PPT，[H5](https://aippt.wps.cn/m/)
 
 
 <!-- **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml) -->
