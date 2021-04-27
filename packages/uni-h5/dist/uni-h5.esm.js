@@ -678,7 +678,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -690,10 +690,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -857,7 +857,6 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-const TempSkipComponents = ["UNI-CHECKBOX", "UNI-LABEL"];
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
 function $nne(evt) {
@@ -865,8 +864,7 @@ function $nne(evt) {
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt;
   }
-  const {tagName} = currentTarget;
-  if (tagName.indexOf("UNI-") !== 0 || tagName === "UNI-PAGE-WRAPPER" || TempSkipComponents.indexOf(tagName) !== -1) {
+  if (currentTarget.tagName.indexOf("UNI-") !== 0) {
     return evt;
   }
   const res = createNativeEvent(evt);
@@ -884,25 +882,30 @@ function $nne(evt) {
 function createNativeEvent(evt) {
   const {type, timeStamp, currentTarget} = evt;
   const target = normalizeTarget(currentTarget);
-  return {
+  const event2 = {
     type,
     timeStamp,
     target,
     detail: {},
-    currentTarget: target,
-    preventDefault() {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
-      }
-      return evt.preventDefault();
-    },
-    stopPropagation() {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("stopPropagation is only supported in h5, use `.stop` instead.");
-      }
-      return evt.stopPropagation();
-    }
+    currentTarget: target
   };
+  {
+    extend(event2, {
+      preventDefault() {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
+        }
+        return evt.preventDefault();
+      },
+      stopPropagation() {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("stopPropagation is only supported in h5, use `.stop` instead.");
+        }
+        return evt.stopPropagation();
+      }
+    });
+  }
+  return event2;
 }
 function normalizeClickEvent(evt, mouseEvt) {
   const {x, y} = mouseEvt;
@@ -1329,7 +1332,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3803,6 +3806,7 @@ function setupPage(comp) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance2) {
+      instance2.__isPage = true;
       instance2.root = instance2;
       const route = usePageRoute();
       if (route.meta.isTabBar) {
@@ -5031,8 +5035,7 @@ function useListeners(props2, listeners2) {
 }
 function _addListeners(id2, listeners2, watch2) {
   const instance2 = getCurrentInstance();
-  const vm = instance2.proxy;
-  const pageId = vm.$root.$page.id;
+  const pageId = instance2.root.proxy.$page.id;
   if (watch2 && !id2) {
     return;
   }
@@ -5055,8 +5058,7 @@ function _addListeners(id2, listeners2, watch2) {
 }
 function _removeListeners(id2, listeners2, watch2) {
   const instance2 = getCurrentInstance();
-  const vm = instance2.proxy;
-  const pageId = vm.$root.$page.id;
+  const pageId = instance2.root.proxy.$page.id;
   if (watch2 && !id2) {
     return;
   }
@@ -5076,6 +5078,9 @@ function _removeListeners(id2, listeners2, watch2) {
       }
     }
   });
+}
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
 }
 function useCustomEvent(ref2, emit2) {
   return (name, evt, detail) => {
@@ -5167,11 +5172,10 @@ var index$b = /* @__PURE__ */ defineComponent({
     slots
   }) {
     const instance2 = getCurrentInstance();
-    const vm = instance2.proxy;
-    const pageId = vm.$root.$page.id;
+    const pageId = instance2.root.proxy.$page.id;
     const handlers = useProvideLabel();
     const pointer = computed(() => props2.for || slots.default && slots.default.length);
-    const _onClick = ($event) => {
+    const _onClick = withWebEvent(($event) => {
       const EventTarget = $event.target;
       let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
       if (!stopPropagation) {
@@ -5190,7 +5194,7 @@ var index$b = /* @__PURE__ */ defineComponent({
           handler($event, true);
         });
       }
-    };
+    });
     return () => createVNode("uni-label", {
       class: {
         "uni-label-pointer": pointer
@@ -6512,16 +6516,13 @@ function useScopedAttrs() {
     attrs: {}
   });
   onMounted(() => {
-    let vm = getCurrentInstance().proxy;
-    while (vm) {
-      const $options = vm.$options;
-      const scopeId = $options.__scopeId;
+    let instance2 = getCurrentInstance();
+    while (instance2) {
+      const scopeId = instance2.type.__scopeId;
       if (scopeId) {
-        const attrs2 = {};
-        attrs2[scopeId] = "";
-        state.attrs = attrs2;
+        state.attrs[scopeId] = "";
       }
-      vm = vm.$parent;
+      instance2 = instance2.__isPage ? null : instance2.parent;
     }
   });
   return {
@@ -10320,7 +10321,7 @@ function removeSubscribe(name) {
 function useSubscribe(callback, name) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
-  const pageId = name ? 0 : vm.$root.$page.id;
+  const pageId = name ? 0 : instance2.root.proxy.$page.id;
   onMounted(() => {
     addSubscribe(name || normalizeEvent(pageId, vm), callback);
     if (!name) {
@@ -11428,7 +11429,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -11541,12 +11542,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11566,10 +11567,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -14392,7 +14393,7 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
     refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
   }
-  function onTouchstartPassive(ev) {
+  const onTouchstartPassive = withWebEvent((ev) => {
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
@@ -14401,8 +14402,8 @@ function usePageRefresh(refreshRef) {
     } else {
       canRefresh = true;
     }
-  }
-  function onTouchmove(ev) {
+  });
+  const onTouchmove = withWebEvent((ev) => {
     if (!canRefresh) {
       return;
     }
@@ -14436,8 +14437,8 @@ function usePageRefresh(refreshRef) {
       addClass();
     }
     pulling(deltaY);
-  }
-  function onTouchend(ev) {
+  });
+  const onTouchend = withWebEvent((ev) => {
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }
@@ -14458,7 +14459,7 @@ function usePageRefresh(refreshRef) {
       addClass();
       refreshing();
     }
-  }
+  });
   function aborting(callback) {
     if (!refreshControllerElem) {
       return;
@@ -14575,4 +14576,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$d as Audio, index$d as Button, _sfc_main$c as Canvas, index$a as Checkbox, index$c as CheckboxGroup, index$9 as Editor, index$e as Form, index$8 as Icon, index$7 as Image, Input, index$b as Label, LayoutComponent, _sfc_main$b as MovableView, _sfc_main$a as Navigator, index as PageComponent, index$6 as Progress, _sfc_main$9 as Radio, _sfc_main$8 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$f as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$d as Audio, index$d as Button, _sfc_main$c as Canvas, index$a as Checkbox, index$c as CheckboxGroup, index$9 as Editor, index$e as Form, index$8 as Icon, index$7 as Image, Input, index$b as Label, LayoutComponent, _sfc_main$b as MovableView, _sfc_main$a as Navigator, index as PageComponent, index$6 as Progress, _sfc_main$9 as Radio, _sfc_main$8 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$f as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

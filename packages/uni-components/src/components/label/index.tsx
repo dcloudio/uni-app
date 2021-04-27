@@ -1,5 +1,6 @@
 import { defineComponent, provide, getCurrentInstance, computed } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
+import { withWebEvent } from '@dcloudio/uni-components'
 
 export const uniLabelKey = PolySymbol(__DEV__ ? 'uniLabel' : 'ul')
 const props = {
@@ -14,8 +15,7 @@ export default /*#__PURE__*/ defineComponent({
   props,
   setup(props, { emit, slots }) {
     const instance = getCurrentInstance()!
-    const vm = instance.proxy!
-    const pageId = vm.$root!.$page.id
+    const pageId = instance.root.proxy!.$page.id
 
     const handlers = useProvideLabel()
 
@@ -23,7 +23,7 @@ export default /*#__PURE__*/ defineComponent({
       () => props.for || (slots.default && slots.default.length)
     )
 
-    const _onClick = ($event: Event) => {
+    const _onClick = withWebEvent(($event: Event) => {
       const EventTarget = $event.target as HTMLElement
       let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(
         EventTarget.className
@@ -52,7 +52,7 @@ export default /*#__PURE__*/ defineComponent({
           handler($event, true)
         })
       }
-    }
+    })
 
     return () => (
       <uni-label class={{ 'uni-label-pointer': pointer }} onClick={_onClick}>

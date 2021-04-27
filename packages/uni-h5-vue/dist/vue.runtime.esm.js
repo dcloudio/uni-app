@@ -8403,7 +8403,19 @@ function createInvoker(initialValue, instance) {
             // fixed by xxxxxx
             const proxy = instance && instance.proxy;
             const normalizeNativeEvent = proxy && proxy.$nne;
-            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [normalizeNativeEvent ? normalizeNativeEvent(e) : e]);
+            if (normalizeNativeEvent && isArray(invoker.value)) {
+                const fns = invoker.value;
+                for (let i = 0; i < fns.length; i++) {
+                    const fn = fns[i];
+                    callWithAsyncErrorHandling(fn, instance, 5 /* NATIVE_EVENT_HANDLER */, [!fn.__wwe ? normalizeNativeEvent(e) : e]);
+                }
+                return;
+            }
+            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [
+                normalizeNativeEvent && !invoker.value.__wwe
+                    ? normalizeNativeEvent(e)
+                    : e
+            ]);
         }
     };
     invoker.value = initialValue;
@@ -8448,7 +8460,7 @@ const forcePatchProp = (_, key) => key === 'value';
 const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     // @ts-expect-error fixed by xxxxxx
     if (__UNI_FEATURE_WXS__ && key.indexOf('change:') === 0) {
-        patchWxs(el, key, nextValue, parentComponent);
+        return patchWxs(el, key, nextValue, parentComponent);
     }
     switch (key) {
         // special

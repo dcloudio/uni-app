@@ -1,26 +1,20 @@
 import { ComponentPublicInstance } from 'vue'
+import { extend } from '@vue/shared'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '../../helpers'
 
-// TODO 临时跳过内置组件事件处理
-const TempSkipComponents = ['UNI-CHECKBOX', 'UNI-LABEL']
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0
 // normalizeNativeEvent
 export function $nne(this: ComponentPublicInstance, evt: Event) {
-  // TODO 目前内置组件底层实现，也会进入以下处理逻辑，可能会有影响
+  // 目前内置组件底层实现，当需要访问原始event时，请使用withWebEvent包裹
+  // 用法参考：uni-h5/src/framework/components/page/page-refresh/index.ts
   const { currentTarget } = evt
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt
   }
-  const { tagName } = currentTarget
-  if (
-    tagName.indexOf('UNI-') !== 0 ||
-    tagName === 'UNI-PAGE-WRAPPER' ||
-    TempSkipComponents.indexOf(tagName) !== -1
-  ) {
-    // TODO 下拉刷新事件返回原始event，目前硬编码，后续换其他方案解决
+  if (currentTarget.tagName.indexOf('UNI-') !== 0) {
     return evt
   }
 
@@ -42,29 +36,34 @@ export function $nne(this: ComponentPublicInstance, evt: Event) {
 function createNativeEvent(evt: Event) {
   const { type, timeStamp, currentTarget } = evt
   const target = normalizeTarget(currentTarget as HTMLElement)
-  return {
+  const event = {
     type,
     timeStamp,
     target,
     detail: {},
     currentTarget: target,
-    preventDefault() {
-      if (__DEV__) {
-        console.warn(
-          'preventDefault is only supported in h5, use `.prevent` instead.'
-        )
-      }
-      return evt.preventDefault()
-    },
-    stopPropagation() {
-      if (__DEV__) {
-        console.warn(
-          'stopPropagation is only supported in h5, use `.stop` instead.'
-        )
-      }
-      return evt.stopPropagation()
-    },
   }
+  if (__PLATFORM__ === 'h5') {
+    extend(event, {
+      preventDefault() {
+        if (__DEV__) {
+          console.warn(
+            'preventDefault is only supported in h5, use `.prevent` instead.'
+          )
+        }
+        return evt.preventDefault()
+      },
+      stopPropagation() {
+        if (__DEV__) {
+          console.warn(
+            'stopPropagation is only supported in h5, use `.stop` instead.'
+          )
+        }
+        return evt.stopPropagation()
+      },
+    })
+  }
+  return event
 }
 
 function normalizeClickEvent(

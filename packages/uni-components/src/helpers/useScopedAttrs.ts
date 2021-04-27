@@ -14,16 +14,13 @@ export function useScopedAttrs() {
   })
 
   onMounted(() => {
-    let vm = (getCurrentInstance() as ComponentInternalInstance).proxy
-    while (vm) {
-      const $options = vm.$options
-      const scopeId = $options.__scopeId
+    let instance = getCurrentInstance()
+    while (instance) {
+      const scopeId = (instance.type as any).__scopeId
       if (scopeId) {
-        const attrs: Record<string, string> = {}
-        attrs[scopeId] = ''
-        state.attrs = attrs
+        state.attrs[scopeId] = ''
       }
-      vm = vm.$parent
+      instance = instance.__isPage ? null : instance.parent
     }
   })
 

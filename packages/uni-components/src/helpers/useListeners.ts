@@ -1,7 +1,7 @@
 import { isPlainObject } from '@vue/shared'
 import { watch, onUnmounted, getCurrentInstance } from 'vue'
 
-export function /*#__PURE__*/ useListeners(
+export function useListeners(
   props: { id: string },
   listeners: Record<string, Function>
 ) {
@@ -26,8 +26,7 @@ function _addListeners(
   watch?: boolean
 ) {
   const instance = getCurrentInstance()!
-  const vm = instance.proxy!
-  const pageId = vm.$root!.$page.id
+  const pageId = instance.root.proxy!.$page.id
 
   if (watch && !id) {
     // id被置空
@@ -61,8 +60,7 @@ function _removeListeners(
   watch?: boolean
 ) {
   const instance = getCurrentInstance()!
-  const vm = instance.proxy!
-  const pageId = vm.$root!.$page.id
+  const pageId = instance.root.proxy!.$page.id
 
   if (watch && !id) {
     // id之前不存在

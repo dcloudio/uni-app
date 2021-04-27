@@ -4,7 +4,7 @@ import {
   API_START_PULL_DOWN_REFRESH,
   API_STOP_PULL_DOWN_REFRESH,
 } from '@dcloudio/uni-api'
-import { useSubscribe } from '@dcloudio/uni-components'
+import { useSubscribe, withWebEvent } from '@dcloudio/uni-components'
 import { usePageMeta } from '../../../setup/provide'
 
 function processDeltaY(
@@ -117,7 +117,7 @@ export function usePageRefresh(refreshRef: Ref) {
     refreshControllerElemStyle.transform = 'translate3d(-50%, ' + y + 'px, 0)'
   }
 
-  function onTouchstartPassive(ev: TouchEvent) {
+  const onTouchstartPassive = withWebEvent((ev: TouchEvent) => {
     const touch = ev.changedTouches[0]
     touchId = touch.identifier
     startY = touch.pageY
@@ -126,9 +126,9 @@ export function usePageRefresh(refreshRef: Ref) {
     } else {
       canRefresh = true
     }
-  }
+  })
 
-  function onTouchmove(ev: TouchEvent) {
+  const onTouchmove = withWebEvent((ev: TouchEvent) => {
     if (!canRefresh) {
       return
     }
@@ -171,9 +171,9 @@ export function usePageRefresh(refreshRef: Ref) {
     }
 
     pulling(deltaY!)
-  }
+  })
 
-  function onTouchend(ev: TouchEvent) {
+  const onTouchend = withWebEvent((ev: TouchEvent) => {
     if (!processDeltaY(ev, touchId, startY)) {
       return
     }
@@ -194,7 +194,7 @@ export function usePageRefresh(refreshRef: Ref) {
       addClass()
       refreshing()
     }
-  }
+  })
 
   function aborting(callback: Function) {
     if (!refreshControllerElem) {

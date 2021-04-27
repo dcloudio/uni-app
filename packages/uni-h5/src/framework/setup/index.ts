@@ -53,6 +53,7 @@ export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance) {
+      instance.__isPage = true // 标记当前组件是页面
       instance.root = instance // 组件root指向页面
       const route = usePageRoute()
       if (route.meta.isTabBar) {

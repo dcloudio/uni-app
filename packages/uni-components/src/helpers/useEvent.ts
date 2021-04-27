@@ -4,6 +4,10 @@ import { normalizeTarget } from '@dcloudio/uni-shared'
 type EventDetail = Record<string, any>
 export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 
+export function withWebEvent(fn: Function) {
+  return ((fn as any).__wwe = true), fn
+}
+
 export function useCustomEvent(
   ref: Ref<HTMLElement | null>,
   emit: SetupContext['emit']

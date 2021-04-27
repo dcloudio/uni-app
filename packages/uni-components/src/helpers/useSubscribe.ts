@@ -45,7 +45,8 @@ export function useSubscribe(
 ) {
   const instance = getCurrentInstance()!
   const vm = instance.proxy!
-  const pageId = name ? 0 : vm.$root!.$page.id
+  // 不能直接使用instance.proxy.$root,此时可能获取到的是exposed
+  const pageId = name ? 0 : instance.root.proxy!.$page.id
   onMounted(() => {
     addSubscribe(name || normalizeEvent(pageId, vm)!, callback)
     if (!name) {
