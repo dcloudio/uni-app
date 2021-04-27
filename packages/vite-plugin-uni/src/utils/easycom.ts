@@ -31,7 +31,42 @@ function clearEasycom() {
   easycomsInvalidCache.clear()
 }
 
-export function initEasycom({
+export function initEasycoms(inputDir: string) {
+  const dirs = ['components']
+    .map((dir) => path.resolve(inputDir, dir))
+    .concat(initUniModulesEasycomDirs(inputDir))
+  const easycomOptions = { dirs, rootDir: inputDir }
+  initEasycom(easycomOptions)
+  debugEasycom(easycomOptions)
+  return {
+    dirs,
+    refresh() {
+      initEasycom(easycomOptions)
+    },
+  }
+}
+
+function initUniModulesEasycomDirs(inputDir: string) {
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  if (!fs.existsSync(uniModulesDir)) {
+    return []
+  }
+  return fs
+    .readdirSync(uniModulesDir)
+    .map((uniModuleDir) => {
+      const uniModuleComponentsDir = path.resolve(
+        uniModulesDir,
+        uniModuleDir,
+        'components'
+      )
+      if (fs.existsSync(uniModuleComponentsDir)) {
+        return uniModuleComponentsDir
+      }
+    })
+    .filter<string>(Boolean as any)
+}
+
+function initEasycom({
   dirs,
   rootDir,
   custom,

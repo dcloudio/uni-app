@@ -1,21 +1,6 @@
-import path from 'path'
 import { ViteDevServer } from 'vite'
-
 import { VitePluginUniResolvedOptions } from '..'
-import { debugEasycom, initEasycom } from '../utils'
-
-function initEasycoms(inputDir: string) {
-  const dirs = ['components'].map((dir) => path.resolve(inputDir, dir))
-  const easycomOptions = { dirs, rootDir: inputDir }
-  initEasycom(easycomOptions)
-  debugEasycom(easycomOptions)
-  return {
-    dirs,
-    refresh() {
-      initEasycom(easycomOptions)
-    },
-  }
-}
+import { initEasycoms } from '../utils'
 
 export const serveEasycom = (
   server: ViteDevServer,

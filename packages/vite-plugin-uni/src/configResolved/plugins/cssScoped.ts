@@ -8,7 +8,7 @@ import { UniPluginFilterOptions } from '.'
 
 const debugScoped = debug('uni:scoped')
 
-const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/gi
+const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/i
 
 function addScoped(code: string) {
   if (SCOPED_RE.test(code)) {

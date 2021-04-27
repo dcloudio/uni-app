@@ -2,12 +2,13 @@ import path from 'path'
 import slash from 'slash'
 import { UserConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '..'
-import { FEATURE_DEFINES } from '../utils'
+import { FEATURE_DEFINES, initEasycoms } from '../utils'
 
 export function createBuild(
   options: VitePluginUniResolvedOptions,
   features: FEATURE_DEFINES
 ): UserConfig['build'] {
+  initEasycoms(options.inputDir)
   return {
     polyfillDynamicImport: features.__UNI_FEATURE_PAGES__,
     rollupOptions: {
