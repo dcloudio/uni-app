@@ -222,9 +222,9 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 #### 互联网公司
 
-**华为：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
+**华为荣耀：** 微信小程序搜索“荣耀亲选商城”、[H5](https://m.qinxuan.honor.cn/)、[App部分栏目使用DCloud SDK](https://appgallery1.huawei.com/#/app/C100382765)
 
-**华为：** [华为大学H5版](https://developer.huaweiuniversity.com/m/)
+**华为大学：** [华为大学H5版](https://developer.huaweiuniversity.com/m/)
 
 **字节跳动：** 抖音小游戏中心。
 
@@ -232,7 +232,11 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **快手：** 微信小程序搜索“快手短视频”、App中搜索“快手每日一答”
 
-**腾讯：** 腾讯医生，微信小程序搜索“腾讯医生”、[h5](https://doctor.baike.qq.com/) 
+**腾讯医生：** 微信小程序搜索“腾讯医生”、[h5](https://doctor.baike.qq.com/) 
+
+**腾讯企业邮箱：** [h5](https://exmail.qq.com/qy_mina_logic/uniapp/h5)
+
+**腾讯地图：** App内穿梭线路栏目
 
 **腾讯财付通：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信浏览器打开）](https://zqact.tenpay.com/chaogu/)
 
@@ -250,6 +254,10 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
     </div>
  </div>
 </div>
+
+**小米：** 米家App内米家智能厨房页面，[App内H5](https://g.home.mi.com/partner/nfc/prod/index.html?m=chunmi.ihcooker.slim#/)；lbs门店微信群：[微信H5](http://s1.mi.com/m/wx/lbs/#/)
+
+**携程微商城：** [微信H5](https://m.ctrip.com/webapp/hotelofficial/?#/)
 
 **搜狐狐友圈：**微信、支付宝、百度、头条小程序均支持。
 
@@ -274,6 +282,16 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **货拉拉：** App部分栏目使用uni小程序sdk。
 
 **叮咚买菜：** 微信小程序搜索 “叮咚买菜”、[公众号H5](http://wx.m.ddxq.mobi/#/)
+
+**百度：** 众测平台用户反馈系统，[H5](http://fans.baidu.com/fanstest/wapindex?product_id=1009&version=3.2.9&client_type=iOS&contact_way=qq)
+
+**新浪健康：** 病情咨询，[H5](https://health.sina.cn/patient_consult_h5/)
+
+**爱奇艺：** i联盟，[H5](https://vip.iqiyi.com/html5VIP/activity/person-union/#/)
+
+**智联招聘：** WeTalk智能问答系统，[H5](https://special.zhaopin.com/h5/2020/sh/dhzc061717/)
+
+
 
 <!-- **达内在线：** 达内教育的在线培训App。[App官网下载](http://www.tmooc.cn/app/index.shtml) -->
 
@@ -304,6 +322,8 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 **浙江移动境外出行指南：**[H5](https://wap.zj.10086.cn/szhy/business/20190610gmh5/#/)
 
 **广东汕头公交：** 广东移动出品。[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.gmcc.stgj)、[iOS](https://apps.apple.com/cn/app/%E6%B1%95%E5%A4%B4%E5%85%AC%E4%BA%A4/id1091442840)、微信小程序搜索“汕头智慧公交”
+
+**中国电信189福利站：** [App内福利站页面](https://www.189.cn/client/actcenter/signActivityH5/welfare2/index1.html#/)
 
 **广东联通粉丝卡：**[H5（特定UA）](https://wxv.gd10010.cn/)
 
@@ -344,7 +364,7 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **苍南农商银行** 丰收联盟。[H5](https://wxmapp.zjcnbank.com/)
 
-**平安集团：**金管家多个页面，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)
+**平安集团：** 智慧医疗慢病管理，[H5](https://hm.city.pingan.com/h5/)；金管家多个页面，[H5](https://laip-gbr-pai.pingan.com/static/goodStart/#/)；口袋合伙人，[H5](https://b.pingan.com.cn/mkt/youhui/2012/kdhhrzhjh/#/package-act21/pages/act-zhlx/index)；易骑行，[H5](https://ebs.yun.city.pingan.com/pc/mini/#/)
 
 **拉卡拉收款宝：** App部分页面使用uni-app制作
 
