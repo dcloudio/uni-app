@@ -414,7 +414,7 @@ function useQuill(
   })
 }
 
-const props = Object.assign({}, keyboardProps, {
+const props = /*#__PURE__*/ Object.assign({}, keyboardProps, {
   id: {
     type: String,
     default: '',

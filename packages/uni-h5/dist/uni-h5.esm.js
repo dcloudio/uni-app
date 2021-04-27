@@ -6055,7 +6055,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$9 = Object.assign({}, props$a, {
+const props$9 = /* @__PURE__ */ Object.assign({}, props$a, {
   id: {
     type: String,
     default: ""
