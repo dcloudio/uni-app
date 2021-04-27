@@ -1,6 +1,7 @@
-import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
+import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
 import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, Fragment, Teleport, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
+import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
@@ -14,238 +15,6 @@ function applyOptions(options, instance2, publicThis) {
 }
 function set(target, key, val) {
   return target[key] = val;
-}
-const isObject = (val) => val !== null && typeof val === "object";
-class BaseFormatter {
-  constructor() {
-    this._caches = Object.create(null);
-  }
-  interpolate(message, values) {
-    if (!values) {
-      return [message];
-    }
-    let tokens = this._caches[message];
-    if (!tokens) {
-      tokens = parse(message);
-      this._caches[message] = tokens;
-    }
-    return compile(tokens, values);
-  }
-}
-const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format) {
-  const tokens = [];
-  let position = 0;
-  let text2 = "";
-  while (position < format.length) {
-    let char = format[position++];
-    if (char === "{") {
-      if (text2) {
-        tokens.push({type: "text", value: text2});
-      }
-      text2 = "";
-      let sub = "";
-      char = format[position++];
-      while (char !== void 0 && char !== "}") {
-        sub += char;
-        char = format[position++];
-      }
-      const isClosed = char === "}";
-      const type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
-      tokens.push({value: sub, type});
-    } else if (char === "%") {
-      if (format[position] !== "{") {
-        text2 += char;
-      }
-    } else {
-      text2 += char;
-    }
-  }
-  text2 && tokens.push({type: "text", value: text2});
-  return tokens;
-}
-function compile(tokens, values) {
-  const compiled = [];
-  let index2 = 0;
-  const mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-  if (mode === "unknown") {
-    return compiled;
-  }
-  while (index2 < tokens.length) {
-    const token = tokens[index2];
-    switch (token.type) {
-      case "text":
-        compiled.push(token.value);
-        break;
-      case "list":
-        compiled.push(values[parseInt(token.value, 10)]);
-        break;
-      case "named":
-        if (mode === "named") {
-          compiled.push(values[token.value]);
-        }
-        break;
-    }
-    index2++;
-  }
-  return compiled;
-}
-const LOCALE_ZH_HANS = "zh-Hans";
-const LOCALE_ZH_HANT = "zh-Hant";
-const LOCALE_EN = "en";
-const LOCALE_FR = "fr";
-const LOCALE_ES = "es";
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const defaultFormatter = new BaseFormatter();
-function include(str, parts) {
-  return !!parts.find((part) => str.indexOf(part) !== -1);
-}
-function startsWith(str, parts) {
-  return parts.find((part) => str.indexOf(part) === 0);
-}
-function normalizeLocale(locale, messages) {
-  if (!locale) {
-    return;
-  }
-  locale = locale.trim().replace(/_/g, "-");
-  if (messages[locale]) {
-    return locale;
-  }
-  locale = locale.toLowerCase();
-  if (locale.indexOf("zh") === 0) {
-    if (locale.indexOf("-hans") !== -1) {
-      return LOCALE_ZH_HANS;
-    }
-    if (locale.indexOf("-hant") !== -1) {
-      return LOCALE_ZH_HANT;
-    }
-    if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
-      return LOCALE_ZH_HANT;
-    }
-    return LOCALE_ZH_HANS;
-  }
-  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
-  if (lang) {
-    return lang;
-  }
-}
-class I18n {
-  constructor({locale, fallbackLocale, messages, watcher, formater}) {
-    this.locale = LOCALE_EN;
-    this.fallbackLocale = LOCALE_EN;
-    this.message = {};
-    this.messages = {};
-    this.watchers = [];
-    if (fallbackLocale) {
-      this.fallbackLocale = fallbackLocale;
-    }
-    this.formater = formater || defaultFormatter;
-    this.messages = messages || {};
-    this.setLocale(locale);
-    if (watcher) {
-      this.watchLocale(watcher);
-    }
-  }
-  setLocale(locale) {
-    const oldLocale = this.locale;
-    this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-    if (!this.messages[this.locale]) {
-      this.messages[this.locale] = {};
-    }
-    this.message = this.messages[this.locale];
-    this.watchers.forEach((watcher) => {
-      watcher(this.locale, oldLocale);
-    });
-  }
-  getLocale() {
-    return this.locale;
-  }
-  watchLocale(fn) {
-    const index2 = this.watchers.push(fn) - 1;
-    return () => {
-      this.watchers.splice(index2, 1);
-    };
-  }
-  add(locale, message) {
-    if (this.messages[locale]) {
-      Object.assign(this.messages[locale], message);
-    } else {
-      this.messages[locale] = message;
-    }
-  }
-  t(key, locale, values) {
-    let message = this.message;
-    if (typeof locale === "string") {
-      locale = normalizeLocale(locale, this.messages);
-      locale && (message = this.messages[locale]);
-    } else {
-      values = locale;
-    }
-    if (!hasOwn(message, key)) {
-      console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
-      return key;
-    }
-    return this.formater.interpolate(message[key], values).join("");
-  }
-}
-function initLocaleWatcher(appVm2, i18n2) {
-  appVm2.$i18n && appVm2.$i18n.vm.$watch("locale", (newLocale) => {
-    i18n2.setLocale(newLocale);
-  }, {
-    immediate: true
-  });
-}
-function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN) {
-  const i18n2 = new I18n({
-    locale: locale || fallbackLocale,
-    fallbackLocale,
-    messages
-  });
-  let t2 = (key, values) => {
-    if (typeof getApp !== "function") {
-      t2 = function(key2, values2) {
-        return i18n2.t(key2, values2);
-      };
-    } else {
-      const appVm2 = getApp().$vm;
-      if (!appVm2.$t || !appVm2.$i18n) {
-        t2 = function(key2, values2) {
-          return i18n2.t(key2, values2);
-        };
-      } else {
-        initLocaleWatcher(appVm2, i18n2);
-        t2 = function(key2, values2) {
-          const $i18n = appVm2.$i18n;
-          const silentTranslationWarn = $i18n.silentTranslationWarn;
-          $i18n.silentTranslationWarn = true;
-          const msg = appVm2.$t(key2, values2);
-          $i18n.silentTranslationWarn = silentTranslationWarn;
-          if (msg !== key2) {
-            return msg;
-          }
-          return i18n2.t(key2, $i18n.locale, values2);
-        };
-      }
-    }
-    return t2(key, values);
-  };
-  return {
-    i18n: i18n2,
-    t(key, values) {
-      return t2(key, values);
-    },
-    add(locale2, message) {
-      return i18n2.add(locale2, message);
-    },
-    getLocale() {
-      return i18n2.getLocale();
-    },
-    setLocale(newLocale) {
-      return i18n2.setLocale(newLocale);
-    }
-  };
 }
 let i18n$1;
 function useI18n() {
@@ -678,7 +447,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -690,10 +459,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1344,7 +1113,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1468,7 +1237,7 @@ function validateProtocolFail(name, msg) {
 }
 function validateProtocol(name, data, protocol) {
   for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
+    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
     if (isString(errMsg)) {
       validateProtocolFail(name, errMsg);
     }
@@ -1531,7 +1300,7 @@ function assertType(value, type) {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
-    valid = isObject$1(value);
+    valid = isObject(value);
   } else if (expectedType === "Array") {
     valid = isArray(value);
   } else {
@@ -1726,7 +1495,7 @@ function formatApiArgs(args, options) {
         return errMsg;
       }
     } else {
-      if (!hasOwn$1(params, name)) {
+      if (!hasOwn(params, name)) {
         params[name] = formatterOrDefaultValue;
       }
     }
@@ -2420,7 +2189,7 @@ function stringifyQuery(url, data) {
     params[part[0]] = part[1];
   });
   for (const key in data) {
-    if (hasOwn$1(data, key)) {
+    if (hasOwn(data, key)) {
       let v2 = data[key];
       if (typeof v2 === "undefined" || v2 === null) {
         v2 = "";
@@ -2807,14 +2576,14 @@ const ShowModalOptions = {
     content: "",
     showCancel: true,
     cancelText(_value, params) {
-      if (!hasOwn$1(params, "cancelText")) {
+      if (!hasOwn(params, "cancelText")) {
         const {t: t2} = useI18n();
         params.cancelText = t2("uni.showModal.cancel");
       }
     },
     cancelColor: "#000",
     confirmText(_value, params) {
-      if (!hasOwn$1(params, "confirmText")) {
+      if (!hasOwn(params, "confirmText")) {
         const {t: t2} = useI18n();
         params.confirmText = t2("uni.showModal.confirm");
       }
@@ -3536,7 +3305,7 @@ const SCHEMA_CSS = {
   "css.backdrop-filter": cssBackdropFilter
 };
 const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
-  if (hasOwn$1(SCHEMA_CSS, schema)) {
+  if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
   return true;
@@ -8527,7 +8296,7 @@ const CHARS = {
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
-    if (hasOwn$1(CHARS, stage) && CHARS[stage]) {
+    if (hasOwn(CHARS, stage) && CHARS[stage]) {
       return CHARS[stage];
     }
     if (/^#[0-9]{1,4}$/.test(stage)) {
@@ -8546,12 +8315,12 @@ function parseNodes(nodes, parentNode) {
     if (!isPlainObject(node)) {
       return;
     }
-    if (!hasOwn$1(node, "type") || node.type === "node") {
+    if (!hasOwn(node, "type") || node.type === "node") {
       if (!(typeof node.name === "string" && node.name)) {
         return;
       }
       const tagName = node.name.toLowerCase();
-      if (!hasOwn$1(TAGS, tagName)) {
+      if (!hasOwn(TAGS, tagName)) {
         return;
       }
       const elem = document.createElement(tagName);
@@ -11450,7 +11219,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -11563,12 +11332,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11588,10 +11357,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -11925,7 +11694,7 @@ function blobToFile(blob, type) {
 }
 function fileToUrl(file) {
   for (const key in files) {
-    if (hasOwn$1(files, key)) {
+    if (hasOwn(files, key)) {
       const oldFile = files[key];
       if (oldFile === file) {
         return key;
@@ -12271,7 +12040,7 @@ const request = defineTaskApi(API_REQUEST, ({
       } else if (contentType === "urlencoded") {
         const bodyArray = [];
         for (const key in data) {
-          if (hasOwn$1(data, key)) {
+          if (hasOwn(data, key)) {
             bodyArray.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
           }
         }
@@ -12285,7 +12054,7 @@ const request = defineTaskApi(API_REQUEST, ({
   const requestTask = new RequestTask(xhr);
   xhr.open(method, url);
   for (const key in header) {
-    if (hasOwn$1(header, key)) {
+    if (hasOwn(header, key)) {
       xhr.setRequestHeader(key, header[key]);
     }
   }
@@ -13307,7 +13076,7 @@ const setTabBarStyleProps = [
 const setTabBarBadgeProps = ["badge", "redDot"];
 function setProperties(item, props2, propsData) {
   props2.forEach(function(name) {
-    if (hasOwn$1(propsData, name)) {
+    if (hasOwn(propsData, name)) {
       item[name] = propsData[name];
     }
   });

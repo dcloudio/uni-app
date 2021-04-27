@@ -1,4 +1,5 @@
 import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
+import { UniCompiler, initUniCompiler } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
 import { createResolveId } from './resolveId'
@@ -17,6 +18,7 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   outputDir: string
   assetsDir: string
   devServer?: ViteDevServer
+  compiler: UniCompiler
 }
 
 export * from './vue'
@@ -32,6 +34,9 @@ export default function uniPlugin(
     outputDir: '',
     command: 'serve',
     platform: 'h5',
+    compiler: initUniCompiler({
+      root: process.env.UNI_CLI_CONTEXT || process.cwd(),
+    }),
   }
   return {
     name: 'vite:uni',

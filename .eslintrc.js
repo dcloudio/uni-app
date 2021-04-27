@@ -35,7 +35,7 @@ module.exports = {
     // Packages targeting DOM
     {
       files: [
-        'packages/{uni-components,uni-h5,uni-h5-vue,uni-shared,uni-core}/**',
+        'packages/{uni-api,uni-app,uni-components,uni-core,uni-h5,uni-h5-vue,uni-i18n,uni-shared,uni-vue}/**',
       ],
       rules: {
         'no-restricted-globals': ['error', ...NodeGlobals],
@@ -44,7 +44,7 @@ module.exports = {
     // Packages targeting Node
     {
       files: [
-        'packages/{vue-cli-plugin-uni,vue-cli-plugin-hbuilderx,vite-plugin-uni}/**',
+        'packages/{uni-cli-shared,vite-plugin-uni}/**',
         'packages/*/vite.config.ts',
       ],
       rules: {

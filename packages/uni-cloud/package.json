@@ -1,0 +1,23 @@
+{
+  "name": "@dcloudio/uni-cloud",
+  "version": "3.0.0",
+  "description": "@dcloudio/uni-cloud",
+  "main": "dist/uni-cloud.esm.js",
+  "module": "dist/uni-cloud.esm.js",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-cloud"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "uni-app": {
+    "name": "uniCloud"
+  }
+}

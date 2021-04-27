@@ -66,9 +66,13 @@ export default defineConfig({
       input: path.resolve(__dirname, 'src/index.ts'),
       external(source) {
         if (
-          ['vue', 'vue-router', '@vue/shared', '@dcloudio/uni-shared'].includes(
-            source
-          )
+          [
+            'vue',
+            'vue-router',
+            '@vue/shared',
+            '@dcloudio/uni-i18n',
+            '@dcloudio/uni-shared',
+          ].includes(source)
         ) {
           return true
         }

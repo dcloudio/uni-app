@@ -1,4 +1,5 @@
 import debug from 'debug'
+import { extend } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 import { VitePluginUniResolvedOptions } from '../..'
@@ -116,13 +117,28 @@ export function initPlugins(
   addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')
   addPlugin(plugins, uniRenderjsPlugin(), 'vite:vue')
 
+  const injectOptions = options.compiler.inject()
+  // 可以考虑使用apply:'build'
   if (command === 'build') {
     addPlugin(
       plugins,
-      uniInjectPlugin(Object.assign(uniInjectPluginOptions, options)),
+      uniInjectPlugin(
+        Object.assign(uniInjectPluginOptions, options, injectOptions)
+      ),
       'vite:vue'
     )
+  } else {
+    if (injectOptions && Object.keys(injectOptions).length) {
+      addPlugin(
+        plugins,
+        uniInjectPlugin(
+          extend({ exclude: [...COMMON_EXCLUDE] }, options, injectOptions)
+        ),
+        'vite:vue'
+      )
+    }
   }
+
   addPlugin(
     plugins,
     uniEasycomPlugin(Object.assign(uniEasycomPluginOptions, options)),

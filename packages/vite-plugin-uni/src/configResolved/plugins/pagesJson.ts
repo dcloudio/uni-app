@@ -69,17 +69,18 @@ function parsePagesJson(
   const cssCode = generateCssCode(config, options)
 
   return `
-import { extend } from '@vue/shared/dist/shared.esm-bundler.js'  
 import { ${
     config.define!.__UNI_FEATURE_PAGES__ ? 'defineAsyncComponent, ' : ''
   }resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
+const extend = Object.assign
 ${cssCode}
 ${uniConfigCode}
 ${definePagesCode}
 ${uniRoutesCode}
 ${options.command === 'serve' ? hmrCode : ''}
+export {}
 `
 }
 

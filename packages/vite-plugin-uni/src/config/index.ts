@@ -1,4 +1,5 @@
 import path from 'path'
+import { extend } from '@vue/shared'
 import { Plugin, UserConfig } from 'vite'
 
 import { normalizePath } from '@dcloudio/uni-cli-shared'
@@ -26,9 +27,10 @@ export function createConfig(
     options.command = env.command
     options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
     options.inputDir = normalizeInputDir(config)
+    options.compiler.init()
     const define = createDefine(options, env)
     return {
-      define,
+      define: extend(define, options.compiler.define()),
       resolve: createResolve(options),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
