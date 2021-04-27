@@ -499,7 +499,6 @@ const db = uniCloud.database()
 db.collection('order,book') // 注意collection方法内需要传入所有用到的表名，用逗号分隔，主表需要放在第一位
   .where('book_id.title == "三国演义"') // 查询order表内书名为“三国演义”的订单
   .field('book_id{title,author},quantity') // 这里联表查询book表返回book表内的title、book表内的author、order表内的quantity
-  // 2021年4月28日10点起，上面field方法不再推荐使用（仍支持），推荐改为此写法：field('book_id.title,book_id.author,quantity')
   .get()
   .then(res => {
     console.log(res);
@@ -609,7 +608,7 @@ db.collection('order')
 ```js
 db.collection('comment,user')
 .where('comment_id=="1-1"')
-.field('content,sender,receiver.name') // 本次调整
+.field('content,sender,receiver.name')
 .foreignKey('comment.receiver') // 仅使用comment表内receiver字段下的foreignKey进行主表和副表之间的关联
 .get()
 ```
@@ -845,7 +844,7 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
 
 ### 字段别名as@alias
 
-> field不使用`{}`进行字段过滤时（以下面示例为例`.field('book_id.title,book_id.author,quantity as order_quantity')`，此写法于2021年4月28日起支持）副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
+> field可以不使用`{}`进行字段过滤，以下面示例为例可以写为`.field('book_id.title,book_id.author,quantity as order_quantity')`，此写法于2021年4月28日起支持。副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
 
