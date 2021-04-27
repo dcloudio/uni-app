@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent, Fragment} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, Fragment, Teleport, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -1368,6 +1368,25 @@ function normalizePageMeta(pageMeta) {
     }
   }
   return pageMeta;
+}
+function separateAttrs(attrs2) {
+  const ignore = ["style", "class"];
+  let $listeners = {};
+  let $ignoreAttrs = {};
+  let $otherAttrs = {};
+  let $attrs = {};
+  for (const key in attrs2) {
+    if (/^on[A-Z]+/.test(key)) {
+      $listeners[key] = attrs2[key];
+      $otherAttrs[key] = attrs2[key];
+    } else if (ignore.includes(key)) {
+      $ignoreAttrs[key] = attrs2[key];
+      $otherAttrs[key] = attrs2[key];
+    } else {
+      $attrs[key] = attrs2[key];
+    }
+  }
+  return {$attrs, $otherAttrs, $listeners, $ignoreAttrs};
 }
 PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
@@ -10574,16 +10593,6 @@ function useVideo(props2, attrs2, trigger) {
       buffered
     });
   });
-  const videoAttrs = computed(() => {
-    const ignore = ["style", "class"];
-    const obj = {};
-    for (const key in attrs2) {
-      if (!(ignore.includes(key) || /^on[A-Z]+/.test(key))) {
-        obj[key] = attrs2[key];
-      }
-    }
-    return obj;
-  });
   function onDurationChange({
     target
   }) {
@@ -10667,7 +10676,6 @@ function useVideo(props2, attrs2, trigger) {
   }
   return {
     videoRef,
-    videoAttrs,
     state,
     play,
     pause,
@@ -11022,7 +11030,6 @@ var index$2 = /* @__PURE__ */ defineComponent({
     initI18nVideoMsgsOnce();
     const {
       videoRef,
-      videoAttrs,
       state: videoState,
       play,
       pause,
@@ -11069,6 +11076,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
     } = useControls(props2, videoState, seek);
     useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
+      const videoAttrs = separateAttrs(attrs2).$attrs;
       return createVNode("uni-video", {
         ref: rootRef,
         id: props2.id
@@ -11090,7 +11098,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
         src: videoState.src,
         poster: props2.poster,
         autoplay: !!props2.autoplay
-      }, videoAttrs.value, {
+      }, videoAttrs, {
         class: "uni-video-video",
         "webkit-playsinline": true,
         playsinline: true,
@@ -11216,49 +11224,45 @@ const props$2 = {
   src: {
     type: String,
     default: ""
-  },
-  allow: String,
-  sandbox: String
+  }
 };
 var index$1 = /* @__PURE__ */ defineComponent({
+  inheritAttrs: false,
   name: "WebView",
   props: props$2,
-  setup(props2) {
+  setup(props2, {
+    attrs: attrs2
+  }) {
     const rootRef = ref(null);
-    const iframe = document.createElement("iframe");
-    const {
-      _resize
-    } = useWebViewSize(rootRef, iframe);
-    useWebViewLoader(iframe, props2, _resize);
-    return () => createVNode("uni-web-view", {
-      ref: rootRef
-    }, [createVNode(ResizeSensor, {
-      onResize: _resize
-    }, null, 8, ["onResize"])], 512);
+    const iframeRef = ref(null);
+    const _resize = useWebViewSize(rootRef, iframeRef);
+    onMounted(() => {
+      _resize();
+    });
+    onActivated(() => {
+      iframeRef.value && (iframeRef.value.style.display = "block");
+    });
+    onDeactivated(() => {
+      iframeRef.value && (iframeRef.value.style.display = "none");
+    });
+    return () => {
+      const webViewAttrs = separateAttrs(attrs2);
+      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps(webViewAttrs.$otherAttrs, {
+        ref: rootRef
+      }), [createVNode(ResizeSensor, {
+        onResize: _resize
+      }, null, 8, ["onResize"])], 16), createVNode(Teleport, {
+        to: "body"
+      }, {
+        default: () => [createVNode("iframe", mergeProps({
+          ref: iframeRef,
+          src: getRealPath(props2.src)
+        }, webViewAttrs.$attrs), null, 16, ["src"])]
+      })]);
+    };
   }
 });
-function useWebViewLoader(iframe, props2, _resize) {
-  props2.allow && iframe.setAttribute("allow", props2.allow);
-  props2.sandbox && iframe.setAttribute("sandbox", props2.sandbox);
-  iframe.src = getRealPath(props2.src);
-  document.body.appendChild(iframe);
-  onMounted(() => {
-    _resize();
-  });
-  onActivated(() => {
-    iframe.style.display = "block";
-  });
-  onDeactivated(() => {
-    iframe.style.display = "none";
-  });
-  onUnmounted(() => {
-    document.body.removeChild(iframe);
-  });
-  watch(() => props2.src, (val) => {
-    iframe.src = getRealPath(val);
-  });
-}
-function useWebViewSize(rootRef, iframe) {
+function useWebViewSize(rootRef, iframeRef) {
   const _resize = () => {
     const {
       top,
@@ -11266,7 +11270,7 @@ function useWebViewSize(rootRef, iframe) {
       width,
       height
     } = rootRef.value.getBoundingClientRect();
-    updateElementStyle(iframe, {
+    iframeRef.value && updateElementStyle(iframeRef.value, {
       position: "absolute",
       display: "block",
       border: "0",
@@ -11276,9 +11280,7 @@ function useWebViewSize(rootRef, iframe) {
       height: height + "px"
     });
   };
-  return {
-    _resize
-  };
+  return _resize;
 }
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event2, args, pageId) {

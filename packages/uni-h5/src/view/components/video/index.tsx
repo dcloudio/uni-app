@@ -17,6 +17,7 @@ import { getRealPath } from '@dcloudio/uni-platform'
 import { useSubscribe } from '@dcloudio/uni-components'
 import { useCustomEvent } from '@dcloudio/uni-components'
 import { useUserAction } from '@dcloudio/uni-components'
+import { separateAttrs } from '../../../helpers/dom'
 
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type UserActionState = ReturnType<typeof useUserAction>['state']
@@ -312,16 +313,6 @@ function useVideo(
       })
     }
   )
-  const videoAttrs = computed(() => {
-    const ignore = ['style', 'class']
-    const obj: Data = {}
-    for (const key in attrs) {
-      if (!(ignore.includes(key) || /^on[A-Z]+/.test(key))) {
-        obj[key] = attrs[key]
-      }
-    }
-    return obj
-  })
   function onDurationChange({ target }: Event) {
     state.duration = (target as HTMLVideoElement).duration
   }
@@ -404,7 +395,6 @@ function useVideo(
   }
   return {
     videoRef,
-    videoAttrs,
     state,
     play,
     pause,
@@ -817,7 +807,6 @@ export default /*#__PURE__*/ defineComponent({
     initI18nVideoMsgsOnce()
     const {
       videoRef,
-      videoAttrs,
       state: videoState,
       play,
       pause,
@@ -873,6 +862,8 @@ export default /*#__PURE__*/ defineComponent({
     )
 
     return () => {
+      const videoAttrs = separateAttrs(attrs).$attrs
+
       return (
         <uni-video ref={rootRef} id={props.id}>
           <div
@@ -895,7 +886,7 @@ export default /*#__PURE__*/ defineComponent({
               src={videoState.src}
               poster={props.poster}
               autoplay={!!props.autoplay}
-              {...videoAttrs.value}
+              {...videoAttrs}
               class="uni-video-video"
               webkit-playsinline
               playsinline
