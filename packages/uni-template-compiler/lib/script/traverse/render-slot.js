@@ -30,5 +30,4 @@ module.exports = function getRenderSlot (path, state) {
     state.renderSlotStatementArray.push(t.expressionStatement(t.callExpression(t.identifier('$setScopedSlotsParams'), [t.stringLiteral(name.node.value), valueNode])))
   }
   // TODO 组件嵌套
-  path.skip()
 }
