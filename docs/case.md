@@ -554,6 +554,9 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **本地宝：** 本地宝（bendibao.com）是领先的便民信息服务平台。[官网App下载](http://www.bendibao.com/app/pc.html)、微信小程序搜索“本地宝”
 
+**不同：** 社交App，遇见价值观相同的知己。nvue优秀体验。[Android](https://a.app.qq.com/o/simple.jsp?pkgname=com.butongapp.butong)、[iOS](https://apps.apple.com/cn/app/%E4%B8%8D%E5%90%8C-%E4%BB%B7%E5%80%BC%E8%A7%82%E7%A4%BE%E5%8C%BA/id1476537831
+)
+
 **仓鼠团：** 囤好货到仓鼠,仓鼠团您身边的购物助手。[App通用链接](http://m3w.cn/cst)
 
 **安咕在家早教：**0-6岁宝宝能力跟踪发展工具，[iOS](https://itunes.apple.com/cn/app/%E5%AE%89%E5%92%95%E5%9C%A8%E5%AE%B6%E6%97%A9%E6%95%99/id1455168710?mt=8)、[Android](https://android.myapp.com/myapp/detail.htm?apkName=com.angubaby.earlyeduhome)、微信小程序搜索“安咕在家早教”。
