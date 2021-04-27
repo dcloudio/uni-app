@@ -1,5 +1,6 @@
 import { isPlainObject } from '@vue/shared'
 import { watch, onUnmounted, getCurrentInstance } from 'vue'
+import { useCurrentPageId } from '@dcloudio/uni-core'
 
 export function useListeners(
   props: { id: string },
@@ -25,8 +26,7 @@ function _addListeners(
   listeners: Record<string, Function>,
   watch?: boolean
 ) {
-  const instance = getCurrentInstance()!
-  const pageId = instance.root.proxy!.$page.id
+  const pageId = useCurrentPageId()
 
   if (watch && !id) {
     // id被置空
@@ -59,8 +59,7 @@ function _removeListeners(
   listeners: Record<string, Function>,
   watch?: boolean
 ) {
-  const instance = getCurrentInstance()!
-  const pageId = instance.root.proxy!.$page.id
+  const pageId = useCurrentPageId()
 
   if (watch && !id) {
     // id之前不存在

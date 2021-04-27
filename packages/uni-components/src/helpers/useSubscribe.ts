@@ -5,6 +5,7 @@ import {
   getCurrentInstance,
   ComponentPublicInstance,
 } from 'vue'
+import { useCurrentPageId } from '@dcloudio/uni-core'
 
 function normalizeEvent(
   pageId: number,
@@ -45,8 +46,7 @@ export function useSubscribe(
 ) {
   const instance = getCurrentInstance()!
   const vm = instance.proxy!
-  // 不能直接使用instance.proxy.$root,此时可能获取到的是exposed
-  const pageId = name ? 0 : instance.root.proxy!.$page.id
+  const pageId = name ? 0 : useCurrentPageId()
   onMounted(() => {
     addSubscribe(name || normalizeEvent(pageId, vm)!, callback)
     if (!name) {

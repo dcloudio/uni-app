@@ -1,5 +1,6 @@
 export * from './dom'
 export * from './util'
 export * from './icon'
+export * from './page'
 export * from './scroll'
 export * from './getRealRoute'

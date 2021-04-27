@@ -1,5 +1,5 @@
-import { defineComponent, provide, getCurrentInstance, computed } from 'vue'
-import { PolySymbol } from '@dcloudio/uni-core'
+import { defineComponent, provide, computed } from 'vue'
+import { PolySymbol, useCurrentPageId } from '@dcloudio/uni-core'
 import { withWebEvent } from '@dcloudio/uni-components'
 
 export const uniLabelKey = PolySymbol(__DEV__ ? 'uniLabel' : 'ul')
@@ -14,9 +14,7 @@ export default /*#__PURE__*/ defineComponent({
   name: 'Label',
   props,
   setup(props, { emit, slots }) {
-    const instance = getCurrentInstance()!
-    const pageId = instance.root.proxy!.$page.id
-
+    const pageId = useCurrentPageId()
     const handlers = useProvideLabel()
 
     const pointer = computed(

@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn as hasOwn$1, isObject as isObject$1, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, inject, provide, reactive, computed, nextTick, getCurrentInstance, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent, Fragment} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent, Fragment} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -767,6 +767,18 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
       fill: color
     }, null, 8, ["d", "fill"])
   ], 8, ["width", "height"]);
+}
+function useCurrentPageId() {
+  return getCurrentInstance().root.proxy.$page.id;
+}
+function getPageIdByVm(vm) {
+  if (!vm.$) {
+    return;
+  }
+  const rootProxy = vm.$.root.proxy;
+  if (rootProxy && rootProxy.$page) {
+    return rootProxy.$page.id;
+  }
 }
 function disableScrollListener(evt) {
   evt.preventDefault();
@@ -1889,7 +1901,7 @@ function getBaseSystemInfo() {
   };
 }
 function operateVideoPlayer(videoId, vm, type, data) {
-  const pageId = vm.$root.$page.id;
+  const pageId = getPageIdByVm(vm);
   UniServiceJSBridge.publishHandler("video." + videoId, {
     videoId,
     type,
@@ -2094,7 +2106,7 @@ function normalizeRootMargin(margins = {}) {
 }
 class ServiceIntersectionObserver {
   constructor(component, options) {
-    this._pageId = component.$page && component.$page.id;
+    this._pageId = getPageIdByVm(component);
     this._component = component;
     this._options = extend({}, defaultOptions, options);
   }
@@ -2126,7 +2138,7 @@ class ServiceIntersectionObserver {
   }
 }
 const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (context, options) => {
-  if (context && !context.$page) {
+  if (context && !getPageIdByVm(context)) {
     options = context;
     context = null;
   }
@@ -5034,8 +5046,7 @@ function useListeners(props2, listeners2) {
   });
 }
 function _addListeners(id2, listeners2, watch2) {
-  const instance2 = getCurrentInstance();
-  const pageId = instance2.root.proxy.$page.id;
+  const pageId = useCurrentPageId();
   if (watch2 && !id2) {
     return;
   }
@@ -5057,8 +5068,7 @@ function _addListeners(id2, listeners2, watch2) {
   });
 }
 function _removeListeners(id2, listeners2, watch2) {
-  const instance2 = getCurrentInstance();
-  const pageId = instance2.root.proxy.$page.id;
+  const pageId = useCurrentPageId();
   if (watch2 && !id2) {
     return;
   }
@@ -5171,8 +5181,7 @@ var index$b = /* @__PURE__ */ defineComponent({
     emit: emit2,
     slots
   }) {
-    const instance2 = getCurrentInstance();
-    const pageId = instance2.root.proxy.$page.id;
+    const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
     const pointer = computed(() => props2.for || slots.default && slots.default.length);
     const _onClick = withWebEvent(($event) => {
@@ -10321,7 +10330,7 @@ function removeSubscribe(name) {
 function useSubscribe(callback, name) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
-  const pageId = name ? 0 : instance2.root.proxy.$page.id;
+  const pageId = name ? 0 : useCurrentPageId();
   onMounted(() => {
     addSubscribe(name || normalizeEvent(pageId, vm), callback);
     if (!name) {
