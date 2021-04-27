@@ -9,7 +9,7 @@ import {
 import type { Ref } from 'vue'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
-import { UniCheckGroupCtx, uniCheckGroupKey } from '../checkbox-group'
+import { UniRadioGroupCtx, uniRadioGroupKey } from '../radio-group'
 import { UniFormCtx, uniFormKey } from '../form'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import {
@@ -41,27 +41,31 @@ const props = {
 }
 
 export default /*#__PURE__*/ defineComponent({
-  name: 'Checkbox',
+  name: 'Radio',
   props,
   setup(props, { slots }) {
-    const checkboxChecked = ref(props.checked)
-    const checkboxValue = ref(props.value)
+    const radioChecked = ref(props.checked)
+    const radioValue = ref(props.value)
+
+    const checkedStyle = computed(
+      () => `background-color: ${props.color};border-color: ${props.color};`
+    )
 
     watch(
       [() => props.checked, () => props.value],
       ([newChecked, newModelValue]) => {
-        checkboxChecked.value = newChecked
-        checkboxValue.value = newModelValue
+        radioChecked.value = newChecked
+        radioValue.value = newModelValue
       }
     )
 
     const reset = () => {
-      checkboxChecked.value = false
+      radioChecked.value = false
     }
 
-    const { uniCheckGroup, uniLabel } = useCheckboxInject(
-      checkboxChecked,
-      checkboxValue,
+    const { uniCheckGroup, uniLabel, field } = useRadioInject(
+      radioChecked,
+      radioValue,
       reset
     )
 
@@ -69,8 +73,8 @@ export default /*#__PURE__*/ defineComponent({
       if (props.disabled) {
         return
       }
-      checkboxChecked.value = !checkboxChecked.value
-      uniCheckGroup && uniCheckGroup.checkboxChange($event)
+      radioChecked.value = true
+      uniCheckGroup && uniCheckGroup.radioChange($event, field)
     }
 
     if (!!uniLabel) {
@@ -85,42 +89,44 @@ export default /*#__PURE__*/ defineComponent({
       const { booleanAttrs } = useBooleanAttr(props, 'disabled')
 
       return (
-        <uni-checkbox {...booleanAttrs} onClick={_onClick}>
-          <div class="uni-checkbox-wrapper">
+        <uni-radio {...booleanAttrs} onClick={_onClick}>
+          <div class="uni-radio-wrapper">
             <div
-              class="uni-checkbox-input"
-              class={{ 'uni-checkbox-input-disabled': props.disabled }}
+              class="uni-radio-input"
+              class={{ 'uni-radio-input-disabled': props.disabled }}
+              style={radioChecked.value ? checkedStyle.value : ''}
             >
-              {checkboxChecked.value
-                ? createSvgIconVNode(
-                    ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.color,
-                    22
-                  )
+              {radioChecked.value
+                ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 18)
                 : ''}
             </div>
             {slots.default && slots.default()}
           </div>
-        </uni-checkbox>
+        </uni-radio>
       )
     }
   },
 })
 
-function useCheckboxInject(
-  checkboxChecked: Ref<string | boolean>,
-  checkboxValue: Ref<string>,
+function useRadioInject(
+  radioChecked: Ref<string | boolean>,
+  radioValue: Ref<string>,
   reset: () => void
 ) {
-  const field = computed(() => ({
-    checkboxChecked: Boolean(checkboxChecked.value),
-    value: checkboxValue.value,
-  }))
+  const field = computed({
+    get: () => ({
+      radioChecked: Boolean(radioChecked.value),
+      value: radioValue.value,
+    }),
+    set: ({ radioChecked: checked }) => {
+      radioChecked.value = checked
+    },
+  })
   const formField = { reset }
 
-  const uniCheckGroup = inject<UniCheckGroupCtx>(
-    uniCheckGroupKey,
-    (false as unknown) as UniCheckGroupCtx
+  const uniCheckGroup = inject<UniRadioGroupCtx>(
+    uniRadioGroupKey,
+    (false as unknown) as UniRadioGroupCtx
   )
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field)
@@ -148,5 +154,6 @@ function useCheckboxInject(
     uniCheckGroup,
     uniForm,
     uniLabel,
+    field,
   }
 }

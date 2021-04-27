@@ -34,9 +34,7 @@ uni-radio:not([disabled]) .uni-radio-input:hover {
   border-color: #007aff;
 }
 
-.uni-radio-input.uni-radio-input-checked:before {
-  font: normal normal normal 14px/1 'uni';
-  content: '\EA08';
+.uni-radio-input svg {
   color: #ffffff;
   font-size: 18px;
   position: absolute;

@@ -678,7 +678,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -690,10 +690,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1344,7 +1344,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3775,7 +3775,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$f = {
+var index$h = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -4124,7 +4124,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$d = {
+const _sfc_main$b = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4243,13 +4243,13 @@ const _sfc_main$d = {
     }
   }
 };
-const _hoisted_1$8 = {class: "uni-audio-default"};
+const _hoisted_1$7 = {class: "uni-audio-default"};
 const _hoisted_2$5 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4259,7 +4259,7 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$8, [
+    createVNode("div", _hoisted_1$7, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4279,7 +4279,7 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$d.render = _sfc_render$d;
+_sfc_main$b.render = _sfc_render$b;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4364,7 +4364,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$e = /* @__PURE__ */ defineComponent({
+var index$g = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -4403,7 +4403,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$d = /* @__PURE__ */ defineComponent({
+var index$f = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4516,7 +4516,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$c = {
+const _sfc_main$a = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -5012,19 +5012,19 @@ const _sfc_main$c = {
     }
   }
 };
-const _hoisted_1$7 = {
+const _hoisted_1$6 = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$4 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$7, null, 512),
+    createVNode("canvas", _hoisted_1$6, null, 512),
     createVNode("div", _hoisted_2$4, [
       renderSlot(_ctx.$slots, "default")
     ]),
@@ -5034,7 +5034,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$c.render = _sfc_render$c;
+_sfc_main$a.render = _sfc_render$a;
 function useListeners(props2, listeners2) {
   _addListeners(props2.id, listeners2);
   watch(() => props2.id, (newId, oldId) => {
@@ -5108,15 +5108,15 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$d = {
+const props$f = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$d,
+  props: props$f,
   setup(props2, {
     emit: emit2,
     slots
@@ -5168,15 +5168,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$c = {
+const props$e = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$b = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$c,
+  props: props$e,
   setup(props2, {
     emit: emit2,
     slots
@@ -5188,10 +5188,7 @@ var index$b = /* @__PURE__ */ defineComponent({
       const EventTarget = $event.target;
       let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
       if (!stopPropagation) {
-        stopPropagation = /^uni-(checkbox|radio|switch|button|svg)$/i.test(EventTarget.tagName);
-      }
-      if (!stopPropagation) {
-        stopPropagation = /^(svg|path)$/i.test(EventTarget.tagName);
+        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
       }
       if (stopPropagation) {
         return;
@@ -5224,7 +5221,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$b = {
+const props$d = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5246,9 +5243,9 @@ const props$b = {
     default: ""
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$b,
+  props: props$d,
   setup(props2, {
     slots
   }) {
@@ -5272,33 +5269,33 @@ var index$a = /* @__PURE__ */ defineComponent({
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
     };
-    uniLabel.addHandler(_onClick);
-    onBeforeUnmount(() => {
-      uniLabel.removeHandler(_onClick);
-    });
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
     useListeners(props2, {
       "label-click": _onClick
     });
     return () => {
       const {
-        disabled,
-        color
-      } = props2;
-      return createVNode("uni-checkbox", {
-        disabled,
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
         onClick: _onClick
-      }, [createVNode("div", {
+      }), [createVNode("div", {
         class: "uni-checkbox-wrapper"
       }, [createVNode("div", {
         class: ["uni-checkbox-input", {
-          "uni-checkbox-input-disabled": disabled
+          "uni-checkbox-input-disabled": props2.disabled
         }]
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, color, 16) : ""], 2), slots.default && slots.default()])], 8, ["disabled", "onClick"]);
+      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
 });
 function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
-  const filed = computed(() => ({
+  const field = computed(() => ({
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
@@ -5307,7 +5304,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   };
   const uniCheckGroup = inject(uniCheckGroupKey, false);
   if (!!uniCheckGroup) {
-    uniCheckGroup.addField(filed);
+    uniCheckGroup.addField(field);
   }
   const uniForm = inject(uniFormKey, false);
   if (!!uniForm) {
@@ -5315,7 +5312,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   }
   const uniLabel = inject(uniLabelKey, false);
   onBeforeUnmount(() => {
-    uniCheckGroup && uniCheckGroup.removeField(filed);
+    uniCheckGroup && uniCheckGroup.removeField(field);
     uniForm && uniForm.removeField(formField);
   });
   return {
@@ -5327,7 +5324,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$a = {
+const props$c = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6071,7 +6068,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$9 = /* @__PURE__ */ Object.assign({}, props$a, {
+const props$b = /* @__PURE__ */ Object.assign({}, props$c, {
   id: {
     type: String,
     default: ""
@@ -6097,9 +6094,9 @@ const props$9 = /* @__PURE__ */ Object.assign({}, props$a, {
     default: false
   }
 });
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$b = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$9,
+  props: props$b,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -6159,7 +6156,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$8 = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -6250,7 +6247,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$8 = {
+const props$a = {
   src: {
     type: String,
     default: ""
@@ -6287,9 +6284,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$7 = /* @__PURE__ */ defineComponent({
+var index$9 = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$8,
+  props: props$a,
   setup(props2, {
     emit: emit2
   }) {
@@ -6568,7 +6565,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$7 = /* @__PURE__ */ Object.assign({}, {
+const props$9 = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -6629,7 +6626,7 @@ const props$7 = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$a);
+}, props$c);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -6814,7 +6811,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$6 = /* @__PURE__ */ Object.assign({}, props$7, {
+const props$8 = /* @__PURE__ */ Object.assign({}, props$9, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -6822,7 +6819,7 @@ const props$6 = /* @__PURE__ */ Object.assign({}, props$7, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$6,
+  props: props$8,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7385,7 +7382,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$b = {
+const _sfc_main$9 = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7937,14 +7934,14 @@ const _sfc_main$b = {
     }
   }
 };
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$b.render = _sfc_render$b;
+_sfc_main$9.render = _sfc_render$9;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7952,7 +7949,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$a = {
+const _sfc_main$8 = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -8025,7 +8022,7 @@ const _sfc_main$a = {
     }
   }
 };
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -8042,13 +8039,13 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$a.render = _sfc_render$a;
+_sfc_main$8.render = _sfc_render$8;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$5 = {
+const props$7 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -8095,9 +8092,9 @@ const props$5 = {
     }
   }
 };
-var index$6 = /* @__PURE__ */ defineComponent({
+var index$8 = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$5,
+  props: props$7,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -8167,192 +8164,205 @@ function _activeAnimation(state, props2) {
     state.currentPercent = state.realPercent;
   }
 }
-const _sfc_main$9 = {
-  name: "Radio",
-  mixins: [emitter, listeners],
-  props: {
-    checked: {
-      type: [Boolean, String],
-      default: false
-    },
-    id: {
-      type: String,
-      default: ""
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    color: {
-      type: String,
-      default: "#007AFF"
-    },
-    value: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      radioChecked: this.checked,
-      radioValue: this.value
+const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+const props$6 = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+var index$7 = /* @__PURE__ */ defineComponent({
+  name: "RadioGroup",
+  props: props$6,
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    useProvideRadioGroup(props2, trigger);
+    return () => {
+      return createVNode("uni-radio-group", {
+        ref: rootRef
+      }, [slots.default && slots.default()], 512);
     };
-  },
-  computed: {
-    checkedStyle() {
-      return `background-color: ${this.color};border-color: ${this.color};`;
-    }
-  },
-  watch: {
-    checked(val) {
-      this.radioChecked = val;
+  }
+});
+function useProvideRadioGroup(props2, trigger) {
+  const fields = [];
+  onMounted(() => {
+    _resetRadioGroupValue(fields.length - 1);
+  });
+  const getFieldsValue = () => {
+    var _a;
+    return (_a = fields.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
+  };
+  provide(uniRadioGroupKey, {
+    addField(field) {
+      fields.push(field);
     },
-    value(val) {
-      this.radioValue = val;
+    removeField(field) {
+      fields.splice(fields.indexOf(field), 1);
+    },
+    radioChange($event, field) {
+      const index2 = fields.indexOf(field);
+      _resetRadioGroupValue(index2, true);
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
     }
-  },
-  listeners: {
-    "label-click": "_onClick",
-    "@label-click": "_onClick"
-  },
-  created() {
-    this.$dispatch("RadioGroup", "uni-radio-group-update", {
-      type: "add",
-      vm: this
+  });
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
     });
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
-    });
-  },
-  beforeDestroy() {
-    this.$dispatch("RadioGroup", "uni-radio-group-update", {
-      type: "remove",
-      vm: this
-    });
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
-  },
-  methods: {
-    _onClick($event) {
-      if (this.disabled || this.radioChecked) {
+  }
+  function setFieldChecked(field, radioChecked) {
+    field.value = {
+      radioChecked,
+      value: field.value.value
+    };
+  }
+  function _resetRadioGroupValue(key, change) {
+    fields.forEach((value, index2) => {
+      if (index2 === key) {
         return;
       }
-      this.radioChecked = true;
-      this.$dispatch("RadioGroup", "uni-radio-change", $event, this);
-    },
-    _resetFormData() {
-      this.radioChecked = this.min;
-    }
-  }
-};
-const _hoisted_1$6 = {class: "uni-radio-wrapper"};
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-radio", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    createVNode("div", _hoisted_1$6, [
-      createVNode("div", {
-        class: [$data.radioChecked ? "uni-radio-input-checked" : "", "uni-radio-input"],
-        style: $data.radioChecked ? $options.checkedStyle : ""
-      }, null, 6),
-      renderSlot(_ctx.$slots, "default")
-    ])
-  ], 16, ["disabled"]);
-}
-_sfc_main$9.render = _sfc_render$9;
-const _sfc_main$8 = {
-  name: "RadioGroup",
-  mixins: [emitter, listeners],
-  props: {
-    name: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      radioList: []
-    };
-  },
-  listeners: {
-    "@radio-change": "_changeHandler",
-    "@radio-group-update": "_radioGroupUpdateHandler"
-  },
-  mounted() {
-    this._resetRadioGroupValue(this.radioList.length - 1);
-  },
-  created() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
-    });
-  },
-  beforeDestroy() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
-  },
-  methods: {
-    _changeHandler($event, vm) {
-      const index2 = this.radioList.indexOf(vm);
-      this._resetRadioGroupValue(index2, true);
-      this.$trigger("change", $event, {
-        value: vm.radioValue
-      });
-    },
-    _radioGroupUpdateHandler($event) {
-      if ($event.type === "add") {
-        this.radioList.push($event.vm);
+      if (change) {
+        setFieldChecked(fields[index2], false);
       } else {
-        const index2 = this.radioList.indexOf($event.vm);
-        this.radioList.splice(index2, 1);
-      }
-    },
-    _resetRadioGroupValue(key, change) {
-      this.radioList.forEach((value, index2) => {
-        if (index2 === key) {
-          return;
-        }
-        if (change) {
-          this.radioList[index2].radioChecked = false;
-        } else {
-          this.radioList.forEach((v2, i2) => {
-            if (index2 >= i2) {
-              return;
-            }
-            if (this.radioList[i2].radioChecked) {
-              this.radioList[index2].radioChecked = false;
-            }
-          });
-        }
-      });
-    },
-    _getFormData() {
-      const data = {};
-      if (this.name !== "") {
-        let value = "";
-        this.radioList.forEach((vm) => {
-          if (vm.radioChecked) {
-            value = vm.value;
+        fields.forEach((v2, i2) => {
+          if (index2 >= i2) {
+            return;
+          }
+          if (fields[i2].value.radioChecked) {
+            setFieldChecked(fields[index2], false);
           }
         });
-        data.value = value;
-        data.key = this.name;
       }
-      return data;
-    }
+    });
+  }
+  return fields;
+}
+const props$5 = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  value: {
+    type: String,
+    default: ""
   }
 };
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-radio-group", _ctx.$attrs, [
-    renderSlot(_ctx.$slots, "default")
-  ], 16);
+var index$6 = /* @__PURE__ */ defineComponent({
+  name: "Radio",
+  props: props$5,
+  setup(props2, {
+    slots
+  }) {
+    const radioChecked = ref(props2.checked);
+    const radioValue = ref(props2.value);
+    const checkedStyle = computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      radioChecked.value = newChecked;
+      radioValue.value = newModelValue;
+    });
+    const reset = () => {
+      radioChecked.value = false;
+    };
+    const {
+      uniCheckGroup,
+      uniLabel,
+      field
+    } = useRadioInject(radioChecked, radioValue, reset);
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      radioChecked.value = true;
+      uniCheckGroup && uniCheckGroup.radioChange($event, field);
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-radio", mergeProps(booleanAttrs, {
+        onClick: _onClick
+      }), [createVNode("div", {
+        class: "uni-radio-wrapper"
+      }, [createVNode("div", {
+        class: ["uni-radio-input", {
+          "uni-radio-input-disabled": props2.disabled
+        }],
+        style: radioChecked.value ? checkedStyle.value : ""
+      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+    };
+  }
+});
+function useRadioInject(radioChecked, radioValue, reset) {
+  const field = computed({
+    get: () => ({
+      radioChecked: Boolean(radioChecked.value),
+      value: radioValue.value
+    }),
+    set: ({
+      radioChecked: checked
+    }) => {
+      radioChecked.value = checked;
+    }
+  });
+  const formField = {
+    reset
+  };
+  const uniCheckGroup = inject(uniRadioGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field);
+  }
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = inject(uniLabelKey, false);
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field);
+    uniForm && uniForm.removeField(formField);
+  });
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel,
+    field
+  };
 }
-_sfc_main$8.render = _sfc_render$8;
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -10149,7 +10159,7 @@ var index$5 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$4 = /* @__PURE__ */ Object.assign({}, props$7, {
+const props$4 = /* @__PURE__ */ Object.assign({}, props$9, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11438,7 +11448,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -11551,12 +11561,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11576,10 +11586,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -14585,4 +14595,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$d as Audio, index$d as Button, _sfc_main$c as Canvas, index$a as Checkbox, index$c as CheckboxGroup, index$9 as Editor, index$e as Form, index$8 as Icon, index$7 as Image, Input, index$b as Label, LayoutComponent, _sfc_main$b as MovableView, _sfc_main$a as Navigator, index as PageComponent, index$6 as Progress, _sfc_main$9 as Radio, _sfc_main$8 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$f as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$b as Audio, index$f as Button, _sfc_main$a as Canvas, index$c as Checkbox, index$e as CheckboxGroup, index$b as Editor, index$g as Form, index$a as Icon, index$9 as Image, Input, index$d as Label, LayoutComponent, _sfc_main$9 as MovableView, _sfc_main$8 as Navigator, index as PageComponent, index$8 as Progress, index$6 as Radio, index$7 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$h as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

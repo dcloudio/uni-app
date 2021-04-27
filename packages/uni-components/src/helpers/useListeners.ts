@@ -1,5 +1,5 @@
 import { isPlainObject } from '@vue/shared'
-import { watch, onUnmounted, getCurrentInstance } from 'vue'
+import { watch, onUnmounted } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 
 export function useListeners(
