@@ -134,7 +134,7 @@ function useCheckboxInject(
 
   onBeforeUnmount(() => {
     uniCheckGroup && uniCheckGroup.removeField(filed)
-    uniForm && uniForm.addField(formField)
+    uniForm && uniForm.removeField(formField)
   })
 
   return {

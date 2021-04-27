@@ -25,21 +25,23 @@ function _addListeners(
   listeners: Record<string, Function>,
   watch?: boolean
 ) {
-  const $page = getCurrentInstance()!.proxy?.$page
+  const instance = getCurrentInstance()!
+  const vm = instance.proxy!
+  const pageId = vm.$root!.$page.id
 
   if (watch && !id) {
     // id被置空
     return
   }
-
   if (!isPlainObject(listeners)) {
     return
   }
+
   Object.keys(listeners).forEach((name) => {
     if (watch) {
       // watch id
       if (name.indexOf('@') !== 0 && name.indexOf('uni-') !== 0) {
-        UniViewJSBridge.on(`uni-${name}-${$page!.id}-${id}`, listeners[name])
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id}`, listeners[name])
       }
     } else {
       if (name.indexOf('uni-') === 0) {
@@ -47,7 +49,7 @@ function _addListeners(
         UniViewJSBridge.on(name, listeners[name])
       } else if (id) {
         // scoped
-        UniViewJSBridge.on(`uni-${name}-${$page!.id}-${id}`, listeners[name])
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id}`, listeners[name])
       }
     }
   })
@@ -58,7 +60,9 @@ function _removeListeners(
   listeners: Record<string, Function>,
   watch?: boolean
 ) {
-  const $page = getCurrentInstance()!.proxy?.$page
+  const instance = getCurrentInstance()!
+  const vm = instance.proxy!
+  const pageId = vm.$root!.$page.id
 
   if (watch && !id) {
     // id之前不存在
@@ -67,11 +71,12 @@ function _removeListeners(
   if (!isPlainObject(listeners)) {
     return
   }
+
   Object.keys(listeners).forEach((name) => {
     if (watch) {
       // watch id
       if (name.indexOf('@') !== 0 && name.indexOf('uni-') !== 0) {
-        UniViewJSBridge.off(`uni-${name}-${$page!.id}-${id}`, listeners[name])
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id}`, listeners[name])
       }
     } else {
       if (name.indexOf('uni-') === 0) {
@@ -79,7 +84,7 @@ function _removeListeners(
         UniViewJSBridge.off(name, listeners[name])
       } else if (id) {
         // scoped
-        UniViewJSBridge.off(`uni-${name}-${$page!.id}-${id}`, listeners[name])
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id}`, listeners[name])
       }
     }
   })

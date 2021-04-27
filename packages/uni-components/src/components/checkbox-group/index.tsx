@@ -83,7 +83,8 @@ function useProvideCheckGroup(
       submit: () => {
         let data: [string, any] = ['', null]
         if (props.name !== '') {
-          data.push(props.name, getFieldsValue())
+          data[0] = props.name
+          data[1] = getFieldsValue()
         }
         return data
       },

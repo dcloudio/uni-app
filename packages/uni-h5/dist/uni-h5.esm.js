@@ -678,7 +678,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -690,10 +690,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1329,7 +1329,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -5030,8 +5030,9 @@ function useListeners(props2, listeners2) {
   });
 }
 function _addListeners(id2, listeners2, watch2) {
-  var _a;
-  const $page = (_a = getCurrentInstance().proxy) == null ? void 0 : _a.$page;
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const pageId = vm.$root.$page.id;
   if (watch2 && !id2) {
     return;
   }
@@ -5041,20 +5042,21 @@ function _addListeners(id2, listeners2, watch2) {
   Object.keys(listeners2).forEach((name) => {
     if (watch2) {
       if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.on(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     } else {
       if (name.indexOf("uni-") === 0) {
         UniViewJSBridge.on(name, listeners2[name]);
       } else if (id2) {
-        UniViewJSBridge.on(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     }
   });
 }
 function _removeListeners(id2, listeners2, watch2) {
-  var _a;
-  const $page = (_a = getCurrentInstance().proxy) == null ? void 0 : _a.$page;
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const pageId = vm.$root.$page.id;
   if (watch2 && !id2) {
     return;
   }
@@ -5064,13 +5066,13 @@ function _removeListeners(id2, listeners2, watch2) {
   Object.keys(listeners2).forEach((name) => {
     if (watch2) {
       if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.off(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     } else {
       if (name.indexOf("uni-") === 0) {
         UniViewJSBridge.off(name, listeners2[name]);
       } else if (id2) {
-        UniViewJSBridge.off(`uni-${name}-${$page.id}-${id2}`, listeners2[name]);
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
       }
     }
   });
@@ -5141,7 +5143,8 @@ function useProvideCheckGroup(props2, trigger) {
       submit: () => {
         let data = ["", null];
         if (props2.name !== "") {
-          data.push(props2.name, getFieldsValue());
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
         }
         return data;
       }
@@ -5300,7 +5303,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const uniLabel = inject(uniLabelKey, false);
   onBeforeUnmount(() => {
     uniCheckGroup && uniCheckGroup.removeField(filed);
-    uniForm && uniForm.addField(formField);
+    uniForm && uniForm.removeField(formField);
   });
   return {
     uniCheckGroup,
@@ -11425,7 +11428,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -11538,12 +11541,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11563,10 +11566,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
