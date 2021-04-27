@@ -232,7 +232,9 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 **快手：** 微信小程序搜索“快手短视频”、App中搜索“快手每日一答”
 
-**腾讯：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信浏览器打开）](https://zqact.tenpay.com/chaogu/)
+**腾讯：** 腾讯医生，微信小程序搜索“腾讯医生”、[h5](https://doctor.baike.qq.com/) 
+
+**腾讯财付通：** 微信小程序搜索“腾讯全民模拟炒股大赛”、[H5（需使用微信浏览器打开）](https://zqact.tenpay.com/chaogu/)
 
 **京东：** 京东开发的新冠抗疫服务平台：[H5](http://yingji-h5.chanye.jdcloud.com/)、京东金融羊羊大作战：[H5](https://u.jr.jd.com/uc-fe-wxgrowing/sheep-fight/)
 
