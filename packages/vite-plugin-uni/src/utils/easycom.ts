@@ -1,6 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
+
+import { createFilter } from '@rollup/pluginutils'
+
+import { once } from '@dcloudio/uni-shared'
+
 interface EasycomOption {
   dirs?: string[]
   rootDir?: string
@@ -31,23 +36,33 @@ function clearEasycom() {
   easycomsInvalidCache.clear()
 }
 
-export function initEasycoms(inputDir: string) {
-  const dirs = ['components']
-    .map((dir) => path.resolve(inputDir, dir))
-    .concat(initUniModulesEasycomDirs(inputDir))
-  const easycomOptions = { dirs, rootDir: inputDir }
-  initEasycom(easycomOptions)
-  debugEasycom(easycomOptions)
+export const initEasycoms = once((inputDir: string) => {
+  const componentsDir = path.resolve(inputDir, 'components')
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  const initEasycomOptions = () => {
+    const easycomOptions = {
+      dirs: [componentsDir, ...initUniModulesEasycomDirs(uniModulesDir)],
+      rootDir: inputDir,
+    }
+    debugEasycom(easycomOptions)
+    return easycomOptions
+  }
+  initEasycom(initEasycomOptions())
   return {
-    dirs,
+    filter: createFilter(
+      ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
+      [],
+      {
+        resolve: inputDir,
+      }
+    ),
     refresh() {
-      initEasycom(easycomOptions)
+      initEasycom(initEasycomOptions())
     },
   }
-}
+})
 
-function initUniModulesEasycomDirs(inputDir: string) {
-  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+function initUniModulesEasycomDirs(uniModulesDir: string) {
   if (!fs.existsSync(uniModulesDir)) {
     return []
   }
@@ -72,7 +87,6 @@ function initEasycom({
   custom,
   extensions = ['.vue'],
 }: EasycomOption) {
-  debugEasycom(dirs, rootDir, custom, extensions)
   clearEasycom()
   const easycomsObj = Object.create(null)
   if (dirs && rootDir) {

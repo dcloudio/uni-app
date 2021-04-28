@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, renderList, onDeactivated, Fragment, Teleport, createApp, watchEffect, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -1137,25 +1137,6 @@ function normalizePageMeta(pageMeta) {
     }
   }
   return pageMeta;
-}
-function separateAttrs(attrs2) {
-  const ignore = ["style", "class"];
-  let $listeners = {};
-  let $ignoreAttrs = {};
-  let $otherAttrs = {};
-  let $attrs = {};
-  for (const key in attrs2) {
-    if (/^on[A-Z]+/.test(key)) {
-      $listeners[key] = attrs2[key];
-      $otherAttrs[key] = attrs2[key];
-    } else if (ignore.includes(key)) {
-      $ignoreAttrs[key] = attrs2[key];
-      $otherAttrs[key] = attrs2[key];
-    } else {
-      $attrs[key] = attrs2[key];
-    }
-  }
-  return {$attrs, $otherAttrs, $listeners, $ignoreAttrs};
 }
 PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
@@ -3258,8 +3239,8 @@ function normalizeRect(rect) {
 function requestComponentObserver($el, options, callback) {
   initIntersectionObserverPolyfill();
   const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
-  const intersectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entrie) => {
+  const intersectionObserver = new IntersectionObserver((entries2) => {
+    entries2.forEach((entrie) => {
       callback({
         intersectionRatio: entrie.intersectionRatio,
         intersectionRect: normalizeRect(entrie.intersectionRect),
@@ -10146,6 +10127,43 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const {excludeListeners = false, excludeKeys = []} = params;
+  const instance2 = getCurrentInstance();
+  const attrs2 = shallowRef({});
+  const listeners2 = shallowRef({});
+  const excludeAttrs = shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance2.attrs = reactive(instance2.attrs);
+  watchEffect(() => {
+    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs2.value = res.attrs;
+    listeners2.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return {$attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs};
+};
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h = Math.floor(val / 3600);
@@ -10794,6 +10812,11 @@ var index$2 = /* @__PURE__ */ defineComponent({
       state: userActionState
     } = useUserAction();
     const {
+      $attrs: videoAttrs
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const {
       t: t2
     } = useI18n();
     initI18nVideoMsgsOnce();
@@ -10845,7 +10868,6 @@ var index$2 = /* @__PURE__ */ defineComponent({
     } = useControls(props2, videoState, seek);
     useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
-      const videoAttrs = separateAttrs(attrs2).$attrs;
       return createVNode("uni-video", {
         ref: rootRef,
         id: props2.id
@@ -10867,7 +10889,7 @@ var index$2 = /* @__PURE__ */ defineComponent({
         src: videoState.src,
         poster: props2.poster,
         autoplay: !!props2.autoplay
-      }, videoAttrs, {
+      }, videoAttrs.value, {
         class: "uni-video-video",
         "webkit-playsinline": true,
         playsinline: true,
@@ -11005,6 +11027,13 @@ var index$1 = /* @__PURE__ */ defineComponent({
     const rootRef = ref(null);
     const iframeRef = ref(null);
     const _resize = useWebViewSize(rootRef, iframeRef);
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
     onMounted(() => {
       _resize();
     });
@@ -11015,8 +11044,7 @@ var index$1 = /* @__PURE__ */ defineComponent({
       iframeRef.value && (iframeRef.value.style.display = "none");
     });
     return () => {
-      const webViewAttrs = separateAttrs(attrs2);
-      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps(webViewAttrs.$otherAttrs, {
+      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
         ref: rootRef
       }), [createVNode(ResizeSensor, {
         onResize: _resize
@@ -11026,7 +11054,7 @@ var index$1 = /* @__PURE__ */ defineComponent({
         default: () => [createVNode("iframe", mergeProps({
           ref: iframeRef,
           src: getRealPath(props2.src)
-        }, webViewAttrs.$attrs), null, 16, ["src"])]
+        }, $attrs.value), null, 16, ["src"])]
       })]);
     };
   }
@@ -14366,4 +14394,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$b as Audio, index$f as Button, _sfc_main$a as Canvas, index$c as Checkbox, index$e as CheckboxGroup, index$b as Editor, index$g as Form, index$a as Icon, index$9 as Image, Input, index$d as Label, LayoutComponent, _sfc_main$9 as MovableView, _sfc_main$8 as Navigator, index as PageComponent, index$8 as Progress, index$6 as Radio, index$7 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$h as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {_sfc_main$1 as AsyncErrorComponent, _sfc_main as AsyncLoadingComponent, _sfc_main$b as Audio, index$f as Button, _sfc_main$a as Canvas, index$c as Checkbox, index$e as CheckboxGroup, index$b as Editor, index$g as Form, index$a as Icon, index$9 as Image, Input, index$d as Label, LayoutComponent, _sfc_main$9 as MovableView, _sfc_main$8 as Navigator, index as PageComponent, index$8 as Progress, index$6 as Radio, index$7 as RadioGroup, ResizeSensor, _sfc_main$7 as RichText, _sfc_main$6 as ScrollView, _sfc_main$5 as Slider, _sfc_main$4 as SwiperItem, _sfc_main$3 as Switch, index$5 as Text, index$4 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$2 as Video, index$3 as View, index$1 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$h as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
