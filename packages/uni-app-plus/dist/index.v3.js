@@ -225,6 +225,7 @@ var serviceContext = (function () {
     'login',
     'checkSession',
     'getUserInfo',
+    'getUserProfile',
     'preLogin',
     'closeAuthView',
     'share',
@@ -252,7 +253,8 @@ var serviceContext = (function () {
   const ad = [
     'createRewardedVideoAd',
     'createFullScreenVideoAd',
-    'createInterstitialAd'
+    'createInterstitialAd',
+    'createInteractiveAd'
   ];
 
   const apis = [
@@ -285,6 +287,56 @@ var serviceContext = (function () {
     })); // https://github.com/facebook/flow/issues/285
     window.addEventListener('test-passive', null, opts);
   } catch (e) {}
+
+  function b64DecodeUnicode (str) {
+    return decodeURIComponent(atob(str).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+  }
+
+  function getCurrentUserInfo () {
+    const token = ( uni ).getStorageSync('uni_id_token') || '';
+    const tokenArr = token.split('.');
+    if (!token || tokenArr.length !== 3) {
+      return {
+        uid: null,
+        role: [],
+        permission: [],
+        tokenExpired: 0
+      }
+    }
+    let userInfo;
+    try {
+      userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+    } catch (error) {
+      throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+    }
+    userInfo.tokenExpired = userInfo.exp * 1000;
+    delete userInfo.exp;
+    delete userInfo.iat;
+    return userInfo
+  }
+
+  function uniIdMixin (Vue) {
+    Vue.prototype.uniIDHasRole = function (roleId) {
+      const {
+        role
+      } = getCurrentUserInfo();
+      return role.indexOf(roleId) > -1
+    };
+    Vue.prototype.uniIDHasPermission = function (permissionId) {
+      const {
+        permission
+      } = getCurrentUserInfo();
+      return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+    };
+    Vue.prototype.uniIDTokenValid = function () {
+      const {
+        tokenExpired
+      } = getCurrentUserInfo();
+      return tokenExpired > Date.now()
+    };
+  }
 
   const _toString = Object.prototype.toString;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -6873,11 +6925,14 @@ var serviceContext = (function () {
     return options
   }, data => {
     return {
+      orientation: data.orientation,
+      type: data.type,
       duration: data.duration,
-      fps: data.fps || 30,
+      size: data.size,
       height: data.height,
       width: data.width,
-      size: data.size
+      fps: data.fps || 30,
+      bitrate: data.bitrate,
     }
   });
 
@@ -7172,6 +7227,7 @@ var serviceContext = (function () {
     responseType,
     sslVerify = true,
     firstIpv4 = false,
+    tls,
     timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
   } = {}) {
     const stream = requireNativePlugin('stream');
@@ -7225,7 +7281,8 @@ var serviceContext = (function () {
       timeout: timeout || 6e5,
       // 配置和weex模块内相反
       sslVerify: !sslVerify,
-      firstIpv4: firstIpv4
+      firstIpv4: firstIpv4,
+      tls
     };
     if (method !== 'GET') {
       options.body = typeof data === 'string' ? data : JSON.stringify(data);
@@ -7697,6 +7754,12 @@ var serviceContext = (function () {
         errMsg: 'operateWXData:fail 请先调用 uni.login'
       });
     });
+  }
+  /**
+   * 获取用户信息-兼容
+   */
+  function getUserProfile (params, callbackId) {
+    return getUserInfo(params, callbackId)
   }
 
   /**
@@ -10913,12 +10976,241 @@ var serviceContext = (function () {
     constructor (options = {}) {
       super(plus.ad.createInterstitialAd(options), options);
 
-      this.load();
+      this._loadAd();
     }
   }
 
   function createInterstitialAd (options) {
     return new InterstitialAd(options)
+  }
+
+  const sdkCache = {};
+  const sdkQueue = {};
+
+  function initSDK (options) {
+    const provider = options.provider;
+    if (typeof sdkCache[provider] === 'object') {
+      options.success(sdkCache[provider]);
+      return
+    }
+
+    if (!sdkQueue[provider]) {
+      sdkQueue[provider] = [];
+    }
+    sdkQueue[provider].push(options);
+
+    if (sdkCache[provider] === true) {
+      return
+    }
+    sdkCache[provider] = true;
+
+    const plugin = requireNativePlugin(provider);
+    if (!plugin || !plugin.initSDK) {
+      sdkQueue[provider].forEach((item) => {
+        item.fail({
+          code: -1,
+          message: 'provider [' + provider + '] invalid'
+        });
+      });
+      sdkQueue[provider].length = 0;
+      sdkCache[provider] = false;
+      return
+    }
+
+    options.__plugin = plugin;
+    plugin.initSDK((res) => {
+      const isSuccess = (res.code === 1 || res.code === '1');
+      if (isSuccess) {
+        sdkCache[provider] = plugin;
+      } else {
+        sdkCache[provider] = false;
+      }
+      sdkQueue[provider].forEach((item) => {
+        if (isSuccess) {
+          item.success(item.__plugin);
+        } else {
+          item.fail(res);
+        }
+      });
+      sdkQueue[provider].length = 0;
+    });
+  }
+
+  class InteractiveAd {
+    constructor (options) {
+      const _callbacks = this._callbacks = {};
+      eventNames$1.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._ad = null;
+      this._adError = '';
+      this._adpid = options.adpid;
+      this._provider = options.provider;
+      this._isLoaded = false;
+      this._isLoading = false;
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      this._showPromiseResolve = null;
+      this._showPromiseReject = null;
+
+      setTimeout(() => {
+        this._init();
+      });
+    }
+
+    _init () {
+      this._adError = '';
+      initSDK({
+        provider: this._provider,
+        success: (res) => {
+          this._ad = res;
+          this._loadAd();
+        },
+        fail: (err) => {
+          this._adError = err;
+          this._dispatchEvent(eventTypes.error, err);
+        }
+      });
+    }
+
+    getProvider () {
+      return this._provider
+    }
+
+    load () {
+      return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._adError) {
+          this._init();
+          return
+        }
+
+        if (this._isLoaded) {
+          resolve();
+        } else {
+          this._loadAd();
+        }
+      })
+    }
+
+    show () {
+      return new Promise((resolve, reject) => {
+        this._showPromiseResolve = resolve;
+        this._showPromiseReject = reject;
+
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._adError) {
+          this._init();
+          return
+        }
+
+        if (this._isLoaded) {
+          this._showAd();
+          resolve();
+        } else {
+          this._loadAd();
+        }
+      })
+    }
+
+    destroy () {
+      if (this._ad !== null && this._ad.destroy) {
+        this._ad.destroy({
+          adpid: this._adpid
+        });
+      }
+    }
+
+    _loadAd () {
+      if (this._ad !== null) {
+        if (this._isLoading === true) {
+          return
+        }
+        this._isLoading = true;
+
+        this._ad.loadData({
+          adpid: this._adpid
+        }, (res) => {
+          this._isLoaded = true;
+          this._isLoading = false;
+          this._dispatchEvent(eventTypes.load, res);
+
+          if (this._loadPromiseResolve != null) {
+            this._loadPromiseResolve();
+            this._loadPromiseResolve = null;
+          }
+          if (this._showPromiseResolve != null) {
+            this._showPromiseResolve();
+            this._showPromiseResolve = null;
+            this._showAd();
+          }
+        }, (err) => {
+          this._isLoading = false;
+          this._dispatchEvent(eventTypes.error, err);
+
+          if (this._showPromiseReject != null) {
+            this._showPromiseReject(this._createError(err));
+            this._showPromiseReject = null;
+          }
+        });
+      }
+    }
+
+    _showAd () {
+      if (this._ad !== null && this._isLoaded === true) {
+        this._ad.show({
+          adpid: this._adpid
+        }, (res) => {
+          this._isLoaded = false;
+        }, (err) => {
+          this._isLoaded = false;
+          this._dispatchEvent(eventTypes.error, err);
+
+          if (this._showPromiseReject != null) {
+            this._showPromiseReject(this._createError(err));
+            this._showPromiseReject = null;
+          }
+        });
+      }
+    }
+
+    _createError (err) {
+      const error = new Error(JSON.stringify(err));
+      error.code = err.code;
+      error.errMsg = err.message;
+      return error
+    }
+
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createInteractiveAd (options) {
+    if (!options.provider) {
+      return new Error('provider invalid')
+    }
+    if (!options.adpid) {
+      return new Error('adpid invalid')
+    }
+    return new InteractiveAd(options)
   }
 
   var api = /*#__PURE__*/Object.freeze({
@@ -11027,6 +11319,7 @@ var serviceContext = (function () {
     getProvider: getProvider$1,
     login: login,
     getUserInfo: getUserInfo,
+    getUserProfile: getUserProfile,
     operateWXData: operateWXData,
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
@@ -11083,7 +11376,8 @@ var serviceContext = (function () {
     requestComponentInfo: requestComponentInfo$2,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
-    createInterstitialAd: createInterstitialAd
+    createInterstitialAd: createInterstitialAd,
+    createInteractiveAd: createInteractiveAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -22102,6 +22396,8 @@ var serviceContext = (function () {
       initLifecycle(Vue);
 
       initPolyfill(Vue);
+
+      uniIdMixin(Vue);
 
       Vue.prototype.getOpenerEventChannel = function () {
         if (!this.$root.$scope.eventChannel) {

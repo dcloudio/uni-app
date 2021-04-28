@@ -7,7 +7,7 @@ function b64DecodeUnicode (str) {
 }
 
 function getCurrentUserInfo () {
-  const token = (uni ).getStorageSync('uni_id_token') || '';
+  const token = ( uni ).getStorageSync('uni_id_token') || '';
   const tokenArr = token.split('.');
   if (!token || tokenArr.length !== 3) {
     return {
@@ -461,7 +461,7 @@ function processReturnValue (methodName, res, returnValue, keepReturnValue = fal
   return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
-function wrapper$2 (methodName, method) {
+function wrapper (methodName, method) {
   if (hasOwn(protocols, methodName)) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
@@ -949,7 +949,7 @@ function initProperties (props, isBehavior = false, file = '') {
   return properties
 }
 
-function wrapper (event) {
+function wrapper$2 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
@@ -1142,7 +1142,7 @@ function getContextVm (vm) {
 }
 
 function handleEvent (event) {
-  event = wrapper(event);
+  event = wrapper$2(event);
 
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const dataset = (event.currentTarget || event.target).dataset;
@@ -1308,7 +1308,7 @@ function getEventChannel (id) {
   return eventChannelStack.shift()
 }
 
-const hooks$3 = [
+const hooks = [
   'onShow',
   'onHide',
   'onError',
@@ -1409,7 +1409,7 @@ function parseBaseApp (vm, {
     });
   }
 
-  initHooks(appOptions, hooks$3);
+  initHooks(appOptions, hooks);
 
   return appOptions
 }
@@ -1494,27 +1494,27 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-function parseApp$1 (vm) {
+function parseApp (vm) {
   return parseBaseApp(vm, {
     mocks,
     initRefs
   })
 }
 
-const hooks$2 = [
+const hooks$1 = [
   'onUniNViewMessage'
 ];
 
-function parseApp (vm) {
-  const appOptions = parseApp$1(vm);
+function parseApp$1 (vm) {
+  const appOptions = parseApp(vm);
 
-  initHooks(appOptions, hooks$2);
+  initHooks(appOptions, hooks$1);
 
   return appOptions
 }
 
 function createApp (vm) {
-  App(parseApp(vm));
+  App(parseApp$1(vm));
   return vm
 }
 
@@ -1653,15 +1653,15 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
-function parseComponent$1 (vueComponentOptions) {
+function parseComponent (vueComponentOptions) {
   return parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
   })
 }
 
-function parseComponent (vueComponentOptions) {
-  const componentOptions = parseComponent$1(vueComponentOptions);
+function parseComponent$1 (vueComponentOptions) {
+  const componentOptions = parseComponent(vueComponentOptions);
 
   componentOptions.methods.$getAppWebview = function () {
     return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
@@ -1669,21 +1669,21 @@ function parseComponent (vueComponentOptions) {
   return componentOptions
 }
 
-const hooks$1 = [
+const hooks$2 = [
   'onShow',
   'onHide',
   'onUnload'
 ];
 
-hooks$1.push(...PAGE_EVENT_HOOKS);
+hooks$2.push(...PAGE_EVENT_HOOKS);
 
 function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent(vuePageOptions);
+  const pageOptions = parseComponent$1(vuePageOptions);
 
-  initHooks(pageOptions.methods, hooks$1, vuePageOptions);
+  initHooks(pageOptions.methods, hooks$2, vuePageOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -1699,14 +1699,14 @@ function parseBasePage (vuePageOptions, {
   return pageOptions
 }
 
-function parsePage$1 (vuePageOptions) {
+function parsePage (vuePageOptions) {
   return parseBasePage(vuePageOptions, {
     isPage,
     initRelation
   })
 }
 
-const hooks = [
+const hooks$3 = [
   'onBackPress',
   'onNavigationBarButtonTap',
   'onNavigationBarSearchInputChanged',
@@ -1715,28 +1715,28 @@ const hooks = [
   'onNavigationBarSearchInputFocusChanged'
 ];
 
-function parsePage (vuePageOptions) {
-  const pageOptions = parsePage$1(vuePageOptions);
+function parsePage$1 (vuePageOptions) {
+  const pageOptions = parsePage(vuePageOptions);
 
-  initHooks(pageOptions.methods, hooks);
+  initHooks(pageOptions.methods, hooks$3);
 
   return pageOptions
 }
 
 function createPage (vuePageOptions) {
   {
-    return Component(parsePage(vuePageOptions))
+    return Component(parsePage$1(vuePageOptions))
   }
 }
 
 function createComponent (vueOptions) {
   {
-    return Component(parseComponent(vueOptions))
+    return Component(parseComponent$1(vueOptions))
   }
 }
 
 function createSubpackageApp (vm) {
-  const appOptions = parseApp(vm);
+  const appOptions = parseApp$1(vm);
   const app = getApp({
     allowDefault: true
   });
@@ -1771,7 +1771,7 @@ function createSubpackageApp (vm) {
 }
 
 function createPlugin (vm) {
-  const appOptions = parseApp(vm);
+  const appOptions = parseApp$1(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow((...args) => {
       appOptions.onShow.apply(vm, args);
@@ -1821,7 +1821,7 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
       if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
       }
-      return promisify(name, wrapper$2(name, wx[name]))
+      return promisify(name, wrapper(name, wx[name]))
     },
     set (target, name, value) {
       target[name] = value;
@@ -1843,7 +1843,7 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
 
   Object.keys(wx).forEach(name => {
     if (hasOwn(wx, name) || hasOwn(protocols, name)) {
-      uni$1[name] = promisify(name, wrapper$2(name, wx[name]));
+      uni$1[name] = promisify(name, wrapper(name, wx[name]));
     }
   });
 }
