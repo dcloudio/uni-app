@@ -14,7 +14,7 @@ import {
   matchEasycom,
 } from '../../utils'
 
-const H5_COMPONENTS_PATH = '@dcloudio/uni-h5/dist/uni-h5.esm.js'
+const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
 const baseComponents = [
   'audio',

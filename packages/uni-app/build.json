@@ -1,6 +1,6 @@
 {
   "input": {
-    "src/index.ts": ["dist/uni-app.esm.js"]
+    "src/index.ts": ["dist/uni-app.es.js", "dist/uni-app.cjs.js"]
   },
   "compilerOptions": {
     "declaration": true

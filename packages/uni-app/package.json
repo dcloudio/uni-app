@@ -2,9 +2,9 @@
   "name": "@dcloudio/uni-app",
   "version": "3.0.0",
   "description": "@dcloudio/uni-app",
-  "main": "dist/uni-app.esm.js",
-  "module": "dist/uni-app.esm.js",
-  "types": "dist/uni-app.d.ts",
+  "main": "./dist/uni-app.cjs.js",
+  "module": "./dist/uni-app.es.js",
+  "types": "./dist/uni-app.d.ts",
   "files": [
     "dist"
   ],

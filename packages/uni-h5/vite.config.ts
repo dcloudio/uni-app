@@ -18,12 +18,13 @@ function resolve(file: string) {
 }
 
 export default defineConfig({
-  root: '.',
+  root: __dirname,
   define: {
     global: 'window',
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('h5'),
+    __NODE_JS__: `import.meta.env.SSR`,
   },
   resolve: {
     alias: [
@@ -61,9 +62,13 @@ export default defineConfig({
   ],
   build: {
     minify: false,
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      formats: ['es', 'cjs'],
+    },
     assetsDir: '.',
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/index.ts'),
+      // input: path.resolve(__dirname, 'src/index.ts'),
       external(source) {
         if (
           [
@@ -82,30 +87,21 @@ export default defineConfig({
       },
       preserveEntrySignatures: 'strict',
       plugins: [
-        replace({
-          values: {
-            // extend: `/*#__PURE__*/ extend`,
-            // defineOnApi: `/*#__PURE__*/ defineOnApi`,
-            // defineOffApi: `/*#__PURE__*/ defineOffApi`,
-            // defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
-            // defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
-            // defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
-          },
-          preventAssignment: true,
-        }),
+        // replace({
+        //   values: {
+        //     // extend: `/*#__PURE__*/ extend`,
+        //     // defineOnApi: `/*#__PURE__*/ defineOnApi`,
+        //     // defineOffApi: `/*#__PURE__*/ defineOffApi`,
+        //     // defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
+        //     // defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
+        //     // defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
+        //   },
+        //   preventAssignment: true,
+        // }),
       ],
-      output: {
-        dir: path.resolve(__dirname, 'dist'),
-        format: 'es',
-        manualChunks: undefined,
-        entryFileNames: 'uni-h5.esm.js',
-        assetFileNames(assetInfo) {
-          if (assetInfo.name === 'style.css') {
-            return 'uni-h5.css'
-          }
-          return 'assets/[name]-[hash][extname]'
-        },
-      },
+      // output: {
+      //   dir: path.resolve(__dirname, 'dist'),
+      // },
     },
   },
 })

@@ -1,4 +1,4 @@
-import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, getGlobalThis, camelize, capitalize, EMPTY_ARR, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, toNumber, invokeArrayFns, looseIndexOf, isSet, looseEqual, hyphenate, isHTMLTag, isSVGTag, isIntegerKey, hasOwn, hasChanged, isReservedProp, NO, isModelListener, makeMap, isSpecialBooleanAttr } from '@vue/shared';
+import { EMPTY_OBJ, isArray, isMap, isIntegerKey, isSymbol, extend, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, isReservedProp, EMPTY_ARR, remove, isSet, invokeArrayFns, NO, getGlobalThis, normalizeClass, normalizeStyle, isGloballyWhitelisted, isSpecialBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, toDisplayString, toHandlerKey } from '@vue/shared';
 
 const targetMap = new WeakMap();

@@ -28,7 +28,7 @@ export function createHandleHotUpdate(
       invalidateFiles = [
         path.resolve(options.inputDir, 'pages.json.js'),
         path.resolve(options.inputDir, 'manifest.json.js'),
-        require.resolve('@dcloudio/uni-h5/dist/uni-h5.esm.js'),
+        require.resolve('@dcloudio/uni-h5/dist/uni-h5.es.js'),
         require.resolve('vite/dist/client/env.js'),
       ]
     }

@@ -9,9 +9,10 @@ export function createConfigureServer(
   return function (server) {
     options.devServer = server
     serveEasycom(server, options)
-    server.httpServer!.on('listening', () => {
-      process.nextTick(() => options.compiler.done())
-    })
+    server.httpServer &&
+      server.httpServer.on('listening', () => {
+        process.nextTick(() => options.compiler.done())
+      })
     return () => {
       serveStatic(server, options)
     }

@@ -1,5 +1,5 @@
 import { App } from 'vue'
-import { Router, RouterOptions, RouteRecordRaw } from 'vue-router'
+import { RouterOptions, RouteRecordRaw } from 'vue-router'
 import {
   createRouter,
   createWebHistory,
@@ -8,7 +8,9 @@ import {
 import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
 
 export function initRouter(app: App) {
-  app.use(createAppRouter(createRouter(createRouterOptions())))
+  const router = createRouter(createRouterOptions())
+  ;(app as any).router = router // 挂在app上，方便ssr获取
+  app.use(router)
 }
 
 const scrollBehavior: RouterOptions['scrollBehavior'] = (
@@ -29,10 +31,6 @@ function createRouterOptions(): RouterOptions {
     routes: (__uniRoutes as unknown) as RouteRecordRaw[],
     scrollBehavior,
   }
-}
-
-function createAppRouter(router: Router) {
-  return router
 }
 
 function removeCurrentPages(delta: number = 1) {

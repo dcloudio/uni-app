@@ -2,9 +2,9 @@
   "name": "@dcloudio/uni-shared",
   "version": "3.0.0",
   "description": "@dcloudio/uni-shared",
-  "main": "dist/uni-shared.cjs.js",
-  "module": "dist/uni-shared.esm.js",
-  "types": "dist/uni-shared.d.ts",
+  "main": "./dist/uni-shared.cjs.js",
+  "module": "./dist/uni-shared.es.js",
+  "types": "./dist/uni-shared.d.ts",
   "files": [
     "dist"
   ],

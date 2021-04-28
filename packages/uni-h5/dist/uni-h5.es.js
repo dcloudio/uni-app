@@ -3508,7 +3508,9 @@ function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
   };
 }
 function initRouter(app) {
-  app.use(createAppRouter(createRouter(createRouterOptions())));
+  const router = createRouter(createRouterOptions());
+  app.router = router;
+  app.use(router);
 }
 const scrollBehavior = (_to, _from, savedPosition) => {
   if (savedPosition) {
@@ -3522,9 +3524,6 @@ function createRouterOptions() {
     routes: __uniRoutes,
     scrollBehavior
   };
-}
-function createAppRouter(router) {
-  return router;
 }
 function removeCurrentPages(delta = 1) {
   const keys = getCurrentPages$1();

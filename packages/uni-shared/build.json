@@ -1,6 +1,6 @@
 {
   "input": {
-    "src/index.ts": ["dist/uni-shared.esm.js", "dist/uni-shared.cjs.js"]
+    "src/index.ts": ["dist/uni-shared.es.js", "dist/uni-shared.cjs.js"]
   },
   "compilerOptions": {
     "declaration": true

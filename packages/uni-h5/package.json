@@ -2,15 +2,13 @@
   "name": "@dcloudio/uni-h5",
   "version": "3.0.0",
   "description": "@dcloudio/uni-h5",
-  "main": "dist/uni-h5.esm.js",
-  "module": "dist/uni-h5.esm.js",
+  "main": "./dist/uni-h5.cjs.js",
+  "module": "./dist/uni-h5.es.js",
   "files": [
     "dist",
     "style"
   ],
-  "sideEffects": [
-    "dist/uni-h5.css"
-  ],
+  "sideEffects": false,
   "buildOptions": {
     "bundler": "vite"
   },

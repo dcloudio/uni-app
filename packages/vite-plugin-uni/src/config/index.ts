@@ -31,7 +31,7 @@ export function createConfig(
     const define = createDefine(options, env)
     return {
       define: extend(define, options.compiler.define()),
-      resolve: createResolve(options),
+      resolve: createResolve(options, config),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
       build: createBuild(options, define as FEATURE_DEFINES),
