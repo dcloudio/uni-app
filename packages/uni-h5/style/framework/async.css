@@ -1,0 +1,21 @@
+.uni-async-error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  color: #999;
+  padding: 100px 10px;
+  text-align: center;
+}
+.uni-async-loading {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 50px;
+  text-align: center;
+}
+
+.uni-async-loading .uni-loading {
+  width: 30px;
+  height: 30px;
+}

@@ -113,6 +113,9 @@ function generateCssCode(
   const define = config.define! as FEATURE_DEFINES
   const cssFiles = [H5_FRAMEWORK_STYLE_PATH + 'base.css']
   if (define.__UNI_FEATURE_PAGES__) {
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'async.css')
+  }
+  if (define.__UNI_FEATURE_RESPONSIVE__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'layout.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR__) {

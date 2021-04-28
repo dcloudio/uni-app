@@ -15,5 +15,5 @@ export { getApp, getCurrentPages } from './framework'
 
 export { default as LayoutComponent } from './framework/components/layout/index'
 export { default as PageComponent } from './framework/components/page/index'
-export { default as AsyncErrorComponent } from './framework/components/async-error/index.vue'
-export { default as AsyncLoadingComponent } from './framework/components/async-loading/index.vue'
+export { default as AsyncErrorComponent } from './framework/components/async-error/index'
+export { default as AsyncLoadingComponent } from './framework/components/async-loading'
