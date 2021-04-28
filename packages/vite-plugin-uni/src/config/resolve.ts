@@ -1,4 +1,5 @@
 import { UserConfig } from 'vite'
+import { EXTNAME_VUE } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 export function createResolve(
@@ -12,5 +13,8 @@ export function createResolve(
         paths: [process.env.UNI_CLI_CONTEXT || process.cwd()],
       }),
     },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'].concat(
+      EXTNAME_VUE
+    ),
   }
 }

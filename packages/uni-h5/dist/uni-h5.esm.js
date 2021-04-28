@@ -13712,7 +13712,9 @@ function useShowTabBar(emit2) {
   const route = useRoute();
   const tabBar2 = useTabBar();
   const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
-  updateCssVar("--tab-bar-height", tabBar2.height);
+  updateCssVar({
+    "--tab-bar-height": tabBar2.height
+  });
   return showTabBar2;
 }
 function createTabBarTsx(showTabBar2) {

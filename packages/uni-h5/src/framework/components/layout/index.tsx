@@ -106,7 +106,9 @@ function useShowTabBar(emit: SetupContext<['change']>['emit']) {
   const tabBar = useTabBar()!
   // TODO meida query
   const showTabBar = computed(() => route.meta.isTabBar && tabBar.shown)
-  updateCssVar('--tab-bar-height', tabBar.height!)
+  updateCssVar({
+    '--tab-bar-height': tabBar.height!,
+  })
   return showTabBar
 }
 
