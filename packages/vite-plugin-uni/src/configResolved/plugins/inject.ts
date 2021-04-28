@@ -1,6 +1,6 @@
 import path, { sep } from 'path'
 import debug from 'debug'
-import { Plugin, ViteDevServer } from 'vite'
+import { Plugin } from 'vite'
 
 import {
   BaseNode,
@@ -15,6 +15,7 @@ import {
 import {
   attachScopes,
   createFilter,
+  FilterPattern,
   makeLegalIdentifier,
 } from '@rollup/pluginutils'
 import { AcornNode } from 'rollup'
@@ -38,15 +39,16 @@ interface Scope {
 
 type Injectment = string | [string, string]
 
-export interface InjectOptions extends UniPluginFilterOptions {
+export interface InjectOptions {
   sourceMap?: boolean
   callback?: (imports: Map<any, any>, mod: [string, string]) => void
+  include?: FilterPattern
+  exclude?: FilterPattern
   [str: string]:
     | Injectment
-    | InjectOptions['include']
+    | UniPluginFilterOptions['include']
     | Boolean
-    | ViteDevServer
-    | any
+    | Function
 }
 
 const debugInject = debug('uni:inject')
@@ -60,7 +62,6 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
   delete modules.include
   delete modules.exclude
   delete modules.sourceMap
-  delete modules.devServer
   delete modules.callback
 
   const modulesMap = new Map<string, string | [string, string]>()

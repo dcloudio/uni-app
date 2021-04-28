@@ -94,14 +94,14 @@ export function initPlugins(
     // h5平台需要为非App.vue组件自动增加scoped
     addPlugin(
       plugins,
-      uniCssScopedPlugin(Object.assign(uniCssScopedPluginOptions, options)),
+      uniCssScopedPlugin(extend(uniCssScopedPluginOptions, options)),
       0,
       'pre'
     )
   }
   addPlugin(
     plugins,
-    uniPrePlugin(Object.assign(uniPrePluginOptions, options)),
+    uniPrePlugin(extend(uniPrePluginOptions, options)),
     0,
     'pre'
   )
@@ -111,7 +111,7 @@ export function initPlugins(
 
   addPlugin(
     plugins,
-    uniPreCssPlugin(Object.assign(uniPreCssPluginOptions, options)),
+    uniPreCssPlugin(extend(uniPreCssPluginOptions, options)),
     'vite:css'
   )
   addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')
@@ -122,9 +122,7 @@ export function initPlugins(
   if (command === 'build') {
     addPlugin(
       plugins,
-      uniInjectPlugin(
-        Object.assign(uniInjectPluginOptions, options, injectOptions)
-      ),
+      uniInjectPlugin(extend(uniInjectPluginOptions, injectOptions)),
       'vite:vue'
     )
   } else {
@@ -132,7 +130,7 @@ export function initPlugins(
       addPlugin(
         plugins,
         uniInjectPlugin(
-          extend({ exclude: [...COMMON_EXCLUDE] }, options, injectOptions)
+          extend({ exclude: [...COMMON_EXCLUDE] }, injectOptions)
         ),
         'vite:vue'
       )
@@ -141,7 +139,7 @@ export function initPlugins(
 
   addPlugin(
     plugins,
-    uniEasycomPlugin(Object.assign(uniEasycomPluginOptions, options)),
+    uniEasycomPlugin(extend(uniEasycomPluginOptions, options)),
     'vite:vue'
   )
   addPlugin(plugins, uniPageVuePlugin(options), 'vite:vue')
