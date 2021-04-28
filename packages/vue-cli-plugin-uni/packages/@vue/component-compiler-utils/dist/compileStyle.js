@@ -8,6 +8,11 @@ const trim_1 = __importDefault(require("./stylePlugins/trim"));
 const scoped_1 = __importDefault(require("./stylePlugins/scoped"));
 const styleProcessors_1 = require("./styleProcessors");
 const removeScoped_1 = __importDefault(require("./stylePlugins/remove-scoped"));
+let comments;
+try{
+  comments = require('postcss-discard-comments')
+}catch(e){}
+
 function compileStyle(options) {
     return doCompileStyle(Object.assign({}, options, { isAsync: false }));
 }
@@ -30,6 +35,12 @@ function doCompileStyle(options) {
         plugins.push(scoped_1.default(id));
     } else { // fixed by xxxxxx
         plugins.push(removeScoped_1.default(id));
+    }
+    // fixed by xxxxxx
+    if (process.env.UNI_PLATFORM === 'app-plus' && process.env.NODE_ENV === 'production') {
+      if (comments) {
+        plugins.push(comments);
+      }
     }
     const postCSSOptions = Object.assign({}, postcssOptions, { to: filename, from: filename });
     if (map) {

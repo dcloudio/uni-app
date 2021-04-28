@@ -1,5 +1,55 @@
 import Vue from 'vue';
 
+function b64DecodeUnicode (str) {
+  return decodeURIComponent(atob(str).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+}
+
+function getCurrentUserInfo () {
+  const token = (uni ).getStorageSync('uni_id_token') || '';
+  const tokenArr = token.split('.');
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    }
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+  }
+  userInfo.tokenExpired = userInfo.exp * 1000;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo
+}
+
+function uniIdMixin (Vue) {
+  Vue.prototype.uniIDHasRole = function (roleId) {
+    const {
+      role
+    } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1
+  };
+  Vue.prototype.uniIDHasPermission = function (permissionId) {
+    const {
+      permission
+    } = getCurrentUserInfo();
+    return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+  };
+  Vue.prototype.uniIDTokenValid = function () {
+    const {
+      tokenExpired
+    } = getCurrentUserInfo();
+    return tokenExpired > Date.now()
+  };
+}
+
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -411,7 +461,7 @@ function processReturnValue (methodName, res, returnValue, keepReturnValue = fal
   return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
-function wrapper (methodName, method) {
+function wrapper$2 (methodName, method) {
   if (hasOwn(protocols, methodName)) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
@@ -899,7 +949,7 @@ function initProperties (props, isBehavior = false, file = '') {
   return properties
 }
 
-function wrapper$2 (event) {
+function wrapper (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
@@ -1092,7 +1142,7 @@ function getContextVm (vm) {
 }
 
 function handleEvent (event) {
-  event = wrapper$2(event);
+  event = wrapper(event);
 
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const dataset = (event.currentTarget || event.target).dataset;
@@ -1258,7 +1308,7 @@ function getEventChannel (id) {
   return eventChannelStack.shift()
 }
 
-const hooks = [
+const hooks$3 = [
   'onShow',
   'onHide',
   'onError',
@@ -1292,6 +1342,7 @@ function parseBaseApp (vm, {
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store;
   }
+  uniIdMixin(Vue);
 
   Vue.prototype.mpHost = "app-plus";
 
@@ -1358,7 +1409,7 @@ function parseBaseApp (vm, {
     });
   }
 
-  initHooks(appOptions, hooks);
+  initHooks(appOptions, hooks$3);
 
   return appOptions
 }
@@ -1443,27 +1494,27 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
-function parseApp (vm) {
+function parseApp$1 (vm) {
   return parseBaseApp(vm, {
     mocks,
     initRefs
   })
 }
 
-const hooks$1 = [
+const hooks$2 = [
   'onUniNViewMessage'
 ];
 
-function parseApp$1 (vm) {
-  const appOptions = parseApp(vm);
+function parseApp (vm) {
+  const appOptions = parseApp$1(vm);
 
-  initHooks(appOptions, hooks$1);
+  initHooks(appOptions, hooks$2);
 
   return appOptions
 }
 
 function createApp (vm) {
-  App(parseApp$1(vm));
+  App(parseApp(vm));
   return vm
 }
 
@@ -1602,15 +1653,15 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
-function parseComponent (vueComponentOptions) {
+function parseComponent$1 (vueComponentOptions) {
   return parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
   })
 }
 
-function parseComponent$1 (vueComponentOptions) {
-  const componentOptions = parseComponent(vueComponentOptions);
+function parseComponent (vueComponentOptions) {
+  const componentOptions = parseComponent$1(vueComponentOptions);
 
   componentOptions.methods.$getAppWebview = function () {
     return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
@@ -1618,21 +1669,21 @@ function parseComponent$1 (vueComponentOptions) {
   return componentOptions
 }
 
-const hooks$2 = [
+const hooks$1 = [
   'onShow',
   'onHide',
   'onUnload'
 ];
 
-hooks$2.push(...PAGE_EVENT_HOOKS);
+hooks$1.push(...PAGE_EVENT_HOOKS);
 
 function parseBasePage (vuePageOptions, {
   isPage,
   initRelation
 }) {
-  const pageOptions = parseComponent$1(vuePageOptions);
+  const pageOptions = parseComponent(vuePageOptions);
 
-  initHooks(pageOptions.methods, hooks$2, vuePageOptions);
+  initHooks(pageOptions.methods, hooks$1, vuePageOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -1648,14 +1699,14 @@ function parseBasePage (vuePageOptions, {
   return pageOptions
 }
 
-function parsePage (vuePageOptions) {
+function parsePage$1 (vuePageOptions) {
   return parseBasePage(vuePageOptions, {
     isPage,
     initRelation
   })
 }
 
-const hooks$3 = [
+const hooks = [
   'onBackPress',
   'onNavigationBarButtonTap',
   'onNavigationBarSearchInputChanged',
@@ -1664,28 +1715,28 @@ const hooks$3 = [
   'onNavigationBarSearchInputFocusChanged'
 ];
 
-function parsePage$1 (vuePageOptions) {
-  const pageOptions = parsePage(vuePageOptions);
+function parsePage (vuePageOptions) {
+  const pageOptions = parsePage$1(vuePageOptions);
 
-  initHooks(pageOptions.methods, hooks$3);
+  initHooks(pageOptions.methods, hooks);
 
   return pageOptions
 }
 
 function createPage (vuePageOptions) {
   {
-    return Component(parsePage$1(vuePageOptions))
+    return Component(parsePage(vuePageOptions))
   }
 }
 
 function createComponent (vueOptions) {
   {
-    return Component(parseComponent$1(vueOptions))
+    return Component(parseComponent(vueOptions))
   }
 }
 
 function createSubpackageApp (vm) {
-  const appOptions = parseApp$1(vm);
+  const appOptions = parseApp(vm);
   const app = getApp({
     allowDefault: true
   });
@@ -1720,7 +1771,7 @@ function createSubpackageApp (vm) {
 }
 
 function createPlugin (vm) {
-  const appOptions = parseApp$1(vm);
+  const appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow((...args) => {
       appOptions.onShow.apply(vm, args);
@@ -1750,10 +1801,10 @@ canIUses.forEach(canIUseApi => {
   }
 });
 
-let uni = {};
+let uni$1 = {};
 
 if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
-  uni = new Proxy({}, {
+  uni$1 = new Proxy({}, {
     get (target, name) {
       if (hasOwn(target, name)) {
         return target[name]
@@ -1770,7 +1821,7 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
       if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
         return
       }
-      return promisify(name, wrapper(name, wx[name]))
+      return promisify(name, wrapper$2(name, wx[name]))
     },
     set (target, name, value) {
       target[name] = value;
@@ -1779,27 +1830,27 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
   });
 } else {
   Object.keys(baseApi).forEach(name => {
-    uni[name] = baseApi[name];
+    uni$1[name] = baseApi[name];
   });
 
   Object.keys(eventApi).forEach(name => {
-    uni[name] = eventApi[name];
+    uni$1[name] = eventApi[name];
   });
 
   Object.keys(api).forEach(name => {
-    uni[name] = promisify(name, api[name]);
+    uni$1[name] = promisify(name, api[name]);
   });
 
   Object.keys(wx).forEach(name => {
     if (hasOwn(wx, name) || hasOwn(protocols, name)) {
-      uni[name] = promisify(name, wrapper(name, wx[name]));
+      uni$1[name] = promisify(name, wrapper$2(name, wx[name]));
     }
   });
 }
 
 {
   if (typeof global !== 'undefined') {
-    global.uni = uni;
+    global.uni = uni$1;
     global.UniEmitter = eventApi;
   }
 }
@@ -1810,7 +1861,7 @@ wx.createComponent = createComponent;
 wx.createSubpackageApp = createSubpackageApp;
 wx.createPlugin = createPlugin;
 
-var uni$1 = uni;
+var uni$2 = uni$1;
 
-export default uni$1;
+export default uni$2;
 export { createApp, createComponent, createPage, createPlugin, createSubpackageApp };

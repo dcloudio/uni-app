@@ -99,6 +99,12 @@ export function getUserInfo (params, callbackId) {
     })
   })
 }
+/**
+ * 获取用户信息-兼容
+ */
+export function getUserProfile (params, callbackId) {
+  return getUserInfo(params, callbackId)
+}
 
 /**
  * 获取用户信息
