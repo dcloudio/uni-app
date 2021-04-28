@@ -2,7 +2,11 @@ import { defineComponent, inject, provide, ref } from 'vue'
 import type { Ref, ExtractPropTypes, ComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '../form'
-import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
+import {
+  CustomEventTrigger,
+  useCustomEvent,
+  EmitEvent,
+} from '../../helpers/useEvent'
 
 export const uniCheckGroupKey = PolySymbol(__DEV__ ? 'uniCheckGroup' : 'ucg')
 
@@ -29,10 +33,10 @@ type CheckBoxGroupProps = ExtractPropTypes<typeof props>
 export default /*#__PURE__*/ defineComponent({
   name: 'CheckboxGroup',
   props,
-  // emits: ['change'],
+  emits: ['change'],
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
-    const trigger = useCustomEvent(rootRef, emit)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
     useProvideCheckGroup(props, trigger)
 

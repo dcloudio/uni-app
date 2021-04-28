@@ -1,16 +1,17 @@
-import { Ref, SetupContext } from 'vue'
+import { Ref, SetupContext, EmitsOptions } from 'vue'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 
 type EventDetail = Record<string, any>
 export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
+export type EmitEvent<E extends (...args: any) => any> = [Parameters<E>[0]]
 
 export function withWebEvent(fn: Function) {
   return ((fn as any).__wwe = true), fn
 }
 
-export function useCustomEvent(
+export function useCustomEvent<E extends EmitsOptions>(
   ref: Ref<HTMLElement | null>,
-  emit: SetupContext['emit']
+  emit: SetupContext<E>['emit']
 ) {
   return (name: string, evt: Event, detail?: EventDetail) => {
     emit(

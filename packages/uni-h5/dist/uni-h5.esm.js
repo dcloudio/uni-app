@@ -447,7 +447,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -459,10 +459,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1113,7 +1113,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3544,7 +3544,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$j = {
+var index$k = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -3893,7 +3893,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$9 = {
+const _sfc_main$8 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4012,13 +4012,13 @@ const _sfc_main$9 = {
     }
   }
 };
-const _hoisted_1$6 = {class: "uni-audio-default"};
-const _hoisted_2$4 = {class: "uni-audio-right"};
+const _hoisted_1$5 = {class: "uni-audio-default"};
+const _hoisted_2$3 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4028,7 +4028,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$6, [
+    createVNode("div", _hoisted_1$5, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4038,7 +4038,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$4, [
+      createVNode("div", _hoisted_2$3, [
         createVNode("div", _hoisted_3$2, toDisplayString($data.currentTime), 1),
         createVNode("div", _hoisted_4$2, [
           createVNode("div", _hoisted_5$1, toDisplayString($props.name), 1),
@@ -4048,7 +4048,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$9.render = _sfc_render$9;
+_sfc_main$8.render = _sfc_render$8;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4133,7 +4133,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$i = /* @__PURE__ */ defineComponent({
+var index$j = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -4172,7 +4172,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$h = /* @__PURE__ */ defineComponent({
+var index$i = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4285,7 +4285,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$8 = {
+const _sfc_main$7 = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -4781,20 +4781,20 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$5 = {
+const _hoisted_1$4 = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
-const _hoisted_2$3 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$5, null, 512),
-    createVNode("div", _hoisted_2$3, [
+    createVNode("canvas", _hoisted_1$4, null, 512),
+    createVNode("div", _hoisted_2$2, [
       renderSlot(_ctx.$slots, "default")
     ]),
     createVNode(_component_v_uni_resize_sensor, {
@@ -4803,7 +4803,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$7.render = _sfc_render$7;
 function useListeners(props2, listeners2) {
   _addListeners(props2.id, listeners2);
   watch(() => props2.id, (newId, oldId) => {
@@ -4877,15 +4877,16 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$f = {
+const props$g = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$g = /* @__PURE__ */ defineComponent({
+var index$h = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$f,
+  props: props$g,
+  emits: ["change"],
   setup(props2, {
     emit: emit2,
     slots
@@ -4937,15 +4938,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$e = {
+const props$f = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$f = /* @__PURE__ */ defineComponent({
+var index$g = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$e,
+  props: props$f,
   setup(props2, {
     emit: emit2,
     slots
@@ -4990,7 +4991,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$d = {
+const props$e = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5012,9 +5013,9 @@ const props$d = {
     default: ""
   }
 };
-var index$e = /* @__PURE__ */ defineComponent({
+var index$f = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$d,
+  props: props$e,
   setup(props2, {
     slots
   }) {
@@ -5093,7 +5094,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$c = {
+const props$d = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5837,7 +5838,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$b = /* @__PURE__ */ Object.assign({}, props$c, {
+const props$c = /* @__PURE__ */ Object.assign({}, props$d, {
   id: {
     type: String,
     default: ""
@@ -5863,9 +5864,9 @@ const props$b = /* @__PURE__ */ Object.assign({}, props$c, {
     default: false
   }
 });
-var index$d = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$b,
+  props: props$c,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -5925,7 +5926,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$c = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -6016,7 +6017,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$a = {
+const props$b = {
   src: {
     type: String,
     default: ""
@@ -6053,9 +6054,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$b = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$a,
+  props: props$b,
   setup(props2, {
     emit: emit2
   }) {
@@ -6334,7 +6335,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$9 = /* @__PURE__ */ Object.assign({}, {
+const props$a = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -6395,7 +6396,7 @@ const props$9 = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$c);
+}, props$d);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -6580,7 +6581,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$8 = /* @__PURE__ */ Object.assign({}, props$9, {
+const props$9 = /* @__PURE__ */ Object.assign({}, props$a, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -6588,7 +6589,7 @@ const props$8 = /* @__PURE__ */ Object.assign({}, props$9, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$8,
+  props: props$9,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -6686,7 +6687,7 @@ var Input = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const addListenerToElement = function(element, type, callback, capture) {
+const addListenerToElement$1 = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
       if (callback($event) === false) {
@@ -6735,7 +6736,7 @@ var touchtrack = {
       let $eventOld = null;
       let hasTouchStart;
       let hasMouseDown;
-      addListenerToElement(element, "touchstart", function($event) {
+      addListenerToElement$1(element, "touchstart", function($event) {
         hasTouchStart = true;
         if ($event.touches.length === 1 && !$eventOld) {
           $eventOld = $event;
@@ -6744,7 +6745,7 @@ var touchtrack = {
           return fn($event, "start", x0, y0);
         }
       });
-      addListenerToElement(element, "mousedown", function($event) {
+      addListenerToElement$1(element, "mousedown", function($event) {
         hasMouseDown = true;
         if (!hasTouchStart && !$eventOld) {
           $eventOld = $event;
@@ -6753,7 +6754,7 @@ var touchtrack = {
           return fn($event, "start", x0, y0);
         }
       });
-      addListenerToElement(element, "touchmove", function($event) {
+      addListenerToElement$1(element, "touchmove", function($event) {
         if ($event.touches.length === 1 && $eventOld) {
           const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
           x1 = $event.touches[0].pageX;
@@ -6770,7 +6771,7 @@ var touchtrack = {
         }
       };
       document.addEventListener("mousemove", mouseMoveEventListener);
-      addListenerToElement(element, "touchend", function($event) {
+      addListenerToElement$1(element, "touchend", function($event) {
         if ($event.touches.length === 0 && $eventOld) {
           hasTouchStart = false;
           $eventOld = null;
@@ -6785,7 +6786,7 @@ var touchtrack = {
         }
       };
       document.addEventListener("mouseup", mouseUpEventListener);
-      addListenerToElement(element, "touchcancel", function($event) {
+      addListenerToElement$1(element, "touchcancel", function($event) {
         if ($eventOld) {
           hasTouchStart = false;
           const $eventTemp = $eventOld;
@@ -7151,7 +7152,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$7 = {
+const _sfc_main$6 = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7703,14 +7704,14 @@ const _sfc_main$7 = {
     }
   }
 };
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$6.render = _sfc_render$6;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7718,7 +7719,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$6 = {
+const _sfc_main$5 = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -7791,7 +7792,7 @@ const _sfc_main$6 = {
     }
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -7808,13 +7809,13 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$5.render = _sfc_render$5;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$7 = {
+const props$8 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7861,9 +7862,9 @@ const props$7 = {
     }
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var index$b = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$7,
+  props: props$8,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -7934,15 +7935,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$6 = {
+const props$7 = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
-  props: props$6,
+  props: props$7,
   setup(props2, {
     emit: emit2,
     slots
@@ -8021,7 +8022,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$5 = {
+const props$6 = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -8043,9 +8044,9 @@ const props$5 = {
     default: ""
   }
 };
-var index$8 = /* @__PURE__ */ defineComponent({
+var index$9 = /* @__PURE__ */ defineComponent({
   name: "Radio",
-  props: props$5,
+  props: props$6,
   setup(props2, {
     slots
   }) {
@@ -8339,7 +8340,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$5 = {
+const _sfc_main$4 = {
   name: "RichText",
   props: {
     nodes: {
@@ -8368,13 +8369,13 @@ const _sfc_main$5 = {
     }
   }
 };
-const _hoisted_1$4 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$3 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$4
+    _hoisted_1$3
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$4.render = _sfc_render$4;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -9047,7 +9048,7 @@ var scroller = {
   }
 };
 const passiveOptions = passive(true);
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -9455,11 +9456,11 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = {
+const _hoisted_1$2 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
-const _hoisted_2$2 = {
+const _hoisted_2$1 = {
   ref: "content",
   class: "uni-scroll-view-content"
 };
@@ -9488,9 +9489,9 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$2, [
       createVNode("div", {
         ref: "main",
         style: {
@@ -9499,7 +9500,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
         },
         class: "uni-scroll-view"
       }, [
-        createVNode("div", _hoisted_2$2, [
+        createVNode("div", _hoisted_2$1, [
           $props.refresherEnabled ? (openBlock(), createBlock("div", {
             key: 0,
             ref: "refresherinner",
@@ -9536,205 +9537,337 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$4.render = _sfc_render$4;
-const _sfc_main$3 = {
-  name: "Slider",
-  mixins: [emitter, listeners, touchtrack],
-  props: {
-    name: {
-      type: String,
-      default: ""
-    },
-    min: {
-      type: [Number, String],
-      default: 0
-    },
-    max: {
-      type: [Number, String],
-      default: 100
-    },
-    value: {
-      type: [Number, String],
-      default: 0
-    },
-    step: {
-      type: [Number, String],
-      default: 1
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    color: {
-      type: String,
-      default: "#e9e9e9"
-    },
-    backgroundColor: {
-      type: String,
-      default: "#e9e9e9"
-    },
-    activeColor: {
-      type: String,
-      default: "#007aff"
-    },
-    selectedColor: {
-      type: String,
-      default: "#007aff"
-    },
-    blockColor: {
-      type: String,
-      default: "#ffffff"
-    },
-    blockSize: {
-      type: [Number, String],
-      default: 28
-    },
-    showValue: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data() {
-    return {
-      sliderValue: Number(this.value)
-    };
-  },
-  computed: {
-    setBlockStyle() {
-      return {
-        width: this.blockSize + "px",
-        height: this.blockSize + "px",
-        marginLeft: -this.blockSize / 2 + "px",
-        marginTop: -this.blockSize / 2 + "px",
-        left: this._getValueWidth(),
-        backgroundColor: this.blockColor
-      };
-    },
-    setBgColor() {
-      return {
-        backgroundColor: this._getBgColor()
-      };
-    },
-    setBlockBg() {
-      return {
-        left: this._getValueWidth()
-      };
-    },
-    setActiveColor() {
-      return {
-        backgroundColor: this._getActiveColor(),
-        width: this._getValueWidth()
-      };
-    }
-  },
-  watch: {
-    value(val) {
-      this.sliderValue = Number(val);
-    }
-  },
-  mounted() {
-    this.touchtrack(this.$refs["uni-slider-handle"], "_onTrack");
-  },
-  created() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
-    });
-  },
-  beforeDestroy() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
-  },
-  methods: {
-    _onUserChangedValue(e2) {
-      const slider = this.$refs["uni-slider"];
-      const offsetWidth = slider.offsetWidth;
-      const boxLeft = slider.getBoundingClientRect().left;
-      const value = (e2.x - boxLeft) * (this.max - this.min) / offsetWidth + Number(this.min);
-      this.sliderValue = this._filterValue(value);
-    },
-    _filterValue(e2) {
-      return e2 < this.min ? this.min : e2 > this.max ? this.max : Math.round((e2 - this.min) / this.step) * this.step + Number(this.min);
-    },
-    _getValueWidth() {
-      return 100 * (this.sliderValue - this.min) / (this.max - this.min) + "%";
-    },
-    _getBgColor() {
-      return this.backgroundColor !== "#e9e9e9" ? this.backgroundColor : this.color !== "#007aff" ? this.color : "#007aff";
-    },
-    _getActiveColor() {
-      return this.activeColor !== "#007aff" ? this.activeColor : this.selectedColor !== "#e9e9e9" ? this.selectedColor : "#e9e9e9";
-    },
-    _onTrack: function(e2) {
-      if (!this.disabled) {
-        return e2.detail.state === "move" ? (this._onUserChangedValue({
-          x: e2.detail.x0
-        }), this.$trigger("changing", e2, {
-          value: this.sliderValue
-        }), false) : e2.detail.state === "end" && this.$trigger("change", e2, {
-          value: this.sliderValue
-        });
+_sfc_main$3.render = _sfc_render$3;
+const addListenerToElement = function(element, type, callback, capture) {
+  element.addEventListener(type, ($event) => {
+    if (typeof callback === "function") {
+      if (callback($event) === false) {
+        if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
+          $event.preventDefault();
+        }
+        $event.stopPropagation();
       }
-    },
-    _onClick($event) {
-      if (this.disabled) {
-        return;
-      }
-      this._onUserChangedValue($event);
-      this.$trigger("change", $event, {
-        value: this.sliderValue
-      });
-    },
-    _resetFormData() {
-      this.sliderValue = this.min;
-    },
-    _getFormData() {
-      const data = {};
-      if (this.name !== "") {
-        data.value = this.sliderValue;
-        data.key = this.name;
-      }
-      return data;
     }
+  }, {
+    passive: false
+  });
+};
+let __mouseMoveEventListener;
+let __mouseUpEventListener;
+function useTouchtrack(element, method, useCancel) {
+  onBeforeUnmount(() => {
+    document.removeEventListener("mousemove", __mouseMoveEventListener);
+    document.removeEventListener("mouseup", __mouseUpEventListener);
+  });
+  let x0 = 0;
+  let y0 = 0;
+  let x1 = 0;
+  let y1 = 0;
+  const fn = function($event, state, x, y) {
+    if (method({
+      target: $event.target,
+      currentTarget: $event.currentTarget,
+      preventDefault: $event.preventDefault.bind($event),
+      stopPropagation: $event.stopPropagation.bind($event),
+      touches: $event.touches,
+      changedTouches: $event.changedTouches,
+      detail: {
+        state,
+        x0: x,
+        y0: y,
+        dx: x - x0,
+        dy: y - y0,
+        ddx: x - x1,
+        ddy: y - y1,
+        timeStamp: $event.timeStamp
+      }
+    }) === false) {
+      return false;
+    }
+  };
+  let $eventOld = null;
+  let hasTouchStart;
+  let hasMouseDown;
+  addListenerToElement(element, "touchstart", function($event) {
+    hasTouchStart = true;
+    if ($event.touches.length === 1 && !$eventOld) {
+      $eventOld = $event;
+      x0 = x1 = $event.touches[0].pageX;
+      y0 = y1 = $event.touches[0].pageY;
+      return fn($event, "start", x0, y0);
+    }
+  });
+  addListenerToElement(element, "mousedown", function($event) {
+    hasMouseDown = true;
+    if (!hasTouchStart && !$eventOld) {
+      $eventOld = $event;
+      x0 = x1 = $event.pageX;
+      y0 = y1 = $event.pageY;
+      return fn($event, "start", x0, y0);
+    }
+  });
+  addListenerToElement(element, "touchmove", function($event) {
+    if ($event.touches.length === 1 && $eventOld) {
+      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
+      x1 = $event.touches[0].pageX;
+      y1 = $event.touches[0].pageY;
+      return res;
+    }
+  });
+  const mouseMoveEventListener = __mouseMoveEventListener = function($event) {
+    if (!hasTouchStart && hasMouseDown && $eventOld) {
+      const res = fn($event, "move", $event.pageX, $event.pageY);
+      x1 = $event.pageX;
+      y1 = $event.pageY;
+      return res;
+    }
+  };
+  document.addEventListener("mousemove", mouseMoveEventListener);
+  addListenerToElement(element, "touchend", function($event) {
+    if ($event.touches.length === 0 && $eventOld) {
+      hasTouchStart = false;
+      $eventOld = null;
+      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
+    }
+  });
+  const mouseUpEventListener = __mouseUpEventListener = function($event) {
+    hasMouseDown = false;
+    if (!hasTouchStart && $eventOld) {
+      $eventOld = null;
+      return fn($event, "end", $event.pageX, $event.pageY);
+    }
+  };
+  document.addEventListener("mouseup", mouseUpEventListener);
+  addListenerToElement(element, "touchcancel", function($event) {
+    if ($eventOld) {
+      hasTouchStart = false;
+      const $eventTemp = $eventOld;
+      $eventOld = null;
+      return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
+    }
+  });
+}
+const props$5 = {
+  name: {
+    type: String,
+    default: ""
+  },
+  min: {
+    type: [Number, String],
+    default: 0
+  },
+  max: {
+    type: [Number, String],
+    default: 100
+  },
+  value: {
+    type: [Number, String],
+    default: 0
+  },
+  step: {
+    type: [Number, String],
+    default: 1
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#e9e9e9"
+  },
+  backgroundColor: {
+    type: String,
+    default: "#e9e9e9"
+  },
+  activeColor: {
+    type: String,
+    default: "#007aff"
+  },
+  selectedColor: {
+    type: String,
+    default: "#007aff"
+  },
+  blockColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  blockSize: {
+    type: [Number, String],
+    default: 28
+  },
+  showValue: {
+    type: [Boolean, String],
+    default: false
   }
 };
-const _hoisted_1$2 = {class: "uni-slider-wrapper"};
-const _hoisted_2$1 = {class: "uni-slider-tap-area"};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-slider", mergeProps({ref: "uni-slider"}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    createVNode("div", _hoisted_1$2, [
-      createVNode("div", _hoisted_2$1, [
-        createVNode("div", {
-          style: $options.setBgColor,
-          class: "uni-slider-handle-wrapper"
-        }, [
-          createVNode("div", {
-            ref: "uni-slider-handle",
-            style: $options.setBlockBg,
-            class: "uni-slider-handle"
-          }, null, 4),
-          createVNode("div", {
-            style: $options.setBlockStyle,
-            class: "uni-slider-thumb"
-          }, null, 4),
-          createVNode("div", {
-            style: $options.setActiveColor,
-            class: "uni-slider-track"
-          }, null, 4)
-        ], 4)
-      ]),
-      withDirectives(createVNode("span", {class: "uni-slider-value"}, toDisplayString($data.sliderValue), 513), [
-        [vShow, $props.showValue]
-      ])
-    ]),
-    renderSlot(_ctx.$slots, "default")
-  ], 16);
+var index$8 = /* @__PURE__ */ defineComponent({
+  name: "Slider",
+  props: props$5,
+  emits: ["changing", "change"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const sliderRef = ref(null);
+    const sliderValueRef = ref(null);
+    const sliderHandleRef = ref(null);
+    const sliderValue = ref(Number(props2.value));
+    const trigger = useCustomEvent(sliderRef, emit2);
+    const state = useSliderState(props2, sliderValue);
+    const {
+      _onClick,
+      _onTrack
+    } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
+    onMounted(() => {
+      useTouchtrack(sliderHandleRef.value, _onTrack);
+    });
+    return () => {
+      const {
+        setBgColor,
+        setBlockBg,
+        setActiveColor,
+        setBlockStyle
+      } = state;
+      return createVNode("uni-slider", {
+        ref: sliderRef,
+        onClick: _onClick
+      }, [createVNode("div", {
+        class: "uni-slider-wrapper"
+      }, [createVNode("div", {
+        class: "uni-slider-tap-area"
+      }, [createVNode("div", {
+        style: setBgColor.value,
+        class: "uni-slider-handle-wrapper"
+      }, [createVNode("div", {
+        ref: sliderHandleRef,
+        style: setBlockBg.value,
+        class: "uni-slider-handle"
+      }, null, 4), createVNode("div", {
+        style: setBlockStyle.value,
+        class: "uni-slider-thumb"
+      }, null, 4), createVNode("div", {
+        style: setActiveColor.value,
+        class: "uni-slider-track"
+      }, null, 4)], 4)]), withDirectives(createVNode("span", {
+        ref: sliderValueRef,
+        class: "uni-slider-value"
+      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+    };
+  }
+});
+function useSliderState(props2, sliderValue) {
+  const _getValueWidth = () => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    return 100 * (sliderValue.value - min) / (max - min) + "%";
+  };
+  const _getBgColor = () => {
+    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+  };
+  const _getActiveColor = () => {
+    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+  };
+  const state = {
+    setBgColor: computed(() => ({
+      backgroundColor: _getBgColor()
+    })),
+    setBlockBg: computed(() => ({
+      left: _getValueWidth()
+    })),
+    setActiveColor: computed(() => ({
+      backgroundColor: _getActiveColor(),
+      width: _getValueWidth()
+    })),
+    setBlockStyle: computed(() => ({
+      width: props2.blockSize + "px",
+      height: props2.blockSize + "px",
+      marginLeft: -props2.blockSize / 2 + "px",
+      marginTop: -props2.blockSize / 2 + "px",
+      left: _getValueWidth(),
+      backgroundColor: props2.blockColor
+    }))
+  };
+  return state;
 }
-_sfc_main$3.render = _sfc_render$3;
+function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const _onClick = ($event) => {
+    if (props2.disabled) {
+      return;
+    }
+    _onUserChangedValue($event);
+    trigger("change", $event, {
+      value: sliderValue.value
+    });
+  };
+  const _filterValue = (e2) => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    const step = Number(props2.step);
+    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  };
+  const _onUserChangedValue = (e2) => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    const sliderRightBox = sliderValueRef.value;
+    const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
+    let sliderRightBoxWidth = sliderRightBox.offsetWidth;
+    sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
+    const slider = sliderRef.value;
+    const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
+    const boxLeft = slider.getBoundingClientRect().left;
+    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
+    sliderValue.value = _filterValue(value);
+  };
+  const _onTrack = (e2) => {
+    if (!props2.disabled) {
+      return e2.detail.state === "move" ? (_onUserChangedValue({
+        x: e2.detail.x0
+      }), trigger("changing", e2, {
+        value: sliderValue.value
+      }), false) : e2.detail.state === "end" && trigger("change", e2, {
+        value: sliderValue.value
+      });
+    }
+  };
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    const field = {
+      reset: () => sliderValue.value = Number(props2.min),
+      submit: () => {
+        const data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = sliderValue.value;
+        }
+        return data;
+      }
+    };
+    uniForm.addField(field);
+    onBeforeUnmount(() => {
+      uniForm.removeField(field);
+    });
+  }
+  return {
+    _onClick,
+    _onTrack
+  };
+}
+var computeController = {
+  mul: function(arg) {
+    let m = 0;
+    let s1 = this.toString();
+    let s2 = arg.toString();
+    try {
+      m += s1.split(".")[1].length;
+    } catch (e2) {
+    }
+    try {
+      m += s2.split(".")[1].length;
+    } catch (e2) {
+    }
+    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+  }
+};
 const _sfc_main$2 = {
   name: "SwiperItem",
   props: {
@@ -9928,7 +10061,7 @@ var index$7 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$4 = /* @__PURE__ */ Object.assign({}, props$9, {
+const props$4 = /* @__PURE__ */ Object.assign({}, props$a, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11247,7 +11380,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -11360,12 +11493,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11385,10 +11518,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -14385,4 +14518,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$9 as Audio, index$h as Button, _sfc_main$8 as Canvas, index$e as Checkbox, index$g as CheckboxGroup, index$d as Editor, index$i as Form, index$c as Icon, index$b as Image, Input, index$f as Label, LayoutComponent, _sfc_main$7 as MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, index$a as Progress, index$8 as Radio, index$9 as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, _sfc_main$3 as Slider, _sfc_main$2 as SwiperItem, _sfc_main$1 as Switch, index$7 as Text, index$6 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$4 as Video, index$5 as View, index$3 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$j as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$i as Button, _sfc_main$7 as Canvas, index$f as Checkbox, index$h as CheckboxGroup, index$e as Editor, index$j as Form, index$d as Icon, index$c as Image, Input, index$g as Label, LayoutComponent, _sfc_main$6 as MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$b as Progress, index$9 as Radio, index$a as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$8 as Slider, _sfc_main$2 as SwiperItem, _sfc_main$1 as Switch, index$7 as Text, index$6 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$4 as Video, index$5 as View, index$3 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$k as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
