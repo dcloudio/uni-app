@@ -69,7 +69,7 @@ export default {
     duration: {
       type: [Number, String],
       default: 30,
-      validator(value) {
+      validator (value) {
         return !isNaN(parseFloat(value, 10))
       }
     }
