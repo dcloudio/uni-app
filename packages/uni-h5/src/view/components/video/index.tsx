@@ -14,10 +14,12 @@ import {
 import { passive } from '@dcloudio/uni-shared'
 import { useI18n, initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { useSubscribe } from '@dcloudio/uni-components'
-import { useCustomEvent } from '@dcloudio/uni-components'
-import { useUserAction } from '@dcloudio/uni-components'
-import { separateAttrs } from '../../../helpers/dom'
+import {
+  useSubscribe,
+  useCustomEvent,
+  useUserAction,
+  useAttrs,
+} from '@dcloudio/uni-components'
 
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type UserActionState = ReturnType<typeof useUserAction>['state']
@@ -803,6 +805,9 @@ export default /*#__PURE__*/ defineComponent({
     const containerRef = ref(null)
     const trigger = useCustomEvent(rootRef, emit as SetupContext['emit'])
     const { state: userActionState } = useUserAction()
+    const { $attrs: videoAttrs } = useAttrs({
+      excludeListeners: true,
+    })
     const { t } = useI18n()
     initI18nVideoMsgsOnce()
     const {
@@ -862,8 +867,6 @@ export default /*#__PURE__*/ defineComponent({
     )
 
     return () => {
-      const videoAttrs = separateAttrs(attrs).$attrs
-
       return (
         <uni-video ref={rootRef} id={props.id}>
           <div
@@ -886,7 +889,7 @@ export default /*#__PURE__*/ defineComponent({
               src={videoState.src}
               poster={props.poster}
               autoplay={!!props.autoplay}
-              {...videoAttrs}
+              {...videoAttrs.value}
               class="uni-video-video"
               webkit-playsinline
               playsinline

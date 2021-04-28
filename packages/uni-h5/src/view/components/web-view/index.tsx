@@ -7,10 +7,9 @@ import {
   onDeactivated,
   Teleport,
 } from 'vue'
-import { ResizeSensor } from '@dcloudio/uni-components'
+import { ResizeSensor, useAttrs } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { updateElementStyle } from '@dcloudio/uni-shared'
-import { separateAttrs } from '../../../helpers/dom'
 
 const props = {
   src: {
@@ -29,6 +28,9 @@ export default /*#__PURE__*/ defineComponent({
     const rootRef: RootRef = ref(null)
     const iframeRef: RootRef = ref(null)
     const _resize = useWebViewSize(rootRef, iframeRef)
+    const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+      excludeListeners: true,
+    })
 
     onMounted(() => {
       _resize()
@@ -43,11 +45,13 @@ export default /*#__PURE__*/ defineComponent({
     })
 
     return () => {
-      const webViewAttrs = separateAttrs(attrs)
-
       return (
         <>
-          <uni-web-view {...webViewAttrs.$otherAttrs} ref={rootRef}>
+          <uni-web-view
+            {...$listeners.value}
+            {...$excludeAttrs.value}
+            ref={rootRef}
+          >
             <ResizeSensor onResize={_resize} />
           </uni-web-view>
 
@@ -55,7 +59,7 @@ export default /*#__PURE__*/ defineComponent({
             <iframe
               ref={iframeRef}
               src={getRealPath(props.src)}
-              {...webViewAttrs.$attrs}
+              {...$attrs.value}
             ></iframe>
           </Teleport>
         </>
