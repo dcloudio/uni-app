@@ -620,6 +620,191 @@ db.collection('comment,user')
 - 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 - 各个表的_id字段会默认带上，即使没有指定返回
 
+
+#### 副表foreignKey联查@st-foreign-key
+
+`2021年4月28日`之前的clientDB版本，只支持主表的foreignKey，把副本内容嵌入主表的foreignKey字段下面。不支持处理副本的foreignKey。（如果你觉得能用，其实是bug，查出来的数是乱的，别依赖这种写法）
+
+调整后，新版将正式支持副表foreignKey联查。将把副表的数据以数组的方式嵌入到主表中。
+
+例：
+
+数据库内schema及数据如下：
+
+
+```js
+// comment - 评论表
+
+// schema
+{
+  "bsonType": "object",
+  "required": [],
+  "permission": {
+    "read": true,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "comment_id": {
+      "bsonType": "string"
+    },
+    "content": {
+      "bsonType": "string"
+    },
+    "article": {
+      "bsonType": "string",
+      "foreignKey": "article.article_id"
+    },
+    "sender": {
+      "bsonType": "string",
+      "foreignKey": "user.uid"
+    },
+    "receiver": {
+      "bsonType": "string",
+      "foreignKey": "user.uid"
+    }
+  }
+}
+
+// data
+{
+  "comment_id": "1-1",
+  "content": "comment1-1",
+  "article": "1",
+  "sender": "1",
+  "receiver": "2"
+}
+{
+  "comment_id": "1-2",
+  "content": "comment1-2",
+  "article": "1",
+  "sender": "2",
+  "receiver": "1"
+}
+{
+  "comment_id": "2-1",
+  "content": "comment2-1",
+  "article": "2",
+  "sender": "1",
+  "receiver": "2"
+}
+{
+  "comment_id": "2-2",
+  "content": "comment2-2",
+  "article": "2",
+  "sender": "2",
+  "receiver": "1"
+}
+```
+
+```js
+// article - 文章表
+
+// schema
+{
+  "bsonType": "object",
+  "required": [],
+  "permission": {
+    "read": true,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "article_id": {
+      "bsonType": "string"
+    },
+    "title": {
+      "bsonType": "string"
+    },
+    "content": {
+      "bsonType": "string"
+    },
+    "author": {
+      "bsonType": "string",
+      "foreignKey": "user.uid"
+    }
+  }
+}
+
+// data
+{
+  "article_id": "1",
+  "title": "title1",
+  "content": "content1",
+  "author": "1"
+}
+{
+  "article_id": "2",
+  "title": "title2",
+  "content": "content2",
+  "author": "1"
+}
+{
+  "article_id": "3",
+  "title": "title3",
+  "content": "content3",
+  "author": "2"
+}
+```
+
+以下查询使用comment表的article字段对应的foreignKey进行关联查询
+
+```js
+db.collection('article,comment')
+.where('article_id=="1"')
+.field('content,article_id')
+.get()
+```
+
+查询结果如下：
+
+```js
+[{
+  "content": "content1",
+  "article_id": {
+    "comment": [{ // 逆向foreignKey查询时此处会自动插入一层副表表名
+      "comment_id": "1-1",
+      "content": "comment1-1",
+      "article": "1",
+      "sender": "1",
+      "receiver": "2"
+    },
+    {
+      "comment_id": "1-2",
+      "content": "comment1-2",
+      "article": "1",
+      "sender": "2",
+      "receiver": "1"
+    }]
+  }
+}]
+```
+
+如需对上述查询的副表字段进行过滤，需要注意多插入的一层副表表名
+
+```js
+// 过滤副表字段
+db.collection('article,comment')
+.where('article_id=="1"')
+.field('content,article_id{comment{content}}')
+.get()
+
+// 查询结果如下
+[{
+  "content": "content1",
+  "article_id": {
+    "comment": [{ 使用副本foreignKey联查时此处会自动插入一层副表表名
+      "content": "comment1-1"
+    },
+    {
+      "content": "comment1-2"
+    }]
+  }
+}]
+```
+
 ### 查询记录过滤，where条件@where
 
 > 代码块`dbget`
