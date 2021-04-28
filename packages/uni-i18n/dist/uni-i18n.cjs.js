@@ -222,6 +222,10 @@ function initLocaleWatcher(appVm, i18n) {
 //   return uni.getSystemInfoSync().language
 // }
 function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_EN) {
+    // 兼容旧版本入参
+    if (typeof locale !== 'string') {
+        [locale, messages] = [messages, locale];
+    }
     const i18n = new I18n({
         locale: locale || fallbackLocale,
         fallbackLocale,

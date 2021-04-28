@@ -34,6 +34,10 @@ export function initVueI18n(
   messages: LocaleMessages = {},
   fallbackLocale: BuiltInLocale = LOCALE_EN
 ) {
+  // 兼容旧版本入参
+  if (typeof locale !== 'string') {
+    ;[locale, messages] = [messages as BuiltInLocale, locale as LocaleMessages]
+  }
   const i18n = new I18n({
     locale: locale || fallbackLocale,
     fallbackLocale,
