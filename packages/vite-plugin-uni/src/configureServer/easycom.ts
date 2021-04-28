@@ -1,14 +1,7 @@
 import { ViteDevServer } from 'vite'
+import { debounce } from '@dcloudio/uni-shared'
 import { VitePluginUniResolvedOptions } from '..'
 import { debugEasycom, initEasycoms } from '../utils'
-
-function debounce(fn: Function, wait: number) {
-  let timeout = 0
-  return () => {
-    if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(fn, wait)
-  }
-}
 
 export const serveEasycom = (
   server: ViteDevServer,
