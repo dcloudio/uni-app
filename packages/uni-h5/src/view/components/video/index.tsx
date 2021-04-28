@@ -7,7 +7,6 @@ import {
   computed,
   watch,
   onMounted,
-  SetupContext,
   renderList,
   onBeforeUnmount,
 } from 'vue'
@@ -17,11 +16,12 @@ import { getRealPath } from '@dcloudio/uni-platform'
 import {
   useSubscribe,
   useCustomEvent,
+  EmitEvent,
+  CustomEventTrigger,
   useUserAction,
   useAttrs,
 } from '@dcloudio/uni-components'
 
-type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 type UserActionState = ReturnType<typeof useUserAction>['state']
 
 function formatTime(val: number): string {
@@ -803,7 +803,7 @@ export default /*#__PURE__*/ defineComponent({
   setup(props, { emit, attrs, slots }) {
     const rootRef = ref(null)
     const containerRef = ref(null)
-    const trigger = useCustomEvent(rootRef, emit as SetupContext['emit'])
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const { state: userActionState } = useUserAction()
     const { $attrs: videoAttrs } = useAttrs({
       excludeListeners: true,
