@@ -844,8 +844,6 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
 
 ### 字段别名as@alias
 
-> field可以不使用`{}`进行字段过滤，以下面示例为例可以写为`.field('book_id.title,book_id.author,quantity as order_quantity')`，此写法于2021年4月28日起支持。副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
-
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
 
 用法形如：`author as book_author`，意思是将数据库的author字段重命名为book_author。
@@ -886,6 +884,62 @@ db.collection('order,book')
 			"book_author": "罗贯中",
 			"book_title": "三国演义"
 		}],
+		"order_quantity": 333
+	}]
+}
+```
+
+**不使用`{}`过滤副表字段**
+
+> 此写法于2021年4月28日起支持
+
+field方法可以不使用`{}`进行副表字段过滤，以上面示例为例可以写为
+
+```js
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id.title,book_id.author,quantity as order_quantity') // book_id.title、book_id.author为副表字段，使用别名时效果和上一个示例不同，请见下方说明
+  .orderBy('order_quantity desc') // 按照order_quantity降序排列
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
+
+```js
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id.title as book_title,book_id.author as book_author,quantity as order_quantity') // book_id.title、book_id.author为副表字段，使用别名时效果和上一个示例不同，请见下方说明
+  .orderBy('order_quantity desc') // 按照order_quantity降序排列
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+返回结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
+    book_title: ["三国演义"],
+    book_author: ["罗贯中"],
+		"order_quantity": 555
+	}, {
+		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
+    book_title: ["三国演义"],
+    book_author: ["罗贯中"],
 		"order_quantity": 333
 	}]
 }
