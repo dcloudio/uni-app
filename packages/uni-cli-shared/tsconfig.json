@@ -3,5 +3,9 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "../shims-node.d.ts",
+    "../shims-uni-app.d.ts"
+  ]
 }

@@ -173,6 +173,12 @@ declare namespace UniApp {
     topWindow?: PagesJsonWindowOptions
     leftWindow?: PagesJsonWindowOptions
     rightWindow?: PagesJsonWindowOptions
+    easycom?: {
+      autoscan?: boolean
+      custom?: {
+        [name: string]: string
+      }
+    }
   }
 
   interface TabBarItemBaseOptions {

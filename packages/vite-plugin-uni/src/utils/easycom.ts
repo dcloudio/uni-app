@@ -5,12 +5,14 @@ import debug from 'debug'
 import { createFilter } from '@rollup/pluginutils'
 
 import { once } from '@dcloudio/uni-shared'
+import { parsePagesJson, parsePagesJsonOnce } from '@dcloudio/uni-cli-shared'
 
 interface EasycomOption {
   dirs?: string[]
   rootDir?: string
-  custom?: EasycomCustom
   extensions?: string[]
+  autoscan?: boolean
+  custom?: EasycomCustom
 }
 interface EasycomMatcher {
   pattern: RegExp
@@ -36,31 +38,44 @@ function clearEasycom() {
   easycomsInvalidCache.clear()
 }
 
-export const initEasycoms = once((inputDir: string) => {
-  const componentsDir = path.resolve(inputDir, 'components')
-  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-  const initEasycomOptions = () => {
-    const easycomOptions = {
-      dirs: [componentsDir, ...initUniModulesEasycomDirs(uniModulesDir)],
-      rootDir: inputDir,
-    }
-    debugEasycom(easycomOptions)
-    return easycomOptions
-  }
-  initEasycom(initEasycomOptions())
-  return {
-    filter: createFilter(
-      ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
-      [],
-      {
-        resolve: inputDir,
+export const initEasycomsOnce = once(
+  (inputDir: string, platform: UniApp.PLATFORM) => {
+    const componentsDir = path.resolve(inputDir, 'components')
+    const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+    const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
+      // 初始化时，从once中读取缓存，refresh时，实时读取
+      const { easycom } = pagesJson || parsePagesJson(inputDir, platform, false)
+      const easycomOptions: EasycomOption = {
+        dirs:
+          easycom && easycom.autoscan === false
+            ? [] // 禁止自动扫描
+            : [componentsDir, ...initUniModulesEasycomDirs(uniModulesDir)],
+        rootDir: inputDir,
+        autoscan: !!(easycom && easycom.autoscan),
+        custom: (easycom && easycom.custom) || {},
       }
-    ),
-    refresh() {
-      initEasycom(initEasycomOptions())
-    },
+      debugEasycom(easycomOptions)
+      return easycomOptions
+    }
+    const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+    initEasycom(options)
+    const res = {
+      options,
+      filter: createFilter(
+        ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
+        [],
+        {
+          resolve: inputDir,
+        }
+      ),
+      refresh() {
+        res.options = initEasycomOptions()
+        initEasycom(res.options)
+      },
+    }
+    return res
   }
-})
+)
 
 function initUniModulesEasycomDirs(uniModulesDir: string) {
   if (!fs.existsSync(uniModulesDir)) {
@@ -89,7 +104,7 @@ function initEasycom({
 }: EasycomOption) {
   clearEasycom()
   const easycomsObj = Object.create(null)
-  if (dirs && rootDir) {
+  if (dirs && dirs.length && rootDir) {
     Object.assign(easycomsObj, initAutoScanEasycoms(dirs, rootDir, extensions))
   }
   if (custom) {

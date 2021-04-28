@@ -1,10 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { ConfigEnv } from 'vite'
-import { parse } from 'jsonc-parser'
 import { isArray } from '@vue/shared'
-import { VitePluginUniResolvedOptions } from '..'
-import { normalizePagesJson } from './pagesJson'
 
 interface ProjectFeatures {}
 interface PagesFeatures {
@@ -35,20 +32,18 @@ interface ManifestFeatures {
   i18nZhHant: boolean
 }
 
-function resolveProjectFeature(
-  options: VitePluginUniResolvedOptions,
-  command: ConfigEnv['command']
-) {
+function initProjectFeature({ command }: InitFeaturesOptions) {
   const features: ProjectFeatures = {}
   if (command === 'build') {
   }
   return features
 }
 
-function resolvePagesFeature(
-  options: VitePluginUniResolvedOptions,
-  command: ConfigEnv['command']
-): PagesFeatures {
+function initPagesFeature({
+  pagesJson,
+  command,
+  inputDir,
+}: InitFeaturesOptions): PagesFeatures {
   const features: PagesFeatures = {
     nvue: true,
     pages: true,
@@ -71,10 +66,7 @@ function resolvePagesFeature(
     leftWindow,
     rightWindow,
     globalStyle,
-  } = normalizePagesJson(
-    fs.readFileSync(path.join(options.inputDir, 'pages.json'), 'utf8'),
-    options.platform
-  )
+  } = pagesJson
   if (pages && pages.length === 1) {
     features.pages = false
   }
@@ -104,7 +96,7 @@ function resolvePagesFeature(
   if (command === 'build') {
     if (
       !pages.find((page) =>
-        fs.existsSync(path.resolve(options.inputDir, page.path, '.nvue'))
+        fs.existsSync(path.resolve(inputDir, page.path, '.nvue'))
       )
     ) {
       features.nvue = false
@@ -153,9 +145,11 @@ function resolvePagesFeature(
   return features
 }
 
-function resolveManifestFeature(
-  options: VitePluginUniResolvedOptions
-): ManifestFeatures {
+function initManifestFeature({
+  manifestJson,
+  command,
+  platform,
+}: InitFeaturesOptions): ManifestFeatures {
   const features: ManifestFeatures = {
     wx: false,
     wxs: true,
@@ -169,23 +163,21 @@ function resolveManifestFeature(
     i18nZhHans: true,
     i18nZhHant: true,
   }
-  const manifest = parse(
-    fs.readFileSync(path.join(options.inputDir, 'manifest.json'), 'utf8')
-  )
-  if (options.command === 'build') {
+
+  if (command === 'build') {
     // TODO 需要预编译一遍？
     features.wxs = false
     features.longpress = false
   }
   if (
-    manifest.h5 &&
-    manifest.h5.router &&
-    manifest.h5.router.mode === 'history'
+    manifestJson.h5 &&
+    manifestJson.h5.router &&
+    manifestJson.h5.router.mode === 'history'
   ) {
     features.routerMode = '"history"'
   }
-  const platform = manifest[options.platform] || {}
-  const manifestFeatures = platform.features
+  const platformJson = manifestJson[platform] || {}
+  const manifestFeatures = platformJson.features
   if (manifestFeatures) {
     const { i18n } = manifestFeatures
     if (isArray(i18n)) {
@@ -210,12 +202,17 @@ function resolveManifestFeature(
   return features
 }
 
-export type FEATURE_DEFINES = ReturnType<typeof getFeatures>
+export type FEATURE_DEFINES = ReturnType<typeof initFeatures>
 
-export function getFeatures(
-  options: VitePluginUniResolvedOptions,
+interface InitFeaturesOptions {
+  pagesJson: UniApp.PagesJson
+  manifestJson: any
+  inputDir: string
+  platform: UniApp.PLATFORM
   command: ConfigEnv['command']
-) {
+}
+
+export function initFeatures(options: InitFeaturesOptions) {
   const {
     wx,
     wxs,
@@ -241,9 +238,9 @@ export function getFeatures(
     navigationBarSearchInput,
     navigationBarTransparent,
   } = Object.assign(
-    resolveManifestFeature(options),
-    resolvePagesFeature(options, command),
-    resolveProjectFeature(options, command)
+    initManifestFeature(options),
+    initPagesFeature(options),
+    initProjectFeature(options)
   )
   return {
     __UNI_FEATURE_WX__: wx, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）

@@ -1,13 +1,16 @@
 import { ViteDevServer } from 'vite'
 import { debounce } from '@dcloudio/uni-shared'
 import { VitePluginUniResolvedOptions } from '..'
-import { debugEasycom, initEasycoms } from '../utils'
+import { debugEasycom, initEasycomsOnce } from '../utils'
 
 export const serveEasycom = (
   server: ViteDevServer,
   options: VitePluginUniResolvedOptions
 ) => {
-  const { filter, refresh } = initEasycoms(options.inputDir)
+  const { filter, refresh } = initEasycomsOnce(
+    options.inputDir,
+    options.platform
+  )
   const refreshEasycom = debounce(refresh, 100)
   server.watcher.on('all', (eventName, path) => {
     if (!['add', 'unlink'].includes(eventName)) {

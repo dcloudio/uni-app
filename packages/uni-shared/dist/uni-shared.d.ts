@@ -49,7 +49,7 @@ export declare function normalizeTarget(el: HTMLElement): {
 
 export declare const ON_REACH_BOTTOM_DISTANCE = 50;
 
-export declare function once(fn: (...args: any[]) => any, ctx?: unknown): (...args: any[]) => any;
+export declare function once<T extends (...args: any[]) => any>(fn: T, ctx?: unknown): T;
 
 /**
  * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts

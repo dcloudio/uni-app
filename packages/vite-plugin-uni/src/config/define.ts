@@ -1,10 +1,20 @@
 import { ConfigEnv, UserConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '..'
-import { getFeatures } from '../utils'
+import {
+  parsePagesJsonOnce,
+  parseManifestJsonOnce,
+} from '@dcloudio/uni-cli-shared'
+import { initFeatures } from '../utils'
 
 export function createDefine(
-  options: VitePluginUniResolvedOptions,
-  env: ConfigEnv
+  { inputDir, platform }: VitePluginUniResolvedOptions,
+  { command }: ConfigEnv
 ): UserConfig['define'] {
-  return getFeatures(options, env.command)
+  return initFeatures({
+    inputDir,
+    command,
+    platform,
+    pagesJson: parsePagesJsonOnce(inputDir, platform),
+    manifestJson: parseManifestJsonOnce(inputDir),
+  })
 }

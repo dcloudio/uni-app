@@ -1,6 +1,5 @@
 export * from './filter'
-export * from './define'
+export * from './features'
 export * from './easycom'
 export * from './postcss'
-export * from './pagesJson'
 export * from './constants'

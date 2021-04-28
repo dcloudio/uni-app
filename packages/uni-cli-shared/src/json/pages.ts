@@ -1,8 +1,24 @@
+import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { parseJson } from '@dcloudio/uni-cli-shared'
-import { TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import { once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+
+import { parseJson } from './json'
+
+export const parsePagesJson = (
+  inputDir: string,
+  platform: UniApp.PLATFORM,
+  normalize: boolean = true
+) => {
+  const jsonStr = fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8')
+  if (normalize) {
+    return normalizePagesJson(jsonStr, platform)
+  }
+  return parseJson(jsonStr, true) as UniApp.PagesJson
+}
+
+export const parsePagesJsonOnce = once(parsePagesJson)
 
 export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   let pagesJson: UniApp.PagesJson = {

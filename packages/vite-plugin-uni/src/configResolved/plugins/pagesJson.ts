@@ -4,13 +4,13 @@ import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { parse } from 'jsonc-parser'
 import { camelize, capitalize } from '@vue/shared'
+import { normalizePagesJson } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 import {
   BASE_COMPONENTS_STYLE_PATH,
   FEATURE_DEFINES,
   H5_API_STYLE_PATH,
   H5_FRAMEWORK_STYLE_PATH,
-  normalizePagesJson,
 } from '../../utils'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
@@ -35,7 +35,7 @@ export function uniPagesJsonPlugin(
           code:
             (config.define!.__UNI_FEATURE_RPX__ ? registerGlobalCode : '') +
             (options.command === 'serve' ? registerDevServerGlobalCode : '') +
-            parsePagesJson(code, config, options),
+            generatePagesJsonCode(code, config, options),
           map: { mappings: '' },
         }
       }
@@ -54,7 +54,7 @@ interface PageRouteOptions {
   meta: Partial<UniApp.PageRouteMeta>
 }
 
-function parsePagesJson(
+function generatePagesJsonCode(
   jsonStr: string,
   config: ResolvedConfig,
   options: VitePluginUniResolvedOptions

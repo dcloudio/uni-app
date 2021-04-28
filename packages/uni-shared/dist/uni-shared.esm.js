@@ -181,13 +181,13 @@ function updateElementStyle(element, styles) {
 }
 function once(fn, ctx = null) {
     let res;
-    return (...args) => {
+    return ((...args) => {
         if (fn) {
             res = fn.apply(ctx, args);
             fn = null;
         }
         return res;
-    };
+    });
 }
 
 const encode = encodeURIComponent;

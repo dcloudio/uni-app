@@ -23,13 +23,16 @@ export function updateElementStyle(
   }
 }
 
-export function once(fn: (...args: any[]) => any, ctx: unknown = null) {
+export function once<T extends (...args: any[]) => any>(
+  fn: T,
+  ctx: unknown = null
+): T {
   let res: any
-  return (...args: any[]) => {
+  return ((...args: any[]) => {
     if (fn) {
       res = fn.apply(ctx, args)
       fn = null as any
     }
     return res
-  }
+  }) as T
 }
