@@ -225,6 +225,7 @@
   "apiList": {
     "uni.createRewardedVideoAd": true,
     "uni.createFullScreenVideoAd": true,
-    "uni.'createInterstitialAd'": true
+    "uni.'createInterstitialAd'": true,
+    "uni.'createInteractiveAd'": true
   }
 }]

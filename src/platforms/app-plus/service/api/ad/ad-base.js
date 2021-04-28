@@ -152,5 +152,7 @@ class AdBase {
 }
 
 export {
+  eventTypes,
+  eventNames,
   AdBase
 }

@@ -6,7 +6,7 @@ class InterstitialAd extends AdBase {
   constructor (options = {}) {
     super(plus.ad.createInterstitialAd(options), options)
 
-    this.load()
+    this._loadAd()
   }
 }
 
