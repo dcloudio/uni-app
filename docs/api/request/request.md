@@ -13,7 +13,7 @@
 |method|String|否|GET|有效值详见下方说明||
 |timeout|Number|否|60000|超时时间，单位 ms|H5(HBuilderX 2.9.9+)、APP(HBuilderX 2.9.9+)、微信小程序（2.10.0）、支付宝小程序|
 |dataType|String|否|json	|如果设为 json，会尝试对返回的数据做一次 JSON.parse||
-|responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|App和支付宝小程序不支持|
+|responseType|String|否|text	|设置响应的数据类型。合法值：text、arraybuffer|支付宝小程序不支持|
 |sslVerify|Boolean|否|true|验证 ssl 证书|仅App安卓端支持（HBuilderX 2.3.3+）|
 |withCredentials|Boolean|否|false|跨域请求时是否携带凭证（cookies）|仅H5支持（HBuilderX 2.6.15+）|
 |firstIpv4|Boolean|否|false|DNS解析时优先使用ipv4|仅 App-Android 支持 (HBuilderX 2.8.0+)|
