@@ -1,3 +1,27 @@
+#### 3.1.12.20210428
+* 【uni-app】
+  + App平台 修复 3.1.11 版本引出的 uni.chooseVideo 选取视频失败的Bug
+  + App-Android平台 修复 3.1.11 版本引出的 nvue 页面在项目配置 nvueCompiler 为 weex 时显示不正常的Bug [详情](https://ask.dcloud.net.cn/question/121905)
+  + App-iOS平台 修复 3.1.11 版本引起的 web-view 组件中 video 标签无法内联播放的Bug [详情](https://ask.dcloud.net.cn/question/121996)
+  + uni-ui 优化 为依赖 uni-icons 的 ui 组件添加依赖, 导入后自动下载依赖
+  + uni-ui 修复 uni-data-picker 非树形数据有 where 属性查询报错的问题
+  + uni-ui 新增 uni-datetime-picker 日历形式日期时间选择
+  + uni-ui 新增 uni-number-box v-model 双向绑定
+  + uni-ui 修复 uni-number-box 浮点数运算不精确的 bug
+  + uni-ui 修复 uni-number-box change 事件触发不正确的 bug
+  + uni-ui 修复 uni-rate 布局变化后 uni-rate  星星计算不准确的 bug
+  + uni-ui 新增 uni-transition 通过方法自定义动画
+  + uni-ui 新增 uni-transition custom-class 非 NVUE 平台支持自定义 class 定制样式
+  + uni-ui 优化 uni-transition 动画触发逻辑，使动画更流畅
+  + uni-ui 优化 uni-transition 支持单独的动画类型
+  + uni-ui 优化 uni-transition 文档示例
+* 【uniCloud】
+  + 【重要】clientDB联表查询策略调整，请参考此文档进行进行排查并调整：[clientDB联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
+  + clientDB 新增 联表查询支持副表foreignKey联查，即副表字段的foreignKey指向主表，把副表数据挂在主表下面 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=st-foreign-key)
+  + uniCloud本地调试插件 修复 阿里云偶发启动时多请求并发报错的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 修复 uni-AD 快手联盟的信息流广告可能返回高度不正确导致显示异常的Bug
+
 #### 3.1.11.20210423
 * 【uni-app】
   + App平台 新增 插屏广告 uni.createInterstitialAd [详情](https://uniapp.dcloud.net.cn/api/a-d/interstitial)
