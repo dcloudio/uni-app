@@ -6932,7 +6932,7 @@ var serviceContext = (function () {
       height: data.height,
       width: data.width,
       fps: data.fps || 30,
-      bitrate: data.bitrate,
+      bitrate: data.bitrate
     }
   });
 
@@ -10848,7 +10848,6 @@ var serviceContext = (function () {
       ad.onLoad((e) => {
         this._isLoaded = true;
         this._isLoading = false;
-        this._dispatchEvent(eventTypes.load, {});
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
@@ -10859,6 +10858,8 @@ var serviceContext = (function () {
           this._showPromiseResolve = null;
           this._showAd();
         }
+
+        this._dispatchEvent(eventTypes.load, {});
       });
       ad.onClose((e) => {
         this._isLoaded = false;
@@ -10881,17 +10882,17 @@ var serviceContext = (function () {
 
         this._dispatchEvent(eventTypes.error, data);
 
-        const promiseError = new Error(JSON.stringify(this._adError));
-        promiseError.code = e.code;
-        promiseError.errMsg = e.message;
+        const error = new Error(JSON.stringify(this._adError));
+        error.code = e.code;
+        error.errMsg = e.message;
 
         if (this._loadPromiseReject != null) {
-          this._loadPromiseReject(promiseError);
+          this._loadPromiseReject(error);
           this._loadPromiseReject = null;
         }
 
         if (this._showPromiseReject != null) {
-          this._showPromiseReject(promiseError);
+          this._showPromiseReject(error);
           this._showPromiseReject = null;
         }
       });
@@ -11146,7 +11147,6 @@ var serviceContext = (function () {
         }, (res) => {
           this._isLoaded = true;
           this._isLoading = false;
-          this._dispatchEvent(eventTypes.load, res);
 
           if (this._loadPromiseResolve != null) {
             this._loadPromiseResolve();
@@ -11157,14 +11157,17 @@ var serviceContext = (function () {
             this._showPromiseResolve = null;
             this._showAd();
           }
+
+          this._dispatchEvent(eventTypes.load, res);
         }, (err) => {
           this._isLoading = false;
-          this._dispatchEvent(eventTypes.error, err);
 
           if (this._showPromiseReject != null) {
             this._showPromiseReject(this._createError(err));
             this._showPromiseReject = null;
           }
+
+          this._dispatchEvent(eventTypes.error, err);
         });
       }
     }
@@ -11177,12 +11180,13 @@ var serviceContext = (function () {
           this._isLoaded = false;
         }, (err) => {
           this._isLoaded = false;
-          this._dispatchEvent(eventTypes.error, err);
 
           if (this._showPromiseReject != null) {
             this._showPromiseReject(this._createError(err));
             this._showPromiseReject = null;
           }
+
+          this._dispatchEvent(eventTypes.error, err);
         });
       }
     }
