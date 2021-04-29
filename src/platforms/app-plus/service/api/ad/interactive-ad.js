@@ -169,7 +169,6 @@ class InteractiveAd {
       }, (res) => {
         this._isLoaded = true
         this._isLoading = false
-        this._dispatchEvent(eventTypes.load, res)
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve()
@@ -180,14 +179,17 @@ class InteractiveAd {
           this._showPromiseResolve = null
           this._showAd()
         }
+
+        this._dispatchEvent(eventTypes.load, res)
       }, (err) => {
         this._isLoading = false
-        this._dispatchEvent(eventTypes.error, err)
 
         if (this._showPromiseReject != null) {
           this._showPromiseReject(this._createError(err))
           this._showPromiseReject = null
         }
+
+        this._dispatchEvent(eventTypes.error, err)
       })
     }
   }
@@ -200,12 +202,13 @@ class InteractiveAd {
         this._isLoaded = false
       }, (err) => {
         this._isLoaded = false
-        this._dispatchEvent(eventTypes.error, err)
 
         if (this._showPromiseReject != null) {
           this._showPromiseReject(this._createError(err))
           this._showPromiseReject = null
         }
+
+        this._dispatchEvent(eventTypes.error, err)
       })
     }
   }
