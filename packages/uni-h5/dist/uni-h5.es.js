@@ -195,19 +195,19 @@ E.prototype = {
   }
 };
 function initBridge(namespace) {
-  const emitter2 = new E();
-  return extend(emitter2, {
+  const emitter = new E();
+  return extend(emitter, {
     subscribe(event2, callback) {
-      emitter2.on(`${namespace}.${event2}`, callback);
+      emitter.on(`${namespace}.${event2}`, callback);
     },
     unsubscribe(event2, callback) {
-      emitter2.off(`${namespace}.${event2}`, callback);
+      emitter.off(`${namespace}.${event2}`, callback);
     },
     subscribeHandler(event2, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
         console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event2}, ${JSON.stringify(args)}, ${pageId}`);
       }
-      emitter2.emit(`${namespace}.${event2}`, args, pageId);
+      emitter.emit(`${namespace}.${event2}`, args, pageId);
     }
   });
 }
@@ -447,7 +447,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -459,10 +459,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1113,7 +1113,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3543,7 +3543,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$k = {
+var index$l = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -3662,103 +3662,6 @@ function setupApp(comp) {
     }
   });
 }
-function broadcast(componentName, eventName, ...params) {
-  const children = this.$children;
-  const len = children.length;
-  for (let i2 = 0; i2 < len; i2++) {
-    const child = children[i2];
-    const name = child.$options.name && child.$options.name.substr(4);
-    if (~componentName.indexOf(name)) {
-      child.$emit.apply(child, [eventName].concat(params));
-      return false;
-    } else {
-      if (broadcast.apply(child, [componentName, eventName].concat([params])) === false) {
-        return false;
-      }
-    }
-  }
-}
-var emitter = {
-  methods: {
-    $dispatch(componentName, eventName, ...params) {
-      console.log("$dispatch", componentName, eventName, params);
-    },
-    $broadcast(componentName, eventName, ...params) {
-      if (typeof componentName === "string") {
-        componentName = [componentName];
-      }
-      broadcast.apply(this, [componentName, eventName].concat(params));
-    }
-  }
-};
-var listeners = {
-  props: {
-    id: {
-      type: String,
-      default: ""
-    }
-  },
-  created() {
-    this._addListeners(this.id);
-    this.$watch("id", (newId, oldId) => {
-      this._removeListeners(oldId, true);
-      this._addListeners(newId, true);
-    });
-  },
-  beforeDestroy() {
-    this._removeListeners(this.id);
-  },
-  methods: {
-    _addListeners(id2, watch2) {
-      if (watch2 && !id2) {
-        return;
-      }
-      const {listeners: listeners2} = this.$options;
-      if (!isPlainObject(listeners2)) {
-        return;
-      }
-      Object.keys(listeners2).forEach((name) => {
-        if (watch2) {
-          if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-            UniViewJSBridge.on(`uni-${name}-${this.$page.id}-${id2}`, this[listeners2[name]]);
-          }
-        } else {
-          if (name.indexOf("@") === 0) {
-            this.$on(`uni-${name.substr(1)}`, this[listeners2[name]]);
-          } else if (name.indexOf("uni-") === 0) {
-            UniViewJSBridge.on(name, this[listeners2[name]]);
-          } else if (id2) {
-            UniViewJSBridge.on(`uni-${name}-${this.$page.id}-${id2}`, this[listeners2[name]]);
-          }
-        }
-      });
-    },
-    _removeListeners(id2, watch2) {
-      if (watch2 && !id2) {
-        return;
-      }
-      const {listeners: listeners2} = this.$options;
-      if (!isPlainObject(listeners2)) {
-        return;
-      }
-      Object.keys(listeners2).forEach((name) => {
-        if (watch2) {
-          if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-            UniViewJSBridge.off(`uni-${name}-${this.$page.id}-${id2}`, this[listeners2[name]]);
-          }
-        } else {
-          if (name.indexOf("@") === 0) {
-            this.$off(`uni-${name.substr(1)}`, this[listeners2[name]]);
-          } else if (name.indexOf("uni-") === 0) {
-            UniViewJSBridge.off(name, this[listeners2[name]]);
-          } else if (id2) {
-            UniViewJSBridge.off(`uni-${name}-${this.$page.id}-${id2}`, this[listeners2[name]]);
-          }
-        }
-      });
-    }
-  }
-};
 var hover = {
   data() {
     return {
@@ -3892,7 +3795,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$8 = {
+const _sfc_main$7 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4011,13 +3914,13 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$5 = {class: "uni-audio-default"};
+const _hoisted_1$4 = {class: "uni-audio-default"};
 const _hoisted_2$3 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4027,7 +3930,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$5, [
+    createVNode("div", _hoisted_1$4, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4047,7 +3950,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$7.render = _sfc_render$7;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4132,7 +4035,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$j = /* @__PURE__ */ defineComponent({
+var index$k = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -4171,7 +4074,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$i = /* @__PURE__ */ defineComponent({
+var index$j = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -4284,7 +4187,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$7 = {
+const _sfc_main$6 = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -4780,19 +4683,19 @@ const _sfc_main$7 = {
     }
   }
 };
-const _hoisted_1$4 = {
+const _hoisted_1$3 = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$4, null, 512),
+    createVNode("canvas", _hoisted_1$3, null, 512),
     createVNode("div", _hoisted_2$2, [
       renderSlot(_ctx.$slots, "default")
     ]),
@@ -4802,57 +4705,57 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$7.render = _sfc_render$7;
-function useListeners(props2, listeners2) {
-  _addListeners(props2.id, listeners2);
+_sfc_main$6.render = _sfc_render$6;
+function useListeners(props2, listeners) {
+  _addListeners(props2.id, listeners);
   watch(() => props2.id, (newId, oldId) => {
-    _removeListeners(oldId, listeners2, true);
-    _addListeners(newId, listeners2, true);
+    _removeListeners(oldId, listeners, true);
+    _addListeners(newId, listeners, true);
   });
   onUnmounted(() => {
-    _removeListeners(props2.id, listeners2);
+    _removeListeners(props2.id, listeners);
   });
 }
-function _addListeners(id2, listeners2, watch2) {
+function _addListeners(id2, listeners, watch2) {
   const pageId = useCurrentPageId();
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners2)) {
+  if (!isPlainObject(listeners)) {
     return;
   }
-  Object.keys(listeners2).forEach((name) => {
+  Object.keys(listeners).forEach((name) => {
     if (watch2) {
       if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
       }
     } else {
       if (name.indexOf("uni-") === 0) {
-        UniViewJSBridge.on(name, listeners2[name]);
+        UniViewJSBridge.on(name, listeners[name]);
       } else if (id2) {
-        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
       }
     }
   });
 }
-function _removeListeners(id2, listeners2, watch2) {
+function _removeListeners(id2, listeners, watch2) {
   const pageId = useCurrentPageId();
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners2)) {
+  if (!isPlainObject(listeners)) {
     return;
   }
-  Object.keys(listeners2).forEach((name) => {
+  Object.keys(listeners).forEach((name) => {
     if (watch2) {
       if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
       }
     } else {
       if (name.indexOf("uni-") === 0) {
-        UniViewJSBridge.off(name, listeners2[name]);
+        UniViewJSBridge.off(name, listeners[name]);
       } else if (id2) {
-        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
       }
     }
   });
@@ -4876,15 +4779,15 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$g = {
+const props$h = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineComponent({
+var index$i = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$g,
+  props: props$h,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -4937,15 +4840,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$f = {
+const props$g = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$g = /* @__PURE__ */ defineComponent({
+var index$h = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$f,
+  props: props$g,
   setup(props2, {
     emit: emit2,
     slots
@@ -4990,7 +4893,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$e = {
+const props$f = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5012,9 +4915,9 @@ const props$e = {
     default: ""
   }
 };
-var index$f = /* @__PURE__ */ defineComponent({
+var index$g = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$e,
+  props: props$f,
   setup(props2, {
     slots
   }) {
@@ -5093,7 +4996,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$d = {
+const props$e = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5837,7 +5740,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$c = /* @__PURE__ */ Object.assign({}, props$d, {
+const props$d = /* @__PURE__ */ Object.assign({}, props$e, {
   id: {
     type: String,
     default: ""
@@ -5863,9 +5766,9 @@ const props$c = /* @__PURE__ */ Object.assign({}, props$d, {
     default: false
   }
 });
-var index$e = /* @__PURE__ */ defineComponent({
+var index$f = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$c,
+  props: props$d,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -5925,7 +5828,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$d = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -6016,7 +5919,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$b = {
+const props$c = {
   src: {
     type: String,
     default: ""
@@ -6053,9 +5956,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$c = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$b,
+  props: props$c,
   setup(props2, {
     emit: emit2
   }) {
@@ -6334,7 +6237,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$a = /* @__PURE__ */ Object.assign({}, {
+const props$b = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -6395,7 +6298,7 @@ const props$a = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$d);
+}, props$e);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -6580,7 +6483,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$9 = /* @__PURE__ */ Object.assign({}, props$a, {
+const props$a = /* @__PURE__ */ Object.assign({}, props$b, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -6588,7 +6491,7 @@ const props$9 = /* @__PURE__ */ Object.assign({}, props$a, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$9,
+  props: props$a,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7151,7 +7054,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$6 = {
+const _sfc_main$5 = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7703,14 +7606,14 @@ const _sfc_main$6 = {
     }
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$5.render = _sfc_render$5;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7718,7 +7621,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$5 = {
+const _sfc_main$4 = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -7791,7 +7694,7 @@ const _sfc_main$5 = {
     }
   }
 };
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -7808,13 +7711,13 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$4.render = _sfc_render$4;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$8 = {
+const props$9 = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7861,9 +7764,9 @@ const props$8 = {
     }
   }
 };
-var index$b = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -7934,15 +7837,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$7 = {
+const props$8 = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var index$b = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
-  props: props$7,
+  props: props$8,
   setup(props2, {
     emit: emit2,
     slots
@@ -8021,7 +7924,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$6 = {
+const props$7 = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -8043,9 +7946,9 @@ const props$6 = {
     default: ""
   }
 };
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineComponent({
   name: "Radio",
-  props: props$6,
+  props: props$7,
   setup(props2, {
     slots
   }) {
@@ -8339,7 +8242,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "RichText",
   props: {
     nodes: {
@@ -8368,13 +8271,13 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$2 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$3
+    _hoisted_1$2
   ], 16);
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$3.render = _sfc_render$3;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -9047,7 +8950,7 @@ var scroller = {
   }
 };
 const passiveOptions = passive(true);
-const _sfc_main$3 = {
+const _sfc_main$2 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -9455,7 +9358,7 @@ const _sfc_main$3 = {
     }
   }
 };
-const _hoisted_1$2 = {
+const _hoisted_1$1 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
@@ -9488,9 +9391,9 @@ const _hoisted_8 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _ctx.$attrs, [
-    createVNode("div", _hoisted_1$2, [
+    createVNode("div", _hoisted_1$1, [
       createVNode("div", {
         ref: "main",
         style: {
@@ -9536,7 +9439,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 16);
 }
-_sfc_main$3.render = _sfc_render$3;
+_sfc_main$2.render = _sfc_render$2;
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback === "function") {
@@ -9646,7 +9549,7 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
-const props$5 = {
+const props$6 = {
   name: {
     type: String,
     default: ""
@@ -9700,9 +9603,9 @@ const props$5 = {
     default: false
   }
 };
-var index$8 = /* @__PURE__ */ defineComponent({
+var index$9 = /* @__PURE__ */ defineComponent({
   name: "Slider",
-  props: props$5,
+  props: props$6,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -9867,7 +9770,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const _sfc_main$2 = {
+const _sfc_main$1 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -9888,112 +9791,120 @@ const _sfc_main$2 = {
     }
   }
 };
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$2.render = _sfc_render$2;
-const _sfc_main$1 = {
-  name: "Switch",
-  mixins: [emitter, listeners],
-  props: {
-    name: {
-      type: String,
-      default: ""
-    },
-    checked: {
-      type: [Boolean, String],
-      default: false
-    },
-    type: {
-      type: String,
-      default: "switch"
-    },
-    id: {
-      type: String,
-      default: ""
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    color: {
-      type: String,
-      default: "#007aff"
-    }
+_sfc_main$1.render = _sfc_render$1;
+const props$5 = {
+  name: {
+    type: String,
+    default: ""
   },
-  data() {
-    return {
-      switchChecked: this.checked
-    };
+  checked: {
+    type: [Boolean, String],
+    default: false
   },
-  watch: {
-    checked(val) {
-      this.switchChecked = val;
-    }
+  type: {
+    type: String,
+    default: "switch"
   },
-  created() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "add",
-      vm: this
-    });
+  id: {
+    type: String,
+    default: ""
   },
-  beforeDestroy() {
-    this.$dispatch("Form", "uni-form-group-update", {
-      type: "remove",
-      vm: this
-    });
+  disabled: {
+    type: [Boolean, String],
+    default: false
   },
-  listeners: {
-    "label-click": "_onClick",
-    "@label-click": "_onClick"
-  },
-  methods: {
-    _onClick($event) {
-      if (this.disabled) {
-        return;
-      }
-      this.switchChecked = !this.switchChecked;
-      this.$trigger("change", $event, {
-        value: this.switchChecked
-      });
-    },
-    _resetFormData() {
-      this.switchChecked = false;
-    },
-    _getFormData() {
-      const data = {};
-      if (this.name !== "") {
-        data.value = this.switchChecked;
-        data.key = this.name;
-      }
-      return data;
-    }
+  color: {
+    type: String,
+    default: "#007aff"
   }
 };
-const _hoisted_1$1 = {class: "uni-switch-wrapper"};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-switch", mergeProps({disabled: $props.disabled}, _ctx.$attrs, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    createVNode("div", _hoisted_1$1, [
-      withDirectives(createVNode("div", {
-        class: [[$data.switchChecked ? "uni-switch-input-checked" : ""], "uni-switch-input"],
-        style: {backgroundColor: $data.switchChecked ? $props.color : "#DFDFDF", borderColor: $data.switchChecked ? $props.color : "#DFDFDF"}
-      }, null, 6), [
-        [vShow, $props.type === "switch"]
-      ]),
-      withDirectives(createVNode("div", {
-        class: [[$data.switchChecked ? "uni-checkbox-input-checked" : ""], "uni-checkbox-input"],
-        style: {color: $props.color}
-      }, null, 6), [
-        [vShow, $props.type === "checkbox"]
-      ])
-    ])
-  ], 16, ["disabled"]);
+var index$8 = /* @__PURE__ */ defineComponent({
+  name: "Switch",
+  props: props$5,
+  emits: ["change"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const switchChecked = ref(props2.checked);
+    const uniLabel = useSwitchInject(props2, switchChecked);
+    const trigger = useCustomEvent(rootRef, emit2);
+    watch(() => props2.checked, (val) => {
+      switchChecked.value = val;
+    });
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      switchChecked.value = !switchChecked.value;
+      trigger("change", $event, {
+        value: switchChecked.value
+      });
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        color,
+        type
+      } = props2;
+      const {
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-switch", mergeProps({
+        ref: rootRef
+      }, booleanAttrs, {
+        onClick: _onClick
+      }), [createVNode("div", {
+        class: "uni-switch-wrapper"
+      }, [withDirectives(createVNode("div", {
+        class: ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+        style: {
+          backgroundColor: switchChecked.value ? color : "#DFDFDF",
+          borderColor: switchChecked.value ? color : "#DFDFDF"
+        }
+      }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+        class: "uni-checkbox-input"
+      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
+    };
+  }
+});
+function useSwitchInject(props2, switchChecked) {
+  const uniForm = inject(uniFormKey, false);
+  const uniLabel = inject(uniLabelKey, false);
+  const formField = {
+    submit: () => {
+      const data = ["", null];
+      if (props2.name) {
+        data[0] = props2.name;
+        data[1] = switchChecked.value;
+      }
+      return data;
+    },
+    reset: () => {
+      switchChecked.value = false;
+    }
+  };
+  if (!!uniForm) {
+    uniForm.addField(formField);
+    onUnmounted(() => {
+      uniForm.removeField(formField);
+    });
+  }
+  return uniLabel;
 }
-_sfc_main$1.render = _sfc_render$1;
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
@@ -10060,7 +9971,7 @@ var index$7 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$4 = /* @__PURE__ */ Object.assign({}, props$a, {
+const props$4 = /* @__PURE__ */ Object.assign({}, props$b, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -10268,7 +10179,7 @@ const useAttrs = (params = {}) => {
   const {excludeListeners = false, excludeKeys = []} = params;
   const instance2 = getCurrentInstance();
   const attrs2 = shallowRef({});
-  const listeners2 = shallowRef({});
+  const listeners = shallowRef({});
   const excludeAttrs = shallowRef({});
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
   instance2.attrs = reactive(instance2.attrs);
@@ -10291,10 +10202,10 @@ const useAttrs = (params = {}) => {
       listeners: {}
     });
     attrs2.value = res.attrs;
-    listeners2.value = res.listeners;
+    listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return {$attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs};
+  return {$attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs};
 };
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -11379,7 +11290,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -11492,12 +11403,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -11517,10 +11428,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -14519,4 +14430,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$i as Button, _sfc_main$7 as Canvas, index$f as Checkbox, index$h as CheckboxGroup, index$e as Editor, index$j as Form, index$d as Icon, index$c as Image, Input, index$g as Label, LayoutComponent, _sfc_main$6 as MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$b as Progress, index$9 as Radio, index$a as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$8 as Slider, _sfc_main$2 as SwiperItem, _sfc_main$1 as Switch, index$7 as Text, index$6 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$4 as Video, index$5 as View, index$3 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$k as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$j as Button, _sfc_main$6 as Canvas, index$g as Checkbox, index$i as CheckboxGroup, index$f as Editor, index$k as Form, index$e as Icon, index$d as Image, Input, index$h as Label, LayoutComponent, _sfc_main$5 as MovableView, _sfc_main$4 as Navigator, index$2 as PageComponent, index$c as Progress, index$a as Radio, index$b as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, index$9 as Slider, _sfc_main$1 as SwiperItem, index$8 as Switch, index$7 as Text, index$6 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$4 as Video, index$5 as View, index$3 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$l as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

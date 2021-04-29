@@ -12,16 +12,13 @@ uni-switch[disabled] {
   cursor: not-allowed;
 }
 
-uni-switch .uni-switch-wrapper {
-  display: -webkit-inline-flex;
+.uni-switch-wrapper {
   display: inline-flex;
-  -webkit-align-items: center;
   align-items: center;
   vertical-align: middle;
 }
 
-uni-switch .uni-switch-input {
-  -webkit-appearance: none;
+.uni-switch-input {
   appearance: none;
   position: relative;
   width: 52px;
@@ -39,7 +36,7 @@ uni-switch[disabled] .uni-switch-input {
   opacity: 0.7;
 }
 
-uni-switch .uni-switch-input:before {
+.uni-switch-input:before {
   content: ' ';
   position: absolute;
   top: 0;
@@ -48,12 +45,10 @@ uni-switch .uni-switch-input:before {
   height: 30px;
   border-radius: 15px;
   background-color: #fdfdfd;
-  transition: -webkit-transform 0.3s;
   transition: transform 0.3s;
-  transition: transform 0.3s, -webkit-transform 0.3s;
 }
 
-uni-switch .uni-switch-input:after {
+.uni-switch-input:after {
   content: ' ';
   position: absolute;
   top: 0;
@@ -68,24 +63,21 @@ uni-switch .uni-switch-input:after {
   transition: transform 0.3s, -webkit-transform 0.3s;
 }
 
-uni-switch .uni-switch-input.uni-switch-input-checked {
+.uni-switch-input.uni-switch-input-checked {
   border-color: #007aff;
   background-color: #007aff;
 }
 
-uni-switch .uni-switch-input.uni-switch-input-checked:before {
-  -webkit-transform: scale(0);
+.uni-switch-input.uni-switch-input-checked:before {
   transform: scale(0);
 }
 
-uni-switch .uni-switch-input.uni-switch-input-checked:after {
-  -webkit-transform: translateX(20px);
+.uni-switch-input.uni-switch-input-checked:after {
   transform: translateX(20px);
 }
 
 uni-switch .uni-checkbox-input {
   margin-right: 5px;
-  -webkit-appearance: none;
   appearance: none;
   outline: 0;
   border: 1px solid #d1d1d1;
@@ -101,20 +93,19 @@ uni-switch:not([disabled]) .uni-checkbox-input:hover {
   border-color: #007aff;
 }
 
-.uni-checkbox-input svg {
+uni-switch .uni-checkbox-input svg {
   color: inherit;
   font-size: 22px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -48%) scale(0.73);
-  -webkit-transform: translate(-50%, -48%) scale(0.73);
 }
 
-uni-switch .uni-checkbox-input.uni-checkbox-input-disabled {
+.uni-checkbox-input.uni-checkbox-input-disabled {
   background-color: #e1e1e1;
 }
 
-uni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {
+.uni-checkbox-input.uni-checkbox-input-disabled:before {
   color: #adadad;
 }
