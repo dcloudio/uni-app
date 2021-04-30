@@ -14,6 +14,7 @@ import {
   API_TYPE_CLOSE_SOCKET,
   CloseSocketProtocol,
 } from '@dcloudio/uni-api'
+import { callback } from '../../../helpers/utils'
 
 type eventName = keyof WebSocketEventMap
 
@@ -116,9 +117,9 @@ class SocketTask implements UniApp.SocketTask {
         throw new Error('SocketTask.readyState is not OPEN')
       }
       ws.send(data)
-      this._callback(options, 'sendSocketMessage:ok')
+      callback(options, 'sendSocketMessage:ok')
     } catch (error) {
-      this._callback(options, `sendSocketMessage:fail ${error}`)
+      callback(options, `sendSocketMessage:fail ${error}`)
     }
   }
 
@@ -137,40 +138,11 @@ class SocketTask implements UniApp.SocketTask {
       } else {
         ws.close(code)
       }
-      this._callback(options, 'closeSocket:ok')
+      callback(options, 'closeSocket:ok')
     } catch (error) {
-      this._callback(options, `closeSocket:fail ${error}`)
+      callback(options, `closeSocket:fail ${error}`)
     }
   }
-
-  /**
-   * 通用回调处理
-   */
-  _callback(
-    {
-      success,
-      fail,
-      complete,
-    }: UniApp.SendSocketMessageOptions | UniApp.CloseSocketOptions = {},
-    errMsg: string
-  ) {
-    const data = {
-      errMsg,
-    }
-    if (/:ok$/.test(errMsg)) {
-      if (typeof success === 'function') {
-        success(data)
-      }
-    } else {
-      if (typeof fail === 'function') {
-        fail(data)
-      }
-    }
-    if (typeof complete === 'function') {
-      complete(data)
-    }
-  }
-
   onOpen(callback: (result: any) => void) {
     this._callbacks.open.push(callback)
   }

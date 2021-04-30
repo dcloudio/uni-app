@@ -13164,9 +13164,9 @@ class SocketTask {
           const res = name === "message" ? {
             data: event2.data
           } : {};
-          this._callbacks[name].forEach((callback22) => {
+          this._callbacks[name].forEach((callback3) => {
             try {
-              callback22(res);
+              callback3(res);
             } catch (e2) {
               console.error(`thirdScriptError
 ${e2};at socketTask.on${capitalize(name)} callback function
@@ -13211,9 +13211,9 @@ ${e2};at socketTask.on${capitalize(name)} callback function
         throw new Error("SocketTask.readyState is not OPEN");
       }
       ws.send(data);
-      this._callback(options, "sendSocketMessage:ok");
+      callback(options, "sendSocketMessage:ok");
     } catch (error) {
-      this._callback(options, `sendSocketMessage:fail ${error}`);
+      callback(options, `sendSocketMessage:fail ${error}`);
     }
   }
   close(options = {}) {
@@ -13226,30 +13226,9 @@ ${e2};at socketTask.on${capitalize(name)} callback function
       } else {
         ws.close(code);
       }
-      this._callback(options, "closeSocket:ok");
+      callback(options, "closeSocket:ok");
     } catch (error) {
-      this._callback(options, `closeSocket:fail ${error}`);
-    }
-  }
-  _callback({
-    success,
-    fail,
-    complete
-  } = {}, errMsg) {
-    const data = {
-      errMsg
-    };
-    if (/:ok$/.test(errMsg)) {
-      if (typeof success === "function") {
-        success(data);
-      }
-    } else {
-      if (typeof fail === "function") {
-        fail(data);
-      }
-    }
-    if (typeof complete === "function") {
-      complete(data);
+      callback(options, `closeSocket:fail ${error}`);
     }
   }
   onOpen(callback2) {
