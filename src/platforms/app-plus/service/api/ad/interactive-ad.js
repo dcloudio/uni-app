@@ -12,8 +12,11 @@ const sdkQueue = {}
 
 function initSDK (options) {
   const provider = options.provider
-  if (typeof sdkCache[provider] === 'object') {
-    options.success(sdkCache[provider])
+  if (!sdkCache[provider]) {
+    sdkCache[provider] = {}
+  }
+  if (typeof sdkCache[provider].plugin === 'object') {
+    options.success(sdkCache[provider].plugin)
     return
   }
 
@@ -22,10 +25,11 @@ function initSDK (options) {
   }
   sdkQueue[provider].push(options)
 
-  if (sdkCache[provider] === true) {
+  if (sdkCache[provider].status === true) {
+    options.__plugin = sdkCache[provider].plugin
     return
   }
-  sdkCache[provider] = true
+  sdkCache[provider].status = true
 
   const plugin = requireNativePlugin(provider)
   if (!plugin || !plugin.initSDK) {
@@ -36,18 +40,21 @@ function initSDK (options) {
       })
     })
     sdkQueue[provider].length = 0
-    sdkCache[provider] = false
+    sdkCache[provider].status = false
     return
   }
 
+  // TODO
+  sdkCache[provider].plugin = plugin
   options.__plugin = plugin
   plugin.initSDK((res) => {
     const isSuccess = (res.code === 1 || res.code === '1')
     if (isSuccess) {
-      sdkCache[provider] = plugin
+      sdkCache[provider].plugin = plugin
     } else {
-      sdkCache[provider] = false
+      sdkCache[provider].status = false
     }
+
     sdkQueue[provider].forEach((item) => {
       if (isSuccess) {
         item.success(item.__plugin)
