@@ -1246,7 +1246,7 @@ function validateProp(name, value, prop, isAbsent) {
   if (!isPlainObject(prop)) {
     prop = {type: prop};
   }
-  const {type, required, validator} = prop;
+  const {type, required, validator: validator2} = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
@@ -1266,8 +1266,8 @@ function validateProp(name, value, prop, isAbsent) {
       return getInvalidTypeMessage(name, value, expectedTypes);
     }
   }
-  if (validator) {
-    return validator(value);
+  if (validator2) {
+    return validator2(value);
   }
 }
 const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
@@ -1677,6 +1677,13 @@ function operateVideoPlayer(videoId, vm, type, data) {
     data
   }, pageId);
 }
+function operateMap(id2, vm, type, data) {
+  const pageId = vm.$root.$page.id;
+  UniServiceJSBridge.publishHandler("map." + id2, {
+    type,
+    data
+  }, pageId);
+}
 function addIntersectionObserver({reqId, component, options, callback: callback2}, _pageId) {
   const $el = findElem(component);
   ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback2);
@@ -1811,7 +1818,16 @@ const promiseInterceptor = {
     });
   }
 };
+const validator = [
+  {
+    name: "id",
+    type: String,
+    required: true
+  }
+];
 const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
+const API_CREATE_MAP_CONTEXT = "createMapContext";
+const CreateMapContextProtocol = validator;
 const API_CREATE_INNER_AUDIO_CONTEXT = "createInnerAudioContext";
 const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
 class VideoContext {
@@ -1863,6 +1879,58 @@ const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context
   }
   return new VideoContext(id2, getCurrentPageVm());
 });
+class MapContext {
+  constructor(id2, vm) {
+    this.id = id2;
+    this.vm = vm;
+  }
+  getCenterLocation(options) {
+    operateMap(this.id, this.vm, "getCenterLocation", options);
+  }
+  moveToLocation() {
+    operateMap(this.id, this.vm, "moveToLocation");
+  }
+  getScale(options) {
+    operateMap(this.id, this.vm, "getScale", options);
+  }
+  getRegion(options) {
+    operateMap(this.id, this.vm, "getRegion", options);
+  }
+  includePoints(options) {
+    operateMap(this.id, this.vm, "includePoints", options);
+  }
+  translateMarker(options) {
+    operateMap(this.id, this.vm, "translateMarker", options);
+  }
+  addCustomLayer() {
+  }
+  removeCustomLayer() {
+  }
+  addGroundOverlay() {
+  }
+  removeGroundOverlay() {
+  }
+  updateGroundOverlay() {
+  }
+  initMarkerCluster() {
+  }
+  addMarkers() {
+  }
+  removeMarkers() {
+  }
+  moveAlong() {
+  }
+  openMapAp() {
+  }
+  $getAppMap() {
+  }
+}
+const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
+  if (context) {
+    return new MapContext(id2, context);
+  }
+  return new MapContext(id2, getCurrentPageVm());
+}, CreateMapContextProtocol);
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -13913,6 +13981,7 @@ var api = /* @__PURE__ */ Object.freeze({
   createIntersectionObserver,
   createSelectorQuery,
   createVideoContext,
+  createMapContext,
   onTabBarMidButtonTap,
   cssVar,
   cssEnv,
@@ -15504,4 +15573,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$k as Button, _sfc_main$6 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, index$g as Editor, index$l as Form, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, _sfc_main$5 as MovableView, _sfc_main$4 as Navigator, index$2 as PageComponent, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, index$a as Slider, _sfc_main$1 as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$m as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$k as Button, _sfc_main$6 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, index$g as Editor, index$l as Form, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, _sfc_main$5 as MovableView, _sfc_main$4 as Navigator, index$2 as PageComponent, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, index$a as Slider, _sfc_main$1 as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$m as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

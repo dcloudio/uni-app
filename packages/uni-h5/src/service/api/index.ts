@@ -55,5 +55,6 @@ export {
   createIntersectionObserver,
   createSelectorQuery,
   createVideoContext,
+  createMapContext,
   onTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
