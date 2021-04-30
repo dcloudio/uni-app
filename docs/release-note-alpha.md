@@ -1,3 +1,44 @@
+#### 3.1.14.20210430-alpha
+* 【uni-app】
+  + App平台、小程序平台 新增 uni.getUserProfile 方法用于获取用户信息 [详情](https://uniapp.dcloud.io/api/plugins/login?id=getuserprofile)
+  + App平台、H5平台 优化 progress 组件支持 duration 参数
+  + App平台 优化 uni.getVideoInfo 返回信息增加 orientation、type、bitrate 属性
+  + App平台 修复 3.1.10 版本引出的 uni.chooseVideo 选取视频失败的Bug
+  + App-Android平台 新增 uni.request 网络请求支持 TLS 双向认证 [详情](https://ask.dcloud.net.cn/article/38981)
+  + App-Android平台 修复 nvue map 组件 marker 执行移动动画时 callout 可能不会跟随的Bug [详情](https://ask.dcloud.net.cn/question/120985)
+  + App-Android平台 修复 nvue video 组件在调用分享功能返回后，视频封面会消失的Bug [详情](https://ask.dcloud.net.cn/question/121364)
+  + H5平台 修复 getSystemInfoSync()获取windowBottom的高度错误 [详情](https://ask.dcloud.net.cn/question/121154)
+  + 小程序平台 修复 v-for 表达式包含方法时事件编译错误的Bug
+  + uni-ui 优化 为依赖 uni-icons 的 ui 组件添加依赖, 导入后自动下载依赖
+  + uni-ui 修复 uni-data-picker 非树形数据有 where 属性查询报错的问题
+  + uni-ui 新增 uni-datetime-picker 日历形式的日期时间选择
+  + uni-ui 新增 uni-number-box v-model 双向绑定
+  + uni-ui 修复 uni-number-box 浮点数运算不精确的Bug
+  + uni-ui 修复 uni-number-box change 事件触发不正确的Bug
+  + uni-ui 修复 uni-rate 布局变化后星星计算不准确的Bug
+  + uni-ui 新增 uni-transition 通过方法自定义动画
+  + uni-ui 新增 uni-transition custom-class 非 NVUE 平台支持自定义 class 定制样式
+  + uni-ui 优化 uni-transition 动画触发逻辑，使动画更流畅
+  + uni-ui 优化 uni-transition 支持单独的动画类型
+  + uni-ui 优化 uni-transition 文档示例
+* 【uniCloud】
+  + 【重要】clientDB联表查询策略调整，请参考此文档进行进行排查并调整：[clientDB联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
+  + clientDB 新增 联表查询支持副表foreignKey联查，即副表字段的foreignKey指向主表，把副表数据挂在主表下面 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=st-foreign-key)
+  + uniCloud本地调试插件 修复 阿里云偶发启动时多请求并发报错的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + 新增 一键登录 全屏模式支持在登录界面添加自定义登录按钮 [详情](https://uniapp.dcloud.io/univerify)
+  + 新增 获取视频信息 getVideoInfo 支持获取画面方向 orientation、视频格式 type、视频码率 bitrate [文档](https://www.html5plus.org/doc/zh_cn/io.html#plus.io.VideoInfo)
+  + Android平台 优化 原生模板隐私政策提示框逻辑，解决部分应用市场检测到弹出隐私政策框之前读取mac地址和应用列表的问题 [文档](https://ask.dcloud.net.cn/article/36937)
+  + Android平台 更新 新浪微博分享、授权登录 SDK 为 10.10.0 版，适配支持 Android11 设备
+  + Android平台 更新 高德地图 SDK 为 7.9.1 版，高德定位 SDK 为 5.3.1 版，友盟统计 SDK 为 9.3.8 版
+  + Android平台 修复 腾讯云等安全检测平台报的部分高风险漏洞 [详情](https://ask.dcloud.net.cn/article/39020)
+  + Android平台 修复 uni-AD 开通基础开屏广告在弱网状态可能引起崩溃的Bug
+  + Android平台 修复 uni-AD 快手联盟的信息流广告可能返回高度不正确导致显示异常的Bug
+  + Android平台 修复 uni原生插件在原生模板隐私政策提示框之前可能进行初始化违规读取用户数据的Bug
+  + 【重要】iOS平台 优化 广告标识 IDFA 操作逻辑，适配从 iOS14.5 开始 AppStore 审核要求用户许可收集跟踪数据 [详情](https://ask.dcloud.net.cn/article/36107)
+  + iOS平台 修复 一键登录 登录和其它登录按钮的默认圆角值不一致的Bug [详情](https://ask.dcloud.net.cn/question/121572)
+  + iOS平台 修复 微信授权登录调用 authorize 动态传入 appid 参数不生效的Bug [详情](https://ask.dcloud.net.cn/question/121292)
+
 #### 3.1.10.20210416-alpha
 * 【uni-app】
   + App平台 新增 插屏广告 uni.createInterstitialAd [详情](https://uniapp.dcloud.net.cn/api/a-d/interstitial)
