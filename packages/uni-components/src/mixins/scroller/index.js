@@ -2,11 +2,11 @@ import { Scroller } from './Scroller'
 
 export default {
   methods: {
-    initScroller: function(element, options) {
+    initScroller: function (element, options) {
       this._touchInfo = {
         trackingID: -1,
         maxDy: 0,
-        maxDx: 0
+        maxDx: 0,
       }
       this._scroller = new Scroller(element, options)
       this.__handleTouchStart = this._handleTouchStart.bind(this)
@@ -14,19 +14,19 @@ export default {
       this.__handleTouchEnd = this._handleTouchEnd.bind(this)
       this._initedScroller = true
     },
-    _findDelta: function(event) {
+    _findDelta: function (event) {
       var touchInfo = this._touchInfo
       return event.detail.state === 'move' || event.detail.state === 'end'
         ? {
             x: event.detail.dx,
-            y: event.detail.dy
+            y: event.detail.dy,
           }
         : {
             x: event.screenX - touchInfo.x,
-            y: event.screenY - touchInfo.y
+            y: event.screenY - touchInfo.y,
           }
     },
-    _handleTouchStart: function(e) {
+    _handleTouchStart: function (e) {
       var t = this._touchInfo
       var n = this._scroller
       if (n) {
@@ -48,10 +48,10 @@ export default {
         if (n.onTouchStart) {
           n.onTouchStart()
         }
-        event.preventDefault()
+        e.preventDefault()
       }
     },
-    _handleTouchMove: function(event) {
+    _handleTouchMove: function (event) {
       var touchInfo = this._touchInfo
       if (touchInfo.trackingID !== -1) {
         event.preventDefault()
@@ -80,7 +80,7 @@ export default {
         }
       }
     },
-    _handleTouchEnd: function(event) {
+    _handleTouchEnd: function (event) {
       var touchInfo = this._touchInfo
       if (touchInfo.trackingID !== -1) {
         event.preventDefault()
@@ -92,7 +92,7 @@ export default {
           var r = touchInfo.historyTime.length
           var o = {
             x: 0,
-            y: 0
+            y: 0,
           }
           if (r > 2) {
             for (
@@ -121,6 +121,6 @@ export default {
           }
         }
       }
-    }
-  }
+    },
+  },
 }

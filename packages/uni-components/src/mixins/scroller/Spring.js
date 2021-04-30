@@ -15,7 +15,7 @@ export function Spring(e, t, n) {
   this._startTime = 0
 }
 
-Spring.prototype._solve = function(e, t) {
+Spring.prototype._solve = function (e, t) {
   var n = this._c
   var i = this._m
   var r = this._k
@@ -25,13 +25,13 @@ Spring.prototype._solve = function(e, t) {
     const s = e
     const l = t / (a * e)
     return {
-      x: function(e) {
+      x: function (e) {
         return (s + l * e) * Math.pow(Math.E, a * e)
       },
-      dx: function(e) {
+      dx: function (e) {
         var t = Math.pow(Math.E, a * e)
         return a * (s + l * e) * t + l * t
-      }
+      },
     }
   }
   if (o > 0) {
@@ -40,7 +40,7 @@ Spring.prototype._solve = function(e, t) {
     const l = (t - c * e) / (u - c)
     const s = e - l
     return {
-      x: function(e) {
+      x: function (e) {
         let t
         let n
         if (e === this._t) {
@@ -56,7 +56,7 @@ Spring.prototype._solve = function(e, t) {
         }
         return s * t + l * n
       },
-      dx: function(e) {
+      dx: function (e) {
         let t
         let n
         if (e === this._t) {
@@ -71,7 +71,7 @@ Spring.prototype._solve = function(e, t) {
           n = this._powER2T = Math.pow(Math.E, u * e)
         }
         return s * c * t + l * u * n
-      }
+      },
     }
   }
   var d = Math.sqrt(4 * i * r - n * n) / (2 * i)
@@ -82,34 +82,34 @@ Spring.prototype._solve = function(e, t) {
 
   var l = (t - a * e) / d
   return {
-    x: function(e) {
+    x: function (e) {
       return (
         Math.pow(Math.E, a * e) * (s * Math.cos(d * e) + l * Math.sin(d * e))
       )
     },
-    dx: function(e) {
+    dx: function (e) {
       var t = Math.pow(Math.E, a * e)
 
       var n = Math.cos(d * e)
 
       var i = Math.sin(d * e)
       return t * (l * d * n - s * d * i) + a * t * (l * i + s * n)
-    }
+    },
   }
 }
-Spring.prototype.x = function(e) {
+Spring.prototype.x = function (e) {
   if (e === undefined) {
     e = (new Date().getTime() - this._startTime) / 1e3
   }
   return this._solution ? this._endPosition + this._solution.x(e) : 0
 }
-Spring.prototype.dx = function(e) {
+Spring.prototype.dx = function (e) {
   if (e === undefined) {
     e = (new Date().getTime() - this._startTime) / 1e3
   }
   return this._solution ? this._solution.dx(e) : 0
 }
-Spring.prototype.setEnd = function(e, t, n) {
+Spring.prototype.setEnd = function (e, t, n) {
   if (!n) {
     n = new Date().getTime()
   }
@@ -136,25 +136,25 @@ Spring.prototype.setEnd = function(e, t, n) {
     }
   }
 }
-Spring.prototype.snap = function(e) {
+Spring.prototype.snap = function (e) {
   this._startTime = new Date().getTime()
   this._endPosition = e
   this._solution = {
-    x: function() {
+    x: function () {
       return 0
     },
-    dx: function() {
+    dx: function () {
       return 0
-    }
+    },
   }
 }
-Spring.prototype.done = function(e) {
+Spring.prototype.done = function (e) {
   if (!e) {
     e = new Date().getTime()
   }
   return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4)
 }
-Spring.prototype.reconfigure = function(e, t, n) {
+Spring.prototype.reconfigure = function (e, t, n) {
   this._m = e
   this._k = t
   this._c = n
@@ -163,13 +163,13 @@ Spring.prototype.reconfigure = function(e, t, n) {
     this._startTime = new Date().getTime()
   }
 }
-Spring.prototype.springConstant = function() {
+Spring.prototype.springConstant = function () {
   return this._k
 }
-Spring.prototype.damping = function() {
+Spring.prototype.damping = function () {
   return this._c
 }
-Spring.prototype.configuration = function() {
+Spring.prototype.configuration = function () {
   function e(e, t) {
     e.reconfigure(1, t, e.damping())
   }
@@ -183,14 +183,14 @@ Spring.prototype.configuration = function() {
       read: this.springConstant.bind(this),
       write: e.bind(this, this),
       min: 100,
-      max: 1e3
+      max: 1e3,
     },
     {
       label: 'Damping',
       read: this.damping.bind(this),
       write: t.bind(this, this),
       min: 1,
-      max: 500
-    }
+      max: 500,
+    },
   ]
 }

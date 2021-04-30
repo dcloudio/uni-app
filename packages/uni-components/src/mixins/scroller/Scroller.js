@@ -26,12 +26,12 @@ function i(scroll, t, n) {
   }
   var o = {
     id: 0,
-    cancelled: false
+    cancelled: false,
   }
   i(o, scroll, t, n)
   return {
     cancel: r.bind(null, o),
-    model: scroll
+    model: scroll,
   }
 }
 
@@ -62,7 +62,7 @@ export function Scroller(element, options) {
   this.updatePosition()
 }
 
-Scroller.prototype.onTouchStart = function() {
+Scroller.prototype.onTouchStart = function () {
   this._startPosition = this._position
   this._lastChangePos = this._startPosition
   if (this._startPosition > 0) {
@@ -79,7 +79,7 @@ Scroller.prototype.onTouchStart = function() {
   }
   this.updatePosition()
 }
-Scroller.prototype.onTouchMove = function(x, y) {
+Scroller.prototype.onTouchMove = function (x, y) {
   var startPosition = this._startPosition
   if (this._enableX) {
     startPosition += x
@@ -96,7 +96,7 @@ Scroller.prototype.onTouchMove = function(x, y) {
   this.updatePosition()
   this.dispatchScroll()
 }
-Scroller.prototype.onTouchEnd = function(e, r, o) {
+Scroller.prototype.onTouchEnd = function (e, r, o) {
   if (
     this._enableSnap &&
     this._position > -this._extent &&
@@ -178,7 +178,7 @@ Scroller.prototype.onTouchEnd = function(e, r, o) {
     }
   )
 }
-Scroller.prototype.onTransitionEnd = function() {
+Scroller.prototype.onTransitionEnd = function () {
   this._element.style.transition = ''
   this._element.style.webkitTransition = ''
   this._element.removeEventListener('transitionend', this._onTransitionEnd)
@@ -191,7 +191,7 @@ Scroller.prototype.onTransitionEnd = function() {
   }
   this.dispatchScroll()
 }
-Scroller.prototype.snap = function() {
+Scroller.prototype.snap = function () {
   var e = this._itemSize
   var t = this._position % e
   var i =
@@ -208,7 +208,7 @@ Scroller.prototype.snap = function() {
     }
   }
 }
-Scroller.prototype.scrollTo = function(e, t) {
+Scroller.prototype.scrollTo = function (e, t) {
   if (this._animation) {
     this._animation.cancel()
     this._scrolling = false
@@ -230,7 +230,7 @@ Scroller.prototype.scrollTo = function(e, t) {
   this._element.addEventListener('transitionend', this._onTransitionEnd)
   this._element.addEventListener('webkitTransitionEnd', this._onTransitionEnd)
 }
-Scroller.prototype.dispatchScroll = function() {
+Scroller.prototype.dispatchScroll = function () {
   if (
     typeof this._options.onScroll === 'function' &&
     Math.round(this._lastPos) !== Math.round(this._position)
@@ -243,13 +243,13 @@ Scroller.prototype.dispatchScroll = function() {
         scrollHeight: this._scrollHeight || this._element.offsetHeight,
         scrollWidth: this._scrollWidth || this._element.offsetWidth,
         offsetHeight: this._element.parentElement.offsetHeight,
-        offsetWidth: this._element.parentElement.offsetWidth
-      }
+        offsetWidth: this._element.parentElement.offsetWidth,
+      },
     }
     this._options.onScroll(e)
   }
 }
-Scroller.prototype.update = function(e, t, n) {
+Scroller.prototype.update = function (e, t, n) {
   var i = 0
   var r = this._position
   if (this._enableX) {
@@ -288,7 +288,7 @@ Scroller.prototype.update = function(e, t, n) {
   this._extent = i
   this._scroll._extent = i
 }
-Scroller.prototype.updatePosition = function() {
+Scroller.prototype.updatePosition = function () {
   var transform = ''
   if (this._enableX) {
     transform = 'translateX(' + this._position + 'px) translateZ(0)'
@@ -300,6 +300,6 @@ Scroller.prototype.updatePosition = function() {
   this._element.style.webkitTransform = transform
   this._element.style.transform = transform
 }
-Scroller.prototype.isScrolling = function() {
+Scroller.prototype.isScrolling = function () {
   return this._scrolling || this._snapping
 }

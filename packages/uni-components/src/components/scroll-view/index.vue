@@ -1,5 +1,5 @@
 <template>
-  <uni-scroll-view v-bind="$attrs">
+  <uni-scroll-view ref="rootRef">
     <div ref="wrap" class="uni-scroll-view">
       <div
         ref="main"
@@ -62,17 +62,19 @@
   </uni-scroll-view>
 </template>
 <script>
-import { passive } from '@dcloudio/uni-shared'
+import { ref } from "vue";
+import scroller from "../../mixins/scroller/index";
+import { passive } from "@dcloudio/uni-shared";
+import { initScrollBounce, disableScrollBounce } from "../../helpers/scroll";
+import { useCustomEvent } from "../../helpers/useEvent";
 
-import scroller from '../../mixins/scroller/index'
-import { disableScrollBounce } from '../../helpers/disable-scroll-bounce'
+const passiveOptions = passive(true);
 
-const passiveOptions = passive(true)
 // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
 
-export default {
-  name: 'ScrollView',
+export default /*#__PURE__*/ {
+  name: "ScrollView",
   mixins: [scroller],
   props: {
     scrollX: {
@@ -101,7 +103,7 @@ export default {
     },
     scrollIntoView: {
       type: String,
-      default: '',
+      default: "",
     },
     scrollWithAnimation: {
       type: [Boolean, String],
@@ -121,11 +123,11 @@ export default {
     },
     refresherDefaultStyle: {
       type: String,
-      default: 'back',
+      default: "back",
     },
     refresherBackground: {
       type: String,
-      default: '#fff',
+      default: "#fff",
     },
     refresherTriggered: {
       type: [Boolean, String],
@@ -140,315 +142,282 @@ export default {
       lastScrollToLowerTime: 0,
       refresherHeight: 0,
       refreshRotate: 0,
-      refreshState: '',
-    }
+      refreshState: "",
+    };
   },
   computed: {
     upperThresholdNumber() {
-      var val = Number(this.upperThreshold)
-      return isNaN(val) ? 50 : val
+      var val = Number(this.upperThreshold);
+      return isNaN(val) ? 50 : val;
     },
     lowerThresholdNumber() {
-      var val = Number(this.lowerThreshold)
-      return isNaN(val) ? 50 : val
+      var val = Number(this.lowerThreshold);
+      return isNaN(val) ? 50 : val;
     },
     scrollTopNumber() {
-      return Number(this.scrollTop) || 0
+      return Number(this.scrollTop) || 0;
     },
     scrollLeftNumber() {
-      return Number(this.scrollLeft) || 0
+      return Number(this.scrollLeft) || 0;
     },
   },
   watch: {
     scrollTopNumber(val) {
-      this._scrollTopChanged(val)
+      this._scrollTopChanged(val);
     },
     scrollLeftNumber(val) {
-      this._scrollLeftChanged(val)
+      this._scrollLeftChanged(val);
     },
     scrollIntoView(val) {
-      this._scrollIntoViewChanged(val)
+      this._scrollIntoViewChanged(val);
     },
     refresherTriggered(val) {
       // TODO
       if (val === true) {
-        this._setRefreshState('refreshing')
+        this._setRefreshState("refreshing");
       } else if (val === false) {
-        this._setRefreshState('restore')
+        this._setRefreshState("restore");
       }
     },
   },
   mounted() {
-    var self = this
-    this._attached = true
-    this._scrollTopChanged(this.scrollTopNumber)
-    this._scrollLeftChanged(this.scrollLeftNumber)
-    this._scrollIntoViewChanged(this.scrollIntoView)
-    this.__handleScroll = function(e) {
-      event.preventDefault()
-      event.stopPropagation()
-      self._handleScroll.bind(self, event)()
-    }
-    var touchStart = null
-    var needStop = null
-    this.__handleTouchMove = function(event) {
-      var x = event.touches[0].pageX
-      var y = event.touches[0].pageY
-      var main = self.$refs.main
+    this.$trigger = useCustomEvent(
+      {
+        value: this.rootRef,
+      },
+      this.$emit
+    );
+    var self = this;
+    this._attached = true;
+    this._scrollTopChanged(this.scrollTopNumber);
+    this._scrollLeftChanged(this.scrollLeftNumber);
+    this._scrollIntoViewChanged(this.scrollIntoView);
+    this.__handleScroll = function (event) {
+      // Unable to preventDefault inside passive event listener invocation.
+      // event.preventDefault();
+      event.stopPropagation();
+      self._handleScroll.bind(self, event)();
+    };
+    var touchStart = null;
+    var needStop = null;
+    this.__handleTouchMove = function (event) {
+      var x = event.touches[0].pageX;
+      var y = event.touches[0].pageY;
+      var main = self.main;
       if (needStop === null) {
         if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
           // 横向滑动
           if (self.scrollX) {
             if (main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false
-              return
+              needStop = false;
+              return;
             } else if (
               main.scrollWidth === main.offsetWidth + main.scrollLeft &&
               x < touchStart.x
             ) {
-              needStop = false
-              return
+              needStop = false;
+              return;
             }
-            needStop = true
+            needStop = true;
           } else {
-            needStop = false
+            needStop = false;
           }
         } else {
           // 纵向滑动
           if (self.scrollY) {
             if (main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false
-              return
+              needStop = false;
+              return;
             } else if (
               main.scrollHeight === main.offsetHeight + main.scrollTop &&
               y < touchStart.y
             ) {
-              needStop = false
-              return
+              needStop = false;
+              return;
             }
-            needStop = true
+            needStop = true;
           } else {
-            needStop = false
+            needStop = false;
           }
         }
       }
       if (needStop) {
-        event.stopPropagation()
+        event.stopPropagation();
       }
 
-      if (self.refresherEnabled && self.refreshState === 'pulling') {
-        const dy = y - touchStart.y
-        self.refresherHeight = dy
+      if (self.refresherEnabled && self.refreshState === "pulling") {
+        const dy = y - touchStart.y;
+        self.refresherHeight = dy;
 
-        let rotate = dy / self.refresherThreshold
+        let rotate = dy / self.refresherThreshold;
         if (rotate > 1) {
-          rotate = 1
+          rotate = 1;
         } else {
-          rotate = rotate * 360
+          rotate = rotate * 360;
         }
-        self.refreshRotate = rotate
+        self.refreshRotate = rotate;
 
-        self.$trigger('refresherpulling', event, {
+        self.$trigger("refresherpulling", event, {
           deltaY: dy,
-        })
+        });
       }
-    }
+    };
 
-    this.__handleTouchStart = function(event) {
+    this.__handleTouchStart = function (event) {
       if (event.touches.length === 1) {
         disableScrollBounce({
           disable: true,
-        })
-        needStop = null
+        });
+        needStop = null;
         touchStart = {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY,
-        }
+        };
         if (
           self.refresherEnabled &&
-          self.refreshState !== 'refreshing' &&
-          self.$refs.main.scrollTop === 0
+          self.refreshState !== "refreshing" &&
+          self.main.scrollTop === 0
         ) {
-          self.refreshState = 'pulling'
+          self.refreshState = "pulling";
         }
       }
-    }
-    this.__handleTouchEnd = function(event) {
-      touchStart = null
+    };
+    this.__handleTouchEnd = function (event) {
+      touchStart = null;
       disableScrollBounce({
         disable: false,
-      })
+      });
       if (self.refresherHeight >= self.refresherThreshold) {
-        self._setRefreshState('refreshing')
+        self._setRefreshState("refreshing");
       } else {
-        self.refresherHeight = 0
-        self.$trigger('refresherabort', event, {})
+        self.refresherHeight = 0;
+        self.$trigger("refresherabort", event, {});
       }
-    }
-    this.$refs.main.addEventListener(
-      'touchstart',
-      this.__handleTouchStart,
-      passiveOptions
-    )
-    this.$refs.main.addEventListener(
-      'touchmove',
-      this.__handleTouchMove,
-      passiveOptions
-    )
-    this.$refs.main.addEventListener('scroll', this.__handleScroll, passive(false))
-    this.$refs.main.addEventListener(
-      'touchend',
-      this.__handleTouchEnd,
-      passiveOptions
-    )
+    };
+    this.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
+    this.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
+    this.main.addEventListener("scroll", this.__handleScroll, passiveOptions);
+    this.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
+    initScrollBounce();
   },
   activated() {
     // 还原 scroll-view 滚动位置
-    this.scrollY && (this.$refs.main.scrollTop = this.lastScrollTop)
-    this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft)
+    this.scrollY && (this.main.scrollTop = this.lastScrollTop);
+    this.scrollX && (this.main.scrollLeft = this.lastScrollLeft);
   },
-  beforeDestroy() {
-    this.$refs.main.removeEventListener(
-      'touchstart',
-      this.__handleTouchStart,
-      passiveOptions
-    )
-    this.$refs.main.removeEventListener(
-      'touchmove',
-      this.__handleTouchMove,
-      passiveOptions
-    )
-    this.$refs.main.removeEventListener('scroll', this.__handleScroll, passive(false))
-    this.$refs.main.removeEventListener(
-      'touchend',
-      this.__handleTouchEnd,
-      passiveOptions
-    )
+  beforeUnmount() {
+    this.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
+    this.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
+    this.main.removeEventListener("scroll", this.__handleScroll, passiveOptions);
+    this.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
   },
   methods: {
-    scrollTo: function(t, n) {
-      var i = this.$refs.main
+    scrollTo: function (t, n) {
+      var i = this.main;
       t < 0
         ? (t = 0)
-        : n === 'x' && t > i.scrollWidth - i.offsetWidth
-          ? (t = i.scrollWidth - i.offsetWidth)
-          : n === 'y' &&
+        : n === "x" && t > i.scrollWidth - i.offsetWidth
+        ? (t = i.scrollWidth - i.offsetWidth)
+        : n === "y" &&
           t > i.scrollHeight - i.offsetHeight &&
-          (t = i.scrollHeight - i.offsetHeight)
-      var r = 0
-      var o = ''
-      n === 'x' ? (r = i.scrollLeft - t) : n === 'y' && (r = i.scrollTop - t)
+          (t = i.scrollHeight - i.offsetHeight);
+      var r = 0;
+      var o = "";
+      n === "x" ? (r = i.scrollLeft - t) : n === "y" && (r = i.scrollTop - t);
       if (r !== 0) {
-        this.$refs.content.style.transition = 'transform .3s ease-out'
-        this.$refs.content.style.webkitTransition =
-          '-webkit-transform .3s ease-out'
-        if (n === 'x') {
-          o = 'translateX(' + r + 'px) translateZ(0)'
+        this.content.style.transition = "transform .3s ease-out";
+        this.content.style.webkitTransition = "-webkit-transform .3s ease-out";
+        if (n === "x") {
+          o = "translateX(" + r + "px) translateZ(0)";
         } else {
-          n === 'y' && (o = 'translateY(' + r + 'px) translateZ(0)')
+          n === "y" && (o = "translateY(" + r + "px) translateZ(0)");
         }
-        this.$refs.content.removeEventListener(
-          'transitionend',
-          this.__transitionEnd
-        )
-        this.$refs.content.removeEventListener(
-          'webkitTransitionEnd',
-          this.__transitionEnd
-        )
-        this.__transitionEnd = this._transitionEnd.bind(this, t, n)
-        this.$refs.content.addEventListener(
-          'transitionend',
-          this.__transitionEnd
-        )
-        this.$refs.content.addEventListener(
-          'webkitTransitionEnd',
-          this.__transitionEnd
-        )
-        if (n === 'x') {
+        this.content.removeEventListener("transitionend", this.__transitionEnd);
+        this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
+        this.__transitionEnd = this._transitionEnd.bind(this, t, n);
+        this.content.addEventListener("transitionend", this.__transitionEnd);
+        this.content.addEventListener("webkitTransitionEnd", this.__transitionEnd);
+        if (n === "x") {
           // if (e !== 'ios') {
-          i.style.overflowX = 'hidden'
+          i.style.overflowX = "hidden";
           // }
-        } else if (n === 'y') {
-          i.style.overflowY = 'hidden'
+        } else if (n === "y") {
+          i.style.overflowY = "hidden";
         }
 
-        this.$refs.content.style.transform = o
-        this.$refs.content.style.webkitTransform = o
+        this.content.style.transform = o;
+        this.content.style.webkitTransform = o;
       }
     },
-    _handleTrack: function($event) {
-      if ($event.detail.state === 'start') {
-        this._x = $event.detail.x
-        this._y = $event.detail.y
-        this._noBubble = null
-        return
+    _handleTrack: function ($event) {
+      if ($event.detail.state === "start") {
+        this._x = $event.detail.x;
+        this._y = $event.detail.y;
+        this._noBubble = null;
+        return;
       }
-      if ($event.detail.state === 'end') {
-        this._noBubble = false
+      if ($event.detail.state === "end") {
+        this._noBubble = false;
       }
       if (this._noBubble === null && this.scrollY) {
         if (
-          Math.abs(this._y - $event.detail.y) /
-          Math.abs(this._x - $event.detail.x) >
+          Math.abs(this._y - $event.detail.y) / Math.abs(this._x - $event.detail.x) >
           1
         ) {
-          this._noBubble = true
+          this._noBubble = true;
         } else {
-          this._noBubble = false
+          this._noBubble = false;
         }
       }
       if (this._noBubble === null && this.scrollX) {
         if (
-          Math.abs(this._x - $event.detail.x) /
-          Math.abs(this._y - $event.detail.y) >
+          Math.abs(this._x - $event.detail.x) / Math.abs(this._y - $event.detail.y) >
           1
         ) {
-          this._noBubble = true
+          this._noBubble = true;
         } else {
-          this._noBubble = false
+          this._noBubble = false;
         }
       }
-      this._x = $event.detail.x
-      this._y = $event.detail.y
+      this._x = $event.detail.x;
+      this._y = $event.detail.y;
       if (this._noBubble) {
-        $event.stopPropagation()
+        $event.stopPropagation();
       }
     },
-    _handleScroll: function($event) {
+    _handleScroll: function ($event) {
       if (!($event.timeStamp - this._lastScrollTime < 20)) {
-        this._lastScrollTime = $event.timeStamp
-        const target = $event.target
-        this.$trigger('scroll', $event, {
+        this._lastScrollTime = $event.timeStamp;
+        const target = $event.target;
+        this.$trigger("scroll", $event, {
           scrollLeft: target.scrollLeft,
           scrollTop: target.scrollTop,
           scrollHeight: target.scrollHeight,
           scrollWidth: target.scrollWidth,
           deltaX: this.lastScrollLeft - target.scrollLeft,
           deltaY: this.lastScrollTop - target.scrollTop,
-        })
+        });
         if (this.scrollY) {
           if (
             target.scrollTop <= this.upperThresholdNumber &&
             this.lastScrollTop - target.scrollTop > 0 &&
             $event.timeStamp - this.lastScrollToUpperTime > 200
           ) {
-            this.$trigger('scrolltoupper', $event, {
-              direction: 'top',
-            })
-            this.lastScrollToUpperTime = $event.timeStamp
+            this.$trigger("scrolltoupper", $event, {
+              direction: "top",
+            });
+            this.lastScrollToUpperTime = $event.timeStamp;
           }
           if (
-            target.scrollTop +
-            target.offsetHeight +
-            this.lowerThresholdNumber >=
-            target.scrollHeight &&
+            target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >=
+              target.scrollHeight &&
             this.lastScrollTop - target.scrollTop < 0 &&
             $event.timeStamp - this.lastScrollToLowerTime > 200
           ) {
-            this.$trigger('scrolltolower', $event, {
-              direction: 'bottom',
-            })
-            this.lastScrollToLowerTime = $event.timeStamp
+            this.$trigger("scrolltolower", $event, {
+              direction: "bottom",
+            });
+            this.lastScrollToLowerTime = $event.timeStamp;
           }
         }
         if (this.scrollX) {
@@ -457,132 +426,135 @@ export default {
             this.lastScrollLeft - target.scrollLeft > 0 &&
             $event.timeStamp - this.lastScrollToUpperTime > 200
           ) {
-            this.$trigger('scrolltoupper', $event, {
-              direction: 'left',
-            })
-            this.lastScrollToUpperTime = $event.timeStamp
+            this.$trigger("scrolltoupper", $event, {
+              direction: "left",
+            });
+            this.lastScrollToUpperTime = $event.timeStamp;
           }
           if (
-            target.scrollLeft +
-            target.offsetWidth +
-            this.lowerThresholdNumber >=
-            target.scrollWidth &&
+            target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >=
+              target.scrollWidth &&
             this.lastScrollLeft - target.scrollLeft < 0 &&
             $event.timeStamp - this.lastScrollToLowerTime > 200
           ) {
-            this.$trigger('scrolltolower', $event, {
-              direction: 'right',
-            })
-            this.lastScrollToLowerTime = $event.timeStamp
+            this.$trigger("scrolltolower", $event, {
+              direction: "right",
+            });
+            this.lastScrollToLowerTime = $event.timeStamp;
           }
         }
-        this.lastScrollTop = target.scrollTop
-        this.lastScrollLeft = target.scrollLeft
+        this.lastScrollTop = target.scrollTop;
+        this.lastScrollLeft = target.scrollLeft;
       }
     },
-    _scrollTopChanged: function(val) {
+    _scrollTopChanged: function (val) {
       if (this.scrollY) {
         if (this._innerSetScrollTop) {
-          this._innerSetScrollTop = false
+          this._innerSetScrollTop = false;
         } else {
           if (this.scrollWithAnimation) {
-            this.scrollTo(val, 'y')
+            this.scrollTo(val, "y");
           } else {
-            this.$refs.main.scrollTop = val
+            this.main.scrollTop = val;
           }
         }
       }
     },
-    _scrollLeftChanged: function(val) {
+    _scrollLeftChanged: function (val) {
       if (this.scrollX) {
         if (this._innerSetScrollLeft) {
-          this._innerSetScrollLeft = false
+          this._innerSetScrollLeft = false;
         } else {
           if (this.scrollWithAnimation) {
-            this.scrollTo(val, 'x')
+            this.scrollTo(val, "x");
           } else {
-            this.$refs.main.scrollLeft = val
+            this.main.scrollLeft = val;
           }
         }
       }
     },
-    _scrollIntoViewChanged: function(val) {
+    _scrollIntoViewChanged: function (val) {
       if (val) {
         if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.group('scroll-into-view="' + val + '" 有误')
-          console.error('id 属性值格式错误。如不能以数字开头。')
-          console.groupEnd()
-          return
+          console.error(`id error: scroll-into-view=${val}`);
+          return;
         }
-        var element = this.$el.querySelector('#' + val)
+        var element = this.rootRef.querySelector("#" + val);
         if (element) {
-          var mainRect = this.$refs.main.getBoundingClientRect()
-          var elRect = element.getBoundingClientRect()
+          var mainRect = this.main.getBoundingClientRect();
+          var elRect = element.getBoundingClientRect();
           if (this.scrollX) {
-            var left = elRect.left - mainRect.left
-            var scrollLeft = this.$refs.main.scrollLeft
-            var x = scrollLeft + left
+            var left = elRect.left - mainRect.left;
+            var scrollLeft = this.main.scrollLeft;
+            var x = scrollLeft + left;
             if (this.scrollWithAnimation) {
-              this.scrollTo(x, 'x')
+              this.scrollTo(x, "x");
             } else {
-              this.$refs.main.scrollLeft = x
+              this.main.scrollLeft = x;
             }
           }
           if (this.scrollY) {
-            var top = elRect.top - mainRect.top
-            var scrollTop = this.$refs.main.scrollTop
-            var y = scrollTop + top
+            var top = elRect.top - mainRect.top;
+            var scrollTop = this.main.scrollTop;
+            var y = scrollTop + top;
             if (this.scrollWithAnimation) {
-              this.scrollTo(y, 'y')
+              this.scrollTo(y, "y");
             } else {
-              this.$refs.main.scrollTop = y
+              this.main.scrollTop = y;
             }
           }
         }
       }
     },
-    _transitionEnd: function(val, type) {
-      this.$refs.content.style.transition = ''
-      this.$refs.content.style.webkitTransition = ''
-      this.$refs.content.style.transform = ''
-      this.$refs.content.style.webkitTransform = ''
-      var main = this.$refs.main
-      if (type === 'x') {
-        main.style.overflowX = this.scrollX ? 'auto' : 'hidden'
-        main.scrollLeft = val
-      } else if (type === 'y') {
-        main.style.overflowY = this.scrollY ? 'auto' : 'hidden'
-        main.scrollTop = val
+    _transitionEnd: function (val, type) {
+      this.content.style.transition = "";
+      this.content.style.webkitTransition = "";
+      this.content.style.transform = "";
+      this.content.style.webkitTransform = "";
+      var main = this.main;
+      if (type === "x") {
+        main.style.overflowX = this.scrollX ? "auto" : "hidden";
+        main.scrollLeft = val;
+      } else if (type === "y") {
+        main.style.overflowY = this.scrollY ? "auto" : "hidden";
+        main.scrollTop = val;
       }
-      this.$refs.content.removeEventListener(
-        'transitionend',
-        this.__transitionEnd
-      )
-      this.$refs.content.removeEventListener(
-        'webkitTransitionEnd',
-        this.__transitionEnd
-      )
+      this.content.removeEventListener("transitionend", this.__transitionEnd);
+      this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
     },
     _setRefreshState(state) {
       switch (state) {
-        case 'refreshing':
-          this.refresherHeight = this.refresherThreshold
-          this.$trigger('refresherrefresh', event, {})
-          break
-        case 'restore':
-          this.refresherHeight = 0
-          this.$trigger('refresherrestore', {}, {})
-          break
+        case "refreshing":
+          this.refresherHeight = this.refresherThreshold;
+          this.$trigger("refresherrefresh", {}, {});
+          break;
+        case "restore":
+          this.refresherHeight = 0;
+          this.$trigger("refresherrestore", {}, {});
+          break;
       }
-      this.refreshState = state
+      this.refreshState = state;
     },
     getScrollPosition() {
-      const main = this.$refs.main
+      const main = this.main;
       return {
         scrollLeft: main.scrollLeft,
         scrollTop: main.scrollTop,
-      }
+        scrollHeight: main.scrollHeight,
+        scrollWidth: main.scrollWidth,
+      };
     },
   },
-}
+  setup(props) {
+    const rootRef = ref(null);
+    const main = ref(null);
+    const content = ref(null);
+
+    return {
+      rootRef,
+      main,
+      content,
+    };
+  },
+};
 </script>
