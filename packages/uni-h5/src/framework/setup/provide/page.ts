@@ -94,7 +94,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
       let offset = rpx2px(refreshOptions.offset)
       const { type } = navigationBar
       if (type !== 'transparent' && type !== 'none') {
-        offset += NAVBAR_HEIGHT + safeAreaInsets.top
+        offset += NAVBAR_HEIGHT + (__NODE_JS__ ? 0 : safeAreaInsets.top)
       }
       refreshOptions.offset = offset
       refreshOptions.height = rpx2px(refreshOptions.height)
@@ -110,7 +110,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
     navigationBar.titleColor = titleColor || '#fff'
     navigationBar.backgroundColor = backgroundColor || '#F7F7F7'
   }
-  if (__UNI_FEATURE_PAGES__ && history.state) {
+  if (!__NODE_JS__ && __UNI_FEATURE_PAGES__ && history.state) {
     // 首页执行了redirectTo
     const type = history.state.__type__
     if (

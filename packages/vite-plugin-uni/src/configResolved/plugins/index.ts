@@ -145,7 +145,7 @@ export function initPlugins(
   addPlugin(plugins, uniPageVuePlugin(options), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
-  if (command === 'build') {
+  if (command === 'build' && !config.build.ssr) {
     addPlugin(plugins, uniCopyPlugin(options), plugins.length)
   }
   if (process.env.DEBUG) {

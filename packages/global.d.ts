@@ -9,6 +9,7 @@ declare var __GLOBAL__: Record<string, any>
 // Global compile-time constants
 declare var __DEV__: boolean
 declare var __TEST__: boolean
+declare var __NODE_JS__: boolean
 
 // Feature flags
 declare var __VUE_OPTIONS_API__: boolean

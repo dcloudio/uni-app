@@ -1,19 +1,21 @@
 import { hasOwn } from '@vue/shared'
 
-export const pixelRatio = /*#__PURE__*/ (function () {
-  const canvas = document.createElement('canvas')
-  canvas.height = canvas.width = 0
-  const context = canvas.getContext('2d')
-  const backingStore =
-    context.backingStorePixelRatio ||
-    context.webkitBackingStorePixelRatio ||
-    context.mozBackingStorePixelRatio ||
-    context.msBackingStorePixelRatio ||
-    context.oBackingStorePixelRatio ||
-    context.backingStorePixelRatio ||
-    1
-  return (window.devicePixelRatio || 1) / backingStore
-})()
+export const pixelRatio = __NODE_JS__
+  ? 1
+  : /*#__PURE__*/ (function () {
+      const canvas = document.createElement('canvas')
+      canvas.height = canvas.width = 0
+      const context = canvas.getContext('2d')
+      const backingStore =
+        context.backingStorePixelRatio ||
+        context.webkitBackingStorePixelRatio ||
+        context.mozBackingStorePixelRatio ||
+        context.msBackingStorePixelRatio ||
+        context.oBackingStorePixelRatio ||
+        context.backingStorePixelRatio ||
+        1
+      return (window.devicePixelRatio || 1) / backingStore
+    })()
 
 export function wrapper(canvas) {
   canvas.width = canvas.offsetWidth * pixelRatio

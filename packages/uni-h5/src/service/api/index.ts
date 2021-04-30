@@ -1,3 +1,6 @@
+//#if _NODE_JS_
+export * from './network/request'
+//#else
 export * from './base/canIUse'
 
 export * from './context/createInnerAudioContext'
@@ -58,3 +61,4 @@ export {
   createMapContext,
   onTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
+//#endif

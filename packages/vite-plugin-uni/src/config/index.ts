@@ -28,7 +28,7 @@ export function createConfig(
     options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
     options.inputDir = normalizeInputDir(config)
     options.compiler.init()
-    const define = createDefine(options, env)
+    const define = createDefine(options, config, env)
     return {
       define: extend(define, options.compiler.define()),
       resolve: createResolve(options, config),

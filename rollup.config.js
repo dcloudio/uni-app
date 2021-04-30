@@ -85,7 +85,7 @@ function createConfig(entryFile, output, plugins = []) {
         namedExports: false,
       }),
       tsPlugin,
-      createReplacePlugin(buildOptions),
+      createReplacePlugin(buildOptions, output.format),
       ...plugins,
     ],
     output,
@@ -113,10 +113,11 @@ function createAliasPlugin(buildOptions) {
   return alias(buildOptions.alias || {})
 }
 
-function createReplacePlugin(buildOptions) {
+function createReplacePlugin(buildOptions, format) {
   const replacements = {
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
+    __NODE_JS__: format === 'cjs',
   }
   if (buildOptions.replacements) {
     Object.assign(replacements, buildOptions.replacements)

@@ -25,17 +25,11 @@ import TabBar from './tabBar'
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
 const DEFAULT_CSS_VAR_VALUE = '0px'
-updateCssVar({
-  '--status-bar-height': DEFAULT_CSS_VAR_VALUE,
-  '--top-window-height': DEFAULT_CSS_VAR_VALUE,
-  '--window-left': DEFAULT_CSS_VAR_VALUE,
-  '--window-right': DEFAULT_CSS_VAR_VALUE,
-  '--window-margin': DEFAULT_CSS_VAR_VALUE,
-  '--tab-bar-height': DEFAULT_CSS_VAR_VALUE,
-})
+
 export default defineComponent({
   name: 'Layout',
   setup(_props, { emit }) {
+    !__NODE_JS__ && initCssVar()
     const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
       useKeepAliveRoute()) as KeepAliveRoute
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow()
@@ -52,7 +46,12 @@ export default defineComponent({
         rightWindow
       )
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar)
-      return <uni-app class={clazz.value}>{[layoutTsx, tabBarTsx]}</uni-app>
+      return (
+        <uni-app class={clazz.value}>
+          {layoutTsx}
+          {tabBarTsx}
+        </uni-app>
+      )
     }
   },
 })
@@ -64,6 +63,17 @@ function useAppClass(showTabBar?: ComputedRef<boolean>) {
       'uni-app--showtabbar': showTabBar && showTabBar.value,
       'uni-app--maxwidth': showMaxWidth.value,
     }
+  })
+}
+
+function initCssVar() {
+  updateCssVar({
+    '--status-bar-height': DEFAULT_CSS_VAR_VALUE,
+    '--top-window-height': DEFAULT_CSS_VAR_VALUE,
+    '--window-left': DEFAULT_CSS_VAR_VALUE,
+    '--window-right': DEFAULT_CSS_VAR_VALUE,
+    '--window-margin': DEFAULT_CSS_VAR_VALUE,
+    '--tab-bar-height': DEFAULT_CSS_VAR_VALUE,
   })
 }
 
@@ -106,9 +116,10 @@ function useShowTabBar(emit: SetupContext<['change']>['emit']) {
   const tabBar = useTabBar()!
   // TODO meida query
   const showTabBar = computed(() => route.meta.isTabBar && tabBar.shown)
-  updateCssVar({
-    '--tab-bar-height': tabBar.height!,
-  })
+  !__NODE_JS__ &&
+    updateCssVar({
+      '--tab-bar-height': tabBar.height!,
+    })
   return showTabBar
 }
 

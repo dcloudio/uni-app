@@ -56,11 +56,20 @@ async function build(target) {
   const env = devOnly ? 'development' : 'production'
 
   if (bundler === 'vite') {
+    await execa(
+      'vite',
+      ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+      {
+        stdio: 'inherit',
+        env: Object.assign({ FORMAT: 'es' }, process.env),
+      }
+    )
     return await execa(
       'vite',
       ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
       {
         stdio: 'inherit',
+        env: Object.assign({ FORMAT: 'cjs' }, process.env),
       }
     )
   } else if (bundler === 'tsc') {

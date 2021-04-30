@@ -5,3 +5,5 @@ export * from './utils'
 export * from './query'
 export * from './debounce'
 export * from './constants'
+
+export * from './node/locale'

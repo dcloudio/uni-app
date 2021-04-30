@@ -11,13 +11,12 @@ import {
 import PageHead from './pageHead'
 import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
+import { getStateId } from '../../../helpers/dom'
 
 export default defineComponent({
   name: 'Page',
   setup(_props, ctx) {
-    const { navigationBar } = providePageMeta(
-      (history.state && history.state.__id__) || 1
-    )
+    const { navigationBar } = providePageMeta(getStateId())
     return () =>
       createVNode(
         'uni-page',

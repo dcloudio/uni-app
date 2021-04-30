@@ -1,10 +1,12 @@
 import { defineComponent, inject, onUnmounted, reactive } from 'vue'
 import { useCustomEvent } from '@dcloudio/uni-components'
+//#if !_NODE_JS_
 import {
   onCompassChange,
   offCompassChange,
   getLocation,
 } from '../../../service/api'
+//#endif
 import { Map } from './qqMap/types'
 import { QQMapsExt } from './qqMap'
 import MapMarker from './MapMarker'
@@ -39,49 +41,51 @@ const ICON_PATH =
 export default /*#__PURE__*/ defineComponent({
   name: 'MapLocation',
   setup() {
-    const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
     const state: State = reactive({
       latitude: 0,
       longitude: 0,
       rotate: 0,
     })
-    let timer: number
-    function compassChangeHandler(res: { direction: number }) {
-      state.rotate = res.direction
-    }
-    function updateLocation() {
-      getLocation({
-        type: 'gcj02',
-        success: (res) => {
-          state.latitude = res.latitude
-          state.longitude = res.longitude
-        },
-        complete: () => {
-          timer = setTimeout(updateLocation, 30000)
-        },
-      })
-    }
-    function removeLocation() {
-      if (timer) {
-        clearTimeout(timer)
+    if (!__NODE_JS__) {
+      const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
+      let timer: number
+      function compassChangeHandler(res: { direction: number }) {
+        state.rotate = res.direction
       }
-      offCompassChange(compassChangeHandler)
+      function updateLocation() {
+        getLocation({
+          type: 'gcj02',
+          success: (res) => {
+            state.latitude = res.latitude
+            state.longitude = res.longitude
+          },
+          complete: () => {
+            timer = setTimeout(updateLocation, 30000)
+          },
+        })
+      }
+      function removeLocation() {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        offCompassChange(compassChangeHandler)
+      }
+      onCompassChange(compassChangeHandler)
+      onMapReady(updateLocation)
+      onUnmounted(removeLocation)
+      const addMapChidlContext: AddMapChidlContext = inject(
+        'addMapChidlContext'
+      ) as AddMapChidlContext
+      const removeMapChidlContext: RemoveMapChidlContext = inject(
+        'removeMapChidlContext'
+      ) as RemoveMapChidlContext
+      const context: Context = {
+        id: CONTEXT_ID,
+        state,
+      }
+      addMapChidlContext(context)
+      onUnmounted(() => removeMapChidlContext(context))
     }
-    onCompassChange(compassChangeHandler)
-    onMapReady(updateLocation)
-    onUnmounted(removeLocation)
-    const addMapChidlContext: AddMapChidlContext = inject(
-      'addMapChidlContext'
-    ) as AddMapChidlContext
-    const removeMapChidlContext: RemoveMapChidlContext = inject(
-      'removeMapChidlContext'
-    ) as RemoveMapChidlContext
-    const context: Context = {
-      id: CONTEXT_ID,
-      state,
-    }
-    addMapChidlContext(context)
-    onUnmounted(() => removeMapChidlContext(context))
     return () => {
       return state.latitude ? (
         <MapMarker

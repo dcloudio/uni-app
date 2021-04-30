@@ -16,7 +16,9 @@ export default defineComponent({
       ref(null)) as Ref<null>
 
     const pageRefresh =
-      __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh
+      !__NODE_JS__ &&
+      __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
+      pageMeta.enablePullDownRefresh
         ? usePageRefresh(refreshRef)
         : null
 
@@ -25,12 +27,12 @@ export default defineComponent({
         __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
         createPageRefreshTsx(refreshRef, pageMeta)
       return (
-        <>
+        <div>
           {pageRefreshTsx}
           <uni-page-wrapper {...pageRefresh}>
             <uni-page-body>{renderSlot(ctx.slots, 'default')}</uni-page-body>
           </uni-page-wrapper>
-        </>
+        </div>
       )
     }
   },

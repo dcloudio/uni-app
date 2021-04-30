@@ -74,9 +74,11 @@ export default /*#__PURE__*/ defineComponent({
       return (
         <uni-image ref={rootRef}>
           <div style={modeStyle} />
-          {imgSrc && <img src={imgSrc} draggable={props.draggable} />}
-          {FIX_MODES[mode as keyof typeof FIX_MODES] && (
+          {imgSrc ? <img src={imgSrc} draggable={props.draggable} /> : <img />}
+          {FIX_MODES[mode as keyof typeof FIX_MODES] ? (
             <ResizeSensor onResize={fixSize} />
+          ) : (
+            <span></span>
           )}
         </uni-image>
       )
@@ -181,7 +183,7 @@ function useImageLoader(
   onBeforeUnmount(() => resetImage())
 }
 
-const isChrome = navigator.vendor === 'Google Inc.'
+const isChrome = __NODE_JS__ ? false : navigator.vendor === 'Google Inc.'
 function fixNumber(num: number) {
   // fix: 解决 Chrome 浏览器上某些情况下导致 1px 缝隙的问题
   if (isChrome && num > 10) {

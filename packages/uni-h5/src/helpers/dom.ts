@@ -12,3 +12,10 @@ export function checkMinWidth(minWidth: number) {
   ]
   return Math.max.apply(null, sizes) > minWidth
 }
+
+export function getStateId() {
+  if (__NODE_JS__) {
+    return 1
+  }
+  return (history.state && history.state.__id__) || 1
+}

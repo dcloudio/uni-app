@@ -15,7 +15,7 @@ export function uniMainJsPlugin(options: VitePluginUniResolvedOptions): Plugin {
         let wrapperCode = `function createApp(rootComponent,rootProps){return createVueApp(rootComponent, rootProps).use(plugin)}`
         if (code.includes('createSSRApp')) {
           code = code.replace('createSSRApp', 'createVueSSRApp')
-          wrapperCode = `function createSSRApp(rootComponent,rootProps){return createVueSSRApp(rootComponent, rootProps).use(plugin)}`
+          wrapperCode = `function createSSRApp(App){return createVueSSRApp(App).use(plugin)}`
         } else {
           code = code.replace('createApp', 'createVueApp')
         }

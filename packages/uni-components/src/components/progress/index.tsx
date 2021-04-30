@@ -90,7 +90,11 @@ export default /*#__PURE__*/ defineComponent({
           <div style={outerBarStyle} class="uni-progress-bar">
             <div style={innerBarStyle} class="uni-progress-inner-bar" />
           </div>
-          {showInfo ? <p class="uni-progress-info">{currentPercent}%</p> : ''}
+          {showInfo ? ( // {currentPercent}% 的写法会影响 SSR Hydration
+            <p class="uni-progress-info">{currentPercent + '%'}</p>
+          ) : (
+            ''
+          )}
         </uni-progress>
       )
     }

@@ -2962,6 +2962,23 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = sh
             callWithErrorHandling(fn, instance, 4 /* WATCH_CLEANUP */);
         };
     };
+    // in SSR there is no need to setup an actual effect, and it should be noop
+    // unless it's eager
+    if (exports.isInSSRComponentSetup) {
+        // we will also not call the invalidate callback (+ runner is not set up)
+        onInvalidate = shared.NOOP;
+        if (!cb) {
+            getter();
+        }
+        else if (immediate) {
+            callWithAsyncErrorHandling(cb, instance, 3 /* WATCH_CALLBACK */, [
+                getter(),
+                undefined,
+                onInvalidate
+            ]);
+        }
+        return shared.NOOP;
+    }
     let oldValue = shared.isArray(source) ? [] : INITIAL_WATCHER_VALUE;
     const job = () => {
         if (!runner.active) {
@@ -3452,7 +3469,7 @@ const KeepAliveImpl = {
         // if the internal renderer is not registered, it indicates that this is server-side rendering,
         // for KeepAlive, we just need to render its children
         if (!sharedContext.renderer) {
-            return slots.default;
+            return ()=>slots.default()[0];
         }
         if (props.cache && shared.hasOwn(props, 'max')) {
             warn('The `max` prop will be ignored if you provide a custom caching strategy');
@@ -4481,7 +4498,7 @@ function defineAsyncComponent(source) {
             };
             // suspense-controlled or SSR.
             if ((suspensible && instance.suspense) ||
-                (false )) {
+                (exports.isInSSRComponentSetup)) {
                 return load()
                     .then(comp => {
                     return () => createInnerComp(comp, instance);
@@ -7471,7 +7488,12 @@ function setupStatefulComponent(instance, isSSR) {
 function handleSetupResult(instance, setupResult, isSSR) {
     if (shared.isFunction(setupResult)) {
         // setup returned an inline render function
-        {
+        if (instance.type.__ssrInlineRender) {
+            // when the function's name is `ssrRender` (compiled by SFC inline mode),
+            // set it as ssrRender instead.
+            instance.ssrRender = setupResult;
+        }
+        else {
             instance.render = setupResult;
         }
     }
@@ -7508,7 +7530,17 @@ function registerRuntimeCompiler(_compile) {
 function finishComponentSetup(instance, isSSR) {
     const Component = instance.type;
     // template / render function normalization
-    if (!instance.render) {
+    if (isSSR) {
+        // 1. the render function may already exist, returned by `setup`
+        // 2. otherwise try to use the `Component.render`
+        // 3. if the component doesn't have a render function,
+        //    set `instance.render` to NOOP so that it can inherit the render
+        //    function from mixins/extend
+        instance.render = (instance.render ||
+            Component.render ||
+            shared.NOOP);
+    }
+    else if (!instance.render) {
         // could be set from setup()
         if (compile && Component.template && !Component.render) {
             {
@@ -7974,11 +8006,19 @@ function createSlots(slots, dynamicSlots) {
 
 // Core API ------------------------------------------------------------------
 const version = "3.0.9";
+const _ssrUtils = {
+    createComponentInstance,
+    setupComponent,
+    renderComponentRoot,
+    setCurrentRenderingInstance,
+    isVNode,
+    normalizeVNode
+};
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
  */
-const ssrUtils = (null);
+const ssrUtils = (_ssrUtils );
 
 const svgNS = 'http://www.w3.org/2000/svg';
 const doc = (typeof document !== 'undefined' ? document : null);
@@ -9110,6 +9150,30 @@ function callModelHook(el, binding, vnode, prevVNode, hook) {
     const fn = modelToUse[hook];
     fn && fn(el, binding, vnode, prevVNode);
 }
+// SSR vnode transforms
+{
+    vModelText.getSSRProps = ({ value }) => ({ value });
+    vModelRadio.getSSRProps = ({ value }, vnode) => {
+        if (vnode.props && shared.looseEqual(vnode.props.value, value)) {
+            return { checked: true };
+        }
+    };
+    vModelCheckbox.getSSRProps = ({ value }, vnode) => {
+        if (shared.isArray(value)) {
+            if (vnode.props && shared.looseIndexOf(value, vnode.props.value) > -1) {
+                return { checked: true };
+            }
+        }
+        else if (shared.isSet(value)) {
+            if (vnode.props && value.has(vnode.props.value)) {
+                return { checked: true };
+            }
+        }
+        else if (value) {
+            return { checked: true };
+        }
+    };
+}
 
 const systemModifiers = ['ctrl', 'shift', 'alt', 'meta'];
 const modifierGuards = {
@@ -9204,6 +9268,13 @@ const vShow = {
         setDisplay(el, value);
     }
 };
+{
+    vShow.getSSRProps = ({ value }) => {
+        if (!value) {
+            return { style: { display: 'none' } };
+        }
+    };
+}
 function setDisplay(el, value) {
     el.style.display = value ? el._vod : 'none';
 }

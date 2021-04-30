@@ -60,7 +60,13 @@ export function setupPage(comp: any) {
         //初始化时，状态肯定是激活
         instance.__isActive = true
       }
+      // node环境不触发Page生命周期
+      if (__NODE_JS__) {
+        return route.query
+      }
+
       const pageMeta = usePageMeta()
+
       onBeforeMount(() => {
         onPageShow(instance, pageMeta)
         const { onLoad, onShow } = instance
@@ -88,6 +94,7 @@ export function setupPage(comp: any) {
           onHide && invokeArrayFns(onHide)
         }
       })
+
       return route.query
     },
   })
@@ -98,6 +105,10 @@ export function setupApp(comp: any) {
     init: initApp,
     setup(instance) {
       const route = usePageRoute()
+      // node环境不触发App生命周期
+      if (__NODE_JS__) {
+        return route.query
+      }
       const onLaunch = () => {
         const { onLaunch, onShow } = instance
         const path = route.path.substr(1)

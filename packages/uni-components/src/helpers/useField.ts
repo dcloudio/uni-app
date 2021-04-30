@@ -365,9 +365,11 @@ export function useField(
   useEvent(fieldRef, state, trigger, triggerInput, beforeInput)
 
   // Safari 14 以上修正禁用状态颜色
-  const fixDisabledColor =
-    String(navigator.vendor).indexOf('Apple') === 0 &&
-    CSS.supports('image-orientation:from-image')
+  // TODO fixDisabledColor 可以调整到beforeMount或mounted做修正，确保不影响SSR
+  const fixDisabledColor = __NODE_JS__
+    ? false
+    : String(navigator.vendor).indexOf('Apple') === 0 &&
+      CSS.supports('image-orientation:from-image')
 
   return {
     fieldRef,

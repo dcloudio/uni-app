@@ -2,6 +2,7 @@ import path from 'path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import jscc from 'rollup-plugin-jscc'
 import replace from '@rollup/plugin-replace'
 
 import { isCustomElement } from '../uni-shared'
@@ -17,6 +18,8 @@ function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
 
+const FORMAT = process.env.FORMAT as 'es' | 'cjs'
+
 export default defineConfig({
   root: __dirname,
   define: {
@@ -24,7 +27,7 @@ export default defineConfig({
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('h5'),
-    __NODE_JS__: `import.meta.env.SSR`,
+    __NODE_JS__: FORMAT === 'cjs' ? true : false,
   },
   resolve: {
     alias: [
@@ -61,14 +64,14 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
+    emptyOutDir: FORMAT === 'es',
     minify: false,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      formats: ['es', 'cjs'],
+      formats: [FORMAT],
     },
     assetsDir: '.',
     rollupOptions: {
-      // input: path.resolve(__dirname, 'src/index.ts'),
       external(source) {
         if (
           [
@@ -87,21 +90,24 @@ export default defineConfig({
       },
       preserveEntrySignatures: 'strict',
       plugins: [
-        // replace({
-        //   values: {
-        //     // extend: `/*#__PURE__*/ extend`,
-        //     // defineOnApi: `/*#__PURE__*/ defineOnApi`,
-        //     // defineOffApi: `/*#__PURE__*/ defineOffApi`,
-        //     // defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
-        //     // defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
-        //     // defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
-        //   },
-        //   preventAssignment: true,
-        // }),
+        replace({
+          values: {
+            defineOnApi: `/*#__PURE__*/ defineOnApi`,
+            defineOffApi: `/*#__PURE__*/ defineOffApi`,
+            defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
+            defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
+            defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
+          },
+          preventAssignment: true,
+        }),
+
+        jscc({
+          values: {
+            // 该插件限制了不能以__开头
+            _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
+          },
+        }),
       ],
-      // output: {
-      //   dir: path.resolve(__dirname, 'dist'),
-      // },
     },
   },
 })

@@ -297,6 +297,12 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 
+function getEnvLocale() {
+    const { env } = process;
+    const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
+    return (lang && lang.replace(/[.:].*/, '')) || 'en';
+}
+
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
@@ -312,6 +318,7 @@ exports.addFont = addFont;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
+exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;

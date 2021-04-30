@@ -6,6 +6,9 @@ export function useListeners(
   props: { id: string },
   listeners: Record<string, Function>
 ) {
+  if (__NODE_JS__) {
+    return
+  }
   _addListeners(props.id, listeners)
 
   watch(

@@ -29,6 +29,7 @@
     "jsonc-parser": "^3.0.0",
     "magic-string": "^0.25.7",
     "mime": "^2.5.2",
+    "module-alias": "^2.2.2",
     "postcss-selector-parser": "^6.0.4",
     "rollup-plugin-copy": "^3.4.0",
     "slash": "^3.0.0"
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@types/mime": "^2.0.3",
+    "@types/module-alias": "^2.0.0",
     "@types/sass": "^1.16.0",
     "@vue/compiler-sfc": "^3.0.11"
   },

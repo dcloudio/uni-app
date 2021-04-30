@@ -16,12 +16,16 @@ function cssSupports(css: string) {
   )
 }
 
-export const cssVar = /*#__PURE__*/ cssSupports('--a:0')
-export const cssEnv = /*#__PURE__*/ cssSupports('top:env(a)')
-export const cssConstant = /*#__PURE__*/ cssSupports('top:constant(a)')
-export const cssBackdropFilter = /*#__PURE__*/ cssSupports(
-  'backdrop-filter:blur(10px)'
-)
+export const cssVar = __NODE_JS__ ? true : /*#__PURE__*/ cssSupports('--a:0')
+export const cssEnv = __NODE_JS__
+  ? true
+  : /*#__PURE__*/ cssSupports('top:env(a)')
+export const cssConstant = __NODE_JS__
+  ? true
+  : /*#__PURE__*/ cssSupports('top:constant(a)')
+export const cssBackdropFilter = __NODE_JS__
+  ? true
+  : /*#__PURE__*/ cssSupports('backdrop-filter:blur(10px)')
 
 const SCHEMA_CSS = {
   'css.var': cssVar,

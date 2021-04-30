@@ -17,6 +17,7 @@ import { ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import { NavigateType } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
+import { getStateId } from '../../helpers/dom'
 
 const SEP = '$$'
 
@@ -65,7 +66,7 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
   removeRouteCaches && removeRouteCache(routeKey)
 }
 
-let id = /*#__PURE__*/ (() => (history.state && history.state.__id__) || 1)()
+let id = /*#__PURE__*/ getStateId()
 
 export function createPageState(type: NavigateType, __id__?: number) {
   return {
@@ -116,9 +117,7 @@ export function normalizeRouteKey(path: string, id: number) {
 
 export function useKeepAliveRoute() {
   const route = useRoute()
-  const routeKey = computed(() =>
-    normalizeRouteKey(route.path, history.state.__id__ || 1)
-  )
+  const routeKey = computed(() => normalizeRouteKey(route.path, getStateId()))
   const isTabBar = computed(() => route.meta.isTabBar)
   return {
     routeKey,

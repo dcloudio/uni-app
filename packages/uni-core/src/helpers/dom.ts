@@ -26,9 +26,9 @@ interface PageCssVars {
   '--window-margin'?: string
   '--top-window-height'?: string
 }
-const style = document.documentElement.style
 
 export function updateCssVar(cssVars: Record<string, any>) {
+  const style = document.documentElement.style
   Object.keys(cssVars).forEach((name) => {
     style.setProperty(name, cssVars[name])
   })

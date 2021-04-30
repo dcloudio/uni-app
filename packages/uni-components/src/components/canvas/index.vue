@@ -18,7 +18,7 @@ import {
   initHidpi
 } from '../../helpers/hidpi'
 
-/*#__PURE__*/ initHidpi()
+!__NODE_JS__ && /*#__PURE__*/ initHidpi()
 
 function resolveColor(color) {
   color = color.slice(0)

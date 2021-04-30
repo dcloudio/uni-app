@@ -8,13 +8,18 @@ import { initFeatures } from '../utils'
 
 export function createDefine(
   { inputDir, platform }: VitePluginUniResolvedOptions,
+  { server }: UserConfig,
   { command }: ConfigEnv
 ): UserConfig['define'] {
-  return initFeatures({
+  const features = initFeatures({
     inputDir,
     command,
     platform,
     pagesJson: parsePagesJsonOnce(inputDir, platform),
     manifestJson: parseManifestJsonOnce(inputDir),
   })
+  if (server && server.middlewareMode) {
+    Object.assign(globalThis, features)
+  }
+  return features
 }

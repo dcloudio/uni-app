@@ -4,6 +4,7 @@ import {
   createRouter,
   createWebHistory,
   createWebHashHistory,
+  createMemoryHistory,
 } from 'vue-router'
 import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
 
@@ -44,6 +45,9 @@ function removeCurrentPages(delta: number = 1) {
 }
 
 function initHistory() {
+  if (__NODE_JS__) {
+    return createMemoryHistory()
+  }
   const history =
     __UNI_FEATURE_ROUTER_MODE__ === 'history'
       ? createWebHistory()

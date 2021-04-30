@@ -29,13 +29,17 @@ export function uniPagesJsonPlugin(
         return pagesJsonPath + '.js'
       }
     },
-    transform(code, id) {
+    transform(code, id, ssr) {
       if (id.endsWith(PAGES_JSON_JS)) {
         return {
           code:
-            (config.define!.__UNI_FEATURE_RPX__ ? registerGlobalCode : '') +
-            (options.command === 'serve' ? registerDevServerGlobalCode : '') +
-            generatePagesJsonCode(code, config, options),
+            (config.define!.__UNI_FEATURE_RPX__
+              ? registerGlobalCode(ssr)
+              : '') +
+            (options.command === 'serve'
+              ? registerDevServerGlobalCode(ssr)
+              : '') +
+            generatePagesJsonCode(ssr, code, config, options),
           map: { mappings: '' },
         }
       }
@@ -55,14 +59,16 @@ interface PageRouteOptions {
 }
 
 function generatePagesJsonCode(
+  ssr: boolean | undefined,
   jsonStr: string,
   config: ResolvedConfig,
   options: VitePluginUniResolvedOptions
 ) {
+  const globalName = getGlobal(ssr)
   const pagesJson = normalizePagesJson(jsonStr, options.platform)
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
-  const uniRoutesCode = generateRoutes(pagesJson)
-  const uniConfigCode = generateConfig(pagesJson, options)
+  const uniRoutesCode = generateRoutes(globalName, pagesJson)
+  const uniConfigCode = generateConfig(globalName, pagesJson, options)
   const manifestJsonPath = slash(
     path.resolve(options.inputDir, 'manifest.json.js')
   )
@@ -90,17 +96,26 @@ const hmrCode = `if(import.meta.hot){
   })
 }`
 
-const registerGlobalCode = `import {upx2px} from '@dcloudio/uni-h5'
-window.rpx2px = upx2px
-`
+function getGlobal(ssr?: boolean) {
+  return ssr ? 'global' : 'window'
+}
 
-const registerDevServerGlobalCode = `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
-window.getApp = getApp
-window.getCurrentPages = getCurrentPages
-window.uni = uni
-window.UniViewJSBridge = UniViewJSBridge
-window.UniServiceJSBridge = UniServiceJSBridge
+function registerGlobalCode(ssr?: boolean) {
+  const name = getGlobal(ssr)
+  return `import {upx2px} from '@dcloudio/uni-h5'
+${name}.rpx2px = upx2px
 `
+}
+function registerDevServerGlobalCode(ssr?: boolean) {
+  const name = getGlobal(ssr)
+  return `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
+${name}.getApp = getApp
+${name}.getCurrentPages = getCurrentPages
+${name}.uni = uni
+${name}.UniViewJSBridge = UniViewJSBridge
+${name}.UniServiceJSBridge = UniServiceJSBridge
+`
+}
 
 function normalizePageIdentifier(path: string) {
   return capitalize(camelize(path.replace(/\//g, '-')))
@@ -220,17 +235,18 @@ function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
   return pagesRouteOptions.map((pageOptions) => generatePageRoute(pageOptions))
 }
 
-function generateRoutes(pagesJson: UniApp.PagesJson) {
+function generateRoutes(globalName: string, pagesJson: UniApp.PagesJson) {
   return `
 function renderPage(component){
   return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, { ref: "page" }, null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
 }
-window.__uniRoutes=[${[
+${globalName}.__uniRoutes=[${[
     ...generatePagesRoute(normalizePagesRoute(pagesJson)),
   ].join(',')}]`
 }
 
 function generateConfig(
+  globalName: string,
   pagesJson: Record<string, any>,
   options: VitePluginUniResolvedOptions
 ) {
@@ -241,10 +257,10 @@ function generateConfig(
   return (
     (options.command === 'serve'
       ? ''
-      : `window['____'+appid+'____']=true
-delete window['____'+appid+'____']
+      : `${globalName}['____'+appid+'____']=true
+delete ${globalName}['____'+appid+'____']
 `) +
-    `window.__uniConfig=Object.assign(${JSON.stringify(pagesJson)},{
+    `${globalName}.__uniConfig=Object.assign(${JSON.stringify(pagesJson)},{
   async,
   debug,
   networkTimeout,

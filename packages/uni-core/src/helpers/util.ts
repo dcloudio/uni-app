@@ -3,6 +3,9 @@ export function PolySymbol(name: string) {
 }
 
 export function rpx2px(str: string | number) {
+  if (__NODE_JS__) {
+    return parseInt(str + '')
+  }
   if (typeof str === 'string') {
     const res = parseInt(str) || 0
     if (str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1) {

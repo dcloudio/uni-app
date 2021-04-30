@@ -26,6 +26,8 @@ export declare function decode(text: string | number): string;
 
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
 
+export declare function getEnvLocale(): string;
+
 export declare function getLen(str?: string): number;
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;

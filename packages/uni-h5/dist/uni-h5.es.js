@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createTextVNode, createCommentVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, plusReady, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -21,7 +21,9 @@ function useI18n() {
   if (!i18n$1) {
     let language;
     {
-      language = navigator.language;
+      {
+        language = navigator.language;
+      }
     }
     i18n$1 = initVueI18n(language);
   }
@@ -286,10 +288,10 @@ function init() {
     });
     return;
   }
-  function setStyle(el, style2) {
+  function setStyle(el, style) {
     var elStyle = el.style;
-    Object.keys(style2).forEach(function(key) {
-      var val = style2[key];
+    Object.keys(style).forEach(function(key) {
+      var val = style[key];
       elStyle[key] = val;
     });
   }
@@ -398,13 +400,13 @@ var changeAttrs = [];
 function attrChange(attr2) {
   if (!changeAttrs.length) {
     setTimeout(function() {
-      var style2 = {};
+      var style = {};
       changeAttrs.forEach(function(attr3) {
-        style2[attr3] = elementComputedStyle[attr3];
+        style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
       callbacks$2.forEach(function(callback2) {
-        callback2(style2);
+        callback2(style);
       });
     }, 0);
   }
@@ -447,26 +449,26 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
 }, ["stop"]);
 function getWindowOffset() {
-  const style2 = document.documentElement.style;
-  const top = parseInt(style2.getPropertyValue("--window-top"));
-  const bottom = parseInt(style2.getPropertyValue("--window-bottom"));
-  const left = parseInt(style2.getPropertyValue("--window-left"));
-  const right = parseInt(style2.getPropertyValue("--window-right"));
+  const style = document.documentElement.style;
+  const top = parseInt(style.getPropertyValue("--window-top"));
+  const bottom = parseInt(style.getPropertyValue("--window-bottom"));
+  const left = parseInt(style.getPropertyValue("--window-left"));
+  const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
-const style = document.documentElement.style;
 function updateCssVar(cssVars) {
+  const style = document.documentElement.style;
   Object.keys(cssVars).forEach((name) => {
     style.setProperty(name, cssVars[name]);
   });
@@ -476,29 +478,29 @@ function updatePageCssVar(cssVars) {
 }
 const sheetsMap = new Map();
 function updateStyle(id2, content) {
-  let style2 = sheetsMap.get(id2);
-  if (style2 && !(style2 instanceof HTMLStyleElement)) {
+  let style = sheetsMap.get(id2);
+  if (style && !(style instanceof HTMLStyleElement)) {
     removeStyle(id2);
-    style2 = void 0;
+    style = void 0;
   }
-  if (!style2) {
-    style2 = document.createElement("style");
-    style2.setAttribute("type", "text/css");
-    style2.innerHTML = content;
-    document.head.appendChild(style2);
+  if (!style) {
+    style = document.createElement("style");
+    style.setAttribute("type", "text/css");
+    style.innerHTML = content;
+    document.head.appendChild(style);
   } else {
-    style2.innerHTML = content;
+    style.innerHTML = content;
   }
-  sheetsMap.set(id2, style2);
+  sheetsMap.set(id2, style);
 }
 function removeStyle(id2) {
-  let style2 = sheetsMap.get(id2);
-  if (style2) {
-    if (style2 instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style2);
-      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style2);
+  let style = sheetsMap.get(id2);
+  if (style) {
+    if (style instanceof CSSStyleSheet) {
+      document.adoptedStyleSheets.indexOf(style);
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style);
     } else {
-      document.head.removeChild(style2);
+      document.head.removeChild(style);
     }
     sheetsMap.delete(id2);
   }
@@ -789,15 +791,15 @@ class ComponentDescriptor {
     }
     return descriptors;
   }
-  setStyle(style2) {
-    if (!this.$el || !style2) {
+  setStyle(style) {
+    if (!this.$el || !style) {
       return this;
     }
-    if (typeof style2 === "string") {
-      style2 = parseStyleText(style2);
+    if (typeof style === "string") {
+      style = parseStyleText(style);
     }
-    if (isPlainObject(style2)) {
-      this.$el.__wxsStyle = style2;
+    if (isPlainObject(style)) {
+      this.$el.__wxsStyle = style;
       this.$vm.$forceUpdate();
     }
     return this;
@@ -1113,7 +1115,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1137,6 +1139,9 @@ function normalizePageMeta(pageMeta) {
     }
   }
   return pageMeta;
+}
+function getStateId() {
+  return history.state && history.state.__id__ || 1;
 }
 PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
@@ -1595,10 +1600,10 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
+const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
   return decode(base64);
 }, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
+const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
   return encode$1(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 function findElem(vm) {
@@ -1715,7 +1720,7 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio2;
   isIOS = platform === "ios";
 }
-const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -1788,14 +1793,14 @@ function removeHook(hooks, hook) {
     hooks.splice(index2, 1);
   }
 }
-const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
   if (typeof method === "string" && isPlainObject(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
   } else if (isPlainObject(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
-const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+const removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
   if (typeof method === "string") {
     if (isPlainObject(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
@@ -1873,7 +1878,7 @@ class VideoContext {
     operateVideoPlayer(this.id, this.vm, "hideStatusBar");
   }
 }
-const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
+const createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
   if (context) {
     return new VideoContext(id2, context);
   }
@@ -1925,7 +1930,7 @@ class MapContext {
   $getAppMap() {
   }
 }
-const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
+const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
   if (context) {
     return new MapContext(id2, context);
   }
@@ -1974,7 +1979,7 @@ class ServiceIntersectionObserver {
     this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
   }
 }
-const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (context, options) => {
+const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
   if (context && !getPageIdByVm(context)) {
     options = context;
     context = null;
@@ -1987,7 +1992,7 @@ const createIntersectionObserver = defineSyncApi("createIntersectionObserver", (
 const createSelectorQuery = () => {
 };
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const onTabBarMidButtonTap = defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
+const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
 });
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
@@ -3353,7 +3358,7 @@ const SCHEMA_CSS = {
   "css.constant": cssConstant,
   "css.backdrop-filter": cssBackdropFilter
 };
-const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
+const canIUse = /* @__PURE__ */ defineSyncApi(API_CAN_I_USE, (schema) => {
   if (hasOwn(SCHEMA_CSS, schema)) {
     return SCHEMA_CSS[schema];
   }
@@ -3418,7 +3423,7 @@ function removePage(routeKey, removeRouteCaches = true) {
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
 }
-let id = /* @__PURE__ */ (() => history.state && history.state.__id__ || 1)();
+let id = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {
   return {
     __id__: __id__ || ++id,
@@ -3461,7 +3466,7 @@ function normalizeRouteKey(path, id2) {
 }
 function useKeepAliveRoute() {
   const route = useRoute();
-  const routeKey = computed(() => normalizeRouteKey(route.path, history.state.__id__ || 1));
+  const routeKey = computed(() => normalizeRouteKey(route.path, getStateId()));
   const isTabBar = computed(() => route.meta.isTabBar);
   return {
     routeKey,
@@ -6052,12 +6057,12 @@ var index$e = /* @__PURE__ */ defineComponent({
         ref: rootRef
       }, [createVNode("div", {
         style: modeStyle
-      }, null, 4), imgSrc && createVNode("img", {
+      }, null, 4), imgSrc ? createVNode("img", {
         src: imgSrc,
         draggable: props2.draggable
-      }, null, 8, ["src", "draggable"]), FIX_MODES[mode] && createVNode(ResizeSensor, {
+      }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode] ? createVNode(ResizeSensor, {
         onResize: fixSize
-      }, null, 8, ["onResize"])], 512);
+      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
   }
 });
@@ -6091,9 +6096,9 @@ function useImageState(rootRef, props2) {
   });
   onMounted(() => {
     const rootEl = rootRef.value;
-    const style2 = rootEl.style;
-    state.origWidth = Number(style2.width) || 0;
-    state.origHeight = Number(style2.height) || 0;
+    const style = rootEl.style;
+    state.origWidth = Number(style.width) || 0;
+    state.origHeight = Number(style.height) || 0;
   });
   return state;
 }
@@ -6182,7 +6187,7 @@ function useImageSize(rootRef, props2, state) {
   };
   const resetSize = () => {
     const {
-      style: style2
+      style
     } = rootRef.value;
     const {
       origStyle: {
@@ -6190,8 +6195,8 @@ function useImageSize(rootRef, props2, state) {
         height
       }
     } = state;
-    style2.width = width;
-    style2.height = height;
+    style.width = width;
+    style.height = height;
   };
   watch(() => props2.mode, (value, oldValue) => {
     if (FIX_MODES[oldValue]) {
@@ -7862,7 +7867,7 @@ var index$d = /* @__PURE__ */ defineComponent({
         class: "uni-progress-inner-bar"
       }, null, 4)], 4), showInfo ? createVNode("p", {
         class: "uni-progress-info"
-      }, [currentPercent, createTextVNode("%")]) : ""]);
+      }, [currentPercent + "%"]) : ""]);
     };
   }
 });
@@ -10807,13 +10812,13 @@ function useDanmu(props2, videoState) {
     const p2 = document.createElement("p");
     p2.className = "uni-video-danmu-item";
     p2.innerText = danmu.text;
-    let style2 = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
-    p2.setAttribute("style", style2);
+    let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
+    p2.setAttribute("style", style);
     const danmuEl = danmuRef.value;
     danmuEl.appendChild(p2);
     setTimeout(function() {
-      style2 += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
-      p2.setAttribute("style", style2);
+      style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
+      p2.setAttribute("style", style);
       setTimeout(function() {
         p2.remove();
       }, 4e3);
@@ -11865,10 +11870,10 @@ var MapControl = /* @__PURE__ */ defineComponent({
         control = document.createElement("div");
         const img = new Image();
         control.appendChild(img);
-        const style2 = control.style;
-        style2.position = "absolute";
-        style2.width = "0";
-        style2.height = "0";
+        const style = control.style;
+        style.position = "absolute";
+        style.width = "0";
+        style.height = "0";
         img.onload = () => {
           if (option.position.width) {
             img.width = option.position.width;
@@ -11876,11 +11881,11 @@ var MapControl = /* @__PURE__ */ defineComponent({
           if (option.position.height) {
             img.height = option.position.height;
           }
-          const style3 = img.style;
-          style3.position = "absolute";
-          style3.left = (position.left || 0) + "px";
-          style3.top = (position.top || 0) + "px";
-          style3.maxWidth = "initial";
+          const style2 = img.style;
+          style2.position = "absolute";
+          style2.left = (position.left || 0) + "px";
+          style2.top = (position.top || 0) + "px";
+          style2.maxWidth = "initial";
         };
         img.src = getRealPath(option.iconPath);
         img.onclick = function($event) {
@@ -12048,14 +12053,14 @@ innerAudioContextOffEventNames.forEach((eventName) => {
     }
   };
 });
-const createInnerAudioContext = defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
+const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
   return new InnerAudioContext();
 });
-const makePhoneCall = defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}, {resolve}) => {
+const makePhoneCall = /* @__PURE__ */ defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}, {resolve}) => {
   window.location.href = `tel:${phoneNumber}`;
   return resolve();
 }, MakePhoneCallProtocol);
-const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
   const pixelRatio2 = window.devicePixelRatio;
   const screenFix = getScreenFix();
   const landscape = isLandscape(screenFix);
@@ -12064,7 +12069,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -12177,12 +12182,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -12202,14 +12207,14 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
-const getSystemInfo = defineAsyncApi("getSystemInfo", (_args, {resolve}) => {
+const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, {resolve}) => {
   return resolve(getSystemInfoSync());
 });
 const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
@@ -12224,7 +12229,7 @@ function networkListener() {
 function getConnection() {
   return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
 }
-const onNetworkStatusChange = defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
+const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
   const connection = getConnection();
   if (connection) {
     connection.addEventListener("change", networkListener);
@@ -12233,7 +12238,7 @@ const onNetworkStatusChange = defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
     window.addEventListener("online", networkListener);
   }
 });
-const offNetworkStatusChange = defineOffApi("offNetworkStatusChange", () => {
+const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
   const connection = getConnection();
   if (connection) {
     connection.removeEventListener("change", networkListener);
@@ -12242,7 +12247,7 @@ const offNetworkStatusChange = defineOffApi("offNetworkStatusChange", () => {
     window.removeEventListener("online", networkListener);
   }
 });
-const getNetworkType = defineAsyncApi("getNetworkType", (_args, {resolve}) => {
+const getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, {resolve}) => {
   const connection = getConnection();
   let networkType = "unknown";
   if (connection) {
@@ -12258,13 +12263,13 @@ const getNetworkType = defineAsyncApi("getNetworkType", (_args, {resolve}) => {
   return resolve({networkType});
 });
 let listener$1 = null;
-const onAccelerometerChange = defineOnApi(API_ON_ACCELEROMETER, () => {
+const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
   startAccelerometer();
 });
-const offAccelerometerChange = defineOnApi(API_OFF_ACCELEROMETER, () => {
+const offAccelerometerChange = /* @__PURE__ */ defineOnApi(API_OFF_ACCELEROMETER, () => {
   stopAccelerometer();
 });
-const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve, reject}) => {
+const startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve, reject}) => {
   if (!window.DeviceMotionEvent) {
     reject();
     return;
@@ -12298,7 +12303,7 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
   }
   resolve();
 });
-const stopAccelerometer = defineAsyncApi(API_STOP_ACCELEROMETER, (_, {resolve}) => {
+const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(API_STOP_ACCELEROMETER, (_, {resolve}) => {
   if (listener$1) {
     window.removeEventListener("devicemotion", listener$1, false);
     listener$1 = null;
@@ -12306,13 +12311,13 @@ const stopAccelerometer = defineAsyncApi(API_STOP_ACCELEROMETER, (_, {resolve}) 
   resolve();
 });
 let listener = null;
-const onCompassChange = defineOnApi(API_ON_COMPASS, () => {
+const onCompassChange = /* @__PURE__ */ defineOnApi(API_ON_COMPASS, () => {
   startCompass();
 });
-const offCompassChange = defineOnApi(API_OFF_COMPASS, () => {
+const offCompassChange = /* @__PURE__ */ defineOnApi(API_OFF_COMPASS, () => {
   stopCompass();
 });
-const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) => {
+const startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) => {
   if (!window.DeviceOrientationEvent) {
     reject();
     return;
@@ -12344,7 +12349,7 @@ const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) =>
   }
   resolve();
 });
-const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
+const stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
   if (listener) {
     window.removeEventListener("deviceorientation", listener, false);
     listener = null;
@@ -12352,14 +12357,14 @@ const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
   resolve();
 });
 const _isSupport = !!window.navigator.vibrate;
-const vibrateShort = defineAsyncApi(API_VIBRATE_SHORT, (args, {resolve, reject}) => {
+const vibrateShort = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_SHORT, (args, {resolve, reject}) => {
   if (_isSupport && window.navigator.vibrate(15)) {
     resolve();
   } else {
     reject("vibrateLong:fail");
   }
 });
-const vibrateLong = defineAsyncApi(API_VIBRATE_LONG, (args, {resolve, reject}) => {
+const vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, {resolve, reject}) => {
   if (_isSupport && window.navigator.vibrate(400)) {
     resolve();
   } else {
@@ -12388,7 +12393,7 @@ function parseValue(value) {
   } catch (error) {
   }
 }
-const setStorageSync = defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
+const setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
   const type = typeof data;
   const value = type === "string" ? data : JSON.stringify({
     type,
@@ -12396,7 +12401,7 @@ const setStorageSync = defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
   });
   localStorage.setItem(key, value);
 }, SetStorageSyncProtocol);
-const setStorage = defineAsyncApi(API_SET_STORAGE, ({key, data}, {resolve, reject}) => {
+const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({key, data}, {resolve, reject}) => {
   try {
     setStorageSync(key, data);
     resolve();
@@ -12420,14 +12425,14 @@ function getStorageOrigin(key) {
   }
   return data;
 }
-const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
+const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
   try {
     return getStorageOrigin(key);
   } catch (error) {
     return "";
   }
 }, GetStorageSyncProtocol);
-const getStorage = defineAsyncApi(API_GET_STORAGE, ({key}, {resolve, reject}) => {
+const getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({key}, {resolve, reject}) => {
   try {
     const data = getStorageOrigin(key);
     resolve({
@@ -12437,25 +12442,25 @@ const getStorage = defineAsyncApi(API_GET_STORAGE, ({key}, {resolve, reject}) =>
     reject(error.message);
   }
 }, GetStorageProtocol);
-const removeStorageSync = defineSyncApi(API_REMOVE_STORAGE, (key) => {
+const removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
   if (localStorage) {
     localStorage.removeItem(key);
   }
 }, RemoveStorageSyncProtocol);
-const removeStorage = defineAsyncApi(API_REMOVE_STORAGE, ({key}, {resolve}) => {
+const removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({key}, {resolve}) => {
   removeStorageSync(key);
   resolve();
 }, RemoveStorageProtocol);
-const clearStorageSync = defineSyncApi("clearStorageSync", () => {
+const clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
   if (localStorage) {
     localStorage.clear();
   }
 });
-const clearStorage = defineAsyncApi("clearStorage", (_, {resolve}) => {
+const clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, {resolve}) => {
   clearStorageSync();
   resolve();
 });
-const getStorageInfoSync = defineSyncApi("getStorageInfoSync", () => {
+const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
   const length = localStorage && localStorage.length || 0;
   const keys = [];
   let currentSize = 0;
@@ -12473,7 +12478,7 @@ const getStorageInfoSync = defineSyncApi("getStorageInfoSync", () => {
     limitSize: Number.MAX_VALUE
   };
 });
-const getStorageInfo = defineAsyncApi("getStorageInfo", (_, {resolve}) => {
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, {resolve}) => {
   resolve(getStorageInfoSync());
 });
 const files = {};
@@ -12555,7 +12560,7 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
-const getFileInfo = defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, reject}) => {
+const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, reject}) => {
   urlToFile(filePath).then((res) => {
     resolve({
       size: res.size
@@ -12564,11 +12569,11 @@ const getFileInfo = defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, rej
     reject(String(err));
   });
 }, GetFileInfoProtocol, GetFileInfoOptions);
-const openDocument = defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) => {
+const openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) => {
   window.open(filePath);
   return resolve();
 }, OpenDocumentProtocol, OpenDocumentOptions);
-const hideKeyboard = defineAsyncApi(API_HIDE_KEYBOARD, (args, {resolve, reject}) => {
+const hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, {resolve, reject}) => {
   const activeElement = document.activeElement;
   if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
     activeElement.blur();
@@ -12578,7 +12583,7 @@ const hideKeyboard = defineAsyncApi(API_HIDE_KEYBOARD, (args, {resolve, reject})
 function getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject}) => {
+const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject}) => {
   const img = new Image();
   img.onload = function() {
     resolve({
@@ -12592,7 +12597,7 @@ const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject
   };
   img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, ({src}, {resolve, reject}) => {
+const getVideoInfo = /* @__PURE__ */ defineAsyncApi(API_GET_VIDEO_INFO, ({src}, {resolve, reject}) => {
   urlToFile(src, true).then((file) => {
     return file;
   }).catch(() => {
@@ -12716,7 +12721,7 @@ function _createInput({
   return inputEl;
 }
 let fileInput = null;
-const chooseFile = defineAsyncApi(API_CHOOSE_FILE, ({
+const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
   count,
   sourceType,
   type,
@@ -12762,7 +12767,7 @@ const chooseFile = defineAsyncApi(API_CHOOSE_FILE, ({
   fileInput.click();
 }, ChooseFileProtocol, ChooseFileOptions);
 let imageInput = null;
-const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({
+const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
   count,
   sourceType,
   extension
@@ -12807,7 +12812,7 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({
   imageInput.click();
 }, ChooseImageProtocol, ChooseImageOptions);
 let videoInput = null;
-const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {resolve, reject}) => {
+const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {resolve, reject}) => {
   if (videoInput) {
     document.body.removeChild(videoInput);
     videoInput = null;
@@ -12860,7 +12865,7 @@ const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {
   });
   videoInput.click();
 }, ChooseVideoProtocol, ChooseVideoOptions);
-const request = defineTaskApi(API_REQUEST, ({
+const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   url,
   data,
   header,
@@ -13009,7 +13014,7 @@ class DownloadTask {
     throw new Error("Method not implemented.");
   }
 }
-const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({url, header, timeout = __uniConfig.networkTimeout.downloadFile}, {resolve, reject}) => {
+const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({url, header, timeout = __uniConfig.networkTimeout.downloadFile}, {resolve, reject}) => {
   var timer;
   var xhr = new XMLHttpRequest();
   var downloadTask = new DownloadTask(xhr);
@@ -13095,7 +13100,7 @@ class UploadTask {
     throw new Error("Method not implemented.");
   }
 }
-const uploadFile = defineTaskApi(API_UPLOAD_FILE, ({
+const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
   url,
   file,
   filePath,
@@ -13283,7 +13288,7 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     this._callbacks.close.push(callback2);
   }
 }
-const connectSocket = defineTaskApi(API_CONNECT_SOCKET, ({url, protocols}, {resolve, reject}) => {
+const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({url, protocols}, {resolve, reject}) => {
   return new SocketTask(url, protocols, (error, socketTask) => {
     if (error) {
       reject(error.toString());
@@ -13307,7 +13312,7 @@ function callSocketTask(socketTask, method, option, resolve, reject) {
     }));
   }
 }
-const sendSocketMessage = defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, {resolve, reject}) => {
+const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, {resolve, reject}) => {
   const socketTask = socketTasks[0];
   if (socketTask && socketTask.readyState === socketTask.OPEN) {
     callSocketTask(socketTask, "send", options, resolve, reject);
@@ -13315,7 +13320,7 @@ const sendSocketMessage = defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, {res
     reject("WebSocket is not connected");
   }
 }, SendSocketMessageProtocol);
-const closeSocket = defineAsyncApi(API_CLOSE_SOCKET, (options, {resolve, reject}) => {
+const closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, {resolve, reject}) => {
   const socketTask = socketTasks[0];
   if (socketTask) {
     callSocketTask(socketTask, "send", options, resolve, reject);
@@ -13325,7 +13330,7 @@ const closeSocket = defineAsyncApi(API_CLOSE_SOCKET, (options, {resolve, reject}
 }, CloseSocketProtocol);
 function on(event) {
   const api2 = `onSocket${capitalize(event)}`;
-  return defineOnApi(api2, () => {
+  return /* @__PURE__ */ defineOnApi(api2, () => {
     globalEvent[event] = api2;
   });
 }
@@ -13365,7 +13370,7 @@ function getJSONP(url, options, success, error) {
   js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
   document.body.appendChild(js);
 }
-const getLocation = defineAsyncApi(API_GET_LOCATION, ({type, altitude}, {resolve, reject}) => {
+const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, altitude}, {resolve, reject}) => {
   const key = __uniConfig.qqMapKey;
   new Promise((resolve2, reject2) => {
     if (navigator.geolocation) {
@@ -13422,7 +13427,7 @@ const getLocation = defineAsyncApi(API_GET_LOCATION, ({type, altitude}, {resolve
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
-const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
+const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
     canBack = false;
@@ -13448,7 +13453,7 @@ function navigate(type, url, __id__) {
     });
   });
 }
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, ({url}, {resolve, reject}) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
+const navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({url}, {resolve, reject}) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
 function removeLastPage() {
   const page = getCurrentPage();
   if (!page) {
@@ -13457,7 +13462,7 @@ function removeLastPage() {
   const $page = page.$page;
   removePage(normalizeRouteKey($page.path, $page.id));
 }
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => {
+const redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => {
   return removeLastPage(), navigate(API_REDIRECT_TO, url).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
 function removeAllPages() {
@@ -13466,7 +13471,7 @@ function removeAllPages() {
     removePage(routeKey);
   }
 }
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => {
+const reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => {
   return removeAllPages(), navigate(API_RE_LAUNCH, url).then(resolve).catch(reject);
 }, ReLaunchProtocol, ReLaunchOptions);
 function removeNonTabBarPages() {
@@ -13499,7 +13504,7 @@ function getTabBarPageId(url) {
     }
   }
 }
-const switchTab = defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
+const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
 const KEY_MAPS = {
@@ -13664,7 +13669,7 @@ function onModalClose(type) {
     cancel: type === "cancel"
   });
 }
-const showModal = defineAsyncApi(API_SHOW_MODAL, (args, {resolve}) => {
+const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, {resolve}) => {
   currentShowModalResolve = resolve;
   if (!showModalState) {
     showModalState = reactive(args);
@@ -13785,7 +13790,7 @@ function createToast(args) {
   });
   onHidePopupOnce();
 }
-const showToast = defineAsyncApi(API_SHOW_TOAST, (args, {resolve, reject}) => {
+const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, {resolve, reject}) => {
   createToast(args);
   showType = "onShowToast";
   resolve();
@@ -13795,17 +13800,17 @@ const showLoadingDefaultState = {
   duration: 1e8,
   image: ""
 };
-const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, {resolve, reject}) => {
+const showLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_LOADING, (args, {resolve, reject}) => {
   extend(args, showLoadingDefaultState);
   createToast(args);
   showType = "onShowLoading";
   resolve();
 }, ShowLoadingProtocol, ShowLoadingOptions);
-const hideToast = defineAsyncApi(API_HIDE_TOAST, (args, {resolve, reject}) => {
+const hideToast = /* @__PURE__ */ defineAsyncApi(API_HIDE_TOAST, (args, {resolve, reject}) => {
   hidePopup("onHideToast");
   resolve();
 });
-const hideLoading = defineAsyncApi(API_HIDE_LOADING, (args, {resolve, reject}) => {
+const hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, (args, {resolve, reject}) => {
   hidePopup("onHideLoading");
   resolve();
 });
@@ -13828,7 +13833,7 @@ function hidePopup(type) {
     showToastState.visible = false;
   }, 10);
 }
-const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
+const loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {
     resolve();
   }).catch((err) => {
@@ -13866,27 +13871,27 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   }
   resolve();
 }
-const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, {resolve, reject}) => {
+const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, {resolve, reject}) => {
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_COLOR, args, resolve, reject);
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
-const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
+const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
   setNavigationBar(getCurrentPageMeta(), API_SHOW_NAVIGATION_BAR_LOADING, args, resolve, reject);
 });
-const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
+const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
   setNavigationBar(getCurrentPageMeta(), API_HIDE_NAVIGATION_BAR_LOADING, args, resolve, reject);
 });
-const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
-const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, ({scrollTop, selector, duration}, {resolve}) => {
+const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({scrollTop, selector, duration}, {resolve}) => {
   scrollTo(selector || scrollTop || 0, duration);
   resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-const startPullDownRefresh = defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, {resolve}) => {
+const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, {resolve}) => {
   UniServiceJSBridge.publishHandler(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
-const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {resolve}) => {
+const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {resolve}) => {
   UniServiceJSBridge.publishHandler(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
@@ -13963,28 +13968,28 @@ function setTabBar(type, args, resolve) {
   }
   resolve();
 }
-const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, {resolve}) => {
+const setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, {resolve}) => {
   setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
-const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, {resolve}) => {
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, {resolve}) => {
   setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
-const hideTabBar = defineAsyncApi(API_HIDE_TAB_BAR, (args, {resolve}) => {
+const hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, {resolve}) => {
   setTabBar(API_HIDE_TAB_BAR, args, resolve);
 }, HideTabBarProtocol);
-const showTabBar = defineAsyncApi(API_SHOW_TAB_BAR, (args, {resolve}) => {
+const showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, {resolve}) => {
   setTabBar(API_SHOW_TAB_BAR, args, resolve);
 }, ShowTabBarProtocol);
-const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, {resolve}) => {
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, {resolve}) => {
   setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-const showTabBarRedDot = defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, {resolve}) => {
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, {resolve}) => {
   setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-const removeTabBarBadge = defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, {resolve}) => {
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, {resolve}) => {
   setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-const setTabBarBadge = defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, {resolve}) => {
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, {resolve}) => {
   setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 var api = /* @__PURE__ */ Object.freeze({
@@ -14084,45 +14089,45 @@ const ICON_PATH = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAAB
 var MapLocation = /* @__PURE__ */ defineComponent({
   name: "MapLocation",
   setup() {
-    const onMapReady = inject("onMapReady");
     const state = reactive({
       latitude: 0,
       longitude: 0,
       rotate: 0
     });
-    let timer;
-    function compassChangeHandler(res) {
-      state.rotate = res.direction;
-    }
-    function updateLocation() {
-      getLocation({
-        type: "gcj02",
-        success: (res) => {
-          state.latitude = res.latitude;
-          state.longitude = res.longitude;
-        },
-        complete: () => {
-          timer = setTimeout(updateLocation, 3e4);
+    {
+      let compassChangeHandler = function(res) {
+        state.rotate = res.direction;
+      }, updateLocation = function() {
+        getLocation({
+          type: "gcj02",
+          success: (res) => {
+            state.latitude = res.latitude;
+            state.longitude = res.longitude;
+          },
+          complete: () => {
+            timer = setTimeout(updateLocation, 3e4);
+          }
+        });
+      }, removeLocation = function() {
+        if (timer) {
+          clearTimeout(timer);
         }
-      });
+        offCompassChange(compassChangeHandler);
+      };
+      const onMapReady = inject("onMapReady");
+      let timer;
+      onCompassChange(compassChangeHandler);
+      onMapReady(updateLocation);
+      onUnmounted(removeLocation);
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: CONTEXT_ID,
+        state
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
     }
-    function removeLocation() {
-      if (timer) {
-        clearTimeout(timer);
-      }
-      offCompassChange(compassChangeHandler);
-    }
-    onCompassChange(compassChangeHandler);
-    onMapReady(updateLocation);
-    onUnmounted(removeLocation);
-    const addMapChidlContext = inject("addMapChidlContext");
-    const removeMapChidlContext = inject("removeMapChidlContext");
-    const context = {
-      id: CONTEXT_ID,
-      state
-    };
-    addMapChidlContext(context);
-    onUnmounted(() => removeMapChidlContext(context));
     return () => {
       return state.latitude ? createVNode(MapMarker, mergeProps({
         anchor: {
@@ -14594,7 +14599,7 @@ var TabBar = /* @__PURE__ */ defineComponent({
     useTabBarCssVar(tabBar2);
     const onSwitchTab = useSwitchTab(useRoute(), tabBar2);
     const {
-      style: style2,
+      style,
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
@@ -14604,7 +14609,7 @@ var TabBar = /* @__PURE__ */ defineComponent({
         class: "uni-tabbar-" + tabBar2.position
       }, [createVNode("div", {
         class: "uni-tabbar",
-        style: style2.value
+        style: style.value
       }, [createVNode("div", {
         class: "uni-tabbar-border",
         style: borderStyle.value
@@ -14678,7 +14683,7 @@ const BORDER_COLORS = {
   black: "rgba(0, 0, 0, 0.33)"
 };
 function useTabBarStyle(tabBar2) {
-  const style2 = computed(() => {
+  const style = computed(() => {
     let backgroundColor = tabBar2.backgroundColor;
     const blurEffect = tabBar2.blurEffect;
     if (!backgroundColor) {
@@ -14705,7 +14710,7 @@ function useTabBarStyle(tabBar2) {
     };
   });
   return {
-    style: style2,
+    style,
     borderStyle,
     placeholderStyle
   };
@@ -14758,13 +14763,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     iconWidth
   } = tabBar2;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
-  const style2 = {
+  const style = {
     width: iconWidth,
     height: iconWidth
   };
   return createVNode("div", {
     class: clazz2,
-    style: style2
+    style
   }, [type !== "midButton" && createVNode("img", {
     src: getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
@@ -14779,7 +14784,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
     fontSize,
     spacing
   } = tabBar2;
-  const style2 = {
+  const style = {
     color,
     fontSize,
     lineHeight: !iconPath ? 1.8 : "normal",
@@ -14787,7 +14792,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   };
   return createVNode("div", {
     class: "uni-tabbar__label",
-    style: style2
+    style
   }, [text2, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
@@ -14827,19 +14832,12 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
-updateCssVar({
-  "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
-  "--top-window-height": DEFAULT_CSS_VAR_VALUE,
-  "--window-left": DEFAULT_CSS_VAR_VALUE,
-  "--window-right": DEFAULT_CSS_VAR_VALUE,
-  "--window-margin": DEFAULT_CSS_VAR_VALUE,
-  "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
-});
 var LayoutComponent = defineComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
   }) {
+    initCssVar();
     const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
     __UNI_FEATURE_TOPWINDOW__ && useTopWindow();
     __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow();
@@ -14851,7 +14849,7 @@ var LayoutComponent = defineComponent({
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
       return createVNode("uni-app", {
         class: clazz2.value
-      }, [[layoutTsx, tabBarTsx]], 2);
+      }, [layoutTsx, tabBarTsx], 2);
     };
   }
 });
@@ -14862,6 +14860,16 @@ function useAppClass(showTabBar2) {
       "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
       "uni-app--maxwidth": showMaxWidth.value
     };
+  });
+}
+function initCssVar() {
+  updateCssVar({
+    "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
+    "--top-window-height": DEFAULT_CSS_VAR_VALUE,
+    "--window-left": DEFAULT_CSS_VAR_VALUE,
+    "--window-right": DEFAULT_CSS_VAR_VALUE,
+    "--window-margin": DEFAULT_CSS_VAR_VALUE,
+    "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
   });
 }
 function createLayoutTsx(keepAliveRoute, topWindow, leftWindow, rightWindow) {
@@ -15050,7 +15058,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
     const navigationBar = pageMeta.navigationBar;
     const {
       clazz: clazz2,
-      style: style2
+      style
     } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
@@ -15071,7 +15079,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
       }, [createVNode("div", {
         ref: headRef,
         class: clazz2.value,
-        style: style2.value
+        style: style.value
       }, [createVNode("div", {
         class: "uni-page-head-hd"
       }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
@@ -15234,7 +15242,7 @@ function usePageHead(navigationBar) {
     }
     return clazz3;
   });
-  const style2 = computed(() => {
+  const style = computed(() => {
     const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
     return {
       backgroundColor,
@@ -15245,7 +15253,7 @@ function usePageHead(navigationBar) {
   });
   return {
     clazz: clazz2,
-    style: style2
+    style
   };
 }
 function usePageHeadButtons({
@@ -15637,7 +15645,7 @@ var PageBody = defineComponent({
     const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      return createVNode("div", null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
@@ -15652,7 +15660,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 var index$2 = defineComponent({
   name: "Page",
   setup(_props, ctx) {
-    const {navigationBar} = providePageMeta(history.state && history.state.__id__ || 1);
+    const {navigationBar} = providePageMeta(getStateId());
     return () => createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
