@@ -450,7 +450,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(() => {
@@ -462,10 +462,10 @@ function getWindowOffset() {
   const left = parseInt(style2.getPropertyValue("--window-left"));
   const right = parseInt(style2.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 const style = document.documentElement.style;
@@ -1116,7 +1116,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += uniShared.NAVBAR_HEIGHT + out.top;
+        offset += uniShared.NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3866,7 +3866,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$7 = {
+const _sfc_main$9 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -3985,13 +3985,13 @@ const _sfc_main$7 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-audio-default"};
+const _hoisted_1$6 = {class: "uni-audio-default"};
 const _hoisted_2$3 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -4001,7 +4001,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {display: "none"}
     }, null, 8, ["loop"]),
-    vue.createVNode("div", _hoisted_1$4, [
+    vue.createVNode("div", _hoisted_1$6, [
       vue.createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -4021,7 +4021,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$9.render = _sfc_render$9;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -4258,7 +4258,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$6 = {
+const _sfc_main$8 = {
   name: "Canvas",
   mixins: [subscriber],
   props: {
@@ -4754,19 +4754,19 @@ const _sfc_main$6 = {
     }
   }
 };
-const _hoisted_1$3 = {
+const _hoisted_1$5 = {
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = vue.resolveComponent("v-uni-resize-sensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, vue.toHandlers($options._listeners)), [
-    vue.createVNode("canvas", _hoisted_1$3, null, 512),
+    vue.createVNode("canvas", _hoisted_1$5, null, 512),
     vue.createVNode("div", _hoisted_2$2, [
       vue.renderSlot(_ctx.$slots, "default")
     ]),
@@ -4776,7 +4776,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$8.render = _sfc_render$8;
 function useListeners(props2, listeners) {
   _addListeners(props2.id, listeners);
   vue.watch(() => props2.id, (newId, oldId) => {
@@ -7125,7 +7125,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$5 = {
+const _sfc_main$7 = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -7677,14 +7677,14 @@ const _sfc_main$5 = {
     }
   }
 };
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = vue.resolveComponent("v-uni-resize-sensor");
   return vue.openBlock(), vue.createBlock("uni-movable-view", _ctx.$attrs, [
     vue.createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     vue.renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$7.render = _sfc_render$7;
 const OPEN_TYPES = [
   "navigate",
   "redirect",
@@ -7692,7 +7692,7 @@ const OPEN_TYPES = [
   "reLaunch",
   "navigateBack"
 ];
-const _sfc_main$4 = {
+const _sfc_main$6 = {
   name: "Navigator",
   mixins: [hover],
   props: {
@@ -7765,7 +7765,7 @@ const _sfc_main$4 = {
     }
   }
 };
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (vue.openBlock(), vue.createBlock("uni-navigator", {
     key: 0,
     class: [_ctx.hovering ? $props.hoverClass : ""],
@@ -7782,7 +7782,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     vue.renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$6.render = _sfc_render$6;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
@@ -8313,7 +8313,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$3 = {
+const _sfc_main$5 = {
   name: "RichText",
   props: {
     nodes: {
@@ -8342,13 +8342,13 @@ const _sfc_main$3 = {
     }
   }
 };
-const _hoisted_1$2 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$4 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$2
+    _hoisted_1$4
   ], 16);
 }
-_sfc_main$3.render = _sfc_render$3;
+_sfc_main$5.render = _sfc_render$5;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -9040,7 +9040,7 @@ function disableScrollBounce({disable}) {
   }
 }
 const passiveOptions = uniShared.passive(true);
-const _sfc_main$2 = {
+const _sfc_main$4 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -9467,7 +9467,7 @@ const _sfc_main$2 = {
     };
   }
 };
-const _hoisted_1$1 = {ref: "rootRef"};
+const _hoisted_1$3 = {ref: "rootRef"};
 const _hoisted_2$1 = {
   ref: "wrap",
   class: "uni-scroll-view"
@@ -9501,8 +9501,8 @@ const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$1, [
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$3, [
     vue.createVNode("div", _hoisted_2$1, [
       vue.createVNode("div", {
         ref: "main",
@@ -9549,7 +9549,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 512);
 }
-_sfc_main$2.render = _sfc_render$2;
+_sfc_main$4.render = _sfc_render$4;
 const addListenerToElement = function(element, type, callback2, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback2 === "function") {
@@ -9880,7 +9880,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const _sfc_main$1 = {
+const _sfc_main$3 = {
   name: "SwiperItem",
   props: {
     itemId: {
@@ -9901,12 +9901,12 @@ const _sfc_main$1 = {
     }
   }
 };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-swiper-item", _ctx.$attrs, [
     vue.renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$1.render = _sfc_render$1;
+_sfc_main$3.render = _sfc_render$3;
 const props$a = {
   name: {
     type: String,
@@ -12067,7 +12067,7 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -12180,12 +12180,12 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -12205,10 +12205,10 @@ const getSystemInfoSync = defineSyncApi("getSystemInfoSync", () => {
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -14484,6 +14484,101 @@ var index$3 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
+const _sfc_main$2 = {
+  name: "CoverView",
+  props: {
+    scrollTop: {
+      type: [String, Number],
+      default: 0
+    }
+  },
+  watch: {
+    scrollTop(val) {
+      this.setScrollTop(val);
+    }
+  },
+  mounted() {
+    this.setScrollTop(this.scrollTop);
+  },
+  methods: {
+    setScrollTop(val) {
+      var content = this.content;
+      if (getComputedStyle(content).overflowY === "scroll") {
+        content.scrollTop = this._upx2pxNum(val);
+      }
+    },
+    _upx2pxNum(val) {
+      if (/\d+[ur]px$/i.test(val)) {
+        val.replace(/\d+[ur]px$/i, (text2) => {
+          return uni.upx2px(parseFloat(text2));
+        });
+      }
+      return parseFloat(val) || 0;
+    }
+  },
+  setup() {
+    const content = vue.ref(null);
+    return {
+      content
+    };
+  }
+};
+const _hoisted_1$2 = {
+  ref: "content",
+  class: "uni-cover-view"
+};
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createBlock("uni-cover-view", {"scroll-top": $props.scrollTop}, [
+    vue.createVNode("div", _hoisted_1$2, [
+      vue.renderSlot(_ctx.$slots, "default")
+    ], 512)
+  ], 8, ["scroll-top"]);
+}
+_sfc_main$2.render = _sfc_render$2;
+const _sfc_main$1 = {
+  name: "CoverImage",
+  props: {
+    src: {
+      type: String,
+      default: ""
+    }
+  },
+  methods: {
+    getRealPath,
+    _load($event) {
+      this.$trigger("load", $event);
+    },
+    _error($event) {
+      this.$trigger("error", $event);
+    }
+  },
+  mounted() {
+    this.$trigger = useCustomEvent({value: this.root}, this.$emit);
+  },
+  setup() {
+    const root = vue.ref(null);
+    return {
+      root
+    };
+  }
+};
+const _hoisted_1$1 = {class: "uni-cover-image"};
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createBlock("uni-cover-image", {
+    ref: "root",
+    src: $props.src
+  }, [
+    vue.createVNode("div", _hoisted_1$1, [
+      $props.src ? (vue.openBlock(), vue.createBlock("img", {
+        key: 0,
+        src: $options.getRealPath($props.src),
+        onLoad: _cache[1] || (_cache[1] = (...args) => $options._load && $options._load(...args)),
+        onError: _cache[2] || (_cache[2] = (...args) => $options._error && $options._error(...args))
+      }, null, 40, ["src"])) : vue.createCommentVNode("", true)
+    ])
+  ], 8, ["src"]);
+}
+_sfc_main$1.render = _sfc_render$1;
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     window.UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -15596,11 +15691,13 @@ var index = /* @__PURE__ */ vue.defineComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$7;
+exports.Audio = _sfc_main$9;
 exports.Button = index$k;
-exports.Canvas = _sfc_main$6;
+exports.Canvas = _sfc_main$8;
 exports.Checkbox = index$h;
 exports.CheckboxGroup = index$j;
+exports.CoverImage = _sfc_main$1;
+exports.CoverView = _sfc_main$2;
 exports.Editor = index$g;
 exports.Form = index$l;
 exports.Icon = index$f;
@@ -15609,17 +15706,17 @@ exports.Input = Input;
 exports.Label = index$i;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
-exports.MovableView = _sfc_main$5;
-exports.Navigator = _sfc_main$4;
+exports.MovableView = _sfc_main$7;
+exports.Navigator = _sfc_main$6;
 exports.PageComponent = index$2;
 exports.Progress = index$d;
 exports.Radio = index$b;
 exports.RadioGroup = index$c;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = _sfc_main$3;
-exports.ScrollView = _sfc_main$2;
+exports.RichText = _sfc_main$5;
+exports.ScrollView = _sfc_main$4;
 exports.Slider = index$a;
-exports.SwiperItem = _sfc_main$1;
+exports.SwiperItem = _sfc_main$3;
 exports.Switch = index$9;
 exports.Text = index$8;
 exports.Textarea = index$7;
