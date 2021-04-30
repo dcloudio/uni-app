@@ -200,17 +200,17 @@ E.prototype = {
 function initBridge(namespace) {
   const emitter = new E();
   return shared.extend(emitter, {
-    subscribe(event2, callback2) {
-      emitter.on(`${namespace}.${event2}`, callback2);
+    subscribe(event, callback2) {
+      emitter.on(`${namespace}.${event}`, callback2);
     },
-    unsubscribe(event2, callback2) {
-      emitter.off(`${namespace}.${event2}`, callback2);
+    unsubscribe(event, callback2) {
+      emitter.off(`${namespace}.${event}`, callback2);
     },
-    subscribeHandler(event2, args, pageId) {
+    subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event2}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
       }
-      emitter.emit(`${namespace}.${event2}`, args, pageId);
+      emitter.emit(`${namespace}.${event}`, args, pageId);
     }
   });
 }
@@ -666,7 +666,7 @@ function $nne(evt) {
 function createNativeEvent(evt) {
   const {type, timeStamp, currentTarget} = evt;
   const target = uniShared.normalizeTarget(currentTarget);
-  const event2 = {
+  const event = {
     type,
     timeStamp,
     target,
@@ -674,7 +674,7 @@ function createNativeEvent(evt) {
     currentTarget: target
   };
   {
-    shared.extend(event2, {
+    shared.extend(event, {
       preventDefault() {
         if (process.env.NODE_ENV !== "production") {
           console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
@@ -689,7 +689,7 @@ function createNativeEvent(evt) {
       }
     });
   }
-  return event2;
+  return event;
 }
 function normalizeClickEvent(evt, mouseEvt) {
   const {x, y} = mouseEvt;
@@ -1681,7 +1681,7 @@ function operateVideoPlayer(videoId, vm, type, data) {
   }, pageId);
 }
 function operateMap(id2, vm, type, data) {
-  const pageId = vm.$root.$page.id;
+  const pageId = getPageIdByVm(vm);
   UniServiceJSBridge.publishHandler("map." + id2, {
     type,
     data
@@ -3181,18 +3181,18 @@ const initIntersectionObserverPolyfill = function() {
       }
     };
   }
-  function addEvent(node, event2, fn, opt_useCapture) {
+  function addEvent(node, event, fn, opt_useCapture) {
     if (typeof node.addEventListener == "function") {
-      node.addEventListener(event2, fn, opt_useCapture || false);
+      node.addEventListener(event, fn, opt_useCapture || false);
     } else if (typeof node.attachEvent == "function") {
-      node.attachEvent("on" + event2, fn);
+      node.attachEvent("on" + event, fn);
     }
   }
-  function removeEvent(node, event2, fn, opt_useCapture) {
+  function removeEvent(node, event, fn, opt_useCapture) {
     if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event2, fn, opt_useCapture || false);
+      node.removeEventListener(event, fn, opt_useCapture || false);
     } else if (typeof node.detatchEvent == "function") {
-      node.detatchEvent("on" + event2, fn);
+      node.detatchEvent("on" + event, fn);
     }
   }
   function computeRectIntersection(rect1, rect2) {
@@ -4283,21 +4283,21 @@ const _sfc_main$6 = {
     _listeners() {
       var $listeners = Object.assign({}, this.$listeners);
       var events = ["touchstart", "touchmove", "touchend"];
-      events.forEach((event2) => {
-        var existing = $listeners[event2];
+      events.forEach((event) => {
+        var existing = $listeners[event];
         var eventHandler = [];
         if (existing) {
           eventHandler.push(($event) => {
-            this.$trigger(event2, Object.assign({}, $event, {
+            this.$trigger(event, Object.assign({}, $event, {
               touches: processTouches($event.currentTarget, $event.touches),
               changedTouches: processTouches($event.currentTarget, $event.changedTouches)
             }));
           });
         }
-        if (this.disableScroll && event2 === "touchmove") {
+        if (this.disableScroll && event === "touchmove") {
           eventHandler.push(this._touchmove);
         }
-        $listeners[event2] = eventHandler;
+        $listeners[event] = eventHandler;
       });
       return $listeners;
     }
@@ -4337,8 +4337,8 @@ const _sfc_main$6 = {
         wrapper(this.$refs.canvas);
       }
     },
-    _touchmove(event2) {
-      event2.preventDefault();
+    _touchmove(event) {
+      event.preventDefault();
     },
     actionsChanged({
       actions,
@@ -6414,13 +6414,13 @@ function useValueSync(props2, state, emit2, trigger) {
     state.value = getValueString(val);
   }, 100);
   vue.watch(() => props2.value, valueChangeFn);
-  const triggerInputFn = throttle((event2, detail) => {
+  const triggerInputFn = throttle((event, detail) => {
     emit2("update:value", detail.value);
-    trigger("input", event2, detail);
+    trigger("input", event, detail);
   }, 100);
-  const triggerInput = (event2, detail, force) => {
+  const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
-    triggerInputFn(event2, detail);
+    triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
     }
@@ -6485,51 +6485,51 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
   }
   function initField() {
     const field = fieldRef.value;
-    const onFocus = function(event2) {
+    const onFocus = function(event) {
       state.focus = true;
-      trigger("focus", event2, {
+      trigger("focus", event, {
         value: state.value
       });
       checkSelection();
       checkCursor();
     };
-    const onInput = function(event2, force) {
-      event2.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event2, state) === false) {
+    const onInput = function(event, force) {
+      event.stopPropagation();
+      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
       if (!state.composing) {
-        triggerInput(event2, {
+        triggerInput(event, {
           value: field.value,
           cursor: field.selectionEnd
         }, force);
       }
     };
-    const onBlur = function(event2) {
+    const onBlur = function(event) {
       if (state.composing) {
         state.composing = false;
-        onInput(event2, true);
+        onInput(event, true);
       }
       state.focus = false;
-      trigger("blur", event2, {
+      trigger("blur", event, {
         value: state.value,
-        cursor: event2.target.selectionEnd
+        cursor: event.target.selectionEnd
       });
     };
-    field.addEventListener("change", (event2) => event2.stopPropagation());
+    field.addEventListener("change", (event) => event.stopPropagation());
     field.addEventListener("focus", onFocus);
     field.addEventListener("blur", onBlur);
     field.addEventListener("input", onInput);
-    field.addEventListener("compositionstart", (event2) => {
-      event2.stopPropagation();
+    field.addEventListener("compositionstart", (event) => {
+      event.stopPropagation();
       state.composing = true;
     });
-    field.addEventListener("compositionend", (event2) => {
-      event2.stopPropagation();
+    field.addEventListener("compositionend", (event) => {
+      event.stopPropagation();
       if (state.composing) {
         state.composing = false;
-        onInput(event2);
+        onInput(event);
       }
     });
   }
@@ -6596,8 +6596,8 @@ var Input = /* @__PURE__ */ vue.defineComponent({
       scopedAttrsState,
       fixDisabledColor,
       trigger
-    } = useField(props2, rootRef, emit2, (event2, state2) => {
-      const input = event2.target;
+    } = useField(props2, rootRef, emit2, (event, state2) => {
+      const input = event.target;
       if (NUMBER_TYPES.includes(props2.type)) {
         valid.value = input.validity && input.validity.valid;
         state2.value;
@@ -6613,13 +6613,13 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     });
     const NUMBER_TYPES = ["number", "digit"];
     const step = vue.computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
-    function onKeyUpEnter(event2) {
-      if (event2.key !== "Enter") {
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
         return;
       }
-      event2.stopPropagation();
-      trigger("confirm", event2, {
-        value: event2.target.value
+      event.stopPropagation();
+      trigger("confirm", event, {
+        value: event.target.value
       });
     }
     return () => {
@@ -6632,7 +6632,7 @@ var Input = /* @__PURE__ */ vue.defineComponent({
         maxlength: state.maxlength,
         step: step.value,
         class: "uni-input-input",
-        onFocus: (event2) => event2.target.blur()
+        onFocus: (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
         ref: fieldRef,
         value: state.value,
@@ -7349,34 +7349,34 @@ const _sfc_main$5 = {
         }
       }
     },
-    __handleTouchMove: function(event2) {
+    __handleTouchMove: function(event) {
       var self = this;
       if (!this._isScaling && !this.disabled && this._isTouching) {
         let x = this._translateX;
         let y = this._translateY;
         if (this._firstMoveDirection === null) {
-          this._firstMoveDirection = Math.abs(event2.detail.dx / event2.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
+          this._firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
         }
         if (this.xMove) {
-          x = event2.detail.dx + this.__baseX;
+          x = event.detail.dx + this.__baseX;
           this.__touchInfo.historyX.shift();
           this.__touchInfo.historyX.push(x);
           if (!this.yMove && this._checkCanMove === null) {
-            this._checkCanMove = Math.abs(event2.detail.dx / event2.detail.dy) < 1;
+            this._checkCanMove = Math.abs(event.detail.dx / event.detail.dy) < 1;
           }
         }
         if (this.yMove) {
-          y = event2.detail.dy + this.__baseY;
+          y = event.detail.dy + this.__baseY;
           this.__touchInfo.historyY.shift();
           this.__touchInfo.historyY.push(y);
           if (!this.xMove && this._checkCanMove === null) {
-            this._checkCanMove = Math.abs(event2.detail.dy / event2.detail.dx) < 1;
+            this._checkCanMove = Math.abs(event.detail.dy / event.detail.dx) < 1;
           }
         }
         this.__touchInfo.historyT.shift();
-        this.__touchInfo.historyT.push(event2.detail.timeStamp);
+        this.__touchInfo.historyT.push(event.detail.timeStamp);
         if (!this._checkCanMove) {
-          event2.preventDefault();
+          event.preventDefault();
           let source = "touch";
           if (x < this.minX) {
             if (this.outOfBounds) {
@@ -7460,13 +7460,13 @@ const _sfc_main$5 = {
         }
       }
     },
-    _onTrack: function(event2) {
-      switch (event2.detail.state) {
+    _onTrack: function(event) {
+      switch (event.detail.state) {
         case "start":
           this.__handleTouchStart();
           break;
         case "move":
-          this.__handleTouchMove(event2);
+          this.__handleTouchMove(event);
           break;
         case "end":
           this.__handleTouchEnd();
@@ -8931,14 +8931,14 @@ var scroller = {
       this.__handleTouchEnd = this._handleTouchEnd.bind(this);
       this._initedScroller = true;
     },
-    _findDelta: function(event2) {
+    _findDelta: function(event) {
       var touchInfo = this._touchInfo;
-      return event2.detail.state === "move" || event2.detail.state === "end" ? {
-        x: event2.detail.dx,
-        y: event2.detail.dy
+      return event.detail.state === "move" || event.detail.state === "end" ? {
+        x: event.detail.dx,
+        y: event.detail.dy
       } : {
-        x: event2.screenX - touchInfo.x,
-        y: event2.screenY - touchInfo.y
+        x: event.screenX - touchInfo.x,
+        y: event.screenY - touchInfo.y
       };
     },
     _handleTouchStart: function(e2) {
@@ -8963,31 +8963,31 @@ var scroller = {
         if (n.onTouchStart) {
           n.onTouchStart();
         }
-        event.preventDefault();
+        e2.preventDefault();
       }
     },
-    _handleTouchMove: function(event2) {
+    _handleTouchMove: function(event) {
       var touchInfo = this._touchInfo;
       if (touchInfo.trackingID !== -1) {
-        event2.preventDefault();
-        var delta = this._findDelta(event2);
+        event.preventDefault();
+        var delta = this._findDelta(event);
         if (delta) {
-          for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(event2.detail.timeStamp); touchInfo.historyTime.length > 10; ) {
+          for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(event.detail.timeStamp); touchInfo.historyTime.length > 10; ) {
             touchInfo.historyTime.shift();
             touchInfo.historyX.shift();
             touchInfo.historyY.shift();
           }
           if (touchInfo.listener && touchInfo.listener.onTouchMove) {
-            touchInfo.listener.onTouchMove(delta.x, delta.y, event2.detail.timeStamp);
+            touchInfo.listener.onTouchMove(delta.x, delta.y, event.detail.timeStamp);
           }
         }
       }
     },
-    _handleTouchEnd: function(event2) {
+    _handleTouchEnd: function(event) {
       var touchInfo = this._touchInfo;
       if (touchInfo.trackingID !== -1) {
-        event2.preventDefault();
-        var delta = this._findDelta(event2);
+        event.preventDefault();
+        var delta = this._findDelta(event);
         if (delta) {
           var listener2 = touchInfo.listener;
           touchInfo.trackingID = -1;
@@ -9020,6 +9020,25 @@ var scroller = {
     }
   }
 };
+let webview;
+let pullToRefreshStyle;
+function initScrollBounce() {
+  uniShared.plusReady(() => {
+    if (!webview) {
+      webview = plus.webview.currentWebview();
+    }
+    if (!pullToRefreshStyle) {
+      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
+    }
+  });
+}
+function disableScrollBounce({disable}) {
+  if (pullToRefreshStyle && pullToRefreshStyle.support) {
+    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
+      support: !disable
+    }));
+  }
+}
 const passiveOptions = uniShared.passive(true);
 const _sfc_main$2 = {
   name: "ScrollView",
@@ -9128,22 +9147,24 @@ const _sfc_main$2 = {
     }
   },
   mounted() {
+    this.$trigger = useCustomEvent({
+      value: this.rootRef
+    }, this.$emit);
     var self = this;
     this._attached = true;
     this._scrollTopChanged(this.scrollTopNumber);
     this._scrollLeftChanged(this.scrollLeftNumber);
     this._scrollIntoViewChanged(this.scrollIntoView);
-    this.__handleScroll = function(e2) {
-      event.preventDefault();
+    this.__handleScroll = function(event) {
       event.stopPropagation();
       self._handleScroll.bind(self, event)();
     };
     var touchStart = null;
     var needStop = null;
-    this.__handleTouchMove = function(event2) {
-      var x = event2.touches[0].pageX;
-      var y = event2.touches[0].pageY;
-      var main = self.$refs.main;
+    this.__handleTouchMove = function(event) {
+      var x = event.touches[0].pageX;
+      var y = event.touches[0].pageY;
+      var main = self.main;
       if (needStop === null) {
         if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
           if (self.scrollX) {
@@ -9174,7 +9195,7 @@ const _sfc_main$2 = {
         }
       }
       if (needStop) {
-        event2.stopPropagation();
+        event.stopPropagation();
       }
       if (self.refresherEnabled && self.refreshState === "pulling") {
         const dy = y - touchStart.y;
@@ -9186,74 +9207,81 @@ const _sfc_main$2 = {
           rotate = rotate * 360;
         }
         self.refreshRotate = rotate;
-        self.$trigger("refresherpulling", event2, {
+        self.$trigger("refresherpulling", event, {
           deltaY: dy
         });
       }
     };
-    this.__handleTouchStart = function(event2) {
-      if (event2.touches.length === 1) {
+    this.__handleTouchStart = function(event) {
+      if (event.touches.length === 1) {
+        disableScrollBounce({
+          disable: true
+        });
         needStop = null;
         touchStart = {
-          x: event2.touches[0].pageX,
-          y: event2.touches[0].pageY
+          x: event.touches[0].pageX,
+          y: event.touches[0].pageY
         };
-        if (self.refresherEnabled && self.refreshState !== "refreshing" && self.$refs.main.scrollTop === 0) {
+        if (self.refresherEnabled && self.refreshState !== "refreshing" && self.main.scrollTop === 0) {
           self.refreshState = "pulling";
         }
       }
     };
-    this.__handleTouchEnd = function(event2) {
+    this.__handleTouchEnd = function(event) {
       touchStart = null;
+      disableScrollBounce({
+        disable: false
+      });
       if (self.refresherHeight >= self.refresherThreshold) {
         self._setRefreshState("refreshing");
       } else {
         self.refresherHeight = 0;
-        self.$trigger("refresherabort", event2, {});
+        self.$trigger("refresherabort", event, {});
       }
     };
-    this.$refs.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.$refs.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.$refs.main.addEventListener("scroll", this.__handleScroll, uniShared.passive(false));
-    this.$refs.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
+    this.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
+    this.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
+    this.main.addEventListener("scroll", this.__handleScroll, passiveOptions);
+    this.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
+    initScrollBounce();
   },
   activated() {
-    this.scrollY && (this.$refs.main.scrollTop = this.lastScrollTop);
-    this.scrollX && (this.$refs.main.scrollLeft = this.lastScrollLeft);
+    this.scrollY && (this.main.scrollTop = this.lastScrollTop);
+    this.scrollX && (this.main.scrollLeft = this.lastScrollLeft);
   },
-  beforeDestroy() {
-    this.$refs.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.$refs.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.$refs.main.removeEventListener("scroll", this.__handleScroll, uniShared.passive(false));
-    this.$refs.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
+  beforeUnmount() {
+    this.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
+    this.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
+    this.main.removeEventListener("scroll", this.__handleScroll, passiveOptions);
+    this.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
   },
   methods: {
     scrollTo: function(t2, n) {
-      var i2 = this.$refs.main;
+      var i2 = this.main;
       t2 < 0 ? t2 = 0 : n === "x" && t2 > i2.scrollWidth - i2.offsetWidth ? t2 = i2.scrollWidth - i2.offsetWidth : n === "y" && t2 > i2.scrollHeight - i2.offsetHeight && (t2 = i2.scrollHeight - i2.offsetHeight);
       var r = 0;
       var o2 = "";
       n === "x" ? r = i2.scrollLeft - t2 : n === "y" && (r = i2.scrollTop - t2);
       if (r !== 0) {
-        this.$refs.content.style.transition = "transform .3s ease-out";
-        this.$refs.content.style.webkitTransition = "-webkit-transform .3s ease-out";
+        this.content.style.transition = "transform .3s ease-out";
+        this.content.style.webkitTransition = "-webkit-transform .3s ease-out";
         if (n === "x") {
           o2 = "translateX(" + r + "px) translateZ(0)";
         } else {
           n === "y" && (o2 = "translateY(" + r + "px) translateZ(0)");
         }
-        this.$refs.content.removeEventListener("transitionend", this.__transitionEnd);
-        this.$refs.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
+        this.content.removeEventListener("transitionend", this.__transitionEnd);
+        this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
         this.__transitionEnd = this._transitionEnd.bind(this, t2, n);
-        this.$refs.content.addEventListener("transitionend", this.__transitionEnd);
-        this.$refs.content.addEventListener("webkitTransitionEnd", this.__transitionEnd);
+        this.content.addEventListener("transitionend", this.__transitionEnd);
+        this.content.addEventListener("webkitTransitionEnd", this.__transitionEnd);
         if (n === "x") {
           i2.style.overflowX = "hidden";
         } else if (n === "y") {
           i2.style.overflowY = "hidden";
         }
-        this.$refs.content.style.transform = o2;
-        this.$refs.content.style.webkitTransform = o2;
+        this.content.style.transform = o2;
+        this.content.style.webkitTransform = o2;
       }
     },
     _handleTrack: function($event) {
@@ -9338,7 +9366,7 @@ const _sfc_main$2 = {
           if (this.scrollWithAnimation) {
             this.scrollTo(val, "y");
           } else {
-            this.$refs.main.scrollTop = val;
+            this.main.scrollTop = val;
           }
         }
       }
@@ -9351,7 +9379,7 @@ const _sfc_main$2 = {
           if (this.scrollWithAnimation) {
             this.scrollTo(val, "x");
           } else {
-            this.$refs.main.scrollLeft = val;
+            this.main.scrollLeft = val;
           }
         }
       }
@@ -9359,44 +9387,42 @@ const _sfc_main$2 = {
     _scrollIntoViewChanged: function(val) {
       if (val) {
         if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.group('scroll-into-view="' + val + '" \u6709\u8BEF');
-          console.error("id \u5C5E\u6027\u503C\u683C\u5F0F\u9519\u8BEF\u3002\u5982\u4E0D\u80FD\u4EE5\u6570\u5B57\u5F00\u5934\u3002");
-          console.groupEnd();
+          console.error(`id error: scroll-into-view=${val}`);
           return;
         }
-        var element = this.$el.querySelector("#" + val);
+        var element = this.rootRef.querySelector("#" + val);
         if (element) {
-          var mainRect = this.$refs.main.getBoundingClientRect();
+          var mainRect = this.main.getBoundingClientRect();
           var elRect = element.getBoundingClientRect();
           if (this.scrollX) {
             var left = elRect.left - mainRect.left;
-            var scrollLeft = this.$refs.main.scrollLeft;
+            var scrollLeft = this.main.scrollLeft;
             var x = scrollLeft + left;
             if (this.scrollWithAnimation) {
               this.scrollTo(x, "x");
             } else {
-              this.$refs.main.scrollLeft = x;
+              this.main.scrollLeft = x;
             }
           }
           if (this.scrollY) {
             var top = elRect.top - mainRect.top;
-            var scrollTop = this.$refs.main.scrollTop;
+            var scrollTop = this.main.scrollTop;
             var y = scrollTop + top;
             if (this.scrollWithAnimation) {
               this.scrollTo(y, "y");
             } else {
-              this.$refs.main.scrollTop = y;
+              this.main.scrollTop = y;
             }
           }
         }
       }
     },
     _transitionEnd: function(val, type) {
-      this.$refs.content.style.transition = "";
-      this.$refs.content.style.webkitTransition = "";
-      this.$refs.content.style.transform = "";
-      this.$refs.content.style.webkitTransform = "";
-      var main = this.$refs.main;
+      this.content.style.transition = "";
+      this.content.style.webkitTransition = "";
+      this.content.style.transform = "";
+      this.content.style.webkitTransform = "";
+      var main = this.main;
       if (type === "x") {
         main.style.overflowX = this.scrollX ? "auto" : "hidden";
         main.scrollLeft = val;
@@ -9404,14 +9430,14 @@ const _sfc_main$2 = {
         main.style.overflowY = this.scrollY ? "auto" : "hidden";
         main.scrollTop = val;
       }
-      this.$refs.content.removeEventListener("transitionend", this.__transitionEnd);
-      this.$refs.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
+      this.content.removeEventListener("transitionend", this.__transitionEnd);
+      this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
     },
     _setRefreshState(state) {
       switch (state) {
         case "refreshing":
           this.refresherHeight = this.refresherThreshold;
-          this.$trigger("refresherrefresh", event, {});
+          this.$trigger("refresherrefresh", {}, {});
           break;
         case "restore":
           this.refresherHeight = 0;
@@ -9421,40 +9447,53 @@ const _sfc_main$2 = {
       this.refreshState = state;
     },
     getScrollPosition() {
-      const main = this.$refs.main;
+      const main = this.main;
       return {
         scrollLeft: main.scrollLeft,
-        scrollTop: main.scrollTop
+        scrollTop: main.scrollTop,
+        scrollHeight: main.scrollHeight,
+        scrollWidth: main.scrollWidth
       };
     }
+  },
+  setup(props2) {
+    const rootRef = vue.ref(null);
+    const main = vue.ref(null);
+    const content = vue.ref(null);
+    return {
+      rootRef,
+      main,
+      content
+    };
   }
 };
-const _hoisted_1$1 = {
+const _hoisted_1$1 = {ref: "rootRef"};
+const _hoisted_2$1 = {
   ref: "wrap",
   class: "uni-scroll-view"
 };
-const _hoisted_2$1 = {
+const _hoisted_3$1 = {
   ref: "content",
   class: "uni-scroll-view-content"
 };
-const _hoisted_3$1 = {
+const _hoisted_4$1 = {
   key: 0,
   class: "uni-scroll-view-refresh"
 };
-const _hoisted_4$1 = {class: "uni-scroll-view-refresh-inner"};
-const _hoisted_5 = /* @__PURE__ */ vue.createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
-const _hoisted_6 = /* @__PURE__ */ vue.createVNode("path", {
+const _hoisted_5 = {class: "uni-scroll-view-refresh-inner"};
+const _hoisted_6 = /* @__PURE__ */ vue.createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
+const _hoisted_7 = /* @__PURE__ */ vue.createVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
 }, null, -1);
-const _hoisted_7 = {
+const _hoisted_8 = {
   key: 1,
   class: "uni-scroll-view-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
-const _hoisted_8 = /* @__PURE__ */ vue.createVNode("circle", {
+const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
   cx: "50",
   cy: "50",
   r: "20",
@@ -9463,8 +9502,8 @@ const _hoisted_8 = /* @__PURE__ */ vue.createVNode("circle", {
   "stroke-width": "3"
 }, null, -1);
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-scroll-view", _ctx.$attrs, [
-    vue.createVNode("div", _hoisted_1$1, [
+  return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$1, [
+    vue.createVNode("div", _hoisted_2$1, [
       vue.createVNode("div", {
         ref: "main",
         style: {
@@ -9473,7 +9512,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
         },
         class: "uni-scroll-view"
       }, [
-        vue.createVNode("div", _hoisted_2$1, [
+        vue.createVNode("div", _hoisted_3$1, [
           $props.refresherEnabled ? (vue.openBlock(), vue.createBlock("div", {
             key: 0,
             ref: "refresherinner",
@@ -9483,8 +9522,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
             },
             class: "uni-scroll-view-refresher"
           }, [
-            $props.refresherDefaultStyle !== "none" ? (vue.openBlock(), vue.createBlock("div", _hoisted_3$1, [
-              vue.createVNode("div", _hoisted_4$1, [
+            $props.refresherDefaultStyle !== "none" ? (vue.openBlock(), vue.createBlock("div", _hoisted_4$1, [
+              vue.createVNode("div", _hoisted_5, [
                 $data.refreshState == "pulling" ? (vue.openBlock(), vue.createBlock("svg", {
                   key: 0,
                   style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
@@ -9494,11 +9533,11 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
                   height: "24",
                   viewBox: "0 0 24 24"
                 }, [
-                  _hoisted_5,
-                  _hoisted_6
+                  _hoisted_6,
+                  _hoisted_7
                 ], 4)) : vue.createCommentVNode("", true),
-                $data.refreshState == "refreshing" ? (vue.openBlock(), vue.createBlock("svg", _hoisted_7, [
-                  _hoisted_8
+                $data.refreshState == "refreshing" ? (vue.openBlock(), vue.createBlock("svg", _hoisted_8, [
+                  _hoisted_9
                 ])) : vue.createCommentVNode("", true)
               ])
             ])) : vue.createCommentVNode("", true),
@@ -9508,7 +9547,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
         ], 512)
       ], 4)
     ], 512)
-  ], 16);
+  ], 512);
 }
 _sfc_main$2.render = _sfc_render$2;
 const addListenerToElement = function(element, type, callback2, capture) {
@@ -10097,26 +10136,26 @@ var index$7 = /* @__PURE__ */ vue.defineComponent({
     }) {
       heightRef.value = height;
     }
-    function confirm(event2) {
-      trigger("confirm", event2, {
+    function confirm(event) {
+      trigger("confirm", event, {
         value: state.value
       });
     }
-    function onKeyDownEnter(event2) {
-      if (event2.key !== "Enter") {
+    function onKeyDownEnter(event) {
+      if (event.key !== "Enter") {
         return;
       }
       if (isDone.value) {
-        event2.preventDefault();
+        event.preventDefault();
       }
     }
-    function onKeyUpEnter(event2) {
-      if (event2.key !== "Enter") {
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
         return;
       }
       if (isDone.value) {
-        confirm(event2);
-        const textarea = event2.target;
+        confirm(event);
+        const textarea = event.target;
         textarea.blur();
       }
     }
@@ -10136,7 +10175,7 @@ var index$7 = /* @__PURE__ */ vue.defineComponent({
         style: {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        onFocus: (event2) => event2.target.blur()
+        onFocus: (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
         ref: fieldRef,
         value: state.value,
@@ -10304,18 +10343,18 @@ function useGesture(props2, videoRef, fullscreenState) {
     x: 0,
     y: 0
   };
-  function onTouchstart(event2) {
-    const toucher = event2.targetTouches[0];
+  function onTouchstart(event) {
+    const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
     state.currentTimeOld = state.currentTimeNew = 0;
   }
-  function onTouchmove(event2) {
+  function onTouchmove(event) {
     function stop() {
-      event2.stopPropagation();
-      event2.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
     }
     if (fullscreenState.fullscreen) {
       stop();
@@ -10324,7 +10363,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     if (gestureType === "stop") {
       return;
     }
-    const toucher = event2.targetTouches[0];
+    const toucher = event.targetTouches[0];
     const pageX = toucher.pageX;
     const pageY = toucher.pageY;
     const origin = touchStartOrigin;
@@ -10359,11 +10398,11 @@ function useGesture(props2, videoRef, fullscreenState) {
       }
     }
   }
-  function onTouchend(event2) {
+  function onTouchend(event) {
     const video = videoRef.value;
     if (state.gestureType !== "none" && state.gestureType !== "stop") {
-      event2.stopPropagation();
-      event2.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
       video.currentTime = state.currentTimeNew;
@@ -10607,10 +10646,10 @@ function useControls(props2, videoState, seek) {
     controlsShow,
     controlsVisible
   });
-  function clickProgress(event2) {
+  function clickProgress(event) {
     const $progress = progressRef.value;
-    let element = event2.target;
-    let x = event2.offsetX;
+    let element = event.target;
+    let x = event.offsetX;
     while (element && element !== $progress) {
       x += element.offsetLeft;
       element = element.parentNode;
@@ -10663,12 +10702,12 @@ function useControls(props2, videoState, seek) {
     let moveOnce = true;
     let originProgress;
     const ball = ballRef.value;
-    function touchmove2(event2) {
-      const toucher = event2.targetTouches[0];
+    function touchmove2(event) {
+      const toucher = event.targetTouches[0];
       const pageX = toucher.pageX;
       const pageY = toucher.pageY;
       if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event2);
+        touchend(event);
         return;
       }
       moveOnce = false;
@@ -10681,24 +10720,24 @@ function useControls(props2, videoState, seek) {
         progress = 100;
       }
       videoState.progress = progress;
-      event2.preventDefault();
-      event2.stopPropagation();
+      event.preventDefault();
+      event.stopPropagation();
     }
-    function touchend(event2) {
+    function touchend(event) {
       state.controlsTouching = false;
       if (state.touching) {
         ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
         if (!moveOnce) {
-          event2.preventDefault();
-          event2.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
           seek(videoState.duration * videoState.progress / 100);
         }
         state.touching = false;
       }
     }
-    ball.addEventListener("touchstart", (event2) => {
+    ball.addEventListener("touchstart", (event) => {
       state.controlsTouching = true;
-      const toucher = event2.targetTouches[0];
+      const toucher = event.targetTouches[0];
       originX = toucher.pageX;
       originY = toucher.pageY;
       originProgress = videoState.progress;
@@ -10735,8 +10774,8 @@ function useDanmu(props2, videoState) {
   function toggleDanmu() {
     state.enable = !state.enable;
   }
-  function updateDanmu(event2) {
-    const video = event2.target;
+  function updateDanmu(event) {
+    const video = event.target;
     const currentTime = video.currentTime;
     const oldDanmuIndex = danmuIndex;
     const newDanmuIndex = {
@@ -11016,9 +11055,9 @@ var index$5 = /* @__PURE__ */ vue.defineComponent({
         onPlay,
         onPause,
         onEnded,
-        onTimeupdate: (event2) => {
-          onTimeUpdate(event2);
-          updateDanmu(event2);
+        onTimeupdate: (event) => {
+          onTimeUpdate(event);
+          updateDanmu(event);
         },
         onWebkitbeginfullscreen: () => emitFullscreenChange(true),
         onX5videoenterfullscreen: () => emitFullscreenChange(true),
@@ -11576,8 +11615,8 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
                 callout.setPosition(latLng);
               }
             });
-            const event2 = maps2.event.addListener(marker, "moveend", () => {
-              event2.remove();
+            const event = maps2.event.addListener(marker, "moveend", () => {
+              event.remove();
               movingEvent.remove();
               marker.lastPosition = a2;
               marker.setPosition(b);
@@ -12234,8 +12273,8 @@ const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve,
     return;
   }
   function addEventListener() {
-    listener$1 = function(event2) {
-      const acceleration = event2.acceleration || event2.accelerationIncludingGravity;
+    listener$1 = function(event) {
+      const acceleration = event.acceleration || event.accelerationIncludingGravity;
       UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
         x: acceleration && acceleration.x || 0,
         y: acceleration && acceleration.y || 0,
@@ -12282,8 +12321,8 @@ const startCompass = defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) =>
     return;
   }
   function addEventListener() {
-    listener = function(event2) {
-      const direction2 = 360 - (event2.alpha !== null ? event2.alpha : 360);
+    listener = function(event) {
+      const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
       UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
         direction: direction2
       });
@@ -12697,8 +12736,8 @@ const chooseFile = defineAsyncApi(API_CHOOSE_FILE, ({
     extension
   });
   document.body.appendChild(fileInput);
-  fileInput.addEventListener("change", function(event2) {
-    const eventTarget = event2.target;
+  fileInput.addEventListener("change", function(event) {
+    const eventTarget = event.target;
     const tempFiles = [];
     if (eventTarget && eventTarget.files) {
       const fileCount = eventTarget.files.length;
@@ -12742,8 +12781,8 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({
     type: "image"
   });
   document.body.appendChild(imageInput);
-  imageInput.addEventListener("change", function(event2) {
-    const eventTarget = event2.target;
+  imageInput.addEventListener("change", function(event) {
+    const eventTarget = event.target;
     const tempFiles = [];
     if (eventTarget && eventTarget.files) {
       const fileCount = eventTarget.files.length;
@@ -12782,8 +12821,8 @@ const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {
     type: "video"
   });
   document.body.appendChild(videoInput);
-  videoInput.addEventListener("change", function(event2) {
-    const eventTarget = event2.target;
+  videoInput.addEventListener("change", function(event) {
+    const eventTarget = event.target;
     const file = eventTarget.files[0];
     let filePath = "";
     const callbackResult = {
@@ -13008,10 +13047,10 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, ({url, header, timeout = _
     clearTimeout(timer);
     reject();
   };
-  xhr.onprogress = function(event2) {
+  xhr.onprogress = function(event) {
     downloadTask._callbacks.forEach((callback2) => {
-      var totalBytesWritten = event2.loaded;
-      var totalBytesExpectedToWrite = event2.total;
+      var totalBytesWritten = event.loaded;
+      var totalBytesExpectedToWrite = event.total;
       var progress = Math.round(totalBytesWritten / totalBytesExpectedToWrite * 100);
       callback2({
         progress,
@@ -13094,10 +13133,10 @@ const uploadFile = defineTaskApi(API_UPLOAD_FILE, ({
     Object.keys(header).forEach((key) => {
       xhr.setRequestHeader(key, header[key]);
     });
-    xhr.upload.onprogress = function(event2) {
+    xhr.upload.onprogress = function(event) {
       uploadTask._callbacks.forEach((callback2) => {
-        var totalBytesSent = event2.loaded;
-        var totalBytesExpectedToSend = event2.total;
+        var totalBytesSent = event.loaded;
+        var totalBytesExpectedToSend = event.total;
         var progress = Math.round(totalBytesSent / totalBytesExpectedToSend * 100);
         callback2({
           progress,
@@ -13163,9 +13202,9 @@ class SocketTask {
       const eventNames = ["open", "close", "error", "message"];
       eventNames.forEach((name) => {
         this._callbacks[name] = [];
-        webSocket.addEventListener(name, (event2) => {
+        webSocket.addEventListener(name, (event) => {
           const res = name === "message" ? {
-            data: event2.data
+            data: event.data
           } : {};
           this._callbacks[name].forEach((callback3) => {
             try {
@@ -13287,10 +13326,10 @@ const closeSocket = defineAsyncApi(API_CLOSE_SOCKET, (options, {resolve, reject}
     reject("WebSocket is not connected");
   }
 }, CloseSocketProtocol);
-function on(event2) {
-  const api2 = `onSocket${shared.capitalize(event2)}`;
+function on(event) {
+  const api2 = `onSocket${shared.capitalize(event)}`;
   return defineOnApi(api2, () => {
-    globalEvent[event2] = api2;
+    globalEvent[event] = api2;
   });
 }
 const onSocketOpen = /* @__PURE__ */ on("open");
@@ -14446,14 +14485,14 @@ var index$3 = /* @__PURE__ */ vue.defineComponent({
   }
 });
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
-  publishHandler(event2, args, pageId) {
-    window.UniServiceJSBridge.subscribeHandler(event2, args, pageId);
+  publishHandler(event, args, pageId) {
+    window.UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
-  publishHandler(event2, args, pageId) {
-    UniViewJSBridge.subscribeHandler(pageId + "." + event2, args, pageId);
+  publishHandler(event, args, pageId) {
+    UniViewJSBridge.subscribeHandler(pageId + "." + event, args, pageId);
   }
 });
 var TabBar = /* @__PURE__ */ vue.defineComponent({
