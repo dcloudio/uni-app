@@ -1,0 +1,10 @@
+uni-map {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  display: block;
+}
+
+uni-map[hidden] {
+  display: none;
+}
