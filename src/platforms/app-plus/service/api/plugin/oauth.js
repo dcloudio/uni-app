@@ -31,7 +31,7 @@ export function login (params, callbackId) {
           authResult: authResult,
           errMsg: 'login:ok'
         })
-      }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: params.univerifyStyle } || {})
+      }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } || {})
     }
     // 先注销再登录
     // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -128,5 +128,28 @@ export function preLogin (params, callbackId) {
 }
 
 export function closeAuthView () {
-  getService('univerify').then(service => service.closeAuthView())
+  return getService('univerify').then(service => service.closeAuthView())
+}
+
+/**
+ * 一键登录自定义登陆按钮点击处理
+ */
+function univerifyButtonsClickHandling(univerifyStyle, errorCallback) {
+  if (univerifyStyle.buttons &&
+    Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
+    univerifyStyle.buttons.list.length > 0
+  ) {
+    univerifyStyle.buttons.list.forEach((button, index) => {
+      univerifyStyle.buttons.list[index].onclick = function () {
+        closeAuthView().then(() => {
+          errorCallback({
+            code: '30008',
+            message: '用户点击了自定义按钮',
+            index
+          })
+        })
+      }
+    })
+  }
+  return univerifyStyle
 }
