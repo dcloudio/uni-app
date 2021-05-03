@@ -105,7 +105,7 @@ export function initPlugins(
     0,
     'pre'
   )
-  addPlugin(plugins, uniMainJsPlugin(options), 1, 'pre')
+  addPlugin(plugins, uniMainJsPlugin(config, options), 1, 'pre')
   addPlugin(plugins, uniPagesJsonPlugin(config, options), 1, 'pre')
   addPlugin(plugins, uniManifestJsonPlugin(config, options), 1, 'pre')
 

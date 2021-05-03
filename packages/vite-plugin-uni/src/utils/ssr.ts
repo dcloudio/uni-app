@@ -1,3 +1,6 @@
+import path from 'path'
+import fs from 'fs-extra'
+
 function serializeDefine(define: Record<string, any>): string {
   let res = `{`
   for (const key in define) {
@@ -10,35 +13,14 @@ function serializeDefine(define: Record<string, any>): string {
 }
 
 export function generateSSREnvCode(define: Record<string, any>): string {
-  return envCode.replace('__DEFINES__', serializeDefine(define))
+  return fs
+    .readFileSync(path.join(__dirname, '../../lib/ssr/env.js'), 'utf8')
+    .replace('__DEFINES__', serializeDefine(define))
 }
 
-const envCode = `const context = (() => {
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
-    }
-    else if (typeof self !== 'undefined') {
-        return self;
-    }
-    else if (typeof window !== 'undefined') {
-        return window;
-    }
-    else {
-        return Function('return this')();
-    }
-})();
-// assign defines
-const defines = __DEFINES__;
-Object.keys(defines).forEach((key) => {
-    const segments = key.split('.');
-    let target = context;
-    for (let i = 0; i < segments.length; i++) {
-        const segment = segments[i];
-        if (i === segments.length - 1) {
-            target[segment] = defines[key];
-        }
-        else {
-            target = target[segment] || (target[segment] = {});
-        }
-    }
-});`
+export function generateSSRRenderCode() {
+  return fs.readFileSync(
+    path.join(__dirname, '../../lib/ssr/render.js'),
+    'utf8'
+  )
+}
