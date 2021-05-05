@@ -2871,7 +2871,7 @@ action支持一次使用多个，比如使用`db.action("action-a,action-b")`，
 
 action是一种特殊的云函数，它不占用服务空间的云函数数量。
 
-目前action还不支持本地运行。后续会支持。
+**目前action还不支持本地运行。后续会支持。**
 
 **新建action**
 
