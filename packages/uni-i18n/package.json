@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-i18n",
-  "version": "2.0.0-alpha-31920210506001",
+  "version": "2.0.0-alpha-31920210506002",
   "description": "@dcloudio/uni-i18n",
   "main": "dist/uni-i18n.cjs.js",
   "module": "dist/uni-i18n.esm.js",
@@ -17,5 +17,6 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
-  }
+  },
+  "gitHead": "ae1adf3d5a079b970dc469dfc61d8c3df2e5a4e3"
 }
