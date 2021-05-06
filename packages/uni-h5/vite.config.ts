@@ -3,8 +3,10 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import jscc from 'rollup-plugin-jscc'
+import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
 
+import { stripOptions } from '@dcloudio/uni-cli-shared'
 import { isCustomElement } from '../uni-shared'
 
 const moduleAlias = require('module-alias')
@@ -20,6 +22,28 @@ function resolve(file: string) {
 
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
+const rollupPlugins = [
+  replace({
+    values: {
+      defineOnApi: `/*#__PURE__*/ defineOnApi`,
+      defineOffApi: `/*#__PURE__*/ defineOffApi`,
+      defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
+      defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
+      defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
+    },
+    preventAssignment: true,
+  }),
+
+  jscc({
+    values: {
+      // 该插件限制了不能以__开头
+      _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
+    },
+  }),
+]
+if (FORMAT === 'cjs') {
+  rollupPlugins.push(strip(stripOptions))
+}
 export default defineConfig({
   root: __dirname,
   define: {
@@ -89,25 +113,14 @@ export default defineConfig({
         }
       },
       preserveEntrySignatures: 'strict',
-      plugins: [
-        replace({
-          values: {
-            defineOnApi: `/*#__PURE__*/ defineOnApi`,
-            defineOffApi: `/*#__PURE__*/ defineOffApi`,
-            defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
-            defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
-            defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
-          },
-          preventAssignment: true,
-        }),
-
-        jscc({
-          values: {
-            // 该插件限制了不能以__开头
-            _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
-          },
-        }),
-      ],
+      plugins: rollupPlugins,
+      onwarn: (msg, warn) => {
+        if (
+          !(msg.message || msg).includes('external module "vue" but never used')
+        ) {
+          warn(msg)
+        }
+      },
     },
   },
 })

@@ -84,21 +84,21 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
 function E() {
 }
 E.prototype = {
-  on: function(name, callback2, ctx) {
+  on: function(name, callback, ctx) {
     var e2 = this.e || (this.e = {});
     (e2[name] || (e2[name] = [])).push({
-      fn: callback2,
+      fn: callback,
       ctx
     });
     return this;
   },
-  once: function(name, callback2, ctx) {
+  once: function(name, callback, ctx) {
     var self = this;
     function listener() {
       self.off(name, listener);
-      callback2.apply(ctx, arguments);
+      callback.apply(ctx, arguments);
     }
-    listener._ = callback2;
+    listener._ = callback;
     return this.on(name, listener, ctx);
   },
   emit: function(name) {
@@ -111,13 +111,13 @@ E.prototype = {
     }
     return this;
   },
-  off: function(name, callback2) {
+  off: function(name, callback) {
     var e2 = this.e || (this.e = {});
     var evts = e2[name];
     var liveEvents = [];
-    if (evts && callback2) {
+    if (evts && callback) {
       for (var i2 = 0, len = evts.length; i2 < len; i2++) {
-        if (evts[i2].fn !== callback2 && evts[i2].fn._ !== callback2)
+        if (evts[i2].fn !== callback && evts[i2].fn._ !== callback)
           liveEvents.push(evts[i2]);
       }
     }
@@ -128,11 +128,11 @@ E.prototype = {
 function initBridge(namespace) {
   const emitter = new E();
   return shared.extend(emitter, {
-    subscribe(event, callback2) {
-      emitter.on(`${namespace}.${event}`, callback2);
+    subscribe(event, callback) {
+      emitter.on(`${namespace}.${event}`, callback);
     },
-    unsubscribe(event, callback2) {
-      emitter.off(`${namespace}.${event}`, callback2);
+    unsubscribe(event, callback) {
+      emitter.off(`${namespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
@@ -538,11 +538,11 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback2, keepAlive = false) {
+function addInvokeCallback(id, name, callback, keepAlive = false) {
   invokeCallbacks[id] = {
     name,
     keepAlive,
-    callback: callback2
+    callback
   };
   return id;
 }
@@ -601,9 +601,9 @@ function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}
   });
   return callbackId;
 }
-const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
+const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
 function hasCallback(args) {
-  if (shared.isPlainObject(args) && callbacks$1.find((cb) => shared.isFunction(args[cb]))) {
+  if (shared.isPlainObject(args) && callbacks.find((cb) => shared.isFunction(args[cb]))) {
     return true;
   }
   return false;
@@ -1656,9 +1656,9 @@ const _sfc_main$8 = {
               });
               color = LinearGradient;
             } else if (data[0] === "pattern") {
-              const loaded = this.checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image2) {
-                if (image2) {
-                  c2d[method1] = c2d.createPattern(image2, data[2]);
+              const loaded = this.checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image) {
+                if (image) {
+                  c2d[method1] = c2d.createPattern(image, data[2]);
                 }
               });
               if (!loaded) {
@@ -1708,9 +1708,9 @@ const _sfc_main$8 = {
             var url = dataArray[0];
             var otherData = dataArray.slice(1);
             self._images = self._images || {};
-            if (!self.checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image2) {
-              if (image2) {
-                c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
+            if (!self.checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image) {
+              if (image) {
+                c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
               }
             }))
               return "break";
@@ -1815,16 +1815,16 @@ const _sfc_main$8 = {
     },
     checkImageLoaded: function(src, actions, callbackId, fn) {
       var self = this;
-      var image2 = this._images[src];
-      if (image2.ready) {
-        fn(image2);
+      var image = this._images[src];
+      if (image.ready) {
+        fn(image);
         return true;
       } else {
         this._actionsDefer.unshift([actions, true]);
         this.actionsWaiting = true;
-        image2.onload = function() {
-          image2.ready = true;
-          fn(image2);
+        image.onload = function() {
+          image.ready = true;
+          fn(image);
           self.actionsWaiting = false;
           var actions2 = self._actionsDefer.slice(0);
           self._actionsDefer = [];
@@ -2220,9 +2220,6 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
-      vue.onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
     }
     return () => {
       const {
@@ -2257,10 +2254,6 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
     uniForm.addField(formField);
   }
   const uniLabel = vue.inject(uniLabelKey, false);
-  vue.onBeforeUnmount(() => {
-    uniCheckGroup && uniCheckGroup.removeField(field);
-    uniForm && uniForm.removeField(formField);
-  });
   return {
     uniCheckGroup,
     uniForm,
@@ -2354,17 +2347,17 @@ function HTMLParser(html, handler) {
       }
       if (chars) {
         index2 = html.indexOf("<");
-        var text2 = index2 < 0 ? html : html.substring(0, index2);
+        var text = index2 < 0 ? html : html.substring(0, index2);
         html = index2 < 0 ? "" : html.substring(index2);
         if (handler.chars) {
-          handler.chars(text2);
+          handler.chars(text);
         }
       }
     } else {
-      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text3) {
-        text3 = text3.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text2) {
+        text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
         if (handler.chars) {
-          handler.chars(text3);
+          handler.chars(text2);
         }
         return "";
       });
@@ -2433,586 +2426,12 @@ function makeMap(str) {
   }
   return obj;
 }
-function divider(Quill) {
-  const BlockEmbed = Quill.import("blots/block/embed");
-  class Divider extends BlockEmbed {
-  }
-  Divider.blotName = "divider";
-  Divider.tagName = "HR";
-  return {
-    "formats/divider": Divider
-  };
-}
-function ins(Quill) {
-  const Inline = Quill.import("blots/inline");
-  class Ins extends Inline {
-  }
-  Ins.blotName = "ins";
-  Ins.tagName = "INS";
-  return {
-    "formats/ins": Ins
-  };
-}
-function align(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
-  const config = {
-    scope: Scope.BLOCK,
-    whitelist: ["left", "right", "center", "justify"]
-  };
-  const AlignStyle = new Attributor.Style("align", "text-align", config);
-  return {
-    "formats/align": AlignStyle
-  };
-}
-function direction(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
-  const config = {
-    scope: Scope.BLOCK,
-    whitelist: ["rtl"]
-  };
-  const DirectionStyle = new Attributor.Style("direction", "direction", config);
-  return {
-    "formats/direction": DirectionStyle
-  };
-}
-function list(Quill) {
-  const Parchment = Quill.import("parchment");
-  const Container = Quill.import("blots/container");
-  const ListItem = Quill.import("formats/list/item");
-  class List extends Container {
-    static create(value) {
-      const tagName = value === "ordered" ? "OL" : "UL";
-      const node = super.create(tagName);
-      if (value === "checked" || value === "unchecked") {
-        node.setAttribute("data-checked", value === "checked");
-      }
-      return node;
-    }
-    static formats(domNode) {
-      if (domNode.tagName === "OL")
-        return "ordered";
-      if (domNode.tagName === "UL") {
-        if (domNode.hasAttribute("data-checked")) {
-          return domNode.getAttribute("data-checked") === "true" ? "checked" : "unchecked";
-        } else {
-          return "bullet";
-        }
-      }
-      return void 0;
-    }
-    constructor(domNode) {
-      super(domNode);
-      const listEventHandler = (e2) => {
-        if (e2.target.parentNode !== domNode)
-          return;
-        const format = this.statics.formats(domNode);
-        const blot = Parchment.find(e2.target);
-        if (format === "checked") {
-          blot.format("list", "unchecked");
-        } else if (format === "unchecked") {
-          blot.format("list", "checked");
-        }
-      };
-      domNode.addEventListener("click", listEventHandler);
-    }
-    format(name, value) {
-      if (this.children.length > 0) {
-        this.children.tail.format(name, value);
-      }
-    }
-    formats() {
-      return {[this.statics.blotName]: this.statics.formats(this.domNode)};
-    }
-    insertBefore(blot, ref) {
-      if (blot instanceof ListItem) {
-        super.insertBefore(blot, ref);
-      } else {
-        const index2 = ref == null ? this.length() : ref.offset(this);
-        const after = this.split(index2);
-        after.parent.insertBefore(blot, after);
-      }
-    }
-    optimize(context) {
-      super.optimize(context);
-      const next = this.next;
-      if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
-        next.moveChildren(this);
-        next.remove();
-      }
-    }
-    replace(target) {
-      if (target.statics.blotName !== this.statics.blotName) {
-        const item = Parchment.create(this.statics.defaultChild);
-        target.moveChildren(item);
-        this.appendChild(item);
-      }
-      super.replace(target);
-    }
-  }
-  List.blotName = "list";
-  List.scope = Parchment.Scope.BLOCK_BLOT;
-  List.tagName = ["OL", "UL"];
-  List.defaultChild = "list-item";
-  List.allowedChildren = [ListItem];
-  return {
-    "formats/list": List
-  };
-}
-function background(Quill) {
-  const {Scope} = Quill.import("parchment");
-  const BackgroundStyle = Quill.import("formats/background");
-  const BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
-    scope: Scope.INLINE
-  });
-  return {
-    "formats/backgroundColor": BackgroundColorStyle
-  };
-}
-function box(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
-  const config = {
-    scope: Scope.BLOCK
-  };
-  const margin = [
-    "margin",
-    "marginTop",
-    "marginBottom",
-    "marginLeft",
-    "marginRight"
-  ];
-  const padding = [
-    "padding",
-    "paddingTop",
-    "paddingBottom",
-    "paddingLeft",
-    "paddingRight"
-  ];
-  const result = {};
-  margin.concat(padding).forEach((name) => {
-    result[`formats/${name}`] = new Attributor.Style(name, shared.hyphenate(name), config);
-  });
-  return result;
-}
-function font(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
-  const config = {
-    scope: Scope.INLINE
-  };
-  const font2 = [
-    "font",
-    "fontSize",
-    "fontStyle",
-    "fontVariant",
-    "fontWeight",
-    "fontFamily"
-  ];
-  const result = {};
-  font2.forEach((name) => {
-    result[`formats/${name}`] = new Attributor.Style(name, shared.hyphenate(name), config);
-  });
-  return result;
-}
-function text(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
-  const text2 = [
-    {
-      name: "lineHeight",
-      scope: Scope.BLOCK
-    },
-    {
-      name: "letterSpacing",
-      scope: Scope.INLINE
-    },
-    {
-      name: "textDecoration",
-      scope: Scope.INLINE
-    },
-    {
-      name: "textIndent",
-      scope: Scope.BLOCK
-    }
-  ];
-  const result = {};
-  text2.forEach(({name, scope}) => {
-    result[`formats/${name}`] = new Attributor.Style(name, shared.hyphenate(name), {
-      scope
-    });
-  });
-  return result;
-}
-function image(Quill) {
-  const Image2 = Quill.import("formats/image");
-  const ATTRIBUTES = [
-    "alt",
-    "height",
-    "width",
-    "data-custom",
-    "class",
-    "data-local"
-  ];
-  Image2.sanitize = (url) => url;
-  Image2.formats = function formats(domNode) {
-    return ATTRIBUTES.reduce(function(formats2, attribute) {
-      if (domNode.hasAttribute(attribute)) {
-        formats2[attribute] = domNode.getAttribute(attribute);
-      }
-      return formats2;
-    }, {});
-  };
-  const format = Image2.prototype.format;
-  Image2.prototype.format = function(name, value) {
-    if (ATTRIBUTES.indexOf(name) > -1) {
-      if (value) {
-        this.domNode.setAttribute(name, value);
-      } else {
-        this.domNode.removeAttribute(name);
-      }
-    } else {
-      format.call(this, name, value);
-    }
-  };
-}
-function register(Quill) {
-  const formats = {
-    divider,
-    ins,
-    align,
-    direction,
-    list,
-    background,
-    box,
-    font,
-    text,
-    image
-  };
-  const options = {};
-  Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
-  Quill.register(options, true);
-}
-const scripts = {};
-function loadScript(globalName, src, callback2) {
-  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
-  if (globalObject) {
-    callback2();
-    return;
-  }
-  let callbacks2 = scripts[src];
-  if (!callbacks2) {
-    callbacks2 = scripts[src] = [];
-    const script = document.createElement("script");
-    script.src = src;
-    document.body.appendChild(script);
-    script.onload = function() {
-      callbacks2.forEach((callback22) => callback22());
-      delete scripts[src];
-    };
-  }
-  callbacks2.push(callback2);
-}
 function useQuill(props2, rootRef, trigger) {
-  let quillReady;
-  let skipMatcher;
-  let quill;
   vue.watch(() => props2.readOnly, (value) => {
-    if (quillReady) {
-      quill.enable(!value);
-      if (!value) {
-        quill.blur();
-      }
-    }
   });
   vue.watch(() => props2.placeholder, (value) => {
-    if (quillReady) {
-      quill.root.setAttribute("data-placeholder", value);
-    }
   });
-  function html2delta(html) {
-    const tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
-    let content = "";
-    let disable;
-    HTMLParser(html, {
-      start: function(tag, attrs, unary) {
-        if (!tags.includes(tag)) {
-          disable = !unary;
-          return;
-        }
-        disable = false;
-        const arrts = attrs.map(({
-          name,
-          value
-        }) => `${name}="${value}"`).join(" ");
-        const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
-        content += start;
-      },
-      end: function(tag) {
-        if (!disable) {
-          content += `</${tag}>`;
-        }
-      },
-      chars: function(text2) {
-        if (!disable) {
-          content += text2;
-        }
-      }
-    });
-    skipMatcher = true;
-    const delta = quill.clipboard.convert(content);
-    skipMatcher = false;
-    return delta;
-  }
-  function getContents() {
-    const html = quill.root.innerHTML;
-    const text2 = quill.getText();
-    const delta = quill.getContents();
-    return {
-      html,
-      text: text2,
-      delta
-    };
-  }
-  let oldStatus = {};
-  function updateStatus(range) {
-    const status = range ? quill.getFormat(range) : {};
-    const keys = Object.keys(status);
-    if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
-      oldStatus = status;
-      trigger("statuschange", {}, status);
-    }
-  }
-  function initQuill(imageResizeModules) {
-    const Quill = window.Quill;
-    register(Quill);
-    const options = {
-      toolbar: false,
-      readOnly: props2.readOnly,
-      placeholder: props2.placeholder
-    };
-    if (imageResizeModules.length) {
-      Quill.register("modules/ImageResize", window.ImageResize.default);
-      options.modules = {
-        ImageResize: {
-          modules: imageResizeModules
-        }
-      };
-    }
-    const rootEl = rootRef.value;
-    quill = new Quill(rootEl, options);
-    const $el = quill.root;
-    const events = ["focus", "blur", "input"];
-    events.forEach((name) => {
-      $el.addEventListener(name, ($event) => {
-        if (name === "input") {
-          $event.stopPropagation();
-        } else {
-          trigger(name, $event, getContents());
-        }
-      });
-    });
-    quill.on("text-change", () => {
-      trigger("input", {}, getContents());
-    });
-    quill.on("selection-change", updateStatus);
-    quill.on("scroll-optimize", () => {
-      const range = quill.selection.getRange()[0];
-      updateStatus(range);
-    });
-    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-      if (skipMatcher) {
-        return delta;
-      }
-      if (delta.ops) {
-        delta.ops = delta.ops.filter(({
-          insert
-        }) => typeof insert === "string").map(({
-          insert
-        }) => ({
-          insert
-        }));
-      }
-      return delta;
-    });
-    quillReady = true;
-    trigger("ready", {}, {});
-  }
-  vue.onMounted(() => {
-    const imageResizeModules = [];
-    if (props2.showImgSize) {
-      imageResizeModules.push("DisplaySize");
-    }
-    if (props2.showImgToolbar) {
-      imageResizeModules.push("Toolbar");
-    }
-    if (props2.showImgResize) {
-      imageResizeModules.push("Resize");
-    }
-    const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-        loadScript(window.ImageResize, imageResizeSrc, () => {
-          initQuill(imageResizeModules);
-        });
-      } else {
-        initQuill(imageResizeModules);
-      }
-    });
-  });
-  useSubscribe((type, data) => {
-    const {
-      options,
-      callbackId
-    } = data;
-    let res;
-    let range;
-    let errMsg;
-    if (quillReady) {
-      const Quill = window.Quill;
-      switch (type) {
-        case "format":
-          {
-            let {
-              name = "",
-              value = false
-            } = options;
-            range = quill.getSelection(true);
-            let format = quill.getFormat(range)[name] || false;
-            if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
-              value = !format;
-            } else if (name === "direction") {
-              value = value === "rtl" && format ? false : value;
-              const align2 = quill.getFormat(range).align;
-              if (value === "rtl" && !align2) {
-                quill.format("align", "right", "user");
-              } else if (!value && align2 === "right") {
-                quill.format("align", false, "user");
-              }
-            } else if (name === "indent") {
-              const rtl = quill.getFormat(range).direction === "rtl";
-              value = value === "+1";
-              if (rtl) {
-                value = !value;
-              }
-              value = value ? "+1" : "-1";
-            } else {
-              if (name === "list") {
-                value = value === "check" ? "unchecked" : value;
-                format = format === "checked" ? "unchecked" : format;
-              }
-              value = format && format !== (value || false) || !format && value ? value : !format;
-            }
-            quill.format(name, value, "user");
-          }
-          break;
-        case "insertDivider":
-          range = quill.getSelection(true);
-          quill.insertText(range.index, "\n", "user");
-          quill.insertEmbed(range.index + 1, "divider", true, "user");
-          quill.setSelection(range.index + 2, 0, "silent");
-          break;
-        case "insertImage":
-          {
-            range = quill.getSelection(true);
-            const {
-              src = "",
-              alt = "",
-              width = "",
-              height = "",
-              extClass = "",
-              data: data2 = {}
-            } = options;
-            const path = getRealPath(src);
-            quill.insertEmbed(range.index, "image", path, "user");
-            const local = /^(file|blob):/.test(path) ? path : false;
-            quill.formatText(range.index, 1, "data-local", local);
-            quill.formatText(range.index, 1, "alt", alt);
-            quill.formatText(range.index, 1, "width", width);
-            quill.formatText(range.index, 1, "height", height);
-            quill.formatText(range.index, 1, "class", extClass);
-            quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
-            quill.setSelection(range.index + 1, 0, "silent");
-          }
-          break;
-        case "insertText":
-          {
-            range = quill.getSelection(true);
-            const {
-              text: text2 = ""
-            } = options;
-            quill.insertText(range.index, text2, "user");
-            quill.setSelection(range.index + text2.length, 0, "silent");
-          }
-          break;
-        case "setContents":
-          {
-            const {
-              delta,
-              html
-            } = options;
-            if (typeof delta === "object") {
-              quill.setContents(delta, "silent");
-            } else if (typeof html === "string") {
-              quill.setContents(html2delta(html), "silent");
-            } else {
-              errMsg = "contents is missing";
-            }
-          }
-          break;
-        case "getContents":
-          res = getContents();
-          break;
-        case "clear":
-          quill.setText("");
-          break;
-        case "removeFormat":
-          {
-            range = quill.getSelection(true);
-            const parchment = Quill.import("parchment");
-            if (range.length) {
-              quill.removeFormat(range.index, range.length, "user");
-            } else {
-              Object.keys(quill.getFormat(range)).forEach((key) => {
-                if (parchment.query(key, parchment.Scope.INLINE)) {
-                  quill.format(key, false);
-                }
-              });
-            }
-          }
-          break;
-        case "undo":
-          quill.history.undo();
-          break;
-        case "redo":
-          quill.history.redo();
-          break;
-        case "blur":
-          quill.blur();
-          break;
-        case "getSelectionText":
-          range = quill.selection.savedRange;
-          res = {
-            text: ""
-          };
-          if (range && range.length !== 0) {
-            res.text = quill.getText(range.index, range.length);
-          }
-          break;
-        case "scrollIntoView":
-          quill.scrollIntoView();
-          break;
-      }
-      updateStatus(range);
-    } else {
-      errMsg = "not ready";
-    }
-    if (callbackId) {
-      UniViewJSBridge.publishHandler("onEditorMethodCallback", {
-        callbackId,
-        data: Object.assign({}, res, {
-          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
-        })
-      });
-    }
-  });
+  useSubscribe();
 }
 const props$g = /* @__PURE__ */ Object.assign({}, props$h, {
   id: {
@@ -3048,8 +2467,7 @@ var index$g = /* @__PURE__ */ vue.defineComponent({
     emit: emit2
   }) {
     const rootRef = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useQuill(props2, rootRef, trigger);
+    useQuill(props2);
     useKeyboard(props2, rootRef);
     return () => {
       return vue.createVNode("uni-editor", {
@@ -3139,7 +2557,6 @@ var ResizeSensor = /* @__PURE__ */ vue.defineComponent({
     const rootRef = vue.ref(null);
     const reset = useResizeSensorReset(rootRef);
     const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
     return () => vue.createVNode("uni-resize-sensor", {
       ref: rootRef,
       onAnimationstartOnce: update
@@ -3177,21 +2594,6 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollLeft = 1e5;
     lastElementChild.scrollTop = 1e5;
   };
-}
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  vue.onActivated(reset);
-  vue.onMounted(() => {
-    if (props2.initial) {
-      vue.nextTick(update);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
 }
 const props$f = {
   src: {
@@ -3295,12 +2697,6 @@ function useImageState(rootRef, props2) {
     modeStyle: modeStyleRef,
     imgSrc
   });
-  vue.onMounted(() => {
-    const rootEl = rootRef.value;
-    const style = rootEl.style;
-    state.origWidth = Number(style.width) || 0;
-    state.origHeight = Number(style.height) || 0;
-  });
   return state;
 }
 function useImageLoader(state, {
@@ -3352,8 +2748,6 @@ function useImageLoader(state, {
     }
   };
   vue.watch(() => state.src, (value) => loadImage(value));
-  vue.onMounted(() => loadImage(state.src));
-  vue.onBeforeUnmount(() => resetImage());
 }
 function fixNumber(num) {
   return num;
@@ -3408,52 +2802,10 @@ function useImageSize(rootRef, props2, state) {
     resetSize
   };
 }
-const passiveOptions$1 = uniShared.passive(true);
-const states = [];
-let userInteract = 0;
-let inited;
-function addInteractListener(vm) {
-  if (!inited) {
-    const eventNames = [
-      "touchstart",
-      "touchmove",
-      "touchend",
-      "mousedown",
-      "mouseup"
-    ];
-    eventNames.forEach((eventName) => {
-      document.addEventListener(eventName, function() {
-        states.forEach((vm2) => {
-          vm2.userAction = true;
-          userInteract++;
-          setTimeout(() => {
-            userInteract--;
-            if (!userInteract) {
-              vm2.userAction = false;
-            }
-          }, 0);
-        });
-      }, passiveOptions$1);
-    });
-    inited = true;
-  }
-  states.push(vm);
-}
-function removeInteractListener(vm) {
-  const index2 = states.indexOf(vm);
-  if (index2 >= 0) {
-    states.splice(index2, 1);
-  }
-}
+uniShared.passive(true);
 function useUserAction() {
   const state = vue.reactive({
     userAction: false
-  });
-  vue.onMounted(() => {
-    addInteractListener(state);
-  });
-  vue.onBeforeUnmount(() => {
-    removeInteractListener(state);
   });
   return {
     state
@@ -3462,16 +2814,6 @@ function useUserAction() {
 function useScopedAttrs() {
   const state = vue.reactive({
     attrs: {}
-  });
-  vue.onMounted(() => {
-    let instance = vue.getCurrentInstance();
-    while (instance) {
-      const scopeId = instance.type.__scopeId;
-      if (scopeId) {
-        state.attrs[scopeId] = "";
-      }
-      instance = instance.__isPage ? null : instance.parent;
-    }
   });
   return {
     state
@@ -3500,9 +2842,6 @@ function useFormField(nameKey, value) {
     }
   };
   uniForm.addField(ctx);
-  vue.onBeforeUnmount(() => {
-    uniForm.removeField(ctx);
-  });
 }
 function getValueString(value) {
   return value === null ? "" : String(value);
@@ -3624,10 +2963,6 @@ function useValueSync(props2, state, emit2, trigger) {
       triggerInputFn.flush();
     }
   };
-  vue.onBeforeMount(() => {
-    valueChangeFn.cancel();
-    triggerInputFn.cancel();
-  });
   return {
     trigger,
     triggerInput
@@ -3660,11 +2995,6 @@ function useAutoFocus(props2, fieldRef) {
       focus();
     } else {
       blur();
-    }
-  });
-  vue.onMounted(() => {
-    if (needFocus.value) {
-      focus();
     }
   });
 }
@@ -3859,10 +3189,10 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const addListenerToElement$1 = function(element, type, callback2, capture) {
+const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
-    if (typeof callback2 === "function") {
-      if (callback2($event) === false) {
+    if (typeof callback === "function") {
+      if (callback($event) === false) {
         $event.preventDefault();
         $event.stopPropagation();
       }
@@ -3908,7 +3238,7 @@ var touchtrack = {
       let $eventOld = null;
       let hasTouchStart;
       let hasMouseDown;
-      addListenerToElement$1(element, "touchstart", function($event) {
+      addListenerToElement(element, "touchstart", function($event) {
         hasTouchStart = true;
         if ($event.touches.length === 1 && !$eventOld) {
           $eventOld = $event;
@@ -3917,7 +3247,7 @@ var touchtrack = {
           return fn($event, "start", x0, y0);
         }
       });
-      addListenerToElement$1(element, "mousedown", function($event) {
+      addListenerToElement(element, "mousedown", function($event) {
         hasMouseDown = true;
         if (!hasTouchStart && !$eventOld) {
           $eventOld = $event;
@@ -3926,7 +3256,7 @@ var touchtrack = {
           return fn($event, "start", x0, y0);
         }
       });
-      addListenerToElement$1(element, "touchmove", function($event) {
+      addListenerToElement(element, "touchmove", function($event) {
         if ($event.touches.length === 1 && $eventOld) {
           const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
           x1 = $event.touches[0].pageX;
@@ -3943,7 +3273,7 @@ var touchtrack = {
         }
       };
       document.addEventListener("mousemove", mouseMoveEventListener);
-      addListenerToElement$1(element, "touchend", function($event) {
+      addListenerToElement(element, "touchend", function($event) {
         if ($event.touches.length === 0 && $eventOld) {
           hasTouchStart = false;
           $eventOld = null;
@@ -3958,7 +3288,7 @@ var touchtrack = {
         }
       };
       document.addEventListener("mouseup", mouseUpEventListener);
-      addListenerToElement$1(element, "touchcancel", function($event) {
+      addListenerToElement(element, "touchcancel", function($event) {
         if ($eventOld) {
           hasTouchStart = false;
           const $eventTemp = $eventOld;
@@ -5132,9 +4462,6 @@ var index$c = /* @__PURE__ */ vue.defineComponent({
 });
 function useProvideRadioGroup(props2, trigger) {
   const fields = [];
-  vue.onMounted(() => {
-    _resetRadioGroupValue(fields.length - 1);
-  });
   const getFieldsValue = () => {
     var _a;
     return (_a = fields.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
@@ -5246,9 +4573,6 @@ var index$b = /* @__PURE__ */ vue.defineComponent({
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
-      vue.onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
     }
     return () => {
       const {
@@ -5291,10 +4615,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     uniForm.addField(formField);
   }
   const uniLabel = vue.inject(uniLabelKey, false);
-  vue.onBeforeUnmount(() => {
-    uniCheckGroup && uniCheckGroup.removeField(field);
-    uniForm && uniForm.removeField(formField);
-  });
   return {
     uniCheckGroup,
     uniForm,
@@ -5363,10 +4683,10 @@ function parseHtml(html) {
         parent.children.push(node);
       }
     },
-    chars: function(text2) {
+    chars: function(text) {
       const node = {
         type: "text",
-        text: text2
+        text
       };
       if (stacks.length === 0) {
         results.children.push(node);
@@ -5378,10 +4698,10 @@ function parseHtml(html) {
         parent.children.push(node);
       }
     },
-    comment: function(text2) {
+    comment: function(text) {
       const node = {
         node: "comment",
-        text: text2
+        text
       };
       const parent = stacks[0];
       if (!parent.children) {
@@ -6746,115 +6066,6 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   ], 512);
 }
 _sfc_main$4.render = _sfc_render$4;
-const addListenerToElement = function(element, type, callback2, capture) {
-  element.addEventListener(type, ($event) => {
-    if (typeof callback2 === "function") {
-      if (callback2($event) === false) {
-        if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
-          $event.preventDefault();
-        }
-        $event.stopPropagation();
-      }
-    }
-  }, {
-    passive: false
-  });
-};
-let __mouseMoveEventListener;
-let __mouseUpEventListener;
-function useTouchtrack(element, method, useCancel) {
-  vue.onBeforeUnmount(() => {
-    document.removeEventListener("mousemove", __mouseMoveEventListener);
-    document.removeEventListener("mouseup", __mouseUpEventListener);
-  });
-  let x0 = 0;
-  let y0 = 0;
-  let x1 = 0;
-  let y1 = 0;
-  const fn = function($event, state, x, y) {
-    if (method({
-      target: $event.target,
-      currentTarget: $event.currentTarget,
-      preventDefault: $event.preventDefault.bind($event),
-      stopPropagation: $event.stopPropagation.bind($event),
-      touches: $event.touches,
-      changedTouches: $event.changedTouches,
-      detail: {
-        state,
-        x0: x,
-        y0: y,
-        dx: x - x0,
-        dy: y - y0,
-        ddx: x - x1,
-        ddy: y - y1,
-        timeStamp: $event.timeStamp
-      }
-    }) === false) {
-      return false;
-    }
-  };
-  let $eventOld = null;
-  let hasTouchStart;
-  let hasMouseDown;
-  addListenerToElement(element, "touchstart", function($event) {
-    hasTouchStart = true;
-    if ($event.touches.length === 1 && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.touches[0].pageX;
-      y0 = y1 = $event.touches[0].pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "mousedown", function($event) {
-    hasMouseDown = true;
-    if (!hasTouchStart && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.pageX;
-      y0 = y1 = $event.pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "touchmove", function($event) {
-    if ($event.touches.length === 1 && $eventOld) {
-      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
-      x1 = $event.touches[0].pageX;
-      y1 = $event.touches[0].pageY;
-      return res;
-    }
-  });
-  const mouseMoveEventListener = __mouseMoveEventListener = function($event) {
-    if (!hasTouchStart && hasMouseDown && $eventOld) {
-      const res = fn($event, "move", $event.pageX, $event.pageY);
-      x1 = $event.pageX;
-      y1 = $event.pageY;
-      return res;
-    }
-  };
-  document.addEventListener("mousemove", mouseMoveEventListener);
-  addListenerToElement(element, "touchend", function($event) {
-    if ($event.touches.length === 0 && $eventOld) {
-      hasTouchStart = false;
-      $eventOld = null;
-      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
-    }
-  });
-  const mouseUpEventListener = __mouseUpEventListener = function($event) {
-    hasMouseDown = false;
-    if (!hasTouchStart && $eventOld) {
-      $eventOld = null;
-      return fn($event, "end", $event.pageX, $event.pageY);
-    }
-  };
-  document.addEventListener("mouseup", mouseUpEventListener);
-  addListenerToElement(element, "touchcancel", function($event) {
-    if ($eventOld) {
-      hasTouchStart = false;
-      const $eventTemp = $eventOld;
-      $eventOld = null;
-      return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
-    }
-  });
-}
 const props$9 = {
   name: {
     type: String,
@@ -6926,9 +6137,6 @@ var index$a = /* @__PURE__ */ vue.defineComponent({
       _onClick,
       _onTrack
     } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
-    vue.onMounted(() => {
-      useTouchtrack(sliderHandleRef.value, _onTrack);
-    });
     return () => {
       const {
         setBgColor,
@@ -7051,9 +6259,6 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       }
     };
     uniForm.addField(field);
-    vue.onBeforeUnmount(() => {
-      uniForm.removeField(field);
-    });
   }
   return {
     _onClick,
@@ -7091,8 +6296,8 @@ const _sfc_main$3 = {
     $el.style.height = "100%";
     var callbacks2 = this.$vnode._callbacks;
     if (callbacks2) {
-      callbacks2.forEach((callback2) => {
-        callback2();
+      callbacks2.forEach((callback) => {
+        callback();
       });
     }
   }
@@ -7154,9 +6359,6 @@ var index$9 = /* @__PURE__ */ vue.defineComponent({
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
-      vue.onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
     }
     return () => {
       const {
@@ -7202,9 +6404,6 @@ function useSwitchInject(props2, switchChecked) {
   };
   if (!!uniForm) {
     uniForm.addField(formField);
-    vue.onUnmounted(() => {
-      uniForm.removeField(formField);
-    });
   }
   return uniLabel;
 }
@@ -7213,17 +6412,17 @@ const SPACE_UNICODE = {
   emsp: "\u2003",
   nbsp: "\xA0"
 };
-function normalizeText(text2, {
+function normalizeText(text, {
   space,
   decode
 }) {
   if (space && SPACE_UNICODE[space]) {
-    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+    text = text.replace(/ /g, SPACE_UNICODE[space]);
   }
   if (!decode) {
-    return text2;
+    return text;
   }
-  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
 var index$8 = /* @__PURE__ */ vue.defineComponent({
   name: "Text",
@@ -7251,8 +6450,8 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
           if (vnode.shapeFlag & 8) {
             const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
             const len = lines.length - 1;
-            lines.forEach((text2, index2) => {
-              children.push(vue.createTextVNode(normalizeText(text2, {
+            lines.forEach((text, index2) => {
+              children.push(vue.createTextVNode(normalizeText(text, {
                 space: props2.space,
                 decode: props2.decode
               })));
@@ -7429,49 +6628,12 @@ var index$6 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-function normalizeEvent(pageId, vm, id) {
-  if (!id) {
-    id = vm.id;
-  }
-  if (!id) {
-    return;
-  }
-  return pageId + "." + vm.$options.name.toLowerCase() + "." + id;
-}
-function addSubscribe(name, callback2) {
-  if (!name) {
-    return;
-  }
-  UniViewJSBridge.subscribe(name, ({type, data}) => {
-    callback2(type, data);
-  });
-}
-function removeSubscribe(name) {
-  if (!name) {
-    return;
-  }
-  UniViewJSBridge.unsubscribe(name);
-}
-function useSubscribe(callback2, name) {
+function useSubscribe(callback, name) {
   const instance = vue.getCurrentInstance();
-  const vm = instance.proxy;
-  const pageId = name ? 0 : useCurrentPageId();
-  vue.onMounted(() => {
-    addSubscribe(name || normalizeEvent(pageId, vm), callback2);
-    if (!name) {
-      vue.watch(() => instance.id, (value, oldValue) => {
-        addSubscribe(normalizeEvent(pageId, vm, value), callback2);
-        removeSubscribe(normalizeEvent(pageId, vm, oldValue));
-      });
-    }
-  });
-  vue.onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(pageId, vm));
-  });
+  instance.proxy;
+  name ? 0 : useCurrentPageId();
 }
-function useOn(name, callback2) {
-  vue.onMounted(() => UniViewJSBridge.on(name, callback2));
-  vue.onBeforeUnmount(() => UniViewJSBridge.off(name));
+function useOn(name, callback) {
 }
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
@@ -7695,7 +6857,6 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
   function exitFullScreen() {
     toggleFullscreen(false);
   }
-  vue.onBeforeUnmount(exitFullScreen);
   return {
     state,
     onFullscreenChange,
@@ -7869,11 +7030,6 @@ function useControls(props2, videoState, seek) {
       hideTiming = null;
     }
   }
-  vue.onBeforeUnmount(() => {
-    if (hideTiming) {
-      clearTimeout(hideTiming);
-    }
-  });
   vue.watch(() => state.controlsShow && videoState.playing && !state.controlsTouching, (val) => {
     if (val) {
       autoHideStart();
@@ -7887,59 +7043,6 @@ function useControls(props2, videoState, seek) {
     if (!state.touching) {
       videoState.progress = videoState.currentTime / videoState.duration * 100;
     }
-  });
-  vue.onMounted(() => {
-    const passiveOptions2 = uniShared.passive(false);
-    let originX;
-    let originY;
-    let moveOnce = true;
-    let originProgress;
-    const ball = ballRef.value;
-    function touchmove(event) {
-      const toucher = event.targetTouches[0];
-      const pageX = toucher.pageX;
-      const pageY = toucher.pageY;
-      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event);
-        return;
-      }
-      moveOnce = false;
-      const progressEl = progressRef.value;
-      const w = progressEl.offsetWidth;
-      let progress = originProgress + (pageX - originX) / w * 100;
-      if (progress < 0) {
-        progress = 0;
-      } else if (progress > 100) {
-        progress = 100;
-      }
-      videoState.progress = progress;
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    function touchend(event) {
-      state.controlsTouching = false;
-      if (state.touching) {
-        ball.removeEventListener("touchmove", touchmove, passiveOptions2);
-        if (!moveOnce) {
-          event.preventDefault();
-          event.stopPropagation();
-          seek(videoState.duration * videoState.progress / 100);
-        }
-        state.touching = false;
-      }
-    }
-    ball.addEventListener("touchstart", (event) => {
-      state.controlsTouching = true;
-      const toucher = event.targetTouches[0];
-      originX = toucher.pageX;
-      originY = toucher.pageY;
-      originProgress = videoState.progress;
-      moveOnce = true;
-      state.touching = true;
-      ball.addEventListener("touchmove", touchmove, passiveOptions2);
-    });
-    ball.addEventListener("touchend", touchend);
-    ball.addEventListener("touchcancel", touchend);
   });
   return {
     state,
@@ -8031,32 +7134,7 @@ function useDanmu(props2, videoState) {
   };
 }
 function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
-  const methods = {
-    play,
-    pause,
-    seek,
-    sendDanmu,
-    playbackRate,
-    requestFullScreen,
-    exitFullScreen
-  };
-  useSubscribe((type, data) => {
-    let options;
-    switch (type) {
-      case "seek":
-        options = data.position;
-        break;
-      case "sendDanmu":
-        options = data;
-        break;
-      case "playbackRate":
-        options = data.rate;
-        break;
-    }
-    if (type in methods) {
-      methods[type](options);
-    }
-  });
+  useSubscribe();
 }
 const props$6 = {
   id: {
@@ -8212,7 +7290,7 @@ var index$5 = /* @__PURE__ */ vue.defineComponent({
       clickProgress,
       toggleControls
     } = useControls(props2, videoState, seek);
-    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    useContext();
     return () => {
       return vue.createVNode("uni-video", {
         ref: rootRef,
@@ -8380,15 +7458,6 @@ var index$4 = /* @__PURE__ */ vue.defineComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    vue.onMounted(() => {
-      _resize();
-    });
-    vue.onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "block");
-    });
-    vue.onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "none");
-    });
     return () => {
       return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-web-view", vue.mergeProps($listeners.value, $excludeAttrs.value, {
         ref: rootRef
@@ -8424,153 +7493,6 @@ function useWebViewSize(rootRef, iframeRef) {
     });
   };
   return _resize;
-}
-function callback(options, data) {
-  options = options || {};
-  if (typeof data === "string") {
-    data = {
-      errMsg: data
-    };
-  }
-  if (/:ok$/.test(data.errMsg)) {
-    if (typeof options.success === "function") {
-      options.success(data);
-    }
-  } else {
-    if (typeof options.fail === "function") {
-      options.fail(data);
-    }
-  }
-  if (typeof options.complete === "function") {
-    options.complete(data);
-  }
-}
-function createCallout(maps2) {
-  const overlay = new maps2.Overlay();
-  class Callout {
-    constructor(option = {}) {
-      this.setMap = overlay.setMap;
-      this.getMap = overlay.getMap;
-      this.getPanes = overlay.getPanes;
-      this.getProjection = overlay.getProjection;
-      this.map_changed = overlay.map_changed;
-      this.set = overlay.set;
-      this.get = overlay.get;
-      this.setOptions = overlay.setOptions;
-      this.bindTo = overlay.bindTo;
-      this.bindsTo = overlay.bindsTo;
-      this.notify = overlay.notify;
-      this.setValues = overlay.setValues;
-      this.unbind = overlay.unbind;
-      this.unbindAll = overlay.unbindAll;
-      this.option = option || {};
-      const map = option.map;
-      this.position = option.position;
-      this.index = 1;
-      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      const div = this.div = document.createElement("div");
-      const divStyle = div.style;
-      divStyle.position = "absolute";
-      divStyle.whiteSpace = "nowrap";
-      divStyle.transform = "translateX(-50%) translateY(-100%)";
-      divStyle.zIndex = "1";
-      divStyle.boxShadow = option.boxShadow || "none";
-      divStyle.display = visible ? "block" : "none";
-      const triangle = this.triangle = document.createElement("div");
-      triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
-      this.setStyle(option);
-      div.appendChild(triangle);
-      if (map) {
-        this.setMap(map);
-      }
-    }
-    set onclick(callback2) {
-      this.div.onclick = callback2;
-    }
-    get onclick() {
-      return this.div.onclick;
-    }
-    construct() {
-      const div = this.div;
-      const panes = this.getPanes();
-      panes.floatPane.appendChild(div);
-    }
-    setOption(option) {
-      this.option = option;
-      this.setPosition(option.position);
-      if (option.display === "ALWAYS") {
-        this.alwaysVisible = this.visible = true;
-      } else {
-        this.alwaysVisible = false;
-      }
-      this.setStyle(option);
-    }
-    setStyle(option) {
-      const div = this.div;
-      const divStyle = div.style;
-      div.innerText = option.content || "";
-      divStyle.lineHeight = (option.fontSize || 14) + "px";
-      divStyle.fontSize = (option.fontSize || 14) + "px";
-      divStyle.padding = (option.padding || 8) + "px";
-      divStyle.color = option.color || "#000";
-      divStyle.borderRadius = (option.borderRadius || 0) + "px";
-      divStyle.backgroundColor = option.bgColor || "#fff";
-      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
-      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
-    }
-    setPosition(position) {
-      this.position = position;
-      this.draw();
-    }
-    draw() {
-      const overlayProjection = this.getProjection();
-      if (!this.position || !this.div || !overlayProjection) {
-        return;
-      }
-      const pixel = overlayProjection.fromLatLngToDivPixel(this.position);
-      const divStyle = this.div.style;
-      divStyle.left = pixel.x + "px";
-      divStyle.top = pixel.y + "px";
-    }
-    changed() {
-      const divStyle = this.div.style;
-      divStyle.display = this.visible ? "block" : "none";
-    }
-    destroy() {
-      const parentNode = this.div.parentNode;
-      if (parentNode) {
-        parentNode.removeChild(this.div);
-      }
-    }
-  }
-  return Callout;
-}
-let maps;
-const callbacks = [];
-const QQ_MAP_CALLBACKNAME = "__qq_map_callback__";
-function loadMaps(callback2) {
-  if (maps) {
-    callback2(maps);
-  } else if (window.qq && window.qq.maps) {
-    maps = window.qq.maps;
-    callback2(maps);
-  } else if (callbacks.length) {
-    callbacks.push(callback2);
-  } else {
-    callbacks.push(callback2);
-    const key = __uniConfig.qqMapKey;
-    const globalExt = window;
-    globalExt[QQ_MAP_CALLBACKNAME] = function() {
-      delete globalExt[QQ_MAP_CALLBACKNAME];
-      maps = window.qq.maps;
-      maps.Callout = createCallout(maps);
-      callbacks.forEach((callback22) => callback22(maps));
-      callbacks.length = 0;
-    };
-    const script = document.createElement("script");
-    script.src = `https://map.qq.com/api/js?v=2.exp&key=${key}&callback=${QQ_MAP_CALLBACKNAME}&libraries=geometry`;
-    document.body.appendChild(script);
-  }
 }
 const props$4 = {
   id: {
@@ -8641,21 +7563,10 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
     const id = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
     let marker;
-    function removeMarker() {
-      if (marker) {
-        if (marker.label) {
-          marker.label.setMap(null);
-        }
-        if (marker.callout) {
-          marker.callout.setMap(null);
-        }
-        marker.setMap(null);
-      }
-    }
-    onMapReady((map, maps2, trigger) => {
+    onMapReady((map, maps, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = new maps2.LatLng(option.latitude, option.longitude);
+        const position = new maps.LatLng(option.latitude, option.longitude);
         const img = new Image();
         img.onload = () => {
           const anchor = option.anchor || {};
@@ -8675,7 +7586,7 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
           x = (typeof x === "number" ? x : 0.5) * w;
           y = (typeof y === "number" ? y : 1) * h;
           top = h - (h - y);
-          icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x, y), new maps2.Size(w, h));
+          icon = new maps.MarkerImage(img.src, null, null, new maps.Point(x, y), new maps.Size(w, h));
           marker.setPosition(position);
           marker.setIcon(icon);
           marker.setRotation(option.rotate || 0);
@@ -8686,7 +7597,7 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
           }
           let label;
           if (labelOpt.content) {
-            label = new maps2.Label({
+            label = new maps.Label({
               position,
               map,
               clickable: false,
@@ -8730,7 +7641,7 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
             if (callout) {
               callout.setOption(calloutStyle);
             } else {
-              callout = marker.callout = new maps2.Callout(calloutStyle);
+              callout = marker.callout = new maps.Callout(calloutStyle);
               callout.div.onclick = function($event) {
                 if (id !== "") {
                   trigger("callouttap", $event, {
@@ -8751,13 +7662,13 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
         img.src = getRealPath(option.iconPath);
       }
       function addMarker(props3) {
-        marker = new maps2.Marker({
+        marker = new maps.Marker({
           map,
           flat: true,
           autoRotation: false
         });
         updateMarker(props3);
-        maps2.event.addListener(marker, "click", () => {
+        maps.event.addListener(marker, "click", () => {
           const callout = marker.callout;
           if (callout) {
             const div = callout.div;
@@ -8782,22 +7693,22 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
     });
     if (id) {
       const addMapChidlContext = vue.inject("addMapChidlContext");
-      const removeMapChidlContext = vue.inject("removeMapChidlContext");
+      vue.inject("removeMapChidlContext");
       const context = {
         id,
         translate(data) {
-          onMapReady((map, maps2, trigger) => {
+          onMapReady((map, maps, trigger) => {
             const destination = data.destination;
             const duration = data.duration;
             const autoRotate = !!data.autoRotate;
             let rotate = Number(data.rotate) || 0;
             const rotation = marker.getRotation();
             const a2 = marker.getPosition();
-            const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const b = new maps.LatLng(destination.latitude, destination.longitude);
+            const distance = maps.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
             const speed = distance / time;
-            const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
+            const movingEvent = maps.event.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
               const label = marker.label;
               if (label) {
@@ -8808,7 +7719,7 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
                 callout.setPosition(latLng);
               }
             });
-            const event = maps2.event.addListener(marker, "moveend", () => {
+            const event = maps.event.addListener(marker, "moveend", () => {
               event.remove();
               movingEvent.remove();
               marker.lastPosition = a2;
@@ -8829,9 +7740,9 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
             let lastRtate = 0;
             if (autoRotate) {
               if (marker.lastPosition) {
-                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
+                lastRtate = maps.geometry.spherical.computeHeading(marker.lastPosition, a2);
               }
-              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
+              rotate = maps.geometry.spherical.computeHeading(a2, b) - lastRtate;
             }
             marker.setRotation(rotation + rotate);
             marker.moveTo(b, speed);
@@ -8839,9 +7750,7 @@ var MapMarker = /* @__PURE__ */ vue.defineComponent({
         }
       };
       addMapChidlContext(context);
-      vue.onUnmounted(() => removeMapChidlContext(context));
     }
-    vue.onUnmounted(removeMarker);
     return () => {
       return null;
     };
@@ -8906,7 +7815,7 @@ var MapPolyline = /* @__PURE__ */ vue.defineComponent({
         polylineBorder.setMap(null);
       }
     }
-    onMapReady((map, maps2) => {
+    onMapReady((map, maps) => {
       function updatePolyline(option) {
         removePolyline();
         addPolyline(option);
@@ -8914,10 +7823,10 @@ var MapPolyline = /* @__PURE__ */ vue.defineComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          path.push(new maps2.LatLng(point.latitude, point.longitude));
+          path.push(new maps.LatLng(point.latitude, point.longitude));
         });
         const strokeWeight = Number(option.width) || 1;
-        polyline = new maps2.Polyline({
+        polyline = new maps.Polyline({
           map,
           clickable: false,
           path,
@@ -8927,7 +7836,7 @@ var MapPolyline = /* @__PURE__ */ vue.defineComponent({
         });
         const borderWidth = Number(option.borderWidth) || 0;
         if (borderWidth) {
-          polylineBorder = new maps2.Polyline({
+          polylineBorder = new maps.Polyline({
             map,
             clickable: false,
             path,
@@ -8940,7 +7849,6 @@ var MapPolyline = /* @__PURE__ */ vue.defineComponent({
       addPolyline(props2);
       vue.watch(props2, updatePolyline);
     });
-    vue.onUnmounted(removePolyline);
     return () => {
       return null;
     };
@@ -8987,22 +7895,22 @@ var MapCircle = /* @__PURE__ */ vue.defineComponent({
         circle.setMap(null);
       }
     }
-    onMapReady((map, maps2) => {
+    onMapReady((map, maps) => {
       function updateCircle(option) {
         removeCircle();
         addCircle(option);
       }
       function addCircle(option) {
-        const center = new maps2.LatLng(option.latitude, option.longitude);
+        const center = new maps.LatLng(option.latitude, option.longitude);
         function getColor(color) {
           const c = color.match(/#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?/);
           if (c && c.length) {
-            return maps2.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255);
+            return maps.Color.fromHex(c[0], Number("0x" + c[1] || 255) / 255);
           } else {
             return void 0;
           }
         }
-        circle = new maps2.Circle({
+        circle = new maps.Circle({
           map,
           center,
           clickable: false,
@@ -9016,7 +7924,6 @@ var MapCircle = /* @__PURE__ */ vue.defineComponent({
       addCircle(props2);
       vue.watch(props2, updateCircle);
     });
-    vue.onUnmounted(removeCircle);
     return () => {
       return null;
     };
@@ -9051,7 +7958,7 @@ var MapControl = /* @__PURE__ */ vue.defineComponent({
         control.remove();
       }
     }
-    onMapReady((map, maps2, trigger) => {
+    onMapReady((map, maps, trigger) => {
       function updateControl(option) {
         removeControl();
         addControl(option);
@@ -9086,18 +7993,16 @@ var MapControl = /* @__PURE__ */ vue.defineComponent({
             });
           }
         };
-        map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
+        map.controls[maps.ControlPosition.TOP_LEFT].push(control);
       }
       addControl(props2);
       vue.watch(props2, updateControl);
     });
-    vue.onUnmounted(removeControl);
     return () => {
       return null;
     };
   }
 });
-const CONTEXT_ID = "MAP_LOCATION";
 const ICON_PATH = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
 var MapLocation = /* @__PURE__ */ vue.defineComponent({
   name: "MapLocation",
@@ -9187,37 +8092,13 @@ function getPoints(points) {
   return newPoints;
 }
 function useMap(props2, rootRef, emit2) {
-  const trigger = useCustomEvent(rootRef, emit2);
   const mapRef = vue.ref(null);
-  let maps2;
-  let map;
   const state = vue.reactive({
     latitude: Number(props2.latitude),
     longitude: Number(props2.longitude),
     includePoints: getPoints(props2.includePoints)
   });
-  const onMapReadyCallbacks = [];
-  let isMapReady;
-  function onMapReady(callback2) {
-    if (isMapReady) {
-      callback2(map, maps2, trigger);
-    } else {
-      onMapReadyCallbacks.push(callback2);
-    }
-  }
-  function emitMapReady() {
-    isMapReady = true;
-    onMapReadyCallbacks.forEach((callback2) => callback2(map, maps2, trigger));
-    onMapReadyCallbacks.length = 0;
-  }
-  let isBoundsReady;
-  const onBoundsReadyCallbacks = [];
-  function onBoundsReady(callback2) {
-    if (isBoundsReady) {
-      callback2();
-    } else {
-      onMapReadyCallbacks.push(callback2);
-    }
+  function onMapReady(callback) {
   }
   const contexts = {};
   function addMapChidlContext(context) {
@@ -9232,204 +8113,14 @@ function useMap(props2, rootRef, emit2) {
     if (latitude !== state.latitude || longitude !== state.longitude) {
       state.latitude = latitude;
       state.longitude = longitude;
-      if (map) {
-        map.setCenter(new maps2.LatLng(latitude, longitude));
-      }
     }
   });
   vue.watch(() => props2.includePoints, (points) => {
     state.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
-    }
   }, {
     deep: true
   });
-  function emitBoundsReady() {
-    isBoundsReady = true;
-    onBoundsReadyCallbacks.forEach((callback2) => callback2());
-    onBoundsReadyCallbacks.length = 0;
-  }
-  function getMapInfo() {
-    const center = map.getCenter();
-    return {
-      scale: map.getZoom(),
-      centerLocation: {
-        latitude: center.getLat(),
-        longitude: center.getLng()
-      }
-    };
-  }
-  function updateCenter() {
-    map.setCenter(new maps2.LatLng(state.latitude, state.longitude));
-  }
-  function updateBounds() {
-    const bounds = new maps2.LatLngBounds();
-    state.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
-      const latLng = new maps2.LatLng(latitude, longitude);
-      bounds.extend(latLng);
-    });
-    map.fitBounds(bounds);
-  }
-  function initMap() {
-    const mapEl = mapRef.value;
-    const center = new maps2.LatLng(state.latitude, state.longitude);
-    const map2 = new maps2.Map(mapEl, {
-      center,
-      zoom: Number(props2.scale),
-      disableDoubleClickZoom: true,
-      mapTypeControl: false,
-      zoomControl: false,
-      scaleControl: false,
-      panControl: false,
-      minZoom: 5,
-      maxZoom: 18,
-      draggable: true
-    });
-    vue.watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
-    onBoundsReady(() => {
-      if (state.includePoints.length) {
-        updateBounds();
-        updateCenter();
-      }
-    });
-    const boundsChangedEvent = maps2.event.addListener(map2, "bounds_changed", () => {
-      boundsChangedEvent.remove();
-      emitBoundsReady();
-    });
-    maps2.event.addListener(map2, "click", () => {
-      trigger("click", {}, {});
-    });
-    maps2.event.addListener(map2, "dragstart", () => {
-      trigger("regionchange", {}, {
-        type: "begin",
-        causedBy: "gesture"
-      });
-    });
-    maps2.event.addListener(map2, "dragend", () => {
-      trigger("regionchange", {}, Object.assign({
-        type: "end",
-        causedBy: "drag"
-      }, getMapInfo()));
-    });
-    maps2.event.addListener(map2, "zoom_changed", () => {
-      emit2("update:scale", map2.getZoom());
-      trigger("regionchange", {}, Object.assign({
-        type: "end",
-        causedBy: "scale"
-      }, getMapInfo()));
-    });
-    maps2.event.addListener(map2, "center_changed", () => {
-      const center2 = map2.getCenter();
-      const latitude = center2.getLat();
-      const longitude = center2.getLng();
-      emit2("update:latitude", latitude);
-      emit2("update:longitude", longitude);
-    });
-    return map2;
-  }
-  useSubscribe((type, data = {}) => {
-    switch (type) {
-      case "getCenterLocation":
-        onMapReady(() => {
-          const center = map.getCenter();
-          callback(data, {
-            latitude: center.getLat(),
-            longitude: center.getLng(),
-            errMsg: `${type}:ok`
-          });
-        });
-        break;
-      case "moveToLocation":
-        {
-          let latitude = Number(data.latitude);
-          let longitude = Number(data.longitude);
-          if (!latitude || !longitude) {
-            const context = contexts[CONTEXT_ID];
-            if (context) {
-              latitude = context.state.latitude;
-              longitude = context.state.longitude;
-            }
-          }
-          if (latitude && longitude) {
-            state.latitude = latitude;
-            state.longitude = longitude;
-            if (map) {
-              map.setCenter(new maps2.LatLng(latitude, longitude));
-            }
-            onMapReady(() => {
-              callback(data, `${type}:ok`);
-            });
-          } else {
-            callback(data, `${type}:fail`);
-          }
-        }
-        break;
-      case "translateMarker":
-        onMapReady(() => {
-          const context = contexts[data.markerId];
-          if (context) {
-            try {
-              context.translate(data);
-            } catch (error) {
-              callback(data, `${type}:fail ${error.message}`);
-            }
-            callback(data, `${type}:ok`);
-          } else {
-            callback(data, `${type}:fail not found`);
-          }
-        });
-        break;
-      case "includePoints":
-        state.includePoints = getPoints(data.includePoints);
-        if (isBoundsReady) {
-          updateBounds();
-        }
-        onBoundsReady(() => {
-          callback(data, `${type}:ok`);
-        });
-        break;
-      case "getRegion":
-        onBoundsReady(() => {
-          const latLngBounds = map.getBounds();
-          const southwest = latLngBounds.getSouthWest();
-          const northeast = latLngBounds.getNorthEast();
-          callback(data, {
-            southwest: {
-              latitude: southwest.getLat(),
-              longitude: southwest.getLng()
-            },
-            northeast: {
-              latitude: northeast.getLat(),
-              longitude: northeast.getLng()
-            },
-            errMsg: `${type}:ok`
-          });
-        });
-        break;
-      case "getScale":
-        onMapReady(() => {
-          callback(data, {
-            scale: map.getZoom(),
-            errMsg: `${type}:ok`
-          });
-        });
-        break;
-    }
-  });
-  vue.onMounted(() => {
-    loadMaps((result) => {
-      maps2 = result;
-      map = initMap();
-      emitMapReady();
-      trigger("updated", {}, {});
-    });
-  });
+  useSubscribe();
   vue.provide("onMapReady", onMapReady);
   vue.provide("addMapChidlContext", addMapChidlContext);
   vue.provide("removeMapChidlContext", removeMapChidlContext);
@@ -9449,7 +8140,7 @@ var index$3 = /* @__PURE__ */ vue.defineComponent({
     const rootRef = vue.ref(null);
     const {
       mapRef
-    } = useMap(props2, rootRef, emit2);
+    } = useMap(props2);
     return () => {
       return vue.createVNode("uni-map", {
         ref: rootRef,
@@ -9490,8 +8181,8 @@ const _sfc_main$2 = {
     },
     _upx2pxNum(val) {
       if (/\d+[ur]px$/i.test(val)) {
-        val.replace(/\d+[ur]px$/i, (text2) => {
-          return uni.upx2px(parseFloat(text2));
+        val.replace(/\d+[ur]px$/i, (text) => {
+          return uni.upx2px(parseFloat(text));
         });
       }
       return parseFloat(val) || 0;
@@ -9666,10 +8357,10 @@ class RequestTask {
       delete this._xhr;
     }
   }
-  onHeadersReceived(callback2) {
+  onHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
-  offHeadersReceived(callback2) {
+  offHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
 }
@@ -9752,7 +8443,7 @@ function useSwitchTab(route, tabBar2) {
       }
       const {
         pagePath,
-        text: text2
+        text
       } = tabBarItem;
       let url = "/" + pagePath;
       if (url === __uniRoutes[0].alias) {
@@ -9766,7 +8457,7 @@ function useSwitchTab(route, tabBar2) {
       } else {
         invokeHook("onTabItemTap", {
           index: index2,
-          text: text2,
+          text,
           pagePath
         });
       }
@@ -9823,12 +8514,12 @@ function isMidButton(item) {
 }
 function createTabBarItemsTsx(tabBar2, onSwitchTab) {
   const {
-    list: list2,
+    list,
     selectedIndex,
     selectedColor,
     color
   } = tabBar2;
-  return list2.map((item, index2) => {
+  return list.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
     const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
@@ -9859,13 +8550,13 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
     type,
-    text: text2,
+    text,
     redDot
   } = tabBarItem;
   const {
     iconWidth
   } = tabBar2;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
@@ -9881,7 +8572,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
     redDot,
     iconPath,
-    text: text2
+    text
   } = tabBarItem;
   const {
     fontSize,
@@ -9896,7 +8587,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   return vue.createVNode("div", {
     class: "uni-tabbar__label",
     style
-  }, [text2, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [text, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
@@ -10076,56 +8767,7 @@ function usePageHeadTransparent(headRef, {
   id,
   navigationBar: {titleColor, coverage, backgroundColor}
 }) {
-  let A = 0;
-  const rgb = vue.computed(() => hexToRgba(backgroundColor));
-  const offset = parseInt(coverage);
-  let titleElem;
-  let transparentElemStyle;
-  const iconElemsStyles = [];
-  const borderRadiusElemsStyles = [];
-  const oldColors = [];
-  vue.onMounted(() => {
-    const $el = headRef.value;
-    transparentElemStyle = $el.style;
-    titleElem = $el.querySelector(".uni-page-head__title");
-    const borderRadiusElems = $el.querySelectorAll(".uni-page-head-btn");
-    const iconElems = $el.querySelectorAll(".uni-btn-icon");
-    for (let i2 = 0; i2 < iconElems.length; i2++) {
-      iconElemsStyles.push(iconElems[i2].style);
-    }
-    for (let i2 = 0; i2 < borderRadiusElems.length; i2++) {
-      const borderRadiusElem = borderRadiusElems[i2];
-      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
-      borderRadiusElemsStyles.push(borderRadiusElem.style);
-    }
-  });
-  useOn(id + ".onPageScroll", ({scrollTop}) => {
-    const alpha = Math.min(scrollTop / offset, 1);
-    if (alpha === 1 && A === 1) {
-      return;
-    }
-    if (alpha > 0.5 && A <= 0.5) {
-      iconElemsStyles.forEach(function(iconElemStyle) {
-        iconElemStyle.color = titleColor;
-      });
-    } else if (alpha <= 0.5 && A > 0.5) {
-      iconElemsStyles.forEach(function(iconElemStyle) {
-        iconElemStyle.color = "#fff";
-      });
-    }
-    A = alpha;
-    if (titleElem) {
-      titleElem.style.opacity = alpha;
-    }
-    const bg = rgb.value;
-    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
-    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
-      const oldColor = oldColors[index2];
-      const rgba = oldColor.match(/[\d+\.]+/g);
-      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
-      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
-    });
-  });
+  vue.computed(() => hexToRgba(backgroundColor));
 }
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATHS = {
@@ -10240,7 +8882,7 @@ function createPageHeadTitleTextTsx({
   }, null, 8, ["src"]) : titleText], 4)]);
 }
 function createPageHeadSearchInputTsx(navigationBar, {
-  text: text2,
+  text,
   focus,
   composing,
   onBlur,
@@ -10251,7 +8893,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
 }) {
   const {
     color,
-    align: align2,
+    align,
     autoFocus,
     disabled,
     borderRadius,
@@ -10263,7 +8905,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     borderRadius,
     backgroundColor
   };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
   return vue.createVNode("div", {
     class: "uni-page-head-search",
     style: searchStyle
@@ -10274,7 +8916,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     class: placeholderClass
   }, [vue.createVNode("div", {
     class: "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
     disabled: true,
     style: {
       color
@@ -10420,7 +9062,7 @@ function usePageHeadSearchInput({
   }
 }) {
   const focus = vue.ref(false);
-  const text2 = vue.ref("");
+  const text = vue.ref("");
   const composing = vue.ref(false);
   const {
     disabled
@@ -10431,7 +9073,7 @@ function usePageHeadSearchInput({
     };
     return {
       focus,
-      text: text2,
+      text,
       composing,
       onClick
     };
@@ -10449,21 +9091,21 @@ function usePageHeadSearchInput({
     });
   };
   const onInput = (evt) => {
-    text2.value = evt.detail.value;
+    text.value = evt.detail.value;
     invokeHook(id, "onNavigationBarSearchInputChanged", {
-      text: text2.value
+      text: text.value
     });
   };
   const onKeyup = (evt) => {
     if (evt.key === "Enter" || evt.keyCode === 13) {
       invokeHook(id, "onNavigationBarSearchInputConfirmed", {
-        text: text2.value
+        text: text.value
       });
     }
   };
   return {
     focus,
-    text: text2,
+    text,
     composing,
     onFocus,
     onBlur,
