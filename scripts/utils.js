@@ -13,9 +13,9 @@ const priority = {
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
-  'uni-h5': 60,
-  'uni-h5-vue': 50,
-  'uni-cli-shared': 40,
+  'uni-cli-shared': 60,
+  'uni-h5': 50,
+  'uni-h5-vue': 40,
   'vite-plugin-uni': 30,
   'size-check': 1,
 }
