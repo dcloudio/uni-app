@@ -51,8 +51,8 @@ export interface InjectOptions {
     | Function
 }
 
-const debugInject = debug('uni:inject')
-const debugInjectTry = debug('uni:inject-try')
+const debugInject = debug('vite:uni:inject')
+const debugInjectTry = debug('vite:uni:inject-try')
 
 export function uniInjectPlugin(options: InjectOptions): Plugin {
   if (!options) throw new Error('Missing options')

@@ -2,6 +2,9 @@
   "name": "@dcloudio/vite-plugin-uni",
   "version": "3.0.0",
   "description": "uni-app vite plugin",
+  "bin": {
+    "uni": "bin/uni.js"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -23,6 +26,8 @@
   "dependencies": {
     "@rollup/pluginutils": "^4.1.0",
     "autoprefixer": "^10.2.5",
+    "cac": "^6.7.3",
+    "chalk": "^4.1.1",
     "debug": "^4.3.1",
     "estree-walker": "^2.0.1",
     "fs-extra": "^9.0.1",

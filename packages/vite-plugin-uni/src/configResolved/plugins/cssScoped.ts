@@ -6,7 +6,7 @@ import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
 
-const debugScoped = debug('uni:scoped')
+const debugScoped = debug('vite:uni:scoped')
 
 const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/i
 

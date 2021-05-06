@@ -5,7 +5,7 @@ import { cleanUrl } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 import { createPublicFileFilter } from '../../utils'
 
-const debugStatic = debug('uni:static')
+const debugStatic = debug('vite:uni:static')
 /**
  * 提供static等目录静态资源加载
  * @param _options

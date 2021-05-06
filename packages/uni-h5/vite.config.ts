@@ -115,9 +115,7 @@ export default defineConfig({
       preserveEntrySignatures: 'strict',
       plugins: rollupPlugins,
       onwarn: (msg, warn) => {
-        if (
-          !(msg.message || msg).includes('external module "vue" but never used')
-        ) {
+        if (!String(msg).includes('external module "vue" but never used')) {
           warn(msg)
         }
       },

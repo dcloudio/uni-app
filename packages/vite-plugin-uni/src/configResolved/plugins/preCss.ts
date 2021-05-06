@@ -5,8 +5,8 @@ import { preJs } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
 
-const debugPre = debug('uni:pre-css')
-const debugPreTry = debug('uni:pre-css-try')
+const debugPre = debug('vite:uni:pre-css')
+const debugPreTry = debug('vite:uni:pre-css-try')
 const cssLangs = `\\.(less|sass|scss|styl|stylus|postcss)($|\\?)`
 const cssLangRE = new RegExp(cssLangs)
 /**

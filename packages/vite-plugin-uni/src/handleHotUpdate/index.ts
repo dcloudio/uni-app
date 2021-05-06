@@ -8,7 +8,7 @@ import { parseManifestJson, parsePagesJson } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 import { initEasycomsOnce, initFeatures } from '../utils'
 
-const debugHmr = debug('uni:hmr')
+const debugHmr = debug('vite:uni:hmr')
 
 async function invalidate(file: string, moduleGraph: ModuleGraph) {
   const mods = await moduleGraph.getModulesByFile(slash(file))

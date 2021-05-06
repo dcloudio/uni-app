@@ -4,7 +4,7 @@ import { Plugin } from 'vite'
 import { VitePluginUniResolvedOptions } from '..'
 import { BUILT_IN_MODULES } from '../utils'
 
-const debugResolve = debug('uni:resolve')
+const debugResolve = debug('vite:uni:resolve')
 
 export function createResolveId(
   _options: VitePluginUniResolvedOptions

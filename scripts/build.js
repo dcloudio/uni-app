@@ -64,6 +64,9 @@ async function build(target) {
         env: Object.assign({ FORMAT: 'es' }, process.env),
       }
     )
+    if (target === 'size-check') {
+      return
+    }
     return await execa(
       'vite',
       ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],

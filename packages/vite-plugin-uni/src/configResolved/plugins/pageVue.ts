@@ -6,7 +6,7 @@ import { Plugin } from 'vite'
 import { parseVueRequest } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
-const debugPageVue = debug('uni:page-vue')
+const debugPageVue = debug('vite:uni:page-vue')
 
 export function uniPageVuePlugin(
   options: VitePluginUniResolvedOptions

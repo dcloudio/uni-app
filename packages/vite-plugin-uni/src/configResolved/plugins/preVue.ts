@@ -11,7 +11,7 @@ import { parse } from '@vue/compiler-dom'
 import { MagicString } from '@vue/compiler-sfc'
 import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
 
-const debugPreVue = debug('uni:pre-vue')
+const debugPreVue = debug('vite:uni:pre-vue')
 
 const WXS_LANG_RE = /lang=["|'](renderjs|wxs)["|']/
 

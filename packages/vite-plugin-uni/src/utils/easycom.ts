@@ -22,7 +22,7 @@ interface EasycomCustom {
   [key: string]: string
 }
 
-export const debugEasycom = debug('uni:easycom')
+export const debugEasycom = debug('vite:uni:easycom')
 
 const easycoms: EasycomMatcher[] = []
 

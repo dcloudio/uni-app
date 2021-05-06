@@ -4,7 +4,7 @@ import { rewriteDefault } from '@vue/compiler-sfc'
 
 import { parseVueRequest } from '@dcloudio/uni-cli-shared'
 
-const debugRenderjs = debug('uni:renderjs')
+const debugRenderjs = debug('vite:uni:renderjs')
 
 export function uniRenderjsPlugin(): Plugin {
   return {

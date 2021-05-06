@@ -19,7 +19,7 @@ import { uniCssScopedPlugin } from './cssScoped'
 import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
 
-const debugPlugin = debug('uni:plugin')
+const debugPlugin = debug('vite:uni:plugin')
 
 export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
   include?: FilterPattern
