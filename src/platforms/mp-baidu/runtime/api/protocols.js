@@ -125,8 +125,8 @@ const protocols = {
     name: 'getEnvInfoSync',
     returnValue: _handleEnvInfo
   },
-  login:{
-    name:'getLoginCode'
+  login: {
+    name: 'getLoginCode'
   }
 }
 
