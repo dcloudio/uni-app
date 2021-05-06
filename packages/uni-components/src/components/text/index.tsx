@@ -61,14 +61,18 @@ export default /*#__PURE__*/ defineComponent({
               .split('\n')
             const len = lines.length - 1
             lines.forEach((text, index) => {
-              children.push(
-                createTextVNode(
-                  normalizeText(text, {
-                    space: props.space as DecodeOptions['space'],
-                    decode: props.decode as boolean,
-                  })
+              if (index === 0 && !text) {
+                //临时方案解决(<text>\n横向布局</text>) Hydration node mismatch
+              } else {
+                children.push(
+                  createTextVNode(
+                    normalizeText(text, {
+                      space: props.space as DecodeOptions['space'],
+                      decode: props.decode as boolean,
+                    })
+                  )
                 )
-              )
+              }
               if (index !== len) {
                 children.push(createVNode('br'))
               }
@@ -89,7 +93,7 @@ export default /*#__PURE__*/ defineComponent({
       }
       return (
         <uni-text selectable={props.selectable}>
-          {<span>{children}</span>}
+          {createVNode('span', null, children)}
         </uni-text>
       )
     }

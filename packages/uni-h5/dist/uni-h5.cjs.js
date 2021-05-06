@@ -153,35 +153,6 @@ function updateCssVar(cssVars) {
 function updatePageCssVar(cssVars) {
   return updateCssVar(cssVars);
 }
-const sheetsMap = new Map();
-function updateStyle(id, content) {
-  let style = sheetsMap.get(id);
-  if (style && !(style instanceof HTMLStyleElement)) {
-    removeStyle(id);
-    style = void 0;
-  }
-  if (!style) {
-    style = document.createElement("style");
-    style.setAttribute("type", "text/css");
-    style.innerHTML = content;
-    document.head.appendChild(style);
-  } else {
-    style.innerHTML = content;
-  }
-  sheetsMap.set(id, style);
-}
-function removeStyle(id) {
-  let style = sheetsMap.get(id);
-  if (style) {
-    if (style instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style);
-      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style);
-    } else {
-      document.head.removeChild(style);
-    }
-    sheetsMap.delete(id);
-  }
-}
 function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
@@ -6451,10 +6422,14 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
             const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
             const len = lines.length - 1;
             lines.forEach((text, index2) => {
-              children.push(vue.createTextVNode(normalizeText(text, {
-                space: props2.space,
-                decode: props2.decode
-              })));
+              if (index2 === 0 && !text)
+                ;
+              else {
+                children.push(vue.createTextVNode(normalizeText(text, {
+                  space: props2.space,
+                  decode: props2.decode
+                })));
+              }
               if (index2 !== len) {
                 children.push(vue.createVNode("br"));
               }
@@ -6469,7 +6444,7 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
       }
       return vue.createVNode("uni-text", {
         selectable: props2.selectable
-      }, [vue.createVNode("span", null, [children])], 8, ["selectable"]);
+      }, [vue.createVNode("span", null, children)], 8, ["selectable"]);
     };
   }
 });
@@ -9008,7 +8983,6 @@ function usePageHeadButtons({
         if (!fontFamily) {
           fontFamily = `font${Date.now()}`;
           fonts[fontSrc] = fontFamily;
-          updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`);
         }
         btn.fontFamily = fontFamily;
       }

@@ -50,6 +50,9 @@ export function uniManifestJsonPlugin(
         const { debug, h5 } = manifest
         const appid = (manifest.appid || '').replace('__UNI__', '')
         const router = { ...defaultRouter, ...((h5 && h5.router) || {}) }
+        if (!router.base) {
+          router.base = '/'
+        }
         const async = define.__UNI_FEATURE_PAGES__
           ? { ...defaultAsync, ...((h5 && h5.async) || {}) }
           : {}

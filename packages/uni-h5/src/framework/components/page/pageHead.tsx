@@ -1,4 +1,4 @@
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
@@ -309,9 +309,11 @@ function usePageHeadButtons({ id, navigationBar }: UniApp.PageRouteMeta) {
         if (!fontFamily) {
           fontFamily = `font${Date.now()}`
           fonts[fontSrc] = fontFamily
-          updateStyle(
-            'uni-btn-' + fontFamily,
-            `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
+          onBeforeMount(() =>
+            updateStyle(
+              'uni-btn-' + fontFamily,
+              `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
+            )
           )
         }
         btn.fontFamily = fontFamily

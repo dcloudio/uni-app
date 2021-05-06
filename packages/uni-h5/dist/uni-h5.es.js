@@ -10061,10 +10061,14 @@ var index$8 = /* @__PURE__ */ defineComponent({
             const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
             const len = lines.length - 1;
             lines.forEach((text2, index2) => {
-              children.push(createTextVNode(normalizeText(text2, {
-                space: props2.space,
-                decode: props2.decode
-              })));
+              if (index2 === 0 && !text2)
+                ;
+              else {
+                children.push(createTextVNode(normalizeText(text2, {
+                  space: props2.space,
+                  decode: props2.decode
+                })));
+              }
               if (index2 !== len) {
                 children.push(createVNode("br"));
               }
@@ -10079,7 +10083,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
       }
       return createVNode("uni-text", {
         selectable: props2.selectable
-      }, [createVNode("span", null, [children])], 8, ["selectable"]);
+      }, [createVNode("span", null, children)], 8, ["selectable"]);
     };
   }
 });
@@ -15278,7 +15282,7 @@ function usePageHeadButtons({
         if (!fontFamily) {
           fontFamily = `font${Date.now()}`;
           fonts[fontSrc] = fontFamily;
-          updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`);
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
         }
         btn.fontFamily = fontFamily;
       }

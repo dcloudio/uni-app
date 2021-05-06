@@ -20,3 +20,21 @@ export function initEnv(options: CliOptions) {
 
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 }
+
+export function cleanOptions(options: CliOptions) {
+  const ret = { ...options }
+  delete ret['--']
+
+  delete ret.platform
+  delete ret.p
+  delete ret.ssr
+
+  delete ret.debug
+  delete ret.d
+  delete ret.filter
+  delete ret.f
+  delete ret.logLevel
+  delete ret.l
+  delete ret.clearScreen
+  return ret
+}

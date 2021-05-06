@@ -8,12 +8,12 @@ function createApp(App) {
   return AppInstance
 }
 
-export async function render(url, manifest) {
+export async function render(url, manifest = {}) {
   const app = AppInstance
   const router = app.router
 
   // set the router to the desired URL before rendering
-  router.push(url)
+  await router.push(url)
   await router.isReady()
 
   // passing SSR context object which will be available via useSSRContext()

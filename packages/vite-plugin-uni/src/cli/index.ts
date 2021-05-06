@@ -1,13 +1,8 @@
 import { cac } from 'cac'
 import chalk from 'chalk'
-import {
-  LogLevel,
-  ServerOptions,
-  build,
-  createServer,
-  createLogger,
-  BuildOptions,
-} from 'vite'
+import { LogLevel, createLogger, ServerOptions } from 'vite'
+import { build, buildSSR } from './build'
+import { createServer, createSSRServer } from './server'
 
 import { initEnv, PLATFORMS } from './utils'
 
@@ -29,26 +24,8 @@ export interface CliOptions {
   clearScreen?: boolean
 }
 
-function cleanOptions(options: CliOptions) {
-  const ret = { ...options }
-  delete ret['--']
-
-  delete ret.platform
-  delete ret.p
-  delete ret.ssr
-
-  delete ret.debug
-  delete ret.d
-  delete ret.filter
-  delete ret.f
-  delete ret.logLevel
-  delete ret.l
-  delete ret.clearScreen
-  return ret
-}
-
 cli
-  .option('-p,--platform [platform]', '[string] ' + PLATFORMS.join(' | '), {
+  .option('-p, --platform [platform]', '[string] ' + PLATFORMS.join(' | '), {
     default: 'h5',
   })
   .option('-ssr', '[boolean] server-side rendering', {
@@ -72,16 +49,10 @@ cli
     '--force',
     `[boolean] force the optimizer to ignore the cache and re-bundle`
   )
-  .action(async (options: CliOptions) => {
+  .action(async (options: CliOptions & ServerOptions) => {
     initEnv(options)
     try {
-      const server = await createServer({
-        root: process.env.VITE_ROOT_DIR,
-        logLevel: options.logLevel,
-        clearScreen: options.clearScreen,
-        server: cleanOptions(options) as ServerOptions,
-      })
-      await server.listen()
+      await (options.ssr ? createSSRServer(options) : createServer(options))
     } catch (e) {
       createLogger(options.logLevel).error(
         chalk.red(`error when starting dev server:\n${e.stack}`)
@@ -117,12 +88,7 @@ cli
   .action(async (options: CliOptions) => {
     initEnv(options)
     try {
-      await build({
-        root: process.env.VITE_ROOT_DIR,
-        logLevel: options.logLevel,
-        clearScreen: options.clearScreen,
-        build: cleanOptions(options) as BuildOptions,
-      })
+      await (options.ssr ? buildSSR(options) : build(options))
     } catch (e) {
       createLogger(options.logLevel).error(
         chalk.red(`error during build:\n${e.stack}`)
