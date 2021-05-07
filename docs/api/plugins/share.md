@@ -5,7 +5,8 @@
 1. 使用 ``uni.share`` API方式调用社交sdk分享
 2. 使用[plus.share.sendWithSystem](http://www.html5plus.org/doc/zh_cn/share.html#plus.share.sendWithSystem)呼起手机os的系统分享菜单
 - 小程序：不支持API调用，只能用户主动点击触发分享。可使用自定义按钮方式 &lt;button open-type="share"&gt; 或监听系统右上角的分享按钮 onShareAppMessage 进行自定义分享内容
-- H5：如果是普通浏览器，浏览器自带分享按钮；如果是在微信内嵌浏览器中，可调用js-sdk进行分享，[参考](https://ask.dcloud.net.cn/article/35380)|
+- H5：如果是普通浏览器，浏览器自带分享按钮；如果是在微信内嵌浏览器中，可调用js-sdk进行分享，[参考](https://ask.dcloud.net.cn/article/35380)
+- APP：可以直接使用已经封装好的uni-share插件[详情](https://ext.dcloud.net.cn/plugin?id=4860)
 
 ### uni.share(OBJECT)
 uni-app的App引擎已经封装了微信、QQ、微博的分享SDK，开发者可以直接调用相关功能。
