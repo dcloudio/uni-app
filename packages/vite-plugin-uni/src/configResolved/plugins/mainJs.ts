@@ -39,14 +39,14 @@ function createApp(code: string) {
 }
 
 function createSSRClientApp(code: string) {
-  return `function createApp(rootComponent, rootProps) {const app = createVueSSRApp(rootComponent, rootProps).use(plugin);const oldMount = app.mount;app.mount = (selector) => app.router.isReady().then(() => oldMount.call(app, selector));return app;};${code.replace(
+  return `function createApp(rootComponent, rootProps) {const app = createSSRApp(rootComponent, rootProps).use(plugin);const oldMount = app.mount;app.mount = (selector) => app.router.isReady().then(() => oldMount.call(app, selector));return app;};${code.replace(
     'createApp',
-    'createVueSSRApp'
+    'createSSRApp'
   )}`
 }
 
 function createSSRServerApp(code: string) {
-  return `${generateSSRRenderCode()};${code.replace(
+  return `function createApp(App) {return createVueSSRApp(App).use(plugin)};${generateSSRRenderCode()};${code.replace(
     'createApp',
     'createVueSSRApp'
   )}`

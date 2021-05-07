@@ -1,16 +1,15 @@
-import { UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA } from '@dcloudio/uni-shared'
+import { createVueSSRAppInstance } from 'vue'
 import { renderToString } from '@vue/server-renderer'
+import {
+  UNI_SSR,
+  UNI_SSR_DATA,
+  UNI_SSR_GLOBAL_DATA,
+} from '@dcloudio/uni-shared'
 
-let AppInstance
-
-function createApp(App) {
-  AppInstance = createVueSSRApp(App).use(plugin)
-  AppInstance.mount = () => {}
-  return AppInstance
-}
+import { getSsrGlobalData } from '@dcloudio/uni-app'
 
 export async function render(url, manifest = {}) {
-  const app = AppInstance
+  const app = createVueSSRAppInstance()
   const router = app.router
 
   // set the router to the desired URL before rendering
@@ -30,12 +29,10 @@ export async function render(url, manifest = {}) {
   const preloadLinks = renderPreloadLinks(ctx.modules, manifest)
   // the SSR context
   const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {})
-  if(!__uniSSR[UNI_SSR_DATA]){
+  if (!__uniSSR[UNI_SSR_DATA]) {
     __uniSSR[UNI_SSR_DATA] = {}
   }
-  if(!__uniSSR[UNI_SSR_GLOBAL_DATA]){
-    __uniSSR[UNI_SSR_GLOBAL_DATA] = {}
-  }
+  __uniSSR[UNI_SSR_GLOBAL_DATA] = getSsrGlobalData()
   const appContext = renderAppContext(ctx)
   return [html, preloadLinks, appContext]
 }
@@ -68,6 +65,6 @@ function renderPreloadLink(file) {
   }
 }
 
-function renderAppContext(ctx){
+function renderAppContext(ctx) {
   return `<script>window.__uniSSR = ${JSON.stringify(ctx[UNI_SSR])}</script>`
 }

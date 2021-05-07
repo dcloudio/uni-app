@@ -2,6 +2,8 @@ import { ComponentInternalInstance } from 'vue';
 import { ref } from 'vue';
 import { shallowRef } from 'vue';
 
+export declare function getSsrGlobalData(): any;
+
 export declare const onAddToFavorites: (hook: () => any, target?: ComponentInternalInstance | null) => any;
 
 export declare const onBackPress: (hook: () => any, target?: ComponentInternalInstance | null) => any;

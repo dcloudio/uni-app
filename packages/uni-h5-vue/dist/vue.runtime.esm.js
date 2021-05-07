@@ -3457,7 +3457,7 @@ const KeepAliveImpl = {
         // if the internal renderer is not registered, it indicates that this is server-side rendering,
         // for KeepAlive, we just need to render its children
         if (!sharedContext.renderer) {
-            return slots.default;
+            return () => slots.default && slots.default()[0]; // fixed by xxxxxx ssr
         }
         if ((process.env.NODE_ENV !== 'production') && props.cache && hasOwn(props, 'max')) {
             warn('The `max` prop will be ignored if you provide a custom caching strategy');
@@ -9434,6 +9434,111 @@ function initDev() {
     }
 }
 
+function createVueAppContext() {
+    return {
+        app: null,
+        config: {
+            performance: false,
+            globalProperties: {},
+            optionMergeStrategies: {},
+            errorHandler: undefined,
+            warnHandler: undefined
+        },
+        mixins: [],
+        components: {},
+        directives: {},
+        provides: Object.create(null)
+    };
+}
+let currentApp;
+let currentPlugins;
+function createVueSSRApp(rootComponent, rootProps = null) {
+    if (rootProps != null && !isObject(rootProps)) {
+        rootProps = null;
+    }
+    currentPlugins = [];
+    const context = createVueAppContext();
+    const app = (context.app = currentApp = {
+        _uid: -1,
+        _component: rootComponent,
+        _props: rootProps,
+        _container: null,
+        _context: context,
+        version: "3.0.9",
+        get config() {
+            return context.config;
+        },
+        set config(_v) { },
+        use(plugin, ...options) {
+            currentPlugins.push([plugin, ...options]);
+            return app;
+        },
+        mixin(mixin) {
+            context.mixins.push(mixin);
+            return app;
+        },
+        component(name, component) {
+            if (!component) {
+                return context.components[name];
+            }
+            context.components[name] = component;
+            return app;
+        },
+        directive(name, directive) {
+            if (!directive) {
+                return context.directives[name];
+            }
+            context.directives[name] = directive;
+            return app;
+        },
+        mount() { },
+        unmount() { },
+        provide(key, value) {
+            context.provides[key] = value;
+            return app;
+        }
+    });
+    return app;
+}
+function createVueSSRAppInstance() {
+    const app = createSSRApp(currentApp._component, currentApp._props);
+    const { config, mixins, components, directives, provides } = currentApp._context;
+    initAppConfig(app, config);
+    initAppPlugins(app, currentPlugins);
+    initAppMixins(app, mixins);
+    initAppComponents(app, components);
+    initAppDirectives(app, directives);
+    initAppProvides(app, provides);
+    return app;
+}
+function initAppConfig(app, { performance, globalProperties, optionMergeStrategies, errorHandler, warnHandler }) {
+    const { config } = app;
+    extend(config, { performance, errorHandler, warnHandler });
+    extend(config.globalProperties, globalProperties);
+    extend(config.optionMergeStrategies, optionMergeStrategies);
+    return app;
+}
+function initAppMixins(app, mixins) {
+    mixins.forEach(mixin => app.mixin(mixin));
+    return app;
+}
+function initAppComponents(app, components) {
+    Object.keys(components).forEach(name => app.component(name, components[name]));
+    return app;
+}
+function initAppDirectives(app, directives) {
+    Object.keys(directives).forEach(name => app.directive(name, directives[name]));
+    return app;
+}
+function initAppProvides(app, provides) {
+    Object.keys(provides).forEach(name => app.provide(name, provides[name]));
+    return app;
+}
+function initAppPlugins(app, plugins) {
+    plugins.forEach(plugin => app.use.apply(app, plugin));
+    return app;
+}
+
 // This entry exports the runtime only, and is built as
 if ((process.env.NODE_ENV !== 'production')) {
     initDev();
@@ -9446,4 +9551,4 @@ const compile$1 = () => {
     }
 };
 
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createSSRApp as createVueSSRApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };
+export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compile$1 as compile, computed$1 as computed, createApp, createBlock, createCommentVNode, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, createApp as createVueApp, createVueSSRApp, createVueSSRAppInstance, customRef, defineAsyncComponent, defineComponent, defineEmit, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, hydrate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelCheckbox, vModelDynamic, vModelRadio, vModelSelect, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };

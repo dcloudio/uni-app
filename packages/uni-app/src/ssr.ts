@@ -5,7 +5,7 @@ import {
   useSSRContext,
   getCurrentInstance,
 } from 'vue'
-import { isObject } from '@vue/shared'
+import { hasOwn, isObject } from '@vue/shared'
 import {
   sanitise,
   UNI_SSR,
@@ -42,7 +42,12 @@ const ssrClientRef: SSRRef = (value, key, shallow = false) => {
   }
   const type = getSSRDataType()
   assertKey(key, shallow)
-  valRef.value = (__uniSSR[type] as any)[key!]
+  if (hasOwn(__uniSSR[type], key!)) {
+    valRef.value = __uniSSR[type][key!]
+    if (type === UNI_SSR_DATA) {
+      delete __uniSSR[type][key!] // TODO 非全局数据仅使用一次？否则下次还会再次使用该数据
+    }
+  }
   return valRef
 }
 
@@ -67,12 +72,18 @@ function proxy(
   })
 }
 
+const globalData: Record<string, any> = {}
+
 const ssrServerRef: SSRRef = (value, key, shallow = false) => {
-  const type = getSSRDataType()
   assertKey(key, shallow)
-  const ctx = useSSRContext()!
-  const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {})
-  const state = __uniSSR[type] || (__uniSSR[type] = {})
+  const ctx = useSSRContext()
+  let state: Record<string, any>
+  if (ctx) {
+    const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {})
+    state = __uniSSR[UNI_SSR_DATA] || (__uniSSR[UNI_SSR_DATA] = {})
+  } else {
+    state = globalData
+  }
   // SSR 模式下 watchEffect 不生效 https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L253
   // 故自定义ref
   return customRef((track, trigger) => {
@@ -105,4 +116,8 @@ export const shallowSsrRef: SSRRef = (value, key) => {
     return ssrServerRef(value, key, true)
   }
   return ssrClientRef(value, key, true)
+}
+
+export function getSsrGlobalData() {
+  return sanitise(globalData)
 }

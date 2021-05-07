@@ -3469,7 +3469,7 @@ const KeepAliveImpl = {
         // if the internal renderer is not registered, it indicates that this is server-side rendering,
         // for KeepAlive, we just need to render its children
         if (!sharedContext.renderer) {
-            return ()=>slots.default()[0];
+            return () => slots.default && slots.default()[0]; // fixed by xxxxxx ssr
         }
         if (props.cache && shared.hasOwn(props, 'max')) {
             warn('The `max` prop will be ignored if you provide a custom caching strategy');
@@ -9381,6 +9381,111 @@ function normalizeContainer(container) {
     return container;
 }
 
+function createVueAppContext() {
+    return {
+        app: null,
+        config: {
+            performance: false,
+            globalProperties: {},
+            optionMergeStrategies: {},
+            errorHandler: undefined,
+            warnHandler: undefined
+        },
+        mixins: [],
+        components: {},
+        directives: {},
+        provides: Object.create(null)
+    };
+}
+let currentApp;
+let currentPlugins;
+function createVueSSRApp(rootComponent, rootProps = null) {
+    if (rootProps != null && !shared.isObject(rootProps)) {
+        rootProps = null;
+    }
+    currentPlugins = [];
+    const context = createVueAppContext();
+    const app = (context.app = currentApp = {
+        _uid: -1,
+        _component: rootComponent,
+        _props: rootProps,
+        _container: null,
+        _context: context,
+        version: "3.0.9",
+        get config() {
+            return context.config;
+        },
+        set config(_v) { },
+        use(plugin, ...options) {
+            currentPlugins.push([plugin, ...options]);
+            return app;
+        },
+        mixin(mixin) {
+            context.mixins.push(mixin);
+            return app;
+        },
+        component(name, component) {
+            if (!component) {
+                return context.components[name];
+            }
+            context.components[name] = component;
+            return app;
+        },
+        directive(name, directive) {
+            if (!directive) {
+                return context.directives[name];
+            }
+            context.directives[name] = directive;
+            return app;
+        },
+        mount() { },
+        unmount() { },
+        provide(key, value) {
+            context.provides[key] = value;
+            return app;
+        }
+    });
+    return app;
+}
+function createVueSSRAppInstance() {
+    const app = createSSRApp(currentApp._component, currentApp._props);
+    const { config, mixins, components, directives, provides } = currentApp._context;
+    initAppConfig(app, config);
+    initAppPlugins(app, currentPlugins);
+    initAppMixins(app, mixins);
+    initAppComponents(app, components);
+    initAppDirectives(app, directives);
+    initAppProvides(app, provides);
+    return app;
+}
+function initAppConfig(app, { performance, globalProperties, optionMergeStrategies, errorHandler, warnHandler }) {
+    const { config } = app;
+    shared.extend(config, { performance, errorHandler, warnHandler });
+    shared.extend(config.globalProperties, globalProperties);
+    shared.extend(config.optionMergeStrategies, optionMergeStrategies);
+    return app;
+}
+function initAppMixins(app, mixins) {
+    mixins.forEach(mixin => app.mixin(mixin));
+    return app;
+}
+function initAppComponents(app, components) {
+    Object.keys(components).forEach(name => app.component(name, components[name]));
+    return app;
+}
+function initAppDirectives(app, directives) {
+    Object.keys(directives).forEach(name => app.directive(name, directives[name]));
+    return app;
+}
+function initAppProvides(app, provides) {
+    Object.keys(provides).forEach(name => app.provide(name, provides[name]));
+    return app;
+}
+function initAppPlugins(app, plugins) {
+    plugins.forEach(plugin => app.use.apply(app, plugin));
+    return app;
+}
+
 // This entry exports the runtime only, and is built as
 const compile$1 = () => {
     {
@@ -9419,7 +9524,8 @@ exports.createStaticVNode = createStaticVNode;
 exports.createTextVNode = createTextVNode;
 exports.createVNode = createVNode;
 exports.createVueApp = createApp;
-exports.createVueSSRApp = createSSRApp;
+exports.createVueSSRApp = createVueSSRApp;
+exports.createVueSSRAppInstance = createVueSSRAppInstance;
 exports.customRef = customRef;
 exports.defineAsyncComponent = defineAsyncComponent;
 exports.defineComponent = defineComponent;

@@ -8,11 +8,7 @@ var shared = require('@vue/shared');
 const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 const UNI_SSR = '__uniSSR';
 const UNI_SSR_DATA = 'data';
-const UNI_SSR_GLOBAL_DATA = 'globalData';
 
-function getSSRDataType() {
-    return vue.getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
-}
 function assertKey(key, shallow = false) {
     if (!key) {
         throw new Error(`${shallow ? 'shallowSsrRef' : 'ssrRef'}: You must provide a key.`);
@@ -34,12 +30,18 @@ function proxy(target, track, trigger) {
         },
     });
 }
+const globalData = {};
 const ssrServerRef = (value, key, shallow = false) => {
-    const type = getSSRDataType();
     assertKey(key, shallow);
     const ctx = vue.useSSRContext();
-    const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {});
-    const state = __uniSSR[type] || (__uniSSR[type] = {});
+    let state;
+    if (ctx) {
+        const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {});
+        state = __uniSSR[UNI_SSR_DATA] || (__uniSSR[UNI_SSR_DATA] = {});
+    }
+    else {
+        state = globalData;
+    }
     // SSR 模式下 watchEffect 不生效 https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L253
     // 故自定义ref
     return vue.customRef((track, trigger) => {
@@ -69,6 +71,9 @@ const shallowSsrRef = (value, key) => {
         return ssrServerRef(value, key, true);
     }
 };
+function getSsrGlobalData() {
+    return sanitise(globalData);
+}
 
 // @ts-ignore
 // App and Page
@@ -125,6 +130,7 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(ON_NAVIGATION
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
+exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
 exports.onError = onError;

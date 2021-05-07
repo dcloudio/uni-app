@@ -1,5 +1,7 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
+import { hasOwn } from '@vue/shared';
 
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 const UNI_SSR = '__uniSSR';
 const UNI_SSR_DATA = 'data';
 const UNI_SSR_GLOBAL_DATA = 'globalData';
@@ -20,15 +22,24 @@ const ssrClientRef = (value, key, shallow = false) => {
     }
     const type = getSSRDataType();
     assertKey(key, shallow);
-    valRef.value = __uniSSR[type][key];
+    if (hasOwn(__uniSSR[type], key)) {
+        valRef.value = __uniSSR[type][key];
+        if (type === UNI_SSR_DATA) {
+            delete __uniSSR[type][key]; // TODO 非全局数据仅使用一次？否则下次还会再次使用该数据
+        }
+    }
     return valRef;
 };
+const globalData = {};
 const ssrRef = (value, key) => {
     return ssrClientRef(value, key);
 };
 const shallowSsrRef = (value, key) => {
     return ssrClientRef(value, key, true);
 };
+function getSsrGlobalData() {
+    return sanitise(globalData);
+}
 
 // @ts-ignore
 // App and Page
@@ -85,4 +96,4 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(ON_NAVIGATION
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
-export { onAddToFavorites, onBackPress, onError, onHide, onLaunch, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, shallowSsrRef, ssrRef };
+export { getSsrGlobalData, onAddToFavorites, onBackPress, onError, onHide, onLaunch, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, shallowSsrRef, ssrRef };
