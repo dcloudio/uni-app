@@ -84,6 +84,7 @@ const ssrServerRef: SSRRef = (value, key, shallow = false) => {
   } else {
     state = globalData
   }
+  state[key!] = sanitise(value)
   // SSR 模式下 watchEffect 不生效 https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L253
   // 故自定义ref
   return customRef((track, trigger) => {

@@ -43,6 +43,7 @@ function initPagesFeature({
   pagesJson,
   command,
   inputDir,
+  ssr,
 }: InitFeaturesOptions): PagesFeatures {
   const features: PagesFeatures = {
     nvue: true,
@@ -67,7 +68,8 @@ function initPagesFeature({
     rightWindow,
     globalStyle,
   } = pagesJson
-  if (pages && pages.length === 1) {
+  // ssr 时强制启用多页面（需要用到router）
+  if (!ssr && pages && pages.length === 1) {
     features.pages = false
   }
   if (!(tabBar && tabBar.list && tabBar.list.length)) {
@@ -210,6 +212,7 @@ interface InitFeaturesOptions {
   inputDir: string
   platform: UniApp.PLATFORM
   command: ConfigEnv['command']
+  ssr: boolean
 }
 
 export function initFeatures(options: InitFeaturesOptions) {

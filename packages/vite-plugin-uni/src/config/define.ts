@@ -17,6 +17,7 @@ export function createDefine(
     platform,
     pagesJson: parsePagesJsonOnce(inputDir, platform),
     manifestJson: parseManifestJsonOnce(inputDir),
+    ssr: !!(server && server.middlewareMode),
   })
   if (server && server.middlewareMode) {
     Object.assign(globalThis, features)

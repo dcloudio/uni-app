@@ -47,17 +47,22 @@ export function createHandleHotUpdate(
     const { inputDir, command, platform } = options
     const pagesJson = parsePagesJson(inputDir, platform)
     // 更新define
+    const {
+      define,
+      server: { middlewareMode },
+    } = server.config
     Object.assign(
-      server.config.define!,
+      define,
       initFeatures({
         inputDir,
         command,
         platform,
         pagesJson,
         manifestJson: parseManifestJson(inputDir),
+        ssr: !!middlewareMode,
       })
     )
-    debugHmr('define', server.config.define)
+    debugHmr('define', define)
     if (isPagesJson) {
       const easycom = pagesJson.easycom || {}
       const { options, refresh } = initEasycomsOnce(inputDir, platform)
