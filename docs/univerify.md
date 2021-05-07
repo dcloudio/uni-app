@@ -216,7 +216,7 @@ univerifyStyle 属性对应配置的界面指示图
 
 全屏效果  | 非全屏效果
 :--------:|:--------:
-<img src="https://img.cdn.aliyun.dcloud.net.cn/client/doc/univerify/full_styles_v2.png" width=30%>  | <img src="https://img.cdn.aliyun.dcloud.net.cn/client/doc/univerify/half_styles_v2.png" width=30%>
+<img src="https://img.cdn.aliyun.dcloud.net.cn/client/doc/univerify/full_styles_v2.png" width=240>  | <img src="https://img.cdn.aliyun.dcloud.net.cn/client/doc/univerify/half_styles_v2.png" width=240>
 
 返回数据示例
 
