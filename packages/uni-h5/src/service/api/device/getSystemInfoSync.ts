@@ -25,6 +25,13 @@ import {
 export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
   'getSystemInfoSync',
   () => {
+    if (__NODE_JS__) {
+      //TODO 临时搞一下配合 uniCloud 测试
+      return ({
+        deviceId: Date.now() + '' + Math.floor(Math.random() * 1e7),
+        platform: 'nodejs',
+      } as unknown) as UniApp.GetSystemInfoResult
+    }
     const pixelRatio = window.devicePixelRatio
     // 横屏时 iOS 获取的屏幕宽高颠倒，进行纠正
     const screenFix = getScreenFix()

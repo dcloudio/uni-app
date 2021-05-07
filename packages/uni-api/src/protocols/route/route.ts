@@ -184,7 +184,7 @@ function createNormalizeUrl(type: string) {
         }
       }
       if (routeOptions.meta.isTabBar) {
-        const pages = getCurrentPages(true)
+        const pages = getCurrentPages()
         const tabBarPagePath = routeOptions.path.substr(1)
         if (pages.find((page) => page.route === tabBarPagePath)) {
           return 'tabBar page `' + tabBarPagePath + '` already exists'

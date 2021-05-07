@@ -6,3 +6,7 @@ export const RESPONSIVE_MIN_WIDTH = 768
 export const COMPONENT_NAME_PREFIX = 'VUni'
 
 export const PRIMARY_COLOR = '#007aff'
+
+export const UNI_SSR = '__uniSSR'
+export const UNI_SSR_DATA = 'data'
+export const UNI_SSR_GLOBAL_DATA = 'globalData'

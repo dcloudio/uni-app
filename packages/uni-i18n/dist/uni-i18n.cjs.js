@@ -226,6 +226,9 @@ function initVueI18n(locale = LOCALE_EN, messages = {}, fallbackLocale = LOCALE_
     if (typeof locale !== 'string') {
         [locale, messages] = [messages, locale];
     }
+    if (typeof locale !== 'string') {
+        locale = fallbackLocale;
+    }
     const i18n = new I18n({
         locale: locale || fallbackLocale,
         fallbackLocale,

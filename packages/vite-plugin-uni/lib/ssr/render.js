@@ -1,3 +1,4 @@
+import { UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA } from '@dcloudio/uni-shared'
 import { renderToString } from '@vue/server-renderer'
 
 let AppInstance
@@ -27,7 +28,16 @@ export async function render(url, manifest = {}) {
   // which we can then use to determine what files need to be preloaded for this
   // request.
   const preloadLinks = renderPreloadLinks(ctx.modules, manifest)
-  return [html, preloadLinks]
+  // the SSR context
+  const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {})
+  if(!__uniSSR[UNI_SSR_DATA]){
+    __uniSSR[UNI_SSR_DATA] = {}
+  }
+  if(!__uniSSR[UNI_SSR_GLOBAL_DATA]){
+    __uniSSR[UNI_SSR_GLOBAL_DATA] = {}
+  }
+  const appContext = renderAppContext(ctx)
+  return [html, preloadLinks, appContext]
 }
 
 function renderPreloadLinks(modules, manifest) {
@@ -56,4 +66,8 @@ function renderPreloadLink(file) {
     // TODO
     return ''
   }
+}
+
+function renderAppContext(ctx){
+  return `<script>window.__uniSSR = ${JSON.stringify(ctx[UNI_SSR])}</script>`
 }

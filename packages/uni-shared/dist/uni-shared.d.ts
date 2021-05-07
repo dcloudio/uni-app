@@ -76,6 +76,8 @@ export declare function removeLeadingSlash(str: string): string;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 
+export declare const sanitise: (val: unknown) => any;
+
 declare function scrollTo_2(scrollTop: number | string, duration: number): void;
 export { scrollTo_2 as scrollTo }
 
@@ -84,6 +86,12 @@ export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: ty
 export declare const TABBAR_HEIGHT = 50;
 
 export declare const TAGS: string[];
+
+export declare const UNI_SSR = "__uniSSR";
+
+export declare const UNI_SSR_DATA = "data";
+
+export declare const UNI_SSR_GLOBAL_DATA = "globalData";
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 

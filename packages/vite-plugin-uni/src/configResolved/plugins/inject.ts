@@ -2,15 +2,7 @@ import path, { sep } from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
 
-import {
-  BaseNode,
-  Program,
-  Property,
-  Identifier,
-  MemberExpression,
-  MethodDefinition,
-  ExportSpecifier,
-} from 'estree'
+import { BaseNode, Program, Identifier } from 'estree'
 
 import {
   attachScopes,
@@ -22,7 +14,7 @@ import { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
 
-import MagicString from 'magic-string'
+import { MagicString } from '@vue/compiler-sfc'
 
 import {
   EXTNAME_JS,
@@ -31,6 +23,8 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
+
+import { isProperty, isReference, isMemberExpression } from '../../utils'
 
 interface Scope {
   parent: Scope
@@ -230,39 +224,6 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
 }
 
 const escape = (str: string) => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&')
-
-const isProperty = (node: BaseNode): node is Property =>
-  node.type === 'Property'
-
-const isIdentifier = (node: BaseNode): node is Identifier =>
-  node.type === 'Identifier'
-
-const isMemberExpression = (node: BaseNode): node is MemberExpression =>
-  node.type === 'MemberExpression'
-
-const isMethodDefinition = (node: BaseNode): node is MethodDefinition =>
-  node.type === 'MethodDefinition'
-
-const isExportSpecifier = (node: BaseNode): node is ExportSpecifier =>
-  node.type === 'ExportSpecifier'
-
-const isReference = (node: BaseNode, parent: BaseNode): boolean => {
-  if (isMemberExpression(node)) {
-    return !node.computed && isReference(node.object, node)
-  }
-  if (isIdentifier(node)) {
-    if (isMemberExpression(parent))
-      return parent.computed || node === parent.object
-    // `bar` in { bar: foo }
-    if (isProperty(parent) && node !== parent.value) return false
-    // `bar` in `class Foo { bar () {...} }`
-    if (isMethodDefinition(parent)) return false
-    // `bar` in `export { foo as bar }`
-    if (isExportSpecifier(parent) && node !== parent.local) return false
-    return true
-  }
-  return false
-}
 
 const flatten = (startNode: BaseNode) => {
   const parts = []

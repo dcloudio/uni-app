@@ -653,8 +653,26 @@ function wrapperTaskApi(name, fn, protocol, options) {
     });
   };
 }
+function wrapperSyncApi(name, fn, protocol, options) {
+  return (...args) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
+function wrapperAsyncApi(name, fn, protocol, options) {
+  return wrapperTaskApi(name, fn, protocol, options);
+}
 function defineTaskApi(name, fn, protocol, options) {
   return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 const SCHEME_RE = /^([a-z-]+:)?\/\//i;
 const DATA_RE = /^data:.*,.*/;
@@ -691,6 +709,46 @@ function getRealPath(filePath) {
   return filePath;
 }
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const API_GET_STORAGE = "getStorage";
+const GetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  }
+};
+const API_GET_STORAGE_SYNC = "getStorageSync";
+const GetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  }
+];
+const API_SET_STORAGE = "setStorage";
+const SetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  },
+  data: {
+    required: true
+  }
+};
+const API_SET_STORAGE_SYNC = "setStorageSync";
+const SetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  },
+  {
+    name: "data",
+    required: true
+  }
+];
+const API_REMOVE_STORAGE = "removeStorage";
+const RemoveStorageProtocol = GetStorageProtocol;
+const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
 const API_REQUEST = "request";
 const dataType = {
   JSON: "json"
@@ -8350,10 +8408,141 @@ function parseHeaders(headers) {
   });
   return headersObject;
 }
+const STORAGE_KEYS = "uni-storage-keys";
+function parseValue(value) {
+  const types = ["object", "string", "number", "boolean", "undefined"];
+  try {
+    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const type = object.type;
+    if (types.indexOf(type) >= 0) {
+      const keys = Object.keys(object);
+      if (keys.length === 2 && "data" in object) {
+        if (typeof object.data === type) {
+          return object.data;
+        }
+        if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
+          return new Date(object.data);
+        }
+      } else if (keys.length === 1) {
+        return "";
+      }
+    }
+  } catch (error) {
+  }
+}
+const setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
+  const type = typeof data;
+  const value = type === "string" ? data : JSON.stringify({
+    type,
+    data
+  });
+  localStorage.setItem(key, value);
+}, SetStorageSyncProtocol);
+const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({key, data}, {resolve, reject}) => {
+  try {
+    setStorageSync(key, data);
+    resolve();
+  } catch (error) {
+    reject(error.message);
+  }
+}, SetStorageProtocol);
+function getStorageOrigin(key) {
+  const value = localStorage && localStorage.getItem(key);
+  if (typeof value !== "string") {
+    throw new Error("data not found");
+  }
+  let data = value;
+  try {
+    const object = JSON.parse(value);
+    const result = parseValue(object);
+    if (result !== void 0) {
+      data = result;
+    }
+  } catch (error) {
+  }
+  return data;
+}
+const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
+  try {
+    return getStorageOrigin(key);
+  } catch (error) {
+    return "";
+  }
+}, GetStorageSyncProtocol);
+const getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({key}, {resolve, reject}) => {
+  try {
+    const data = getStorageOrigin(key);
+    resolve({
+      data
+    });
+  } catch (error) {
+    reject(error.message);
+  }
+}, GetStorageProtocol);
+const removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
+  if (localStorage) {
+    localStorage.removeItem(key);
+  }
+}, RemoveStorageSyncProtocol);
+const removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({key}, {resolve}) => {
+  removeStorageSync(key);
+  resolve();
+}, RemoveStorageProtocol);
+const clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
+  if (localStorage) {
+    localStorage.clear();
+  }
+});
+const clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, {resolve}) => {
+  clearStorageSync();
+  resolve();
+});
+const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
+  const length = localStorage && localStorage.length || 0;
+  const keys = [];
+  let currentSize = 0;
+  for (let index2 = 0; index2 < length; index2++) {
+    const key = localStorage.key(index2);
+    const value = localStorage.getItem(key) || "";
+    currentSize += key.length + value.length;
+    if (key !== STORAGE_KEYS) {
+      keys.push(key);
+    }
+  }
+  return {
+    keys,
+    currentSize: Math.ceil(currentSize * 2 / 1024),
+    limitSize: Number.MAX_VALUE
+  };
+});
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, {resolve}) => {
+  resolve(getStorageInfoSync());
+});
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
+  {
+    return {
+      deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+      platform: "nodejs"
+    };
+  }
+});
+require("localstorage-polyfill");
+global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
-  request
+  request,
+  setStorageSync,
+  setStorage,
+  getStorageSync,
+  getStorage,
+  removeStorageSync,
+  removeStorage,
+  clearStorageSync,
+  clearStorage,
+  getStorageInfoSync,
+  getStorageInfo,
+  getSystemInfoSync
 });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
@@ -9236,10 +9425,21 @@ exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$5;
 exports.View = index$6;
 exports.WebView = index$4;
+exports.clearStorage = clearStorage;
+exports.clearStorageSync = clearStorageSync;
 exports.getApp = getApp$1;
 exports.getCurrentPages = getCurrentPages$1;
+exports.getStorage = getStorage;
+exports.getStorageInfo = getStorageInfo;
+exports.getStorageInfoSync = getStorageInfoSync;
+exports.getStorageSync = getStorageSync;
+exports.getSystemInfoSync = getSystemInfoSync;
 exports.plugin = index$m;
+exports.removeStorage = removeStorage;
+exports.removeStorageSync = removeStorageSync;
 exports.request = request;
+exports.setStorage = setStorage;
+exports.setStorageSync = setStorageSync;
 exports.setupApp = setupApp;
 exports.setupPage = setupPage;
 exports.uni = uni$1;

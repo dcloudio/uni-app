@@ -193,6 +193,7 @@ function once(fn, ctx = null) {
         return res;
     });
 }
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -296,6 +297,9 @@ const ON_REACH_BOTTOM_DISTANCE = 50;
 const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
+const UNI_SSR = '__uniSSR';
+const UNI_SSR_DATA = 'data';
+const UNI_SSR_GLOBAL_DATA = 'globalData';
 
 function getEnvLocale() {
     const { env } = process;
@@ -314,6 +318,9 @@ exports.PRIMARY_COLOR = PRIMARY_COLOR;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
+exports.UNI_SSR = UNI_SSR;
+exports.UNI_SSR_DATA = UNI_SSR_DATA;
+exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.addFont = addFont;
 exports.debounce = debounce;
 exports.decode = decode;
@@ -331,6 +338,7 @@ exports.parseQuery = parseQuery;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;
+exports.sanitise = sanitise;
 exports.scrollTo = scrollTo;
 exports.stringifyQuery = stringifyQuery;
 exports.updateElementStyle = updateElementStyle;

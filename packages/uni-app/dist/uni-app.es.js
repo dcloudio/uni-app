@@ -1,4 +1,34 @@
-import { getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
+import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
+
+const UNI_SSR = '__uniSSR';
+const UNI_SSR_DATA = 'data';
+const UNI_SSR_GLOBAL_DATA = 'globalData';
+
+function getSSRDataType() {
+    return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
+}
+function assertKey(key, shallow = false) {
+    if (!key) {
+        throw new Error(`${shallow ? 'shallowSsrRef' : 'ssrRef'}: You must provide a key.`);
+    }
+}
+const ssrClientRef = (value, key, shallow = false) => {
+    const valRef = shallow ? shallowRef(value) : ref(value);
+    const __uniSSR = window[UNI_SSR];
+    if (!__uniSSR) {
+        return valRef;
+    }
+    const type = getSSRDataType();
+    assertKey(key, shallow);
+    valRef.value = __uniSSR[type][key];
+    return valRef;
+};
+const ssrRef = (value, key) => {
+    return ssrClientRef(value, key);
+};
+const shallowSsrRef = (value, key) => {
+    return ssrClientRef(value, key, true);
+};
 
 // @ts-ignore
 // App and Page
@@ -55,4 +85,4 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(ON_NAVIGATION
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
-export { onAddToFavorites, onBackPress, onError, onHide, onLaunch, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload };
+export { onAddToFavorites, onBackPress, onError, onHide, onLaunch, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, shallowSsrRef, ssrRef };

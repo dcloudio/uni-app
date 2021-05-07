@@ -47,7 +47,7 @@ if (FORMAT === 'cjs') {
 export default defineConfig({
   root: __dirname,
   define: {
-    global: 'window',
+    global: FORMAT === 'cjs' ? 'global' : 'window',
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('h5'),

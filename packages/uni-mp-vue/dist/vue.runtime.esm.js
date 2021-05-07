@@ -2239,7 +2239,7 @@ function createAppAPI() {
                 if (__VUE_OPTIONS_API__) {
                     if (!context.mixins.includes(mixin)) {
                         context.mixins.push(mixin);
-                        // global mixin with props/emits de-optimizes props/emits
+                        // window mixin with props/emits de-optimizes props/emits
                         // normalization caching.
                         if (mixin.props || mixin.emits) {
                             context.deopt = true;
@@ -2337,7 +2337,7 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
         // local registration
         // check instance[type] first for components with mixin or extends.
         resolve(instance[type] || Component[type], name) ||
-            // global registration
+            // window registration
             resolve(instance.appContext[type], name);
         if (!res && maybeSelfReference) {
             // fallback to implicit self-reference
@@ -2734,7 +2734,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
         shouldCacheAccess = false;
         callSyncHook('beforeCreate', "bc" /* BEFORE_CREATE */, options, instance, globalMixins);
         shouldCacheAccess = true;
-        // global mixins are applied first
+        // window mixins are applied first
         applyMixins(instance, globalMixins, deferredData, deferredWatch, deferredProvide);
     }
     // extending a base component...
@@ -3215,7 +3215,7 @@ const PublicInstanceProxyHandlers = {
             return ctx[key];
         }
         else if (
-        // global properties
+        // window properties
         ((globalProperties = appContext.config.globalProperties),
             hasOwn(globalProperties, key))) {
             return globalProperties[key];
@@ -3327,7 +3327,7 @@ function createRenderContext(instance) {
             set: NOOP
         });
     });
-    // expose global properties
+    // expose window properties
     const { globalProperties } = instance.appContext.config;
     Object.keys(globalProperties).forEach(key => {
         Object.defineProperty(target, key, {

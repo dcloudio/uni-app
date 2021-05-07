@@ -59,11 +59,12 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
         await vite.ssrLoadModule(resolveMainPathOnce(process.env.UNI_INPUT_DIR))
       ).render
 
-      const [appHtml, preloadLinks] = await render(url)
+      const [appHtml, preloadLinks, appContext] = await render(url)
 
       const html = template
         .replace(`<!--preload-links-->`, preloadLinks)
         .replace(`<!--app-html-->`, appHtml)
+        .replace(`<!--app-context-->`, appContext)
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
     } catch (e) {
       vite && vite.ssrFixStacktrace(e)

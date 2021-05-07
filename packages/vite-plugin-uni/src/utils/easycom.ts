@@ -40,6 +40,10 @@ function clearEasycom() {
 
 export const initEasycomsOnce = once(
   (inputDir: string, platform: UniApp.PLATFORM) => {
+    const buildInComponentsDir = path.resolve(
+      require.resolve('@dcloudio/uni-components'),
+      '../lib'
+    )
     const componentsDir = path.resolve(inputDir, 'components')
     const uniModulesDir = path.resolve(inputDir, 'uni_modules')
     const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
@@ -48,8 +52,12 @@ export const initEasycomsOnce = once(
       const easycomOptions: EasycomOption = {
         dirs:
           easycom && easycom.autoscan === false
-            ? [] // 禁止自动扫描
-            : [componentsDir, ...initUniModulesEasycomDirs(uniModulesDir)],
+            ? [buildInComponentsDir] // 禁止自动扫描
+            : [
+                buildInComponentsDir,
+                componentsDir,
+                ...initUniModulesEasycomDirs(uniModulesDir),
+              ],
         rootDir: inputDir,
         autoscan: !!(easycom && easycom.autoscan),
         custom: (easycom && easycom.custom) || {},

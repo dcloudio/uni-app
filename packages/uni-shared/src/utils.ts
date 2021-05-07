@@ -36,3 +36,6 @@ export function once<T extends (...args: any[]) => any>(
     return res
   }) as T
 }
+
+export const sanitise = (val: unknown) =>
+  (val && JSON.parse(JSON.stringify(val))) || val

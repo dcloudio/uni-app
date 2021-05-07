@@ -18,6 +18,7 @@ import { uniStaticPlugin } from './static'
 import { uniCssScopedPlugin } from './cssScoped'
 import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
+import { uniSSRPlugin } from './ssr'
 
 const debugPlugin = debug('vite:uni:plugin')
 
@@ -136,6 +137,12 @@ export function initPlugins(
       )
     }
   }
+
+  addPlugin(
+    plugins,
+    uniSSRPlugin(extend({ exclude: [...COMMON_EXCLUDE] }, options)),
+    'vite:vue'
+  )
 
   addPlugin(
     plugins,

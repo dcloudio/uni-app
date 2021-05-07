@@ -3,6 +3,72 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
+var shared = require('@vue/shared');
+
+const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
+const UNI_SSR = '__uniSSR';
+const UNI_SSR_DATA = 'data';
+const UNI_SSR_GLOBAL_DATA = 'globalData';
+
+function getSSRDataType() {
+    return vue.getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
+}
+function assertKey(key, shallow = false) {
+    if (!key) {
+        throw new Error(`${shallow ? 'shallowSsrRef' : 'ssrRef'}: You must provide a key.`);
+    }
+}
+function proxy(target, track, trigger) {
+    return new Proxy(target, {
+        get(target, prop) {
+            track();
+            if (shared.isObject(target[prop])) {
+                return proxy(target[prop], track, trigger);
+            }
+            return Reflect.get(target, prop);
+        },
+        set(obj, prop, newVal) {
+            const result = Reflect.set(obj, prop, newVal);
+            trigger();
+            return result;
+        },
+    });
+}
+const ssrServerRef = (value, key, shallow = false) => {
+    const type = getSSRDataType();
+    assertKey(key, shallow);
+    const ctx = vue.useSSRContext();
+    const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {});
+    const state = __uniSSR[type] || (__uniSSR[type] = {});
+    // SSR 模式下 watchEffect 不生效 https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L253
+    // 故自定义ref
+    return vue.customRef((track, trigger) => {
+        const customTrigger = () => (trigger(), (state[key] = sanitise(value)));
+        return {
+            get: () => {
+                track();
+                if (!shallow && shared.isObject(value)) {
+                    return proxy(value, track, customTrigger);
+                }
+                return value;
+            },
+            set: (v) => {
+                value = v;
+                customTrigger();
+            },
+        };
+    });
+};
+const ssrRef = (value, key) => {
+    {
+        return ssrServerRef(value, key);
+    }
+};
+const shallowSsrRef = (value, key) => {
+    {
+        return ssrServerRef(value, key, true);
+    }
+};
 
 // @ts-ignore
 // App and Page
@@ -82,3 +148,5 @@ exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
+exports.shallowSsrRef = shallowSsrRef;
+exports.ssrRef = ssrRef;

@@ -44,7 +44,3 @@ declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
-
-declare const getCurrentPages: <T extends AnyObject = {}>(
-  isAll?: boolean
-) => Array<Page.PageInstance<AnyObject, T> & T>

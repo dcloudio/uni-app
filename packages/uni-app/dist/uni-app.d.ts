@@ -1,4 +1,6 @@
 import { ComponentInternalInstance } from 'vue';
+import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
 export declare const onAddToFavorites: (hook: () => any, target?: ComponentInternalInstance | null) => any;
 
@@ -45,5 +47,11 @@ export declare const onThemeChange: (hook: () => any, target?: ComponentInternal
 export declare const onUnhandledRejection: (hook: () => any, target?: ComponentInternalInstance | null) => any;
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => any;
+
+export declare const shallowSsrRef: SSRRef;
+
+declare type SSRRef = (value: unknown, key?: string, shallow?: boolean) => ReturnType<typeof ref> | ReturnType<typeof shallowRef>;
+
+export declare const ssrRef: SSRRef;
 
 export { }
