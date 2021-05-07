@@ -215,9 +215,10 @@ univerifyStyle 数据结构：
 univerifyStyle 属性对应配置的界面指示图
 
 全屏
-![全屏](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/full_styles_v2.png)
+<img src="https://img.cdn.aliyun.dcloud.net.cn/client/doc/univerify/full_styles_v2.png" width=50%>
+
 非全屏
-![非全屏](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/client/doc/univerify/half_styles_v2.png)
+<img src="https://img.cdn.aliyun.dcloud.net.cn/client/doc/univerify/half_styles_v2.png" width=50%>
 
 返回数据示例
 
