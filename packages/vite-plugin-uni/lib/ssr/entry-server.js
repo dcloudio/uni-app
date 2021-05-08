@@ -1,3 +1,4 @@
+import './main'
 import { createVueSSRAppInstance } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import {

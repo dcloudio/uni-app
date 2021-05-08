@@ -2,7 +2,6 @@ import path from 'path'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '../..'
-import { generateSSRRenderCode } from '../../utils'
 
 export function uniMainJsPlugin(
   config: ResolvedConfig,
@@ -46,7 +45,7 @@ function createSSRClientApp(code: string) {
 }
 
 function createSSRServerApp(code: string) {
-  return `function createApp(App) {return createVueSSRApp(App).use(plugin)};${generateSSRRenderCode()};${code.replace(
+  return `function createApp(App) {return createVueSSRApp(App).use(plugin)};${code.replace(
     'createApp',
     'createVueSSRApp'
   )}`

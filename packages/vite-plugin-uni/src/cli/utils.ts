@@ -1,4 +1,5 @@
 import path from 'path'
+import { BuildOptions } from 'vite'
 import { CliOptions } from '.'
 
 export const PLATFORMS = [
@@ -15,8 +16,14 @@ export const PLATFORMS = [
 
 export function initEnv(options: CliOptions) {
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
+
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
+
+  process.env.UNI_OUTPUT_DIR =
+    (options as BuildOptions).outDir ||
+    process.env.UNI_OUTPUT_DIR ||
+    path.resolve(process.cwd(), 'dist')
 
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 }

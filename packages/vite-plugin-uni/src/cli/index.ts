@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import chalk from 'chalk'
-import { LogLevel, createLogger, ServerOptions } from 'vite'
+import { LogLevel, createLogger, ServerOptions, BuildOptions } from 'vite'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
 
@@ -85,7 +85,7 @@ cli
   )
   .option('-m, --mode <mode>', `[string] set env mode`)
   .option('-w, --watch', `[boolean] rebuilds when modules have changed on disk`)
-  .action(async (options: CliOptions) => {
+  .action(async (options: CliOptions & BuildOptions) => {
     initEnv(options)
     try {
       await (options.ssr ? buildSSR(options) : build(options))

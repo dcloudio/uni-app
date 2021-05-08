@@ -1,23 +1,42 @@
+import path from 'path'
 import debug from 'debug'
 import crypto from 'crypto'
 import { Plugin } from 'vite'
 
 import { walk } from 'estree-walker'
-
 import { CallExpression } from 'estree'
 import { createFilter } from '@rollup/pluginutils'
-import { UniPluginFilterOptions } from '.'
-import { isIdentifier, isCallExpression, isMemberExpression } from '../../utils'
 import { MagicString } from '@vue/compiler-sfc'
+import { UniPluginFilterOptions } from '.'
+import {
+  isIdentifier,
+  isCallExpression,
+  isMemberExpression,
+  generateSSREntryServerCode,
+} from '../../utils'
 
 const debugSSR = debug('vite:uni:ssr')
 
 const KEYED_FUNC_RE = /(ssrRef|shallowSsrRef)/
 
+const ENTRY_SERVER_JS = 'entry-server.js'
+
 export function uniSSRPlugin(options: UniPluginFilterOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
+  const entryServerJs = path.join(options.inputDir, ENTRY_SERVER_JS)
+  const entryServerJsCode = generateSSREntryServerCode()
   return {
     name: 'vite:uni-ssr',
+    resolveId(id) {
+      if (id.endsWith(ENTRY_SERVER_JS)) {
+        return entryServerJs
+      }
+    },
+    load(id) {
+      if (id.endsWith(ENTRY_SERVER_JS)) {
+        return entryServerJsCode
+      }
+    },
     transform(code, id) {
       if (!filter(id)) return null
       if (!KEYED_FUNC_RE.test(code)) {

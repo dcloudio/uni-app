@@ -9,7 +9,6 @@ import {
 } from 'vite'
 import express from 'express'
 import { hasOwn } from '@vue/shared'
-import { resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { cleanOptions } from './utils'
 
@@ -56,7 +55,9 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
         )
       )
       const render = (
-        await vite.ssrLoadModule(resolveMainPathOnce(process.env.UNI_INPUT_DIR))
+        await vite.ssrLoadModule(
+          path.resolve(process.env.UNI_INPUT_DIR, 'entry-server.js')
+        )
       ).render
 
       const [appHtml, preloadLinks, appContext] = await render(url)

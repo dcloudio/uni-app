@@ -18,9 +18,9 @@ export function generateSSREnvCode(define: Record<string, any>): string {
     .replace('__DEFINES__', serializeDefine(define))
 }
 
-export function generateSSRRenderCode() {
+export function generateSSREntryServerCode() {
   return fs.readFileSync(
-    path.join(__dirname, '../../lib/ssr/render.js'),
+    path.join(__dirname, '../../lib/ssr/entry-server.js'),
     'utf8'
   )
 }
