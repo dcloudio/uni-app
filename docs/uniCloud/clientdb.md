@@ -990,7 +990,6 @@ db.collection('book')
 field可以指定字符串，也可以指定一个对象。
 
 - 字符串写法：列出字段名称，多个字段以半角逗号做分隔符。比如`db.collection('book').field("title,author")`，查询结果会返回`_id`、`title`、`author`3个字段的数据。字符串写法，`_id`是一定会返回的
-- json写法：一般用于黑名单排除。比如`db.collection('book').field({ '_id': false })`，明确指定不返回`_id`。
 
 **复杂嵌套json数据过滤**
 
