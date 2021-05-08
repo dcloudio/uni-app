@@ -298,6 +298,7 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 const UNI_SSR = '__uniSSR';
+const UNI_SSR_STORE = 'store';
 const UNI_SSR_DATA = 'data';
 const UNI_SSR_GLOBAL_DATA = 'globalData';
 
@@ -321,6 +322,7 @@ exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
 exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
+exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.addFont = addFont;
 exports.debounce = debounce;
 exports.decode = decode;

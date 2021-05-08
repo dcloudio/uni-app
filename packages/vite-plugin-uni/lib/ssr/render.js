@@ -3,6 +3,7 @@ import { renderToString } from '@vue/server-renderer'
 import {
   UNI_SSR,
   UNI_SSR_DATA,
+  UNI_SSR_STORE,
   UNI_SSR_GLOBAL_DATA,
 } from '@dcloudio/uni-shared'
 
@@ -11,6 +12,7 @@ import { getSsrGlobalData } from '@dcloudio/uni-app'
 export async function render(url, manifest = {}) {
   const app = createVueSSRAppInstance()
   const router = app.router
+  const store = app.config.globalProperties.$store
 
   // set the router to the desired URL before rendering
   await router.push(url)
@@ -33,6 +35,9 @@ export async function render(url, manifest = {}) {
     __uniSSR[UNI_SSR_DATA] = {}
   }
   __uniSSR[UNI_SSR_GLOBAL_DATA] = getSsrGlobalData()
+  if (store) {
+    __uniSSR[UNI_SSR_STORE] = store.state
+  }
   const appContext = renderAppContext(ctx)
   return [html, preloadLinks, appContext]
 }

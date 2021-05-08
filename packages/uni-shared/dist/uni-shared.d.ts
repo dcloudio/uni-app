@@ -93,6 +93,8 @@ export declare const UNI_SSR_DATA = "data";
 
 export declare const UNI_SSR_GLOBAL_DATA = "globalData";
 
+export declare const UNI_SSR_STORE = "store";
+
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export { }

@@ -39,7 +39,7 @@ function createApp(code: string) {
 }
 
 function createSSRClientApp(code: string) {
-  return `function createApp(rootComponent, rootProps) {const app = createSSRApp(rootComponent, rootProps).use(plugin);const oldMount = app.mount;app.mount = (selector) => app.router.isReady().then(() => oldMount.call(app, selector));return app;};${code.replace(
+  return `import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';function createApp(rootComponent, rootProps) {const app = createSSRApp(rootComponent, rootProps).use(plugin);const oldMount = app.mount;app.mount = (selector) => {window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && app.config.globalProperties.$store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);app.router.isReady().then(() => oldMount.call(app, selector));};return app;};${code.replace(
     'createApp',
     'createSSRApp'
   )}`
