@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import { once } from '@dcloudio/uni-shared'
+import { extend } from '@vue/shared'
+import { once, defaultRpx2Unit } from '@dcloudio/uni-shared'
 
 import { parseJson } from './json'
 
@@ -12,3 +13,8 @@ export const parseManifestJson = (inputDir: string) => {
 }
 
 export const parseManifestJsonOnce = once(parseManifestJson)
+
+export const parseRpx2UnitOnce = once((inputDir: string) => {
+  const { h5 } = parseManifestJsonOnce(inputDir)
+  return extend({}, defaultRpx2Unit, (h5 && h5.rpx) || {})
+})

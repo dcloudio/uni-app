@@ -11,7 +11,12 @@ export function uniMainJsPlugin(
   const mainJsPath = mainPath + '.js'
   const mainTsPath = mainPath + '.ts'
   const pagesJsonJsPath = slash(path.resolve(options.inputDir, 'pages.json.js'))
-  const isSSR = config.server.middlewareMode
+  const isSSR =
+    config.command === 'serve'
+      ? !!config.server.middlewareMode
+      : config.command === 'build'
+      ? !!(config.build.ssr || config.build.ssrManifest)
+      : false
   return {
     name: 'vite:uni-main-js',
     transform(code, id, ssr) {

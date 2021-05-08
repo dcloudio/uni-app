@@ -1,12 +1,14 @@
 import { ResolvedConfig } from 'vite'
-import { parserOptions } from '@vue/compiler-dom'
-import { isNativeTag } from '@dcloudio/uni-shared'
+import { rewriteSsrNativeTag, rewriteSsrRenderStyle } from '../utils'
+
 // import alias from 'module-alias'
 export function initConfig(config: ResolvedConfig) {
-  if (config.server.middlewareMode) {
-    // TODO compiler-ssr时，传入的 isNativeTag 会被 @vue/compiler-dom 的 isNativeTag 覆盖
-    // https://github.com/vuejs/vue-next/blob/master/packages/compiler-ssr/src/index.ts#L36
-    parserOptions.isNativeTag = isNativeTag
+  if (
+    (config.command === 'serve' && config.server.middlewareMode) ||
+    (config.command === 'build' && config.build.ssr)
+  ) {
+    rewriteSsrNativeTag()
+    rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
   }
   //   let ssr = (config as any).ssr as SSROptions
   //   if (!ssr) {

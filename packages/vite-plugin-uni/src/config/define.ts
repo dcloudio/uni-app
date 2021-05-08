@@ -11,7 +11,7 @@ export function createDefine(
   { server }: UserConfig,
   { command }: ConfigEnv
 ): UserConfig['define'] {
-  const features = initFeatures({
+  return initFeatures({
     inputDir,
     command,
     platform,
@@ -19,8 +19,4 @@ export function createDefine(
     manifestJson: parseManifestJsonOnce(inputDir),
     ssr: !!(server && server.middlewareMode),
   })
-  if (server && server.middlewareMode) {
-    Object.assign(globalThis, features)
-  }
-  return features
 }

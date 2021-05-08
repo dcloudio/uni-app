@@ -140,7 +140,7 @@ export function initPlugins(
 
   addPlugin(
     plugins,
-    uniSSRPlugin(extend({ exclude: [...COMMON_EXCLUDE] }, options)),
+    uniSSRPlugin(config, extend({ exclude: [...COMMON_EXCLUDE] }, options)),
     'vite:vue'
   )
 

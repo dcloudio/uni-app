@@ -4,6 +4,27 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
+const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
+function toFixed(number, precision) {
+    const multiplier = Math.pow(10, precision + 1);
+    const wholeNumber = Math.floor(number * multiplier);
+    return (Math.round(wholeNumber / 10) * 10) / multiplier;
+}
+const defaultRpx2Unit = {
+    unit: 'rem',
+    unitRatio: 10 / 320,
+    unitPrecision: 5,
+};
+function createRpx2Unit(unit, unitRatio, unitPrecision) {
+    return (val) => val.replace(unitRE, (m, $1) => {
+        if (!$1) {
+            return m;
+        }
+        const value = toFixed(parseFloat($1) * unitRatio, unitPrecision);
+        return value === 0 ? '0' : `${value}${unit}`;
+    });
+}
+
 function passive(passive) {
     return { passive };
 }
@@ -324,9 +345,11 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.addFont = addFont;
+exports.createRpx2Unit = createRpx2Unit;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
+exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.invokeArrayFns = invokeArrayFns;

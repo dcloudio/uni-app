@@ -76,7 +76,7 @@ const globalData: Record<string, any> = {}
 
 const ssrServerRef: SSRRef = (value, key, shallow = false) => {
   assertKey(key, shallow)
-  const ctx = useSSRContext()
+  const ctx = getCurrentInstance() && useSSRContext()
   let state: Record<string, any>
   if (ctx) {
     const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {})

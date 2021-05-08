@@ -1,6 +1,8 @@
 import { FontFaceDescriptors } from 'css-font-loading-module'
 import { isString } from '@vue/shared'
 
+export * from './style'
+
 export function passive(passive: boolean) {
   return { passive }
 }

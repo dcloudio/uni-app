@@ -33,13 +33,9 @@ export function uniPagesJsonPlugin(
       if (id.endsWith(PAGES_JSON_JS)) {
         return {
           code:
-            (config.define!.__UNI_FEATURE_RPX__
-              ? registerGlobalCode(ssr)
-              : '') +
-            (options.command === 'serve'
-              ? registerDevServerGlobalCode(ssr)
-              : '') +
-            generatePagesJsonCode(ssr, code, config, options),
+            (options.command === 'serve' || (options.command === 'build' && ssr)
+              ? registerGlobalCode(config, ssr)
+              : '') + generatePagesJsonCode(ssr, code, config, options),
           map: { mappings: '' },
         }
       }
@@ -100,15 +96,15 @@ function getGlobal(ssr?: boolean) {
   return ssr ? 'global' : 'window'
 }
 
-function registerGlobalCode(ssr?: boolean) {
+function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const name = getGlobal(ssr)
-  return `import {upx2px} from '@dcloudio/uni-h5'
-${name}.rpx2px = upx2px
+  const rpx2pxCode = config.define!.__UNI_FEATURE_RPX__
+    ? `import {upx2px} from '@dcloudio/uni-h5'
+  ${name}.rpx2px = upx2px
 `
-}
-function registerDevServerGlobalCode(ssr?: boolean) {
-  const name = getGlobal(ssr)
-  return `import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
+    : ''
+  return `${rpx2pxCode}
+import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 ${name}.getApp = getApp
 ${name}.getCurrentPages = getCurrentPages
 ${name}.uni = uni

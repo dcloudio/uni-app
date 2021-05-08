@@ -1,5 +1,26 @@
 import { isString, isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
 
+const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
+function toFixed(number, precision) {
+    const multiplier = Math.pow(10, precision + 1);
+    const wholeNumber = Math.floor(number * multiplier);
+    return (Math.round(wholeNumber / 10) * 10) / multiplier;
+}
+const defaultRpx2Unit = {
+    unit: 'rem',
+    unitRatio: 10 / 320,
+    unitPrecision: 5,
+};
+function createRpx2Unit(unit, unitRatio, unitPrecision) {
+    return (val) => val.replace(unitRE, (m, $1) => {
+        if (!$1) {
+            return m;
+        }
+        const value = toFixed(parseFloat($1) * unitRatio, unitPrecision);
+        return value === 0 ? '0' : `${value}${unit}`;
+    });
+}
+
 function passive(passive) {
     return { passive };
 }
@@ -304,4 +325,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, debounce, decode, decodedQuery, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

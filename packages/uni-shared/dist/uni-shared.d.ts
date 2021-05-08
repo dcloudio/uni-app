@@ -10,6 +10,8 @@ export declare const COMPONENT_PREFIX: string;
 
 export declare const COMPONENT_SELECTOR_PREFIX = "uni-";
 
+export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
+
 export declare function debounce(fn: Function, delay: number): {
     (this: any): void;
     cancel(): void;
@@ -25,6 +27,12 @@ export declare function debounce(fn: Function, delay: number): {
 export declare function decode(text: string | number): string;
 
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
+
+export declare const defaultRpx2Unit: {
+    unit: string;
+    unitRatio: number;
+    unitPrecision: number;
+};
 
 export declare function getEnvLocale(): string;
 
@@ -75,6 +83,8 @@ export declare const PRIMARY_COLOR = "#007aff";
 export declare function removeLeadingSlash(str: string): string;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
+
+export declare type Rpx2UnitOptions = typeof defaultRpx2Unit;
 
 export declare const sanitise: (val: unknown) => any;
 

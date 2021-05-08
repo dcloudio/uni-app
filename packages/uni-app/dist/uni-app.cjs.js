@@ -33,7 +33,7 @@ function proxy(target, track, trigger) {
 const globalData = {};
 const ssrServerRef = (value, key, shallow = false) => {
     assertKey(key, shallow);
-    const ctx = vue.useSSRContext();
+    const ctx = vue.getCurrentInstance() && vue.useSSRContext();
     let state;
     if (ctx) {
         const __uniSSR = ctx[UNI_SSR] || (ctx[UNI_SSR] = {});

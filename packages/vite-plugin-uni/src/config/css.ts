@@ -2,6 +2,8 @@ import path from 'path'
 import fs from 'fs-extra'
 import { UserConfig } from 'vite'
 import autoprefixer from 'autoprefixer'
+import { extend } from '@vue/shared'
+import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 import { uniapp } from '../utils'
 
@@ -19,7 +21,12 @@ export function createCss(
   return {
     postcss: {
       plugins: [
-        uniapp({ page: options.platform === 'h5' ? 'uni-page-body' : 'body' }),
+        uniapp(
+          extend(
+            { page: options.platform === 'h5' ? 'uni-page-body' : 'body' },
+            parseRpx2UnitOnce(options.inputDir)
+          )
+        ),
         autoprefixer(),
       ],
     },

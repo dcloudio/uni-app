@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { ConfigEnv } from 'vite'
-import { isArray } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 
 interface ProjectFeatures {}
 interface PagesFeatures {
@@ -245,7 +245,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     initPagesFeature(options),
     initProjectFeature(options)
   )
-  return {
+  const features = {
     __UNI_FEATURE_WX__: wx, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）
     __UNI_FEATURE_WXS__: wxs, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
     __UNI_FEATURE_RPX__: rpx, // 是否启用运行时 rpx 支持
@@ -272,4 +272,9 @@ export function initFeatures(options: InitFeaturesOptions) {
     __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput, // 是否启用标题栏搜索框
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent, // 是否启用透明标题栏
   }
+  // ssr nodejs features
+  if (options.ssr) {
+    extend(globalThis, features)
+  }
+  return features
 }

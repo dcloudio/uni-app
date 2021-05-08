@@ -2,6 +2,8 @@ import { extend } from '@vue/shared'
 import { rule, Rule, Declaration, Plugin } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
+  createRpx2Unit,
+  defaultRpx2Unit,
   isBuiltInComponent,
   COMPONENT_SELECTOR_PREFIX,
 } from '@dcloudio/uni-shared'
@@ -13,12 +15,12 @@ interface UniAppCssProcessorOptions {
   unitPrecision?: number // 单位精度，默认5
 }
 
-const defaultUniAppCssProcessorOptions = {
-  page: 'body',
-  unit: 'rem',
-  unitRatio: 10 / 320,
-  unitPrecision: 5,
-}
+const defaultUniAppCssProcessorOptions = extend(
+  {
+    page: 'body',
+  },
+  defaultRpx2Unit
+)
 
 const BG_PROPS = [
   'background',
@@ -34,7 +36,7 @@ const BG_PROPS = [
 
 function transform(
   selector: selectorParser.Node,
-  opts: UniAppCssProcessorOptions,
+  page: string,
   state: { bg: boolean }
 ) {
   if (selector.type !== 'tag') {
@@ -44,7 +46,6 @@ function transform(
   if (isBuiltInComponent(value)) {
     selector.value = COMPONENT_SELECTOR_PREFIX + value
   } else if (value === 'page') {
-    const { page } = opts
     if (!page) {
       return
     }
@@ -67,52 +68,40 @@ function createBodyBackgroundRule(origRule: Rule) {
   }
 }
 
-function walkRules(opts: UniAppCssProcessorOptions) {
+function walkRules(page: string) {
   return (rule: Rule) => {
     const state = { bg: false }
     rule.selector = selectorParser((selectors) =>
-      selectors.walk((selector) => transform(selector, opts, state))
+      selectors.walk((selector) => transform(selector, page, state))
     ).processSync(rule.selector)
     state.bg && createBodyBackgroundRule(rule)
   }
 }
 
-const unitRE = new RegExp(
-  `"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`,
-  'g'
-)
-
-function toFixed(number: number, precision: number) {
-  const multiplier = Math.pow(10, precision + 1)
-  const wholeNumber = Math.floor(number * multiplier)
-  return (Math.round(wholeNumber / 10) * 10) / multiplier
-}
-
-function walkDecls(opts: Required<UniAppCssProcessorOptions>) {
+function walkDecls(rpx2unit: ReturnType<typeof createRpx2Unit>) {
   return (decl: Declaration) => {
     const { value } = decl
     if (value.indexOf('rpx') === -1 && value.indexOf('upx') === -1) {
       return
     }
-    decl.value = decl.value.replace(unitRE, (m, $1) => {
-      if (!$1) {
-        return m
-      }
-      const value = toFixed(parseFloat($1) * opts.unitRatio, opts.unitPrecision)
-      return value === 0 ? '0' : `${value}${opts.unit}`
-    })
+    decl.value = rpx2unit(decl.value)
   }
 }
 
 export const uniapp = (opts?: UniAppCssProcessorOptions) => {
-  const options = extend({}, defaultUniAppCssProcessorOptions, opts || {})
+  const { page, unit, unitRatio, unitPrecision } = extend(
+    {},
+    defaultUniAppCssProcessorOptions,
+    opts || {}
+  )
+  const rpx2unit = createRpx2Unit(unit, unitRatio, unitPrecision)
   return {
     postcssPlugin: 'uni-app',
     prepare() {
       return {
         OnceExit(root) {
-          root.walkDecls(walkDecls(options))
-          root.walkRules(walkRules(options))
+          root.walkDecls(walkDecls(rpx2unit))
+          root.walkRules(walkRules(page))
         },
       }
     },
