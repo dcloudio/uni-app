@@ -162,15 +162,21 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
 ### 开发 uni_modules 插件
 #### 新建uni_modules目录
 在uni-app项目根目录下，创建uni_modules目录，在HBuilderX中可以项目右键菜单中点击`新建uni_modules目录`
+
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/de27eb20-6217-11eb-8a36-ebb87efcf8c0.png)
-**Tips**
+
+**Tips:**
 - 如果是vue-cli项目，uni_modules目录，位于`src`下，即`src/uni_modules`
 
 #### 新建uni_modules插件
 1. 在HBuilderX中uni_modules目录右键点击`新建uni_modules插件`
+
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/dd758b10-6217-11eb-8a36-ebb87efcf8c0.png)
+
 2. 填写正确的插件ID，选择插件分类
+
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/dcc6d480-6217-11eb-8a36-ebb87efcf8c0.png)
+
 插件ID命名规范：
 - 格式为：'作者ID-插件英文名称'，示例：'xx-yy'，其中作者ID和插件英文名称只能包含英文、数字
 - 作者ID由插件作者自定义，不能使用'DCloud'、'uni'等关键字，长度要求至少2位字符

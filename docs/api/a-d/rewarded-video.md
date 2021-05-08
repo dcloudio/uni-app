@@ -124,28 +124,42 @@ options 为 object 类型，属性如下：
 推荐使用此方案
 
 ```html
+<template>
+  <view>
+    <button type="primary" class="btn" @click="showRewardedVideoAd">显示激励视频广告</button>
+    <button type="primary" class="btn" @click="showFullScreenVideoAd">显示全屏视频广告</button>
+  </view>
+</template>
+
 <script>
-  import AD from "ad.js"
+  import AD from "../ad.js"
 
   export default {
     data() {
       return {
-        title: '激励视频广告'
+        title: '视频广告'
       }
     },
     onReady() {
-      // HBuilderX标准基座真机运行测试激励视频广告位标识（adpid）为：1507000689
-      // adpid: 1507000689 仅用于测试，发布时需要改为广告后台（https://uniad.dcloud.net.cn/）申请的 adpid
-      // 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效
-      this._adpid = 1507000689
+      // 可选预载广告数据
 
-      // 可选预加载数据, 减少加载等待时间，调用此 API 不会显示loading，不影响业务
-      // AD.load(this._adpid)
+      // AD.load({
+      //   adpid: 1507000689,
+      //   adType: "RewardedVideo"
+      // });
+
+      // AD.load({
+      //   adpid: 1507000611,
+      //   adType: "FullScreenVideo"
+      // });
     },
     methods: {
-      showAd() {
-        // 调用后默认显示Loading
-        AD.show(this._adpid, (res) => {
+      showRewardedVideoAd() {
+        // 调用后会显示 loading 界面
+        AD.show({
+          adpid: 1507000689, // HBuilder 基座测试广告位
+          adType: "RewardedVideo"
+        }, (res) => {
           // 用户点击了【关闭广告】按钮
           if (res && res.isEnded) {
             // 正常播放结束
@@ -155,32 +169,67 @@ options 为 object 类型，属性如下：
             console.log("onClose " + res.isEnded);
           }
         }, (err) => {
-          // 广告无法显示，输出错误信息
-          console.log(err) // {code: code, errMsg: message}
+          // 广告加载错误
+          console.log(err)
+        })
+      },
+      showFullScreenVideoAd() {
+        // 调用后会显示 loading 界面
+        AD.show({
+          adpid: 1507000611, // HBuilder 基座测试广告位
+          adType: "FullScreenVideo"
+        }, (res) => {
+          // 用户点击了【关闭广告】按钮
+          if (res && res.isEnded) {
+            // 正常播放结束
+            console.log("onClose " + res.isEnded);
+          } else {
+            // 播放中途退出
+            console.log("onClose " + res.isEnded);
+          }
+        }, (err) => {
+          // 广告加载错误
+          console.log(err)
         })
       }
     }
   }
 </script>
+
 ```
 
 ```js
 // ad.js
+const ADType = {
+  RewardedVideo: "RewardedVideo",
+  FullScreenVideo: "FullScreenVideo"
+}
+
 class AdHelper {
 
   constructor() {
     this._ads = {}
   }
 
-  load(adpid, onload, onerror) {
+  load(options, onload, onerror) {
+    let ops = this._fixOldOptions(options)
+    let {
+      adpid
+    } = ops
+
     if (!adpid || this.isBusy(adpid)) {
       return
     }
 
-    this.get(adpid).load(onload, onerror)
+    this.get(ops).load(onload, onerror)
   }
 
-  show(adpid, onsuccess, onfail) {
+  show(options, onsuccess, onfail) {
+    let ops = this._fixOldOptions(options)
+    let {
+      adpid
+    } = ops
+
     if (!adpid) {
       return
     }
@@ -189,7 +238,7 @@ class AdHelper {
       mask: true
     })
 
-    var ad = this.get(adpid)
+    var ad = this.get(ops)
 
     ad.load(() => {
       uni.hideLoading()
@@ -206,23 +255,37 @@ class AdHelper {
     return (this._ads[adpid] && this._ads[adpid].isLoading)
   }
 
-  get(adpid) {
+  get(options) {
+    const {
+      adpid
+    } = options
     if (!this._ads[adpid]) {
-      this._ads[adpid] = new RewardedVideo({
-        adpid: adpid
-      })
+      this._ads[adpid] = this._createAdInstance(options)
     }
 
     return this._ads[adpid]
   }
-}
 
-const eventNames = [
-  'load',
-  'close',
-  'verify',
-  'error'
-]
+  _createAdInstance(options) {
+    const adType = options.adType || ADType.RewardedVideo
+    delete options.adType
+
+    let ad = null;
+    if (adType === ADType.RewardedVideo) {
+      ad = new RewardedVideo(options)
+    } else if (adType === ADType.FullScreenVideo) {
+      ad = new FullScreenVideo(options)
+    }
+
+    return ad
+  }
+
+  _fixOldOptions(options) {
+    return (typeof options === "string") ? {
+      adpid: options
+    } : options
+  }
+}
 
 const EXPIRED_TIME = 1000 * 60 * 30
 const ProviderType = {
@@ -232,8 +295,8 @@ const ProviderType = {
 
 const RETRY_COUNT = 1
 
-class RewardedVideo {
-  constructor(options = {}) {
+class AdBase {
+  constructor(adInstance, options = {}) {
     this._isLoad = false
     this._isLoading = false
     this._lastLoadTime = 0
@@ -244,22 +307,22 @@ class RewardedVideo {
     this._closeCallback = null
     this._errorCallback = null
 
-    const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options)
-    rewardAd.onLoad((e) => {
+    const ad = this._ad = adInstance
+    ad.onLoad((e) => {
       this._isLoading = false
       this._isLoad = true
       this._lastLoadTime = Date.now()
 
       this.onLoad()
     })
-    rewardAd.onClose((e) => {
+    ad.onClose((e) => {
       this._isLoad = false
       this.onClose(e)
     })
-    rewardAd.onVerify((e) => {
+    ad.onVerify((e) => {
       // e.isValid
     })
-    rewardAd.onError(({
+    ad.onError(({
       code,
       message
     }) => {
@@ -294,7 +357,7 @@ class RewardedVideo {
   }
 
   getProvider() {
-    return this._rewardAd.getProvider()
+    return this._ad.getProvider()
   }
 
   load(onload, onerror) {
@@ -333,7 +396,7 @@ class RewardedVideo {
       return
     }
 
-    this._rewardAd.show()
+    this._ad.show()
   }
 
   onLoad(e) {
@@ -357,14 +420,26 @@ class RewardedVideo {
   }
 
   destroy() {
-    this._rewardAd.destroy()
+    this._ad.destroy()
   }
 
   _loadAd() {
     this._isLoad = false
     this._isLoading = true
     this._lastError = null
-    this._rewardAd.load()
+    this._ad.load()
+  }
+}
+
+class RewardedVideo extends AdBase {
+  constructor(options = {}) {
+    super(plus.ad.createRewardedVideoAd(options), options)
+  }
+}
+
+class FullScreenVideo extends AdBase {
+  constructor(options = {}) {
+    super(plus.ad.createFullScreenVideoAd(options), options)
   }
 }
 

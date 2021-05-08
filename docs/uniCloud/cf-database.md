@@ -211,6 +211,9 @@ let res = await collection.doc('doc-id').set({
 });
 ```
 
+**注意**
+
+- 自动生成的_id是自增的，后创建的记录的_id总是大于先生成的_id
 
 ## 查询文档
 

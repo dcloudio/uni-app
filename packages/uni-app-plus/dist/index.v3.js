@@ -63,8 +63,10 @@ var serviceContext = (function () {
     'chooseFile',
     'previewImage',
     'getImageInfo',
+    'getVideoInfo',
     'saveImageToPhotosAlbum',
     'compressImage',
+    'compressVideo',
     'getRecorderManager',
     'getBackgroundAudioManager',
     'createAudioContext',
@@ -249,7 +251,8 @@ var serviceContext = (function () {
 
   const ad = [
     'createRewardedVideoAd',
-    'createFullScreenVideoAd'
+    'createFullScreenVideoAd',
+    'createInterstitialAd'
   ];
 
   const apis = [
@@ -1003,7 +1006,6 @@ var serviceContext = (function () {
     quality: {
       type: Number,
       validator (value, params) {
-        value = Math.floor(value);
         params.quality = value > 0 && value < 1 ? value : 1;
       }
     }
@@ -1893,6 +1895,10 @@ var serviceContext = (function () {
         params.sourceType = sourceType.length ? sourceType : SOURCE_TYPES$2;
       }
     },
+    compressed: {
+      type: Boolean,
+      default: true
+    },
     maxDuration: {
       type: Number,
       default: 60
@@ -1930,6 +1936,33 @@ var serviceContext = (function () {
     compressImage: compressImage
   });
 
+  const compressVideo = {
+    src: {
+      type: String,
+      required: true,
+      validator (src, params) {
+        params.src = getRealPath(src);
+      }
+    },
+    quality: {
+      type: String
+    },
+    bitrate: {
+      type: Number
+    },
+    fps: {
+      type: Number
+    },
+    resolution: {
+      type: Number
+    }
+  };
+
+  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    compressVideo: compressVideo
+  });
+
   const getImageInfo = {
     src: {
       type: String,
@@ -1940,9 +1973,24 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_19 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getImageInfo: getImageInfo
+  });
+
+  const getVideoInfo = {
+    src: {
+      type: String,
+      required: true,
+      validator (src, params) {
+        params.src = getRealPath(src);
+      }
+    }
+  };
+
+  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getVideoInfo: getVideoInfo
   });
 
   const previewImage = {
@@ -1976,7 +2024,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_20 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     previewImage: previewImage
   });
@@ -1991,7 +2039,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_21 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum
   });
@@ -2009,7 +2057,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     downloadFile: downloadFile
   });
@@ -2120,7 +2168,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     request: request
   });
@@ -2178,7 +2226,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
@@ -2199,7 +2247,7 @@ var serviceContext = (function () {
       type: String,
       validator (value, params) {
         if (value) {
-          params.type = getRealPath(value);
+          params.filePath = getRealPath(value);
         }
       }
     },
@@ -2220,7 +2268,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     uploadFile: uploadFile
   });
@@ -2245,7 +2293,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getProvider: getProvider
   });
@@ -2266,7 +2314,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadSubPackage: loadSubPackage
   });
@@ -2288,7 +2336,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     preLogin: preLogin
   });
@@ -2489,7 +2537,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
@@ -2535,7 +2583,7 @@ var serviceContext = (function () {
   const removeStorage = getStorage;
   const removeStorageSync = getStorageSync;
 
-  var require_context_module_0_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getStorage: getStorage,
     getStorageSync: getStorageSync,
@@ -2572,7 +2620,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace
   });
@@ -2615,7 +2663,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle
@@ -2635,7 +2683,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_33 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo
   });
@@ -2760,7 +2808,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_34 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_36 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     showModal: showModal,
     showToast: showToast,
@@ -2859,7 +2907,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_0_35 = /*#__PURE__*/Object.freeze({
+  var require_context_module_0_37 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
@@ -2894,23 +2942,25 @@ var serviceContext = (function () {
   './media/choose-image.js': require_context_module_0_16,
   './media/choose-video.js': require_context_module_0_17,
   './media/compress-image.js': require_context_module_0_18,
-  './media/get-image-info.js': require_context_module_0_19,
-  './media/preview-image.js': require_context_module_0_20,
-  './media/save-image-to-photos-album.js': require_context_module_0_21,
-  './network/download-file.js': require_context_module_0_22,
-  './network/request.js': require_context_module_0_23,
-  './network/socket.js': require_context_module_0_24,
-  './network/upload-file.js': require_context_module_0_25,
-  './plugin/get-provider.js': require_context_module_0_26,
-  './plugin/load-sub-package.js': require_context_module_0_27,
-  './plugin/pre-login.js': require_context_module_0_28,
-  './route/route.js': require_context_module_0_29,
-  './storage/storage.js': require_context_module_0_30,
-  './ui/load-font-face.js': require_context_module_0_31,
-  './ui/navigation-bar.js': require_context_module_0_32,
-  './ui/page-scroll-to.js': require_context_module_0_33,
-  './ui/popup.js': require_context_module_0_34,
-  './ui/tab-bar.js': require_context_module_0_35,
+  './media/compress-video.js': require_context_module_0_19,
+  './media/get-image-info.js': require_context_module_0_20,
+  './media/get-video-info.js': require_context_module_0_21,
+  './media/preview-image.js': require_context_module_0_22,
+  './media/save-image-to-photos-album.js': require_context_module_0_23,
+  './network/download-file.js': require_context_module_0_24,
+  './network/request.js': require_context_module_0_25,
+  './network/socket.js': require_context_module_0_26,
+  './network/upload-file.js': require_context_module_0_27,
+  './plugin/get-provider.js': require_context_module_0_28,
+  './plugin/load-sub-package.js': require_context_module_0_29,
+  './plugin/pre-login.js': require_context_module_0_30,
+  './route/route.js': require_context_module_0_31,
+  './storage/storage.js': require_context_module_0_32,
+  './ui/load-font-face.js': require_context_module_0_33,
+  './ui/navigation-bar.js': require_context_module_0_34,
+  './ui/page-scroll-to.js': require_context_module_0_35,
+  './ui/popup.js': require_context_module_0_36,
+  './ui/tab-bar.js': require_context_module_0_37,
 
       };
       var req = function req(key) {
@@ -3949,7 +3999,7 @@ var serviceContext = (function () {
     }
   }
 
-  function warpPlusMethod (module, name, before) {
+  function warpPlusMethod (module, name, before, after) {
     return function (options, callbackId) {
       if (typeof before === 'function') {
         options = before(options);
@@ -3958,6 +4008,9 @@ var serviceContext = (function () {
         success (data = {}) {
           delete data.code;
           delete data.message;
+          if (typeof after === 'function') {
+            data = after(data);
+          }
           invoke$1(callbackId, Object.assign({}, data, {
             errMsg: `${name}:ok`
           }));
@@ -5945,6 +5998,7 @@ var serviceContext = (function () {
   function getSystemInfo () {
     const platform = plus.os.name.toLowerCase();
     const ios = platform === 'ios';
+    const isAndroid = platform === 'android';
     const {
       screenWidth,
       screenHeight
@@ -6011,7 +6065,7 @@ var serviceContext = (function () {
       windowHeight,
       statusBarHeight,
       language: plus.os.language,
-      system: plus.os.version,
+      system: `${ios ? 'iOS' : isAndroid ? 'Android' : ''} ${plus.os.version}`,
       version: plus.runtime.innerVersion,
       fontSizeSetting: '',
       platform,
@@ -6575,7 +6629,7 @@ var serviceContext = (function () {
 
   function compressImage$1 (tempFilePath) {
     const dstPath = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       plus.nativeUI.showWaiting();
       plus.zip.compressImage({
         src: tempFilePath,
@@ -6584,9 +6638,9 @@ var serviceContext = (function () {
       }, () => {
         plus.nativeUI.closeWaiting();
         resolve(dstPath);
-      }, (error) => {
+      }, () => {
         plus.nativeUI.closeWaiting();
-        reject(error);
+        resolve(tempFilePath);
       });
     })
   }
@@ -6685,26 +6739,46 @@ var serviceContext = (function () {
 
   function chooseVideo$1 ({
     sourceType,
+    compressed,
     maxDuration,
     camera
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      plus.io.getVideoInfo({
-        filePath: tempFilePath,
-        success (videoInfo) {
-          const result = {
-            errMsg: 'chooseVideo:ok',
-            tempFilePath: tempFilePath
-          };
-          result.size = videoInfo.size;
-          result.duration = videoInfo.duration;
-          result.width = videoInfo.width;
-          result.height = videoInfo.height;
-          invoke$1(callbackId, result);
-        },
-        errorCallback
+      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      const compressVideo = compressed ? new Promise((resolve) => {
+        plus.zip.compressVideo({
+          src: tempFilePath,
+          dst
+        }, ({ tempFilePath }) => {
+          resolve(tempFilePath);
+        }, () => {
+          resolve(tempFilePath);
+        });
+      }) : Promise.resolve();
+      if (compressed) {
+        plus.nativeUI.showWaiting();
+      }
+      compressVideo.then(tempFilePath => {
+        if (compressed) {
+          plus.nativeUI.closeWaiting();
+        }
+        plus.io.getVideoInfo({
+          filePath: tempFilePath,
+          success (videoInfo) {
+            const result = {
+              errMsg: 'chooseVideo:ok',
+              tempFilePath: tempFilePath
+            };
+            result.size = videoInfo.size;
+            result.duration = videoInfo.duration;
+            result.width = videoInfo.width;
+            result.height = videoInfo.height;
+            invoke$1(callbackId, result);
+          },
+          errorCallback
+        });
       });
     }
 
@@ -6773,9 +6847,31 @@ var serviceContext = (function () {
     }, errorCallback);
   }
 
+  function compressVideo$1 (options, callbackId) {
+    const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const successCallback = warpPlusSuccessCallback(callbackId, 'compressVideo');
+    const errorCallback = warpPlusErrorCallback(callbackId, 'compressVideo');
+    plus.zip.compressVideo(Object.assign({}, options, {
+      dst
+    }), successCallback, errorCallback);
+  }
+
   const getImageInfo$1 = warpPlusMethod('io', 'getImageInfo', options => {
     options.savePath = options.filename = TEMP_PATH + '/download/';
     return options
+  });
+
+  const getVideoInfo$1 = warpPlusMethod('io', 'getVideoInfo', options => {
+    options.filePath = options.src;
+    return options
+  }, data => {
+    return {
+      duration: data.duration,
+      fps: data.fps || 30,
+      height: data.height,
+      width: data.width,
+      size: data.size
+    }
   });
 
   function previewImagePlus ({
@@ -9911,7 +10007,7 @@ var serviceContext = (function () {
     let currentSize = 0;
     for (let index = 0; index < length; index++) {
       const key = plus.storage.key(index);
-      if (key !== STORAGE_KEYS && key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length) {
+      if (key !== STORAGE_KEYS && (key.indexOf(STORAGE_DATA_TYPE) < 0 || key.indexOf(STORAGE_DATA_TYPE) + STORAGE_DATA_TYPE.length !== key.length)) {
         const value = plus.storage.getItem(key);
         currentSize += key.length + value.length;
         keys.push(key);
@@ -10460,8 +10556,7 @@ var serviceContext = (function () {
     callbackId,
     data
   }, pageId) => {
-    const { adpid, width, count } = data;
-    getAdData(adpid, width, count, (res) => {
+    getAdData(data, (res) => {
       operateAdView(pageId, callbackId, 'success', res);
     }, (err) => {
       operateAdView(pageId, callbackId, 'fail', err);
@@ -10470,7 +10565,8 @@ var serviceContext = (function () {
 
   const _adDataCache = {};
 
-  function getAdData (adpid, width, count, onsuccess, onerror) {
+  function getAdData (data, onsuccess, onerror) {
+    const { adpid, width } = data;
     const key = adpid + '-' + width;
     const adDataList = _adDataCache[key];
     if (adDataList && adDataList.length > 0) {
@@ -10479,11 +10575,7 @@ var serviceContext = (function () {
     }
 
     plus.ad.getAds(
-      {
-        adpid,
-        count,
-        width
-      },
+      data,
       (res) => {
         const list = res.ads;
         onsuccess(list.splice(0, 1)[0]);
@@ -10524,6 +10616,7 @@ var serviceContext = (function () {
 
       this._preload = options.preload !== undefined ? options.preload : true;
       this._isLoad = false;
+      this._isLoading = false;
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
@@ -10532,6 +10625,7 @@ var serviceContext = (function () {
       const rewardAd = this._rewardAd = plus.ad.createRewardedVideoAd(options);
       rewardAd.onLoad((e) => {
         this._isLoad = true;
+        this._isLoading = false;
         this._lastLoadTime = Date.now();
         this._dispatchEvent('load', {});
 
@@ -10541,6 +10635,8 @@ var serviceContext = (function () {
         }
       });
       rewardAd.onClose((e) => {
+        this._isLoad = false;
+        this._isLoading = false;
         if (this._preload) {
           this._loadAd();
         }
@@ -10550,6 +10646,7 @@ var serviceContext = (function () {
         this._dispatchEvent('verify', { isValid: e.isValid });
       });
       rewardAd.onError((e) => {
+        this._isLoading = false;
         const { code, message } = e;
         const data = { code: code, errMsg: message };
         this._adError = message;
@@ -10578,18 +10675,25 @@ var serviceContext = (function () {
 
     load () {
       return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
         if (this._isLoad) {
           resolve();
           return
         }
-        this._loadPromiseResolve = resolve;
-        this._loadPromiseReject = reject;
         this._loadAd();
       })
     }
 
     show () {
       return new Promise((resolve, reject) => {
+        if (this._isLoading) {
+          return
+        }
+
         const provider = this.getProvider();
         if (provider === ProviderType.CSJ && this.isExpired) {
           this._isLoad = false;
@@ -10618,6 +10722,7 @@ var serviceContext = (function () {
 
     _loadAd () {
       this._isLoad = false;
+      this._isLoading = true;
       this._rewardAd.load();
     }
 
@@ -10634,15 +10739,22 @@ var serviceContext = (function () {
     return new RewardedVideoAd(options)
   }
 
+  const eventTypes = {
+    load: 'load',
+    close: 'close',
+    error: 'error',
+    adClicked: 'adClicked'
+  };
+
   const eventNames$1 = [
-    'load',
-    'close',
-    'error',
-    'adClicked'
+    eventTypes.load,
+    eventTypes.close,
+    eventTypes.error,
+    eventTypes.adClicked
   ];
 
-  class FullScreenVideoAd {
-    constructor (options = {}) {
+  class AdBase {
+    constructor (adInstance, options) {
       const _callbacks = this._callbacks = {};
       eventNames$1.forEach(item => {
         _callbacks[item] = [];
@@ -10652,80 +10764,123 @@ var serviceContext = (function () {
         };
       });
 
-      this._isLoad = false;
+      this._preload = options.preload !== undefined ? options.preload : false;
+
+      this._isLoaded = false;
+      this._isLoading = false;
       this._adError = '';
       this._loadPromiseResolve = null;
       this._loadPromiseReject = null;
-      this._lastLoadTime = 0;
+      this._showPromiseResolve = null;
+      this._showPromiseReject = null;
 
-      const ad = this._ad = plus.ad.createFullScreenVideoAd(options);
+      const ad = this._ad = adInstance;
       ad.onLoad((e) => {
-        this._isLoad = true;
-        this._lastLoadTime = Date.now();
-        this._dispatchEvent('load', {});
+        this._isLoaded = true;
+        this._isLoading = false;
+        this._dispatchEvent(eventTypes.load, {});
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
           this._loadPromiseResolve = null;
         }
+        if (this._showPromiseResolve != null) {
+          this._showPromiseResolve();
+          this._showPromiseResolve = null;
+          this._showAd();
+        }
       });
       ad.onClose((e) => {
-        this._isLoad = false;
-        this._dispatchEvent('close', { isEnded: e.isEnded });
+        this._isLoaded = false;
+        this._isLoading = false;
+        this._dispatchEvent(eventTypes.close, { isEnded: e.isEnded });
+
+        if (this._preload === true) {
+          this._loadAd();
+        }
       });
       ad.onError((e) => {
-        const { code, message } = e;
-        const data = { code: code, errMsg: message };
-        this._adError = message;
-        if (code === -5008) {
-          this._isLoad = false;
-        }
-        this._dispatchEvent('error', data);
+        this._isLoading = false;
+
+        const data = {
+          code: e.code,
+          errMsg: e.message
+        };
+
+        this._adError = data;
+
+        this._dispatchEvent(eventTypes.error, data);
+
+        const promiseError = new Error(JSON.stringify(this._adError));
+        promiseError.code = e.code;
+        promiseError.errMsg = e.message;
 
         if (this._loadPromiseReject != null) {
-          this._loadPromiseReject(data);
+          this._loadPromiseReject(promiseError);
           this._loadPromiseReject = null;
         }
+
+        if (this._showPromiseReject != null) {
+          this._showPromiseReject(promiseError);
+          this._showPromiseReject = null;
+        }
       });
-      ad.onAdClicked((e) => {
-        this._dispatchEvent('adClicked', {});
+      ad.onAdClicked && ad.onAdClicked((e) => {
+        this._dispatchEvent(eventTypes.adClicked, {});
       });
     }
 
     load () {
       return new Promise((resolve, reject) => {
-        if (this._isLoad) {
-          resolve();
-          return
-        }
         this._loadPromiseResolve = resolve;
         this._loadPromiseReject = reject;
-        this._loadAd();
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoaded) {
+          resolve();
+        } else {
+          this._loadAd();
+        }
       })
     }
 
     show () {
       return new Promise((resolve, reject) => {
-        if (this._isLoad) {
-          this._ad.show();
+        this._showPromiseResolve = resolve;
+        this._showPromiseReject = reject;
+
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._isLoaded) {
+          this._showAd();
           resolve();
         } else {
-          reject(new Error(this._adError));
+          this._loadAd();
         }
       })
-    }
-
-    getProvider () {
-      return this._ad.getProvider()
     }
 
     destroy () {
       this._ad.destroy();
     }
 
+    getProvider () {
+      return this._ad.getProvider()
+    }
+
     _loadAd () {
-      this._isLoad = false;
+      this._adError = '';
+      this._isLoaded = false;
+      this._isLoading = true;
       this._ad.load();
+    }
+
+    _showAd () {
+      this._ad.show();
     }
 
     _dispatchEvent (name, data) {
@@ -10737,8 +10892,26 @@ var serviceContext = (function () {
     }
   }
 
+  class FullScreenVideoAd extends AdBase {
+    constructor (options = {}) {
+      super(plus.ad.createFullScreenVideoAd(options), options);
+    }
+  }
+
   function createFullScreenVideoAd (options) {
     return new FullScreenVideoAd(options)
+  }
+
+  class InterstitialAd extends AdBase {
+    constructor (options = {}) {
+      super(plus.ad.createInterstitialAd(options), options);
+
+      this.load();
+    }
+  }
+
+  function createInterstitialAd (options) {
+    return new InterstitialAd(options)
   }
 
   var api = /*#__PURE__*/Object.freeze({
@@ -10828,7 +11001,9 @@ var serviceContext = (function () {
     chooseImage: chooseImage$1,
     chooseVideo: chooseVideo$1,
     compressImage: compressImage$2,
+    compressVideo: compressVideo$1,
     getImageInfo: getImageInfo$1,
+    getVideoInfo: getVideoInfo$1,
     previewImagePlus: previewImagePlus,
     operateRecorder: operateRecorder,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum$1,
@@ -10900,7 +11075,8 @@ var serviceContext = (function () {
     showTabBar: showTabBar$2,
     requestComponentInfo: requestComponentInfo$2,
     createRewardedVideoAd: createRewardedVideoAd,
-    createFullScreenVideoAd: createFullScreenVideoAd
+    createFullScreenVideoAd: createFullScreenVideoAd,
+    createInterstitialAd: createInterstitialAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -18752,7 +18928,7 @@ var serviceContext = (function () {
     destHeight,
     canvasId,
     fileType,
-    qualit
+    quality
   }, callbackId) {
     var pageId = getCurrentPageId();
     if (!pageId) {
@@ -18773,7 +18949,7 @@ var serviceContext = (function () {
       destWidth,
       destHeight,
       fileType,
-      qualit,
+      quality,
       dirname,
       callbackId: cId
     });
@@ -20897,10 +21073,15 @@ var serviceContext = (function () {
       });
     });
 
+    let keyboardHeightChange = 0;
     plus.globalEvent.addEventListener('KeyboardHeightChange', function (event) {
-      publish('onKeyboardHeightChange', {
-        height: event.height
-      });
+      // 安卓设备首次获取高度为 0
+      if (keyboardHeightChange !== event.height) {
+        keyboardHeightChange = event.height;
+        publish('onKeyboardHeightChange', {
+          height: keyboardHeightChange
+        });
+      }
     });
 
     globalEvent.addEventListener('uistylechange', function (event) {

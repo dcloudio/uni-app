@@ -47,6 +47,7 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |field|string|指定要查询的字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段。支持用 oldname as newname方式对返回字段重命名|
 |where|string|查询条件，对记录进行过滤。[见下](/uniCloud/unicloud-db?id=where)|
 |orderby|string|排序字段及正序倒叙设置|
+|foreign-key|String|手动指定使用的关联关系，HBuilderX 3.1.10+ [详情](/uniCloud/clientdb?id=lookup-foreign-key)|
 |page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮，默认值为`add`|
 |page-current|Number|当前页|
 |page-size|Number|每页数据数量|
@@ -54,18 +55,19 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |getone|Boolean|指定查询结果是否仅返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要[0]的方式获取。在值为 true 时，直接返回结果数据，少一层数组，一般用于非列表页，比如详情页|
 |action|string|云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，[详情](/uniCloud/uni-clientDB?id=%e4%ba%91%e7%ab%af%e9%83%a8%e5%88%86)。场景：前端无权操作的数据，比如阅读数+1|
 |manual|Boolean|是否手动加载数据，默认为 false，页面onready时自动联网加载数据。如果设为 true，则需要自行指定时机通过方法`this.$refs.udb.loadData()`来触发联网，其中的`udb`指组件的ref值。一般onLoad因时机太早取不到this.$refs.udb，在onReady里可以取到|
-|gettree|Boolean|是否查询树状结构数据，HBuilderX3.0.5+ [详情](/uniCloud/clientdb?id=gettree)|
-|startwith|String|gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询，HBuilderX3.0.5+|
-|limitlevel|Number|gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1，HBuilderX3.0.5+|
-|groupby|String|对数据进行分组，HBuilderX3.1.0+|
+|gettree|Boolean|是否查询树状结构数据，HBuilderX 3.0.5+ [详情](/uniCloud/clientdb?id=gettree)|
+|startwith|String|gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询，HBuilderX 3.0.5+|
+|limitlevel|Number|gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1，HBuilderX 3.0.5+|
+|groupby|String|对数据进行分组，HBuilderX 3.1.0+|
 |group-field|String|对数据进行分组统计|
-|distinct|Boolean|是否对数据查询结果中重复的记录进行去重，默认值false，HBuilderX3.1.0+|
+|distinct|Boolean|是否对数据查询结果中重复的记录进行去重，默认值false，HBuilderX 3.1.0+|
+|loadtime|String|加载数据时机，默认auto，可选值 auto&#124;onready&#124;manual,[详情](/uniCloud/unicloud-db?id=loadtime) HBuilderX3.1.10+|
 |@load|EventHandle|成功回调。联网返回结果后，若希望先修改下数据再渲染界面，则在本方法里对data进行修改|
 |@error|EventHandle|失败回调|
 
 TODO：暂不支持in子查询功能。后续会补充
 
-注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`)除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
+注意：`page-current/page-size` 改变不重置数据(`page-data="replace"`) 和 (`loadtime="manual"`) 除外，`collection/action/field/getcount/orderby/where` 改变后清空已有数据
 
 
 **示例**
@@ -200,6 +202,15 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 ```html
 <unicloud-db orderby="createTime1 asc,createTime2 desc"></unicloud-db>
 ```
+
+
+## loadtime@loadtime
+
+|值|类型|描述|
+|:-|:-|:-|
+|auto|String|页面就绪后或属性变化后加载数据，默认为auto|
+|onready|String|页面就绪后不自动加载数据，属性变化后加载。适合在onready中接收上个页面的参数作为where条件时。|
+|manual|String|手动模式，不自动加载数据。如果涉及到分页，需要先手动修改当前页，在调用加载数据|
 
 
 
@@ -596,7 +607,7 @@ H5平台，开发模式下浏览器控制台输入 `unidev.clientDB.data`，可�
 // field 属性 查询book表返回book表内的title、book表内的author、order表内的quantity
 <template>
   <view>
-    <unicloud-db v-slot:default="{data, loading, error, options}" collection="order,book" where="'book.title == "三国演义"'" field="book{title,author},quantity">
+    <unicloud-db v-slot:default="{data, loading, error, options}" collection="order,book" where="'book_id.title == "三国演义"'" field="book_id{title,author},quantity">
       <view>
 		  <view v-for="(item, index) in data" :key="index" class="list-item">
 		    {{ item.name}}

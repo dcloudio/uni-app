@@ -387,6 +387,7 @@ mixin是vue的技术，不熟悉的可以点此了解[vue官网的mixin文档](h
 |gettree					|Boolean		|	false		|是否查询树状数据，默认 `false`|
 |startwith					|String			|	''			|`gettree`的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询|
 |limitlevel					|Number			|	10			|`gettree`查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1|
+|foreign-key				|String			|	''			|手动指定使用的关联关系，HBuilderX 3.1.10+ [详情](/uniCloud/clientdb?id=lookup-foreign-key)|
 
 
 `uniCloud.mixinDatacom` 的data

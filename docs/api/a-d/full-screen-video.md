@@ -50,92 +50,75 @@ uni.createFullScreenVideoAd(Object)
 
 
 示例代码
-```
+```html
 <template>
-	<view>
-		<view class="uni-padding-wrap uni-common-mt">
-			<button :loading="loading" :disabled="loading" type="primary" class="btn" @click="showAd">显示广告</button>
-		</view>
-	</view>
+  <view>
+    <button :loading="loading" :disabled="loading" type="primary" @click="showFullScreenVideoAd">显示广告</button>
+  </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				title: '全屏视频广告',
-				loading: false,
-				loadError: false
-			}
-		},
-		onReady() {
-			// #ifdef APP-PLUS
-			// HBuilderX标准基座真机运行测试全屏视频广告位标识（adpid）为：1507000611
-			// adpid: 1507000611 仅用于测试，发布时需要改为广告后台（https://uniad.dcloud.net.cn/）申请的 adpid
-			// 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效
-			this.adOption = {
-				adpid: '1507000611'
-			};
-			// #endif
-			this.createAd();
-		},
-		methods: {
-			createAd() {
-				var _ad = this._ad = uni.createFullScreenVideoAd(this.adOption);
-				_ad.onLoad(() => {
-					this.loading = false;
-					this.loadError = false;
-					_ad.show();
-					console.log('onLoad event')
-				});
-				_ad.onClose((res) => {
-					// 用户点击了【关闭广告】按钮
-					if (res && res.isEnded) {
-						// 正常播放结束
-						console.log("onClose " + res.isEnded);
-					} else {
-						// 播放中途退出
-						console.log("onClose " + res.isEnded);
-					}
+  export default {
+    data() {
+      return {
+        title: '全屏视频广告',
+        loading: false
+      }
+    },
+    onReady() {
+      // HBuilderX标准基座真机运行测试全屏视频广告位标识（adpid）为：1507000611
+      // adpid: 1507000611 仅用于测试，发布时需要改为广告后台（https://uniad.dcloud.net.cn/）申请的 adpid
+      // 广告后台申请的广告位(adpid)需要自定义基座/云打包/本地打包后生效
+      this.adOption = {
+        adpid: '1507000611'
+      };
 
-					setTimeout(() => {
-						uni.showToast({
-							title: "全屏视频" + (res.isEnded ? "成功" : "未") + "播放完毕",
-							duration: 10000,
-							position: 'bottom'
-						})
-					}, 500)
-				});
-				_ad.onError((err) => {
-					this.loading = false;
-					if (err.code) {
-						this.loadError = true;
-					}
-					console.log('onError event', err)
-					uni.showToast({
-						title: err.errMsg,
-						position: 'bottom'
-					})
-				});
-			},
-			showAd() {
-				this.loading = true;
-				this._ad.load();
-			}
-		}
-	}
+      // 创建广告实例
+      this.createFullScreenVideoAd();
+    },
+    methods: {
+      createFullScreenVideoAd() {
+        var fullScreenVideoAd = this.fullScreenVideoAd = uni.createFullScreenVideoAd(this.adOption);
+        fullScreenVideoAd.onLoad(() => {
+          // 广告数据加载成功
+          this.loading = false;
+          console.log("onLoad");
+        });
+        fullScreenVideoAd.onClose((e) => {
+          // 用户点击了关闭或返回键(仅Android有返回键)
+          console.log("onClose " + e.isEnded);
+        });
+        fullScreenVideoAd.onError((err) => {
+          console.log("onError", JSON.stringify(err));
+          // 广告数据加载失败
+          this.loading = false;
+          uni.showToast({
+            title: `${err.code} : ${err.errMsg}`
+          })
+        });
+      },
+      showFullScreenVideoAd() {
+        // 调用 fullScreenVideoAd.show()，如果数据正在加载中不会显示广告，加载成功后才显示
+        // 在数据没有加载成功时，需要防止用户频繁点击显示广告
+        if (this.loading == true) {
+          return
+        }
+        this.loading = true;
+        this.fullScreenVideoAd.show().then(() => {
+          this.loading = false;
+        }).catch((err) => {
+          console.log(err.message);
+          this.loading = false;
+          uni.showToast({
+            title: `${err.code} : ${err.errMsg}`
+          })
+        });
+      }
+    },
+    onUnload() {
+      this.fullScreenVideoAd.destroy()
+    }
+  }
 </script>
-
-<style>
-	.btn {
-		margin-bottom: 20px;
-	}
-
-	.ad-tips {
-		color: #999;
-		padding: 30px 0;
-		text-align: center;
-	}
-</style>
 
 ```

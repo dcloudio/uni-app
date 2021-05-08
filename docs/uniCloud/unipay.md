@@ -619,6 +619,7 @@ exports.main = async function (event) {
   // 注意如果处理成功需要严格按照下面的格式进行返回，否则厂商会持续通知
   // 微信处理成功之后 
   return {  
+    "mpserverlessComposedResponse": true,
     statusCode: 200,  
     headers: {  
         'content-type': 'text/xml;charset=utf-8'  
@@ -627,6 +628,7 @@ exports.main = async function (event) {
   }
   // 支付宝处理成功后  
   return {  
+    "mpserverlessComposedResponse": true,
     statusCode: 200,
     headers: {  
       'content-type': 'text/plain'  
