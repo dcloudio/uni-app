@@ -38,52 +38,53 @@ function clearEasycom() {
   easycomsInvalidCache.clear()
 }
 
-export const initEasycomsOnce = once(
-  (inputDir: string, platform: UniApp.PLATFORM) => {
-    const buildInComponentsDir = path.resolve(
-      require.resolve('@dcloudio/uni-components'),
-      '../lib'
-    )
-    const componentsDir = path.resolve(inputDir, 'components')
-    const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-    const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
-      // 初始化时，从once中读取缓存，refresh时，实时读取
-      const { easycom } = pagesJson || parsePagesJson(inputDir, platform, false)
-      const easycomOptions: EasycomOption = {
-        dirs:
-          easycom && easycom.autoscan === false
-            ? [buildInComponentsDir] // 禁止自动扫描
-            : [
-                buildInComponentsDir,
-                componentsDir,
-                ...initUniModulesEasycomDirs(uniModulesDir),
-              ],
-        rootDir: inputDir,
-        autoscan: !!(easycom && easycom.autoscan),
-        custom: (easycom && easycom.custom) || {},
-      }
-      debugEasycom(easycomOptions)
-      return easycomOptions
+export function initEasycoms(inputDir: string, platform: UniApp.PLATFORM) {
+  const buildInComponentsDir = path.resolve(
+    require.resolve('@dcloudio/uni-components'),
+    '../lib'
+  )
+  const componentsDir = path.resolve(inputDir, 'components')
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
+    // 初始化时，从once中读取缓存，refresh时，实时读取
+    const { easycom } = pagesJson || parsePagesJson(inputDir, platform, false)
+    const easycomOptions: EasycomOption = {
+      dirs:
+        easycom && easycom.autoscan === false
+          ? [buildInComponentsDir] // 禁止自动扫描
+          : [
+              buildInComponentsDir,
+              componentsDir,
+              ...initUniModulesEasycomDirs(uniModulesDir),
+            ],
+      rootDir: inputDir,
+      autoscan: !!(easycom && easycom.autoscan),
+      custom: (easycom && easycom.custom) || {},
     }
-    const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
-    initEasycom(options)
-    const res = {
-      options,
-      filter: createFilter(
-        ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
-        [],
-        {
-          resolve: inputDir,
-        }
-      ),
-      refresh() {
-        res.options = initEasycomOptions()
-        initEasycom(res.options)
-      },
-    }
-    return res
+    debugEasycom(easycomOptions)
+    return easycomOptions
   }
-)
+  const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+  initEasycom(options)
+  const res = {
+    options,
+    filter: createFilter(
+      ['components/*/*.vue', 'uni_modules/*/components/*/*.vue'],
+      [],
+      {
+        resolve: inputDir,
+      }
+    ),
+    refresh() {
+      res.options = initEasycomOptions()
+      initEasycom(res.options)
+    },
+    easycoms,
+  }
+  return res
+}
+
+export const initEasycomsOnce = once(initEasycoms)
 
 function initUniModulesEasycomDirs(uniModulesDir: string) {
   if (!fs.existsSync(uniModulesDir)) {

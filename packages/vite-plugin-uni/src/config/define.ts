@@ -4,11 +4,11 @@ import {
   parsePagesJsonOnce,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import { initFeatures } from '../utils'
+import { initFeatures, isSsr, isSsrManifest } from '../utils'
 
 export function createDefine(
   { inputDir, platform }: VitePluginUniResolvedOptions,
-  { server }: UserConfig,
+  config: UserConfig,
   { command }: ConfigEnv
 ): UserConfig['define'] {
   return initFeatures({
@@ -17,6 +17,6 @@ export function createDefine(
     platform,
     pagesJson: parsePagesJsonOnce(inputDir, platform),
     manifestJson: parseManifestJsonOnce(inputDir),
-    ssr: !!(server && server.middlewareMode),
+    ssr: isSsr(command, config) || isSsrManifest(command, config),
   })
 }

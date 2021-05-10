@@ -51,8 +51,12 @@ function validateProtocolFail(name: string, msg: string) {
 function validateProtocol(
   name: string,
   data: Record<string, any>,
-  protocol?: ApiProtocol<any>
+  protocol?: ApiProtocol<any>,
+  onFail?: (name: string, msg: string) => void
 ) {
+  if (!onFail) {
+    onFail = validateProtocolFail
+  }
   for (const key in protocol) {
     const errMsg = validateProp(
       key,
@@ -61,7 +65,7 @@ function validateProtocol(
       !hasOwn(data, key)
     )
     if (isString(errMsg)) {
-      validateProtocolFail(name, errMsg)
+      onFail(name, errMsg)
     }
   }
 }
@@ -69,13 +73,19 @@ function validateProtocol(
 export function validateProtocols(
   name: string,
   args: any[],
-  protocol?: ApiProtocols<any>
+  protocol?: ApiProtocols<any>,
+  onFail?: (name: string, msg: string) => void
 ) {
   if (!protocol) {
     return
   }
   if (!isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol)
+    return validateProtocol(
+      name,
+      args[0] || Object.create(null),
+      protocol,
+      onFail
+    )
   }
   const len = protocol.length
   const argsLen = args.length
@@ -85,7 +95,7 @@ export function validateProtocols(
     if (argsLen > i) {
       data[opts.name!] = args[i]
     }
-    validateProtocol(name, data, { [opts.name!]: opts })
+    validateProtocol(name, data, { [opts.name!]: opts }, onFail)
   }
 }
 

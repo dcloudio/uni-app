@@ -476,20 +476,23 @@ function elemInArray(str, arr) {
 function validateProtocolFail(name, msg) {
   console.warn(`${name}: ${msg}`);
 }
-function validateProtocol(name, data, protocol) {
+function validateProtocol(name, data, protocol, onFail) {
+  if (!onFail) {
+    onFail = validateProtocolFail;
+  }
   for (const key in protocol) {
     const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
     if (shared.isString(errMsg)) {
-      validateProtocolFail(name, errMsg);
+      onFail(name, errMsg);
     }
   }
 }
-function validateProtocols(name, args, protocol) {
+function validateProtocols(name, args, protocol, onFail) {
   if (!protocol) {
     return;
   }
   if (!shared.isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol);
+    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
   }
   const len = protocol.length;
   const argsLen = args.length;
@@ -499,7 +502,7 @@ function validateProtocols(name, args, protocol) {
     if (argsLen > i2) {
       data[opts.name] = args[i2];
     }
-    validateProtocol(name, data, {[opts.name]: opts});
+    validateProtocol(name, data, {[opts.name]: opts}, onFail);
   }
 }
 function validateProp(name, value, prop, isAbsent) {

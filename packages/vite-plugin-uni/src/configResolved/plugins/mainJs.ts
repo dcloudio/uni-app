@@ -2,6 +2,7 @@ import path from 'path'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '../..'
+import { isSsr, isSsrManifest } from '../../utils'
 
 export function uniMainJsPlugin(
   config: ResolvedConfig,
@@ -12,11 +13,7 @@ export function uniMainJsPlugin(
   const mainTsPath = mainPath + '.ts'
   const pagesJsonJsPath = slash(path.resolve(options.inputDir, 'pages.json.js'))
   const isSSR =
-    config.command === 'serve'
-      ? !!config.server.middlewareMode
-      : config.command === 'build'
-      ? !!(config.build.ssr || config.build.ssrManifest)
-      : false
+    isSsr(config.command, config) || isSsrManifest(config.command, config)
   return {
     name: 'vite:uni-main-js',
     transform(code, id, ssr) {

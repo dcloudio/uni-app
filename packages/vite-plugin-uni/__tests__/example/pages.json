@@ -1,0 +1,12 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index"
+    }
+  ],
+  "easycom": {
+    "custom": {
+      "^uni-(.*)": "@/components/uni-$1.vue"
+    }
+  }
+}

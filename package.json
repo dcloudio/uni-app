@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "node scripts/build.js",
-    "size": "size-limit",
+    "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "ls-lint": "ls-lint",

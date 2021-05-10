@@ -7,6 +7,30 @@ import {
   Rpx2UnitOptions,
 } from '@dcloudio/uni-shared'
 import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
+import { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
+
+export function isSsr(
+  command: ConfigEnv['command'],
+  config: UserConfig | ResolvedConfig
+) {
+  if (command === 'serve') {
+    return !!(config.server && config.server.middlewareMode)
+  }
+  if (command === 'build') {
+    return !!(config.build && config.build.ssr)
+  }
+  return false
+}
+
+export function isSsrManifest(
+  command: ConfigEnv['command'],
+  config: UserConfig | ResolvedConfig
+) {
+  if (command === 'build') {
+    return !!(config.build && config.build.ssrManifest)
+  }
+  return false
+}
 
 function serializeDefine(define: Record<string, any>): string {
   let res = `{`
