@@ -7,7 +7,7 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |value|String||输入框的初始内容||
-|type|String|text|input 的类型|H5 暂未支持动态切换请使用 v-if 进行整体切换|
+|type|String|text|input 的类型|H5 暂未支持动态切换，详见下方 Tips，请使用 v-if 进行整体切换|
 |password|Boolean|false|是否是密码类型|H5和App写此属性时，type失效|
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
@@ -35,6 +35,17 @@
 - `input` 事件处理函数可以直接 return 一个字符串，将替换输入框的内容。仅微信小程序支持。
 - 如果遇到 value 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/vue-api?id=_4-组件属性设置不生效解决办法)
 - `input` 组件上有默认的 `min-height` 样式，如果 `min-height` 的值大于 `height` 的值那么 `height` 样式无效。
+- H5 暂未支持动态切换，请使用 `v-if`进行整体切换。
+```html
+        <!-- 错误写法 -->
+	<input :type="isText?'text':'number'" placeholder="请输入内容" />
+	
+        <!-- 正确写法 -->
+	<input v-if="isText" type="text" placeholder="请输入文本" />
+	<input v-else  type="number"  placeholder="请输入数字" />
+```
+
+
 
 **type 有效值**
 
