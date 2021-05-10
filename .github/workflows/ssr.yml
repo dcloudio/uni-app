@@ -15,15 +15,16 @@ jobs:
       - name: build
         run: npm run build
       - uses: bahmutov/npm-install@v1
-        working-directory: packages/playground/ssr
+        with: packages/playground/ssr
       - name: Cypress run
         uses: cypress-io/github-action@v2
         working-directory: packages/playground/ssr
         with:
           install: false
           start: npm run dev:ssr
+          project: packages/playground/ssr
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           browser: chrome
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
