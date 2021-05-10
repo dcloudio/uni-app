@@ -23,7 +23,7 @@ export function usePageHeadTransparent(
   const borderRadiusElemsStyles: CSSStyleDeclaration[] = []
   const oldColors: string[] = []
   onMounted(() => {
-    const $el = (headRef.value as unknown) as HTMLDivElement
+    const $el = headRef.value as unknown as HTMLDivElement
     transparentElemStyle = $el.style
     titleElem = $el.querySelector('.uni-page-head__title')!
     const borderRadiusElems = $el.querySelectorAll(
@@ -58,15 +58,15 @@ export function usePageHeadTransparent(
     A = alpha
     // TODO 暂时仅处理背景色
     if (titleElem) {
-      titleElem.style.opacity = (alpha as unknown) as string
+      titleElem.style.opacity = alpha as unknown as string
     }
     const bg = rgb.value
     transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`
     borderRadiusElemsStyles.forEach(function (borderRadiusElemStyle, index) {
       const oldColor = oldColors[index]
       const rgba = oldColor.match(/[\d+\.]+/g)!
-      rgba[3] = (((1 - alpha) *
-        ((rgba.length === 4 ? rgba[3] : 1) as number)) as unknown) as string
+      rgba[3] = ((1 - alpha) *
+        ((rgba.length === 4 ? rgba[3] : 1) as number)) as unknown as string
       borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`
     })
   })

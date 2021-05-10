@@ -34,9 +34,8 @@ export default /*#__PURE__*/ defineComponent({
       },
     }
     onMounted(() => {
-      const addSwiperContext: AddSwiperContext | undefined = inject(
-        'addSwiperContext'
-      )
+      const addSwiperContext: AddSwiperContext | undefined =
+        inject('addSwiperContext')
       if (addSwiperContext) {
         addSwiperContext(context)
       }

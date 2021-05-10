@@ -46,7 +46,7 @@ export default /*#__PURE__*/ defineComponent({
     }
     const uniForm = inject<UniFormCtx>(
       uniFormKey,
-      (false as unknown) as UniFormCtx
+      false as unknown as UniFormCtx
     )
     const { hovering, binding } = useHover(props)
     const { t } = useI18n()

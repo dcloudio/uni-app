@@ -73,8 +73,5 @@ interface AsyncApiOptionalOptions {
   complete?: any
 }
 
-type AsyncApi<
-  T extends AsyncMethodOptionLike
-> = AsyncApiOptionalOptions extends T
-  ? AsyncApiOptional<T>
-  : AsyncApiRequired<T>
+type AsyncApi<T extends AsyncMethodOptionLike> =
+  AsyncApiOptionalOptions extends T ? AsyncApiOptional<T> : AsyncApiRequired<T>

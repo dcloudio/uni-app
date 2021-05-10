@@ -60,14 +60,8 @@ function initPagesFeature({
     navigationBarTransparent: true,
   }
 
-  const {
-    tabBar,
-    pages,
-    topWindow,
-    leftWindow,
-    rightWindow,
-    globalStyle,
-  } = pagesJson
+  const { tabBar, pages, topWindow, leftWindow, rightWindow, globalStyle } =
+    pagesJson
   // ssr 时强制启用多页面（需要用到router）
   if (!ssr && pages && pages.length === 1) {
     features.pages = false

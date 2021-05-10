@@ -45,7 +45,7 @@ function initPageMeta(id: number) {
           JSON.stringify(
             mergePageMeta(
               id,
-              (useRoute().meta as unknown) as UniApp.PageRouteMeta
+              useRoute().meta as unknown as UniApp.PageRouteMeta
             )
           )
         )

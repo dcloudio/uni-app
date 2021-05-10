@@ -68,57 +68,61 @@ function setNavigationBar(
   resolve()
 }
 
-export const setNavigationBarColor = defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_COLOR>(
-  API_SET_NAVIGATION_BAR_COLOR,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_COLOR,
-      args,
-      resolve,
-      reject
-    )
-  },
-  SetNavigationBarColorProtocol,
-  SetNavigationBarColorOptions
-)
+export const setNavigationBarColor =
+  defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_COLOR>(
+    API_SET_NAVIGATION_BAR_COLOR,
+    (args, { resolve, reject }) => {
+      setNavigationBar(
+        getCurrentPageMeta(),
+        API_SET_NAVIGATION_BAR_COLOR,
+        args,
+        resolve,
+        reject
+      )
+    },
+    SetNavigationBarColorProtocol,
+    SetNavigationBarColorOptions
+  )
 
-export const showNavigationBarLoading = defineAsyncApi<API_TYPE_SHOW_NAVIGATION_BAR_LOADING>(
-  API_SHOW_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SHOW_NAVIGATION_BAR_LOADING,
-      args,
-      resolve,
-      reject
-    )
-  }
-)
+export const showNavigationBarLoading =
+  defineAsyncApi<API_TYPE_SHOW_NAVIGATION_BAR_LOADING>(
+    API_SHOW_NAVIGATION_BAR_LOADING,
+    (args, { resolve, reject }) => {
+      setNavigationBar(
+        getCurrentPageMeta(),
+        API_SHOW_NAVIGATION_BAR_LOADING,
+        args,
+        resolve,
+        reject
+      )
+    }
+  )
 
-export const hideNavigationBarLoading = defineAsyncApi<API_TYPE_HIDE_NAVIGATION_BAR_LOADING>(
-  API_HIDE_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_HIDE_NAVIGATION_BAR_LOADING,
-      args,
-      resolve,
-      reject
-    )
-  }
-)
+export const hideNavigationBarLoading =
+  defineAsyncApi<API_TYPE_HIDE_NAVIGATION_BAR_LOADING>(
+    API_HIDE_NAVIGATION_BAR_LOADING,
+    (args, { resolve, reject }) => {
+      setNavigationBar(
+        getCurrentPageMeta(),
+        API_HIDE_NAVIGATION_BAR_LOADING,
+        args,
+        resolve,
+        reject
+      )
+    }
+  )
 
-export const setNavigationBarTitle = defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_TITLE>(
-  API_SET_NAVIGATION_BAR_TITLE,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_TITLE,
-      args,
-      resolve,
-      reject
-    )
-  },
-  SetNavigationBarTitleProtocol
-)
+export const setNavigationBarTitle =
+  defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_TITLE>(
+    API_SET_NAVIGATION_BAR_TITLE,
+    (args, { resolve, reject }) => {
+      setNavigationBar(
+        getCurrentPageMeta(),
+        API_SET_NAVIGATION_BAR_TITLE,
+        args,
+        resolve,
+        reject
+      )
+    },
+    SetNavigationBarTitleProtocol
+  )

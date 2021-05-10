@@ -368,8 +368,7 @@ function initData(vueOptions) {
     let data = vueOptions.data || {};
     if (typeof data === 'function') {
         try {
-            const appConfig = getApp().$vm.$.appContext
-                .config;
+            const appConfig = getApp().$vm.$.appContext.config;
             data = data.call(appConfig.globalProperties);
         }
         catch (e) {
@@ -752,7 +751,7 @@ function $destroyComponent(instance) {
 }
 
 function parsePage(vueOptions, parseOptions) {
-    const { parse, mocks, isPage, initRelation, handleLink, initLifetimes, } = parseOptions;
+    const { parse, mocks, isPage, initRelation, handleLink, initLifetimes } = parseOptions;
     const miniProgramPageOptions = parseComponent(vueOptions, {
         mocks,
         isPage,

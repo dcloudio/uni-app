@@ -315,9 +315,8 @@ innerAudioContextEventNames.forEach((eventName) => {
 // 批量设置音频上下文事件取消监听方法
 innerAudioContextOffEventNames.forEach((eventName) => {
   InnerAudioContext.prototype[eventName] = function (callback: Function) {
-    var handle = this._events[
-      eventName.replace('off', 'on') as InnerAudioContextEvent
-    ]
+    var handle =
+      this._events[eventName.replace('off', 'on') as InnerAudioContextEvent]
     var index = handle!.indexOf(callback)
     if (index >= 0) {
       handle!.splice(index, 1)
@@ -328,9 +327,10 @@ innerAudioContextOffEventNames.forEach((eventName) => {
 /**
  * 创建音频上下文
  */
-export const createInnerAudioContext = defineSyncApi<API_TYPE_CREATEE_INNER_AUDIO_CONTEXT>(
-  API_CREATE_INNER_AUDIO_CONTEXT,
-  () => {
-    return new InnerAudioContext()
-  }
-)
+export const createInnerAudioContext =
+  defineSyncApi<API_TYPE_CREATEE_INNER_AUDIO_CONTEXT>(
+    API_CREATE_INNER_AUDIO_CONTEXT,
+    () => {
+      return new InnerAudioContext()
+    }
+  )

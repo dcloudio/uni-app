@@ -175,7 +175,7 @@ export function defineOnApi<T extends ApiLike>(
   fn: () => void,
   options?: ApiOptions<T>
 ) {
-  return (wrapperOnApi(name, fn, options) as unknown) as T
+  return wrapperOnApi(name, fn, options) as unknown as T
 }
 
 export function defineOffApi<T extends ApiLike>(
@@ -183,7 +183,7 @@ export function defineOffApi<T extends ApiLike>(
   fn: () => void,
   options?: ApiOptions<T>
 ) {
-  return (wrapperOffApi(name, fn, options) as unknown) as T
+  return wrapperOffApi(name, fn, options) as unknown as T
 }
 
 export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
@@ -198,9 +198,9 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   protocol?: ApiProtocols<T>,
   options?: ApiOptions<T>
 ) {
-  return (promisify(
+  return promisify(
     wrapperTaskApi(name, fn, __DEV__ ? protocol : undefined, options)
-  ) as unknown) as T
+  ) as unknown as T
 }
 
 export function defineSyncApi<T extends ApiLike>(
@@ -209,12 +209,12 @@ export function defineSyncApi<T extends ApiLike>(
   protocol?: ApiProtocols<T>,
   options?: ApiOptions<T>
 ) {
-  return (wrapperSyncApi(
+  return wrapperSyncApi(
     name,
     fn,
     __DEV__ ? protocol : undefined,
     options
-  ) as unknown) as T
+  ) as unknown as T
 }
 
 export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(

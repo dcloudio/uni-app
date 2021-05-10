@@ -52,9 +52,9 @@ export function initWrapper(protocols: MPProtocols) {
             toArgs[keyOption] = fromArgs[key]
           } else if (isPlainObject(keyOption)) {
             // {name:newName,value:value}可重新指定参数 key:value
-            toArgs[
-              keyOption.name ? keyOption.name : key
-            ] = (keyOption as MPProtocolArgsValue).value
+            toArgs[keyOption.name ? keyOption.name : key] = (
+              keyOption as MPProtocolArgsValue
+            ).value
           }
         } else if (CALLBACKS.indexOf(key) !== -1) {
           const callback = (fromArgs as any)[key]

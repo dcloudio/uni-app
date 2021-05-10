@@ -27,15 +27,16 @@ const IndexOptions: ApiOptions<API_TYPE_REMOVE_TAB_BAR_BADGE> = {
 }
 export const API_SET_TAB_BAR_ITEM = 'setTabBarItem'
 export type API_TYPE_SET_TAB_BAR_ITEM = typeof uni.setTabBarItem
-export const SetTabBarItemProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_ITEM> = /*#__PURE__*/ extend(
-  {
-    text: String,
-    iconPath: String,
-    selectedIconPath: String,
-    pagePath: String,
-  },
-  IndexProtocol
-)
+export const SetTabBarItemProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_ITEM> =
+  /*#__PURE__*/ extend(
+    {
+      text: String,
+      iconPath: String,
+      selectedIconPath: String,
+      pagePath: String,
+    },
+    IndexProtocol
+  )
 
 export const SetTabBarItemOptions: ApiOptions<API_TYPE_SET_TAB_BAR_ITEM> = {
   beforeInvoke: IndexOptions.beforeInvoke,
@@ -84,34 +85,42 @@ export const HideTabBarProtocol: ApiProtocol<API_TYPE_HIDE_TAB_BAR> = {
 
 export const API_SHOW_TAB_BAR = 'showTabBar'
 export type API_TYPE_SHOW_TAB_BAR = typeof uni.showTabBar
-export const ShowTabBarProtocol: ApiProtocol<API_TYPE_SHOW_TAB_BAR> = HideTabBarProtocol
+export const ShowTabBarProtocol: ApiProtocol<API_TYPE_SHOW_TAB_BAR> =
+  HideTabBarProtocol
 
 export const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot'
 export type API_TYPE_HIDE_TAB_BAR_RED_DOT = typeof uni.hideTabBarRedDot
-export const HideTabBarRedDotProtocol: ApiProtocol<API_TYPE_HIDE_TAB_BAR_RED_DOT> = IndexProtocol
-export const HideTabBarRedDotOptions: ApiOptions<API_TYPE_HIDE_TAB_BAR_RED_DOT> = IndexOptions
+export const HideTabBarRedDotProtocol: ApiProtocol<API_TYPE_HIDE_TAB_BAR_RED_DOT> =
+  IndexProtocol
+export const HideTabBarRedDotOptions: ApiOptions<API_TYPE_HIDE_TAB_BAR_RED_DOT> =
+  IndexOptions
 
 export const API_SHOW_TAB_BAR_RED_DOT = 'showTabBarRedDot'
 export type API_TYPE_SHOW_TAB_BAR_RED_DOT = typeof uni.showTabBarRedDot
-export const ShowTabBarRedDotProtocol: ApiProtocol<API_TYPE_SHOW_TAB_BAR_RED_DOT> = IndexProtocol
-export const ShowTabBarRedDotOptions: ApiOptions<API_TYPE_SHOW_TAB_BAR_RED_DOT> = IndexOptions
+export const ShowTabBarRedDotProtocol: ApiProtocol<API_TYPE_SHOW_TAB_BAR_RED_DOT> =
+  IndexProtocol
+export const ShowTabBarRedDotOptions: ApiOptions<API_TYPE_SHOW_TAB_BAR_RED_DOT> =
+  IndexOptions
 
 export const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge'
 export type API_TYPE_REMOVE_TAB_BAR_BADGE = typeof uni.removeTabBarBadge
-export const RemoveTabBarBadgeProtocol: ApiProtocol<API_TYPE_REMOVE_TAB_BAR_BADGE> = IndexProtocol
-export const RemoveTabBarBadgeOptions: ApiOptions<API_TYPE_REMOVE_TAB_BAR_BADGE> = IndexOptions
+export const RemoveTabBarBadgeProtocol: ApiProtocol<API_TYPE_REMOVE_TAB_BAR_BADGE> =
+  IndexProtocol
+export const RemoveTabBarBadgeOptions: ApiOptions<API_TYPE_REMOVE_TAB_BAR_BADGE> =
+  IndexOptions
 
 export const API_SET_TAB_BAR_BADGE = 'setTabBarBadge'
 export type API_TYPE_SET_TAB_BAR_BADGE = typeof uni.setTabBarBadge
-export const SetTabBarBadgeProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_BADGE> = /*#__PURE__*/ extend(
-  {
-    text: {
-      type: String,
-      required: true,
+export const SetTabBarBadgeProtocol: ApiProtocol<API_TYPE_SET_TAB_BAR_BADGE> =
+  /*#__PURE__*/ extend(
+    {
+      text: {
+        type: String,
+        required: true,
+      },
     },
-  },
-  IndexProtocol
-)
+    IndexProtocol
+  )
 export const SetTabBarBadgeOptions: ApiOptions<API_TYPE_SET_TAB_BAR_BADGE> = {
   beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: /*#__PURE__*/ extend(

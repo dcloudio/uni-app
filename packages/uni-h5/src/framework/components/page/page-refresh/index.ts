@@ -61,13 +61,14 @@ export function usePageRefresh(refreshRef: Ref) {
   }, id + '.' + API_STOP_PULL_DOWN_REFRESH)
   onMounted(() => {
     refreshContainerElem = refreshRef.value.$el
-    refreshControllerElem = refreshContainerElem.querySelector(
-      '.uni-page-refresh'
-    )!
+    refreshControllerElem =
+      refreshContainerElem.querySelector('.uni-page-refresh')!
     refreshControllerElemStyle = refreshControllerElem.style
-    refreshInnerElemStyle = (refreshControllerElem.querySelector(
-      '.uni-page-refresh-inner'
-    ) as HTMLDivElement).style
+    refreshInnerElemStyle = (
+      refreshControllerElem.querySelector(
+        '.uni-page-refresh-inner'
+      ) as HTMLDivElement
+    ).style
   })
   let touchId: number | null
   let startY: number

@@ -109,7 +109,7 @@ describe('i18n', () => {
     )
     expect(i18n.t('empty')).toBe(messages.en.empty)
     expect(i18n.t('hyphen-locale')).toBe(messages.en['hyphen-locale'])
-    expect(i18n.t((1234 as unknown) as string)).toBe(messages.en[1234])
+    expect(i18n.t(1234 as unknown as string)).toBe(messages.en[1234])
     expect(i18n.t('1mixedKey')).toBe(messages.en['1mixedKey'])
     expect(i18n.t('sálvame')).toBe(messages.en['sálvame'])
   })

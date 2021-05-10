@@ -106,7 +106,7 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
       }
 
       const imports = new Set()
-      ;((ast as unknown) as Program).body.forEach((node) => {
+      ;(ast as unknown as Program).body.forEach((node) => {
         if (node.type === 'ImportDeclaration') {
           node.specifiers.forEach((specifier) => {
             imports.add(specifier.local.name)

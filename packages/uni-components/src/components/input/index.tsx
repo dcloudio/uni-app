@@ -43,43 +43,38 @@ export default /*#__PURE__*/ defineComponent({
     const valid = ref(true)
     let cachedValue = ''
     const rootRef: Ref<HTMLElement | null> = ref(null)
-    const {
-      fieldRef,
-      state,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger,
-    } = useField(props, rootRef, emit, (event, state) => {
-      const input = event.target as HTMLInputElement
+    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
+      useField(props, rootRef, emit, (event, state) => {
+        const input = event.target as HTMLInputElement
 
-      if (NUMBER_TYPES.includes(props.type)) {
-        // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false，因此做此处理
-        valid.value = input.validity && input.validity.valid
-        cachedValue = state.value
+        if (NUMBER_TYPES.includes(props.type)) {
+          // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false，因此做此处理
+          valid.value = input.validity && input.validity.valid
+          cachedValue = state.value
 
-        // 处理部分输入法可以输入其它字符的情况
-        // 上一处理导致无法输入 - ，因此去除
-        // if (input.validity && !input.validity.valid) {
-        //   input.value = cachedValue
-        //   state.value = input.value
-        //   // 输入非法字符不触发 input 事件
-        //   return false
-        // } else {
-        //   cachedValue = state.value
-        // }
-      }
-
-      // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-      if (type.value === 'number') {
-        const maxlength = state.maxlength
-        if (maxlength > 0 && input.value.length > maxlength) {
-          input.value = input.value.slice(0, maxlength)
-          state.value = input.value
-          // 字符长度超出范围不触发 input 事件
-          return false
+          // 处理部分输入法可以输入其它字符的情况
+          // 上一处理导致无法输入 - ，因此去除
+          // if (input.validity && !input.validity.valid) {
+          //   input.value = cachedValue
+          //   state.value = input.value
+          //   // 输入非法字符不触发 input 事件
+          //   return false
+          // } else {
+          //   cachedValue = state.value
+          // }
         }
-      }
-    })
+
+        // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
+        if (type.value === 'number') {
+          const maxlength = state.maxlength
+          if (maxlength > 0 && input.value.length > maxlength) {
+            input.value = input.value.slice(0, maxlength)
+            state.value = input.value
+            // 字符长度超出范围不触发 input 事件
+            return false
+          }
+        }
+      })
     const NUMBER_TYPES = ['number', 'digit']
     const step = computed(() =>
       NUMBER_TYPES.includes(props.type) ? '0.000000000000000001' : ''

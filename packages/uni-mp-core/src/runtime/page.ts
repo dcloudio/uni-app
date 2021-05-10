@@ -13,14 +13,8 @@ function parsePage(
   vueOptions: ComponentOptions,
   parseOptions: ParseComponentOptions
 ) {
-  const {
-    parse,
-    mocks,
-    isPage,
-    initRelation,
-    handleLink,
-    initLifetimes,
-  } = parseOptions
+  const { parse, mocks, isPage, initRelation, handleLink, initLifetimes } =
+    parseOptions
   const miniProgramPageOptions = parseComponent(vueOptions, {
     mocks,
     isPage,
@@ -29,7 +23,8 @@ function parsePage(
     initLifetimes,
   })
 
-  const methods = miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
+  const methods =
+    miniProgramPageOptions.methods as WechatMiniprogram.Component.MethodOption
 
   methods.onLoad = function (
     this: CustomComponentInstanceProperty,

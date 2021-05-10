@@ -358,8 +358,7 @@ function initData(vueOptions) {
     let data = vueOptions.data || {};
     if (typeof data === 'function') {
         try {
-            const appConfig = getApp().$vm.$.appContext
-                .config;
+            const appConfig = getApp().$vm.$.appContext.config;
             data = data.call(appConfig.globalProperties);
         }
         catch (e) {

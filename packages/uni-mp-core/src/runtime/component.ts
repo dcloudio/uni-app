@@ -57,9 +57,7 @@ export interface ParseComponentOptions {
     options: RelationOptions
   ) => void
   handleLink: (event: any) => void
-  initLifetimes: (
-    options: CreateLifetimesOptions
-  ) => Partial<{
+  initLifetimes: (options: CreateLifetimesOptions) => Partial<{
     attached(): void
     ready(): void
     detached(): void

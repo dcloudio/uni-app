@@ -25,7 +25,7 @@ const currentPagesMap = new Map<string, Page.PageInstance>()
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
-    if (((page as unknown) as ComponentPublicInstance).$.isUnmounted) {
+    if ((page as unknown as ComponentPublicInstance).$.isUnmounted) {
       currentPagesMap.delete(id)
     }
   })
@@ -107,7 +107,7 @@ export function initPage(vm: ComponentPublicInstance) {
   vm.__isTabBar = page.meta.isTabBar!
   currentPagesMap.set(
     normalizeRouteKey(page.path, page.id),
-    (vm as unknown) as Page.PageInstance
+    vm as unknown as Page.PageInstance
   )
 }
 

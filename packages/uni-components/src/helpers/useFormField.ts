@@ -13,7 +13,7 @@ export function useFormField(
 ): void {
   const uniForm = inject<UniFormCtx>(
     uniFormKey,
-    (false as unknown) as UniFormCtx // remove warning
+    false as unknown as UniFormCtx // remove warning
   )
   if (!uniForm) {
     return

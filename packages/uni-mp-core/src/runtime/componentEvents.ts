@@ -241,8 +241,8 @@ export function handleEvent(this: MPComponentInstance, event: Event) {
   if (!dataset) {
     return console.warn('事件信息不存在')
   }
-  const eventOpts = ((dataset.eventOpts ||
-    dataset['event-opts']) as unknown) as any[] // 支付宝 web-view 组件 dataset 非驼峰
+  const eventOpts = (dataset.eventOpts ||
+    dataset['event-opts']) as unknown as any[] // 支付宝 web-view 组件 dataset 非驼峰
   if (!eventOpts) {
     return console.warn('事件信息不存在')
   }

@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { UserConfig } from 'vite'
-import autoprefixer from 'autoprefixer'
+// import autoprefixer from 'autoprefixer'
 import { extend } from '@vue/shared'
 import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
@@ -27,7 +27,7 @@ export function createCss(
             parseRpx2UnitOnce(options.inputDir)
           )
         ),
-        autoprefixer(),
+        // autoprefixer(),// TODO 似乎版本兼容有问题，目前报：Cannot read property 'prefix_exceptions' of undefined
       ],
     },
     preprocessorOptions: {

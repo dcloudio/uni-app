@@ -126,23 +126,20 @@ function useRadioInject(
 
   const uniCheckGroup = inject<UniRadioGroupCtx>(
     uniRadioGroupKey,
-    (false as unknown) as UniRadioGroupCtx
+    false as unknown as UniRadioGroupCtx
   )
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field)
   }
 
-  const uniForm = inject<UniFormCtx>(
-    uniFormKey,
-    (false as unknown) as UniFormCtx
-  )
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
   if (!!uniForm) {
     uniForm.addField(formField)
   }
 
   const uniLabel = inject<UniLabelCtx>(
     uniLabelKey,
-    (false as unknown) as UniLabelCtx
+    false as unknown as UniLabelCtx
   )
 
   onBeforeUnmount(() => {

@@ -121,13 +121,10 @@ function useSwitchInject(
   props: SwitchProps,
   switchChecked: Ref<string | boolean>
 ) {
-  const uniForm = inject<UniFormCtx>(
-    uniFormKey,
-    (false as unknown) as UniFormCtx
-  )
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
   const uniLabel = inject<UniLabelCtx>(
     uniLabelKey,
-    (false as unknown) as UniLabelCtx
+    false as unknown as UniLabelCtx
   )
 
   const formField = {

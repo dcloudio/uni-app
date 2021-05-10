@@ -27,13 +27,8 @@ export default /*#__PURE__*/ defineComponent({
   emit: ['confirm', 'linechange', ...fieldEmit],
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
-    const {
-      fieldRef,
-      state,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger,
-    } = useField(props, rootRef, emit)
+    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
+      useField(props, rootRef, emit)
     const valueCompute = computed(() => state.value.split('\n'))
     const isDone = computed(() =>
       ['done', 'go', 'next', 'search', 'send'].includes(props.confirmType)

@@ -1,5 +1,4 @@
-import './main'
-import { createVueSSRAppInstance } from 'vue'
+import { createApp } from './main'
 import { renderToString } from '@vue/server-renderer'
 import {
   UNI_SSR,
@@ -7,13 +6,13 @@ import {
   UNI_SSR_STORE,
   UNI_SSR_GLOBAL_DATA,
 } from '@dcloudio/uni-shared'
-
+import { plugin } from '@dcloudio/uni-h5'
 import { getSsrGlobalData } from '@dcloudio/uni-app'
 
 export async function render(url, manifest = {}) {
-  const app = createVueSSRAppInstance()
+  const { app, store } = createApp()
+  app.use(plugin)
   const router = app.router
-  const store = app.config.globalProperties.$store
 
   // set the router to the desired URL before rendering
   await router.push(url)

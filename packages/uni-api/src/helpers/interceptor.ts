@@ -93,9 +93,9 @@ function getApiInterceptorHooks(method: string) {
   const interceptor = Object.create(null)
   Object.keys(globalInterceptors).forEach((hook) => {
     if (hook !== 'returnValue') {
-      interceptor[hook] = (globalInterceptors[
-        hook as HOOKS
-      ] as Function[]).slice()
+      interceptor[hook] = (
+        globalInterceptors[hook as HOOKS] as Function[]
+      ).slice()
     }
   })
   const scopedInterceptor = scopedInterceptors[method]

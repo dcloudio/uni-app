@@ -28,9 +28,10 @@ export default /*#__PURE__*/ defineComponent({
       )
       if (!stopPropagation) {
         // 现在checkbox图标已经改为svg实现，svg和path都跳过
-        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(
-          EventTarget.tagName
-        )
+        stopPropagation =
+          /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(
+            EventTarget.tagName
+          )
       }
       if (stopPropagation) {
         return

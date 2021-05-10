@@ -29,7 +29,7 @@ function createRouterOptions(): RouterOptions {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: (__uniRoutes as unknown) as RouteRecordRaw[],
+    routes: __uniRoutes as unknown as RouteRecordRaw[],
     scrollBehavior,
   }
 }

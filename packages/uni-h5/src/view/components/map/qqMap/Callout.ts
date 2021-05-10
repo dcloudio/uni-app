@@ -49,8 +49,10 @@ export function createCallout(maps: QQMaps) {
       const map = option.map
       this.position = option.position
       this.index = 1
-      const visible = (this.visible = this.alwaysVisible =
-        option.display === 'ALWAYS')
+      const visible =
+        (this.visible =
+        this.alwaysVisible =
+          option.display === 'ALWAYS')
       const div = (this.div = document.createElement('div'))
       const divStyle = div.style
       divStyle.position = 'absolute'

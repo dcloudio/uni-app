@@ -5,14 +5,15 @@ import {
 } from '@dcloudio/uni-api'
 import { getCurrentPageId } from '@dcloudio/uni-core'
 
-export const startPullDownRefresh = defineAsyncApi<API_TYPE_START_PULL_DOWN_REFRESH>(
-  API_START_PULL_DOWN_REFRESH,
-  (_args, { resolve }) => {
-    UniServiceJSBridge.publishHandler(
-      API_START_PULL_DOWN_REFRESH,
-      {},
-      getCurrentPageId()
-    )
-    resolve()
-  }
-)
+export const startPullDownRefresh =
+  defineAsyncApi<API_TYPE_START_PULL_DOWN_REFRESH>(
+    API_START_PULL_DOWN_REFRESH,
+    (_args, { resolve }) => {
+      UniServiceJSBridge.publishHandler(
+        API_START_PULL_DOWN_REFRESH,
+        {},
+        getCurrentPageId()
+      )
+      resolve()
+    }
+  )

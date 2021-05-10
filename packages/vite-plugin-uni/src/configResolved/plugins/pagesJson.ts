@@ -98,11 +98,12 @@ function getGlobal(ssr?: boolean) {
 
 function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const name = getGlobal(ssr)
-  const rpx2pxCode = config.define!.__UNI_FEATURE_RPX__
-    ? `import {upx2px} from '@dcloudio/uni-h5'
+  const rpx2pxCode =
+    !ssr && config.define!.__UNI_FEATURE_RPX__
+      ? `import {upx2px} from '@dcloudio/uni-h5'
   ${name}.rpx2px = upx2px
 `
-    : ''
+      : ''
   return `${rpx2pxCode}
 import {uni,getCurrentPages,getApp,UniServiceJSBridge,UniViewJSBridge} from '@dcloudio/uni-h5'
 ${name}.getApp = getApp

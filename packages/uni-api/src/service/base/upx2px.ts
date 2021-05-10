@@ -22,6 +22,10 @@ function checkDeviceWidth() {
 export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
   API_UPX2PX,
   (number, newDeviceWidth?: number) => {
+    // ssr nodejs 中，暂不支持 rpx,upx 转 px
+    if (__NODE_JS__) {
+      return number
+    }
     if (deviceWidth === 0) {
       checkDeviceWidth()
     }

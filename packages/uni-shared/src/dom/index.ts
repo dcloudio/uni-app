@@ -38,14 +38,8 @@ export function addFont(
     const style = document.createElement('style')
     const values = []
     if (desc) {
-      const {
-        style,
-        weight,
-        stretch,
-        unicodeRange,
-        variant,
-        featureSettings,
-      } = desc as FontFaceDescriptors
+      const { style, weight, stretch, unicodeRange, variant, featureSettings } =
+        desc as FontFaceDescriptors
       style && values.push(`font-style:${style}`)
       weight && values.push(`font-weight:${weight}`)
       stretch && values.push(`font-stretch:${stretch}`)

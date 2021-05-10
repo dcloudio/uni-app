@@ -2,7 +2,8 @@ import { isFunction } from '@vue/shared'
 
 import { invokeApi, handlePromise, wrapperReturnValue } from '@dcloudio/uni-api'
 
-const SYNC_API_RE = /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/
+const SYNC_API_RE =
+  /^\$|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/
 
 const CONTEXT_API_RE = /^create|Manager$/
 

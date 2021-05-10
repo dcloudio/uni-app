@@ -230,10 +230,7 @@ function useSliderLoader(
     }
   }
 
-  const uniForm = inject<UniFormCtx>(
-    uniFormKey,
-    (false as unknown) as UniFormCtx
-  )
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
   if (!!uniForm) {
     const field = {
       reset: () => (sliderValue.value = Number(props.min)),

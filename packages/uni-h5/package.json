@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "localstorage-polyfill": "^1.0.1",
+    "pako": "^2.0.3",
     "safe-area-insets": "^1.4.1",
     "vue-router": "^4.0.6",
     "xmlhttprequest": "^1.8.0"

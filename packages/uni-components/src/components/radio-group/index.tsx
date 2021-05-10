@@ -75,10 +75,7 @@ function useProvideRadioGroup(
     },
   })
 
-  const uniForm = inject<UniFormCtx>(
-    uniFormKey,
-    (false as unknown) as UniFormCtx
-  )
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
   if (uniForm) {
     uniForm.addField({
       submit: () => {

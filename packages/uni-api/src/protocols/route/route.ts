@@ -47,20 +47,22 @@ export const API_PRELOAD_PAGE = 'preloadPage'
 export type API_TYPE_PRELOAD_PAGE = typeof uni.preloadPage
 export const API_UN_PRELOAD_PAGE = 'unPreloadPage'
 export type API_TYPE_UN_PRELOAD_PAGE = typeof uni.unPreloadPage
-export const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = /*#__PURE__*/ extend(
-  {},
-  BaseRouteProtocol,
-  createAnimationProtocol(ANIMATION_IN)
-)
+export const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> =
+  /*#__PURE__*/ extend(
+    {},
+    BaseRouteProtocol,
+    createAnimationProtocol(ANIMATION_IN)
+  )
 
-export const NavigateBackProtocol: ApiProtocol<API_TYPE_NAVIGATE_BACK> = /*#__PURE__*/ extend(
-  {
-    delta: {
-      type: Number,
+export const NavigateBackProtocol: ApiProtocol<API_TYPE_NAVIGATE_BACK> =
+  /*#__PURE__*/ extend(
+    {
+      delta: {
+        type: Number,
+      },
     },
-  },
-  createAnimationProtocol(ANIMATION_OUT)
-)
+    createAnimationProtocol(ANIMATION_OUT)
+  )
 
 export const RedirectToProtocol = BaseRouteProtocol
 
@@ -72,18 +74,14 @@ export const PreloadPageProtocol = BaseRouteProtocol
 
 export const UnPreloadPageProtocol = BaseRouteProtocol
 
-export const NavigateToOptions: ApiOptions<API_TYPE_NAVIGATE_TO> = /*#__PURE__*/ createRouteOptions(
-  API_NAVIGATE_TO
-)
-export const RedirectToOptions: ApiOptions<API_TYPE_REDIRECT_TO> = /*#__PURE__*/ createRouteOptions(
-  API_REDIRECT_TO
-)
-export const ReLaunchOptions: ApiOptions<API_TYPE_RE_LAUNCH> = /*#__PURE__*/ createRouteOptions(
-  API_RE_LAUNCH
-)
-export const SwitchTabOptions: ApiOptions<API_TYPE_SWITCH_TAB> = /*#__PURE__*/ createRouteOptions(
-  API_SWITCH_TAB
-)
+export const NavigateToOptions: ApiOptions<API_TYPE_NAVIGATE_TO> =
+  /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO)
+export const RedirectToOptions: ApiOptions<API_TYPE_REDIRECT_TO> =
+  /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO)
+export const ReLaunchOptions: ApiOptions<API_TYPE_RE_LAUNCH> =
+  /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH)
+export const SwitchTabOptions: ApiOptions<API_TYPE_SWITCH_TAB> =
+  /*#__PURE__*/ createRouteOptions(API_SWITCH_TAB)
 
 export const NavigateBackOptions: ApiOptions<API_TYPE_NAVIGATE_BACK> = {
   formatArgs: {

@@ -22,7 +22,9 @@ export function uniMainJsPlugin(
     transform(code, id, ssr) {
       if (id === mainJsPath || id === mainTsPath) {
         if (!isSSR) {
-          code = createApp(code)
+          code = code.includes('createSSRApp')
+            ? createApp(code)
+            : createLegacyApp(code)
         } else {
           code = ssr ? createSSRServerApp(code) : createSSRClientApp(code)
         }
@@ -36,6 +38,13 @@ export function uniMainJsPlugin(
 }
 
 function createApp(code: string) {
+  return `createApp().app.use(plugin).mount("#app");${code.replace(
+    'createSSRApp',
+    'createVueApp as createSSRApp'
+  )}`
+}
+
+function createLegacyApp(code: string) {
   return `function createApp(rootComponent,rootProps){return createVueApp(rootComponent, rootProps).use(plugin)};${code.replace(
     'createApp',
     'createVueApp'
@@ -43,15 +52,9 @@ function createApp(code: string) {
 }
 
 function createSSRClientApp(code: string) {
-  return `import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';function createApp(rootComponent, rootProps) {const app = createSSRApp(rootComponent, rootProps).use(plugin);const oldMount = app.mount;app.mount = (selector) => {window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && app.config.globalProperties.$store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);app.router.isReady().then(() => oldMount.call(app, selector));};return app;};${code.replace(
-    'createApp',
-    'createSSRApp'
-  )}`
+  return `import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';const { app, store } = createApp();app.use(plugin);store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);app.router.isReady().then(() => app.mount("#app"));${code}`
 }
 
 function createSSRServerApp(code: string) {
-  return `function createApp(App) {return createVueSSRApp(App).use(plugin)};${code.replace(
-    'createApp',
-    'createVueSSRApp'
-  )}`
+  return code
 }

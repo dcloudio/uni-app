@@ -10,8 +10,8 @@ export function initData(vueOptions: ComponentOptions) {
 
   if (typeof data === 'function') {
     try {
-      const appConfig = getApp<CustomAppInstanceProperty>().$vm!.$.appContext
-        .config
+      const appConfig =
+        getApp<CustomAppInstanceProperty>().$vm!.$.appContext.config
       data = data.call(appConfig.globalProperties)
     } catch (e) {
       if (process.env.VUE_APP_DEBUG) {

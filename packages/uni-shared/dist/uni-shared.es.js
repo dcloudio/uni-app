@@ -49,7 +49,7 @@ function addFont(family, source, desc) {
         const style = document.createElement('style');
         const values = [];
         if (desc) {
-            const { style, weight, stretch, unicodeRange, variant, featureSettings, } = desc;
+            const { style, weight, stretch, unicodeRange, variant, featureSettings } = desc;
             style && values.push(`font-style:${style}`);
             weight && values.push(`font-weight:${weight}`);
             stretch && values.push(`font-stretch:${stretch}`);

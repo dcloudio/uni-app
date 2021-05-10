@@ -799,29 +799,6 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const ua = navigator.userAgent;
-const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
-  return {
-    platform: isIOS$1 ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
-}
 function saveImage(base64, dirname, callback) {
   callback(null, base64);
 }
@@ -910,38 +887,10 @@ const Upx2pxProtocol = [
     required: true
   }
 ];
-const EPS = 1e-4;
-const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
-let deviceWidth = 0;
-let deviceDPR = 0;
-function checkDeviceWidth() {
-  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
-  deviceWidth = windowWidth;
-  deviceDPR = pixelRatio2;
-  isIOS = platform === "ios";
-}
 const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  if (deviceWidth === 0) {
-    checkDeviceWidth();
+  {
+    return number;
   }
-  number = Number(number);
-  if (number === 0) {
-    return 0;
-  }
-  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
-  if (result < 0) {
-    result = -result;
-  }
-  result = Math.floor(result + EPS);
-  if (result === 0) {
-    if (deviceDPR === 1 || !isIOS) {
-      result = 1;
-    } else {
-      result = 0.5;
-    }
-  }
-  return number < 0 ? -result : result;
 }, Upx2pxProtocol);
 const canvasEventCallbacks = createCallbacks("canvasEvent");
 ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {

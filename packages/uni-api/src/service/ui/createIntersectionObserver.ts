@@ -20,8 +20,8 @@ export interface RemoveIntersectionObserverArgs {
   component: ComponentPublicInstance
 }
 
-type ServiceIntersectionObserverOptions = UniApp.CreateIntersectionObserverOptions &
-  RequestComponentObserverOptions
+type ServiceIntersectionObserverOptions =
+  UniApp.CreateIntersectionObserverOptions & RequestComponentObserverOptions
 
 const defaultOptions = {
   thresholds: [0],

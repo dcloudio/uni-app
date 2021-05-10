@@ -62,14 +62,11 @@ type UniLifecycleHooks =
   | typeof ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED
   | typeof ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED
 
-const createHook = <T extends Function = () => any>(
-  lifecycle: UniLifecycleHooks
-) => (
-  hook: T,
-  target: ComponentInternalInstance | null = getCurrentInstance()
-) =>
-  // post-create lifecycle registrations are noops during SSR
-  !isInSSRComponentSetup && injectHook(lifecycle as any, hook, target)
+const createHook =
+  <T extends Function = () => any>(lifecycle: UniLifecycleHooks) =>
+  (hook: T, target: ComponentInternalInstance | null = getCurrentInstance()) =>
+    // post-create lifecycle registrations are noops during SSR
+    !isInSSRComponentSetup && injectHook(lifecycle as any, hook, target)
 
 export const onShow = /*#__PURE__*/ createHook(ON_SHOW)
 export const onHide = /*#__PURE__*/ createHook(ON_HIDE)

@@ -715,7 +715,7 @@ export class CanvasContext implements UniApp.CanvasContext {
   }
 
   set globalAlpha(value: number) {
-    value = Math.floor(255 * parseFloat((value as unknown) as string))
+    value = Math.floor(255 * parseFloat(value as unknown as string))
     this.actions.push({
       method: 'setGlobalAlpha',
       data: [value],
@@ -929,7 +929,7 @@ methods3.forEach(function (method) {
         }
       case 'setGlobalAlpha':
         return function (alpha: number) {
-          alpha = Math.floor(255 * parseFloat((alpha as unknown) as string))
+          alpha = Math.floor(255 * parseFloat(alpha as unknown as string))
           // @ts-ignore
           this.actions.push({
             method,
@@ -998,137 +998,141 @@ methods3.forEach(function (method) {
   ;(CanvasContext.prototype as any)[method] = get(method)
 })
 
-export const createCanvasContext = defineSyncApi<API_TYPE_CREATE_CANVAS_CONTEXT>(
-  API_CREATE_CANVAS_CONTEXT,
-  (canvasId, componentInstance): any => {
-    if (componentInstance) {
-      return new CanvasContext(canvasId, componentInstance.$page.id)
-    }
-    const pageId = getCurrentPageId()
-    if (pageId) {
-      return new CanvasContext(canvasId, pageId)
-    } else {
-      UniServiceJSBridge.emit('onError', 'createCanvasContext:fail')
-    }
-  },
-  CreateCanvasContextProtocol
-)
-
-export const canvasGetImageData = defineAsyncApi<API_TYPE_CANVAS_GET_IMAGE_DATA>(
-  API_CANVAS_GET_IMAGE_DATA,
-  ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-    const pageId = getCurrentPageId()
-    if (!pageId) {
-      reject()
-      return
-    }
-    const cId = canvasEventCallbacks.push(async function (
-      data: UniApp.CanvasGetImageDataRes & { compressed?: boolean }
-    ) {
-      let imgData = data.data
-      if (imgData && imgData.length) {
-        if (__PLATFORM__ === 'app' && data.compressed) {
-          const pako = await import('pako')
-          imgData = pako.inflateRaw(imgData) as any
-          delete data.compressed
-        }
-        data.data = new Uint8ClampedArray(imgData) as any
+export const createCanvasContext =
+  defineSyncApi<API_TYPE_CREATE_CANVAS_CONTEXT>(
+    API_CREATE_CANVAS_CONTEXT,
+    (canvasId, componentInstance): any => {
+      if (componentInstance) {
+        return new CanvasContext(canvasId, componentInstance.$page.id)
       }
-      resolve(data)
-    })
-    operateCanvas(canvasId, pageId, 'getImageData', {
-      x,
-      y,
-      width,
-      height,
-      callbackId: cId,
-    })
-  },
-  CanvasGetImageDataProtocol,
-  CanvasGetImageDataOptions
-)
-
-export const canvasPutImageData = defineAsyncApi<API_TYPE_CANVAS_PUT_IMAGE_DATA>(
-  API_CANVAS_PUT_IMAGE_DATA,
-  async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-    var pageId = getCurrentPageId()
-    if (!pageId) {
-      reject()
-      return
-    }
-    var cId = canvasEventCallbacks.push(function (
-      data: UniApp.CanvasGetImageDataRes
-    ) {
-      resolve(data)
-    })
-    let compressed
-    // iOS真机非调试模式压缩太慢暂时排除
-    if (
-      __PLATFORM__ === 'app' &&
-      (plus.os.name !== 'iOS' || typeof __WEEX_DEVTOOL__ === 'boolean')
-    ) {
-      const pako = await import('pako')
-      data = pako.deflateRaw(data as any, { to: 'string' }) as any
-      compressed = true
-    } else {
-      // fix ...
-      data = Array.prototype.slice.call(data)
-    }
-
-    operateCanvas(canvasId, pageId, 'putImageData', {
-      data,
-      x,
-      y,
-      width,
-      height,
-      compressed,
-      callbackId: cId,
-    })
-  },
-  CanvasPutImageDataProtocol,
-  CanvasPutImageDataOptions
-)
-
-export const canvasToTempFilePath = defineAsyncApi<API_TYPE_CANVAS_TO_TEMP_FILE_PATH>(
-  API_CANVAS_TO_TEMP_FILE_PATH,
-  (
-    {
-      x = 0,
-      y = 0,
-      width,
-      height,
-      destWidth,
-      destHeight,
-      canvasId,
-      fileType,
-      quality,
+      const pageId = getCurrentPageId()
+      if (pageId) {
+        return new CanvasContext(canvasId, pageId)
+      } else {
+        UniServiceJSBridge.emit('onError', 'createCanvasContext:fail')
+      }
     },
-    { resolve, reject }
-  ) => {
-    var pageId = getCurrentPageId()
-    if (!pageId) {
-      reject()
-      return
-    }
-    const cId = canvasEventCallbacks.push(function (
-      res: UniApp.CanvasToTempFilePathRes
-    ) {
-      resolve(res)
-    })
-    const dirname = `${TEMP_PATH}/canvas`
-    operateCanvas(canvasId, pageId, 'toTempFilePath', {
-      x,
-      y,
-      width,
-      height,
-      destWidth,
-      destHeight,
-      fileType,
-      quality,
-      dirname,
-      callbackId: cId,
-    })
-  },
-  CanvasToTempFilePathProtocol,
-  CanvasToTempFilePathOptions
-)
+    CreateCanvasContextProtocol
+  )
+
+export const canvasGetImageData =
+  defineAsyncApi<API_TYPE_CANVAS_GET_IMAGE_DATA>(
+    API_CANVAS_GET_IMAGE_DATA,
+    ({ canvasId, x, y, width, height }, { resolve, reject }) => {
+      const pageId = getCurrentPageId()
+      if (!pageId) {
+        reject()
+        return
+      }
+      const cId = canvasEventCallbacks.push(async function (
+        data: UniApp.CanvasGetImageDataRes & { compressed?: boolean }
+      ) {
+        let imgData = data.data
+        if (imgData && imgData.length) {
+          if (__PLATFORM__ === 'app' && data.compressed) {
+            const pako = await import('pako')
+            imgData = pako.inflateRaw(imgData) as any
+            delete data.compressed
+          }
+          data.data = new Uint8ClampedArray(imgData) as any
+        }
+        resolve(data)
+      })
+      operateCanvas(canvasId, pageId, 'getImageData', {
+        x,
+        y,
+        width,
+        height,
+        callbackId: cId,
+      })
+    },
+    CanvasGetImageDataProtocol,
+    CanvasGetImageDataOptions
+  )
+
+export const canvasPutImageData =
+  defineAsyncApi<API_TYPE_CANVAS_PUT_IMAGE_DATA>(
+    API_CANVAS_PUT_IMAGE_DATA,
+    async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+      var pageId = getCurrentPageId()
+      if (!pageId) {
+        reject()
+        return
+      }
+      var cId = canvasEventCallbacks.push(function (
+        data: UniApp.CanvasGetImageDataRes
+      ) {
+        resolve(data)
+      })
+      let compressed
+      // iOS真机非调试模式压缩太慢暂时排除
+      if (
+        __PLATFORM__ === 'app' &&
+        (plus.os.name !== 'iOS' || typeof __WEEX_DEVTOOL__ === 'boolean')
+      ) {
+        const pako = await import('pako')
+        data = pako.deflateRaw(data as any, { to: 'string' }) as any
+        compressed = true
+      } else {
+        // fix ...
+        data = Array.prototype.slice.call(data)
+      }
+
+      operateCanvas(canvasId, pageId, 'putImageData', {
+        data,
+        x,
+        y,
+        width,
+        height,
+        compressed,
+        callbackId: cId,
+      })
+    },
+    CanvasPutImageDataProtocol,
+    CanvasPutImageDataOptions
+  )
+
+export const canvasToTempFilePath =
+  defineAsyncApi<API_TYPE_CANVAS_TO_TEMP_FILE_PATH>(
+    API_CANVAS_TO_TEMP_FILE_PATH,
+    (
+      {
+        x = 0,
+        y = 0,
+        width,
+        height,
+        destWidth,
+        destHeight,
+        canvasId,
+        fileType,
+        quality,
+      },
+      { resolve, reject }
+    ) => {
+      var pageId = getCurrentPageId()
+      if (!pageId) {
+        reject()
+        return
+      }
+      const cId = canvasEventCallbacks.push(function (
+        res: UniApp.CanvasToTempFilePathRes
+      ) {
+        resolve(res)
+      })
+      const dirname = `${TEMP_PATH}/canvas`
+      operateCanvas(canvasId, pageId, 'toTempFilePath', {
+        x,
+        y,
+        width,
+        height,
+        destWidth,
+        destHeight,
+        fileType,
+        quality,
+        dirname,
+        callbackId: cId,
+      })
+    },
+    CanvasToTempFilePathProtocol,
+    CanvasToTempFilePathOptions
+  )

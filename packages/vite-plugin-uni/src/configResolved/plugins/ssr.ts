@@ -70,7 +70,7 @@ export function uniSSRPlugin(
           if (name !== 'ssrRef' && name !== 'shallowSsrRef') {
             return
           }
-          const { end } = (node as unknown) as { end: number }
+          const { end } = node as unknown as { end: number }
           const key = id + '-' + (node as any).end
           debugSSR(key, name)
           s.appendLeft(end - 1, ", '" + createKey(`${id}-${end}`) + "'")

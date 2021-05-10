@@ -21,9 +21,9 @@ export function $nne(this: ComponentPublicInstance, evt: Event) {
   const res = createNativeEvent(evt)
 
   if (isClickEvent(evt)) {
-    normalizeClickEvent((res as unknown) as WechatMiniprogram.Touch, evt)
+    normalizeClickEvent(res as unknown as WechatMiniprogram.Touch, evt)
   } else if (__PLATFORM__ === 'h5' && isMouseEvent(evt)) {
-    normalizeMouseEvent((res as unknown) as WechatMiniprogram.Touch, evt)
+    normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
   } else if (evt instanceof TouchEvent) {
     const { top } = getWindowOffset()
     ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
