@@ -12,12 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install
+        run: yarn
       - name: Build all
         run: npm run build
       - name: Install ssr
         working-directory: ./packages/playground/ssr
-        run: |
-          yarn
+        run: yarn
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
