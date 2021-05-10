@@ -23,7 +23,9 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           install: false
-          start: cd ./packages/playground/ssr && npm run dev:ssr
+          start: |
+            cd ./packages/playground/ssr
+            npm run dev:ssr
           project: ./packages/playground/ssr
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
