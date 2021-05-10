@@ -799,6 +799,29 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
+const ua = navigator.userAgent;
+const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
+  return {
+    platform: isIOS$1 ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
 function saveImage(base64, dirname, callback) {
   callback(null, base64);
 }
@@ -879,6 +902,47 @@ function getSameOriginUrl(url) {
   }
   return urlToFile(url).then(fileToUrl);
 }
+const API_UPX2PX = "upx2px";
+const Upx2pxProtocol = [
+  {
+    name: "upx",
+    type: [Number, String],
+    required: true
+  }
+];
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+function checkDeviceWidth() {
+  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
+  deviceWidth = windowWidth;
+  deviceDPR = pixelRatio2;
+  isIOS = platform === "ios";
+}
+const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+  if (deviceWidth === 0) {
+    checkDeviceWidth();
+  }
+  number = Number(number);
+  if (number === 0) {
+    return 0;
+  }
+  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
+    if (deviceDPR === 1 || !isIOS) {
+      result = 1;
+    } else {
+      result = 0.5;
+    }
+  }
+  return number < 0 ? -result : result;
+}, Upx2pxProtocol);
 const canvasEventCallbacks = createCallbacks("canvasEvent");
 ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
   const callback = canvasEventCallbacks.pop(callbackId);
@@ -1138,7 +1202,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory();
   }
 }
-var index$m = {
+var index$o = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -1272,7 +1336,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$9 = {
+const _sfc_main$8 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1397,7 +1461,7 @@ const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1427,7 +1491,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$9.render = _sfc_render$9;
+_sfc_main$8.render = _sfc_render$8;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -1512,7 +1576,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$l = /* @__PURE__ */ vue.defineComponent({
+var index$n = /* @__PURE__ */ vue.defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1551,7 +1615,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$k = /* @__PURE__ */ vue.defineComponent({
+var index$m = /* @__PURE__ */ vue.defineComponent({
   name: "Button",
   props: {
     id: {
@@ -1734,7 +1798,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$8 = {
+var _sfc_main$7 = {
   name: "Canvas",
   inheritAttrs: false,
   components: {
@@ -2196,7 +2260,7 @@ const _hoisted_1$5 = {
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
@@ -2212,17 +2276,17 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$7.render = _sfc_render$7;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$k = {
+const props$m = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ vue.defineComponent({
+var index$l = /* @__PURE__ */ vue.defineComponent({
   name: "CheckboxGroup",
-  props: props$k,
+  props: props$m,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2275,15 +2339,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$j = {
+const props$l = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ vue.defineComponent({
+var index$k = /* @__PURE__ */ vue.defineComponent({
   name: "Label",
-  props: props$j,
+  props: props$l,
   setup(props2, {
     emit: emit2,
     slots
@@ -2328,7 +2392,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$i = {
+const props$k = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2350,9 +2414,9 @@ const props$i = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ vue.defineComponent({
+var index$j = /* @__PURE__ */ vue.defineComponent({
   name: "Checkbox",
-  props: props$i,
+  props: props$k,
   setup(props2, {
     slots
   }) {
@@ -2421,7 +2485,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$h = {
+const props$j = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2591,7 +2655,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   useSubscribe();
 }
-const props$g = /* @__PURE__ */ Object.assign({}, props$h, {
+const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
   id: {
     type: String,
     default: ""
@@ -2617,9 +2681,9 @@ const props$g = /* @__PURE__ */ Object.assign({}, props$h, {
     default: false
   }
 });
-var index$g = /* @__PURE__ */ vue.defineComponent({
+var index$i = /* @__PURE__ */ vue.defineComponent({
   name: "Editor",
-  props: props$g,
+  props: props$i,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2678,7 +2742,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$f = /* @__PURE__ */ vue.defineComponent({
+var index$h = /* @__PURE__ */ vue.defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -2700,7 +2764,7 @@ var index$f = /* @__PURE__ */ vue.defineComponent({
     return () => vue.createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
   }
 });
-const props$f = {
+const props$h = {
   src: {
     type: String,
     default: ""
@@ -2737,9 +2801,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$e = /* @__PURE__ */ vue.defineComponent({
+var index$g = /* @__PURE__ */ vue.defineComponent({
   name: "Image",
-  props: props$f,
+  props: props$h,
   setup(props2, {
     emit: emit2
   }) {
@@ -2951,7 +3015,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$e = /* @__PURE__ */ Object.assign({}, {
+const props$g = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -3012,7 +3076,7 @@ const props$e = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$h);
+}, props$j);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = vue.ref(null);
@@ -3188,7 +3252,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$d = /* @__PURE__ */ Object.assign({}, props$e, {
+const props$f = /* @__PURE__ */ Object.assign({}, props$g, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3196,7 +3260,7 @@ const props$d = /* @__PURE__ */ Object.assign({}, props$e, {
 });
 var Input = /* @__PURE__ */ vue.defineComponent({
   name: "Input",
-  props: props$d,
+  props: props$f,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3759,7 +3823,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$7 = {
+const _sfc_main$6 = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -4311,16 +4375,16 @@ const _sfc_main$7 = {
     }
   }
 };
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = vue.resolveComponent("v-uni-resize-sensor");
   return vue.openBlock(), vue.createBlock("uni-movable-view", _ctx.$attrs, [
     vue.createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     vue.renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$6.render = _sfc_render$6;
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const _sfc_main$6 = {
+const _sfc_main$5 = {
   name: "Navigator",
   props: {
     hoverClass: {
@@ -4403,7 +4467,7 @@ const _sfc_main$6 = {
     };
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (vue.openBlock(), vue.createBlock("uni-navigator", vue.mergeProps({
     key: 0,
     class: [$setup.hovering ? $props.hoverClass : ""]
@@ -4418,13 +4482,13 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     vue.renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$5.render = _sfc_render$5;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$c = {
+const props$e = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -4471,9 +4535,9 @@ const props$c = {
     }
   }
 };
-var index$d = /* @__PURE__ */ vue.defineComponent({
+var index$f = /* @__PURE__ */ vue.defineComponent({
   name: "Progress",
-  props: props$c,
+  props: props$e,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -4544,15 +4608,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$b = {
+const props$d = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ vue.defineComponent({
+var index$e = /* @__PURE__ */ vue.defineComponent({
   name: "RadioGroup",
-  props: props$b,
+  props: props$d,
   setup(props2, {
     emit: emit2,
     slots
@@ -4628,7 +4692,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$a = {
+const props$c = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -4650,9 +4714,9 @@ const props$a = {
     default: ""
   }
 };
-var index$b = /* @__PURE__ */ vue.defineComponent({
+var index$d = /* @__PURE__ */ vue.defineComponent({
   name: "Radio",
-  props: props$a,
+  props: props$c,
   setup(props2, {
     slots
   }) {
@@ -4936,7 +5000,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$5 = {
+const _sfc_main$4 = {
   name: "RichText",
   props: {
     nodes: {
@@ -4966,12 +5030,12 @@ const _sfc_main$5 = {
   }
 };
 const _hoisted_1$4 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-rich-text", _ctx.$attrs, [
     _hoisted_1$4
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$4.render = _sfc_render$4;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -5663,7 +5727,7 @@ function disableScrollBounce({disable}) {
   }
 }
 const passiveOptions = uniShared.passive(true);
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -6124,7 +6188,7 @@ const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$3, [
     vue.createVNode("div", _hoisted_2$1, [
       vue.createVNode("div", {
@@ -6172,8 +6236,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 512);
 }
-_sfc_main$4.render = _sfc_render$4;
-const props$9 = {
+_sfc_main$3.render = _sfc_render$3;
+const props$b = {
   name: {
     type: String,
     default: ""
@@ -6227,9 +6291,9 @@ const props$9 = {
     default: false
   }
 };
-var index$a = /* @__PURE__ */ vue.defineComponent({
+var index$c = /* @__PURE__ */ vue.defineComponent({
   name: "Slider",
-  props: props$9,
+  props: props$b,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -6388,33 +6452,509 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const _sfc_main$3 = {
-  name: "SwiperItem",
-  props: {
-    itemId: {
-      type: String,
-      default: ""
-    }
+const props$a = {
+  indicatorDots: {
+    type: [Boolean, String],
+    default: false
   },
-  mounted: function() {
-    var $el = this.$el;
-    $el.style.position = "absolute";
-    $el.style.width = "100%";
-    $el.style.height = "100%";
-    var callbacks2 = this.$vnode._callbacks;
-    if (callbacks2) {
-      callbacks2.forEach((callback) => {
-        callback();
+  vertical: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  circular: {
+    type: [Boolean, String],
+    default: false
+  },
+  interval: {
+    type: [Number, String],
+    default: 5e3
+  },
+  duration: {
+    type: [Number, String],
+    default: 500
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  },
+  indicatorColor: {
+    type: String,
+    default: ""
+  },
+  indicatorActiveColor: {
+    type: String,
+    default: ""
+  },
+  previousMargin: {
+    type: String,
+    default: ""
+  },
+  nextMargin: {
+    type: String,
+    default: ""
+  },
+  currentItemId: {
+    type: String,
+    default: ""
+  },
+  skipHiddenItemLayout: {
+    type: [Boolean, String],
+    default: false
+  },
+  displayMultipleItems: {
+    type: [Number, String],
+    default: 1
+  },
+  disableTouch: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+function upx2pxStr(val) {
+  if (/\d+[ur]px$/i.test(val)) {
+    val.replace(/\d+[ur]px$/i, (text) => {
+      return `${upx2px(parseFloat(text))}px`;
+    });
+  }
+  return val || "";
+}
+function useState(props2) {
+  const interval = vue.computed(() => {
+    const interval2 = Number(props2.interval);
+    return isNaN(interval2) ? 5e3 : interval2;
+  });
+  const duration = vue.computed(() => {
+    const duration2 = Number(props2.duration);
+    return isNaN(duration2) ? 500 : duration2;
+  });
+  const displayMultipleItems = vue.computed(() => {
+    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
+    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
+  });
+  const state = vue.reactive({
+    interval,
+    duration,
+    displayMultipleItems,
+    current: Math.round(props2.current) || 0,
+    currentItemId: props2.currentItemId,
+    userTracking: false
+  });
+  return state;
+}
+function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger) {
+  function cancelSchedule() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  let timer = null;
+  let invalid = true;
+  let viewportPosition = 0;
+  let viewportMoveRatio = 1;
+  let animating = null;
+  let requestedAnimation = false;
+  let contentTrackViewport = 0;
+  let transitionStart;
+  let currentChangeSource = "";
+  const circularEnabled = vue.computed(() => props2.circular && swiperContexts.value.length > state.displayMultipleItems);
+  function checkCircularLayout(index2) {
+    if (!invalid) {
+      for (let items = swiperContexts.value, n = items.length, i2 = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
+        const item = items[r];
+        const s = Math.floor(index2 / n) * n + r;
+        const l = s + n;
+        const c = s - n;
+        const u = Math.max(index2 - (s + 1), s - i2, 0);
+        const d = Math.max(index2 - (l + 1), l - i2, 0);
+        const h = Math.max(index2 - (c + 1), c - i2, 0);
+        const p2 = Math.min(u, d, h);
+        const position = [s, l, c][[u, d, h].indexOf(p2)];
+        item.updatePosition(position, props2.vertical);
+      }
+    }
+  }
+  function updateViewport(index2) {
+    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
+      if (circularEnabled.value) {
+        checkCircularLayout(index2);
+      }
+    }
+    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
+    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
+    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
+    const slideFrame = slideFrameRef.value;
+    if (slideFrame) {
+      slideFrame.style.webkitTransform = transform;
+      slideFrame.style.transform = transform;
+    }
+    viewportPosition = index2;
+    if (!transitionStart) {
+      if (index2 % 1 === 0) {
+        return;
+      }
+      transitionStart = index2;
+    }
+    index2 -= Math.floor(transitionStart);
+    const items = swiperContexts.value;
+    if (index2 <= -(items.length - 1)) {
+      index2 += items.length;
+    } else if (index2 >= items.length) {
+      index2 -= items.length;
+    }
+    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
+    trigger("transition", {}, {
+      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
+      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
+    });
+  }
+  function endViewportAnimation() {
+    if (animating) {
+      updateViewport(animating.toPos);
+      animating = null;
+    }
+  }
+  function normalizeCurrentValue(current) {
+    const length = swiperContexts.value.length;
+    if (!length) {
+      return -1;
+    }
+    const index2 = (Math.round(current) % length + length) % length;
+    if (circularEnabled.value) {
+      if (length <= state.displayMultipleItems) {
+        return 0;
+      }
+    } else if (index2 > length - state.displayMultipleItems) {
+      return length - state.displayMultipleItems;
+    }
+    return index2;
+  }
+  function cancelViewportAnimation() {
+    animating = null;
+  }
+  function animateFrameFuncProto() {
+    if (!animating) {
+      requestedAnimation = false;
+      return;
+    }
+    const _animating = animating;
+    const toPos = _animating.toPos;
+    const acc = _animating.acc;
+    const endTime = _animating.endTime;
+    const source = _animating.source;
+    const time = endTime - Date.now();
+    if (time <= 0) {
+      updateViewport(toPos);
+      animating = null;
+      requestedAnimation = false;
+      transitionStart = null;
+      const item = swiperContexts.value[state.current];
+      if (item) {
+        const currentItemId = item.getItemId();
+        trigger("animationfinish", {}, {
+          current: state.current,
+          currentItemId,
+          source
+        });
+      }
+      return;
+    }
+    const s = acc * time * time / 2;
+    const l = toPos + s;
+    updateViewport(l);
+    requestAnimationFrame(animateFrameFuncProto);
+  }
+  function animateViewport(current, source, n) {
+    cancelViewportAnimation();
+    const duration = state.duration;
+    const length = swiperContexts.value.length;
+    let position = viewportPosition;
+    if (circularEnabled.value) {
+      if (n < 0) {
+        for (; position < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+      } else if (n > 0) {
+        for (; position > current; ) {
+          position -= length;
+        }
+        for (; position + length < current; ) {
+          position += length;
+        }
+      } else {
+        for (; position + length < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+        if (position + length - current < current - position) {
+          position += length;
+        }
+      }
+    }
+    animating = {
+      toPos: current,
+      acc: 2 * (position - current) / (duration * duration),
+      endTime: Date.now() + duration,
+      source
+    };
+    if (!requestedAnimation) {
+      requestedAnimation = true;
+      requestAnimationFrame(animateFrameFuncProto);
+    }
+  }
+  function scheduleAutoplay() {
+    cancelSchedule();
+    const items = swiperContexts.value;
+    const callback = function() {
+      timer = null;
+      currentChangeSource = "autoplay";
+      if (circularEnabled.value) {
+        state.current = normalizeCurrentValue(state.current + 1);
+      } else {
+        state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
+      }
+      animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
+      timer = setTimeout(callback, state.interval);
+    };
+    if (!(invalid || items.length <= state.displayMultipleItems)) {
+      timer = setTimeout(callback, state.interval);
+    }
+  }
+  function resetLayout() {
+    cancelSchedule();
+    endViewportAnimation();
+    const items = swiperContexts.value;
+    for (let i2 = 0; i2 < items.length; i2++) {
+      items[i2].updatePosition(i2, props2.vertical);
+    }
+    viewportMoveRatio = 1;
+    const slideFrameEl = slideFrameRef.value;
+    if (state.displayMultipleItems === 1 && items.length) {
+      const itemRect = items[0].getBoundingClientRect();
+      const slideFrameRect = slideFrameEl.getBoundingClientRect();
+      viewportMoveRatio = itemRect.width / slideFrameRect.width;
+      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
+        viewportMoveRatio = 1;
+      }
+    }
+    const position = viewportPosition;
+    viewportPosition = -2;
+    const current = state.current;
+    if (current >= 0) {
+      invalid = false;
+      if (state.userTracking) {
+        updateViewport(position + current - contentTrackViewport);
+        contentTrackViewport = current;
+      } else {
+        updateViewport(current);
+        if (props2.autoplay) {
+          scheduleAutoplay();
+        }
+      }
+    } else {
+      invalid = true;
+      updateViewport(-state.displayMultipleItems - 1);
+    }
+  }
+  vue.watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
+    let current = -1;
+    if (props2.currentItemId) {
+      for (let i2 = 0, items = swiperContexts.value; i2 < items.length; i2++) {
+        const itemId = items[i2].getItemId();
+        if (itemId === props2.currentItemId) {
+          current = i2;
+          break;
+        }
+      }
+    }
+    if (current < 0) {
+      current = Math.round(props2.current) || 0;
+    }
+    current = current < 0 ? 0 : current;
+    if (state.current !== current) {
+      currentChangeSource = "";
+      state.current = current;
+    }
+  });
+  vue.watch([() => props2.vertical, () => circularEnabled.value, () => state.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+  vue.watch(() => state.interval, () => {
+    if (timer) {
+      cancelSchedule();
+      scheduleAutoplay();
+    }
+  });
+  function currentChanged(current, history) {
+    const source = currentChangeSource;
+    currentChangeSource = "";
+    const items = swiperContexts.value;
+    if (!source) {
+      const length = items.length;
+      animateViewport(current, "", circularEnabled.value && history + (length - current) % length > length / 2 ? 1 : 0);
+    }
+    const item = items[current];
+    if (item) {
+      const currentItemId = state.currentItemId = item.getItemId();
+      trigger("change", {}, {
+        current: state.current,
+        currentItemId,
+        source
       });
     }
   }
-};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-swiper-item", _ctx.$attrs, [
-    vue.renderSlot(_ctx.$slots, "default")
-  ], 16);
+  vue.watch(() => state.current, (val, oldVal) => {
+    currentChanged(val, oldVal);
+    emit2("update:current", val);
+  });
+  vue.watch(() => state.currentItemId, (val) => {
+    emit2("update:currentItemId", val);
+  });
+  function inintAutoplay(enable) {
+    if (enable) {
+      scheduleAutoplay();
+    } else {
+      cancelSchedule();
+    }
+  }
+  vue.watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
+  inintAutoplay(props2.autoplay && !state.userTracking);
+  function onSwiperDotClick(index2) {
+    animateViewport(state.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
+  }
+  return {
+    onSwiperDotClick
+  };
 }
-_sfc_main$3.render = _sfc_render$3;
+var index$b = /* @__PURE__ */ vue.defineComponent({
+  name: "Swiper",
+  props: props$a,
+  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const slidesWrapperRef = vue.ref(null);
+    const slideFrameRef = vue.ref(null);
+    const state = useState(props2);
+    const slidesStyle = vue.computed(() => {
+      let style = {};
+      if (props2.nextMargin || props2.previousMargin) {
+        style = props2.vertical ? {
+          left: 0,
+          right: 0,
+          top: upx2pxStr(props2.previousMargin),
+          bottom: upx2pxStr(props2.nextMargin)
+        } : {
+          top: 0,
+          bottom: 0,
+          left: upx2pxStr(props2.previousMargin),
+          right: upx2pxStr(props2.nextMargin)
+        };
+      }
+      return style;
+    });
+    const slideFrameStyle = vue.computed(() => {
+      const value = Math.abs(100 / state.displayMultipleItems) + "%";
+      return {
+        width: props2.vertical ? "100%" : value,
+        height: !props2.vertical ? "100%" : value
+      };
+    });
+    let swiperItems = [];
+    const originSwiperContexts = [];
+    const swiperContexts = vue.ref([]);
+    function updateSwiperContexts() {
+      const contexts = [];
+      for (let index2 = 0; index2 < swiperItems.length; index2++) {
+        const swiperItem = swiperItems[index2];
+        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
+        if (swiperContext) {
+          contexts.push(vue.markRaw(swiperContext));
+        }
+      }
+      swiperContexts.value = contexts;
+    }
+    const addSwiperContext = function(swiperContext) {
+      originSwiperContexts.push(swiperContext);
+      updateSwiperContexts();
+    };
+    vue.provide("addSwiperContext", addSwiperContext);
+    const removeSwiperContext = function(swiperContext) {
+      const index2 = originSwiperContexts.indexOf(swiperContext);
+      if (index2 >= 0) {
+        originSwiperContexts.splice(index2, 1);
+        updateSwiperContexts();
+      }
+    };
+    vue.provide("removeSwiperContext", removeSwiperContext);
+    const {
+      onSwiperDotClick
+    } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      swiperItems = defaultSlots || [];
+      return vue.createVNode("uni-swiper", {
+        ref: rootRef
+      }, [vue.createVNode("div", {
+        ref: slidesWrapperRef,
+        class: "uni-swiper-wrapper"
+      }, [vue.createVNode("div", {
+        class: "uni-swiper-slides",
+        style: slidesStyle.value
+      }, [vue.createVNode("div", {
+        ref: slideFrameRef,
+        class: "uni-swiper-slide-frame",
+        style: slideFrameStyle.value
+      }, [swiperItems], 4)], 4), props2.indicatorDots && vue.createVNode("div", {
+        class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+      }, [swiperContexts.value.map((_, index2, array) => vue.createVNode("div", {
+        onClick: () => onSwiperDotClick(index2),
+        class: {
+          "uni-swiper-dot": true,
+          "uni-swiper-dot-active": index2 < state.current + state.displayMultipleItems && index2 >= state.current || index2 < state.current + state.displayMultipleItems - array.length
+        },
+        style: {
+          background: index2 === state.current ? props2.indicatorActiveColor : props2.indicatorColor
+        }
+      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+    };
+  }
+});
+const props$9 = {
+  itemId: {
+    type: String,
+    default: ""
+  }
+};
+var index$a = /* @__PURE__ */ vue.defineComponent({
+  name: "SwiperItem",
+  props: props$9,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    return () => {
+      return vue.createVNode("uni-swiper-item", {
+        ref: rootRef,
+        style: {
+          position: "absolute",
+          width: "100%",
+          height: "100%"
+        }
+      }, [slots.default && slots.default()], 512);
+    };
+  }
+});
 const props$8 = {
   name: {
     type: String,
@@ -6584,7 +7124,7 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const props$7 = /* @__PURE__ */ Object.assign({}, props$e, {
+const props$7 = /* @__PURE__ */ Object.assign({}, props$g, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9469,32 +10009,33 @@ var index = /* @__PURE__ */ vue.defineComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$9;
-exports.Button = index$k;
-exports.Canvas = _sfc_main$8;
-exports.Checkbox = index$h;
-exports.CheckboxGroup = index$j;
+exports.Audio = _sfc_main$8;
+exports.Button = index$m;
+exports.Canvas = _sfc_main$7;
+exports.Checkbox = index$j;
+exports.CheckboxGroup = index$l;
 exports.CoverImage = _sfc_main$1;
 exports.CoverView = _sfc_main$2;
-exports.Editor = index$g;
-exports.Form = index$l;
-exports.Icon = index$f;
-exports.Image = index$e;
+exports.Editor = index$i;
+exports.Form = index$n;
+exports.Icon = index$h;
+exports.Image = index$g;
 exports.Input = Input;
-exports.Label = index$i;
+exports.Label = index$k;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
-exports.MovableView = _sfc_main$7;
-exports.Navigator = _sfc_main$6;
+exports.MovableView = _sfc_main$6;
+exports.Navigator = _sfc_main$5;
 exports.PageComponent = index$2;
-exports.Progress = index$d;
-exports.Radio = index$b;
-exports.RadioGroup = index$c;
+exports.Progress = index$f;
+exports.Radio = index$d;
+exports.RadioGroup = index$e;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = _sfc_main$5;
-exports.ScrollView = _sfc_main$4;
-exports.Slider = index$a;
-exports.SwiperItem = _sfc_main$3;
+exports.RichText = _sfc_main$4;
+exports.ScrollView = _sfc_main$3;
+exports.Slider = index$c;
+exports.Swiper = index$b;
+exports.SwiperItem = index$a;
 exports.Switch = index$9;
 exports.Text = index$8;
 exports.Textarea = index$7;
@@ -9512,7 +10053,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$m;
+exports.plugin = index$o;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

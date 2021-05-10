@@ -21,8 +21,8 @@ import ResizeSensor from './resize-sensor/index'
 import RichText from './rich-text/index.vue'
 import ScrollView from './scroll-view/index.vue'
 import Slider from './slider/index'
-// import Swiper from './swiper/index.vue'
-import SwiperItem from './swiper-item/index.vue'
+import Swiper from './swiper/index'
+import SwiperItem from './swiper-item/index'
 import Switch from './switch/index'
 import Text from './text/index'
 import Textarea from './textarea/index'
@@ -51,7 +51,7 @@ export {
   RichText,
   ScrollView,
   Slider,
-  //   Swiper,
+  Swiper,
   SwiperItem,
   Switch,
   Text,

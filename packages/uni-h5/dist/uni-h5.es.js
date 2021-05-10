@@ -15,7 +15,7 @@ var __assign = (a2, b) => {
   return a2;
 };
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, createCommentVNode, markRaw, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, plusReady, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -465,7 +465,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -477,10 +477,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1164,7 +1164,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -4675,7 +4675,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$m = {
+var index$o = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -4860,7 +4860,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$9 = {
+const _sfc_main$8 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -4985,7 +4985,7 @@ const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -5015,7 +5015,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$9.render = _sfc_render$9;
+_sfc_main$8.render = _sfc_render$8;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -5100,7 +5100,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$l = /* @__PURE__ */ defineComponent({
+var index$n = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -5139,7 +5139,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$k = /* @__PURE__ */ defineComponent({
+var index$m = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -5468,7 +5468,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$8 = {
+var _sfc_main$7 = {
   name: "Canvas",
   inheritAttrs: false,
   components: {
@@ -5930,7 +5930,7 @@ const _hoisted_1$5 = {
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
@@ -5946,7 +5946,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$7.render = _sfc_render$7;
 function useListeners(props2, listeners) {
   _addListeners(props2.id, listeners);
   watch(() => props2.id, (newId, oldId) => {
@@ -6002,15 +6002,15 @@ function _removeListeners(id2, listeners, watch2) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$m = {
+const props$o = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ defineComponent({
+var index$l = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$m,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6063,15 +6063,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$l = {
+const props$n = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineComponent({
+var index$k = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$l,
+  props: props$n,
   setup(props2, {
     emit: emit2,
     slots
@@ -6116,7 +6116,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$k = {
+const props$m = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6138,9 +6138,9 @@ const props$k = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineComponent({
+var index$j = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$k,
+  props: props$m,
   setup(props2, {
     slots
   }) {
@@ -6219,7 +6219,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$j = {
+const props$l = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6963,7 +6963,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
+const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
   id: {
     type: String,
     default: ""
@@ -6989,9 +6989,9 @@ const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
     default: false
   }
 });
-var index$g = /* @__PURE__ */ defineComponent({
+var index$i = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$i,
+  props: props$k,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7051,7 +7051,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$f = /* @__PURE__ */ defineComponent({
+var index$h = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -7073,7 +7073,7 @@ var index$f = /* @__PURE__ */ defineComponent({
     return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
   }
 });
-const props$h = {
+const props$j = {
   src: {
     type: String,
     default: ""
@@ -7110,9 +7110,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$e = /* @__PURE__ */ defineComponent({
+var index$g = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$h,
+  props: props$j,
   setup(props2, {
     emit: emit2
   }) {
@@ -7391,7 +7391,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$g = /* @__PURE__ */ Object.assign({}, {
+const props$i = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -7452,7 +7452,7 @@ const props$g = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$j);
+}, props$l);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -7637,7 +7637,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$f = /* @__PURE__ */ Object.assign({}, props$g, {
+const props$h = /* @__PURE__ */ Object.assign({}, props$i, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7645,7 +7645,7 @@ const props$f = /* @__PURE__ */ Object.assign({}, props$g, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$f,
+  props: props$h,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -8208,7 +8208,7 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$7 = {
+const _sfc_main$6 = {
   name: "MovableView",
   mixins: [touchtrack],
   props: {
@@ -8760,16 +8760,16 @@ const _sfc_main$7 = {
     }
   }
 };
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
   return openBlock(), createBlock("uni-movable-view", _ctx.$attrs, [
     createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
     renderSlot(_ctx.$slots, "default")
   ], 16);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$6.render = _sfc_render$6;
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const _sfc_main$6 = {
+const _sfc_main$5 = {
   name: "Navigator",
   props: {
     hoverClass: {
@@ -8852,7 +8852,7 @@ const _sfc_main$6 = {
     };
   }
 };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 0,
     class: [$setup.hovering ? $props.hoverClass : ""]
@@ -8867,13 +8867,13 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$5.render = _sfc_render$5;
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$e = {
+const props$g = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -8920,9 +8920,9 @@ const props$e = {
     }
   }
 };
-var index$d = /* @__PURE__ */ defineComponent({
+var index$f = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$e,
+  props: props$g,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -8993,15 +8993,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$d = {
+const props$f = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
-  props: props$d,
+  props: props$f,
   setup(props2, {
     emit: emit2,
     slots
@@ -9080,7 +9080,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$c = {
+const props$e = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -9102,9 +9102,9 @@ const props$c = {
     default: ""
   }
 };
-var index$b = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Radio",
-  props: props$c,
+  props: props$e,
   setup(props2, {
     slots
   }) {
@@ -9398,7 +9398,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$5 = {
+const _sfc_main$4 = {
   name: "RichText",
   props: {
     nodes: {
@@ -9428,12 +9428,12 @@ const _sfc_main$5 = {
   }
 };
 const _hoisted_1$4 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
     _hoisted_1$4
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$4.render = _sfc_render$4;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -10125,7 +10125,7 @@ function disableScrollBounce({disable}) {
   }
 }
 const passiveOptions = passive(true);
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -10586,7 +10586,7 @@ const _hoisted_9 = /* @__PURE__ */ createVNode("circle", {
   style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-scroll-view", _hoisted_1$3, [
     createVNode("div", _hoisted_2$1, [
       createVNode("div", {
@@ -10634,7 +10634,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 512);
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$3.render = _sfc_render$3;
 const addListenerToElement = function(element, type, callback2, capture) {
   element.addEventListener(type, ($event) => {
     if (typeof callback2 === "function") {
@@ -10744,7 +10744,7 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
-const props$b = {
+const props$d = {
   name: {
     type: String,
     default: ""
@@ -10798,9 +10798,9 @@ const props$b = {
     default: false
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "Slider",
-  props: props$b,
+  props: props$d,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -10965,33 +10965,647 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const _sfc_main$3 = {
-  name: "SwiperItem",
-  props: {
-    itemId: {
-      type: String,
-      default: ""
-    }
+const props$c = {
+  indicatorDots: {
+    type: [Boolean, String],
+    default: false
   },
-  mounted: function() {
-    var $el = this.$el;
-    $el.style.position = "absolute";
-    $el.style.width = "100%";
-    $el.style.height = "100%";
-    var callbacks2 = this.$vnode._callbacks;
-    if (callbacks2) {
-      callbacks2.forEach((callback2) => {
-        callback2();
+  vertical: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  circular: {
+    type: [Boolean, String],
+    default: false
+  },
+  interval: {
+    type: [Number, String],
+    default: 5e3
+  },
+  duration: {
+    type: [Number, String],
+    default: 500
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  },
+  indicatorColor: {
+    type: String,
+    default: ""
+  },
+  indicatorActiveColor: {
+    type: String,
+    default: ""
+  },
+  previousMargin: {
+    type: String,
+    default: ""
+  },
+  nextMargin: {
+    type: String,
+    default: ""
+  },
+  currentItemId: {
+    type: String,
+    default: ""
+  },
+  skipHiddenItemLayout: {
+    type: [Boolean, String],
+    default: false
+  },
+  displayMultipleItems: {
+    type: [Number, String],
+    default: 1
+  },
+  disableTouch: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+function upx2pxStr(val) {
+  if (/\d+[ur]px$/i.test(val)) {
+    val.replace(/\d+[ur]px$/i, (text2) => {
+      return `${upx2px(parseFloat(text2))}px`;
+    });
+  }
+  return val || "";
+}
+function useState(props2) {
+  const interval = computed(() => {
+    const interval2 = Number(props2.interval);
+    return isNaN(interval2) ? 5e3 : interval2;
+  });
+  const duration = computed(() => {
+    const duration2 = Number(props2.duration);
+    return isNaN(duration2) ? 500 : duration2;
+  });
+  const displayMultipleItems = computed(() => {
+    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
+    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
+  });
+  const state = reactive({
+    interval,
+    duration,
+    displayMultipleItems,
+    current: Math.round(props2.current) || 0,
+    currentItemId: props2.currentItemId,
+    userTracking: false
+  });
+  return state;
+}
+function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger) {
+  function cancelSchedule() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  let timer = null;
+  let invalid = true;
+  let viewportPosition = 0;
+  let viewportMoveRatio = 1;
+  let animating = null;
+  let requestedAnimation = false;
+  let contentTrackViewport = 0;
+  let transitionStart;
+  let currentChangeSource = "";
+  let animationFrame;
+  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state.displayMultipleItems);
+  function checkCircularLayout(index2) {
+    if (!invalid) {
+      for (let items = swiperContexts.value, n = items.length, i2 = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
+        const item = items[r];
+        const s = Math.floor(index2 / n) * n + r;
+        const l = s + n;
+        const c = s - n;
+        const u = Math.max(index2 - (s + 1), s - i2, 0);
+        const d = Math.max(index2 - (l + 1), l - i2, 0);
+        const h = Math.max(index2 - (c + 1), c - i2, 0);
+        const p2 = Math.min(u, d, h);
+        const position = [s, l, c][[u, d, h].indexOf(p2)];
+        item.updatePosition(position, props2.vertical);
+      }
+    }
+  }
+  function updateViewport(index2) {
+    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
+      if (circularEnabled.value) {
+        checkCircularLayout(index2);
+      }
+    }
+    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
+    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
+    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
+    const slideFrame = slideFrameRef.value;
+    if (slideFrame) {
+      slideFrame.style.webkitTransform = transform;
+      slideFrame.style.transform = transform;
+    }
+    viewportPosition = index2;
+    if (!transitionStart) {
+      if (index2 % 1 === 0) {
+        return;
+      }
+      transitionStart = index2;
+    }
+    index2 -= Math.floor(transitionStart);
+    const items = swiperContexts.value;
+    if (index2 <= -(items.length - 1)) {
+      index2 += items.length;
+    } else if (index2 >= items.length) {
+      index2 -= items.length;
+    }
+    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
+    trigger("transition", {}, {
+      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
+      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
+    });
+  }
+  function endViewportAnimation() {
+    if (animating) {
+      updateViewport(animating.toPos);
+      animating = null;
+    }
+  }
+  function normalizeCurrentValue(current) {
+    const length = swiperContexts.value.length;
+    if (!length) {
+      return -1;
+    }
+    const index2 = (Math.round(current) % length + length) % length;
+    if (circularEnabled.value) {
+      if (length <= state.displayMultipleItems) {
+        return 0;
+      }
+    } else if (index2 > length - state.displayMultipleItems) {
+      return length - state.displayMultipleItems;
+    }
+    return index2;
+  }
+  function cancelViewportAnimation() {
+    animating = null;
+  }
+  function animateFrameFuncProto() {
+    if (!animating) {
+      requestedAnimation = false;
+      return;
+    }
+    const _animating = animating;
+    const toPos = _animating.toPos;
+    const acc = _animating.acc;
+    const endTime = _animating.endTime;
+    const source = _animating.source;
+    const time = endTime - Date.now();
+    if (time <= 0) {
+      updateViewport(toPos);
+      animating = null;
+      requestedAnimation = false;
+      transitionStart = null;
+      const item = swiperContexts.value[state.current];
+      if (item) {
+        const currentItemId = item.getItemId();
+        trigger("animationfinish", {}, {
+          current: state.current,
+          currentItemId,
+          source
+        });
+      }
+      return;
+    }
+    const s = acc * time * time / 2;
+    const l = toPos + s;
+    updateViewport(l);
+    animationFrame = requestAnimationFrame(animateFrameFuncProto);
+  }
+  function animateViewport(current, source, n) {
+    cancelViewportAnimation();
+    const duration = state.duration;
+    const length = swiperContexts.value.length;
+    let position = viewportPosition;
+    if (circularEnabled.value) {
+      if (n < 0) {
+        for (; position < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+      } else if (n > 0) {
+        for (; position > current; ) {
+          position -= length;
+        }
+        for (; position + length < current; ) {
+          position += length;
+        }
+      } else {
+        for (; position + length < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+        if (position + length - current < current - position) {
+          position += length;
+        }
+      }
+    }
+    animating = {
+      toPos: current,
+      acc: 2 * (position - current) / (duration * duration),
+      endTime: Date.now() + duration,
+      source
+    };
+    if (!requestedAnimation) {
+      requestedAnimation = true;
+      animationFrame = requestAnimationFrame(animateFrameFuncProto);
+    }
+  }
+  function scheduleAutoplay() {
+    cancelSchedule();
+    const items = swiperContexts.value;
+    const callback2 = function() {
+      timer = null;
+      currentChangeSource = "autoplay";
+      if (circularEnabled.value) {
+        state.current = normalizeCurrentValue(state.current + 1);
+      } else {
+        state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
+      }
+      animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
+      timer = setTimeout(callback2, state.interval);
+    };
+    if (!(invalid || items.length <= state.displayMultipleItems)) {
+      timer = setTimeout(callback2, state.interval);
+    }
+  }
+  function resetLayout() {
+    cancelSchedule();
+    endViewportAnimation();
+    const items = swiperContexts.value;
+    for (let i2 = 0; i2 < items.length; i2++) {
+      items[i2].updatePosition(i2, props2.vertical);
+    }
+    viewportMoveRatio = 1;
+    const slideFrameEl = slideFrameRef.value;
+    if (state.displayMultipleItems === 1 && items.length) {
+      const itemRect = items[0].getBoundingClientRect();
+      const slideFrameRect = slideFrameEl.getBoundingClientRect();
+      viewportMoveRatio = itemRect.width / slideFrameRect.width;
+      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
+        viewportMoveRatio = 1;
+      }
+    }
+    const position = viewportPosition;
+    viewportPosition = -2;
+    const current = state.current;
+    if (current >= 0) {
+      invalid = false;
+      if (state.userTracking) {
+        updateViewport(position + current - contentTrackViewport);
+        contentTrackViewport = current;
+      } else {
+        updateViewport(current);
+        if (props2.autoplay) {
+          scheduleAutoplay();
+        }
+      }
+    } else {
+      invalid = true;
+      updateViewport(-state.displayMultipleItems - 1);
+    }
+  }
+  watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
+    let current = -1;
+    if (props2.currentItemId) {
+      for (let i2 = 0, items = swiperContexts.value; i2 < items.length; i2++) {
+        const itemId = items[i2].getItemId();
+        if (itemId === props2.currentItemId) {
+          current = i2;
+          break;
+        }
+      }
+    }
+    if (current < 0) {
+      current = Math.round(props2.current) || 0;
+    }
+    current = current < 0 ? 0 : current;
+    if (state.current !== current) {
+      currentChangeSource = "";
+      state.current = current;
+    }
+  });
+  watch([() => props2.vertical, () => circularEnabled.value, () => state.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+  watch(() => state.interval, () => {
+    if (timer) {
+      cancelSchedule();
+      scheduleAutoplay();
+    }
+  });
+  function currentChanged(current, history2) {
+    const source = currentChangeSource;
+    currentChangeSource = "";
+    const items = swiperContexts.value;
+    if (!source) {
+      const length = items.length;
+      animateViewport(current, "", circularEnabled.value && history2 + (length - current) % length > length / 2 ? 1 : 0);
+    }
+    const item = items[current];
+    if (item) {
+      const currentItemId = state.currentItemId = item.getItemId();
+      trigger("change", {}, {
+        current: state.current,
+        currentItemId,
+        source
       });
     }
   }
-};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-swiper-item", _ctx.$attrs, [
-    renderSlot(_ctx.$slots, "default")
-  ], 16);
+  watch(() => state.current, (val, oldVal) => {
+    currentChanged(val, oldVal);
+    emit2("update:current", val);
+  });
+  watch(() => state.currentItemId, (val) => {
+    emit2("update:currentItemId", val);
+  });
+  function inintAutoplay(enable) {
+    if (enable) {
+      scheduleAutoplay();
+    } else {
+      cancelSchedule();
+    }
+  }
+  watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
+  inintAutoplay(props2.autoplay && !state.userTracking);
+  onMounted(() => {
+    let userDirectionChecked = false;
+    let contentTrackSpeed = 0;
+    let contentTrackT = 0;
+    function handleTrackStart() {
+      cancelSchedule();
+      contentTrackViewport = viewportPosition;
+      contentTrackSpeed = 0;
+      contentTrackT = Date.now();
+      cancelViewportAnimation();
+    }
+    function handleTrackMove(data) {
+      const oldContentTrackT = contentTrackT;
+      contentTrackT = Date.now();
+      const length = swiperContexts.value.length;
+      const other = length - state.displayMultipleItems;
+      function calc(val) {
+        return 0.5 - 0.25 / (val + 0.5);
+      }
+      function move(oldVal, newVal) {
+        let val = contentTrackViewport + oldVal;
+        contentTrackSpeed = 0.6 * contentTrackSpeed + 0.4 * newVal;
+        if (!circularEnabled.value) {
+          if (val < 0 || val > other) {
+            if (val < 0) {
+              val = -calc(-val);
+            } else {
+              if (val > other) {
+                val = other + calc(val - other);
+              }
+            }
+            contentTrackSpeed = 0;
+          }
+        }
+        updateViewport(val);
+      }
+      const time = contentTrackT - oldContentTrackT || 1;
+      const slideFrameEl = slideFrameRef.value;
+      if (props2.vertical) {
+        move(-data.dy / slideFrameEl.offsetHeight, -data.ddy / time);
+      } else {
+        move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
+      }
+    }
+    function handleTrackEnd(isCancel) {
+      state.userTracking = false;
+      const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
+      let n = 0;
+      if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
+        n = 0.5 * t2;
+      }
+      const current = normalizeCurrentValue(viewportPosition + n);
+      if (isCancel) {
+        updateViewport(contentTrackViewport);
+      } else {
+        currentChangeSource = "touch";
+        state.current = current;
+        animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
+      }
+    }
+    useTouchtrack(slideFrameRef.value, (event) => {
+      if (props2.disableTouch) {
+        return;
+      }
+      if (!invalid) {
+        if (event.detail.state === "start") {
+          state.userTracking = true;
+          userDirectionChecked = false;
+          return handleTrackStart();
+        }
+        if (event.detail.state === "end") {
+          return handleTrackEnd(false);
+        }
+        if (event.detail.state === "cancel") {
+          return handleTrackEnd(true);
+        }
+        if (state.userTracking) {
+          if (!userDirectionChecked) {
+            userDirectionChecked = true;
+            const t2 = Math.abs(event.detail.dx);
+            const n = Math.abs(event.detail.dy);
+            if (t2 >= n && props2.vertical) {
+              state.userTracking = false;
+            } else {
+              if (t2 <= n && !props2.vertical) {
+                state.userTracking = false;
+              }
+            }
+            if (!state.userTracking) {
+              if (props2.autoplay) {
+                scheduleAutoplay();
+              }
+              return;
+            }
+          }
+          handleTrackMove(event.detail);
+          return false;
+        }
+      }
+    });
+  });
+  onUnmounted(() => {
+    cancelSchedule();
+    cancelAnimationFrame(animationFrame);
+  });
+  function onSwiperDotClick(index2) {
+    animateViewport(state.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
+  }
+  return {
+    onSwiperDotClick
+  };
 }
-_sfc_main$3.render = _sfc_render$3;
+var index$b = /* @__PURE__ */ defineComponent({
+  name: "Swiper",
+  props: props$c,
+  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const slidesWrapperRef = ref(null);
+    const slideFrameRef = ref(null);
+    const state = useState(props2);
+    const slidesStyle = computed(() => {
+      let style = {};
+      if (props2.nextMargin || props2.previousMargin) {
+        style = props2.vertical ? {
+          left: 0,
+          right: 0,
+          top: upx2pxStr(props2.previousMargin),
+          bottom: upx2pxStr(props2.nextMargin)
+        } : {
+          top: 0,
+          bottom: 0,
+          left: upx2pxStr(props2.previousMargin),
+          right: upx2pxStr(props2.nextMargin)
+        };
+      }
+      return style;
+    });
+    const slideFrameStyle = computed(() => {
+      const value = Math.abs(100 / state.displayMultipleItems) + "%";
+      return {
+        width: props2.vertical ? "100%" : value,
+        height: !props2.vertical ? "100%" : value
+      };
+    });
+    let swiperItems = [];
+    const originSwiperContexts = [];
+    const swiperContexts = ref([]);
+    function updateSwiperContexts() {
+      const contexts = [];
+      for (let index2 = 0; index2 < swiperItems.length; index2++) {
+        const swiperItem = swiperItems[index2];
+        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
+        if (swiperContext) {
+          contexts.push(markRaw(swiperContext));
+        }
+      }
+      swiperContexts.value = contexts;
+    }
+    const addSwiperContext = function(swiperContext) {
+      originSwiperContexts.push(swiperContext);
+      updateSwiperContexts();
+    };
+    provide("addSwiperContext", addSwiperContext);
+    const removeSwiperContext = function(swiperContext) {
+      const index2 = originSwiperContexts.indexOf(swiperContext);
+      if (index2 >= 0) {
+        originSwiperContexts.splice(index2, 1);
+        updateSwiperContexts();
+      }
+    };
+    provide("removeSwiperContext", removeSwiperContext);
+    const {
+      onSwiperDotClick
+    } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      swiperItems = defaultSlots || [];
+      return createVNode("uni-swiper", {
+        ref: rootRef
+      }, [createVNode("div", {
+        ref: slidesWrapperRef,
+        class: "uni-swiper-wrapper"
+      }, [createVNode("div", {
+        class: "uni-swiper-slides",
+        style: slidesStyle.value
+      }, [createVNode("div", {
+        ref: slideFrameRef,
+        class: "uni-swiper-slide-frame",
+        style: slideFrameStyle.value
+      }, [swiperItems], 4)], 4), props2.indicatorDots && createVNode("div", {
+        class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+      }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
+        onClick: () => onSwiperDotClick(index2),
+        class: {
+          "uni-swiper-dot": true,
+          "uni-swiper-dot-active": index2 < state.current + state.displayMultipleItems && index2 >= state.current || index2 < state.current + state.displayMultipleItems - array.length
+        },
+        style: {
+          background: index2 === state.current ? props2.indicatorActiveColor : props2.indicatorColor
+        }
+      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+    };
+  }
+});
+const props$b = {
+  itemId: {
+    type: String,
+    default: ""
+  }
+};
+var index$a = /* @__PURE__ */ defineComponent({
+  name: "SwiperItem",
+  props: props$b,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const context = {
+      rootRef,
+      getItemId() {
+        return props2.itemId;
+      },
+      getBoundingClientRect() {
+        const el = rootRef.value;
+        return el.getBoundingClientRect();
+      },
+      updatePosition(position, vertical) {
+        const x = vertical ? "0" : 100 * position + "%";
+        const y = vertical ? 100 * position + "%" : "0";
+        const rootEl = rootRef.value;
+        const value = `translate(${x},${y}) translateZ(0)`;
+        if (rootEl) {
+          rootEl.style.webkitTransform = value;
+          rootEl.style.transform = value;
+        }
+      }
+    };
+    onMounted(() => {
+      const addSwiperContext = inject("addSwiperContext");
+      if (addSwiperContext) {
+        addSwiperContext(context);
+      }
+    });
+    onUnmounted(() => {
+      const removeSwiperContext = inject("removeSwiperContext");
+      if (removeSwiperContext) {
+        removeSwiperContext(context);
+      }
+    });
+    return () => {
+      return createVNode("uni-swiper-item", {
+        ref: rootRef,
+        style: {
+          position: "absolute",
+          width: "100%",
+          height: "100%"
+        }
+      }, [slots.default && slots.default()], 512);
+    };
+  }
+});
 const props$a = {
   name: {
     type: String,
@@ -11170,7 +11784,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ Object.assign({}, props$g, {
+const props$9 = /* @__PURE__ */ Object.assign({}, props$i, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -13156,7 +13770,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -13269,12 +13883,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -13294,10 +13908,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -16706,4 +17320,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$9 as Audio, index$k as Button, _sfc_main$8 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$g as Editor, index$l as Form, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, _sfc_main$7 as MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, index$a as Slider, _sfc_main$3 as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$m as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$m as Button, _sfc_main$7 as Canvas, index$j as Checkbox, index$l as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$i as Editor, index$n as Form, index$h as Icon, index$g as Image, Input, index$k as Label, LayoutComponent, index$3 as Map, _sfc_main$6 as MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as Progress, index$d as Radio, index$e as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$c as Slider, index$b as Swiper, index$a as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$o as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

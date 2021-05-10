@@ -53,7 +53,7 @@ let __mouseUpEventListener: (this: Document, ev: MouseEvent) => any
 
 export function useTouchtrack(
   element: HTMLElement,
-  method: Function,
+  method: (event: TouchtrackEvent) => boolean | void,
   useCancel?: boolean
 ) {
   onBeforeUnmount(() => {
