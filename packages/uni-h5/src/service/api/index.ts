@@ -67,5 +67,9 @@ export {
   createVideoContext,
   createMapContext,
   onTabBarMidButtonTap,
+  createCanvasContext,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
 } from '@dcloudio/uni-api'
 //#endif

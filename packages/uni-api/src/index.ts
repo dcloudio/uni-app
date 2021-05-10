@@ -4,6 +4,7 @@ export * from './service/base/interceptor'
 
 export * from './service/context/createVideoContext'
 export * from './service/context/createMapContext'
+export * from './service/context/canvas'
 
 export * from './service/ui/createIntersectionObserver'
 export * from './service/ui/createSelectorQuery'
@@ -13,6 +14,7 @@ export * from './service/ui/tabBar'
 export * from './protocols/base/canIUse'
 
 export * from './protocols/context/context'
+export * from './protocols/context/canvas'
 
 export * from './protocols/device/makePhoneCall'
 export * from './protocols/device/setClipboardData'

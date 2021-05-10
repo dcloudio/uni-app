@@ -12,6 +12,8 @@ function getInt(name: string, defaultValue?: number) {
 
 const formatWidth = getInt('width')
 const formatHeight = getInt('height')
+
+//#region getImageDataOptions
 export const API_CANVAS_GET_IMAGE_DATA = 'canvasGetImageData'
 export type API_TYPE_CANVAS_GET_IMAGE_DATA = typeof uni.canvasGetImageData
 export const CanvasGetImageDataOptions: ApiOptions<API_TYPE_CANVAS_GET_IMAGE_DATA> = {
@@ -22,7 +24,6 @@ export const CanvasGetImageDataOptions: ApiOptions<API_TYPE_CANVAS_GET_IMAGE_DAT
     height: formatHeight,
   },
 }
-
 export const CanvasGetImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_GET_IMAGE_DATA> = {
   canvasId: {
     type: String,
@@ -45,11 +46,12 @@ export const CanvasGetImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_GET_IMAGE_D
     required: true,
   },
 }
+//#endregion
+
+//#region putImageData
 export const API_CANVAS_PUT_IMAGE_DATA = 'canvasPutImageData'
 export type API_TYPE_CANVAS_PUT_IMAGE_DATA = typeof uni.canvasPutImageData
-
 export const CanvasPutImageDataOptions = CanvasGetImageDataOptions
-
 export const CanvasPutImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_PUT_IMAGE_DATA> = /*#__PURE__*/ extend(
   {
     data: {
@@ -59,7 +61,9 @@ export const CanvasPutImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_PUT_IMAGE_D
   },
   CanvasGetImageDataProtocol
 )
+//#endregion
 
+//#region toTempFilePath
 const fileTypes = {
   PNG: 'png',
   JPG: 'jpg',
@@ -67,7 +71,6 @@ const fileTypes = {
 }
 export const API_CANVAS_TO_TEMP_FILE_PATH = 'canvasToTempFilePath'
 export type API_TYPE_CANVAS_TO_TEMP_FILE_PATH = typeof uni.canvasToTempFilePath
-
 export const CanvasToTempFilePathOptions: ApiOptions<API_TYPE_CANVAS_TO_TEMP_FILE_PATH> = {
   formatArgs: {
     x: getInt('x', 0),
@@ -89,7 +92,6 @@ export const CanvasToTempFilePathOptions: ApiOptions<API_TYPE_CANVAS_TO_TEMP_FIL
     },
   },
 }
-
 export const CanvasToTempFilePathProtocol: ApiProtocol<API_TYPE_CANVAS_TO_TEMP_FILE_PATH> = {
   x: Number,
   y: Number,
@@ -104,6 +106,7 @@ export const CanvasToTempFilePathProtocol: ApiProtocol<API_TYPE_CANVAS_TO_TEMP_F
   fileType: String,
   quality: Number,
 }
+//#endregion
 
 export const DrawCanvasProtocol: ApiProtocol<any> = {
   canvasId: {

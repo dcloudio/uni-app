@@ -1,5 +1,21 @@
+var __defProp = Object.defineProperty;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, {enumerable: true, configurable: true, writable: true, value}) : obj[key] = value;
+var __assign = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, resolveComponent, toHandlers, renderSlot, watch, onUnmounted, onBeforeUnmount, onActivated, withDirectives, vShow, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, plusReady, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -405,14 +421,14 @@ function attrChange(attr2) {
         style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
-      callbacks$2.forEach(function(callback2) {
+      callbacks$3.forEach(function(callback2) {
         callback2(style);
       });
     }, 0);
   }
   changeAttrs.push(attr2);
 }
-var callbacks$2 = [];
+var callbacks$3 = [];
 function onChange(callback2) {
   if (!getSupport()) {
     return;
@@ -421,13 +437,13 @@ function onChange(callback2) {
     init();
   }
   if (typeof callback2 === "function") {
-    callbacks$2.push(callback2);
+    callbacks$3.push(callback2);
   }
 }
 function offChange(callback2) {
-  var index2 = callbacks$2.indexOf(callback2);
+  var index2 = callbacks$3.indexOf(callback2);
   if (index2 >= 0) {
-    callbacks$2.splice(index2, 1);
+    callbacks$3.splice(index2, 1);
   }
 }
 var safeAreaInsets = {
@@ -449,7 +465,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -461,10 +477,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -640,6 +656,34 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
+const callbacks$2 = {};
+function createCallbacks(namespace) {
+  let scopedCallbacks = callbacks$2[namespace];
+  if (!scopedCallbacks) {
+    scopedCallbacks = {
+      id: 1,
+      callbacks: Object.create(null)
+    };
+    callbacks$2[namespace] = scopedCallbacks;
+  }
+  return {
+    get(id2) {
+      return scopedCallbacks.callbacks[id2];
+    },
+    pop(id2) {
+      const callback2 = scopedCallbacks.callbacks[id2];
+      if (callback2) {
+        delete scopedCallbacks.callbacks[id2];
+      }
+      return callback2;
+    },
+    push(callback2) {
+      const id2 = scopedCallbacks.id++;
+      scopedCallbacks.callbacks[id2] = callback2;
+      return id2;
+    }
+  };
+}
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
 function $nne(evt) {
@@ -672,6 +716,10 @@ function createNativeEvent(evt) {
     detail: {},
     currentTarget: target
   };
+  if (evt.type.startsWith("touch")) {
+    event.touches = evt.touches;
+    event.changedTouches = evt.changedTouches;
+  }
   {
     extend(event, {
       preventDefault() {
@@ -731,7 +779,8 @@ function normalizeTouchEvent(touches, top) {
 var instance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
-  $nne
+  $nne,
+  createNativeEvent
 });
 const CLASS_RE = /^\s+|\s+$/g;
 const WXS_CLASS_RE = /\s+/;
@@ -1115,7 +1164,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1701,6 +1750,97 @@ function removeIntersectionObserver({reqId, component}, _pageId) {
     delete $el.__io[reqId];
   }
 }
+function saveImage(base64, dirname, callback2) {
+  callback2(null, base64);
+}
+const TEMP_PATH = "";
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a2 = document.createElement("a");
+  a2.href = url;
+  if (a2.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
 const API_UPX2PX = "upx2px";
 const Upx2pxProtocol = [
   {
@@ -1833,6 +1973,18 @@ const validator = [
 const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
 const API_CREATE_MAP_CONTEXT = "createMapContext";
 const CreateMapContextProtocol = validator;
+const API_CREATE_CANVAS_CONTEXT = "createCanvasContext";
+const CreateCanvasContextProtocol = [
+  {
+    name: "canvasId",
+    type: String,
+    required: true
+  },
+  {
+    name: "componentInstance",
+    type: Object
+  }
+];
 const API_CREATE_INNER_AUDIO_CONTEXT = "createInnerAudioContext";
 const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
 class VideoContext {
@@ -1994,6 +2146,913 @@ const createSelectorQuery = () => {
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
 });
+function getInt(name, defaultValue) {
+  return function(value, params) {
+    if (value) {
+      params[name] = Math.round(value);
+    } else if (typeof defaultValue !== "undefined") {
+      params[name] = defaultValue;
+    }
+  };
+}
+const formatWidth = getInt("width");
+const formatHeight = getInt("height");
+const API_CANVAS_GET_IMAGE_DATA = "canvasGetImageData";
+const CanvasGetImageDataOptions = {
+  formatArgs: {
+    x: getInt("x"),
+    y: getInt("y"),
+    width: formatWidth,
+    height: formatHeight
+  }
+};
+const CanvasGetImageDataProtocol = {
+  canvasId: {
+    type: String,
+    required: true
+  },
+  x: {
+    type: Number,
+    required: true
+  },
+  y: {
+    type: Number,
+    required: true
+  },
+  width: {
+    type: Number,
+    required: true
+  },
+  height: {
+    type: Number,
+    required: true
+  }
+};
+const API_CANVAS_PUT_IMAGE_DATA = "canvasPutImageData";
+const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
+const CanvasPutImageDataProtocol = /* @__PURE__ */ extend({
+  data: {
+    type: Uint8ClampedArray,
+    required: true
+  }
+}, CanvasGetImageDataProtocol);
+const fileTypes = {
+  PNG: "png",
+  JPG: "jpg",
+  JPEG: "jpg"
+};
+const API_CANVAS_TO_TEMP_FILE_PATH = "canvasToTempFilePath";
+const CanvasToTempFilePathOptions = {
+  formatArgs: {
+    x: getInt("x", 0),
+    y: getInt("y", 0),
+    width: formatWidth,
+    height: formatHeight,
+    destWidth: getInt("destWidth"),
+    destHeight: getInt("destHeight"),
+    fileType(value, params) {
+      value = (value || "").toUpperCase();
+      let type = fileTypes[value];
+      if (!type) {
+        type = fileTypes.PNG;
+      }
+      params.fileType = type;
+    },
+    quality(value, params) {
+      params.quality = value && value > 0 && value < 1 ? value : 1;
+    }
+  }
+};
+const CanvasToTempFilePathProtocol = {
+  x: Number,
+  y: Number,
+  width: Number,
+  height: Number,
+  destWidth: Number,
+  destHeight: Number,
+  canvasId: {
+    type: String,
+    required: true
+  },
+  fileType: String,
+  quality: Number
+};
+const canvasEventCallbacks = createCallbacks("canvasEvent");
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
+  const callback2 = canvasEventCallbacks.pop(callbackId);
+  if (callback2) {
+    callback2(data);
+  }
+});
+function operateCanvas(canvasId, pageId, type, data) {
+  ServiceJSBridge.publishHandler("canvas." + canvasId, {
+    canvasId,
+    type,
+    data
+  }, pageId);
+}
+var methods1 = ["scale", "rotate", "translate", "setTransform", "transform"];
+var methods2 = [
+  "drawImage",
+  "fillText",
+  "fill",
+  "stroke",
+  "fillRect",
+  "strokeRect",
+  "clearRect",
+  "strokeText"
+];
+var methods3 = [
+  "setFillStyle",
+  "setTextAlign",
+  "setStrokeStyle",
+  "setGlobalAlpha",
+  "setShadow",
+  "setFontSize",
+  "setLineCap",
+  "setLineJoin",
+  "setLineWidth",
+  "setMiterLimit",
+  "setTextBaseline",
+  "setLineDash"
+];
+function measureText(text2, font2) {
+  const canvas = document.createElement("canvas");
+  const c2d = canvas.getContext("2d");
+  c2d.font = font2;
+  return c2d.measureText(text2).width || 0;
+}
+const predefinedColor = {
+  aliceblue: "#f0f8ff",
+  antiquewhite: "#faebd7",
+  aqua: "#00ffff",
+  aquamarine: "#7fffd4",
+  azure: "#f0ffff",
+  beige: "#f5f5dc",
+  bisque: "#ffe4c4",
+  black: "#000000",
+  blanchedalmond: "#ffebcd",
+  blue: "#0000ff",
+  blueviolet: "#8a2be2",
+  brown: "#a52a2a",
+  burlywood: "#deb887",
+  cadetblue: "#5f9ea0",
+  chartreuse: "#7fff00",
+  chocolate: "#d2691e",
+  coral: "#ff7f50",
+  cornflowerblue: "#6495ed",
+  cornsilk: "#fff8dc",
+  crimson: "#dc143c",
+  cyan: "#00ffff",
+  darkblue: "#00008b",
+  darkcyan: "#008b8b",
+  darkgoldenrod: "#b8860b",
+  darkgray: "#a9a9a9",
+  darkgrey: "#a9a9a9",
+  darkgreen: "#006400",
+  darkkhaki: "#bdb76b",
+  darkmagenta: "#8b008b",
+  darkolivegreen: "#556b2f",
+  darkorange: "#ff8c00",
+  darkorchid: "#9932cc",
+  darkred: "#8b0000",
+  darksalmon: "#e9967a",
+  darkseagreen: "#8fbc8f",
+  darkslateblue: "#483d8b",
+  darkslategray: "#2f4f4f",
+  darkslategrey: "#2f4f4f",
+  darkturquoise: "#00ced1",
+  darkviolet: "#9400d3",
+  deeppink: "#ff1493",
+  deepskyblue: "#00bfff",
+  dimgray: "#696969",
+  dimgrey: "#696969",
+  dodgerblue: "#1e90ff",
+  firebrick: "#b22222",
+  floralwhite: "#fffaf0",
+  forestgreen: "#228b22",
+  fuchsia: "#ff00ff",
+  gainsboro: "#dcdcdc",
+  ghostwhite: "#f8f8ff",
+  gold: "#ffd700",
+  goldenrod: "#daa520",
+  gray: "#808080",
+  grey: "#808080",
+  green: "#008000",
+  greenyellow: "#adff2f",
+  honeydew: "#f0fff0",
+  hotpink: "#ff69b4",
+  indianred: "#cd5c5c",
+  indigo: "#4b0082",
+  ivory: "#fffff0",
+  khaki: "#f0e68c",
+  lavender: "#e6e6fa",
+  lavenderblush: "#fff0f5",
+  lawngreen: "#7cfc00",
+  lemonchiffon: "#fffacd",
+  lightblue: "#add8e6",
+  lightcoral: "#f08080",
+  lightcyan: "#e0ffff",
+  lightgoldenrodyellow: "#fafad2",
+  lightgray: "#d3d3d3",
+  lightgrey: "#d3d3d3",
+  lightgreen: "#90ee90",
+  lightpink: "#ffb6c1",
+  lightsalmon: "#ffa07a",
+  lightseagreen: "#20b2aa",
+  lightskyblue: "#87cefa",
+  lightslategray: "#778899",
+  lightslategrey: "#778899",
+  lightsteelblue: "#b0c4de",
+  lightyellow: "#ffffe0",
+  lime: "#00ff00",
+  limegreen: "#32cd32",
+  linen: "#faf0e6",
+  magenta: "#ff00ff",
+  maroon: "#800000",
+  mediumaquamarine: "#66cdaa",
+  mediumblue: "#0000cd",
+  mediumorchid: "#ba55d3",
+  mediumpurple: "#9370db",
+  mediumseagreen: "#3cb371",
+  mediumslateblue: "#7b68ee",
+  mediumspringgreen: "#00fa9a",
+  mediumturquoise: "#48d1cc",
+  mediumvioletred: "#c71585",
+  midnightblue: "#191970",
+  mintcream: "#f5fffa",
+  mistyrose: "#ffe4e1",
+  moccasin: "#ffe4b5",
+  navajowhite: "#ffdead",
+  navy: "#000080",
+  oldlace: "#fdf5e6",
+  olive: "#808000",
+  olivedrab: "#6b8e23",
+  orange: "#ffa500",
+  orangered: "#ff4500",
+  orchid: "#da70d6",
+  palegoldenrod: "#eee8aa",
+  palegreen: "#98fb98",
+  paleturquoise: "#afeeee",
+  palevioletred: "#db7093",
+  papayawhip: "#ffefd5",
+  peachpuff: "#ffdab9",
+  peru: "#cd853f",
+  pink: "#ffc0cb",
+  plum: "#dda0dd",
+  powderblue: "#b0e0e6",
+  purple: "#800080",
+  rebeccapurple: "#663399",
+  red: "#ff0000",
+  rosybrown: "#bc8f8f",
+  royalblue: "#4169e1",
+  saddlebrown: "#8b4513",
+  salmon: "#fa8072",
+  sandybrown: "#f4a460",
+  seagreen: "#2e8b57",
+  seashell: "#fff5ee",
+  sienna: "#a0522d",
+  silver: "#c0c0c0",
+  skyblue: "#87ceeb",
+  slateblue: "#6a5acd",
+  slategray: "#708090",
+  slategrey: "#708090",
+  snow: "#fffafa",
+  springgreen: "#00ff7f",
+  steelblue: "#4682b4",
+  tan: "#d2b48c",
+  teal: "#008080",
+  thistle: "#d8bfd8",
+  tomato: "#ff6347",
+  turquoise: "#40e0d0",
+  violet: "#ee82ee",
+  wheat: "#f5deb3",
+  white: "#ffffff",
+  whitesmoke: "#f5f5f5",
+  yellow: "#ffff00",
+  yellowgreen: "#9acd32",
+  transparent: "#00000000"
+};
+function checkColor(e2) {
+  e2 = e2 || "#000000";
+  var t2 = null;
+  if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
+    const n = parseInt(t2[1].slice(0, 2), 16);
+    const o2 = parseInt(t2[1].slice(2, 4), 16);
+    const r = parseInt(t2[1].slice(4), 16);
+    return [n, o2, r, 255];
+  }
+  if ((t2 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
+    let n = t2[1].slice(0, 1);
+    let o2 = t2[1].slice(1, 2);
+    let r = t2[1].slice(2, 3);
+    n = parseInt(n + n, 16);
+    o2 = parseInt(o2 + o2, 16);
+    r = parseInt(r + r, 16);
+    return [n, o2, r, 255];
+  }
+  if ((t2 = /^rgb\((.+)\)$/.exec(e2)) != null) {
+    return t2[1].split(",").map(function(e22) {
+      return Math.min(255, parseInt(e22.trim()));
+    }).concat(255);
+  }
+  if ((t2 = /^rgba\((.+)\)$/.exec(e2)) != null) {
+    return t2[1].split(",").map(function(e22, t22) {
+      return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
+    });
+  }
+  var i2 = e2.toLowerCase();
+  if (hasOwn(predefinedColor, i2)) {
+    t2 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i2]);
+    const n = parseInt(t2[1].slice(0, 2), 16);
+    const o2 = parseInt(t2[1].slice(2, 4), 16);
+    const r = parseInt(t2[1].slice(4, 6), 16);
+    let a2 = parseInt(t2[1].slice(6, 8), 16);
+    a2 = a2 >= 0 ? a2 : 255;
+    return [n, o2, r, a2];
+  }
+  console.error("unsupported color:" + e2);
+  return [0, 0, 0, 255];
+}
+class CanvasGradient {
+  constructor(type, data) {
+    this.type = type;
+    this.data = data;
+    this.colorStop = [];
+  }
+  addColorStop(position, color) {
+    this.colorStop.push([position, checkColor(color)]);
+  }
+}
+class Pattern {
+  constructor(image2, repetition) {
+    this.image = image2;
+    this.repetition = repetition;
+  }
+}
+class TextMetrics {
+  constructor(width) {
+    this.width = width;
+  }
+}
+class CanvasContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+    this.actions = [];
+    this.path = [];
+    this.subpath = [];
+    this.drawingState = [];
+    this.state = {
+      lineDash: [0, 0],
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      shadowBlur: 0,
+      shadowColor: [0, 0, 0, 0],
+      font: "10px sans-serif",
+      fontSize: 10,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontFamily: "sans-serif"
+    };
+  }
+  draw(reserve = false, callback2) {
+    var actions = [...this.actions];
+    this.actions = [];
+    this.path = [];
+    var callbackId;
+    if (typeof callback2 === "function") {
+      callbackId = canvasEventCallbacks.push(callback2);
+    }
+    operateCanvas(this.id, this.pageId, "actionsChanged", {
+      actions,
+      reserve,
+      callbackId
+    });
+  }
+  createLinearGradient(x0, y0, x1, y1) {
+    return new CanvasGradient("linear", [x0, y0, x1, y1]);
+  }
+  createCircularGradient(x, y, r) {
+    return new CanvasGradient("radial", [x, y, r]);
+  }
+  createPattern(image2, repetition) {
+    if (repetition === void 0) {
+      console.error("Failed to execute 'createPattern' on 'CanvasContext': 2 arguments required, but only 1 present.");
+    } else if (["repeat", "repeat-x", "repeat-y", "no-repeat"].indexOf(repetition) < 0) {
+      console.error("Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition + "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'.");
+    } else {
+      return new Pattern(image2, repetition);
+    }
+  }
+  measureText(text2) {
+    const font2 = this.state.font;
+    let width = 0;
+    {
+      width = measureText(text2, font2);
+    }
+    return new TextMetrics(width);
+  }
+  save() {
+    this.actions.push({
+      method: "save",
+      data: []
+    });
+    this.drawingState.push(this.state);
+  }
+  restore() {
+    this.actions.push({
+      method: "restore",
+      data: []
+    });
+    this.state = this.drawingState.pop() || {
+      lineDash: [0, 0],
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      shadowBlur: 0,
+      shadowColor: [0, 0, 0, 0],
+      font: "10px sans-serif",
+      fontSize: 10,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontFamily: "sans-serif"
+    };
+  }
+  beginPath() {
+    this.path = [];
+    this.subpath = [];
+  }
+  moveTo(x, y) {
+    this.path.push({
+      method: "moveTo",
+      data: [x, y]
+    });
+    this.subpath = [[x, y]];
+  }
+  lineTo(x, y) {
+    if (this.path.length === 0 && this.subpath.length === 0) {
+      this.path.push({
+        method: "moveTo",
+        data: [x, y]
+      });
+    } else {
+      this.path.push({
+        method: "lineTo",
+        data: [x, y]
+      });
+    }
+    this.subpath.push([x, y]);
+  }
+  quadraticCurveTo(cpx, cpy, x, y) {
+    this.path.push({
+      method: "quadraticCurveTo",
+      data: [cpx, cpy, x, y]
+    });
+    this.subpath.push([x, y]);
+  }
+  bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
+    this.path.push({
+      method: "bezierCurveTo",
+      data: [cp1x, cp1y, cp2x, cp2y, x, y]
+    });
+    this.subpath.push([x, y]);
+  }
+  arc(x, y, r, sAngle, eAngle, counterclockwise = false) {
+    this.path.push({
+      method: "arc",
+      data: [x, y, r, sAngle, eAngle, counterclockwise]
+    });
+    this.subpath.push([x, y]);
+  }
+  rect(x, y, width, height) {
+    this.path.push({
+      method: "rect",
+      data: [x, y, width, height]
+    });
+    this.subpath = [[x, y]];
+  }
+  arcTo(x1, y1, x2, y2, radius) {
+    this.path.push({
+      method: "arcTo",
+      data: [x1, y1, x2, y2, radius]
+    });
+    this.subpath.push([x2, y2]);
+  }
+  clip() {
+    this.actions.push({
+      method: "clip",
+      data: [...this.path]
+    });
+  }
+  closePath() {
+    this.path.push({
+      method: "closePath",
+      data: []
+    });
+    if (this.subpath.length) {
+      this.subpath = [this.subpath.shift()];
+    }
+  }
+  clearActions() {
+    this.actions = [];
+    this.path = [];
+    this.subpath = [];
+  }
+  getActions() {
+    var actions = [...this.actions];
+    this.clearActions();
+    return actions;
+  }
+  set lineDashOffset(value) {
+    this.actions.push({
+      method: "setLineDashOffset",
+      data: [value]
+    });
+  }
+  set globalCompositeOperation(type) {
+    this.actions.push({
+      method: "setGlobalCompositeOperation",
+      data: [type]
+    });
+  }
+  set shadowBlur(level) {
+    this.actions.push({
+      method: "setShadowBlur",
+      data: [level]
+    });
+  }
+  set shadowColor(color) {
+    this.actions.push({
+      method: "setShadowColor",
+      data: [color]
+    });
+  }
+  set shadowOffsetX(x) {
+    this.actions.push({
+      method: "setShadowOffsetX",
+      data: [x]
+    });
+  }
+  set shadowOffsetY(y) {
+    this.actions.push({
+      method: "setShadowOffsetY",
+      data: [y]
+    });
+  }
+  set font(value) {
+    var self = this;
+    this.state.font = value;
+    var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+    if (fontFormat) {
+      var style = fontFormat[1].trim().split(/\s/);
+      var fontSize = parseFloat(fontFormat[3]);
+      var fontFamily = fontFormat[7];
+      var actions = [];
+      style.forEach(function(value2, index2) {
+        if (["italic", "oblique", "normal"].indexOf(value2) > -1) {
+          actions.push({
+            method: "setFontStyle",
+            data: [value2]
+          });
+          self.state.fontStyle = value2;
+        } else if (["bold", "normal"].indexOf(value2) > -1) {
+          actions.push({
+            method: "setFontWeight",
+            data: [value2]
+          });
+          self.state.fontWeight = value2;
+        } else if (index2 === 0) {
+          actions.push({
+            method: "setFontStyle",
+            data: ["normal"]
+          });
+          self.state.fontStyle = "normal";
+        } else if (index2 === 1) {
+          pushAction();
+        }
+      });
+      if (style.length === 1) {
+        pushAction();
+      }
+      style = actions.map(function(action) {
+        return action.data[0];
+      }).join(" ");
+      this.state.fontSize = fontSize;
+      this.state.fontFamily = fontFamily;
+      this.actions.push({
+        method: "setFont",
+        data: [`${style} ${fontSize}px ${fontFamily}`]
+      });
+    } else {
+      console.warn("Failed to set 'font' on 'CanvasContext': invalid format.");
+    }
+    function pushAction() {
+      actions.push({
+        method: "setFontWeight",
+        data: ["normal"]
+      });
+      self.state.fontWeight = "normal";
+    }
+  }
+  get font() {
+    return this.state.font;
+  }
+  set fillStyle(color) {
+    this.setFillStyle(color);
+  }
+  set strokeStyle(color) {
+    this.setStrokeStyle(color);
+  }
+  set globalAlpha(value) {
+    value = Math.floor(255 * parseFloat(value));
+    this.actions.push({
+      method: "setGlobalAlpha",
+      data: [value]
+    });
+  }
+  set textAlign(align2) {
+    this.actions.push({
+      method: "setTextAlign",
+      data: [align2]
+    });
+  }
+  set lineCap(type) {
+    this.actions.push({
+      method: "setLineCap",
+      data: [type]
+    });
+  }
+  set lineJoin(type) {
+    this.actions.push({
+      method: "setLineJoin",
+      data: [type]
+    });
+  }
+  set lineWidth(value) {
+    this.actions.push({
+      method: "setLineWidth",
+      data: [value]
+    });
+  }
+  set miterLimit(value) {
+    this.actions.push({
+      method: "setMiterLimit",
+      data: [value]
+    });
+  }
+  set textBaseline(type) {
+    this.actions.push({
+      method: "setTextBaseline",
+      data: [type]
+    });
+  }
+}
+[...methods1, ...methods2].forEach(function(method) {
+  function get(method2) {
+    switch (method2) {
+      case "fill":
+      case "stroke":
+        return function() {
+          this.actions.push({
+            method: method2 + "Path",
+            data: [...this.path]
+          });
+        };
+      case "fillRect":
+        return function(x, y, width, height) {
+          this.actions.push({
+            method: "fillPath",
+            data: [
+              {
+                method: "rect",
+                data: [x, y, width, height]
+              }
+            ]
+          });
+        };
+      case "strokeRect":
+        return function(x, y, width, height) {
+          this.actions.push({
+            method: "strokePath",
+            data: [
+              {
+                method: "rect",
+                data: [x, y, width, height]
+              }
+            ]
+          });
+        };
+      case "fillText":
+      case "strokeText":
+        return function(text2, x, y, maxWidth) {
+          var data = [text2.toString(), x, y];
+          if (typeof maxWidth === "number") {
+            data.push(maxWidth);
+          }
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+      case "drawImage":
+        return function(imageResource, dx, dy, dWidth, dHeight, sx, sy, sWidth, sHeight) {
+          if (sHeight === void 0) {
+            sx = dx;
+            sy = dy;
+            sWidth = dWidth;
+            sHeight = dHeight;
+            dx = void 0;
+            dy = void 0;
+            dWidth = void 0;
+            dHeight = void 0;
+          }
+          var data;
+          function isNumber(e2) {
+            return typeof e2 === "number";
+          }
+          data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [
+            imageResource,
+            sx,
+            sy,
+            sWidth,
+            sHeight,
+            dx,
+            dy,
+            dWidth,
+            dHeight
+          ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+      default:
+        return function(...data) {
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+    }
+  }
+  CanvasContext.prototype[method] = get(method);
+});
+methods3.forEach(function(method) {
+  function get(method2) {
+    switch (method2) {
+      case "setFillStyle":
+      case "setStrokeStyle":
+        return function(color) {
+          if (typeof color !== "object") {
+            this.actions.push({
+              method: method2,
+              data: ["normal", checkColor(color)]
+            });
+          } else {
+            this.actions.push({
+              method: method2,
+              data: [color.type, color.data, color.colorStop]
+            });
+          }
+        };
+      case "setGlobalAlpha":
+        return function(alpha) {
+          alpha = Math.floor(255 * parseFloat(alpha));
+          this.actions.push({
+            method: method2,
+            data: [alpha]
+          });
+        };
+      case "setShadow":
+        return function(offsetX, offsetY, blur, color) {
+          color = checkColor(color);
+          this.actions.push({
+            method: method2,
+            data: [offsetX, offsetY, blur, color]
+          });
+          this.state.shadowBlur = blur;
+          this.state.shadowColor = color;
+          this.state.shadowOffsetX = offsetX;
+          this.state.shadowOffsetY = offsetY;
+        };
+      case "setLineDash":
+        return function(pattern, offset) {
+          pattern = pattern || [0, 0];
+          offset = offset || 0;
+          this.actions.push({
+            method: method2,
+            data: [pattern, offset]
+          });
+          this.state.lineDash = pattern;
+        };
+      case "setFontSize":
+        return function(fontSize) {
+          this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
+          this.state.fontSize = fontSize;
+          this.actions.push({
+            method: method2,
+            data: [fontSize]
+          });
+        };
+      default:
+        return function(...data) {
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+    }
+  }
+  CanvasContext.prototype[method] = get(method);
+});
+const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
+  if (componentInstance) {
+    return new CanvasContext(canvasId, componentInstance.$page.id);
+  }
+  const pageId = getCurrentPageId();
+  if (pageId) {
+    return new CanvasContext(canvasId, pageId);
+  } else {
+    UniServiceJSBridge.emit("onError", "createCanvasContext:fail");
+  }
+}, CreateCanvasContextProtocol);
+const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({canvasId, x, y, width, height}, {resolve, reject}) => {
+  const pageId = getCurrentPageId();
+  if (!pageId) {
+    reject();
+    return;
+  }
+  const cId = canvasEventCallbacks.push(async function(data) {
+    let imgData = data.data;
+    if (imgData && imgData.length) {
+      data.data = new Uint8ClampedArray(imgData);
+    }
+    resolve(data);
+  });
+  operateCanvas(canvasId, pageId, "getImageData", {
+    x,
+    y,
+    width,
+    height,
+    callbackId: cId
+  });
+}, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
+const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({canvasId, data, x, y, width, height}, {resolve, reject}) => {
+  var pageId = getCurrentPageId();
+  if (!pageId) {
+    reject();
+    return;
+  }
+  var cId = canvasEventCallbacks.push(function(data2) {
+    resolve(data2);
+  });
+  let compressed;
+  {
+    data = Array.prototype.slice.call(data);
+  }
+  operateCanvas(canvasId, pageId, "putImageData", {
+    data,
+    x,
+    y,
+    width,
+    height,
+    compressed,
+    callbackId: cId
+  });
+}, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
+const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({
+  x = 0,
+  y = 0,
+  width,
+  height,
+  destWidth,
+  destHeight,
+  canvasId,
+  fileType,
+  quality
+}, {resolve, reject}) => {
+  var pageId = getCurrentPageId();
+  if (!pageId) {
+    reject();
+    return;
+  }
+  const cId = canvasEventCallbacks.push(function(res) {
+    resolve(res);
+  });
+  const dirname = `${TEMP_PATH}/canvas`;
+  operateCanvas(canvasId, pageId, "toTempFilePath", {
+    x,
+    y,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    fileType,
+    quality,
+    dirname,
+    callbackId: cId
+  });
+}, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
   {
@@ -4224,6 +5283,98 @@ var index$k = /* @__PURE__ */ defineComponent({
     };
   }
 });
+var ResizeSensor = /* @__PURE__ */ defineComponent({
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    return () => createVNode("uni-resize-sensor", {
+      ref: rootRef,
+      onAnimationstartOnce: update
+    }, [createVNode("div", {
+      onScroll: update
+    }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
+      onScroll: update
+    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = reactive({
+    width: -1,
+    height: -1
+  });
+  watch(() => extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const {
+      offsetWidth,
+      offsetHeight
+    } = rootRef.value;
+    size.width = offsetWidth;
+    size.height = offsetHeight;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const {
+      firstElementChild,
+      lastElementChild
+    } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+  onActivated(reset);
+  onMounted(() => {
+    if (props2.initial) {
+      nextTick(update);
+    }
+    const rootEl = rootRef.value;
+    if (rootEl.offsetParent !== rootEl.parentElement) {
+      rootEl.parentElement.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      reset();
+    }
+  });
+}
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref2, emit2) {
+  return (name, evt, detail) => {
+    emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const pixelRatio = /* @__PURE__ */ function() {
   const canvas = document.createElement("canvas");
   canvas.height = canvas.width = 0;
@@ -4236,6 +5387,130 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
+let isHidpi = false;
+function initHidpi() {
+  if (isHidpi) {
+    return;
+  }
+  isHidpi = true;
+  const forEach = function(obj, func) {
+    for (const key in obj) {
+      if (hasOwn(obj, key)) {
+        func(obj[key], key);
+      }
+    }
+  };
+  const ratioArgs = {
+    fillRect: "all",
+    clearRect: "all",
+    strokeRect: "all",
+    moveTo: "all",
+    lineTo: "all",
+    arc: [0, 1, 2],
+    arcTo: "all",
+    bezierCurveTo: "all",
+    isPointinPath: "all",
+    isPointinStroke: "all",
+    quadraticCurveTo: "all",
+    rect: "all",
+    translate: "all",
+    createRadialGradient: "all",
+    createLinearGradient: "all",
+    setTransform: [4, 5]
+  };
+  const proto = CanvasRenderingContext2D.prototype;
+  proto.drawImageByCanvas = function(_super) {
+    return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+      srcx *= pixelRatio;
+      srcy *= pixelRatio;
+      srcw *= pixelRatio;
+      srch *= pixelRatio;
+      desx *= pixelRatio;
+      desy *= pixelRatio;
+      desw = isScale ? desw * pixelRatio : desw;
+      desh = isScale ? desh * pixelRatio : desh;
+      _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
+    };
+  }(proto.drawImage);
+  if (pixelRatio !== 1) {
+    forEach(ratioArgs, function(value, key) {
+      proto[key] = function(_super) {
+        return function() {
+          if (!this.__hidpi__) {
+            return _super.apply(this, arguments);
+          }
+          let args = Array.prototype.slice.call(arguments);
+          if (value === "all") {
+            args = args.map(function(a2) {
+              return a2 * pixelRatio;
+            });
+          } else if (Array.isArray(value)) {
+            for (let i2 = 0; i2 < value.length; i2++) {
+              args[value[i2]] *= pixelRatio;
+            }
+          }
+          return _super.apply(this, args);
+        };
+      }(proto[key]);
+    });
+    proto.stroke = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        this.lineWidth *= pixelRatio;
+        _super.apply(this, arguments);
+        this.lineWidth /= pixelRatio;
+      };
+    }(proto.stroke);
+    proto.fillText = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        const args = Array.prototype.slice.call(arguments);
+        args[1] *= pixelRatio;
+        args[2] *= pixelRatio;
+        var font2 = this.font;
+        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          return m * pixelRatio + u;
+        });
+        _super.apply(this, args);
+        this.font = font2;
+      };
+    }(proto.fillText);
+    proto.strokeText = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        var args = Array.prototype.slice.call(arguments);
+        args[1] *= pixelRatio;
+        args[2] *= pixelRatio;
+        var font2 = this.font;
+        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          return m * pixelRatio + u;
+        });
+        _super.apply(this, args);
+        this.font = font2;
+      };
+    }(proto.strokeText);
+    proto.drawImage = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        this.scale(pixelRatio, pixelRatio);
+        _super.apply(this, arguments);
+        this.scale(1 / pixelRatio, 1 / pixelRatio);
+      };
+    }(proto.drawImage);
+  }
+}
+initHidpi();
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -4260,9 +5535,12 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$8 = {
+var _sfc_main$8 = {
   name: "Canvas",
-  mixins: [subscriber],
+  inheritAttrs: false,
+  components: {
+    ResizeSensor
+  },
   props: {
     canvasId: {
       type: String,
@@ -4283,21 +5561,37 @@ const _sfc_main$8 = {
       return this.canvasId;
     },
     _listeners() {
-      var $listeners = Object.assign({}, this.$listeners);
-      var events = ["touchstart", "touchmove", "touchend"];
+      let events = ["touchstart", "touchmove", "touchend"];
+      let _$listeners = this.Listeners;
+      let $listeners = Object.assign({}, (() => {
+        let obj = {};
+        for (const key in _$listeners) {
+          if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+            const event = _$listeners[key];
+            obj[key.replace("on", "").toLowerCase()] = event;
+          }
+        }
+        return obj;
+      })());
       events.forEach((event) => {
-        var existing = $listeners[event];
-        var eventHandler = [];
+        let existing = $listeners[event];
+        let eventHandler = [];
         if (existing) {
-          eventHandler.push(($event) => {
-            this.$trigger(event, Object.assign({}, $event, {
+          eventHandler.push(withWebEvent(($event) => {
+            this.$trigger(event, Object.assign({}, (() => {
+              let obj = {};
+              for (const key in $event) {
+                obj[key] = $event[key];
+              }
+              return obj;
+            })(), {
               touches: processTouches($event.currentTarget, $event.touches),
               changedTouches: processTouches($event.currentTarget, $event.changedTouches)
             }));
-          });
+          }));
         }
         if (this.disableScroll && event === "touchmove") {
-          eventHandler.push(this._touchmove);
+          eventHandler.push(onEventPrevent);
         }
         $listeners[event] = eventHandler;
       });
@@ -4307,46 +5601,35 @@ const _sfc_main$8 = {
   created() {
     this._actionsDefer = [];
     this._images = {};
+    useSubscribe(this._handleSubscribe);
   },
   mounted() {
-    this._resize({
-      width: this.$refs.sensor.$el.offsetWidth,
-      height: this.$refs.sensor.$el.offsetHeight
-    });
+    this.$trigger = useNativeEvent(this.$emit);
+    this._resize();
   },
-  beforeDestroy() {
-    const canvas = this.$refs.canvas;
+  beforeUnmount() {
+    const canvas = this.canvas;
     canvas.height = canvas.width = 0;
   },
   methods: {
-    _handleSubscribe({
-      type,
-      data = {}
-    }) {
+    _handleSubscribe(type, data = {}) {
       var method = this[type];
       if (type.indexOf("_") !== 0 && typeof method === "function") {
         method(data);
       }
     },
     _resize() {
-      var canvas = this.$refs.canvas;
+      var canvas = this.canvas;
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext("2d");
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        wrapper(this.$refs.canvas);
+        wrapper(canvas);
         context.putImageData(imageData, 0, 0);
       } else {
-        wrapper(this.$refs.canvas);
+        wrapper(canvas);
       }
     },
-    _touchmove(event) {
-      event.preventDefault();
-    },
-    actionsChanged({
-      actions,
-      reserve,
-      callbackId
-    }) {
+    actionsChanged({actions, reserve, callbackId}) {
       var self = this;
       if (!actions) {
         return;
@@ -4355,7 +5638,7 @@ const _sfc_main$8 = {
         this._actionsDefer.push([actions, reserve, callbackId]);
         return;
       }
-      var canvas = this.$refs.canvas;
+      var canvas = this.canvas;
       var c2d = canvas.getContext("2d");
       if (!reserve) {
         c2d.fillStyle = "#000000";
@@ -4416,24 +5699,21 @@ const _sfc_main$8 = {
             data.forEach(function(color_, method_) {
               c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
             });
-          } else {
-            if (method1 === "fontSize") {
-              c2d.font = c2d.font.replace(/\d+\.?\d*px/, data[0] + "px");
-            } else {
-              if (method1 === "lineDash") {
-                c2d.setLineDash(data[0]);
-                c2d.lineDashOffset = data[1] || 0;
-              } else {
-                if (method1 === "textBaseline") {
-                  if (data[0] === "normal") {
-                    data[0] = "alphabetic";
-                  }
-                  c2d[method1] = data[0];
-                } else {
-                  c2d[method1] = data[0];
-                }
-              }
+          } else if (method1 === "fontSize") {
+            const font2 = c2d.__font__ || c2d.font;
+            c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, data[0] + "px");
+          } else if (method1 === "lineDash") {
+            c2d.setLineDash(data[0]);
+            c2d.lineDashOffset = data[1] || 0;
+          } else if (method1 === "textBaseline") {
+            if (data[0] === "normal") {
+              data[0] = "alphabetic";
             }
+            c2d[method1] = data[0];
+          } else if (method1 === "font") {
+            c2d.__font__ = c2d.font = data[0];
+          } else {
+            c2d[method1] = data[0];
           }
         } else if (method === "fillPath" || method === "strokePath") {
           method = method.replace(/Path/, "");
@@ -4472,12 +5752,12 @@ const _sfc_main$8 = {
         }
       }
       if (!this.actionsWaiting && callbackId) {
-        UniViewJSBridge.publishHandler("onDrawCanvas", {
+        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
           data: {
             errMsg: "drawCanvas:ok"
           }
-        }, this.$page.id);
+        }, getCurrentPageId());
       }
     },
     preloadImage: function(actions) {
@@ -4499,59 +5779,15 @@ const _sfc_main$8 = {
           loadImage();
         }
         function loadImage() {
-          self._images[src] = new Image();
-          self._images[src].onload = function() {
-            self._images[src].ready = true;
+          const image2 = self._images[src] = new Image();
+          image2.onload = function() {
+            image2.ready = true;
           };
-          function loadBlob(blob) {
-            self._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob);
-          }
-          function loadFile(path) {
-            var bitmap = new plus.nativeObj.Bitmap("bitmap" + Date.now());
-            bitmap.load(path, function() {
-              self._images[src].src = bitmap.toBase64Data();
-              bitmap.clear();
-            }, function() {
-              bitmap.clear();
-              console.error("preloadImage error");
-            });
-          }
-          function loadUrl(url) {
-            function plusDownload() {
-              plus.downloader.createDownload(url, {
-                filename: "_doc/uniapp_temp/download/"
-              }, function(d, status) {
-                if (status === 200) {
-                  loadFile(d.filename);
-                } else {
-                  self._images[src].src = src;
-                }
-              }).start();
-            }
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.responseType = "blob";
-            xhr.onload = function() {
-              if (this.status === 200) {
-                loadBlob(this.response);
-              }
-            };
-            xhr.onerror = window.plus ? plusDownload : function() {
-              self._images[src].src = src;
-            };
-            xhr.send();
-          }
-          if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
-            self._images[src].src = src;
-          } else {
-            if (window.plus && src.indexOf("http://") !== 0 && src.indexOf("https://") !== 0 && !/^data:.*,.*/.test(src)) {
-              loadFile(src);
-            } else if (/^data:.*,.*/.test(src)) {
-              self._images[src].src = src;
-            } else {
-              loadUrl(src);
-            }
-          }
+          getSameOriginUrl(src).then((src2) => {
+            image2.src = src2;
+          }).catch(() => {
+            image2.src = src;
+          });
         }
       });
     },
@@ -4590,83 +5826,86 @@ const _sfc_main$8 = {
       destWidth,
       destHeight,
       hidpi = true,
+      dataType: dataType2,
+      quality = 1,
+      type = "png",
       callbackId
     }) {
-      var imgData;
-      var canvas = this.$refs.canvas;
-      if (!width) {
-        width = canvas.offsetWidth - x;
+      const canvas = this.canvas;
+      let data;
+      const maxWidth = canvas.offsetWidth - x;
+      width = width ? Math.min(width, maxWidth) : maxWidth;
+      const maxHeight = canvas.offsetHeight - y;
+      height = height ? Math.min(height, maxHeight) : maxHeight;
+      if (!hidpi) {
+        if (!destWidth && !destHeight) {
+          destWidth = Math.round(width * pixelRatio);
+          destHeight = Math.round(height * pixelRatio);
+        } else if (!destWidth) {
+          destWidth = Math.round(width / height * destHeight);
+        } else if (!destHeight) {
+          destHeight = Math.round(height / width * destWidth);
+        }
+      } else {
+        destWidth = width;
+        destHeight = height;
       }
-      if (!height) {
-        height = canvas.offsetHeight - y;
+      const newCanvas = getTempCanvas(destWidth, destHeight);
+      const context = newCanvas.getContext("2d");
+      if (type === "jpeg" || type === "jpg") {
+        type = "jpeg";
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, destWidth, destHeight);
       }
+      context.__hidpi__ = true;
+      context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
+      let result;
       try {
-        if (!hidpi) {
-          if (!destWidth && !destHeight) {
-            destWidth = Math.round(width * pixelRatio);
-            destHeight = Math.round(height * pixelRatio);
-          } else if (!destWidth) {
-            destWidth = Math.round(width / height * destHeight);
-          } else if (!destHeight) {
-            destHeight = Math.round(height / width * destWidth);
-          }
+        let compressed;
+        if (dataType2 === "base64") {
+          data = newCanvas.toDataURL(`image/${type}`, quality);
         } else {
-          destWidth = width;
-          destHeight = height;
-        }
-        const newCanvas = getTempCanvas(destWidth, destHeight);
-        const context = newCanvas.getContext("2d");
-        context.__hidpi__ = true;
-        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
-        imgData = context.getImageData(0, 0, destWidth, destHeight);
-        newCanvas.height = newCanvas.width = 0;
-        context.__hidpi__ = false;
-      } catch (error) {
-        if (!callbackId) {
-          return;
-        }
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: "canvasGetImageData:fail"
+          const imgData = context.getImageData(0, 0, destWidth, destHeight);
+          if (false)
+            ;
+          else {
+            data = Array.prototype.slice.call(imgData.data);
           }
-        }, this.$page.id);
-        return;
-      }
-      if (!callbackId) {
-        return {
-          data: Array.prototype.slice.call(imgData.data),
+        }
+        result = {
+          errMsg: "canvasGetImageData:ok",
+          data,
+          compressed,
           width: destWidth,
           height: destHeight
         };
+      } catch (error) {
+        result = {
+          errMsg: `canvasGetImageData:fail ${error}`
+        };
+      }
+      newCanvas.height = newCanvas.width = 0;
+      context.__hidpi__ = false;
+      if (!callbackId) {
+        return result;
       } else {
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
-          data: {
-            errMsg: "canvasGetImageData:ok",
-            data: [...imgData.data],
-            width: destWidth,
-            height: destHeight
-          }
-        }, this.$page.id);
+          data: result
+        }, getCurrentPageId());
       }
     },
-    putImageData({
-      data,
-      x,
-      y,
-      width,
-      height,
-      callbackId
-    }) {
+    putImageData({data, x, y, width, height, compressed, callbackId}) {
       try {
         if (!height) {
           height = Math.round(data.length / 4 / width);
         }
         const canvas = getTempCanvas(width, height);
         const context = canvas.getContext("2d");
+        if (false)
+          ;
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
-        this.$refs.canvas.getContext("2d").drawImage(canvas, x, y, width, height);
+        this.canvas.getContext("2d").drawImage(canvas, x, y, width, height);
         canvas.height = canvas.width = 0;
       } catch (error) {
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
@@ -4674,7 +5913,7 @@ const _sfc_main$8 = {
           data: {
             errMsg: "canvasPutImageData:fail"
           }
-        }, this.$page.id);
+        }, getCurrentPageId());
         return;
       }
       UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
@@ -4682,18 +5921,18 @@ const _sfc_main$8 = {
         data: {
           errMsg: "canvasPutImageData:ok"
         }
-      }, this.$page.id);
+      }, getCurrentPageId());
     },
-    getDataUrl({
+    toTempFilePath({
       x = 0,
       y = 0,
       width,
       height,
       destWidth,
       destHeight,
-      hidpi = true,
       fileType,
-      qualit,
+      quality,
+      dirname,
       callbackId
     }) {
       const res = this.getImageData({
@@ -4703,76 +5942,72 @@ const _sfc_main$8 = {
         height,
         destWidth,
         destHeight,
-        hidpi
+        hidpi: false,
+        dataType: "base64",
+        type: fileType,
+        quality
       });
       if (!res.data || !res.data.length) {
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
           data: {
-            errMsg: "canvasGetDataUrl:fail"
+            errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
           }
-        }, this.$page.id);
+        }, getCurrentPageId());
         return;
       }
-      let imgData;
-      try {
-        imgData = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height);
-      } catch (error) {
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: "canvasGetDataUrl:fail"
-          }
-        }, this.$page.id);
-        return;
-      }
-      destWidth = res.width;
-      destHeight = res.height;
-      const canvas = getTempCanvas(destWidth, destHeight);
-      const c2d = canvas.getContext("2d");
-      c2d.putImageData(imgData, 0, 0);
-      let base64 = canvas.toDataURL("image/png");
-      canvas.height = canvas.width = 0;
-      const img = new Image();
-      img.onload = () => {
-        const canvas2 = getTempCanvas(destWidth, destHeight);
-        if (fileType === "jpeg" || fileType === "jpg") {
-          fileType = "jpeg";
-          c2d.fillStyle = "#fff";
-          c2d.fillRect(0, 0, destWidth, destHeight);
+      saveImage(res.data, dirname, (error, tempFilePath) => {
+        let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
+        if (error) {
+          errMsg += ` ${error.message}`;
         }
-        c2d.drawImage(img, 0, 0);
-        base64 = canvas2.toDataURL(`image/${fileType}`, qualit);
-        canvas2.height = canvas2.width = 0;
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
           data: {
-            errMsg: "canvasGetDataUrl:ok",
-            base64
+            errMsg,
+            tempFilePath
           }
-        }, this.$page.id);
-      };
-      img.src = base64;
+        }, getCurrentPageId());
+      });
     }
+  },
+  setup() {
+    const canvas = ref(null);
+    const sensor = ref(null);
+    const {
+      $attrs: Attrs,
+      $excludeAttrs: ExcludeAttrs,
+      $listeners: Listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    return {
+      canvas,
+      sensor,
+      Attrs,
+      ExcludeAttrs,
+      Listeners
+    };
   }
 };
 const _hoisted_1$5 = {
+  class: "uni-canvas-canvas",
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
 function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_resize_sensor = resolveComponent("v-uni-resize-sensor");
+  const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
-  }, toHandlers($options._listeners)), [
+  }, __assign(__assign({}, $setup.Attrs), $setup.ExcludeAttrs), toHandlers($options._listeners)), [
     createVNode("canvas", _hoisted_1$5, null, 512),
     createVNode("div", _hoisted_2$2, [
       renderSlot(_ctx.$slots, "default")
     ]),
-    createVNode(_component_v_uni_resize_sensor, {
+    createVNode(_component_ResizeSensor, {
       ref: "sensor",
       onResize: $options._resize
     }, null, 8, ["onResize"])
@@ -4832,24 +6067,6 @@ function _removeListeners(id2, listeners, watch2) {
       }
     }
   });
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref2, emit2) {
-  return (name, evt, detail) => {
-    emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
 const props$m = {
@@ -5923,75 +7140,6 @@ var index$f = /* @__PURE__ */ defineComponent({
     return () => createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
   }
 });
-var ResizeSensor = /* @__PURE__ */ defineComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => createVNode("uni-resize-sensor", {
-      ref: rootRef,
-      onAnimationstartOnce: update
-    }, [createVNode("div", {
-      onScroll: update
-    }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-      onScroll: update
-    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const {
-      offsetWidth,
-      offsetHeight
-    } = rootRef.value;
-    size.width = offsetWidth;
-    size.height = offsetHeight;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  onActivated(reset);
-  onMounted(() => {
-    if (props2.initial) {
-      nextTick(update);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
-}
 const props$h = {
   src: {
     type: String,
@@ -12073,7 +13221,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -12186,12 +13334,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -12211,10 +13359,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -12485,85 +13633,6 @@ const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", (
 const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, {resolve}) => {
   resolve(getStorageInfoSync());
 });
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, {type});
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function revokeObjectURL(url) {
-  const URL = window.URL || window.webkitURL;
-  URL.revokeObjectURL(url);
-  delete files[url];
-}
 const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, reject}) => {
   urlToFile(filePath).then((res) => {
     resolve({
@@ -14010,6 +15079,10 @@ var api = /* @__PURE__ */ Object.freeze({
   createVideoContext,
   createMapContext,
   onTabBarMidButtonTap,
+  createCanvasContext,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
   cssVar,
   cssEnv,
   cssConstant,
@@ -15698,4 +16771,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$9 as Audio, index$k as Button, _sfc_main$8 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$g as Editor, index$l as Form, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, _sfc_main$7 as MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, index$a as Slider, _sfc_main$3 as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$m as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$9 as Audio, index$k as Button, _sfc_main$8 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$g as Editor, index$l as Form, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, _sfc_main$7 as MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, index$a as Slider, _sfc_main$3 as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$m as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

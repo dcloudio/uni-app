@@ -1,8 +1,10 @@
 import { Ref, SetupContext, EmitsOptions } from 'vue'
 import { normalizeTarget } from '@dcloudio/uni-shared'
+import { createNativeEvent } from '@dcloudio/uni-core'
 
 type EventDetail = Record<string, any>
 export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
+export type NativeEventTrigger = ReturnType<typeof useNativeEvent>
 export type EmitEvent<E extends (...args: any) => any> = [Parameters<E>[0]]
 
 export function withWebEvent(fn: Function) {
@@ -18,6 +20,14 @@ export function useCustomEvent<E extends EmitsOptions>(
       name,
       normalizeCustomEvent(name, evt, ref.value as HTMLElement, detail || {})
     )
+  }
+}
+
+export function useNativeEvent<E extends EmitsOptions>(
+  emit: SetupContext<E>['emit']
+) {
+  return (name: string, evt: Event) => {
+    emit(name, createNativeEvent(evt))
   }
 }
 

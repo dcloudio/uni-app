@@ -1,4 +1,20 @@
 "use strict";
+var __defProp = Object.defineProperty;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, {enumerable: true, configurable: true, writable: true, value}) : obj[key] = value;
+var __assign = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
 Object.defineProperty(exports, "__esModule", {value: true});
 exports[Symbol.toStringTag] = "Module";
 var shared = require("@vue/shared");
@@ -144,6 +160,8 @@ function initBridge(namespace) {
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("view");
 uniShared.passive(true);
+const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
+}, ["prevent"]);
 function updateCssVar(cssVars) {
   const style = document.documentElement.style;
   Object.keys(cssVars).forEach((name) => {
@@ -216,6 +234,66 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
+const callbacks$1 = {};
+function createCallbacks(namespace) {
+  let scopedCallbacks = callbacks$1[namespace];
+  if (!scopedCallbacks) {
+    scopedCallbacks = {
+      id: 1,
+      callbacks: Object.create(null)
+    };
+    callbacks$1[namespace] = scopedCallbacks;
+  }
+  return {
+    get(id) {
+      return scopedCallbacks.callbacks[id];
+    },
+    pop(id) {
+      const callback = scopedCallbacks.callbacks[id];
+      if (callback) {
+        delete scopedCallbacks.callbacks[id];
+      }
+      return callback;
+    },
+    push(callback) {
+      const id = scopedCallbacks.id++;
+      scopedCallbacks.callbacks[id] = callback;
+      return id;
+    }
+  };
+}
+function createNativeEvent(evt) {
+  const {type, timeStamp, currentTarget} = evt;
+  const target = uniShared.normalizeTarget(currentTarget);
+  const event = {
+    type,
+    timeStamp,
+    target,
+    detail: {},
+    currentTarget: target
+  };
+  if (evt.type.startsWith("touch")) {
+    event.touches = evt.touches;
+    event.changedTouches = evt.changedTouches;
+  }
+  {
+    shared.extend(event, {
+      preventDefault() {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
+        }
+        return evt.preventDefault();
+      },
+      stopPropagation() {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("stopPropagation is only supported in h5, use `.stop` instead.");
+        }
+        return evt.stopPropagation();
+      }
+    });
+  }
+  return event;
+}
 const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("service"), {
   invokeOnCallback(name, res) {
     return UniServiceJSBridge.emit("api." + name, res);
@@ -227,6 +305,19 @@ function getCurrentPage() {
   if (len) {
     return pages[len - 1];
   }
+}
+function getCurrentPageMeta() {
+  const page = getCurrentPage();
+  if (page) {
+    return page.$page.meta;
+  }
+}
+function getCurrentPageId() {
+  const meta = getCurrentPageMeta();
+  if (meta) {
+    return meta.id;
+  }
+  return -1;
 }
 function getCurrentPageVm() {
   const page = getCurrentPage();
@@ -708,7 +799,94 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
+function saveImage(base64, dirname, callback) {
+  callback(null, base64);
+}
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (shared.hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a2 = document.createElement("a");
+  a2.href = url;
+  if (a2.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const canvasEventCallbacks = createCallbacks("canvasEvent");
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
+  const callback = canvasEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -1517,6 +1695,82 @@ var index$k = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
+var ResizeSensor = /* @__PURE__ */ vue.defineComponent({
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    return () => vue.createVNode("uni-resize-sensor", {
+      ref: rootRef,
+      onAnimationstartOnce: update
+    }, [vue.createVNode("div", {
+      onScroll: update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
+      onScroll: update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = vue.reactive({
+    width: -1,
+    height: -1
+  });
+  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const {
+      offsetWidth,
+      offsetHeight
+    } = rootRef.value;
+    size.width = offsetWidth;
+    size.height = offsetHeight;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const {
+      firstElementChild,
+      lastElementChild
+    } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref, emit2) {
+  return (name, evt, detail) => {
+    emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = uniShared.normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const pixelRatio = 1;
 function wrapper(canvas) {
   canvas.width = canvas.offsetWidth * pixelRatio;
@@ -1547,9 +1801,12 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const _sfc_main$8 = {
+var _sfc_main$8 = {
   name: "Canvas",
-  mixins: [subscriber],
+  inheritAttrs: false,
+  components: {
+    ResizeSensor
+  },
   props: {
     canvasId: {
       type: String,
@@ -1570,21 +1827,37 @@ const _sfc_main$8 = {
       return this.canvasId;
     },
     _listeners() {
-      var $listeners = Object.assign({}, this.$listeners);
-      var events = ["touchstart", "touchmove", "touchend"];
+      let events = ["touchstart", "touchmove", "touchend"];
+      let _$listeners = this.Listeners;
+      let $listeners = Object.assign({}, (() => {
+        let obj = {};
+        for (const key in _$listeners) {
+          if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+            const event = _$listeners[key];
+            obj[key.replace("on", "").toLowerCase()] = event;
+          }
+        }
+        return obj;
+      })());
       events.forEach((event) => {
-        var existing = $listeners[event];
-        var eventHandler = [];
+        let existing = $listeners[event];
+        let eventHandler = [];
         if (existing) {
-          eventHandler.push(($event) => {
-            this.$trigger(event, Object.assign({}, $event, {
+          eventHandler.push(withWebEvent(($event) => {
+            this.$trigger(event, Object.assign({}, (() => {
+              let obj = {};
+              for (const key in $event) {
+                obj[key] = $event[key];
+              }
+              return obj;
+            })(), {
               touches: processTouches($event.currentTarget, $event.touches),
               changedTouches: processTouches($event.currentTarget, $event.changedTouches)
             }));
-          });
+          }));
         }
         if (this.disableScroll && event === "touchmove") {
-          eventHandler.push(this._touchmove);
+          eventHandler.push(onEventPrevent);
         }
         $listeners[event] = eventHandler;
       });
@@ -1594,46 +1867,35 @@ const _sfc_main$8 = {
   created() {
     this._actionsDefer = [];
     this._images = {};
+    useSubscribe(this._handleSubscribe);
   },
   mounted() {
-    this._resize({
-      width: this.$refs.sensor.$el.offsetWidth,
-      height: this.$refs.sensor.$el.offsetHeight
-    });
+    this.$trigger = useNativeEvent(this.$emit);
+    this._resize();
   },
-  beforeDestroy() {
-    const canvas = this.$refs.canvas;
+  beforeUnmount() {
+    const canvas = this.canvas;
     canvas.height = canvas.width = 0;
   },
   methods: {
-    _handleSubscribe({
-      type,
-      data = {}
-    }) {
+    _handleSubscribe(type, data = {}) {
       var method = this[type];
       if (type.indexOf("_") !== 0 && typeof method === "function") {
         method(data);
       }
     },
     _resize() {
-      var canvas = this.$refs.canvas;
+      var canvas = this.canvas;
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext("2d");
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        wrapper(this.$refs.canvas);
+        wrapper(canvas);
         context.putImageData(imageData, 0, 0);
       } else {
-        wrapper(this.$refs.canvas);
+        wrapper(canvas);
       }
     },
-    _touchmove(event) {
-      event.preventDefault();
-    },
-    actionsChanged({
-      actions,
-      reserve,
-      callbackId
-    }) {
+    actionsChanged({actions, reserve, callbackId}) {
       var self = this;
       if (!actions) {
         return;
@@ -1642,7 +1904,7 @@ const _sfc_main$8 = {
         this._actionsDefer.push([actions, reserve, callbackId]);
         return;
       }
-      var canvas = this.$refs.canvas;
+      var canvas = this.canvas;
       var c2d = canvas.getContext("2d");
       if (!reserve) {
         c2d.fillStyle = "#000000";
@@ -1703,24 +1965,21 @@ const _sfc_main$8 = {
             data.forEach(function(color_, method_) {
               c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
             });
-          } else {
-            if (method1 === "fontSize") {
-              c2d.font = c2d.font.replace(/\d+\.?\d*px/, data[0] + "px");
-            } else {
-              if (method1 === "lineDash") {
-                c2d.setLineDash(data[0]);
-                c2d.lineDashOffset = data[1] || 0;
-              } else {
-                if (method1 === "textBaseline") {
-                  if (data[0] === "normal") {
-                    data[0] = "alphabetic";
-                  }
-                  c2d[method1] = data[0];
-                } else {
-                  c2d[method1] = data[0];
-                }
-              }
+          } else if (method1 === "fontSize") {
+            const font = c2d.__font__ || c2d.font;
+            c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, data[0] + "px");
+          } else if (method1 === "lineDash") {
+            c2d.setLineDash(data[0]);
+            c2d.lineDashOffset = data[1] || 0;
+          } else if (method1 === "textBaseline") {
+            if (data[0] === "normal") {
+              data[0] = "alphabetic";
             }
+            c2d[method1] = data[0];
+          } else if (method1 === "font") {
+            c2d.__font__ = c2d.font = data[0];
+          } else {
+            c2d[method1] = data[0];
           }
         } else if (method === "fillPath" || method === "strokePath") {
           method = method.replace(/Path/, "");
@@ -1759,12 +2018,12 @@ const _sfc_main$8 = {
         }
       }
       if (!this.actionsWaiting && callbackId) {
-        UniViewJSBridge.publishHandler("onDrawCanvas", {
+        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
           data: {
             errMsg: "drawCanvas:ok"
           }
-        }, this.$page.id);
+        }, getCurrentPageId());
       }
     },
     preloadImage: function(actions) {
@@ -1786,59 +2045,15 @@ const _sfc_main$8 = {
           loadImage();
         }
         function loadImage() {
-          self._images[src] = new Image();
-          self._images[src].onload = function() {
-            self._images[src].ready = true;
+          const image = self._images[src] = new Image();
+          image.onload = function() {
+            image.ready = true;
           };
-          function loadBlob(blob) {
-            self._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob);
-          }
-          function loadFile(path) {
-            var bitmap = new plus.nativeObj.Bitmap("bitmap" + Date.now());
-            bitmap.load(path, function() {
-              self._images[src].src = bitmap.toBase64Data();
-              bitmap.clear();
-            }, function() {
-              bitmap.clear();
-              console.error("preloadImage error");
-            });
-          }
-          function loadUrl(url) {
-            function plusDownload() {
-              plus.downloader.createDownload(url, {
-                filename: "_doc/uniapp_temp/download/"
-              }, function(d, status) {
-                if (status === 200) {
-                  loadFile(d.filename);
-                } else {
-                  self._images[src].src = src;
-                }
-              }).start();
-            }
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.responseType = "blob";
-            xhr.onload = function() {
-              if (this.status === 200) {
-                loadBlob(this.response);
-              }
-            };
-            xhr.onerror = window.plus ? plusDownload : function() {
-              self._images[src].src = src;
-            };
-            xhr.send();
-          }
-          if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
-            self._images[src].src = src;
-          } else {
-            if (window.plus && src.indexOf("http://") !== 0 && src.indexOf("https://") !== 0 && !/^data:.*,.*/.test(src)) {
-              loadFile(src);
-            } else if (/^data:.*,.*/.test(src)) {
-              self._images[src].src = src;
-            } else {
-              loadUrl(src);
-            }
-          }
+          getSameOriginUrl(src).then((src2) => {
+            image.src = src2;
+          }).catch(() => {
+            image.src = src;
+          });
         }
       });
     },
@@ -1877,83 +2092,86 @@ const _sfc_main$8 = {
       destWidth,
       destHeight,
       hidpi = true,
+      dataType: dataType2,
+      quality = 1,
+      type = "png",
       callbackId
     }) {
-      var imgData;
-      var canvas = this.$refs.canvas;
-      if (!width) {
-        width = canvas.offsetWidth - x;
+      const canvas = this.canvas;
+      let data;
+      const maxWidth = canvas.offsetWidth - x;
+      width = width ? Math.min(width, maxWidth) : maxWidth;
+      const maxHeight = canvas.offsetHeight - y;
+      height = height ? Math.min(height, maxHeight) : maxHeight;
+      if (!hidpi) {
+        if (!destWidth && !destHeight) {
+          destWidth = Math.round(width * pixelRatio);
+          destHeight = Math.round(height * pixelRatio);
+        } else if (!destWidth) {
+          destWidth = Math.round(width / height * destHeight);
+        } else if (!destHeight) {
+          destHeight = Math.round(height / width * destWidth);
+        }
+      } else {
+        destWidth = width;
+        destHeight = height;
       }
-      if (!height) {
-        height = canvas.offsetHeight - y;
+      const newCanvas = getTempCanvas(destWidth, destHeight);
+      const context = newCanvas.getContext("2d");
+      if (type === "jpeg" || type === "jpg") {
+        type = "jpeg";
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, destWidth, destHeight);
       }
+      context.__hidpi__ = true;
+      context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
+      let result;
       try {
-        if (!hidpi) {
-          if (!destWidth && !destHeight) {
-            destWidth = Math.round(width * pixelRatio);
-            destHeight = Math.round(height * pixelRatio);
-          } else if (!destWidth) {
-            destWidth = Math.round(width / height * destHeight);
-          } else if (!destHeight) {
-            destHeight = Math.round(height / width * destWidth);
-          }
+        let compressed;
+        if (dataType2 === "base64") {
+          data = newCanvas.toDataURL(`image/${type}`, quality);
         } else {
-          destWidth = width;
-          destHeight = height;
-        }
-        const newCanvas = getTempCanvas(destWidth, destHeight);
-        const context = newCanvas.getContext("2d");
-        context.__hidpi__ = true;
-        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
-        imgData = context.getImageData(0, 0, destWidth, destHeight);
-        newCanvas.height = newCanvas.width = 0;
-        context.__hidpi__ = false;
-      } catch (error) {
-        if (!callbackId) {
-          return;
-        }
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: "canvasGetImageData:fail"
+          const imgData = context.getImageData(0, 0, destWidth, destHeight);
+          if (false)
+            ;
+          else {
+            data = Array.prototype.slice.call(imgData.data);
           }
-        }, this.$page.id);
-        return;
-      }
-      if (!callbackId) {
-        return {
-          data: Array.prototype.slice.call(imgData.data),
+        }
+        result = {
+          errMsg: "canvasGetImageData:ok",
+          data,
+          compressed,
           width: destWidth,
           height: destHeight
         };
+      } catch (error) {
+        result = {
+          errMsg: `canvasGetImageData:fail ${error}`
+        };
+      }
+      newCanvas.height = newCanvas.width = 0;
+      context.__hidpi__ = false;
+      if (!callbackId) {
+        return result;
       } else {
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
-          data: {
-            errMsg: "canvasGetImageData:ok",
-            data: [...imgData.data],
-            width: destWidth,
-            height: destHeight
-          }
-        }, this.$page.id);
+          data: result
+        }, getCurrentPageId());
       }
     },
-    putImageData({
-      data,
-      x,
-      y,
-      width,
-      height,
-      callbackId
-    }) {
+    putImageData({data, x, y, width, height, compressed, callbackId}) {
       try {
         if (!height) {
           height = Math.round(data.length / 4 / width);
         }
         const canvas = getTempCanvas(width, height);
         const context = canvas.getContext("2d");
+        if (false)
+          ;
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
-        this.$refs.canvas.getContext("2d").drawImage(canvas, x, y, width, height);
+        this.canvas.getContext("2d").drawImage(canvas, x, y, width, height);
         canvas.height = canvas.width = 0;
       } catch (error) {
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
@@ -1961,7 +2179,7 @@ const _sfc_main$8 = {
           data: {
             errMsg: "canvasPutImageData:fail"
           }
-        }, this.$page.id);
+        }, getCurrentPageId());
         return;
       }
       UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
@@ -1969,18 +2187,18 @@ const _sfc_main$8 = {
         data: {
           errMsg: "canvasPutImageData:ok"
         }
-      }, this.$page.id);
+      }, getCurrentPageId());
     },
-    getDataUrl({
+    toTempFilePath({
       x = 0,
       y = 0,
       width,
       height,
       destWidth,
       destHeight,
-      hidpi = true,
       fileType,
-      qualit,
+      quality,
+      dirname,
       callbackId
     }) {
       const res = this.getImageData({
@@ -1990,100 +2208,78 @@ const _sfc_main$8 = {
         height,
         destWidth,
         destHeight,
-        hidpi
+        hidpi: false,
+        dataType: "base64",
+        type: fileType,
+        quality
       });
       if (!res.data || !res.data.length) {
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
           data: {
-            errMsg: "canvasGetDataUrl:fail"
+            errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
           }
-        }, this.$page.id);
+        }, getCurrentPageId());
         return;
       }
-      let imgData;
-      try {
-        imgData = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height);
-      } catch (error) {
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: "canvasGetDataUrl:fail"
-          }
-        }, this.$page.id);
-        return;
-      }
-      destWidth = res.width;
-      destHeight = res.height;
-      const canvas = getTempCanvas(destWidth, destHeight);
-      const c2d = canvas.getContext("2d");
-      c2d.putImageData(imgData, 0, 0);
-      let base64 = canvas.toDataURL("image/png");
-      canvas.height = canvas.width = 0;
-      const img = new Image();
-      img.onload = () => {
-        const canvas2 = getTempCanvas(destWidth, destHeight);
-        if (fileType === "jpeg" || fileType === "jpg") {
-          fileType = "jpeg";
-          c2d.fillStyle = "#fff";
-          c2d.fillRect(0, 0, destWidth, destHeight);
+      saveImage(res.data, dirname, (error, tempFilePath) => {
+        let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
+        if (error) {
+          errMsg += ` ${error.message}`;
         }
-        c2d.drawImage(img, 0, 0);
-        base64 = canvas2.toDataURL(`image/${fileType}`, qualit);
-        canvas2.height = canvas2.width = 0;
         UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
           callbackId,
           data: {
-            errMsg: "canvasGetDataUrl:ok",
-            base64
+            errMsg,
+            tempFilePath
           }
-        }, this.$page.id);
-      };
-      img.src = base64;
+        }, getCurrentPageId());
+      });
     }
+  },
+  setup() {
+    const canvas = vue.ref(null);
+    const sensor = vue.ref(null);
+    const {
+      $attrs: Attrs,
+      $excludeAttrs: ExcludeAttrs,
+      $listeners: Listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    return {
+      canvas,
+      sensor,
+      Attrs,
+      ExcludeAttrs,
+      Listeners
+    };
   }
 };
 const _hoisted_1$5 = {
+  class: "uni-canvas-canvas",
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
 function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_resize_sensor = vue.resolveComponent("v-uni-resize-sensor");
+  const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
-  }, vue.toHandlers($options._listeners)), [
+  }, __assign(__assign({}, $setup.Attrs), $setup.ExcludeAttrs), vue.toHandlers($options._listeners)), [
     vue.createVNode("canvas", _hoisted_1$5, null, 512),
     vue.createVNode("div", _hoisted_2$2, [
       vue.renderSlot(_ctx.$slots, "default")
     ]),
-    vue.createVNode(_component_v_uni_resize_sensor, {
+    vue.createVNode(_component_ResizeSensor, {
       ref: "sensor",
       onResize: $options._resize
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
 _sfc_main$8.render = _sfc_render$8;
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref, emit2) {
-  return (name, evt, detail) => {
-    emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = uniShared.normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-}
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
 const props$k = {
   name: {
@@ -2571,59 +2767,6 @@ var index$f = /* @__PURE__ */ vue.defineComponent({
     return () => vue.createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
   }
 });
-var ResizeSensor = /* @__PURE__ */ vue.defineComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    return () => vue.createVNode("uni-resize-sensor", {
-      ref: rootRef,
-      onAnimationstartOnce: update
-    }, [vue.createVNode("div", {
-      onScroll: update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
-      onScroll: update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = vue.reactive({
-    width: -1,
-    height: -1
-  });
-  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const {
-      offsetWidth,
-      offsetHeight
-    } = rootRef.value;
-    size.width = offsetWidth;
-    size.height = offsetHeight;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
 const props$f = {
   src: {
     type: String,
@@ -9445,6 +9588,7 @@ exports.setupPage = setupPage;
 exports.uni = uni$1;
 exports.useAttrs = useAttrs;
 exports.useCustomEvent = useCustomEvent;
+exports.useNativeEvent = useNativeEvent;
 exports.useOn = useOn;
 exports.useSubscribe = useSubscribe;
 exports.useUserAction = useUserAction;

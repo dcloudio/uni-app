@@ -13,3 +13,5 @@ export function initView(app: App) {
   initAppConfig(app._context.config)
   // TODO wxs,behaviors
 }
+
+export { createNativeEvent } from './componentInstance'

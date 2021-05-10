@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
+import minimatch from 'minimatch'
 
 import { stripOptions } from '@dcloudio/uni-cli-shared'
 import { isCustomElement } from '../uni-shared'
@@ -39,6 +40,8 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
     },
+    // exclude: ['pako.esm.mjs'],
+    exclude: [resolve('../../node_modules/pako/**')],
   }),
 ]
 if (FORMAT === 'cjs') {

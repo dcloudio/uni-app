@@ -5,7 +5,7 @@ uni-canvas {
   position: relative;
 }
 
-uni-canvas > canvas {
+uni-canvas > .uni-canvas-canvas {
   position: absolute;
   top: 0;
   left: 0;

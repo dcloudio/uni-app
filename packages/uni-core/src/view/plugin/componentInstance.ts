@@ -33,7 +33,7 @@ export function $nne(this: ComponentPublicInstance, evt: Event) {
   return res
 }
 
-function createNativeEvent(evt: Event) {
+export function createNativeEvent(evt: Event | TouchEvent) {
   const { type, timeStamp, currentTarget } = evt
   const target = normalizeTarget(currentTarget as HTMLElement)
   const event = {
@@ -42,6 +42,10 @@ function createNativeEvent(evt: Event) {
     target,
     detail: {},
     currentTarget: target,
+  }
+  if (evt.type.startsWith('touch')) {
+    ;(event as any).touches = (evt as TouchEvent).touches
+    ;(event as any).changedTouches = (evt as TouchEvent).changedTouches
   }
   if (__PLATFORM__ === 'h5') {
     extend(event, {
