@@ -4794,73 +4794,6 @@ function setupApp(comp) {
     }
   });
 }
-var hover = {
-  data() {
-    return {
-      hovering: false
-    };
-  },
-  props: {
-    hoverClass: {
-      type: String,
-      default: "none"
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 50
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 400
-    }
-  },
-  methods: {
-    _hoverTouchStart(evt) {
-      if (evt._hoverPropagationStopped) {
-        return;
-      }
-      if (!this.hoverClass || this.hoverClass === "none" || this.disabled) {
-        return;
-      }
-      if (evt.touches.length > 1) {
-        return;
-      }
-      if (this.hoverStopPropagation) {
-        evt._hoverPropagationStopped = true;
-      }
-      this._hoverTouch = true;
-      this._hoverStartTimer = setTimeout(() => {
-        this.hovering = true;
-        if (!this._hoverTouch) {
-          this._hoverReset();
-        }
-      }, this.hoverStartTime);
-    },
-    _hoverTouchEnd(evt) {
-      this._hoverTouch = false;
-      if (this.hovering) {
-        this._hoverReset();
-      }
-    },
-    _hoverReset() {
-      requestAnimationFrame(() => {
-        clearTimeout(this._hoverStayTimer);
-        this._hoverStayTimer = setTimeout(() => {
-          this.hovering = false;
-        }, this.hoverStayTime);
-      });
-    },
-    _hoverTouchCancel(evt) {
-      this._hoverTouch = false;
-      this.hovering = false;
-      clearTimeout(this._hoverStartTimer);
-    }
-  }
-};
 var subscriber = {
   mounted() {
     this._toggleListeners("subscribe", this.id);
@@ -8835,16 +8768,9 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$7.render = _sfc_render$7;
-const OPEN_TYPES = [
-  "navigate",
-  "redirect",
-  "switchTab",
-  "reLaunch",
-  "navigateBack"
-];
+const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 const _sfc_main$6 = {
   name: "Navigator",
-  mixins: [hover],
   props: {
     hoverClass: {
       type: String,
@@ -8867,7 +8793,7 @@ const _sfc_main$6 = {
     },
     hoverStartTime: {
       type: [Number, String],
-      default: 20
+      default: 50
     },
     hoverStayTime: {
       type: [Number, String],
@@ -8876,6 +8802,10 @@ const _sfc_main$6 = {
     exists: {
       type: String,
       default: ""
+    },
+    hoverStopPropagation: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -8913,21 +8843,26 @@ const _sfc_main$6 = {
           break;
       }
     }
+  },
+  setup(props2) {
+    const {hovering, binding} = useHover(props2);
+    return {
+      hovering,
+      binding
+    };
   }
 };
 function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
-  return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", {
+  return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
     key: 0,
-    class: [_ctx.hovering ? $props.hoverClass : ""],
-    onTouchstart: _cache[1] || (_cache[1] = (...args) => _ctx._hoverTouchStart && _ctx._hoverTouchStart(...args)),
-    onTouchend: _cache[2] || (_cache[2] = (...args) => _ctx._hoverTouchEnd && _ctx._hoverTouchEnd(...args)),
-    onTouchcancel: _cache[3] || (_cache[3] = (...args) => _ctx._hoverTouchCancel && _ctx._hoverTouchCancel(...args)),
-    onClick: _cache[4] || (_cache[4] = (...args) => $options._onClick && $options._onClick(...args))
-  }, [
+    class: [$setup.hovering ? $props.hoverClass : ""]
+  }, $setup.binding, {
+    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
+  }), [
     renderSlot(_ctx.$slots, "default")
-  ], 34)) : (openBlock(), createBlock("uni-navigator", {
+  ], 16)) : (openBlock(), createBlock("uni-navigator", {
     key: 1,
-    onClick: _cache[5] || (_cache[5] = (...args) => $options._onClick && $options._onClick(...args))
+    onClick: _cache[2] || (_cache[2] = (...args) => $options._onClick && $options._onClick(...args))
   }, [
     renderSlot(_ctx.$slots, "default")
   ]));

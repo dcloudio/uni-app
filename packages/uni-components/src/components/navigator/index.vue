@@ -2,9 +2,7 @@
   <uni-navigator
     v-if="hoverClass && hoverClass !== 'none'"
     :class="[hovering ? hoverClass : '']"
-    @touchstart="_hoverTouchStart"
-    @touchend="_hoverTouchEnd"
-    @touchcancel="_hoverTouchCancel"
+    v-bind="binding"
     @click="_onClick"
   >
     <slot />
@@ -14,33 +12,26 @@
   </uni-navigator>
 </template>
 <script>
-import hover from '../../mixins/hover'
+import { useHover } from "../../helpers/useHover";
 
-const OPEN_TYPES = [
-  'navigate',
-  'redirect',
-  'switchTab',
-  'reLaunch',
-  'navigateBack',
-]
+const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 
 export default {
-  name: 'Navigator',
-  mixins: [hover],
+  name: "Navigator",
   props: {
     hoverClass: {
       type: String,
-      default: 'navigator-hover',
+      default: "navigator-hover",
     },
     url: {
       type: String,
-      default: '',
+      default: "",
     },
     openType: {
       type: String,
-      default: 'navigate',
+      default: "navigate",
       validator(value) {
-        return ~OPEN_TYPES.indexOf(value)
+        return ~OPEN_TYPES.indexOf(value);
       },
     },
     delta: {
@@ -49,7 +40,7 @@ export default {
     },
     hoverStartTime: {
       type: [Number, String],
-      default: 20,
+      default: 50,
     },
     hoverStayTime: {
       type: [Number, String],
@@ -57,50 +48,63 @@ export default {
     },
     exists: {
       type: String,
-      default: '',
+      default: "",
+    },
+    hoverStopPropagation: {
+      type: Boolean,
+      default: false,
     },
   },
 
   methods: {
     _onClick($event) {
-      if (this.openType !== 'navigateBack' && !this.url) {
+      if (this.openType !== "navigateBack" && !this.url) {
         console.error(
-          '<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab'
-        )
-        return
+          "<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab"
+        );
+        return;
       }
 
       switch (this.openType) {
-        case 'navigate':
+        case "navigate":
           uni.navigateTo({
             url: this.url,
-          })
-          break
-        case 'redirect':
+          });
+          break;
+        case "redirect":
           uni.redirectTo({
             url: this.url,
             exists: this.exists,
-          })
-          break
-        case 'switchTab':
+          });
+          break;
+        case "switchTab":
           uni.switchTab({
             url: this.url,
-          })
-          break
-        case 'reLaunch':
+          });
+          break;
+        case "reLaunch":
           uni.reLaunch({
             url: this.url,
-          })
-          break
-        case 'navigateBack':
+          });
+          break;
+        case "navigateBack":
           uni.navigateBack({
             delta: this.delta,
-          })
-          break
+          });
+          break;
         default:
-          break
+          break;
       }
     },
   },
-}
+
+  setup(props) {
+    const { hovering, binding } = useHover(props);
+
+    return {
+      hovering,
+      binding,
+    };
+  },
+};
 </script>
