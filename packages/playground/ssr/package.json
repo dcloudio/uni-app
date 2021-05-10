@@ -1,0 +1,31 @@
+{
+  "name": "ssr",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "uni",
+    "build": "uni build",
+    "dev:ssr": "uni --ssr",
+    "build:ssr": "uni build --ssr"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "../../uni-app",
+    "@dcloudio/uni-cloud": "../../uni-cloud",
+    "@dcloudio/uni-components": "../../uni-components",
+    "@dcloudio/uni-h5": "../../uni-h5",
+    "@dcloudio/uni-h5-vue": "../../uni-h5-vue",
+    "@dcloudio/uni-i18n": "../../uni-i18n",
+    "@dcloudio/uni-shared": "../../uni-shared",
+    "vue": "link:../../uni-h5-vue"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
+    "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
+    "@vitejs/plugin-vue": "^1.2.1",
+    "@vue/compiler-sfc": "^3.0.11",
+    "@vue/server-renderer": "^3.0.11",
+    "compression": "^1.7.4",
+    "serve-static": "^1.14.1",
+    "vite": "^2.2.3"
+  }
+}
