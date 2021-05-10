@@ -360,7 +360,7 @@ type DefaultState = typeof defaultState
 type Callback = (result: any) => void | undefined
 type LineCapType = 'butt' | 'round' | 'square'
 type LineJoinType = 'bevel' | 'round' | 'miter'
-type TextAlignType = 'left' | 'center' | 'right'
+// type TextAlignType = 'left' | 'center' | 'right'
 type TextBaselineType = 'top' | 'bottom' | 'middle' | 'normal'
 
 export class CanvasContext implements UniApp.CanvasContext {

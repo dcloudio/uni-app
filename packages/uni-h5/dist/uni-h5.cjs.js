@@ -879,7 +879,6 @@ function getSameOriginUrl(url) {
   }
   return urlToFile(url).then(fileToUrl);
 }
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const canvasEventCallbacks = createCallbacks("canvasEvent");
 ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
   const callback = canvasEventCallbacks.pop(callbackId);
@@ -887,6 +886,7 @@ ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
     callback(data);
   }
 });
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {

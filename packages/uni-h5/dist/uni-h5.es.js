@@ -2088,64 +2088,6 @@ const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (
   }
   return new MapContext(id2, getCurrentPageVm());
 }, CreateMapContextProtocol);
-const defaultOptions = {
-  thresholds: [0],
-  initialRatio: 0,
-  observeAll: false
-};
-const MARGINS = ["top", "right", "bottom", "left"];
-let reqComponentObserverId = 1;
-function normalizeRootMargin(margins = {}) {
-  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
-}
-class ServiceIntersectionObserver {
-  constructor(component, options) {
-    this._pageId = getPageIdByVm(component);
-    this._component = component;
-    this._options = extend({}, defaultOptions, options);
-  }
-  relativeTo(selector, margins) {
-    this._options.relativeToSelector = selector;
-    this._options.rootMargin = normalizeRootMargin(margins);
-    return this;
-  }
-  relativeToViewport(margins) {
-    this._options.relativeToSelector = void 0;
-    this._options.rootMargin = normalizeRootMargin(margins);
-    return this;
-  }
-  observe(selector, callback2) {
-    if (!isFunction(callback2)) {
-      return;
-    }
-    this._options.selector = selector;
-    this._reqId = reqComponentObserverId++;
-    addIntersectionObserver({
-      reqId: this._reqId,
-      component: this._component,
-      options: this._options,
-      callback: callback2
-    }, this._pageId);
-  }
-  disconnect() {
-    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
-  }
-}
-const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
-  if (context && !getPageIdByVm(context)) {
-    options = context;
-    context = null;
-  }
-  if (context) {
-    return new ServiceIntersectionObserver(context, options);
-  }
-  return new ServiceIntersectionObserver(getCurrentPageVm(), options);
-});
-const createSelectorQuery = () => {
-};
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
-});
 function getInt(name, defaultValue) {
   return function(value, params) {
     if (value) {
@@ -3053,6 +2995,64 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
     callbackId: cId
   });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
+const defaultOptions = {
+  thresholds: [0],
+  initialRatio: 0,
+  observeAll: false
+};
+const MARGINS = ["top", "right", "bottom", "left"];
+let reqComponentObserverId = 1;
+function normalizeRootMargin(margins = {}) {
+  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
+}
+class ServiceIntersectionObserver {
+  constructor(component, options) {
+    this._pageId = getPageIdByVm(component);
+    this._component = component;
+    this._options = extend({}, defaultOptions, options);
+  }
+  relativeTo(selector, margins) {
+    this._options.relativeToSelector = selector;
+    this._options.rootMargin = normalizeRootMargin(margins);
+    return this;
+  }
+  relativeToViewport(margins) {
+    this._options.relativeToSelector = void 0;
+    this._options.rootMargin = normalizeRootMargin(margins);
+    return this;
+  }
+  observe(selector, callback2) {
+    if (!isFunction(callback2)) {
+      return;
+    }
+    this._options.selector = selector;
+    this._reqId = reqComponentObserverId++;
+    addIntersectionObserver({
+      reqId: this._reqId,
+      component: this._component,
+      options: this._options,
+      callback: callback2
+    }, this._pageId);
+  }
+  disconnect() {
+    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
+  }
+}
+const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
+  if (context && !getPageIdByVm(context)) {
+    options = context;
+    context = null;
+  }
+  if (context) {
+    return new ServiceIntersectionObserver(context, options);
+  }
+  return new ServiceIntersectionObserver(getCurrentPageVm(), options);
+});
+const createSelectorQuery = () => {
+};
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
+});
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
   {
