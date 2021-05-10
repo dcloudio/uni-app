@@ -7,7 +7,7 @@ import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
 
 import { stripOptions } from '@dcloudio/uni-cli-shared'
-import { isCustomElement } from '../uni-shared'
+import { isCustomElement } from '@dcloudio/uni-shared'
 
 const moduleAlias = require('module-alias')
 moduleAlias.addAlias(

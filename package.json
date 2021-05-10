@@ -11,7 +11,8 @@
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "ls-lint": "ls-lint",
     "test": "jest",
-    "preinstall": "node ./scripts/checkYarn.js"
+    "preinstall": "node ./scripts/checkYarn.js",
+    "e2e:ssr": "cypress open --project packages/playground/ssr"
   },
   "types": "test-dts/index.d.ts",
   "tsd": {

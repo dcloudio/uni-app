@@ -1,0 +1,29 @@
+name: 'ssr'
+on:
+  push:
+    branches:
+      - next
+  pull_request:
+    branches:
+      - next
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: build
+        run: npm run build
+      - uses: bahmutov/npm-install@v1
+        working-directory: packages/playground/ssr
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        working-directory: packages/playground/ssr
+        with:
+          install: false
+          start: npm run dev:ssr
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          browser: chrome
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
