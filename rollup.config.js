@@ -48,7 +48,8 @@ function createConfig(entryFile, output, plugins = []) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
 
   const tsPlugin = ts({
-    check: process.env.NODE_ENV === 'production' && !hasTSChecked,
+    check:
+      !process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked,
     tsconfig: path.resolve(__dirname, 'tsconfig.json'),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
