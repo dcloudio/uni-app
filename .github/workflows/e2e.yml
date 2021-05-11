@@ -34,13 +34,19 @@ jobs:
       - name: Set dependencies cache
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.cache
-            ${{ steps.yarn-cache.outputs.dir }}
+          path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
             ${{ runner.os }}-node${{ matrix.node_version }}-
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
 
       - name: Versions
         run: yarn versions
@@ -48,8 +54,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build all
-        run: npm run build
+      - name: Build
+        run: npm run build uni-app uni-cli-shared uni-h5 uni-i18n uni-shared vite-plugin-uni
 
       - name: Install ssr
         working-directory: ./packages/playground/ssr
@@ -58,7 +64,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          install: false
+          install: true
           start: npm run e2e:ssr:dev
           project: ./packages/playground/ssr
           wait-on: 'http://localhost:3000'
