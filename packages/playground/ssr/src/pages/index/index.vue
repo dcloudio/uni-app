@@ -6,6 +6,7 @@
   <ssr-view />
   <ssr-text />
   <ssr-progress />
+  <ssr-scroll-view />
   <view id="ssr-log"></view>
 </template>
 
