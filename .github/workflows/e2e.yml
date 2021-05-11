@@ -59,7 +59,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           install: false
-          start: npm run e2e:dev:ssr
+          start: npm run e2e:ssr:dev
           project: ./packages/playground/ssr
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
