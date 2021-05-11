@@ -1154,7 +1154,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(__uniConfig.router.base);
   }
 }
-var index$q = {
+var index$s = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -1528,7 +1528,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$p = /* @__PURE__ */ vue.defineComponent({
+var index$r = /* @__PURE__ */ vue.defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1567,7 +1567,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$o = /* @__PURE__ */ vue.defineComponent({
+var index$q = /* @__PURE__ */ vue.defineComponent({
   name: "Button",
   props: {
     id: {
@@ -2230,15 +2230,15 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
 }
 _sfc_main$6.render = _sfc_render$6;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
+const props$p = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ vue.defineComponent({
+var index$p = /* @__PURE__ */ vue.defineComponent({
   name: "CheckboxGroup",
-  props: props$o,
+  props: props$p,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2291,15 +2291,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$n = {
+const props$o = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$m = /* @__PURE__ */ vue.defineComponent({
+var index$o = /* @__PURE__ */ vue.defineComponent({
   name: "Label",
-  props: props$n,
+  props: props$o,
   setup(props2, {
     emit: emit2,
     slots
@@ -2344,7 +2344,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$m = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2366,9 +2366,9 @@ const props$m = {
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ vue.defineComponent({
+var index$n = /* @__PURE__ */ vue.defineComponent({
   name: "Checkbox",
-  props: props$m,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -2437,7 +2437,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$l = {
+const props$m = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2607,7 +2607,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   useSubscribe();
 }
-const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
+const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
   id: {
     type: String,
     default: ""
@@ -2633,9 +2633,9 @@ const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
     default: false
   }
 });
-var index$k = /* @__PURE__ */ vue.defineComponent({
+var index$m = /* @__PURE__ */ vue.defineComponent({
   name: "Editor",
-  props: props$k,
+  props: props$l,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2694,7 +2694,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$j = /* @__PURE__ */ vue.defineComponent({
+var index$l = /* @__PURE__ */ vue.defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -2721,7 +2721,7 @@ var index$j = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const props$j = {
+const props$k = {
   src: {
     type: String,
     default: ""
@@ -2758,9 +2758,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$i = /* @__PURE__ */ vue.defineComponent({
+var index$k = /* @__PURE__ */ vue.defineComponent({
   name: "Image",
-  props: props$j,
+  props: props$k,
   setup(props2, {
     emit: emit2
   }) {
@@ -2972,7 +2972,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$i = /* @__PURE__ */ Object.assign({}, {
+const props$j = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -3033,7 +3033,7 @@ const props$i = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$l);
+}, props$m);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = vue.ref(null);
@@ -3209,7 +3209,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$h = /* @__PURE__ */ Object.assign({}, props$i, {
+const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3217,7 +3217,7 @@ const props$h = /* @__PURE__ */ Object.assign({}, props$i, {
 });
 var Input = /* @__PURE__ */ vue.defineComponent({
   name: "Input",
-  props: props$h,
+  props: props$i,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3315,35 +3315,16 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-let webview;
-let pullToRefreshStyle;
-function initScrollBounce() {
-  uniShared.plusReady(() => {
-    if (!webview) {
-      webview = plus.webview.currentWebview();
-    }
-    if (!pullToRefreshStyle) {
-      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
-    }
-  });
-}
-function disableScrollBounce({disable}) {
-  if (pullToRefreshStyle && pullToRefreshStyle.support) {
-    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
-      support: !disable
-    }));
-  }
-}
-const props$g = {
+const props$h = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$h = /* @__PURE__ */ vue.defineComponent({
+var index$j = /* @__PURE__ */ vue.defineComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$g,
+  props: props$h,
   setup(props2, {
     slots
   }) {
@@ -3447,9 +3428,6 @@ function useMovableAreaState(props2, rootRef) {
     return get(target);
   }
   const _onTouchstart = withWebEvent((t2) => {
-    disableScrollBounce({
-      disable: true
-    });
     let i2 = t2.touches;
     if (i2) {
       if (i2.length > 1) {
@@ -3487,9 +3465,6 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    disableScrollBounce({
-      disable: false
-    });
     let t2 = e2.touches;
     if (!(t2 && t2.length)) {
       if (e2.changedTouches) {
@@ -3832,7 +3807,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$f = {
+const props$g = {
   direction: {
     type: String,
     default: "none"
@@ -3886,9 +3861,9 @@ const props$f = {
     default: true
   }
 };
-var index$g = /* @__PURE__ */ vue.defineComponent({
+var index$i = /* @__PURE__ */ vue.defineComponent({
   name: "MovableView",
-  props: props$f,
+  props: props$g,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -4358,6 +4333,234 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ]));
 }
 _sfc_main$5.render = _sfc_render$5;
+const props$f = {
+  value: {
+    type: Array,
+    default() {
+      return [];
+    },
+    validator: function(val) {
+      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+    }
+  },
+  indicatorStyle: {
+    type: String,
+    default: ""
+  },
+  indicatorClass: {
+    type: String,
+    default: ""
+  },
+  maskStyle: {
+    type: String,
+    default: ""
+  },
+  maskClass: {
+    type: String,
+    default: ""
+  }
+};
+function useState$1(props2) {
+  const value = vue.reactive([...props2.value]);
+  const state = {
+    value,
+    height: 34
+  };
+  vue.watch(() => props2.value, (val, oldVal) => {
+    {
+      state.value.length = val.length;
+      val.forEach((val2, index2) => {
+        if (val2 !== state.value[index2]) {
+          state.value.splice(index2, 1, val2);
+        }
+      });
+    }
+  });
+  return state;
+}
+var index$h = /* @__PURE__ */ vue.defineComponent({
+  name: "PickerView",
+  props: props$f,
+  emits: ["change", "pickstart", "pickend", "update:value"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const state = useState$1(props2);
+    let columnVNodes = [];
+    function getItemIndex(vnode) {
+      return columnVNodes.indexOf(vnode);
+    }
+    const getPickerViewColumn = function(columnInstance) {
+      const ref = vue.computed({
+        get() {
+          const index2 = getItemIndex(columnInstance.vnode);
+          return state.value[index2] || 0;
+        },
+        set(current) {
+          const index2 = getItemIndex(columnInstance.vnode);
+          const oldCurrent = state.value[index2];
+          if (oldCurrent !== current) {
+            state.value.splice(index2, 1, current);
+            const value = state.value.map((val) => val);
+            emit2("update:value", value);
+            trigger("change", {}, {
+              value
+            });
+          }
+        }
+      });
+      return ref;
+    };
+    vue.provide("getPickerViewColumn", getPickerViewColumn);
+    const getPickerViewProps = () => {
+      return props2;
+    };
+    vue.provide("getPickerViewProps", getPickerViewProps);
+    const getPickerViewState = () => {
+      return state;
+    };
+    vue.provide("getPickerViewState", getPickerViewState);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      columnVNodes = columnVNodes = defaultSlots || [];
+      return vue.createVNode("uni-picker-view", {
+        ref: rootRef
+      }, [vue.createVNode(ResizeSensor, {
+        initial: true,
+        onResize: ({
+          height
+        }) => state.height = height
+      }, null, 8, ["initial", "onResize"]), vue.createVNode("div", {
+        class: "uni-picker-view-wrapper"
+      }, [columnVNodes])], 512);
+    };
+  }
+});
+function flatVNode(nodes) {
+  const array = [];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((vnode) => {
+      if (vue.isVNode(vnode)) {
+        if (vnode.type === vue.Fragment) {
+          array.push(...flatVNode(vnode.children));
+        } else {
+          array.push(vnode);
+        }
+      }
+    });
+  }
+  return array;
+}
+let scopedIndex = 0;
+function useScopedClass(indicatorHeightRef) {
+  const className = `uni-picker-view-content-${scopedIndex++}`;
+  function updateStyle() {
+    const style = document.createElement("style");
+    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
+    document.head.appendChild(style);
+  }
+  vue.watch(() => indicatorHeightRef.value, updateStyle);
+  return className;
+}
+var index$g = /* @__PURE__ */ vue.defineComponent({
+  name: "PickerViewColumn",
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const contentRef = vue.ref(null);
+    const getPickerViewColumn = vue.inject("getPickerViewColumn");
+    const instance = vue.getCurrentInstance();
+    const currentRef = getPickerViewColumn ? getPickerViewColumn(instance) : vue.ref(0);
+    const getPickerViewProps = vue.inject("getPickerViewProps");
+    const pickerViewProps = getPickerViewProps();
+    const getPickerViewState = vue.inject("getPickerViewState");
+    const pickerViewState = getPickerViewState();
+    const indicatorHeight = vue.ref(34);
+    const maskSize = vue.computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
+    const {
+      state: scopedAttrsState
+    } = useScopedAttrs();
+    const className = useScopedClass(indicatorHeight);
+    let scroller2;
+    const state = vue.reactive({
+      current: currentRef.value,
+      length: 0
+    });
+    function updatesScroller() {
+    }
+    vue.watch(() => currentRef.value, (current) => {
+      if (current !== state.current) {
+        state.current = current;
+      }
+    });
+    vue.watch(() => state.current, (current) => currentRef.value = current);
+    vue.watch([() => indicatorHeight.value, () => state.length], updatesScroller);
+    let oldDeltaY = 0;
+    function handleWheel(event) {
+      const deltaY = oldDeltaY + event.deltaY;
+      if (Math.abs(deltaY) > 10) {
+        oldDeltaY = 0;
+        let current = Math.min(state.current + (deltaY < 0 ? -1 : 1), state.length - 1);
+        state.current = current = Math.max(current, 0);
+        scroller2.scrollTo(current * indicatorHeight.value);
+      } else {
+        oldDeltaY = deltaY;
+      }
+      event.preventDefault();
+    }
+    function handleTap({
+      clientY
+    }) {
+      const el = rootRef.value;
+      if (!scroller2.isScrolling()) {
+        const rect = el.getBoundingClientRect();
+        const r = clientY - rect.top - pickerViewState.height / 2;
+        const o2 = indicatorHeight.value / 2;
+        if (!(Math.abs(r) <= o2)) {
+          const a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
+          const s = r < 0 ? -a2 : a2;
+          let current = Math.min(state.current + s, state.length - 1);
+          state.current = current = Math.max(current, 0);
+          scroller2.scrollTo(current * indicatorHeight.value);
+        }
+      }
+    }
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      state.length = flatVNode(defaultSlots).length;
+      const padding = `${maskSize.value}px 0`;
+      return vue.createVNode("uni-picker-view-column", {
+        ref: rootRef
+      }, [vue.createVNode("div", {
+        onWheel: handleWheel,
+        onClick: handleTap,
+        class: "uni-picker-view-group"
+      }, [vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
+        class: ["uni-picker-view-mask", pickerViewProps.maskClass],
+        style: `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+      }), null, 16), vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
+        class: ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+        style: pickerViewProps.indicatorStyle
+      }), [vue.createVNode(ResizeSensor, {
+        initial: true,
+        onResize: ({
+          height
+        }) => indicatorHeight.value = height
+      }, null, 8, ["initial", "onResize"])], 16), vue.createVNode("div", {
+        ref: contentRef,
+        class: ["uni-picker-view-content", className],
+        style: {
+          padding
+        }
+      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+    };
+  }
+});
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
@@ -5757,9 +5960,6 @@ const _sfc_main$3 = {
     };
     this.__handleTouchStart = function(event) {
       if (event.touches.length === 1) {
-        disableScrollBounce({
-          disable: true
-        });
         needStop = null;
         touchStart = {
           x: event.touches[0].pageX,
@@ -5772,9 +5972,6 @@ const _sfc_main$3 = {
     };
     this.__handleTouchEnd = function(event) {
       touchStart = null;
-      disableScrollBounce({
-        disable: false
-      });
       if (self.refresherHeight >= self.refresherThreshold) {
         self._setRefreshState("refreshing");
       } else {
@@ -5786,7 +5983,6 @@ const _sfc_main$3 = {
     this.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
     this.main.addEventListener("scroll", this.__handleScroll, passiveOptions);
     this.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
-    initScrollBounce();
   },
   activated() {
     this.scrollY && (this.main.scrollTop = this.lastScrollTop);
@@ -6264,7 +6460,7 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
   const _onTrack = (e2) => {
     if (!props2.disabled) {
       return e2.detail.state === "move" ? (_onUserChangedValue({
-        x: e2.detail.x0
+        x: e2.detail.x
       }), trigger("changing", e2, {
         value: sliderValue.value
       }), false) : e2.detail.state === "end" && trigger("change", e2, {
@@ -6758,7 +6954,7 @@ var index$b = /* @__PURE__ */ vue.defineComponent({
     } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = defaultSlots || [];
+      swiperItems = flatVNode(defaultSlots);
       return vue.createVNode("uni-swiper", {
         ref: rootRef
       }, [vue.createVNode("div", {
@@ -6771,7 +6967,7 @@ var index$b = /* @__PURE__ */ vue.defineComponent({
         ref: slideFrameRef,
         class: "uni-swiper-slide-frame",
         style: slideFrameStyle.value
-      }, [swiperItems], 4)], 4), props2.indicatorDots && vue.createVNode("div", {
+      }, [defaultSlots], 4)], 4), props2.indicatorDots && vue.createVNode("div", {
         class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
       }, [swiperContexts.value.map((_, index2, array) => vue.createVNode("div", {
         onClick: () => onSwiperDotClick(index2),
@@ -6980,7 +7176,7 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const props$7 = /* @__PURE__ */ Object.assign({}, props$i, {
+const props$7 = /* @__PURE__ */ Object.assign({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9866,24 +10062,26 @@ var index = /* @__PURE__ */ vue.defineComponent({
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
 exports.Audio = _sfc_main$7;
-exports.Button = index$o;
+exports.Button = index$q;
 exports.Canvas = _sfc_main$6;
-exports.Checkbox = index$l;
-exports.CheckboxGroup = index$n;
+exports.Checkbox = index$n;
+exports.CheckboxGroup = index$p;
 exports.CoverImage = _sfc_main$1;
 exports.CoverView = _sfc_main$2;
-exports.Editor = index$k;
-exports.Form = index$p;
-exports.Icon = index$j;
-exports.Image = index$i;
+exports.Editor = index$m;
+exports.Form = index$r;
+exports.Icon = index$l;
+exports.Image = index$k;
 exports.Input = Input;
-exports.Label = index$m;
+exports.Label = index$o;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
-exports.MovableArea = index$h;
-exports.MovableView = index$g;
+exports.MovableArea = index$j;
+exports.MovableView = index$i;
 exports.Navigator = _sfc_main$5;
 exports.PageComponent = index$2;
+exports.PickerView = index$h;
+exports.PickerViewColumn = index$g;
 exports.Progress = index$f;
 exports.Radio = index$d;
 exports.RadioGroup = index$e;
@@ -9910,7 +10108,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$q;
+exports.plugin = index$s;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

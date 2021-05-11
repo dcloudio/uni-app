@@ -12,8 +12,8 @@ import Label from './label/index'
 import MovableArea from './movable-area/index'
 import MovableView from './movable-view/index'
 import Navigator from './navigator/index.vue'
-// import PickerView from './picker-view/index.vue'
-// import PickerViewColumn from './picker-view-column/index.vue'
+import PickerView from './picker-view/index'
+import PickerViewColumn from './picker-view-column/index'
 import Progress from './progress/index'
 import Radio from './radio/index'
 import RadioGroup from './radio-group/index'
@@ -42,8 +42,8 @@ export {
   MovableArea,
   MovableView,
   Navigator,
-  //   PickerView,
-  //   PickerViewColumn,
+  PickerView,
+  PickerViewColumn,
   Progress,
   Radio,
   RadioGroup,

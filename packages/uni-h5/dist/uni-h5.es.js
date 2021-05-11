@@ -15,8 +15,8 @@ var __assign = (a2, b) => {
   return a2;
 };
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, markRaw, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Fragment, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, plusReady, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, markRaw, isVNode, Fragment, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -4678,7 +4678,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$q = {
+var index$s = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -5103,7 +5103,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$p = /* @__PURE__ */ defineComponent({
+var index$r = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -5142,7 +5142,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$o = /* @__PURE__ */ defineComponent({
+var index$q = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -6005,15 +6005,15 @@ function _removeListeners(id2, listeners, watch2) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$r = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineComponent({
+var index$p = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$r,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6066,15 +6066,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$p = {
+const props$q = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$m = /* @__PURE__ */ defineComponent({
+var index$o = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$p,
+  props: props$q,
   setup(props2, {
     emit: emit2,
     slots
@@ -6119,7 +6119,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$o = {
+const props$p = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6141,9 +6141,9 @@ const props$o = {
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ defineComponent({
+var index$n = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$o,
+  props: props$p,
   setup(props2, {
     slots
   }) {
@@ -6222,7 +6222,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$n = {
+const props$o = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6966,7 +6966,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
+const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
   id: {
     type: String,
     default: ""
@@ -6992,9 +6992,9 @@ const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
     default: false
   }
 });
-var index$k = /* @__PURE__ */ defineComponent({
+var index$m = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$m,
+  props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7054,7 +7054,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$j = /* @__PURE__ */ defineComponent({
+var index$l = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -7081,7 +7081,7 @@ var index$j = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$l = {
+const props$m = {
   src: {
     type: String,
     default: ""
@@ -7118,9 +7118,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$i = /* @__PURE__ */ defineComponent({
+var index$k = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$l,
+  props: props$m,
   setup(props2, {
     emit: emit2
   }) {
@@ -7399,7 +7399,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$k = /* @__PURE__ */ Object.assign({}, {
+const props$l = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -7460,7 +7460,7 @@ const props$k = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$n);
+}, props$o);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -7645,7 +7645,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$j = /* @__PURE__ */ Object.assign({}, props$k, {
+const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7653,7 +7653,7 @@ const props$j = /* @__PURE__ */ Object.assign({}, props$k, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$j,
+  props: props$k,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7751,35 +7751,16 @@ var Input = /* @__PURE__ */ defineComponent({
     };
   }
 });
-let webview;
-let pullToRefreshStyle;
-function initScrollBounce() {
-  plusReady(() => {
-    if (!webview) {
-      webview = plus.webview.currentWebview();
-    }
-    if (!pullToRefreshStyle) {
-      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
-    }
-  });
-}
-function disableScrollBounce({disable}) {
-  if (pullToRefreshStyle && pullToRefreshStyle.support) {
-    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
-      support: !disable
-    }));
-  }
-}
-const props$i = {
+const props$j = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$h = /* @__PURE__ */ defineComponent({
+var index$j = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$i,
+  props: props$j,
   setup(props2, {
     slots
   }) {
@@ -7803,7 +7784,6 @@ var index$h = /* @__PURE__ */ defineComponent({
     });
     onMounted(() => {
       movableAreaEvents._resize();
-      initScrollBounce();
       _isMounted.value = true;
     });
     let movableViewItems = [];
@@ -7888,9 +7868,6 @@ function useMovableAreaState(props2, rootRef) {
     return get(target);
   }
   const _onTouchstart = withWebEvent((t2) => {
-    disableScrollBounce({
-      disable: true
-    });
     let i2 = t2.touches;
     if (i2) {
       if (i2.length > 1) {
@@ -7928,9 +7905,6 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    disableScrollBounce({
-      disable: false
-    });
     let t2 = e2.touches;
     if (!(t2 && t2.length)) {
       if (e2.changedTouches) {
@@ -8018,8 +7992,8 @@ function useTouchtrack(element, method, useCancel) {
       changedTouches: $event.changedTouches,
       detail: {
         state,
-        x0: x,
-        y0: y,
+        x,
+        y,
         dx: x - x0,
         dy: y - y0,
         ddx: x - x1,
@@ -8103,13 +8077,13 @@ function Decline() {
 Decline.prototype.x = function(e2) {
   return Math.sqrt(e2);
 };
-function Friction$1(e2, t2) {
+function Friction$2(e2, t2) {
   this._m = e2;
   this._f = 1e3 * t2;
   this._startTime = 0;
   this._v = 0;
 }
-Friction$1.prototype.setV = function(x, y) {
+Friction$2.prototype.setV = function(x, y) {
   var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
@@ -8119,11 +8093,11 @@ Friction$1.prototype.setV = function(x, y) {
   this._lastDt = null;
   this._startTime = new Date().getTime();
 };
-Friction$1.prototype.setS = function(x, y) {
+Friction$2.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t2) {
+Friction$2.prototype.s = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -8144,7 +8118,7 @@ Friction$1.prototype.s = function(t2) {
     y
   };
 };
-Friction$1.prototype.ds = function(t2) {
+Friction$2.prototype.ds = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -8156,29 +8130,29 @@ Friction$1.prototype.ds = function(t2) {
     dy: this._y_v + this._y_a * t2
   };
 };
-Friction$1.prototype.delta = function() {
+Friction$2.prototype.delta = function() {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   };
 };
-Friction$1.prototype.dt = function() {
+Friction$2.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
-Friction$1.prototype.done = function() {
+Friction$2.prototype.done = function() {
   var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
-Friction$1.prototype.setEnd = function(x, y) {
+Friction$2.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
   this._endPositionY = y;
 };
-Friction$1.prototype.reconfigure = function(m, f2) {
+Friction$2.prototype.reconfigure = function(m, f2) {
   this._m = m;
   this._f = 1e3 * f2;
 };
-function Spring$1(m, k, c) {
+function Spring$2(m, k, c) {
   this._m = m;
   this._k = k;
   this._c = c;
@@ -8186,7 +8160,7 @@ function Spring$1(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring$1.prototype._solve = function(e2, t2) {
+Spring$2.prototype._solve = function(e2, t2) {
   var n = this._c;
   var i2 = this._m;
   var r = this._k;
@@ -8261,19 +8235,19 @@ Spring$1.prototype._solve = function(e2, t2) {
     }
   };
 };
-Spring$1.prototype.x = function(e2) {
+Spring$2.prototype.x = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
-Spring$1.prototype.dx = function(e2) {
+Spring$2.prototype.dx = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
 };
-Spring$1.prototype.setEnd = function(e2, n, i2) {
+Spring$2.prototype.setEnd = function(e2, n, i2) {
   if (!i2) {
     i2 = new Date().getTime();
   }
@@ -8300,7 +8274,7 @@ Spring$1.prototype.setEnd = function(e2, n, i2) {
     }
   }
 };
-Spring$1.prototype.snap = function(e2) {
+Spring$2.prototype.snap = function(e2) {
   this._startTime = new Date().getTime();
   this._endPosition = e2;
   this._solution = {
@@ -8312,13 +8286,13 @@ Spring$1.prototype.snap = function(e2) {
     }
   };
 };
-Spring$1.prototype.done = function(n) {
+Spring$2.prototype.done = function(n) {
   if (!n) {
     n = new Date().getTime();
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring$1.prototype.reconfigure = function(m, t2, c) {
+Spring$2.prototype.reconfigure = function(m, t2, c) {
   this._m = m;
   this._k = t2;
   this._c = c;
@@ -8327,13 +8301,13 @@ Spring$1.prototype.reconfigure = function(m, t2, c) {
     this._startTime = new Date().getTime();
   }
 };
-Spring$1.prototype.springConstant = function() {
+Spring$2.prototype.springConstant = function() {
   return this._k;
 };
-Spring$1.prototype.damping = function() {
+Spring$2.prototype.damping = function() {
   return this._c;
 };
-Spring$1.prototype.configuration = function() {
+Spring$2.prototype.configuration = function() {
   function e2(e3, t3) {
     e3.reconfigure(1, t3, e3.damping());
   }
@@ -8358,9 +8332,9 @@ Spring$1.prototype.configuration = function() {
   ];
 };
 function STD(e2, t2, n) {
-  this._springX = new Spring$1(e2, t2, n);
-  this._springY = new Spring$1(e2, t2, n);
-  this._springScale = new Spring$1(e2, t2, n);
+  this._springX = new Spring$2(e2, t2, n);
+  this._springY = new Spring$2(e2, t2, n);
+  this._springScale = new Spring$2(e2, t2, n);
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i2) {
@@ -8387,7 +8361,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$h = {
+const props$i = {
   direction: {
     type: String,
     default: "none"
@@ -8441,9 +8415,9 @@ const props$h = {
     default: true
   }
 };
-var index$g = /* @__PURE__ */ defineComponent({
+var index$i = /* @__PURE__ */ defineComponent({
   name: "MovableView",
-  props: props$h,
+  props: props$i,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -8593,7 +8567,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
   const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  const _friction = new Friction$1(1, frictionNumber.value);
+  const _friction = new Friction$2(1, frictionNumber.value);
   watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -8663,9 +8637,6 @@ function useMovableViewState(props2, trigger, rootRef) {
   function __handleTouchStart() {
     if (!_isScaling) {
       if (!props2.disabled) {
-        disableScrollBounce({
-          disable: true
-        });
         if (_FA) {
           _FA.cancel();
         }
@@ -8756,9 +8727,6 @@ function useMovableViewState(props2, trigger, rootRef) {
   }
   function __handleTouchEnd() {
     if (!_isScaling && !props2.disabled && _isTouching) {
-      disableScrollBounce({
-        disable: false
-      });
       rootRef.value.style.willChange = "auto";
       _isTouching = false;
       if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
@@ -9017,7 +8985,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     _friction.reconfigure(1, frictionNumber.value);
     _STD.reconfigure(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
     rootRef.value.style.transformOrigin = "center";
-    initScrollBounce();
     const context = {
       rootRef,
       setParent,
@@ -9133,6 +9100,987 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ]));
 }
 _sfc_main$5.render = _sfc_render$5;
+const props$h = {
+  value: {
+    type: Array,
+    default() {
+      return [];
+    },
+    validator: function(val) {
+      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+    }
+  },
+  indicatorStyle: {
+    type: String,
+    default: ""
+  },
+  indicatorClass: {
+    type: String,
+    default: ""
+  },
+  maskStyle: {
+    type: String,
+    default: ""
+  },
+  maskClass: {
+    type: String,
+    default: ""
+  }
+};
+function useState$1(props2) {
+  const value = reactive([...props2.value]);
+  const state = {
+    value,
+    height: 34
+  };
+  watch(() => props2.value, (val, oldVal) => {
+    {
+      state.value.length = val.length;
+      val.forEach((val2, index2) => {
+        if (val2 !== state.value[index2]) {
+          state.value.splice(index2, 1, val2);
+        }
+      });
+    }
+  });
+  return state;
+}
+var index$h = /* @__PURE__ */ defineComponent({
+  name: "PickerView",
+  props: props$h,
+  emits: ["change", "pickstart", "pickend", "update:value"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const state = useState$1(props2);
+    let columnVNodes = [];
+    function getItemIndex(vnode) {
+      return columnVNodes.indexOf(vnode);
+    }
+    const getPickerViewColumn = function(columnInstance) {
+      const ref2 = computed({
+        get() {
+          const index2 = getItemIndex(columnInstance.vnode);
+          return state.value[index2] || 0;
+        },
+        set(current) {
+          const index2 = getItemIndex(columnInstance.vnode);
+          const oldCurrent = state.value[index2];
+          if (oldCurrent !== current) {
+            state.value.splice(index2, 1, current);
+            const value = state.value.map((val) => val);
+            emit2("update:value", value);
+            trigger("change", {}, {
+              value
+            });
+          }
+        }
+      });
+      return ref2;
+    };
+    provide("getPickerViewColumn", getPickerViewColumn);
+    const getPickerViewProps = () => {
+      return props2;
+    };
+    provide("getPickerViewProps", getPickerViewProps);
+    const getPickerViewState = () => {
+      return state;
+    };
+    provide("getPickerViewState", getPickerViewState);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      columnVNodes = columnVNodes = defaultSlots || [];
+      return createVNode("uni-picker-view", {
+        ref: rootRef
+      }, [createVNode(ResizeSensor, {
+        initial: true,
+        onResize: ({
+          height
+        }) => state.height = height
+      }, null, 8, ["initial", "onResize"]), createVNode("div", {
+        class: "uni-picker-view-wrapper"
+      }, [columnVNodes])], 512);
+    };
+  }
+});
+class Friction$1 {
+  constructor(drag) {
+    this._drag = drag;
+    this._dragLog = Math.log(drag);
+    this._x = 0;
+    this._v = 0;
+    this._startTime = 0;
+  }
+  set(x, v2) {
+    this._x = x;
+    this._v = v2;
+    this._startTime = new Date().getTime();
+  }
+  setVelocityByEnd(e2) {
+    this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
+  }
+  x(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    this._dt = e2;
+    return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
+  }
+  dx(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    this._dt = e2;
+    return this._v * t2;
+  }
+  done() {
+    return Math.abs(this.dx()) < 3;
+  }
+  reconfigure(e2) {
+    const t2 = this.x();
+    const n = this.dx();
+    this._drag = e2;
+    this._dragLog = Math.log(e2);
+    this.set(t2, n);
+  }
+  configuration() {
+    const e2 = this;
+    return [
+      {
+        label: "Friction",
+        read: function() {
+          return e2._drag;
+        },
+        write: function(t2) {
+          e2.reconfigure(t2);
+        },
+        min: 1e-3,
+        max: 0.1,
+        step: 1e-3
+      }
+    ];
+  }
+}
+function o$1(e2, t2, n) {
+  return e2 > t2 - n && e2 < t2 + n;
+}
+function a$1(e2, t2) {
+  return o$1(e2, 0, t2);
+}
+class Spring$1 {
+  constructor(m, k, c) {
+    this._m = m;
+    this._k = k;
+    this._c = c;
+    this._solution = null;
+    this._endPosition = 0;
+    this._startTime = 0;
+  }
+  _solve(e2, t2) {
+    const n = this._c;
+    const i2 = this._m;
+    const r = this._k;
+    const o2 = n * n - 4 * i2 * r;
+    if (o2 === 0) {
+      const a3 = -n / (2 * i2);
+      const s2 = e2;
+      const l2 = t2 / (a3 * e2);
+      return {
+        x: function(e22) {
+          return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
+        },
+        dx: function(e22) {
+          const t22 = Math.pow(Math.E, a3 * e22);
+          return a3 * (s2 + l2 * e22) * t22 + l2 * t22;
+        }
+      };
+    }
+    if (o2 > 0) {
+      const c = (-n - Math.sqrt(o2)) / (2 * i2);
+      const u = (-n + Math.sqrt(o2)) / (2 * i2);
+      const l2 = (t2 - c * e2) / (u - c);
+      const s2 = e2 - l2;
+      return {
+        x: function(e22) {
+          let t22;
+          let n2;
+          if (e22 === this._t) {
+            t22 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e22;
+          if (!t22) {
+            t22 = this._powER1T = Math.pow(Math.E, c * e22);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e22);
+          }
+          return s2 * t22 + l2 * n2;
+        },
+        dx: function(e22) {
+          let t22;
+          let n2;
+          if (e22 === this._t) {
+            t22 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e22;
+          if (!t22) {
+            t22 = this._powER1T = Math.pow(Math.E, c * e22);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e22);
+          }
+          return s2 * c * t22 + l2 * u * n2;
+        }
+      };
+    }
+    const d = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
+    const a2 = -n / 2 * i2;
+    const s = e2;
+    const l = (t2 - a2 * e2) / d;
+    return {
+      x: function(e22) {
+        return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
+      },
+      dx: function(e22) {
+        const t22 = Math.pow(Math.E, a2 * e22);
+        const n2 = Math.cos(d * e22);
+        const i22 = Math.sin(d * e22);
+        return t22 * (l * d * n2 - s * d * i22) + a2 * t22 * (l * i22 + s * n2);
+      }
+    };
+  }
+  x(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._endPosition + this._solution.x(e2) : 0;
+  }
+  dx(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._solution.dx(e2) : 0;
+  }
+  setEnd(e2, t2, n) {
+    if (!n) {
+      n = new Date().getTime();
+    }
+    if (e2 !== this._endPosition || !a$1(t2, 0.4)) {
+      t2 = t2 || 0;
+      let i2 = this._endPosition;
+      if (this._solution) {
+        if (a$1(t2, 0.4)) {
+          t2 = this._solution.dx((n - this._startTime) / 1e3);
+        }
+        i2 = this._solution.x((n - this._startTime) / 1e3);
+        if (a$1(t2, 0.4)) {
+          t2 = 0;
+        }
+        if (a$1(i2, 0.4)) {
+          i2 = 0;
+        }
+        i2 += this._endPosition;
+      }
+      if (!(this._solution && a$1(i2 - e2, 0.4) && a$1(t2, 0.4))) {
+        this._endPosition = e2;
+        this._solution = this._solve(i2 - this._endPosition, t2);
+        this._startTime = n;
+      }
+    }
+  }
+  snap(e2) {
+    this._startTime = new Date().getTime();
+    this._endPosition = e2;
+    this._solution = {
+      x: function() {
+        return 0;
+      },
+      dx: function() {
+        return 0;
+      }
+    };
+  }
+  done(e2) {
+    if (!e2) {
+      e2 = new Date().getTime();
+    }
+    return o$1(this.x(), this._endPosition, 0.4) && a$1(this.dx(), 0.4);
+  }
+  reconfigure(e2, t2, n) {
+    this._m = e2;
+    this._k = t2;
+    this._c = n;
+    if (!this.done()) {
+      this._solution = this._solve(this.x() - this._endPosition, this.dx());
+      this._startTime = new Date().getTime();
+    }
+  }
+  springConstant() {
+    return this._k;
+  }
+  damping() {
+    return this._c;
+  }
+  configuration() {
+    function e2(e22, t22) {
+      e22.reconfigure(1, t22, e22.damping());
+    }
+    function t2(e22, t22) {
+      e22.reconfigure(1, e22.springConstant(), t22);
+    }
+    return [
+      {
+        label: "Spring Constant",
+        read: this.springConstant.bind(this),
+        write: e2.bind(this, this),
+        min: 100,
+        max: 1e3
+      },
+      {
+        label: "Damping",
+        read: this.damping.bind(this),
+        write: t2.bind(this, this),
+        min: 1,
+        max: 500
+      }
+    ];
+  }
+}
+class Scroll$1 {
+  constructor(extent, friction, spring) {
+    this._extent = extent;
+    this._friction = friction || new Friction$1(0.01);
+    this._spring = spring || new Spring$1(1, 90, 20);
+    this._startTime = 0;
+    this._springing = false;
+    this._springOffset = 0;
+  }
+  snap(e2, t2) {
+    this._springOffset = 0;
+    this._springing = true;
+    this._spring.snap(e2);
+    this._spring.setEnd(t2);
+  }
+  set(e2, t2) {
+    this._friction.set(e2, t2);
+    if (e2 > 0 && t2 >= 0) {
+      this._springOffset = 0;
+      this._springing = true;
+      this._spring.snap(e2);
+      this._spring.setEnd(0);
+    } else {
+      if (e2 < -this._extent && t2 <= 0) {
+        this._springOffset = 0;
+        this._springing = true;
+        this._spring.snap(e2);
+        this._spring.setEnd(-this._extent);
+      } else {
+        this._springing = false;
+      }
+    }
+    this._startTime = new Date().getTime();
+  }
+  x(e2) {
+    if (!this._startTime) {
+      return 0;
+    }
+    if (!e2) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    if (this._springing) {
+      return this._spring.x() + this._springOffset;
+    }
+    let t2 = this._friction.x(e2);
+    let n = this.dx(e2);
+    if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
+      this._springing = true;
+      this._spring.setEnd(0, n);
+      if (t2 < -this._extent) {
+        this._springOffset = -this._extent;
+      } else {
+        this._springOffset = 0;
+      }
+      t2 = this._spring.x() + this._springOffset;
+    }
+    return t2;
+  }
+  dx(e2) {
+    let t2;
+    if (this._lastTime === e2) {
+      t2 = this._lastDx;
+    } else {
+      t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
+    }
+    this._lastTime = e2;
+    this._lastDx = t2;
+    return t2;
+  }
+  done() {
+    return this._springing ? this._spring.done() : this._friction.done();
+  }
+  setVelocityByEnd(e2) {
+    this._friction.setVelocityByEnd(e2);
+  }
+  configuration() {
+    const e2 = this._friction.configuration();
+    e2.push.apply(e2, this._spring.configuration());
+    return e2;
+  }
+}
+function createAnimation(scroll, onScroll, onEnd) {
+  const state = {
+    id: 0,
+    cancelled: false
+  };
+  function startAnimation(state2, scroll2, onScroll2, onEnd2) {
+    if (!state2 || !state2.cancelled) {
+      onScroll2(scroll2);
+      const isDone = scroll2.done();
+      if (!isDone) {
+        if (!state2.cancelled) {
+          state2.id = requestAnimationFrame(startAnimation.bind(null, state2, scroll2, onScroll2, onEnd2));
+        }
+      }
+      if (isDone && onEnd2) {
+        onEnd2(scroll2);
+      }
+    }
+  }
+  function cancel(state2) {
+    if (state2 && state2.id) {
+      cancelAnimationFrame(state2.id);
+    }
+    if (state2) {
+      state2.cancelled = true;
+    }
+  }
+  startAnimation(state, scroll, onScroll, onEnd);
+  return {
+    cancel: cancel.bind(null, state),
+    model: scroll
+  };
+}
+class Scroller$1 {
+  constructor(element, options) {
+    options = options || {};
+    this._element = element;
+    this._options = options;
+    this._enableSnap = options.enableSnap || false;
+    this._itemSize = options.itemSize || 0;
+    this._enableX = options.enableX || false;
+    this._enableY = options.enableY || false;
+    this._shouldDispatchScrollEvent = !!options.onScroll;
+    if (this._enableX) {
+      this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
+      this._scrollWidth = options.scrollWidth;
+    } else {
+      this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
+      this._scrollHeight = options.scrollHeight;
+    }
+    this._position = 0;
+    this._scroll = new Scroll$1(this._extent, options.friction, options.spring);
+    this._onTransitionEnd = this.onTransitionEnd.bind(this);
+    this.updatePosition();
+  }
+  onTouchStart() {
+    this._startPosition = this._position;
+    this._lastChangePos = this._startPosition;
+    if (this._startPosition > 0) {
+      this._startPosition /= 0.5;
+    } else {
+      if (this._startPosition < -this._extent) {
+        this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
+      }
+    }
+    if (this._animation) {
+      this._animation.cancel();
+      this._scrolling = false;
+    }
+    this.updatePosition();
+  }
+  onTouchMove(x, y) {
+    let startPosition = this._startPosition;
+    if (this._enableX) {
+      startPosition += x;
+    } else if (this._enableY) {
+      startPosition += y;
+    }
+    if (startPosition > 0) {
+      startPosition *= 0.5;
+    } else if (startPosition < -this._extent) {
+      startPosition = 0.5 * (startPosition + this._extent) - this._extent;
+    }
+    this._position = startPosition;
+    this.updatePosition();
+    this.dispatchScroll();
+  }
+  onTouchEnd(x, y, o2) {
+    if (this._enableSnap && this._position > -this._extent && this._position < 0) {
+      if (this._enableY && (Math.abs(y) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
+        this.snap();
+        return;
+      }
+      if (this._enableX && (Math.abs(x) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
+        this.snap();
+        return;
+      }
+    }
+    if (this._enableX) {
+      this._scroll.set(this._position, o2.x);
+    } else if (this._enableY) {
+      this._scroll.set(this._position, o2.y);
+    }
+    let c;
+    if (this._enableSnap) {
+      const s = this._scroll._friction.x(100);
+      const l = s % this._itemSize;
+      c = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
+      if (c <= 0 && c >= -this._extent) {
+        this._scroll.setVelocityByEnd(c);
+      }
+    }
+    this._lastTime = Date.now();
+    this._lastDelay = 0;
+    this._scrolling = true;
+    this._lastChangePos = this._position;
+    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._animation = createAnimation(this._scroll, () => {
+      const e2 = Date.now();
+      const i2 = (e2 - this._scroll._startTime) / 1e3;
+      const r = this._scroll.x(i2);
+      this._position = r;
+      this.updatePosition();
+      const o22 = this._scroll.dx(i2);
+      if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
+        this.dispatchScroll();
+        this._lastDelay = Math.abs(2e3 / o22);
+        this._lastTime = e2;
+      }
+    }, () => {
+      if (this._enableSnap) {
+        if (c <= 0 && c >= -this._extent) {
+          this._position = c;
+          this.updatePosition();
+        }
+        if (typeof this._options.onSnap === "function") {
+          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+        }
+      }
+      if (this._shouldDispatchScrollEvent) {
+        this.dispatchScroll();
+      }
+      this._scrolling = false;
+    });
+  }
+  onTransitionEnd() {
+    this._element.style.webkitTransition = "";
+    this._element.style.transition = "";
+    this._element.removeEventListener("transitionend", this._onTransitionEnd);
+    if (this._snapping) {
+      this._snapping = false;
+    }
+    this.dispatchScroll();
+  }
+  snap() {
+    const itemSize = this._itemSize;
+    const position = this._position % itemSize;
+    const i2 = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
+    if (this._position !== i2) {
+      this._snapping = true;
+      this.scrollTo(-i2);
+      if (typeof this._options.onSnap === "function") {
+        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      }
+    }
+  }
+  scrollTo(position, time) {
+    if (this._animation) {
+      this._animation.cancel();
+      this._scrolling = false;
+    }
+    if (typeof position === "number") {
+      this._position = -position;
+    }
+    if (this._position < -this._extent) {
+      this._position = -this._extent;
+    } else {
+      if (this._position > 0) {
+        this._position = 0;
+      }
+    }
+    const transition = "transform " + (time || 0.2) + "s ease-out";
+    this._element.style.webkitTransition = "-webkit-" + transition;
+    this._element.style.transition = transition;
+    this.updatePosition();
+    this._element.addEventListener("transitionend", this._onTransitionEnd);
+  }
+  dispatchScroll() {
+    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+      this._lastPos = this._position;
+      const event = {
+        target: {
+          scrollLeft: this._enableX ? -this._position : 0,
+          scrollTop: this._enableY ? -this._position : 0,
+          scrollHeight: this._scrollHeight || this._element.offsetHeight,
+          scrollWidth: this._scrollWidth || this._element.offsetWidth,
+          offsetHeight: this._element.parentElement.offsetHeight,
+          offsetWidth: this._element.parentElement.offsetWidth
+        }
+      };
+      this._options.onScroll(event);
+    }
+  }
+  update(height, scrollHeight, itemSize) {
+    let extent = 0;
+    const position = this._position;
+    if (this._enableX) {
+      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
+      this._scrollWidth = scrollHeight;
+    } else {
+      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
+      this._scrollHeight = scrollHeight;
+    }
+    if (typeof height === "number") {
+      this._position = -height;
+    }
+    if (this._position < -extent) {
+      this._position = -extent;
+    } else {
+      if (this._position > 0) {
+        this._position = 0;
+      }
+    }
+    this._itemSize = itemSize || this._itemSize;
+    this.updatePosition();
+    if (position !== this._position) {
+      this.dispatchScroll();
+      if (typeof this._options.onSnap === "function") {
+        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      }
+    }
+    this._extent = extent;
+    this._scroll._extent = extent;
+  }
+  updatePosition() {
+    let transform = "";
+    if (this._enableX) {
+      transform = "translateX(" + this._position + "px) translateZ(0)";
+    } else {
+      if (this._enableY) {
+        transform = "translateY(" + this._position + "px) translateZ(0)";
+      }
+    }
+    this._element.style.webkitTransform = transform;
+    this._element.style.transform = transform;
+  }
+  isScrolling() {
+    return this._scrolling || this._snapping;
+  }
+}
+function useScroller(element, options) {
+  const touchInfo = {
+    trackingID: -1,
+    maxDy: 0,
+    maxDx: 0
+  };
+  const scroller2 = new Scroller$1(element, options);
+  function findDelta(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    return touchtrackEvent.detail.state === "move" || touchtrackEvent.detail.state === "end" ? {
+      x: touchtrackEvent.detail.dx,
+      y: touchtrackEvent.detail.dy
+    } : {
+      x: mouseEvent.screenX - touchInfo.x,
+      y: mouseEvent.screenY - touchInfo.y
+    };
+  }
+  function handleTouchStart(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    if (touchtrackEvent.detail.state === "start") {
+      touchInfo.trackingID = "touch";
+      touchInfo.x = touchtrackEvent.detail.x;
+      touchInfo.y = touchtrackEvent.detail.y;
+    } else {
+      touchInfo.trackingID = "mouse";
+      touchInfo.x = mouseEvent.screenX;
+      touchInfo.y = mouseEvent.screenY;
+    }
+    touchInfo.maxDx = 0;
+    touchInfo.maxDy = 0;
+    touchInfo.historyX = [0];
+    touchInfo.historyY = [0];
+    touchInfo.historyTime = [
+      touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
+    ];
+    touchInfo.listener = scroller2;
+    if (scroller2.onTouchStart) {
+      scroller2.onTouchStart();
+    }
+    event.preventDefault();
+  }
+  function handleTouchMove(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    if (touchInfo.trackingID !== -1) {
+      event.preventDefault();
+      const delta = findDelta(event);
+      if (delta) {
+        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
+          touchInfo.historyTime.shift();
+          touchInfo.historyX.shift();
+          touchInfo.historyY.shift();
+        }
+        if (touchInfo.listener && touchInfo.listener.onTouchMove) {
+          touchInfo.listener.onTouchMove(delta.x, delta.y);
+        }
+      }
+    }
+  }
+  function handleTouchEnd(event) {
+    if (touchInfo.trackingID !== -1) {
+      event.preventDefault();
+      const delta = findDelta(event);
+      if (delta) {
+        const listener2 = touchInfo.listener;
+        touchInfo.trackingID = -1;
+        touchInfo.listener = null;
+        const length = touchInfo.historyTime.length;
+        const o2 = {
+          x: 0,
+          y: 0
+        };
+        if (length > 2) {
+          for (let i2 = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i2], x = touchInfo.historyX[i2], y = touchInfo.historyY[i2]; i2 > 0; ) {
+            i2--;
+            const time0 = touchInfo.historyTime[i2];
+            const time = time1 - time0;
+            if (time > 30 && time < 50) {
+              o2.x = (x - touchInfo.historyX[i2]) / (time / 1e3);
+              o2.y = (y - touchInfo.historyY[i2]) / (time / 1e3);
+              break;
+            }
+          }
+        }
+        touchInfo.historyTime = [];
+        touchInfo.historyX = [];
+        touchInfo.historyY = [];
+        if (listener2 && listener2.onTouchEnd) {
+          listener2.onTouchEnd(delta.x, delta.y, o2);
+        }
+      }
+    }
+  }
+  return {
+    scroller: scroller2,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd
+  };
+}
+function flatVNode(nodes) {
+  const array = [];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((vnode) => {
+      if (isVNode(vnode)) {
+        if (vnode.type === Fragment) {
+          array.push(...flatVNode(vnode.children));
+        } else {
+          array.push(vnode);
+        }
+      }
+    });
+  }
+  return array;
+}
+let scopedIndex = 0;
+function useScopedClass(indicatorHeightRef) {
+  const className = `uni-picker-view-content-${scopedIndex++}`;
+  function updateStyle2() {
+    const style = document.createElement("style");
+    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
+    document.head.appendChild(style);
+  }
+  watch(() => indicatorHeightRef.value, updateStyle2);
+  return className;
+}
+function useCustomClick(dom) {
+  const MAX_MOVE = 20;
+  let x = 0;
+  let y = 0;
+  dom.addEventListener("touchstart", (event) => {
+    const info = event.changedTouches[0];
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener("touchend", (event) => {
+    const info = event.changedTouches[0];
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      const options = {
+        bubbles: true,
+        cancelable: true,
+        target: event.target,
+        currentTarget: event.currentTarget
+      };
+      const customClick = new CustomEvent("click", options);
+      const props2 = ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"];
+      props2.forEach((key) => {
+        customClick[key] = info[key];
+      });
+      event.target.dispatchEvent(customClick);
+    }
+  });
+}
+var index$g = /* @__PURE__ */ defineComponent({
+  name: "PickerViewColumn",
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const contentRef = ref(null);
+    const getPickerViewColumn = inject("getPickerViewColumn");
+    const instance2 = getCurrentInstance();
+    const currentRef = getPickerViewColumn ? getPickerViewColumn(instance2) : ref(0);
+    const getPickerViewProps = inject("getPickerViewProps");
+    const pickerViewProps = getPickerViewProps();
+    const getPickerViewState = inject("getPickerViewState");
+    const pickerViewState = getPickerViewState();
+    const indicatorHeight = ref(34);
+    const maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
+    const {
+      state: scopedAttrsState
+    } = useScopedAttrs();
+    const className = useScopedClass(indicatorHeight);
+    let scroller2;
+    const state = reactive({
+      current: currentRef.value,
+      length: 0
+    });
+    function updatesScroller() {
+      if (scroller2) {
+        nextTick(() => {
+          let current = Math.min(state.current, state.length - 1);
+          current = Math.max(current, 0);
+          scroller2.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
+        });
+      }
+    }
+    watch(() => currentRef.value, (current) => {
+      if (current !== state.current) {
+        state.current = current;
+        updatesScroller();
+      }
+    });
+    watch(() => state.current, (current) => currentRef.value = current);
+    watch([() => indicatorHeight.value, () => state.length], updatesScroller);
+    let oldDeltaY = 0;
+    function handleWheel(event) {
+      const deltaY = oldDeltaY + event.deltaY;
+      if (Math.abs(deltaY) > 10) {
+        oldDeltaY = 0;
+        let current = Math.min(state.current + (deltaY < 0 ? -1 : 1), state.length - 1);
+        state.current = current = Math.max(current, 0);
+        scroller2.scrollTo(current * indicatorHeight.value);
+      } else {
+        oldDeltaY = deltaY;
+      }
+      event.preventDefault();
+    }
+    function handleTap({
+      clientY
+    }) {
+      const el = rootRef.value;
+      if (!scroller2.isScrolling()) {
+        const rect = el.getBoundingClientRect();
+        const r = clientY - rect.top - pickerViewState.height / 2;
+        const o2 = indicatorHeight.value / 2;
+        if (!(Math.abs(r) <= o2)) {
+          const a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
+          const s = r < 0 ? -a2 : a2;
+          let current = Math.min(state.current + s, state.length - 1);
+          state.current = current = Math.max(current, 0);
+          scroller2.scrollTo(current * indicatorHeight.value);
+        }
+      }
+    }
+    onMounted(() => {
+      const el = rootRef.value;
+      const content = contentRef.value;
+      const {
+        scroller: scrollerOrigin,
+        handleTouchStart,
+        handleTouchMove,
+        handleTouchEnd
+      } = useScroller(content, {
+        enableY: true,
+        enableX: false,
+        enableSnap: true,
+        itemSize: indicatorHeight.value,
+        friction: new Friction$1(1e-4),
+        spring: new Spring$1(2, 90, 20),
+        onSnap: (index2) => {
+          if (!isNaN(index2) && index2 !== state.current) {
+            state.current = index2;
+          }
+        }
+      });
+      scroller2 = scrollerOrigin;
+      useTouchtrack(el, (e2) => {
+        switch (e2.detail.state) {
+          case "start":
+            handleTouchStart(e2);
+            break;
+          case "move":
+            handleTouchMove(e2);
+            break;
+          case "end":
+          case "cancel":
+            handleTouchEnd(e2);
+        }
+      }, true);
+      useCustomClick(el);
+      updatesScroller();
+    });
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      state.length = flatVNode(defaultSlots).length;
+      const padding = `${maskSize.value}px 0`;
+      return createVNode("uni-picker-view-column", {
+        ref: rootRef
+      }, [createVNode("div", {
+        onWheel: handleWheel,
+        onClick: handleTap,
+        class: "uni-picker-view-group"
+      }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        class: ["uni-picker-view-mask", pickerViewProps.maskClass],
+        style: `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+      }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        class: ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+        style: pickerViewProps.indicatorStyle
+      }), [createVNode(ResizeSensor, {
+        initial: true,
+        onResize: ({
+          height
+        }) => indicatorHeight.value = height
+      }, null, 8, ["initial", "onResize"])], 16), createVNode("div", {
+        ref: contentRef,
+        class: ["uni-picker-view-content", className],
+        style: {
+          padding
+        }
+      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+    };
+  }
+});
 const VALUES = {
   activeColor: "#007AFF",
   backgroundColor: "#EBEBEB",
@@ -10545,9 +11493,6 @@ const _sfc_main$3 = {
     };
     this.__handleTouchStart = function(event) {
       if (event.touches.length === 1) {
-        disableScrollBounce({
-          disable: true
-        });
         needStop = null;
         touchStart = {
           x: event.touches[0].pageX,
@@ -10560,9 +11505,6 @@ const _sfc_main$3 = {
     };
     this.__handleTouchEnd = function(event) {
       touchStart = null;
-      disableScrollBounce({
-        disable: false
-      });
       if (self.refresherHeight >= self.refresherThreshold) {
         self._setRefreshState("refreshing");
       } else {
@@ -10574,7 +11516,6 @@ const _sfc_main$3 = {
     this.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
     this.main.addEventListener("scroll", this.__handleScroll, passiveOptions);
     this.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
-    initScrollBounce();
   },
   activated() {
     this.scrollY && (this.main.scrollTop = this.lastScrollTop);
@@ -11055,7 +11996,7 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
   const _onTrack = (e2) => {
     if (!props2.disabled) {
       return e2.detail.state === "move" ? (_onUserChangedValue({
-        x: e2.detail.x0
+        x: e2.detail.x
       }), trigger("changing", e2, {
         value: sliderValue.value
       }), false) : e2.detail.state === "end" && trigger("change", e2, {
@@ -11658,7 +12599,7 @@ var index$b = /* @__PURE__ */ defineComponent({
     } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = defaultSlots || [];
+      swiperItems = flatVNode(defaultSlots);
       return createVNode("uni-swiper", {
         ref: rootRef
       }, [createVNode("div", {
@@ -11671,7 +12612,7 @@ var index$b = /* @__PURE__ */ defineComponent({
         ref: slideFrameRef,
         class: "uni-swiper-slide-frame",
         style: slideFrameStyle.value
-      }, [swiperItems], 4)], 4), props2.indicatorDots && createVNode("div", {
+      }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
         class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
       }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
         onClick: () => onSwiperDotClick(index2),
@@ -11921,7 +12862,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$9 = /* @__PURE__ */ Object.assign({}, props$k, {
+const props$9 = /* @__PURE__ */ Object.assign({}, props$l, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -17457,4 +18398,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$o as Button, _sfc_main$6 as Canvas, index$l as Checkbox, index$n as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$k as Editor, index$p as Form, index$j as Icon, index$i as Image, Input, index$m as Label, LayoutComponent, index$3 as Map, index$h as MovableArea, index$g as MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as Progress, index$d as Radio, index$e as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$c as Slider, index$b as Swiper, index$a as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$q as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$q as Button, _sfc_main$6 as Canvas, index$n as Checkbox, index$p as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$m as Editor, index$r as Form, index$l as Icon, index$k as Image, Input, index$o as Label, LayoutComponent, index$3 as Map, index$j as MovableArea, index$i as MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$h as PickerView, index$g as PickerViewColumn, index$f as Progress, index$d as Radio, index$e as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$c as Slider, index$b as Swiper, index$a as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$s as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
