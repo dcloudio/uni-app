@@ -3439,7 +3439,7 @@ const KeepAliveImpl = {
         if (!sharedContext.renderer) {
             return () => slots.default && slots.default()[0]; // fixed by xxxxxx
         }
-        if (props.cache && shared.hasOwn(props, 'max')) {
+        if (props.cache && props.max) { // fixed by xxxxxx
             warn('The `max` prop will be ignored if you provide a custom caching strategy');
         }
         const cache = props.cache || new Cache(props.max);

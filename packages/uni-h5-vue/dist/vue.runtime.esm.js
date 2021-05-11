@@ -3431,7 +3431,7 @@ const KeepAliveImpl = {
         if (!sharedContext.renderer) {
             return () => slots.default && slots.default()[0]; // fixed by xxxxxx
         }
-        if ((process.env.NODE_ENV !== 'production') && props.cache && hasOwn(props, 'max')) {
+        if ((process.env.NODE_ENV !== 'production') && props.cache && props.max) { // fixed by xxxxxx
             warn('The `max` prop will be ignored if you provide a custom caching strategy');
         }
         const cache = props.cache || new Cache(props.max);
