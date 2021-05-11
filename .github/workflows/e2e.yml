@@ -57,7 +57,7 @@ jobs:
           npx cypress version --component node
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2.2.7
+        uses: cypress-io/github-action@v2.3.6
         with:
           install: true
           start: npm run dev:ssr
