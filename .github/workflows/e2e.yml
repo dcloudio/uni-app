@@ -16,8 +16,6 @@ jobs:
         include:
           - os: macos-latest
             node_version: 12
-          - os: windows-latest
-            node_version: 12
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
     steps:
