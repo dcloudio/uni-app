@@ -1,4 +1,4 @@
-name: CI
+name: 'size'
 on:
   push:
     branches:
@@ -7,28 +7,32 @@ on:
     branches:
       - next
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node_version: [12]
-        include:
-          - os: macos-latest
-            node_version: 12
-          - os: windows-latest
-            node_version: 12
-      fail-fast: false
-
-    name: 'Build&Test: node-${{ matrix.node_version }}, ${{ matrix.os }}'
+  size:
+    runs-on: ubuntu-latest
+    env:
+      CI_JOB_NUMBER: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set node version to ${{ matrix.node_version }}
+      - name: Set node version to 12
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node_version }}
+          node-version: 12
+
+      - name: Get yarn cache directory
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Set dependencies cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-12-${{ hashFiles('yarn.lock') }}
+          restore-keys: ${{ runner.os }}-12-${{ hashFiles('yarn.lock') }}
+
+      - name: Versions
+        run: yarn versions
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -38,5 +42,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           build_script: build
           files: packages/size-check/dist/size-check.es.js packages/size-check/dist/style.css packages/uni-app/dist/uni-app.es.js packages/uni-h5-vue/dist/vue.runtime.esm.js packages/uni-mp-vue/dist/vue.runtime.esm.js packages/uni-mp-alipay/dist/uni.api.esm.js packages/uni-mp-alipay/dist/uni.mp.esm.js packages/uni-mp-baidu/dist/uni.api.esm.js packages/uni-mp-baidu/dist/uni.mp.esm.js packages/uni-mp-qq/dist/uni.api.esm.js packages/uni-mp-qq/dist/uni.mp.esm.js packages/uni-mp-toutiao/dist/uni.api.esm.js packages/uni-mp-toutiao/dist/uni.mp.esm.js packages/uni-mp-weixin/dist/uni.api.esm.js packages/uni-mp-weixin/dist/uni.mp.esm.js packages/uni-quickapp-webview/dist/uni.api.esm.js packages/uni-quickapp-webview/dist/uni.mp.esm.js
-
-      - run: npm run test
