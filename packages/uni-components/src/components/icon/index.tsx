@@ -78,15 +78,19 @@ export default /*#__PURE__*/ defineComponent({
   },
   setup(props) {
     const path = computed(() => ICONS[props.type as keyof typeof ICONS])
-    return () => (
-      <uni-icon>
-        {path.value.d &&
-          createSvgIconVNode(
-            path.value.d,
-            props.color || path.value.c,
-            rpx2px(props.size)
-          )}
-      </uni-icon>
-    )
+    return () => {
+      const { value } = path
+      return (
+        <uni-icon>
+          {value &&
+            value.d &&
+            createSvgIconVNode(
+              value.d,
+              props.color || value.c,
+              rpx2px(props.size)
+            )}
+        </uni-icon>
+      )
+    }
   },
 })

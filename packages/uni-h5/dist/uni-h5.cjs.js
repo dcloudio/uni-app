@@ -2713,7 +2713,12 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
   },
   setup(props2) {
     const path = vue.computed(() => ICONS[props2.type]);
-    return () => vue.createVNode("uni-icon", null, [path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))]);
+    return () => {
+      const {
+        value
+      } = path;
+      return vue.createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
+    };
   }
 });
 const props$h = {

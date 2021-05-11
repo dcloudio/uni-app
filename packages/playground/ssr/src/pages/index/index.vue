@@ -1,6 +1,7 @@
 <template>
   <ssr-cover-image />
   <ssr-cover-view />
+  <ssr-icon />
   <!-- <ssr-match-media /> -->
   <!-- <ssr-movable-area /> -->
   <ssr-progress />
