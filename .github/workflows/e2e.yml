@@ -38,13 +38,13 @@ jobs:
       - name: Versions
         run: yarn versions
 
-      - name: Install dependencies and verify Cypress
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build
         run: npm run build uni-app uni-cli-shared uni-h5 uni-i18n uni-shared vite-plugin-uni
 
-      - name: Install ssr
+      - name: Install ssr and verify Cypress
         working-directory: ./packages/playground/ssr
         run: |
           yarn install --frozen-lockfile
@@ -59,9 +59,9 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          install: true
-          start: npm run e2e:ssr:dev
-          project: ./packages/playground/ssr
+          install: false
+          start: npm run dev:ssr
+          working-directory: ./packages/playground/ssr
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           browser: chrome
