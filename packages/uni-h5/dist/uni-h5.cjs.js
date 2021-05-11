@@ -1151,7 +1151,7 @@ function createRouterOptions() {
 }
 function initHistory() {
   {
-    return vueRouter.createMemoryHistory();
+    return vueRouter.createMemoryHistory(__uniConfig.router.base);
   }
 }
 var index$q = {

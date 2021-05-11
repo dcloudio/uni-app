@@ -246,8 +246,8 @@ function useMovableAreaState(props: Props, rootRef: Ref<HTMLElement | null>) {
         const RIGHT = ('padding' + item) as keyof CSSStyleDeclaration
         return (
           all +
-          parseFloat((style[LEFT] as unknown) as string) +
-          parseFloat((style[RIGHT] as unknown) as string)
+          parseFloat(style[LEFT] as unknown as string) +
+          parseFloat(style[RIGHT] as unknown as string)
         )
       }, 0)
     height.value =
@@ -257,8 +257,8 @@ function useMovableAreaState(props: Props, rootRef: Ref<HTMLElement | null>) {
         const BOTTOM = ('padding' + item) as keyof CSSStyleDeclaration
         return (
           all +
-          parseFloat((style[TOP] as unknown) as string) +
-          parseFloat((style[BOTTOM] as unknown) as string)
+          parseFloat(style[TOP] as unknown as string) +
+          parseFloat(style[BOTTOM] as unknown as string)
         )
       }, 0)
   }

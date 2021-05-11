@@ -9,6 +9,7 @@ import {
 } from 'vite'
 import express from 'express'
 import { hasOwn } from '@vue/shared'
+import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { cleanOptions } from './utils'
 
@@ -46,7 +47,9 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
 
   app.use('*', async (req, res) => {
     try {
-      const url = req.originalUrl
+      const { h5 } = parseManifestJson(process.env.UNI_INPUT_DIR)
+      const base = (h5 && h5.router && h5.router.base) || ''
+      const url = req.originalUrl.replace(base, '')
       const template = await vite.transformIndexHtml(
         url,
         fs.readFileSync(

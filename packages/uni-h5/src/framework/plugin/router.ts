@@ -46,12 +46,12 @@ function removeCurrentPages(delta: number = 1) {
 
 function initHistory() {
   if (__NODE_JS__) {
-    return createMemoryHistory()
+    return createMemoryHistory(__uniConfig.router.base)
   }
   const history =
     __UNI_FEATURE_ROUTER_MODE__ === 'history'
-      ? createWebHistory()
-      : createWebHashHistory()
+      ? createWebHistory(__uniConfig.router.base)
+      : createWebHashHistory(__uniConfig.router.base)
   history.listen((_to, _from, info) => {
     if (info.direction === 'back') {
       removeCurrentPages(Math.abs(info.delta))
