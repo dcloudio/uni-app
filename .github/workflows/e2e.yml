@@ -27,34 +27,27 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
 
-      - name: Get yarn cache directory
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Set dependencies cache
+      - name: Cache node modules
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
+          path: ~/.cache
+          key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
-            ${{ runner.os }}-node${{ matrix.node_version }}-
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/Cypress
-            ~/Library/Caches/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
+            ${{ runner.os }}-node-
 
       - name: Versions
         run: yarn versions
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: Install dependencies and verify Cypress
+        run: |
+          yarn install --frozen-lockfile
+          npx cypress verify
+          npx cypress info
+          npx cypress version
+          npx cypress version --component package
+          npx cypress version --component binary
+          npx cypress version --component electron
+          npx cypress version --component node
 
       - name: Build
         run: npm run build uni-app uni-cli-shared uni-h5 uni-i18n uni-shared vite-plugin-uni

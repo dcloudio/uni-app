@@ -3,10 +3,11 @@
   <ssr-cover-view />
   <!-- <ssr-match-media /> -->
   <!-- <ssr-movable-area /> -->
-  <ssr-view />
-  <ssr-text />
   <ssr-progress />
   <ssr-scroll-view />
+  <ssr-swiper />
+  <ssr-text />
+  <ssr-view />
   <view id="ssr-log"></view>
 </template>
 

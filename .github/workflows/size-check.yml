@@ -14,28 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Get yarn cache directory
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Set dependencies cache
+      - name: Cache node modules
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
+          path: ~/.cache
           key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
             ${{ runner.os }}-node-
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/Cypress
-            ~/Library/Caches/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
 
       - name: Versions
         run: yarn versions
