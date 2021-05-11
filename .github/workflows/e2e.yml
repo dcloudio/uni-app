@@ -1,4 +1,4 @@
-name: 'ssr'
+name: 'e2e'
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
     branches:
       - next
 jobs:
-  ssr:
+  e2e:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
