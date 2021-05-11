@@ -1,7 +1,7 @@
 const defines = __DEFINES__
 Object.keys(defines).forEach((key) => {
   const segments = key.split('.')
-  let target = globalThis
+  let target = global
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i]
     if (i === segments.length - 1) {
