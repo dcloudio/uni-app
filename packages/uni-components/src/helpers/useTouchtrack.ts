@@ -30,8 +30,8 @@ type State = 'start' | 'move' | 'end' | 'cancel'
 type TouchOrMouseEvent = TouchEvent | MouseEvent
 type Detail = {
   state: State
-  x0: number
-  y0: number
+  x: number
+  y: number
   dx: number
   dy: number
   ddx: number
@@ -81,8 +81,8 @@ export function useTouchtrack(
         changedTouches: ($event as TouchEvent).changedTouches,
         detail: {
           state,
-          x0: x,
-          y0: y,
+          x: x,
+          y: y,
           dx: x - x0,
           dy: y - y0,
           ddx: x - x1,

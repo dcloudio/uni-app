@@ -217,7 +217,7 @@ function useSliderLoader(
     if (!props.disabled) {
       return e.detail.state === 'move'
         ? (_onUserChangedValue({
-            x: e.detail.x0,
+            x: e.detail.x,
           } as MouseEvent),
           trigger('changing', e as any, {
             value: sliderValue.value,
