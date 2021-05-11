@@ -16,6 +16,7 @@ import {
 import { upx2px } from '@dcloudio/uni-api'
 import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
+import { flatVNode } from '../../helpers/flatVNode'
 
 const props = {
   indicatorDots: {
@@ -693,7 +694,7 @@ export default /*#__PURE__*/ defineComponent({
     return () => {
       const defaultSlots = slots.default && slots.default()
       // TODO filter
-      swiperItems = defaultSlots || []
+      swiperItems = flatVNode(defaultSlots)
       return (
         <uni-swiper ref={rootRef}>
           <div ref={slidesWrapperRef} class="uni-swiper-wrapper">
@@ -703,7 +704,7 @@ export default /*#__PURE__*/ defineComponent({
                 class="uni-swiper-slide-frame"
                 style={slideFrameStyle.value}
               >
-                {swiperItems}
+                {defaultSlots}
               </div>
             </div>
             {props.indicatorDots && (
