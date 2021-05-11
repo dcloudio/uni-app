@@ -27,7 +27,9 @@ jobs:
       - name: Set dependencies cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
+          path: |
+            ~/cache
+            ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-node12-${{ hashFiles('yarn.lock') }}
           restore-keys: ${{ runner.os }}-node12-${{ hashFiles('yarn.lock') }}
 

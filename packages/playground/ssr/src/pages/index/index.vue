@@ -1,4 +1,6 @@
 <template>
+  <ssr-cover-image />
+  <ssr-cover-view />
   <ssr-view />
   <ssr-text />
   <ssr-progress />
