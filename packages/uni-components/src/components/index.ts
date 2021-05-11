@@ -9,8 +9,8 @@ import Icon from './icon/index'
 import Image from './image/index'
 import Input from './input/index'
 import Label from './label/index'
-// import MovableArea from './movable-area/index.vue'
-import MovableView from './movable-view/index.vue'
+import MovableArea from './movable-area/index'
+import MovableView from './movable-view/index'
 import Navigator from './navigator/index.vue'
 // import PickerView from './picker-view/index.vue'
 // import PickerViewColumn from './picker-view-column/index.vue'
@@ -39,7 +39,7 @@ export {
   Image,
   Input,
   Label,
-  //   MovableArea,
+  MovableArea,
   MovableView,
   Navigator,
   //   PickerView,

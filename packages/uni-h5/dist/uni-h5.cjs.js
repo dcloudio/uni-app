@@ -1154,7 +1154,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory();
   }
 }
-var index$o = {
+var index$q = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -1288,7 +1288,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$8 = {
+const _sfc_main$7 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1413,7 +1413,7 @@ const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1443,7 +1443,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$7.render = _sfc_render$7;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -1528,7 +1528,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$n = /* @__PURE__ */ vue.defineComponent({
+var index$p = /* @__PURE__ */ vue.defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1567,7 +1567,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$m = /* @__PURE__ */ vue.defineComponent({
+var index$o = /* @__PURE__ */ vue.defineComponent({
   name: "Button",
   props: {
     id: {
@@ -1750,7 +1750,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$7 = {
+var _sfc_main$6 = {
   name: "Canvas",
   inheritAttrs: false,
   components: {
@@ -2212,7 +2212,7 @@ const _hoisted_1$5 = {
   height: "150"
 };
 const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
@@ -2228,17 +2228,17 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$6.render = _sfc_render$6;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$m = {
+const props$o = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ vue.defineComponent({
+var index$n = /* @__PURE__ */ vue.defineComponent({
   name: "CheckboxGroup",
-  props: props$m,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2291,15 +2291,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$l = {
+const props$n = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$k = /* @__PURE__ */ vue.defineComponent({
+var index$m = /* @__PURE__ */ vue.defineComponent({
   name: "Label",
-  props: props$l,
+  props: props$n,
   setup(props2, {
     emit: emit2,
     slots
@@ -2344,7 +2344,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$k = {
+const props$m = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2366,9 +2366,9 @@ const props$k = {
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ vue.defineComponent({
+var index$l = /* @__PURE__ */ vue.defineComponent({
   name: "Checkbox",
-  props: props$k,
+  props: props$m,
   setup(props2, {
     slots
   }) {
@@ -2437,7 +2437,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$j = {
+const props$l = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2607,7 +2607,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   useSubscribe();
 }
-const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
+const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
   id: {
     type: String,
     default: ""
@@ -2633,9 +2633,9 @@ const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
     default: false
   }
 });
-var index$i = /* @__PURE__ */ vue.defineComponent({
+var index$k = /* @__PURE__ */ vue.defineComponent({
   name: "Editor",
-  props: props$i,
+  props: props$k,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2694,7 +2694,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$h = /* @__PURE__ */ vue.defineComponent({
+var index$j = /* @__PURE__ */ vue.defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -2721,7 +2721,7 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const props$h = {
+const props$j = {
   src: {
     type: String,
     default: ""
@@ -2758,9 +2758,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$g = /* @__PURE__ */ vue.defineComponent({
+var index$i = /* @__PURE__ */ vue.defineComponent({
   name: "Image",
-  props: props$h,
+  props: props$j,
   setup(props2, {
     emit: emit2
   }) {
@@ -2972,7 +2972,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$g = /* @__PURE__ */ Object.assign({}, {
+const props$i = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -3033,7 +3033,7 @@ const props$g = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$j);
+}, props$l);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = vue.ref(null);
@@ -3209,7 +3209,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$f = /* @__PURE__ */ Object.assign({}, props$g, {
+const props$h = /* @__PURE__ */ Object.assign({}, props$i, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3217,7 +3217,7 @@ const props$f = /* @__PURE__ */ Object.assign({}, props$g, {
 });
 var Input = /* @__PURE__ */ vue.defineComponent({
   name: "Input",
-  props: props$f,
+  props: props$h,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3315,127 +3315,239 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const addListenerToElement = function(element, type, callback, capture) {
-  element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
-      if (callback($event) === false) {
-        $event.preventDefault();
-        $event.stopPropagation();
-      }
+let webview;
+let pullToRefreshStyle;
+function initScrollBounce() {
+  uniShared.plusReady(() => {
+    if (!webview) {
+      webview = plus.webview.currentWebview();
     }
-  }, {
-    passive: false
+    if (!pullToRefreshStyle) {
+      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
+    }
   });
-};
-var touchtrack = {
-  beforeDestroy() {
-    document.removeEventListener("mousemove", this.__mouseMoveEventListener);
-    document.removeEventListener("mouseup", this.__mouseUpEventListener);
-  },
-  methods: {
-    touchtrack: function(element, method, useCancel) {
-      const self = this;
-      let x0 = 0;
-      let y0 = 0;
-      let x1 = 0;
-      let y1 = 0;
-      const fn = function($event, state, x, y) {
-        if (self[method]({
-          target: $event.target,
-          currentTarget: $event.currentTarget,
-          preventDefault: $event.preventDefault.bind($event),
-          stopPropagation: $event.stopPropagation.bind($event),
-          touches: $event.touches,
-          changedTouches: $event.changedTouches,
-          detail: {
-            state,
-            x0: x,
-            y0: y,
-            dx: x - x0,
-            dy: y - y0,
-            ddx: x - x1,
-            ddy: y - y1,
-            timeStamp: $event.timeStamp
-          }
-        }) === false) {
-          return false;
-        }
-      };
-      let $eventOld = null;
-      let hasTouchStart;
-      let hasMouseDown;
-      addListenerToElement(element, "touchstart", function($event) {
-        hasTouchStart = true;
-        if ($event.touches.length === 1 && !$eventOld) {
-          $eventOld = $event;
-          x0 = x1 = $event.touches[0].pageX;
-          y0 = y1 = $event.touches[0].pageY;
-          return fn($event, "start", x0, y0);
-        }
-      });
-      addListenerToElement(element, "mousedown", function($event) {
-        hasMouseDown = true;
-        if (!hasTouchStart && !$eventOld) {
-          $eventOld = $event;
-          x0 = x1 = $event.pageX;
-          y0 = y1 = $event.pageY;
-          return fn($event, "start", x0, y0);
-        }
-      });
-      addListenerToElement(element, "touchmove", function($event) {
-        if ($event.touches.length === 1 && $eventOld) {
-          const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
-          x1 = $event.touches[0].pageX;
-          y1 = $event.touches[0].pageY;
-          return res;
-        }
-      });
-      const mouseMoveEventListener = this.__mouseMoveEventListener = function($event) {
-        if (!hasTouchStart && hasMouseDown && $eventOld) {
-          const res = fn($event, "move", $event.pageX, $event.pageY);
-          x1 = $event.pageX;
-          y1 = $event.pageY;
-          return res;
-        }
-      };
-      document.addEventListener("mousemove", mouseMoveEventListener);
-      addListenerToElement(element, "touchend", function($event) {
-        if ($event.touches.length === 0 && $eventOld) {
-          hasTouchStart = false;
-          $eventOld = null;
-          return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
-        }
-      });
-      const mouseUpEventListener = this.__mouseUpEventListener = function($event) {
-        hasMouseDown = false;
-        if (!hasTouchStart && $eventOld) {
-          $eventOld = null;
-          return fn($event, "end", $event.pageX, $event.pageY);
-        }
-      };
-      document.addEventListener("mouseup", mouseUpEventListener);
-      addListenerToElement(element, "touchcancel", function($event) {
-        if ($eventOld) {
-          hasTouchStart = false;
-          const $eventTemp = $eventOld;
-          $eventOld = null;
-          return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
-        }
-      });
-    }
+}
+function disableScrollBounce({disable}) {
+  if (pullToRefreshStyle && pullToRefreshStyle.support) {
+    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
+      support: !disable
+    }));
+  }
+}
+const props$g = {
+  scaleArea: {
+    type: Boolean,
+    default: false
   }
 };
+var index$h = /* @__PURE__ */ vue.defineComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: props$g,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const _isMounted = vue.ref(false);
+    let {
+      setContexts,
+      events: movableAreaEvents
+    } = useMovableAreaState(props2, rootRef);
+    const {
+      $listeners,
+      $attrs,
+      $excludeAttrs
+    } = useAttrs();
+    const _listeners = $listeners.value;
+    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+    events.forEach((event) => {
+      let existing = _listeners[event];
+      let ours = movableAreaEvents[`_${event}`];
+      _listeners[event] = existing ? [].concat(existing, ours) : ours;
+    });
+    let movableViewItems = [];
+    const originMovableViewContexts = [];
+    function updateMovableViewContexts() {
+      const contexts = [];
+      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
+        const movableViewItem = movableViewItems[index2];
+        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem.el === context.rootRef.value);
+        if (movableViewContext) {
+          contexts.push(vue.markRaw(movableViewContext));
+        }
+      }
+      setContexts(contexts);
+    }
+    const addMovableViewContext = (movableViewContext) => {
+      originMovableViewContexts.push(movableViewContext);
+      updateMovableViewContexts();
+    };
+    const removeMovableViewContext = (movableViewContext) => {
+      const index2 = originMovableViewContexts.indexOf(movableViewContext);
+      if (index2 >= 0) {
+        originMovableViewContexts.splice(index2, 1);
+        updateMovableViewContexts();
+      }
+    };
+    vue.provide("_isMounted", _isMounted);
+    vue.provide("movableAreaRootRef", rootRef);
+    vue.provide("addMovableViewContext", addMovableViewContext);
+    vue.provide("removeMovableViewContext", removeMovableViewContext);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      movableViewItems = defaultSlots || [];
+      return vue.createVNode("uni-movable-area", vue.mergeProps({
+        ref: rootRef
+      }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
+        onReize: movableAreaEvents._resize
+      }, null, 8, ["onReize"]), movableViewItems], 16);
+    };
+  }
+});
+function calc(e2) {
+  return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
+}
+function useMovableAreaState(props2, rootRef) {
+  const width = vue.ref(0);
+  const height = vue.ref(0);
+  const gapV = vue.reactive({
+    x: null,
+    y: null
+  });
+  const pinchStartLen = vue.ref(null);
+  let _scaleMovableView = null;
+  let movableViewContexts = [];
+  function _updateScale(e2) {
+    if (e2 && e2 !== 1) {
+      if (props2.scaleArea) {
+        movableViewContexts.forEach(function(item) {
+          item._setScale(e2);
+        });
+      } else {
+        if (_scaleMovableView) {
+          _scaleMovableView._setScale(e2);
+        }
+      }
+    }
+  }
+  function _find(target, items = movableViewContexts) {
+    let root = rootRef.value;
+    function get(node) {
+      for (let i2 = 0; i2 < items.length; i2++) {
+        const item = items[i2];
+        if (node === item.rootRef.value) {
+          return item;
+        }
+      }
+      if (node === root || node === document.body || node === document) {
+        return null;
+      }
+      return get(node.parentNode);
+    }
+    return get(target);
+  }
+  const _onTouchstart = withWebEvent((t2) => {
+    disableScrollBounce({
+      disable: true
+    });
+    let i2 = t2.touches;
+    if (i2) {
+      if (i2.length > 1) {
+        let r = {
+          x: i2[1].pageX - i2[0].pageX,
+          y: i2[1].pageY - i2[0].pageY
+        };
+        pinchStartLen.value = calc(r);
+        gapV.x = r.x;
+        gapV.y = r.y;
+        if (!props2.scaleArea) {
+          let touch0 = _find(i2[0].target);
+          let touch1 = _find(i2[1].target);
+          _scaleMovableView = touch0 && touch0 === touch1 ? touch0 : null;
+        }
+      }
+    }
+  });
+  const _onTouchmove = withWebEvent((t2) => {
+    let n = t2.touches;
+    if (n) {
+      if (n.length > 1) {
+        t2.preventDefault();
+        let i2 = {
+          x: n[1].pageX - n[0].pageX,
+          y: n[1].pageY - n[0].pageY
+        };
+        if (gapV.x !== null && pinchStartLen.value && pinchStartLen.value > 0) {
+          let r = calc(i2) / pinchStartLen.value;
+          _updateScale(r);
+        }
+        gapV.x = i2.x;
+        gapV.y = i2.y;
+      }
+    }
+  });
+  const _onTouchend = withWebEvent((e2) => {
+    disableScrollBounce({
+      disable: false
+    });
+    let t2 = e2.touches;
+    if (!(t2 && t2.length)) {
+      if (e2.changedTouches) {
+        gapV.x = 0;
+        gapV.y = 0;
+        pinchStartLen.value = null;
+        if (props2.scaleArea) {
+          movableViewContexts.forEach(function(item) {
+            item._endScale();
+          });
+        } else {
+          if (_scaleMovableView) {
+            _scaleMovableView._endScale();
+          }
+        }
+      }
+    }
+  });
+  function _resize() {
+    _getWH();
+    movableViewContexts.forEach(function(item, index2) {
+      item.setParent();
+    });
+  }
+  function _getWH() {
+    let style = window.getComputedStyle(rootRef.value);
+    let rect = rootRef.value.getBoundingClientRect();
+    width.value = rect.width - ["Left", "Right"].reduce(function(all, item) {
+      const LEFT = "border" + item + "Width";
+      const RIGHT = "padding" + item;
+      return all + parseFloat(style[LEFT]) + parseFloat(style[RIGHT]);
+    }, 0);
+    height.value = rect.height - ["Top", "Bottom"].reduce(function(all, item) {
+      const TOP = "border" + item + "Width";
+      const BOTTOM = "padding" + item;
+      return all + parseFloat(style[TOP]) + parseFloat(style[BOTTOM]);
+    }, 0);
+  }
+  vue.provide("movableAreaWidth", width);
+  vue.provide("movableAreaHeight", height);
+  return {
+    setContexts(contexts) {
+      movableViewContexts = contexts;
+    },
+    events: {
+      _onTouchstart,
+      _onTouchmove,
+      _onTouchend,
+      _resize
+    }
+  };
+}
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
 function t(t2, n) {
   return e(t2, 0, n);
 }
-function Decline() {
-}
-Decline.prototype.x = function(e2) {
-  return Math.sqrt(e2);
-};
 function Friction$1(e2, t2) {
   this._m = e2;
   this._f = 1e3 * t2;
@@ -3720,7 +3832,83 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-var requesting = false;
+const props$f = {
+  direction: {
+    type: String,
+    default: "none"
+  },
+  inertia: {
+    type: [Boolean, String],
+    default: false
+  },
+  outOfBounds: {
+    type: [Boolean, String],
+    default: false
+  },
+  x: {
+    type: [Number, String],
+    default: 0
+  },
+  y: {
+    type: [Number, String],
+    default: 0
+  },
+  damping: {
+    type: [Number, String],
+    default: 20
+  },
+  friction: {
+    type: [Number, String],
+    default: 2
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  scale: {
+    type: [Boolean, String],
+    default: false
+  },
+  scaleMin: {
+    type: [Number, String],
+    default: 0.5
+  },
+  scaleMax: {
+    type: [Number, String],
+    default: 10
+  },
+  scaleValue: {
+    type: [Number, String],
+    default: 1
+  },
+  animation: {
+    type: [Boolean, String],
+    default: true
+  }
+};
+var index$g = /* @__PURE__ */ vue.defineComponent({
+  name: "MovableView",
+  props: props$f,
+  emits: ["change", "scale"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      setParent
+    } = useMovableViewState(props2, trigger, rootRef);
+    return () => {
+      return vue.createVNode("uni-movable-view", {
+        ref: rootRef
+      }, [vue.createVNode(ResizeSensor, {
+        onResize: setParent
+      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+    };
+  }
+});
+let requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
     requesting = true;
@@ -3734,21 +3922,21 @@ function p(t2, n) {
   if (t2 === n) {
     return 0;
   }
-  var i2 = t2.offsetLeft;
+  let i2 = t2.offsetLeft;
   return t2.offsetParent ? i2 += p(t2.offsetParent, n) : 0;
 }
 function f(t2, n) {
   if (t2 === n) {
     return 0;
   }
-  var i2 = t2.offsetTop;
+  let i2 = t2.offsetTop;
   return t2.offsetParent ? i2 += f(t2.offsetParent, n) : 0;
 }
 function v(a2, b) {
   return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(e2, t2, n) {
-  var i2 = function(e3) {
+  let i2 = function(e3) {
     if (e3 && e3.id) {
       cancelAnimationFrame(e3.id);
     }
@@ -3756,14 +3944,14 @@ function g(e2, t2, n) {
       e3.cancelled = true;
     }
   };
-  var r = {
+  let r = {
     id: 0,
     cancelled: false
   };
   function fn(n2, i3, r2, o2) {
     if (!n2 || !n2.cancelled) {
       r2(i3);
-      var a2 = e2.done();
+      let a2 = e2.done();
       if (!a2) {
         if (!n2.cancelled) {
           n2.id = requestAnimationFrame(fn.bind(null, n2, i3, r2, o2));
@@ -3780,566 +3968,296 @@ function g(e2, t2, n) {
     model: e2
   };
 }
-const _sfc_main$6 = {
-  name: "MovableView",
-  mixins: [touchtrack],
-  props: {
-    direction: {
-      type: String,
-      default: "none"
-    },
-    inertia: {
-      type: [Boolean, String],
-      default: false
-    },
-    outOfBounds: {
-      type: [Boolean, String],
-      default: false
-    },
-    x: {
-      type: [Number, String],
-      default: 0
-    },
-    y: {
-      type: [Number, String],
-      default: 0
-    },
-    damping: {
-      type: [Number, String],
-      default: 20
-    },
-    friction: {
-      type: [Number, String],
-      default: 2
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    scale: {
-      type: [Boolean, String],
-      default: false
-    },
-    scaleMin: {
-      type: [Number, String],
-      default: 0.5
-    },
-    scaleMax: {
-      type: [Number, String],
-      default: 10
-    },
-    scaleValue: {
-      type: [Number, String],
-      default: 1
-    },
-    animation: {
-      type: [Boolean, String],
-      default: true
+function _getPx(val) {
+  if (/\d+[ur]px$/i.test(val)) {
+    return uni.upx2px(parseFloat(val));
+  }
+  return Number(val) || 0;
+}
+function useMovableViewState(props2, trigger, rootRef) {
+  const movableAreaWidth = vue.inject("movableAreaWidth", vue.ref(0));
+  const movableAreaHeight = vue.inject("movableAreaHeight", vue.ref(0));
+  const _isMounted = vue.inject("_isMounted", vue.ref(false));
+  const movableAreaRootRef = vue.inject("movableAreaRootRef");
+  vue.inject("addMovableViewContext", () => {
+  });
+  vue.inject("removeMovableViewContext", () => {
+  });
+  const xSync = vue.ref(_getPx(props2.x));
+  const ySync = vue.ref(_getPx(props2.y));
+  const scaleValueSync = vue.ref(Number(props2.scaleValue) || 1);
+  const width = vue.ref(0);
+  const height = vue.ref(0);
+  const minX = vue.ref(0);
+  const minY = vue.ref(0);
+  const maxX = vue.ref(0);
+  const maxY = vue.ref(0);
+  let _SFA = null;
+  const _offset = {
+    x: 0,
+    y: 0
+  };
+  const _scaleOffset = {
+    x: 0,
+    y: 0
+  };
+  let _scale = 1;
+  let _translateX = 0;
+  let _translateY = 0;
+  const dampingNumber = vue.computed(() => {
+    let val = Number(props2.damping);
+    return isNaN(val) ? 20 : val;
+  });
+  const frictionNumber = vue.computed(() => {
+    let val = Number(props2.friction);
+    return isNaN(val) || val <= 0 ? 2 : val;
+  });
+  const scaleMinNumber = vue.computed(() => {
+    let val = Number(props2.scaleMin);
+    return isNaN(val) ? 0.5 : val;
+  });
+  const scaleMaxNumber = vue.computed(() => {
+    let val = Number(props2.scaleMax);
+    return isNaN(val) ? 10 : val;
+  });
+  const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
+  const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  new Friction$1(1, frictionNumber.value);
+  vue.watch(() => props2.x, (val) => {
+    xSync.value = _getPx(val);
+  });
+  vue.watch(() => props2.y, (val) => {
+    ySync.value = _getPx(val);
+  });
+  vue.watch(xSync, (val) => {
+    _setX(val);
+  });
+  vue.watch(ySync, (val) => {
+    _setY(val);
+  });
+  vue.watch(() => props2.scaleValue, (val) => {
+    scaleValueSync.value = Number(val) || 0;
+  });
+  vue.watch(scaleValueSync, (val) => {
+    _setScaleValue(val);
+  });
+  vue.watch(scaleMinNumber, () => {
+    _setScaleMinOrMax();
+  });
+  vue.watch(scaleMaxNumber, () => {
+    _setScaleMinOrMax();
+  });
+  function _setX(val) {
+    if (xMove.value) {
+      if (val + _scaleOffset.x === _translateX) {
+        return _translateX;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
+      }
     }
-  },
-  data() {
+    return val;
+  }
+  function _setY(val) {
+    if (yMove.value) {
+      if (val + _scaleOffset.y === _translateY) {
+        return _translateY;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
+      }
+    }
+    return val;
+  }
+  function _setScaleMinOrMax() {
+    if (!props2.scale) {
+      return false;
+    }
+    _updateScale(_scale, true);
+  }
+  function _setScaleValue(scale) {
+    if (!props2.scale) {
+      return false;
+    }
+    scale = _adjustScale(scale);
+    _updateScale(scale, true);
+    return scale;
+  }
+  function _getLimitXY(x, y) {
+    let outOfBounds = false;
+    if (x > maxX.value) {
+      x = maxX.value;
+      outOfBounds = true;
+    } else {
+      if (x < minX.value) {
+        x = minX.value;
+        outOfBounds = true;
+      }
+    }
+    if (y > maxY.value) {
+      y = maxY.value;
+      outOfBounds = true;
+    } else {
+      if (y < minY.value) {
+        y = minY.value;
+        outOfBounds = true;
+      }
+    }
     return {
-      xSync: this._getPx(this.x),
-      ySync: this._getPx(this.y),
-      scaleValueSync: Number(this.scaleValue) || 1,
-      width: 0,
-      height: 0,
-      minX: 0,
-      minY: 0,
-      maxX: 0,
-      maxY: 0
+      x,
+      y,
+      outOfBounds
     };
-  },
-  computed: {
-    dampingNumber() {
-      var val = Number(this.damping);
-      return isNaN(val) ? 20 : val;
-    },
-    frictionNumber() {
-      var val = Number(this.friction);
-      return isNaN(val) || val <= 0 ? 2 : val;
-    },
-    scaleMinNumber() {
-      var val = Number(this.scaleMin);
-      return isNaN(val) ? 0.5 : val;
-    },
-    scaleMaxNumber() {
-      var val = Number(this.scaleMax);
-      return isNaN(val) ? 10 : val;
-    },
-    xMove() {
-      return this.direction === "all" || this.direction === "horizontal";
-    },
-    yMove() {
-      return this.direction === "all" || this.direction === "vertical";
-    }
-  },
-  watch: {
-    x(val) {
-      this.xSync = this._getPx(val);
-    },
-    xSync(val) {
-      this._setX(val);
-    },
-    y(val) {
-      this.ySync = this._getPx(val);
-    },
-    ySync(val) {
-      this._setY(val);
-    },
-    scaleValue(val) {
-      this.scaleValueSync = Number(val) || 0;
-    },
-    scaleValueSync(val) {
-      this._setScaleValue(val);
-    },
-    scaleMinNumber() {
-      this._setScaleMinOrMax();
-    },
-    scaleMaxNumber() {
-      this._setScaleMinOrMax();
-    }
-  },
-  created: function() {
-    this._offset = {
-      x: 0,
-      y: 0
-    };
-    this._scaleOffset = {
-      x: 0,
-      y: 0
-    };
-    this._translateX = 0;
-    this._translateY = 0;
-    this._scale = 1;
-    this._oldScale = 1;
-    this._STD = new STD(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber);
-    this._friction = new Friction$1(1, this.frictionNumber);
-    this._declineX = new Decline();
-    this._declineY = new Decline();
-    this.__touchInfo = {
-      historyX: [0, 0],
-      historyY: [0, 0],
-      historyT: [0, 0]
-    };
-  },
-  mounted: function() {
-    this.touchtrack(this.$el, "_onTrack");
-    this.setParent();
-    this._friction.reconfigure(1, this.frictionNumber);
-    this._STD.reconfigure(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber);
-    this.$el.style.transformOrigin = "center";
-  },
-  methods: {
-    _getPx(val) {
-      if (/\d+[ur]px$/i.test(val)) {
-        return uni.upx2px(parseFloat(val));
-      }
-      return Number(val) || 0;
-    },
-    _setX: function(val) {
-      if (this.xMove) {
-        if (val + this._scaleOffset.x === this._translateX) {
-          return this._translateX;
-        } else {
-          if (this._SFA) {
-            this._SFA.cancel();
-          }
-          this._animationTo(val + this._scaleOffset.x, this.ySync + this._scaleOffset.y, this._scale);
-        }
-      }
-      return val;
-    },
-    _setY: function(val) {
-      if (this.yMove) {
-        if (val + this._scaleOffset.y === this._translateY) {
-          return this._translateY;
-        } else {
-          if (this._SFA) {
-            this._SFA.cancel();
-          }
-          this._animationTo(this.xSync + this._scaleOffset.x, val + this._scaleOffset.y, this._scale);
-        }
-      }
-      return val;
-    },
-    _setScaleMinOrMax: function() {
-      if (!this.scale) {
-        return false;
-      }
-      this._updateScale(this._scale, true);
-      this._updateOldScale(this._scale);
-    },
-    _setScaleValue: function(scale) {
-      if (!this.scale) {
-        return false;
-      }
-      scale = this._adjustScale(scale);
-      this._updateScale(scale, true);
-      this._updateOldScale(scale);
-      return scale;
-    },
-    __handleTouchStart: function() {
-      if (!this._isScaling) {
-        if (!this.disabled) {
-          if (this._FA) {
-            this._FA.cancel();
-          }
-          if (this._SFA) {
-            this._SFA.cancel();
-          }
-          this.__touchInfo.historyX = [0, 0];
-          this.__touchInfo.historyY = [0, 0];
-          this.__touchInfo.historyT = [0, 0];
-          if (this.xMove) {
-            this.__baseX = this._translateX;
-          }
-          if (this.yMove) {
-            this.__baseY = this._translateY;
-          }
-          this.$el.style.willChange = "transform";
-          this._checkCanMove = null;
-          this._firstMoveDirection = null;
-          this._isTouching = true;
-        }
-      }
-    },
-    __handleTouchMove: function(event) {
-      var self = this;
-      if (!this._isScaling && !this.disabled && this._isTouching) {
-        let x = this._translateX;
-        let y = this._translateY;
-        if (this._firstMoveDirection === null) {
-          this._firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
-        }
-        if (this.xMove) {
-          x = event.detail.dx + this.__baseX;
-          this.__touchInfo.historyX.shift();
-          this.__touchInfo.historyX.push(x);
-          if (!this.yMove && this._checkCanMove === null) {
-            this._checkCanMove = Math.abs(event.detail.dx / event.detail.dy) < 1;
-          }
-        }
-        if (this.yMove) {
-          y = event.detail.dy + this.__baseY;
-          this.__touchInfo.historyY.shift();
-          this.__touchInfo.historyY.push(y);
-          if (!this.xMove && this._checkCanMove === null) {
-            this._checkCanMove = Math.abs(event.detail.dy / event.detail.dx) < 1;
-          }
-        }
-        this.__touchInfo.historyT.shift();
-        this.__touchInfo.historyT.push(event.detail.timeStamp);
-        if (!this._checkCanMove) {
-          event.preventDefault();
-          let source = "touch";
-          if (x < this.minX) {
-            if (this.outOfBounds) {
-              source = "touch-out-of-bounds";
-              x = this.minX - this._declineX.x(this.minX - x);
-            } else {
-              x = this.minX;
-            }
-          } else if (x > this.maxX) {
-            if (this.outOfBounds) {
-              source = "touch-out-of-bounds";
-              x = this.maxX + this._declineX.x(x - this.maxX);
-            } else {
-              x = this.maxX;
-            }
-          }
-          if (y < this.minY) {
-            if (this.outOfBounds) {
-              source = "touch-out-of-bounds";
-              y = this.minY - this._declineY.x(this.minY - y);
-            } else {
-              y = this.minY;
-            }
-          } else {
-            if (y > this.maxY) {
-              if (this.outOfBounds) {
-                source = "touch-out-of-bounds";
-                y = this.maxY + this._declineY.x(y - this.maxY);
-              } else {
-                y = this.maxY;
-              }
-            }
-          }
-          _requestAnimationFrame(function() {
-            self._setTransform(x, y, self._scale, source);
-          });
-        }
-      }
-    },
-    __handleTouchEnd: function() {
-      var self = this;
-      if (!this._isScaling && !this.disabled && this._isTouching) {
-        this.$el.style.willChange = "auto";
-        this._isTouching = false;
-        if (!this._checkCanMove && !this._revise("out-of-bounds") && this.inertia) {
-          const xv = 1e3 * (this.__touchInfo.historyX[1] - this.__touchInfo.historyX[0]) / (this.__touchInfo.historyT[1] - this.__touchInfo.historyT[0]);
-          const yv = 1e3 * (this.__touchInfo.historyY[1] - this.__touchInfo.historyY[0]) / (this.__touchInfo.historyT[1] - this.__touchInfo.historyT[0]);
-          this._friction.setV(xv, yv);
-          this._friction.setS(this._translateX, this._translateY);
-          const x0 = this._friction.delta().x;
-          const y0 = this._friction.delta().y;
-          let x = x0 + this._translateX;
-          let y = y0 + this._translateY;
-          if (x < this.minX) {
-            x = this.minX;
-            y = this._translateY + (this.minX - this._translateX) * y0 / x0;
-          } else {
-            if (x > this.maxX) {
-              x = this.maxX;
-              y = this._translateY + (this.maxX - this._translateX) * y0 / x0;
-            }
-          }
-          if (y < this.minY) {
-            y = this.minY;
-            x = this._translateX + (this.minY - this._translateY) * x0 / y0;
-          } else {
-            if (y > this.maxY) {
-              y = this.maxY;
-              x = this._translateX + (this.maxY - this._translateY) * x0 / y0;
-            }
-          }
-          this._friction.setEnd(x, y);
-          this._FA = g(this._friction, function() {
-            var t2 = self._friction.s();
-            var x2 = t2.x;
-            var y2 = t2.y;
-            self._setTransform(x2, y2, self._scale, "friction");
-          }, function() {
-            self._FA.cancel();
-          });
-        }
-      }
-    },
-    _onTrack: function(event) {
-      switch (event.detail.state) {
-        case "start":
-          this.__handleTouchStart();
-          break;
-        case "move":
-          this.__handleTouchMove(event);
-          break;
-        case "end":
-          this.__handleTouchEnd();
-      }
-    },
-    _getLimitXY: function(x, y) {
-      var outOfBounds = false;
-      if (x > this.maxX) {
-        x = this.maxX;
-        outOfBounds = true;
+  }
+  function _updateOffset() {
+    _offset.x = p(rootRef.value, movableAreaRootRef.value);
+    _offset.y = f(rootRef.value, movableAreaRootRef.value);
+  }
+  function _updateWH(scale) {
+    scale = scale || _scale;
+    scale = _adjustScale(scale);
+    let rect = rootRef.value.getBoundingClientRect();
+    height.value = rect.height / _scale;
+    width.value = rect.width / _scale;
+    let _height = height.value * scale;
+    let _width = width.value * scale;
+    _scaleOffset.x = (_width - width.value) / 2;
+    _scaleOffset.y = (_height - height.value) / 2;
+  }
+  function _updateBoundary() {
+    let x = 0 - _offset.x + _scaleOffset.x;
+    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+    minX.value = Math.min(x, _width);
+    maxX.value = Math.max(x, _width);
+    let y = 0 - _offset.y + _scaleOffset.y;
+    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+    minY.value = Math.min(y, _height);
+    maxY.value = Math.max(y, _height);
+  }
+  function _updateScale(scale, animat) {
+    if (props2.scale) {
+      scale = _adjustScale(scale);
+      _updateWH(scale);
+      _updateBoundary();
+      const limitXY = _getLimitXY(_translateX, _translateY);
+      const x = limitXY.x;
+      const y = limitXY.y;
+      if (animat) {
+        _animationTo(x, y, scale, "", true, true);
       } else {
-        if (x < this.minX) {
-          x = this.minX;
-          outOfBounds = true;
-        }
-      }
-      if (y > this.maxY) {
-        y = this.maxY;
-        outOfBounds = true;
-      } else {
-        if (y < this.minY) {
-          y = this.minY;
-          outOfBounds = true;
-        }
-      }
-      return {
-        x,
-        y,
-        outOfBounds
-      };
-    },
-    setParent: function() {
-      if (!this.$parent._isMounted) {
-        return;
-      }
-      if (this._FA) {
-        this._FA.cancel();
-      }
-      if (this._SFA) {
-        this._SFA.cancel();
-      }
-      var scale = this.scale ? this.scaleValueSync : 1;
-      this._updateOffset();
-      this._updateWH(scale);
-      this._updateBoundary();
-      this._translateX = this.xSync + this._scaleOffset.x;
-      this._translateY = this.ySync + this._scaleOffset.y;
-      var limitXY = this._getLimitXY(this._translateX, this._translateY);
-      var x = limitXY.x;
-      var y = limitXY.y;
-      this._setTransform(x, y, scale, "", true);
-      this._updateOldScale(scale);
-    },
-    _updateOffset: function() {
-      this._offset.x = p(this.$el, this.$parent.$el);
-      this._offset.y = f(this.$el, this.$parent.$el);
-    },
-    _updateWH: function(scale) {
-      scale = scale || this._scale;
-      scale = this._adjustScale(scale);
-      var rect = this.$el.getBoundingClientRect();
-      this.height = rect.height / this._scale;
-      this.width = rect.width / this._scale;
-      var height = this.height * scale;
-      var width = this.width * scale;
-      this._scaleOffset.x = (width - this.width) / 2;
-      this._scaleOffset.y = (height - this.height) / 2;
-    },
-    _updateBoundary: function() {
-      var x = 0 - this._offset.x + this._scaleOffset.x;
-      var width = this.$parent.width - this.width - this._offset.x - this._scaleOffset.x;
-      this.minX = Math.min(x, width);
-      this.maxX = Math.max(x, width);
-      var y = 0 - this._offset.y + this._scaleOffset.y;
-      var height = this.$parent.height - this.height - this._offset.y - this._scaleOffset.y;
-      this.minY = Math.min(y, height);
-      this.maxY = Math.max(y, height);
-    },
-    _beginScale: function() {
-      this._isScaling = true;
-    },
-    _endScale: function() {
-      this._isScaling = false;
-      this._updateOldScale(this._scale);
-    },
-    _setScale: function(scale) {
-      if (this.scale) {
-        scale = this._adjustScale(scale);
-        scale = this._oldScale * scale;
-        this._beginScale();
-        this._updateScale(scale);
-      }
-    },
-    _updateScale: function(scale, animat) {
-      var self = this;
-      if (this.scale) {
-        scale = this._adjustScale(scale);
-        this._updateWH(scale);
-        this._updateBoundary();
-        const limitXY = this._getLimitXY(this._translateX, this._translateY);
-        const x = limitXY.x;
-        const y = limitXY.y;
-        if (animat) {
-          this._animationTo(x, y, scale, "", true, true);
-        } else {
-          _requestAnimationFrame(function() {
-            self._setTransform(x, y, scale, "", true, true);
-          });
-        }
-      }
-    },
-    _updateOldScale: function(scale) {
-      this._oldScale = scale;
-    },
-    _adjustScale: function(scale) {
-      scale = Math.max(0.5, this.scaleMinNumber, scale);
-      scale = Math.min(10, this.scaleMaxNumber, scale);
-      return scale;
-    },
-    _animationTo: function(x, y, scale, source, r, o2) {
-      var self = this;
-      if (this._FA) {
-        this._FA.cancel();
-      }
-      if (this._SFA) {
-        this._SFA.cancel();
-      }
-      if (!this.xMove) {
-        x = this._translateX;
-      }
-      if (!this.yMove) {
-        y = this._translateY;
-      }
-      if (!this.scale) {
-        scale = this._scale;
-      }
-      var limitXY = this._getLimitXY(x, y);
-      x = limitXY.x;
-      y = limitXY.y;
-      if (!this.animation) {
-        this._setTransform(x, y, scale, source, r, o2);
-        return;
-      }
-      this._STD._springX._solution = null;
-      this._STD._springY._solution = null;
-      this._STD._springScale._solution = null;
-      this._STD._springX._endPosition = this._translateX;
-      this._STD._springY._endPosition = this._translateY;
-      this._STD._springScale._endPosition = this._scale;
-      this._STD.setEnd(x, y, scale, 1);
-      this._SFA = g(this._STD, function() {
-        var data = self._STD.x();
-        var x2 = data.x;
-        var y2 = data.y;
-        var scale2 = data.scale;
-        self._setTransform(x2, y2, scale2, source, r, o2);
-      }, function() {
-        self._SFA.cancel();
-      });
-    },
-    _revise: function(source) {
-      var limitXY = this._getLimitXY(this._translateX, this._translateY);
-      var x = limitXY.x;
-      var y = limitXY.y;
-      var outOfBounds = limitXY.outOfBounds;
-      if (outOfBounds) {
-        this._animationTo(x, y, this._scale, source);
-      }
-      return outOfBounds;
-    },
-    _setTransform: function(x, y, scale, source = "", r, o2) {
-      if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
-        x = this._translateX || 0;
-      }
-      if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
-        y = this._translateY || 0;
-      }
-      x = Number(x.toFixed(1));
-      y = Number(y.toFixed(1));
-      scale = Number(scale.toFixed(1));
-      if (!(this._translateX === x && this._translateY === y)) {
-        if (!r) {
-          this.$trigger("change", {}, {
-            x: v(x, this._scaleOffset.x),
-            y: v(y, this._scaleOffset.y),
-            source
-          });
-        }
-      }
-      if (!this.scale) {
-        scale = this._scale;
-      }
-      scale = this._adjustScale(scale);
-      scale = +scale.toFixed(3);
-      if (o2 && scale !== this._scale) {
-        this.$trigger("scale", {}, {
-          x,
-          y,
-          scale
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, scale, "", true, true);
         });
       }
-      var transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-      this.$el.style.transform = transform;
-      this.$el.style.webkitTransform = transform;
-      this._translateX = x;
-      this._translateY = y;
-      this._scale = scale;
     }
   }
-};
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_resize_sensor = vue.resolveComponent("v-uni-resize-sensor");
-  return vue.openBlock(), vue.createBlock("uni-movable-view", _ctx.$attrs, [
-    vue.createVNode(_component_v_uni_resize_sensor, {onResize: $options.setParent}, null, 8, ["onResize"]),
-    vue.renderSlot(_ctx.$slots, "default")
-  ], 16);
+  function _adjustScale(scale) {
+    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.min(10, scaleMaxNumber.value, scale);
+    return scale;
+  }
+  function _animationTo(x, y, scale, source, r, o2) {
+    if (_SFA) {
+      _SFA.cancel();
+    }
+    if (!xMove.value) {
+      x = _translateX;
+    }
+    if (!yMove.value) {
+      y = _translateY;
+    }
+    if (!props2.scale) {
+      scale = _scale;
+    }
+    let limitXY = _getLimitXY(x, y);
+    x = limitXY.x;
+    y = limitXY.y;
+    if (!props2.animation) {
+      _setTransform(x, y, scale, source, r, o2);
+      return;
+    }
+    _STD._springX._solution = null;
+    _STD._springY._solution = null;
+    _STD._springScale._solution = null;
+    _STD._springX._endPosition = _translateX;
+    _STD._springY._endPosition = _translateY;
+    _STD._springScale._endPosition = _scale;
+    _STD.setEnd(x, y, scale, 1);
+    _SFA = g(_STD, function() {
+      let data = _STD.x();
+      let x2 = data.x;
+      let y2 = data.y;
+      let scale2 = data.scale;
+      _setTransform(x2, y2, scale2, source, r, o2);
+    }, function() {
+      _SFA.cancel();
+    });
+  }
+  function _setTransform(x, y, scale, source = "", r, o2) {
+    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
+      x = _translateX || 0;
+    }
+    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
+      y = _translateY || 0;
+    }
+    x = Number(x.toFixed(1));
+    y = Number(y.toFixed(1));
+    scale = Number(scale.toFixed(1));
+    if (!(_translateX === x && _translateY === y)) {
+      if (!r) {
+        trigger("change", {}, {
+          x: v(x, _scaleOffset.x),
+          y: v(y, _scaleOffset.y),
+          source
+        });
+      }
+    }
+    if (!props2.scale) {
+      scale = _scale;
+    }
+    scale = _adjustScale(scale);
+    scale = +scale.toFixed(3);
+    if (o2 && scale !== _scale) {
+      trigger("scale", {}, {
+        x,
+        y,
+        scale
+      });
+    }
+    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
+    rootRef.value.style.transform = transform;
+    rootRef.value.style.webkitTransform = transform;
+    _translateX = x;
+    _translateY = y;
+    _scale = scale;
+  }
+  function setParent() {
+    if (!_isMounted.value) {
+      return;
+    }
+    if (_SFA) {
+      _SFA.cancel();
+    }
+    let scale = props2.scale ? scaleValueSync.value : 1;
+    _updateOffset();
+    _updateWH(scale);
+    _updateBoundary();
+    _translateX = xSync.value + _scaleOffset.x;
+    _translateY = ySync.value + _scaleOffset.y;
+    let limitXY = _getLimitXY(_translateX, _translateY);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    _setTransform(x, y, scale, "", true);
+  }
+  return {
+    setParent
+  };
 }
-_sfc_main$6.render = _sfc_render$6;
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 const _sfc_main$5 = {
   name: "Navigator",
@@ -5664,25 +5582,6 @@ var scroller = {
     }
   }
 };
-let webview;
-let pullToRefreshStyle;
-function initScrollBounce() {
-  uniShared.plusReady(() => {
-    if (!webview) {
-      webview = plus.webview.currentWebview();
-    }
-    if (!pullToRefreshStyle) {
-      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
-    }
-  });
-}
-function disableScrollBounce({disable}) {
-  if (pullToRefreshStyle && pullToRefreshStyle.support) {
-    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
-      support: !disable
-    }));
-  }
-}
 const passiveOptions = uniShared.passive(true);
 const _sfc_main$3 = {
   name: "ScrollView",
@@ -7081,7 +6980,7 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const props$7 = /* @__PURE__ */ Object.assign({}, props$g, {
+const props$7 = /* @__PURE__ */ Object.assign({}, props$i, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9966,22 +9865,23 @@ var index = /* @__PURE__ */ vue.defineComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$8;
-exports.Button = index$m;
-exports.Canvas = _sfc_main$7;
-exports.Checkbox = index$j;
-exports.CheckboxGroup = index$l;
+exports.Audio = _sfc_main$7;
+exports.Button = index$o;
+exports.Canvas = _sfc_main$6;
+exports.Checkbox = index$l;
+exports.CheckboxGroup = index$n;
 exports.CoverImage = _sfc_main$1;
 exports.CoverView = _sfc_main$2;
-exports.Editor = index$i;
-exports.Form = index$n;
-exports.Icon = index$h;
-exports.Image = index$g;
+exports.Editor = index$k;
+exports.Form = index$p;
+exports.Icon = index$j;
+exports.Image = index$i;
 exports.Input = Input;
-exports.Label = index$k;
+exports.Label = index$m;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
-exports.MovableView = _sfc_main$6;
+exports.MovableArea = index$h;
+exports.MovableView = index$g;
 exports.Navigator = _sfc_main$5;
 exports.PageComponent = index$2;
 exports.Progress = index$f;
@@ -10010,7 +9910,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$o;
+exports.plugin = index$q;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

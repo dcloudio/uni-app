@@ -26,10 +26,10 @@ const addListenerToElement = function (
     }
   )
 }
-
+type State = 'start' | 'move' | 'end' | 'cancel'
 type TouchOrMouseEvent = TouchEvent | MouseEvent
 type Detail = {
-  state: any
+  state: State
   x0: number
   y0: number
   dx: number
@@ -67,7 +67,7 @@ export function useTouchtrack(
   let y1 = 0
   const fn = function (
     $event: TouchOrMouseEvent,
-    state: any,
+    state: State,
     x: number,
     y: number
   ) {

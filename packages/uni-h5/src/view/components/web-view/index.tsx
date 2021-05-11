@@ -52,6 +52,7 @@ export default /*#__PURE__*/ defineComponent({
             {...$excludeAttrs.value}
             ref={rootRef}
           >
+            {/* @ts-ignore */}
             <ResizeSensor onResize={_resize} />
           </uni-web-view>
 
