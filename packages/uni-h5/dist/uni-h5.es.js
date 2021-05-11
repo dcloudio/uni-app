@@ -4670,7 +4670,11 @@ function removeCurrentPages(delta = 1) {
   }
 }
 function initHistory() {
-  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(__uniConfig.router.base) : createWebHashHistory(__uniConfig.router.base);
+  let {base} = __uniConfig.router;
+  if (base === "/") {
+    base = "";
+  }
+  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(base) : createWebHashHistory(base);
   history2.listen((_to, _from, info) => {
     if (info.direction === "back") {
       removeCurrentPages(Math.abs(info.delta));

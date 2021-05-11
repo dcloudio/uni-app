@@ -11,7 +11,6 @@ import { createServer } from './server'
 import { createBuild } from './build'
 import { createOptimizeDeps } from './optimizeDeps'
 import { createDefine } from './define'
-import { FEATURE_DEFINES } from '../utils'
 
 function normalizeRoot(config: UserConfig) {
   return normalizePath(config.root ? path.resolve(config.root) : process.cwd())
@@ -34,7 +33,7 @@ export function createConfig(
       resolve: createResolve(options, config),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
-      build: createBuild(options, define as FEATURE_DEFINES),
+      build: createBuild(options),
       css: createCss(options),
     }
   }

@@ -1150,8 +1150,12 @@ function createRouterOptions() {
   };
 }
 function initHistory() {
+  let {base} = __uniConfig.router;
+  if (base === "/") {
+    base = "";
+  }
   {
-    return vueRouter.createMemoryHistory(__uniConfig.router.base);
+    return vueRouter.createMemoryHistory(base);
   }
 }
 var index$s = {
