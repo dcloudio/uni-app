@@ -31,14 +31,21 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-node${{ matrix.node_version }}-
 
       - name: Versions
         run: yarn versions
 
       - name: Install dependencies and verify Cypress
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: npm run build uni-app uni-cli-shared uni-h5 uni-i18n uni-shared vite-plugin-uni
+
+      - name: Install ssr
+        working-directory: ./packages/playground/ssr
         run: |
           yarn install --frozen-lockfile
           npx cypress verify
@@ -48,13 +55,6 @@ jobs:
           npx cypress version --component binary
           npx cypress version --component electron
           npx cypress version --component node
-
-      - name: Build
-        run: npm run build uni-app uni-cli-shared uni-h5 uni-i18n uni-shared vite-plugin-uni
-
-      - name: Install ssr
-        working-directory: ./packages/playground/ssr
-        run: yarn install --frozen-lockfile
 
       - name: Cypress run
         uses: cypress-io/github-action@v2

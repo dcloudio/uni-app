@@ -12,7 +12,7 @@
     "ls-lint": "ls-lint",
     "test": "jest",
     "preinstall": "node ./scripts/checkYarn.js",
-    "e2e:ssr:open": "cypress open --project packages/playground/ssr",
+    "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr"
   },
   "types": "test-dts/index.d.ts",
@@ -57,7 +57,6 @@
     "@typescript-eslint/parser": "^4.12.0",
     "@vitejs/plugin-vue": "^1.2.2",
     "@vitejs/plugin-vue-jsx": "^1.1.4",
-    "cypress": "^7.3.0",
     "eslint": "^7.17.0",
     "fs-extra": "^9.0.1",
     "jest": "^26.6.3",
