@@ -5,7 +5,7 @@ export function createApp() {
   // `trace` 是组件的继承关系追踪
   app.config.warnHandler = function (msg) {
     const ssrLogElem = document.getElementById('ssr-log')
-    ssrLogElem.innerHTML = ssrLogElem.innerHTML + '\n' + msg
+    ssrLogElem && (ssrLogElem.innerHTML = ssrLogElem.innerHTML + '\n' + msg)
   }
   return {
     app,

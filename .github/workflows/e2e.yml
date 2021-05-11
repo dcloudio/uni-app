@@ -16,8 +16,6 @@ jobs:
         include:
           - os: macos-latest
             node_version: 12
-          - os: windows-latest
-            node_version: 12
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
     steps:
@@ -37,7 +35,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/cache
+            ~/.cache
             ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-node${{ matrix.node_version }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |

@@ -1,6 +1,8 @@
 <template>
   <ssr-cover-image />
   <ssr-cover-view />
+  <!-- <ssr-match-media /> -->
+  <!-- <ssr-movable-area /> -->
   <ssr-view />
   <ssr-text />
   <ssr-progress />
