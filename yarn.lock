@@ -6309,7 +6309,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite@^2.2.4:
+vite@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vite/-/vite-2.3.0.tgz#02b007c7aa4ac88cc18f854b9c68e4fbe76e3ef4"
   integrity sha512-gsCy0t3X9nGGYDoNiE2NJgYq6BPxrtKeo6FkpMXdMvtUluYxnRhl7xfpHaYDmQLCnMbYTWhvWS1L/Hpw/V9L5w==

@@ -31,6 +31,7 @@ export function createConfig(
     const { h5 } = parseManifestJsonOnce(options.inputDir)
     return {
       base: (h5 && h5.router && h5.router.base) || '',
+      publicDir: false,
       define: extend(define, options.compiler.define()),
       resolve: createResolve(options, config),
       optimizeDeps: createOptimizeDeps(options),

@@ -44,7 +44,7 @@
     "@dcloudio/uni-cli-shared": "^3.0.0",
     "@dcloudio/uni-shared": "^3.0.0",
     "@vue/shared": "^3.0.11",
-    "vite": "^2.2.3"
+    "vite": "^2.3.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

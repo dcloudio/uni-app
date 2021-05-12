@@ -12,8 +12,9 @@
     "ls-lint": "ls-lint",
     "test": "jest",
     "preinstall": "node ./scripts/checkYarn.js",
-    "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
-    "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr"
+    "e2e:ssr:install": "cd packages/playground/ssr && rm -rf node_modules yarn.lock && yarn",
+    "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
+    "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open"
   },
   "types": "test-dts/index.d.ts",
   "tsd": {
@@ -74,7 +75,7 @@
     "semver": "^7.3.4",
     "ts-jest": "^26.4.4",
     "typescript": "~4.1.3",
-    "vite": "^2.2.4",
+    "vite": "^2.3.0",
     "vue": "3.0.11",
     "yorkie": "^2.0.0"
   }

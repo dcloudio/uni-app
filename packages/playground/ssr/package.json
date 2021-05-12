@@ -21,12 +21,12 @@
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
-    "@vitejs/plugin-vue": "^1.2.1",
+    "@vitejs/plugin-vue": "^1.2.2",
     "@vue/compiler-sfc": "^3.0.11",
     "@vue/server-renderer": "^3.0.11",
     "compression": "^1.7.4",
     "cypress": "^7.3.0",
     "serve-static": "^1.14.1",
-    "vite": "^2.2.3"
+    "vite": "^2.3.0"
   }
 }
