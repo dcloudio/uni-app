@@ -1,0 +1,32 @@
+import { getRealPath } from '@dcloudio/uni-platform'
+
+export const API_PREVIEW_IMAGE = 'previewImage'
+export type API_TYPE_PREVIEW_IMAGE = typeof uni.previewImage
+
+export const PreviewImageOptions: ApiOptions<API_TYPE_PREVIEW_IMAGE> = {
+  formatArgs: {
+    urls(urls, params) {
+      params.urls = urls.map((url) =>
+        typeof url === 'string' && url ? getRealPath(url) : ''
+      )
+    },
+    current(current, params) {
+      if (typeof current === 'number') {
+        params.current =
+          current > 0 && current < params.urls.length ? current : 0
+      } else if (typeof current === 'string' && current) {
+        params.current = getRealPath(current)
+      }
+    },
+  },
+}
+
+export const PreviewImageProtocol: ApiProtocol<API_TYPE_PREVIEW_IMAGE> = {
+  urls: {
+    type: Array,
+    required: true,
+  },
+  current: {
+    type: [Number, String],
+  },
+}

@@ -7,7 +7,7 @@ export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 export type NativeEventTrigger = ReturnType<typeof useNativeEvent>
 export type EmitEvent<E extends (...args: any) => any> = [Parameters<E>[0]]
 
-export function withWebEvent(fn: Function) {
+export function withWebEvent(fn: (e: any) => any) {
   return ((fn as any).__wwe = true), fn
 }
 

@@ -3247,6 +3247,30 @@ const GetImageInfoProtocol = {
     required: true
   }
 };
+const API_PREVIEW_IMAGE = "previewImage";
+const PreviewImageOptions = {
+  formatArgs: {
+    urls(urls, params) {
+      params.urls = urls.map((url) => typeof url === "string" && url ? getRealPath(url) : "");
+    },
+    current(current, params) {
+      if (typeof current === "number") {
+        params.current = current > 0 && current < params.urls.length ? current : 0;
+      } else if (typeof current === "string" && current) {
+        params.current = getRealPath(current);
+      }
+    }
+  }
+};
+const PreviewImageProtocol = {
+  urls: {
+    type: Array,
+    required: true
+  },
+  current: {
+    type: [Number, String]
+  }
+};
 const API_GET_VIDEO_INFO = "getVideoInfo";
 const GetVideoInfoOptions = {
   formatArgs: {
@@ -4658,7 +4682,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$s = {
+var index$o = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -4976,7 +5000,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("audio", {
       ref: "audio",
       loop: $props.loop,
-      style: {"display": "none"}
+      style: {display: "none"}
     }, null, 8, ["loop"]),
     createVNode("div", _hoisted_1$6, [
       createVNode("div", {
@@ -5083,7 +5107,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$r = /* @__PURE__ */ defineComponent({
+var index$n = /* @__PURE__ */ defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -5122,7 +5146,7 @@ function provideForm(emit2) {
   });
   return fields;
 }
-var index$q = /* @__PURE__ */ defineComponent({
+var index$m = /* @__PURE__ */ defineComponent({
   name: "Button",
   props: {
     id: {
@@ -5189,12 +5213,12 @@ var index$q = /* @__PURE__ */ defineComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-button", mergeProps({
-          "onClick": onClick,
-          "class": hovering.value ? hoverClass : ""
+          onClick,
+          class: hovering.value ? hoverClass : ""
         }, binding, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
       }
       return createVNode("uni-button", mergeProps({
-        "onClick": onClick
+        onClick
       }, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
@@ -5216,12 +5240,12 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
     const update = useResizeSensorUpdate(rootRef, emit2, reset);
     useResizeSensorLifecycle(rootRef, props2, update, reset);
     return () => createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
+      ref: rootRef,
+      onAnimationstartOnce: update
     }, [createVNode("div", {
-      "onScroll": update
+      onScroll: update
     }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-      "onScroll": update
+      onScroll: update
     }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
   }
 });
@@ -5912,7 +5936,7 @@ const _hoisted_1$5 = {
   width: "300",
   height: "150"
 };
-const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
+const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
 function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
@@ -5985,15 +6009,15 @@ function _removeListeners(id2, listeners, watch2) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$r = {
+const props$t = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$p = /* @__PURE__ */ defineComponent({
+var index$l = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$r,
+  props: props$t,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6004,7 +6028,7 @@ var index$p = /* @__PURE__ */ defineComponent({
     useProvideCheckGroup(props2, trigger);
     return () => {
       return createVNode("uni-checkbox-group", {
-        "ref": rootRef
+        ref: rootRef
       }, [slots.default && slots.default()], 512);
     };
   }
@@ -6046,15 +6070,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$q = {
+const props$s = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineComponent({
+var index$k = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$q,
+  props: props$s,
   setup(props2, {
     emit: emit2,
     slots
@@ -6080,10 +6104,10 @@ var index$o = /* @__PURE__ */ defineComponent({
       }
     });
     return () => createVNode("uni-label", {
-      "class": {
+      class: {
         "uni-label-pointer": pointer
       },
-      "onClick": _onClick
+      onClick: _onClick
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
@@ -6099,7 +6123,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$p = {
+const props$r = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6121,9 +6145,9 @@ const props$p = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineComponent({
+var index$j = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$r,
   setup(props2, {
     slots
   }) {
@@ -6161,11 +6185,11 @@ var index$n = /* @__PURE__ */ defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        onClick: _onClick
       }), [createVNode("div", {
-        "class": "uni-checkbox-wrapper"
+        class: "uni-checkbox-wrapper"
       }, [createVNode("div", {
-        "class": ["uni-checkbox-input", {
+        class: ["uni-checkbox-input", {
           "uni-checkbox-input-disabled": props2.disabled
         }]
       }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])], 16, ["onClick"]);
@@ -6202,7 +6226,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$q = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6946,7 +6970,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
+const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
   id: {
     type: String,
     default: ""
@@ -6972,9 +6996,9 @@ const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
     default: false
   }
 });
-var index$m = /* @__PURE__ */ defineComponent({
+var index$i = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$n,
+  props: props$p,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -6985,9 +7009,9 @@ var index$m = /* @__PURE__ */ defineComponent({
     useKeyboard$1(props2, rootRef);
     return () => {
       return createVNode("uni-editor", {
-        "ref": rootRef,
-        "id": props2.id,
-        "class": "ql-container"
+        ref: rootRef,
+        id: props2.id,
+        class: "ql-container"
       }, null, 8, ["id"]);
     };
   }
@@ -7034,7 +7058,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$l = /* @__PURE__ */ defineComponent({
+var index$h = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -7061,7 +7085,7 @@ var index$l = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$m = {
+const props$o = {
   src: {
     type: String,
     default: ""
@@ -7098,19 +7122,19 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$k = /* @__PURE__ */ defineComponent({
+var index$g = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$m,
+  props: props$o,
   setup(props2, {
     emit: emit2
   }) {
     const rootRef = ref(null);
-    const state = useImageState(rootRef, props2);
+    const state2 = useImageState(rootRef, props2);
     const trigger = useCustomEvent(rootRef, emit2);
     const {
       fixSize
-    } = useImageSize(rootRef, props2, state);
-    useImageLoader(state, {
+    } = useImageSize(rootRef, props2, state2);
+    useImageLoader(state2, {
       trigger,
       fixSize
     });
@@ -7121,16 +7145,16 @@ var index$k = /* @__PURE__ */ defineComponent({
       const {
         imgSrc,
         modeStyle
-      } = state;
+      } = state2;
       return createVNode("uni-image", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode("div", {
-        "style": modeStyle
+        style: modeStyle
       }, null, 4), imgSrc ? createVNode("img", {
-        "src": imgSrc,
-        "draggable": props2.draggable
+        src: imgSrc,
+        draggable: props2.draggable
       }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode] ? createVNode(ResizeSensor, {
-        "onResize": fixSize
+        onResize: fixSize
       }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
   }
@@ -7151,7 +7175,7 @@ function useImageState(rootRef, props2) {
     const srcVal = imgSrc.value;
     return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
   });
-  const state = reactive({
+  const state2 = reactive({
     rootEl: rootRef,
     src: computed(() => props2.src ? getRealPath(props2.src) : ""),
     origWidth: 0,
@@ -7166,20 +7190,20 @@ function useImageState(rootRef, props2) {
   onMounted(() => {
     const rootEl = rootRef.value;
     const style = rootEl.style;
-    state.origWidth = Number(style.width) || 0;
-    state.origHeight = Number(style.height) || 0;
+    state2.origWidth = Number(style.width) || 0;
+    state2.origHeight = Number(style.height) || 0;
   });
-  return state;
+  return state2;
 }
-function useImageLoader(state, {
+function useImageLoader(state2, {
   trigger,
   fixSize
 }) {
   let img;
   const setState = (width = 0, height = 0, imgSrc = "") => {
-    state.origWidth = width;
-    state.origHeight = height;
-    state.imgSrc = imgSrc;
+    state2.origWidth = width;
+    state2.origHeight = height;
+    state2.imgSrc = imgSrc;
   };
   const loadImage = (src) => {
     if (!src) {
@@ -7207,7 +7231,7 @@ function useImageLoader(state, {
       setState();
       resetImage();
       trigger("error", evt, {
-        errMsg: `GET ${state.src} 404 (Not Found)`
+        errMsg: `GET ${state2.src} 404 (Not Found)`
       });
     };
     img.src = src;
@@ -7219,8 +7243,8 @@ function useImageLoader(state, {
       img = null;
     }
   };
-  watch(() => state.src, (value) => loadImage(value));
-  onMounted(() => loadImage(state.src));
+  watch(() => state2.src, (value) => loadImage(value));
+  onMounted(() => loadImage(state2.src));
   onBeforeUnmount(() => resetImage());
 }
 const isChrome = navigator.vendor === "Google Inc.";
@@ -7230,7 +7254,7 @@ function fixNumber(num) {
   }
   return num;
 }
-function useImageSize(rootRef, props2, state) {
+function useImageSize(rootRef, props2, state2) {
   const fixSize = () => {
     const {
       mode
@@ -7242,7 +7266,7 @@ function useImageSize(rootRef, props2, state) {
     const {
       origWidth,
       origHeight
-    } = state;
+    } = state2;
     const ratio = origWidth && origHeight ? origWidth / origHeight : 0;
     if (!ratio) {
       return;
@@ -7263,7 +7287,7 @@ function useImageSize(rootRef, props2, state) {
         width,
         height
       }
-    } = state;
+    } = state2;
     style.width = width;
     style.height = height;
   };
@@ -7318,21 +7342,21 @@ function removeInteractListener(vm) {
   }
 }
 function useUserAction() {
-  const state = reactive({
+  const state2 = reactive({
     userAction: false
   });
   onMounted(() => {
-    addInteractListener(state);
+    addInteractListener(state2);
   });
   onBeforeUnmount(() => {
-    removeInteractListener(state);
+    removeInteractListener(state2);
   });
   return {
-    state
+    state: state2
   };
 }
 function useScopedAttrs() {
-  const state = reactive({
+  const state2 = reactive({
     attrs: {}
   });
   onMounted(() => {
@@ -7340,13 +7364,13 @@ function useScopedAttrs() {
     while (instance2) {
       const scopeId = instance2.type.__scopeId;
       if (scopeId) {
-        state.attrs[scopeId] = "";
+        state2.attrs[scopeId] = "";
       }
       instance2 = instance2.__isPage ? null : instance2.parent;
     }
   });
   return {
-    state
+    state: state2
   };
 }
 function useFormField(nameKey, value) {
@@ -7379,7 +7403,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$l = /* @__PURE__ */ Object.assign({}, {
+const props$n = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -7440,7 +7464,7 @@ const props$l = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$o);
+}, props$q);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -7462,7 +7486,7 @@ function useBase(props2, rootRef, emit2) {
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
   const value = getValueString(props2.value);
-  const state = reactive({
+  const state2 = reactive({
     value,
     valueOrigin: value,
     maxlength,
@@ -7472,17 +7496,17 @@ function useBase(props2, rootRef, emit2) {
     selectionEnd,
     cursor
   });
-  watch(() => state.focus, (val) => emit2("update:focus", val));
-  watch(() => state.maxlength, (val) => state.value = state.value.slice(0, val));
+  watch(() => state2.focus, (val) => emit2("update:focus", val));
+  watch(() => state2.maxlength, (val) => state2.value = state2.value.slice(0, val));
   return {
     fieldRef,
-    state,
+    state: state2,
     trigger
   };
 }
-function useValueSync(props2, state, emit2, trigger) {
+function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = debounce((val) => {
-    state.value = getValueString(val);
+    state2.value = getValueString(val);
   }, 100);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -7540,37 +7564,37 @@ function useAutoFocus(props2, fieldRef) {
     }
   });
 }
-function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
+function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1) {
-      field.selectionStart = state.selectionStart;
-      field.selectionEnd = state.selectionEnd;
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1) {
+      field.selectionStart = state2.selectionStart;
+      field.selectionEnd = state2.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1) {
-      field.selectionEnd = field.selectionStart = state.cursor;
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1) {
+      field.selectionEnd = field.selectionStart = state2.cursor;
     }
   }
   function initField() {
     const field = fieldRef.value;
     const onFocus = function(event) {
-      state.focus = true;
+      state2.focus = true;
       trigger("focus", event, {
-        value: state.value
+        value: state2.value
       });
       checkSelection();
       checkCursor();
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
+      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
         return;
       }
-      state.value = field.value;
-      if (!state.composing) {
+      state2.value = field.value;
+      if (!state2.composing) {
         triggerInput(event, {
           value: field.value,
           cursor: field.selectionEnd
@@ -7578,13 +7602,13 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
       }
     };
     const onBlur = function(event) {
-      if (state.composing) {
-        state.composing = false;
+      if (state2.composing) {
+        state2.composing = false;
         onInput(event, true);
       }
-      state.focus = false;
+      state2.focus = false;
       trigger("blur", event, {
-        value: state.value,
+        value: state2.value,
         cursor: event.target.selectionEnd
       });
     };
@@ -7594,38 +7618,38 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
     field.addEventListener("input", onInput);
     field.addEventListener("compositionstart", (event) => {
       event.stopPropagation();
-      state.composing = true;
+      state2.composing = true;
     });
     field.addEventListener("compositionend", (event) => {
       event.stopPropagation();
-      if (state.composing) {
-        state.composing = false;
+      if (state2.composing) {
+        state2.composing = false;
         onInput(event);
       }
     });
   }
-  watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
-  watch(() => state.cursor, checkCursor);
+  watch([() => state2.selectionStart, () => state2.selectionEnd], checkSelection);
+  watch(() => state2.cursor, checkCursor);
   watch(() => fieldRef.value, initField);
 }
 function useField(props2, rootRef, emit2, beforeInput) {
-  const {fieldRef, state, trigger} = useBase(props2, rootRef, emit2);
-  const {triggerInput} = useValueSync(props2, state, emit2, trigger);
+  const {fieldRef, state: state2, trigger} = useBase(props2, rootRef, emit2);
+  const {triggerInput} = useValueSync(props2, state2, emit2, trigger);
   useAutoFocus(props2, fieldRef);
   useKeyboard$1(props2, fieldRef);
   const {state: scopedAttrsState} = useScopedAttrs();
-  useFormField("name", state);
-  useEvent(fieldRef, state, trigger, triggerInput, beforeInput);
+  useFormField("name", state2);
+  useEvent(fieldRef, state2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
   return {
     fieldRef,
-    state,
+    state: state2,
     scopedAttrsState,
     fixDisabledColor,
     trigger
   };
 }
-const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
+const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7633,7 +7657,7 @@ const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$k,
+  props: props$m,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7663,21 +7687,21 @@ var Input = /* @__PURE__ */ defineComponent({
     const rootRef = ref(null);
     const {
       fieldRef,
-      state,
+      state: state2,
       scopedAttrsState,
       fixDisabledColor,
       trigger
-    } = useField(props2, rootRef, emit2, (event, state2) => {
+    } = useField(props2, rootRef, emit2, (event, state3) => {
       const input = event.target;
       if (NUMBER_TYPES.includes(props2.type)) {
         valid.value = input.validity && input.validity.valid;
-        state2.value;
+        state3.value;
       }
       if (type.value === "number") {
-        const maxlength = state2.maxlength;
+        const maxlength = state3.maxlength;
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
-          state2.value = input.value;
+          state3.value = input.value;
           return false;
         }
       }
@@ -7695,52 +7719,52 @@ var Input = /* @__PURE__ */ defineComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
-        "ref": fieldRef,
-        "value": state.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "type": type.value,
-        "maxlength": state.maxlength,
-        "step": step.value,
-        "class": "uni-input-input",
-        "onFocus": (event) => event.target.blur()
+        ref: fieldRef,
+        value: state2.value,
+        tabindex: "-1",
+        readonly: !!props2.disabled,
+        type: type.value,
+        maxlength: state2.maxlength,
+        step: step.value,
+        class: "uni-input-input",
+        onFocus: (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
-        "ref": fieldRef,
-        "value": state.value,
-        "disabled": !!props2.disabled,
-        "type": type.value,
-        "maxlength": state.maxlength,
-        "step": step.value,
-        "enterkeyhint": props2.confirmType,
-        "class": "uni-input-input",
-        "autocomplete": "off",
-        "onKeyup": onKeyUpEnter
+        ref: fieldRef,
+        value: state2.value,
+        disabled: !!props2.disabled,
+        type: type.value,
+        maxlength: state2.maxlength,
+        step: step.value,
+        enterkeyhint: props2.confirmType,
+        class: "uni-input-input",
+        autocomplete: "off",
+        onKeyup: onKeyUpEnter
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
       return createVNode("uni-input", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode("div", {
-        "class": "uni-input-wrapper"
+        class: "uni-input-wrapper"
       }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-input-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !(state.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": () => false,
-        "class": "uni-input-form"
+        style: props2.placeholderStyle,
+        class: ["uni-input-placeholder", props2.placeholderClass]
+      }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
+        action: "",
+        onSubmit: () => false,
+        class: "uni-input-form"
       }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
     };
   }
 });
-const props$j = {
+const props$l = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$j = /* @__PURE__ */ defineComponent({
+var MovableArea = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$j,
+  props: props$l,
   setup(props2, {
     slots
   }) {
@@ -7798,9 +7822,9 @@ var index$j = /* @__PURE__ */ defineComponent({
       const defaultSlots = slots.default && slots.default();
       movableViewItems = defaultSlots || [];
       return createVNode("uni-movable-area", mergeProps({
-        "ref": rootRef
+        ref: rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-        "onReize": movableAreaEvents._resize
+        onReize: movableAreaEvents._resize
       }, null, 8, ["onReize"]), movableViewItems], 16);
     };
   }
@@ -7962,7 +7986,7 @@ function useTouchtrack(element, method, useCancel) {
   let y0 = 0;
   let x1 = 0;
   let y1 = 0;
-  const fn = function($event, state, x, y) {
+  const fn = function($event, state2, x, y) {
     if (method({
       target: $event.target,
       currentTarget: $event.currentTarget,
@@ -7971,7 +7995,7 @@ function useTouchtrack(element, method, useCancel) {
       touches: $event.touches,
       changedTouches: $event.changedTouches,
       detail: {
-        state,
+        state: state2,
         x,
         y,
         dx: x - x0,
@@ -8341,7 +8365,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$i = {
+const props$k = {
   direction: {
     type: String,
     default: "none"
@@ -8395,9 +8419,9 @@ const props$i = {
     default: true
   }
 };
-var index$i = /* @__PURE__ */ defineComponent({
+var MovableView = /* @__PURE__ */ defineComponent({
   name: "MovableView",
-  props: props$i,
+  props: props$k,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -8410,9 +8434,9 @@ var index$i = /* @__PURE__ */ defineComponent({
     } = useMovableViewState(props2, trigger, rootRef);
     return () => {
       return createVNode("uni-movable-view", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode(ResizeSensor, {
-        "onResize": setParent
+        onResize: setParent
       }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
     };
   }
@@ -9080,7 +9104,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ]));
 }
 _sfc_main$5.render = _sfc_render$5;
-const props$h = {
+const props$j = {
   value: {
     type: Array,
     default() {
@@ -9109,25 +9133,25 @@ const props$h = {
 };
 function useState$1(props2) {
   const value = reactive([...props2.value]);
-  const state = {
+  const state2 = {
     value,
     height: 34
   };
   watch(() => props2.value, (val, oldVal) => {
     {
-      state.value.length = val.length;
+      state2.value.length = val.length;
       val.forEach((val2, index2) => {
-        if (val2 !== state.value[index2]) {
-          state.value.splice(index2, 1, val2);
+        if (val2 !== state2.value[index2]) {
+          state2.value.splice(index2, 1, val2);
         }
       });
     }
   });
-  return state;
+  return state2;
 }
-var index$h = /* @__PURE__ */ defineComponent({
+var index$f = /* @__PURE__ */ defineComponent({
   name: "PickerView",
-  props: props$h,
+  props: props$j,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -9135,7 +9159,7 @@ var index$h = /* @__PURE__ */ defineComponent({
   }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state = useState$1(props2);
+    const state2 = useState$1(props2);
     let columnVNodes = [];
     function getItemIndex(vnode) {
       return columnVNodes.indexOf(vnode);
@@ -9144,14 +9168,14 @@ var index$h = /* @__PURE__ */ defineComponent({
       const ref2 = computed({
         get() {
           const index2 = getItemIndex(columnInstance.vnode);
-          return state.value[index2] || 0;
+          return state2.value[index2] || 0;
         },
         set(current) {
           const index2 = getItemIndex(columnInstance.vnode);
-          const oldCurrent = state.value[index2];
+          const oldCurrent = state2.value[index2];
           if (oldCurrent !== current) {
-            state.value.splice(index2, 1, current);
-            const value = state.value.map((val) => val);
+            state2.value.splice(index2, 1, current);
+            const value = state2.value.map((val) => val);
             emit2("update:value", value);
             trigger("change", {}, {
               value
@@ -9167,21 +9191,21 @@ var index$h = /* @__PURE__ */ defineComponent({
     };
     provide("getPickerViewProps", getPickerViewProps);
     const getPickerViewState = () => {
-      return state;
+      return state2;
     };
     provide("getPickerViewState", getPickerViewState);
     return () => {
       const defaultSlots = slots.default && slots.default();
       columnVNodes = columnVNodes = defaultSlots || [];
       return createVNode("uni-picker-view", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": ({
+        initial: true,
+        onResize: ({
           height
-        }) => state.height = height
+        }) => state2.height = height
       }, null, 8, ["initial", "onResize"]), createVNode("div", {
-        "class": "uni-picker-view-wrapper"
+        class: "uni-picker-view-wrapper"
       }, [columnVNodes])], 512);
     };
   }
@@ -9515,17 +9539,17 @@ class Scroll$1 {
   }
 }
 function createAnimation(scroll, onScroll, onEnd) {
-  const state = {
+  const state2 = {
     id: 0,
     cancelled: false
   };
-  function startAnimation(state2, scroll2, onScroll2, onEnd2) {
-    if (!state2 || !state2.cancelled) {
+  function startAnimation(state22, scroll2, onScroll2, onEnd2) {
+    if (!state22 || !state22.cancelled) {
       onScroll2(scroll2);
       const isDone = scroll2.done();
       if (!isDone) {
-        if (!state2.cancelled) {
-          state2.id = requestAnimationFrame(startAnimation.bind(null, state2, scroll2, onScroll2, onEnd2));
+        if (!state22.cancelled) {
+          state22.id = requestAnimationFrame(startAnimation.bind(null, state22, scroll2, onScroll2, onEnd2));
         }
       }
       if (isDone && onEnd2) {
@@ -9533,17 +9557,17 @@ function createAnimation(scroll, onScroll, onEnd) {
       }
     }
   }
-  function cancel(state2) {
-    if (state2 && state2.id) {
-      cancelAnimationFrame(state2.id);
+  function cancel(state22) {
+    if (state22 && state22.id) {
+      cancelAnimationFrame(state22.id);
     }
-    if (state2) {
-      state2.cancelled = true;
+    if (state22) {
+      state22.cancelled = true;
     }
   }
-  startAnimation(state, scroll, onScroll, onEnd);
+  startAnimation(state2, scroll, onScroll, onEnd);
   return {
-    cancel: cancel.bind(null, state),
+    cancel: cancel.bind(null, state2),
     model: scroll
   };
 }
@@ -9876,6 +9900,8 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
+      } else if (Array.isArray(vnode)) {
+        array.push(...flatVNode(vnode));
       }
     });
   }
@@ -9919,7 +9945,7 @@ function useCustomClick(dom) {
     }
   });
 }
-var index$g = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineComponent({
   name: "PickerViewColumn",
   setup(props2, {
     slots,
@@ -9941,34 +9967,34 @@ var index$g = /* @__PURE__ */ defineComponent({
     } = useScopedAttrs();
     const className = useScopedClass(indicatorHeight);
     let scroller2;
-    const state = reactive({
+    const state2 = reactive({
       current: currentRef.value,
       length: 0
     });
     function updatesScroller() {
       if (scroller2) {
         nextTick(() => {
-          let current = Math.min(state.current, state.length - 1);
+          let current = Math.min(state2.current, state2.length - 1);
           current = Math.max(current, 0);
           scroller2.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
         });
       }
     }
     watch(() => currentRef.value, (current) => {
-      if (current !== state.current) {
-        state.current = current;
+      if (current !== state2.current) {
+        state2.current = current;
         updatesScroller();
       }
     });
-    watch(() => state.current, (current) => currentRef.value = current);
-    watch([() => indicatorHeight.value, () => state.length], updatesScroller);
+    watch(() => state2.current, (current) => currentRef.value = current);
+    watch([() => indicatorHeight.value, () => state2.length], updatesScroller);
     let oldDeltaY = 0;
     function handleWheel(event) {
       const deltaY = oldDeltaY + event.deltaY;
       if (Math.abs(deltaY) > 10) {
         oldDeltaY = 0;
-        let current = Math.min(state.current + (deltaY < 0 ? -1 : 1), state.length - 1);
-        state.current = current = Math.max(current, 0);
+        let current = Math.min(state2.current + (deltaY < 0 ? -1 : 1), state2.length - 1);
+        state2.current = current = Math.max(current, 0);
         scroller2.scrollTo(current * indicatorHeight.value);
       } else {
         oldDeltaY = deltaY;
@@ -9986,8 +10012,8 @@ var index$g = /* @__PURE__ */ defineComponent({
         if (!(Math.abs(r) <= o2)) {
           const a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
           const s = r < 0 ? -a2 : a2;
-          let current = Math.min(state.current + s, state.length - 1);
-          state.current = current = Math.max(current, 0);
+          let current = Math.min(state2.current + s, state2.length - 1);
+          state2.current = current = Math.max(current, 0);
           scroller2.scrollTo(current * indicatorHeight.value);
         }
       }
@@ -10008,8 +10034,8 @@ var index$g = /* @__PURE__ */ defineComponent({
         friction: new Friction$1(1e-4),
         spring: new Spring$1(2, 90, 20),
         onSnap: (index2) => {
-          if (!isNaN(index2) && index2 !== state.current) {
-            state.current = index2;
+          if (!isNaN(index2) && index2 !== state2.current) {
+            state2.current = index2;
           }
         }
       });
@@ -10032,29 +10058,29 @@ var index$g = /* @__PURE__ */ defineComponent({
     });
     return () => {
       const defaultSlots = slots.default && slots.default();
-      state.length = flatVNode(defaultSlots).length;
+      state2.length = flatVNode(defaultSlots).length;
       const padding = `${maskSize.value}px 0`;
       return createVNode("uni-picker-view-column", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode("div", {
-        "onWheel": handleWheel,
-        "onClick": handleTap,
-        "class": "uni-picker-view-group"
+        onWheel: handleWheel,
+        onClick: handleTap,
+        class: "uni-picker-view-group"
       }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
-        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        class: ["uni-picker-view-mask", pickerViewProps.maskClass],
+        style: `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
       }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        "style": pickerViewProps.indicatorStyle
+        class: ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+        style: pickerViewProps.indicatorStyle
       }), [createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": ({
+        initial: true,
+        onResize: ({
           height
         }) => indicatorHeight.value = height
       }, null, 8, ["initial", "onResize"])], 16), createVNode("div", {
-        "ref": contentRef,
-        "class": ["uni-picker-view-content", className],
-        "style": {
+        ref: contentRef,
+        class: ["uni-picker-view-content", className],
+        style: {
           padding
         }
       }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
@@ -10066,7 +10092,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$g = {
+const props$i = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -10113,16 +10139,16 @@ const props$g = {
     }
   }
 };
-var index$f = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$g,
+  props: props$i,
   setup(props2) {
-    const state = useProgressState(props2);
-    _activeAnimation(state, props2);
-    watch(() => state.realPercent, (newValue, oldValue) => {
-      state.strokeTimer && clearInterval(state.strokeTimer);
-      state.lastPercent = oldValue || 0;
-      _activeAnimation(state, props2);
+    const state2 = useProgressState(props2);
+    _activeAnimation(state2, props2);
+    watch(() => state2.realPercent, (newValue, oldValue) => {
+      state2.strokeTimer && clearInterval(state2.strokeTimer);
+      state2.lastPercent = oldValue || 0;
+      _activeAnimation(state2, props2);
     });
     return () => {
       const {
@@ -10132,17 +10158,17 @@ var index$f = /* @__PURE__ */ defineComponent({
         outerBarStyle,
         innerBarStyle,
         currentPercent
-      } = state;
+      } = state2;
       return createVNode("uni-progress", {
-        "class": "uni-progress"
+        class: "uni-progress"
       }, [createVNode("div", {
-        "style": outerBarStyle,
-        "class": "uni-progress-bar"
+        style: outerBarStyle,
+        class: "uni-progress-bar"
       }, [createVNode("div", {
-        "style": innerBarStyle,
-        "class": "uni-progress-inner-bar"
+        style: innerBarStyle,
+        class: "uni-progress-inner-bar"
       }, null, 4)], 4), showInfo ? createVNode("p", {
-        "class": "uni-progress-info"
+        class: "uni-progress-info"
       }, [currentPercent + "%"]) : ""]);
     };
   }
@@ -10160,7 +10186,7 @@ function useProgressState(props2) {
     realValue > 100 && (realValue = 100);
     return realValue;
   });
-  const state = reactive({
+  const state2 = reactive({
     outerBarStyle,
     innerBarStyle,
     realPercent,
@@ -10168,33 +10194,33 @@ function useProgressState(props2) {
     strokeTimer: 0,
     lastPercent: 0
   });
-  return state;
+  return state2;
 }
-function _activeAnimation(state, props2) {
+function _activeAnimation(state2, props2) {
   if (props2.active) {
-    state.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state.lastPercent;
-    state.strokeTimer = setInterval(() => {
-      if (state.currentPercent + 1 > state.realPercent) {
-        state.currentPercent = state.realPercent;
-        state.strokeTimer && clearInterval(state.strokeTimer);
+    state2.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state2.lastPercent;
+    state2.strokeTimer = setInterval(() => {
+      if (state2.currentPercent + 1 > state2.realPercent) {
+        state2.currentPercent = state2.realPercent;
+        state2.strokeTimer && clearInterval(state2.strokeTimer);
       } else {
-        state.currentPercent += 1;
+        state2.currentPercent += 1;
       }
     }, parseFloat(props2.duration));
   } else {
-    state.currentPercent = state.realPercent;
+    state2.currentPercent = state2.realPercent;
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$f = {
+const props$h = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$e = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
-  props: props$f,
+  props: props$h,
   setup(props2, {
     emit: emit2,
     slots
@@ -10204,7 +10230,7 @@ var index$e = /* @__PURE__ */ defineComponent({
     useProvideRadioGroup(props2, trigger);
     return () => {
       return createVNode("uni-radio-group", {
-        "ref": rootRef
+        ref: rootRef
       }, [slots.default && slots.default()], 512);
     };
   }
@@ -10270,7 +10296,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$e = {
+const props$g = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -10292,9 +10318,9 @@ const props$e = {
     default: ""
   }
 };
-var index$d = /* @__PURE__ */ defineComponent({
+var index$b = /* @__PURE__ */ defineComponent({
   name: "Radio",
-  props: props$e,
+  props: props$g,
   setup(props2, {
     slots
   }) {
@@ -10334,14 +10360,14 @@ var index$d = /* @__PURE__ */ defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        onClick: _onClick
       }), [createVNode("div", {
-        "class": "uni-radio-wrapper"
+        class: "uni-radio-wrapper"
       }, [createVNode("div", {
-        "class": ["uni-radio-input", {
+        class: ["uni-radio-input", {
           "uni-radio-input-disabled": props2.disabled
         }],
-        "style": radioChecked.value ? checkedStyle.value : ""
+        style: radioChecked.value ? checkedStyle.value : ""
       }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
@@ -11682,8 +11708,8 @@ const _sfc_main$3 = {
       this.content.removeEventListener("transitionend", this.__transitionEnd);
       this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
     },
-    _setRefreshState(state) {
-      switch (state) {
+    _setRefreshState(state2) {
+      switch (state2) {
         case "refreshing":
           this.refresherHeight = this.refresherThreshold;
           this.$trigger("refresherrefresh", {}, {});
@@ -11693,7 +11719,7 @@ const _sfc_main$3 = {
           this.$trigger("refresherrestore", {}, {});
           break;
       }
-      this.refreshState = state;
+      this.refreshState = state2;
     },
     getScrollPosition() {
       const main = this.main;
@@ -11747,7 +11773,7 @@ const _hoisted_9 = /* @__PURE__ */ createVNode("circle", {
   cy: "50",
   r: "20",
   fill: "none",
-  style: {"color": "#2bd009"},
+  style: {color: "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
@@ -11799,7 +11825,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   ], 512);
 }
 _sfc_main$3.render = _sfc_render$3;
-const props$d = {
+const props$f = {
   name: {
     type: String,
     default: ""
@@ -11853,9 +11879,9 @@ const props$d = {
     default: false
   }
 };
-var index$c = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineComponent({
   name: "Slider",
-  props: props$d,
+  props: props$f,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -11865,7 +11891,7 @@ var index$c = /* @__PURE__ */ defineComponent({
     const sliderHandleRef = ref(null);
     const sliderValue = ref(Number(props2.value));
     const trigger = useCustomEvent(sliderRef, emit2);
-    const state = useSliderState(props2, sliderValue);
+    const state2 = useSliderState(props2, sliderValue);
     const {
       _onClick,
       _onTrack
@@ -11879,30 +11905,30 @@ var index$c = /* @__PURE__ */ defineComponent({
         setBlockBg,
         setActiveColor,
         setBlockStyle
-      } = state;
+      } = state2;
       return createVNode("uni-slider", {
-        "ref": sliderRef,
-        "onClick": _onClick
+        ref: sliderRef,
+        onClick: _onClick
       }, [createVNode("div", {
-        "class": "uni-slider-wrapper"
+        class: "uni-slider-wrapper"
       }, [createVNode("div", {
-        "class": "uni-slider-tap-area"
+        class: "uni-slider-tap-area"
       }, [createVNode("div", {
-        "style": setBgColor.value,
-        "class": "uni-slider-handle-wrapper"
+        style: setBgColor.value,
+        class: "uni-slider-handle-wrapper"
       }, [createVNode("div", {
-        "ref": sliderHandleRef,
-        "style": setBlockBg.value,
-        "class": "uni-slider-handle"
+        ref: sliderHandleRef,
+        style: setBlockBg.value,
+        class: "uni-slider-handle"
       }, null, 4), createVNode("div", {
-        "style": setBlockStyle.value,
-        "class": "uni-slider-thumb"
+        style: setBlockStyle.value,
+        class: "uni-slider-thumb"
       }, null, 4), createVNode("div", {
-        "style": setActiveColor.value,
-        "class": "uni-slider-track"
+        style: setActiveColor.value,
+        class: "uni-slider-track"
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
-        "ref": sliderValueRef,
-        "class": "uni-slider-value"
+        ref: sliderValueRef,
+        class: "uni-slider-value"
       }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
     };
   }
@@ -11919,7 +11945,7 @@ function useSliderState(props2, sliderValue) {
   const _getActiveColor = () => {
     return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
-  const state = {
+  const state2 = {
     setBgColor: computed(() => ({
       backgroundColor: _getBgColor()
     })),
@@ -11939,7 +11965,7 @@ function useSliderState(props2, sliderValue) {
       backgroundColor: props2.blockColor
     }))
   };
-  return state;
+  return state2;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
   const _onClick = ($event) => {
@@ -12020,7 +12046,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$c = {
+const props$e = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -12103,7 +12129,7 @@ function useState(props2) {
     const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
     return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
   });
-  const state = reactive({
+  const state2 = reactive({
     interval,
     duration,
     displayMultipleItems,
@@ -12111,9 +12137,9 @@ function useState(props2) {
     currentItemId: props2.currentItemId,
     userTracking: false
   });
-  return state;
+  return state2;
 }
-function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger) {
+function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger) {
   function cancelSchedule() {
     if (timer) {
       clearTimeout(timer);
@@ -12130,10 +12156,10 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   let transitionStart;
   let currentChangeSource = "";
   let animationFrame;
-  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state.displayMultipleItems);
+  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
   function checkCircularLayout(index2) {
     if (!invalid) {
-      for (let items = swiperContexts.value, n = items.length, i2 = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
+      for (let items = swiperContexts.value, n = items.length, i2 = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
         const item = items[r];
         const s = Math.floor(index2 / n) * n + r;
         const l = s + n;
@@ -12194,11 +12220,11 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     }
     const index2 = (Math.round(current) % length + length) % length;
     if (circularEnabled.value) {
-      if (length <= state.displayMultipleItems) {
+      if (length <= state2.displayMultipleItems) {
         return 0;
       }
-    } else if (index2 > length - state.displayMultipleItems) {
-      return length - state.displayMultipleItems;
+    } else if (index2 > length - state2.displayMultipleItems) {
+      return length - state2.displayMultipleItems;
     }
     return index2;
   }
@@ -12221,11 +12247,11 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       animating = null;
       requestedAnimation = false;
       transitionStart = null;
-      const item = swiperContexts.value[state.current];
+      const item = swiperContexts.value[state2.current];
       if (item) {
         const currentItemId = item.getItemId();
         trigger("animationfinish", {}, {
-          current: state.current,
+          current: state2.current,
           currentItemId,
           source
         });
@@ -12239,7 +12265,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   }
   function animateViewport(current, source, n) {
     cancelViewportAnimation();
-    const duration = state.duration;
+    const duration = state2.duration;
     const length = swiperContexts.value.length;
     let position = viewportPosition;
     if (circularEnabled.value) {
@@ -12287,15 +12313,15 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       timer = null;
       currentChangeSource = "autoplay";
       if (circularEnabled.value) {
-        state.current = normalizeCurrentValue(state.current + 1);
+        state2.current = normalizeCurrentValue(state2.current + 1);
       } else {
-        state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
+        state2.current = state2.current + state2.displayMultipleItems < items.length ? state2.current + 1 : 0;
       }
-      animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback2, state.interval);
+      animateViewport(state2.current, "autoplay", circularEnabled.value ? 1 : 0);
+      timer = setTimeout(callback2, state2.interval);
     };
-    if (!(invalid || items.length <= state.displayMultipleItems)) {
-      timer = setTimeout(callback2, state.interval);
+    if (!(invalid || items.length <= state2.displayMultipleItems)) {
+      timer = setTimeout(callback2, state2.interval);
     }
   }
   function resetLayout() {
@@ -12307,7 +12333,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     }
     viewportMoveRatio = 1;
     const slideFrameEl = slideFrameRef.value;
-    if (state.displayMultipleItems === 1 && items.length) {
+    if (state2.displayMultipleItems === 1 && items.length) {
       const itemRect = items[0].getBoundingClientRect();
       const slideFrameRect = slideFrameEl.getBoundingClientRect();
       viewportMoveRatio = itemRect.width / slideFrameRect.width;
@@ -12317,10 +12343,10 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     }
     const position = viewportPosition;
     viewportPosition = -2;
-    const current = state.current;
+    const current = state2.current;
     if (current >= 0) {
       invalid = false;
-      if (state.userTracking) {
+      if (state2.userTracking) {
         updateViewport(position + current - contentTrackViewport);
         contentTrackViewport = current;
       } else {
@@ -12331,7 +12357,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       }
     } else {
       invalid = true;
-      updateViewport(-state.displayMultipleItems - 1);
+      updateViewport(-state2.displayMultipleItems - 1);
     }
   }
   watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
@@ -12349,13 +12375,13 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       current = Math.round(props2.current) || 0;
     }
     current = current < 0 ? 0 : current;
-    if (state.current !== current) {
+    if (state2.current !== current) {
       currentChangeSource = "";
-      state.current = current;
+      state2.current = current;
     }
   });
-  watch([() => props2.vertical, () => circularEnabled.value, () => state.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
-  watch(() => state.interval, () => {
+  watch([() => props2.vertical, () => circularEnabled.value, () => state2.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+  watch(() => state2.interval, () => {
     if (timer) {
       cancelSchedule();
       scheduleAutoplay();
@@ -12371,19 +12397,19 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     }
     const item = items[current];
     if (item) {
-      const currentItemId = state.currentItemId = item.getItemId();
+      const currentItemId = state2.currentItemId = item.getItemId();
       trigger("change", {}, {
-        current: state.current,
+        current: state2.current,
         currentItemId,
         source
       });
     }
   }
-  watch(() => state.current, (val, oldVal) => {
+  watch(() => state2.current, (val, oldVal) => {
     currentChanged(val, oldVal);
     emit2("update:current", val);
   });
-  watch(() => state.currentItemId, (val) => {
+  watch(() => state2.currentItemId, (val) => {
     emit2("update:currentItemId", val);
   });
   function inintAutoplay(enable) {
@@ -12393,8 +12419,8 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       cancelSchedule();
     }
   }
-  watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
-  inintAutoplay(props2.autoplay && !state.userTracking);
+  watch(() => props2.autoplay && !state2.userTracking, inintAutoplay);
+  inintAutoplay(props2.autoplay && !state2.userTracking);
   onMounted(() => {
     let userDirectionChecked = false;
     let contentTrackSpeed = 0;
@@ -12410,7 +12436,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       const oldContentTrackT = contentTrackT;
       contentTrackT = Date.now();
       const length = swiperContexts.value.length;
-      const other = length - state.displayMultipleItems;
+      const other = length - state2.displayMultipleItems;
       function calc2(val) {
         return 0.5 - 0.25 / (val + 0.5);
       }
@@ -12440,7 +12466,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       }
     }
     function handleTrackEnd(isCancel) {
-      state.userTracking = false;
+      state2.userTracking = false;
       const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
       let n = 0;
       if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
@@ -12451,7 +12477,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
         updateViewport(contentTrackViewport);
       } else {
         currentChangeSource = "touch";
-        state.current = current;
+        state2.current = current;
         animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
       }
     }
@@ -12461,7 +12487,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
       }
       if (!invalid) {
         if (event.detail.state === "start") {
-          state.userTracking = true;
+          state2.userTracking = true;
           userDirectionChecked = false;
           return handleTrackStart();
         }
@@ -12471,19 +12497,19 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
         if (event.detail.state === "cancel") {
           return handleTrackEnd(true);
         }
-        if (state.userTracking) {
+        if (state2.userTracking) {
           if (!userDirectionChecked) {
             userDirectionChecked = true;
             const t2 = Math.abs(event.detail.dx);
             const n = Math.abs(event.detail.dy);
             if (t2 >= n && props2.vertical) {
-              state.userTracking = false;
+              state2.userTracking = false;
             } else {
               if (t2 <= n && !props2.vertical) {
-                state.userTracking = false;
+                state2.userTracking = false;
               }
             }
-            if (!state.userTracking) {
+            if (!state2.userTracking) {
               if (props2.autoplay) {
                 scheduleAutoplay();
               }
@@ -12501,15 +12527,15 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     cancelAnimationFrame(animationFrame);
   });
   function onSwiperDotClick(index2) {
-    animateViewport(state.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
+    animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
   }
   return {
     onSwiperDotClick
   };
 }
-var index$b = /* @__PURE__ */ defineComponent({
+var Swiper = /* @__PURE__ */ defineComponent({
   name: "Swiper",
-  props: props$c,
+  props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -12519,7 +12545,7 @@ var index$b = /* @__PURE__ */ defineComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
     const slideFrameRef = ref(null);
-    const state = useState(props2);
+    const state2 = useState(props2);
     const slidesStyle = computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -12538,7 +12564,7 @@ var index$b = /* @__PURE__ */ defineComponent({
       return style;
     });
     const slideFrameStyle = computed(() => {
-      const value = Math.abs(100 / state.displayMultipleItems) + "%";
+      const value = Math.abs(100 / state2.displayMultipleItems) + "%";
       return {
         width: props2.vertical ? "100%" : value,
         height: !props2.vertical ? "100%" : value
@@ -12573,46 +12599,46 @@ var index$b = /* @__PURE__ */ defineComponent({
     provide("removeSwiperContext", removeSwiperContext);
     const {
       onSwiperDotClick
-    } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
+    } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
     return () => {
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
       return createVNode("uni-swiper", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode("div", {
-        "ref": slidesWrapperRef,
-        "class": "uni-swiper-wrapper"
+        ref: slidesWrapperRef,
+        class: "uni-swiper-wrapper"
       }, [createVNode("div", {
-        "class": "uni-swiper-slides",
-        "style": slidesStyle.value
+        class: "uni-swiper-slides",
+        style: slidesStyle.value
       }, [createVNode("div", {
-        "ref": slideFrameRef,
-        "class": "uni-swiper-slide-frame",
-        "style": slideFrameStyle.value
+        ref: slideFrameRef,
+        class: "uni-swiper-slide-frame",
+        style: slideFrameStyle.value
       }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
-        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+        class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
       }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
-        "onClick": () => onSwiperDotClick(index2),
-        "class": {
+        onClick: () => onSwiperDotClick(index2),
+        class: {
           "uni-swiper-dot": true,
-          "uni-swiper-dot-active": index2 < state.current + state.displayMultipleItems && index2 >= state.current || index2 < state.current + state.displayMultipleItems - array.length
+          "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
         },
-        "style": {
-          background: index2 === state.current ? props2.indicatorActiveColor : props2.indicatorColor
+        style: {
+          background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
       }, null, 14, ["onClick"]))], 2)], 512)], 512);
     };
   }
 });
-const props$b = {
+const props$d = {
   itemId: {
     type: String,
     default: ""
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var SwiperItem = /* @__PURE__ */ defineComponent({
   name: "SwiperItem",
-  props: props$b,
+  props: props$d,
   setup(props2, {
     slots
   }) {
@@ -12651,8 +12677,8 @@ var index$a = /* @__PURE__ */ defineComponent({
     });
     return () => {
       return createVNode("uni-swiper-item", {
-        "ref": rootRef,
-        "style": {
+        ref: rootRef,
+        style: {
           position: "absolute",
           width: "100%",
           height: "100%"
@@ -12661,7 +12687,7 @@ var index$a = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$a = {
+const props$c = {
   name: {
     type: String,
     default: ""
@@ -12689,7 +12715,7 @@ const props$a = {
 };
 var index$9 = /* @__PURE__ */ defineComponent({
   name: "Switch",
-  props: props$a,
+  props: props$c,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -12728,19 +12754,19 @@ var index$9 = /* @__PURE__ */ defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-switch", mergeProps({
-        "ref": rootRef
+        ref: rootRef
       }, booleanAttrs, {
-        "onClick": _onClick
+        onClick: _onClick
       }), [createVNode("div", {
-        "class": "uni-switch-wrapper"
+        class: "uni-switch-wrapper"
       }, [withDirectives(createVNode("div", {
-        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
+        class: ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+        style: {
           backgroundColor: switchChecked.value ? color : "#DFDFDF",
           borderColor: switchChecked.value ? color : "#DFDFDF"
         }
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
-        "class": "uni-checkbox-input"
+        class: "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
     };
   }
@@ -12834,12 +12860,12 @@ var index$8 = /* @__PURE__ */ defineComponent({
         });
       }
       return createVNode("uni-text", {
-        "selectable": props2.selectable
+        selectable: props2.selectable
       }, [createVNode("span", null, children)], 8, ["selectable"]);
     };
   }
 });
-const props$9 = /* @__PURE__ */ Object.assign({}, props$l, {
+const props$b = /* @__PURE__ */ Object.assign({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12855,7 +12881,7 @@ const props$9 = /* @__PURE__ */ Object.assign({}, props$l, {
 });
 var index$7 = /* @__PURE__ */ defineComponent({
   name: "Textarea",
-  props: props$9,
+  props: props$b,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -12863,12 +12889,12 @@ var index$7 = /* @__PURE__ */ defineComponent({
     const rootRef = ref(null);
     const {
       fieldRef,
-      state,
+      state: state2,
       scopedAttrsState,
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state.value.split("\n"));
+    const valueCompute = computed(() => state2.value.split("\n"));
     const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
     const heightRef = ref(0);
     const lineRef = ref(null);
@@ -12896,7 +12922,7 @@ var index$7 = /* @__PURE__ */ defineComponent({
     }
     function confirm(event) {
       trigger("confirm", event, {
-        value: state.value
+        value: state2.value
       });
     }
     function onKeyDownEnter(event) {
@@ -12921,54 +12947,54 @@ var index$7 = /* @__PURE__ */ defineComponent({
     const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
-        "ref": fieldRef,
-        "value": state.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "maxlength": state.maxlength,
-        "class": {
+        ref: fieldRef,
+        value: state2.value,
+        tabindex: "-1",
+        readonly: !!props2.disabled,
+        maxlength: state2.maxlength,
+        class: {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
-        "style": {
+        style: {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        "onFocus": (event) => event.target.blur()
+        onFocus: (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
-        "ref": fieldRef,
-        "value": state.value,
-        "disabled": !!props2.disabled,
-        "maxlength": state.maxlength,
-        "enterkeyhint": props2.confirmType,
-        "class": {
+        ref: fieldRef,
+        value: state2.value,
+        disabled: !!props2.disabled,
+        maxlength: state2.maxlength,
+        enterkeyhint: props2.confirmType,
+        class: {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
-        "style": {
+        style: {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
+        onKeydown: onKeyDownEnter,
+        onKeyup: onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
       return createVNode("uni-textarea", {
-        "ref": rootRef
+        ref: rootRef
       }, [createVNode("div", {
-        "class": "uni-textarea-wrapper"
+        class: "uni-textarea-wrapper"
       }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-textarea-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !state.value.length]]), createVNode("div", {
-        "ref": lineRef,
-        "class": "uni-textarea-line"
+        style: props2.placeholderStyle,
+        class: ["uni-textarea-placeholder", props2.placeholderClass]
+      }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
+        ref: lineRef,
+        class: "uni-textarea-line"
       }, [" "], 512), createVNode("div", {
-        "class": "uni-textarea-compute"
+        class: "uni-textarea-compute"
       }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": onResize
+        initial: true,
+        onResize
       }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": () => false,
-        "class": "uni-input-form"
+        action: "",
+        onSubmit: () => false,
+        class: "uni-input-form"
       }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
     };
   }
@@ -12987,7 +13013,7 @@ var index$6 = /* @__PURE__ */ defineComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-view", mergeProps({
-          "class": hovering.value ? hoverClass : ""
+          class: hovering.value ? hoverClass : ""
         }, binding), [slots.default && slots.default()], 16);
       }
       return createVNode("uni-view", null, [slots.default && slots.default()]);
@@ -13090,7 +13116,7 @@ function formatTime(val) {
   return str;
 }
 function useGesture(props2, videoRef, fullscreenState) {
-  const state = reactive({
+  const state2 = reactive({
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
@@ -13105,9 +13131,9 @@ function useGesture(props2, videoRef, fullscreenState) {
     const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
     touchStartOrigin.y = toucher.pageY;
-    state.gestureType = "none";
-    state.volumeOld = 0;
-    state.currentTimeOld = state.currentTimeNew = 0;
+    state2.gestureType = "none";
+    state2.volumeOld = 0;
+    state2.currentTimeOld = state2.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -13117,7 +13143,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     if (fullscreenState.fullscreen) {
       stop();
     }
-    const gestureType = state.gestureType;
+    const gestureType = state2.gestureType;
     if (gestureType === "stop") {
       return;
     }
@@ -13136,21 +13162,21 @@ function useGesture(props2, videoRef, fullscreenState) {
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
       if (!props2.enableProgressGesture) {
-        state.gestureType = "stop";
+        state2.gestureType = "stop";
         return;
       }
-      state.gestureType = "progress";
-      state.currentTimeOld = state.currentTimeNew = video.currentTime;
+      state2.gestureType = "progress";
+      state2.currentTimeOld = state2.currentTimeNew = video.currentTime;
       if (!fullscreenState.fullscreen) {
         stop();
       }
     } else {
       if (!props2.pageGesture) {
-        state.gestureType = "stop";
+        state2.gestureType = "stop";
         return;
       }
-      state.gestureType = "volume";
-      state.volumeOld = video.volume;
+      state2.gestureType = "volume";
+      state2.volumeOld = video.volume;
       if (!fullscreenState.fullscreen) {
         stop();
       }
@@ -13158,29 +13184,29 @@ function useGesture(props2, videoRef, fullscreenState) {
   }
   function onTouchend(event) {
     const video = videoRef.value;
-    if (state.gestureType !== "none" && state.gestureType !== "stop") {
+    if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
       event.stopPropagation();
       event.preventDefault();
     }
-    if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
-      video.currentTime = state.currentTimeNew;
+    if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
+      video.currentTime = state2.currentTimeNew;
     }
-    state.gestureType = "none";
+    state2.gestureType = "none";
   }
   function changeProgress(x) {
     const video = videoRef.value;
     const duration = video.duration;
-    let currentTimeNew = x / 600 * duration + state.currentTimeOld;
+    let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
     } else if (currentTimeNew > duration) {
       currentTimeNew = duration;
     }
-    state.currentTimeNew = currentTimeNew;
+    state2.currentTimeNew = currentTimeNew;
   }
   function changeVolume(y) {
     const video = videoRef.value;
-    const valueOld = state.volumeOld;
+    const valueOld = state2.volumeOld;
     let value;
     if (typeof valueOld === "number") {
       value = valueOld - y / 200;
@@ -13190,18 +13216,18 @@ function useGesture(props2, videoRef, fullscreenState) {
         value = 1;
       }
       video.volume = value;
-      state.volumeNew = value;
+      state2.volumeNew = value;
     }
   }
   return {
-    state,
+    state: state2,
     onTouchstart,
     onTouchmove,
     onTouchend
   };
 }
 function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
-  const state = reactive({
+  const state2 = reactive({
     fullscreen: false
   });
   const isSafari = /^Apple/.test(navigator.vendor);
@@ -13212,7 +13238,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
     emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
   }
   function emitFullscreenChange(val) {
-    state.fullscreen = val;
+    state2.fullscreen = val;
     trigger("fullscreenchange", {}, {
       fullScreen: val,
       direction: "vertical"
@@ -13262,7 +13288,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
   }
   onBeforeUnmount(exitFullScreen);
   return {
-    state,
+    state: state2,
     onFullscreenChange,
     emitFullscreenChange,
     toggleFullscreen,
@@ -13273,7 +13299,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
 function useVideo(props2, attrs2, trigger) {
   const videoRef = ref(null);
   const src = computed(() => getRealPath(props2.src));
-  const state = reactive({
+  const state2 = reactive({
     start: false,
     src,
     playing: false,
@@ -13283,10 +13309,10 @@ function useVideo(props2, attrs2, trigger) {
     buffered: 0
   });
   watch(() => src.value, () => {
-    state.playing = false;
-    state.currentTime = 0;
+    state2.playing = false;
+    state2.currentTime = 0;
   });
-  watch(() => state.buffered, (buffered) => {
+  watch(() => state2.buffered, (buffered) => {
     trigger("progress", {}, {
       buffered
     });
@@ -13294,7 +13320,7 @@ function useVideo(props2, attrs2, trigger) {
   function onDurationChange({
     target
   }) {
-    state.duration = target.duration;
+    state2.duration = target.duration;
   }
   function onLoadedMetadata($event) {
     const initialTime = Number(props2.initialTime) || 0;
@@ -13313,32 +13339,32 @@ function useVideo(props2, attrs2, trigger) {
     const video = $event.target;
     const buffered = video.buffered;
     if (buffered.length) {
-      state.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+      state2.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
     }
   }
   function onWaiting($event) {
     trigger("waiting", $event, {});
   }
   function onVideoError($event) {
-    state.playing = false;
+    state2.playing = false;
     trigger("error", $event, {});
   }
   function onPlay($event) {
-    state.start = true;
-    state.playing = true;
+    state2.start = true;
+    state2.playing = true;
     trigger("play", $event, {});
   }
   function onPause($event) {
-    state.playing = false;
+    state2.playing = false;
     trigger("pause", $event, {});
   }
   function onEnded($event) {
-    state.playing = false;
+    state2.playing = false;
     trigger("ended", $event, {});
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state.currentTime = video.currentTime;
+    const currentTime = state2.currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -13346,7 +13372,7 @@ function useVideo(props2, attrs2, trigger) {
   }
   function toggle() {
     const video = videoRef.value;
-    if (state.playing) {
+    if (state2.playing) {
       video.pause();
     } else {
       video.play();
@@ -13354,7 +13380,7 @@ function useVideo(props2, attrs2, trigger) {
   }
   function play() {
     const video = videoRef.value;
-    state.start = true;
+    state2.start = true;
     video.play();
   }
   function pause() {
@@ -13374,7 +13400,7 @@ function useVideo(props2, attrs2, trigger) {
   }
   return {
     videoRef,
-    state,
+    state: state2,
     play,
     pause,
     seek,
@@ -13397,7 +13423,7 @@ function useControls(props2, videoState, seek) {
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
-  const state = reactive({
+  const state2 = reactive({
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -13420,12 +13446,12 @@ function useControls(props2, videoState, seek) {
     }
   }
   function toggleControls() {
-    state.controlsVisible = !state.controlsVisible;
+    state2.controlsVisible = !state2.controlsVisible;
   }
   let hideTiming;
   function autoHideStart() {
     hideTiming = setTimeout(() => {
-      state.controlsVisible = false;
+      state2.controlsVisible = false;
     }, 3e3);
   }
   function autoHideEnd() {
@@ -13439,7 +13465,7 @@ function useControls(props2, videoState, seek) {
       clearTimeout(hideTiming);
     }
   });
-  watch(() => state.controlsShow && videoState.playing && !state.controlsTouching, (val) => {
+  watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
     if (val) {
       autoHideStart();
     } else {
@@ -13449,7 +13475,7 @@ function useControls(props2, videoState, seek) {
   watch([() => videoState.currentTime, () => {
     props2.duration;
   }], function updateProgress() {
-    if (!state.touching) {
+    if (!state2.touching) {
       videoState.progress = videoState.currentTime / videoState.duration * 100;
     }
   });
@@ -13482,32 +13508,32 @@ function useControls(props2, videoState, seek) {
       event.stopPropagation();
     }
     function touchend(event) {
-      state.controlsTouching = false;
-      if (state.touching) {
+      state2.controlsTouching = false;
+      if (state2.touching) {
         ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
         if (!moveOnce) {
           event.preventDefault();
           event.stopPropagation();
           seek(videoState.duration * videoState.progress / 100);
         }
-        state.touching = false;
+        state2.touching = false;
       }
     }
     ball.addEventListener("touchstart", (event) => {
-      state.controlsTouching = true;
+      state2.controlsTouching = true;
       const toucher = event.targetTouches[0];
       originX = toucher.pageX;
       originY = toucher.pageY;
       originProgress = videoState.progress;
       moveOnce = true;
-      state.touching = true;
+      state2.touching = true;
       ball.addEventListener("touchmove", touchmove2, passiveOptions2);
     });
     ball.addEventListener("touchend", touchend);
     ball.addEventListener("touchcancel", touchend);
   });
   return {
-    state,
+    state: state2,
     progressRef,
     ballRef,
     clickProgress,
@@ -13518,7 +13544,7 @@ function useControls(props2, videoState, seek) {
 }
 function useDanmu(props2, videoState) {
   const danmuRef = ref(null);
-  const state = reactive({
+  const state2 = reactive({
     enable: Boolean(props2.enableDanmu)
   });
   let danmuIndex = {
@@ -13530,7 +13556,7 @@ function useDanmu(props2, videoState) {
     return (a2.time || 0) - (b.time || 0);
   });
   function toggleDanmu() {
-    state.enable = !state.enable;
+    state2.enable = !state2.enable;
   }
   function updateDanmu(event) {
     const video = event.target;
@@ -13545,7 +13571,7 @@ function useDanmu(props2, videoState) {
         const element = danmuList[index2];
         if (currentTime >= (element.time || 0)) {
           newDanmuIndex.index = index2;
-          if (videoState.playing && state.enable) {
+          if (videoState.playing && state2.enable) {
             playDanmu(element);
           }
         } else {
@@ -13588,7 +13614,7 @@ function useDanmu(props2, videoState) {
     });
   }
   return {
-    state,
+    state: state2,
     danmuRef,
     updateDanmu,
     toggleDanmu,
@@ -13623,7 +13649,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   });
 }
-const props$8 = {
+const props$a = {
   id: {
     type: String,
     default: ""
@@ -13709,7 +13735,7 @@ const props$8 = {
 };
 var index$5 = /* @__PURE__ */ defineComponent({
   name: "Video",
-  props: props$8,
+  props: props$a,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -13780,149 +13806,149 @@ var index$5 = /* @__PURE__ */ defineComponent({
     useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
       return createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id
+        ref: rootRef,
+        id: props2.id
       }, [createVNode("div", {
-        "ref": containerRef,
-        "class": "uni-video-container",
-        "onTouchstart": onTouchstart,
-        "onTouchend": onTouchend,
-        "onTouchmove": onTouchmove,
-        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
-        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+        ref: containerRef,
+        class: "uni-video-container",
+        onTouchstart,
+        onTouchend,
+        onTouchmove,
+        onFullscreenchange: withModifiers(onFullscreenChange, ["stop"]),
+        onWebkitfullscreenchange: withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
       }, [createVNode("video", mergeProps({
-        "ref": videoRef,
-        "style": {
+        ref: videoRef,
+        style: {
           "object-fit": props2.objectFit
         },
-        "muted": !!props2.muted,
-        "loop": !!props2.loop,
-        "src": videoState.src,
-        "poster": props2.poster,
-        "autoplay": !!props2.autoplay
+        muted: !!props2.muted,
+        loop: !!props2.loop,
+        src: videoState.src,
+        poster: props2.poster,
+        autoplay: !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        class: "uni-video-video",
         "webkit-playsinline": true,
-        "playsinline": true,
-        "onClick": toggleControls,
-        "onDurationchange": onDurationChange,
-        "onLoadedmetadata": onLoadedMetadata,
-        "onProgress": onProgress,
-        "onWaiting": onWaiting,
-        "onError": onVideoError,
-        "onPlay": onPlay,
-        "onPause": onPause,
-        "onEnded": onEnded,
-        "onTimeupdate": (event) => {
+        playsinline: true,
+        onClick: toggleControls,
+        onDurationchange: onDurationChange,
+        onLoadedmetadata: onLoadedMetadata,
+        onProgress,
+        onWaiting,
+        onError: onVideoError,
+        onPlay,
+        onPause,
+        onEnded,
+        onTimeupdate: (event) => {
           onTimeUpdate(event);
           updateDanmu(event);
         },
-        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
-        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
-        "onWebkitendfullscreen": () => emitFullscreenChange(false),
-        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
+        onWebkitbeginfullscreen: () => emitFullscreenChange(true),
+        onX5videoenterfullscreen: () => emitFullscreenChange(true),
+        onWebkitendfullscreen: () => emitFullscreenChange(false),
+        onX5videoexitfullscreen: () => emitFullscreenChange(false)
       }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
-        "class": "uni-video-bar uni-video-bar-full",
-        "onClick": withModifiers(() => {
+        class: "uni-video-bar uni-video-bar-full",
+        onClick: withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-controls"
+        class: "uni-video-controls"
       }, [withDirectives(createVNode("div", {
-        "class": {
+        class: {
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
         },
-        "onClick": withModifiers(toggle, ["stop"])
+        onClick: withModifiers(toggle, ["stop"])
       }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
-        "class": "uni-video-current-time"
+        class: "uni-video-current-time"
       }, [formatTime(videoState.currentTime)]), createVNode("div", {
-        "ref": progressRef,
-        "class": "uni-video-progress-container",
-        "onClick": withModifiers(clickProgress, ["stop"])
+        ref: progressRef,
+        class: "uni-video-progress-container",
+        onClick: withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-progress"
+        class: "uni-video-progress"
       }, [createVNode("div", {
-        "style": {
+        style: {
           width: videoState.buffered + "%"
         },
-        "class": "uni-video-progress-buffered"
+        class: "uni-video-progress-buffered"
       }, null, 4), createVNode("div", {
-        "ref": ballRef,
-        "style": {
+        ref: ballRef,
+        style: {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        class: "uni-video-ball"
       }, [createVNode("div", {
-        "class": "uni-video-inner"
+        class: "uni-video-inner"
       }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-video-duration"
+        class: "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
-        "class": {
+        class: {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
-        "onClick": withModifiers(toggleDanmu, ["stop"])
+        onClick: withModifiers(toggleDanmu, ["stop"])
       }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
-        "class": {
+        class: {
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
-        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+        onClick: withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
       }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
-        "ref": danmuRef,
-        "style": "z-index: 0;",
-        "class": "uni-video-danmu"
+        ref: danmuRef,
+        style: "z-index: 0;",
+        class: "uni-video-danmu"
       }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
-        "class": "uni-video-cover",
-        "onClick": withModifiers(() => {
+        class: "uni-video-cover",
+        onClick: withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
-        "onClick": withModifiers(play, ["stop"])
+        class: "uni-video-cover-play-button",
+        onClick: withModifiers(play, ["stop"])
       }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
+        class: "uni-video-cover-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
-        "class": {
+        class: {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
         }
       }, [createVNode("div", {
-        "class": "uni-video-toast-title"
+        class: "uni-video-toast-title"
       }, [t2("uni.video.volume")]), createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
+        class: "uni-video-toast-icon",
+        width: "200px",
+        height: "200px",
+        viewBox: "0 0 1024 1024",
+        version: "1.1",
+        xmlns: "http://www.w3.org/2000/svg"
       }, [createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+        d: "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
       }, null)]), createVNode("div", {
-        "class": "uni-video-toast-value"
+        class: "uni-video-toast-value"
       }, [createVNode("div", {
-        "style": {
+        style: {
           width: gestureState.volumeNew * 100 + "%"
         },
-        "class": "uni-video-toast-value-content"
+        class: "uni-video-toast-value-content"
       }, [createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
+        class: "uni-video-toast-volume-grids"
       }, [renderList(10, () => createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
+        class: "uni-video-toast-volume-grids-item"
       }, null))])], 4)])], 2), createVNode("div", {
-        "class": {
+        class: {
           "uni-video-toast": true,
           "uni-video-toast-progress": gestureState.gestureType === "progress"
         }
       }, [createVNode("div", {
-        "class": "uni-video-toast-title"
+        class: "uni-video-toast-title"
       }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
-        "class": "uni-video-slots"
+        class: "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
     };
   }
 });
-const props$7 = {
+const props$9 = {
   src: {
     type: String,
     default: ""
@@ -13931,7 +13957,7 @@ const props$7 = {
 var index$4 = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$7,
+  props: props$9,
   setup(props2, {
     attrs: attrs2
   }) {
@@ -13956,15 +13982,15 @@ var index$4 = /* @__PURE__ */ defineComponent({
     });
     return () => {
       return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
-        "ref": rootRef
+        ref: rootRef
       }), [createVNode(ResizeSensor, {
-        "onResize": _resize
+        onResize: _resize
       }, null, 8, ["onResize"])], 16), createVNode(Teleport, {
-        "to": "body"
+        to: "body"
       }, {
         default: () => [createVNode("iframe", mergeProps({
-          "ref": iframeRef,
-          "src": getRealPath(props2.src)
+          ref: iframeRef,
+          src: getRealPath(props2.src)
         }, $attrs.value), null, 16, ["src"])]
       })]);
     };
@@ -14137,7 +14163,7 @@ function loadMaps(callback2) {
     document.body.appendChild(script);
   }
 }
-const props$6 = {
+const props$8 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14201,7 +14227,7 @@ const props$6 = {
 };
 var MapMarker = /* @__PURE__ */ defineComponent({
   name: "MapMarker",
-  props: props$6,
+  props: props$8,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14412,7 +14438,7 @@ var MapMarker = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$5 = {
+const props$7 = {
   points: {
     type: Array,
     require: true
@@ -14458,7 +14484,7 @@ const props$5 = {
 };
 var MapPolyline = /* @__PURE__ */ defineComponent({
   name: "MapPolyline",
-  props: props$5,
+  props: props$7,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14511,7 +14537,7 @@ var MapPolyline = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$4 = {
+const props$6 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14543,7 +14569,7 @@ const props$4 = {
 };
 var MapCircle = /* @__PURE__ */ defineComponent({
   name: "MapCircle",
-  props: props$4,
+  props: props$6,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14587,7 +14613,7 @@ var MapCircle = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$3 = {
+const props$5 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14607,7 +14633,7 @@ const props$3 = {
 };
 var MapControl = /* @__PURE__ */ defineComponent({
   name: "MapControl",
-  props: props$3,
+  props: props$5,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -15488,6 +15514,278 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
   });
   imageInput.click();
 }, ChooseImageProtocol, ChooseImageOptions);
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  enter: ["Enter"]
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
+    if (res) {
+      key.value = res;
+    }
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode("div", {class: "uni-mask"}, null, -1);
+function createRootApp(component, rootState, callback2) {
+  const onClose = (...args) => (rootState.visible = false, callback2.apply(null, args));
+  return createApp(defineComponent({
+    setup() {
+      return () => (openBlock(), createBlock(component, mergeProps({
+        onClose
+      }, rootState)));
+    }
+  }));
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const {key, disable} = useKeyboard();
+  watch(() => props2.visible, (value) => visible.value = value);
+  watch(() => visible.value, (value) => disable.value = !value);
+  watchEffect(() => {
+    const {value} = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
+const props$4 = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+var ImageView = /* @__PURE__ */ defineComponent({
+  name: "ImageView",
+  props: props$4,
+  setup(props2) {
+    const state2 = reactive({
+      direction: "none"
+    });
+    let scale = 1;
+    let imgWidth = 0;
+    let imgHeight = 0;
+    let width = 0;
+    let height = 0;
+    function onScale({
+      detail
+    }) {
+      scale = detail.scale;
+    }
+    function onImgLoad(event) {
+      const target = event.target;
+      const rect = target.getBoundingClientRect();
+      imgWidth = rect.width;
+      imgHeight = rect.height;
+    }
+    function onTouchStart(event) {
+      const target = event.target;
+      const rect = target.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      checkDirection(event);
+    }
+    function onTouchEnd(event) {
+      const horizontal = scale * imgWidth > width;
+      const vertical = scale * imgHeight > height;
+      if (horizontal && vertical) {
+        state2.direction = "all";
+      } else if (horizontal) {
+        state2.direction = "horizontal";
+      } else if (vertical) {
+        state2.direction = "vertical";
+      } else {
+        state2.direction = "none";
+      }
+      checkDirection(event);
+    }
+    function checkDirection(event) {
+      if (state2.direction === "all" || state2.direction === "horizontal") {
+        event.stopPropagation();
+      }
+    }
+    return () => {
+      const viewStyle = {
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "100%",
+        height: "100%"
+      };
+      return createVNode(MovableArea, {
+        style: viewStyle,
+        onTouchstart: withWebEvent(onTouchStart),
+        onTouchmove: withWebEvent(checkDirection),
+        onTouchend: withWebEvent(onTouchEnd)
+      }, {
+        default: () => [createVNode(MovableView, {
+          style: viewStyle,
+          direction: state2.direction,
+          inertia: true,
+          scale: true,
+          "scale-min": "1",
+          "scale-max": "4",
+          onScale
+        }, {
+          default: () => [createVNode("img", {
+            src: props2.src,
+            style: {
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              maxHeight: "100%",
+              maxWidth: "100%"
+            },
+            onLoad: onImgLoad
+          }, null, 40, ["src", "onLoad"])]
+        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
+      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
+    };
+  }
+});
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const props$3 = {
+  urls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  }
+};
+function getIndex(props2) {
+  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
+  index2 = index2 < 0 ? 0 : index2;
+  return index2;
+}
+var ImagePreview = /* @__PURE__ */ defineComponent({
+  props: props$3,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const indexRef = ref(getIndex(props2));
+    watch(() => props2.current, () => indexRef.value = getIndex(props2));
+    let preventDefault;
+    onMounted(() => {
+      const el = rootRef.value;
+      const MAX_MOVE = 20;
+      let x = 0;
+      let y = 0;
+      el.addEventListener("mousedown", (event) => {
+        preventDefault = false;
+        x = event.clientX;
+        y = event.clientY;
+      });
+      el.addEventListener("mouseup", (event) => {
+        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
+          preventDefault = true;
+        }
+      });
+    });
+    function onClick() {
+      if (!preventDefault) {
+        nextTick(() => {
+          emit2("close");
+        });
+      }
+    }
+    function onChange2(event) {
+      indexRef.value = event.detail.current;
+    }
+    return () => {
+      let _slot;
+      return createVNode("div", {
+        ref: rootRef,
+        style: {
+          display: "block",
+          position: "fixed",
+          left: "0",
+          top: "0",
+          width: "100%",
+          height: "100%",
+          zIndex: 999,
+          background: "rgba(0,0,0,0.8)"
+        },
+        onClick
+      }, [createVNode(Swiper, {
+        current: indexRef.value,
+        onChange: onChange2,
+        "indicator-dots": false,
+        autoplay: false,
+        style: {
+          position: "absolute",
+          left: "0",
+          top: "0",
+          width: "100%",
+          height: "100%"
+        }
+      }, _isSlot(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+        default: () => [createVNode(ImageView, {
+          src
+        }, null, 8, ["src"])]
+      }))) ? _slot : {
+        default: () => [_slot],
+        _: 1
+      }, 8, ["current", "onChange"])], 8, ["onClick"]);
+    };
+  }
+});
+let state = null;
+const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {resolve}) => {
+  if (!state) {
+    state = reactive(args);
+    nextTick(() => {
+      const app = createRootApp(ImagePreview, state, () => {
+        state = null;
+        nextTick(() => {
+          app.unmount();
+        });
+      });
+      app.mount(ensureRoot("u-a-p"));
+    });
+  } else {
+    extend(state, args);
+  }
+  resolve();
+}, PreviewImageProtocol, PreviewImageOptions);
 let videoInput = null;
 const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {resolve, reject}) => {
   if (videoInput) {
@@ -16184,72 +16482,6 @@ function getTabBarPageId(url) {
 const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  enter: ["Enter"]
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
-    if (res) {
-      key.value = res;
-    }
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-const VNODE_MASK = /* @__PURE__ */ createVNode("div", {class: "uni-mask"}, null, -1);
-function createRootApp(component, rootState, callback2) {
-  const onClose = (...args) => (rootState.visible = false, callback2.apply(null, args));
-  return createApp(defineComponent({
-    setup() {
-      return () => (openBlock(), createBlock(component, mergeProps({
-        onClose
-      }, rootState)));
-    }
-  }));
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const {key, disable} = useKeyboard();
-  watch(() => props2.visible, (value) => visible.value = value);
-  watch(() => visible.value, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {value} = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
 const props$2 = {
   title: {
     type: String,
@@ -16304,35 +16536,35 @@ var modal = /* @__PURE__ */ defineComponent({
         confirmColor
       } = props2;
       return createVNode(Transition, {
-        "name": "uni-fade"
+        name: "uni-fade"
       }, {
         default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
+          onTouchmove: onEventPrevent
         }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
+          class: "uni-modal"
         }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
+          class: "uni-modal__hd"
         }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
+          class: "uni-modal__title",
+          textContent: title
         }, null, 8, ["textContent"])]), createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
+          class: "uni-modal__bd",
+          onTouchmovePassive: onEventStop,
+          textContent: content
         }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
+          class: "uni-modal__ft"
         }, [showCancel && createVNode("div", {
-          "style": {
+          style: {
             color: props2.cancelColor
           },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
+          class: "uni-modal__btn uni-modal__btn_default",
+          onClick: cancel
         }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
+          style: {
             color: confirmColor
           },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
+          class: "uni-modal__btn uni-modal__btn_primary",
+          onClick: confirm
         }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
       });
     };
@@ -16402,25 +16634,25 @@ var Toast = /* @__PURE__ */ defineComponent({
         image: image2
       } = props2;
       return createVNode(Transition, {
-        "name": "uni-fade"
+        name: "uni-fade"
       }, {
         default: () => [withDirectives(createVNode("uni-toast", {
           "data-duration": duration
         }, [mask ? createVNode("div", {
-          "class": "uni-mask",
-          "style": "background: transparent;",
-          "onTouchmove": onEventPrevent
+          class: "uni-mask",
+          style: "background: transparent;",
+          onTouchmove: onEventPrevent
         }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
-          "class": "uni-sample-toast"
+          class: "uni-sample-toast"
         }, [createVNode("p", {
-          "class": "uni-simple-toast__text"
+          class: "uni-simple-toast__text"
         }, [title])]) : createVNode("div", {
-          "class": "uni-toast"
+          class: "uni-toast"
         }, [image2 ? createVNode("img", {
-          "src": image2,
-          "class": ToastIconClassName
+          src: image2,
+          class: ToastIconClassName
         }, null, 10, ["src"]) : Icon.value, createVNode("p", {
-          "class": "uni-toast__content"
+          class: "uni-toast__content"
         }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
       });
     };
@@ -16430,7 +16662,7 @@ function useToastIcon(props2) {
   const Icon = computed(() => props2.icon === "success" ? createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
     class: ToastIconClassName
   }) : props2.icon === "loading" ? createVNode("i", {
-    "class": [ToastIconClassName, "uni-loading"]
+    class: [ToastIconClassName, "uni-loading"]
   }, null, 2) : null);
   return {
     Icon
@@ -16726,6 +16958,7 @@ var api = /* @__PURE__ */ Object.freeze({
   getVideoInfo,
   chooseFile,
   chooseImage,
+  previewImage,
   chooseVideo,
   request,
   downloadFile,
@@ -16770,20 +17003,20 @@ const ICON_PATH = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAAB
 var MapLocation = /* @__PURE__ */ defineComponent({
   name: "MapLocation",
   setup() {
-    const state = reactive({
+    const state2 = reactive({
       latitude: 0,
       longitude: 0,
       rotate: 0
     });
     {
       let compassChangeHandler = function(res) {
-        state.rotate = res.direction;
+        state2.rotate = res.direction;
       }, updateLocation = function() {
         getLocation({
           type: "gcj02",
           success: (res) => {
-            state.latitude = res.latitude;
-            state.longitude = res.longitude;
+            state2.latitude = res.latitude;
+            state2.longitude = res.longitude;
           },
           complete: () => {
             timer = setTimeout(updateLocation, 3e4);
@@ -16804,21 +17037,21 @@ var MapLocation = /* @__PURE__ */ defineComponent({
       const removeMapChidlContext = inject("removeMapChidlContext");
       const context = {
         id: CONTEXT_ID,
-        state
+        state: state2
       };
       addMapChidlContext(context);
       onUnmounted(() => removeMapChidlContext(context));
     }
     return () => {
-      return state.latitude ? createVNode(MapMarker, mergeProps({
-        "anchor": {
+      return state2.latitude ? createVNode(MapMarker, mergeProps({
+        anchor: {
           x: 0.5,
           y: 0.5
         },
-        "width": "44",
-        "height": "44",
-        "iconPath": ICON_PATH
-      }, state), null, 16, ["iconPath"]) : null;
+        width: "44",
+        height: "44",
+        iconPath: ICON_PATH
+      }, state2), null, 16, ["iconPath"]) : null;
     };
   }
 });
@@ -16893,7 +17126,7 @@ function useMap(props2, rootRef, emit2) {
   const mapRef = ref(null);
   let maps2;
   let map;
-  const state = reactive({
+  const state2 = reactive({
     latitude: Number(props2.latitude),
     longitude: Number(props2.longitude),
     includePoints: getPoints(props2.includePoints)
@@ -16931,16 +17164,16 @@ function useMap(props2, rootRef, emit2) {
   watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
     const latitude = Number(latitudeVlaue);
     const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
+    if (latitude !== state2.latitude || longitude !== state2.longitude) {
+      state2.latitude = latitude;
+      state2.longitude = longitude;
       if (map) {
         map.setCenter(new maps2.LatLng(latitude, longitude));
       }
     }
   });
   watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
+    state2.includePoints = getPoints(points);
     if (isBoundsReady) {
       updateBounds();
     }
@@ -16963,11 +17196,11 @@ function useMap(props2, rootRef, emit2) {
     };
   }
   function updateCenter() {
-    map.setCenter(new maps2.LatLng(state.latitude, state.longitude));
+    map.setCenter(new maps2.LatLng(state2.latitude, state2.longitude));
   }
   function updateBounds() {
     const bounds = new maps2.LatLngBounds();
-    state.includePoints.forEach(({
+    state2.includePoints.forEach(({
       latitude,
       longitude
     }) => {
@@ -16978,7 +17211,7 @@ function useMap(props2, rootRef, emit2) {
   }
   function initMap() {
     const mapEl = mapRef.value;
-    const center = new maps2.LatLng(state.latitude, state.longitude);
+    const center = new maps2.LatLng(state2.latitude, state2.longitude);
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
@@ -16995,7 +17228,7 @@ function useMap(props2, rootRef, emit2) {
       map2.setZoom(Number(scale) || 16);
     });
     onBoundsReady(() => {
-      if (state.includePoints.length) {
+      if (state2.includePoints.length) {
         updateBounds();
         updateCenter();
       }
@@ -17059,8 +17292,8 @@ function useMap(props2, rootRef, emit2) {
             }
           }
           if (latitude && longitude) {
-            state.latitude = latitude;
-            state.longitude = longitude;
+            state2.latitude = latitude;
+            state2.longitude = longitude;
             if (map) {
               map.setCenter(new maps2.LatLng(latitude, longitude));
             }
@@ -17088,7 +17321,7 @@ function useMap(props2, rootRef, emit2) {
         });
         break;
       case "includePoints":
-        state.includePoints = getPoints(data.includePoints);
+        state2.includePoints = getPoints(data.includePoints);
         if (isBoundsReady) {
           updateBounds();
         }
@@ -17136,7 +17369,7 @@ function useMap(props2, rootRef, emit2) {
   provide("addMapChidlContext", addMapChidlContext);
   provide("removeMapChidlContext", removeMapChidlContext);
   return {
-    state,
+    state: state2,
     mapRef
   };
 }
@@ -17154,15 +17387,15 @@ var index$3 = /* @__PURE__ */ defineComponent({
     } = useMap(props2, rootRef, emit2);
     return () => {
       return createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
+        ref: rootRef,
+        id: props2.id
       }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
+        ref: mapRef,
+        style: "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
-        "key": item.id
+        key: item.id
       }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+        style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
   }
@@ -17287,16 +17520,16 @@ var TabBar = /* @__PURE__ */ defineComponent({
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
       return createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
+        class: "uni-tabbar-" + tabBar2.position
       }, [createVNode("div", {
-        "class": "uni-tabbar",
-        "style": style.value
+        class: "uni-tabbar",
+        style: style.value
       }, [createVNode("div", {
-        "class": "uni-tabbar-border",
-        "style": borderStyle.value
+        class: "uni-tabbar-border",
+        style: borderStyle.value
       }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
-        "class": "uni-placeholder",
-        "style": placeholderStyle.value
+        class: "uni-placeholder",
+        style: placeholderStyle.value
       }, null, 4)], 2);
     };
   }
@@ -17418,9 +17651,9 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab) {
 }
 function createTabBarItemTsx(color, iconPath, tabBarItem, tabBar2, index2, onSwitchTab) {
   return createVNode("div", {
-    "key": index2,
-    "class": "uni-tabbar__item",
-    "onClick": onSwitchTab(tabBarItem, index2)
+    key: index2,
+    class: "uni-tabbar__item",
+    onClick: onSwitchTab(tabBarItem, index2)
   }, [createTabBarItemBdTsx(color, iconPath || "", tabBarItem, tabBar2)], 8, ["onClick"]);
 }
 function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
@@ -17428,8 +17661,8 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
     height
   } = tabBar2;
   return createVNode("div", {
-    "class": "uni-tabbar__bd",
-    "style": {
+    class: "uni-tabbar__bd",
+    style: {
       height
     }
   }, [iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
@@ -17449,10 +17682,10 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     height: iconWidth
   };
   return createVNode("div", {
-    "class": clazz2,
-    "style": style
+    class: clazz2,
+    style
   }, [type !== "midButton" && createVNode("img", {
-    "src": getRealPath(iconPath)
+    src: getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
@@ -17472,14 +17705,14 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
     marginTop: !iconPath ? "inherit" : spacing
   };
   return createVNode("div", {
-    "class": "uni-tabbar__label",
-    "style": style
+    class: "uni-tabbar__label",
+    style
   }, [text2, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
   return createVNode("div", {
-    "class": clazz2
+    class: clazz2
   }, [badge], 2);
 }
 function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, onSwitchTab) {
@@ -17490,26 +17723,26 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     iconWidth
   } = midButton;
   return createVNode("div", {
-    "key": index2,
-    "class": "uni-tabbar__item",
-    "style": {
+    key: index2,
+    class: "uni-tabbar__item",
+    style: {
       flex: "0 0 " + width,
       position: "relative"
     },
-    "onClick": onSwitchTab(midButton, index2)
+    onClick: onSwitchTab(midButton, index2)
   }, [createVNode("div", {
-    "class": "uni-tabbar__mid",
-    "style": {
+    class: "uni-tabbar__mid",
+    style: {
       width,
       height,
       backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
     }
   }, [iconPath && createVNode("img", {
-    "style": {
+    style: {
       width: iconWidth,
       height: iconWidth
     },
-    "src": getRealPath(iconPath)
+    src: getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
@@ -17529,7 +17762,7 @@ var LayoutComponent = defineComponent({
       const layoutTsx = createLayoutTsx(keepAliveRoute);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
       return createVNode("uni-app", {
-        "class": clazz2.value
+        class: clazz2.value
       }, [layoutTsx, tabBarTsx], 2);
     };
   }
@@ -17750,7 +17983,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
       const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        "class": {
+        class: {
           "uni-placeholder": true,
           "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
         }
@@ -17758,13 +17991,13 @@ var PageHead = /* @__PURE__ */ defineComponent({
       return createVNode("uni-page-head", {
         "uni-page-head-type": type
       }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
+        ref: headRef,
+        class: clazz2.value,
+        style: style.value
       }, [createVNode("div", {
-        "class": "uni-page-head-hd"
+        class: "uni-page-head-hd"
       }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
+        class: "uni-page-head-ft"
       }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
     };
   }
@@ -17776,8 +18009,8 @@ function createBackButtonTsx(pageMeta) {
   } = pageMeta;
   if (navigationBar.backButton && !isQuit) {
     return createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
+      class: "uni-page-head-btn",
+      onClick: onPageHeadBackButton
     }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)], 8, ["onClick"]);
   }
 }
@@ -17792,15 +18025,15 @@ function createButtonsTsx(btns) {
     iconStyle
   }, index2) => {
     return createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
+      key: index2,
+      class: btnClass,
+      style: btnStyle,
+      onClick,
       "badge-text": badgeText
     }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
+      class: "uni-btn-icon",
+      style: iconStyle,
+      innerHTML: btnText
     }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
   });
 }
@@ -17818,18 +18051,18 @@ function createPageHeadTitleTextTsx({
   titleImage
 }) {
   return createVNode("div", {
-    "class": "uni-page-head-bd"
+    class: "uni-page-head-bd"
   }, [createVNode("div", {
-    "style": {
+    style: {
       fontSize: titleSize,
       opacity: type === "transparent" ? 0 : 1
     },
-    "class": "uni-page-head__title"
+    class: "uni-page-head__title"
   }, [loading ? createVNode("i", {
-    "class": "uni-loading"
+    class: "uni-loading"
   }, null) : titleImage ? createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
+    src: titleImage,
+    class: "uni-page-head__title_image"
   }, null, 8, ["src"]) : titleText], 4)]);
 }
 function createPageHeadSearchInputTsx(navigationBar, {
@@ -17858,40 +18091,40 @@ function createPageHeadSearchInputTsx(navigationBar, {
   };
   const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
   return createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
+    class: "uni-page-head-search",
+    style: searchStyle
   }, [createVNode("div", {
-    "style": {
+    style: {
       color: placeholderColor
     },
-    "class": placeholderClass
+    class: placeholderClass
   }, [createVNode("div", {
-    "class": "uni-page-head-search-icon"
+    class: "uni-page-head-search-icon"
   }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
-    "disabled": true,
-    "style": {
+    disabled: true,
+    style: {
       color
     },
     "placeholder-style": {
       color: placeholderColor
     },
-    "class": "uni-page-head-search-input",
+    class: "uni-page-head-search-input",
     "confirm-type": "search",
-    "onClick": onClick
+    onClick
   }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
+    focus: autoFocus,
+    style: {
       color
     },
     "placeholder-style": {
       color: placeholderColor
     },
-    "class": "uni-page-head-search-input",
+    class: "uni-page-head-search-input",
     "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onKeyup": onKeyup
+    onFocus,
+    onBlur,
+    onInput,
+    onKeyup
   }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
 }
 function onPageHeadBackButton() {
@@ -18141,8 +18374,8 @@ function usePageRefresh(refreshRef) {
   let refreshControllerElemStyle;
   let refreshInnerElemStyle;
   useSubscribe(() => {
-    if (!state) {
-      state = REFRESHING;
+    if (!state2) {
+      state2 = REFRESHING;
       addClass();
       setTimeout(() => {
         refreshing();
@@ -18150,13 +18383,13 @@ function usePageRefresh(refreshRef) {
     }
   }, id2 + "." + API_START_PULL_DOWN_REFRESH);
   useSubscribe(() => {
-    if (state === REFRESHING) {
+    if (state2 === REFRESHING) {
       removeClass();
-      state = RESTORING;
+      state2 = RESTORING;
       addClass();
       restoring(() => {
         removeClass();
-        state = distance = offset = null;
+        state2 = distance = offset = null;
       });
     }
   }, id2 + "." + API_STOP_PULL_DOWN_REFRESH);
@@ -18169,15 +18402,15 @@ function usePageRefresh(refreshRef) {
   let touchId;
   let startY;
   let canRefresh;
-  let state;
+  let state2;
   let distance = null;
   let offset = null;
   function toggleClass(type) {
-    if (!state) {
+    if (!state2) {
       return;
     }
     if (refreshContainerElem) {
-      refreshContainerElem.classList[type]("uni-page-refresh--" + state);
+      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
     }
   }
   function addClass() {
@@ -18205,7 +18438,7 @@ function usePageRefresh(refreshRef) {
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
-    if ([ABORTING, REFRESHING, RESTORING].indexOf(state) >= 0) {
+    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
       canRefresh = false;
     } else {
       canRefresh = true;
@@ -18223,13 +18456,13 @@ function usePageRefresh(refreshRef) {
       touchId = null;
       return;
     }
-    if (deltaY < 0 && !state) {
+    if (deltaY < 0 && !state2) {
       return;
     }
     ev.preventDefault();
     if (distance === null) {
       offset = deltaY;
-      state = PULLING;
+      state2 = PULLING;
       addClass();
     }
     deltaY = deltaY - offset;
@@ -18237,11 +18470,11 @@ function usePageRefresh(refreshRef) {
       deltaY = 0;
     }
     distance = deltaY;
-    const isReached = deltaY >= range && state !== REACHED;
-    const isPulling = deltaY < range && state !== PULLING;
+    const isReached = deltaY >= range && state2 !== REACHED;
+    const isPulling = deltaY < range && state2 !== PULLING;
     if (isReached || isPulling) {
       removeClass();
-      state = state === REACHED ? PULLING : REACHED;
+      state2 = state2 === REACHED ? PULLING : REACHED;
       addClass();
     }
     pulling(deltaY);
@@ -18250,20 +18483,20 @@ function usePageRefresh(refreshRef) {
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }
-    if (state === null) {
+    if (state2 === null) {
       return;
     }
-    if (state === PULLING) {
+    if (state2 === PULLING) {
       removeClass();
-      state = ABORTING;
+      state2 = ABORTING;
       addClass();
       aborting(() => {
         removeClass();
-        state = distance = offset = null;
+        state2 = distance = offset = null;
       });
-    } else if (state === REACHED) {
+    } else if (state2 === REACHED) {
       removeClass();
-      state = REFRESHING;
+      state2 = REFRESHING;
       addClass();
       refreshing();
     }
@@ -18335,7 +18568,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     return null;
   }
   return createVNode(_sfc_main, {
-    "ref": refreshRef
+    ref: refreshRef
   }, null, 512);
 }
 var index$2 = defineComponent({
@@ -18362,8 +18595,8 @@ var index$1 = /* @__PURE__ */ defineComponent({
       t: t2
     } = useI18n();
     return () => createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
+      class: "uni-async-error",
+      onClick: reload
     }, [t2("uni.async.error")], 8, ["onClick"]);
   }
 });
@@ -18375,4 +18608,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$q as Button, _sfc_main$6 as Canvas, index$n as Checkbox, index$p as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$m as Editor, index$r as Form, index$l as Icon, index$k as Image, Input, index$o as Label, LayoutComponent, index$3 as Map, index$j as MovableArea, index$i as MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$h as PickerView, index$g as PickerViewColumn, index$f as Progress, index$d as Radio, index$e as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$c as Slider, index$b as Swiper, index$a as SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$s as plugin, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$m as Button, _sfc_main$6 as Canvas, index$j as Checkbox, index$l as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$i as Editor, index$n as Form, index$h as Icon, index$g as Image, Input, index$k as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as PickerView, index$e as PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$a as Slider, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$o as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};

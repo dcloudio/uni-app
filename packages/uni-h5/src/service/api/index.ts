@@ -31,6 +31,7 @@ export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
 export * from './media/chooseFile'
 export * from './media/chooseImage'
+export * from './media/previewImage'
 export * from './media/chooseVideo'
 
 export * from './network/request'
