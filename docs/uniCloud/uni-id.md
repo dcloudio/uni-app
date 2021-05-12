@@ -106,7 +106,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
 
-**config.json的说明**
+## config.json的说明
 
 注意：
 
