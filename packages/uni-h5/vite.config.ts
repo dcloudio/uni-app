@@ -94,7 +94,7 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
-    target: 'es2020', // keep import.meta...
+    target: FORMAT === 'cjs' ? 'modules' : 'es2020', // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,
     lib: {
