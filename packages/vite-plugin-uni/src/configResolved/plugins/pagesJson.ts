@@ -4,14 +4,14 @@ import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { parse } from 'jsonc-parser'
 import { camelize, capitalize } from '@vue/shared'
-import { normalizePagesJson } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '../..'
 import {
-  BASE_COMPONENTS_STYLE_PATH,
-  FEATURE_DEFINES,
-  H5_API_STYLE_PATH,
   H5_FRAMEWORK_STYLE_PATH,
-} from '../../utils'
+  BASE_COMPONENTS_STYLE_PATH,
+  normalizePagesJson,
+  API_STYLES,
+} from '@dcloudio/uni-cli-shared'
+import { VitePluginUniResolvedOptions } from '../..'
+import { FEATURE_DEFINES } from '../../utils'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
 
@@ -146,9 +146,15 @@ function generateCssCode(
     cssFiles.push(BASE_COMPONENTS_STYLE_PATH + 'input.css')
   }
   if (options.command === 'serve') {
-    cssFiles.push(H5_API_STYLE_PATH + 'modal.css')
-    cssFiles.push(H5_API_STYLE_PATH + 'toast.css')
-    cssFiles.push(H5_API_STYLE_PATH + 'action-sheet.css')
+    // 开发模式，自动添加所有API相关css
+    Object.keys(API_STYLES).forEach((name) => {
+      const styles = API_STYLES[name as keyof typeof API_STYLES]
+      styles.forEach((style) => {
+        if (!cssFiles.includes(style)) {
+          cssFiles.push(style)
+        }
+      })
+    })
   }
   return cssFiles.map((file) => `import '${file}'`).join('\n')
 }

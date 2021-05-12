@@ -4,15 +4,15 @@ import { createFilter } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
-import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
-
-import { UniPluginFilterOptions } from '.'
 import {
+  EXTNAME_VUE,
   H5_COMPONENTS_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
-  debugEasycom,
-  matchEasycom,
-} from '../../utils'
+  parseVueRequest,
+} from '@dcloudio/uni-cli-shared'
+
+import { UniPluginFilterOptions } from '.'
+import { debugEasycom, matchEasycom } from '../../utils'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 

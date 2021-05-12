@@ -5000,7 +5000,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("audio", {
       ref: "audio",
       loop: $props.loop,
-      style: {display: "none"}
+      style: {"display": "none"}
     }, null, 8, ["loop"]),
     createVNode("div", _hoisted_1$6, [
       createVNode("div", {
@@ -5213,12 +5213,12 @@ var index$m = /* @__PURE__ */ defineComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-button", mergeProps({
-          onClick,
-          class: hovering.value ? hoverClass : ""
+          "onClick": onClick,
+          "class": hovering.value ? hoverClass : ""
         }, binding, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
       }
       return createVNode("uni-button", mergeProps({
-        onClick
+        "onClick": onClick
       }, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
@@ -5240,12 +5240,12 @@ var ResizeSensor = /* @__PURE__ */ defineComponent({
     const update = useResizeSensorUpdate(rootRef, emit2, reset);
     useResizeSensorLifecycle(rootRef, props2, update, reset);
     return () => createVNode("uni-resize-sensor", {
-      ref: rootRef,
-      onAnimationstartOnce: update
+      "ref": rootRef,
+      "onAnimationstartOnce": update
     }, [createVNode("div", {
-      onScroll: update
+      "onScroll": update
     }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-      onScroll: update
+      "onScroll": update
     }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
   }
 });
@@ -5936,7 +5936,7 @@ const _hoisted_1$5 = {
   width: "300",
   height: "150"
 };
-const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
 function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
@@ -6028,7 +6028,7 @@ var index$l = /* @__PURE__ */ defineComponent({
     useProvideCheckGroup(props2, trigger);
     return () => {
       return createVNode("uni-checkbox-group", {
-        ref: rootRef
+        "ref": rootRef
       }, [slots.default && slots.default()], 512);
     };
   }
@@ -6104,10 +6104,10 @@ var index$k = /* @__PURE__ */ defineComponent({
       }
     });
     return () => createVNode("uni-label", {
-      class: {
+      "class": {
         "uni-label-pointer": pointer
       },
-      onClick: _onClick
+      "onClick": _onClick
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
@@ -6185,11 +6185,11 @@ var index$j = /* @__PURE__ */ defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
-        onClick: _onClick
+        "onClick": _onClick
       }), [createVNode("div", {
-        class: "uni-checkbox-wrapper"
+        "class": "uni-checkbox-wrapper"
       }, [createVNode("div", {
-        class: ["uni-checkbox-input", {
+        "class": ["uni-checkbox-input", {
           "uni-checkbox-input-disabled": props2.disabled
         }]
       }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])], 16, ["onClick"]);
@@ -7009,9 +7009,9 @@ var index$i = /* @__PURE__ */ defineComponent({
     useKeyboard$1(props2, rootRef);
     return () => {
       return createVNode("uni-editor", {
-        ref: rootRef,
-        id: props2.id,
-        class: "ql-container"
+        "ref": rootRef,
+        "id": props2.id,
+        "class": "ql-container"
       }, null, 8, ["id"]);
     };
   }
@@ -7147,14 +7147,14 @@ var index$g = /* @__PURE__ */ defineComponent({
         modeStyle
       } = state2;
       return createVNode("uni-image", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode("div", {
-        style: modeStyle
+        "style": modeStyle
       }, null, 4), imgSrc ? createVNode("img", {
-        src: imgSrc,
-        draggable: props2.draggable
+        "src": imgSrc,
+        "draggable": props2.draggable
       }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode] ? createVNode(ResizeSensor, {
-        onResize: fixSize
+        "onResize": fixSize
       }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
   }
@@ -7719,38 +7719,38 @@ var Input = /* @__PURE__ */ defineComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
-        ref: fieldRef,
-        value: state2.value,
-        tabindex: "-1",
-        readonly: !!props2.disabled,
-        type: type.value,
-        maxlength: state2.maxlength,
-        step: step.value,
-        class: "uni-input-input",
-        onFocus: (event) => event.target.blur()
+        "ref": fieldRef,
+        "value": state2.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "type": type.value,
+        "maxlength": state2.maxlength,
+        "step": step.value,
+        "class": "uni-input-input",
+        "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
-        ref: fieldRef,
-        value: state2.value,
-        disabled: !!props2.disabled,
-        type: type.value,
-        maxlength: state2.maxlength,
-        step: step.value,
-        enterkeyhint: props2.confirmType,
-        class: "uni-input-input",
-        autocomplete: "off",
-        onKeyup: onKeyUpEnter
+        "ref": fieldRef,
+        "value": state2.value,
+        "disabled": !!props2.disabled,
+        "type": type.value,
+        "maxlength": state2.maxlength,
+        "step": step.value,
+        "enterkeyhint": props2.confirmType,
+        "class": "uni-input-input",
+        "autocomplete": "off",
+        "onKeyup": onKeyUpEnter
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
       return createVNode("uni-input", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode("div", {
-        class: "uni-input-wrapper"
+        "class": "uni-input-wrapper"
       }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-input-placeholder", props2.placeholderClass]
+        "style": props2.placeholderStyle,
+        "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
-        action: "",
-        onSubmit: () => false,
-        class: "uni-input-form"
+        "action": "",
+        "onSubmit": () => false,
+        "class": "uni-input-form"
       }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
     };
   }
@@ -7822,9 +7822,9 @@ var MovableArea = /* @__PURE__ */ defineComponent({
       const defaultSlots = slots.default && slots.default();
       movableViewItems = defaultSlots || [];
       return createVNode("uni-movable-area", mergeProps({
-        ref: rootRef
+        "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-        onReize: movableAreaEvents._resize
+        "onReize": movableAreaEvents._resize
       }, null, 8, ["onReize"]), movableViewItems], 16);
     };
   }
@@ -8434,9 +8434,9 @@ var MovableView = /* @__PURE__ */ defineComponent({
     } = useMovableViewState(props2, trigger, rootRef);
     return () => {
       return createVNode("uni-movable-view", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode(ResizeSensor, {
-        onResize: setParent
+        "onResize": setParent
       }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
     };
   }
@@ -9198,14 +9198,14 @@ var index$f = /* @__PURE__ */ defineComponent({
       const defaultSlots = slots.default && slots.default();
       columnVNodes = columnVNodes = defaultSlots || [];
       return createVNode("uni-picker-view", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode(ResizeSensor, {
-        initial: true,
-        onResize: ({
+        "initial": true,
+        "onResize": ({
           height
         }) => state2.height = height
       }, null, 8, ["initial", "onResize"]), createVNode("div", {
-        class: "uni-picker-view-wrapper"
+        "class": "uni-picker-view-wrapper"
       }, [columnVNodes])], 512);
     };
   }
@@ -10061,26 +10061,26 @@ var index$e = /* @__PURE__ */ defineComponent({
       state2.length = flatVNode(defaultSlots).length;
       const padding = `${maskSize.value}px 0`;
       return createVNode("uni-picker-view-column", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode("div", {
-        onWheel: handleWheel,
-        onClick: handleTap,
-        class: "uni-picker-view-group"
+        "onWheel": handleWheel,
+        "onClick": handleTap,
+        "class": "uni-picker-view-group"
       }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        class: ["uni-picker-view-mask", pickerViewProps.maskClass],
-        style: `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
+        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
       }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        class: ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        style: pickerViewProps.indicatorStyle
+        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+        "style": pickerViewProps.indicatorStyle
       }), [createVNode(ResizeSensor, {
-        initial: true,
-        onResize: ({
+        "initial": true,
+        "onResize": ({
           height
         }) => indicatorHeight.value = height
       }, null, 8, ["initial", "onResize"])], 16), createVNode("div", {
-        ref: contentRef,
-        class: ["uni-picker-view-content", className],
-        style: {
+        "ref": contentRef,
+        "class": ["uni-picker-view-content", className],
+        "style": {
           padding
         }
       }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
@@ -10160,15 +10160,15 @@ var index$d = /* @__PURE__ */ defineComponent({
         currentPercent
       } = state2;
       return createVNode("uni-progress", {
-        class: "uni-progress"
+        "class": "uni-progress"
       }, [createVNode("div", {
-        style: outerBarStyle,
-        class: "uni-progress-bar"
+        "style": outerBarStyle,
+        "class": "uni-progress-bar"
       }, [createVNode("div", {
-        style: innerBarStyle,
-        class: "uni-progress-inner-bar"
+        "style": innerBarStyle,
+        "class": "uni-progress-inner-bar"
       }, null, 4)], 4), showInfo ? createVNode("p", {
-        class: "uni-progress-info"
+        "class": "uni-progress-info"
       }, [currentPercent + "%"]) : ""]);
     };
   }
@@ -10230,7 +10230,7 @@ var index$c = /* @__PURE__ */ defineComponent({
     useProvideRadioGroup(props2, trigger);
     return () => {
       return createVNode("uni-radio-group", {
-        ref: rootRef
+        "ref": rootRef
       }, [slots.default && slots.default()], 512);
     };
   }
@@ -10360,14 +10360,14 @@ var index$b = /* @__PURE__ */ defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
-        onClick: _onClick
+        "onClick": _onClick
       }), [createVNode("div", {
-        class: "uni-radio-wrapper"
+        "class": "uni-radio-wrapper"
       }, [createVNode("div", {
-        class: ["uni-radio-input", {
+        "class": ["uni-radio-input", {
           "uni-radio-input-disabled": props2.disabled
         }],
-        style: radioChecked.value ? checkedStyle.value : ""
+        "style": radioChecked.value ? checkedStyle.value : ""
       }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
@@ -11773,7 +11773,7 @@ const _hoisted_9 = /* @__PURE__ */ createVNode("circle", {
   cy: "50",
   r: "20",
   fill: "none",
-  style: {color: "#2bd009"},
+  style: {"color": "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
@@ -11907,28 +11907,28 @@ var index$a = /* @__PURE__ */ defineComponent({
         setBlockStyle
       } = state2;
       return createVNode("uni-slider", {
-        ref: sliderRef,
-        onClick: _onClick
+        "ref": sliderRef,
+        "onClick": _onClick
       }, [createVNode("div", {
-        class: "uni-slider-wrapper"
+        "class": "uni-slider-wrapper"
       }, [createVNode("div", {
-        class: "uni-slider-tap-area"
+        "class": "uni-slider-tap-area"
       }, [createVNode("div", {
-        style: setBgColor.value,
-        class: "uni-slider-handle-wrapper"
+        "style": setBgColor.value,
+        "class": "uni-slider-handle-wrapper"
       }, [createVNode("div", {
-        ref: sliderHandleRef,
-        style: setBlockBg.value,
-        class: "uni-slider-handle"
+        "ref": sliderHandleRef,
+        "style": setBlockBg.value,
+        "class": "uni-slider-handle"
       }, null, 4), createVNode("div", {
-        style: setBlockStyle.value,
-        class: "uni-slider-thumb"
+        "style": setBlockStyle.value,
+        "class": "uni-slider-thumb"
       }, null, 4), createVNode("div", {
-        style: setActiveColor.value,
-        class: "uni-slider-track"
+        "style": setActiveColor.value,
+        "class": "uni-slider-track"
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
-        ref: sliderValueRef,
-        class: "uni-slider-value"
+        "ref": sliderValueRef,
+        "class": "uni-slider-value"
       }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
     };
   }
@@ -12604,26 +12604,26 @@ var Swiper = /* @__PURE__ */ defineComponent({
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
       return createVNode("uni-swiper", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode("div", {
-        ref: slidesWrapperRef,
-        class: "uni-swiper-wrapper"
+        "ref": slidesWrapperRef,
+        "class": "uni-swiper-wrapper"
       }, [createVNode("div", {
-        class: "uni-swiper-slides",
-        style: slidesStyle.value
+        "class": "uni-swiper-slides",
+        "style": slidesStyle.value
       }, [createVNode("div", {
-        ref: slideFrameRef,
-        class: "uni-swiper-slide-frame",
-        style: slideFrameStyle.value
+        "ref": slideFrameRef,
+        "class": "uni-swiper-slide-frame",
+        "style": slideFrameStyle.value
       }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
-        class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
       }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
-        onClick: () => onSwiperDotClick(index2),
-        class: {
+        "onClick": () => onSwiperDotClick(index2),
+        "class": {
           "uni-swiper-dot": true,
           "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
         },
-        style: {
+        "style": {
           background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
       }, null, 14, ["onClick"]))], 2)], 512)], 512);
@@ -12677,8 +12677,8 @@ var SwiperItem = /* @__PURE__ */ defineComponent({
     });
     return () => {
       return createVNode("uni-swiper-item", {
-        ref: rootRef,
-        style: {
+        "ref": rootRef,
+        "style": {
           position: "absolute",
           width: "100%",
           height: "100%"
@@ -12754,19 +12754,19 @@ var index$9 = /* @__PURE__ */ defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-switch", mergeProps({
-        ref: rootRef
+        "ref": rootRef
       }, booleanAttrs, {
-        onClick: _onClick
+        "onClick": _onClick
       }), [createVNode("div", {
-        class: "uni-switch-wrapper"
+        "class": "uni-switch-wrapper"
       }, [withDirectives(createVNode("div", {
-        class: ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        style: {
+        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+        "style": {
           backgroundColor: switchChecked.value ? color : "#DFDFDF",
           borderColor: switchChecked.value ? color : "#DFDFDF"
         }
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
-        class: "uni-checkbox-input"
+        "class": "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
     };
   }
@@ -12860,7 +12860,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
         });
       }
       return createVNode("uni-text", {
-        selectable: props2.selectable
+        "selectable": props2.selectable
       }, [createVNode("span", null, children)], 8, ["selectable"]);
     };
   }
@@ -12947,54 +12947,54 @@ var index$7 = /* @__PURE__ */ defineComponent({
     const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
-        ref: fieldRef,
-        value: state2.value,
-        tabindex: "-1",
-        readonly: !!props2.disabled,
-        maxlength: state2.maxlength,
-        class: {
+        "ref": fieldRef,
+        "value": state2.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "maxlength": state2.maxlength,
+        "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
-        style: {
+        "style": {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        onFocus: (event) => event.target.blur()
+        "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
-        ref: fieldRef,
-        value: state2.value,
-        disabled: !!props2.disabled,
-        maxlength: state2.maxlength,
-        enterkeyhint: props2.confirmType,
-        class: {
+        "ref": fieldRef,
+        "value": state2.value,
+        "disabled": !!props2.disabled,
+        "maxlength": state2.maxlength,
+        "enterkeyhint": props2.confirmType,
+        "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
-        style: {
+        "style": {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        onKeydown: onKeyDownEnter,
-        onKeyup: onKeyUpEnter
+        "onKeydown": onKeyDownEnter,
+        "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
       return createVNode("uni-textarea", {
-        ref: rootRef
+        "ref": rootRef
       }, [createVNode("div", {
-        class: "uni-textarea-wrapper"
+        "class": "uni-textarea-wrapper"
       }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-textarea-placeholder", props2.placeholderClass]
+        "style": props2.placeholderStyle,
+        "class": ["uni-textarea-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
-        ref: lineRef,
-        class: "uni-textarea-line"
+        "ref": lineRef,
+        "class": "uni-textarea-line"
       }, [" "], 512), createVNode("div", {
-        class: "uni-textarea-compute"
+        "class": "uni-textarea-compute"
       }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
-        initial: true,
-        onResize
+        "initial": true,
+        "onResize": onResize
       }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
-        action: "",
-        onSubmit: () => false,
-        class: "uni-input-form"
+        "action": "",
+        "onSubmit": () => false,
+        "class": "uni-input-form"
       }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
     };
   }
@@ -13013,7 +13013,7 @@ var index$6 = /* @__PURE__ */ defineComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-view", mergeProps({
-          class: hovering.value ? hoverClass : ""
+          "class": hovering.value ? hoverClass : ""
         }, binding), [slots.default && slots.default()], 16);
       }
       return createVNode("uni-view", null, [slots.default && slots.default()]);
@@ -13806,144 +13806,144 @@ var index$5 = /* @__PURE__ */ defineComponent({
     useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
       return createVNode("uni-video", {
-        ref: rootRef,
-        id: props2.id
+        "ref": rootRef,
+        "id": props2.id
       }, [createVNode("div", {
-        ref: containerRef,
-        class: "uni-video-container",
-        onTouchstart,
-        onTouchend,
-        onTouchmove,
-        onFullscreenchange: withModifiers(onFullscreenChange, ["stop"]),
-        onWebkitfullscreenchange: withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+        "ref": containerRef,
+        "class": "uni-video-container",
+        "onTouchstart": onTouchstart,
+        "onTouchend": onTouchend,
+        "onTouchmove": onTouchmove,
+        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
+        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
       }, [createVNode("video", mergeProps({
-        ref: videoRef,
-        style: {
+        "ref": videoRef,
+        "style": {
           "object-fit": props2.objectFit
         },
-        muted: !!props2.muted,
-        loop: !!props2.loop,
-        src: videoState.src,
-        poster: props2.poster,
-        autoplay: !!props2.autoplay
+        "muted": !!props2.muted,
+        "loop": !!props2.loop,
+        "src": videoState.src,
+        "poster": props2.poster,
+        "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        class: "uni-video-video",
+        "class": "uni-video-video",
         "webkit-playsinline": true,
-        playsinline: true,
-        onClick: toggleControls,
-        onDurationchange: onDurationChange,
-        onLoadedmetadata: onLoadedMetadata,
-        onProgress,
-        onWaiting,
-        onError: onVideoError,
-        onPlay,
-        onPause,
-        onEnded,
-        onTimeupdate: (event) => {
+        "playsinline": true,
+        "onClick": toggleControls,
+        "onDurationchange": onDurationChange,
+        "onLoadedmetadata": onLoadedMetadata,
+        "onProgress": onProgress,
+        "onWaiting": onWaiting,
+        "onError": onVideoError,
+        "onPlay": onPlay,
+        "onPause": onPause,
+        "onEnded": onEnded,
+        "onTimeupdate": (event) => {
           onTimeUpdate(event);
           updateDanmu(event);
         },
-        onWebkitbeginfullscreen: () => emitFullscreenChange(true),
-        onX5videoenterfullscreen: () => emitFullscreenChange(true),
-        onWebkitendfullscreen: () => emitFullscreenChange(false),
-        onX5videoexitfullscreen: () => emitFullscreenChange(false)
+        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
+        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
+        "onWebkitendfullscreen": () => emitFullscreenChange(false),
+        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
       }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
-        class: "uni-video-bar uni-video-bar-full",
-        onClick: withModifiers(() => {
+        "class": "uni-video-bar uni-video-bar-full",
+        "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        class: "uni-video-controls"
+        "class": "uni-video-controls"
       }, [withDirectives(createVNode("div", {
-        class: {
+        "class": {
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
         },
-        onClick: withModifiers(toggle, ["stop"])
+        "onClick": withModifiers(toggle, ["stop"])
       }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
-        class: "uni-video-current-time"
+        "class": "uni-video-current-time"
       }, [formatTime(videoState.currentTime)]), createVNode("div", {
-        ref: progressRef,
-        class: "uni-video-progress-container",
-        onClick: withModifiers(clickProgress, ["stop"])
+        "ref": progressRef,
+        "class": "uni-video-progress-container",
+        "onClick": withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        class: "uni-video-progress"
+        "class": "uni-video-progress"
       }, [createVNode("div", {
-        style: {
+        "style": {
           width: videoState.buffered + "%"
         },
-        class: "uni-video-progress-buffered"
+        "class": "uni-video-progress-buffered"
       }, null, 4), createVNode("div", {
-        ref: ballRef,
-        style: {
+        "ref": ballRef,
+        "style": {
           left: videoState.progress + "%"
         },
-        class: "uni-video-ball"
+        "class": "uni-video-ball"
       }, [createVNode("div", {
-        class: "uni-video-inner"
+        "class": "uni-video-inner"
       }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
-        class: "uni-video-duration"
+        "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
-        class: {
+        "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
-        onClick: withModifiers(toggleDanmu, ["stop"])
+        "onClick": withModifiers(toggleDanmu, ["stop"])
       }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
-        class: {
+        "class": {
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
-        onClick: withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
       }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
-        ref: danmuRef,
-        style: "z-index: 0;",
-        class: "uni-video-danmu"
+        "ref": danmuRef,
+        "style": "z-index: 0;",
+        "class": "uni-video-danmu"
       }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
-        class: "uni-video-cover",
-        onClick: withModifiers(() => {
+        "class": "uni-video-cover",
+        "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        class: "uni-video-cover-play-button",
-        onClick: withModifiers(play, ["stop"])
+        "class": "uni-video-cover-play-button",
+        "onClick": withModifiers(play, ["stop"])
       }, null, 8, ["onClick"]), createVNode("p", {
-        class: "uni-video-cover-duration"
+        "class": "uni-video-cover-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
-        class: {
+        "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
         }
       }, [createVNode("div", {
-        class: "uni-video-toast-title"
+        "class": "uni-video-toast-title"
       }, [t2("uni.video.volume")]), createVNode("svg", {
-        class: "uni-video-toast-icon",
-        width: "200px",
-        height: "200px",
-        viewBox: "0 0 1024 1024",
-        version: "1.1",
-        xmlns: "http://www.w3.org/2000/svg"
+        "class": "uni-video-toast-icon",
+        "width": "200px",
+        "height": "200px",
+        "viewBox": "0 0 1024 1024",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg"
       }, [createVNode("path", {
-        d: "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
       }, null)]), createVNode("div", {
-        class: "uni-video-toast-value"
+        "class": "uni-video-toast-value"
       }, [createVNode("div", {
-        style: {
+        "style": {
           width: gestureState.volumeNew * 100 + "%"
         },
-        class: "uni-video-toast-value-content"
+        "class": "uni-video-toast-value-content"
       }, [createVNode("div", {
-        class: "uni-video-toast-volume-grids"
+        "class": "uni-video-toast-volume-grids"
       }, [renderList(10, () => createVNode("div", {
-        class: "uni-video-toast-volume-grids-item"
+        "class": "uni-video-toast-volume-grids-item"
       }, null))])], 4)])], 2), createVNode("div", {
-        class: {
+        "class": {
           "uni-video-toast": true,
           "uni-video-toast-progress": gestureState.gestureType === "progress"
         }
       }, [createVNode("div", {
-        class: "uni-video-toast-title"
+        "class": "uni-video-toast-title"
       }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
-        class: "uni-video-slots"
+        "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
     };
   }
@@ -13982,15 +13982,15 @@ var index$4 = /* @__PURE__ */ defineComponent({
     });
     return () => {
       return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
-        ref: rootRef
+        "ref": rootRef
       }), [createVNode(ResizeSensor, {
-        onResize: _resize
+        "onResize": _resize
       }, null, 8, ["onResize"])], 16), createVNode(Teleport, {
-        to: "body"
+        "to": "body"
       }, {
         default: () => [createVNode("iframe", mergeProps({
-          ref: iframeRef,
-          src: getRealPath(props2.src)
+          "ref": iframeRef,
+          "src": getRealPath(props2.src)
         }, $attrs.value), null, 16, ["src"])]
       })]);
     };
@@ -15644,23 +15644,23 @@ var ImageView = /* @__PURE__ */ defineComponent({
         height: "100%"
       };
       return createVNode(MovableArea, {
-        style: viewStyle,
-        onTouchstart: withWebEvent(onTouchStart),
-        onTouchmove: withWebEvent(checkDirection),
-        onTouchend: withWebEvent(onTouchEnd)
+        "style": viewStyle,
+        "onTouchstart": withWebEvent(onTouchStart),
+        "onTouchmove": withWebEvent(checkDirection),
+        "onTouchend": withWebEvent(onTouchEnd)
       }, {
         default: () => [createVNode(MovableView, {
-          style: viewStyle,
-          direction: state2.direction,
-          inertia: true,
-          scale: true,
+          "style": viewStyle,
+          "direction": state2.direction,
+          "inertia": true,
+          "scale": true,
           "scale-min": "1",
           "scale-max": "4",
-          onScale
+          "onScale": onScale
         }, {
           default: () => [createVNode("img", {
-            src: props2.src,
-            style: {
+            "src": props2.src,
+            "style": {
               position: "absolute",
               left: "50%",
               top: "50%",
@@ -15668,7 +15668,7 @@ var ImageView = /* @__PURE__ */ defineComponent({
               maxHeight: "100%",
               maxWidth: "100%"
             },
-            onLoad: onImgLoad
+            "onLoad": onImgLoad
           }, null, 40, ["src", "onLoad"])]
         }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
       }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
@@ -15733,8 +15733,8 @@ var ImagePreview = /* @__PURE__ */ defineComponent({
     return () => {
       let _slot;
       return createVNode("div", {
-        ref: rootRef,
-        style: {
+        "ref": rootRef,
+        "style": {
           display: "block",
           position: "fixed",
           left: "0",
@@ -15744,13 +15744,13 @@ var ImagePreview = /* @__PURE__ */ defineComponent({
           zIndex: 999,
           background: "rgba(0,0,0,0.8)"
         },
-        onClick
+        "onClick": onClick
       }, [createVNode(Swiper, {
-        current: indexRef.value,
-        onChange: onChange2,
+        "current": indexRef.value,
+        "onChange": onChange2,
         "indicator-dots": false,
-        autoplay: false,
-        style: {
+        "autoplay": false,
+        "style": {
           position: "absolute",
           left: "0",
           top: "0",
@@ -15759,7 +15759,7 @@ var ImagePreview = /* @__PURE__ */ defineComponent({
         }
       }, _isSlot(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
-          src
+          "src": src
         }, null, 8, ["src"])]
       }))) ? _slot : {
         default: () => [_slot],
@@ -16536,35 +16536,35 @@ var modal = /* @__PURE__ */ defineComponent({
         confirmColor
       } = props2;
       return createVNode(Transition, {
-        name: "uni-fade"
+        "name": "uni-fade"
       }, {
         default: () => [withDirectives(createVNode("uni-modal", {
-          onTouchmove: onEventPrevent
+          "onTouchmove": onEventPrevent
         }, [VNODE_MASK, createVNode("div", {
-          class: "uni-modal"
+          "class": "uni-modal"
         }, [title && createVNode("div", {
-          class: "uni-modal__hd"
+          "class": "uni-modal__hd"
         }, [createVNode("strong", {
-          class: "uni-modal__title",
-          textContent: title
+          "class": "uni-modal__title",
+          "textContent": title
         }, null, 8, ["textContent"])]), createVNode("div", {
-          class: "uni-modal__bd",
-          onTouchmovePassive: onEventStop,
-          textContent: content
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
         }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          class: "uni-modal__ft"
+          "class": "uni-modal__ft"
         }, [showCancel && createVNode("div", {
-          style: {
+          "style": {
             color: props2.cancelColor
           },
-          class: "uni-modal__btn uni-modal__btn_default",
-          onClick: cancel
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
         }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          style: {
+          "style": {
             color: confirmColor
           },
-          class: "uni-modal__btn uni-modal__btn_primary",
-          onClick: confirm
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
         }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
       });
     };
@@ -16634,25 +16634,25 @@ var Toast = /* @__PURE__ */ defineComponent({
         image: image2
       } = props2;
       return createVNode(Transition, {
-        name: "uni-fade"
+        "name": "uni-fade"
       }, {
         default: () => [withDirectives(createVNode("uni-toast", {
           "data-duration": duration
         }, [mask ? createVNode("div", {
-          class: "uni-mask",
-          style: "background: transparent;",
-          onTouchmove: onEventPrevent
+          "class": "uni-mask",
+          "style": "background: transparent;",
+          "onTouchmove": onEventPrevent
         }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
-          class: "uni-sample-toast"
+          "class": "uni-sample-toast"
         }, [createVNode("p", {
-          class: "uni-simple-toast__text"
+          "class": "uni-simple-toast__text"
         }, [title])]) : createVNode("div", {
-          class: "uni-toast"
+          "class": "uni-toast"
         }, [image2 ? createVNode("img", {
-          src: image2,
-          class: ToastIconClassName
+          "src": image2,
+          "class": ToastIconClassName
         }, null, 10, ["src"]) : Icon.value, createVNode("p", {
-          class: "uni-toast__content"
+          "class": "uni-toast__content"
         }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
       });
     };
@@ -16662,7 +16662,7 @@ function useToastIcon(props2) {
   const Icon = computed(() => props2.icon === "success" ? createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
     class: ToastIconClassName
   }) : props2.icon === "loading" ? createVNode("i", {
-    class: [ToastIconClassName, "uni-loading"]
+    "class": [ToastIconClassName, "uni-loading"]
   }, null, 2) : null);
   return {
     Icon
@@ -17044,13 +17044,13 @@ var MapLocation = /* @__PURE__ */ defineComponent({
     }
     return () => {
       return state2.latitude ? createVNode(MapMarker, mergeProps({
-        anchor: {
+        "anchor": {
           x: 0.5,
           y: 0.5
         },
-        width: "44",
-        height: "44",
-        iconPath: ICON_PATH
+        "width": "44",
+        "height": "44",
+        "iconPath": ICON_PATH
       }, state2), null, 16, ["iconPath"]) : null;
     };
   }
@@ -17387,15 +17387,15 @@ var index$3 = /* @__PURE__ */ defineComponent({
     } = useMap(props2, rootRef, emit2);
     return () => {
       return createVNode("uni-map", {
-        ref: rootRef,
-        id: props2.id
+        "ref": rootRef,
+        "id": props2.id
       }, [createVNode("div", {
-        ref: mapRef,
-        style: "width: 100%; height: 100%; position: relative; overflow: hidden"
+        "ref": mapRef,
+        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
-        key: item.id
+        "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
-        style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
   }
@@ -17520,16 +17520,16 @@ var TabBar = /* @__PURE__ */ defineComponent({
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
       return createVNode("uni-tabbar", {
-        class: "uni-tabbar-" + tabBar2.position
+        "class": "uni-tabbar-" + tabBar2.position
       }, [createVNode("div", {
-        class: "uni-tabbar",
-        style: style.value
+        "class": "uni-tabbar",
+        "style": style.value
       }, [createVNode("div", {
-        class: "uni-tabbar-border",
-        style: borderStyle.value
+        "class": "uni-tabbar-border",
+        "style": borderStyle.value
       }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
-        class: "uni-placeholder",
-        style: placeholderStyle.value
+        "class": "uni-placeholder",
+        "style": placeholderStyle.value
       }, null, 4)], 2);
     };
   }
@@ -17651,9 +17651,9 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab) {
 }
 function createTabBarItemTsx(color, iconPath, tabBarItem, tabBar2, index2, onSwitchTab) {
   return createVNode("div", {
-    key: index2,
-    class: "uni-tabbar__item",
-    onClick: onSwitchTab(tabBarItem, index2)
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "onClick": onSwitchTab(tabBarItem, index2)
   }, [createTabBarItemBdTsx(color, iconPath || "", tabBarItem, tabBar2)], 8, ["onClick"]);
 }
 function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
@@ -17661,8 +17661,8 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
     height
   } = tabBar2;
   return createVNode("div", {
-    class: "uni-tabbar__bd",
-    style: {
+    "class": "uni-tabbar__bd",
+    "style": {
       height
     }
   }, [iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
@@ -17682,10 +17682,10 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     height: iconWidth
   };
   return createVNode("div", {
-    class: clazz2,
-    style
+    "class": clazz2,
+    "style": style
   }, [type !== "midButton" && createVNode("img", {
-    src: getRealPath(iconPath)
+    "src": getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
@@ -17705,14 +17705,14 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
     marginTop: !iconPath ? "inherit" : spacing
   };
   return createVNode("div", {
-    class: "uni-tabbar__label",
-    style
+    "class": "uni-tabbar__label",
+    "style": style
   }, [text2, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
   return createVNode("div", {
-    class: clazz2
+    "class": clazz2
   }, [badge], 2);
 }
 function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, onSwitchTab) {
@@ -17723,26 +17723,26 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     iconWidth
   } = midButton;
   return createVNode("div", {
-    key: index2,
-    class: "uni-tabbar__item",
-    style: {
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "style": {
       flex: "0 0 " + width,
       position: "relative"
     },
-    onClick: onSwitchTab(midButton, index2)
+    "onClick": onSwitchTab(midButton, index2)
   }, [createVNode("div", {
-    class: "uni-tabbar__mid",
-    style: {
+    "class": "uni-tabbar__mid",
+    "style": {
       width,
       height,
       backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
     }
   }, [iconPath && createVNode("img", {
-    style: {
+    "style": {
       width: iconWidth,
       height: iconWidth
     },
-    src: getRealPath(iconPath)
+    "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
@@ -17762,7 +17762,7 @@ var LayoutComponent = defineComponent({
       const layoutTsx = createLayoutTsx(keepAliveRoute);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
       return createVNode("uni-app", {
-        class: clazz2.value
+        "class": clazz2.value
       }, [layoutTsx, tabBarTsx], 2);
     };
   }
@@ -17983,7 +17983,7 @@ var PageHead = /* @__PURE__ */ defineComponent({
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
       const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        class: {
+        "class": {
           "uni-placeholder": true,
           "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
         }
@@ -17991,13 +17991,13 @@ var PageHead = /* @__PURE__ */ defineComponent({
       return createVNode("uni-page-head", {
         "uni-page-head-type": type
       }, [createVNode("div", {
-        ref: headRef,
-        class: clazz2.value,
-        style: style.value
+        "ref": headRef,
+        "class": clazz2.value,
+        "style": style.value
       }, [createVNode("div", {
-        class: "uni-page-head-hd"
+        "class": "uni-page-head-hd"
       }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        class: "uni-page-head-ft"
+        "class": "uni-page-head-ft"
       }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
     };
   }
@@ -18009,8 +18009,8 @@ function createBackButtonTsx(pageMeta) {
   } = pageMeta;
   if (navigationBar.backButton && !isQuit) {
     return createVNode("div", {
-      class: "uni-page-head-btn",
-      onClick: onPageHeadBackButton
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
     }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)], 8, ["onClick"]);
   }
 }
@@ -18025,15 +18025,15 @@ function createButtonsTsx(btns) {
     iconStyle
   }, index2) => {
     return createVNode("div", {
-      key: index2,
-      class: btnClass,
-      style: btnStyle,
-      onClick,
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
       "badge-text": badgeText
     }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : createVNode("i", {
-      class: "uni-btn-icon",
-      style: iconStyle,
-      innerHTML: btnText
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
     }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
   });
 }
@@ -18051,18 +18051,18 @@ function createPageHeadTitleTextTsx({
   titleImage
 }) {
   return createVNode("div", {
-    class: "uni-page-head-bd"
+    "class": "uni-page-head-bd"
   }, [createVNode("div", {
-    style: {
+    "style": {
       fontSize: titleSize,
       opacity: type === "transparent" ? 0 : 1
     },
-    class: "uni-page-head__title"
+    "class": "uni-page-head__title"
   }, [loading ? createVNode("i", {
-    class: "uni-loading"
+    "class": "uni-loading"
   }, null) : titleImage ? createVNode("img", {
-    src: titleImage,
-    class: "uni-page-head__title_image"
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
   }, null, 8, ["src"]) : titleText], 4)]);
 }
 function createPageHeadSearchInputTsx(navigationBar, {
@@ -18091,40 +18091,40 @@ function createPageHeadSearchInputTsx(navigationBar, {
   };
   const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
   return createVNode("div", {
-    class: "uni-page-head-search",
-    style: searchStyle
+    "class": "uni-page-head-search",
+    "style": searchStyle
   }, [createVNode("div", {
-    style: {
+    "style": {
       color: placeholderColor
     },
-    class: placeholderClass
+    "class": placeholderClass
   }, [createVNode("div", {
-    class: "uni-page-head-search-icon"
+    "class": "uni-page-head-search-icon"
   }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
-    disabled: true,
-    style: {
+    "disabled": true,
+    "style": {
       color
     },
     "placeholder-style": {
       color: placeholderColor
     },
-    class: "uni-page-head-search-input",
+    "class": "uni-page-head-search-input",
     "confirm-type": "search",
-    onClick
+    "onClick": onClick
   }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
-    focus: autoFocus,
-    style: {
+    "focus": autoFocus,
+    "style": {
       color
     },
     "placeholder-style": {
       color: placeholderColor
     },
-    class: "uni-page-head-search-input",
+    "class": "uni-page-head-search-input",
     "confirm-type": "search",
-    onFocus,
-    onBlur,
-    onInput,
-    onKeyup
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onKeyup": onKeyup
   }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
 }
 function onPageHeadBackButton() {
@@ -18568,7 +18568,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     return null;
   }
   return createVNode(_sfc_main, {
-    ref: refreshRef
+    "ref": refreshRef
   }, null, 512);
 }
 var index$2 = defineComponent({
@@ -18595,8 +18595,8 @@ var index$1 = /* @__PURE__ */ defineComponent({
       t: t2
     } = useI18n();
     return () => createVNode("div", {
-      class: "uni-async-error",
-      onClick: reload
+      "class": "uni-async-error",
+      "onClick": reload
     }, [t2("uni.async.error")], 8, ["onClick"]);
   }
 });

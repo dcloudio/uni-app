@@ -1,10 +1,10 @@
 "use strict";
 var __defProp = Object.defineProperty;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, {enumerable: true, configurable: true, writable: true, value}) : obj[key] = value;
-var __assign = (a2, b) => {
+var __spreadValues = (a2, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp.call(b, prop))
       __defNormalProp(a2, prop, b[prop]);
@@ -1417,7 +1417,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     vue.createVNode("audio", {
       ref: "audio",
       loop: $props.loop,
-      style: {display: "none"}
+      style: {"display": "none"}
     }, null, 8, ["loop"]),
     vue.createVNode("div", _hoisted_1$6, [
       vue.createVNode("div", {
@@ -1630,12 +1630,12 @@ var index$q = /* @__PURE__ */ vue.defineComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       if (hoverClass && hoverClass !== "none") {
         return vue.createVNode("uni-button", vue.mergeProps({
-          onClick,
-          class: hovering.value ? hoverClass : ""
+          "onClick": onClick,
+          "class": hovering.value ? hoverClass : ""
         }, binding, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
       }
       return vue.createVNode("uni-button", vue.mergeProps({
-        onClick
+        "onClick": onClick
       }, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
@@ -1656,12 +1656,12 @@ var ResizeSensor = /* @__PURE__ */ vue.defineComponent({
     const reset = useResizeSensorReset(rootRef);
     const update = useResizeSensorUpdate(rootRef, emit2, reset);
     return () => vue.createVNode("uni-resize-sensor", {
-      ref: rootRef,
-      onAnimationstartOnce: update
+      "ref": rootRef,
+      "onAnimationstartOnce": update
     }, [vue.createVNode("div", {
-      onScroll: update
+      "onScroll": update
     }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
-      onScroll: update
+      "onScroll": update
     }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
   }
 });
@@ -2207,13 +2207,13 @@ const _hoisted_1$5 = {
   width: "300",
   height: "150"
 };
-const _hoisted_2$2 = {style: {position: "absolute", top: "0", left: "0", width: "100%", height: "100%", overflow: "hidden"}};
+const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
 function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
-  }, __assign(__assign({}, $setup.Attrs), $setup.ExcludeAttrs), vue.toHandlers($options._listeners)), [
+  }, __spreadValues(__spreadValues({}, $setup.Attrs), $setup.ExcludeAttrs), vue.toHandlers($options._listeners)), [
     vue.createVNode("canvas", _hoisted_1$5, null, 512),
     vue.createVNode("div", _hoisted_2$2, [
       vue.renderSlot(_ctx.$slots, "default")
@@ -2245,7 +2245,7 @@ var index$p = /* @__PURE__ */ vue.defineComponent({
     useProvideCheckGroup(props2, trigger);
     return () => {
       return vue.createVNode("uni-checkbox-group", {
-        ref: rootRef
+        "ref": rootRef
       }, [slots.default && slots.default()], 512);
     };
   }
@@ -2321,10 +2321,10 @@ var index$o = /* @__PURE__ */ vue.defineComponent({
       }
     });
     return () => vue.createVNode("uni-label", {
-      class: {
+      "class": {
         "uni-label-pointer": pointer
       },
-      onClick: _onClick
+      "onClick": _onClick
     }, [slots.default && slots.default()], 10, ["onClick"]);
   }
 });
@@ -2396,11 +2396,11 @@ var index$n = /* @__PURE__ */ vue.defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return vue.createVNode("uni-checkbox", vue.mergeProps(booleanAttrs, {
-        onClick: _onClick
+        "onClick": _onClick
       }), [vue.createVNode("div", {
-        class: "uni-checkbox-wrapper"
+        "class": "uni-checkbox-wrapper"
       }, [vue.createVNode("div", {
-        class: ["uni-checkbox-input", {
+        "class": ["uni-checkbox-input", {
           "uni-checkbox-input-disabled": props2.disabled
         }]
       }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])], 16, ["onClick"]);
@@ -2641,9 +2641,9 @@ var index$m = /* @__PURE__ */ vue.defineComponent({
     useKeyboard(props2, rootRef);
     return () => {
       return vue.createVNode("uni-editor", {
-        ref: rootRef,
-        id: props2.id,
-        class: "ql-container"
+        "ref": rootRef,
+        "id": props2.id,
+        "class": "ql-container"
       }, null, 8, ["id"]);
     };
   }
@@ -2779,14 +2779,14 @@ var index$k = /* @__PURE__ */ vue.defineComponent({
         modeStyle
       } = state;
       return vue.createVNode("uni-image", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode("div", {
-        style: modeStyle
+        "style": modeStyle
       }, null, 4), imgSrc ? vue.createVNode("img", {
-        src: imgSrc,
-        draggable: props2.draggable
+        "src": imgSrc,
+        "draggable": props2.draggable
       }, null, 8, ["src", "draggable"]) : vue.createVNode("img", null, null), FIX_MODES[mode] ? vue.createVNode(ResizeSensor, {
-        onResize: fixSize
+        "onResize": fixSize
       }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
   }
@@ -3275,38 +3275,38 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
-        ref: fieldRef,
-        value: state.value,
-        tabindex: "-1",
-        readonly: !!props2.disabled,
-        type: type.value,
-        maxlength: state.maxlength,
-        step: step.value,
-        class: "uni-input-input",
-        onFocus: (event) => event.target.blur()
+        "ref": fieldRef,
+        "value": state.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "type": type.value,
+        "maxlength": state.maxlength,
+        "step": step.value,
+        "class": "uni-input-input",
+        "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
-        ref: fieldRef,
-        value: state.value,
-        disabled: !!props2.disabled,
-        type: type.value,
-        maxlength: state.maxlength,
-        step: step.value,
-        enterkeyhint: props2.confirmType,
-        class: "uni-input-input",
-        autocomplete: "off",
-        onKeyup: onKeyUpEnter
+        "ref": fieldRef,
+        "value": state.value,
+        "disabled": !!props2.disabled,
+        "type": type.value,
+        "maxlength": state.maxlength,
+        "step": step.value,
+        "enterkeyhint": props2.confirmType,
+        "class": "uni-input-input",
+        "autocomplete": "off",
+        "onKeyup": onKeyUpEnter
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
       return vue.createVNode("uni-input", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode("div", {
-        class: "uni-input-wrapper"
+        "class": "uni-input-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-input-placeholder", props2.placeholderClass]
+        "style": props2.placeholderStyle,
+        "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || !valid.value)]]), props2.confirmType === "search" ? vue.createVNode("form", {
-        action: "",
-        onSubmit: () => false,
-        class: "uni-input-form"
+        "action": "",
+        "onSubmit": () => false,
+        "class": "uni-input-form"
       }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
     };
   }
@@ -3374,9 +3374,9 @@ var index$j = /* @__PURE__ */ vue.defineComponent({
       const defaultSlots = slots.default && slots.default();
       movableViewItems = defaultSlots || [];
       return vue.createVNode("uni-movable-area", vue.mergeProps({
-        ref: rootRef
+        "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
-        onReize: movableAreaEvents._resize
+        "onReize": movableAreaEvents._resize
       }, null, 8, ["onReize"]), movableViewItems], 16);
     };
   }
@@ -3872,9 +3872,9 @@ var index$i = /* @__PURE__ */ vue.defineComponent({
     } = useMovableViewState(props2, trigger, rootRef);
     return () => {
       return vue.createVNode("uni-movable-view", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode(ResizeSensor, {
-        onResize: setParent
+        "onResize": setParent
       }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
     };
   }
@@ -4423,14 +4423,14 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
       const defaultSlots = slots.default && slots.default();
       columnVNodes = columnVNodes = defaultSlots || [];
       return vue.createVNode("uni-picker-view", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode(ResizeSensor, {
-        initial: true,
-        onResize: ({
+        "initial": true,
+        "onResize": ({
           height
         }) => state.height = height
       }, null, 8, ["initial", "onResize"]), vue.createVNode("div", {
-        class: "uni-picker-view-wrapper"
+        "class": "uni-picker-view-wrapper"
       }, [columnVNodes])], 512);
     };
   }
@@ -4533,26 +4533,26 @@ var index$g = /* @__PURE__ */ vue.defineComponent({
       state.length = flatVNode(defaultSlots).length;
       const padding = `${maskSize.value}px 0`;
       return vue.createVNode("uni-picker-view-column", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode("div", {
-        onWheel: handleWheel,
-        onClick: handleTap,
-        class: "uni-picker-view-group"
+        "onWheel": handleWheel,
+        "onClick": handleTap,
+        "class": "uni-picker-view-group"
       }, [vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        class: ["uni-picker-view-mask", pickerViewProps.maskClass],
-        style: `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
+        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
       }), null, 16), vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        class: ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        style: pickerViewProps.indicatorStyle
+        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+        "style": pickerViewProps.indicatorStyle
       }), [vue.createVNode(ResizeSensor, {
-        initial: true,
-        onResize: ({
+        "initial": true,
+        "onResize": ({
           height
         }) => indicatorHeight.value = height
       }, null, 8, ["initial", "onResize"])], 16), vue.createVNode("div", {
-        ref: contentRef,
-        class: ["uni-picker-view-content", className],
-        style: {
+        "ref": contentRef,
+        "class": ["uni-picker-view-content", className],
+        "style": {
           padding
         }
       }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
@@ -4632,15 +4632,15 @@ var index$f = /* @__PURE__ */ vue.defineComponent({
         currentPercent
       } = state;
       return vue.createVNode("uni-progress", {
-        class: "uni-progress"
+        "class": "uni-progress"
       }, [vue.createVNode("div", {
-        style: outerBarStyle,
-        class: "uni-progress-bar"
+        "style": outerBarStyle,
+        "class": "uni-progress-bar"
       }, [vue.createVNode("div", {
-        style: innerBarStyle,
-        class: "uni-progress-inner-bar"
+        "style": innerBarStyle,
+        "class": "uni-progress-inner-bar"
       }, null, 4)], 4), showInfo ? vue.createVNode("p", {
-        class: "uni-progress-info"
+        "class": "uni-progress-info"
       }, [currentPercent + "%"]) : ""]);
     };
   }
@@ -4702,7 +4702,7 @@ var index$e = /* @__PURE__ */ vue.defineComponent({
     useProvideRadioGroup(props2, trigger);
     return () => {
       return vue.createVNode("uni-radio-group", {
-        ref: rootRef
+        "ref": rootRef
       }, [slots.default && slots.default()], 512);
     };
   }
@@ -4826,14 +4826,14 @@ var index$d = /* @__PURE__ */ vue.defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return vue.createVNode("uni-radio", vue.mergeProps(booleanAttrs, {
-        onClick: _onClick
+        "onClick": _onClick
       }), [vue.createVNode("div", {
-        class: "uni-radio-wrapper"
+        "class": "uni-radio-wrapper"
       }, [vue.createVNode("div", {
-        class: ["uni-radio-input", {
+        "class": ["uni-radio-input", {
           "uni-radio-input-disabled": props2.disabled
         }],
-        style: radioChecked.value ? checkedStyle.value : ""
+        "style": radioChecked.value ? checkedStyle.value : ""
       }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
@@ -6235,7 +6235,7 @@ const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
   cy: "50",
   r: "20",
   fill: "none",
-  style: {color: "#2bd009"},
+  style: {"color": "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
@@ -6366,28 +6366,28 @@ var index$c = /* @__PURE__ */ vue.defineComponent({
         setBlockStyle
       } = state;
       return vue.createVNode("uni-slider", {
-        ref: sliderRef,
-        onClick: _onClick
+        "ref": sliderRef,
+        "onClick": _onClick
       }, [vue.createVNode("div", {
-        class: "uni-slider-wrapper"
+        "class": "uni-slider-wrapper"
       }, [vue.createVNode("div", {
-        class: "uni-slider-tap-area"
+        "class": "uni-slider-tap-area"
       }, [vue.createVNode("div", {
-        style: setBgColor.value,
-        class: "uni-slider-handle-wrapper"
+        "style": setBgColor.value,
+        "class": "uni-slider-handle-wrapper"
       }, [vue.createVNode("div", {
-        ref: sliderHandleRef,
-        style: setBlockBg.value,
-        class: "uni-slider-handle"
+        "ref": sliderHandleRef,
+        "style": setBlockBg.value,
+        "class": "uni-slider-handle"
       }, null, 4), vue.createVNode("div", {
-        style: setBlockStyle.value,
-        class: "uni-slider-thumb"
+        "style": setBlockStyle.value,
+        "class": "uni-slider-thumb"
       }, null, 4), vue.createVNode("div", {
-        style: setActiveColor.value,
-        class: "uni-slider-track"
+        "style": setActiveColor.value,
+        "class": "uni-slider-track"
       }, null, 4)], 4)]), vue.withDirectives(vue.createVNode("span", {
-        ref: sliderValueRef,
-        class: "uni-slider-value"
+        "ref": sliderValueRef,
+        "class": "uni-slider-value"
       }, [sliderValue.value], 512), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 8, ["onClick"]);
     };
   }
@@ -6954,26 +6954,26 @@ var index$b = /* @__PURE__ */ vue.defineComponent({
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
       return vue.createVNode("uni-swiper", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode("div", {
-        ref: slidesWrapperRef,
-        class: "uni-swiper-wrapper"
+        "ref": slidesWrapperRef,
+        "class": "uni-swiper-wrapper"
       }, [vue.createVNode("div", {
-        class: "uni-swiper-slides",
-        style: slidesStyle.value
+        "class": "uni-swiper-slides",
+        "style": slidesStyle.value
       }, [vue.createVNode("div", {
-        ref: slideFrameRef,
-        class: "uni-swiper-slide-frame",
-        style: slideFrameStyle.value
+        "ref": slideFrameRef,
+        "class": "uni-swiper-slide-frame",
+        "style": slideFrameStyle.value
       }, [defaultSlots], 4)], 4), props2.indicatorDots && vue.createVNode("div", {
-        class: ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
       }, [swiperContexts.value.map((_, index2, array) => vue.createVNode("div", {
-        onClick: () => onSwiperDotClick(index2),
-        class: {
+        "onClick": () => onSwiperDotClick(index2),
+        "class": {
           "uni-swiper-dot": true,
           "uni-swiper-dot-active": index2 < state.current + state.displayMultipleItems && index2 >= state.current || index2 < state.current + state.displayMultipleItems - array.length
         },
-        style: {
+        "style": {
           background: index2 === state.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
       }, null, 14, ["onClick"]))], 2)], 512)], 512);
@@ -6995,8 +6995,8 @@ var index$a = /* @__PURE__ */ vue.defineComponent({
     const rootRef = vue.ref(null);
     return () => {
       return vue.createVNode("uni-swiper-item", {
-        ref: rootRef,
-        style: {
+        "ref": rootRef,
+        "style": {
           position: "absolute",
           width: "100%",
           height: "100%"
@@ -7066,19 +7066,19 @@ var index$9 = /* @__PURE__ */ vue.defineComponent({
         booleanAttrs
       } = useBooleanAttr(props2, "disabled");
       return vue.createVNode("uni-switch", vue.mergeProps({
-        ref: rootRef
+        "ref": rootRef
       }, booleanAttrs, {
-        onClick: _onClick
+        "onClick": _onClick
       }), [vue.createVNode("div", {
-        class: "uni-switch-wrapper"
+        "class": "uni-switch-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", {
-        class: ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        style: {
+        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+        "style": {
           backgroundColor: switchChecked.value ? color : "#DFDFDF",
           borderColor: switchChecked.value ? color : "#DFDFDF"
         }
       }, null, 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
-        class: "uni-checkbox-input"
+        "class": "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);
     };
   }
@@ -7169,7 +7169,7 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
         });
       }
       return vue.createVNode("uni-text", {
-        selectable: props2.selectable
+        "selectable": props2.selectable
       }, [vue.createVNode("span", null, children)], 8, ["selectable"]);
     };
   }
@@ -7256,54 +7256,54 @@ var index$7 = /* @__PURE__ */ vue.defineComponent({
     const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
-        ref: fieldRef,
-        value: state.value,
-        tabindex: "-1",
-        readonly: !!props2.disabled,
-        maxlength: state.maxlength,
-        class: {
+        "ref": fieldRef,
+        "value": state.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "maxlength": state.maxlength,
+        "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
-        style: {
+        "style": {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        onFocus: (event) => event.target.blur()
+        "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
-        ref: fieldRef,
-        value: state.value,
-        disabled: !!props2.disabled,
-        maxlength: state.maxlength,
-        enterkeyhint: props2.confirmType,
-        class: {
+        "ref": fieldRef,
+        "value": state.value,
+        "disabled": !!props2.disabled,
+        "maxlength": state.maxlength,
+        "enterkeyhint": props2.confirmType,
+        "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
-        style: {
+        "style": {
           overflowY: props2.autoHeight ? "hidden" : "auto"
         },
-        onKeydown: onKeyDownEnter,
-        onKeyup: onKeyUpEnter
+        "onKeydown": onKeyDownEnter,
+        "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
-        ref: rootRef
+        "ref": rootRef
       }, [vue.createVNode("div", {
-        class: "uni-textarea-wrapper"
+        "class": "uni-textarea-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-textarea-placeholder", props2.placeholderClass]
+        "style": props2.placeholderStyle,
+        "class": ["uni-textarea-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !state.value.length]]), vue.createVNode("div", {
-        ref: lineRef,
-        class: "uni-textarea-line"
+        "ref": lineRef,
+        "class": "uni-textarea-line"
       }, [" "], 512), vue.createVNode("div", {
-        class: "uni-textarea-compute"
+        "class": "uni-textarea-compute"
       }, [valueCompute.value.map((item) => vue.createVNode("div", null, [item.trim() ? item : "."])), vue.createVNode(ResizeSensor, {
-        initial: true,
-        onResize
+        "initial": true,
+        "onResize": onResize
       }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? vue.createVNode("form", {
-        action: "",
-        onSubmit: () => false,
-        class: "uni-input-form"
+        "action": "",
+        "onSubmit": () => false,
+        "class": "uni-input-form"
       }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
     };
   }
@@ -7322,7 +7322,7 @@ var index$6 = /* @__PURE__ */ vue.defineComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return vue.createVNode("uni-view", vue.mergeProps({
-          class: hovering.value ? hoverClass : ""
+          "class": hovering.value ? hoverClass : ""
         }, binding), [slots.default && slots.default()], 16);
       }
       return vue.createVNode("uni-view", null, [slots.default && slots.default()]);
@@ -7994,144 +7994,144 @@ var index$5 = /* @__PURE__ */ vue.defineComponent({
     useContext();
     return () => {
       return vue.createVNode("uni-video", {
-        ref: rootRef,
-        id: props2.id
+        "ref": rootRef,
+        "id": props2.id
       }, [vue.createVNode("div", {
-        ref: containerRef,
-        class: "uni-video-container",
-        onTouchstart,
-        onTouchend,
-        onTouchmove,
-        onFullscreenchange: vue.withModifiers(onFullscreenChange, ["stop"]),
-        onWebkitfullscreenchange: vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+        "ref": containerRef,
+        "class": "uni-video-container",
+        "onTouchstart": onTouchstart,
+        "onTouchend": onTouchend,
+        "onTouchmove": onTouchmove,
+        "onFullscreenchange": vue.withModifiers(onFullscreenChange, ["stop"]),
+        "onWebkitfullscreenchange": vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
       }, [vue.createVNode("video", vue.mergeProps({
-        ref: videoRef,
-        style: {
+        "ref": videoRef,
+        "style": {
           "object-fit": props2.objectFit
         },
-        muted: !!props2.muted,
-        loop: !!props2.loop,
-        src: videoState.src,
-        poster: props2.poster,
-        autoplay: !!props2.autoplay
+        "muted": !!props2.muted,
+        "loop": !!props2.loop,
+        "src": videoState.src,
+        "poster": props2.poster,
+        "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        class: "uni-video-video",
+        "class": "uni-video-video",
         "webkit-playsinline": true,
-        playsinline: true,
-        onClick: toggleControls,
-        onDurationchange: onDurationChange,
-        onLoadedmetadata: onLoadedMetadata,
-        onProgress,
-        onWaiting,
-        onError: onVideoError,
-        onPlay,
-        onPause,
-        onEnded,
-        onTimeupdate: (event) => {
+        "playsinline": true,
+        "onClick": toggleControls,
+        "onDurationchange": onDurationChange,
+        "onLoadedmetadata": onLoadedMetadata,
+        "onProgress": onProgress,
+        "onWaiting": onWaiting,
+        "onError": onVideoError,
+        "onPlay": onPlay,
+        "onPause": onPause,
+        "onEnded": onEnded,
+        "onTimeupdate": (event) => {
           onTimeUpdate(event);
           updateDanmu(event);
         },
-        onWebkitbeginfullscreen: () => emitFullscreenChange(true),
-        onX5videoenterfullscreen: () => emitFullscreenChange(true),
-        onWebkitendfullscreen: () => emitFullscreenChange(false),
-        onX5videoexitfullscreen: () => emitFullscreenChange(false)
+        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
+        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
+        "onWebkitendfullscreen": () => emitFullscreenChange(false),
+        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
       }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), vue.withDirectives(vue.createVNode("div", {
-        class: "uni-video-bar uni-video-bar-full",
-        onClick: vue.withModifiers(() => {
+        "class": "uni-video-bar uni-video-bar-full",
+        "onClick": vue.withModifiers(() => {
         }, ["stop"])
       }, [vue.createVNode("div", {
-        class: "uni-video-controls"
+        "class": "uni-video-controls"
       }, [vue.withDirectives(vue.createVNode("div", {
-        class: {
+        "class": {
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
         },
-        onClick: vue.withModifiers(toggle, ["stop"])
+        "onClick": vue.withModifiers(toggle, ["stop"])
       }, null, 10, ["onClick"]), [[vue.vShow, props2.showPlayBtn]]), vue.createVNode("div", {
-        class: "uni-video-current-time"
+        "class": "uni-video-current-time"
       }, [formatTime(videoState.currentTime)]), vue.createVNode("div", {
-        ref: progressRef,
-        class: "uni-video-progress-container",
-        onClick: vue.withModifiers(clickProgress, ["stop"])
+        "ref": progressRef,
+        "class": "uni-video-progress-container",
+        "onClick": vue.withModifiers(clickProgress, ["stop"])
       }, [vue.createVNode("div", {
-        class: "uni-video-progress"
+        "class": "uni-video-progress"
       }, [vue.createVNode("div", {
-        style: {
+        "style": {
           width: videoState.buffered + "%"
         },
-        class: "uni-video-progress-buffered"
+        "class": "uni-video-progress-buffered"
       }, null, 4), vue.createVNode("div", {
-        ref: ballRef,
-        style: {
+        "ref": ballRef,
+        "style": {
           left: videoState.progress + "%"
         },
-        class: "uni-video-ball"
+        "class": "uni-video-ball"
       }, [vue.createVNode("div", {
-        class: "uni-video-inner"
+        "class": "uni-video-inner"
       }, null)], 4)])], 8, ["onClick"]), vue.createVNode("div", {
-        class: "uni-video-duration"
+        "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)])]), vue.withDirectives(vue.createVNode("div", {
-        class: {
+        "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
-        onClick: vue.withModifiers(toggleDanmu, ["stop"])
+        "onClick": vue.withModifiers(toggleDanmu, ["stop"])
       }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
-        class: {
+        "class": {
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
-        onClick: vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+        "onClick": vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
       }, null, 10, ["onClick"]), [[vue.vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vue.vShow, controlsState.controlsShow]]), vue.withDirectives(vue.createVNode("div", {
-        ref: danmuRef,
-        style: "z-index: 0;",
-        class: "uni-video-danmu"
+        "ref": danmuRef,
+        "style": "z-index: 0;",
+        "class": "uni-video-danmu"
       }, null, 512), [[vue.vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && vue.createVNode("div", {
-        class: "uni-video-cover",
-        onClick: vue.withModifiers(() => {
+        "class": "uni-video-cover",
+        "onClick": vue.withModifiers(() => {
         }, ["stop"])
       }, [vue.createVNode("div", {
-        class: "uni-video-cover-play-button",
-        onClick: vue.withModifiers(play, ["stop"])
+        "class": "uni-video-cover-play-button",
+        "onClick": vue.withModifiers(play, ["stop"])
       }, null, 8, ["onClick"]), vue.createVNode("p", {
-        class: "uni-video-cover-duration"
+        "class": "uni-video-cover-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), vue.createVNode("div", {
-        class: {
+        "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
         }
       }, [vue.createVNode("div", {
-        class: "uni-video-toast-title"
+        "class": "uni-video-toast-title"
       }, [t2("uni.video.volume")]), vue.createVNode("svg", {
-        class: "uni-video-toast-icon",
-        width: "200px",
-        height: "200px",
-        viewBox: "0 0 1024 1024",
-        version: "1.1",
-        xmlns: "http://www.w3.org/2000/svg"
+        "class": "uni-video-toast-icon",
+        "width": "200px",
+        "height": "200px",
+        "viewBox": "0 0 1024 1024",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg"
       }, [vue.createVNode("path", {
-        d: "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
       }, null)]), vue.createVNode("div", {
-        class: "uni-video-toast-value"
+        "class": "uni-video-toast-value"
       }, [vue.createVNode("div", {
-        style: {
+        "style": {
           width: gestureState.volumeNew * 100 + "%"
         },
-        class: "uni-video-toast-value-content"
+        "class": "uni-video-toast-value-content"
       }, [vue.createVNode("div", {
-        class: "uni-video-toast-volume-grids"
+        "class": "uni-video-toast-volume-grids"
       }, [vue.renderList(10, () => vue.createVNode("div", {
-        class: "uni-video-toast-volume-grids-item"
+        "class": "uni-video-toast-volume-grids-item"
       }, null))])], 4)])], 2), vue.createVNode("div", {
-        class: {
+        "class": {
           "uni-video-toast": true,
           "uni-video-toast-progress": gestureState.gestureType === "progress"
         }
       }, [vue.createVNode("div", {
-        class: "uni-video-toast-title"
+        "class": "uni-video-toast-title"
       }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), vue.createVNode("div", {
-        class: "uni-video-slots"
+        "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
     };
   }
@@ -8161,15 +8161,15 @@ var index$4 = /* @__PURE__ */ vue.defineComponent({
     });
     return () => {
       return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-web-view", vue.mergeProps($listeners.value, $excludeAttrs.value, {
-        ref: rootRef
+        "ref": rootRef
       }), [vue.createVNode(ResizeSensor, {
-        onResize: _resize
+        "onResize": _resize
       }, null, 8, ["onResize"])], 16), vue.createVNode(vue.Teleport, {
-        to: "body"
+        "to": "body"
       }, {
         default: () => [vue.createVNode("iframe", vue.mergeProps({
-          ref: iframeRef,
-          src: getRealPath(props2.src)
+          "ref": iframeRef,
+          "src": getRealPath(props2.src)
         }, $attrs.value), null, 16, ["src"])]
       })]);
     };
@@ -8715,13 +8715,13 @@ var MapLocation = /* @__PURE__ */ vue.defineComponent({
     });
     return () => {
       return state.latitude ? vue.createVNode(MapMarker, vue.mergeProps({
-        anchor: {
+        "anchor": {
           x: 0.5,
           y: 0.5
         },
-        width: "44",
-        height: "44",
-        iconPath: ICON_PATH
+        "width": "44",
+        "height": "44",
+        "iconPath": ICON_PATH
       }, state), null, 16, ["iconPath"]) : null;
     };
   }
@@ -8844,15 +8844,15 @@ var index$3 = /* @__PURE__ */ vue.defineComponent({
     } = useMap(props2);
     return () => {
       return vue.createVNode("uni-map", {
-        ref: rootRef,
-        id: props2.id
+        "ref": rootRef,
+        "id": props2.id
       }, [vue.createVNode("div", {
-        ref: mapRef,
-        style: "width: 100%; height: 100%; position: relative; overflow: hidden"
+        "ref": mapRef,
+        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => item.id && vue.createVNode(MapMarker, vue.mergeProps({
-        key: item.id
+        "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), vue.createVNode("div", {
-        style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
   }
@@ -9232,16 +9232,16 @@ var TabBar = /* @__PURE__ */ vue.defineComponent({
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
       return vue.createVNode("uni-tabbar", {
-        class: "uni-tabbar-" + tabBar2.position
+        "class": "uni-tabbar-" + tabBar2.position
       }, [vue.createVNode("div", {
-        class: "uni-tabbar",
-        style: style.value
+        "class": "uni-tabbar",
+        "style": style.value
       }, [vue.createVNode("div", {
-        class: "uni-tabbar-border",
-        style: borderStyle.value
+        "class": "uni-tabbar-border",
+        "style": borderStyle.value
       }, null, 4), tabBarItemsTsx], 4), vue.createVNode("div", {
-        class: "uni-placeholder",
-        style: placeholderStyle.value
+        "class": "uni-placeholder",
+        "style": placeholderStyle.value
       }, null, 4)], 2);
     };
   }
@@ -9363,9 +9363,9 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab) {
 }
 function createTabBarItemTsx(color, iconPath, tabBarItem, tabBar2, index2, onSwitchTab) {
   return vue.createVNode("div", {
-    key: index2,
-    class: "uni-tabbar__item",
-    onClick: onSwitchTab(tabBarItem, index2)
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "onClick": onSwitchTab(tabBarItem, index2)
   }, [createTabBarItemBdTsx(color, iconPath || "", tabBarItem, tabBar2)], 8, ["onClick"]);
 }
 function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
@@ -9373,8 +9373,8 @@ function createTabBarItemBdTsx(color, iconPath, tabBarItem, tabBar2) {
     height
   } = tabBar2;
   return vue.createVNode("div", {
-    class: "uni-tabbar__bd",
-    style: {
+    "class": "uni-tabbar__bd",
+    "style": {
       height
     }
   }, [iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
@@ -9394,10 +9394,10 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     height: iconWidth
   };
   return vue.createVNode("div", {
-    class: clazz2,
-    style
+    "class": clazz2,
+    "style": style
   }, [type !== "midButton" && vue.createVNode("img", {
-    src: getRealPath(iconPath)
+    "src": getRealPath(iconPath)
   }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
@@ -9417,14 +9417,14 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
     marginTop: !iconPath ? "inherit" : spacing
   };
   return vue.createVNode("div", {
-    class: "uni-tabbar__label",
-    style
+    "class": "uni-tabbar__label",
+    "style": style
   }, [text, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
   return vue.createVNode("div", {
-    class: clazz2
+    "class": clazz2
   }, [badge], 2);
 }
 function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, onSwitchTab) {
@@ -9435,26 +9435,26 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     iconWidth
   } = midButton;
   return vue.createVNode("div", {
-    key: index2,
-    class: "uni-tabbar__item",
-    style: {
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "style": {
       flex: "0 0 " + width,
       position: "relative"
     },
-    onClick: onSwitchTab(midButton, index2)
+    "onClick": onSwitchTab(midButton, index2)
   }, [vue.createVNode("div", {
-    class: "uni-tabbar__mid",
-    style: {
+    "class": "uni-tabbar__mid",
+    "style": {
       width,
       height,
       backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
     }
   }, [iconPath && vue.createVNode("img", {
-    style: {
+    "style": {
       width: iconWidth,
       height: iconWidth
     },
-    src: getRealPath(iconPath)
+    "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 var LayoutComponent = vue.defineComponent({
@@ -9472,7 +9472,7 @@ var LayoutComponent = vue.defineComponent({
       const layoutTsx = createLayoutTsx(keepAliveRoute);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar);
       return vue.createVNode("uni-app", {
-        class: clazz2.value
+        "class": clazz2.value
       }, [layoutTsx, tabBarTsx], 2);
     };
   }
@@ -9631,7 +9631,7 @@ var PageHead = /* @__PURE__ */ vue.defineComponent({
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
       const placeholderTsx = type !== "transparent" && type !== "float" && vue.createVNode("div", {
-        class: {
+        "class": {
           "uni-placeholder": true,
           "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
         }
@@ -9639,13 +9639,13 @@ var PageHead = /* @__PURE__ */ vue.defineComponent({
       return vue.createVNode("uni-page-head", {
         "uni-page-head-type": type
       }, [vue.createVNode("div", {
-        ref: headRef,
-        class: clazz2.value,
-        style: style.value
+        "ref": headRef,
+        "class": clazz2.value,
+        "style": style.value
       }, [vue.createVNode("div", {
-        class: "uni-page-head-hd"
+        "class": "uni-page-head-hd"
       }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), vue.createVNode("div", {
-        class: "uni-page-head-ft"
+        "class": "uni-page-head-ft"
       }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
     };
   }
@@ -9657,8 +9657,8 @@ function createBackButtonTsx(pageMeta) {
   } = pageMeta;
   if (navigationBar.backButton && !isQuit) {
     return vue.createVNode("div", {
-      class: "uni-page-head-btn",
-      onClick: onPageHeadBackButton
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
     }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)], 8, ["onClick"]);
   }
 }
@@ -9673,15 +9673,15 @@ function createButtonsTsx(btns) {
     iconStyle
   }, index2) => {
     return vue.createVNode("div", {
-      key: index2,
-      class: btnClass,
-      style: btnStyle,
-      onClick,
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
       "badge-text": badgeText
     }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : vue.createVNode("i", {
-      class: "uni-btn-icon",
-      style: iconStyle,
-      innerHTML: btnText
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
     }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
   });
 }
@@ -9699,18 +9699,18 @@ function createPageHeadTitleTextTsx({
   titleImage
 }) {
   return vue.createVNode("div", {
-    class: "uni-page-head-bd"
+    "class": "uni-page-head-bd"
   }, [vue.createVNode("div", {
-    style: {
+    "style": {
       fontSize: titleSize,
       opacity: type === "transparent" ? 0 : 1
     },
-    class: "uni-page-head__title"
+    "class": "uni-page-head__title"
   }, [loading ? vue.createVNode("i", {
-    class: "uni-loading"
+    "class": "uni-loading"
   }, null) : titleImage ? vue.createVNode("img", {
-    src: titleImage,
-    class: "uni-page-head__title_image"
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
   }, null, 8, ["src"]) : titleText], 4)]);
 }
 function createPageHeadSearchInputTsx(navigationBar, {
@@ -9739,40 +9739,40 @@ function createPageHeadSearchInputTsx(navigationBar, {
   };
   const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
   return vue.createVNode("div", {
-    class: "uni-page-head-search",
-    style: searchStyle
+    "class": "uni-page-head-search",
+    "style": searchStyle
   }, [vue.createVNode("div", {
-    style: {
+    "style": {
       color: placeholderColor
     },
-    class: placeholderClass
+    "class": placeholderClass
   }, [vue.createVNode("div", {
-    class: "uni-page-head-search-icon"
+    "class": "uni-page-head-search-icon"
   }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
-    disabled: true,
-    style: {
+    "disabled": true,
+    "style": {
       color
     },
     "placeholder-style": {
       color: placeholderColor
     },
-    class: "uni-page-head-search-input",
+    "class": "uni-page-head-search-input",
     "confirm-type": "search",
-    onClick
+    "onClick": onClick
   }, null, 8, ["style", "placeholder-style", "onClick"]) : vue.createVNode(Input, {
-    focus: autoFocus,
-    style: {
+    "focus": autoFocus,
+    "style": {
       color
     },
     "placeholder-style": {
       color: placeholderColor
     },
-    class: "uni-page-head-search-input",
+    "class": "uni-page-head-search-input",
     "confirm-type": "search",
-    onFocus,
-    onBlur,
-    onInput,
-    onKeyup
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onKeyup": onKeyup
   }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
 }
 function onPageHeadBackButton() {
@@ -10017,7 +10017,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     return null;
   }
   return vue.createVNode(_sfc_main, {
-    ref: refreshRef
+    "ref": refreshRef
   }, null, 512);
 }
 var index$2 = vue.defineComponent({
@@ -10044,8 +10044,8 @@ var index$1 = /* @__PURE__ */ vue.defineComponent({
       t: t2
     } = useI18n();
     return () => vue.createVNode("div", {
-      class: "uni-async-error",
-      onClick: reload
+      "class": "uni-async-error",
+      "onClick": reload
     }, [t2("uni.async.error")], 8, ["onClick"]);
   }
 });
