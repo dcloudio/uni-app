@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { isString, NormalizedStyle } from '@vue/shared'
+import { extend, isString, NormalizedStyle } from '@vue/shared'
 import {
   isNativeTag,
   createRpx2Unit,
@@ -30,6 +30,10 @@ export function isSsrManifest(
     return !!(config.build && config.build.ssrManifest)
   }
   return false
+}
+
+export function initSsrDefine(config: ResolvedConfig) {
+  extend(globalThis, { __IMPORT_META_ENV_BASE_URL__: config.env.BASE_URL })
 }
 
 function serializeDefine(define: Record<string, any>): string {

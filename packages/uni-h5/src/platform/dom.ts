@@ -1,6 +1,14 @@
 import { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
 
+declare global {
+  interface ImportMeta {
+    env: {
+      BASE_URL: string
+    }
+  }
+}
+
 export function findElem(vm: ComponentPublicInstance) {
   return vm.$el
 }
@@ -8,18 +16,9 @@ export function findElem(vm: ComponentPublicInstance) {
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/
 
+const baseUrl = __IMPORT_META_ENV_BASE_URL__
 function addBase(filePath: string) {
-  const base = __uniConfig.router.base
-  if (!base) {
-    return filePath
-  }
-  if (base !== '/') {
-    // 部分地址已经带了base(如被webpack处理过的资源自动带了publicPath)
-    if (('/' + filePath).indexOf(base) === 0) {
-      return '/' + filePath
-    }
-  }
-  return base + filePath
+  return baseUrl + filePath
 }
 
 export function getRealPath(filePath: string) {

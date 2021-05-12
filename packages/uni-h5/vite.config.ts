@@ -30,6 +30,10 @@ const rollupPlugins = [
       defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
       defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
       defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
+      __IMPORT_META_ENV_BASE_URL__:
+        FORMAT === 'cjs'
+          ? '__IMPORT_META_ENV_BASE_URL__'
+          : 'import.meta.env.BASE_URL', //直接使用import.meta.env.BASE_URL会被vite替换成'/'
     },
     preventAssignment: true,
   }),
@@ -90,6 +94,7 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
+    target: 'es2020', // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,
     lib: {

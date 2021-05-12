@@ -6,6 +6,11 @@ declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__: 'wx' | 'qq' | 'my' | 'swan' | 'tt' | 'qa'
 declare var __GLOBAL__: Record<string, any>
 
+// importMeta(es|cjs)
+declare var __IMPORT_META_ENV_BASE_URL__:
+  | 'import.meta.env.BASE_URL'
+  | '__IMPORT_META_ENV_BASE_URL__'
+
 // Global compile-time constants
 declare var __DEV__: boolean
 declare var __TEST__: boolean

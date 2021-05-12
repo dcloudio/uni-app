@@ -2,7 +2,7 @@ import path from 'path'
 import { extend } from '@vue/shared'
 import { Plugin, UserConfig } from 'vite'
 
-import { normalizePath } from '@dcloudio/uni-cli-shared'
+import { normalizePath, parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { createCss } from './css'
@@ -28,7 +28,9 @@ export function createConfig(
     options.inputDir = normalizeInputDir(config)
     options.compiler.init()
     const define = createDefine(options, config, env)
+    const { h5 } = parseManifestJsonOnce(options.inputDir)
     return {
+      base: (h5 && h5.router && h5.router.base) || '',
       define: extend(define, options.compiler.define()),
       resolve: createResolve(options, config),
       optimizeDeps: createOptimizeDeps(options),

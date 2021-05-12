@@ -1,9 +1,15 @@
 import { ResolvedConfig } from 'vite'
-import { isSsr, rewriteSsrNativeTag, rewriteSsrRenderStyle } from '../utils'
+import {
+  isSsr,
+  initSsrDefine,
+  rewriteSsrNativeTag,
+  rewriteSsrRenderStyle,
+} from '../utils'
 
 // import alias from 'module-alias'
 export function initConfig(config: ResolvedConfig) {
   if (isSsr(config.command, config)) {
+    initSsrDefine(config)
     rewriteSsrNativeTag()
     rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
   }

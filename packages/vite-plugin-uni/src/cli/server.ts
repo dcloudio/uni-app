@@ -84,8 +84,16 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
     ? 'https'
     : 'http'
   let port = options.port || serverOptions.port || 3000
-  const hostname = options.host
-
+  let hostname: string | undefined
+  if (options.host === undefined || options.host === 'localhost') {
+    // Use a secure default
+    hostname = '127.0.0.1'
+  } else if (options.host === true) {
+    // probably passed --host in the CLI, without arguments
+    hostname = undefined // undefined typically means 0.0.0.0 or :: (listen on all IPs)
+  } else {
+    hostname = options.host as string
+  }
   return new Promise((resolve, reject) => {
     const onSuccess = () => {
       const interfaces = os.networkInterfaces()
