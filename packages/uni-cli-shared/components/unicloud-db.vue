@@ -546,7 +546,9 @@ export default {
         exec = exec.action(action)
       }
 
-      exec.collection(this.collection).where({
+      const collection = this.collection.indexOf(',') > 0 ? this.collection.substring(0, this.collection.indexOf(',')) : this.collection
+
+      exec.collection(collection).where({
         _id: dbCmd.in(ids)
       }).remove().then((res) => {
         success && success(res.result)
