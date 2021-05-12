@@ -36,7 +36,9 @@ function getIndex(props: Props): number {
 }
 
 export default /*#__PURE__*/ defineComponent({
+  name: 'ImagePreview',
   props,
+  emits: ['close'],
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const indexRef = ref(getIndex(props))
