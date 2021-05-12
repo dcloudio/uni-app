@@ -1,14 +1,16 @@
 import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { UniCompiler, initUniCompiler } from '@dcloudio/uni-cli-shared'
+import { Options as VueOptions } from '@vitejs/plugin-vue'
 
 import { createConfig } from './config'
-import { createResolveId } from './resolveId'
+// import { createResolveId } from './resolveId'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 import { createHandleHotUpdate } from './handleHotUpdate'
 export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
+  vueOptions?: VueOptions
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   base: string
@@ -43,7 +45,7 @@ export default function uniPlugin(
     config: createConfig(options),
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
-    resolveId: createResolveId(options),
+    // resolveId: createResolveId(options),// TODO 仅为HBuilderX中服务？
     handleHotUpdate: createHandleHotUpdate(options),
   }
 }

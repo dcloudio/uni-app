@@ -24,7 +24,6 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@vue/compiler-sfc": "^3.0.11",
     "@rollup/pluginutils": "^4.1.0",
     "autoprefixer": "^10.2.5",
     "cac": "^6.7.3",
@@ -41,9 +40,10 @@
     "slash": "^3.0.0"
   },
   "peerDependencies": {
-    "@dcloudio/uni-cli-shared": "^3.0.0",
-    "@dcloudio/uni-shared": "^3.0.0",
-    "@vue/shared": "^3.0.11",
+    "@vitejs/plugin-vue": "^1.2.2",
+    "@vue/compiler-sfc": "^3.1.0-beta.2",
+    "@vue/server-renderer": "^3.1.0-beta.2",
+    "@vue/shared": "^3.1.0-beta.2",
     "vite": "^2.3.0"
   },
   "devDependencies": {

@@ -23,6 +23,8 @@ export const BUILT_IN_MODULES = {
   '@dcloudio/uni-h5-vue': {
     es: 'dist/vue.runtime.esm.js',
     cjs: 'dist/vue.runtime.cjs.js',
+    'es-compat': 'dist/vue.runtime.compat.esm.js',
+    'cjs-compat': 'dist/vue.runtime.compat.cjs.js',
   },
   '@dcloudio/uni-i18n': {
     es: 'dist/uni-i18n.es.js',

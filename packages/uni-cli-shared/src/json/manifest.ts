@@ -18,3 +18,12 @@ export const parseRpx2UnitOnce = once((inputDir: string) => {
   const { h5 } = parseManifestJsonOnce(inputDir)
   return extend({}, defaultRpx2Unit, (h5 && h5.rpx) || {})
 })
+
+interface CompilerCompatConfig {
+  MODE?: 2 | 3
+}
+function parseCompatConfig(inputDir: string): CompilerCompatConfig {
+  return parseManifestJsonOnce(inputDir).compatConfig || {}
+}
+
+export const parseCompatConfigOnce = once(parseCompatConfig)

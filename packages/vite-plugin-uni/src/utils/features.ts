@@ -30,6 +30,8 @@ interface ManifestFeatures {
   i18nFr: boolean
   i18nZhHans: boolean
   i18nZhHant: boolean
+  vueOptionsApi: boolean
+  vueProdDevTools: boolean
 }
 
 function initProjectFeature({ command }: InitFeaturesOptions) {
@@ -158,6 +160,8 @@ function initManifestFeature({
     i18nFr: true,
     i18nZhHans: true,
     i18nZhHant: true,
+    vueOptionsApi: true,
+    vueProdDevTools: false,
   }
 
   if (command === 'build') {
@@ -220,6 +224,8 @@ export function initFeatures(options: InitFeaturesOptions) {
     i18nFr,
     i18nZhHans,
     i18nZhHant,
+    vueOptionsApi,
+    vueProdDevTools,
     pages,
     tabBar,
     tabBarMidButton,
@@ -240,6 +246,10 @@ export function initFeatures(options: InitFeaturesOptions) {
     initProjectFeature(options)
   )
   const features = {
+    // vue
+    __VUE_OPTIONS_API__: vueOptionsApi, // enable/disable Options API support, default: true
+    __VUE_PROD_DEVTOOLS__: vueProdDevTools, // enable/disable devtools support in production, default: false
+    // uni
     __UNI_FEATURE_WX__: wx, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）
     __UNI_FEATURE_WXS__: wxs, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）
     __UNI_FEATURE_RPX__: rpx, // 是否启用运行时 rpx 支持

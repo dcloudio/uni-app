@@ -2,7 +2,10 @@ import debug from 'debug'
 import { extend } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
+import vue from '@vitejs/plugin-vue'
+
 import { API_STYLES } from '@dcloudio/uni-cli-shared'
+
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
@@ -87,6 +90,9 @@ export function initPlugins(
 ) {
   const command = config.command
   const plugins = config.plugins as Plugin[]
+
+  addPlugin(plugins, vue(options.vueOptions), 'vite:uni', 'pre')
+
   if (options.platform === 'h5') {
     // h5平台需要为非App.vue组件自动增加scoped
     addPlugin(

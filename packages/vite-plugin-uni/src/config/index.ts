@@ -12,6 +12,8 @@ import { createBuild } from './build'
 import { createOptimizeDeps } from './optimizeDeps'
 import { createDefine } from './define'
 
+import { initPluginVueOptions } from '../vue'
+
 function normalizeRoot(config: UserConfig) {
   return normalizePath(config.root ? path.resolve(config.root) : process.cwd())
 }
@@ -26,6 +28,7 @@ export function createConfig(
     options.command = env.command
     options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
     options.inputDir = normalizeInputDir(config)
+    options.vueOptions = initPluginVueOptions(options.vueOptions || {})
     options.compiler.init()
     const define = createDefine(options, config, env)
     const { h5 } = parseManifestJsonOnce(options.inputDir)
