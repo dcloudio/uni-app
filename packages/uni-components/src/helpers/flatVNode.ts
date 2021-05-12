@@ -10,6 +10,8 @@ export function flatVNode(nodes: any): VNode[] {
         } else {
           array.push(vnode)
         }
+      } else if (Array.isArray(vnode)) {
+        array.push(...flatVNode(vnode))
       }
     })
   }
