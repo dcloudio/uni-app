@@ -4329,6 +4329,23 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ]));
 }
 _sfc_main$5.render = _sfc_render$5;
+function flatVNode(nodes) {
+  const array = [];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((vnode) => {
+      if (vue.isVNode(vnode)) {
+        if (vnode.type === vue.Fragment) {
+          array.push(...flatVNode(vnode.children));
+        } else {
+          array.push(vnode);
+        }
+      } else if (Array.isArray(vnode)) {
+        array.push(...flatVNode(vnode));
+      }
+    });
+  }
+  return array;
+}
 const props$f = {
   value: {
     type: Array,
@@ -4358,10 +4375,10 @@ const props$f = {
 };
 function useState$1(props2) {
   const value = vue.reactive([...props2.value]);
-  const state = {
+  const state = vue.reactive({
     value,
     height: 34
-  };
+  });
   vue.watch(() => props2.value, (val, oldVal) => {
     {
       state.value.length = val.length;
@@ -4411,17 +4428,11 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
       return ref;
     };
     vue.provide("getPickerViewColumn", getPickerViewColumn);
-    const getPickerViewProps = () => {
-      return props2;
-    };
-    vue.provide("getPickerViewProps", getPickerViewProps);
-    const getPickerViewState = () => {
-      return state;
-    };
-    vue.provide("getPickerViewState", getPickerViewState);
+    vue.provide("pickerViewProps", props2);
+    vue.provide("pickerViewState", state);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      columnVNodes = columnVNodes = defaultSlots || [];
+      columnVNodes = flatVNode(defaultSlots);
       return vue.createVNode("uni-picker-view", {
         "ref": rootRef
       }, [vue.createVNode(ResizeSensor, {
@@ -4431,27 +4442,10 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
         }) => state.height = height
       }, null, 8, ["initial", "onResize"]), vue.createVNode("div", {
         "class": "uni-picker-view-wrapper"
-      }, [columnVNodes])], 512);
+      }, [defaultSlots])], 512);
     };
   }
 });
-function flatVNode(nodes) {
-  const array = [];
-  if (Array.isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (vue.isVNode(vnode)) {
-        if (vnode.type === vue.Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (Array.isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
 let scopedIndex = 0;
 function useScopedClass(indicatorHeightRef) {
   const className = `uni-picker-view-content-${scopedIndex++}`;
@@ -4474,10 +4468,8 @@ var index$g = /* @__PURE__ */ vue.defineComponent({
     const getPickerViewColumn = vue.inject("getPickerViewColumn");
     const instance = vue.getCurrentInstance();
     const currentRef = getPickerViewColumn ? getPickerViewColumn(instance) : vue.ref(0);
-    const getPickerViewProps = vue.inject("getPickerViewProps");
-    const pickerViewProps = getPickerViewProps();
-    const getPickerViewState = vue.inject("getPickerViewState");
-    const pickerViewState = getPickerViewState();
+    const pickerViewProps = vue.inject("pickerViewProps");
+    const pickerViewState = vue.inject("pickerViewState");
     const indicatorHeight = vue.ref(34);
     const maskSize = vue.computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
     const {
@@ -4497,7 +4489,7 @@ var index$g = /* @__PURE__ */ vue.defineComponent({
       }
     });
     vue.watch(() => state.current, (current) => currentRef.value = current);
-    vue.watch([() => indicatorHeight.value, () => state.length], updatesScroller);
+    vue.watch([() => indicatorHeight.value, () => state.length, () => pickerViewState.height], updatesScroller);
     let oldDeltaY = 0;
     function handleWheel(event) {
       const deltaY = oldDeltaY + event.deltaY;

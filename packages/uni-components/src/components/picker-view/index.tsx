@@ -12,6 +12,7 @@ import {
   PropType,
   ComponentInternalInstance,
 } from 'vue'
+import { flatVNode } from '../../helpers/flatVNode'
 import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
 
@@ -46,17 +47,17 @@ const props = {
   },
 }
 
-type Props = Record<keyof typeof props, any>
-interface State {
+export type Props = Record<keyof typeof props, any>
+export interface State {
   value: number[]
   height: number
 }
 function useState(props: Props): State {
   const value: number[] = reactive([...props.value])
-  const state = {
+  const state = reactive({
     value,
     height: 34,
-  }
+  })
   watch(
     () => props.value,
     (val: number[], oldVal: number[]) => {
@@ -81,8 +82,6 @@ function useState(props: Props): State {
 export type GetPickerViewColumn = (
   columnInstance: ComponentInternalInstance
 ) => ComputedRef<number>
-export type GetPickerViewProps = () => Props
-export type GetPickerViewState = () => State
 
 export default /*#__PURE__*/ defineComponent({
   name: 'PickerView',
@@ -119,20 +118,13 @@ export default /*#__PURE__*/ defineComponent({
       return ref
     }
     provide('getPickerViewColumn', getPickerViewColumn)
-    const getPickerViewProps: GetPickerViewProps = () => {
-      return props
-    }
-    provide('getPickerViewProps', getPickerViewProps)
-
-    const getPickerViewState: GetPickerViewState = () => {
-      return state
-    }
-    provide('getPickerViewState', getPickerViewState)
+    provide('pickerViewProps', props)
+    provide('pickerViewState', state)
 
     return () => {
       const defaultSlots = slots.default && slots.default()
       // TODO filter
-      columnVNodes = columnVNodes = defaultSlots || []
+      columnVNodes = flatVNode(defaultSlots)
       return (
         <uni-picker-view ref={rootRef}>
           <ResizeSensor
@@ -141,7 +133,7 @@ export default /*#__PURE__*/ defineComponent({
               (state.height = height)
             }
           ></ResizeSensor>
-          <div class="uni-picker-view-wrapper">{columnVNodes}</div>
+          <div class="uni-picker-view-wrapper">{defaultSlots}</div>
         </uni-picker-view>
       )
     }

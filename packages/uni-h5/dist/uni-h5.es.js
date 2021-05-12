@@ -9104,6 +9104,23 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ]));
 }
 _sfc_main$5.render = _sfc_render$5;
+function flatVNode(nodes) {
+  const array = [];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((vnode) => {
+      if (isVNode(vnode)) {
+        if (vnode.type === Fragment) {
+          array.push(...flatVNode(vnode.children));
+        } else {
+          array.push(vnode);
+        }
+      } else if (Array.isArray(vnode)) {
+        array.push(...flatVNode(vnode));
+      }
+    });
+  }
+  return array;
+}
 const props$j = {
   value: {
     type: Array,
@@ -9133,10 +9150,10 @@ const props$j = {
 };
 function useState$1(props2) {
   const value = reactive([...props2.value]);
-  const state2 = {
+  const state2 = reactive({
     value,
     height: 34
-  };
+  });
   watch(() => props2.value, (val, oldVal) => {
     {
       state2.value.length = val.length;
@@ -9186,17 +9203,11 @@ var index$f = /* @__PURE__ */ defineComponent({
       return ref2;
     };
     provide("getPickerViewColumn", getPickerViewColumn);
-    const getPickerViewProps = () => {
-      return props2;
-    };
-    provide("getPickerViewProps", getPickerViewProps);
-    const getPickerViewState = () => {
-      return state2;
-    };
-    provide("getPickerViewState", getPickerViewState);
+    provide("pickerViewProps", props2);
+    provide("pickerViewState", state2);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      columnVNodes = columnVNodes = defaultSlots || [];
+      columnVNodes = flatVNode(defaultSlots);
       return createVNode("uni-picker-view", {
         "ref": rootRef
       }, [createVNode(ResizeSensor, {
@@ -9206,7 +9217,7 @@ var index$f = /* @__PURE__ */ defineComponent({
         }) => state2.height = height
       }, null, 8, ["initial", "onResize"]), createVNode("div", {
         "class": "uni-picker-view-wrapper"
-      }, [columnVNodes])], 512);
+      }, [defaultSlots])], 512);
     };
   }
 });
@@ -9890,23 +9901,6 @@ function useScroller(element, options) {
     handleTouchEnd
   };
 }
-function flatVNode(nodes) {
-  const array = [];
-  if (Array.isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (isVNode(vnode)) {
-        if (vnode.type === Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (Array.isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
 let scopedIndex = 0;
 function useScopedClass(indicatorHeightRef) {
   const className = `uni-picker-view-content-${scopedIndex++}`;
@@ -9956,10 +9950,8 @@ var index$e = /* @__PURE__ */ defineComponent({
     const getPickerViewColumn = inject("getPickerViewColumn");
     const instance2 = getCurrentInstance();
     const currentRef = getPickerViewColumn ? getPickerViewColumn(instance2) : ref(0);
-    const getPickerViewProps = inject("getPickerViewProps");
-    const pickerViewProps = getPickerViewProps();
-    const getPickerViewState = inject("getPickerViewState");
-    const pickerViewState = getPickerViewState();
+    const pickerViewProps = inject("pickerViewProps");
+    const pickerViewState = inject("pickerViewState");
     const indicatorHeight = ref(34);
     const maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
     const {
@@ -9987,7 +9979,7 @@ var index$e = /* @__PURE__ */ defineComponent({
       }
     });
     watch(() => state2.current, (current) => currentRef.value = current);
-    watch([() => indicatorHeight.value, () => state2.length], updatesScroller);
+    watch([() => indicatorHeight.value, () => state2.length, () => pickerViewState.height], updatesScroller);
     let oldDeltaY = 0;
     function handleWheel(event) {
       const deltaY = oldDeltaY + event.deltaY;

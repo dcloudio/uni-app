@@ -22,8 +22,8 @@ import { flatVNode } from '../../helpers/flatVNode'
 import ResizeSensor from '../resize-sensor/index'
 import {
   GetPickerViewColumn,
-  GetPickerViewProps,
-  GetPickerViewState,
+  Props as PickerViewProps,
+  State as PickerViewState,
 } from '../picker-view'
 
 let scopedIndex = 0
@@ -100,15 +100,8 @@ export default /*#__PURE__*/ defineComponent({
       ? getPickerViewColumn(instance)
       : ref(0)
 
-    const getPickerViewProps: GetPickerViewProps = inject(
-      'getPickerViewProps'
-    ) as GetPickerViewProps
-    const pickerViewProps = getPickerViewProps()
-
-    const getPickerViewState: GetPickerViewState = inject(
-      'getPickerViewState'
-    ) as GetPickerViewState
-    const pickerViewState = getPickerViewState()
+    const pickerViewProps = inject('pickerViewProps') as PickerViewProps
+    const pickerViewState = inject('pickerViewState') as PickerViewState
     const indicatorHeight = ref(34)
     const maskSize = computed(
       () => (pickerViewState.height - indicatorHeight.value) / 2
@@ -149,7 +142,14 @@ export default /*#__PURE__*/ defineComponent({
       () => state.current,
       (current) => (currentRef.value = current)
     )
-    watch([() => indicatorHeight.value, () => state.length], updatesScroller)
+    watch(
+      [
+        () => indicatorHeight.value,
+        () => state.length,
+        () => pickerViewState.height,
+      ],
+      updatesScroller
+    )
 
     let oldDeltaY = 0
     function handleWheel(event: Event) {
