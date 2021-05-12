@@ -10,4 +10,5 @@ export const API_STYLES = {
     `${BASE_COMPONENTS_STYLE_PATH}/movable-area.css`,
     `${BASE_COMPONENTS_STYLE_PATH}/movable-view.css`,
   ],
+  openLocation: [`${H5_API_STYLE_PATH}/location-view.css`],
 }

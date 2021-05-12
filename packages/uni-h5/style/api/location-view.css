@@ -1,0 +1,60 @@
+.uni-system-open-location {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #f8f8f8;
+  z-index: 999;
+}
+
+.uni-system-open-location .nav-btn-back {
+  position: absolute;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.uni-system-open-location .nav-btn-back>svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.uni-system-open-location .map-content {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  width: 100%;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.uni-system-open-location .map-content.fix-position {
+  top: -74px;
+  bottom: -44px;
+}
+
+.uni-system-open-location .map-content>iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.uni-system-open-location .actTonav {
+  position: absolute;
+  right: 16px;
+  bottom: 56px;
+  width: 60px;
+  height: 60px;
+  border-radius: 60px;
+}

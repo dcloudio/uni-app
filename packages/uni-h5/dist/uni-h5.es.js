@@ -527,6 +527,7 @@ const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
+const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
   return createVNode("svg", {
     width: size,
@@ -3144,6 +3145,28 @@ const GetLocationOptions = {
 const GetLocationProtocol = {
   type: String,
   altitude: Boolean
+};
+const API_OPEN_LOCATION = "openLocation";
+const OpenLocationOptions = {
+  formatArgs: {
+    scale(value, params) {
+      value = Math.floor(value);
+      params.scale = value >= 5 && value <= 18 ? value : 18;
+    }
+  }
+};
+const OpenLocationProtocol = {
+  latitude: {
+    type: Number,
+    required: true
+  },
+  longitude: {
+    type: Number,
+    required: true
+  },
+  scale: Number,
+  name: String,
+  address: String
 };
 const API_CHOOSE_IMAGE = "chooseImage";
 const ChooseImageOptions = {
@@ -6009,7 +6032,7 @@ function _removeListeners(id2, listeners, watch2) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$t = {
+const props$u = {
   name: {
     type: String,
     default: ""
@@ -6017,7 +6040,7 @@ const props$t = {
 };
 var index$l = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$t,
+  props: props$u,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6070,7 +6093,7 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$s = {
+const props$t = {
   for: {
     type: String,
     default: ""
@@ -6078,7 +6101,7 @@ const props$s = {
 };
 var index$k = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$s,
+  props: props$t,
   setup(props2, {
     emit: emit2,
     slots
@@ -6123,7 +6146,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$r = {
+const props$s = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6147,7 +6170,7 @@ const props$r = {
 };
 var index$j = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$r,
+  props: props$s,
   setup(props2, {
     slots
   }) {
@@ -6226,7 +6249,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$q = {
+const props$r = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6970,7 +6993,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
+const props$q = /* @__PURE__ */ Object.assign({}, props$r, {
   id: {
     type: String,
     default: ""
@@ -6998,7 +7021,7 @@ const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
 });
 var index$i = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$p,
+  props: props$q,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7085,7 +7108,7 @@ var index$h = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$o = {
+const props$p = {
   src: {
     type: String,
     default: ""
@@ -7124,7 +7147,7 @@ const IMAGE_MODES = {
 };
 var index$g = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$o,
+  props: props$p,
   setup(props2, {
     emit: emit2
   }) {
@@ -7403,7 +7426,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$n = /* @__PURE__ */ Object.assign({}, {
+const props$o = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -7464,7 +7487,7 @@ const props$n = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$q);
+}, props$r);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -7649,7 +7672,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
+const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7657,7 +7680,7 @@ const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$m,
+  props: props$n,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7755,7 +7778,7 @@ var Input = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$l = {
+const props$m = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -7764,7 +7787,7 @@ const props$l = {
 var MovableArea = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$l,
+  props: props$m,
   setup(props2, {
     slots
   }) {
@@ -8365,7 +8388,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$k = {
+const props$l = {
   direction: {
     type: String,
     default: "none"
@@ -8421,7 +8444,7 @@ const props$k = {
 };
 var MovableView = /* @__PURE__ */ defineComponent({
   name: "MovableView",
-  props: props$k,
+  props: props$l,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -9121,7 +9144,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$j = {
+const props$k = {
   value: {
     type: Array,
     default() {
@@ -9168,7 +9191,7 @@ function useState$1(props2) {
 }
 var index$f = /* @__PURE__ */ defineComponent({
   name: "PickerView",
-  props: props$j,
+  props: props$k,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -10084,7 +10107,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$i = {
+const props$j = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -10133,7 +10156,7 @@ const props$i = {
 };
 var index$d = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$i,
+  props: props$j,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -10204,7 +10227,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$h = {
+const props$i = {
   name: {
     type: String,
     default: ""
@@ -10212,7 +10235,7 @@ const props$h = {
 };
 var index$c = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
-  props: props$h,
+  props: props$i,
   setup(props2, {
     emit: emit2,
     slots
@@ -10288,7 +10311,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$g = {
+const props$h = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -10312,7 +10335,7 @@ const props$g = {
 };
 var index$b = /* @__PURE__ */ defineComponent({
   name: "Radio",
-  props: props$g,
+  props: props$h,
   setup(props2, {
     slots
   }) {
@@ -11817,7 +11840,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   ], 512);
 }
 _sfc_main$3.render = _sfc_render$3;
-const props$f = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -11873,7 +11896,7 @@ const props$f = {
 };
 var index$a = /* @__PURE__ */ defineComponent({
   name: "Slider",
-  props: props$f,
+  props: props$g,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -12038,7 +12061,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$e = {
+const props$f = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -12527,7 +12550,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 var Swiper = /* @__PURE__ */ defineComponent({
   name: "Swiper",
-  props: props$e,
+  props: props$f,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -12622,7 +12645,7 @@ var Swiper = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$d = {
+const props$e = {
   itemId: {
     type: String,
     default: ""
@@ -12630,7 +12653,7 @@ const props$d = {
 };
 var SwiperItem = /* @__PURE__ */ defineComponent({
   name: "SwiperItem",
-  props: props$d,
+  props: props$e,
   setup(props2, {
     slots
   }) {
@@ -12679,7 +12702,7 @@ var SwiperItem = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$c = {
+const props$d = {
   name: {
     type: String,
     default: ""
@@ -12707,7 +12730,7 @@ const props$c = {
 };
 var index$9 = /* @__PURE__ */ defineComponent({
   name: "Switch",
-  props: props$c,
+  props: props$d,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -12857,7 +12880,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$b = /* @__PURE__ */ Object.assign({}, props$n, {
+const props$c = /* @__PURE__ */ Object.assign({}, props$o, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12873,7 +12896,7 @@ const props$b = /* @__PURE__ */ Object.assign({}, props$n, {
 });
 var index$7 = /* @__PURE__ */ defineComponent({
   name: "Textarea",
-  props: props$b,
+  props: props$c,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -13641,7 +13664,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   });
 }
-const props$a = {
+const props$b = {
   id: {
     type: String,
     default: ""
@@ -13727,7 +13750,7 @@ const props$a = {
 };
 var index$5 = /* @__PURE__ */ defineComponent({
   name: "Video",
-  props: props$a,
+  props: props$b,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -13940,7 +13963,7 @@ var index$5 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$9 = {
+const props$a = {
   src: {
     type: String,
     default: ""
@@ -13949,7 +13972,7 @@ const props$9 = {
 var index$4 = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$9,
+  props: props$a,
   setup(props2, {
     attrs: attrs2
   }) {
@@ -14155,7 +14178,7 @@ function loadMaps(callback2) {
     document.body.appendChild(script);
   }
 }
-const props$8 = {
+const props$9 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14219,7 +14242,7 @@ const props$8 = {
 };
 var MapMarker = /* @__PURE__ */ defineComponent({
   name: "MapMarker",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14430,7 +14453,7 @@ var MapMarker = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$7 = {
+const props$8 = {
   points: {
     type: Array,
     require: true
@@ -14476,7 +14499,7 @@ const props$7 = {
 };
 var MapPolyline = /* @__PURE__ */ defineComponent({
   name: "MapPolyline",
-  props: props$7,
+  props: props$8,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14529,7 +14552,7 @@ var MapPolyline = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$6 = {
+const props$7 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14561,7 +14584,7 @@ const props$6 = {
 };
 var MapCircle = /* @__PURE__ */ defineComponent({
   name: "MapCircle",
-  props: props$6,
+  props: props$7,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14605,7 +14628,7 @@ var MapCircle = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$5 = {
+const props$6 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14625,7 +14648,7 @@ const props$5 = {
 };
 var MapControl = /* @__PURE__ */ defineComponent({
   name: "MapControl",
-  props: props$5,
+  props: props$6,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -15572,7 +15595,7 @@ function usePopup(props2, {
   });
   return visible;
 }
-const props$4 = {
+const props$5 = {
   src: {
     type: String,
     default: ""
@@ -15580,7 +15603,7 @@ const props$4 = {
 };
 var ImageView = /* @__PURE__ */ defineComponent({
   name: "ImageView",
-  props: props$4,
+  props: props$5,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -15670,7 +15693,7 @@ var ImageView = /* @__PURE__ */ defineComponent({
 function _isSlot(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$3 = {
+const props$4 = {
   urls: {
     type: Array,
     default() {
@@ -15688,7 +15711,9 @@ function getIndex(props2) {
   return index2;
 }
 var ImagePreview = /* @__PURE__ */ defineComponent({
-  props: props$3,
+  name: "ImagePreview",
+  props: props$4,
+  emits: ["close"],
   setup(props2, {
     emit: emit2
   }) {
@@ -15760,13 +15785,13 @@ var ImagePreview = /* @__PURE__ */ defineComponent({
     };
   }
 });
-let state = null;
+let state$1 = null;
 const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {resolve}) => {
-  if (!state) {
-    state = reactive(args);
+  if (!state$1) {
+    state$1 = reactive(args);
     nextTick(() => {
-      const app = createRootApp(ImagePreview, state, () => {
-        state = null;
+      const app = createRootApp(ImagePreview, state$1, () => {
+        state$1 = null;
         nextTick(() => {
           app.unmount();
         });
@@ -15774,7 +15799,7 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {r
       app.mount(ensureRoot("u-a-p"));
     });
   } else {
-    extend(state, args);
+    extend(state$1, args);
   }
   resolve();
 }, PreviewImageProtocol, PreviewImageOptions);
@@ -16394,6 +16419,115 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
+const props$3 = {
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
+  },
+  scale: {
+    type: Number,
+    default: 18
+  },
+  name: {
+    type: String,
+    default: ""
+  },
+  address: {
+    type: String,
+    default: ""
+  }
+};
+var LocationView = /* @__PURE__ */ defineComponent({
+  name: "LocationView",
+  props: props$3,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const mapRef = ref(null);
+    const key = __uniConfig.qqMapKey;
+    const referer = "uniapp";
+    const poimarkerSrc = "https://apis.map.qq.com/tools/poimarker";
+    const src = computed(() => {
+      const {
+        latitude,
+        longitude,
+        name,
+        address
+      } = props2;
+      return latitude && longitude ? `${poimarkerSrc}?type=0&marker=coord:${latitude},${longitude};title:${name};addr:${address};&key=${key}&referer=${referer}` : "";
+    });
+    const state2 = reactive({
+      src,
+      isPoimarkerSrc: true
+    });
+    function check() {
+      const map = mapRef.value;
+      if (map.src.indexOf(poimarkerSrc) === 0) {
+        state2.isPoimarkerSrc = true;
+      } else {
+        state2.isPoimarkerSrc = false;
+      }
+    }
+    function nav() {
+      const map = mapRef.value;
+      const url = `https://map.qq.com/nav/drive#routes/page?transport=2&epointy=${props2.latitude}&epointx=${props2.longitude}&eword=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&referer=${referer}`;
+      map.src = url;
+    }
+    function back() {
+      const map = mapRef.value;
+      if (map.src.indexOf(poimarkerSrc) !== 0) {
+        map.src = state2.src;
+      } else {
+        emit2("close");
+      }
+      check();
+    }
+    return () => {
+      return createVNode("div", {
+        "class": "uni-system-open-location"
+      }, [createVNode("div", {
+        "class": {
+          "map-content": true,
+          "fix-position": state2.isPoimarkerSrc
+        }
+      }, [createVNode("iframe", {
+        "ref": mapRef,
+        "src": state2.src,
+        "allow": "geolocation",
+        "sandbox": "allow-scripts allow-same-origin allow-forms allow-top-navigation allow-modals allow-popups",
+        "frameborder": "0",
+        "onLoad": check
+      }, null, 40, ["src", "onLoad"]), state2.isPoimarkerSrc && createVNode("div", {
+        "class": "actTonav",
+        "onClick": nav
+      }, null, 8, ["onClick"])], 2), createVNode("div", {
+        "class": "nav-btn-back",
+        "onClick": back
+      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
+    };
+  }
+});
+let state = null;
+const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, {resolve}) => {
+  if (!state) {
+    state = reactive(args);
+    nextTick(() => {
+      const app = createRootApp(LocationView, state, () => {
+        state = null;
+        nextTick(() => {
+          app.unmount();
+        });
+      });
+      app.mount(ensureRoot("u-a-o"));
+    });
+  } else {
+    extend(state, args);
+  }
+  resolve();
+}, OpenLocationProtocol, OpenLocationOptions);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -16963,6 +17097,7 @@ var api = /* @__PURE__ */ Object.freeze({
   onSocketMessage,
   onSocketClose,
   getLocation,
+  openLocation,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -17945,7 +18080,6 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATHS = {
   none: "",
   forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -18600,4 +18734,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$m as Button, _sfc_main$6 as Canvas, index$j as Checkbox, index$l as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$i as Editor, index$n as Form, index$h as Icon, index$g as Image, Input, index$k as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as PickerView, index$e as PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$a as Slider, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, pageScrollTo, index$o as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$m as Button, _sfc_main$6 as Canvas, index$j as Checkbox, index$l as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$i as Editor, index$n as Form, index$h as Icon, index$g as Image, Input, index$k as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as PickerView, index$e as PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$a as Slider, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$o as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
