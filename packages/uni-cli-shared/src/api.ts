@@ -7,5 +7,7 @@ export const API_STYLES = {
   previewImage: [
     `${BASE_COMPONENTS_STYLE_PATH}/swiper.css`,
     `${BASE_COMPONENTS_STYLE_PATH}/swiper-item.css`,
+    `${BASE_COMPONENTS_STYLE_PATH}/movable-area.css`,
+    `${BASE_COMPONENTS_STYLE_PATH}/movable-view.css`,
   ],
 }
