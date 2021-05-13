@@ -615,9 +615,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
-        if (isSymbol(key)
-            ? builtInSymbols.has(key)
-            : isNonTrackableKeys(key)) {
+        if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
             return res;
         }
         if (!isReadonly) {
@@ -2027,13 +2025,13 @@ const deprecationData = {
             `\n\n  configureCompat({ ${"ATTR_FALSE_VALUE" /* ATTR_FALSE_VALUE */}: false })\n`,
         link: `https://v3.vuejs.org/guide/migration/attribute-coercion.html`
     },
-    ["ATTR_ENUMERATED_COERSION" /* ATTR_ENUMERATED_COERSION */]: {
+    ["ATTR_ENUMERATED_COERCION" /* ATTR_ENUMERATED_COERCION */]: {
         message: (name, value, coerced) => `Enumerated attribute "${name}" with v-bind value \`${value}\` will ` +
             `${value === null ? `be removed` : `render the value as-is`} instead of coercing the value to "${coerced}" in Vue 3. ` +
             `Always use explicit "true" or "false" values for enumerated attributes. ` +
             `If the usage is intended, ` +
             `you can disable the compat behavior and suppress this warning with:` +
-            `\n\n  configureCompat({ ${"ATTR_ENUMERATED_COERSION" /* ATTR_ENUMERATED_COERSION */}: false })\n`,
+            `\n\n  configureCompat({ ${"ATTR_ENUMERATED_COERCION" /* ATTR_ENUMERATED_COERCION */}: false })\n`,
         link: `https://v3.vuejs.org/guide/migration/attribute-coercion.html`
     },
     ["TRANSITION_CLASSES" /* TRANSITION_CLASSES */]: {
@@ -4505,7 +4503,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // state
     data: dataOptions, computed: computedOptions, methods, watch: watchOptions, provide: provideOptions, inject: injectOptions, 
     // lifecycle
-    beforeMount, mounted, beforeUpdate, updated, beforeActivate, activated, beforeDeactivate, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, serverPrefetch, 
+    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, serverPrefetch, 
     // public API
     expose } = options;
     const publicThis = instance.proxy;
@@ -4678,56 +4676,35 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     if (!asMixin) {
         callSyncHook('created', "c" /* CREATED */, options, instance, globalMixins);
     }
-    if (beforeMount) {
-        onBeforeMount(beforeMount.bind(publicThis));
+    function registerLifecycleHook(register, hook) {
+        // Array lifecycle hooks are only present in the compat build
+        if (isArray(hook)) {
+            hook.forEach(_hook => register(_hook.bind(publicThis)));
+        }
+        else if (hook) {
+            register(hook.bind(publicThis));
+        }
     }
-    if (mounted) {
-        onMounted(mounted.bind(publicThis));
-    }
-    if (beforeUpdate) {
-        onBeforeUpdate(beforeUpdate.bind(publicThis));
-    }
-    if (updated) {
-        onUpdated(updated.bind(publicThis));
-    }
-    if (beforeActivate) {
-        onBeforeActivate(beforeActivate.bind(publicThis));
-    }
-    if (activated) {
-        onActivated(activated.bind(publicThis));
-    }
-    if (beforeDeactivate) {
-        onBeforeDeactivate(beforeDeactivate.bind(publicThis));
-    }
-    if (deactivated) {
-        onDeactivated(deactivated.bind(publicThis));
-    }
-    if (errorCaptured) {
-        onErrorCaptured(errorCaptured.bind(publicThis));
-    }
-    if (renderTracked) {
-        onRenderTracked(renderTracked.bind(publicThis));
-    }
-    if (renderTriggered) {
-        onRenderTriggered(renderTriggered.bind(publicThis));
-    }
-    if (beforeUnmount) {
-        onBeforeUnmount(beforeUnmount.bind(publicThis));
-    }
-    if (unmounted) {
-        onUnmounted(unmounted.bind(publicThis));
-    }
-    if (serverPrefetch) {
-        onServerPrefetch(serverPrefetch.bind(publicThis));
-    }
+    registerLifecycleHook(onBeforeMount, beforeMount);
+    registerLifecycleHook(onMounted, mounted);
+    registerLifecycleHook(onBeforeUpdate, beforeUpdate);
+    registerLifecycleHook(onUpdated, updated);
+    registerLifecycleHook(onActivated, activated);
+    registerLifecycleHook(onDeactivated, deactivated);
+    registerLifecycleHook(onErrorCaptured, errorCaptured);
+    registerLifecycleHook(onRenderTracked, renderTracked);
+    registerLifecycleHook(onRenderTriggered, renderTriggered);
+    registerLifecycleHook(onBeforeUnmount, beforeUnmount);
+    registerLifecycleHook(onUnmounted, unmounted);
+    registerLifecycleHook(onServerPrefetch, serverPrefetch);
     {
         if (beforeDestroy &&
             softAssertCompatEnabled("OPTIONS_BEFORE_DESTROY" /* OPTIONS_BEFORE_DESTROY */, instance)) {
-            onBeforeUnmount(beforeDestroy.bind(publicThis));
+            registerLifecycleHook(onBeforeUnmount, beforeDestroy);
         }
         if (destroyed &&
             softAssertCompatEnabled("OPTIONS_DESTROYED" /* OPTIONS_DESTROYED */, instance)) {
-            onUnmounted(destroyed.bind(publicThis));
+            registerLifecycleHook(onUnmounted, destroyed);
         }
     }
     if (isArray(expose)) {
@@ -5679,8 +5656,11 @@ const legacyOptionMergeStrats = {
     // on the watch-specific behavior, just expose the object merge strat.
     watch: mergeObjectOptions
 };
+function toArray(target) {
+    return isArray(target) ? target : target ? [target] : [];
+}
 function mergeHook(to, from) {
-    return Array.from(new Set([...(isArray(to) ? to : to ? [to] : []), from]));
+    return Array.from(new Set([...toArray(to), ...toArray(from)]));
 }
 function mergeObjectOptions(to, from) {
     return to ? extend(extend(Object.create(null), to), from) : from;
@@ -5716,7 +5696,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.1.0-beta.2";
+    Vue.version = "3.1.0-beta.3";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -10440,7 +10420,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.0-beta.2";
+const version = "3.1.0-beta.3";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10695,7 +10675,7 @@ function compatCoerceAttr(el, key, value, instance = null) {
                 ? 'true'
                 : null;
         if (v2CocercedValue &&
-            compatUtils.softAssertCompatEnabled("ATTR_ENUMERATED_COERSION" /* ATTR_ENUMERATED_COERSION */, instance, key, value, v2CocercedValue)) {
+            compatUtils.softAssertCompatEnabled("ATTR_ENUMERATED_COERCION" /* ATTR_ENUMERATED_COERCION */, instance, key, value, v2CocercedValue)) {
             el.setAttribute(key, v2CocercedValue);
             return true;
         }
@@ -16030,6 +16010,13 @@ const transformText = (node, context) => {
                     (node.type === 0 /* ROOT */ ||
                         (node.type === 1 /* ELEMENT */ &&
                             node.tagType === 0 /* ELEMENT */ &&
+                            // #3756
+                            // custom directives can potentially add DOM elements arbitrarily,
+                            // we need to avoid setting textContent of the element at runtime
+                            // to avoid accidentally overwriting the DOM elements added
+                            // by the user through custom directives.
+                            !node.props.find(p => p.type === 7 /* DIRECTIVE */ &&
+                                !context.directiveTransforms[p.name]) &&
                             // in compat mode, <template> tags with no special directives
                             // will be rendered as a fragment so its children must be
                             // converted into vnodes.

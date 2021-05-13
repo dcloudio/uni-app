@@ -250,9 +250,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
-        if (isSymbol(key)
-            ? builtInSymbols.has(key)
-            : isNonTrackableKeys(key)) {
+        if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
             return res;
         }
         if (!isReadonly) {
@@ -1662,13 +1660,13 @@ const deprecationData = {
             `\n\n  configureCompat({ ${"ATTR_FALSE_VALUE" /* ATTR_FALSE_VALUE */}: false })\n`,
         link: `https://v3.vuejs.org/guide/migration/attribute-coercion.html`
     },
-    ["ATTR_ENUMERATED_COERSION" /* ATTR_ENUMERATED_COERSION */]: {
+    ["ATTR_ENUMERATED_COERCION" /* ATTR_ENUMERATED_COERCION */]: {
         message: (name, value, coerced) => `Enumerated attribute "${name}" with v-bind value \`${value}\` will ` +
             `${value === null ? `be removed` : `render the value as-is`} instead of coercing the value to "${coerced}" in Vue 3. ` +
             `Always use explicit "true" or "false" values for enumerated attributes. ` +
             `If the usage is intended, ` +
             `you can disable the compat behavior and suppress this warning with:` +
-            `\n\n  configureCompat({ ${"ATTR_ENUMERATED_COERSION" /* ATTR_ENUMERATED_COERSION */}: false })\n`,
+            `\n\n  configureCompat({ ${"ATTR_ENUMERATED_COERCION" /* ATTR_ENUMERATED_COERCION */}: false })\n`,
         link: `https://v3.vuejs.org/guide/migration/attribute-coercion.html`
     },
     ["TRANSITION_CLASSES" /* TRANSITION_CLASSES */]: {
@@ -3431,7 +3429,8 @@ const KeepAliveImpl = {
         if (!sharedContext.renderer) {
             return () => slots.default && slots.default()[0]; // fixed by xxxxxx
         }
-        if ((process.env.NODE_ENV !== 'production') && props.cache && props.max) { // fixed by xxxxxx
+        if ((process.env.NODE_ENV !== 'production') && props.cache && props.max) {
+            // fixed by xxxxxx
             warn('The `max` prop will be ignored if you provide a custom caching strategy');
         }
         const cache = props.cache || new Cache(props.max);
@@ -3863,7 +3862,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     // state
     data: dataOptions, computed: computedOptions, methods, watch: watchOptions, provide: provideOptions, inject: injectOptions, 
     // lifecycle
-    beforeMount, mounted, beforeUpdate, updated, beforeActivate, activated, beforeDeactivate, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, serverPrefetch, 
+    beforeMount, mounted, beforeUpdate, updated, activated, deactivated, beforeDestroy, beforeUnmount, destroyed, unmounted, render, renderTracked, renderTriggered, errorCaptured, serverPrefetch, 
     // public API
     expose } = options;
     const publicThis = instance.proxy;
@@ -4033,48 +4032,24 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     if (!asMixin) {
         callSyncHook('created', "c" /* CREATED */, options, instance, globalMixins);
     }
-    if (beforeMount) {
-        onBeforeMount(beforeMount.bind(publicThis));
+    function registerLifecycleHook(register, hook) {
+        // Array lifecycle hooks are only present in the compat build
+        if (hook) {
+            register(hook.bind(publicThis));
+        }
     }
-    if (mounted) {
-        onMounted(mounted.bind(publicThis));
-    }
-    if (beforeUpdate) {
-        onBeforeUpdate(beforeUpdate.bind(publicThis));
-    }
-    if (updated) {
-        onUpdated(updated.bind(publicThis));
-    }
-    if (beforeActivate) {
-        onBeforeActivate(beforeActivate.bind(publicThis));
-    }
-    if (activated) {
-        onActivated(activated.bind(publicThis));
-    }
-    if (beforeDeactivate) {
-        onBeforeDeactivate(beforeDeactivate.bind(publicThis));
-    }
-    if (deactivated) {
-        onDeactivated(deactivated.bind(publicThis));
-    }
-    if (errorCaptured) {
-        onErrorCaptured(errorCaptured.bind(publicThis));
-    }
-    if (renderTracked) {
-        onRenderTracked(renderTracked.bind(publicThis));
-    }
-    if (renderTriggered) {
-        onRenderTriggered(renderTriggered.bind(publicThis));
-    }
-    if (beforeUnmount) {
-        onBeforeUnmount(beforeUnmount.bind(publicThis));
-    }
-    if (unmounted) {
-        onUnmounted(unmounted.bind(publicThis));
-    }
-    if (serverPrefetch) {
-        onServerPrefetch(serverPrefetch.bind(publicThis));
-    }
+    registerLifecycleHook(onBeforeMount, beforeMount);
+    registerLifecycleHook(onMounted, mounted);
+    registerLifecycleHook(onBeforeUpdate, beforeUpdate);
+    registerLifecycleHook(onUpdated, updated);
+    registerLifecycleHook(onActivated, activated);
+    registerLifecycleHook(onDeactivated, deactivated);
+    registerLifecycleHook(onErrorCaptured, errorCaptured);
+    registerLifecycleHook(onRenderTracked, renderTracked);
+    registerLifecycleHook(onRenderTriggered, renderTriggered);
+    registerLifecycleHook(onBeforeUnmount, beforeUnmount);
+    registerLifecycleHook(onUnmounted, unmounted);
+    registerLifecycleHook(onServerPrefetch, serverPrefetch);
     if (isArray(expose)) {
         if (!asMixin) {
             if (expose.length) {
@@ -8469,7 +8444,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.0-beta.2";
+const version = "3.1.0-beta.3";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
