@@ -39,6 +39,7 @@
   },
   "include": [
     "packages/global.d.ts",
+    "packages/shims-node.d.ts",
     "packages/shims-uni-app.d.ts",
     "packages/shims-vue-runtime.d.ts",
     "packages/shims-vue.d.ts",
