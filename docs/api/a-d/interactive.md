@@ -91,9 +91,12 @@ CreateInteractiveAd.show().catch((err) => {
 ```js
 CreateInteractiveAd.onLoad(res => {
     console.log('图片素材地址', res.imgUrl);
-    console.log('广告加载成功')
+    console.log('广告加载成功');
 })
 ```
+
+
+HBuilder基座的测试广告位 adpid: `1042956255` (游戏); `1620839118` (抽奖); `1064042976` (养成)
 
 
 示例代码
@@ -101,7 +104,7 @@ CreateInteractiveAd.onLoad(res => {
 ```html
 <template>
   <view>
-    <button :loading="loading" :disabled="loading" type="primary" @click="showInteractiveAd">显示广告</button>
+    <image class="ad-icon" v-if="imgUrl" :src="imgUrl" @click="showInteractiveAd"></image>
   </view>
 </template>
 
@@ -109,14 +112,15 @@ CreateInteractiveAd.onLoad(res => {
   export default {
     data() {
       return {
-        title: '场景广告',
-        loading: false
+        title: '互动广告',
+        loading: false,
+        imgUrl: ""
       }
     },
     onReady() {
       this.adOption = {
-        adpid: '1111111113' // HBuilder基座的测试广告位
-        provider: ""
+        adpid: '1042956255'
+        provider: "BXM-AD"
       };
 
       // 创建广告实例
@@ -127,6 +131,7 @@ CreateInteractiveAd.onLoad(res => {
         var interactiveAd = this.interactiveAd = uni.createInteractiveAd(this.adOption);
         interactiveAd.onLoad((e) => {
           this.loading = false;
+          this.imgUrl = e.imgUrl;
           console.log("广告加载成功");
           // 如果有广告图片素材, 通过 e.imgUrl 获取
         });
@@ -161,6 +166,14 @@ CreateInteractiveAd.onLoad(res => {
     }
   }
 </script>
+<style>
+  .ad-icon {
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+  }
+</style>
 ```
 
 
@@ -197,12 +210,4 @@ CreateInteractiveAd.onLoad(res => {
 `CreateInteractiveAd.offError(function callback)`
 
 取消监听错误事件
-
-`CreateInteractiveAd.onClose(function callback)`
-
-监听广告关闭事件。
-
-`CreateInteractiveAd.offClose(function callback)`
-
-取消监听广告关闭事件
 
