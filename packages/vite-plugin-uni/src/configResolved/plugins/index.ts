@@ -4,7 +4,7 @@ import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 import vue from '@vitejs/plugin-vue'
 
-import { API_STYLES } from '@dcloudio/uni-cli-shared'
+import { API_DEPS_CSS } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
@@ -72,7 +72,7 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
   callback(imports, mod) {
     const styles =
       mod[0] === '@dcloudio/uni-h5' &&
-      API_STYLES[mod[1] as keyof typeof API_STYLES]
+      API_DEPS_CSS[mod[1] as keyof typeof API_DEPS_CSS]
     if (!styles) {
       return
     }

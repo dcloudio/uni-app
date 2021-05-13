@@ -8,7 +8,7 @@ import {
   H5_FRAMEWORK_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
   normalizePagesJson,
-  API_STYLES,
+  API_DEPS_CSS,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 import { FEATURE_DEFINES } from '../../utils'
@@ -147,8 +147,8 @@ function generateCssCode(
   }
   if (options.command === 'serve') {
     // 开发模式，自动添加所有API相关css
-    Object.keys(API_STYLES).forEach((name) => {
-      const styles = API_STYLES[name as keyof typeof API_STYLES]
+    Object.keys(API_DEPS_CSS).forEach((name) => {
+      const styles = API_DEPS_CSS[name as keyof typeof API_DEPS_CSS]
       styles.forEach((style) => {
         if (!cssFiles.includes(style)) {
           cssFiles.push(style)

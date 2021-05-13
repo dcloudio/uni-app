@@ -8,6 +8,7 @@ import {
   EXTNAME_VUE,
   H5_COMPONENTS_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
+  COMPONENT_DEPS_CSS,
   parseVueRequest,
 } from '@dcloudio/uni-cli-shared'
 
@@ -46,17 +47,6 @@ const baseComponents = [
   'text',
   'textarea',
   'view',
-]
-
-const resizeComponents = [
-  'canvas',
-  'image',
-  'movable-area',
-  'picker-view',
-  'picker-view-column',
-  'rich-text',
-  'textarea',
-  'web-view',
 ]
 
 export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
@@ -110,11 +100,6 @@ function addBuiltInImportDeclaration(
   local: string,
   name: string
 ) {
-  if (resizeComponents.includes(name)) {
-    importDeclarations.push(
-      `import '${BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'}';`
-    )
-  }
   if (baseComponents.includes(name)) {
     importDeclarations.push(
       `import '${BASE_COMPONENTS_STYLE_PATH + name + '.css'}';`
@@ -123,6 +108,10 @@ function addBuiltInImportDeclaration(
     importDeclarations.push(
       `import '${H5_COMPONENTS_STYLE_PATH + name + '.css'}';`
     )
+  }
+  const deps = COMPONENT_DEPS_CSS[name as keyof typeof COMPONENT_DEPS_CSS]
+  if (deps) {
+    deps.forEach((dep) => importDeclarations.push(`import '${dep}';`))
   }
   return addImportDeclaration(
     importDeclarations,
