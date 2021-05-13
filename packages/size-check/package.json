@@ -4,5 +4,8 @@
   "version": "3.0.0",
   "buildOptions": {
     "bundler": "vite"
+  },
+  "dependencies": {
+    "vue-router": "^4.0.7"
   }
 }
