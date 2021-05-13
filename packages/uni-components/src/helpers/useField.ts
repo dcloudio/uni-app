@@ -19,6 +19,41 @@ import {
 } from './useKeyboard'
 import { useScopedAttrs } from './useScopedAttrs'
 import { useFormField } from './useFormField'
+import { getCurrentPageId } from '@dcloudio/uni-core'
+
+const pageIds: number[] = []
+const UniViewJSBridgeSubscribe = function () {
+  const pageId = getCurrentPageId()
+  if (pageIds.includes(pageId)) return
+  pageIds.push(pageId)
+
+  UniViewJSBridge.subscribe(
+    pageId + '.getSelectedTextRange',
+    function ({ pageId, callbackId }: { pageId: number; callbackId: number }) {
+      const activeElement = document.activeElement
+      if (!activeElement) return
+      const tagName = activeElement.tagName.toLowerCase()
+      const tagNames = ['input', 'textarea']
+      const data: {
+        errMsg?: string
+        start?: number | null
+        end?: number | null
+      } = {}
+      if (tagNames.includes(tagName)) {
+        data.start = (activeElement as HTMLInputElement).selectionStart
+        data.end = (activeElement as HTMLInputElement).selectionEnd
+      }
+      UniViewJSBridge.publishHandler(
+        'onGetSelectedTextRange',
+        {
+          callbackId,
+          data,
+        },
+        pageId
+      )
+    }
+  )
+}
 
 // App 延迟获取焦点
 const FOCUS_DELAY = 200
@@ -356,6 +391,7 @@ export function useField(
   emit: SetupContext['emit'],
   beforeInput?: (event: Event, state: State) => any
 ) {
+  UniViewJSBridgeSubscribe()
   const { fieldRef, state, trigger } = useBase(props, rootRef, emit)
   const { triggerInput } = useValueSync(props, state, emit, trigger)
   useAutoFocus(props, fieldRef)

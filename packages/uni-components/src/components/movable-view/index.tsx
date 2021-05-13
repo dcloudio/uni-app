@@ -683,6 +683,7 @@ function useMovableViewState(
       'px) translateZ(0px) scale(' +
       scale +
       ')'
+    // TODO 使用 uni.previewImage 点击关闭时，由于组件销毁此处会报错
     rootRef.value!.style.transform = transform
     rootRef.value!.style.webkitTransform = transform
     _translateX = x

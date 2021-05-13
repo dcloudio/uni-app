@@ -914,6 +914,13 @@ ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
   }
 });
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
+ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
+  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -2984,6 +2991,29 @@ function useFormField(nameKey, value) {
   };
   uniForm.addField(ctx);
 }
+const pageIds = [];
+const UniViewJSBridgeSubscribe = function() {
+  const pageId = getCurrentPageId();
+  if (pageIds.includes(pageId))
+    return;
+  pageIds.push(pageId);
+  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({pageId: pageId2, callbackId}) {
+    const activeElement = document.activeElement;
+    if (!activeElement)
+      return;
+    const tagName = activeElement.tagName.toLowerCase();
+    const tagNames = ["input", "textarea"];
+    const data = {};
+    if (tagNames.includes(tagName)) {
+      data.start = activeElement.selectionStart;
+      data.end = activeElement.selectionEnd;
+    }
+    UniViewJSBridge.publishHandler("onGetSelectedTextRange", {
+      callbackId,
+      data
+    }, pageId2);
+  });
+};
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
@@ -3208,6 +3238,7 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
   vue.watch(() => fieldRef.value, initField);
 }
 function useField(props2, rootRef, emit2, beforeInput) {
+  UniViewJSBridgeSubscribe();
   const {fieldRef, state, trigger} = useBase(props2, rootRef, emit2);
   const {triggerInput} = useValueSync(props2, state, emit2, trigger);
   useAutoFocus(props2, fieldRef);

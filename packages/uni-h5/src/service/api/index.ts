@@ -74,5 +74,6 @@ export {
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
+  getSelectedTextRange,
 } from '@dcloudio/uni-api'
 //#endif

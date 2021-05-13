@@ -10,6 +10,8 @@ export * from './service/ui/createIntersectionObserver'
 export * from './service/ui/createSelectorQuery'
 export * from './service/ui/tabBar'
 
+export * from './service/keyboard/getSelectedTextRange'
+
 // protocols
 export * from './protocols/base/canIUse'
 
@@ -28,6 +30,7 @@ export * from './protocols/file/getFileInfo'
 export * from './protocols/file/openDocument'
 
 export * from './protocols/keyboard/keyboard'
+export * from './protocols/keyboard/getSelectedTextRange'
 
 export * from './protocols/location/chooseLocation'
 export * from './protocols/location/getLocation'
