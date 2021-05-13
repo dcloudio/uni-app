@@ -1,7 +1,10 @@
 import { ResolvedConfig } from 'vite'
+import { parseCompatConfigOnce } from '../../../uni-cli-shared/dist'
 import {
   isSsr,
   initSsrDefine,
+  rewriteSsrVue,
+  rewriteSsrResolve,
   rewriteSsrNativeTag,
   rewriteSsrRenderStyle,
 } from '../utils'
@@ -9,7 +12,10 @@ import {
 // import alias from 'module-alias'
 export function initConfig(config: ResolvedConfig) {
   if (isSsr(config.command, config)) {
+    const { MODE } = parseCompatConfigOnce(process.env.UNI_INPUT_DIR)
     initSsrDefine(config)
+    rewriteSsrVue(MODE)
+    rewriteSsrResolve(MODE)
     rewriteSsrNativeTag()
     rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
   }

@@ -35,3 +35,5 @@ export const BUILT_IN_MODULES = {
     cjs: 'dist/uni-shared.cjs.js',
   },
 }
+
+export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES

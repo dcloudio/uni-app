@@ -15,3 +15,7 @@ export const resolveMainPathOnce = once((inputDir: string) => {
   }
   return path.resolve(inputDir, 'main.js')
 })
+
+export function resolveBuiltIn(path: string) {
+  return require.resolve(path, { paths: [process.env.UNI_CLI_CONTEXT] })
+}

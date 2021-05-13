@@ -23,6 +23,7 @@ import { uniCssScopedPlugin } from './cssScoped'
 import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
 import { uniSSRPlugin } from './ssr'
+import { uniResolveIdPlugin } from './resolveId'
 
 const debugPlugin = debug('vite:uni:plugin')
 
@@ -92,6 +93,8 @@ export function initPlugins(
   const plugins = config.plugins as Plugin[]
 
   addPlugin(plugins, vue(options.vueOptions), 'vite:uni', 'pre')
+
+  addPlugin(plugins, uniResolveIdPlugin(options), 'vite:resolve', 'pre')
 
   if (options.platform === 'h5') {
     // h5平台需要为非App.vue组件自动增加scoped

@@ -1,13 +1,14 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { extend, isString, NormalizedStyle } from '@vue/shared'
+import { extend, isArray, isString, NormalizedStyle } from '@vue/shared'
 import {
   isNativeTag,
   createRpx2Unit,
   Rpx2UnitOptions,
 } from '@dcloudio/uni-shared'
-import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
+import { parseRpx2UnitOnce, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
+import resolve from 'resolve'
 
 export function isSsr(
   command: ConfigEnv['command'],
@@ -66,6 +67,51 @@ export function generateSSREntryServerCode() {
     path.join(__dirname, '../../lib/ssr/entry-server.js'),
     'utf8'
   )
+}
+
+export function rewriteSsrVue(mode?: 2 | 3) {
+  // 解决 @vue/server-renderer 中引入 vue 的映射
+  let vuePath: string
+  if (mode === 2) {
+    vuePath = resolveBuiltIn(
+      '@dcloudio/uni-h5-vue/dist/vue.runtime.compat.cjs.js'
+    )
+  } else {
+    vuePath = resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
+  }
+  require('module-alias').addAlias('vue', vuePath)
+}
+
+function initResolveSyncOpts(opts?: resolve.SyncOpts) {
+  if (!opts) {
+    opts = {}
+  }
+  if (!opts.paths) {
+    opts.paths = []
+  }
+  if (isString(opts.paths)) {
+    opts.paths = [opts.paths]
+  }
+  if (isArray(opts.paths)) {
+    opts.paths.push(path.join(process.env.UNI_CLI_CONTEXT, 'node_modules'))
+  }
+  return opts
+}
+
+export function rewriteSsrResolve(mode?: 2 | 3) {
+  // 解决 ssr 时 __vite_ssr_import__("vue") 的映射
+  const resolve = require('resolve')
+  const oldSync = resolve.sync
+  resolve.sync = (id: string, opts?: resolve.SyncOpts) => {
+    if (id === 'vue') {
+      return resolveBuiltIn(
+        `@dcloudio/uni-h5-vue/dist/vue.runtime.${
+          mode === 2 ? 'compat.' : ''
+        }cjs.js`
+      )
+    }
+    return oldSync(id, initResolveSyncOpts(opts))
+  }
 }
 
 export function rewriteSsrNativeTag() {

@@ -248,6 +248,30 @@
     "@vue/compiler-dom" "3.1.0-beta.3"
     "@vue/shared" "3.1.0-beta.3"
 
+"@vue/reactivity@3.1.0-beta.3":
+  version "3.1.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.1.0-beta.3.tgz#94328652d2f76c691332806b9ff205847c7f956b"
+  integrity sha512-zA5m8IajiNbIrDiha8HaEzxqTcT0ZmcQkUoAwPK7exq70Z+AD4eemIWnXFiAaf+Mi8pePQ0dk0sITcWgXGo/pQ==
+  dependencies:
+    "@vue/shared" "3.1.0-beta.3"
+
+"@vue/runtime-core@3.1.0-beta.3":
+  version "3.1.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@vue/runtime-core/-/runtime-core-3.1.0-beta.3.tgz#1c360e12c0f8016c227a9df46d5b13158cdbdc14"
+  integrity sha512-/GzufgW/y3O2ZHtvKoBqWCLXj13u5qGBFN4cPY2mbazHxyVCqX+FplVj/PI2wo02txzoJtH3/BXbC151fCx/Gg==
+  dependencies:
+    "@vue/reactivity" "3.1.0-beta.3"
+    "@vue/shared" "3.1.0-beta.3"
+
+"@vue/runtime-dom@3.1.0-beta.3":
+  version "3.1.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@vue/runtime-dom/-/runtime-dom-3.1.0-beta.3.tgz#83bca683010df26eac2b2b3544d0e52134b3ee41"
+  integrity sha512-s5W/6G8VQNEoTTLSb7cZ0uTWum8K5Sx5AFc0tRvUi2VyXJbgHUB/pN6SNvi3qsTbgSrYPG7kKWnhoxCZCBUwrA==
+  dependencies:
+    "@vue/runtime-core" "3.1.0-beta.3"
+    "@vue/shared" "3.1.0-beta.3"
+    csstype "^2.6.8"
+
 "@vue/server-renderer@^3.1.0-beta.3":
   version "3.1.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.1.0-beta.3.tgz#d30d467965165c6e68dd76044d3315f55d61fc0d"
@@ -704,6 +728,11 @@ cssesc@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/cssesc/-/cssesc-3.0.0.tgz#37741919903b868565e1c09ea747445cd18983ee"
   integrity sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==
+
+csstype@^2.6.8:
+  version "2.6.17"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.17.tgz#4cf30eb87e1d1a005d8b6510f95292413f6a1c0e"
+  integrity sha512-u1wmTI1jJGzCJzWndZo8mk4wnPTZd1eOIYTYvuEyOQGfmDl3TrabCCfKnOC86FZwW/9djqTl933UF/cS425i9A==
 
 cypress@^7.3.0:
   version "7.3.0"
@@ -2465,8 +2494,14 @@ vue-router@^4.0.6:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.6.tgz#91750db507d26642f225b0ec6064568e5fe448d6"
   integrity sha512-Y04llmK2PyaESj+N33VxLjGCUDuv9t4q2OpItEGU7POZiuQZaugV6cJpE6Qm1sVFtxufodLKN2y2dQl9nk0Reg==
 
-vue@../../uni-h5-vue:
-  version "3.0.0"
+vue@^3.1.0-beta.3:
+  version "3.1.0-beta.3"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-3.1.0-beta.3.tgz#ed7d944b3d276cbdcda8993f73833a05a182bd13"
+  integrity sha512-Um1HjcgTBs65/imtgxKJEfFV00UaAAxbTTpuWlTfHeKd2wSyvoMMvQdiwL+GuEeKzgG0pZomZ8z2otekcLkmCA==
+  dependencies:
+    "@vue/compiler-dom" "3.1.0-beta.3"
+    "@vue/runtime-dom" "3.1.0-beta.3"
+    "@vue/shared" "3.1.0-beta.3"
 
 which@^2.0.1:
   version "2.0.2"
