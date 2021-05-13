@@ -134,3 +134,8 @@ export function useScroller(element: HTMLElement, options: Options) {
     handleTouchEnd,
   }
 }
+
+export { Friction } from './Friction'
+export { Spring } from './Spring'
+export { Scroller } from './Scroller'
+export { initScrollBounce, disableScrollBounce } from '../scroll'

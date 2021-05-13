@@ -14,19 +14,14 @@ import { usePopupStyle } from '../../../../helpers/usePopupStyle'
 import { useKeyboard } from '../../../../helpers/useKeyboard'
 import { initI18nShowActionSheetMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import { useTouchtrack } from '@dcloudio/uni-components'
-// @ts-ignore
-import { Friction } from '@dcloudio/uni-components/../helpers/scroller/Friction'
-// @ts-ignore
-import { Spring } from '@dcloudio/uni-components/../helpers/scroller/Spring'
-// @ts-ignore
-import { Scroller } from '@dcloudio/uni-components/../helpers/scroller/Scroller'
-// @ts-ignore
-import { useScroller } from '@dcloudio/uni-components/../helpers/scroller'
 import {
+  useScroller,
+  Friction,
+  Spring,
+  Scroller,
   initScrollBounce,
   disableScrollBounce,
-  // @ts-ignore
-} from '@dcloudio/uni-components/../helpers/scroll'
+} from '@dcloudio/uni-components'
 import { onEventPrevent } from '@dcloudio/uni-core'
 
 const props = {
@@ -86,8 +81,8 @@ export default /*#__PURE__*/ defineComponent({
         enableY: true,
         friction: new Friction(0.0001),
         spring: new Spring(2, 90, 20),
-        onScroll: (e: Event) => {
-          scrollTop.value = (e.target as HTMLElement).scrollTop
+        onScroll: (e) => {
+          scrollTop.value = e.target.scrollTop
         },
       })
 

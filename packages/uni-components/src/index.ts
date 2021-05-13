@@ -10,6 +10,7 @@ export type {
   NativeEventTrigger,
   EmitEvent,
 } from './helpers/useEvent'
+export * from './helpers/scroller'
 export { useUserAction } from './helpers/useUserAction'
 export { useAttrs } from './helpers/useAttrs'
 export { useBooleanAttr } from './helpers/useBooleanAttr'
