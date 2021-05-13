@@ -1,10 +1,12 @@
+import { isArray } from '@vue/shared'
 import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
-import { isNativeTag } from '@dcloudio/uni-shared'
-
-import { matchMedia } from './transforms/matchMedia'
 import { Options as VueOptions } from '@vitejs/plugin-vue'
 
+import { isNativeTag } from '@dcloudio/uni-shared'
+import { EXTNAME_VUE_RE } from '@dcloudio/uni-cli-shared'
+
+import { matchMedia } from './transforms/matchMedia'
 export const uniVueCompilerOptions: CompilerOptions = {
   isNativeTag,
   nodeTransforms: [matchMedia],
@@ -35,6 +37,14 @@ export const uniVueTemplateOptions: Partial<SFCTemplateCompileOptions> = {
 }
 
 export function initPluginVueOptions(vueOptions: VueOptions) {
+  if (!vueOptions.include) {
+    vueOptions.include = []
+  }
+  if (!isArray(vueOptions.include)) {
+    vueOptions.include = [vueOptions.include]
+  }
+  vueOptions.include.push(EXTNAME_VUE_RE)
+
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
   templateOptions.transformAssetUrls = uniVueTransformAssetUrls

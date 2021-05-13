@@ -9,6 +9,8 @@ export const jsContext = {
   MP_WEIXIN: false,
   QUICKAPP_NATIVE: false,
   QUICKAPP_WEBVIEW: false,
+  QUICKAPP_WEBVIEW_UNION: false,
+  QUICKAPP_WEBVIEW_HUAWEI: false,
   MP: false,
   APP: false,
   APP_PLUS_NVUE: false,

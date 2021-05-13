@@ -345,9 +345,9 @@
     minimist "^1.2.0"
 
 "@dcloudio/types@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.3.tgz#651e61eed278fd2ff44c3a654a6a799cc4a6d1a6"
-  integrity sha512-pGtihm7tmfaSEwZS8IuT9fnS79MsofycKQBmA9/vP8dufFhMOPxC35S1sovQonB8PhvletY3hK6InxCWe3HIRg==
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.4.tgz#10bf140a90011b5737abafb16a191b4711a89ab1"
+  integrity sha512-MF/Qs8lZnr4cyhav30TwrPohrlIimxB47y/G+djrt2CK4/MJ0tXI6JKWHZK7jYTaqUG6eG1J0KIkix9jIYS6Uw==
 
 "@eslint/eslintrc@^0.4.1":
   version "0.4.1"
@@ -6330,11 +6330,6 @@ vlq@^0.2.2:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/vlq/-/vlq-0.2.3.tgz#8f3e4328cf63b1540c0d67e1b2778386f8975b26"
   integrity sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==
-
-vue-router@^4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.6.tgz#91750db507d26642f225b0ec6064568e5fe448d6"
-  integrity sha512-Y04llmK2PyaESj+N33VxLjGCUDuv9t4q2OpItEGU7POZiuQZaugV6cJpE6Qm1sVFtxufodLKN2y2dQl9nk0Reg==
 
 vue@^3.1.0-beta.3:
   version "3.1.0-beta.3"

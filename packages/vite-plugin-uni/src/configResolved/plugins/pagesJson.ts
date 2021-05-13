@@ -164,7 +164,7 @@ function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
     pageOptions.path
   )} = defineAsyncComponent(extend({loader:()=>import('./${
     pageOptions.path
-  }.vue?mpType=page')},AsyncComponentOptions))`
+  }?mpType=page')},AsyncComponentOptions))`
 }
 
 function generatePagesDefineCode(

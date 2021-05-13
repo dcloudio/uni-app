@@ -67,26 +67,29 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
       debugEasycom(id)
       let i = 0
       const importDeclarations: string[] = []
-      code = code.replace(/_resolveComponent\("(.+?)"\)/g, (str, name) => {
-        if (name && !name.startsWith('_')) {
-          if (isBuiltInComponent(name)) {
-            return addBuiltInImportDeclaration(
-              importDeclarations,
-              `__syscom_${i++}`,
-              name
-            )
+      code = code.replace(
+        /_resolveComponent\("(.+?)"(, true)?\)/g,
+        (str, name) => {
+          if (name && !name.startsWith('_')) {
+            if (isBuiltInComponent(name)) {
+              return addBuiltInImportDeclaration(
+                importDeclarations,
+                `__syscom_${i++}`,
+                name
+              )
+            }
+            const source = matchEasycom(name)
+            if (source) {
+              return addImportDeclaration(
+                importDeclarations,
+                `__easycom_${i++}`,
+                source
+              )
+            }
           }
-          const source = matchEasycom(name)
-          if (source) {
-            return addImportDeclaration(
-              importDeclarations,
-              `__easycom_${i++}`,
-              source
-            )
-          }
+          return str
         }
-        return str
-      })
+      )
       if (importDeclarations.length) {
         code = importDeclarations.join('') + code
       }
