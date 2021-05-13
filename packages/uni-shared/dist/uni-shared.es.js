@@ -211,6 +211,19 @@ function once(fn, ctx = null) {
     });
 }
 const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
+const _completeValue = (value) => (value > 9 ? value : '0' + value);
+function formatDateTime({ date = new Date(), mode = 'date' }) {
+    if (mode === 'time') {
+        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
+    }
+    else {
+        return (date.getFullYear() +
+            '-' +
+            _completeValue(date.getMonth() + 1) +
+            '-' +
+            _completeValue(date.getDate()));
+    }
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -325,4 +338,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

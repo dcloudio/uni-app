@@ -34,6 +34,11 @@ export declare const defaultRpx2Unit: {
     unitPrecision: number;
 };
 
+export declare function formatDateTime({ date, mode }: {
+    date?: Date | undefined;
+    mode?: string | undefined;
+}): string;
+
 export declare function getEnvLocale(): string;
 
 export declare function getLen(str?: string): number;

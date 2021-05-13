@@ -215,6 +215,19 @@ function once(fn, ctx = null) {
     });
 }
 const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
+const _completeValue = (value) => (value > 9 ? value : '0' + value);
+function formatDateTime({ date = new Date(), mode = 'date' }) {
+    if (mode === 'time') {
+        return (_completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes()));
+    }
+    else {
+        return (date.getFullYear() +
+            '-' +
+            _completeValue(date.getMonth() + 1) +
+            '-' +
+            _completeValue(date.getDate()));
+    }
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -350,6 +363,7 @@ exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultRpx2Unit = defaultRpx2Unit;
+exports.formatDateTime = formatDateTime;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
 exports.invokeArrayFns = invokeArrayFns;

@@ -100,6 +100,7 @@ function useToastIcon(props: ToastProps) {
         class: ToastIconClassName,
       })
     ) : props.icon === 'loading' ? (
+      // @ts-ignore
       <i class={ToastIconClassName} class="uni-loading"></i>
     ) : null
   )

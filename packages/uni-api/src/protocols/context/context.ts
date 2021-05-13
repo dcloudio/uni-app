@@ -5,9 +5,9 @@ const validator: ProtocolOptions<String>[] = [
     required: true,
   },
 ]
-export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
+/* export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
 export type API_TYPE_CREATE_AUDIO_CONTEXT = typeof uni.createAudioContext
-export const CreateAudioContextProtocol = validator
+export const CreateAudioContextProtocol = validator */
 
 export const API_CREATE_VIDEO_CONTEXT = 'createVideoContext'
 export type API_TYPE_CREATE_VIDEO_CONTEXT = typeof uni.createVideoContext

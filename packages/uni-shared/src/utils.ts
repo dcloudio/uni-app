@@ -39,3 +39,21 @@ export function once<T extends (...args: any[]) => any>(
 
 export const sanitise = (val: unknown) =>
   (val && JSON.parse(JSON.stringify(val))) || val
+
+const _completeValue = (value: number) => (value > 9 ? value : '0' + value)
+
+export function formatDateTime({ date = new Date(), mode = 'date' }) {
+  if (mode === 'time') {
+    return (
+      _completeValue(date.getHours()) + ':' + _completeValue(date.getMinutes())
+    )
+  } else {
+    return (
+      date.getFullYear() +
+      '-' +
+      _completeValue(date.getMonth() + 1) +
+      '-' +
+      _completeValue(date.getDate())
+    )
+  }
+}

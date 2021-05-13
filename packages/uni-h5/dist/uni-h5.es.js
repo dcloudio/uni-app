@@ -60,6 +60,24 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"}));
   }
 });
+const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.showActionSheet.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(LOCALE_EN, normalizeMessages(name, {cancel: "Cancel"}));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(LOCALE_ES, normalizeMessages(name, {cancel: "Cancelar"}));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(LOCALE_FR, normalizeMessages(name, {cancel: "Annuler"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {cancel: "\u53D6\u6D88"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {cancel: "\u53D6\u6D88"}));
+  }
+});
 const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showToast.";
   if (__UNI_FEATURE_I18N_EN__) {
@@ -449,7 +467,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -461,10 +479,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1149,7 +1167,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3685,6 +3703,19 @@ const PageScrollToOptions = {
     }
   }
 };
+const API_SHOW_ACTION_SHEET = "showActionSheet";
+const ShowActionSheetProtocol = {
+  itemList: {
+    type: Array,
+    required: true
+  },
+  itemColor: String
+};
+const ShowActionSheetOptions = {
+  formatArgs: {
+    itemColor: "#000"
+  }
+};
 const API_SHOW_LOADING = "showLoading";
 const ShowLoadingProtocol = {
   title: String,
@@ -6032,7 +6063,7 @@ function _removeListeners(id2, listeners, watch2) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$u = {
+const props$v = {
   name: {
     type: String,
     default: ""
@@ -6040,7 +6071,7 @@ const props$u = {
 };
 var index$l = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
-  props: props$u,
+  props: props$v,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6093,7 +6124,7 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$t = {
+const props$u = {
   for: {
     type: String,
     default: ""
@@ -6101,7 +6132,7 @@ const props$t = {
 };
 var index$k = /* @__PURE__ */ defineComponent({
   name: "Label",
-  props: props$t,
+  props: props$u,
   setup(props2, {
     emit: emit2,
     slots
@@ -6146,7 +6177,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$s = {
+const props$t = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6170,7 +6201,7 @@ const props$s = {
 };
 var index$j = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
-  props: props$s,
+  props: props$t,
   setup(props2, {
     slots
   }) {
@@ -6249,7 +6280,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$r = {
+const props$s = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6993,7 +7024,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$q = /* @__PURE__ */ Object.assign({}, props$r, {
+const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
   id: {
     type: String,
     default: ""
@@ -7021,7 +7052,7 @@ const props$q = /* @__PURE__ */ Object.assign({}, props$r, {
 });
 var index$i = /* @__PURE__ */ defineComponent({
   name: "Editor",
-  props: props$q,
+  props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7108,7 +7139,7 @@ var index$h = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$p = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -7147,7 +7178,7 @@ const IMAGE_MODES = {
 };
 var index$g = /* @__PURE__ */ defineComponent({
   name: "Image",
-  props: props$p,
+  props: props$q,
   setup(props2, {
     emit: emit2
   }) {
@@ -7426,7 +7457,7 @@ function useFormField(nameKey, value) {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$o = /* @__PURE__ */ Object.assign({}, {
+const props$p = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -7487,7 +7518,7 @@ const props$o = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$r);
+}, props$s);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -7672,7 +7703,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
+const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7680,7 +7711,7 @@ const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
 });
 var Input = /* @__PURE__ */ defineComponent({
   name: "Input",
-  props: props$n,
+  props: props$o,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7778,7 +7809,7 @@ var Input = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$m = {
+const props$n = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -7787,7 +7818,7 @@ const props$m = {
 var MovableArea = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$m,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -8388,7 +8419,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$l = {
+const props$m = {
   direction: {
     type: String,
     default: "none"
@@ -8444,7 +8475,7 @@ const props$l = {
 };
 var MovableView = /* @__PURE__ */ defineComponent({
   name: "MovableView",
-  props: props$l,
+  props: props$m,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -9144,7 +9175,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$k = {
+const props$l = {
   value: {
     type: Array,
     default() {
@@ -9191,7 +9222,7 @@ function useState$1(props2) {
 }
 var index$f = /* @__PURE__ */ defineComponent({
   name: "PickerView",
-  props: props$k,
+  props: props$l,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -10107,7 +10138,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$j = {
+const props$k = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -10156,7 +10187,7 @@ const props$j = {
 };
 var index$d = /* @__PURE__ */ defineComponent({
   name: "Progress",
-  props: props$j,
+  props: props$k,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -10227,7 +10258,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$i = {
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -10235,7 +10266,7 @@ const props$i = {
 };
 var index$c = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
-  props: props$i,
+  props: props$j,
   setup(props2, {
     emit: emit2,
     slots
@@ -10311,7 +10342,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields;
 }
-const props$h = {
+const props$i = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -10335,7 +10366,7 @@ const props$h = {
 };
 var index$b = /* @__PURE__ */ defineComponent({
   name: "Radio",
-  props: props$h,
+  props: props$i,
   setup(props2, {
     slots
   }) {
@@ -11840,7 +11871,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   ], 512);
 }
 _sfc_main$3.render = _sfc_render$3;
-const props$g = {
+const props$h = {
   name: {
     type: String,
     default: ""
@@ -11896,7 +11927,7 @@ const props$g = {
 };
 var index$a = /* @__PURE__ */ defineComponent({
   name: "Slider",
-  props: props$g,
+  props: props$h,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -12061,7 +12092,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$f = {
+const props$g = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -12550,7 +12581,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 var Swiper = /* @__PURE__ */ defineComponent({
   name: "Swiper",
-  props: props$f,
+  props: props$g,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -12645,7 +12676,7 @@ var Swiper = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$e = {
+const props$f = {
   itemId: {
     type: String,
     default: ""
@@ -12653,7 +12684,7 @@ const props$e = {
 };
 var SwiperItem = /* @__PURE__ */ defineComponent({
   name: "SwiperItem",
-  props: props$e,
+  props: props$f,
   setup(props2, {
     slots
   }) {
@@ -12702,7 +12733,7 @@ var SwiperItem = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$d = {
+const props$e = {
   name: {
     type: String,
     default: ""
@@ -12730,7 +12761,7 @@ const props$d = {
 };
 var index$9 = /* @__PURE__ */ defineComponent({
   name: "Switch",
-  props: props$d,
+  props: props$e,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -12880,7 +12911,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$c = /* @__PURE__ */ Object.assign({}, props$o, {
+const props$d = /* @__PURE__ */ Object.assign({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12896,7 +12927,7 @@ const props$c = /* @__PURE__ */ Object.assign({}, props$o, {
 });
 var index$7 = /* @__PURE__ */ defineComponent({
   name: "Textarea",
-  props: props$c,
+  props: props$d,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -13664,7 +13695,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   });
 }
-const props$b = {
+const props$c = {
   id: {
     type: String,
     default: ""
@@ -13750,7 +13781,7 @@ const props$b = {
 };
 var index$5 = /* @__PURE__ */ defineComponent({
   name: "Video",
-  props: props$b,
+  props: props$c,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -13963,7 +13994,7 @@ var index$5 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$a = {
+const props$b = {
   src: {
     type: String,
     default: ""
@@ -13972,7 +14003,7 @@ const props$a = {
 var index$4 = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$a,
+  props: props$b,
   setup(props2, {
     attrs: attrs2
   }) {
@@ -14178,7 +14209,7 @@ function loadMaps(callback2) {
     document.body.appendChild(script);
   }
 }
-const props$9 = {
+const props$a = {
   id: {
     type: [Number, String],
     default: ""
@@ -14242,7 +14273,7 @@ const props$9 = {
 };
 var MapMarker = /* @__PURE__ */ defineComponent({
   name: "MapMarker",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14453,7 +14484,7 @@ var MapMarker = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$8 = {
+const props$9 = {
   points: {
     type: Array,
     require: true
@@ -14499,7 +14530,7 @@ const props$8 = {
 };
 var MapPolyline = /* @__PURE__ */ defineComponent({
   name: "MapPolyline",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14552,7 +14583,7 @@ var MapPolyline = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$7 = {
+const props$8 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14584,7 +14615,7 @@ const props$7 = {
 };
 var MapCircle = /* @__PURE__ */ defineComponent({
   name: "MapCircle",
-  props: props$7,
+  props: props$8,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14628,7 +14659,7 @@ var MapCircle = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$6 = {
+const props$7 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14648,7 +14679,7 @@ const props$6 = {
 };
 var MapControl = /* @__PURE__ */ defineComponent({
   name: "MapControl",
-  props: props$6,
+  props: props$7,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -14866,7 +14897,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -14979,12 +15010,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15004,10 +15035,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -15595,7 +15626,7 @@ function usePopup(props2, {
   });
   return visible;
 }
-const props$5 = {
+const props$6 = {
   src: {
     type: String,
     default: ""
@@ -15603,7 +15634,7 @@ const props$5 = {
 };
 var ImageView = /* @__PURE__ */ defineComponent({
   name: "ImageView",
-  props: props$5,
+  props: props$6,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -15693,7 +15724,7 @@ var ImageView = /* @__PURE__ */ defineComponent({
 function _isSlot(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$4 = {
+const props$5 = {
   urls: {
     type: Array,
     default() {
@@ -15712,7 +15743,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineComponent({
   name: "ImagePreview",
-  props: props$4,
+  props: props$5,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16419,7 +16450,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
-const props$3 = {
+const props$4 = {
   latitude: {
     type: Number
   },
@@ -16441,7 +16472,7 @@ const props$3 = {
 };
 var LocationView = /* @__PURE__ */ defineComponent({
   name: "LocationView",
-  props: props$3,
+  props: props$4,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16608,7 +16639,7 @@ function getTabBarPageId(url) {
 const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
-const props$2 = {
+const props$3 = {
   title: {
     type: String,
     default: ""
@@ -16642,7 +16673,7 @@ const props$2 = {
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
-  props: props$2,
+  props: props$3,
   setup(props2, {
     emit: emit2
   }) {
@@ -16714,7 +16745,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, {resolve
     showModalState.visible = true;
   }
 }, ShowModalProtocol, ShowModalOptions);
-const props$1 = {
+const props$2 = {
   title: {
     type: String,
     default: ""
@@ -16744,7 +16775,7 @@ const props$1 = {
 const ToastIconClassName = "uni-toast__icon";
 var Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$1,
+  props: props$2,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -16868,6 +16899,311 @@ function hidePopup(type) {
     showToastState.visible = false;
   }, 10);
 }
+function usePopupStyle(props2) {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(() => popupWidth.value >= 500 && popupHeight.value >= 500);
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      Object.assign(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      const {windowWidth, windowHeight, windowTop} = uni.getSystemInfoSync();
+      popupWidth.value = windowWidth;
+      popupHeight.value = windowHeight + windowTop;
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+const props$1 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  itemList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  itemColor: {
+    type: String,
+    default: "#000000"
+  },
+  popover: {
+    type: Object,
+    default: null
+  },
+  visible: {
+    type: Boolean,
+    default: false
+  }
+};
+var actionSheet = /* @__PURE__ */ defineComponent({
+  name: "ActionSheet",
+  props: props$1,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    initI18nShowActionSheetMsgsOnce();
+    const HEIGHT = ref(260);
+    const contentHeight = ref(0);
+    const titleHeight = ref(0);
+    const deltaY = ref(0);
+    const scrollTop = ref(0);
+    const content = ref(null);
+    const main = ref(null);
+    const {
+      t: t2
+    } = useI18n();
+    const {
+      _close
+    } = useActionSheetLoader(props2, emit2);
+    const {
+      popupStyle
+    } = usePopupStyle(props2);
+    let scroller2;
+    onMounted(() => {
+      const {
+        scroller: _scroller,
+        handleTouchStart,
+        handleTouchMove,
+        handleTouchEnd
+      } = useScroller(content.value, {
+        enableY: true,
+        friction: new Friction$1(1e-4),
+        spring: new Spring$1(2, 90, 20),
+        onScroll: (e2) => {
+          scrollTop.value = e2.target.scrollTop;
+        }
+      });
+      scroller2 = _scroller;
+      useTouchtrack(content.value, (e2) => {
+        if (_scroller) {
+          switch (e2.detail.state) {
+            case "start":
+              handleTouchStart(e2);
+              break;
+            case "move":
+              handleTouchMove(e2);
+              break;
+            case "end":
+            case "cancel":
+              handleTouchEnd(e2);
+          }
+        }
+      }, true);
+    });
+    function _handleWheel($event) {
+      const _deltaY = deltaY.value + $event.deltaY;
+      if (Math.abs(_deltaY) > 10) {
+        scrollTop.value += _deltaY / 3;
+        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
+        scroller2.scrollTo(scrollTop.value);
+      } else {
+        deltaY.value = _deltaY;
+      }
+      $event.preventDefault();
+    }
+    watch(() => props2.visible, () => {
+      nextTick(() => {
+        if (props2.title) {
+          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
+        }
+        scroller2.update();
+        if (content.value)
+          contentHeight.value = content.value.clientHeight - HEIGHT.value;
+        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
+          initClick(item);
+        });
+      });
+    });
+    return () => {
+      return createVNode("uni-actionsheet", {
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-actionsheet__mask",
+          "onClick": () => _close(-1)
+        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
+      }), createVNode("div", {
+        "class": ["uni-actionsheet", {
+          "uni-actionsheet_toggle": props2.visible
+        }],
+        "style": popupStyle.value.content
+      }, [createVNode("div", {
+        "ref": main,
+        "class": "uni-actionsheet__menu",
+        "onWheel": _handleWheel
+      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
+        "class": "uni-actionsheet__cell",
+        "style": {
+          height: `${titleHeight.value}px`
+        }
+      }, null), createVNode("div", {
+        "class": "uni-actionsheet__title"
+      }, [props2.title])]) : "", createVNode("div", {
+        "style": {
+          maxHeight: `${HEIGHT.value}px`,
+          overflow: "hidden"
+        }
+      }, [createVNode("div", {
+        "ref": content
+      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
+        "key": index2,
+        "style": {
+          color: props2.itemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(index2)
+      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
+        "class": "uni-actionsheet__action"
+      }, [createVNode("div", {
+        "style": {
+          color: props2.itemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(-1)
+      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
+        "style": popupStyle.value.triangle
+      }, null, 4)], 6)], 40, ["onTouchmove"]);
+    };
+  }
+});
+function useActionSheetLoader(props2, emit2) {
+  function _close(tapIndex) {
+    emit2("close", tapIndex);
+  }
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watch(() => props2.visible, (value) => disable.value = !value);
+  watchEffect(() => {
+    const {
+      value
+    } = key;
+    if (value === "esc") {
+      _close && _close(-1);
+    }
+  });
+  return {
+    _close
+  };
+}
+function initClick(dom) {
+  const MAX_MOVE = 20;
+  let x = 0;
+  let y = 0;
+  dom.addEventListener("touchstart", (event) => {
+    const info = event.changedTouches[0];
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener("touchend", (event) => {
+    const info = event.changedTouches[0];
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      const target = event.target;
+      const currentTarget = event.currentTarget;
+      const customEvent = new CustomEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        target,
+        currentTarget
+      });
+      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
+        customEvent[key] = info[key];
+      });
+      event.target.dispatchEvent(customEvent);
+    }
+  });
+}
+let resolveAction;
+let rejectAction;
+let showActionSheetState;
+function onActionSheetClose(tapIndex) {
+  if (tapIndex === -1) {
+    rejectAction && rejectAction("cancel");
+  } else {
+    resolveAction && resolveAction({tapIndex});
+  }
+}
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, {resolve, reject}) => {
+  resolveAction = resolve;
+  rejectAction = reject;
+  if (!showActionSheetState) {
+    showActionSheetState = reactive(args);
+    nextTick(() => (createRootApp(actionSheet, showActionSheetState, onActionSheetClose).mount(ensureRoot("u-s-a-s")), nextTick(() => showActionSheetState.visible = true)));
+  } else {
+    extend(showActionSheetState, args);
+    showActionSheetState.visible = true;
+  }
+}, ShowActionSheetProtocol, ShowActionSheetOptions);
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
   addFont(family, source, desc).then(() => {
     resolve();
@@ -17108,6 +17444,7 @@ var api = /* @__PURE__ */ Object.freeze({
   showLoading,
   hideToast,
   hideLoading,
+  showActionSheet,
   loadFontFace,
   setNavigationBarColor,
   showNavigationBarLoading,
@@ -18734,4 +19071,4 @@ var index = /* @__PURE__ */ defineComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$m as Button, _sfc_main$6 as Canvas, index$j as Checkbox, index$l as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$i as Editor, index$n as Form, index$h as Icon, index$g as Image, Input, index$k as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as PickerView, index$e as PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$a as Slider, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$o as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useCustomEvent, useNativeEvent, useOn, useSubscribe, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$7 as Audio, index$m as Button, _sfc_main$6 as Canvas, index$j as Checkbox, index$l as CheckboxGroup, _sfc_main$1 as CoverImage, _sfc_main$2 as CoverView, index$i as Editor, index$n as Form, index$h as Icon, index$g as Image, Input, index$k as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$5 as Navigator, index$2 as PageComponent, index$f as PickerView, index$e as PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$4 as RichText, _sfc_main$3 as ScrollView, index$a as Slider, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$o as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useBooleanAttr, useCustomEvent, useNativeEvent, useOn, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

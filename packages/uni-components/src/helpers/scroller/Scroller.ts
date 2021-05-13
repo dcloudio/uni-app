@@ -312,7 +312,7 @@ export class Scroller {
       this._options.onScroll(event)
     }
   }
-  update(height: number, scrollHeight?: number, itemSize?: number) {
+  update(height?: number, scrollHeight?: number, itemSize?: number) {
     let extent = 0
     const position = this._position
     if (this._enableX) {

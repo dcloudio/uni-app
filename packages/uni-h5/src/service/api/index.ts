@@ -50,6 +50,7 @@ export * from './route/switchTab'
 
 export * from './ui/popup/showModal'
 export * from './ui/popup/showToast'
+export * from './ui/popup/showActionSheet'
 export * from './ui/loadFontFace'
 export * from './ui/navigationBar'
 export * from './ui/pageScrollTo'

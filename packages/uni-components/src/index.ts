@@ -12,3 +12,5 @@ export type {
 } from './helpers/useEvent'
 export { useUserAction } from './helpers/useUserAction'
 export { useAttrs } from './helpers/useAttrs'
+export { useBooleanAttr } from './helpers/useBooleanAttr'
+export { useTouchtrack } from './helpers/useTouchtrack'
