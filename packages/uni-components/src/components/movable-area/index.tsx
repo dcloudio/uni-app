@@ -12,6 +12,7 @@ import {
 import { useAttrs, withWebEvent } from '@dcloudio/uni-components'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
 import ResizeSensor from '../resize-sensor/index'
+import { flatVNode } from '../../helpers/flatVNode'
 
 const props = {
   scaleArea: {
@@ -98,7 +99,7 @@ export default /*#__PURE__*/ defineComponent({
 
     return () => {
       const defaultSlots = slots.default && slots.default()
-      movableViewItems = defaultSlots || []
+      movableViewItems = flatVNode(defaultSlots)
 
       return (
         <uni-movable-area

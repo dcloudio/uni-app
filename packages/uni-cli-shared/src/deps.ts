@@ -24,4 +24,9 @@ export const COMPONENT_DEPS_CSS = {
   'rich-text': [RESIZE_SENSOR_CSS],
   textarea: [RESIZE_SENSOR_CSS],
   'web-view': [RESIZE_SENSOR_CSS],
+  picker: [
+    RESIZE_SENSOR_CSS,
+    `${BASE_COMPONENTS_STYLE_PATH}picker-view.css`,
+    `${BASE_COMPONENTS_STYLE_PATH}picker-view-column.css`,
+  ],
 }

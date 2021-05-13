@@ -79,6 +79,24 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     i18n.add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, {error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"}));
   }
 });
+const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
+  const name = "uni.picker.";
+  if (__UNI_FEATURE_I18N_EN__) {
+    i18n.add(uniI18n.LOCALE_EN, normalizeMessages(name, {done: "Done", cancel: "Cancel"}));
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    i18n.add(uniI18n.LOCALE_ES, normalizeMessages(name, {done: "OK", cancel: "Cancelar"}));
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    i18n.add(uniI18n.LOCALE_FR, normalizeMessages(name, {done: "OK", cancel: "Annuler"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    i18n.add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, {done: "\u5B8C\u6210", cancel: "\u53D6\u6D88"}));
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    i18n.add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, {done: "\u5B8C\u6210", cancel: "\u53D6\u6D88"}));
+  }
+});
 const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.video.";
   if (__UNI_FEATURE_I18N_EN__) {
@@ -1151,7 +1169,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(base);
   }
 }
-var index$s = {
+var index$p = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -1285,7 +1303,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$7 = {
+const _sfc_main$8 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1410,7 +1428,7 @@ const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1440,7 +1458,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$8.render = _sfc_render$8;
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -1524,8 +1542,8 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, Object.create(null));
 }
-const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$r = /* @__PURE__ */ vue.defineComponent({
+const uniFormKey$1 = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
+var Form = /* @__PURE__ */ vue.defineComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1536,18 +1554,18 @@ var index$r = /* @__PURE__ */ vue.defineComponent({
   }
 });
 function provideForm(emit2) {
-  const fields = [];
-  vue.provide(uniFormKey, {
+  const fields2 = [];
+  vue.provide(uniFormKey$1, {
     addField(field) {
-      fields.push(field);
+      fields2.push(field);
     },
     removeField(field) {
-      fields.splice(fields.indexOf(field), 1);
+      fields2.splice(fields2.indexOf(field), 1);
     },
     submit() {
       emit2("submit", {
         detail: {
-          value: fields.reduce((res, field) => {
+          value: fields2.reduce((res, field) => {
             if (field.submit) {
               const [name, value] = field.submit();
               name && (res[name] = value);
@@ -1558,13 +1576,13 @@ function provideForm(emit2) {
       });
     },
     reset() {
-      fields.forEach((field) => field.reset && field.reset());
+      fields2.forEach((field) => field.reset && field.reset());
       emit2("reset");
     }
   });
-  return fields;
+  return fields2;
 }
-var index$q = /* @__PURE__ */ vue.defineComponent({
+var index$o = /* @__PURE__ */ vue.defineComponent({
   name: "Button",
   props: {
     id: {
@@ -1603,7 +1621,7 @@ var index$q = /* @__PURE__ */ vue.defineComponent({
   setup(props2, {
     slots
   }) {
-    const uniForm = vue.inject(uniFormKey, false);
+    const uniForm = vue.inject(uniFormKey$1, false);
     const {
       hovering,
       binding
@@ -1747,7 +1765,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$6 = {
+var _sfc_main$7 = {
   name: "Canvas",
   inheritAttrs: false,
   components: {
@@ -2209,7 +2227,7 @@ const _hoisted_1$5 = {
   height: "150"
 };
 const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
@@ -2225,7 +2243,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$6.render = _sfc_render$6;
+_sfc_main$7.render = _sfc_render$7;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
 const props$p = {
   name: {
@@ -2233,7 +2251,7 @@ const props$p = {
     default: ""
   }
 };
-var index$p = /* @__PURE__ */ vue.defineComponent({
+var index$n = /* @__PURE__ */ vue.defineComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2252,8 +2270,8 @@ var index$p = /* @__PURE__ */ vue.defineComponent({
   }
 });
 function useProvideCheckGroup(props2, trigger) {
-  const fields = [];
-  const getFieldsValue = () => fields.reduce((res, field) => {
+  const fields2 = [];
+  const getFieldsValue = () => fields2.reduce((res, field) => {
     if (field.value.checkboxChecked) {
       res.push(field.value.value);
     }
@@ -2261,10 +2279,10 @@ function useProvideCheckGroup(props2, trigger) {
   }, new Array());
   vue.provide(uniCheckGroupKey, {
     addField(field) {
-      fields.push(field);
+      fields2.push(field);
     },
     removeField(field) {
-      fields.splice(fields.indexOf(field), 1);
+      fields2.splice(fields2.indexOf(field), 1);
     },
     checkboxChange($event) {
       trigger("change", $event, {
@@ -2272,7 +2290,7 @@ function useProvideCheckGroup(props2, trigger) {
       });
     }
   });
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   if (uniForm) {
     uniForm.addField({
       submit: () => {
@@ -2294,7 +2312,7 @@ const props$o = {
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ vue.defineComponent({
+var index$m = /* @__PURE__ */ vue.defineComponent({
   name: "Label",
   props: props$o,
   setup(props2, {
@@ -2363,7 +2381,7 @@ const props$n = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ vue.defineComponent({
+var index$l = /* @__PURE__ */ vue.defineComponent({
   name: "Checkbox",
   props: props$n,
   setup(props2, {
@@ -2420,7 +2438,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field);
   }
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   if (!!uniForm) {
     uniForm.addField(formField);
   }
@@ -2453,7 +2471,7 @@ const props$m = {
   }
 };
 const emit$1 = ["keyboardheightchange"];
-function useKeyboard(props2, elRef, trigger) {
+function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
     el.addEventListener("focus", () => {
       clearTimeout(resetTimer);
@@ -2630,7 +2648,7 @@ const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
     default: false
   }
 });
-var index$m = /* @__PURE__ */ vue.defineComponent({
+var index$k = /* @__PURE__ */ vue.defineComponent({
   name: "Editor",
   props: props$l,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2639,7 +2657,7 @@ var index$m = /* @__PURE__ */ vue.defineComponent({
   }) {
     const rootRef = vue.ref(null);
     useQuill(props2);
-    useKeyboard(props2, rootRef);
+    useKeyboard$1(props2, rootRef);
     return () => {
       return vue.createVNode("uni-editor", {
         "ref": rootRef,
@@ -2691,7 +2709,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$l = /* @__PURE__ */ vue.defineComponent({
+var index$j = /* @__PURE__ */ vue.defineComponent({
   name: "Icon",
   props: {
     type: {
@@ -2755,7 +2773,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$k = /* @__PURE__ */ vue.defineComponent({
+var index$i = /* @__PURE__ */ vue.defineComponent({
   name: "Image",
   props: props$k,
   setup(props2, {
@@ -2773,7 +2791,7 @@ var index$k = /* @__PURE__ */ vue.defineComponent({
     });
     return () => {
       const {
-        mode
+        mode: mode2
       } = props2;
       const {
         imgSrc,
@@ -2786,7 +2804,7 @@ var index$k = /* @__PURE__ */ vue.defineComponent({
       }, null, 4), imgSrc ? vue.createVNode("img", {
         "src": imgSrc,
         "draggable": props2.draggable
-      }, null, 8, ["src", "draggable"]) : vue.createVNode("img", null, null), FIX_MODES[mode] ? vue.createVNode(ResizeSensor, {
+      }, null, 8, ["src", "draggable"]) : vue.createVNode("img", null, null), FIX_MODES[mode2] ? vue.createVNode(ResizeSensor, {
         "onResize": fixSize
       }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
@@ -2878,9 +2896,9 @@ function fixNumber(num) {
 function useImageSize(rootRef, props2, state) {
   const fixSize = () => {
     const {
-      mode
+      mode: mode2
     } = props2;
-    const names = FIX_MODES[mode];
+    const names = FIX_MODES[mode2];
     if (!names) {
       return;
     }
@@ -2943,7 +2961,7 @@ function useScopedAttrs() {
   };
 }
 function useFormField(nameKey, value) {
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   if (!uniForm) {
     return;
   }
@@ -3193,7 +3211,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
   const {fieldRef, state, trigger} = useBase(props2, rootRef, emit2);
   const {triggerInput} = useValueSync(props2, state, emit2, trigger);
   useAutoFocus(props2, fieldRef);
-  useKeyboard(props2, fieldRef);
+  useKeyboard$1(props2, fieldRef);
   const {state: scopedAttrsState} = useScopedAttrs();
   useFormField("name", state);
   useEvent(fieldRef, state, trigger, triggerInput, beforeInput);
@@ -3312,13 +3330,34 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
+function initScrollBounce() {
+}
+function disableScrollBounce({disable}) {
+}
+function flatVNode(nodes) {
+  const array = [];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((vnode) => {
+      if (vue.isVNode(vnode)) {
+        if (vnode.type === vue.Fragment) {
+          array.push(...flatVNode(vnode.children));
+        } else {
+          array.push(vnode);
+        }
+      } else if (Array.isArray(vnode)) {
+        array.push(...flatVNode(vnode));
+      }
+    });
+  }
+  return array;
+}
 const props$h = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$j = /* @__PURE__ */ vue.defineComponent({
+var index$h = /* @__PURE__ */ vue.defineComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: props$h,
@@ -3373,7 +3412,7 @@ var index$j = /* @__PURE__ */ vue.defineComponent({
     vue.provide("removeMovableViewContext", removeMovableViewContext);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      movableViewItems = defaultSlots || [];
+      movableViewItems = flatVNode(defaultSlots);
       return vue.createVNode("uni-movable-area", vue.mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
@@ -3620,16 +3659,16 @@ function useTouchtrack(element, method, useCancel) {
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
-function t(t2, n) {
+function t$1(t2, n) {
   return e(t2, 0, n);
 }
-function Friction$1(e2, t2) {
+function Friction$2(e2, t2) {
   this._m = e2;
   this._f = 1e3 * t2;
   this._startTime = 0;
   this._v = 0;
 }
-Friction$1.prototype.setV = function(x, y) {
+Friction$2.prototype.setV = function(x, y) {
   var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
@@ -3639,11 +3678,11 @@ Friction$1.prototype.setV = function(x, y) {
   this._lastDt = null;
   this._startTime = new Date().getTime();
 };
-Friction$1.prototype.setS = function(x, y) {
+Friction$2.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t2) {
+Friction$2.prototype.s = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -3664,7 +3703,7 @@ Friction$1.prototype.s = function(t2) {
     y
   };
 };
-Friction$1.prototype.ds = function(t2) {
+Friction$2.prototype.ds = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -3676,29 +3715,29 @@ Friction$1.prototype.ds = function(t2) {
     dy: this._y_v + this._y_a * t2
   };
 };
-Friction$1.prototype.delta = function() {
+Friction$2.prototype.delta = function() {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   };
 };
-Friction$1.prototype.dt = function() {
+Friction$2.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
-Friction$1.prototype.done = function() {
+Friction$2.prototype.done = function() {
   var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
-Friction$1.prototype.setEnd = function(x, y) {
+Friction$2.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
   this._endPositionY = y;
 };
-Friction$1.prototype.reconfigure = function(m, f2) {
+Friction$2.prototype.reconfigure = function(m, f2) {
   this._m = m;
   this._f = 1e3 * f2;
 };
-function Spring$1(m, k, c) {
+function Spring$2(m, k, c) {
   this._m = m;
   this._k = k;
   this._c = c;
@@ -3706,7 +3745,7 @@ function Spring$1(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring$1.prototype._solve = function(e2, t2) {
+Spring$2.prototype._solve = function(e2, t2) {
   var n = this._c;
   var i2 = this._m;
   var r = this._k;
@@ -3781,46 +3820,46 @@ Spring$1.prototype._solve = function(e2, t2) {
     }
   };
 };
-Spring$1.prototype.x = function(e2) {
+Spring$2.prototype.x = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
-Spring$1.prototype.dx = function(e2) {
+Spring$2.prototype.dx = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
 };
-Spring$1.prototype.setEnd = function(e2, n, i2) {
+Spring$2.prototype.setEnd = function(e2, n, i2) {
   if (!i2) {
     i2 = new Date().getTime();
   }
-  if (e2 !== this._endPosition || !t(n, 0.1)) {
+  if (e2 !== this._endPosition || !t$1(n, 0.1)) {
     n = n || 0;
     var r = this._endPosition;
     if (this._solution) {
-      if (t(n, 0.1)) {
+      if (t$1(n, 0.1)) {
         n = this._solution.dx((i2 - this._startTime) / 1e3);
       }
       r = this._solution.x((i2 - this._startTime) / 1e3);
-      if (t(n, 0.1)) {
+      if (t$1(n, 0.1)) {
         n = 0;
       }
-      if (t(r, 0.1)) {
+      if (t$1(r, 0.1)) {
         r = 0;
       }
       r += this._endPosition;
     }
-    if (!(this._solution && t(r - e2, 0.1) && t(n, 0.1))) {
+    if (!(this._solution && t$1(r - e2, 0.1) && t$1(n, 0.1))) {
       this._endPosition = e2;
       this._solution = this._solve(r - this._endPosition, n);
       this._startTime = i2;
     }
   }
 };
-Spring$1.prototype.snap = function(e2) {
+Spring$2.prototype.snap = function(e2) {
   this._startTime = new Date().getTime();
   this._endPosition = e2;
   this._solution = {
@@ -3832,13 +3871,13 @@ Spring$1.prototype.snap = function(e2) {
     }
   };
 };
-Spring$1.prototype.done = function(n) {
+Spring$2.prototype.done = function(n) {
   if (!n) {
     n = new Date().getTime();
   }
-  return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
+  return e(this.x(), this._endPosition, 0.1) && t$1(this.dx(), 0.1);
 };
-Spring$1.prototype.reconfigure = function(m, t2, c) {
+Spring$2.prototype.reconfigure = function(m, t2, c) {
   this._m = m;
   this._k = t2;
   this._c = c;
@@ -3847,13 +3886,13 @@ Spring$1.prototype.reconfigure = function(m, t2, c) {
     this._startTime = new Date().getTime();
   }
 };
-Spring$1.prototype.springConstant = function() {
+Spring$2.prototype.springConstant = function() {
   return this._k;
 };
-Spring$1.prototype.damping = function() {
+Spring$2.prototype.damping = function() {
   return this._c;
 };
-Spring$1.prototype.configuration = function() {
+Spring$2.prototype.configuration = function() {
   function e2(e3, t3) {
     e3.reconfigure(1, t3, e3.damping());
   }
@@ -3878,9 +3917,9 @@ Spring$1.prototype.configuration = function() {
   ];
 };
 function STD(e2, t2, n) {
-  this._springX = new Spring$1(e2, t2, n);
-  this._springY = new Spring$1(e2, t2, n);
-  this._springScale = new Spring$1(e2, t2, n);
+  this._springX = new Spring$2(e2, t2, n);
+  this._springY = new Spring$2(e2, t2, n);
+  this._springScale = new Spring$2(e2, t2, n);
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i2) {
@@ -3961,7 +4000,7 @@ const props$g = {
     default: true
   }
 };
-var index$i = /* @__PURE__ */ vue.defineComponent({
+var index$g = /* @__PURE__ */ vue.defineComponent({
   name: "MovableView",
   props: props$g,
   emits: ["change", "scale"],
@@ -4098,7 +4137,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
   const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  new Friction$1(1, frictionNumber.value);
+  new Friction$2(1, frictionNumber.value);
   vue.watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -4334,7 +4373,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const _sfc_main$5 = {
+const _sfc_main$6 = {
   name: "Navigator",
   props: {
     hoverClass: {
@@ -4417,7 +4456,7 @@ const _sfc_main$5 = {
     };
   }
 };
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.hoverClass && $props.hoverClass !== "none" ? (vue.openBlock(), vue.createBlock("uni-navigator", vue.mergeProps({
     key: 0,
     class: [$setup.hovering ? $props.hoverClass : ""]
@@ -4432,24 +4471,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     vue.renderSlot(_ctx.$slots, "default")
   ]));
 }
-_sfc_main$5.render = _sfc_render$5;
-function flatVNode(nodes) {
-  const array = [];
-  if (Array.isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (vue.isVNode(vnode)) {
-        if (vnode.type === vue.Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (Array.isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
+_sfc_main$6.render = _sfc_render$6;
 const props$f = {
   value: {
     type: Array,
@@ -4495,7 +4517,7 @@ function useState$1(props2) {
   });
   return state;
 }
-var index$h = /* @__PURE__ */ vue.defineComponent({
+var PickerView = /* @__PURE__ */ vue.defineComponent({
   name: "PickerView",
   props: props$f,
   emits: ["change", "pickstart", "pickend", "update:value"],
@@ -4550,6 +4572,686 @@ var index$h = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
+class Friction$1 {
+  constructor(drag) {
+    this._drag = drag;
+    this._dragLog = Math.log(drag);
+    this._x = 0;
+    this._v = 0;
+    this._startTime = 0;
+  }
+  set(x, v2) {
+    this._x = x;
+    this._v = v2;
+    this._startTime = new Date().getTime();
+  }
+  setVelocityByEnd(e2) {
+    this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
+  }
+  x(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    this._dt = e2;
+    return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
+  }
+  dx(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    this._dt = e2;
+    return this._v * t2;
+  }
+  done() {
+    return Math.abs(this.dx()) < 3;
+  }
+  reconfigure(e2) {
+    const t2 = this.x();
+    const n = this.dx();
+    this._drag = e2;
+    this._dragLog = Math.log(e2);
+    this.set(t2, n);
+  }
+  configuration() {
+    const e2 = this;
+    return [
+      {
+        label: "Friction",
+        read: function() {
+          return e2._drag;
+        },
+        write: function(t2) {
+          e2.reconfigure(t2);
+        },
+        min: 1e-3,
+        max: 0.1,
+        step: 1e-3
+      }
+    ];
+  }
+}
+function o$1(e2, t2, n) {
+  return e2 > t2 - n && e2 < t2 + n;
+}
+function a$1(e2, t2) {
+  return o$1(e2, 0, t2);
+}
+class Spring$1 {
+  constructor(m, k, c) {
+    this._m = m;
+    this._k = k;
+    this._c = c;
+    this._solution = null;
+    this._endPosition = 0;
+    this._startTime = 0;
+  }
+  _solve(e2, t2) {
+    const n = this._c;
+    const i2 = this._m;
+    const r = this._k;
+    const o2 = n * n - 4 * i2 * r;
+    if (o2 === 0) {
+      const a3 = -n / (2 * i2);
+      const s2 = e2;
+      const l2 = t2 / (a3 * e2);
+      return {
+        x: function(e22) {
+          return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
+        },
+        dx: function(e22) {
+          const t22 = Math.pow(Math.E, a3 * e22);
+          return a3 * (s2 + l2 * e22) * t22 + l2 * t22;
+        }
+      };
+    }
+    if (o2 > 0) {
+      const c = (-n - Math.sqrt(o2)) / (2 * i2);
+      const u = (-n + Math.sqrt(o2)) / (2 * i2);
+      const l2 = (t2 - c * e2) / (u - c);
+      const s2 = e2 - l2;
+      return {
+        x: function(e22) {
+          let t22;
+          let n2;
+          if (e22 === this._t) {
+            t22 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e22;
+          if (!t22) {
+            t22 = this._powER1T = Math.pow(Math.E, c * e22);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e22);
+          }
+          return s2 * t22 + l2 * n2;
+        },
+        dx: function(e22) {
+          let t22;
+          let n2;
+          if (e22 === this._t) {
+            t22 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e22;
+          if (!t22) {
+            t22 = this._powER1T = Math.pow(Math.E, c * e22);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e22);
+          }
+          return s2 * c * t22 + l2 * u * n2;
+        }
+      };
+    }
+    const d = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
+    const a2 = -n / 2 * i2;
+    const s = e2;
+    const l = (t2 - a2 * e2) / d;
+    return {
+      x: function(e22) {
+        return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
+      },
+      dx: function(e22) {
+        const t22 = Math.pow(Math.E, a2 * e22);
+        const n2 = Math.cos(d * e22);
+        const i22 = Math.sin(d * e22);
+        return t22 * (l * d * n2 - s * d * i22) + a2 * t22 * (l * i22 + s * n2);
+      }
+    };
+  }
+  x(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._endPosition + this._solution.x(e2) : 0;
+  }
+  dx(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._solution.dx(e2) : 0;
+  }
+  setEnd(e2, t2, n) {
+    if (!n) {
+      n = new Date().getTime();
+    }
+    if (e2 !== this._endPosition || !a$1(t2, 0.4)) {
+      t2 = t2 || 0;
+      let i2 = this._endPosition;
+      if (this._solution) {
+        if (a$1(t2, 0.4)) {
+          t2 = this._solution.dx((n - this._startTime) / 1e3);
+        }
+        i2 = this._solution.x((n - this._startTime) / 1e3);
+        if (a$1(t2, 0.4)) {
+          t2 = 0;
+        }
+        if (a$1(i2, 0.4)) {
+          i2 = 0;
+        }
+        i2 += this._endPosition;
+      }
+      if (!(this._solution && a$1(i2 - e2, 0.4) && a$1(t2, 0.4))) {
+        this._endPosition = e2;
+        this._solution = this._solve(i2 - this._endPosition, t2);
+        this._startTime = n;
+      }
+    }
+  }
+  snap(e2) {
+    this._startTime = new Date().getTime();
+    this._endPosition = e2;
+    this._solution = {
+      x: function() {
+        return 0;
+      },
+      dx: function() {
+        return 0;
+      }
+    };
+  }
+  done(e2) {
+    if (!e2) {
+      e2 = new Date().getTime();
+    }
+    return o$1(this.x(), this._endPosition, 0.4) && a$1(this.dx(), 0.4);
+  }
+  reconfigure(e2, t2, n) {
+    this._m = e2;
+    this._k = t2;
+    this._c = n;
+    if (!this.done()) {
+      this._solution = this._solve(this.x() - this._endPosition, this.dx());
+      this._startTime = new Date().getTime();
+    }
+  }
+  springConstant() {
+    return this._k;
+  }
+  damping() {
+    return this._c;
+  }
+  configuration() {
+    function e2(e22, t22) {
+      e22.reconfigure(1, t22, e22.damping());
+    }
+    function t2(e22, t22) {
+      e22.reconfigure(1, e22.springConstant(), t22);
+    }
+    return [
+      {
+        label: "Spring Constant",
+        read: this.springConstant.bind(this),
+        write: e2.bind(this, this),
+        min: 100,
+        max: 1e3
+      },
+      {
+        label: "Damping",
+        read: this.damping.bind(this),
+        write: t2.bind(this, this),
+        min: 1,
+        max: 500
+      }
+    ];
+  }
+}
+class Scroll$1 {
+  constructor(extent, friction, spring) {
+    this._extent = extent;
+    this._friction = friction || new Friction$1(0.01);
+    this._spring = spring || new Spring$1(1, 90, 20);
+    this._startTime = 0;
+    this._springing = false;
+    this._springOffset = 0;
+  }
+  snap(e2, t2) {
+    this._springOffset = 0;
+    this._springing = true;
+    this._spring.snap(e2);
+    this._spring.setEnd(t2);
+  }
+  set(e2, t2) {
+    this._friction.set(e2, t2);
+    if (e2 > 0 && t2 >= 0) {
+      this._springOffset = 0;
+      this._springing = true;
+      this._spring.snap(e2);
+      this._spring.setEnd(0);
+    } else {
+      if (e2 < -this._extent && t2 <= 0) {
+        this._springOffset = 0;
+        this._springing = true;
+        this._spring.snap(e2);
+        this._spring.setEnd(-this._extent);
+      } else {
+        this._springing = false;
+      }
+    }
+    this._startTime = new Date().getTime();
+  }
+  x(e2) {
+    if (!this._startTime) {
+      return 0;
+    }
+    if (!e2) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    if (this._springing) {
+      return this._spring.x() + this._springOffset;
+    }
+    let t2 = this._friction.x(e2);
+    let n = this.dx(e2);
+    if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
+      this._springing = true;
+      this._spring.setEnd(0, n);
+      if (t2 < -this._extent) {
+        this._springOffset = -this._extent;
+      } else {
+        this._springOffset = 0;
+      }
+      t2 = this._spring.x() + this._springOffset;
+    }
+    return t2;
+  }
+  dx(e2) {
+    let t2;
+    if (this._lastTime === e2) {
+      t2 = this._lastDx;
+    } else {
+      t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
+    }
+    this._lastTime = e2;
+    this._lastDx = t2;
+    return t2;
+  }
+  done() {
+    return this._springing ? this._spring.done() : this._friction.done();
+  }
+  setVelocityByEnd(e2) {
+    this._friction.setVelocityByEnd(e2);
+  }
+  configuration() {
+    const e2 = this._friction.configuration();
+    e2.push.apply(e2, this._spring.configuration());
+    return e2;
+  }
+}
+function createAnimation(scroll, onScroll, onEnd) {
+  const state = {
+    id: 0,
+    cancelled: false
+  };
+  function startAnimation(state2, scroll2, onScroll2, onEnd2) {
+    if (!state2 || !state2.cancelled) {
+      onScroll2(scroll2);
+      const isDone = scroll2.done();
+      if (!isDone) {
+        if (!state2.cancelled) {
+          state2.id = requestAnimationFrame(startAnimation.bind(null, state2, scroll2, onScroll2, onEnd2));
+        }
+      }
+      if (isDone && onEnd2) {
+        onEnd2(scroll2);
+      }
+    }
+  }
+  function cancel(state2) {
+    if (state2 && state2.id) {
+      cancelAnimationFrame(state2.id);
+    }
+    if (state2) {
+      state2.cancelled = true;
+    }
+  }
+  startAnimation(state, scroll, onScroll, onEnd);
+  return {
+    cancel: cancel.bind(null, state),
+    model: scroll
+  };
+}
+class Scroller$1 {
+  constructor(element, options) {
+    options = options || {};
+    this._element = element;
+    this._options = options;
+    this._enableSnap = options.enableSnap || false;
+    this._itemSize = options.itemSize || 0;
+    this._enableX = options.enableX || false;
+    this._enableY = options.enableY || false;
+    this._shouldDispatchScrollEvent = !!options.onScroll;
+    if (this._enableX) {
+      this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
+      this._scrollWidth = options.scrollWidth;
+    } else {
+      this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
+      this._scrollHeight = options.scrollHeight;
+    }
+    this._position = 0;
+    this._scroll = new Scroll$1(this._extent, options.friction, options.spring);
+    this._onTransitionEnd = this.onTransitionEnd.bind(this);
+    this.updatePosition();
+  }
+  onTouchStart() {
+    this._startPosition = this._position;
+    this._lastChangePos = this._startPosition;
+    if (this._startPosition > 0) {
+      this._startPosition /= 0.5;
+    } else {
+      if (this._startPosition < -this._extent) {
+        this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
+      }
+    }
+    if (this._animation) {
+      this._animation.cancel();
+      this._scrolling = false;
+    }
+    this.updatePosition();
+  }
+  onTouchMove(x, y) {
+    let startPosition = this._startPosition;
+    if (this._enableX) {
+      startPosition += x;
+    } else if (this._enableY) {
+      startPosition += y;
+    }
+    if (startPosition > 0) {
+      startPosition *= 0.5;
+    } else if (startPosition < -this._extent) {
+      startPosition = 0.5 * (startPosition + this._extent) - this._extent;
+    }
+    this._position = startPosition;
+    this.updatePosition();
+    this.dispatchScroll();
+  }
+  onTouchEnd(x, y, o2) {
+    if (this._enableSnap && this._position > -this._extent && this._position < 0) {
+      if (this._enableY && (Math.abs(y) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
+        this.snap();
+        return;
+      }
+      if (this._enableX && (Math.abs(x) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
+        this.snap();
+        return;
+      }
+    }
+    if (this._enableX) {
+      this._scroll.set(this._position, o2.x);
+    } else if (this._enableY) {
+      this._scroll.set(this._position, o2.y);
+    }
+    let c;
+    if (this._enableSnap) {
+      const s = this._scroll._friction.x(100);
+      const l = s % this._itemSize;
+      c = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
+      if (c <= 0 && c >= -this._extent) {
+        this._scroll.setVelocityByEnd(c);
+      }
+    }
+    this._lastTime = Date.now();
+    this._lastDelay = 0;
+    this._scrolling = true;
+    this._lastChangePos = this._position;
+    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._animation = createAnimation(this._scroll, () => {
+      const e2 = Date.now();
+      const i2 = (e2 - this._scroll._startTime) / 1e3;
+      const r = this._scroll.x(i2);
+      this._position = r;
+      this.updatePosition();
+      const o22 = this._scroll.dx(i2);
+      if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
+        this.dispatchScroll();
+        this._lastDelay = Math.abs(2e3 / o22);
+        this._lastTime = e2;
+      }
+    }, () => {
+      if (this._enableSnap) {
+        if (c <= 0 && c >= -this._extent) {
+          this._position = c;
+          this.updatePosition();
+        }
+        if (typeof this._options.onSnap === "function") {
+          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+        }
+      }
+      if (this._shouldDispatchScrollEvent) {
+        this.dispatchScroll();
+      }
+      this._scrolling = false;
+    });
+  }
+  onTransitionEnd() {
+    this._element.style.webkitTransition = "";
+    this._element.style.transition = "";
+    this._element.removeEventListener("transitionend", this._onTransitionEnd);
+    if (this._snapping) {
+      this._snapping = false;
+    }
+    this.dispatchScroll();
+  }
+  snap() {
+    const itemSize = this._itemSize;
+    const position = this._position % itemSize;
+    const i2 = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
+    if (this._position !== i2) {
+      this._snapping = true;
+      this.scrollTo(-i2);
+      if (typeof this._options.onSnap === "function") {
+        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      }
+    }
+  }
+  scrollTo(position, time) {
+    if (this._animation) {
+      this._animation.cancel();
+      this._scrolling = false;
+    }
+    if (typeof position === "number") {
+      this._position = -position;
+    }
+    if (this._position < -this._extent) {
+      this._position = -this._extent;
+    } else {
+      if (this._position > 0) {
+        this._position = 0;
+      }
+    }
+    const transition = "transform " + (time || 0.2) + "s ease-out";
+    this._element.style.webkitTransition = "-webkit-" + transition;
+    this._element.style.transition = transition;
+    this.updatePosition();
+    this._element.addEventListener("transitionend", this._onTransitionEnd);
+  }
+  dispatchScroll() {
+    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+      this._lastPos = this._position;
+      const event = {
+        target: {
+          scrollLeft: this._enableX ? -this._position : 0,
+          scrollTop: this._enableY ? -this._position : 0,
+          scrollHeight: this._scrollHeight || this._element.offsetHeight,
+          scrollWidth: this._scrollWidth || this._element.offsetWidth,
+          offsetHeight: this._element.parentElement.offsetHeight,
+          offsetWidth: this._element.parentElement.offsetWidth
+        }
+      };
+      this._options.onScroll(event);
+    }
+  }
+  update(height, scrollHeight, itemSize) {
+    let extent = 0;
+    const position = this._position;
+    if (this._enableX) {
+      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
+      this._scrollWidth = scrollHeight;
+    } else {
+      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
+      this._scrollHeight = scrollHeight;
+    }
+    if (typeof height === "number") {
+      this._position = -height;
+    }
+    if (this._position < -extent) {
+      this._position = -extent;
+    } else {
+      if (this._position > 0) {
+        this._position = 0;
+      }
+    }
+    this._itemSize = itemSize || this._itemSize;
+    this.updatePosition();
+    if (position !== this._position) {
+      this.dispatchScroll();
+      if (typeof this._options.onSnap === "function") {
+        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      }
+    }
+    this._extent = extent;
+    this._scroll._extent = extent;
+  }
+  updatePosition() {
+    let transform = "";
+    if (this._enableX) {
+      transform = "translateX(" + this._position + "px) translateZ(0)";
+    } else {
+      if (this._enableY) {
+        transform = "translateY(" + this._position + "px) translateZ(0)";
+      }
+    }
+    this._element.style.webkitTransform = transform;
+    this._element.style.transform = transform;
+  }
+  isScrolling() {
+    return this._scrolling || this._snapping;
+  }
+}
+function useScroller(element, options) {
+  const touchInfo = {
+    trackingID: -1,
+    maxDy: 0,
+    maxDx: 0
+  };
+  const scroller2 = new Scroller$1(element, options);
+  function findDelta(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    return touchtrackEvent.detail.state === "move" || touchtrackEvent.detail.state === "end" ? {
+      x: touchtrackEvent.detail.dx,
+      y: touchtrackEvent.detail.dy
+    } : {
+      x: mouseEvent.screenX - touchInfo.x,
+      y: mouseEvent.screenY - touchInfo.y
+    };
+  }
+  function handleTouchStart(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    if (touchtrackEvent.detail.state === "start") {
+      touchInfo.trackingID = "touch";
+      touchInfo.x = touchtrackEvent.detail.x;
+      touchInfo.y = touchtrackEvent.detail.y;
+    } else {
+      touchInfo.trackingID = "mouse";
+      touchInfo.x = mouseEvent.screenX;
+      touchInfo.y = mouseEvent.screenY;
+    }
+    touchInfo.maxDx = 0;
+    touchInfo.maxDy = 0;
+    touchInfo.historyX = [0];
+    touchInfo.historyY = [0];
+    touchInfo.historyTime = [
+      touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
+    ];
+    touchInfo.listener = scroller2;
+    if (scroller2.onTouchStart) {
+      scroller2.onTouchStart();
+    }
+    event.preventDefault();
+  }
+  function handleTouchMove(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    if (touchInfo.trackingID !== -1) {
+      event.preventDefault();
+      const delta = findDelta(event);
+      if (delta) {
+        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
+          touchInfo.historyTime.shift();
+          touchInfo.historyX.shift();
+          touchInfo.historyY.shift();
+        }
+        if (touchInfo.listener && touchInfo.listener.onTouchMove) {
+          touchInfo.listener.onTouchMove(delta.x, delta.y);
+        }
+      }
+    }
+  }
+  function handleTouchEnd(event) {
+    if (touchInfo.trackingID !== -1) {
+      event.preventDefault();
+      const delta = findDelta(event);
+      if (delta) {
+        const listener = touchInfo.listener;
+        touchInfo.trackingID = -1;
+        touchInfo.listener = null;
+        const length = touchInfo.historyTime.length;
+        const o2 = {
+          x: 0,
+          y: 0
+        };
+        if (length > 2) {
+          for (let i2 = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i2], x = touchInfo.historyX[i2], y = touchInfo.historyY[i2]; i2 > 0; ) {
+            i2--;
+            const time0 = touchInfo.historyTime[i2];
+            const time = time1 - time0;
+            if (time > 30 && time < 50) {
+              o2.x = (x - touchInfo.historyX[i2]) / (time / 1e3);
+              o2.y = (y - touchInfo.historyY[i2]) / (time / 1e3);
+              break;
+            }
+          }
+        }
+        touchInfo.historyTime = [];
+        touchInfo.historyX = [];
+        touchInfo.historyY = [];
+        if (listener && listener.onTouchEnd) {
+          listener.onTouchEnd(delta.x, delta.y, o2);
+        }
+      }
+    }
+  }
+  return {
+    scroller: scroller2,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd
+  };
+}
 let scopedIndex = 0;
 function useScopedClass(indicatorHeightRef) {
   const className = `uni-picker-view-content-${scopedIndex++}`;
@@ -4561,7 +5263,7 @@ function useScopedClass(indicatorHeightRef) {
   vue.watch(() => indicatorHeightRef.value, updateStyle);
   return className;
 }
-var index$g = /* @__PURE__ */ vue.defineComponent({
+var PickerViewColumn = /* @__PURE__ */ vue.defineComponent({
   name: "PickerViewColumn",
   setup(props2, {
     slots,
@@ -4804,27 +5506,27 @@ var index$e = /* @__PURE__ */ vue.defineComponent({
   }
 });
 function useProvideRadioGroup(props2, trigger) {
-  const fields = [];
+  const fields2 = [];
   const getFieldsValue = () => {
     var _a;
-    return (_a = fields.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
+    return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
   };
   vue.provide(uniRadioGroupKey, {
     addField(field) {
-      fields.push(field);
+      fields2.push(field);
     },
     removeField(field) {
-      fields.splice(fields.indexOf(field), 1);
+      fields2.splice(fields2.indexOf(field), 1);
     },
     radioChange($event, field) {
-      const index2 = fields.indexOf(field);
+      const index2 = fields2.indexOf(field);
       _resetRadioGroupValue(index2, true);
       trigger("change", $event, {
         value: getFieldsValue()
       });
     }
   });
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   if (uniForm) {
     uniForm.addField({
       submit: () => {
@@ -4844,25 +5546,25 @@ function useProvideRadioGroup(props2, trigger) {
     };
   }
   function _resetRadioGroupValue(key, change) {
-    fields.forEach((value, index2) => {
+    fields2.forEach((value, index2) => {
       if (index2 === key) {
         return;
       }
       if (change) {
-        setFieldChecked(fields[index2], false);
+        setFieldChecked(fields2[index2], false);
       } else {
-        fields.forEach((v2, i2) => {
+        fields2.forEach((v2, i2) => {
           if (index2 >= i2) {
             return;
           }
-          if (fields[i2].value.radioChecked) {
-            setFieldChecked(fields[index2], false);
+          if (fields2[i2].value.radioChecked) {
+            setFieldChecked(fields2[index2], false);
           }
         });
       }
     });
   }
-  return fields;
+  return fields2;
 }
 const props$c = {
   checked: {
@@ -4953,7 +5655,7 @@ function useRadioInject(radioChecked, radioValue, reset) {
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field);
   }
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   if (!!uniForm) {
     uniForm.addField(formField);
   }
@@ -5172,7 +5874,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   name: "RichText",
   props: {
     nodes: {
@@ -5202,12 +5904,12 @@ const _sfc_main$4 = {
   }
 };
 const _hoisted_1$4 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-rich-text", _ctx.$attrs, [
     _hoisted_1$4
   ], 16);
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$5.render = _sfc_render$5;
 function Friction(e2) {
   this._drag = e2;
   this._dragLog = Math.log(e2);
@@ -5880,7 +6582,7 @@ var scroller = {
   }
 };
 const passiveOptions = uniShared.passive(true);
-const _sfc_main$3 = {
+const _sfc_main$4 = {
   name: "ScrollView",
   mixins: [scroller],
   props: {
@@ -6334,7 +7036,7 @@ const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
   style: {"color": "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$3, [
     vue.createVNode("div", _hoisted_2$1, [
       vue.createVNode("div", {
@@ -6382,7 +7084,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 512);
 }
-_sfc_main$3.render = _sfc_render$3;
+_sfc_main$4.render = _sfc_render$4;
 const props$b = {
   name: {
     type: String,
@@ -6562,7 +7264,7 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       });
     }
   };
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   if (!!uniForm) {
     const field = {
       reset: () => sliderValue.value = Number(props2.min),
@@ -7180,7 +7882,7 @@ var index$9 = /* @__PURE__ */ vue.defineComponent({
   }
 });
 function useSwitchInject(props2, switchChecked) {
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(uniFormKey$1, false);
   const uniLabel = vue.inject(uniLabelKey, false);
   const formField = {
     submit: () => {
@@ -8953,7 +9655,7 @@ var index$3 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const _sfc_main$2 = {
+const _sfc_main$3 = {
   name: "CoverView",
   props: {
     scrollTop: {
@@ -8996,15 +9698,15 @@ const _hoisted_1$2 = {
   ref: "content",
   class: "uni-cover-view"
 };
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-cover-view", {"scroll-top": $props.scrollTop}, [
     vue.createVNode("div", _hoisted_1$2, [
       vue.renderSlot(_ctx.$slots, "default")
     ], 512)
   ], 8, ["scroll-top"]);
 }
-_sfc_main$2.render = _sfc_render$2;
-const _sfc_main$1 = {
+_sfc_main$3.render = _sfc_render$3;
+const _sfc_main$2 = {
   name: "CoverImage",
   props: {
     src: {
@@ -9032,7 +9734,7 @@ const _sfc_main$1 = {
   }
 };
 const _hoisted_1$1 = {class: "uni-cover-image"};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-cover-image", {
     ref: "root",
     src: $props.src
@@ -9046,6 +9748,798 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
       }, null, 40, ["src"])) : vue.createCommentVNode("", true)
     ])
   ], 8, ["src"]);
+}
+_sfc_main$2.render = _sfc_render$2;
+function useKeyboard() {
+  const key = vue.ref("");
+  const disable = vue.ref(false);
+  return {
+    key,
+    disable
+  };
+}
+function usePopupStyle(props2) {
+  const popupWidth = vue.ref(0);
+  const popupHeight = vue.ref(0);
+  const isDesktop = vue.computed(() => popupWidth.value >= 500 && popupHeight.value >= 500);
+  const popupStyle = vue.computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      Object.assign(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+const {UniFormCtx, uniFormKey} = Form;
+const {t, getLocale} = useI18n();
+function getDefaultStartValue() {
+  if (this.mode === mode.TIME) {
+    return "00:00";
+  }
+  if (this.mode === mode.DATE) {
+    const year = new Date().getFullYear() - 100;
+    switch (this.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-01";
+      default:
+        return year + "-01-01";
+    }
+  }
+  return "";
+}
+function getDefaultEndValue() {
+  if (this.mode === mode.TIME) {
+    return "23:59";
+  }
+  if (this.mode === mode.DATE) {
+    const year = new Date().getFullYear() + 100;
+    switch (this.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-12";
+      default:
+        return year + "-12-31";
+    }
+  }
+  return "";
+}
+const mode = {
+  SELECTOR: "selector",
+  MULTISELECTOR: "multiSelector",
+  TIME: "time",
+  DATE: "date"
+};
+const fields = {
+  YEAR: "year",
+  MONTH: "month",
+  DAY: "day"
+};
+const selectorType = {
+  PICKER: "picker",
+  SELECT: "select"
+};
+var _sfc_main$1 = {
+  name: "Picker",
+  components: {PickerView, PickerViewColumn},
+  props: {
+    name: {
+      type: String,
+      default: ""
+    },
+    range: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    rangeKey: {
+      type: String,
+      default: ""
+    },
+    value: {
+      type: [Number, String, Array],
+      default: 0
+    },
+    mode: {
+      type: String,
+      default: mode.SELECTOR,
+      validator(val) {
+        return Object.values(mode).includes(val);
+      }
+    },
+    fields: {
+      type: String,
+      default: ""
+    },
+    start: {
+      type: String,
+      default: (props2) => {
+        return getDefaultStartValue.call(props2);
+      }
+    },
+    end: {
+      type: String,
+      default: (props2) => {
+        return getDefaultEndValue.call(props2);
+      }
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    selectorType: {
+      type: String,
+      default: ""
+    }
+  },
+  data() {
+    return {
+      valueSync: null,
+      visible: false,
+      contentVisible: false,
+      popover: null,
+      valueChangeSource: "",
+      timeArray: [],
+      dateArray: [],
+      valueArray: [],
+      oldValueArray: [],
+      isDesktop: false,
+      popupStyle: {
+        content: {},
+        triangle: {}
+      }
+    };
+  },
+  computed: {
+    rangeArray() {
+      var val = this.range;
+      switch (this.mode) {
+        case mode.SELECTOR:
+          return [val];
+        case mode.MULTISELECTOR:
+          return val;
+        case mode.TIME:
+          return this.timeArray;
+        case mode.DATE: {
+          const dateArray = this.dateArray;
+          switch (this.fields) {
+            case fields.YEAR:
+              return [dateArray[0]];
+            case fields.MONTH:
+              return [dateArray[0], dateArray[1]];
+            default:
+              return [dateArray[0], dateArray[1], dateArray[2]];
+          }
+        }
+      }
+      return [];
+    },
+    startArray() {
+      return this._getDateValueArray(this.start, getDefaultStartValue.bind(this)());
+    },
+    endArray() {
+      return this._getDateValueArray(this.end, getDefaultEndValue.bind(this)());
+    },
+    selectorTypeComputed() {
+      const type = this.selectorType;
+      if (Object.values(selectorType).includes(type)) {
+        return type;
+      }
+      return String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT;
+    },
+    system() {
+      if (this.mode === mode.DATE && !Object.values(fields).includes(this.fields) && this.isDesktop && /win|mac/i.test(navigator.platform)) {
+        if (navigator.vendor === "Google Inc.") {
+          return "chrome";
+        } else if (/Firefox/.test(navigator.userAgent)) {
+          return "firefox";
+        }
+      }
+      return "";
+    }
+  },
+  watch: {
+    visible(val) {
+      if (val) {
+        clearTimeout(this.__contentVisibleDelay);
+        this.contentVisible = val;
+        this._select();
+      } else {
+        this.__contentVisibleDelay = setTimeout(() => {
+          this.contentVisible = val;
+        }, 300);
+      }
+    },
+    value() {
+      this._setValueSync();
+    },
+    mode() {
+      this._setValueSync();
+    },
+    range() {
+      this._setValueSync();
+    },
+    valueSync() {
+      this._setValueArray();
+    },
+    valueArray(val) {
+      if (this.mode === mode.TIME || this.mode === mode.DATE) {
+        const getValue = this.mode === mode.TIME ? this._getTimeValue : this._getDateValue;
+        const valueArray = this.valueArray;
+        const startArray = this.startArray;
+        const endArray = this.endArray;
+        if (this.mode === mode.DATE) {
+          const dateArray = this.dateArray;
+          const max = dateArray[2].length;
+          const day = Number(dateArray[2][valueArray[2]]) || 1;
+          const realDay = new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`).getDate();
+          if (realDay < day) {
+            valueArray[2] -= realDay + max - day;
+          }
+        }
+        if (getValue(valueArray) < getValue(startArray)) {
+          this._cloneArray(valueArray, startArray);
+        } else if (getValue(valueArray) > getValue(endArray)) {
+          this._cloneArray(valueArray, endArray);
+        }
+      }
+      val.forEach((value, column) => {
+        if (value !== this.oldValueArray[column]) {
+          this.oldValueArray[column] = value;
+          if (this.mode === mode.MULTISELECTOR) {
+            this.$trigger("columnchange", {}, {
+              column,
+              value
+            });
+          }
+        }
+      });
+    }
+  },
+  created() {
+    initI18nPickerMsgsOnce();
+    this._createTime();
+    this._createDate();
+    this._setValueSync();
+    usePickerWatch.call(this);
+    usePickerForm.call(this);
+    const popup = usePopupStyle(this);
+    this.isDesktop = popup.isDesktop;
+    this.popupStyle = popup.popupStyle;
+  },
+  mounted() {
+    this.$trigger = useCustomEvent({value: this.$refs.root}, this.$emit);
+  },
+  beforeUnmount() {
+    this.$refs.picker.remove();
+  },
+  methods: {
+    withWebEvent,
+    $$t: t,
+    _show(event) {
+      if (this.disabled) {
+        return;
+      }
+      this.valueChangeSource = "";
+      var $picker = this.$refs.picker;
+      $picker.remove();
+      (document.querySelector("uni-app") || document.body).appendChild($picker);
+      $picker.style.display = "block";
+      const rect = event.currentTarget.getBoundingClientRect();
+      this.popover = {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height
+      };
+      setTimeout(() => {
+        this.visible = true;
+      }, 20);
+    },
+    _getFormData() {
+      return {
+        value: this.valueSync,
+        key: this.name
+      };
+    },
+    _resetFormData() {
+      switch (this.mode) {
+        case mode.SELECTOR:
+          this.valueSync = 0;
+          break;
+        case mode.MULTISELECTOR:
+          this.valueSync = this.value.map((val) => 0);
+          break;
+        case mode.DATE:
+        case mode.TIME:
+          this.valueSync = "";
+          break;
+      }
+    },
+    _createTime() {
+      var hours = [];
+      var minutes = [];
+      hours.splice(0, hours.length);
+      for (let i2 = 0; i2 < 24; i2++) {
+        hours.push((i2 < 10 ? "0" : "") + i2);
+      }
+      minutes.splice(0, minutes.length);
+      for (let i2 = 0; i2 < 60; i2++) {
+        minutes.push((i2 < 10 ? "0" : "") + i2);
+      }
+      this.timeArray.push(hours, minutes);
+    },
+    _createDate() {
+      var years = [];
+      var year = new Date().getFullYear();
+      for (let i2 = year - 150, end = year + 150; i2 <= end; i2++) {
+        years.push(String(i2));
+      }
+      var months = [];
+      for (let i2 = 1; i2 <= 12; i2++) {
+        months.push((i2 < 10 ? "0" : "") + i2);
+      }
+      var days = [];
+      for (let i2 = 1; i2 <= 31; i2++) {
+        days.push((i2 < 10 ? "0" : "") + i2);
+      }
+      this.dateArray.push(years, months, days);
+    },
+    _getTimeValue(val) {
+      return val[0] * 60 + val[1];
+    },
+    _getDateValue(val) {
+      const DAY = 31;
+      return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
+    },
+    _cloneArray(val1, val2) {
+      for (let i2 = 0; i2 < val1.length && i2 < val2.length; i2++) {
+        val1[i2] = val2[i2];
+      }
+    },
+    _setValueSync() {
+      let val = this.value;
+      switch (this.mode) {
+        case mode.MULTISELECTOR:
+          {
+            if (!Array.isArray(val)) {
+              val = [];
+            }
+            if (!Array.isArray(this.valueSync)) {
+              this.valueSync = [];
+            }
+            const length = this.valueSync.length = Math.max(val.length, this.range.length);
+            for (let index2 = 0; index2 < length; index2++) {
+              const val0 = Number(val[index2]);
+              const val1 = Number(this.valueSync[index2]);
+              const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+              const maxVal = this.range[index2] ? this.range[index2].length - 1 : 0;
+              this.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
+            }
+          }
+          break;
+        case mode.TIME:
+        case mode.DATE:
+          this.valueSync = String(val);
+          break;
+        default: {
+          const valueSync = Number(val);
+          this.valueSync = valueSync < 0 ? 0 : valueSync;
+          break;
+        }
+      }
+    },
+    _setValueArray() {
+      var val = this.valueSync;
+      var valueArray;
+      switch (this.mode) {
+        case mode.MULTISELECTOR:
+          valueArray = [...val];
+          break;
+        case mode.TIME:
+          valueArray = this._getDateValueArray(val, uniShared.formatDateTime({
+            mode: mode.TIME
+          }));
+          break;
+        case mode.DATE:
+          valueArray = this._getDateValueArray(val, uniShared.formatDateTime({
+            mode: mode.DATE
+          }));
+          break;
+        default:
+          valueArray = [val];
+          break;
+      }
+      this.oldValueArray = [...valueArray];
+      this.valueArray = [...valueArray];
+    },
+    _getValue() {
+      var val = this.valueArray;
+      switch (this.mode) {
+        case mode.SELECTOR:
+          return val[0];
+        case mode.MULTISELECTOR:
+          return val.map((val2) => val2);
+        case mode.TIME:
+          return this.valueArray.map((val2, i2) => this.timeArray[i2][val2]).join(":");
+        case mode.DATE:
+          return this.valueArray.map((val2, i2) => this.dateArray[i2][val2]).join("-");
+      }
+    },
+    _getDateValueArray(valueStr, defaultValue) {
+      const splitStr = this.mode === mode.DATE ? "-" : ":";
+      const array = this.mode === mode.DATE ? this.dateArray : this.timeArray;
+      let max;
+      if (this.mode === mode.TIME) {
+        max = 2;
+      } else {
+        switch (this.fields) {
+          case fields.YEAR:
+            max = 1;
+            break;
+          case fields.MONTH:
+            max = 2;
+            break;
+          default:
+            max = 3;
+            break;
+        }
+      }
+      const inputArray = String(valueStr).split(splitStr);
+      let value = [];
+      for (let i2 = 0; i2 < max; i2++) {
+        const val = inputArray[i2];
+        value.push(array[i2].indexOf(val));
+      }
+      if (value.indexOf(-1) >= 0) {
+        value = defaultValue ? this._getDateValueArray(defaultValue) : value.map(() => 0);
+      }
+      return value;
+    },
+    _change() {
+      this._close();
+      this.valueChangeSource = "click";
+      const value = this._getValue();
+      this.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+      this.$trigger("change", {}, {
+        value
+      });
+    },
+    _cancel($event) {
+      if (this.system === "firefox") {
+        const {top, left, width, height} = this.popover;
+        const {pageX, pageY} = $event;
+        if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
+          return;
+        }
+      }
+      this._close();
+      this.$trigger("cancel", {}, {});
+    },
+    _close() {
+      this.visible = false;
+      setTimeout(() => {
+        var $picker = this.$refs.picker;
+        $picker.remove();
+        this.$el.prepend($picker);
+        $picker.style.display = "none";
+      }, 260);
+    },
+    _select() {
+      if (this.mode === mode.SELECTOR && this.selectorTypeComputed === selectorType.SELECT) {
+        this.$refs.select.scrollTop = this.valueArray[0] * 34;
+      }
+    },
+    _input($event) {
+      this.valueSync = $event.target.value;
+      this.$nextTick(() => {
+        this._change();
+      });
+    },
+    _fixInputPosition($event) {
+      if (this.system === "chrome") {
+        const rect = this.$el.getBoundingClientRect();
+        const style = this.$refs.input.style;
+        const fontSize = 32;
+        style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
+        style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
+      }
+    },
+    _pickerViewChange(event) {
+      this.valueArray = this._l10nColumn(event.detail.value, true);
+    },
+    _l10nColumn(array, normalize) {
+      if (this.mode === mode.DATE) {
+        const locale = getLocale();
+        if (!locale.startsWith("zh")) {
+          switch (this.fields) {
+            case fields.YEAR:
+              return array;
+            case fields.MONTH:
+              return [array[1], array[0]];
+            default:
+              switch (locale) {
+                case "es":
+                case "fr":
+                  return [array[2], array[1], array[0]];
+                default:
+                  return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
+              }
+          }
+        }
+      }
+      return array;
+    },
+    _l10nItem(item, index2) {
+      if (this.mode === mode.DATE) {
+        const locale = getLocale();
+        if (locale.startsWith("zh")) {
+          const array = ["\u5E74", "\u6708", "\u65E5"];
+          return item + array[index2];
+        } else if (this.fields !== fields.YEAR && index2 === (this.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
+          let array;
+          switch (locale) {
+            case "es":
+              array = [
+                "enero",
+                "febrero",
+                "marzo",
+                "abril",
+                "mayo",
+                "junio",
+                "\u200B\u200Bjulio",
+                "agosto",
+                "septiembre",
+                "octubre",
+                "noviembre",
+                "diciembre"
+              ];
+              break;
+            case "fr":
+              array = [
+                "janvier",
+                "f\xE9vrier",
+                "mars",
+                "avril",
+                "mai",
+                "juin",
+                "juillet",
+                "ao\xFBt",
+                "septembre",
+                "octobre",
+                "novembre",
+                "d\xE9cembre"
+              ];
+              break;
+            default:
+              array = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+              ];
+              break;
+          }
+          return array[Number(item) - 1];
+        }
+      }
+      return item;
+    }
+  },
+  setup(props2) {
+    const booleanAttrs = useBooleanAttr(props2, "disabled");
+    return {
+      booleanAttrs
+    };
+  }
+};
+function usePickerWatch() {
+  const {key, disable} = useKeyboard();
+  vue.watch(() => this.visible, (value) => disable.value = !value);
+  vue.watchEffect(() => {
+    const {value} = key;
+    if (value === "esc") {
+      this._cancel && this._cancel();
+    } else if (value === "enter") {
+      this._change && this._change();
+    }
+  });
+}
+function usePickerForm() {
+  const uniForm = vue.inject(uniFormKey, false);
+  if (!!uniForm) {
+    const field = {
+      reset: this._resetFormData,
+      submit: () => {
+        const data = ["", null];
+        const {key, value} = this._getFormData();
+        if (key !== "") {
+          data[0] = key;
+          data[1] = value;
+        }
+        return data;
+      }
+    };
+    uniForm.addField(field);
+  }
+}
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_PickerViewColumn = vue.resolveComponent("PickerViewColumn");
+  const _component_PickerView = vue.resolveComponent("PickerView");
+  return vue.openBlock(), vue.createBlock("uni-picker", vue.mergeProps({ref: "root"}, $setup.booleanAttrs, {
+    onClick: _cache[13] || (_cache[13] = (() => $options.withWebEvent($options._show))())
+  }), [
+    vue.createVNode("div", {
+      ref: "picker",
+      class: ["uni-picker-container", `uni-${$props.mode}-${$options.selectorTypeComputed}`],
+      onWheel: _cache[9] || (_cache[9] = vue.withModifiers(() => {
+      }, ["prevent"])),
+      onTouchmove: _cache[10] || (_cache[10] = vue.withModifiers(() => {
+      }, ["prevent"]))
+    }, [
+      vue.createVNode(vue.Transition, {name: "uni-fade"}, {
+        default: vue.withCtx(() => [
+          vue.withDirectives(vue.createVNode("div", {
+            class: "uni-mask uni-picker-mask",
+            onClick: _cache[1] || (_cache[1] = (() => $options.withWebEvent($options._cancel))()),
+            onMousemove: _cache[2] || (_cache[2] = (...args) => $options._fixInputPosition && $options._fixInputPosition(...args))
+          }, null, 544), [
+            [vue.vShow, $data.visible]
+          ])
+        ]),
+        _: 1
+      }),
+      !$options.system ? (vue.openBlock(), vue.createBlock("div", {
+        key: 0,
+        class: [{"uni-picker-toggle": $data.visible}, "uni-picker-custom"],
+        style: $data.popupStyle.content
+      }, [
+        vue.createVNode("div", {
+          class: "uni-picker-header",
+          onClick: _cache[5] || (_cache[5] = vue.withModifiers(() => {
+          }, ["stop"]))
+        }, [
+          vue.createVNode("div", {
+            class: "uni-picker-action uni-picker-action-cancel",
+            onClick: _cache[3] || (_cache[3] = (() => $options.withWebEvent($options._cancel))())
+          }, vue.toDisplayString($options.$$t("uni.picker.cancel")), 1),
+          vue.createVNode("div", {
+            class: "uni-picker-action uni-picker-action-confirm",
+            onClick: _cache[4] || (_cache[4] = (...args) => $options._change && $options._change(...args))
+          }, vue.toDisplayString($options.$$t("uni.picker.done")), 1)
+        ]),
+        $data.contentVisible ? (vue.openBlock(), vue.createBlock(_component_PickerView, {
+          key: 0,
+          value: $options._l10nColumn($data.valueArray),
+          class: "uni-picker-content",
+          onChange: _cache[6] || (_cache[6] = (() => $options.withWebEvent($options._pickerViewChange))())
+        }, {
+          default: vue.withCtx(() => [
+            (vue.openBlock(true), vue.createBlock(vue.Fragment, null, vue.renderList($options._l10nColumn($options.rangeArray), (rangeItem, index0) => {
+              return vue.openBlock(), vue.createBlock(_component_PickerViewColumn, {key: index0}, {
+                default: vue.withCtx(() => [
+                  (vue.openBlock(true), vue.createBlock(vue.Fragment, null, vue.renderList(rangeItem, (item, index2) => {
+                    return vue.openBlock(), vue.createBlock("div", {
+                      key: index2,
+                      class: "uni-picker-item"
+                    }, vue.toDisplayString(typeof item === "object" ? item[$props.rangeKey] || "" : $options._l10nItem(item, index0)), 1);
+                  }), 128))
+                ]),
+                _: 2
+              }, 1024);
+            }), 128))
+          ]),
+          _: 1
+        }, 8, ["value"])) : vue.createCommentVNode("", true),
+        vue.createVNode("div", {
+          ref: "select",
+          class: "uni-picker-select",
+          onWheel: _cache[7] || (_cache[7] = vue.withModifiers(() => {
+          }, ["stop"])),
+          onTouchmove: _cache[8] || (_cache[8] = vue.withModifiers(() => {
+          }, ["stop"]))
+        }, [
+          (vue.openBlock(true), vue.createBlock(vue.Fragment, null, vue.renderList($options.rangeArray[0], (item, index2) => {
+            return vue.openBlock(), vue.createBlock("div", {
+              key: index2,
+              class: ["uni-picker-item", {selected: $data.valueArray[0] === index2}],
+              onClick: ($event) => {
+                $data.valueArray[0] = index2;
+                $options._change();
+              }
+            }, vue.toDisplayString(typeof item === "object" ? item[$props.rangeKey] || "" : item), 11, ["onClick"]);
+          }), 128))
+        ], 544),
+        vue.createVNode("div", {
+          style: $data.popupStyle.triangle
+        }, null, 4)
+      ], 6)) : vue.createCommentVNode("", true)
+    ], 34),
+    vue.createVNode("div", null, [
+      vue.renderSlot(_ctx.$slots, "default")
+    ]),
+    $options.system ? (vue.openBlock(), vue.createBlock("div", {
+      key: 0,
+      class: "uni-picker-system",
+      onMousemove: _cache[12] || (_cache[12] = (() => $options.withWebEvent($options._fixInputPosition))())
+    }, [
+      vue.createVNode("input", {
+        ref: "input",
+        value: $data.valueSync,
+        type: $props.mode,
+        tabindex: "-1",
+        min: $props.start,
+        max: $props.end,
+        class: [$options.system, $data.popupStyle.dock],
+        onChange: _cache[11] || (_cache[11] = vue.withModifiers((() => $options.withWebEvent($options._input))(), ["stop"]))
+      }, null, 42, ["value", "type", "min", "max"])
+    ], 32)) : vue.createCommentVNode("", true)
+  ], 16);
 }
 _sfc_main$1.render = _sfc_render$1;
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
@@ -10154,34 +11648,38 @@ var index = /* @__PURE__ */ vue.defineComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$7;
-exports.Button = index$q;
-exports.Canvas = _sfc_main$6;
-exports.Checkbox = index$n;
-exports.CheckboxGroup = index$p;
-exports.CoverImage = _sfc_main$1;
-exports.CoverView = _sfc_main$2;
-exports.Editor = index$m;
-exports.Form = index$r;
-exports.Icon = index$l;
-exports.Image = index$k;
+exports.Audio = _sfc_main$8;
+exports.Button = index$o;
+exports.Canvas = _sfc_main$7;
+exports.Checkbox = index$l;
+exports.CheckboxGroup = index$n;
+exports.CoverImage = _sfc_main$2;
+exports.CoverView = _sfc_main$3;
+exports.Editor = index$k;
+exports.Form = Form;
+exports.Friction = Friction$1;
+exports.Icon = index$j;
+exports.Image = index$i;
 exports.Input = Input;
-exports.Label = index$o;
+exports.Label = index$m;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
-exports.MovableArea = index$j;
-exports.MovableView = index$i;
-exports.Navigator = _sfc_main$5;
+exports.MovableArea = index$h;
+exports.MovableView = index$g;
+exports.Navigator = _sfc_main$6;
 exports.PageComponent = index$2;
-exports.PickerView = index$h;
-exports.PickerViewColumn = index$g;
+exports.Picker = _sfc_main$1;
+exports.PickerView = PickerView;
+exports.PickerViewColumn = PickerViewColumn;
 exports.Progress = index$f;
 exports.Radio = index$d;
 exports.RadioGroup = index$e;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = _sfc_main$4;
-exports.ScrollView = _sfc_main$3;
+exports.RichText = _sfc_main$5;
+exports.ScrollView = _sfc_main$4;
+exports.Scroller = Scroller$1;
 exports.Slider = index$c;
+exports.Spring = Spring$1;
 exports.Swiper = index$b;
 exports.SwiperItem = index$a;
 exports.Switch = index$9;
@@ -10194,6 +11692,7 @@ exports.View = index$6;
 exports.WebView = index$4;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
+exports.disableScrollBounce = disableScrollBounce;
 exports.getApp = getApp$1;
 exports.getCurrentPages = getCurrentPages$1;
 exports.getStorage = getStorage;
@@ -10201,7 +11700,8 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$s;
+exports.initScrollBounce = initScrollBounce;
+exports.plugin = index$p;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;
@@ -10215,6 +11715,7 @@ exports.useBooleanAttr = useBooleanAttr;
 exports.useCustomEvent = useCustomEvent;
 exports.useNativeEvent = useNativeEvent;
 exports.useOn = useOn;
+exports.useScroller = useScroller;
 exports.useSubscribe = useSubscribe;
 exports.useTouchtrack = useTouchtrack;
 exports.useUserAction = useUserAction;
