@@ -301,57 +301,69 @@ export default {
         }, 300);
       }
     },
-    value() {
-      this._setValueSync();
+    value: {
+      deep: true,
+      handler() {
+        this._setValueSync();
+      }
     },
     mode() {
       this._setValueSync();
     },
-    range() {
-      this._setValueSync();
-    },
-    valueSync() {
-      this._setValueArray();
-    },
-    valueArray(val) {
-      if (this.mode === mode.TIME || this.mode === mode.DATE) {
-        const getValue =
-          this.mode === mode.TIME ? this._getTimeValue : this._getDateValue;
-        const valueArray = this.valueArray;
-        const startArray = this.startArray;
-        const endArray = this.endArray;
-        if (this.mode === mode.DATE) {
-          const dateArray = this.dateArray;
-          const max = dateArray[2].length;
-          const day = Number(dateArray[2][valueArray[2]]) || 1;
-          const realDay = new Date(
-            `${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`
-          ).getDate();
-          if (realDay < day) {
-            valueArray[2] -= realDay + max - day;
-          }
-        }
-        if (getValue(valueArray) < getValue(startArray)) {
-          this._cloneArray(valueArray, startArray);
-        } else if (getValue(valueArray) > getValue(endArray)) {
-          this._cloneArray(valueArray, endArray);
-        }
+    range: {
+      deep: true,
+      handler() {
+        this._setValueSync();
       }
-      val.forEach((value, column) => {
-        if (value !== this.oldValueArray[column]) {
-          this.oldValueArray[column] = value;
-          if (this.mode === mode.MULTISELECTOR) {
-            this.$trigger(
-              "columnchange",
-              {},
-              {
-                column,
-                value,
-              }
-            );
+    },
+    valueSync: {
+      deep: true,
+      handler() {
+        this._setValueArray();
+      }
+    },
+    valueArray: {
+      deep: true,
+      handler(val) {
+        if (this.mode === mode.TIME || this.mode === mode.DATE) {
+          const getValue =
+            this.mode === mode.TIME ? this._getTimeValue : this._getDateValue;
+          const valueArray = this.valueArray;
+          const startArray = this.startArray;
+          const endArray = this.endArray;
+          if (this.mode === mode.DATE) {
+            const dateArray = this.dateArray;
+            const max = dateArray[2].length;
+            const day = Number(dateArray[2][valueArray[2]]) || 1;
+            const realDay = new Date(
+              `${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`
+            ).getDate();
+            if (realDay < day) {
+              valueArray[2] -= realDay + max - day;
+            }
+          }
+          if (getValue(valueArray) < getValue(startArray)) {
+            this._cloneArray(valueArray, startArray);
+          } else if (getValue(valueArray) > getValue(endArray)) {
+            this._cloneArray(valueArray, endArray);
           }
         }
-      });
+        val.forEach((value, column) => {
+          if (value !== this.oldValueArray[column]) {
+            this.oldValueArray[column] = value;
+            if (this.mode === mode.MULTISELECTOR) {
+              this.$trigger(
+                "columnchange",
+                {},
+                {
+                  column,
+                  value,
+                }
+              );
+            }
+          }
+        });
+      }
     },
   },
   created() {
