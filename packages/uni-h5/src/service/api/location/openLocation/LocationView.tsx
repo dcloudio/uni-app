@@ -1,12 +1,6 @@
-import {
-  defineComponent,
-  Ref,
-  ref,
-  ExtractPropTypes,
-  reactive,
-  computed,
-} from 'vue'
+import { Ref, ref, ExtractPropTypes, reactive, computed } from 'vue'
 import { createSvgIconVNode, ICON_PATH_BACK } from '@dcloudio/uni-core'
+import { defineSystemComponent } from '@dcloudio/uni-components'
 import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 
 const props = {
@@ -32,7 +26,7 @@ const props = {
 
 export type Props = ExtractPropTypes<typeof props>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'LocationView',
   props,
   emits: ['close'],

@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   PropType,
   onMounted,
   Ref,
@@ -8,6 +7,7 @@ import {
   watch,
   nextTick,
 } from 'vue'
+import { defineSystemComponent } from '@dcloudio/uni-components'
 import { Swiper, SwiperItem } from '@dcloudio/uni-components'
 import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 import ImageView from './ImageView'
@@ -36,7 +36,7 @@ function getIndex(props: Props): number {
   return index
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'ImagePreview',
   props,
   emits: ['close'],

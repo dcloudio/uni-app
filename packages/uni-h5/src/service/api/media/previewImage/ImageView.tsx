@@ -1,5 +1,6 @@
-import { defineComponent, reactive } from 'vue'
+import { reactive } from 'vue'
 import {
+  defineSystemComponent,
   MovableArea,
   MovableView,
   withWebEvent,
@@ -12,7 +13,7 @@ const props = {
   },
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'ImageView',
   props,
   setup(props) {
