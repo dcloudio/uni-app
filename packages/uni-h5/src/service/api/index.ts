@@ -76,5 +76,9 @@ export {
   canvasPutImageData,
   canvasToTempFilePath,
   getSelectedTextRange,
+  $on,
+  $off,
+  $once,
+  $emit,
 } from '@dcloudio/uni-api'
 //#endif

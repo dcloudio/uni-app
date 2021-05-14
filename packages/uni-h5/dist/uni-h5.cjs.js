@@ -138,10 +138,10 @@ E.prototype = {
   emit: function(name) {
     var data = [].slice.call(arguments, 1);
     var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-    var i2 = 0;
+    var i = 0;
     var len = evtArr.length;
-    for (i2; i2 < len; i2++) {
-      evtArr[i2].fn.apply(evtArr[i2].ctx, data);
+    for (i; i < len; i++) {
+      evtArr[i].fn.apply(evtArr[i].ctx, data);
     }
     return this;
   },
@@ -150,9 +150,9 @@ E.prototype = {
     var evts = e2[name];
     var liveEvents = [];
     if (evts && callback2) {
-      for (var i2 = 0, len = evts.length; i2 < len; i2++) {
-        if (evts[i2].fn !== callback2 && evts[i2].fn._ !== callback2)
-          liveEvents.push(evts[i2]);
+      for (var i = 0, len = evts.length; i < len; i++) {
+        if (evts[i].fn !== callback2 && evts[i].fn._ !== callback2)
+          liveEvents.push(evts[i]);
       }
     }
     liveEvents.length ? e2[name] = liveEvents : delete e2[name];
@@ -245,13 +245,13 @@ function getRealRoute(fromRoute, toRoute) {
   }
   const toRouteArray = toRoute.split("/");
   const toRouteLength = toRouteArray.length;
-  let i2 = 0;
-  for (; i2 < toRouteLength && toRouteArray[i2] === ".."; i2++) {
+  let i = 0;
+  for (; i < toRouteLength && toRouteArray[i] === ".."; i++) {
   }
-  toRouteArray.splice(0, i2);
+  toRouteArray.splice(0, i);
   toRoute = toRouteArray.join("/");
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
-  fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
+  fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
 const callbacks$1 = {};
@@ -511,11 +511,11 @@ function validateProtocols(name, args, protocol, onFail) {
   }
   const len = protocol.length;
   const argsLen = args.length;
-  for (let i2 = 0; i2 < len; i2++) {
-    const opts = protocol[i2];
+  for (let i = 0; i < len; i++) {
+    const opts = protocol[i];
     const data = Object.create(null);
-    if (argsLen > i2) {
-      data[opts.name] = args[i2];
+    if (argsLen > i) {
+      data[opts.name] = args[i];
     }
     validateProtocol(name, data, {[opts.name]: opts}, onFail);
   }
@@ -535,8 +535,8 @@ function validateProp(name, value, prop, isAbsent) {
     let isValid = false;
     const types = shared.isArray(type) ? type : [type];
     const expectedTypes = [];
-    for (let i2 = 0; i2 < types.length && !isValid; i2++) {
-      const {valid, expectedType} = assertType(value, types[i2]);
+    for (let i = 0; i < types.length && !isValid; i++) {
+      const {valid, expectedType} = assertType(value, types[i]);
       expectedTypes.push(expectedType || "");
       isValid = valid;
     }
@@ -713,8 +713,8 @@ function formatApiArgs(args, options) {
   }
   const formatArgs = options.formatArgs;
   const keys = Object.keys(formatArgs);
-  for (let i2 = 0; i2 < keys.length; i2++) {
-    const name = keys[i2];
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i];
     const formatterOrDefaultValue = formatArgs[name];
     if (shared.isFunction(formatterOrDefaultValue)) {
       const errMsg = formatterOrDefaultValue(args[0][name], params);
@@ -1780,6 +1780,9 @@ function getTempCanvas(width = 0, height = 0) {
 var _sfc_main$7 = {
   name: "Canvas",
   inheritAttrs: false,
+  compatConfig: {
+    MODE: 3
+  },
   components: {
     ResizeSensor
   },
@@ -2610,9 +2613,9 @@ function HTMLParser(html, handler) {
       }
     }
     if (pos >= 0) {
-      for (var i2 = stack.length - 1; i2 >= pos; i2--) {
+      for (var i = stack.length - 1; i >= pos; i--) {
         if (handler.end) {
-          handler.end(stack[i2]);
+          handler.end(stack[i]);
         }
       }
       stack.length = pos;
@@ -2622,8 +2625,8 @@ function HTMLParser(html, handler) {
 function makeMap(str) {
   var obj = {};
   var items = str.split(",");
-  for (var i2 = 0; i2 < items.length; i2++) {
-    obj[items[i2]] = true;
+  for (var i = 0; i < items.length; i++) {
+    obj[items[i]] = true;
   }
   return obj;
 }
@@ -3523,8 +3526,8 @@ function useMovableAreaState(props2, rootRef) {
   function _find(target, items = movableViewContexts) {
     let root = rootRef.value;
     function get(node) {
-      for (let i2 = 0; i2 < items.length; i2++) {
-        const item = items[i2];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
         if (node === item.rootRef.value) {
           return item;
         }
@@ -3537,19 +3540,19 @@ function useMovableAreaState(props2, rootRef) {
     return get(target);
   }
   const _onTouchstart = withWebEvent((t2) => {
-    let i2 = t2.touches;
-    if (i2) {
-      if (i2.length > 1) {
+    let i = t2.touches;
+    if (i) {
+      if (i.length > 1) {
         let r = {
-          x: i2[1].pageX - i2[0].pageX,
-          y: i2[1].pageY - i2[0].pageY
+          x: i[1].pageX - i[0].pageX,
+          y: i[1].pageY - i[0].pageY
         };
         pinchStartLen.value = calc(r);
         gapV.x = r.x;
         gapV.y = r.y;
         if (!props2.scaleArea) {
-          let touch0 = _find(i2[0].target);
-          let touch1 = _find(i2[1].target);
+          let touch0 = _find(i[0].target);
+          let touch1 = _find(i[1].target);
           _scaleMovableView = touch0 && touch0 === touch1 ? touch0 : null;
         }
       }
@@ -3560,16 +3563,16 @@ function useMovableAreaState(props2, rootRef) {
     if (n) {
       if (n.length > 1) {
         t2.preventDefault();
-        let i2 = {
+        let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
         };
         if (gapV.x !== null && pinchStartLen.value && pinchStartLen.value > 0) {
-          let r = calc(i2) / pinchStartLen.value;
+          let r = calc(i) / pinchStartLen.value;
           _updateScale(r);
         }
-        gapV.x = i2.x;
-        gapV.y = i2.y;
+        gapV.x = i.x;
+        gapV.y = i.y;
       }
     }
   });
@@ -3735,13 +3738,13 @@ function e(e2, t2, n) {
 function t$1(t2, n) {
   return e(t2, 0, n);
 }
-function Friction$2(e2, t2) {
+function Friction$1(e2, t2) {
   this._m = e2;
   this._f = 1e3 * t2;
   this._startTime = 0;
   this._v = 0;
 }
-Friction$2.prototype.setV = function(x, y) {
+Friction$1.prototype.setV = function(x, y) {
   var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
@@ -3751,11 +3754,11 @@ Friction$2.prototype.setV = function(x, y) {
   this._lastDt = null;
   this._startTime = new Date().getTime();
 };
-Friction$2.prototype.setS = function(x, y) {
+Friction$1.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$2.prototype.s = function(t2) {
+Friction$1.prototype.s = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -3776,7 +3779,7 @@ Friction$2.prototype.s = function(t2) {
     y
   };
 };
-Friction$2.prototype.ds = function(t2) {
+Friction$1.prototype.ds = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -3788,29 +3791,29 @@ Friction$2.prototype.ds = function(t2) {
     dy: this._y_v + this._y_a * t2
   };
 };
-Friction$2.prototype.delta = function() {
+Friction$1.prototype.delta = function() {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   };
 };
-Friction$2.prototype.dt = function() {
+Friction$1.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
-Friction$2.prototype.done = function() {
+Friction$1.prototype.done = function() {
   var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
-Friction$2.prototype.setEnd = function(x, y) {
+Friction$1.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
   this._endPositionY = y;
 };
-Friction$2.prototype.reconfigure = function(m, f2) {
+Friction$1.prototype.reconfigure = function(m, f2) {
   this._m = m;
   this._f = 1e3 * f2;
 };
-function Spring$2(m, k, c) {
+function Spring$1(m, k, c) {
   this._m = m;
   this._k = k;
   this._c = c;
@@ -3818,13 +3821,13 @@ function Spring$2(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring$2.prototype._solve = function(e2, t2) {
+Spring$1.prototype._solve = function(e2, t2) {
   var n = this._c;
-  var i2 = this._m;
+  var i = this._m;
   var r = this._k;
-  var o2 = n * n - 4 * i2 * r;
+  var o2 = n * n - 4 * i * r;
   if (o2 === 0) {
-    const a2 = -n / (2 * i2);
+    const a2 = -n / (2 * i);
     const s = e2;
     const l = t2 / (a2 * e2);
     return {
@@ -3838,8 +3841,8 @@ Spring$2.prototype._solve = function(e2, t2) {
     };
   }
   if (o2 > 0) {
-    const c = (-n - Math.sqrt(o2)) / (2 * i2);
-    const u = (-n + Math.sqrt(o2)) / (2 * i2);
+    const c = (-n - Math.sqrt(o2)) / (2 * i);
+    const u = (-n + Math.sqrt(o2)) / (2 * i);
     const d = (t2 - c * e2) / (u - c);
     const h = e2 - d;
     return {
@@ -3877,8 +3880,8 @@ Spring$2.prototype._solve = function(e2, t2) {
       }
     };
   }
-  var p2 = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
-  var f2 = -n / 2 * i2;
+  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
+  var f2 = -n / 2 * i;
   var v2 = e2;
   var g2 = (t2 - f2 * e2) / p2;
   return {
@@ -3888,35 +3891,35 @@ Spring$2.prototype._solve = function(e2, t2) {
     dx: function(e3) {
       var t3 = Math.pow(Math.E, f2 * e3);
       var n2 = Math.cos(p2 * e3);
-      var i3 = Math.sin(p2 * e3);
-      return t3 * (g2 * p2 * n2 - v2 * p2 * i3) + f2 * t3 * (g2 * i3 + v2 * n2);
+      var i2 = Math.sin(p2 * e3);
+      return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
     }
   };
 };
-Spring$2.prototype.x = function(e2) {
+Spring$1.prototype.x = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
-Spring$2.prototype.dx = function(e2) {
+Spring$1.prototype.dx = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
 };
-Spring$2.prototype.setEnd = function(e2, n, i2) {
-  if (!i2) {
-    i2 = new Date().getTime();
+Spring$1.prototype.setEnd = function(e2, n, i) {
+  if (!i) {
+    i = new Date().getTime();
   }
   if (e2 !== this._endPosition || !t$1(n, 0.1)) {
     n = n || 0;
     var r = this._endPosition;
     if (this._solution) {
       if (t$1(n, 0.1)) {
-        n = this._solution.dx((i2 - this._startTime) / 1e3);
+        n = this._solution.dx((i - this._startTime) / 1e3);
       }
-      r = this._solution.x((i2 - this._startTime) / 1e3);
+      r = this._solution.x((i - this._startTime) / 1e3);
       if (t$1(n, 0.1)) {
         n = 0;
       }
@@ -3928,11 +3931,11 @@ Spring$2.prototype.setEnd = function(e2, n, i2) {
     if (!(this._solution && t$1(r - e2, 0.1) && t$1(n, 0.1))) {
       this._endPosition = e2;
       this._solution = this._solve(r - this._endPosition, n);
-      this._startTime = i2;
+      this._startTime = i;
     }
   }
 };
-Spring$2.prototype.snap = function(e2) {
+Spring$1.prototype.snap = function(e2) {
   this._startTime = new Date().getTime();
   this._endPosition = e2;
   this._solution = {
@@ -3944,13 +3947,13 @@ Spring$2.prototype.snap = function(e2) {
     }
   };
 };
-Spring$2.prototype.done = function(n) {
+Spring$1.prototype.done = function(n) {
   if (!n) {
     n = new Date().getTime();
   }
   return e(this.x(), this._endPosition, 0.1) && t$1(this.dx(), 0.1);
 };
-Spring$2.prototype.reconfigure = function(m, t2, c) {
+Spring$1.prototype.reconfigure = function(m, t2, c) {
   this._m = m;
   this._k = t2;
   this._c = c;
@@ -3959,13 +3962,13 @@ Spring$2.prototype.reconfigure = function(m, t2, c) {
     this._startTime = new Date().getTime();
   }
 };
-Spring$2.prototype.springConstant = function() {
+Spring$1.prototype.springConstant = function() {
   return this._k;
 };
-Spring$2.prototype.damping = function() {
+Spring$1.prototype.damping = function() {
   return this._c;
 };
-Spring$2.prototype.configuration = function() {
+Spring$1.prototype.configuration = function() {
   function e2(e3, t3) {
     e3.reconfigure(1, t3, e3.damping());
   }
@@ -3990,16 +3993,16 @@ Spring$2.prototype.configuration = function() {
   ];
 };
 function STD(e2, t2, n) {
-  this._springX = new Spring$2(e2, t2, n);
-  this._springY = new Spring$2(e2, t2, n);
-  this._springScale = new Spring$2(e2, t2, n);
+  this._springX = new Spring$1(e2, t2, n);
+  this._springY = new Spring$1(e2, t2, n);
+  this._springScale = new Spring$1(e2, t2, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t2, n, i2) {
+STD.prototype.setEnd = function(e2, t2, n, i) {
   var r = new Date().getTime();
-  this._springX.setEnd(e2, i2, r);
-  this._springY.setEnd(t2, i2, r);
-  this._springScale.setEnd(n, i2, r);
+  this._springX.setEnd(e2, i, r);
+  this._springY.setEnd(t2, i, r);
+  this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
 STD.prototype.x = function() {
@@ -4109,21 +4112,21 @@ function p(t2, n) {
   if (t2 === n) {
     return 0;
   }
-  let i2 = t2.offsetLeft;
-  return t2.offsetParent ? i2 += p(t2.offsetParent, n) : 0;
+  let i = t2.offsetLeft;
+  return t2.offsetParent ? i += p(t2.offsetParent, n) : 0;
 }
 function f(t2, n) {
   if (t2 === n) {
     return 0;
   }
-  let i2 = t2.offsetTop;
-  return t2.offsetParent ? i2 += f(t2.offsetParent, n) : 0;
+  let i = t2.offsetTop;
+  return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
 }
 function v(a2, b) {
   return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(e2, t2, n) {
-  let i2 = function(e3) {
+  let i = function(e3) {
     if (e3 && e3.id) {
       cancelAnimationFrame(e3.id);
     }
@@ -4135,23 +4138,23 @@ function g(e2, t2, n) {
     id: 0,
     cancelled: false
   };
-  function fn(n2, i3, r2, o2) {
+  function fn(n2, i2, r2, o2) {
     if (!n2 || !n2.cancelled) {
-      r2(i3);
+      r2(i2);
       let a2 = e2.done();
       if (!a2) {
         if (!n2.cancelled) {
-          n2.id = requestAnimationFrame(fn.bind(null, n2, i3, r2, o2));
+          n2.id = requestAnimationFrame(fn.bind(null, n2, i2, r2, o2));
         }
       }
       if (a2 && o2) {
-        o2(i3);
+        o2(i2);
       }
     }
   }
   fn(r, e2, t2, n);
   return {
-    cancel: i2.bind(null, r),
+    cancel: i.bind(null, r),
     model: e2
   };
 }
@@ -4210,7 +4213,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
   const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  new Friction$2(1, frictionNumber.value);
+  new Friction$1(1, frictionNumber.value);
   vue.watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -4448,6 +4451,9 @@ function useMovableViewState(props2, trigger, rootRef) {
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
 const _sfc_main$6 = {
   name: "Navigator",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     hoverClass: {
       type: String,
@@ -4646,7 +4652,7 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class Friction$1 {
+class Friction {
   constructor(drag) {
     this._drag = drag;
     this._dragLog = Math.log(drag);
@@ -4706,13 +4712,13 @@ class Friction$1 {
     ];
   }
 }
-function o$1(e2, t2, n) {
+function o(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
-function a$1(e2, t2) {
-  return o$1(e2, 0, t2);
+function a(e2, t2) {
+  return o(e2, 0, t2);
 }
-class Spring$1 {
+class Spring {
   constructor(m, k, c) {
     this._m = m;
     this._k = k;
@@ -4723,11 +4729,11 @@ class Spring$1 {
   }
   _solve(e2, t2) {
     const n = this._c;
-    const i2 = this._m;
+    const i = this._m;
     const r = this._k;
-    const o2 = n * n - 4 * i2 * r;
+    const o2 = n * n - 4 * i * r;
     if (o2 === 0) {
-      const a3 = -n / (2 * i2);
+      const a3 = -n / (2 * i);
       const s2 = e2;
       const l2 = t2 / (a3 * e2);
       return {
@@ -4741,8 +4747,8 @@ class Spring$1 {
       };
     }
     if (o2 > 0) {
-      const c = (-n - Math.sqrt(o2)) / (2 * i2);
-      const u = (-n + Math.sqrt(o2)) / (2 * i2);
+      const c = (-n - Math.sqrt(o2)) / (2 * i);
+      const u = (-n + Math.sqrt(o2)) / (2 * i);
       const l2 = (t2 - c * e2) / (u - c);
       const s2 = e2 - l2;
       return {
@@ -4780,8 +4786,8 @@ class Spring$1 {
         }
       };
     }
-    const d = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
-    const a2 = -n / 2 * i2;
+    const d = Math.sqrt(4 * i * r - n * n) / (2 * i);
+    const a2 = -n / 2 * i;
     const s = e2;
     const l = (t2 - a2 * e2) / d;
     return {
@@ -4791,8 +4797,8 @@ class Spring$1 {
       dx: function(e22) {
         const t22 = Math.pow(Math.E, a2 * e22);
         const n2 = Math.cos(d * e22);
-        const i22 = Math.sin(d * e22);
-        return t22 * (l * d * n2 - s * d * i22) + a2 * t22 * (l * i22 + s * n2);
+        const i2 = Math.sin(d * e22);
+        return t22 * (l * d * n2 - s * d * i2) + a2 * t22 * (l * i2 + s * n2);
       }
     };
   }
@@ -4812,25 +4818,25 @@ class Spring$1 {
     if (!n) {
       n = new Date().getTime();
     }
-    if (e2 !== this._endPosition || !a$1(t2, 0.4)) {
+    if (e2 !== this._endPosition || !a(t2, 0.4)) {
       t2 = t2 || 0;
-      let i2 = this._endPosition;
+      let i = this._endPosition;
       if (this._solution) {
-        if (a$1(t2, 0.4)) {
+        if (a(t2, 0.4)) {
           t2 = this._solution.dx((n - this._startTime) / 1e3);
         }
-        i2 = this._solution.x((n - this._startTime) / 1e3);
-        if (a$1(t2, 0.4)) {
+        i = this._solution.x((n - this._startTime) / 1e3);
+        if (a(t2, 0.4)) {
           t2 = 0;
         }
-        if (a$1(i2, 0.4)) {
-          i2 = 0;
+        if (a(i, 0.4)) {
+          i = 0;
         }
-        i2 += this._endPosition;
+        i += this._endPosition;
       }
-      if (!(this._solution && a$1(i2 - e2, 0.4) && a$1(t2, 0.4))) {
+      if (!(this._solution && a(i - e2, 0.4) && a(t2, 0.4))) {
         this._endPosition = e2;
-        this._solution = this._solve(i2 - this._endPosition, t2);
+        this._solution = this._solve(i - this._endPosition, t2);
         this._startTime = n;
       }
     }
@@ -4851,7 +4857,7 @@ class Spring$1 {
     if (!e2) {
       e2 = new Date().getTime();
     }
-    return o$1(this.x(), this._endPosition, 0.4) && a$1(this.dx(), 0.4);
+    return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
   }
   reconfigure(e2, t2, n) {
     this._m = e2;
@@ -4893,11 +4899,11 @@ class Spring$1 {
     ];
   }
 }
-class Scroll$1 {
+class Scroll {
   constructor(extent, friction, spring) {
     this._extent = extent;
-    this._friction = friction || new Friction$1(0.01);
-    this._spring = spring || new Spring$1(1, 90, 20);
+    this._friction = friction || new Friction(0.01);
+    this._spring = spring || new Spring(1, 90, 20);
     this._startTime = 0;
     this._springing = false;
     this._springOffset = 0;
@@ -5007,7 +5013,7 @@ function createAnimation(scroll, onScroll, onEnd) {
     model: scroll
   };
 }
-class Scroller$1 {
+class Scroller {
   constructor(element, options) {
     options = options || {};
     this._element = element;
@@ -5025,7 +5031,7 @@ class Scroller$1 {
       this._scrollHeight = options.scrollHeight;
     }
     this._position = 0;
-    this._scroll = new Scroll$1(this._extent, options.friction, options.spring);
+    this._scroll = new Scroll(this._extent, options.friction, options.spring);
     this._onTransitionEnd = this.onTransitionEnd.bind(this);
     this.updatePosition();
   }
@@ -5093,11 +5099,11 @@ class Scroller$1 {
     this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
     this._animation = createAnimation(this._scroll, () => {
       const e2 = Date.now();
-      const i2 = (e2 - this._scroll._startTime) / 1e3;
-      const r = this._scroll.x(i2);
+      const i = (e2 - this._scroll._startTime) / 1e3;
+      const r = this._scroll.x(i);
       this._position = r;
       this.updatePosition();
-      const o22 = this._scroll.dx(i2);
+      const o22 = this._scroll.dx(i);
       if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
         this.dispatchScroll();
         this._lastDelay = Math.abs(2e3 / o22);
@@ -5131,10 +5137,10 @@ class Scroller$1 {
   snap() {
     const itemSize = this._itemSize;
     const position = this._position % itemSize;
-    const i2 = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
-    if (this._position !== i2) {
+    const i = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
+    if (this._position !== i) {
       this._snapping = true;
-      this.scrollTo(-i2);
+      this.scrollTo(-i);
       if (typeof this._options.onSnap === "function") {
         this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
       }
@@ -5230,7 +5236,7 @@ function useScroller(element, options) {
     maxDy: 0,
     maxDx: 0
   };
-  const scroller2 = new Scroller$1(element, options);
+  const scroller = new Scroller(element, options);
   function findDelta(event) {
     const touchtrackEvent = event;
     const mouseEvent = event;
@@ -5261,9 +5267,9 @@ function useScroller(element, options) {
     touchInfo.historyTime = [
       touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
     ];
-    touchInfo.listener = scroller2;
-    if (scroller2.onTouchStart) {
-      scroller2.onTouchStart();
+    touchInfo.listener = scroller;
+    if (scroller.onTouchStart) {
+      scroller.onTouchStart();
     }
     event.preventDefault();
   }
@@ -5299,13 +5305,13 @@ function useScroller(element, options) {
           y: 0
         };
         if (length > 2) {
-          for (let i2 = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i2], x = touchInfo.historyX[i2], y = touchInfo.historyY[i2]; i2 > 0; ) {
-            i2--;
-            const time0 = touchInfo.historyTime[i2];
+          for (let i = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i], x = touchInfo.historyX[i], y = touchInfo.historyY[i]; i > 0; ) {
+            i--;
+            const time0 = touchInfo.historyTime[i];
             const time = time1 - time0;
             if (time > 30 && time < 50) {
-              o2.x = (x - touchInfo.historyX[i2]) / (time / 1e3);
-              o2.y = (y - touchInfo.historyY[i2]) / (time / 1e3);
+              o2.x = (x - touchInfo.historyX[i]) / (time / 1e3);
+              o2.y = (y - touchInfo.historyY[i]) / (time / 1e3);
               break;
             }
           }
@@ -5320,7 +5326,7 @@ function useScroller(element, options) {
     }
   }
   return {
-    scroller: scroller2,
+    scroller,
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd
@@ -5357,7 +5363,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       state: scopedAttrsState
     } = useScopedAttrs();
     const className = useScopedClass(indicatorHeight);
-    let scroller2;
+    let scroller;
     const state = vue.reactive({
       current: currentRef.value,
       length: 0
@@ -5378,7 +5384,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         oldDeltaY = 0;
         let current = Math.min(state.current + (deltaY < 0 ? -1 : 1), state.length - 1);
         state.current = current = Math.max(current, 0);
-        scroller2.scrollTo(current * indicatorHeight.value);
+        scroller.scrollTo(current * indicatorHeight.value);
       } else {
         oldDeltaY = deltaY;
       }
@@ -5388,7 +5394,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       clientY
     }) {
       const el = rootRef.value;
-      if (!scroller2.isScrolling()) {
+      if (!scroller.isScrolling()) {
         const rect = el.getBoundingClientRect();
         const r = clientY - rect.top - pickerViewState.height / 2;
         const o2 = indicatorHeight.value / 2;
@@ -5397,7 +5403,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
           const s = r < 0 ? -a2 : a2;
           let current = Math.min(state.current + s, state.length - 1);
           state.current = current = Math.max(current, 0);
-          scroller2.scrollTo(current * indicatorHeight.value);
+          scroller.scrollTo(current * indicatorHeight.value);
         }
       }
     }
@@ -5628,11 +5634,11 @@ function useProvideRadioGroup(props2, trigger) {
       if (change) {
         setFieldChecked(fields2[index2], false);
       } else {
-        fields2.forEach((v2, i2) => {
-          if (index2 >= i2) {
+        fields2.forEach((v2, i) => {
+          if (index2 >= i) {
             return;
           }
-          if (fields2[i2].value.radioChecked) {
+          if (fields2[i].value.radioChecked) {
             setFieldChecked(fields2[index2], false);
           }
         });
@@ -5951,6 +5957,9 @@ function parseNodes(nodes, parentNode) {
 }
 const _sfc_main$5 = {
   name: "RichText",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     nodes: {
       type: [Array, String],
@@ -5985,684 +5994,12 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16);
 }
 _sfc_main$5.render = _sfc_render$5;
-function Friction(e2) {
-  this._drag = e2;
-  this._dragLog = Math.log(e2);
-  this._x = 0;
-  this._v = 0;
-  this._startTime = 0;
-}
-Friction.prototype.set = function(e2, t2) {
-  this._x = e2;
-  this._v = t2;
-  this._startTime = new Date().getTime();
-};
-Friction.prototype.setVelocityByEnd = function(e2) {
-  this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
-};
-Friction.prototype.x = function(e2) {
-  if (e2 === void 0) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  var t2;
-  t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
-  this._dt = e2;
-  return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
-};
-Friction.prototype.dx = function(e2) {
-  if (e2 === void 0) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  var t2;
-  t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
-  this._dt = e2;
-  return this._v * t2;
-};
-Friction.prototype.done = function() {
-  return Math.abs(this.dx()) < 3;
-};
-Friction.prototype.reconfigure = function(e2) {
-  var t2 = this.x();
-  var n = this.dx();
-  this._drag = e2;
-  this._dragLog = Math.log(e2);
-  this.set(t2, n);
-};
-Friction.prototype.configuration = function() {
-  var e2 = this;
-  return [
-    {
-      label: "Friction",
-      read: function() {
-        return e2._drag;
-      },
-      write: function(t2) {
-        e2.reconfigure(t2);
-      },
-      min: 1e-3,
-      max: 0.1,
-      step: 1e-3
-    }
-  ];
-};
-function o(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
-}
-function a(e2, t2) {
-  return o(e2, 0, t2);
-}
-function Spring(e2, t2, n) {
-  this._m = e2;
-  this._k = t2;
-  this._c = n;
-  this._solution = null;
-  this._endPosition = 0;
-  this._startTime = 0;
-}
-Spring.prototype._solve = function(e2, t2) {
-  var n = this._c;
-  var i2 = this._m;
-  var r = this._k;
-  var o2 = n * n - 4 * i2 * r;
-  if (o2 === 0) {
-    const a3 = -n / (2 * i2);
-    const s2 = e2;
-    const l2 = t2 / (a3 * e2);
-    return {
-      x: function(e3) {
-        return (s2 + l2 * e3) * Math.pow(Math.E, a3 * e3);
-      },
-      dx: function(e3) {
-        var t3 = Math.pow(Math.E, a3 * e3);
-        return a3 * (s2 + l2 * e3) * t3 + l2 * t3;
-      }
-    };
-  }
-  if (o2 > 0) {
-    const c = (-n - Math.sqrt(o2)) / (2 * i2);
-    const u = (-n + Math.sqrt(o2)) / (2 * i2);
-    const l2 = (t2 - c * e2) / (u - c);
-    const s2 = e2 - l2;
-    return {
-      x: function(e3) {
-        let t3;
-        let n2;
-        if (e3 === this._t) {
-          t3 = this._powER1T;
-          n2 = this._powER2T;
-        }
-        this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
-        }
-        if (!n2) {
-          n2 = this._powER2T = Math.pow(Math.E, u * e3);
-        }
-        return s2 * t3 + l2 * n2;
-      },
-      dx: function(e3) {
-        let t3;
-        let n2;
-        if (e3 === this._t) {
-          t3 = this._powER1T;
-          n2 = this._powER2T;
-        }
-        this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
-        }
-        if (!n2) {
-          n2 = this._powER2T = Math.pow(Math.E, u * e3);
-        }
-        return s2 * c * t3 + l2 * u * n2;
-      }
-    };
-  }
-  var d = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
-  var a2 = -n / 2 * i2;
-  var s = e2;
-  var l = (t2 - a2 * e2) / d;
-  return {
-    x: function(e3) {
-      return Math.pow(Math.E, a2 * e3) * (s * Math.cos(d * e3) + l * Math.sin(d * e3));
-    },
-    dx: function(e3) {
-      var t3 = Math.pow(Math.E, a2 * e3);
-      var n2 = Math.cos(d * e3);
-      var i3 = Math.sin(d * e3);
-      return t3 * (l * d * n2 - s * d * i3) + a2 * t3 * (l * i3 + s * n2);
-    }
-  };
-};
-Spring.prototype.x = function(e2) {
-  if (e2 === void 0) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  return this._solution ? this._endPosition + this._solution.x(e2) : 0;
-};
-Spring.prototype.dx = function(e2) {
-  if (e2 === void 0) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  return this._solution ? this._solution.dx(e2) : 0;
-};
-Spring.prototype.setEnd = function(e2, t2, n) {
-  if (!n) {
-    n = new Date().getTime();
-  }
-  if (e2 !== this._endPosition || !a(t2, 0.4)) {
-    t2 = t2 || 0;
-    var i2 = this._endPosition;
-    if (this._solution) {
-      if (a(t2, 0.4)) {
-        t2 = this._solution.dx((n - this._startTime) / 1e3);
-      }
-      i2 = this._solution.x((n - this._startTime) / 1e3);
-      if (a(t2, 0.4)) {
-        t2 = 0;
-      }
-      if (a(i2, 0.4)) {
-        i2 = 0;
-      }
-      i2 += this._endPosition;
-    }
-    if (!(this._solution && a(i2 - e2, 0.4) && a(t2, 0.4))) {
-      this._endPosition = e2;
-      this._solution = this._solve(i2 - this._endPosition, t2);
-      this._startTime = n;
-    }
-  }
-};
-Spring.prototype.snap = function(e2) {
-  this._startTime = new Date().getTime();
-  this._endPosition = e2;
-  this._solution = {
-    x: function() {
-      return 0;
-    },
-    dx: function() {
-      return 0;
-    }
-  };
-};
-Spring.prototype.done = function(e2) {
-  if (!e2) {
-    e2 = new Date().getTime();
-  }
-  return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
-};
-Spring.prototype.reconfigure = function(e2, t2, n) {
-  this._m = e2;
-  this._k = t2;
-  this._c = n;
-  if (!this.done()) {
-    this._solution = this._solve(this.x() - this._endPosition, this.dx());
-    this._startTime = new Date().getTime();
-  }
-};
-Spring.prototype.springConstant = function() {
-  return this._k;
-};
-Spring.prototype.damping = function() {
-  return this._c;
-};
-Spring.prototype.configuration = function() {
-  function e2(e3, t3) {
-    e3.reconfigure(1, t3, e3.damping());
-  }
-  function t2(e3, t3) {
-    e3.reconfigure(1, e3.springConstant(), t3);
-  }
-  return [
-    {
-      label: "Spring Constant",
-      read: this.springConstant.bind(this),
-      write: e2.bind(this, this),
-      min: 100,
-      max: 1e3
-    },
-    {
-      label: "Damping",
-      read: this.damping.bind(this),
-      write: t2.bind(this, this),
-      min: 1,
-      max: 500
-    }
-  ];
-};
-function Scroll(extent, friction, spring) {
-  this._extent = extent;
-  this._friction = friction || new Friction(0.01);
-  this._spring = spring || new Spring(1, 90, 20);
-  this._startTime = 0;
-  this._springing = false;
-  this._springOffset = 0;
-}
-Scroll.prototype.snap = function(e2, t2) {
-  this._springOffset = 0;
-  this._springing = true;
-  this._spring.snap(e2);
-  this._spring.setEnd(t2);
-};
-Scroll.prototype.set = function(e2, t2) {
-  this._friction.set(e2, t2);
-  if (e2 > 0 && t2 >= 0) {
-    this._springOffset = 0;
-    this._springing = true;
-    this._spring.snap(e2);
-    this._spring.setEnd(0);
-  } else {
-    if (e2 < -this._extent && t2 <= 0) {
-      this._springOffset = 0;
-      this._springing = true;
-      this._spring.snap(e2);
-      this._spring.setEnd(-this._extent);
-    } else {
-      this._springing = false;
-    }
-  }
-  this._startTime = new Date().getTime();
-};
-Scroll.prototype.x = function(e2) {
-  if (!this._startTime) {
-    return 0;
-  }
-  if (!e2) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  if (this._springing) {
-    return this._spring.x() + this._springOffset;
-  }
-  var t2 = this._friction.x(e2);
-  var n = this.dx(e2);
-  if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
-    this._springing = true;
-    this._spring.setEnd(0, n);
-    if (t2 < -this._extent) {
-      this._springOffset = -this._extent;
-    } else {
-      this._springOffset = 0;
-    }
-    t2 = this._spring.x() + this._springOffset;
-  }
-  return t2;
-};
-Scroll.prototype.dx = function(e2) {
-  var t2 = 0;
-  t2 = this._lastTime === e2 ? this._lastDx : this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
-  this._lastTime = e2;
-  this._lastDx = t2;
-  return t2;
-};
-Scroll.prototype.done = function() {
-  return this._springing ? this._spring.done() : this._friction.done();
-};
-Scroll.prototype.setVelocityByEnd = function(e2) {
-  this._friction.setVelocityByEnd(e2);
-};
-Scroll.prototype.configuration = function() {
-  var e2 = this._friction.configuration();
-  e2.push.apply(e2, this._spring.configuration());
-  return e2;
-};
-function i(scroll, t2, n) {
-  function i2(t3, scroll2, r2, o3) {
-    if (!t3 || !t3.cancelled) {
-      r2(scroll2);
-      var a2 = scroll2.done();
-      if (!a2) {
-        if (!t3.cancelled) {
-          t3.id = requestAnimationFrame(i2.bind(null, t3, scroll2, r2, o3));
-        }
-      }
-      if (a2 && o3) {
-        o3(scroll2);
-      }
-    }
-  }
-  function r(scroll2) {
-    if (scroll2 && scroll2.id) {
-      cancelAnimationFrame(scroll2.id);
-    }
-    if (scroll2) {
-      scroll2.cancelled = true;
-    }
-  }
-  var o2 = {
-    id: 0,
-    cancelled: false
-  };
-  i2(o2, scroll, t2, n);
-  return {
-    cancel: r.bind(null, o2),
-    model: scroll
-  };
-}
-function Scroller(element, options) {
-  options = options || {};
-  this._element = element;
-  this._options = options;
-  this._enableSnap = options.enableSnap || false;
-  this._itemSize = options.itemSize || 0;
-  this._enableX = options.enableX || false;
-  this._enableY = options.enableY || false;
-  this._shouldDispatchScrollEvent = !!options.onScroll;
-  if (this._enableX) {
-    this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
-    this._scrollWidth = options.scrollWidth;
-  } else {
-    this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
-    this._scrollHeight = options.scrollHeight;
-  }
-  this._position = 0;
-  this._scroll = new Scroll(this._extent, options.friction, options.spring);
-  this._onTransitionEnd = this.onTransitionEnd.bind(this);
-  this.updatePosition();
-}
-Scroller.prototype.onTouchStart = function() {
-  this._startPosition = this._position;
-  this._lastChangePos = this._startPosition;
-  if (this._startPosition > 0) {
-    this._startPosition /= 0.5;
-  } else {
-    if (this._startPosition < -this._extent) {
-      this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
-    }
-  }
-  if (this._animation) {
-    this._animation.cancel();
-    this._scrolling = false;
-  }
-  this.updatePosition();
-};
-Scroller.prototype.onTouchMove = function(x, y) {
-  var startPosition = this._startPosition;
-  if (this._enableX) {
-    startPosition += x;
-  } else if (this._enableY) {
-    startPosition += y;
-  }
-  if (startPosition > 0) {
-    startPosition *= 0.5;
-  } else if (startPosition < -this._extent) {
-    startPosition = 0.5 * (startPosition + this._extent) - this._extent;
-  }
-  this._position = startPosition;
-  this.updatePosition();
-  this.dispatchScroll();
-};
-Scroller.prototype.onTouchEnd = function(e2, r, o2) {
-  if (this._enableSnap && this._position > -this._extent && this._position < 0) {
-    if (this._enableY && (Math.abs(r) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
-      this.snap();
-      return;
-    }
-    if (this._enableX && (Math.abs(e2) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
-      this.snap();
-      return;
-    }
-  }
-  if (this._enableX) {
-    this._scroll.set(this._position, o2.x);
-  } else if (this._enableY) {
-    this._scroll.set(this._position, o2.y);
-  }
-  if (this._enableSnap) {
-    var s = this._scroll._friction.x(100);
-    var l = s % this._itemSize;
-    var c = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
-    if (c <= 0 && c >= -this._extent) {
-      this._scroll.setVelocityByEnd(c);
-    }
-  }
-  this._lastTime = Date.now();
-  this._lastDelay = 0;
-  this._scrolling = true;
-  this._lastChangePos = this._position;
-  this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
-  this._animation = i(this._scroll, () => {
-    var e3 = Date.now();
-    var i2 = (e3 - this._scroll._startTime) / 1e3;
-    var r2 = this._scroll.x(i2);
-    this._position = r2;
-    this.updatePosition();
-    var o3 = this._scroll.dx(i2);
-    if (this._shouldDispatchScrollEvent && e3 - this._lastTime > this._lastDelay) {
-      this.dispatchScroll();
-      this._lastDelay = Math.abs(2e3 / o3);
-      this._lastTime = e3;
-    }
-  }, () => {
-    if (this._enableSnap) {
-      if (c <= 0 && c >= -this._extent) {
-        this._position = c;
-        this.updatePosition();
-      }
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-      }
-    }
-    if (this._shouldDispatchScrollEvent) {
-      this.dispatchScroll();
-    }
-    this._scrolling = false;
-  });
-};
-Scroller.prototype.onTransitionEnd = function() {
-  this._element.style.transition = "";
-  this._element.style.webkitTransition = "";
-  this._element.removeEventListener("transitionend", this._onTransitionEnd);
-  this._element.removeEventListener("webkitTransitionEnd", this._onTransitionEnd);
-  if (this._snapping) {
-    this._snapping = false;
-  }
-  this.dispatchScroll();
-};
-Scroller.prototype.snap = function() {
-  var e2 = this._itemSize;
-  var t2 = this._position % e2;
-  var i2 = Math.abs(t2) > this._itemSize / 2 ? this._position - (e2 - Math.abs(t2)) : this._position - t2;
-  if (this._position !== i2) {
-    this._snapping = true;
-    this.scrollTo(-i2);
-    if (typeof this._options.onSnap === "function") {
-      this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-    }
-  }
-};
-Scroller.prototype.scrollTo = function(e2, t2) {
-  if (this._animation) {
-    this._animation.cancel();
-    this._scrolling = false;
-  }
-  if (typeof e2 === "number") {
-    this._position = -e2;
-  }
-  if (this._position < -this._extent) {
-    this._position = -this._extent;
-  } else {
-    if (this._position > 0) {
-      this._position = 0;
-    }
-  }
-  this._element.style.transition = "transform " + (t2 || 0.2) + "s ease-out";
-  this._element.style.webkitTransition = "-webkit-transform " + (t2 || 0.2) + "s ease-out";
-  this.updatePosition();
-  this._element.addEventListener("transitionend", this._onTransitionEnd);
-  this._element.addEventListener("webkitTransitionEnd", this._onTransitionEnd);
-};
-Scroller.prototype.dispatchScroll = function() {
-  if (typeof this._options.onScroll === "function" && Math.round(this._lastPos) !== Math.round(this._position)) {
-    this._lastPos = this._position;
-    var e2 = {
-      target: {
-        scrollLeft: this._enableX ? -this._position : 0,
-        scrollTop: this._enableY ? -this._position : 0,
-        scrollHeight: this._scrollHeight || this._element.offsetHeight,
-        scrollWidth: this._scrollWidth || this._element.offsetWidth,
-        offsetHeight: this._element.parentElement.offsetHeight,
-        offsetWidth: this._element.parentElement.offsetWidth
-      }
-    };
-    this._options.onScroll(e2);
-  }
-};
-Scroller.prototype.update = function(e2, t2, n) {
-  var i2 = 0;
-  var r = this._position;
-  if (this._enableX) {
-    i2 = this._element.childNodes.length ? (t2 || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
-    this._scrollWidth = t2;
-  } else {
-    i2 = this._element.childNodes.length ? (t2 || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
-    this._scrollHeight = t2;
-  }
-  if (typeof e2 === "number") {
-    this._position = -e2;
-  }
-  if (this._position < -i2) {
-    this._position = -i2;
-  } else {
-    if (this._position > 0) {
-      this._position = 0;
-    }
-  }
-  this._itemSize = n || this._itemSize;
-  this.updatePosition();
-  if (r !== this._position) {
-    this.dispatchScroll();
-    if (typeof this._options.onSnap === "function") {
-      this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-    }
-  }
-  this._extent = i2;
-  this._scroll._extent = i2;
-};
-Scroller.prototype.updatePosition = function() {
-  var transform = "";
-  if (this._enableX) {
-    transform = "translateX(" + this._position + "px) translateZ(0)";
-  } else {
-    if (this._enableY) {
-      transform = "translateY(" + this._position + "px) translateZ(0)";
-    }
-  }
-  this._element.style.webkitTransform = transform;
-  this._element.style.transform = transform;
-};
-Scroller.prototype.isScrolling = function() {
-  return this._scrolling || this._snapping;
-};
-var scroller = {
-  methods: {
-    initScroller: function(element, options) {
-      this._touchInfo = {
-        trackingID: -1,
-        maxDy: 0,
-        maxDx: 0
-      };
-      this._scroller = new Scroller(element, options);
-      this.__handleTouchStart = this._handleTouchStart.bind(this);
-      this.__handleTouchMove = this._handleTouchMove.bind(this);
-      this.__handleTouchEnd = this._handleTouchEnd.bind(this);
-      this._initedScroller = true;
-    },
-    _findDelta: function(event) {
-      var touchInfo = this._touchInfo;
-      return event.detail.state === "move" || event.detail.state === "end" ? {
-        x: event.detail.dx,
-        y: event.detail.dy
-      } : {
-        x: event.screenX - touchInfo.x,
-        y: event.screenY - touchInfo.y
-      };
-    },
-    _handleTouchStart: function(e2) {
-      var t2 = this._touchInfo;
-      var n = this._scroller;
-      if (n) {
-        if (e2.detail.state === "start") {
-          t2.trackingID = "touch";
-          t2.x = e2.detail.x;
-          t2.y = e2.detail.y;
-        } else {
-          t2.trackingID = "mouse";
-          t2.x = e2.screenX;
-          t2.y = e2.screenY;
-        }
-        t2.maxDx = 0;
-        t2.maxDy = 0;
-        t2.historyX = [0];
-        t2.historyY = [0];
-        t2.historyTime = [e2.detail.timeStamp];
-        t2.listener = n;
-        if (n.onTouchStart) {
-          n.onTouchStart();
-        }
-        e2.preventDefault();
-      }
-    },
-    _handleTouchMove: function(event) {
-      var touchInfo = this._touchInfo;
-      if (touchInfo.trackingID !== -1) {
-        event.preventDefault();
-        var delta = this._findDelta(event);
-        if (delta) {
-          for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(event.detail.timeStamp); touchInfo.historyTime.length > 10; ) {
-            touchInfo.historyTime.shift();
-            touchInfo.historyX.shift();
-            touchInfo.historyY.shift();
-          }
-          if (touchInfo.listener && touchInfo.listener.onTouchMove) {
-            touchInfo.listener.onTouchMove(delta.x, delta.y, event.detail.timeStamp);
-          }
-        }
-      }
-    },
-    _handleTouchEnd: function(event) {
-      var touchInfo = this._touchInfo;
-      if (touchInfo.trackingID !== -1) {
-        event.preventDefault();
-        var delta = this._findDelta(event);
-        if (delta) {
-          var listener = touchInfo.listener;
-          touchInfo.trackingID = -1;
-          touchInfo.listener = null;
-          var r = touchInfo.historyTime.length;
-          var o2 = {
-            x: 0,
-            y: 0
-          };
-          if (r > 2) {
-            for (var a2 = touchInfo.historyTime.length - 1, s = touchInfo.historyTime[a2], l = touchInfo.historyX[a2], c = touchInfo.historyY[a2]; a2 > 0; ) {
-              a2--;
-              var u = touchInfo.historyTime[a2];
-              var d = s - u;
-              if (d > 30 && d < 50) {
-                o2.x = (l - touchInfo.historyX[a2]) / (d / 1e3);
-                o2.y = (c - touchInfo.historyY[a2]) / (d / 1e3);
-                break;
-              }
-            }
-          }
-          touchInfo.historyTime = [];
-          touchInfo.historyX = [];
-          touchInfo.historyY = [];
-          if (listener && listener.onTouchEnd) {
-            listener.onTouchEnd(delta.x, delta.y, o2);
-          }
-        }
-      }
-    }
-  }
-};
 const passiveOptions = uniShared.passive(true);
 const _sfc_main$4 = {
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  mixins: [scroller],
   props: {
     scrollX: {
       type: [Boolean, String],
@@ -6870,11 +6207,11 @@ const _sfc_main$4 = {
   },
   methods: {
     scrollTo: function(t2, n) {
-      var i2 = this.main;
-      t2 < 0 ? t2 = 0 : n === "x" && t2 > i2.scrollWidth - i2.offsetWidth ? t2 = i2.scrollWidth - i2.offsetWidth : n === "y" && t2 > i2.scrollHeight - i2.offsetHeight && (t2 = i2.scrollHeight - i2.offsetHeight);
+      var i = this.main;
+      t2 < 0 ? t2 = 0 : n === "x" && t2 > i.scrollWidth - i.offsetWidth ? t2 = i.scrollWidth - i.offsetWidth : n === "y" && t2 > i.scrollHeight - i.offsetHeight && (t2 = i.scrollHeight - i.offsetHeight);
       var r = 0;
       var o2 = "";
-      n === "x" ? r = i2.scrollLeft - t2 : n === "y" && (r = i2.scrollTop - t2);
+      n === "x" ? r = i.scrollLeft - t2 : n === "y" && (r = i.scrollTop - t2);
       if (r !== 0) {
         this.content.style.transition = "transform .3s ease-out";
         this.content.style.webkitTransition = "-webkit-transform .3s ease-out";
@@ -6889,42 +6226,12 @@ const _sfc_main$4 = {
         this.content.addEventListener("transitionend", this.__transitionEnd);
         this.content.addEventListener("webkitTransitionEnd", this.__transitionEnd);
         if (n === "x") {
-          i2.style.overflowX = "hidden";
+          i.style.overflowX = "hidden";
         } else if (n === "y") {
-          i2.style.overflowY = "hidden";
+          i.style.overflowY = "hidden";
         }
         this.content.style.transform = o2;
         this.content.style.webkitTransform = o2;
-      }
-    },
-    _handleTrack: function($event) {
-      if ($event.detail.state === "start") {
-        this._x = $event.detail.x;
-        this._y = $event.detail.y;
-        this._noBubble = null;
-        return;
-      }
-      if ($event.detail.state === "end") {
-        this._noBubble = false;
-      }
-      if (this._noBubble === null && this.scrollY) {
-        if (Math.abs(this._y - $event.detail.y) / Math.abs(this._x - $event.detail.x) > 1) {
-          this._noBubble = true;
-        } else {
-          this._noBubble = false;
-        }
-      }
-      if (this._noBubble === null && this.scrollX) {
-        if (Math.abs(this._x - $event.detail.x) / Math.abs(this._y - $event.detail.y) > 1) {
-          this._noBubble = true;
-        } else {
-          this._noBubble = false;
-        }
-      }
-      this._x = $event.detail.x;
-      this._y = $event.detail.y;
-      if (this._noBubble) {
-        $event.stopPropagation();
       }
     },
     _handleScroll: function($event) {
@@ -7490,14 +6797,14 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   const circularEnabled = vue.computed(() => props2.circular && swiperContexts.value.length > state.displayMultipleItems);
   function checkCircularLayout(index2) {
     if (!invalid) {
-      for (let items = swiperContexts.value, n = items.length, i2 = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
+      for (let items = swiperContexts.value, n = items.length, i = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
         const item = items[r];
         const s = Math.floor(index2 / n) * n + r;
         const l = s + n;
         const c = s - n;
-        const u = Math.max(index2 - (s + 1), s - i2, 0);
-        const d = Math.max(index2 - (l + 1), l - i2, 0);
-        const h = Math.max(index2 - (c + 1), c - i2, 0);
+        const u = Math.max(index2 - (s + 1), s - i, 0);
+        const d = Math.max(index2 - (l + 1), l - i, 0);
+        const h = Math.max(index2 - (c + 1), c - i, 0);
         const p2 = Math.min(u, d, h);
         const position = [s, l, c][[u, d, h].indexOf(p2)];
         item.updatePosition(position, props2.vertical);
@@ -7659,8 +6966,8 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     cancelSchedule();
     endViewportAnimation();
     const items = swiperContexts.value;
-    for (let i2 = 0; i2 < items.length; i2++) {
-      items[i2].updatePosition(i2, props2.vertical);
+    for (let i = 0; i < items.length; i++) {
+      items[i].updatePosition(i, props2.vertical);
     }
     viewportMoveRatio = 1;
     const slideFrameEl = slideFrameRef.value;
@@ -7694,10 +7001,10 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   vue.watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
     let current = -1;
     if (props2.currentItemId) {
-      for (let i2 = 0, items = swiperContexts.value; i2 < items.length; i2++) {
-        const itemId = items[i2].getItemId();
+      for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
+        const itemId = items[i].getItemId();
         if (itemId === props2.currentItemId) {
-          current = i2;
+          current = i;
           break;
         }
       }
@@ -9824,6 +9131,9 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
 });
 const _sfc_main$3 = {
   name: "CoverView",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     scrollTop: {
       type: [String, Number],
@@ -9875,6 +9185,9 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
 _sfc_main$3.render = _sfc_render$3;
 const _sfc_main$2 = {
   name: "CoverImage",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     src: {
       type: String,
@@ -10298,28 +9611,28 @@ var _sfc_main$1 = {
       var hours = [];
       var minutes = [];
       hours.splice(0, hours.length);
-      for (let i2 = 0; i2 < 24; i2++) {
-        hours.push((i2 < 10 ? "0" : "") + i2);
+      for (let i = 0; i < 24; i++) {
+        hours.push((i < 10 ? "0" : "") + i);
       }
       minutes.splice(0, minutes.length);
-      for (let i2 = 0; i2 < 60; i2++) {
-        minutes.push((i2 < 10 ? "0" : "") + i2);
+      for (let i = 0; i < 60; i++) {
+        minutes.push((i < 10 ? "0" : "") + i);
       }
       this.timeArray.push(hours, minutes);
     },
     _createDate() {
       var years = [];
       var year = new Date().getFullYear();
-      for (let i2 = year - 150, end = year + 150; i2 <= end; i2++) {
-        years.push(String(i2));
+      for (let i = year - 150, end = year + 150; i <= end; i++) {
+        years.push(String(i));
       }
       var months = [];
-      for (let i2 = 1; i2 <= 12; i2++) {
-        months.push((i2 < 10 ? "0" : "") + i2);
+      for (let i = 1; i <= 12; i++) {
+        months.push((i < 10 ? "0" : "") + i);
       }
       var days = [];
-      for (let i2 = 1; i2 <= 31; i2++) {
-        days.push((i2 < 10 ? "0" : "") + i2);
+      for (let i = 1; i <= 31; i++) {
+        days.push((i < 10 ? "0" : "") + i);
       }
       this.dateArray.push(years, months, days);
     },
@@ -10331,8 +9644,8 @@ var _sfc_main$1 = {
       return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
     },
     _cloneArray(val1, val2) {
-      for (let i2 = 0; i2 < val1.length && i2 < val2.length; i2++) {
-        val1[i2] = val2[i2];
+      for (let i = 0; i < val1.length && i < val2.length; i++) {
+        val1[i] = val2[i];
       }
     },
     _setValueSync() {
@@ -10399,9 +9712,9 @@ var _sfc_main$1 = {
         case mode.MULTISELECTOR:
           return val.map((val2) => val2);
         case mode.TIME:
-          return this.valueArray.map((val2, i2) => this.timeArray[i2][val2]).join(":");
+          return this.valueArray.map((val2, i) => this.timeArray[i][val2]).join(":");
         case mode.DATE:
-          return this.valueArray.map((val2, i2) => this.dateArray[i2][val2]).join("-");
+          return this.valueArray.map((val2, i) => this.dateArray[i][val2]).join("-");
       }
     },
     _getDateValueArray(valueStr, defaultValue) {
@@ -10425,9 +9738,9 @@ var _sfc_main$1 = {
       }
       const inputArray = String(valueStr).split(splitStr);
       let value = [];
-      for (let i2 = 0; i2 < max; i2++) {
-        const val = inputArray[i2];
-        value.push(array[i2].indexOf(val));
+      for (let i = 0; i < max; i++) {
+        const val = inputArray[i];
+        value.push(array[i].indexOf(val));
       }
       if (value.indexOf(-1) >= 0) {
         value = defaultValue ? this._getDateValueArray(defaultValue) : value.map(() => 0);
@@ -11838,7 +11151,7 @@ exports.CoverImage = _sfc_main$2;
 exports.CoverView = _sfc_main$3;
 exports.Editor = index$k;
 exports.Form = index$p;
-exports.Friction = Friction$1;
+exports.Friction = Friction;
 exports.Icon = index$j;
 exports.Image = index$i;
 exports.Input = Input;
@@ -11858,9 +11171,9 @@ exports.RadioGroup = index$e;
 exports.ResizeSensor = ResizeSensor;
 exports.RichText = _sfc_main$5;
 exports.ScrollView = _sfc_main$4;
-exports.Scroller = Scroller$1;
+exports.Scroller = Scroller;
 exports.Slider = index$c;
-exports.Spring = Spring$1;
+exports.Spring = Spring;
 exports.Swiper = index$b;
 exports.SwiperItem = index$a;
 exports.Switch = index$9;

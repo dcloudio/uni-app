@@ -1,7 +1,9 @@
-export const $on: ProtocolOptions<String | Array<String> | Function>[] = [
+export const API_ON = '$on'
+export type API_TYPE_ON = typeof uni.$on
+export const OnProtocol: ProtocolOptions<String | Function>[] = [
   {
     name: 'event',
-    type: [String, Array],
+    type: String,
     required: true,
   },
   {
@@ -11,20 +13,27 @@ export const $on: ProtocolOptions<String | Array<String> | Function>[] = [
   },
 ]
 
-export const $once = $on
+export const API_ONCE = '$once'
+export type API_TYPE_ONCE = typeof uni.$once
+export const OnceProtocol = OnProtocol
 
-export const $off: ProtocolOptions<String | Array<String> | Function>[] = [
-  {
-    name: 'event',
-    type: [String, Array],
-  },
-  {
-    name: 'callback',
-    type: Function,
-  },
-]
+export const API_OFF = '$off'
+export type API_TYPE_OFF = typeof uni.$off
+export const OffProtocol: ProtocolOptions<String | Function | Array<String>>[] =
+  [
+    {
+      name: 'event',
+      type: [String, Array],
+    },
+    {
+      name: 'callback',
+      type: Function,
+    },
+  ]
 
-export const $emit: ProtocolOptions<String>[] = [
+export const API_EMIT = '$emit'
+export type API_TYPE_EMIT = typeof uni.$emit
+export const EmitProtocol: ProtocolOptions<String>[] = [
   {
     name: 'event',
     type: String,
