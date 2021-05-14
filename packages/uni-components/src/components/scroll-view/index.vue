@@ -63,7 +63,6 @@
 </template>
 <script>
 import { ref } from "vue";
-import scroller from "../../mixins/scroller/index";
 import { passive } from "@dcloudio/uni-shared";
 import { initScrollBounce, disableScrollBounce } from "../../helpers/scroll";
 import { useCustomEvent } from "../../helpers/useEvent";
@@ -73,12 +72,11 @@ const passiveOptions = passive(true);
 // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
 
-export default /*#__PURE__*/ {
+export default {
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  mixins: [scroller],
   props: {
     scrollX: {
       type: [Boolean, String],
@@ -350,42 +348,6 @@ export default /*#__PURE__*/ {
 
         this.content.style.transform = o;
         this.content.style.webkitTransform = o;
-      }
-    },
-    _handleTrack: function ($event) {
-      if ($event.detail.state === "start") {
-        this._x = $event.detail.x;
-        this._y = $event.detail.y;
-        this._noBubble = null;
-        return;
-      }
-      if ($event.detail.state === "end") {
-        this._noBubble = false;
-      }
-      if (this._noBubble === null && this.scrollY) {
-        if (
-          Math.abs(this._y - $event.detail.y) / Math.abs(this._x - $event.detail.x) >
-          1
-        ) {
-          this._noBubble = true;
-        } else {
-          this._noBubble = false;
-        }
-      }
-      if (this._noBubble === null && this.scrollX) {
-        if (
-          Math.abs(this._x - $event.detail.x) / Math.abs(this._y - $event.detail.y) >
-          1
-        ) {
-          this._noBubble = true;
-        } else {
-          this._noBubble = false;
-        }
-      }
-      this._x = $event.detail.x;
-      this._y = $event.detail.y;
-      if (this._noBubble) {
-        $event.stopPropagation();
       }
     },
     _handleScroll: function ($event) {

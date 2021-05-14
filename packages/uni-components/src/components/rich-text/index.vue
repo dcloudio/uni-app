@@ -9,6 +9,9 @@ import parseNodes from './nodes-parser'
 
 export default {
   name: 'RichText',
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     nodes: {
       type: [Array, String],

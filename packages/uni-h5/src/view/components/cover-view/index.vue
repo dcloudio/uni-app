@@ -10,6 +10,9 @@ import { ref } from "vue";
 
 export default {
   name: "CoverView",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     scrollTop: {
       type: [String, Number],

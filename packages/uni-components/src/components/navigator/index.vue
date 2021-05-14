@@ -18,6 +18,9 @@ const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBa
 
 export default {
   name: "Navigator",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     hoverClass: {
       type: String,

@@ -12,6 +12,9 @@ import { useCustomEvent } from "@dcloudio/uni-components";
 
 export default {
   name: "CoverImage",
+  compatConfig: {
+    MODE: 3
+  },
   props: {
     src: {
       type: String,

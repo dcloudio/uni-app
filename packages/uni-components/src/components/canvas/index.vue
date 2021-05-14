@@ -62,6 +62,9 @@ function getTempCanvas(width = 0, height = 0) {
 export default {
   name: "Canvas",
   inheritAttrs: false,
+  compatConfig: {
+    MODE: 3
+  },
   components: {
     ResizeSensor,
   },
