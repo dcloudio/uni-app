@@ -1171,7 +1171,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(base);
   }
 }
-var index$p = {
+var index$q = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -1553,8 +1553,8 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, Object.create(null));
 }
-const uniFormKey$1 = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var Form = /* @__PURE__ */ defineBuiltInComponent({
+const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1566,7 +1566,7 @@ var Form = /* @__PURE__ */ defineBuiltInComponent({
 });
 function provideForm(emit2) {
   const fields2 = [];
-  vue.provide(uniFormKey$1, {
+  vue.provide(uniFormKey, {
     addField(field) {
       fields2.push(field);
     },
@@ -1632,7 +1632,7 @@ var index$o = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
-    const uniForm = vue.inject(uniFormKey$1, false);
+    const uniForm = vue.inject(uniFormKey, false);
     const {
       hovering,
       binding
@@ -2301,7 +2301,7 @@ function useProvideCheckGroup(props2, trigger) {
       });
     }
   });
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   if (uniForm) {
     uniForm.addField({
       submit: () => {
@@ -2449,7 +2449,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field);
   }
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   if (!!uniForm) {
     uniForm.addField(formField);
   }
@@ -2972,7 +2972,7 @@ function useScopedAttrs() {
   };
 }
 function useFormField(nameKey, value) {
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   if (!uniForm) {
     return;
   }
@@ -5598,7 +5598,7 @@ function useProvideRadioGroup(props2, trigger) {
       });
     }
   });
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   if (uniForm) {
     uniForm.addField({
       submit: () => {
@@ -5727,7 +5727,7 @@ function useRadioInject(radioChecked, radioValue, reset) {
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field);
   }
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   if (!!uniForm) {
     uniForm.addField(formField);
   }
@@ -7336,7 +7336,7 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       });
     }
   };
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   if (!!uniForm) {
     const field = {
       reset: () => sliderValue.value = Number(props2.min),
@@ -7954,7 +7954,7 @@ var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 function useSwitchInject(props2, switchChecked) {
-  const uniForm = vue.inject(uniFormKey$1, false);
+  const uniForm = vue.inject(uniFormKey, false);
   const uniLabel = vue.inject(uniLabelKey, false);
   const formField = {
     submit: () => {
@@ -9859,7 +9859,6 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const {UniFormCtx, uniFormKey} = Form;
 const {t, getLocale} = useI18n();
 function getDefaultStartValue() {
   if (this.mode === mode.TIME) {
@@ -11691,7 +11690,7 @@ exports.CheckboxGroup = index$n;
 exports.CoverImage = _sfc_main$2;
 exports.CoverView = _sfc_main$3;
 exports.Editor = index$k;
-exports.Form = Form;
+exports.Form = index$p;
 exports.Friction = Friction$1;
 exports.Icon = index$j;
 exports.Image = index$i;
@@ -11738,7 +11737,7 @@ exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
 exports.initScrollBounce = initScrollBounce;
-exports.plugin = index$p;
+exports.plugin = index$q;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;
@@ -11747,6 +11746,7 @@ exports.setStorageSync = setStorageSync;
 exports.setupApp = setupApp;
 exports.setupPage = setupPage;
 exports.uni = uni$1;
+exports.uniFormKey = uniFormKey;
 exports.useAttrs = useAttrs;
 exports.useBooleanAttr = useBooleanAttr;
 exports.useCustomEvent = useCustomEvent;

@@ -19,3 +19,5 @@ export {
   defineBuiltInComponent,
   defineSystemComponent,
 } from './helpers/component'
+export { uniFormKey } from './components/form'
+export type { UniFormCtx } from './components/form'

@@ -95,14 +95,14 @@ import {
   useBooleanAttr,
   useCustomEvent,
   withWebEvent,
-  Form,
   PickerView,
   PickerViewColumn,
+  UniFormCtx,
+  uniFormKey,
 } from "@dcloudio/uni-components";
 import { formatDateTime } from "@dcloudio/uni-shared";
 import { usePopupStyle } from "../../../helpers/usePopupStyle";
 import { initI18nPickerMsgsOnce, useI18n } from "@dcloudio/uni-core";
-const { UniFormCtx, uniFormKey } = Form;
 const { t, getLocale } = useI18n();
 
 function getDefaultStartValue() {
