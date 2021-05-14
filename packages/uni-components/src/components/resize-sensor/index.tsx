@@ -49,9 +49,9 @@ function useResizeSensorUpdate(
     (value: typeof size) => emit('resize', value)
   )
   return () => {
-    const { offsetWidth, offsetHeight } = rootRef.value!
-    size.width = offsetWidth
-    size.height = offsetHeight
+    const { width, height } = rootRef.value!.getBoundingClientRect()
+    size.width = width
+    size.height = height
     reset()
   }
 }

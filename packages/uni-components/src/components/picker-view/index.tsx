@@ -10,6 +10,8 @@ import {
   SetupContext,
   PropType,
   ComponentInternalInstance,
+  onMounted,
+  ComponentPublicInstance,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -91,6 +93,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent(rootRef, emit as SetupContext['emit'])
     const state = useState(props)
+    const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
+    onMounted(() => {
+      const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
+      state.height = resizeSensor.$el.getBoundingClientRect().height
+    })
     let columnVNodes: VNode[] = []
     function getItemIndex(vnode: VNode): number {
       return columnVNodes.indexOf(vnode)
@@ -128,7 +135,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (
         <uni-picker-view ref={rootRef}>
           <ResizeSensor
-            initial
+            ref={resizeSensorRef}
+            // @ts-ignore
             onResize={({ height }: { height: number }) =>
               (state.height = height)
             }

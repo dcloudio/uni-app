@@ -9,6 +9,7 @@ import {
   getCurrentInstance,
   ComponentInternalInstance,
   nextTick,
+  ComponentPublicInstance,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useScroller } from '../../helpers/scroller'
@@ -103,6 +104,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const pickerViewProps = inject('pickerViewProps') as PickerViewProps
     const pickerViewState = inject('pickerViewState') as PickerViewState
     const indicatorHeight = ref(34)
+    const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
+    onMounted(() => {
+      const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height
+    })
     const maskSize = computed(
       () => (pickerViewState.height - indicatorHeight.value) / 2
     )
@@ -258,7 +264,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               style={pickerViewProps.indicatorStyle}
             >
               <ResizeSensor
-                initial
+                ref={resizeSensorRef}
+                // @ts-ignore
                 onResize={({ height }: { height: number }) =>
                   (indicatorHeight.value = height)
                 }
