@@ -1,10 +1,13 @@
 import { BASE_COMPONENTS_STYLE_PATH, H5_API_STYLE_PATH } from './constants'
 
+const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
+
 export const API_DEPS_CSS = {
   showModal: [`${H5_API_STYLE_PATH}modal.css`],
   showToast: [`${H5_API_STYLE_PATH}toast.css`],
   showActionSheet: [`${H5_API_STYLE_PATH}action-sheet.css`],
   previewImage: [
+    RESIZE_SENSOR_CSS,
     `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
     `${BASE_COMPONENTS_STYLE_PATH}swiper-item.css`,
     `${BASE_COMPONENTS_STYLE_PATH}movable-area.css`,
@@ -12,8 +15,6 @@ export const API_DEPS_CSS = {
   ],
   openLocation: [`${H5_API_STYLE_PATH}location-view.css`],
 }
-
-const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
 
 export const COMPONENT_DEPS_CSS = {
   canvas: [RESIZE_SENSOR_CSS],
