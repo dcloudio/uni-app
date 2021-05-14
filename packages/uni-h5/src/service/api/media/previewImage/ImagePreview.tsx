@@ -9,6 +9,7 @@ import {
   nextTick,
 } from 'vue'
 import { Swiper, SwiperItem } from '@dcloudio/uni-components'
+import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 import ImageView from './ImageView'
 
 const props = {
@@ -40,6 +41,7 @@ export default /*#__PURE__*/ defineComponent({
   props,
   emits: ['close'],
   setup(props, { emit }) {
+    usePreventScroll()
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const indexRef = ref(getIndex(props))
     watch(
@@ -98,6 +100,7 @@ export default /*#__PURE__*/ defineComponent({
         >
           <Swiper
             current={indexRef.value}
+            // @ts-ignore
             onChange={onChange}
             indicator-dots={false}
             autoplay={false}

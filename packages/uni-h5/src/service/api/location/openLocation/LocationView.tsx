@@ -7,6 +7,7 @@ import {
   computed,
 } from 'vue'
 import { createSvgIconVNode, ICON_PATH_BACK } from '@dcloudio/uni-core'
+import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 
 const props = {
   latitude: {
@@ -36,6 +37,7 @@ export default /*#__PURE__*/ defineComponent({
   props,
   emits: ['close'],
   setup(props, { emit }) {
+    usePreventScroll()
     const mapRef: Ref<HTMLIFrameElement | null> = ref(null)
     const key = __uniConfig.qqMapKey
     const referer = 'uniapp'

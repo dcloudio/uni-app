@@ -71,6 +71,7 @@ export default /*#__PURE__*/ defineComponent({
       return (
         <MovableArea
           style={viewStyle}
+          // @ts-ignore
           onTouchstart={withWebEvent(onTouchStart)}
           onTouchmove={withWebEvent(checkDirection)}
           onTouchend={withWebEvent(onTouchEnd)}
@@ -82,6 +83,7 @@ export default /*#__PURE__*/ defineComponent({
             scale
             scale-min="1"
             scale-max="4"
+            // @ts-ignore
             onScale={onScale}
           >
             <img
