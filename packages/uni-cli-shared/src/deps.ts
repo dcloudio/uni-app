@@ -1,4 +1,8 @@
-import { BASE_COMPONENTS_STYLE_PATH, H5_API_STYLE_PATH } from './constants'
+import {
+  BASE_COMPONENTS_STYLE_PATH,
+  H5_COMPONENTS_STYLE_PATH,
+  H5_API_STYLE_PATH,
+} from './constants'
 
 const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
 
@@ -14,6 +18,12 @@ export const API_DEPS_CSS = {
     `${BASE_COMPONENTS_STYLE_PATH}movable-view.css`,
   ],
   openLocation: [`${H5_API_STYLE_PATH}location-view.css`],
+  chooseLocation: [
+    `${H5_API_STYLE_PATH}/location-picker.css`,
+    `${BASE_COMPONENTS_STYLE_PATH}/input.css`,
+    `${H5_COMPONENTS_STYLE_PATH}/map.css`,
+    `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
+  ],
 }
 
 export const COMPONENT_DEPS_CSS = {

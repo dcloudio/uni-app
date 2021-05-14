@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -564,6 +564,8 @@ const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
+const ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
   return createVNode("svg", {
     width: size,
@@ -1179,7 +1181,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -3183,6 +3185,12 @@ const OpenDocumentProtocol = {
   fileType: String
 };
 const API_HIDE_KEYBOARD = "hideKeyboard";
+const API_CHOOSE_LOCATION = "chooseLocation";
+const ChooseLocationProtocol = {
+  keyword: String,
+  latitude: Number,
+  longitude: Number
+};
 const API_GET_LOCATION = "getLocation";
 const coordTypes = ["WGS84", "GCJ02"];
 const GetLocationOptions = {
@@ -4776,7 +4784,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$n = {
+var index$m = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -5210,7 +5218,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -5249,7 +5257,7 @@ function provideForm(emit2) {
   });
   return fields2;
 }
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -6112,15 +6120,15 @@ function _removeListeners(id2, listeners, watch2) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$v = {
+const props$w = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$v,
+  props: props$w,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -6173,15 +6181,15 @@ function useProvideCheckGroup(props2, trigger) {
   return getFieldsValue;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$u = {
+const props$v = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$u,
+  props: props$v,
   setup(props2, {
     emit: emit2,
     slots
@@ -6226,7 +6234,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const props$t = {
+const props$u = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6248,9 +6256,9 @@ const props$t = {
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$t,
+  props: props$u,
   setup(props2, {
     slots
   }) {
@@ -6329,7 +6337,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$s = {
+const props$t = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -7073,7 +7081,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
 }
-const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
+const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
   id: {
     type: String,
     default: ""
@@ -7099,9 +7107,9 @@ const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
     default: false
   }
 });
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$r,
+  props: props$s,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -7161,7 +7169,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -7188,7 +7196,7 @@ var index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$q = {
+const props$r = {
   src: {
     type: String,
     default: ""
@@ -7225,9 +7233,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$q,
+  props: props$r,
   setup(props2, {
     emit: emit2
   }) {
@@ -7529,7 +7537,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$p = /* @__PURE__ */ Object.assign({}, {
+const props$q = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -7590,7 +7598,7 @@ const props$p = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$s);
+}, props$t);
 const emit = ["input", "focus", "blur", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
@@ -7776,7 +7784,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
+const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7784,7 +7792,7 @@ const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$o,
+  props: props$p,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -7940,7 +7948,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$n = {
+const props$o = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -7949,7 +7957,7 @@ const props$n = {
 var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$n,
+  props: props$o,
   setup(props2, {
     slots
   }) {
@@ -8550,7 +8558,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$m = {
+const props$n = {
   direction: {
     type: String,
     default: "none"
@@ -8606,7 +8614,7 @@ const props$m = {
 };
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$m,
+  props: props$n,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -9289,7 +9297,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   ]));
 }
 _sfc_main$6.render = _sfc_render$6;
-const props$l = {
+const props$m = {
   value: {
     type: Array,
     default() {
@@ -9316,7 +9324,7 @@ const props$l = {
     default: ""
   }
 };
-function useState$1(props2) {
+function useState$2(props2) {
   const value = reactive([...props2.value]);
   const state2 = reactive({
     value,
@@ -9336,7 +9344,7 @@ function useState$1(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$l,
+  props: props$m,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -9344,7 +9352,7 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state2 = useState$1(props2);
+    const state2 = useState$2(props2);
     let columnVNodes = [];
     function getItemIndex(vnode) {
       return columnVNodes.indexOf(vnode);
@@ -10252,7 +10260,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$k = {
+const props$l = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -10299,9 +10307,9 @@ const props$k = {
     }
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$k,
+  props: props$l,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -10372,15 +10380,15 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$j = {
+const props$k = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$j,
+  props: props$k,
   setup(props2, {
     emit: emit2,
     slots
@@ -10456,7 +10464,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$i = {
+const props$j = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -10478,9 +10486,9 @@ const props$i = {
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$i,
+  props: props$j,
   setup(props2, {
     slots
   }) {
@@ -11985,7 +11993,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   ], 512);
 }
 _sfc_main$4.render = _sfc_render$4;
-const props$h = {
+const props$i = {
   name: {
     type: String,
     default: ""
@@ -12039,9 +12047,9 @@ const props$h = {
     default: false
   }
 };
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$h,
+  props: props$i,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -12206,7 +12214,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$g = {
+const props$h = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -12276,7 +12284,7 @@ function upx2pxStr(val) {
   }
   return val || "";
 }
-function useState(props2) {
+function useState$1(props2) {
   const interval = computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -12695,7 +12703,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 var Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$g,
+  props: props$h,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -12705,7 +12713,7 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
     const slideFrameRef = ref(null);
-    const state2 = useState(props2);
+    const state2 = useState$1(props2);
     const slidesStyle = computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -12790,7 +12798,7 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = {
+const props$g = {
   itemId: {
     type: String,
     default: ""
@@ -12798,7 +12806,7 @@ const props$f = {
 };
 var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$f,
+  props: props$g,
   setup(props2, {
     slots
   }) {
@@ -12847,7 +12855,7 @@ var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$e = {
+const props$f = {
   name: {
     type: String,
     default: ""
@@ -12873,9 +12881,9 @@ const props$e = {
     default: "#007aff"
   }
 };
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$e,
+  props: props$f,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -12972,7 +12980,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+var index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -13025,7 +13033,7 @@ var index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$d = /* @__PURE__ */ extend({}, props$p, {
+const props$e = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -13039,9 +13047,9 @@ const props$d = /* @__PURE__ */ extend({}, props$p, {
     default: ""
   }
 });
-var index$8 = /* @__PURE__ */ defineBuiltInComponent({
+var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$d,
+  props: props$e,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -13159,7 +13167,7 @@ var index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$7 = /* @__PURE__ */ defineBuiltInComponent({
+var index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -13772,7 +13780,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   });
 }
-const props$c = {
+const props$d = {
   id: {
     type: String,
     default: ""
@@ -13856,9 +13864,9 @@ const props$c = {
     default: true
   }
 };
-var index$6 = /* @__PURE__ */ defineBuiltInComponent({
+var index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$c,
+  props: props$d,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -14071,16 +14079,16 @@ var index$6 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$b = {
+const props$c = {
   src: {
     type: String,
     default: ""
   }
 };
-var index$5 = /* @__PURE__ */ defineBuiltInComponent({
+var index$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$b,
+  props: props$c,
   setup(props2, {
     attrs: attrs2
   }) {
@@ -14286,7 +14294,7 @@ function loadMaps(callback2) {
     document.body.appendChild(script);
   }
 }
-const props$a = {
+const props$b = {
   id: {
     type: [Number, String],
     default: ""
@@ -14350,7 +14358,7 @@ const props$a = {
 };
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$a,
+  props: props$b,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14508,9 +14516,9 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const rotation = marker.getRotation();
             const a2 = marker.getPosition();
             const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance / time;
+            const speed = distance2 / time;
             const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
               const label = marker.label;
@@ -14561,7 +14569,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$9 = {
+const props$a = {
   points: {
     type: Array,
     require: true
@@ -14607,7 +14615,7 @@ const props$9 = {
 };
 var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14660,7 +14668,7 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$8 = {
+const props$9 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14692,7 +14700,7 @@ const props$8 = {
 };
 var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14736,7 +14744,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$7 = {
+const props$8 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14756,7 +14764,7 @@ const props$7 = {
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$7,
+  props: props$8,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -14974,7 +14982,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -15087,12 +15095,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15112,10 +15120,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -15703,13 +15711,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$4 = 0;
+let index$3 = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$4;
-  index$4 += prevent ? 1 : -1;
-  index$4 = Math.max(0, index$4);
-  if (index$4 > 0) {
+  let before = index$3;
+  index$3 += prevent ? 1 : -1;
+  index$3 = Math.max(0, index$3);
+  if (index$3 > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -15723,7 +15731,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$6 = {
+const props$7 = {
   src: {
     type: String,
     default: ""
@@ -15731,7 +15739,7 @@ const props$6 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$6,
+  props: props$7,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -15818,10 +15826,10 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot(s) {
+function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$5 = {
+const props$6 = {
   urls: {
     type: Array,
     default() {
@@ -15840,7 +15848,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$5,
+  props: props$6,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -15903,7 +15911,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
           width: "100%",
           height: "100%"
         }
-      }, _isSlot(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
           "src": src
         }, null, 8, ["src"])]
@@ -15914,13 +15922,13 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-let state$1 = null;
+let state$2 = null;
 const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {resolve}) => {
-  if (!state$1) {
-    state$1 = reactive(args);
+  if (!state$2) {
+    state$2 = reactive(args);
     nextTick(() => {
-      const app = createRootApp(ImagePreview, state$1, () => {
-        state$1 = null;
+      const app = createRootApp(ImagePreview, state$2, () => {
+        state$2 = null;
         nextTick(() => {
           app.unmount();
         });
@@ -15928,7 +15936,7 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {r
       app.mount(ensureRoot("u-a-p"));
     });
   } else {
-    extend(state$1, args);
+    extend(state$2, args);
   }
   resolve();
 }, PreviewImageProtocol, PreviewImageOptions);
@@ -16548,7 +16556,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
-const props$4 = {
+const props$5 = {
   latitude: {
     type: Number
   },
@@ -16570,7 +16578,7 @@ const props$4 = {
 };
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$4,
+  props: props$5,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16640,13 +16648,13 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-let state = null;
+let state$1 = null;
 const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, {resolve}) => {
-  if (!state) {
-    state = reactive(args);
+  if (!state$1) {
+    state$1 = reactive(args);
     nextTick(() => {
-      const app = createRootApp(LocationView, state, () => {
-        state = null;
+      const app = createRootApp(LocationView, state$1, () => {
+        state$1 = null;
         nextTick(() => {
           app.unmount();
         });
@@ -16654,10 +16662,281 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, {r
       app.mount(ensureRoot("u-a-o"));
     });
   } else {
-    extend(state, args);
+    extend(state$1, args);
   }
   resolve();
 }, OpenLocationProtocol, OpenLocationOptions);
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
+const props$4 = {
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
+  }
+};
+function distance(distance2) {
+  if (distance2 > 100) {
+    return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
+  } else if (distance2 > 0) {
+    return "100m\u5185 | ";
+  } else {
+    return "";
+  }
+}
+function useState(props2) {
+  const state2 = reactive({
+    latitude: 0,
+    longitude: 0,
+    keyword: "",
+    searching: false
+  });
+  function updatePosition() {
+    if (props2.latitude && props2.longitude) {
+      state2.latitude = props2.latitude;
+      state2.longitude = props2.longitude;
+    }
+  }
+  watch([() => props2.latitude, () => props2.longitude], updatePosition);
+  updatePosition();
+  return state2;
+}
+function useList(state2) {
+  const key = __uniConfig.qqMapKey;
+  const list2 = reactive([]);
+  const selectedIndexRef = ref(-1);
+  const selectedRef = computed(() => list2[selectedIndexRef.value]);
+  const listState = reactive({
+    loading: true,
+    pageSize: 15,
+    pageIndex: 1,
+    selectedIndex: selectedIndexRef,
+    selected: selectedRef
+  });
+  const adcodeRef = ref("");
+  const boundaryRef = computed(() => adcodeRef.value ? `region(${adcodeRef.value},1,${state2.latitude},${state2.longitude})` : `nearby(${state2.latitude},${state2.longitude},5000)`);
+  function pushData(array) {
+    array.forEach((item) => {
+      list2.push({
+        name: item.title,
+        address: item.address,
+        distance: item._distance,
+        latitude: item.location.lat,
+        longitude: item.location.lng
+      });
+    });
+  }
+  function getList() {
+    listState.loading = true;
+    const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
+    getJSONP(url, {
+      callback: "callback"
+    }, (res) => {
+      listState.loading = false;
+      if (state2.searching && "data" in res && res.data.length) {
+        pushData(res.data);
+      } else if ("result" in res) {
+        const result = res.result;
+        adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
+        if (result.pois) {
+          pushData(result.pois);
+        }
+      }
+    }, () => {
+      listState.loading = false;
+    });
+  }
+  function loadMore() {
+    if (!listState.loading && list2.length === listState.pageSize * listState.pageIndex) {
+      listState.pageIndex++;
+      getList();
+    }
+  }
+  function reset() {
+    listState.selectedIndex = -1;
+    listState.pageIndex = 1;
+    list2.splice(0, list2.length);
+  }
+  return {
+    listState,
+    list: list2,
+    loadMore,
+    reset,
+    getList
+  };
+}
+var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
+  name: "LoctaionPicker",
+  props: props$4,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    usePreventScroll();
+    const state2 = useState(props2);
+    const {
+      list: list2,
+      listState,
+      loadMore,
+      reset,
+      getList
+    } = useList(state2);
+    const search = debounce(() => {
+      reset();
+      if (state2.keyword) {
+        getList();
+      }
+    }, 1e3);
+    watch(() => state2.searching, (val) => {
+      reset();
+      if (!val) {
+        getList();
+      }
+    });
+    function onInput(event) {
+      state2.keyword = event.detail.value;
+      search();
+    }
+    function onChoose() {
+      emit2("close", Object.assign({}, listState.selected));
+    }
+    function onBack() {
+      emit2("close");
+    }
+    function onRegionChange(event) {
+      const centerLocation = event.detail.centerLocation;
+      if (centerLocation) {
+        move(centerLocation);
+      }
+    }
+    function moveToLocation() {
+      getLocation({
+        type: "gcj02",
+        success: move,
+        fail: () => {
+          move({
+            latitude: 39.90960456049752,
+            longitude: 116.3972282409668
+          });
+        }
+      });
+    }
+    function move({
+      latitude,
+      longitude
+    }) {
+      state2.latitude = latitude;
+      state2.longitude = longitude;
+      if (!state2.searching) {
+        reset();
+        getList();
+      }
+    }
+    if (!state2.latitude || !state2.longitude) {
+      moveToLocation();
+    }
+    return () => {
+      const content = list2.map((item, index2) => {
+        return createVNode("div", {
+          "key": index2,
+          "class": {
+            "list-item": true,
+            selected: listState.selectedIndex === index2
+          },
+          "onClick": () => {
+            listState.selectedIndex = index2;
+            state2.latitude = item.latitude;
+            state2.longitude = item.longitude;
+          }
+        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
+          "class": "list-item-title"
+        }, [item.name]), createVNode("div", {
+          "class": "list-item-detail"
+        }, [distance(item.distance), item.address])], 10, ["onClick"]);
+      });
+      if (listState.loading) {
+        content.unshift(createVNode("div", {
+          "class": "list-loading"
+        }, [createVNode("i", {
+          "class": "uni-loading"
+        }, null)]));
+      }
+      return createVNode("div", {
+        "class": "uni-system-choose-location"
+      }, [createVNode(Map$1, {
+        "latitude": state2.latitude,
+        "longitude": state2.longitude,
+        "class": "map",
+        "show-location": true,
+        "onRegionchange": onRegionChange
+      }, {
+        default: () => [createVNode("div", {
+          "class": "map-location"
+        }, null), createVNode("div", {
+          "class": "map-move",
+          "onClick": moveToLocation
+        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
+        _: 1
+      }, 8, ["latitude", "longitude", "show-location", "onRegionchange"]), createVNode("div", {
+        "class": "nav"
+      }, [createVNode("div", {
+        "class": "nav-btn back",
+        "onClick": onBack
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
+        "class": {
+          "nav-btn": true,
+          confirm: true,
+          disable: !listState.selected
+        },
+        "onClick": onChoose
+      }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
+        "class": "menu"
+      }, [createVNode("div", {
+        "class": "search"
+      }, [createVNode(Input, {
+        "value": state2.keyword,
+        "class": "search-input",
+        "placeholder": "\u641C\u7D22\u5730\u70B9",
+        "onFocus": () => state2.searching = true,
+        "onInput": onInput
+      }, null, 8, ["value", "onFocus", "onInput"]), state2.searching && createVNode("div", {
+        "class": "search-btn",
+        "onClick": () => {
+          state2.searching = false;
+          state2.keyword = "";
+        }
+      }, [createTextVNode("\u53D6\u6D88")], 8, ["onClick"])]), createVNode(_sfc_main$4, {
+        "scroll-y": true,
+        "class": "list",
+        "onScrolltolower": loadMore
+      }, _isSlot(content) ? content : {
+        default: () => [content],
+        _: 2
+      }, 8, ["scroll-y", "onScrolltolower"])])]);
+    };
+  }
+});
+let state = null;
+const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args, {resolve, reject}) => {
+  if (!state) {
+    state = reactive(args);
+    nextTick(() => {
+      const app = createRootApp(LoctaionPicker, state, (poi) => {
+        state = null;
+        nextTick(() => {
+          app.unmount();
+        });
+        poi ? resolve(poi) : reject("cancel");
+      });
+      app.mount(ensureRoot("u-a-c"));
+    });
+  } else {
+    reject("cancel");
+  }
+}, ChooseLocationProtocol);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
@@ -17534,6 +17813,7 @@ var api = /* @__PURE__ */ Object.freeze({
   onSocketClose,
   getLocation,
   openLocation,
+  chooseLocation,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -17832,95 +18112,98 @@ function useMap(props2, rootRef, emit2) {
     });
     return map2;
   }
-  useSubscribe((type, data = {}) => {
-    switch (type) {
-      case "getCenterLocation":
-        onMapReady(() => {
-          const center = map.getCenter();
-          callback(data, {
-            latitude: center.getLat(),
-            longitude: center.getLng(),
-            errMsg: `${type}:ok`
-          });
-        });
-        break;
-      case "moveToLocation":
-        {
-          let latitude = Number(data.latitude);
-          let longitude = Number(data.longitude);
-          if (!latitude || !longitude) {
-            const context = contexts[CONTEXT_ID];
-            if (context) {
-              latitude = context.state.latitude;
-              longitude = context.state.longitude;
-            }
-          }
-          if (latitude && longitude) {
-            state2.latitude = latitude;
-            state2.longitude = longitude;
-            if (map) {
-              map.setCenter(new maps2.LatLng(latitude, longitude));
-            }
-            onMapReady(() => {
-              callback(data, `${type}:ok`);
+  try {
+    useSubscribe((type, data = {}) => {
+      switch (type) {
+        case "getCenterLocation":
+          onMapReady(() => {
+            const center = map.getCenter();
+            callback(data, {
+              latitude: center.getLat(),
+              longitude: center.getLng(),
+              errMsg: `${type}:ok`
             });
-          } else {
-            callback(data, `${type}:fail`);
-          }
-        }
-        break;
-      case "translateMarker":
-        onMapReady(() => {
-          const context = contexts[data.markerId];
-          if (context) {
-            try {
-              context.translate(data);
-            } catch (error) {
-              callback(data, `${type}:fail ${error.message}`);
+          });
+          break;
+        case "moveToLocation":
+          {
+            let latitude = Number(data.latitude);
+            let longitude = Number(data.longitude);
+            if (!latitude || !longitude) {
+              const context = contexts[CONTEXT_ID];
+              if (context) {
+                latitude = context.state.latitude;
+                longitude = context.state.longitude;
+              }
             }
-            callback(data, `${type}:ok`);
-          } else {
-            callback(data, `${type}:fail not found`);
+            if (latitude && longitude) {
+              state2.latitude = latitude;
+              state2.longitude = longitude;
+              if (map) {
+                map.setCenter(new maps2.LatLng(latitude, longitude));
+              }
+              onMapReady(() => {
+                callback(data, `${type}:ok`);
+              });
+            } else {
+              callback(data, `${type}:fail`);
+            }
           }
-        });
-        break;
-      case "includePoints":
-        state2.includePoints = getPoints(data.includePoints);
-        if (isBoundsReady) {
-          updateBounds();
-        }
-        onBoundsReady(() => {
-          callback(data, `${type}:ok`);
-        });
-        break;
-      case "getRegion":
-        onBoundsReady(() => {
-          const latLngBounds = map.getBounds();
-          const southwest = latLngBounds.getSouthWest();
-          const northeast = latLngBounds.getNorthEast();
-          callback(data, {
-            southwest: {
-              latitude: southwest.getLat(),
-              longitude: southwest.getLng()
-            },
-            northeast: {
-              latitude: northeast.getLat(),
-              longitude: northeast.getLng()
-            },
-            errMsg: `${type}:ok`
+          break;
+        case "translateMarker":
+          onMapReady(() => {
+            const context = contexts[data.markerId];
+            if (context) {
+              try {
+                context.translate(data);
+              } catch (error) {
+                callback(data, `${type}:fail ${error.message}`);
+              }
+              callback(data, `${type}:ok`);
+            } else {
+              callback(data, `${type}:fail not found`);
+            }
           });
-        });
-        break;
-      case "getScale":
-        onMapReady(() => {
-          callback(data, {
-            scale: map.getZoom(),
-            errMsg: `${type}:ok`
+          break;
+        case "includePoints":
+          state2.includePoints = getPoints(data.includePoints);
+          if (isBoundsReady) {
+            updateBounds();
+          }
+          onBoundsReady(() => {
+            callback(data, `${type}:ok`);
           });
-        });
-        break;
-    }
-  });
+          break;
+        case "getRegion":
+          onBoundsReady(() => {
+            const latLngBounds = map.getBounds();
+            const southwest = latLngBounds.getSouthWest();
+            const northeast = latLngBounds.getNorthEast();
+            callback(data, {
+              southwest: {
+                latitude: southwest.getLat(),
+                longitude: southwest.getLng()
+              },
+              northeast: {
+                latitude: northeast.getLat(),
+                longitude: northeast.getLng()
+              },
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "getScale":
+          onMapReady(() => {
+            callback(data, {
+              scale: map.getZoom(),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+      }
+    });
+  } catch (error) {
+  }
   onMounted(() => {
     loadMaps((result) => {
       maps2 = result;
@@ -17937,7 +18220,7 @@ function useMap(props2, rootRef, emit2) {
     mapRef
   };
 }
-var index$3 = /* @__PURE__ */ defineBuiltInComponent({
+var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -19245,7 +19528,7 @@ const ICON_PATHS = {
   favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
   home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z"
+  close: ICON_PATH_CLOSE
 };
 var PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",
@@ -19672,7 +19955,7 @@ function usePageRefresh(refreshRef) {
       addClass();
       restoring(() => {
         removeClass();
-        state2 = distance = offset = null;
+        state2 = distance2 = offset = null;
       });
     }
   }, id2 + "." + API_STOP_PULL_DOWN_REFRESH);
@@ -19686,7 +19969,7 @@ function usePageRefresh(refreshRef) {
   let startY;
   let canRefresh;
   let state2;
-  let distance = null;
+  let distance2 = null;
   let offset = null;
   function toggleClass(type) {
     if (!state2) {
@@ -19743,7 +20026,7 @@ function usePageRefresh(refreshRef) {
       return;
     }
     ev.preventDefault();
-    if (distance === null) {
+    if (distance2 === null) {
       offset = deltaY;
       state2 = PULLING;
       addClass();
@@ -19752,7 +20035,7 @@ function usePageRefresh(refreshRef) {
     if (deltaY < 0) {
       deltaY = 0;
     }
-    distance = deltaY;
+    distance2 = deltaY;
     const isReached = deltaY >= range && state2 !== REACHED;
     const isPulling = deltaY < range && state2 !== PULLING;
     if (isReached || isPulling) {
@@ -19775,7 +20058,7 @@ function usePageRefresh(refreshRef) {
       addClass();
       aborting(() => {
         removeClass();
-        state2 = distance = offset = null;
+        state2 = distance2 = offset = null;
       });
     } else if (state2 === REACHED) {
       removeClass();
@@ -19891,4 +20174,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$l as Button, _sfc_main$7 as Canvas, index$i as Checkbox, index$k as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$h as Editor, index$m as Form, Friction$1 as Friction, index$g as Icon, index$f as Image, Input, index$j as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$e as Progress, index$c as Radio, index$d as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller$1 as Scroller, index$b as Slider, Spring$1 as Spring, Swiper, SwiperItem, index$a as Switch, index$9 as Text, index$8 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$6 as Video, index$7 as View, index$5 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$n as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$k as Button, _sfc_main$7 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$g as Editor, index$l as Form, Friction$1 as Friction, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller$1 as Scroller, index$a as Slider, Spring$1 as Spring, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$m as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

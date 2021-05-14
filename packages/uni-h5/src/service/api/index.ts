@@ -41,6 +41,7 @@ export * from './network/socket'
 
 export * from './location/getLocation'
 export * from './location/openLocation'
+export * from './location/chooseLocation'
 
 export * from './route/navigateBack'
 export * from './route/navigateTo'

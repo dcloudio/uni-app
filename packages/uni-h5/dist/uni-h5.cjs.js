@@ -118,21 +118,21 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
 function E() {
 }
 E.prototype = {
-  on: function(name, callback, ctx) {
+  on: function(name, callback2, ctx) {
     var e2 = this.e || (this.e = {});
     (e2[name] || (e2[name] = [])).push({
-      fn: callback,
+      fn: callback2,
       ctx
     });
     return this;
   },
-  once: function(name, callback, ctx) {
+  once: function(name, callback2, ctx) {
     var self = this;
     function listener() {
       self.off(name, listener);
-      callback.apply(ctx, arguments);
+      callback2.apply(ctx, arguments);
     }
-    listener._ = callback;
+    listener._ = callback2;
     return this.on(name, listener, ctx);
   },
   emit: function(name) {
@@ -145,13 +145,13 @@ E.prototype = {
     }
     return this;
   },
-  off: function(name, callback) {
+  off: function(name, callback2) {
     var e2 = this.e || (this.e = {});
     var evts = e2[name];
     var liveEvents = [];
-    if (evts && callback) {
+    if (evts && callback2) {
       for (var i2 = 0, len = evts.length; i2 < len; i2++) {
-        if (evts[i2].fn !== callback && evts[i2].fn._ !== callback)
+        if (evts[i2].fn !== callback2 && evts[i2].fn._ !== callback2)
           liveEvents.push(evts[i2]);
       }
     }
@@ -162,11 +162,11 @@ E.prototype = {
 function initBridge(namespace) {
   const emitter = new E();
   return shared.extend(emitter, {
-    subscribe(event, callback) {
-      emitter.on(`${namespace}.${event}`, callback);
+    subscribe(event, callback2) {
+      emitter.on(`${namespace}.${event}`, callback2);
     },
-    unsubscribe(event, callback) {
-      emitter.off(`${namespace}.${event}`, callback);
+    unsubscribe(event, callback2) {
+      emitter.off(`${namespace}.${event}`, callback2);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
@@ -207,6 +207,7 @@ const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
   return vue.createVNode("svg", {
     width: size,
@@ -268,15 +269,15 @@ function createCallbacks(namespace) {
       return scopedCallbacks.callbacks[id];
     },
     pop(id) {
-      const callback = scopedCallbacks.callbacks[id];
-      if (callback) {
+      const callback2 = scopedCallbacks.callbacks[id];
+      if (callback2) {
         delete scopedCallbacks.callbacks[id];
       }
-      return callback;
+      return callback2;
     },
-    push(callback) {
+    push(callback2) {
       const id = scopedCallbacks.id++;
-      scopedCallbacks.callbacks[id] = callback;
+      scopedCallbacks.callbacks[id] = callback2;
       return id;
     }
   };
@@ -617,11 +618,11 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback, keepAlive = false) {
+function addInvokeCallback(id, name, callback2, keepAlive = false) {
   invokeCallbacks[id] = {
     name,
     keepAlive,
-    callback
+    callback: callback2
   };
   return id;
 }
@@ -808,8 +809,8 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-function saveImage(base64, dirname, callback) {
-  callback(null, base64);
+function saveImage(base64, dirname, callback2) {
+  callback2(null, base64);
 }
 const files = {};
 function urlToFile(url, local) {
@@ -903,17 +904,17 @@ const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth
 }, Upx2pxProtocol);
 const canvasEventCallbacks = createCallbacks("canvasEvent");
 ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
-  const callback = canvasEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
+  const callback2 = canvasEventCallbacks.pop(callbackId);
+  if (callback2) {
+    callback2(data);
   }
 });
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
 ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
-  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
+  const callback2 = getSelectedTextRangeEventCallbacks.pop(callbackId);
+  if (callback2) {
+    callback2(data);
   }
 });
 const API_GET_STORAGE = "getStorage";
@@ -3625,10 +3626,10 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const addListenerToElement = function(element, type, callback, capture) {
+const addListenerToElement = function(element, type, callback2, capture) {
   element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
-      if (callback($event) === false) {
+    if (typeof callback2 === "function") {
+      if (callback2($event) === false) {
         if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
           $event.preventDefault();
         }
@@ -7634,7 +7635,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   function scheduleAutoplay() {
     cancelSchedule();
     const items = swiperContexts.value;
-    const callback = function() {
+    const callback2 = function() {
       timer = null;
       currentChangeSource = "autoplay";
       if (circularEnabled.value) {
@@ -7643,10 +7644,10 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
         state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
       }
       animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback, state.interval);
+      timer = setTimeout(callback2, state.interval);
     };
     if (!(invalid || items.length <= state.displayMultipleItems)) {
-      timer = setTimeout(callback, state.interval);
+      timer = setTimeout(callback2, state.interval);
     }
   }
   function resetLayout() {
@@ -8199,12 +8200,12 @@ var index$6 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useSubscribe(callback, name) {
+function useSubscribe(callback2, name) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
   name ? 0 : useCurrentPageId();
 }
-function useOn(name, callback) {
+function useOn(name, callback2) {
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -9028,6 +9029,26 @@ function useWebViewSize(rootRef, iframeRef) {
   };
   return _resize;
 }
+function callback(options, data) {
+  options = options || {};
+  if (typeof data === "string") {
+    data = {
+      errMsg: data
+    };
+  }
+  if (/:ok$/.test(data.errMsg)) {
+    if (typeof options.success === "function") {
+      options.success(data);
+    }
+  } else {
+    if (typeof options.fail === "function") {
+      options.fail(data);
+    }
+  }
+  if (typeof options.complete === "function") {
+    options.complete(data);
+  }
+}
 const props$4 = {
   id: {
     type: [Number, String],
@@ -9537,6 +9558,7 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
+const CONTEXT_ID = "MAP_LOCATION";
 const ICON_PATH = "data:image/png;base64,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";
 var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
@@ -9627,12 +9649,17 @@ function getPoints(points) {
 }
 function useMap(props2, rootRef, emit2) {
   const mapRef = vue.ref(null);
+  let maps;
+  let map;
   const state = vue.reactive({
     latitude: Number(props2.latitude),
     longitude: Number(props2.longitude),
     includePoints: getPoints(props2.includePoints)
   });
-  function onMapReady(callback) {
+  function onMapReady(callback2) {
+  }
+  let isBoundsReady;
+  function onBoundsReady(callback2) {
   }
   const contexts = {};
   function addMapChidlContext(context) {
@@ -9654,7 +9681,107 @@ function useMap(props2, rootRef, emit2) {
   }, {
     deep: true
   });
-  useSubscribe();
+  function updateBounds() {
+    const bounds = new maps.LatLngBounds();
+    state.includePoints.forEach(({
+      latitude,
+      longitude
+    }) => {
+      const latLng = new maps.LatLng(latitude, longitude);
+      bounds.extend(latLng);
+    });
+    map.fitBounds(bounds);
+  }
+  try {
+    useSubscribe((type, data = {}) => {
+      switch (type) {
+        case "getCenterLocation":
+          onMapReady(() => {
+            const center = map.getCenter();
+            callback(data, {
+              latitude: center.getLat(),
+              longitude: center.getLng(),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "moveToLocation":
+          {
+            let latitude = Number(data.latitude);
+            let longitude = Number(data.longitude);
+            if (!latitude || !longitude) {
+              const context = contexts[CONTEXT_ID];
+              if (context) {
+                latitude = context.state.latitude;
+                longitude = context.state.longitude;
+              }
+            }
+            if (latitude && longitude) {
+              state.latitude = latitude;
+              state.longitude = longitude;
+              if (map)
+                ;
+              onMapReady(() => {
+                callback(data, `${type}:ok`);
+              });
+            } else {
+              callback(data, `${type}:fail`);
+            }
+          }
+          break;
+        case "translateMarker":
+          onMapReady(() => {
+            const context = contexts[data.markerId];
+            if (context) {
+              try {
+                context.translate(data);
+              } catch (error) {
+                callback(data, `${type}:fail ${error.message}`);
+              }
+              callback(data, `${type}:ok`);
+            } else {
+              callback(data, `${type}:fail not found`);
+            }
+          });
+          break;
+        case "includePoints":
+          state.includePoints = getPoints(data.includePoints);
+          if (isBoundsReady)
+            ;
+          onBoundsReady(() => {
+            callback(data, `${type}:ok`);
+          });
+          break;
+        case "getRegion":
+          onBoundsReady(() => {
+            const latLngBounds = map.getBounds();
+            const southwest = latLngBounds.getSouthWest();
+            const northeast = latLngBounds.getNorthEast();
+            callback(data, {
+              southwest: {
+                latitude: southwest.getLat(),
+                longitude: southwest.getLng()
+              },
+              northeast: {
+                latitude: northeast.getLat(),
+                longitude: northeast.getLng()
+              },
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "getScale":
+          onMapReady(() => {
+            callback(data, {
+              scale: map.getZoom(),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+      }
+    });
+  } catch (error) {
+  }
   vue.provide("onMapReady", onMapReady);
   vue.provide("addMapChidlContext", addMapChidlContext);
   vue.provide("removeMapChidlContext", removeMapChidlContext);
@@ -10682,10 +10809,10 @@ class RequestTask {
       delete this._xhr;
     }
   }
-  onHeadersReceived(callback) {
+  onHeadersReceived(callback2) {
     throw new Error("Method not implemented.");
   }
-  offHeadersReceived(callback) {
+  offHeadersReceived(callback2) {
     throw new Error("Method not implemented.");
   }
 }
@@ -11233,7 +11360,7 @@ const ICON_PATHS = {
   favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
   home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z"
+  close: ICON_PATH_CLOSE
 };
 var PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",

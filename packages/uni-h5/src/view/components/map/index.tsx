@@ -297,99 +297,102 @@ function useMap(
     })
     return map
   }
-  useSubscribe((type, data: any = {}) => {
-    switch (type) {
-      case 'getCenterLocation':
-        onMapReady(() => {
-          const center = map.getCenter()
-          callback(data, {
-            latitude: center.getLat(),
-            longitude: center.getLng(),
-            errMsg: `${type}:ok`,
-          })
-        })
-        break
-      case 'moveToLocation':
-        {
-          let latitude = Number(data.latitude)
-          let longitude = Number(data.longitude)
-          if (!latitude || !longitude) {
-            const context: MapLocationContext = contexts[
-              MAP_LOCATION_CONTEXT_ID
-            ] as MapLocationContext
-            if (context) {
-              latitude = context.state.latitude
-              longitude = context.state.longitude
-            }
-          }
-          if (latitude && longitude) {
-            state.latitude = latitude
-            state.longitude = longitude
-            if (map) {
-              map.setCenter(new maps.LatLng(latitude, longitude))
-            }
-            onMapReady(() => {
-              callback(data, `${type}:ok`)
+  try {
+    // TODO 支持在页面外使用
+    useSubscribe((type, data: any = {}) => {
+      switch (type) {
+        case 'getCenterLocation':
+          onMapReady(() => {
+            const center = map.getCenter()
+            callback(data, {
+              latitude: center.getLat(),
+              longitude: center.getLng(),
+              errMsg: `${type}:ok`,
             })
-          } else {
-            callback(data, `${type}:fail`)
-          }
-        }
-        break
-      case 'translateMarker':
-        onMapReady(() => {
-          const context: MapMarkerContext = contexts[
-            data.markerId
-          ] as MapMarkerContext
-          if (context) {
-            try {
-              context.translate(data)
-            } catch (error) {
-              callback(data, `${type}:fail ${error.message}`)
+          })
+          break
+        case 'moveToLocation':
+          {
+            let latitude = Number(data.latitude)
+            let longitude = Number(data.longitude)
+            if (!latitude || !longitude) {
+              const context: MapLocationContext = contexts[
+                MAP_LOCATION_CONTEXT_ID
+              ] as MapLocationContext
+              if (context) {
+                latitude = context.state.latitude
+                longitude = context.state.longitude
+              }
             }
-            callback(data, `${type}:ok`)
-          } else {
-            callback(data, `${type}:fail not found`)
+            if (latitude && longitude) {
+              state.latitude = latitude
+              state.longitude = longitude
+              if (map) {
+                map.setCenter(new maps.LatLng(latitude, longitude))
+              }
+              onMapReady(() => {
+                callback(data, `${type}:ok`)
+              })
+            } else {
+              callback(data, `${type}:fail`)
+            }
           }
-        })
-        break
-      case 'includePoints':
-        state.includePoints = getPoints(data.includePoints as Point[])
-        if (isBoundsReady) {
-          updateBounds()
-        }
-        onBoundsReady(() => {
-          callback(data, `${type}:ok`)
-        })
-        break
-      case 'getRegion':
-        onBoundsReady(() => {
-          const latLngBounds = map.getBounds()
-          const southwest = latLngBounds.getSouthWest()
-          const northeast = latLngBounds.getNorthEast()
-          callback(data, {
-            southwest: {
-              latitude: southwest.getLat(),
-              longitude: southwest.getLng(),
-            },
-            northeast: {
-              latitude: northeast.getLat(),
-              longitude: northeast.getLng(),
-            },
-            errMsg: `${type}:ok`,
+          break
+        case 'translateMarker':
+          onMapReady(() => {
+            const context: MapMarkerContext = contexts[
+              data.markerId
+            ] as MapMarkerContext
+            if (context) {
+              try {
+                context.translate(data)
+              } catch (error) {
+                callback(data, `${type}:fail ${error.message}`)
+              }
+              callback(data, `${type}:ok`)
+            } else {
+              callback(data, `${type}:fail not found`)
+            }
           })
-        })
-        break
-      case 'getScale':
-        onMapReady(() => {
-          callback(data, {
-            scale: map.getZoom(),
-            errMsg: `${type}:ok`,
+          break
+        case 'includePoints':
+          state.includePoints = getPoints(data.includePoints as Point[])
+          if (isBoundsReady) {
+            updateBounds()
+          }
+          onBoundsReady(() => {
+            callback(data, `${type}:ok`)
           })
-        })
-        break
-    }
-  })
+          break
+        case 'getRegion':
+          onBoundsReady(() => {
+            const latLngBounds = map.getBounds()
+            const southwest = latLngBounds.getSouthWest()
+            const northeast = latLngBounds.getNorthEast()
+            callback(data, {
+              southwest: {
+                latitude: southwest.getLat(),
+                longitude: southwest.getLng(),
+              },
+              northeast: {
+                latitude: northeast.getLat(),
+                longitude: northeast.getLng(),
+              },
+              errMsg: `${type}:ok`,
+            })
+          })
+          break
+        case 'getScale':
+          onMapReady(() => {
+            callback(data, {
+              scale: map.getZoom(),
+              errMsg: `${type}:ok`,
+            })
+          })
+          break
+      }
+    })
+  } catch (error) {}
   onMounted(() => {
     loadMaps((result) => {
       maps = result as QQMapsExt
