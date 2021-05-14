@@ -143,9 +143,6 @@ export default {
       }
     })
   },
-  beforeDestroy () {
-    window.removeEventListener('message', this.__messageHandle, false)
-  },
   methods: {
     _choose () {
       if (this.selected) {
