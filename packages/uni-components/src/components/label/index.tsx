@@ -1,7 +1,7 @@
-import { defineComponent, provide, computed } from 'vue'
+import { provide, computed } from 'vue'
 import { PolySymbol, useCurrentPageId } from '@dcloudio/uni-core'
-import { withWebEvent } from '@dcloudio/uni-components'
-
+import { withWebEvent } from '../../helpers/useEvent'
+import { defineBuiltInComponent } from '../../helpers/component'
 export const uniLabelKey = PolySymbol(__DEV__ ? 'uniLabel' : 'ul')
 const props = {
   for: {
@@ -10,7 +10,7 @@ const props = {
   },
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Label',
   props,
   setup(props, { emit, slots }) {

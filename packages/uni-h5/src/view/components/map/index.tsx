@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   onMounted,
   reactive,
   Ref,
@@ -9,8 +8,11 @@ import {
   PropType,
   provide,
 } from 'vue'
-import { useCustomEvent } from '@dcloudio/uni-components'
-import { useSubscribe } from '@dcloudio/uni-components'
+import {
+  defineBuiltInComponent,
+  useSubscribe,
+  useCustomEvent,
+} from '@dcloudio/uni-components'
 import { callback } from '../../../helpers/utils'
 import { QQMapsExt, loadMaps } from './qqMap'
 import { Map } from './qqMap/types'
@@ -405,7 +407,7 @@ function useMap(
   }
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Map',
   props,
   emits: [

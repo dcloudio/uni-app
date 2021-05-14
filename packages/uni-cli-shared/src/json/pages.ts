@@ -124,6 +124,7 @@ function normalizeNavigationBar(
   pageStyle: Record<string, any>
 ): UniApp.PageNavigationBar {
   const navigationBar = Object.create(null) as UniApp.PageNavigationBar
+
   Object.keys(navigationBarMaps).forEach((name) => {
     if (hasOwn(pageStyle, name)) {
       // @ts-ignore

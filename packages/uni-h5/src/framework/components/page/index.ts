@@ -5,15 +5,15 @@ import {
   createVNode,
   createBlock,
   SetupContext,
-  defineComponent,
 } from 'vue'
+import { defineSystemComponent } from '@dcloudio/uni-components'
 
 import PageHead from './pageHead'
 import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 
-export default defineComponent({
+export default defineSystemComponent({
   name: 'Page',
   setup(_props, ctx) {
     const { navigationBar } = providePageMeta(getStateId())

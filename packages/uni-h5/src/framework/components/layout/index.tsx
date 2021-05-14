@@ -8,7 +8,6 @@ import {
   createBlock,
   createVNode,
   SetupContext,
-  defineComponent,
   resolveComponent,
   ConcreteComponent,
   resolveDynamicComponent,
@@ -16,6 +15,7 @@ import {
 
 import { RouterView, useRoute } from 'vue-router'
 
+import { defineSystemComponent } from '@dcloudio/uni-components'
 import { updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
 import { useKeepAliveRoute } from '../../setup/page'
@@ -26,7 +26,7 @@ type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
 const DEFAULT_CSS_VAR_VALUE = '0px'
 
-export default defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'Layout',
   setup(_props, { emit }) {
     !__NODE_JS__ && initCssVar()

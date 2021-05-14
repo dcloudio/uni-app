@@ -19,12 +19,16 @@ uni-app,
 uni-page,
 uni-page-wrapper,
 uni-page-body {
-  position: relative;
   display: block;
   box-sizing: border-box;
   width: 100%;
 }
 
+uni-page-wrapper {
+  position: relative;
+}
+
+#app,
 uni-app,
 uni-page,
 uni-page-wrapper {
@@ -44,7 +48,7 @@ uni-page-wrapper {
 /* toast,modal,actionSheet,picker */
 .uni-fade-enter-active,
 .uni-fade-leave-active {
-  transition-duration: .25s;
+  transition-duration: 0.25s;
   transition-property: opacity;
   transition-timing-function: ease;
 }

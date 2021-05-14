@@ -1,6 +1,6 @@
-import { computed, defineComponent, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
-import { Input } from '@dcloudio/uni-components'
+import { defineSystemComponent, Input } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   invokeHook,
@@ -30,7 +30,7 @@ const ICON_PATHS = {
     'M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z',
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'PageHead',
   setup() {
     const headRef = ref(null)

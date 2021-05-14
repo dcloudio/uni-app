@@ -1,12 +1,6 @@
-import {
-  computed,
-  defineComponent,
-  inject,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-} from 'vue'
+import { computed, inject, onMounted, onBeforeUnmount, ref } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
 import {
   CustomEventTrigger,
@@ -73,7 +67,7 @@ const props = {
 type SliderProps = ExtractPropTypes<typeof props>
 type HTMLRef = Ref<HTMLElement | null>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',
   props,
   emits: ['changing', 'change'],

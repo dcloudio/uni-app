@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   ref,
   onBeforeUnmount,
   watch,
@@ -8,7 +7,9 @@ import {
   ExtractPropTypes,
   Ref,
 } from 'vue'
-import { useCustomEvent, EmitEvent } from '@dcloudio/uni-components'
+import { defineBuiltInComponent } from '../../helpers/component'
+import { useCustomEvent, EmitEvent } from '../../helpers/useEvent'
+
 import { UniFormCtx, uniFormKey } from '../form'
 import { UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
@@ -47,7 +48,7 @@ const props = {
 
 type SwitchProps = ExtractPropTypes<typeof props>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Switch',
   props,
   emits: ['change'],

@@ -1,6 +1,5 @@
 import {
   ref,
-  defineComponent,
   ExtractPropTypes,
   Ref,
   onMounted,
@@ -9,6 +8,7 @@ import {
   watch,
   onUnmounted,
 } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
 import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
 import ResizeSensor from '../resize-sensor/index'
@@ -82,7 +82,7 @@ const props = {
 type Props = ExtractPropTypes<typeof props>
 type RootRef = Ref<HTMLElement | null>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'MovableView',
   props,
   emits: ['change', 'scale'],

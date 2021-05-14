@@ -1,7 +1,8 @@
-import { defineComponent, inject, provide, ref, onMounted } from 'vue'
+import { inject, provide, ref, onMounted } from 'vue'
 import type { Ref, ExtractPropTypes, WritableComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '../form'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 
 export const uniRadioGroupKey = PolySymbol(__DEV__ ? 'uniCheckGroup' : 'ucg')
@@ -26,7 +27,7 @@ const props = {
 
 type RadioGroupProps = ExtractPropTypes<typeof props>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RadioGroup',
   props,
   // emits: ['change'],

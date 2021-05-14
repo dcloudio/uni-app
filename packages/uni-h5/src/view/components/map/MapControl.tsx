@@ -1,6 +1,6 @@
-import { defineComponent, inject, onUnmounted, watch, PropType } from 'vue'
+import { inject, onUnmounted, watch, PropType } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { useCustomEvent } from '@dcloudio/uni-components'
+import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Map } from './qqMap/types'
 import { QQMapsExt } from './qqMap'
 
@@ -27,7 +27,7 @@ type OnMapReadyCallback = (
 ) => void
 type OnMapReady = (callback: OnMapReadyCallback) => void
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapControl',
   props,
   setup(props) {

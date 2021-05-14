@@ -1,4 +1,4 @@
-import { computed, defineComponent } from 'vue'
+import { computed } from 'vue'
 
 import { PRIMARY_COLOR } from '@dcloudio/uni-shared'
 import {
@@ -14,6 +14,8 @@ import {
   ICON_PATH_DOWNLOAD,
   ICON_PATH_SUCCESS_NO_CIRCLE,
 } from '@dcloudio/uni-core'
+
+import { defineBuiltInComponent } from '../../helpers/component'
 
 const INFO_COLOR = '#10aeff'
 const WARN_COLOR = '#f76260'
@@ -59,7 +61,7 @@ const ICONS = {
   },
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Icon',
   props: {
     type: {

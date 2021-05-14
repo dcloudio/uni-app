@@ -6,12 +6,12 @@ import {
   nextTick,
   onMounted,
   onActivated,
-  defineComponent,
   SetupContext,
 } from 'vue'
 import { extend } from '@vue/shared'
+import { defineBuiltInComponent } from '../../helpers/component'
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ResizeSensor',
   props: {
     initial: {

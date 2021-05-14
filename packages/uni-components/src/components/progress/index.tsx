@@ -1,14 +1,10 @@
-import {
-  defineComponent,
-  ref,
-  reactive,
-  watch,
-  computed,
-  ExtractPropTypes,
-} from 'vue'
+import { PRIMARY_COLOR } from '@dcloudio/uni-shared'
+import { ref, reactive, watch, computed, ExtractPropTypes } from 'vue'
+
+import { defineBuiltInComponent } from '../../helpers/component'
 
 const VALUES = {
-  activeColor: '#007AFF',
+  activeColor: PRIMARY_COLOR,
   backgroundColor: '#EBEBEB',
   activeMode: 'backwards',
 }
@@ -64,7 +60,7 @@ const props = {
 type ProgressProps = ExtractPropTypes<typeof props>
 type ProgerssState = ReturnType<typeof useProgressState>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Progress',
   props,
   setup(props) {

@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, Ref, ref, watch } from 'vue'
+import { onMounted, Ref, ref, watch } from 'vue'
 import QuillClass, {
   QuillOptionsStatic,
   EventEmitter,
@@ -7,6 +7,7 @@ import QuillClass, {
 } from 'quill'
 import { useSubscribe } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 import {
   props as keyboardProps,
@@ -441,7 +442,7 @@ const props = /*#__PURE__*/ Object.assign({}, keyboardProps, {
   },
 })
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Editor',
   props,
   emit: ['ready', 'focus', 'blur', 'input', 'statuschange', ...keyboardEmit],

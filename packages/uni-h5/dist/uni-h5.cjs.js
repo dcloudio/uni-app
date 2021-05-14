@@ -298,15 +298,9 @@ function createNativeEvent(evt) {
   {
     shared.extend(event, {
       preventDefault() {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
-        }
         return evt.preventDefault();
       },
       stopPropagation() {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn("stopPropagation is only supported in h5, use `.stop` instead.");
-        }
         return evt.stopPropagation();
       }
     });
@@ -456,6 +450,7 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
     const {navigationBar} = pageMeta;
     const {titleSize, titleColor, backgroundColor} = navigationBar;
+    navigationBar.type = navigationBar.type || "default";
     navigationBar.backButton = pageMeta.isQuit ? false : true;
     navigationBar.titleSize = titleSize || "16px";
     navigationBar.titleColor = titleColor || "#fff";
@@ -1466,6 +1461,15 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["id", "controls"]);
 }
 _sfc_main$8.render = _sfc_render$8;
+const defineBuiltInComponent = (options) => {
+  return defineSystemComponent(options);
+};
+const defineSystemComponent = (options) => {
+  options.compatConfig = {
+    MODE: 3
+  };
+  return vue.defineComponent(options);
+};
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -1550,7 +1554,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey$1 = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var Form = /* @__PURE__ */ vue.defineComponent({
+var Form = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1589,7 +1593,7 @@ function provideForm(emit2) {
   });
   return fields2;
 }
-var index$o = /* @__PURE__ */ vue.defineComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1666,7 +1670,7 @@ var index$o = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var ResizeSensor = /* @__PURE__ */ vue.defineComponent({
+var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
     initial: {
@@ -2258,7 +2262,7 @@ const props$p = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ vue.defineComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2319,7 +2323,7 @@ const props$o = {
     default: ""
   }
 };
-var index$m = /* @__PURE__ */ vue.defineComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$o,
   setup(props2, {
@@ -2388,7 +2392,7 @@ const props$n = {
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ vue.defineComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$n,
   setup(props2, {
@@ -2655,7 +2659,7 @@ const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
     default: false
   }
 });
-var index$k = /* @__PURE__ */ vue.defineComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$l,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2716,7 +2720,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$j = /* @__PURE__ */ vue.defineComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2780,7 +2784,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$i = /* @__PURE__ */ vue.defineComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$k,
   setup(props2, {
@@ -3261,7 +3265,7 @@ const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
     default: "input-placeholder"
   }
 });
-var Input = /* @__PURE__ */ vue.defineComponent({
+var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$i,
   emit: ["confirm", ...emit],
@@ -3361,6 +3365,43 @@ var Input = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const {excludeListeners = false, excludeKeys = []} = params;
+  const instance = vue.getCurrentInstance();
+  const attrs = vue.shallowRef({});
+  const listeners = vue.shallowRef({});
+  const excludeAttrs = vue.shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance.attrs = vue.reactive(instance.attrs);
+  vue.watchEffect(() => {
+    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return {$attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs};
+};
 function initScrollBounce() {
 }
 function disableScrollBounce({disable}) {
@@ -3388,7 +3429,7 @@ const props$h = {
     default: false
   }
 };
-var index$h = /* @__PURE__ */ vue.defineComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: props$h,
@@ -4031,7 +4072,7 @@ const props$g = {
     default: true
   }
 };
-var index$g = /* @__PURE__ */ vue.defineComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: props$g,
   emits: ["change", "scale"],
@@ -4548,7 +4589,7 @@ function useState$1(props2) {
   });
   return state;
 }
-var PickerView = /* @__PURE__ */ vue.defineComponent({
+var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: props$f,
   emits: ["change", "pickstart", "pickend", "update:value"],
@@ -5294,7 +5335,7 @@ function useScopedClass(indicatorHeightRef) {
   vue.watch(() => indicatorHeightRef.value, updateStyle);
   return className;
 }
-var PickerViewColumn = /* @__PURE__ */ vue.defineComponent({
+var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
     slots,
@@ -5389,7 +5430,7 @@ var PickerViewColumn = /* @__PURE__ */ vue.defineComponent({
   }
 });
 const VALUES = {
-  activeColor: "#007AFF",
+  activeColor: uniShared.PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
@@ -5440,7 +5481,7 @@ const props$e = {
     }
   }
 };
-var index$f = /* @__PURE__ */ vue.defineComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: props$e,
   setup(props2) {
@@ -5519,7 +5560,7 @@ const props$d = {
     default: ""
   }
 };
-var index$e = /* @__PURE__ */ vue.defineComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$d,
   setup(props2, {
@@ -5619,7 +5660,7 @@ const props$c = {
     default: ""
   }
 };
-var index$d = /* @__PURE__ */ vue.defineComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$c,
   setup(props2, {
@@ -7170,7 +7211,7 @@ const props$b = {
     default: false
   }
 };
-var index$c = /* @__PURE__ */ vue.defineComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$b,
   emits: ["changing", "change"],
@@ -7712,7 +7753,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     onSwiperDotClick
   };
 }
-var index$b = /* @__PURE__ */ vue.defineComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$a,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7815,7 +7856,7 @@ const props$9 = {
     default: ""
   }
 };
-var index$a = /* @__PURE__ */ vue.defineComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$9,
   setup(props2, {
@@ -7860,7 +7901,7 @@ const props$8 = {
     default: "#007aff"
   }
 };
-var index$9 = /* @__PURE__ */ vue.defineComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$8,
   emits: ["change"],
@@ -7950,7 +7991,7 @@ function normalizeText(text, {
   }
   return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$8 = /* @__PURE__ */ vue.defineComponent({
+var index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -8003,7 +8044,7 @@ var index$8 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const props$7 = /* @__PURE__ */ Object.assign({}, props$j, {
+const props$7 = /* @__PURE__ */ shared.extend({}, props$j, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -8017,7 +8058,7 @@ const props$7 = /* @__PURE__ */ Object.assign({}, props$j, {
     default: ""
   }
 });
-var index$7 = /* @__PURE__ */ vue.defineComponent({
+var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$7,
   emit: ["confirm", "linechange", ...emit],
@@ -8137,7 +8178,7 @@ var index$7 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var index$6 = /* @__PURE__ */ vue.defineComponent({
+var index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -8165,43 +8206,6 @@ function useSubscribe(callback, name) {
 }
 function useOn(name, callback) {
 }
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const {excludeListeners = false, excludeKeys = []} = params;
-  const instance = vue.getCurrentInstance();
-  const attrs = vue.shallowRef({});
-  const listeners = vue.shallowRef({});
-  const excludeAttrs = vue.shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance.attrs = vue.reactive(instance.attrs);
-  vue.watchEffect(() => {
-    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
-          acc.attrs[key] = val;
-        }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
-      }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
-    attrs.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return {$attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs};
-};
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h = Math.floor(val / 3600);
@@ -8750,7 +8754,7 @@ const props$6 = {
     default: true
   }
 };
-var index$5 = /* @__PURE__ */ vue.defineComponent({
+var index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$6,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -8971,7 +8975,7 @@ const props$5 = {
     default: ""
   }
 };
-var index$4 = /* @__PURE__ */ vue.defineComponent({
+var index$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$5,
@@ -9086,7 +9090,7 @@ const props$4 = {
     default: ""
   }
 };
-var MapMarker = /* @__PURE__ */ vue.defineComponent({
+var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$4,
   setup(props2) {
@@ -9330,7 +9334,7 @@ const props$3 = {
     default: ""
   }
 };
-var MapPolyline = /* @__PURE__ */ vue.defineComponent({
+var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
   props: props$3,
   setup(props2) {
@@ -9414,7 +9418,7 @@ const props$2 = {
     default: ""
   }
 };
-var MapCircle = /* @__PURE__ */ vue.defineComponent({
+var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
   props: props$2,
   setup(props2) {
@@ -9477,7 +9481,7 @@ const props$1 = {
     default: ""
   }
 };
-var MapControl = /* @__PURE__ */ vue.defineComponent({
+var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$1,
   setup(props2) {
@@ -9534,7 +9538,7 @@ var MapControl = /* @__PURE__ */ vue.defineComponent({
   }
 });
 const ICON_PATH = "data:image/png;base64,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";
-var MapLocation = /* @__PURE__ */ vue.defineComponent({
+var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
   setup() {
     const state = vue.reactive({
@@ -9659,7 +9663,7 @@ function useMap(props2, rootRef, emit2) {
     mapRef
   };
 }
-var index$3 = /* @__PURE__ */ vue.defineComponent({
+var index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -10839,7 +10843,7 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(pageId + "." + event, args, pageId);
   }
 });
-var TabBar = /* @__PURE__ */ vue.defineComponent({
+var TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const tabBar2 = useTabBar();
@@ -11078,7 +11082,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
-var LayoutComponent = vue.defineComponent({
+var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -11232,7 +11236,7 @@ const ICON_PATHS = {
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
   close: "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z"
 };
-var PageHead = /* @__PURE__ */ vue.defineComponent({
+var PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",
   setup() {
     const headRef = vue.ref(null);
@@ -11620,7 +11624,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 _sfc_main.render = _sfc_render;
-var PageBody = vue.defineComponent({
+var PageBody = defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -11628,7 +11632,7 @@ var PageBody = vue.defineComponent({
     const pageRefresh = null;
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return vue.createVNode("div", null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
+      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
@@ -11640,7 +11644,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-var index$2 = vue.defineComponent({
+var index$2 = defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const {navigationBar} = providePageMeta(getStateId());
@@ -11656,7 +11660,7 @@ function createPageBodyVNode(ctx) {
 function reload() {
   window.location.reload();
 }
-var index$1 = /* @__PURE__ */ vue.defineComponent({
+var index$1 = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
   setup() {
     initI18nAsyncMsgsOnce();
@@ -11671,7 +11675,7 @@ var index$1 = /* @__PURE__ */ vue.defineComponent({
 });
 const clazz = {class: "uni-async-loading"};
 const loadingVNode = /* @__PURE__ */ vue.createVNode("i", {class: "uni-loading"}, null, -1);
-var index = /* @__PURE__ */ vue.defineComponent({
+var index = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
   render() {
     return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
@@ -11723,6 +11727,8 @@ exports.View = index$6;
 exports.WebView = index$4;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
+exports.defineBuiltInComponent = defineBuiltInComponent;
+exports.defineSystemComponent = defineSystemComponent;
 exports.disableScrollBounce = disableScrollBounce;
 exports.getApp = getApp$1;
 exports.getCurrentPages = getCurrentPages$1;

@@ -6,10 +6,10 @@ import {
   reactive,
   onMounted,
   onBeforeUnmount,
-  defineComponent,
   ExtractPropTypes,
 } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 import ResizeSensor from '../resize-sensor/index'
 
@@ -56,7 +56,7 @@ const IMAGE_MODES = {
   'bottom right': ['right bottom'],
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Image',
   props,
   setup(props, { emit }) {

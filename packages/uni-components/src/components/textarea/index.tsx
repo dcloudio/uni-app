@@ -1,4 +1,6 @@
-import { defineComponent, Ref, ref, computed, watch } from 'vue'
+import { Ref, ref, computed, watch } from 'vue'
+import { extend } from '@vue/shared'
+import { defineBuiltInComponent } from '../../helpers/component'
 import {
   props as fieldProps,
   emit as fieldEmit,
@@ -6,7 +8,7 @@ import {
 } from '../../helpers/useField'
 import ResizeSensor from '../resize-sensor/index'
 
-const props = /*#__PURE__*/ Object.assign({}, fieldProps, {
+const props = /*#__PURE__*/ extend({}, fieldProps, {
   placeholderClass: {
     type: String,
     default: 'input-placeholder',
@@ -21,7 +23,7 @@ const props = /*#__PURE__*/ Object.assign({}, fieldProps, {
   },
 })
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
   props,
   emit: ['confirm', 'linechange', ...fieldEmit],

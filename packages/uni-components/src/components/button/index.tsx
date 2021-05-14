@@ -1,10 +1,11 @@
-import { defineComponent, inject } from 'vue'
+import { inject } from 'vue'
 import { useI18n, initI18nButtonMsgsOnce } from '@dcloudio/uni-core'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniFormCtx, uniFormKey } from '../form'
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Button',
   props: {
     id: {

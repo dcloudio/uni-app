@@ -1,6 +1,5 @@
 import {
   ref,
-  defineComponent,
   ExtractPropTypes,
   reactive,
   Ref,
@@ -9,7 +8,9 @@ import {
   markRaw,
   provide,
 } from 'vue'
-import { useAttrs, withWebEvent } from '@dcloudio/uni-components'
+import { defineBuiltInComponent } from '../../helpers/component'
+import { withWebEvent } from '../../helpers/useEvent'
+import { useAttrs } from '../../helpers/useAttrs'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
 import ResizeSensor from '../resize-sensor/index'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -31,7 +32,7 @@ export interface MovableViewContext {
 export type AddMovableViewContext = (context: MovableViewContext) => void
 export type RemoveMovableViewContext = (context: MovableViewContext) => void
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'MovableArea',
   props,

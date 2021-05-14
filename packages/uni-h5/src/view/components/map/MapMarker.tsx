@@ -1,6 +1,6 @@
-import { defineComponent, onUnmounted, inject, watch } from 'vue'
+import { onUnmounted, inject, watch } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { useCustomEvent } from '@dcloudio/uni-components'
+import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Map, Marker, Label, LatLng } from './qqMap/types'
 import { Callout, CalloutOptions, QQMapsExt } from './qqMap'
 
@@ -98,7 +98,7 @@ interface MarkerExt extends Marker {
   lastPosition?: LatLng
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapMarker',
   props,
   setup(props) {

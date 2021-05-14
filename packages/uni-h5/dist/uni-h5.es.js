@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, ref, defineComponent, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, shallowRef, watchEffect, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -744,15 +744,9 @@ function createNativeEvent(evt) {
   {
     extend(event, {
       preventDefault() {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn("preventDefault is only supported in h5, use `.prevent` instead.");
-        }
         return evt.preventDefault();
       },
       stopPropagation() {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn("stopPropagation is only supported in h5, use `.stop` instead.");
-        }
         return evt.stopPropagation();
       }
     });
@@ -1185,7 +1179,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1196,6 +1190,7 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
     const {navigationBar} = pageMeta;
     const {titleSize, titleColor, backgroundColor} = navigationBar;
+    navigationBar.type = navigationBar.type || "default";
     navigationBar.backButton = pageMeta.isQuit ? false : true;
     navigationBar.titleSize = titleSize || "16px";
     navigationBar.titleColor = titleColor || "#fff";
@@ -5116,6 +5111,15 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["id", "controls"]);
 }
 _sfc_main$8.render = _sfc_render$8;
+const defineBuiltInComponent = (options) => {
+  return defineSystemComponent(options);
+};
+const defineSystemComponent = (options) => {
+  options.compatConfig = {
+    MODE: 3
+  };
+  return defineComponent(options);
+};
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -5200,7 +5204,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey$1 = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var Form = /* @__PURE__ */ defineComponent({
+var Form = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -5239,7 +5243,7 @@ function provideForm(emit2) {
   });
   return fields2;
 }
-var index$k = /* @__PURE__ */ defineComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -5316,7 +5320,7 @@ var index$k = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var ResizeSensor = /* @__PURE__ */ defineComponent({
+var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
     initial: {
@@ -6108,7 +6112,7 @@ const props$v = {
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ defineComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$v,
   emits: ["change"],
@@ -6169,7 +6173,7 @@ const props$u = {
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$u,
   setup(props2, {
@@ -6238,7 +6242,7 @@ const props$t = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$t,
   setup(props2, {
@@ -7089,7 +7093,7 @@ const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
     default: false
   }
 });
-var index$g = /* @__PURE__ */ defineComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -7151,7 +7155,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$f = /* @__PURE__ */ defineComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -7215,7 +7219,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$e = /* @__PURE__ */ defineComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$q,
   setup(props2, {
@@ -7772,7 +7776,7 @@ const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
     default: "input-placeholder"
   }
 });
-var Input = /* @__PURE__ */ defineComponent({
+var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$o,
   emit: ["confirm", ...emit],
@@ -7872,6 +7876,43 @@ var Input = /* @__PURE__ */ defineComponent({
     };
   }
 });
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const {excludeListeners = false, excludeKeys = []} = params;
+  const instance2 = getCurrentInstance();
+  const attrs2 = shallowRef({});
+  const listeners = shallowRef({});
+  const excludeAttrs = shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance2.attrs = reactive(instance2.attrs);
+  watchEffect(() => {
+    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs2.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return {$attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs};
+};
 function initScrollBounce() {
 }
 function disableScrollBounce({disable}) {
@@ -7899,7 +7940,7 @@ const props$n = {
     default: false
   }
 };
-var MovableArea = /* @__PURE__ */ defineComponent({
+var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: props$n,
@@ -8557,7 +8598,7 @@ const props$m = {
     default: true
   }
 };
-var MovableView = /* @__PURE__ */ defineComponent({
+var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: props$m,
   emits: ["change", "scale"],
@@ -9287,7 +9328,7 @@ function useState$1(props2) {
   });
   return state2;
 }
-var PickerView = /* @__PURE__ */ defineComponent({
+var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: props$l,
   emits: ["change", "pickstart", "pickend", "update:value"],
@@ -10060,7 +10101,7 @@ function useCustomClick(dom) {
     }
   });
 }
-var PickerViewColumn = /* @__PURE__ */ defineComponent({
+var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
     slots,
@@ -10201,7 +10242,7 @@ var PickerViewColumn = /* @__PURE__ */ defineComponent({
   }
 });
 const VALUES = {
-  activeColor: "#007AFF",
+  activeColor: PRIMARY_COLOR,
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
@@ -10252,7 +10293,7 @@ const props$k = {
     }
   }
 };
-var index$d = /* @__PURE__ */ defineComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: props$k,
   setup(props2) {
@@ -10331,7 +10372,7 @@ const props$j = {
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ defineComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   setup(props2, {
@@ -10431,7 +10472,7 @@ const props$i = {
     default: ""
   }
 };
-var index$b = /* @__PURE__ */ defineComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$i,
   setup(props2, {
@@ -11992,7 +12033,7 @@ const props$h = {
     default: false
   }
 };
-var index$a = /* @__PURE__ */ defineComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$h,
   emits: ["changing", "change"],
@@ -12646,7 +12687,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     onSwiperDotClick
   };
 }
-var Swiper = /* @__PURE__ */ defineComponent({
+var Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$g,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -12749,7 +12790,7 @@ const props$f = {
     default: ""
   }
 };
-var SwiperItem = /* @__PURE__ */ defineComponent({
+var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$f,
   setup(props2, {
@@ -12826,7 +12867,7 @@ const props$e = {
     default: "#007aff"
   }
 };
-var index$9 = /* @__PURE__ */ defineComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$e,
   emits: ["change"],
@@ -12925,7 +12966,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$8 = /* @__PURE__ */ defineComponent({
+var index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -12978,7 +13019,7 @@ var index$8 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const props$d = /* @__PURE__ */ Object.assign({}, props$p, {
+const props$d = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12992,7 +13033,7 @@ const props$d = /* @__PURE__ */ Object.assign({}, props$p, {
     default: ""
   }
 });
-var index$7 = /* @__PURE__ */ defineComponent({
+var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$d,
   emit: ["confirm", "linechange", ...emit],
@@ -13112,7 +13153,7 @@ var index$7 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var index$6 = /* @__PURE__ */ defineComponent({
+var index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -13177,43 +13218,6 @@ function useOn(name, callback2) {
   onMounted(() => UniViewJSBridge.on(name, callback2));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const {excludeListeners = false, excludeKeys = []} = params;
-  const instance2 = getCurrentInstance();
-  const attrs2 = shallowRef({});
-  const listeners = shallowRef({});
-  const excludeAttrs = shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance2.attrs = reactive(instance2.attrs);
-  watchEffect(() => {
-    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
-          acc.attrs[key] = val;
-        }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
-      }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
-    attrs2.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return {$attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs};
-};
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h = Math.floor(val / 3600);
@@ -13846,7 +13850,7 @@ const props$c = {
     default: true
   }
 };
-var index$5 = /* @__PURE__ */ defineComponent({
+var index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$c,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -14067,7 +14071,7 @@ const props$b = {
     default: ""
   }
 };
-var index$4 = /* @__PURE__ */ defineComponent({
+var index$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$b,
@@ -14338,7 +14342,7 @@ const props$a = {
     default: ""
   }
 };
-var MapMarker = /* @__PURE__ */ defineComponent({
+var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$a,
   setup(props2) {
@@ -14595,7 +14599,7 @@ const props$9 = {
     default: ""
   }
 };
-var MapPolyline = /* @__PURE__ */ defineComponent({
+var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
   props: props$9,
   setup(props2) {
@@ -14680,7 +14684,7 @@ const props$8 = {
     default: ""
   }
 };
-var MapCircle = /* @__PURE__ */ defineComponent({
+var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
   props: props$8,
   setup(props2) {
@@ -14744,7 +14748,7 @@ const props$7 = {
     default: ""
   }
 };
-var MapControl = /* @__PURE__ */ defineComponent({
+var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$7,
   setup(props2) {
@@ -14964,7 +14968,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -15077,12 +15081,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15102,10 +15106,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -17532,7 +17536,7 @@ var api = /* @__PURE__ */ Object.freeze({
 });
 const CONTEXT_ID = "MAP_LOCATION";
 const ICON_PATH = "data:image/png;base64,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";
-var MapLocation = /* @__PURE__ */ defineComponent({
+var MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
   setup() {
     const state2 = reactive({
@@ -17905,7 +17909,7 @@ function useMap(props2, rootRef, emit2) {
     mapRef
   };
 }
-var index$3 = /* @__PURE__ */ defineComponent({
+var index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -18759,7 +18763,7 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(pageId + "." + event, args, pageId);
   }
 });
-var TabBar = /* @__PURE__ */ defineComponent({
+var TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const tabBar2 = useTabBar();
@@ -18999,7 +19003,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
-var LayoutComponent = defineComponent({
+var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -19216,7 +19220,7 @@ const ICON_PATHS = {
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
   close: "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z"
 };
-var PageHead = /* @__PURE__ */ defineComponent({
+var PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",
   setup() {
     const headRef = ref(null);
@@ -19803,7 +19807,7 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-var PageBody = defineComponent({
+var PageBody = defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -19811,7 +19815,7 @@ var PageBody = defineComponent({
     const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode("div", null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
@@ -19823,7 +19827,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-var index$2 = defineComponent({
+var index$2 = defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const {navigationBar} = providePageMeta(getStateId());
@@ -19839,7 +19843,7 @@ function createPageBodyVNode(ctx) {
 function reload() {
   window.location.reload();
 }
-var index$1 = /* @__PURE__ */ defineComponent({
+var index$1 = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
   setup() {
     initI18nAsyncMsgsOnce();
@@ -19854,10 +19858,10 @@ var index$1 = /* @__PURE__ */ defineComponent({
 });
 const clazz = {class: "uni-async-loading"};
 const loadingVNode = /* @__PURE__ */ createVNode("i", {class: "uni-loading"}, null, -1);
-var index = /* @__PURE__ */ defineComponent({
+var index = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
   render() {
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$k as Button, _sfc_main$7 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$g as Editor, Form, Friction$1 as Friction, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller$1 as Scroller, index$a as Slider, Spring$1 as Spring, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, disableScrollBounce, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$l as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useBooleanAttr, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$k as Button, _sfc_main$7 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$g as Editor, Form, Friction$1 as Friction, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, index$3 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller$1 as Scroller, index$a as Slider, Spring$1 as Spring, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$l as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useAttrs, useBooleanAttr, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

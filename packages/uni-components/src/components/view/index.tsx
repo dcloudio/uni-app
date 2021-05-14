@@ -1,9 +1,9 @@
 import { extend } from '@vue/shared'
-import { defineComponent } from 'vue'
 
+import { defineBuiltInComponent } from '../../helpers/component'
 import { hoverProps, useHover } from '../../helpers/useHover'
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'View',
   props: extend({}, hoverProps),
   setup(props, { slots }) {

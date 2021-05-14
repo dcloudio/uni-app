@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   Ref,
   ref,
   watch,
@@ -12,6 +11,7 @@ import {
   PropType,
   ComponentInternalInstance,
 } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
 import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
@@ -83,7 +83,7 @@ export type GetPickerViewColumn = (
   columnInstance: ComponentInternalInstance
 ) => ComputedRef<number>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',
   props,
   emits: ['change', 'pickstart', 'pickend', 'update:value'],

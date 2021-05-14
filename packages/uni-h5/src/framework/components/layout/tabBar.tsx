@@ -1,16 +1,17 @@
-import { watch, watchEffect, computed, defineComponent } from 'vue'
+import { watch, watchEffect, computed } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
   API_ON_TAB_BAR_MID_BUTTON_TAP,
   OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
+import { defineSystemComponent } from '@dcloudio/uni-components'
 import { getRealPath } from '../../../platform'
 import { useTabBar } from '../../setup/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
 import { normalizeWindowBottom } from '../../../helpers/cssVar'
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'TabBar',
   setup() {
     const tabBar = useTabBar()!

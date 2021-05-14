@@ -1,11 +1,11 @@
-import { defineComponent } from 'vue'
+import { defineSystemComponent } from '@dcloudio/uni-components'
 import { useI18n, initI18nAsyncMsgsOnce } from '@dcloudio/uni-core'
 
 function reload() {
   window.location.reload()
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'AsyncError',
   setup() {
     initI18nAsyncMsgsOnce()

@@ -1,5 +1,5 @@
-import { defineComponent, inject, PropType, onUnmounted, watch } from 'vue'
-import { useCustomEvent } from '@dcloudio/uni-components'
+import { inject, PropType, onUnmounted, watch } from 'vue'
+import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Map, LatLng, Polyline } from './qqMap/types'
 import { QQMapsExt } from './qqMap'
 
@@ -35,7 +35,7 @@ type OnMapReadyCallback = (
 ) => void
 type OnMapReady = (callback: OnMapReadyCallback) => void
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapPolyline',
   props,
   setup(props) {

@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   Ref,
   ref,
   watch,
@@ -14,6 +13,7 @@ import {
   SetupContext,
 } from 'vue'
 import { upx2px } from '@dcloudio/uni-api'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -610,7 +610,7 @@ function useLayout(
   }
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Swiper',
   props,
   emits: [

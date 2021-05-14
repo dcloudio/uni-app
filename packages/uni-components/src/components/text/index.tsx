@@ -1,10 +1,5 @@
-import {
-  defineComponent,
-  VNode,
-  Component,
-  createTextVNode,
-  createVNode,
-} from 'vue'
+import { VNode, Component, createTextVNode, createVNode } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 
 const SPACE_UNICODE = {
   ensp: '\u2002',
@@ -34,7 +29,7 @@ function normalizeText(text: string, { space, decode }: DecodeOptions) {
     .replace(/&apos;/g, "'")
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Text',
   props: {
     selectable: {

@@ -28,7 +28,7 @@ export function createConfig(
     options.command = env.command
     options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
     options.inputDir = normalizeInputDir(config)
-    options.vueOptions = initPluginVueOptions(options.vueOptions || {})
+    options.vueOptions = initPluginVueOptions(options)
     options.compiler.init()
     const define = createDefine(options, config, env)
     const { h5 } = parseManifestJsonOnce(options.inputDir)

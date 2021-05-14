@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   withModifiers,
   Ref,
   ref,
@@ -14,6 +13,7 @@ import { passive } from '@dcloudio/uni-shared'
 import { useI18n, initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
+  defineBuiltInComponent,
   useSubscribe,
   useCustomEvent,
   EmitEvent,
@@ -786,7 +786,7 @@ const props = {
     default: true,
   },
 }
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',
   props,
   emits: [

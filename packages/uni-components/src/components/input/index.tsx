@@ -1,8 +1,8 @@
-import { defineComponent, Ref, ref, computed } from 'vue'
+import { Ref, ref, computed } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 import {
   props as fieldProps,
   emit as fieldEmit,
-  emit,
   useField,
 } from '../../helpers/useField'
 
@@ -13,7 +13,7 @@ const props = /*#__PURE__*/ Object.assign({}, fieldProps, {
   },
 })
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Input',
   props,
   emit: ['confirm', ...fieldEmit],

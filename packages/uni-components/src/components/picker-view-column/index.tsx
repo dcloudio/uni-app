@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   Ref,
   ref,
   watch,
@@ -11,6 +10,7 @@ import {
   ComponentInternalInstance,
   nextTick,
 } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { useScroller } from '../../helpers/scroller'
 import { Friction } from '../../helpers/scroller/Friction'
 import { Spring } from '../../helpers/scroller/Spring'
@@ -86,7 +86,7 @@ function useCustomClick(dom: HTMLElement) {
   })
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerViewColumn',
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)

@@ -1,15 +1,16 @@
-import { isArray } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
-import { Options as VueOptions } from '@vitejs/plugin-vue'
-
 import { isNativeTag } from '@dcloudio/uni-shared'
-import { EXTNAME_VUE_RE } from '@dcloudio/uni-cli-shared'
+import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 
+import { block } from './transforms/block'
 import { matchMedia } from './transforms/matchMedia'
+import { VitePluginUniResolvedOptions } from '..'
+
 export const uniVueCompilerOptions: CompilerOptions = {
   isNativeTag,
-  nodeTransforms: [matchMedia],
+  nodeTransforms: [block, matchMedia],
 }
 
 export const uniVueTransformAssetUrls: SFCTemplateCompileOptions['transformAssetUrls'] =
@@ -36,7 +37,8 @@ export const uniVueTemplateOptions: Partial<SFCTemplateCompileOptions> = {
   transformAssetUrls: uniVueTransformAssetUrls,
 }
 
-export function initPluginVueOptions(vueOptions: VueOptions) {
+export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
+  const vueOptions = options.vueOptions || (options.vueOptions = {})
   if (!vueOptions.include) {
     vueOptions.include = []
   }
@@ -55,6 +57,15 @@ export function initPluginVueOptions(vueOptions: VueOptions) {
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
+
+  const compatConfig = parseCompatConfigOnce(options.inputDir)
+
+  compilerOptions.compatConfig = extend(
+    compilerOptions.compatConfig || {},
+    compatConfig
+  )
+
   compilerOptions.nodeTransforms.unshift(matchMedia)
+  compilerOptions.nodeTransforms.unshift(block)
   return vueOptions
 }

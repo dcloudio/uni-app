@@ -1,12 +1,6 @@
-import {
-  defineComponent,
-  onBeforeUnmount,
-  watch,
-  inject,
-  ref,
-  computed,
-} from 'vue'
+import { onBeforeUnmount, watch, inject, ref, computed } from 'vue'
 import type { Ref } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniCheckGroupCtx, uniCheckGroupKey } from '../checkbox-group'
@@ -40,7 +34,7 @@ const props = {
   },
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Checkbox',
   props,
   setup(props, { slots }) {

@@ -1,4 +1,6 @@
-import { ref, renderSlot, defineComponent, Ref } from 'vue'
+import { ref, renderSlot, Ref } from 'vue'
+
+import { defineSystemComponent } from '@dcloudio/uni-components'
 
 import { usePageMeta } from '../../setup/provide'
 
@@ -6,7 +8,7 @@ import PageRefresh from './page-refresh/component.vue'
 
 import { usePageRefresh } from './page-refresh'
 
-export default defineComponent({
+export default defineSystemComponent({
   name: 'PageBody',
   setup(props, ctx) {
     const pageMeta = (__UNI_FEATURE_PULL_DOWN_REFRESH__ &&
@@ -27,12 +29,12 @@ export default defineComponent({
         __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
         createPageRefreshTsx(refreshRef, pageMeta)
       return (
-        <div>
+        <>
           {pageRefreshTsx}
           <uni-page-wrapper {...pageRefresh}>
             <uni-page-body>{renderSlot(ctx.slots, 'default')}</uni-page-body>
           </uni-page-wrapper>
-        </div>
+        </>
       )
     }
   },

@@ -1,5 +1,6 @@
 import { PolySymbol } from '@dcloudio/uni-core'
-import { defineComponent, provide, SetupContext } from 'vue'
+import { provide, SetupContext } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
 
 export const uniFormKey = PolySymbol(__DEV__ ? 'uniForm' : 'uf')
 
@@ -15,7 +16,7 @@ interface UniFormFieldCtx {
   reset?: () => void
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Form',
   setup(_props, { slots, emit }) {
     provideForm(emit)

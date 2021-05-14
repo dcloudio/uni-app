@@ -1,5 +1,6 @@
-import { defineComponent, Ref, ref, onMounted, onUnmounted, inject } from 'vue'
+import { Ref, ref, onMounted, onUnmounted, inject } from 'vue'
 import { AddSwiperContext, SwiperContext, RemoveSwiperContext } from '../swiper'
+import { defineBuiltInComponent } from '../../helpers/component'
 
 const props = {
   itemId: {
@@ -8,7 +9,7 @@ const props = {
   },
 }
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'SwiperItem',
   props,
   setup(props, { slots }) {

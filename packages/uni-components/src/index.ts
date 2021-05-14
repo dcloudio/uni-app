@@ -15,3 +15,7 @@ export { useUserAction } from './helpers/useUserAction'
 export { useAttrs } from './helpers/useAttrs'
 export { useBooleanAttr } from './helpers/useBooleanAttr'
 export { useTouchtrack } from './helpers/useTouchtrack'
+export {
+  defineBuiltInComponent,
+  defineSystemComponent,
+} from './helpers/component'

@@ -50,19 +50,9 @@ export function createNativeEvent(evt: Event | TouchEvent) {
   if (__PLATFORM__ === 'h5') {
     extend(event, {
       preventDefault() {
-        if (__DEV__) {
-          console.warn(
-            'preventDefault is only supported in h5, use `.prevent` instead.'
-          )
-        }
         return evt.preventDefault()
       },
       stopPropagation() {
-        if (__DEV__) {
-          console.warn(
-            'stopPropagation is only supported in h5, use `.stop` instead.'
-          )
-        }
         return evt.stopPropagation()
       },
     })

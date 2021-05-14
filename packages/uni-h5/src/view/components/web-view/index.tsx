@@ -1,13 +1,9 @@
+import { ref, onMounted, Ref, onActivated, onDeactivated, Teleport } from 'vue'
 import {
-  defineComponent,
-  ref,
-  onMounted,
-  Ref,
-  onActivated,
-  onDeactivated,
-  Teleport,
-} from 'vue'
-import { ResizeSensor, useAttrs } from '@dcloudio/uni-components'
+  defineBuiltInComponent,
+  ResizeSensor,
+  useAttrs,
+} from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { updateElementStyle } from '@dcloudio/uni-shared'
 
@@ -20,7 +16,7 @@ const props = {
 
 type RootRef = Ref<HTMLElement | null>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'WebView',
   props,
