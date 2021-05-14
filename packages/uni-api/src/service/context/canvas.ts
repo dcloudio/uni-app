@@ -352,9 +352,11 @@ const defaultState = {
   fontFamily: 'sans-serif',
 }
 
+type ActionsItemType = string | number | boolean | undefined | Array<number>
+type ActionsItemData = Array<ActionsItemType>
 type ActionsItem = {
   method: string
-  data: Array<string | number | boolean>
+  data: ActionsItemData | Array<ActionsItem>
 }
 type DefaultState = typeof defaultState
 type Callback = (result: any) => void | undefined
@@ -793,21 +795,20 @@ export class CanvasContext implements UniApp.CanvasContext {
 
 ;[...methods1, ...methods2].forEach(function (method) {
   function get(method: string) {
+    // @ts-ignore
+    let _this = this as CanvasContext
     switch (method) {
       case 'fill':
       case 'stroke':
         return function () {
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method: method + 'Path',
-            // @ts-ignore
-            data: [...this.path],
+            data: [..._this.path],
           })
         }
       case 'fillRect':
         return function (x: number, y: number, width: number, height: number) {
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method: 'fillPath',
             data: [
               {
@@ -819,8 +820,7 @@ export class CanvasContext implements UniApp.CanvasContext {
         }
       case 'strokeRect':
         return function (x: number, y: number, width: number, height: number) {
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method: 'strokePath',
             data: [
               {
@@ -837,8 +837,7 @@ export class CanvasContext implements UniApp.CanvasContext {
           if (typeof maxWidth === 'number') {
             data.push(maxWidth)
           }
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method,
             data,
           })
@@ -865,7 +864,7 @@ export class CanvasContext implements UniApp.CanvasContext {
             dWidth = undefined
             dHeight = undefined
           }
-          var data
+          let data: ActionsItemData
 
           function isNumber(e: any) {
             return typeof e === 'number'
@@ -889,16 +888,14 @@ export class CanvasContext implements UniApp.CanvasContext {
               : isNumber(sWidth) && isNumber(sHeight)
               ? [imageResource, sx, sy, sWidth, sHeight]
               : [imageResource, sx, sy]
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method,
             data,
           })
         }
       default:
-        return function (...data: any) {
-          // @ts-ignore
-          this.actions.push({
+        return function (...data: ActionsItemData) {
+          _this.actions.push({
             method,
             data,
           })
@@ -909,29 +906,32 @@ export class CanvasContext implements UniApp.CanvasContext {
 })
 methods3.forEach(function (method) {
   function get(method: string) {
+    // @ts-ignore
+    let _this = this as CanvasContext
     switch (method) {
       case 'setFillStyle':
       case 'setStrokeStyle':
         return function (color: string | Data) {
           if (typeof color !== 'object') {
-            // @ts-ignore
-            this.actions.push({
+            _this.actions.push({
               method,
               data: ['normal', checkColor(color)],
             })
           } else {
-            // @ts-ignore
-            this.actions.push({
+            _this.actions.push({
               method,
-              data: [color.type, color.data, color.colorStop],
+              data: [
+                color.type as ActionsItemType,
+                color.data as ActionsItemType,
+                color.colorStop as ActionsItemType,
+              ],
             })
           }
         }
       case 'setGlobalAlpha':
         return function (alpha: number) {
           alpha = Math.floor(255 * parseFloat(alpha as unknown as string))
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method,
             data: [alpha],
           })
@@ -943,52 +943,41 @@ methods3.forEach(function (method) {
           blur: number,
           color: string
         ) {
-          color = checkColor(color) as any
-          // @ts-ignore
-          this.actions.push({
+          let _color = checkColor(color)
+          _this.actions.push({
             method,
             data: [offsetX, offsetY, blur, color],
           })
-          // @ts-ignore
-          this.state.shadowBlur = blur
-          // @ts-ignore
-          this.state.shadowColor = color
-          // @ts-ignore
-          this.state.shadowOffsetX = offsetX
-          // @ts-ignore
-          this.state.shadowOffsetY = offsetY
+          _this.state.shadowBlur = blur
+          _this.state.shadowColor = _color
+          _this.state.shadowOffsetX = offsetX
+          _this.state.shadowOffsetY = offsetY
         }
       case 'setLineDash':
         return function (pattern: Array<number> | undefined, offset: number) {
           pattern = pattern || [0, 0]
           offset = offset || 0
-          // @ts-ignore
-          this.actions.push({
+          _this.actions.push({
             method,
             data: [pattern, offset],
           })
-          // @ts-ignore
-          this.state.lineDash = pattern
+          _this.state.lineDash = pattern
         }
       case 'setFontSize':
         return function (fontSize: number) {
-          // @ts-ignore
-          this.state.font = this.state.font.replace(
+          _this.state.font = _this.state.font.replace(
             /\d+\.?\d*px/,
             fontSize + 'px'
           )
-          // @ts-ignore
-          this.state.fontSize = fontSize
-          // @ts-ignore
-          this.actions.push({
+          _this.state.fontSize = fontSize
+          _this.actions.push({
             method,
             data: [fontSize],
           })
         }
       default:
-        return function (...data: any) {
-          // @ts-ignore
-          this.actions.push({
+        return function (...data: ActionsItemData) {
+          _this.actions.push({
             method,
             data,
           })

@@ -2762,18 +2762,19 @@ class CanvasContext {
 }
 [...methods1, ...methods2].forEach(function(method) {
   function get(method2) {
+    let _this = this;
     switch (method2) {
       case "fill":
       case "stroke":
         return function() {
-          this.actions.push({
+          _this.actions.push({
             method: method2 + "Path",
-            data: [...this.path]
+            data: [..._this.path]
           });
         };
       case "fillRect":
         return function(x, y, width, height) {
-          this.actions.push({
+          _this.actions.push({
             method: "fillPath",
             data: [
               {
@@ -2785,7 +2786,7 @@ class CanvasContext {
         };
       case "strokeRect":
         return function(x, y, width, height) {
-          this.actions.push({
+          _this.actions.push({
             method: "strokePath",
             data: [
               {
@@ -2802,7 +2803,7 @@ class CanvasContext {
           if (typeof maxWidth === "number") {
             data.push(maxWidth);
           }
-          this.actions.push({
+          _this.actions.push({
             method: method2,
             data
           });
@@ -2819,7 +2820,7 @@ class CanvasContext {
             dWidth = void 0;
             dHeight = void 0;
           }
-          var data;
+          let data;
           function isNumber(e2) {
             return typeof e2 === "number";
           }
@@ -2834,14 +2835,14 @@ class CanvasContext {
             dWidth,
             dHeight
           ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
-          this.actions.push({
+          _this.actions.push({
             method: method2,
             data
           });
         };
       default:
         return function(...data) {
-          this.actions.push({
+          _this.actions.push({
             method: method2,
             data
           });
@@ -2852,64 +2853,69 @@ class CanvasContext {
 });
 methods3.forEach(function(method) {
   function get(method2) {
+    let _this = this;
     switch (method2) {
       case "setFillStyle":
       case "setStrokeStyle":
         return function(color) {
           if (typeof color !== "object") {
-            this.actions.push({
+            _this.actions.push({
               method: method2,
               data: ["normal", checkColor(color)]
             });
           } else {
-            this.actions.push({
+            _this.actions.push({
               method: method2,
-              data: [color.type, color.data, color.colorStop]
+              data: [
+                color.type,
+                color.data,
+                color.colorStop
+              ]
             });
           }
         };
       case "setGlobalAlpha":
         return function(alpha) {
           alpha = Math.floor(255 * parseFloat(alpha));
-          this.actions.push({
+          _this.actions.push({
             method: method2,
             data: [alpha]
           });
         };
       case "setShadow":
         return function(offsetX, offsetY, blur, color) {
-          color = checkColor(color);
-          this.actions.push({
+          let _color = checkColor(color);
+          _this.actions.push({
             method: method2,
             data: [offsetX, offsetY, blur, color]
           });
-          this.state.shadowBlur = blur;
-          this.state.shadowColor = color;
-          this.state.shadowOffsetX = offsetX;
-          this.state.shadowOffsetY = offsetY;
+          _this.state.shadowBlur = blur;
+          _this.state.shadowColor = _color;
+          _this.state.shadowOffsetX = offsetX;
+          _this.state.shadowOffsetY = offsetY;
         };
       case "setLineDash":
         return function(pattern, offset) {
           pattern = pattern || [0, 0];
           offset = offset || 0;
-          this.actions.push({
+          _this.actions.push({
             method: method2,
             data: [pattern, offset]
           });
-          this.state.lineDash = pattern;
+          _this.state.lineDash = pattern;
         };
       case "setFontSize":
         return function(fontSize) {
-          this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
-          this.state.fontSize = fontSize;
-          this.actions.push({
+          _this.state.font = _this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
+          _this.state.fontSize = fontSize;
+          _this.actions.push({
             method: method2,
             data: [fontSize]
           });
         };
       default:
         return function(...data) {
-          this.actions.push({
+          _this.actions.push({
             method: method2,
             data
           });
