@@ -25,7 +25,10 @@ ${code}
 </script>`
         )
       }
-      return `${rewriteDefault(code, '_sfc_' + type)}
+      return `${rewriteDefault(
+        code.replace(/module\.exports\s*=/, 'export default '),
+        '_sfc_' + type
+      )}
 export default Comp => {
   if(!Comp.mixins){Comp.mixins = []}
   Comp.mixins.push({beforeCreate(){ this['${(query as any).name}'] = this }})
