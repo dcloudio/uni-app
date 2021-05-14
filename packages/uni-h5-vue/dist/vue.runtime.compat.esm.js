@@ -4431,7 +4431,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
         instance.render = render;
     }
     // fixed by xxxxxx
-    const customApplyOptions = ctx.$applyOptions;
+    const customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
     if (customApplyOptions) {
         customApplyOptions(options, instance, publicThis);
     }

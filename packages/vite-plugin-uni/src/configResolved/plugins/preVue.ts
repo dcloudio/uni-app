@@ -2,16 +2,21 @@ import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
 import {
-  TextModes,
+  RootNode,
   NodeTypes,
+  ParentNode,
   ElementNode,
   AttributeNode,
+  TemplateChildNode,
 } from '@vue/compiler-core'
-import { parse } from '@vue/compiler-dom'
+
 import { MagicString } from '@vue/compiler-sfc'
 import { EXTNAME_VUE, parseVueRequest } from '@dcloudio/uni-cli-shared'
+import { isElementNode, parseVue } from '../../utils'
 
 const debugPreVue = debug('vite:uni:pre-vue')
+
+const BLOCK_RE = /<\/block>/
 
 const WXS_LANG_RE = /lang=["|'](renderjs|wxs)["|']/
 
@@ -30,36 +35,84 @@ export function uniPreVuePlugin(): Plugin {
       if (!EXTNAME_VUE.includes(path.extname(filename))) {
         return
       }
-      if (!WXS_LANG_RE.test(code)) {
-        return
-      }
       const sourceKey = code + filename
       const cache = sourceToSFC.get(sourceKey)
       if (cache) {
         debugPreVue('cache', id)
         return cache
       }
+      const hasBlock = BLOCK_RE.test(code)
+      const hasWxs = WXS_LANG_RE.test(code)
+      if (!hasBlock && !hasWxs) {
+        return
+      }
       debugPreVue(id)
-      const [errors, wxsCode] = normalizeWxsCode(code)
+      const errors: SyntaxError[] = []
+      const ast = parseVue(code, errors)
+      if (hasBlock) {
+        code = normalizeBlockCode(ast, code)
+      }
+      if (hasWxs) {
+        code = normalizeWxsCode(ast, code)
+      }
       if (errors.length) {
         this.error(errors.join('\n'))
       }
-      sourceToSFC.set(sourceKey, wxsCode)
-      return wxsCode
+      sourceToSFC.set(sourceKey, code)
+      return code // 暂不提供sourcemap,意义不大
     },
   }
 }
 
-export function normalizeWxsCode(code: string): [SyntaxError[], string] {
-  const errors: SyntaxError[] = []
-  const ast = parse(code, {
-    isNativeTag: () => true,
-    isPreTag: () => true,
-    getTextMode: () => TextModes.DATA,
-    onError: (e) => {
-      errors.push(e)
-    },
+function traverseChildren({ children }: ParentNode, blockNodes: ElementNode[]) {
+  children.forEach((node) => traverseNode(node, blockNodes))
+}
+
+function traverseNode(
+  node: RootNode | TemplateChildNode,
+  blockNodes: ElementNode[]
+) {
+  if (isElementNode(node) && node.tag === 'block') {
+    blockNodes.push(node)
+  }
+  if (
+    node.type === NodeTypes.IF_BRANCH ||
+    node.type === NodeTypes.FOR ||
+    node.type === NodeTypes.ELEMENT ||
+    node.type === NodeTypes.ROOT
+  ) {
+    traverseChildren(node, blockNodes)
+  }
+}
+
+export function normalizeBlockCode(ast: RootNode, code: string) {
+  const blockNodes: ElementNode[] = []
+  traverseNode(ast, blockNodes)
+  if (blockNodes.length) {
+    return normalizeBlockNode(code, blockNodes)
+  }
+  return code
+}
+
+const BLOCK_END_LEN = '</block>'.length
+const BLOCK_START_LEN = '<block'.length
+
+function normalizeBlockNode(code: string, blocks: ElementNode[]) {
+  const magicString = new MagicString(code)
+  blocks.forEach(({ loc }) => {
+    const startOffset = loc.start.offset
+    const endOffset = loc.end.offset
+    magicString.overwrite(
+      startOffset,
+      startOffset + BLOCK_START_LEN,
+      '<template'
+    )
+    magicString.overwrite(endOffset - BLOCK_END_LEN, endOffset, '</template>')
   })
+  return magicString.toString()
+}
+
+export function normalizeWxsCode(ast: RootNode, code: string) {
   const wxsNode = ast.children.find(
     (node) =>
       node.type === NodeTypes.ELEMENT &&
@@ -75,7 +128,7 @@ export function normalizeWxsCode(code: string): [SyntaxError[], string] {
   if (wxsNode) {
     code = normalizeWxsNode(code, wxsNode as ElementNode)
   }
-  return [errors, code]
+  return code
 }
 
 const SCRIPT_END_LEN = '</script>'.length

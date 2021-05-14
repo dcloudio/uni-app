@@ -9,6 +9,9 @@ import {
   ExportSpecifier,
 } from 'estree'
 
+import { Node, TextModes, NodeTypes, ElementNode } from '@vue/compiler-core'
+import { parse } from '@vue/compiler-dom'
+
 export const isProperty = (node: BaseNode): node is Property =>
   node.type === 'Property'
 
@@ -51,4 +54,19 @@ export function createLiteral(value: string) {
     value,
     raw: `'${value}'`,
   } as Literal
+}
+
+export function parseVue(code: string, errors: SyntaxError[]) {
+  return parse(code, {
+    isNativeTag: () => true,
+    isPreTag: () => true,
+    getTextMode: () => TextModes.DATA,
+    onError: (e) => {
+      errors.push(e)
+    },
+  })
+}
+
+export function isElementNode(node: Node): node is ElementNode {
+  return node.type === NodeTypes.ELEMENT
 }

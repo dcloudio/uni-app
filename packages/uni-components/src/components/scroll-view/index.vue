@@ -75,6 +75,9 @@ const passiveOptions = passive(true);
 
 export default /*#__PURE__*/ {
   name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
   mixins: [scroller],
   props: {
     scrollX: {

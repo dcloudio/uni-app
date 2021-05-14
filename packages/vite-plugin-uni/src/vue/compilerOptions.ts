@@ -4,13 +4,12 @@ import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { isNativeTag } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 
-import { block } from './transforms/block'
 import { matchMedia } from './transforms/matchMedia'
 import { VitePluginUniResolvedOptions } from '..'
 
 export const uniVueCompilerOptions: CompilerOptions = {
   isNativeTag,
-  nodeTransforms: [block, matchMedia],
+  nodeTransforms: [matchMedia],
 }
 
 export const uniVueTransformAssetUrls: SFCTemplateCompileOptions['transformAssetUrls'] =
@@ -66,6 +65,5 @@ export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
   )
 
   compilerOptions.nodeTransforms.unshift(matchMedia)
-  compilerOptions.nodeTransforms.unshift(block)
   return vueOptions
 }

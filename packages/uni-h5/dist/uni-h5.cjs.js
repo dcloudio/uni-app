@@ -6657,6 +6657,9 @@ var scroller = {
 const passiveOptions = uniShared.passive(true);
 const _sfc_main$4 = {
   name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
   mixins: [scroller],
   props: {
     scrollX: {
@@ -10038,6 +10041,9 @@ const selectorType = {
 };
 var _sfc_main$1 = {
   name: "Picker",
+  compatConfig: {
+    MODE: 3
+  },
   components: {PickerView, PickerViewColumn},
   props: {
     name: {

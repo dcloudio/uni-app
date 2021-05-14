@@ -160,6 +160,9 @@ const selectorType = {
 };
 export default {
   name: "Picker",
+  compatConfig: {
+    MODE: 3
+  },
   components: { PickerView, PickerViewColumn },
   props: {
     name: {
