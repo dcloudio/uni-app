@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { ConfigEnv } from 'vite'
-import { extend, isArray } from '@vue/shared'
+import { extend, isArray, isString } from '@vue/shared'
 
 interface ProjectFeatures {}
 interface PagesFeatures {
@@ -278,7 +278,12 @@ export function initFeatures(options: InitFeaturesOptions) {
   }
   // ssr nodejs features
   if (options.ssr) {
-    extend(globalThis, features)
+    Object.keys(features).forEach((name) => {
+      const value = features[name as keyof typeof features]
+      extend(globalThis, {
+        [name]: isString(value) ? JSON.parse(value) : value,
+      })
+    })
   }
   return features
 }

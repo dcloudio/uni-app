@@ -85,10 +85,7 @@ export function uniSSRPlugin(
       const chunk = bundle['entry-server.js'] as OutputChunk
       if (chunk) {
         chunk.code =
-          generateSSRDefineCode(
-            config.define!,
-            parseRpx2UnitOnce(options.inputDir)
-          ) +
+          generateSSRDefineCode(config, parseRpx2UnitOnce(options.inputDir)) +
           '\n' +
           chunk.code
       }

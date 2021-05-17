@@ -34,7 +34,9 @@ export function isSsrManifest(
 }
 
 export function initSsrDefine(config: ResolvedConfig) {
-  extend(globalThis, { __IMPORT_META_ENV_BASE_URL__: config.env.BASE_URL })
+  return extend(globalThis, {
+    __IMPORT_META_ENV_BASE_URL__: config.env.BASE_URL,
+  })
 }
 
 function serializeDefine(define: Record<string, any>): string {
@@ -42,21 +44,29 @@ function serializeDefine(define: Record<string, any>): string {
   for (const key in define) {
     const val = define[key]
     res += `${JSON.stringify(key)}: ${
-      typeof val === 'string' && !key.startsWith('process.env.') // process.env.* 必须序列化为字符串
-        ? `(${val})`
-        : JSON.stringify(val)
+      typeof val === 'string' ? `(${val})` : JSON.stringify(val)
     }, `
   }
   return res + `}`
 }
 
 export function generateSSRDefineCode(
-  define: Record<string, any>,
+  config: ResolvedConfig,
   { unit, unitRatio, unitPrecision }: Rpx2UnitOptions
 ): string {
   return fs
     .readFileSync(path.join(__dirname, '../../lib/ssr/define.js'), 'utf8')
-    .replace('__DEFINES__', serializeDefine(define))
+    .replace(
+      '__DEFINES__',
+      serializeDefine(
+        extend(
+          {
+            __IMPORT_META_ENV_BASE_URL__: JSON.stringify(config.env.BASE_URL),
+          },
+          config.define!
+        )
+      )
+    )
     .replace('__UNIT__', JSON.stringify(unit))
     .replace('__UNIT_RATIO__', JSON.stringify(unitRatio))
     .replace('__UNIT_PRECISION__', JSON.stringify(unitPrecision))

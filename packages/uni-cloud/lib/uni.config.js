@@ -61,8 +61,10 @@ function init() {
 
 function define() {
   return {
-    'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
-    'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
+    'process.env.UNI_CLOUD_PROVIDER': JSON.stringify(
+      process.env.UNI_CLOUD_PROVIDER
+    ),
+    'process.env.UNICLOUD_DEBUG': JSON.stringify(process.env.UNICLOUD_DEBUG),
   }
 }
 

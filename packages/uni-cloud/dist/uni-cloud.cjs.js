@@ -5605,7 +5605,8 @@ let uniCloud$3 = new UniCloud();
 (() => {
   {
     let defaultSpace = {};
-    const providers = process.env.UNI_CLOUD_PROVIDER&&JSON.parse(process.env.UNI_CLOUD_PROVIDER)||[]
+    const cloudProvider = process.env.UNI_CLOUD_PROVIDER
+    const providers = cloudProvider && JSON.parse(cloudProvider)||[]
     if (providers.length === 1) {
       defaultSpace = providers[0];
       uniCloud$3 = uniCloud$3.init(defaultSpace);

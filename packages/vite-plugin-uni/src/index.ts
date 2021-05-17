@@ -1,6 +1,8 @@
 import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { UniCompiler, initUniCompiler } from '@dcloudio/uni-cli-shared'
 import { Options as VueOptions } from '@vitejs/plugin-vue'
+import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
+import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
@@ -10,6 +12,8 @@ export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
   vueOptions?: VueOptions
+  vueJsxOptions?: VueJSXPluginOptions
+  viteLegacyOptions?: ViteLegacyOptions
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   base: string

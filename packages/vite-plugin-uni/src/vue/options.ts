@@ -1,7 +1,7 @@
-import { extend, isArray } from '@vue/shared'
+import { extend, hasOwn, isArray } from '@vue/shared'
 import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
-import { isNativeTag } from '@dcloudio/uni-shared'
+import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 
 import { matchMedia } from './transforms/matchMedia'
@@ -66,4 +66,21 @@ export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
 
   compilerOptions.nodeTransforms.unshift(matchMedia)
   return vueOptions
+}
+
+export function initPluginVueJsxOptions(options: VitePluginUniResolvedOptions) {
+  const vueJsxOptions = options.vueJsxOptions || (options.vueJsxOptions = {})
+  if (!hasOwn(vueJsxOptions, 'optimize')) {
+    vueJsxOptions.optimize = true
+  }
+  vueJsxOptions.isCustomElement = isCustomElement
+  return vueJsxOptions
+}
+
+export function initPluginViteLegacyOptions(
+  options: VitePluginUniResolvedOptions
+) {
+  const viteLegacyOptions =
+    options.viteLegacyOptions || (options.viteLegacyOptions = {})
+  return viteLegacyOptions
 }

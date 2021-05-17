@@ -3,6 +3,8 @@ import { extend } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 import vue from '@vitejs/plugin-vue'
+import VueJsxPlugin from '@vitejs/plugin-vue-jsx'
+import ViteLegacyPlugin from '@vitejs/plugin-legacy'
 
 import { API_DEPS_CSS } from '@dcloudio/uni-cli-shared'
 
@@ -84,6 +86,15 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
     })
   },
 }
+let vueJsxPlugin: typeof VueJsxPlugin | undefined
+try {
+  vueJsxPlugin = require('@vitejs/plugin-vue-jsx')
+} catch (e) {}
+
+let viteLegacyPlugin: typeof ViteLegacyPlugin | undefined
+try {
+  viteLegacyPlugin = require('@vitejs/plugin-legacy')
+} catch (e) {}
 
 export function initPlugins(
   config: ResolvedConfig,
@@ -91,7 +102,6 @@ export function initPlugins(
 ) {
   const command = config.command
   const plugins = config.plugins as Plugin[]
-
   addPlugin(plugins, vue(options.vueOptions), 'vite:uni', 'pre')
 
   addPlugin(plugins, uniResolveIdPlugin(options), 'vite:resolve', 'pre')
@@ -160,6 +170,25 @@ export function initPlugins(
   if (command === 'build' && !config.build.ssr) {
     addPlugin(plugins, uniCopyPlugin(options), plugins.length)
   }
+
+  if (viteLegacyPlugin && options.viteLegacyOptions !== false) {
+    ;(
+      viteLegacyPlugin(options.viteLegacyOptions) as unknown as Plugin[]
+    ).forEach((plugin) => {
+      if (!plugin.apply || plugin.apply === command) {
+        if (plugin.enforce === 'post') {
+          addPlugin(plugins, plugin, 'vite:import-analysis', 'pre')
+        } else {
+          addPlugin(plugins, plugin, 'vite:vue', 'pre')
+        }
+      }
+    })
+  }
+
+  if (vueJsxPlugin && options.vueJsxOptions !== false) {
+    addPlugin(plugins, vueJsxPlugin(options.vueJsxOptions), 'vite:vue', 'post')
+  }
+
   if (process.env.DEBUG) {
     debugPlugin(plugins.length)
     debugPlugin(plugins.map((p) => (p as Plugin).name))

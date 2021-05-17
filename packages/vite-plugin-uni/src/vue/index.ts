@@ -1,1 +1,1 @@
-export * from './compilerOptions'
+export * from './options'

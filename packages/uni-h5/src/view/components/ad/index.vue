@@ -413,14 +413,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  uni-ad {
-    display: block;
-    overflow: hidden;
-  }
-
-  uni-ad[hidden] {
-    display: none;
-  }
-</style>
