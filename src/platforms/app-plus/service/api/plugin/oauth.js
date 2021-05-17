@@ -5,8 +5,9 @@ import {
   warpPlusSuccessCallback,
   warpPlusErrorCallback
 } from '../util'
+import { isPlainObject } from 'uni-shared';
 
-function getService (provider) {
+function getService(provider) {
   return new Promise((resolve, reject) => {
     plus.oauth.getServices(services => {
       const service = services.find(({ id }) => id === provider)
@@ -18,12 +19,12 @@ function getService (provider) {
 /**
  * 微信登录
  */
-export function login (params, callbackId) {
+export function login(params, callbackId) {
   const provider = params.provider || 'weixin'
   const errorCallback = warpPlusErrorCallback(callbackId, 'login')
 
   getService(provider).then(service => {
-    function login () {
+    function login() {
       service.login(res => {
         const authResult = res.target.authResult
         invoke(callbackId, {
@@ -43,7 +44,7 @@ export function login (params, callbackId) {
   }).catch(errorCallback)
 }
 
-export function getUserInfo (params, callbackId) {
+export function getUserInfo(params, callbackId) {
   const provider = params.provider || 'weixin'
   const errorCallback = warpPlusErrorCallback(callbackId, 'operateWXData')
   getService(provider).then(loginService => {
@@ -102,14 +103,14 @@ export function getUserInfo (params, callbackId) {
 /**
  * 获取用户信息-兼容
  */
-export function getUserProfile (params, callbackId) {
+export function getUserProfile(params, callbackId) {
   return getUserInfo(params, callbackId)
 }
 
 /**
  * 获取用户信息
  */
-export function operateWXData (params, callbackId) {
+export function operateWXData(params, callbackId) {
   switch (params.data.api_name) {
     case 'webapi_getuserinfo':
       getUserInfo(params, callbackId)
@@ -121,21 +122,21 @@ export function operateWXData (params, callbackId) {
   }
 }
 
-export function preLogin (params, callbackId) {
+export function preLogin(params, callbackId) {
   const successCallback = warpPlusSuccessCallback(callbackId, 'preLogin')
   const errorCallback = warpPlusErrorCallback(callbackId, 'preLogin')
   getService(params.provider).then(service => service.preLogin(successCallback, errorCallback)).catch(errorCallback)
 }
 
-export function closeAuthView () {
+export function closeAuthView() {
   return getService('univerify').then(service => service.closeAuthView())
 }
 
 /**
  * 一键登录自定义登陆按钮点击处理
  */
-function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
-  if (univerifyStyle.buttons &&
+function univerifyButtonsClickHandling(univerifyStyle, errorCallback) {
+  if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
     Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
     univerifyStyle.buttons.list.length > 0
   ) {
