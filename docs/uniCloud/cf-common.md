@@ -7,14 +7,14 @@
 以下面的目录结构为例，介绍一下如何使用。
 
 ```
-|--cloudfunctions
-  |--common // 云函数公用模块目录
-    |--hello-common // 云函数公用模块
-      |--package.json
-      |--index.js // 公用模块代码，可以不使用index.js，修改 package.json 内的 main 字段可以指定此文件名
-    |--use-common // 使用公用模块的云函数
-      |--package.json // 在 use-common 目录执行 npm init -y 生成
-      |--index.js // 云函数入口文件
+cloudfunctions
+  ├─common // 云函数公用模块目录
+  |  └─hello-common // 云函数公用模块
+  |     ├─package.json
+  |     └─index.js // 公用模块代码，可以不使用index.js，修改 package.json 内的 main 字段可以指定此文件名
+  └─use-common // 使用公用模块的云函数
+     ├─package.json // 在 use-common 目录执行 npm init -y 生成
+     └─index.js // 云函数入口文件
 ```
 
 **创建并引入公用模块**
