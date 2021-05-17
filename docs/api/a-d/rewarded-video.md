@@ -538,9 +538,9 @@ rewardedVideoAd.onClose(res => {
 ```
 
 
-### 服务器回调
+### 服务器回调@callback
 
-App平台 2.6.8+ **仅穿山甲支持。优量汇和快手自身不支持**
+App平台 3.1.15+ 支持穿山甲/优量汇/快手
 
 激励视频广告可以支持广告服务器到业务服务器的回调，用于业务系统判断是否提供奖励给观看广告的用户。配置服务器回调后，当用户成功看完广告时，广告服务器会访问配置的回调链接，通知用户完成观看激励视频。
 
@@ -557,8 +557,6 @@ urlCallback示例
 rewardedVideoAd = uni.createRewardedVideoAd({
   adpid: '',
   urlCallback: {
-    amount: '6',
-    name: 'RewardVideoAD1',
     userId: 'testuser',
     extra: 'testdata'
   }
@@ -575,37 +573,31 @@ rewardedVideoAd.onVerify(e => {
 })
 ```
 
-### 服务器回调数据说明
+### 服务器回调说明
 
-当最终用户观看激励视频广告完成后，广告服务器会以GET方式请求业务服务器的回调链接，并拼接以下参数回传：
-`user_id=%s&trans_id=%s&reward_name=%s&reward_amount=%d&extra=%s&sign=%s`
+服务器回调基于[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README)，详细流程如下:
 
-字段名称|说明|字段类型|备注|
-:-|:-|:-|:-|
-sign|签名|String|签名信息|
-user_id|用户id|String	|调用API传入的userId|
-trans_id|交易id|String	|广告平台生成的唯一交易ID|
-reward_amount|奖励数量|String	|广告后台配置或调用API传入的amount|
-reward_name|奖励名称|String|广告后台配置或调用API传入的name|
-extra|自定义数据，可以为空|String|透传给回调服务器的数据，调用API传入的extra|
+1. 登陆 [uniCloud](https://unicloud.dcloud.net.cn/) web控制台，新建服务空间或选择已有服务空间，然后新建云函数用于接受广告的回调
+2. 在 [uniAD](https://uniad-dev.dcloud.net.cn/) web控制台开通服务器回调并选择上一步新建的云函数
+3. 开通后将在选择的服务空间下自动部署一个加密云函数 `uniad-callback`
+4. `uniad-callback` 接收广告商服务器回调验证签名并抹平穿山甲/优量汇/快手参数差异，然后以 [callFunction](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=callbyfunction) 方式调用用户云函数
+5. 用户在自己的云函数中处理业务
 
-#### 签名信息
+注意：服务器通信和前端事件是同步的，前端需要轮询向服务器请求并验证结果
 
-在uni-AD广告平台申请激励视频广告位通过后，如果开启服务器回调则会生成appSecurityKey。
-appSecurityKey用于签名校验服务器回调请求的合法性（请务必保管好），sign字段值生成规则为：sign=sha256(appSecurityKey,trans_id)
-Python示例：
+### 云函数ad-callback传递的参数
 
-```
-import hashlib
+|字段定义|类型|字段名称|备注|
+|:-:|:-:|:-:|:-:|
+|adpid|String|DCloud广告位id||
+|provider|String|广告服务商|csj、ks、gdt|
+|platform|String|平台|iOS、Android|
+|trans_id|String|交易id|完成观看的唯一交易ID|
+|user_id|String|用户id|调用SDK透传，应用对用户的唯一标识|
+|extra|String|自定义数据|调用SDK传入并透传，如无需要则为空|
 
-if __name__ == "__main__":
-    trans_id = "6FEB23ACB0374985A2A52D282EDD5361u6643"
-    app_security_key = "7ca31ab0a59d69a42dd8abc7cf2d8fbd"
-    check_sign_raw = "%s:%s" % (app_security_key, trans_id)
-    sign = hashlib.sha256(check_sign_raw).hexdigest()
-```
 
-#### 回调请求返回数据约定
+#### 用户的云函数返回数据约定
 
 返回json数据，字段如下：
 
@@ -614,17 +606,132 @@ if __name__ == "__main__":
 isValid|校验结果|Blean|判定结果，是否发放奖励|
 
 示例
+```js
+exports.main = async (event, context) => {
+  //event为客户端上传的参数
+  console.log('event : ', event);
+
+  return {
+    "isValid": true
+  }
+};
 ```
-{
-  "isValid": true
+
+#### 用户云函数详细说明
+
+如果业务使用了uniCloud，可以直接在云函数内部处理
+
+也可以将结果发送给已有业务服务器
+
+示例代码
+```js
+'use strict';
+
+const db = uniCloud.database();
+
+const DEFAUTL_TIMEOUT = 30000;
+const DEFAUTL_RETRY_COUNT = 3;
+const RETRY_TIMEOUT = 3000;
+
+const ProviderType = {
+  CSJ: "csj",
+  GDT: "gdt",
+  KS: "ks"
+};
+
+const collectionName = "opendb-uniad-callback-log";
+
+class DB {
+
+  static save(data) {
+    return new DB().add(data);
+  }
+
+  add(data) {
+    const collection = db.collection(collectionName);
+    const data2 = Object.assign(data, {
+      ad_type: 0,
+      create_date: new Date()
+    })
+    return collection.add(data2);
+  }
 }
+
+class UserServer {
+
+  static send(url, data) {
+    return new UserServer().sendHttpRequest(url, data);
+  }
+
+  async sendHttpRequest(url, data) {
+    let needRetry = parameters.provider !== ProviderType.GDT;
+    let retryCount = needRetry ? DEFAUTL_RETRY_COUNT : 1;
+    let timeout = needRetry ? RETRY_TIMEOUT : DEFAUTL_TIMEOUT;
+    let result = null;
+
+    while (retryCount > 0) {
+      console.log("sendHttpRequest::count::" + retryCount + "::", url, data);
+
+      try {
+        result = await uniCloud.httpclient.request(url, {
+          data,
+          dataType: 'json',
+          contentType: 'json',
+          timeout
+        });
+
+        if (result.data && result.data.isValid === true) {
+          break;
+        }
+      } catch (e) {
+        console.log(e);
+      }
+
+      retryCount--;
+    }
+
+    return result;
+  }
+}
+
+exports.main = async (event, context) => {
+  //event为客户端上传的参数
+  console.log('event : ', event);
+
+  const {
+    path,
+    queryStringParameters
+  } = event;
+
+  const data = {
+    adpid: event.adpid,
+    platform: event.platform,
+    provider: event.provider,
+    trans_id: event.trans_id,
+    user_id: event.user_id,
+    extra: event.extra,
+  }
+
+  // 可选将回调记录保存到uniCloud，避免用户服务器没有响应时有日志可查，如果选择了保存记录需要做定时清理日志，避免日志过多影响性能
+  // try {
+  //   await DB.save(data);
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  //const url = "https://"; // 用户业务服务器地址，为了避免请求被伪造，必须使用签名的方式请求
+  //let reuslt = await UserServer.send(url, data);
+
+  return {
+    "isValid": true
+  }
+};
 ```
+
 
 #### 安全注意
 
 由于激励视频对应着用户奖励，可能会遇到恶意刷激励奖励但实际上并不看广告的情况。此时广告平台不给结算，但开发者却可能把激励送出去。
-
-穿山甲有服务器回调，情况略好。但腾讯优量汇和快手均不支持服务器回调。
 
 为了提升安全性，建议所有使用激励视频的开发者都要做如下工作来加强保护：
 1. 前端代码加密。涉及激励相关的，在manifest中配置好要加密的代码文件，打包后会自动加密相应文件。[详见](https://ask.dcloud.net.cn/article/36437)
