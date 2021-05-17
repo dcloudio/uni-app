@@ -7791,7 +7791,7 @@ var serviceContext = (function () {
    * 一键登录自定义登陆按钮点击处理
    */
   function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
-    if (univerifyStyle.buttons &&
+    if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
       Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
       univerifyStyle.buttons.list.length > 0
     ) {
