@@ -115,8 +115,8 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     i18n.add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, {danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF"}));
   }
 });
-function E() {
-}
+const E = function() {
+};
 E.prototype = {
   on: function(name, callback2, ctx) {
     var e2 = this.e || (this.e = {});

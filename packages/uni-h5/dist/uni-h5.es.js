@@ -188,8 +188,8 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF"}));
   }
 });
-function E() {
-}
+const E = function() {
+};
 E.prototype = {
   on: function(name, callback2, ctx) {
     var e2 = this.e || (this.e = {});
@@ -2010,61 +2010,27 @@ const EmitProtocol = [
     required: true
   }
 ];
-class Emitter {
-  constructor() {
-    this.on = (name, callback2) => {
-      if (!this.eventMap.has(name)) {
-        this.eventMap.set(name, []);
-      }
-      this.eventMap.get(name).push(callback2);
-      return () => this.off(name, callback2);
-    };
-    this.once = (name, callback2) => {
-      const listener2 = (...args) => {
-        this.off(name, listener2);
-        callback2(...args);
-      };
-      this.on(name, listener2);
-      return () => this.off(name, listener2);
-    };
-    this.emit = (name, ...args) => {
-      const cbs = this.eventMap.get(name);
-      if (cbs instanceof Array) {
-        cbs.forEach((cb) => {
-          typeof cb === "function" && cb(...args);
-        });
-      }
-    };
-    this.off = (names, callback2) => {
-      if (!names) {
-        this.eventMap.clear();
-        return;
-      }
-      if (!(names instanceof Array)) {
-        names = [names];
-      }
-      if (typeof callback2 === "function") {
-        names.forEach((name) => {
-          if (this.eventMap.has(name)) {
-            this.eventMap.set(name, this.eventMap.get(name).filter((cb) => cb !== callback2));
-          }
-        });
-      } else {
-        names.forEach((name) => {
-          this.eventMap.delete(name);
-        });
-      }
-    };
-    this.eventMap = new Map();
+const emitter = new E();
+const $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback2) => {
+  emitter.on(name, callback2);
+  return () => emitter.off(name, callback2);
+}, OnProtocol);
+const $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback2) => {
+  emitter.once(name, callback2);
+  return () => emitter.off(name, callback2);
+}, OnceProtocol);
+const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback2) => {
+  if (!name) {
+    emitter.e = {};
+    return;
   }
-}
-const emitter = new Emitter();
-const $on = /* @__PURE__ */ defineSyncApi(API_ON, (type, callback2) => emitter.on(type, callback2), OnProtocol);
-const $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (type, callback2) => emitter.once(type, callback2), OnceProtocol);
-const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (type, callback2) => {
-  emitter.off(type, callback2);
+  if (!Array.isArray(name))
+    name = [name];
+  name.forEach((n) => emitter.off(n, callback2));
 }, OffProtocol);
-const $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, emitter.emit, EmitProtocol);
+const $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, (name, ...args) => {
+  emitter.emit(name, ...args);
+}, EmitProtocol);
 const validator = [
   {
     name: "id",
@@ -2853,19 +2819,18 @@ class CanvasContext {
 }
 [...methods1, ...methods2].forEach(function(method) {
   function get(method2) {
-    let _this = this;
     switch (method2) {
       case "fill":
       case "stroke":
         return function() {
-          _this.actions.push({
+          this.actions.push({
             method: method2 + "Path",
-            data: [..._this.path]
+            data: [...this.path]
           });
         };
       case "fillRect":
         return function(x, y, width, height) {
-          _this.actions.push({
+          this.actions.push({
             method: "fillPath",
             data: [
               {
@@ -2877,7 +2842,7 @@ class CanvasContext {
         };
       case "strokeRect":
         return function(x, y, width, height) {
-          _this.actions.push({
+          this.actions.push({
             method: "strokePath",
             data: [
               {
@@ -2894,7 +2859,7 @@ class CanvasContext {
           if (typeof maxWidth === "number") {
             data.push(maxWidth);
           }
-          _this.actions.push({
+          this.actions.push({
             method: method2,
             data
           });
@@ -2911,7 +2876,7 @@ class CanvasContext {
             dWidth = void 0;
             dHeight = void 0;
           }
-          let data;
+          var data;
           function isNumber(e2) {
             return typeof e2 === "number";
           }
@@ -2926,14 +2891,14 @@ class CanvasContext {
             dWidth,
             dHeight
           ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
-          _this.actions.push({
+          this.actions.push({
             method: method2,
             data
           });
         };
       default:
         return function(...data) {
-          _this.actions.push({
+          this.actions.push({
             method: method2,
             data
           });
@@ -2944,69 +2909,64 @@ class CanvasContext {
 });
 methods3.forEach(function(method) {
   function get(method2) {
-    let _this = this;
     switch (method2) {
       case "setFillStyle":
       case "setStrokeStyle":
         return function(color) {
           if (typeof color !== "object") {
-            _this.actions.push({
+            this.actions.push({
               method: method2,
               data: ["normal", checkColor(color)]
             });
           } else {
-            _this.actions.push({
+            this.actions.push({
               method: method2,
-              data: [
-                color.type,
-                color.data,
-                color.colorStop
-              ]
+              data: [color.type, color.data, color.colorStop]
             });
           }
         };
       case "setGlobalAlpha":
         return function(alpha) {
           alpha = Math.floor(255 * parseFloat(alpha));
-          _this.actions.push({
+          this.actions.push({
             method: method2,
             data: [alpha]
           });
         };
       case "setShadow":
         return function(offsetX, offsetY, blur, color) {
-          let _color = checkColor(color);
-          _this.actions.push({
+          color = checkColor(color);
+          this.actions.push({
             method: method2,
             data: [offsetX, offsetY, blur, color]
           });
-          _this.state.shadowBlur = blur;
-          _this.state.shadowColor = _color;
-          _this.state.shadowOffsetX = offsetX;
-          _this.state.shadowOffsetY = offsetY;
+          this.state.shadowBlur = blur;
+          this.state.shadowColor = color;
+          this.state.shadowOffsetX = offsetX;
+          this.state.shadowOffsetY = offsetY;
         };
       case "setLineDash":
         return function(pattern, offset) {
           pattern = pattern || [0, 0];
           offset = offset || 0;
-          _this.actions.push({
+          this.actions.push({
             method: method2,
             data: [pattern, offset]
           });
-          _this.state.lineDash = pattern;
+          this.state.lineDash = pattern;
         };
       case "setFontSize":
         return function(fontSize) {
-          _this.state.font = _this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
-          _this.state.fontSize = fontSize;
-          _this.actions.push({
+          this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
+          this.state.fontSize = fontSize;
+          this.actions.push({
             method: method2,
             data: [fontSize]
           });
         };
       default:
         return function(...data) {
-          _this.actions.push({
+          this.actions.push({
             method: method2,
             data
           });
@@ -3846,7 +3806,8 @@ const ShowActionSheetProtocol = {
     type: Array,
     required: true
   },
-  itemColor: String
+  itemColor: String,
+  popover: Object
 };
 const ShowActionSheetOptions = {
   formatArgs: {

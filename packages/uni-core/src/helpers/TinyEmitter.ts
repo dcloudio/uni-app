@@ -1,10 +1,22 @@
-function E() {
-  // Keep this empty so it's easier to inherit from
-  // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+interface E {
+  e: Data
+  on: (name: EventName, callback: EventCallback, ctx?: any) => this
+  once: (name: EventName, callback: EventCallback, ctx?: any) => this
+  emit: (name: EventName, ...args: any[]) => this
+  off: (name: EventName, callback?: EventCallback) => this
 }
 
+const E = function () {
+  // Keep this empty so it's easier to inherit from
+  // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+} as unknown as { new (): E }
+
+// export type EventName = string | number | symbol
+export type EventName = string
+export type EventCallback = Function
+
 E.prototype = {
-  on: function (name, callback, ctx) {
+  on: function (name: EventName, callback: EventCallback, ctx?: any) {
     var e = this.e || (this.e = {})
 
     ;(e[name] || (e[name] = [])).push({
@@ -15,7 +27,7 @@ E.prototype = {
     return this
   },
 
-  once: function (name, callback, ctx) {
+  once: function (name: EventName, callback: EventCallback, ctx?: any) {
     var self = this
     function listener() {
       self.off(name, listener)
@@ -26,7 +38,7 @@ E.prototype = {
     return this.on(name, listener, ctx)
   },
 
-  emit: function (name) {
+  emit: function (name: EventName) {
     var data = [].slice.call(arguments, 1)
     var evtArr = ((this.e || (this.e = {}))[name] || []).slice()
     var i = 0
@@ -39,7 +51,7 @@ E.prototype = {
     return this
   },
 
-  off: function (name, callback) {
+  off: function (name: EventName, callback?: EventCallback) {
     var e = this.e || (this.e = {})
     var evts = e[name]
     var liveEvents = []

@@ -7,7 +7,7 @@ export const ShowActionSheetProtocol: ApiProtocol<API_TYPE_SHOW_ACTION_SHEET> =
       required: true,
     },
     itemColor: String,
-    // popover: Object,
+    popover: Object,
   }
 export const ShowActionSheetOptions: ApiOptions<API_TYPE_SHOW_ACTION_SHEET> = {
   formatArgs: {
