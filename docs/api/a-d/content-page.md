@@ -23,7 +23,7 @@
     * App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 2. 申请广告位id
 在各位后台申请广告位id
-3. App端打包后生效，打包时必须选择要集成的广告SDK（目前仅支持快手联盟）。
+3. App端打包后生效，打包时必须选择要集成的广告SDK（目前仅支持快手内容联盟）。
 
 
 ### 语法

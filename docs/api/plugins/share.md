@@ -5,7 +5,8 @@
 1. 使用 ``uni.share`` API方式调用社交sdk分享
 2. 使用[plus.share.sendWithSystem](http://www.html5plus.org/doc/zh_cn/share.html#plus.share.sendWithSystem)呼起手机os的系统分享菜单
 - 小程序：不支持API调用，只能用户主动点击触发分享。可使用自定义按钮方式 &lt;button open-type="share"&gt; 或监听系统右上角的分享按钮 onShareAppMessage 进行自定义分享内容
-- H5：如果是普通浏览器，浏览器自带分享按钮；如果是在微信内嵌浏览器中，可调用js-sdk进行分享，[参考](https://ask.dcloud.net.cn/article/35380)|
+- H5：如果是普通浏览器，浏览器自带分享按钮；如果是在微信内嵌浏览器中，可调用js-sdk进行分享，[参考](https://ask.dcloud.net.cn/article/35380)
+- APP：可以直接使用已经封装好的uni-share插件[详情](https://ext.dcloud.net.cn/plugin?id=4860)
 
 ### uni.share(OBJECT)
 uni-app的App引擎已经封装了微信、QQ、微博的分享SDK，开发者可以直接调用相关功能。
@@ -350,7 +351,7 @@ App端可调用手机的系统分享，实现所有注册分享的应用的呼�
 
 小程序中用户点击分享后，在 js 中定义 onShareAppMessage 处理函数（和 onLoad 等生命周期函数同级），设置该页面的分享信息。
 
-* 用户点击分享按钮的时候会调用。这个分享按钮可能是小程序右上角原生菜单自带的分享按钮，也可能是开发者在页面中放置的分享按钮（\<button open-type="share">）；
+* 用户点击分享按钮的时候会调用。这个分享按钮可能是小程序右上角原生菜单自带的分享按钮，也可能是开发者在页面中放置的分享按钮（`<button open-type="share">`）；
 * 此事件需要 return 一个Object，用于自定义分享内容。
 
 微信小程序平台的分享管理比较严格，请参考 [小程序分享指引](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html)。

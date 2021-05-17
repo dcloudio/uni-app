@@ -253,7 +253,7 @@ export default {
     _onTrack: function (e) {
       if (!this.disabled) {
         return e.detail.state === 'move' ? (this._onUserChangedValue({
-          x: e.detail.x0
+          x: e.detail.x
         }), this.$trigger('changing', e, {
           value: this.sliderValue
         }), !1) : (e.detail.state === 'end' && this.$trigger('change', e, {

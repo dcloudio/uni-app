@@ -13,6 +13,7 @@
 - iOS端支持高斯模糊，<a href="https://ask.dcloud.net.cn/article/36617#view" target="_blank">详情</a>
 - 可实现区域滚动长列表+左右拖动列表+吸顶的复杂排版效果
 - 优化圆角边框绘制性能
+- 扩展了更多的css
 
 
 

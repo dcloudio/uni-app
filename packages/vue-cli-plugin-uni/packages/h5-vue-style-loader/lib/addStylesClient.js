@@ -253,7 +253,7 @@ function processCss(css) {
 		.replace(BODY_SCOPED_RE, page)
 		.replace(BODY_RE, '')
 		.replace(PAGE_SCOPED_RE, 'body.' + page + ' uni-page-body')
-		.replace(/\{[\s\S]+?\}|@media.+\{/g, function (css) {
+		.replace(/\{[\s\S]+?\}|@media.+?\{/g, function (css) {
       if(typeof uni === 'undefined'){
         return css
       }

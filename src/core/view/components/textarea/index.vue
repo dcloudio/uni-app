@@ -1,6 +1,9 @@
 <template>
   <uni-textarea v-on="$listeners">
-    <div class="uni-textarea-wrapper">
+    <div
+      ref="wrapper"
+      class="uni-textarea-wrapper"
+    >
       <div
         v-show="!(composing || valueSync.length)"
         ref="placeholder"
@@ -144,7 +147,8 @@ export default {
         lineCount
       })
       if (this.autoHeight) {
-        this.$el.style.height = this.height + 'px'
+        this.$el.style.height = 'auto'
+        this.$refs.wrapper.style.height = this.height + 'px'
       }
     }
   },
@@ -246,7 +250,6 @@ uni-textarea {
   line-height: normal;
   white-space: pre-wrap;
   word-break: break-all;
-  box-sizing: content-box !important;
 }
 uni-textarea[hidden] {
   display: none;

@@ -133,6 +133,20 @@
 
 ![地理位置索引](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/21b31780-5fb0-11eb-bdc1-8bd33eb6adaa.jpg)
 
+### TTL索引@ttl
+
+ttl索引用于设置数据过期时间，并在数据过期后进行删除。
+
+配置方式如下：
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/25187fa4-dc40-48a2-ba00-e6ad8c604c39.jpg)
+
+**注意**
+
+- 数据删除并非实时，mongoDB会在后台定时进行数据清理
+- 启用ttl索引后仅可添加一个索引字段
+- 仅支持对存储了日期类型（并非时间戳）的字段进行设置ttl索引
+
 ## 索引使用注意事项
 
 ### 唯一性限制

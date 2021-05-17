@@ -81,6 +81,7 @@ class InteractiveAd {
     this._adError = ''
     this._adpid = options.adpid
     this._provider = options.provider
+    this._userData = options.userData
     this._isLoaded = false
     this._isLoading = false
     this._loadPromiseResolve = null
@@ -99,6 +100,9 @@ class InteractiveAd {
       provider: this._provider,
       success: (res) => {
         this._ad = res
+        if (this._userData) {
+          this.bindUserData(this._userData)
+        }
         this._loadAd()
       },
       fail: (err) => {
@@ -161,6 +165,12 @@ class InteractiveAd {
       this._ad.destroy({
         adpid: this._adpid
       })
+    }
+  }
+
+  bindUserData (data) {
+    if (this._ad !== null) {
+      this._ad.bindUserData(data)
     }
   }
 
