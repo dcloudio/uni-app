@@ -13,6 +13,8 @@ const {
   generateApiManifest
 } = require('./manifest')
 
+const fixInnerHTML = require('./fixInnerHTML')
+
 const service = new Service(process.env.VUE_CLI_CONTEXT || process.cwd(), {
   inlineOptions: require('./vue.config.js')
 })
@@ -52,6 +54,9 @@ service.run('build', {
       JSON.parse(JSON.stringify(process.UNI_SERVICE_API_MANIFEST)),
       JSON.parse(JSON.stringify(process.UNI_SERVICE_API_PROTOCOL))
     )
+  }
+  if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true' && process.env.UNI_WATCH !== 'true') {
+    fixInnerHTML()
   }
 }).catch(err => {
   error(err)
