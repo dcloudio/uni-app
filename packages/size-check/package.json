@@ -6,6 +6,6 @@
     "bundler": "vite"
   },
   "dependencies": {
-    "vue-router": "^4.0.7"
+    "vue-router": "^4.0.8"
   }
 }

@@ -1,6 +1,5 @@
 import path from 'path'
-import vue from '@vitejs/plugin-vue'
-import uni, { uniVueTemplateOptions } from '@dcloudio/vite-plugin-uni'
+import uni from '@dcloudio/vite-plugin-uni'
 
 /**
  * @type {import('vite').UserConfig}
@@ -23,10 +22,5 @@ export default {
     },
   },
 
-  plugins: [
-    vue({
-      template: uniVueTemplateOptions,
-    }),
-    uni({ inputDir: path.resolve(__dirname, 'src') }),
-  ],
+  plugins: [uni({ viteLegacyOptions: false })],
 }
