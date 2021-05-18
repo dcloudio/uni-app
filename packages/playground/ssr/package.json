@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "uni -d uni:*",
-    "build": "uni build",
+    "build": "uni build -d uni:*",
     "dev:ssr": "uni -d uni:* --ssr",
     "build:ssr": "uni build --ssr"
   },

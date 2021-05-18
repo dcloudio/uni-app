@@ -1,5 +1,5 @@
 import { extend, hasOwn, isArray } from '@vue/shared'
-import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
@@ -7,13 +7,11 @@ import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 import { matchMedia } from './transforms/matchMedia'
 import { VitePluginUniResolvedOptions } from '..'
 
-export const uniVueCompilerOptions: CompilerOptions = {
-  isNativeTag,
-  nodeTransforms: [matchMedia],
-}
-
-export const uniVueTransformAssetUrls: SFCTemplateCompileOptions['transformAssetUrls'] =
-  {
+function createUniVueTransformAssetUrls(
+  base: string
+): SFCTemplateCompileOptions['transformAssetUrls'] {
+  return {
+    base,
     tags: {
       audio: ['src'],
       video: ['src', 'poster'],
@@ -30,10 +28,6 @@ export const uniVueTransformAssetUrls: SFCTemplateCompileOptions['transformAsset
       'u-video': ['src', 'poster'],
     },
   }
-
-export const uniVueTemplateOptions: Partial<SFCTemplateCompileOptions> = {
-  compilerOptions: uniVueCompilerOptions,
-  transformAssetUrls: uniVueTransformAssetUrls,
 }
 
 export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
@@ -48,7 +42,9 @@ export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
-  templateOptions.transformAssetUrls = uniVueTransformAssetUrls
+  templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
+    options.base
+  )
 
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
