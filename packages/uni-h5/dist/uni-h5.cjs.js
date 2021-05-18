@@ -10038,7 +10038,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
 _sfc_main$1.render = _sfc_render$1;
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
-    window.UniServiceJSBridge.subscribeHandler(event, args, pageId);
+    UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
 const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
