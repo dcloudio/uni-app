@@ -34,23 +34,6 @@
 - 新增 `nvueStyleCompiler` 配置，支持组合选择器（相邻兄弟选择器、普通兄弟选择器、子选择器、后代选择器）。[详见](https://ask.dcloud.net.cn/article/38751)
 
 
-
-
-
-
-下面有些正确和错误的写法示例对比：
-
-- 选择器类型仅支持 class 选择器
-
-```css
-	/* 错误 */
-	#id {}
-	
-	/* 正确 */
-	.class {}
-```
-
-
 - nvue的```uni-app```编译模式下，App.vue 中的样式，会编译到每个 nvue文件。对于共享样式，如果有不合法属性控制台会给出警告，可以通过[条件编译](https://uniapp.dcloud.io/platform)```APP-PLUS-NVUE```屏蔽 App 中的警告。
 
 
