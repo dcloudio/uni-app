@@ -1,6 +1,6 @@
-import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, computed, nextTick, onBeforeMount, onMounted, onBeforeActivate, onBeforeDeactivate, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, watch, onActivated, resolveComponent, toHandlers, renderSlot, onUnmounted, onBeforeUnmount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, debounce, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
+import {isFunction, extend, hyphenate, isPlainObject, camelize, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, watch, onActivated, onMounted, nextTick, resolveComponent, toHandlers, renderSlot, onUnmounted, computed, onBeforeUnmount, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -191,21 +191,21 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
 const E = function() {
 };
 E.prototype = {
-  on: function(name, callback2, ctx) {
+  on: function(name, callback, ctx) {
     var e2 = this.e || (this.e = {});
     (e2[name] || (e2[name] = [])).push({
-      fn: callback2,
+      fn: callback,
       ctx
     });
     return this;
   },
-  once: function(name, callback2, ctx) {
+  once: function(name, callback, ctx) {
     var self = this;
     function listener2() {
       self.off(name, listener2);
-      callback2.apply(ctx, arguments);
+      callback.apply(ctx, arguments);
     }
-    listener2._ = callback2;
+    listener2._ = callback;
     return this.on(name, listener2, ctx);
   },
   emit: function(name) {
@@ -218,13 +218,13 @@ E.prototype = {
     }
     return this;
   },
-  off: function(name, callback2) {
+  off: function(name, callback) {
     var e2 = this.e || (this.e = {});
     var evts = e2[name];
     var liveEvents = [];
-    if (evts && callback2) {
+    if (evts && callback) {
       for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback2 && evts[i].fn._ !== callback2)
+        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
           liveEvents.push(evts[i]);
       }
     }
@@ -235,11 +235,11 @@ E.prototype = {
 function initBridge(namespace) {
   const emitter2 = new E();
   return extend(emitter2, {
-    subscribe(event, callback2) {
-      emitter2.on(`${namespace}.${event}`, callback2);
+    subscribe(event, callback) {
+      emitter2.on(`${namespace}.${event}`, callback);
     },
-    unsubscribe(event, callback2) {
-      emitter2.off(`${namespace}.${event}`, callback2);
+    unsubscribe(event, callback) {
+      emitter2.off(`${namespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
@@ -332,9 +332,9 @@ function init() {
     });
   }
   var cbs = [];
-  function parentReady(callback2) {
-    if (callback2) {
-      cbs.push(callback2);
+  function parentReady(callback) {
+    if (callback) {
+      cbs.push(callback);
     } else {
       cbs.forEach(function(cb) {
         cb();
@@ -441,27 +441,27 @@ function attrChange(attr2) {
         style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
-      callbacks$3.forEach(function(callback2) {
-        callback2(style);
+      callbacks$3.forEach(function(callback) {
+        callback(style);
       });
     }, 0);
   }
   changeAttrs.push(attr2);
 }
 var callbacks$3 = [];
-function onChange(callback2) {
+function onChange(callback) {
   if (!getSupport()) {
     return;
   }
   if (!inited$1) {
     init();
   }
-  if (typeof callback2 === "function") {
-    callbacks$3.push(callback2);
+  if (typeof callback === "function") {
+    callbacks$3.push(callback);
   }
 }
-function offChange(callback2) {
-  var index2 = callbacks$3.indexOf(callback2);
+function offChange(callback) {
+  var index2 = callbacks$3.indexOf(callback);
   if (index2 >= 0) {
     callbacks$3.splice(index2, 1);
   }
@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -694,15 +694,15 @@ function createCallbacks(namespace) {
       return scopedCallbacks.callbacks[id2];
     },
     pop(id2) {
-      const callback2 = scopedCallbacks.callbacks[id2];
-      if (callback2) {
+      const callback = scopedCallbacks.callbacks[id2];
+      if (callback) {
         delete scopedCallbacks.callbacks[id2];
       }
-      return callback2;
+      return callback;
     },
-    push(callback2) {
+    push(callback) {
       const id2 = scopedCallbacks.id++;
-      scopedCallbacks.callbacks[id2] = callback2;
+      scopedCallbacks.callbacks[id2] = callback;
       return id2;
     }
   };
@@ -928,8 +928,8 @@ class ComponentDescriptor {
       });
     }
   }
-  requestAnimationFrame(callback2) {
-    return window.requestAnimationFrame(callback2), this;
+  requestAnimationFrame(callback) {
+    return window.requestAnimationFrame(callback), this;
   }
   getState() {
     return this.$el && (this.$el.__wxsState || (this.$el.__wxsState = {}));
@@ -959,7 +959,32 @@ function initAppConfig$1(appConfig) {
     globalProperties.$gcd = getComponentDescriptor;
   }
 }
+function formatKey(key) {
+  return camelize(key.substring(5));
+}
+function initCostomDataset() {
+  const prototype = HTMLElement.prototype;
+  const setAttribute = prototype.setAttribute;
+  prototype.setAttribute = function(key, value) {
+    if (key.startsWith("data-") && this.tagName.startsWith("UNI-")) {
+      const dataset = this.__uniDataset = this.__uniDataset || {};
+      dataset[formatKey(key)] = value;
+    }
+    setAttribute.call(this, key, value);
+  };
+  const removeAttribute = prototype.removeAttribute;
+  prototype.removeAttribute = function(key) {
+    if (this.__uniDataset && key.startsWith("data-") && this.tagName.startsWith("UNI-")) {
+      delete this.__uniDataset[formatKey(key)];
+    }
+    removeAttribute.call(this, key);
+  };
+}
+function getCostomDataset(el) {
+  return Object.assign({}, el.dataset, el.__uniDataset);
+}
 function initView(app) {
+  initCostomDataset();
   if (__UNI_FEATURE_LONGPRESS__) {
     initLongPress();
   }
@@ -1181,7 +1206,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1415,11 +1440,11 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id2, name, callback2, keepAlive = false) {
+function addInvokeCallback(id2, name, callback, keepAlive = false) {
   invokeCallbacks[id2] = {
     name,
     keepAlive,
-    callback: callback2
+    callback
   };
   return id2;
 }
@@ -1443,10 +1468,10 @@ function findInvokeCallbackByName(name) {
   }
   return false;
 }
-function removeKeepAliveApiCallback(name, callback2) {
+function removeKeepAliveApiCallback(name, callback) {
   for (const key in invokeCallbacks) {
     const item = invokeCallbacks[key];
-    if (item.callback === callback2 && item.name === name) {
+    if (item.callback === callback && item.name === name) {
       delete invokeCallbacks[key];
     }
   }
@@ -1464,8 +1489,8 @@ function onKeepAliveApiCallback(name) {
     }
   });
 }
-function createKeepAliveApiCallback(name, callback2) {
-  return addInvokeCallback(invokeCallbackId++, name, callback2, true);
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
 }
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
@@ -1578,20 +1603,20 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function checkCallback(callback2) {
-  if (!isFunction(callback2)) {
+function checkCallback(callback) {
+  if (!isFunction(callback)) {
     throw new Error('Invalid args: type check failed for args "callback". Expected Function');
   }
 }
 function wrapperOnApi(name, fn, options) {
-  return (callback2) => {
-    checkCallback(callback2);
-    const errMsg = beforeInvokeApi(name, [callback2], void 0, options);
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
     if (errMsg) {
       throw new Error(errMsg);
     }
     const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback2);
+    createKeepAliveApiCallback(name, callback);
     if (isFirstInvokeOnApi) {
       onKeepAliveApiCallback(name);
       fn();
@@ -1599,14 +1624,14 @@ function wrapperOnApi(name, fn, options) {
   };
 }
 function wrapperOffApi(name, fn, options) {
-  return (callback2) => {
-    checkCallback(callback2);
-    const errMsg = beforeInvokeApi(name, [callback2], void 0, options);
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
     if (errMsg) {
       throw new Error(errMsg);
     }
     name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback2);
+    removeKeepAliveApiCallback(name, callback);
     const hasInvokeOnApi = findInvokeCallbackByName(name);
     if (!hasInvokeOnApi) {
       offKeepAliveApiCallback(name);
@@ -1736,3222 +1761,18 @@ function getBaseSystemInfo() {
     windowWidth
   };
 }
-function operateVideoPlayer(videoId, vm, type, data) {
-  const pageId = getPageIdByVm(vm);
+function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.publishHandler("video." + videoId, {
     videoId,
     type,
     data
   }, pageId);
 }
-function operateMap(id2, vm, type, data) {
-  const pageId = getPageIdByVm(vm);
+function operateMap(id2, pageId, type, data) {
   UniServiceJSBridge.publishHandler("map." + id2, {
     type,
     data
   }, pageId);
-}
-function addIntersectionObserver({reqId, component, options, callback: callback2}, _pageId) {
-  const $el = findElem(component);
-  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback2);
-}
-function removeIntersectionObserver({reqId, component}, _pageId) {
-  const $el = findElem(component);
-  const intersectionObserver = $el.__io && $el.__io[reqId];
-  if (intersectionObserver) {
-    intersectionObserver.disconnect();
-    delete $el.__io[reqId];
-  }
-}
-function saveImage(base64, dirname, callback2) {
-  callback2(null, base64);
-}
-const TEMP_PATH = "";
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, {type});
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function getSameOriginUrl(url) {
-  const a2 = document.createElement("a");
-  a2.href = url;
-  if (a2.origin === location.origin) {
-    return Promise.resolve(url);
-  }
-  return urlToFile(url).then(fileToUrl);
-}
-function revokeObjectURL(url) {
-  const URL = window.URL || window.webkitURL;
-  URL.revokeObjectURL(url);
-  delete files[url];
-}
-const API_UPX2PX = "upx2px";
-const Upx2pxProtocol = [
-  {
-    name: "upx",
-    type: [Number, String],
-    required: true
-  }
-];
-const EPS = 1e-4;
-const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
-let deviceWidth = 0;
-let deviceDPR = 0;
-function checkDeviceWidth() {
-  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
-  deviceWidth = windowWidth;
-  deviceDPR = pixelRatio2;
-  isIOS = platform === "ios";
-}
-const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  if (deviceWidth === 0) {
-    checkDeviceWidth();
-  }
-  number = Number(number);
-  if (number === 0) {
-    return 0;
-  }
-  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
-  if (result < 0) {
-    result = -result;
-  }
-  result = Math.floor(result + EPS);
-  if (result === 0) {
-    if (deviceDPR === 1 || !isIOS) {
-      result = 1;
-    } else {
-      result = 0.5;
-    }
-  }
-  return number < 0 ? -result : result;
-}, Upx2pxProtocol);
-const globalInterceptors = {};
-const scopedInterceptors = {};
-const API_ADD_INTERCEPTOR = "addInterceptor";
-const API_REMOVE_INTERCEPTOR = "removeInterceptor";
-const AddInterceptorProtocol = [
-  {
-    name: "method",
-    type: [String, Object],
-    required: true
-  }
-];
-const RemoveInterceptorProtocol = AddInterceptorProtocol;
-function mergeInterceptorHook(interceptors, interceptor) {
-  Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
-      interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
-    }
-  });
-}
-function removeInterceptorHook(interceptors, interceptor) {
-  if (!interceptors || !interceptor) {
-    return;
-  }
-  Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
-      removeHook(interceptors[hook], interceptor[hook]);
-    }
-  });
-}
-function mergeHook(parentVal, childVal) {
-  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
-  return res ? dedupeHooks(res) : res;
-}
-function dedupeHooks(hooks) {
-  const res = [];
-  for (let i = 0; i < hooks.length; i++) {
-    if (res.indexOf(hooks[i]) === -1) {
-      res.push(hooks[i]);
-    }
-  }
-  return res;
-}
-function removeHook(hooks, hook) {
-  if (!hooks) {
-    return;
-  }
-  const index2 = hooks.indexOf(hook);
-  if (index2 !== -1) {
-    hooks.splice(index2, 1);
-  }
-}
-const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string" && isPlainObject(interceptor)) {
-    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
-  } else if (isPlainObject(method)) {
-    mergeInterceptorHook(globalInterceptors, method);
-  }
-}, AddInterceptorProtocol);
-const removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string") {
-    if (isPlainObject(interceptor)) {
-      removeInterceptorHook(scopedInterceptors[method], interceptor);
-    } else {
-      delete scopedInterceptors[method];
-    }
-  } else if (isPlainObject(method)) {
-    removeInterceptorHook(globalInterceptors, method);
-  }
-}, RemoveInterceptorProtocol);
-const promiseInterceptor = {
-  returnValue(res) {
-    if (!isPromise(res)) {
-      return res;
-    }
-    return res.then((res2) => {
-      return res2[1];
-    }).catch((res2) => {
-      return res2[0];
-    });
-  }
-};
-const API_ON = "$on";
-const OnProtocol = [
-  {
-    name: "event",
-    type: String,
-    required: true
-  },
-  {
-    name: "callback",
-    type: Function,
-    required: true
-  }
-];
-const API_ONCE = "$once";
-const OnceProtocol = OnProtocol;
-const API_OFF = "$off";
-const OffProtocol = [
-  {
-    name: "event",
-    type: [String, Array]
-  },
-  {
-    name: "callback",
-    type: Function
-  }
-];
-const API_EMIT = "$emit";
-const EmitProtocol = [
-  {
-    name: "event",
-    type: String,
-    required: true
-  }
-];
-const emitter = new E();
-const $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback2) => {
-  emitter.on(name, callback2);
-  return () => emitter.off(name, callback2);
-}, OnProtocol);
-const $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback2) => {
-  emitter.once(name, callback2);
-  return () => emitter.off(name, callback2);
-}, OnceProtocol);
-const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback2) => {
-  if (!name) {
-    emitter.e = {};
-    return;
-  }
-  if (!Array.isArray(name))
-    name = [name];
-  name.forEach((n) => emitter.off(n, callback2));
-}, OffProtocol);
-const $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, (name, ...args) => {
-  emitter.emit(name, ...args);
-}, EmitProtocol);
-const validator = [
-  {
-    name: "id",
-    type: String,
-    required: true
-  }
-];
-const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
-const API_CREATE_MAP_CONTEXT = "createMapContext";
-const CreateMapContextProtocol = validator;
-const API_CREATE_CANVAS_CONTEXT = "createCanvasContext";
-const CreateCanvasContextProtocol = [
-  {
-    name: "canvasId",
-    type: String,
-    required: true
-  },
-  {
-    name: "componentInstance",
-    type: Object
-  }
-];
-const API_CREATE_INNER_AUDIO_CONTEXT = "createInnerAudioContext";
-const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
-class VideoContext {
-  constructor(id2, vm) {
-    this.id = id2;
-    this.vm = vm;
-  }
-  play() {
-    operateVideoPlayer(this.id, this.vm, "play");
-  }
-  pause() {
-    operateVideoPlayer(this.id, this.vm, "pause");
-  }
-  stop() {
-    operateVideoPlayer(this.id, this.vm, "stop");
-  }
-  seek(position) {
-    operateVideoPlayer(this.id, this.vm, "seek", {
-      position
-    });
-  }
-  sendDanmu(args) {
-    operateVideoPlayer(this.id, this.vm, "sendDanmu", args);
-  }
-  playbackRate(rate) {
-    if (!~RATES.indexOf(rate)) {
-      rate = 1;
-    }
-    operateVideoPlayer(this.id, this.vm, "playbackRate", {
-      rate
-    });
-  }
-  requestFullScreen(args = {}) {
-    operateVideoPlayer(this.id, this.vm, "requestFullScreen", args);
-  }
-  exitFullScreen() {
-    operateVideoPlayer(this.id, this.vm, "exitFullScreen");
-  }
-  showStatusBar() {
-    operateVideoPlayer(this.id, this.vm, "showStatusBar");
-  }
-  hideStatusBar() {
-    operateVideoPlayer(this.id, this.vm, "hideStatusBar");
-  }
-}
-const createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
-  if (context) {
-    return new VideoContext(id2, context);
-  }
-  return new VideoContext(id2, getCurrentPageVm());
-});
-class MapContext {
-  constructor(id2, vm) {
-    this.id = id2;
-    this.vm = vm;
-  }
-  getCenterLocation(options) {
-    operateMap(this.id, this.vm, "getCenterLocation", options);
-  }
-  moveToLocation() {
-    operateMap(this.id, this.vm, "moveToLocation");
-  }
-  getScale(options) {
-    operateMap(this.id, this.vm, "getScale", options);
-  }
-  getRegion(options) {
-    operateMap(this.id, this.vm, "getRegion", options);
-  }
-  includePoints(options) {
-    operateMap(this.id, this.vm, "includePoints", options);
-  }
-  translateMarker(options) {
-    operateMap(this.id, this.vm, "translateMarker", options);
-  }
-  addCustomLayer() {
-  }
-  removeCustomLayer() {
-  }
-  addGroundOverlay() {
-  }
-  removeGroundOverlay() {
-  }
-  updateGroundOverlay() {
-  }
-  initMarkerCluster() {
-  }
-  addMarkers() {
-  }
-  removeMarkers() {
-  }
-  moveAlong() {
-  }
-  openMapAp() {
-  }
-  $getAppMap() {
-  }
-}
-const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
-  if (context) {
-    return new MapContext(id2, context);
-  }
-  return new MapContext(id2, getCurrentPageVm());
-}, CreateMapContextProtocol);
-function getInt(name, defaultValue) {
-  return function(value, params) {
-    if (value) {
-      params[name] = Math.round(value);
-    } else if (typeof defaultValue !== "undefined") {
-      params[name] = defaultValue;
-    }
-  };
-}
-const formatWidth = getInt("width");
-const formatHeight = getInt("height");
-const API_CANVAS_GET_IMAGE_DATA = "canvasGetImageData";
-const CanvasGetImageDataOptions = {
-  formatArgs: {
-    x: getInt("x"),
-    y: getInt("y"),
-    width: formatWidth,
-    height: formatHeight
-  }
-};
-const CanvasGetImageDataProtocol = {
-  canvasId: {
-    type: String,
-    required: true
-  },
-  x: {
-    type: Number,
-    required: true
-  },
-  y: {
-    type: Number,
-    required: true
-  },
-  width: {
-    type: Number,
-    required: true
-  },
-  height: {
-    type: Number,
-    required: true
-  }
-};
-const API_CANVAS_PUT_IMAGE_DATA = "canvasPutImageData";
-const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
-const CanvasPutImageDataProtocol = /* @__PURE__ */ extend({
-  data: {
-    type: Uint8ClampedArray,
-    required: true
-  }
-}, CanvasGetImageDataProtocol);
-const fileTypes = {
-  PNG: "png",
-  JPG: "jpg",
-  JPEG: "jpg"
-};
-const API_CANVAS_TO_TEMP_FILE_PATH = "canvasToTempFilePath";
-const CanvasToTempFilePathOptions = {
-  formatArgs: {
-    x: getInt("x", 0),
-    y: getInt("y", 0),
-    width: formatWidth,
-    height: formatHeight,
-    destWidth: getInt("destWidth"),
-    destHeight: getInt("destHeight"),
-    fileType(value, params) {
-      value = (value || "").toUpperCase();
-      let type = fileTypes[value];
-      if (!type) {
-        type = fileTypes.PNG;
-      }
-      params.fileType = type;
-    },
-    quality(value, params) {
-      params.quality = value && value > 0 && value < 1 ? value : 1;
-    }
-  }
-};
-const CanvasToTempFilePathProtocol = {
-  x: Number,
-  y: Number,
-  width: Number,
-  height: Number,
-  destWidth: Number,
-  destHeight: Number,
-  canvasId: {
-    type: String,
-    required: true
-  },
-  fileType: String,
-  quality: Number
-};
-const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
-  const callback2 = canvasEventCallbacks.pop(callbackId);
-  if (callback2) {
-    callback2(data);
-  }
-});
-function operateCanvas(canvasId, pageId, type, data) {
-  ServiceJSBridge.publishHandler("canvas." + canvasId, {
-    canvasId,
-    type,
-    data
-  }, pageId);
-}
-var methods1 = ["scale", "rotate", "translate", "setTransform", "transform"];
-var methods2 = [
-  "drawImage",
-  "fillText",
-  "fill",
-  "stroke",
-  "fillRect",
-  "strokeRect",
-  "clearRect",
-  "strokeText"
-];
-var methods3 = [
-  "setFillStyle",
-  "setTextAlign",
-  "setStrokeStyle",
-  "setGlobalAlpha",
-  "setShadow",
-  "setFontSize",
-  "setLineCap",
-  "setLineJoin",
-  "setLineWidth",
-  "setMiterLimit",
-  "setTextBaseline",
-  "setLineDash"
-];
-function measureText(text2, font2) {
-  const canvas = document.createElement("canvas");
-  const c2d = canvas.getContext("2d");
-  c2d.font = font2;
-  return c2d.measureText(text2).width || 0;
-}
-const predefinedColor = {
-  aliceblue: "#f0f8ff",
-  antiquewhite: "#faebd7",
-  aqua: "#00ffff",
-  aquamarine: "#7fffd4",
-  azure: "#f0ffff",
-  beige: "#f5f5dc",
-  bisque: "#ffe4c4",
-  black: "#000000",
-  blanchedalmond: "#ffebcd",
-  blue: "#0000ff",
-  blueviolet: "#8a2be2",
-  brown: "#a52a2a",
-  burlywood: "#deb887",
-  cadetblue: "#5f9ea0",
-  chartreuse: "#7fff00",
-  chocolate: "#d2691e",
-  coral: "#ff7f50",
-  cornflowerblue: "#6495ed",
-  cornsilk: "#fff8dc",
-  crimson: "#dc143c",
-  cyan: "#00ffff",
-  darkblue: "#00008b",
-  darkcyan: "#008b8b",
-  darkgoldenrod: "#b8860b",
-  darkgray: "#a9a9a9",
-  darkgrey: "#a9a9a9",
-  darkgreen: "#006400",
-  darkkhaki: "#bdb76b",
-  darkmagenta: "#8b008b",
-  darkolivegreen: "#556b2f",
-  darkorange: "#ff8c00",
-  darkorchid: "#9932cc",
-  darkred: "#8b0000",
-  darksalmon: "#e9967a",
-  darkseagreen: "#8fbc8f",
-  darkslateblue: "#483d8b",
-  darkslategray: "#2f4f4f",
-  darkslategrey: "#2f4f4f",
-  darkturquoise: "#00ced1",
-  darkviolet: "#9400d3",
-  deeppink: "#ff1493",
-  deepskyblue: "#00bfff",
-  dimgray: "#696969",
-  dimgrey: "#696969",
-  dodgerblue: "#1e90ff",
-  firebrick: "#b22222",
-  floralwhite: "#fffaf0",
-  forestgreen: "#228b22",
-  fuchsia: "#ff00ff",
-  gainsboro: "#dcdcdc",
-  ghostwhite: "#f8f8ff",
-  gold: "#ffd700",
-  goldenrod: "#daa520",
-  gray: "#808080",
-  grey: "#808080",
-  green: "#008000",
-  greenyellow: "#adff2f",
-  honeydew: "#f0fff0",
-  hotpink: "#ff69b4",
-  indianred: "#cd5c5c",
-  indigo: "#4b0082",
-  ivory: "#fffff0",
-  khaki: "#f0e68c",
-  lavender: "#e6e6fa",
-  lavenderblush: "#fff0f5",
-  lawngreen: "#7cfc00",
-  lemonchiffon: "#fffacd",
-  lightblue: "#add8e6",
-  lightcoral: "#f08080",
-  lightcyan: "#e0ffff",
-  lightgoldenrodyellow: "#fafad2",
-  lightgray: "#d3d3d3",
-  lightgrey: "#d3d3d3",
-  lightgreen: "#90ee90",
-  lightpink: "#ffb6c1",
-  lightsalmon: "#ffa07a",
-  lightseagreen: "#20b2aa",
-  lightskyblue: "#87cefa",
-  lightslategray: "#778899",
-  lightslategrey: "#778899",
-  lightsteelblue: "#b0c4de",
-  lightyellow: "#ffffe0",
-  lime: "#00ff00",
-  limegreen: "#32cd32",
-  linen: "#faf0e6",
-  magenta: "#ff00ff",
-  maroon: "#800000",
-  mediumaquamarine: "#66cdaa",
-  mediumblue: "#0000cd",
-  mediumorchid: "#ba55d3",
-  mediumpurple: "#9370db",
-  mediumseagreen: "#3cb371",
-  mediumslateblue: "#7b68ee",
-  mediumspringgreen: "#00fa9a",
-  mediumturquoise: "#48d1cc",
-  mediumvioletred: "#c71585",
-  midnightblue: "#191970",
-  mintcream: "#f5fffa",
-  mistyrose: "#ffe4e1",
-  moccasin: "#ffe4b5",
-  navajowhite: "#ffdead",
-  navy: "#000080",
-  oldlace: "#fdf5e6",
-  olive: "#808000",
-  olivedrab: "#6b8e23",
-  orange: "#ffa500",
-  orangered: "#ff4500",
-  orchid: "#da70d6",
-  palegoldenrod: "#eee8aa",
-  palegreen: "#98fb98",
-  paleturquoise: "#afeeee",
-  palevioletred: "#db7093",
-  papayawhip: "#ffefd5",
-  peachpuff: "#ffdab9",
-  peru: "#cd853f",
-  pink: "#ffc0cb",
-  plum: "#dda0dd",
-  powderblue: "#b0e0e6",
-  purple: "#800080",
-  rebeccapurple: "#663399",
-  red: "#ff0000",
-  rosybrown: "#bc8f8f",
-  royalblue: "#4169e1",
-  saddlebrown: "#8b4513",
-  salmon: "#fa8072",
-  sandybrown: "#f4a460",
-  seagreen: "#2e8b57",
-  seashell: "#fff5ee",
-  sienna: "#a0522d",
-  silver: "#c0c0c0",
-  skyblue: "#87ceeb",
-  slateblue: "#6a5acd",
-  slategray: "#708090",
-  slategrey: "#708090",
-  snow: "#fffafa",
-  springgreen: "#00ff7f",
-  steelblue: "#4682b4",
-  tan: "#d2b48c",
-  teal: "#008080",
-  thistle: "#d8bfd8",
-  tomato: "#ff6347",
-  turquoise: "#40e0d0",
-  violet: "#ee82ee",
-  wheat: "#f5deb3",
-  white: "#ffffff",
-  whitesmoke: "#f5f5f5",
-  yellow: "#ffff00",
-  yellowgreen: "#9acd32",
-  transparent: "#00000000"
-};
-function checkColor(e2) {
-  e2 = e2 || "#000000";
-  var t2 = null;
-  if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
-    const n = parseInt(t2[1].slice(0, 2), 16);
-    const o2 = parseInt(t2[1].slice(2, 4), 16);
-    const r = parseInt(t2[1].slice(4), 16);
-    return [n, o2, r, 255];
-  }
-  if ((t2 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
-    let n = t2[1].slice(0, 1);
-    let o2 = t2[1].slice(1, 2);
-    let r = t2[1].slice(2, 3);
-    n = parseInt(n + n, 16);
-    o2 = parseInt(o2 + o2, 16);
-    r = parseInt(r + r, 16);
-    return [n, o2, r, 255];
-  }
-  if ((t2 = /^rgb\((.+)\)$/.exec(e2)) != null) {
-    return t2[1].split(",").map(function(e22) {
-      return Math.min(255, parseInt(e22.trim()));
-    }).concat(255);
-  }
-  if ((t2 = /^rgba\((.+)\)$/.exec(e2)) != null) {
-    return t2[1].split(",").map(function(e22, t22) {
-      return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
-    });
-  }
-  var i = e2.toLowerCase();
-  if (hasOwn(predefinedColor, i)) {
-    t2 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
-    const n = parseInt(t2[1].slice(0, 2), 16);
-    const o2 = parseInt(t2[1].slice(2, 4), 16);
-    const r = parseInt(t2[1].slice(4, 6), 16);
-    let a2 = parseInt(t2[1].slice(6, 8), 16);
-    a2 = a2 >= 0 ? a2 : 255;
-    return [n, o2, r, a2];
-  }
-  console.error("unsupported color:" + e2);
-  return [0, 0, 0, 255];
-}
-class CanvasGradient {
-  constructor(type, data) {
-    this.type = type;
-    this.data = data;
-    this.colorStop = [];
-  }
-  addColorStop(position, color) {
-    this.colorStop.push([position, checkColor(color)]);
-  }
-}
-class Pattern {
-  constructor(image2, repetition) {
-    this.image = image2;
-    this.repetition = repetition;
-  }
-}
-class TextMetrics {
-  constructor(width) {
-    this.width = width;
-  }
-}
-class CanvasContext {
-  constructor(id2, pageId) {
-    this.id = id2;
-    this.pageId = pageId;
-    this.actions = [];
-    this.path = [];
-    this.subpath = [];
-    this.drawingState = [];
-    this.state = {
-      lineDash: [0, 0],
-      shadowOffsetX: 0,
-      shadowOffsetY: 0,
-      shadowBlur: 0,
-      shadowColor: [0, 0, 0, 0],
-      font: "10px sans-serif",
-      fontSize: 10,
-      fontWeight: "normal",
-      fontStyle: "normal",
-      fontFamily: "sans-serif"
-    };
-  }
-  draw(reserve = false, callback2) {
-    var actions = [...this.actions];
-    this.actions = [];
-    this.path = [];
-    var callbackId;
-    if (typeof callback2 === "function") {
-      callbackId = canvasEventCallbacks.push(callback2);
-    }
-    operateCanvas(this.id, this.pageId, "actionsChanged", {
-      actions,
-      reserve,
-      callbackId
-    });
-  }
-  createLinearGradient(x0, y0, x1, y1) {
-    return new CanvasGradient("linear", [x0, y0, x1, y1]);
-  }
-  createCircularGradient(x, y, r) {
-    return new CanvasGradient("radial", [x, y, r]);
-  }
-  createPattern(image2, repetition) {
-    if (repetition === void 0) {
-      console.error("Failed to execute 'createPattern' on 'CanvasContext': 2 arguments required, but only 1 present.");
-    } else if (["repeat", "repeat-x", "repeat-y", "no-repeat"].indexOf(repetition) < 0) {
-      console.error("Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition + "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'.");
-    } else {
-      return new Pattern(image2, repetition);
-    }
-  }
-  measureText(text2) {
-    const font2 = this.state.font;
-    let width = 0;
-    {
-      width = measureText(text2, font2);
-    }
-    return new TextMetrics(width);
-  }
-  save() {
-    this.actions.push({
-      method: "save",
-      data: []
-    });
-    this.drawingState.push(this.state);
-  }
-  restore() {
-    this.actions.push({
-      method: "restore",
-      data: []
-    });
-    this.state = this.drawingState.pop() || {
-      lineDash: [0, 0],
-      shadowOffsetX: 0,
-      shadowOffsetY: 0,
-      shadowBlur: 0,
-      shadowColor: [0, 0, 0, 0],
-      font: "10px sans-serif",
-      fontSize: 10,
-      fontWeight: "normal",
-      fontStyle: "normal",
-      fontFamily: "sans-serif"
-    };
-  }
-  beginPath() {
-    this.path = [];
-    this.subpath = [];
-  }
-  moveTo(x, y) {
-    this.path.push({
-      method: "moveTo",
-      data: [x, y]
-    });
-    this.subpath = [[x, y]];
-  }
-  lineTo(x, y) {
-    if (this.path.length === 0 && this.subpath.length === 0) {
-      this.path.push({
-        method: "moveTo",
-        data: [x, y]
-      });
-    } else {
-      this.path.push({
-        method: "lineTo",
-        data: [x, y]
-      });
-    }
-    this.subpath.push([x, y]);
-  }
-  quadraticCurveTo(cpx, cpy, x, y) {
-    this.path.push({
-      method: "quadraticCurveTo",
-      data: [cpx, cpy, x, y]
-    });
-    this.subpath.push([x, y]);
-  }
-  bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
-    this.path.push({
-      method: "bezierCurveTo",
-      data: [cp1x, cp1y, cp2x, cp2y, x, y]
-    });
-    this.subpath.push([x, y]);
-  }
-  arc(x, y, r, sAngle, eAngle, counterclockwise = false) {
-    this.path.push({
-      method: "arc",
-      data: [x, y, r, sAngle, eAngle, counterclockwise]
-    });
-    this.subpath.push([x, y]);
-  }
-  rect(x, y, width, height) {
-    this.path.push({
-      method: "rect",
-      data: [x, y, width, height]
-    });
-    this.subpath = [[x, y]];
-  }
-  arcTo(x1, y1, x2, y2, radius) {
-    this.path.push({
-      method: "arcTo",
-      data: [x1, y1, x2, y2, radius]
-    });
-    this.subpath.push([x2, y2]);
-  }
-  clip() {
-    this.actions.push({
-      method: "clip",
-      data: [...this.path]
-    });
-  }
-  closePath() {
-    this.path.push({
-      method: "closePath",
-      data: []
-    });
-    if (this.subpath.length) {
-      this.subpath = [this.subpath.shift()];
-    }
-  }
-  clearActions() {
-    this.actions = [];
-    this.path = [];
-    this.subpath = [];
-  }
-  getActions() {
-    var actions = [...this.actions];
-    this.clearActions();
-    return actions;
-  }
-  set lineDashOffset(value) {
-    this.actions.push({
-      method: "setLineDashOffset",
-      data: [value]
-    });
-  }
-  set globalCompositeOperation(type) {
-    this.actions.push({
-      method: "setGlobalCompositeOperation",
-      data: [type]
-    });
-  }
-  set shadowBlur(level) {
-    this.actions.push({
-      method: "setShadowBlur",
-      data: [level]
-    });
-  }
-  set shadowColor(color) {
-    this.actions.push({
-      method: "setShadowColor",
-      data: [color]
-    });
-  }
-  set shadowOffsetX(x) {
-    this.actions.push({
-      method: "setShadowOffsetX",
-      data: [x]
-    });
-  }
-  set shadowOffsetY(y) {
-    this.actions.push({
-      method: "setShadowOffsetY",
-      data: [y]
-    });
-  }
-  set font(value) {
-    var self = this;
-    this.state.font = value;
-    var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
-    if (fontFormat) {
-      var style = fontFormat[1].trim().split(/\s/);
-      var fontSize = parseFloat(fontFormat[3]);
-      var fontFamily = fontFormat[7];
-      var actions = [];
-      style.forEach(function(value2, index2) {
-        if (["italic", "oblique", "normal"].indexOf(value2) > -1) {
-          actions.push({
-            method: "setFontStyle",
-            data: [value2]
-          });
-          self.state.fontStyle = value2;
-        } else if (["bold", "normal"].indexOf(value2) > -1) {
-          actions.push({
-            method: "setFontWeight",
-            data: [value2]
-          });
-          self.state.fontWeight = value2;
-        } else if (index2 === 0) {
-          actions.push({
-            method: "setFontStyle",
-            data: ["normal"]
-          });
-          self.state.fontStyle = "normal";
-        } else if (index2 === 1) {
-          pushAction();
-        }
-      });
-      if (style.length === 1) {
-        pushAction();
-      }
-      style = actions.map(function(action) {
-        return action.data[0];
-      }).join(" ");
-      this.state.fontSize = fontSize;
-      this.state.fontFamily = fontFamily;
-      this.actions.push({
-        method: "setFont",
-        data: [`${style} ${fontSize}px ${fontFamily}`]
-      });
-    } else {
-      console.warn("Failed to set 'font' on 'CanvasContext': invalid format.");
-    }
-    function pushAction() {
-      actions.push({
-        method: "setFontWeight",
-        data: ["normal"]
-      });
-      self.state.fontWeight = "normal";
-    }
-  }
-  get font() {
-    return this.state.font;
-  }
-  set fillStyle(color) {
-    this.setFillStyle(color);
-  }
-  set strokeStyle(color) {
-    this.setStrokeStyle(color);
-  }
-  set globalAlpha(value) {
-    value = Math.floor(255 * parseFloat(value));
-    this.actions.push({
-      method: "setGlobalAlpha",
-      data: [value]
-    });
-  }
-  set textAlign(align2) {
-    this.actions.push({
-      method: "setTextAlign",
-      data: [align2]
-    });
-  }
-  set lineCap(type) {
-    this.actions.push({
-      method: "setLineCap",
-      data: [type]
-    });
-  }
-  set lineJoin(type) {
-    this.actions.push({
-      method: "setLineJoin",
-      data: [type]
-    });
-  }
-  set lineWidth(value) {
-    this.actions.push({
-      method: "setLineWidth",
-      data: [value]
-    });
-  }
-  set miterLimit(value) {
-    this.actions.push({
-      method: "setMiterLimit",
-      data: [value]
-    });
-  }
-  set textBaseline(type) {
-    this.actions.push({
-      method: "setTextBaseline",
-      data: [type]
-    });
-  }
-}
-[...methods1, ...methods2].forEach(function(method) {
-  function get(method2) {
-    switch (method2) {
-      case "fill":
-      case "stroke":
-        return function() {
-          this.actions.push({
-            method: method2 + "Path",
-            data: [...this.path]
-          });
-        };
-      case "fillRect":
-        return function(x, y, width, height) {
-          this.actions.push({
-            method: "fillPath",
-            data: [
-              {
-                method: "rect",
-                data: [x, y, width, height]
-              }
-            ]
-          });
-        };
-      case "strokeRect":
-        return function(x, y, width, height) {
-          this.actions.push({
-            method: "strokePath",
-            data: [
-              {
-                method: "rect",
-                data: [x, y, width, height]
-              }
-            ]
-          });
-        };
-      case "fillText":
-      case "strokeText":
-        return function(text2, x, y, maxWidth) {
-          var data = [text2.toString(), x, y];
-          if (typeof maxWidth === "number") {
-            data.push(maxWidth);
-          }
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-      case "drawImage":
-        return function(imageResource, dx, dy, dWidth, dHeight, sx, sy, sWidth, sHeight) {
-          if (sHeight === void 0) {
-            sx = dx;
-            sy = dy;
-            sWidth = dWidth;
-            sHeight = dHeight;
-            dx = void 0;
-            dy = void 0;
-            dWidth = void 0;
-            dHeight = void 0;
-          }
-          var data;
-          function isNumber(e2) {
-            return typeof e2 === "number";
-          }
-          data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [
-            imageResource,
-            sx,
-            sy,
-            sWidth,
-            sHeight,
-            dx,
-            dy,
-            dWidth,
-            dHeight
-          ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-      default:
-        return function(...data) {
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-    }
-  }
-  CanvasContext.prototype[method] = get(method);
-});
-methods3.forEach(function(method) {
-  function get(method2) {
-    switch (method2) {
-      case "setFillStyle":
-      case "setStrokeStyle":
-        return function(color) {
-          if (typeof color !== "object") {
-            this.actions.push({
-              method: method2,
-              data: ["normal", checkColor(color)]
-            });
-          } else {
-            this.actions.push({
-              method: method2,
-              data: [color.type, color.data, color.colorStop]
-            });
-          }
-        };
-      case "setGlobalAlpha":
-        return function(alpha) {
-          alpha = Math.floor(255 * parseFloat(alpha));
-          this.actions.push({
-            method: method2,
-            data: [alpha]
-          });
-        };
-      case "setShadow":
-        return function(offsetX, offsetY, blur, color) {
-          color = checkColor(color);
-          this.actions.push({
-            method: method2,
-            data: [offsetX, offsetY, blur, color]
-          });
-          this.state.shadowBlur = blur;
-          this.state.shadowColor = color;
-          this.state.shadowOffsetX = offsetX;
-          this.state.shadowOffsetY = offsetY;
-        };
-      case "setLineDash":
-        return function(pattern, offset) {
-          pattern = pattern || [0, 0];
-          offset = offset || 0;
-          this.actions.push({
-            method: method2,
-            data: [pattern, offset]
-          });
-          this.state.lineDash = pattern;
-        };
-      case "setFontSize":
-        return function(fontSize) {
-          this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
-          this.state.fontSize = fontSize;
-          this.actions.push({
-            method: method2,
-            data: [fontSize]
-          });
-        };
-      default:
-        return function(...data) {
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-    }
-  }
-  CanvasContext.prototype[method] = get(method);
-});
-const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
-  if (componentInstance) {
-    return new CanvasContext(canvasId, componentInstance.$page.id);
-  }
-  const pageId = getCurrentPageId();
-  if (pageId) {
-    return new CanvasContext(canvasId, pageId);
-  } else {
-    UniServiceJSBridge.emit("onError", "createCanvasContext:fail");
-  }
-}, CreateCanvasContextProtocol);
-const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({canvasId, x, y, width, height}, {resolve, reject}) => {
-  const pageId = getCurrentPageId();
-  if (!pageId) {
-    reject();
-    return;
-  }
-  const cId = canvasEventCallbacks.push(async function(data) {
-    let imgData = data.data;
-    if (imgData && imgData.length) {
-      data.data = new Uint8ClampedArray(imgData);
-    }
-    resolve(data);
-  });
-  operateCanvas(canvasId, pageId, "getImageData", {
-    x,
-    y,
-    width,
-    height,
-    callbackId: cId
-  });
-}, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({canvasId, data, x, y, width, height}, {resolve, reject}) => {
-  var pageId = getCurrentPageId();
-  if (!pageId) {
-    reject();
-    return;
-  }
-  var cId = canvasEventCallbacks.push(function(data2) {
-    resolve(data2);
-  });
-  let compressed;
-  {
-    data = Array.prototype.slice.call(data);
-  }
-  operateCanvas(canvasId, pageId, "putImageData", {
-    data,
-    x,
-    y,
-    width,
-    height,
-    compressed,
-    callbackId: cId
-  });
-}, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
-const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({
-  x = 0,
-  y = 0,
-  width,
-  height,
-  destWidth,
-  destHeight,
-  canvasId,
-  fileType,
-  quality
-}, {resolve, reject}) => {
-  var pageId = getCurrentPageId();
-  if (!pageId) {
-    reject();
-    return;
-  }
-  const cId = canvasEventCallbacks.push(function(res) {
-    resolve(res);
-  });
-  const dirname = `${TEMP_PATH}/canvas`;
-  operateCanvas(canvasId, pageId, "toTempFilePath", {
-    x,
-    y,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    fileType,
-    quality,
-    dirname,
-    callbackId: cId
-  });
-}, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
-const defaultOptions = {
-  thresholds: [0],
-  initialRatio: 0,
-  observeAll: false
-};
-const MARGINS = ["top", "right", "bottom", "left"];
-let reqComponentObserverId = 1;
-function normalizeRootMargin(margins = {}) {
-  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
-}
-class ServiceIntersectionObserver {
-  constructor(component, options) {
-    this._pageId = getPageIdByVm(component);
-    this._component = component;
-    this._options = extend({}, defaultOptions, options);
-  }
-  relativeTo(selector, margins) {
-    this._options.relativeToSelector = selector;
-    this._options.rootMargin = normalizeRootMargin(margins);
-    return this;
-  }
-  relativeToViewport(margins) {
-    this._options.relativeToSelector = void 0;
-    this._options.rootMargin = normalizeRootMargin(margins);
-    return this;
-  }
-  observe(selector, callback2) {
-    if (!isFunction(callback2)) {
-      return;
-    }
-    this._options.selector = selector;
-    this._reqId = reqComponentObserverId++;
-    addIntersectionObserver({
-      reqId: this._reqId,
-      component: this._component,
-      options: this._options,
-      callback: callback2
-    }, this._pageId);
-  }
-  disconnect() {
-    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
-  }
-}
-const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
-  if (context && !getPageIdByVm(context)) {
-    options = context;
-    context = null;
-  }
-  if (context) {
-    return new ServiceIntersectionObserver(context, options);
-  }
-  return new ServiceIntersectionObserver(getCurrentPageVm(), options);
-});
-const createSelectorQuery = () => {
-};
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
-});
-const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
-const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
-  const callback2 = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback2) {
-    callback2(data);
-  }
-});
-const getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, {resolve, reject}) => {
-  const pageId = getCurrentPageId();
-  ServiceJSBridge.publishHandler && ServiceJSBridge.publishHandler("getSelectedTextRange", {
-    pageId,
-    callbackId: getSelectedTextRangeEventCallbacks.push(function(res) {
-      if (typeof res.end === "undefined" && typeof res.start === "undefined") {
-        reject("no focused");
-      } else {
-        resolve(res);
-      }
-    })
-  }, pageId);
-});
-const API_CAN_I_USE = "canIUse";
-const CanIUseProtocol = [
-  {
-    name: "schema",
-    type: String,
-    required: true
-  }
-];
-const API_MAKE_PHONE_CALL = "makePhoneCall";
-const MakePhoneCallProtocol = {
-  phoneNumber: String
-};
-const API_ON_ACCELEROMETER = "onAccelerometer";
-const API_OFF_ACCELEROMETER = "offAccelerometer";
-const API_START_ACCELEROMETER = "startAccelerometer";
-const API_STOP_ACCELEROMETER = "stopAccelerometer";
-const API_ON_COMPASS = "onCompass";
-const API_OFF_COMPASS = "offCompass";
-const API_START_COMPASS = "startCompass";
-const API_STOP_COMPASS = "stopCompass";
-const API_VIBRATE_SHORT = "vibrateShort";
-const API_VIBRATE_LONG = "vibrateLong";
-const API_GET_STORAGE = "getStorage";
-const GetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  }
-};
-const API_GET_STORAGE_SYNC = "getStorageSync";
-const GetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  }
-];
-const API_SET_STORAGE = "setStorage";
-const SetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  },
-  data: {
-    required: true
-  }
-};
-const API_SET_STORAGE_SYNC = "setStorageSync";
-const SetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  },
-  {
-    name: "data",
-    required: true
-  }
-];
-const API_REMOVE_STORAGE = "removeStorage";
-const RemoveStorageProtocol = GetStorageProtocol;
-const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
-const API_GET_FILE_INFO = "getFileInfo";
-const GetFileInfoOptions = {
-  formatArgs: {
-    filePath(filePath, params) {
-      params.filePath = getRealPath(filePath);
-    }
-  }
-};
-const GetFileInfoProtocol = {
-  filePath: {
-    type: String,
-    required: true
-  }
-};
-const API_OPEN_DOCUMENT = "openDocument";
-const OpenDocumentOptions = {
-  formatArgs: {
-    filePath(filePath, params) {
-      params.filePath = getRealPath(filePath);
-    }
-  }
-};
-const OpenDocumentProtocol = {
-  filePath: {
-    type: String,
-    required: true
-  },
-  fileType: String
-};
-const API_HIDE_KEYBOARD = "hideKeyboard";
-const API_CHOOSE_LOCATION = "chooseLocation";
-const ChooseLocationProtocol = {
-  keyword: String,
-  latitude: Number,
-  longitude: Number
-};
-const API_GET_LOCATION = "getLocation";
-const coordTypes = ["WGS84", "GCJ02"];
-const GetLocationOptions = {
-  formatArgs: {
-    type(value, params) {
-      value = (value || "").toUpperCase();
-      if (coordTypes.indexOf(value) === -1) {
-        params.type = coordTypes[0];
-      } else {
-        params.type = value;
-      }
-    },
-    altitude(value, params) {
-      params.altitude = value ? value : false;
-    }
-  }
-};
-const GetLocationProtocol = {
-  type: String,
-  altitude: Boolean
-};
-const API_OPEN_LOCATION = "openLocation";
-const OpenLocationOptions = {
-  formatArgs: {
-    scale(value, params) {
-      value = Math.floor(value);
-      params.scale = value >= 5 && value <= 18 ? value : 18;
-    }
-  }
-};
-const OpenLocationProtocol = {
-  latitude: {
-    type: Number,
-    required: true
-  },
-  longitude: {
-    type: Number,
-    required: true
-  },
-  scale: Number,
-  name: String,
-  address: String
-};
-const API_CHOOSE_IMAGE = "chooseImage";
-const ChooseImageOptions = {
-  formatArgs: {
-    count(value, params) {
-      if (!value || value <= 0) {
-        params.count = 9;
-      }
-    },
-    sizeType(sizeType, params) {
-      params.sizeType = elemsInArray(sizeType, CHOOSE_SIZE_TYPES);
-    },
-    sourceType(sourceType, params) {
-      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-    },
-    extension(extension, params) {
-      if (extension instanceof Array && extension.length === 0) {
-        return "param extension should not be empty.";
-      }
-      if (!extension)
-        params.extension = [""];
-    }
-  }
-};
-const ChooseImageProtocol = {
-  count: Number,
-  sizeType: [Array, String],
-  sourceType: Array,
-  extension: Array
-};
-const API_CHOOSE_VIDEO = "chooseVideo";
-const ChooseVideoOptions = {
-  formatArgs: {
-    sourceType(sourceType, params) {
-      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-    },
-    compressed: true,
-    maxDuration: 60,
-    camera: "back",
-    extension(extension, params) {
-      if (extension instanceof Array && extension.length === 0) {
-        return "param extension should not be empty.";
-      }
-      if (!extension)
-        params.extension = [""];
-    }
-  }
-};
-const ChooseVideoProtocol = {
-  sourceType: Array,
-  compressed: Boolean,
-  maxDuration: Number,
-  camera: String,
-  extension: Array
-};
-const API_CHOOSE_FILE = "chooseFile";
-const CHOOSE_MEDIA_TYPE = [
-  "all",
-  "image",
-  "video"
-];
-const ChooseFileOptions = {
-  formatArgs: {
-    count(count, params) {
-      if (!count || count <= 0) {
-        params.count = 100;
-      }
-    },
-    sourceType(sourceType, params) {
-      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-    },
-    type(type, params) {
-      params.type = elemInArray(type, CHOOSE_MEDIA_TYPE);
-    },
-    extension(extension, params) {
-      if (extension instanceof Array && extension.length === 0) {
-        return "param extension should not be empty.";
-      }
-      if (!extension)
-        params.extension = [""];
-    }
-  }
-};
-const ChooseFileProtocol = {
-  count: Number,
-  sourceType: Array,
-  type: String,
-  extension: Array
-};
-const API_GET_IMAGE_INFO = "getImageInfo";
-const GetImageInfoOptions = {
-  formatArgs: {
-    src(src, params) {
-      params.src = getRealPath(src);
-    }
-  }
-};
-const GetImageInfoProtocol = {
-  src: {
-    type: String,
-    required: true
-  }
-};
-const API_PREVIEW_IMAGE = "previewImage";
-const PreviewImageOptions = {
-  formatArgs: {
-    urls(urls, params) {
-      params.urls = urls.map((url) => typeof url === "string" && url ? getRealPath(url) : "");
-    },
-    current(current, params) {
-      if (typeof current === "number") {
-        params.current = current > 0 && current < params.urls.length ? current : 0;
-      } else if (typeof current === "string" && current) {
-        params.current = getRealPath(current);
-      }
-    }
-  }
-};
-const PreviewImageProtocol = {
-  urls: {
-    type: Array,
-    required: true
-  },
-  current: {
-    type: [Number, String]
-  }
-};
-const API_GET_VIDEO_INFO = "getVideoInfo";
-const GetVideoInfoOptions = {
-  formatArgs: {
-    src(src, params) {
-      params.src = getRealPath(src);
-    }
-  }
-};
-const GetVideoInfoProtocol = {
-  src: {
-    type: String,
-    required: true
-  }
-};
-const API_REQUEST = "request";
-const dataType = {
-  JSON: "json"
-};
-const RESPONSE_TYPE = ["text", "arraybuffer"];
-const DEFAULT_RESPONSE_TYPE = "text";
-const encode = encodeURIComponent;
-function stringifyQuery(url, data) {
-  let str = url.split("#");
-  const hash = str[1] || "";
-  str = str[0].split("?");
-  let query = str[1] || "";
-  url = str[0];
-  const search = query.split("&").filter((item) => item);
-  const params = {};
-  search.forEach((item) => {
-    const part = item.split("=");
-    params[part[0]] = part[1];
-  });
-  for (const key in data) {
-    if (hasOwn(data, key)) {
-      let v2 = data[key];
-      if (typeof v2 === "undefined" || v2 === null) {
-        v2 = "";
-      } else if (isPlainObject(v2)) {
-        v2 = JSON.stringify(v2);
-      }
-      params[encode(key)] = encode(v2);
-    }
-  }
-  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
-  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
-}
-const RequestProtocol = {
-  method: String,
-  data: [Object, String, Array, ArrayBuffer],
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  dataType: String,
-  responseType: String,
-  withCredentials: Boolean
-};
-const RequestOptions = {
-  formatArgs: {
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    data(value, params) {
-      params.data = value || "";
-    },
-    url(value, params) {
-      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
-        params.url = stringifyQuery(value, params.data);
-      }
-    },
-    header(value, params) {
-      const header = params.header = value || {};
-      if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
-          header["Content-Type"] = "application/json";
-        }
-      }
-    },
-    dataType(value, params) {
-      params.dataType = (value || dataType.JSON).toLowerCase();
-    },
-    responseType(value, params) {
-      params.responseType = (value || "").toLowerCase();
-      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-        params.responseType = DEFAULT_RESPONSE_TYPE;
-      }
-    }
-  }
-};
-const API_DOWNLOAD_FILE = "downloadFile";
-const DownloadFileOptions = {
-  formatArgs: {
-    header(value, params) {
-      params.header = value || {};
-    }
-  }
-};
-const DownloadFileProtocol = {
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  timeout: Number
-};
-const API_UPLOAD_FILE = "uploadFile";
-const UploadFileOptions = {
-  formatArgs: {
-    filePath(filePath, params) {
-      if (filePath) {
-        params.filePath = getRealPath(filePath);
-      }
-    },
-    header(value, params) {
-      params.header = value || {};
-    },
-    formData(value, params) {
-      params.formData = value || {};
-    }
-  }
-};
-const UploadFileProtocol = {
-  url: {
-    type: String,
-    required: true
-  },
-  files: Array,
-  filePath: String,
-  name: String,
-  header: Object,
-  formData: Object,
-  timeout: Number
-};
-const API_CONNECT_SOCKET = "connectSocket";
-const ConnectSocketOptions = {
-  formatArgs: {
-    header(value, params) {
-      params.header = value || {};
-    },
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    protocols(protocols, params) {
-      if (typeof protocols === "string") {
-        params.protocols = [protocols];
-      }
-    }
-  }
-};
-const ConnectSocketProtocol = {
-  url: {
-    type: String,
-    required: true
-  },
-  header: {
-    type: Object
-  },
-  method: String,
-  protocols: [Array, String]
-};
-const API_SEND_SOCKET_MESSAGE = "sendSocketMessage";
-const SendSocketMessageProtocol = {
-  data: [String, ArrayBuffer]
-};
-const API_CLOSE_SOCKET = "closeSocket";
-const CloseSocketProtocol = {
-  code: Number,
-  reason: String
-};
-function encodeQueryString(url) {
-  if (typeof url !== "string") {
-    return url;
-  }
-  const index2 = url.indexOf("?");
-  if (index2 === -1) {
-    return url;
-  }
-  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
-  if (!query) {
-    return url;
-  }
-  url = url.substr(0, index2);
-  const params = [];
-  query.split("&").forEach((param) => {
-    const parts = param.replace(/\+/g, " ").split("=");
-    const key = parts.shift();
-    const val = parts.length > 0 ? parts.join("=") : "";
-    params.push(key + "=" + encodeURIComponent(val));
-  });
-  return params.length ? url + "?" + params.join("&") : url;
-}
-const ANIMATION_IN = [
-  "slide-in-right",
-  "slide-in-left",
-  "slide-in-top",
-  "slide-in-bottom",
-  "fade-in",
-  "zoom-out",
-  "zoom-fade-out",
-  "pop-in",
-  "none"
-];
-const ANIMATION_OUT = [
-  "slide-out-right",
-  "slide-out-left",
-  "slide-out-top",
-  "slide-out-bottom",
-  "fade-out",
-  "zoom-in",
-  "zoom-fade-in",
-  "pop-out",
-  "none"
-];
-const BaseRouteProtocol = {
-  url: {
-    type: String,
-    required: true
-  }
-};
-const API_NAVIGATE_TO = "navigateTo";
-const API_REDIRECT_TO = "redirectTo";
-const API_RE_LAUNCH = "reLaunch";
-const API_SWITCH_TAB = "switchTab";
-const API_NAVIGATE_BACK = "navigateBack";
-const API_PRELOAD_PAGE = "preloadPage";
-const API_UN_PRELOAD_PAGE = "unPreloadPage";
-const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
-const NavigateBackProtocol = /* @__PURE__ */ extend({
-  delta: {
-    type: Number
-  }
-}, createAnimationProtocol(ANIMATION_OUT));
-const RedirectToProtocol = BaseRouteProtocol;
-const ReLaunchProtocol = BaseRouteProtocol;
-const SwitchTabProtocol = BaseRouteProtocol;
-const NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
-const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
-const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
-const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
-const NavigateBackOptions = {
-  formatArgs: {
-    delta(value, params) {
-      value = parseInt(value + "") || 1;
-      params.delta = Math.min(getCurrentPages().length - 1, value);
-    }
-  }
-};
-function createAnimationProtocol(animationTypes) {
-  return {
-    animationType: {
-      type: String,
-      validator(type) {
-        if (type && animationTypes.indexOf(type) === -1) {
-          return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
-        }
-      }
-    },
-    animationDuration: {
-      type: Number
-    }
-  };
-}
-let navigatorLock;
-function beforeRoute() {
-  navigatorLock = "";
-}
-function createRouteOptions(type) {
-  return {
-    formatArgs: {
-      url: createNormalizeUrl(type)
-    },
-    beforeAll: beforeRoute
-  };
-}
-function createNormalizeUrl(type) {
-  return function normalizeUrl(url, params) {
-    if (!url) {
-      return `Missing required args: "url"`;
-    }
-    url = getRealRoute(url);
-    const pagePath = url.split("?")[0];
-    const routeOptions = __uniRoutes.find(({path, alias}) => path === pagePath || alias === pagePath);
-    if (!routeOptions) {
-      return "page `" + url + "` is not found";
-    }
-    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
-      if (routeOptions.meta.isTabBar) {
-        return `can not ${type} a tabbar page`;
-      }
-    } else if (type === API_SWITCH_TAB) {
-      if (!routeOptions.meta.isTabBar) {
-        return "can not switch to no-tabBar page";
-      }
-    }
-    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
-      url = pagePath;
-    }
-    if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.alias, "/");
-    }
-    params.url = encodeQueryString(url);
-    if (type === API_UN_PRELOAD_PAGE) {
-      return;
-    } else if (type === API_PRELOAD_PAGE) {
-      if (routeOptions.meta.isTabBar) {
-        const pages = getCurrentPages();
-        const tabBarPagePath = routeOptions.path.substr(1);
-        if (pages.find((page) => page.route === tabBarPagePath)) {
-          return "tabBar page `" + tabBarPagePath + "` already exists";
-        }
-      }
-      return;
-    }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
-      return `${navigatorLock} locked`;
-    }
-    if (__uniConfig.ready) {
-      navigatorLock = url;
-    }
-  };
-}
-const API_HIDE_LOADING = "hideLoading";
-const API_HIDE_TOAST = "hideToast";
-const API_LOAD_FONT_FACE = "loadFontFace";
-const LoadFontFaceProtocol = {
-  family: {
-    type: String,
-    required: true
-  },
-  source: {
-    type: String,
-    required: true
-  },
-  desc: Object
-};
-const FRONT_COLORS = ["#ffffff", "#000000"];
-const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
-const SetNavigationBarColorOptions = {
-  formatArgs: {
-    animation(animation, params) {
-      if (!animation) {
-        animation = {duration: 0, timingFunc: "linear"};
-      }
-      params.animation = {
-        duration: animation.duration || 0,
-        timingFunc: animation.timingFunc || "linear"
-      };
-    }
-  }
-};
-const SetNavigationBarColorProtocol = {
-  frontColor: {
-    type: String,
-    required: true,
-    validator(frontColor) {
-      if (FRONT_COLORS.indexOf(frontColor) === -1) {
-        return `invalid frontColor "${frontColor}"`;
-      }
-    }
-  },
-  backgroundColor: {
-    type: String,
-    required: true
-  },
-  animation: Object
-};
-const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
-const SetNavigationBarTitleProtocol = {
-  title: {
-    type: String,
-    required: true
-  }
-};
-const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
-const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-const API_PAGE_SCROLL_TO = "pageScrollTo";
-const PageScrollToProtocol = {
-  scrollTop: Number,
-  selector: String,
-  duration: Number
-};
-const DEFAULT_DURATION = 300;
-const PageScrollToOptions = {
-  formatArgs: {
-    duration(value, params) {
-      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
-    }
-  }
-};
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  itemColor: String,
-  popover: Object
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
-  }
-};
-const API_SHOW_LOADING = "showLoading";
-const ShowLoadingProtocol = {
-  title: String,
-  mask: Boolean
-};
-const ShowLoadingOptions = {
-  formatArgs: {
-    title: "",
-    mask: false
-  }
-};
-const API_SHOW_MODAL = "showModal";
-const ShowModalProtocol = {
-  title: String,
-  content: String,
-  showCancel: Boolean,
-  cancelText: String,
-  cancelColor: String,
-  confirmText: String,
-  confirmColor: String
-};
-const ShowModalOptions = {
-  beforeInvoke() {
-    initI18nShowModalMsgsOnce();
-  },
-  formatArgs: {
-    title: "",
-    content: "",
-    showCancel: true,
-    cancelText(_value, params) {
-      if (!hasOwn(params, "cancelText")) {
-        const {t: t2} = useI18n();
-        params.cancelText = t2("uni.showModal.cancel");
-      }
-    },
-    cancelColor: "#000",
-    confirmText(_value, params) {
-      if (!hasOwn(params, "confirmText")) {
-        const {t: t2} = useI18n();
-        params.confirmText = t2("uni.showModal.confirm");
-      }
-    },
-    confirmColor: PRIMARY_COLOR
-  }
-};
-const API_SHOW_TOAST = "showToast";
-const SHOW_TOAST_ICON = [
-  "success",
-  "loading",
-  "none"
-];
-const ShowToastProtocol = {
-  title: String,
-  icon: String,
-  image: String,
-  duration: Number,
-  mask: Boolean
-};
-const ShowToastOptions = {
-  formatArgs: {
-    title: "",
-    icon(type, params) {
-      params.icon = elemInArray(type, SHOW_TOAST_ICON);
-    },
-    image(value, params) {
-      if (value) {
-        params.image = getRealPath(value);
-      } else {
-        params.image = "";
-      }
-    },
-    duration: 1500,
-    mask: false
-  }
-};
-const API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
-const API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
-const IndexProtocol = {
-  index: {
-    type: Number,
-    required: true
-  }
-};
-const IndexOptions = {
-  beforeInvoke() {
-    const pageMeta = getCurrentPageMeta();
-    if (pageMeta && !pageMeta.isTabBar) {
-      return "not TabBar page";
-    }
-  },
-  formatArgs: {
-    index(value) {
-      if (!__uniConfig.tabBar.list[value]) {
-        return "tabbar item not found";
-      }
-    }
-  }
-};
-const API_SET_TAB_BAR_ITEM = "setTabBarItem";
-const SetTabBarItemProtocol = /* @__PURE__ */ extend({
-  text: String,
-  iconPath: String,
-  selectedIconPath: String,
-  pagePath: String
-}, IndexProtocol);
-const SetTabBarItemOptions = {
-  beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: /* @__PURE__ */ extend({
-    pagePath(value, params) {
-      if (value) {
-        params.pagePath = removeLeadingSlash(value);
-      }
-    }
-  }, IndexOptions.formatArgs)
-};
-const API_SET_TAB_BAR_STYLE = "setTabBarStyle";
-const SetTabBarStyleProtocol = {
-  color: String,
-  selectedColor: String,
-  backgroundColor: String,
-  backgroundImage: String,
-  backgroundRepeat: String,
-  borderStyle: String
-};
-const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
-const SetTabBarStyleOptions = {
-  beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: {
-    backgroundImage(value, params) {
-      if (value && !GRADIENT_RE.test(value)) {
-        params.backgroundImage = getRealPath(value);
-      }
-    },
-    borderStyle(value, params) {
-      if (value) {
-        params.borderStyle = value === "white" ? "white" : "black";
-      }
-    }
-  }
-};
-const API_HIDE_TAB_BAR = "hideTabBar";
-const HideTabBarProtocol = {
-  animation: Boolean
-};
-const API_SHOW_TAB_BAR = "showTabBar";
-const ShowTabBarProtocol = HideTabBarProtocol;
-const API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
-const HideTabBarRedDotProtocol = IndexProtocol;
-const HideTabBarRedDotOptions = IndexOptions;
-const API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
-const ShowTabBarRedDotProtocol = IndexProtocol;
-const ShowTabBarRedDotOptions = IndexOptions;
-const API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
-const RemoveTabBarBadgeProtocol = IndexProtocol;
-const RemoveTabBarBadgeOptions = IndexOptions;
-const API_SET_TAB_BAR_BADGE = "setTabBarBadge";
-const SetTabBarBadgeProtocol = /* @__PURE__ */ extend({
-  text: {
-    type: String,
-    required: true
-  }
-}, IndexProtocol);
-const SetTabBarBadgeOptions = {
-  beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: /* @__PURE__ */ extend({
-    text(value, params) {
-      if (getLen(value) >= 4) {
-        params.text = "...";
-      }
-    }
-  }, IndexOptions.formatArgs)
-};
-const initIntersectionObserverPolyfill = function() {
-  if (typeof window !== "object") {
-    return;
-  }
-  if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype) {
-    if (!("isIntersecting" in window.IntersectionObserverEntry.prototype)) {
-      Object.defineProperty(window.IntersectionObserverEntry.prototype, "isIntersecting", {
-        get: function() {
-          return this.intersectionRatio > 0;
-        }
-      });
-    }
-    return;
-  }
-  function getFrameElement(doc) {
-    try {
-      return doc.defaultView && doc.defaultView.frameElement || null;
-    } catch (e2) {
-      return null;
-    }
-  }
-  var document2 = function(startDoc) {
-    var doc = startDoc;
-    var frame = getFrameElement(doc);
-    while (frame) {
-      doc = frame.ownerDocument;
-      frame = getFrameElement(doc);
-    }
-    return doc;
-  }(window.document);
-  var registry = [];
-  var crossOriginUpdater = null;
-  var crossOriginRect = null;
-  function IntersectionObserverEntry(entry) {
-    this.time = entry.time;
-    this.target = entry.target;
-    this.rootBounds = ensureDOMRect(entry.rootBounds);
-    this.boundingClientRect = ensureDOMRect(entry.boundingClientRect);
-    this.intersectionRect = ensureDOMRect(entry.intersectionRect || getEmptyRect());
-    this.isIntersecting = !!entry.intersectionRect;
-    var targetRect = this.boundingClientRect;
-    var targetArea = targetRect.width * targetRect.height;
-    var intersectionRect = this.intersectionRect;
-    var intersectionArea = intersectionRect.width * intersectionRect.height;
-    if (targetArea) {
-      this.intersectionRatio = Number((intersectionArea / targetArea).toFixed(4));
-    } else {
-      this.intersectionRatio = this.isIntersecting ? 1 : 0;
-    }
-  }
-  function IntersectionObserver2(callback2, opt_options) {
-    var options = opt_options || {};
-    if (typeof callback2 != "function") {
-      throw new Error("callback must be a function");
-    }
-    if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
-      throw new Error("root must be a Document or Element");
-    }
-    this._checkForIntersections = throttle2(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
-    this._callback = callback2;
-    this._observationTargets = [];
-    this._queuedEntries = [];
-    this._rootMarginValues = this._parseRootMargin(options.rootMargin);
-    this.thresholds = this._initThresholds(options.threshold);
-    this.root = options.root || null;
-    this.rootMargin = this._rootMarginValues.map(function(margin) {
-      return margin.value + margin.unit;
-    }).join(" ");
-    this._monitoringDocuments = [];
-    this._monitoringUnsubscribes = [];
-  }
-  IntersectionObserver2.prototype.THROTTLE_TIMEOUT = 100;
-  IntersectionObserver2.prototype.POLL_INTERVAL = null;
-  IntersectionObserver2.prototype.USE_MUTATION_OBSERVER = true;
-  IntersectionObserver2._setupCrossOriginUpdater = function() {
-    if (!crossOriginUpdater) {
-      crossOriginUpdater = function(boundingClientRect, intersectionRect) {
-        if (!boundingClientRect || !intersectionRect) {
-          crossOriginRect = getEmptyRect();
-        } else {
-          crossOriginRect = convertFromParentRect(boundingClientRect, intersectionRect);
-        }
-        registry.forEach(function(observer) {
-          observer._checkForIntersections();
-        });
-      };
-    }
-    return crossOriginUpdater;
-  };
-  IntersectionObserver2._resetCrossOriginUpdater = function() {
-    crossOriginUpdater = null;
-    crossOriginRect = null;
-  };
-  IntersectionObserver2.prototype.observe = function(target) {
-    var isTargetAlreadyObserved = this._observationTargets.some(function(item) {
-      return item.element == target;
-    });
-    if (isTargetAlreadyObserved) {
-      return;
-    }
-    if (!(target && target.nodeType == 1)) {
-      throw new Error("target must be an Element");
-    }
-    this._registerInstance();
-    this._observationTargets.push({element: target, entry: null});
-    this._monitorIntersections(target.ownerDocument);
-    this._checkForIntersections();
-  };
-  IntersectionObserver2.prototype.unobserve = function(target) {
-    this._observationTargets = this._observationTargets.filter(function(item) {
-      return item.element != target;
-    });
-    this._unmonitorIntersections(target.ownerDocument);
-    if (this._observationTargets.length == 0) {
-      this._unregisterInstance();
-    }
-  };
-  IntersectionObserver2.prototype.disconnect = function() {
-    this._observationTargets = [];
-    this._unmonitorAllIntersections();
-    this._unregisterInstance();
-  };
-  IntersectionObserver2.prototype.takeRecords = function() {
-    var records = this._queuedEntries.slice();
-    this._queuedEntries = [];
-    return records;
-  };
-  IntersectionObserver2.prototype._initThresholds = function(opt_threshold) {
-    var threshold = opt_threshold || [0];
-    if (!Array.isArray(threshold))
-      threshold = [threshold];
-    return threshold.sort().filter(function(t2, i, a2) {
-      if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
-        throw new Error("threshold must be a number between 0 and 1 inclusively");
-      }
-      return t2 !== a2[i - 1];
-    });
-  };
-  IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
-    var marginString = opt_rootMargin || "0px";
-    var margins = marginString.split(/\s+/).map(function(margin) {
-      var parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
-      if (!parts) {
-        throw new Error("rootMargin must be specified in pixels or percent");
-      }
-      return {value: parseFloat(parts[1]), unit: parts[2]};
-    });
-    margins[1] = margins[1] || margins[0];
-    margins[2] = margins[2] || margins[0];
-    margins[3] = margins[3] || margins[1];
-    return margins;
-  };
-  IntersectionObserver2.prototype._monitorIntersections = function(doc) {
-    var win = doc.defaultView;
-    if (!win) {
-      return;
-    }
-    if (this._monitoringDocuments.indexOf(doc) != -1) {
-      return;
-    }
-    var callback2 = this._checkForIntersections;
-    var monitoringInterval = null;
-    var domObserver = null;
-    if (this.POLL_INTERVAL) {
-      monitoringInterval = win.setInterval(callback2, this.POLL_INTERVAL);
-    } else {
-      addEvent(win, "resize", callback2, true);
-      addEvent(doc, "scroll", callback2, true);
-      if (this.USE_MUTATION_OBSERVER && "MutationObserver" in win) {
-        domObserver = new win.MutationObserver(callback2);
-        domObserver.observe(doc, {
-          attributes: true,
-          childList: true,
-          characterData: true,
-          subtree: true
-        });
-      }
-    }
-    this._monitoringDocuments.push(doc);
-    this._monitoringUnsubscribes.push(function() {
-      var win2 = doc.defaultView;
-      if (win2) {
-        if (monitoringInterval) {
-          win2.clearInterval(monitoringInterval);
-        }
-        removeEvent(win2, "resize", callback2, true);
-      }
-      removeEvent(doc, "scroll", callback2, true);
-      if (domObserver) {
-        domObserver.disconnect();
-      }
-    });
-    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    if (doc != rootDoc) {
-      var frame = getFrameElement(doc);
-      if (frame) {
-        this._monitorIntersections(frame.ownerDocument);
-      }
-    }
-  };
-  IntersectionObserver2.prototype._unmonitorIntersections = function(doc) {
-    var index2 = this._monitoringDocuments.indexOf(doc);
-    if (index2 == -1) {
-      return;
-    }
-    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    var hasDependentTargets = this._observationTargets.some(function(item) {
-      var itemDoc = item.element.ownerDocument;
-      if (itemDoc == doc) {
-        return true;
-      }
-      while (itemDoc && itemDoc != rootDoc) {
-        var frame2 = getFrameElement(itemDoc);
-        itemDoc = frame2 && frame2.ownerDocument;
-        if (itemDoc == doc) {
-          return true;
-        }
-      }
-      return false;
-    });
-    if (hasDependentTargets) {
-      return;
-    }
-    var unsubscribe = this._monitoringUnsubscribes[index2];
-    this._monitoringDocuments.splice(index2, 1);
-    this._monitoringUnsubscribes.splice(index2, 1);
-    unsubscribe();
-    if (doc != rootDoc) {
-      var frame = getFrameElement(doc);
-      if (frame) {
-        this._unmonitorIntersections(frame.ownerDocument);
-      }
-    }
-  };
-  IntersectionObserver2.prototype._unmonitorAllIntersections = function() {
-    var unsubscribes = this._monitoringUnsubscribes.slice(0);
-    this._monitoringDocuments.length = 0;
-    this._monitoringUnsubscribes.length = 0;
-    for (var i = 0; i < unsubscribes.length; i++) {
-      unsubscribes[i]();
-    }
-  };
-  IntersectionObserver2.prototype._checkForIntersections = function() {
-    if (!this.root && crossOriginUpdater && !crossOriginRect) {
-      return;
-    }
-    var rootIsInDom = this._rootIsInDom();
-    var rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect();
-    this._observationTargets.forEach(function(item) {
-      var target = item.element;
-      var targetRect = getBoundingClientRect(target);
-      var rootContainsTarget = this._rootContainsTarget(target);
-      var oldEntry = item.entry;
-      var intersectionRect = rootIsInDom && rootContainsTarget && this._computeTargetAndRootIntersection(target, targetRect, rootRect);
-      var rootBounds = null;
-      if (!this._rootContainsTarget(target)) {
-        rootBounds = getEmptyRect();
-      } else if (!crossOriginUpdater || this.root) {
-        rootBounds = rootRect;
-      }
-      var newEntry = item.entry = new IntersectionObserverEntry({
-        time: now(),
-        target,
-        boundingClientRect: targetRect,
-        rootBounds,
-        intersectionRect
-      });
-      if (!oldEntry) {
-        this._queuedEntries.push(newEntry);
-      } else if (rootIsInDom && rootContainsTarget) {
-        if (this._hasCrossedThreshold(oldEntry, newEntry)) {
-          this._queuedEntries.push(newEntry);
-        }
-      } else {
-        if (oldEntry && oldEntry.isIntersecting) {
-          this._queuedEntries.push(newEntry);
-        }
-      }
-    }, this);
-    if (this._queuedEntries.length) {
-      this._callback(this.takeRecords(), this);
-    }
-  };
-  IntersectionObserver2.prototype._computeTargetAndRootIntersection = function(target, targetRect, rootRect) {
-    if (window.getComputedStyle(target).display == "none")
-      return;
-    var intersectionRect = targetRect;
-    var parent = getParentNode(target);
-    var atRoot = false;
-    while (!atRoot && parent) {
-      var parentRect = null;
-      var parentComputedStyle = parent.nodeType == 1 ? window.getComputedStyle(parent) : {};
-      if (parentComputedStyle.display == "none")
-        return null;
-      if (parent == this.root || parent.nodeType == 9) {
-        atRoot = true;
-        if (parent == this.root || parent == document2) {
-          if (crossOriginUpdater && !this.root) {
-            if (!crossOriginRect || crossOriginRect.width == 0 && crossOriginRect.height == 0) {
-              parent = null;
-              parentRect = null;
-              intersectionRect = null;
-            } else {
-              parentRect = crossOriginRect;
-            }
-          } else {
-            parentRect = rootRect;
-          }
-        } else {
-          var frame = getParentNode(parent);
-          var frameRect = frame && getBoundingClientRect(frame);
-          var frameIntersect = frame && this._computeTargetAndRootIntersection(frame, frameRect, rootRect);
-          if (frameRect && frameIntersect) {
-            parent = frame;
-            parentRect = convertFromParentRect(frameRect, frameIntersect);
-          } else {
-            parent = null;
-            intersectionRect = null;
-          }
-        }
-      } else {
-        var doc = parent.ownerDocument;
-        if (parent != doc.body && parent != doc.documentElement && parentComputedStyle.overflow != "visible") {
-          parentRect = getBoundingClientRect(parent);
-        }
-      }
-      if (parentRect) {
-        intersectionRect = computeRectIntersection(parentRect, intersectionRect);
-      }
-      if (!intersectionRect)
-        break;
-      parent = parent && getParentNode(parent);
-    }
-    return intersectionRect;
-  };
-  IntersectionObserver2.prototype._getRootRect = function() {
-    var rootRect;
-    if (this.root && !isDoc(this.root)) {
-      rootRect = getBoundingClientRect(this.root);
-    } else {
-      var doc = isDoc(this.root) ? this.root : document2;
-      var html = doc.documentElement;
-      var body = doc.body;
-      rootRect = {
-        top: 0,
-        left: 0,
-        right: html.clientWidth || body.clientWidth,
-        width: html.clientWidth || body.clientWidth,
-        bottom: html.clientHeight || body.clientHeight,
-        height: html.clientHeight || body.clientHeight
-      };
-    }
-    return this._expandRectByRootMargin(rootRect);
-  };
-  IntersectionObserver2.prototype._expandRectByRootMargin = function(rect) {
-    var margins = this._rootMarginValues.map(function(margin, i) {
-      return margin.unit == "px" ? margin.value : margin.value * (i % 2 ? rect.width : rect.height) / 100;
-    });
-    var newRect = {
-      top: rect.top - margins[0],
-      right: rect.right + margins[1],
-      bottom: rect.bottom + margins[2],
-      left: rect.left - margins[3]
-    };
-    newRect.width = newRect.right - newRect.left;
-    newRect.height = newRect.bottom - newRect.top;
-    return newRect;
-  };
-  IntersectionObserver2.prototype._hasCrossedThreshold = function(oldEntry, newEntry) {
-    var oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1;
-    var newRatio = newEntry.isIntersecting ? newEntry.intersectionRatio || 0 : -1;
-    if (oldRatio === newRatio)
-      return;
-    for (var i = 0; i < this.thresholds.length; i++) {
-      var threshold = this.thresholds[i];
-      if (threshold == oldRatio || threshold == newRatio || threshold < oldRatio !== threshold < newRatio) {
-        return true;
-      }
-    }
-  };
-  IntersectionObserver2.prototype._rootIsInDom = function() {
-    return !this.root || containsDeep(document2, this.root);
-  };
-  IntersectionObserver2.prototype._rootContainsTarget = function(target) {
-    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
-    return containsDeep(rootDoc, target) && (!this.root || rootDoc == target.ownerDocument);
-  };
-  IntersectionObserver2.prototype._registerInstance = function() {
-    if (registry.indexOf(this) < 0) {
-      registry.push(this);
-    }
-  };
-  IntersectionObserver2.prototype._unregisterInstance = function() {
-    var index2 = registry.indexOf(this);
-    if (index2 != -1)
-      registry.splice(index2, 1);
-  };
-  function now() {
-    return window.performance && performance.now && performance.now();
-  }
-  function throttle2(fn, timeout) {
-    var timer = null;
-    return function() {
-      if (!timer) {
-        timer = setTimeout(function() {
-          fn();
-          timer = null;
-        }, timeout);
-      }
-    };
-  }
-  function addEvent(node, event, fn, opt_useCapture) {
-    if (typeof node.addEventListener == "function") {
-      node.addEventListener(event, fn, opt_useCapture || false);
-    } else if (typeof node.attachEvent == "function") {
-      node.attachEvent("on" + event, fn);
-    }
-  }
-  function removeEvent(node, event, fn, opt_useCapture) {
-    if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event, fn, opt_useCapture || false);
-    } else if (typeof node.detatchEvent == "function") {
-      node.detatchEvent("on" + event, fn);
-    }
-  }
-  function computeRectIntersection(rect1, rect2) {
-    var top = Math.max(rect1.top, rect2.top);
-    var bottom = Math.min(rect1.bottom, rect2.bottom);
-    var left = Math.max(rect1.left, rect2.left);
-    var right = Math.min(rect1.right, rect2.right);
-    var width = right - left;
-    var height = bottom - top;
-    return width >= 0 && height >= 0 && {
-      top,
-      bottom,
-      left,
-      right,
-      width,
-      height
-    } || null;
-  }
-  function getBoundingClientRect(el) {
-    var rect;
-    try {
-      rect = el.getBoundingClientRect();
-    } catch (err) {
-    }
-    if (!rect)
-      return getEmptyRect();
-    if (!(rect.width && rect.height)) {
-      rect = {
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        left: rect.left,
-        width: rect.right - rect.left,
-        height: rect.bottom - rect.top
-      };
-    }
-    return rect;
-  }
-  function getEmptyRect() {
-    return {
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      width: 0,
-      height: 0
-    };
-  }
-  function ensureDOMRect(rect) {
-    if (!rect || "x" in rect) {
-      return rect;
-    }
-    return {
-      top: rect.top,
-      y: rect.top,
-      bottom: rect.bottom,
-      left: rect.left,
-      x: rect.left,
-      right: rect.right,
-      width: rect.width,
-      height: rect.height
-    };
-  }
-  function convertFromParentRect(parentBoundingRect, parentIntersectionRect) {
-    var top = parentIntersectionRect.top - parentBoundingRect.top;
-    var left = parentIntersectionRect.left - parentBoundingRect.left;
-    return {
-      top,
-      left,
-      height: parentIntersectionRect.height,
-      width: parentIntersectionRect.width,
-      bottom: top + parentIntersectionRect.height,
-      right: left + parentIntersectionRect.width
-    };
-  }
-  function containsDeep(parent, child) {
-    var node = child;
-    while (node) {
-      if (node == parent)
-        return true;
-      node = getParentNode(node);
-    }
-    return false;
-  }
-  function getParentNode(node) {
-    var parent = node.parentNode;
-    if (node.nodeType == 9 && node != document2) {
-      return getFrameElement(node);
-    }
-    if (parent && parent.assignedSlot) {
-      parent = parent.assignedSlot.parentNode;
-    }
-    if (parent && parent.nodeType == 11 && parent.host) {
-      return parent.host;
-    }
-    return parent;
-  }
-  function isDoc(node) {
-    return node && node.nodeType === 9;
-  }
-  window.IntersectionObserver = IntersectionObserver2;
-  window.IntersectionObserverEntry = IntersectionObserverEntry;
-};
-function normalizeRect(rect) {
-  const {bottom, height, left, right, top, width} = rect || {};
-  return {
-    bottom,
-    height,
-    left,
-    right,
-    top,
-    width
-  };
-}
-function requestComponentObserver($el, options, callback2) {
-  initIntersectionObserverPolyfill();
-  const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
-  const intersectionObserver = new IntersectionObserver((entries2) => {
-    entries2.forEach((entrie) => {
-      callback2({
-        intersectionRatio: entrie.intersectionRatio,
-        intersectionRect: normalizeRect(entrie.intersectionRect),
-        boundingClientRect: normalizeRect(entrie.boundingClientRect),
-        relativeRect: normalizeRect(entrie.rootBounds),
-        time: Date.now()
-      });
-    });
-  }, {
-    root,
-    rootMargin: options.rootMargin,
-    threshold: options.thresholds
-  });
-  if (options.observeAll) {
-    intersectionObserver.USE_MUTATION_OBSERVER = true;
-    const nodeList = $el.querySelectorAll(options.selector);
-    for (let i = 0; i < nodeList.length; i++) {
-      intersectionObserver.observe(nodeList[i]);
-    }
-  } else {
-    intersectionObserver.USE_MUTATION_OBSERVER = false;
-    const el = $el.querySelector(options.selector);
-    if (!el) {
-      console.warn(`Node ${options.selector} is not found. Intersection observer will not trigger.`);
-    } else {
-      intersectionObserver.observe(el);
-    }
-  }
-  return intersectionObserver;
-}
-const supports = window.CSS && window.CSS.supports;
-function cssSupports(css) {
-  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
-}
-const cssVar = /* @__PURE__ */ cssSupports("--a:0");
-const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
-const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
-const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
-const SCHEMA_CSS = {
-  "css.var": cssVar,
-  "css.env": cssEnv,
-  "css.constant": cssConstant,
-  "css.backdrop-filter": cssBackdropFilter
-};
-const canIUse = /* @__PURE__ */ defineSyncApi(API_CAN_I_USE, (schema) => {
-  if (hasOwn(SCHEMA_CSS, schema)) {
-    return SCHEMA_CSS[schema];
-  }
-  return true;
-}, CanIUseProtocol);
-const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
-function updateCurPageCssVar(pageMeta) {
-  let windowTopValue = 0;
-  let windowBottomValue = 0;
-  if (__UNI_FEATURE_NAVIGATIONBAR__ && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
-    windowTopValue = NAVBAR_HEIGHT;
-  }
-  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
-    const tabBar2 = useTabBar();
-    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
-  }
-  updatePageCssVar({
-    "--window-top": normalizeWindowBottom(windowTopValue),
-    "--window-bottom": normalizeWindowBottom(windowBottomValue)
-  });
-}
-function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const SEP = "$$";
-const currentPagesMap = new Map();
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, "onUnload");
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    const {path: path2, alias} = __uniRoutes[0];
-    return {
-      id: meta.id,
-      path: path2,
-      route: alias.substr(1),
-      fullPath: path2,
-      options: {},
-      meta
-    };
-  }
-  const {path} = route;
-  return {
-    id: meta.id,
-    path,
-    route: route.meta.route,
-    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
-    options: {},
-    meta
-  };
-}
-function initPage(vm) {
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  vm.$vm = vm;
-  vm.$page = page;
-  vm.__isTabBar = page.meta.isTabBar;
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = useRoute();
-  const routeKey = computed(() => normalizeRouteKey(route.path, getStateId()));
-  const isTabBar = computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      nextTick(() => pruneCurrentPages());
-    }
-  });
-}
-function onPageShow(instance2, pageMeta) {
-  updateBodyScopeId(instance2);
-  updateCurPageCssVar(pageMeta);
-  initPageScrollListener(instance2, pageMeta);
-}
-function onPageReady(instance2) {
-  const scopeId = getScopeId(instance2);
-  scopeId && updateCurPageBodyScopeId(scopeId);
-}
-function updateCurPageBodyScopeId(scopeId) {
-  const pageBodyEl = document.querySelector("uni-page-body");
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, "");
-  } else if (process.env.NODE_ENV !== "production") {
-    console.warn("uni-page-body not found");
-  }
-}
-function getScopeId(instance2) {
-  return instance2.type.__scopeId;
-}
-let curScopeId;
-function updateBodyScopeId(instance2) {
-  const scopeId = getScopeId(instance2);
-  const {body} = document;
-  curScopeId && body.removeAttribute(curScopeId);
-  scopeId && body.setAttribute(scopeId, "");
-  curScopeId = scopeId;
-}
-let curScrollListener;
-function initPageScrollListener(instance2, pageMeta) {
-  document.removeEventListener("touchmove", disableScrollListener);
-  if (curScrollListener) {
-    document.removeEventListener("scroll", curScrollListener);
-  }
-  if (pageMeta.disableScroll) {
-    return document.addEventListener("touchmove", disableScrollListener);
-  }
-  const {onPageScroll, onReachBottom} = instance2;
-  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
-  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
-    return;
-  }
-  const opts = {};
-  const pageId = instance2.proxy.$page.id;
-  if (onPageScroll || navigationBarTransparent) {
-    opts.onPageScroll = createOnPageScroll(pageId, onPageScroll, navigationBarTransparent);
-  }
-  if (onReachBottom) {
-    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler("onReachBottom", {}, pageId);
-  }
-  curScrollListener = createScrollListener(opts);
-  requestAnimationFrame(() => document.addEventListener("scroll", curScrollListener));
-}
-function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
-  return (scrollTop) => {
-    if (onPageScroll) {
-      UniViewJSBridge.publishHandler("onPageScroll", {scrollTop}, pageId);
-    }
-    if (navigationBarTransparent) {
-      UniViewJSBridge.emit(pageId + ".onPageScroll", {
-        scrollTop
-      });
-    }
-  };
-}
-function initRouter(app) {
-  const router = createRouter(createRouterOptions());
-  app.router = router;
-  app.use(router);
-}
-const scrollBehavior = (_to, _from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  }
-};
-function createRouterOptions() {
-  return {
-    history: initHistory(),
-    strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
-  };
-}
-function removeCurrentPages(delta = 1) {
-  const keys = getCurrentPages$1();
-  const start = keys.length - 1;
-  const end = start - delta;
-  for (let i = start; i > end; i--) {
-    const page = keys[i].$page;
-    removePage(normalizeRouteKey(page.path, page.id), false);
-  }
-}
-function initHistory() {
-  let {base} = __uniConfig.router;
-  if (base === "/") {
-    base = "";
-  }
-  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(base) : createWebHashHistory(base);
-  history2.listen((_to, _from, info) => {
-    if (info.direction === "back") {
-      removeCurrentPages(Math.abs(info.delta));
-    }
-  });
-  return history2;
-}
-var index$m = {
-  install(app) {
-    initApp$1(app);
-    initView(app);
-    initService(app);
-    if (__UNI_FEATURE_PAGES__) {
-      initRouter(app);
-    }
-  }
-};
-let appVm;
-function getApp$1() {
-  return appVm;
-}
-function initApp(vm) {
-  appVm = vm;
-  appVm.$vm = vm;
-  appVm.globalData = appVm.$options.globalData || {};
-}
-function wrapperComponentSetup(comp, {init: init2, setup, after}) {
-  const oldSetup = comp.setup;
-  comp.setup = (props2, ctx) => {
-    const instance2 = getCurrentInstance();
-    init2(instance2.proxy);
-    const query = setup(instance2);
-    if (oldSetup) {
-      return oldSetup(query, ctx);
-    }
-  };
-  after && after(comp);
-}
-function setupComponent(comp, options) {
-  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    wrapperComponentSetup(comp.default, options);
-  } else {
-    wrapperComponentSetup(comp, options);
-  }
-  return comp;
-}
-function setupPage(comp) {
-  return setupComponent(comp, {
-    init: initPage,
-    setup(instance2) {
-      instance2.__isPage = true;
-      instance2.root = instance2;
-      const route = usePageRoute();
-      if (route.meta.isTabBar) {
-        instance2.__isActive = true;
-      }
-      const pageMeta = usePageMeta();
-      onBeforeMount(() => {
-        onPageShow(instance2, pageMeta);
-        const {onLoad, onShow} = instance2;
-        onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
-        instance2.__isVisible = true;
-        onShow && invokeArrayFns$1(onShow);
-      });
-      onMounted(() => {
-        onPageReady(instance2);
-        const {onReady} = instance2;
-        onReady && invokeArrayFns$1(onReady);
-      });
-      onBeforeActivate(() => {
-        if (!instance2.__isVisible) {
-          onPageShow(instance2, pageMeta);
-          instance2.__isVisible = true;
-          const {onShow} = instance2;
-          onShow && invokeArrayFns$1(onShow);
-        }
-      });
-      onBeforeDeactivate(() => {
-        if (instance2.__isVisible && !instance2.__isUnload) {
-          instance2.__isVisible = false;
-          const {onHide} = instance2;
-          onHide && invokeArrayFns$1(onHide);
-        }
-      });
-      return route.query;
-    }
-  });
-}
-function setupApp(comp) {
-  return setupComponent(comp, {
-    init: initApp,
-    setup(instance2) {
-      const route = usePageRoute();
-      const onLaunch = () => {
-        const {onLaunch: onLaunch2, onShow} = instance2;
-        const path = route.path.substr(1);
-        const launchOptions = {
-          path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query),
-          scene: 1001
-        };
-        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions);
-        onShow && invokeArrayFns$1(onShow, launchOptions);
-      };
-      if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
-      } else {
-        onBeforeMount(onLaunch);
-      }
-      onMounted(() => {
-        document.addEventListener("visibilitychange", function() {
-          if (document.visibilityState === "visible") {
-            UniServiceJSBridge.emit("onAppEnterForeground");
-          } else {
-            UniServiceJSBridge.emit("onAppEnterBackground");
-          }
-        });
-      });
-      return route.query;
-    },
-    after(comp2) {
-      comp2.mpType = "app";
-      comp2.render = () => (openBlock(), createBlock(LayoutComponent));
-    }
-  });
 }
 var subscriber = {
   mounted() {
@@ -5268,7 +2089,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -5307,7 +2128,7 @@ function provideForm(emit2) {
   });
   return fields2;
 }
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -5705,7 +2526,8 @@ var _sfc_main$7 = {
   created() {
     this._actionsDefer = [];
     this._images = {};
-    useSubscribe(this._handleSubscribe);
+    const id2 = useContextInfo();
+    useSubscribe(this._handleSubscribe, id2, true);
   },
   mounted() {
     this.$trigger = useNativeEvent(this.$emit);
@@ -6179,7 +3001,7 @@ const props$w = {
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -6240,7 +3062,7 @@ const props$v = {
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$v,
   setup(props2, {
@@ -6309,7 +3131,7 @@ const props$u = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$u,
   setup(props2, {
@@ -6810,10 +3632,10 @@ function register(Quill) {
   Quill.register(options, true);
 }
 const scripts = {};
-function loadScript(globalName, src, callback2) {
+function loadScript(globalName, src, callback) {
   const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
   if (globalObject) {
-    callback2();
+    callback();
     return;
   }
   let callbacks2 = scripts[src];
@@ -6823,11 +3645,11 @@ function loadScript(globalName, src, callback2) {
     script.src = src;
     document.body.appendChild(script);
     script.onload = function() {
-      callbacks2.forEach((callback22) => callback22());
+      callbacks2.forEach((callback2) => callback2());
       delete scripts[src];
     };
   }
-  callbacks2.push(callback2);
+  callbacks2.push(callback);
 }
 function useQuill(props2, rootRef, trigger) {
   let quillReady;
@@ -6977,6 +3799,7 @@ function useQuill(props2, rootRef, trigger) {
       }
     });
   });
+  const id2 = useContextInfo();
   useSubscribe((type, data) => {
     const {
       options,
@@ -7132,7 +3955,7 @@ function useQuill(props2, rootRef, trigger) {
         })
       });
     }
-  });
+  }, id2, true);
 }
 const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
   id: {
@@ -7160,7 +3983,7 @@ const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
     default: false
   }
 });
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$s,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -7222,7 +4045,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -7286,7 +4109,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$r,
   setup(props2, {
@@ -8207,10 +5030,10 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const addListenerToElement = function(element, type, callback2, capture) {
+const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
-    if (typeof callback2 === "function") {
-      if (callback2($event) === false) {
+    if (typeof callback === "function") {
+      if (callback($event) === false) {
         if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
           $event.preventDefault();
         }
@@ -10373,7 +7196,7 @@ const props$l = {
     }
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: props$l,
   setup(props2) {
@@ -10452,7 +7275,7 @@ const props$k = {
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$k,
   setup(props2, {
@@ -10552,7 +7375,7 @@ const props$j = {
     default: ""
   }
 };
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$j,
   setup(props2, {
@@ -11417,7 +8240,7 @@ const props$i = {
     default: false
   }
 };
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$i,
   emits: ["changing", "change"],
@@ -11847,7 +8670,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
   function scheduleAutoplay() {
     cancelSchedule();
     const items = swiperContexts.value;
-    const callback2 = function() {
+    const callback = function() {
       timer = null;
       currentChangeSource = "autoplay";
       if (circularEnabled.value) {
@@ -11856,10 +8679,10 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         state2.current = state2.current + state2.displayMultipleItems < items.length ? state2.current + 1 : 0;
       }
       animateViewport(state2.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback2, state2.interval);
+      timer = setTimeout(callback, state2.interval);
     };
     if (!(invalid || items.length <= state2.displayMultipleItems)) {
-      timer = setTimeout(callback2, state2.interval);
+      timer = setTimeout(callback, state2.interval);
     }
   }
   function resetLayout() {
@@ -12251,7 +9074,7 @@ const props$f = {
     default: "#007aff"
   }
 };
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$f,
   emits: ["change"],
@@ -12350,7 +9173,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$8 = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -12417,7 +9240,7 @@ const props$e = /* @__PURE__ */ extend({}, props$q, {
     default: ""
   }
 });
-var index$7 = /* @__PURE__ */ defineBuiltInComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$e,
   emit: ["confirm", "linechange", ...emit],
@@ -12537,7 +9360,7 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$6 = /* @__PURE__ */ defineBuiltInComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -12567,12 +9390,12 @@ function normalizeEvent(pageId, vm, id2) {
   }
   return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
 }
-function addSubscribe(name, callback2) {
+function addSubscribe(name, callback) {
   if (!name) {
     return;
   }
   UniViewJSBridge.subscribe(name, ({type, data}) => {
-    callback2(type, data);
+    callback(type, data);
   });
 }
 function removeSubscribe(name) {
@@ -12581,16 +9404,16 @@ function removeSubscribe(name) {
   }
   UniViewJSBridge.unsubscribe(name);
 }
-function useSubscribe(callback2, name) {
+function useSubscribe(callback, name, multiple) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
-  const pageId = name ? 0 : useCurrentPageId();
+  const pageId = multiple || !name ? useCurrentPageId() : 0;
   onMounted(() => {
-    addSubscribe(name || normalizeEvent(pageId, vm), callback2);
-    if (!name) {
-      watch(() => instance2.id, (value, oldValue) => {
-        addSubscribe(normalizeEvent(pageId, vm, value), callback2);
-        removeSubscribe(normalizeEvent(pageId, vm, oldValue));
+    addSubscribe(name || normalizeEvent(pageId, vm), callback);
+    if (multiple || !name) {
+      watch(() => vm.id, (value, oldValue) => {
+        addSubscribe(normalizeEvent(pageId, vm, value), callback);
+        removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
       });
     }
   });
@@ -12598,9 +9421,3527 @@ function useSubscribe(callback2, name) {
     removeSubscribe(name || normalizeEvent(pageId, vm));
   });
 }
-function useOn(name, callback2) {
-  onMounted(() => UniViewJSBridge.on(name, callback2));
+function useOn(name, callback) {
+  onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
+}
+let index$8 = 0;
+function useContextInfo() {
+  const page = useCurrentPageId();
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const type = vm.$options.name.toLowerCase();
+  const id2 = vm.id || `context${index$8++}`;
+  onMounted(() => {
+    const el = vm.$el;
+    el.__uniContextInfo = {
+      id: id2,
+      type,
+      page
+    };
+  });
+  return `${page}.${type}.${id2}`;
+}
+function getContextInfo(el) {
+  return el.__uniContextInfo;
+}
+function getRootInfo(fields2) {
+  const info = {};
+  if (fields2.id) {
+    info.id = "";
+  }
+  if (fields2.dataset) {
+    info.dataset = {};
+  }
+  if (fields2.rect) {
+    info.left = 0;
+    info.right = 0;
+    info.top = 0;
+    info.bottom = 0;
+  }
+  if (fields2.size) {
+    info.width = document.documentElement.clientWidth;
+    info.height = document.documentElement.clientHeight;
+  }
+  if (fields2.scrollOffset) {
+    const documentElement = document.documentElement;
+    const body = document.body;
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+  }
+  return info;
+}
+function getNodeInfo(el, fields2) {
+  const info = {};
+  const {top} = getWindowOffset();
+  if (fields2.id) {
+    info.id = el.id;
+  }
+  if (fields2.dataset) {
+    info.dataset = getCostomDataset(el);
+  }
+  if (fields2.rect || fields2.size) {
+    const rect = el.getBoundingClientRect();
+    if (fields2.rect) {
+      info.left = rect.left;
+      info.right = rect.right;
+      info.top = rect.top - top;
+      info.bottom = rect.bottom - top;
+    }
+    if (fields2.size) {
+      info.width = rect.width;
+      info.height = rect.height;
+    }
+  }
+  if (Array.isArray(fields2.properties)) {
+    fields2.properties.forEach((prop) => {
+      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+        return t2.toUpperCase();
+      });
+    });
+  }
+  if (fields2.scrollOffset) {
+    if (el.tagName === "UNI-SCROLL-VIEW") {
+      const scroll = el.children[0].children[0];
+      info.scrollLeft = scroll.scrollLeft;
+      info.scrollTop = scroll.scrollTop;
+      info.scrollHeight = scroll.scrollHeight;
+      info.scrollWidth = scroll.scrollWidth;
+    } else {
+      info.scrollLeft = 0;
+      info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
+    }
+  }
+  if (Array.isArray(fields2.computedStyle)) {
+    const sytle = getComputedStyle(el);
+    fields2.computedStyle.forEach((name) => {
+      info[name] = sytle[name];
+    });
+  }
+  if (fields2.context) {
+    info.contextInfo = getContextInfo(el);
+  }
+  return info;
+}
+function findElm(component, pageVm) {
+  return component ? component.$el : pageVm.$el;
+}
+function getNodesInfo(pageVm, component, selector, single, fields2) {
+  const parentElement = findElm(component, pageVm).parentElement;
+  if (!parentElement) {
+    return single ? null : [];
+  }
+  if (single) {
+    const node = parentElement.querySelector(selector);
+    if (node) {
+      return getNodeInfo(node, fields2);
+    }
+    return null;
+  } else {
+    let infos = [];
+    const nodeList = parentElement.querySelectorAll(selector);
+    if (nodeList && nodeList.length) {
+      [].forEach.call(nodeList, (node) => {
+        infos.push(getNodeInfo(node, fields2));
+      });
+    }
+    return infos;
+  }
+}
+function requestComponentInfo(page, reqs, callback) {
+  const result = [];
+  reqs.forEach(({component, selector, single, fields: fields2}) => {
+    if (component === null) {
+      result.push(getRootInfo(fields2));
+    } else {
+      result.push(getNodesInfo(page, component, selector, single, fields2));
+    }
+  });
+  callback(result);
+}
+function addIntersectionObserver({reqId, component, options, callback}, _pageId) {
+  const $el = findElem(component);
+  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
+}
+function removeIntersectionObserver({reqId, component}, _pageId) {
+  const $el = findElem(component);
+  const intersectionObserver = $el.__io && $el.__io[reqId];
+  if (intersectionObserver) {
+    intersectionObserver.disconnect();
+    delete $el.__io[reqId];
+  }
+}
+function saveImage(base64, dirname, callback) {
+  callback(null, base64);
+}
+const TEMP_PATH = "";
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a2 = document.createElement("a");
+  a2.href = url;
+  if (a2.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
+const API_UPX2PX = "upx2px";
+const Upx2pxProtocol = [
+  {
+    name: "upx",
+    type: [Number, String],
+    required: true
+  }
+];
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+function checkDeviceWidth() {
+  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
+  deviceWidth = windowWidth;
+  deviceDPR = pixelRatio2;
+  isIOS = platform === "ios";
+}
+const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+  if (deviceWidth === 0) {
+    checkDeviceWidth();
+  }
+  number = Number(number);
+  if (number === 0) {
+    return 0;
+  }
+  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
+  if (result < 0) {
+    result = -result;
+  }
+  result = Math.floor(result + EPS);
+  if (result === 0) {
+    if (deviceDPR === 1 || !isIOS) {
+      result = 1;
+    } else {
+      result = 0.5;
+    }
+  }
+  return number < 0 ? -result : result;
+}, Upx2pxProtocol);
+const globalInterceptors = {};
+const scopedInterceptors = {};
+const API_ADD_INTERCEPTOR = "addInterceptor";
+const API_REMOVE_INTERCEPTOR = "removeInterceptor";
+const AddInterceptorProtocol = [
+  {
+    name: "method",
+    type: [String, Object],
+    required: true
+  }
+];
+const RemoveInterceptorProtocol = AddInterceptorProtocol;
+function mergeInterceptorHook(interceptors, interceptor) {
+  Object.keys(interceptor).forEach((hook) => {
+    if (isFunction(interceptor[hook])) {
+      interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
+    }
+  });
+}
+function removeInterceptorHook(interceptors, interceptor) {
+  if (!interceptors || !interceptor) {
+    return;
+  }
+  Object.keys(interceptor).forEach((hook) => {
+    if (isFunction(interceptor[hook])) {
+      removeHook(interceptors[hook], interceptor[hook]);
+    }
+  });
+}
+function mergeHook(parentVal, childVal) {
+  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
+  return res ? dedupeHooks(res) : res;
+}
+function dedupeHooks(hooks) {
+  const res = [];
+  for (let i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i]);
+    }
+  }
+  return res;
+}
+function removeHook(hooks, hook) {
+  if (!hooks) {
+    return;
+  }
+  const index2 = hooks.indexOf(hook);
+  if (index2 !== -1) {
+    hooks.splice(index2, 1);
+  }
+}
+const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+  if (typeof method === "string" && isPlainObject(interceptor)) {
+    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
+  } else if (isPlainObject(method)) {
+    mergeInterceptorHook(globalInterceptors, method);
+  }
+}, AddInterceptorProtocol);
+const removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+  if (typeof method === "string") {
+    if (isPlainObject(interceptor)) {
+      removeInterceptorHook(scopedInterceptors[method], interceptor);
+    } else {
+      delete scopedInterceptors[method];
+    }
+  } else if (isPlainObject(method)) {
+    removeInterceptorHook(globalInterceptors, method);
+  }
+}, RemoveInterceptorProtocol);
+const promiseInterceptor = {
+  returnValue(res) {
+    if (!isPromise(res)) {
+      return res;
+    }
+    return res.then((res2) => {
+      return res2[1];
+    }).catch((res2) => {
+      return res2[0];
+    });
+  }
+};
+const API_ON = "$on";
+const OnProtocol = [
+  {
+    name: "event",
+    type: String,
+    required: true
+  },
+  {
+    name: "callback",
+    type: Function,
+    required: true
+  }
+];
+const API_ONCE = "$once";
+const OnceProtocol = OnProtocol;
+const API_OFF = "$off";
+const OffProtocol = [
+  {
+    name: "event",
+    type: [String, Array]
+  },
+  {
+    name: "callback",
+    type: Function
+  }
+];
+const API_EMIT = "$emit";
+const EmitProtocol = [
+  {
+    name: "event",
+    type: String,
+    required: true
+  }
+];
+const emitter = new E();
+const $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
+  emitter.on(name, callback);
+  return () => emitter.off(name, callback);
+}, OnProtocol);
+const $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
+  emitter.once(name, callback);
+  return () => emitter.off(name, callback);
+}, OnceProtocol);
+const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
+  if (!name) {
+    emitter.e = {};
+    return;
+  }
+  if (!Array.isArray(name))
+    name = [name];
+  name.forEach((n) => emitter.off(n, callback));
+}, OffProtocol);
+const $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, (name, ...args) => {
+  emitter.emit(name, ...args);
+}, EmitProtocol);
+const validator = [
+  {
+    name: "id",
+    type: String,
+    required: true
+  }
+];
+const API_CREATE_VIDEO_CONTEXT = "createVideoContext";
+const API_CREATE_MAP_CONTEXT = "createMapContext";
+const CreateMapContextProtocol = validator;
+const API_CREATE_CANVAS_CONTEXT = "createCanvasContext";
+const CreateCanvasContextProtocol = [
+  {
+    name: "canvasId",
+    type: String,
+    required: true
+  },
+  {
+    name: "componentInstance",
+    type: Object
+  }
+];
+const API_CREATE_INNER_AUDIO_CONTEXT = "createInnerAudioContext";
+const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
+class VideoContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  play() {
+    operateVideoPlayer(this.id, this.pageId, "play");
+  }
+  pause() {
+    operateVideoPlayer(this.id, this.pageId, "pause");
+  }
+  stop() {
+    operateVideoPlayer(this.id, this.pageId, "stop");
+  }
+  seek(position) {
+    operateVideoPlayer(this.id, this.pageId, "seek", {
+      position
+    });
+  }
+  sendDanmu(args) {
+    operateVideoPlayer(this.id, this.pageId, "sendDanmu", args);
+  }
+  playbackRate(rate) {
+    if (!~RATES.indexOf(rate)) {
+      rate = 1;
+    }
+    operateVideoPlayer(this.id, this.pageId, "playbackRate", {
+      rate
+    });
+  }
+  requestFullScreen(args = {}) {
+    operateVideoPlayer(this.id, this.pageId, "requestFullScreen", args);
+  }
+  exitFullScreen() {
+    operateVideoPlayer(this.id, this.pageId, "exitFullScreen");
+  }
+  showStatusBar() {
+    operateVideoPlayer(this.id, this.pageId, "showStatusBar");
+  }
+  hideStatusBar() {
+    operateVideoPlayer(this.id, this.pageId, "hideStatusBar");
+  }
+}
+const createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
+  if (context) {
+    return new VideoContext(id2, getPageIdByVm(context));
+  }
+  return new VideoContext(id2, getPageIdByVm(getCurrentPageVm()));
+});
+class MapContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  getCenterLocation(options) {
+    operateMap(this.id, this.pageId, "getCenterLocation", options);
+  }
+  moveToLocation() {
+    operateMap(this.id, this.pageId, "moveToLocation");
+  }
+  getScale(options) {
+    operateMap(this.id, this.pageId, "getScale", options);
+  }
+  getRegion(options) {
+    operateMap(this.id, this.pageId, "getRegion", options);
+  }
+  includePoints(options) {
+    operateMap(this.id, this.pageId, "includePoints", options);
+  }
+  translateMarker(options) {
+    operateMap(this.id, this.pageId, "translateMarker", options);
+  }
+  addCustomLayer() {
+  }
+  removeCustomLayer() {
+  }
+  addGroundOverlay() {
+  }
+  removeGroundOverlay() {
+  }
+  updateGroundOverlay() {
+  }
+  initMarkerCluster() {
+  }
+  addMarkers() {
+  }
+  removeMarkers() {
+  }
+  moveAlong() {
+  }
+  openMapAp() {
+  }
+  $getAppMap() {
+  }
+}
+const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
+  if (context) {
+    return new MapContext(id2, getPageIdByVm(context));
+  }
+  return new MapContext(id2, getPageIdByVm(getCurrentPageVm()));
+}, CreateMapContextProtocol);
+function getInt(name, defaultValue) {
+  return function(value, params) {
+    if (value) {
+      params[name] = Math.round(value);
+    } else if (typeof defaultValue !== "undefined") {
+      params[name] = defaultValue;
+    }
+  };
+}
+const formatWidth = getInt("width");
+const formatHeight = getInt("height");
+const API_CANVAS_GET_IMAGE_DATA = "canvasGetImageData";
+const CanvasGetImageDataOptions = {
+  formatArgs: {
+    x: getInt("x"),
+    y: getInt("y"),
+    width: formatWidth,
+    height: formatHeight
+  }
+};
+const CanvasGetImageDataProtocol = {
+  canvasId: {
+    type: String,
+    required: true
+  },
+  x: {
+    type: Number,
+    required: true
+  },
+  y: {
+    type: Number,
+    required: true
+  },
+  width: {
+    type: Number,
+    required: true
+  },
+  height: {
+    type: Number,
+    required: true
+  }
+};
+const API_CANVAS_PUT_IMAGE_DATA = "canvasPutImageData";
+const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
+const CanvasPutImageDataProtocol = /* @__PURE__ */ extend({
+  data: {
+    type: Uint8ClampedArray,
+    required: true
+  }
+}, CanvasGetImageDataProtocol);
+const fileTypes = {
+  PNG: "png",
+  JPG: "jpg",
+  JPEG: "jpg"
+};
+const API_CANVAS_TO_TEMP_FILE_PATH = "canvasToTempFilePath";
+const CanvasToTempFilePathOptions = {
+  formatArgs: {
+    x: getInt("x", 0),
+    y: getInt("y", 0),
+    width: formatWidth,
+    height: formatHeight,
+    destWidth: getInt("destWidth"),
+    destHeight: getInt("destHeight"),
+    fileType(value, params) {
+      value = (value || "").toUpperCase();
+      let type = fileTypes[value];
+      if (!type) {
+        type = fileTypes.PNG;
+      }
+      params.fileType = type;
+    },
+    quality(value, params) {
+      params.quality = value && value > 0 && value < 1 ? value : 1;
+    }
+  }
+};
+const CanvasToTempFilePathProtocol = {
+  x: Number,
+  y: Number,
+  width: Number,
+  height: Number,
+  destWidth: Number,
+  destHeight: Number,
+  canvasId: {
+    type: String,
+    required: true
+  },
+  fileType: String,
+  quality: Number
+};
+const canvasEventCallbacks = createCallbacks("canvasEvent");
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
+  const callback = canvasEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+function operateCanvas(canvasId, pageId, type, data) {
+  ServiceJSBridge.publishHandler("canvas." + canvasId, {
+    canvasId,
+    type,
+    data
+  }, pageId);
+}
+var methods1 = ["scale", "rotate", "translate", "setTransform", "transform"];
+var methods2 = [
+  "drawImage",
+  "fillText",
+  "fill",
+  "stroke",
+  "fillRect",
+  "strokeRect",
+  "clearRect",
+  "strokeText"
+];
+var methods3 = [
+  "setFillStyle",
+  "setTextAlign",
+  "setStrokeStyle",
+  "setGlobalAlpha",
+  "setShadow",
+  "setFontSize",
+  "setLineCap",
+  "setLineJoin",
+  "setLineWidth",
+  "setMiterLimit",
+  "setTextBaseline",
+  "setLineDash"
+];
+function measureText(text2, font2) {
+  const canvas = document.createElement("canvas");
+  const c2d = canvas.getContext("2d");
+  c2d.font = font2;
+  return c2d.measureText(text2).width || 0;
+}
+const predefinedColor = {
+  aliceblue: "#f0f8ff",
+  antiquewhite: "#faebd7",
+  aqua: "#00ffff",
+  aquamarine: "#7fffd4",
+  azure: "#f0ffff",
+  beige: "#f5f5dc",
+  bisque: "#ffe4c4",
+  black: "#000000",
+  blanchedalmond: "#ffebcd",
+  blue: "#0000ff",
+  blueviolet: "#8a2be2",
+  brown: "#a52a2a",
+  burlywood: "#deb887",
+  cadetblue: "#5f9ea0",
+  chartreuse: "#7fff00",
+  chocolate: "#d2691e",
+  coral: "#ff7f50",
+  cornflowerblue: "#6495ed",
+  cornsilk: "#fff8dc",
+  crimson: "#dc143c",
+  cyan: "#00ffff",
+  darkblue: "#00008b",
+  darkcyan: "#008b8b",
+  darkgoldenrod: "#b8860b",
+  darkgray: "#a9a9a9",
+  darkgrey: "#a9a9a9",
+  darkgreen: "#006400",
+  darkkhaki: "#bdb76b",
+  darkmagenta: "#8b008b",
+  darkolivegreen: "#556b2f",
+  darkorange: "#ff8c00",
+  darkorchid: "#9932cc",
+  darkred: "#8b0000",
+  darksalmon: "#e9967a",
+  darkseagreen: "#8fbc8f",
+  darkslateblue: "#483d8b",
+  darkslategray: "#2f4f4f",
+  darkslategrey: "#2f4f4f",
+  darkturquoise: "#00ced1",
+  darkviolet: "#9400d3",
+  deeppink: "#ff1493",
+  deepskyblue: "#00bfff",
+  dimgray: "#696969",
+  dimgrey: "#696969",
+  dodgerblue: "#1e90ff",
+  firebrick: "#b22222",
+  floralwhite: "#fffaf0",
+  forestgreen: "#228b22",
+  fuchsia: "#ff00ff",
+  gainsboro: "#dcdcdc",
+  ghostwhite: "#f8f8ff",
+  gold: "#ffd700",
+  goldenrod: "#daa520",
+  gray: "#808080",
+  grey: "#808080",
+  green: "#008000",
+  greenyellow: "#adff2f",
+  honeydew: "#f0fff0",
+  hotpink: "#ff69b4",
+  indianred: "#cd5c5c",
+  indigo: "#4b0082",
+  ivory: "#fffff0",
+  khaki: "#f0e68c",
+  lavender: "#e6e6fa",
+  lavenderblush: "#fff0f5",
+  lawngreen: "#7cfc00",
+  lemonchiffon: "#fffacd",
+  lightblue: "#add8e6",
+  lightcoral: "#f08080",
+  lightcyan: "#e0ffff",
+  lightgoldenrodyellow: "#fafad2",
+  lightgray: "#d3d3d3",
+  lightgrey: "#d3d3d3",
+  lightgreen: "#90ee90",
+  lightpink: "#ffb6c1",
+  lightsalmon: "#ffa07a",
+  lightseagreen: "#20b2aa",
+  lightskyblue: "#87cefa",
+  lightslategray: "#778899",
+  lightslategrey: "#778899",
+  lightsteelblue: "#b0c4de",
+  lightyellow: "#ffffe0",
+  lime: "#00ff00",
+  limegreen: "#32cd32",
+  linen: "#faf0e6",
+  magenta: "#ff00ff",
+  maroon: "#800000",
+  mediumaquamarine: "#66cdaa",
+  mediumblue: "#0000cd",
+  mediumorchid: "#ba55d3",
+  mediumpurple: "#9370db",
+  mediumseagreen: "#3cb371",
+  mediumslateblue: "#7b68ee",
+  mediumspringgreen: "#00fa9a",
+  mediumturquoise: "#48d1cc",
+  mediumvioletred: "#c71585",
+  midnightblue: "#191970",
+  mintcream: "#f5fffa",
+  mistyrose: "#ffe4e1",
+  moccasin: "#ffe4b5",
+  navajowhite: "#ffdead",
+  navy: "#000080",
+  oldlace: "#fdf5e6",
+  olive: "#808000",
+  olivedrab: "#6b8e23",
+  orange: "#ffa500",
+  orangered: "#ff4500",
+  orchid: "#da70d6",
+  palegoldenrod: "#eee8aa",
+  palegreen: "#98fb98",
+  paleturquoise: "#afeeee",
+  palevioletred: "#db7093",
+  papayawhip: "#ffefd5",
+  peachpuff: "#ffdab9",
+  peru: "#cd853f",
+  pink: "#ffc0cb",
+  plum: "#dda0dd",
+  powderblue: "#b0e0e6",
+  purple: "#800080",
+  rebeccapurple: "#663399",
+  red: "#ff0000",
+  rosybrown: "#bc8f8f",
+  royalblue: "#4169e1",
+  saddlebrown: "#8b4513",
+  salmon: "#fa8072",
+  sandybrown: "#f4a460",
+  seagreen: "#2e8b57",
+  seashell: "#fff5ee",
+  sienna: "#a0522d",
+  silver: "#c0c0c0",
+  skyblue: "#87ceeb",
+  slateblue: "#6a5acd",
+  slategray: "#708090",
+  slategrey: "#708090",
+  snow: "#fffafa",
+  springgreen: "#00ff7f",
+  steelblue: "#4682b4",
+  tan: "#d2b48c",
+  teal: "#008080",
+  thistle: "#d8bfd8",
+  tomato: "#ff6347",
+  turquoise: "#40e0d0",
+  violet: "#ee82ee",
+  wheat: "#f5deb3",
+  white: "#ffffff",
+  whitesmoke: "#f5f5f5",
+  yellow: "#ffff00",
+  yellowgreen: "#9acd32",
+  transparent: "#00000000"
+};
+function checkColor(e2) {
+  e2 = e2 || "#000000";
+  var t2 = null;
+  if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
+    const n = parseInt(t2[1].slice(0, 2), 16);
+    const o2 = parseInt(t2[1].slice(2, 4), 16);
+    const r = parseInt(t2[1].slice(4), 16);
+    return [n, o2, r, 255];
+  }
+  if ((t2 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
+    let n = t2[1].slice(0, 1);
+    let o2 = t2[1].slice(1, 2);
+    let r = t2[1].slice(2, 3);
+    n = parseInt(n + n, 16);
+    o2 = parseInt(o2 + o2, 16);
+    r = parseInt(r + r, 16);
+    return [n, o2, r, 255];
+  }
+  if ((t2 = /^rgb\((.+)\)$/.exec(e2)) != null) {
+    return t2[1].split(",").map(function(e22) {
+      return Math.min(255, parseInt(e22.trim()));
+    }).concat(255);
+  }
+  if ((t2 = /^rgba\((.+)\)$/.exec(e2)) != null) {
+    return t2[1].split(",").map(function(e22, t22) {
+      return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
+    });
+  }
+  var i = e2.toLowerCase();
+  if (hasOwn(predefinedColor, i)) {
+    t2 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
+    const n = parseInt(t2[1].slice(0, 2), 16);
+    const o2 = parseInt(t2[1].slice(2, 4), 16);
+    const r = parseInt(t2[1].slice(4, 6), 16);
+    let a2 = parseInt(t2[1].slice(6, 8), 16);
+    a2 = a2 >= 0 ? a2 : 255;
+    return [n, o2, r, a2];
+  }
+  console.error("unsupported color:" + e2);
+  return [0, 0, 0, 255];
+}
+class CanvasGradient {
+  constructor(type, data) {
+    this.type = type;
+    this.data = data;
+    this.colorStop = [];
+  }
+  addColorStop(position, color) {
+    this.colorStop.push([position, checkColor(color)]);
+  }
+}
+class Pattern {
+  constructor(image2, repetition) {
+    this.image = image2;
+    this.repetition = repetition;
+  }
+}
+class TextMetrics {
+  constructor(width) {
+    this.width = width;
+  }
+}
+class CanvasContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+    this.actions = [];
+    this.path = [];
+    this.subpath = [];
+    this.drawingState = [];
+    this.state = {
+      lineDash: [0, 0],
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      shadowBlur: 0,
+      shadowColor: [0, 0, 0, 0],
+      font: "10px sans-serif",
+      fontSize: 10,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontFamily: "sans-serif"
+    };
+  }
+  draw(reserve = false, callback) {
+    var actions = [...this.actions];
+    this.actions = [];
+    this.path = [];
+    var callbackId;
+    if (typeof callback === "function") {
+      callbackId = canvasEventCallbacks.push(callback);
+    }
+    operateCanvas(this.id, this.pageId, "actionsChanged", {
+      actions,
+      reserve,
+      callbackId
+    });
+  }
+  createLinearGradient(x0, y0, x1, y1) {
+    return new CanvasGradient("linear", [x0, y0, x1, y1]);
+  }
+  createCircularGradient(x, y, r) {
+    return new CanvasGradient("radial", [x, y, r]);
+  }
+  createPattern(image2, repetition) {
+    if (repetition === void 0) {
+      console.error("Failed to execute 'createPattern' on 'CanvasContext': 2 arguments required, but only 1 present.");
+    } else if (["repeat", "repeat-x", "repeat-y", "no-repeat"].indexOf(repetition) < 0) {
+      console.error("Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition + "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'.");
+    } else {
+      return new Pattern(image2, repetition);
+    }
+  }
+  measureText(text2) {
+    const font2 = this.state.font;
+    let width = 0;
+    {
+      width = measureText(text2, font2);
+    }
+    return new TextMetrics(width);
+  }
+  save() {
+    this.actions.push({
+      method: "save",
+      data: []
+    });
+    this.drawingState.push(this.state);
+  }
+  restore() {
+    this.actions.push({
+      method: "restore",
+      data: []
+    });
+    this.state = this.drawingState.pop() || {
+      lineDash: [0, 0],
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      shadowBlur: 0,
+      shadowColor: [0, 0, 0, 0],
+      font: "10px sans-serif",
+      fontSize: 10,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontFamily: "sans-serif"
+    };
+  }
+  beginPath() {
+    this.path = [];
+    this.subpath = [];
+  }
+  moveTo(x, y) {
+    this.path.push({
+      method: "moveTo",
+      data: [x, y]
+    });
+    this.subpath = [[x, y]];
+  }
+  lineTo(x, y) {
+    if (this.path.length === 0 && this.subpath.length === 0) {
+      this.path.push({
+        method: "moveTo",
+        data: [x, y]
+      });
+    } else {
+      this.path.push({
+        method: "lineTo",
+        data: [x, y]
+      });
+    }
+    this.subpath.push([x, y]);
+  }
+  quadraticCurveTo(cpx, cpy, x, y) {
+    this.path.push({
+      method: "quadraticCurveTo",
+      data: [cpx, cpy, x, y]
+    });
+    this.subpath.push([x, y]);
+  }
+  bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
+    this.path.push({
+      method: "bezierCurveTo",
+      data: [cp1x, cp1y, cp2x, cp2y, x, y]
+    });
+    this.subpath.push([x, y]);
+  }
+  arc(x, y, r, sAngle, eAngle, counterclockwise = false) {
+    this.path.push({
+      method: "arc",
+      data: [x, y, r, sAngle, eAngle, counterclockwise]
+    });
+    this.subpath.push([x, y]);
+  }
+  rect(x, y, width, height) {
+    this.path.push({
+      method: "rect",
+      data: [x, y, width, height]
+    });
+    this.subpath = [[x, y]];
+  }
+  arcTo(x1, y1, x2, y2, radius) {
+    this.path.push({
+      method: "arcTo",
+      data: [x1, y1, x2, y2, radius]
+    });
+    this.subpath.push([x2, y2]);
+  }
+  clip() {
+    this.actions.push({
+      method: "clip",
+      data: [...this.path]
+    });
+  }
+  closePath() {
+    this.path.push({
+      method: "closePath",
+      data: []
+    });
+    if (this.subpath.length) {
+      this.subpath = [this.subpath.shift()];
+    }
+  }
+  clearActions() {
+    this.actions = [];
+    this.path = [];
+    this.subpath = [];
+  }
+  getActions() {
+    var actions = [...this.actions];
+    this.clearActions();
+    return actions;
+  }
+  set lineDashOffset(value) {
+    this.actions.push({
+      method: "setLineDashOffset",
+      data: [value]
+    });
+  }
+  set globalCompositeOperation(type) {
+    this.actions.push({
+      method: "setGlobalCompositeOperation",
+      data: [type]
+    });
+  }
+  set shadowBlur(level) {
+    this.actions.push({
+      method: "setShadowBlur",
+      data: [level]
+    });
+  }
+  set shadowColor(color) {
+    this.actions.push({
+      method: "setShadowColor",
+      data: [color]
+    });
+  }
+  set shadowOffsetX(x) {
+    this.actions.push({
+      method: "setShadowOffsetX",
+      data: [x]
+    });
+  }
+  set shadowOffsetY(y) {
+    this.actions.push({
+      method: "setShadowOffsetY",
+      data: [y]
+    });
+  }
+  set font(value) {
+    var self = this;
+    this.state.font = value;
+    var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+    if (fontFormat) {
+      var style = fontFormat[1].trim().split(/\s/);
+      var fontSize = parseFloat(fontFormat[3]);
+      var fontFamily = fontFormat[7];
+      var actions = [];
+      style.forEach(function(value2, index2) {
+        if (["italic", "oblique", "normal"].indexOf(value2) > -1) {
+          actions.push({
+            method: "setFontStyle",
+            data: [value2]
+          });
+          self.state.fontStyle = value2;
+        } else if (["bold", "normal"].indexOf(value2) > -1) {
+          actions.push({
+            method: "setFontWeight",
+            data: [value2]
+          });
+          self.state.fontWeight = value2;
+        } else if (index2 === 0) {
+          actions.push({
+            method: "setFontStyle",
+            data: ["normal"]
+          });
+          self.state.fontStyle = "normal";
+        } else if (index2 === 1) {
+          pushAction();
+        }
+      });
+      if (style.length === 1) {
+        pushAction();
+      }
+      style = actions.map(function(action) {
+        return action.data[0];
+      }).join(" ");
+      this.state.fontSize = fontSize;
+      this.state.fontFamily = fontFamily;
+      this.actions.push({
+        method: "setFont",
+        data: [`${style} ${fontSize}px ${fontFamily}`]
+      });
+    } else {
+      console.warn("Failed to set 'font' on 'CanvasContext': invalid format.");
+    }
+    function pushAction() {
+      actions.push({
+        method: "setFontWeight",
+        data: ["normal"]
+      });
+      self.state.fontWeight = "normal";
+    }
+  }
+  get font() {
+    return this.state.font;
+  }
+  set fillStyle(color) {
+    this.setFillStyle(color);
+  }
+  set strokeStyle(color) {
+    this.setStrokeStyle(color);
+  }
+  set globalAlpha(value) {
+    value = Math.floor(255 * parseFloat(value));
+    this.actions.push({
+      method: "setGlobalAlpha",
+      data: [value]
+    });
+  }
+  set textAlign(align2) {
+    this.actions.push({
+      method: "setTextAlign",
+      data: [align2]
+    });
+  }
+  set lineCap(type) {
+    this.actions.push({
+      method: "setLineCap",
+      data: [type]
+    });
+  }
+  set lineJoin(type) {
+    this.actions.push({
+      method: "setLineJoin",
+      data: [type]
+    });
+  }
+  set lineWidth(value) {
+    this.actions.push({
+      method: "setLineWidth",
+      data: [value]
+    });
+  }
+  set miterLimit(value) {
+    this.actions.push({
+      method: "setMiterLimit",
+      data: [value]
+    });
+  }
+  set textBaseline(type) {
+    this.actions.push({
+      method: "setTextBaseline",
+      data: [type]
+    });
+  }
+}
+[...methods1, ...methods2].forEach(function(method) {
+  function get(method2) {
+    switch (method2) {
+      case "fill":
+      case "stroke":
+        return function() {
+          this.actions.push({
+            method: method2 + "Path",
+            data: [...this.path]
+          });
+        };
+      case "fillRect":
+        return function(x, y, width, height) {
+          this.actions.push({
+            method: "fillPath",
+            data: [
+              {
+                method: "rect",
+                data: [x, y, width, height]
+              }
+            ]
+          });
+        };
+      case "strokeRect":
+        return function(x, y, width, height) {
+          this.actions.push({
+            method: "strokePath",
+            data: [
+              {
+                method: "rect",
+                data: [x, y, width, height]
+              }
+            ]
+          });
+        };
+      case "fillText":
+      case "strokeText":
+        return function(text2, x, y, maxWidth) {
+          var data = [text2.toString(), x, y];
+          if (typeof maxWidth === "number") {
+            data.push(maxWidth);
+          }
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+      case "drawImage":
+        return function(imageResource, dx, dy, dWidth, dHeight, sx, sy, sWidth, sHeight) {
+          if (sHeight === void 0) {
+            sx = dx;
+            sy = dy;
+            sWidth = dWidth;
+            sHeight = dHeight;
+            dx = void 0;
+            dy = void 0;
+            dWidth = void 0;
+            dHeight = void 0;
+          }
+          var data;
+          function isNumber(e2) {
+            return typeof e2 === "number";
+          }
+          data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [
+            imageResource,
+            sx,
+            sy,
+            sWidth,
+            sHeight,
+            dx,
+            dy,
+            dWidth,
+            dHeight
+          ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+      default:
+        return function(...data) {
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+    }
+  }
+  CanvasContext.prototype[method] = get(method);
+});
+methods3.forEach(function(method) {
+  function get(method2) {
+    switch (method2) {
+      case "setFillStyle":
+      case "setStrokeStyle":
+        return function(color) {
+          if (typeof color !== "object") {
+            this.actions.push({
+              method: method2,
+              data: ["normal", checkColor(color)]
+            });
+          } else {
+            this.actions.push({
+              method: method2,
+              data: [color.type, color.data, color.colorStop]
+            });
+          }
+        };
+      case "setGlobalAlpha":
+        return function(alpha) {
+          alpha = Math.floor(255 * parseFloat(alpha));
+          this.actions.push({
+            method: method2,
+            data: [alpha]
+          });
+        };
+      case "setShadow":
+        return function(offsetX, offsetY, blur, color) {
+          color = checkColor(color);
+          this.actions.push({
+            method: method2,
+            data: [offsetX, offsetY, blur, color]
+          });
+          this.state.shadowBlur = blur;
+          this.state.shadowColor = color;
+          this.state.shadowOffsetX = offsetX;
+          this.state.shadowOffsetY = offsetY;
+        };
+      case "setLineDash":
+        return function(pattern, offset) {
+          pattern = pattern || [0, 0];
+          offset = offset || 0;
+          this.actions.push({
+            method: method2,
+            data: [pattern, offset]
+          });
+          this.state.lineDash = pattern;
+        };
+      case "setFontSize":
+        return function(fontSize) {
+          this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
+          this.state.fontSize = fontSize;
+          this.actions.push({
+            method: method2,
+            data: [fontSize]
+          });
+        };
+      default:
+        return function(...data) {
+          this.actions.push({
+            method: method2,
+            data
+          });
+        };
+    }
+  }
+  CanvasContext.prototype[method] = get(method);
+});
+const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
+  if (componentInstance) {
+    return new CanvasContext(canvasId, getPageIdByVm(componentInstance));
+  }
+  const pageId = getPageIdByVm(getCurrentPageVm());
+  if (pageId) {
+    return new CanvasContext(canvasId, pageId);
+  } else {
+    UniServiceJSBridge.emit("onError", "createCanvasContext:fail");
+  }
+}, CreateCanvasContextProtocol);
+const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({canvasId, x, y, width, height}, {resolve, reject}) => {
+  const pageId = getPageIdByVm(getCurrentPageVm());
+  if (!pageId) {
+    reject();
+    return;
+  }
+  const cId = canvasEventCallbacks.push(async function(data) {
+    let imgData = data.data;
+    if (imgData && imgData.length) {
+      data.data = new Uint8ClampedArray(imgData);
+    }
+    resolve(data);
+  });
+  operateCanvas(canvasId, pageId, "getImageData", {
+    x,
+    y,
+    width,
+    height,
+    callbackId: cId
+  });
+}, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
+const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({canvasId, data, x, y, width, height}, {resolve, reject}) => {
+  var pageId = getPageIdByVm(getCurrentPageVm());
+  if (!pageId) {
+    reject();
+    return;
+  }
+  var cId = canvasEventCallbacks.push(function(data2) {
+    resolve(data2);
+  });
+  let compressed;
+  {
+    data = Array.prototype.slice.call(data);
+  }
+  operateCanvas(canvasId, pageId, "putImageData", {
+    data,
+    x,
+    y,
+    width,
+    height,
+    compressed,
+    callbackId: cId
+  });
+}, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
+const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({
+  x = 0,
+  y = 0,
+  width,
+  height,
+  destWidth,
+  destHeight,
+  canvasId,
+  fileType,
+  quality
+}, {resolve, reject}) => {
+  var pageId = getPageIdByVm(getCurrentPageVm());
+  if (!pageId) {
+    reject();
+    return;
+  }
+  const cId = canvasEventCallbacks.push(function(res) {
+    resolve(res);
+  });
+  const dirname = `${TEMP_PATH}/canvas`;
+  operateCanvas(canvasId, pageId, "toTempFilePath", {
+    x,
+    y,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    fileType,
+    quality,
+    dirname,
+    callbackId: cId
+  });
+}, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
+const defaultOptions = {
+  thresholds: [0],
+  initialRatio: 0,
+  observeAll: false
+};
+const MARGINS = ["top", "right", "bottom", "left"];
+let reqComponentObserverId = 1;
+function normalizeRootMargin(margins = {}) {
+  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
+}
+class ServiceIntersectionObserver {
+  constructor(component, options) {
+    this._pageId = getPageIdByVm(component);
+    this._component = component;
+    this._options = extend({}, defaultOptions, options);
+  }
+  relativeTo(selector, margins) {
+    this._options.relativeToSelector = selector;
+    this._options.rootMargin = normalizeRootMargin(margins);
+    return this;
+  }
+  relativeToViewport(margins) {
+    this._options.relativeToSelector = void 0;
+    this._options.rootMargin = normalizeRootMargin(margins);
+    return this;
+  }
+  observe(selector, callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._options.selector = selector;
+    this._reqId = reqComponentObserverId++;
+    addIntersectionObserver({
+      reqId: this._reqId,
+      component: this._component,
+      options: this._options,
+      callback
+    }, this._pageId);
+  }
+  disconnect() {
+    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
+  }
+}
+const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
+  if (context && !getPageIdByVm(context)) {
+    options = context;
+    context = null;
+  }
+  if (context) {
+    return new ServiceIntersectionObserver(context, options);
+  }
+  return new ServiceIntersectionObserver(getCurrentPageVm(), options);
+});
+let eventReady = false;
+let index$7 = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+  const data = {};
+  if (options && ("success" in options || "fail" in options || "complete" in options)) {
+    const callbackId = String(index$7++);
+    data.callbackId = callbackId;
+    optionsCache[callbackId] = options;
+    if (!eventReady) {
+      ServiceJSBridge.subscribe("onEditorMethodCallback", ({callbackId: callbackId2, data: data2}) => {
+        callOptions(optionsCache[callbackId2], data2);
+        delete optionsCache[callbackId2];
+      });
+      eventReady = true;
+    }
+  }
+  data.options = options;
+  ServiceJSBridge.publishHandler("editor." + componentId, {
+    componentId,
+    type,
+    data
+  }, pageId);
+}
+class EditorContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  format(name, value) {
+    this._exec("format", {
+      name,
+      value
+    });
+  }
+  insertDivider() {
+    this._exec("insertDivider");
+  }
+  insertImage(options) {
+    this._exec("insertImage", options);
+  }
+  insertText(options) {
+    this._exec("insertText", options);
+  }
+  setContents(options) {
+    this._exec("setContents", options);
+  }
+  getContents(options) {
+    this._exec("getContents", options);
+  }
+  clear(options) {
+    this._exec("clear", options);
+  }
+  removeFormat(options) {
+    this._exec("removeFormat", options);
+  }
+  undo(options) {
+    this._exec("undo", options);
+  }
+  redo(options) {
+    this._exec("redo", options);
+  }
+  blur(options) {
+    this._exec("blur", options);
+  }
+  getSelectionText(options) {
+    this._exec("getSelectionText", options);
+  }
+  scrollIntoView(options) {
+    this._exec("scrollIntoView", options);
+  }
+  _exec(method, options) {
+    operateEditor(this.id, this.pageId, method, options);
+  }
+}
+const ContextClasss = {
+  canvas: CanvasContext,
+  map: MapContext,
+  video: VideoContext,
+  editor: EditorContext
+};
+function convertContext(result) {
+  if (result && result.contextInfo) {
+    const {id: id2, type, page} = result.contextInfo;
+    const ContextClass = ContextClasss[type];
+    result.context = new ContextClass(id2, page);
+    delete result.contextInfo;
+  }
+}
+class NodesRef {
+  constructor(selectorQuery, component, selector, single) {
+    this._selectorQuery = selectorQuery;
+    this._component = component;
+    this._selector = selector;
+    this._single = single;
+  }
+  boundingClientRect(callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      id: true,
+      dataset: true,
+      rect: true,
+      size: true
+    }, callback);
+    return this._selectorQuery;
+  }
+  fields(fields2, callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, fields2, callback);
+    return this._selectorQuery;
+  }
+  scrollOffset(callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      id: true,
+      dataset: true,
+      scrollOffset: true
+    }, callback);
+    return this._selectorQuery;
+  }
+  context(callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      context: true
+    }, callback);
+    return this._selectorQuery;
+  }
+}
+class SelectorQuery {
+  constructor(page) {
+    this._component = void 0;
+    this._page = page;
+    this._queue = [];
+    this._queueCb = [];
+  }
+  exec(callback) {
+    requestComponentInfo(this._page, this._queue, (res) => {
+      const queueCbs = this._queueCb;
+      res.forEach((result, index2) => {
+        if (Array.isArray(result)) {
+          result.forEach(convertContext);
+        } else {
+          convertContext(result);
+        }
+        const queueCb = queueCbs[index2];
+        if (typeof queueCb === "function") {
+          queueCb.call(this, result);
+        }
+      });
+      if (typeof callback === "function") {
+        callback.call(this, res);
+      }
+    });
+    return this._nodesRef;
+  }
+  in(component) {
+    this._component = component || void 0;
+    return this;
+  }
+  select(selector) {
+    return this._nodesRef = new NodesRef(this, this._component, selector, true);
+  }
+  selectAll(selector) {
+    return this._nodesRef = new NodesRef(this, this._component, selector, false);
+  }
+  selectViewport() {
+    return this._nodesRef = new NodesRef(this, null, "", true);
+  }
+  _push(selector, component, single, fields2, callback) {
+    this._queue.push({
+      component,
+      selector,
+      single,
+      fields: fields2
+    });
+    this._queueCb.push(callback);
+  }
+}
+const createSelectorQuery = /* @__PURE__ */ defineSyncApi("createSelectorQuery", (context) => {
+  if (context && !getPageIdByVm(context)) {
+    context = null;
+  }
+  return new SelectorQuery(context || getCurrentPageVm());
+});
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
+});
+const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
+const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
+ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
+  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, {resolve, reject}) => {
+  const pageId = getCurrentPageId();
+  ServiceJSBridge.publishHandler && ServiceJSBridge.publishHandler("getSelectedTextRange", {
+    pageId,
+    callbackId: getSelectedTextRangeEventCallbacks.push(function(res) {
+      if (typeof res.end === "undefined" && typeof res.start === "undefined") {
+        reject("no focused");
+      } else {
+        resolve(res);
+      }
+    })
+  }, pageId);
+});
+const API_CAN_I_USE = "canIUse";
+const CanIUseProtocol = [
+  {
+    name: "schema",
+    type: String,
+    required: true
+  }
+];
+const API_MAKE_PHONE_CALL = "makePhoneCall";
+const MakePhoneCallProtocol = {
+  phoneNumber: String
+};
+const API_ON_ACCELEROMETER = "onAccelerometer";
+const API_OFF_ACCELEROMETER = "offAccelerometer";
+const API_START_ACCELEROMETER = "startAccelerometer";
+const API_STOP_ACCELEROMETER = "stopAccelerometer";
+const API_ON_COMPASS = "onCompass";
+const API_OFF_COMPASS = "offCompass";
+const API_START_COMPASS = "startCompass";
+const API_STOP_COMPASS = "stopCompass";
+const API_VIBRATE_SHORT = "vibrateShort";
+const API_VIBRATE_LONG = "vibrateLong";
+const API_GET_STORAGE = "getStorage";
+const GetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  }
+};
+const API_GET_STORAGE_SYNC = "getStorageSync";
+const GetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  }
+];
+const API_SET_STORAGE = "setStorage";
+const SetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  },
+  data: {
+    required: true
+  }
+};
+const API_SET_STORAGE_SYNC = "setStorageSync";
+const SetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  },
+  {
+    name: "data",
+    required: true
+  }
+];
+const API_REMOVE_STORAGE = "removeStorage";
+const RemoveStorageProtocol = GetStorageProtocol;
+const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
+const API_GET_FILE_INFO = "getFileInfo";
+const GetFileInfoOptions = {
+  formatArgs: {
+    filePath(filePath, params) {
+      params.filePath = getRealPath(filePath);
+    }
+  }
+};
+const GetFileInfoProtocol = {
+  filePath: {
+    type: String,
+    required: true
+  }
+};
+const API_OPEN_DOCUMENT = "openDocument";
+const OpenDocumentOptions = {
+  formatArgs: {
+    filePath(filePath, params) {
+      params.filePath = getRealPath(filePath);
+    }
+  }
+};
+const OpenDocumentProtocol = {
+  filePath: {
+    type: String,
+    required: true
+  },
+  fileType: String
+};
+const API_HIDE_KEYBOARD = "hideKeyboard";
+const API_CHOOSE_LOCATION = "chooseLocation";
+const ChooseLocationProtocol = {
+  keyword: String,
+  latitude: Number,
+  longitude: Number
+};
+const API_GET_LOCATION = "getLocation";
+const coordTypes = ["WGS84", "GCJ02"];
+const GetLocationOptions = {
+  formatArgs: {
+    type(value, params) {
+      value = (value || "").toUpperCase();
+      if (coordTypes.indexOf(value) === -1) {
+        params.type = coordTypes[0];
+      } else {
+        params.type = value;
+      }
+    },
+    altitude(value, params) {
+      params.altitude = value ? value : false;
+    }
+  }
+};
+const GetLocationProtocol = {
+  type: String,
+  altitude: Boolean
+};
+const API_OPEN_LOCATION = "openLocation";
+const OpenLocationOptions = {
+  formatArgs: {
+    scale(value, params) {
+      value = Math.floor(value);
+      params.scale = value >= 5 && value <= 18 ? value : 18;
+    }
+  }
+};
+const OpenLocationProtocol = {
+  latitude: {
+    type: Number,
+    required: true
+  },
+  longitude: {
+    type: Number,
+    required: true
+  },
+  scale: Number,
+  name: String,
+  address: String
+};
+const API_CHOOSE_IMAGE = "chooseImage";
+const ChooseImageOptions = {
+  formatArgs: {
+    count(value, params) {
+      if (!value || value <= 0) {
+        params.count = 9;
+      }
+    },
+    sizeType(sizeType, params) {
+      params.sizeType = elemsInArray(sizeType, CHOOSE_SIZE_TYPES);
+    },
+    sourceType(sourceType, params) {
+      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+    },
+    extension(extension, params) {
+      if (extension instanceof Array && extension.length === 0) {
+        return "param extension should not be empty.";
+      }
+      if (!extension)
+        params.extension = [""];
+    }
+  }
+};
+const ChooseImageProtocol = {
+  count: Number,
+  sizeType: [Array, String],
+  sourceType: Array,
+  extension: Array
+};
+const API_CHOOSE_VIDEO = "chooseVideo";
+const ChooseVideoOptions = {
+  formatArgs: {
+    sourceType(sourceType, params) {
+      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+    },
+    compressed: true,
+    maxDuration: 60,
+    camera: "back",
+    extension(extension, params) {
+      if (extension instanceof Array && extension.length === 0) {
+        return "param extension should not be empty.";
+      }
+      if (!extension)
+        params.extension = [""];
+    }
+  }
+};
+const ChooseVideoProtocol = {
+  sourceType: Array,
+  compressed: Boolean,
+  maxDuration: Number,
+  camera: String,
+  extension: Array
+};
+const API_CHOOSE_FILE = "chooseFile";
+const CHOOSE_MEDIA_TYPE = [
+  "all",
+  "image",
+  "video"
+];
+const ChooseFileOptions = {
+  formatArgs: {
+    count(count, params) {
+      if (!count || count <= 0) {
+        params.count = 100;
+      }
+    },
+    sourceType(sourceType, params) {
+      params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+    },
+    type(type, params) {
+      params.type = elemInArray(type, CHOOSE_MEDIA_TYPE);
+    },
+    extension(extension, params) {
+      if (extension instanceof Array && extension.length === 0) {
+        return "param extension should not be empty.";
+      }
+      if (!extension)
+        params.extension = [""];
+    }
+  }
+};
+const ChooseFileProtocol = {
+  count: Number,
+  sourceType: Array,
+  type: String,
+  extension: Array
+};
+const API_GET_IMAGE_INFO = "getImageInfo";
+const GetImageInfoOptions = {
+  formatArgs: {
+    src(src, params) {
+      params.src = getRealPath(src);
+    }
+  }
+};
+const GetImageInfoProtocol = {
+  src: {
+    type: String,
+    required: true
+  }
+};
+const API_PREVIEW_IMAGE = "previewImage";
+const PreviewImageOptions = {
+  formatArgs: {
+    urls(urls, params) {
+      params.urls = urls.map((url) => typeof url === "string" && url ? getRealPath(url) : "");
+    },
+    current(current, params) {
+      if (typeof current === "number") {
+        params.current = current > 0 && current < params.urls.length ? current : 0;
+      } else if (typeof current === "string" && current) {
+        params.current = getRealPath(current);
+      }
+    }
+  }
+};
+const PreviewImageProtocol = {
+  urls: {
+    type: Array,
+    required: true
+  },
+  current: {
+    type: [Number, String]
+  }
+};
+const API_GET_VIDEO_INFO = "getVideoInfo";
+const GetVideoInfoOptions = {
+  formatArgs: {
+    src(src, params) {
+      params.src = getRealPath(src);
+    }
+  }
+};
+const GetVideoInfoProtocol = {
+  src: {
+    type: String,
+    required: true
+  }
+};
+const API_REQUEST = "request";
+const dataType = {
+  JSON: "json"
+};
+const RESPONSE_TYPE = ["text", "arraybuffer"];
+const DEFAULT_RESPONSE_TYPE = "text";
+const encode = encodeURIComponent;
+function stringifyQuery(url, data) {
+  let str = url.split("#");
+  const hash = str[1] || "";
+  str = str[0].split("?");
+  let query = str[1] || "";
+  url = str[0];
+  const search = query.split("&").filter((item) => item);
+  const params = {};
+  search.forEach((item) => {
+    const part = item.split("=");
+    params[part[0]] = part[1];
+  });
+  for (const key in data) {
+    if (hasOwn(data, key)) {
+      let v2 = data[key];
+      if (typeof v2 === "undefined" || v2 === null) {
+        v2 = "";
+      } else if (isPlainObject(v2)) {
+        v2 = JSON.stringify(v2);
+      }
+      params[encode(key)] = encode(v2);
+    }
+  }
+  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
+  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
+}
+const RequestProtocol = {
+  method: String,
+  data: [Object, String, Array, ArrayBuffer],
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean
+};
+const RequestOptions = {
+  formatArgs: {
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    data(value, params) {
+      params.data = value || "";
+    },
+    url(value, params) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
+        params.url = stringifyQuery(value, params.data);
+      }
+    },
+    header(value, params) {
+      const header = params.header = value || {};
+      if (params.method !== HTTP_METHODS[0]) {
+        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+          header["Content-Type"] = "application/json";
+        }
+      }
+    },
+    dataType(value, params) {
+      params.dataType = (value || dataType.JSON).toLowerCase();
+    },
+    responseType(value, params) {
+      params.responseType = (value || "").toLowerCase();
+      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+        params.responseType = DEFAULT_RESPONSE_TYPE;
+      }
+    }
+  }
+};
+const API_DOWNLOAD_FILE = "downloadFile";
+const DownloadFileOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    }
+  }
+};
+const DownloadFileProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  timeout: Number
+};
+const API_UPLOAD_FILE = "uploadFile";
+const UploadFileOptions = {
+  formatArgs: {
+    filePath(filePath, params) {
+      if (filePath) {
+        params.filePath = getRealPath(filePath);
+      }
+    },
+    header(value, params) {
+      params.header = value || {};
+    },
+    formData(value, params) {
+      params.formData = value || {};
+    }
+  }
+};
+const UploadFileProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  files: Array,
+  filePath: String,
+  name: String,
+  header: Object,
+  formData: Object,
+  timeout: Number
+};
+const API_CONNECT_SOCKET = "connectSocket";
+const ConnectSocketOptions = {
+  formatArgs: {
+    header(value, params) {
+      params.header = value || {};
+    },
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    protocols(protocols, params) {
+      if (typeof protocols === "string") {
+        params.protocols = [protocols];
+      }
+    }
+  }
+};
+const ConnectSocketProtocol = {
+  url: {
+    type: String,
+    required: true
+  },
+  header: {
+    type: Object
+  },
+  method: String,
+  protocols: [Array, String]
+};
+const API_SEND_SOCKET_MESSAGE = "sendSocketMessage";
+const SendSocketMessageProtocol = {
+  data: [String, ArrayBuffer]
+};
+const API_CLOSE_SOCKET = "closeSocket";
+const CloseSocketProtocol = {
+  code: Number,
+  reason: String
+};
+function encodeQueryString(url) {
+  if (typeof url !== "string") {
+    return url;
+  }
+  const index2 = url.indexOf("?");
+  if (index2 === -1) {
+    return url;
+  }
+  const query = url.substr(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  if (!query) {
+    return url;
+  }
+  url = url.substr(0, index2);
+  const params = [];
+  query.split("&").forEach((param) => {
+    const parts = param.replace(/\+/g, " ").split("=");
+    const key = parts.shift();
+    const val = parts.length > 0 ? parts.join("=") : "";
+    params.push(key + "=" + encodeURIComponent(val));
+  });
+  return params.length ? url + "?" + params.join("&") : url;
+}
+const ANIMATION_IN = [
+  "slide-in-right",
+  "slide-in-left",
+  "slide-in-top",
+  "slide-in-bottom",
+  "fade-in",
+  "zoom-out",
+  "zoom-fade-out",
+  "pop-in",
+  "none"
+];
+const ANIMATION_OUT = [
+  "slide-out-right",
+  "slide-out-left",
+  "slide-out-top",
+  "slide-out-bottom",
+  "fade-out",
+  "zoom-in",
+  "zoom-fade-in",
+  "pop-out",
+  "none"
+];
+const BaseRouteProtocol = {
+  url: {
+    type: String,
+    required: true
+  }
+};
+const API_NAVIGATE_TO = "navigateTo";
+const API_REDIRECT_TO = "redirectTo";
+const API_RE_LAUNCH = "reLaunch";
+const API_SWITCH_TAB = "switchTab";
+const API_NAVIGATE_BACK = "navigateBack";
+const API_PRELOAD_PAGE = "preloadPage";
+const API_UN_PRELOAD_PAGE = "unPreloadPage";
+const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateBackProtocol = /* @__PURE__ */ extend({
+  delta: {
+    type: Number
+  }
+}, createAnimationProtocol(ANIMATION_OUT));
+const RedirectToProtocol = BaseRouteProtocol;
+const ReLaunchProtocol = BaseRouteProtocol;
+const SwitchTabProtocol = BaseRouteProtocol;
+const NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
+const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
+const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
+const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
+const NavigateBackOptions = {
+  formatArgs: {
+    delta(value, params) {
+      value = parseInt(value + "") || 1;
+      params.delta = Math.min(getCurrentPages().length - 1, value);
+    }
+  }
+};
+function createAnimationProtocol(animationTypes) {
+  return {
+    animationType: {
+      type: String,
+      validator(type) {
+        if (type && animationTypes.indexOf(type) === -1) {
+          return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
+        }
+      }
+    },
+    animationDuration: {
+      type: Number
+    }
+  };
+}
+let navigatorLock;
+function beforeRoute() {
+  navigatorLock = "";
+}
+function createRouteOptions(type) {
+  return {
+    formatArgs: {
+      url: createNormalizeUrl(type)
+    },
+    beforeAll: beforeRoute
+  };
+}
+function createNormalizeUrl(type) {
+  return function normalizeUrl(url, params) {
+    if (!url) {
+      return `Missing required args: "url"`;
+    }
+    url = getRealRoute(url);
+    const pagePath = url.split("?")[0];
+    const routeOptions = __uniRoutes.find(({path, alias}) => path === pagePath || alias === pagePath);
+    if (!routeOptions) {
+      return "page `" + url + "` is not found";
+    }
+    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+      if (routeOptions.meta.isTabBar) {
+        return `can not ${type} a tabbar page`;
+      }
+    } else if (type === API_SWITCH_TAB) {
+      if (!routeOptions.meta.isTabBar) {
+        return "can not switch to no-tabBar page";
+      }
+    }
+    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
+      url = pagePath;
+    }
+    if (routeOptions.meta.isEntry) {
+      url = url.replace(routeOptions.alias, "/");
+    }
+    params.url = encodeQueryString(url);
+    if (type === API_UN_PRELOAD_PAGE) {
+      return;
+    } else if (type === API_PRELOAD_PAGE) {
+      if (routeOptions.meta.isTabBar) {
+        const pages = getCurrentPages();
+        const tabBarPagePath = routeOptions.path.substr(1);
+        if (pages.find((page) => page.route === tabBarPagePath)) {
+          return "tabBar page `" + tabBarPagePath + "` already exists";
+        }
+      }
+      return;
+    }
+    if (navigatorLock === url && params.openType !== "appLaunch") {
+      return `${navigatorLock} locked`;
+    }
+    if (__uniConfig.ready) {
+      navigatorLock = url;
+    }
+  };
+}
+const API_HIDE_LOADING = "hideLoading";
+const API_HIDE_TOAST = "hideToast";
+const API_LOAD_FONT_FACE = "loadFontFace";
+const LoadFontFaceProtocol = {
+  family: {
+    type: String,
+    required: true
+  },
+  source: {
+    type: String,
+    required: true
+  },
+  desc: Object
+};
+const FRONT_COLORS = ["#ffffff", "#000000"];
+const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const SetNavigationBarColorOptions = {
+  formatArgs: {
+    animation(animation, params) {
+      if (!animation) {
+        animation = {duration: 0, timingFunc: "linear"};
+      }
+      params.animation = {
+        duration: animation.duration || 0,
+        timingFunc: animation.timingFunc || "linear"
+      };
+    }
+  }
+};
+const SetNavigationBarColorProtocol = {
+  frontColor: {
+    type: String,
+    required: true,
+    validator(frontColor) {
+      if (FRONT_COLORS.indexOf(frontColor) === -1) {
+        return `invalid frontColor "${frontColor}"`;
+      }
+    }
+  },
+  backgroundColor: {
+    type: String,
+    required: true
+  },
+  animation: Object
+};
+const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+const SetNavigationBarTitleProtocol = {
+  title: {
+    type: String,
+    required: true
+  }
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
+const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+const API_PAGE_SCROLL_TO = "pageScrollTo";
+const PageScrollToProtocol = {
+  scrollTop: Number,
+  selector: String,
+  duration: Number
+};
+const DEFAULT_DURATION = 300;
+const PageScrollToOptions = {
+  formatArgs: {
+    duration(value, params) {
+      params.duration = Math.max(0, parseInt(value + "") || DEFAULT_DURATION);
+    }
+  }
+};
+const API_SHOW_ACTION_SHEET = "showActionSheet";
+const ShowActionSheetProtocol = {
+  itemList: {
+    type: Array,
+    required: true
+  },
+  itemColor: String,
+  popover: Object
+};
+const ShowActionSheetOptions = {
+  formatArgs: {
+    itemColor: "#000"
+  }
+};
+const API_SHOW_LOADING = "showLoading";
+const ShowLoadingProtocol = {
+  title: String,
+  mask: Boolean
+};
+const ShowLoadingOptions = {
+  formatArgs: {
+    title: "",
+    mask: false
+  }
+};
+const API_SHOW_MODAL = "showModal";
+const ShowModalProtocol = {
+  title: String,
+  content: String,
+  showCancel: Boolean,
+  cancelText: String,
+  cancelColor: String,
+  confirmText: String,
+  confirmColor: String
+};
+const ShowModalOptions = {
+  beforeInvoke() {
+    initI18nShowModalMsgsOnce();
+  },
+  formatArgs: {
+    title: "",
+    content: "",
+    showCancel: true,
+    cancelText(_value, params) {
+      if (!hasOwn(params, "cancelText")) {
+        const {t: t2} = useI18n();
+        params.cancelText = t2("uni.showModal.cancel");
+      }
+    },
+    cancelColor: "#000",
+    confirmText(_value, params) {
+      if (!hasOwn(params, "confirmText")) {
+        const {t: t2} = useI18n();
+        params.confirmText = t2("uni.showModal.confirm");
+      }
+    },
+    confirmColor: PRIMARY_COLOR
+  }
+};
+const API_SHOW_TOAST = "showToast";
+const SHOW_TOAST_ICON = [
+  "success",
+  "loading",
+  "none"
+];
+const ShowToastProtocol = {
+  title: String,
+  icon: String,
+  image: String,
+  duration: Number,
+  mask: Boolean
+};
+const ShowToastOptions = {
+  formatArgs: {
+    title: "",
+    icon(type, params) {
+      params.icon = elemInArray(type, SHOW_TOAST_ICON);
+    },
+    image(value, params) {
+      if (value) {
+        params.image = getRealPath(value);
+      } else {
+        params.image = "";
+      }
+    },
+    duration: 1500,
+    mask: false
+  }
+};
+const API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
+const API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
+const IndexProtocol = {
+  index: {
+    type: Number,
+    required: true
+  }
+};
+const IndexOptions = {
+  beforeInvoke() {
+    const pageMeta = getCurrentPageMeta();
+    if (pageMeta && !pageMeta.isTabBar) {
+      return "not TabBar page";
+    }
+  },
+  formatArgs: {
+    index(value) {
+      if (!__uniConfig.tabBar.list[value]) {
+        return "tabbar item not found";
+      }
+    }
+  }
+};
+const API_SET_TAB_BAR_ITEM = "setTabBarItem";
+const SetTabBarItemProtocol = /* @__PURE__ */ extend({
+  text: String,
+  iconPath: String,
+  selectedIconPath: String,
+  pagePath: String
+}, IndexProtocol);
+const SetTabBarItemOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: /* @__PURE__ */ extend({
+    pagePath(value, params) {
+      if (value) {
+        params.pagePath = removeLeadingSlash(value);
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
+const API_SET_TAB_BAR_STYLE = "setTabBarStyle";
+const SetTabBarStyleProtocol = {
+  color: String,
+  selectedColor: String,
+  backgroundColor: String,
+  backgroundImage: String,
+  backgroundRepeat: String,
+  borderStyle: String
+};
+const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
+const SetTabBarStyleOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: {
+    backgroundImage(value, params) {
+      if (value && !GRADIENT_RE.test(value)) {
+        params.backgroundImage = getRealPath(value);
+      }
+    },
+    borderStyle(value, params) {
+      if (value) {
+        params.borderStyle = value === "white" ? "white" : "black";
+      }
+    }
+  }
+};
+const API_HIDE_TAB_BAR = "hideTabBar";
+const HideTabBarProtocol = {
+  animation: Boolean
+};
+const API_SHOW_TAB_BAR = "showTabBar";
+const ShowTabBarProtocol = HideTabBarProtocol;
+const API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
+const HideTabBarRedDotProtocol = IndexProtocol;
+const HideTabBarRedDotOptions = IndexOptions;
+const API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
+const ShowTabBarRedDotProtocol = IndexProtocol;
+const ShowTabBarRedDotOptions = IndexOptions;
+const API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
+const RemoveTabBarBadgeProtocol = IndexProtocol;
+const RemoveTabBarBadgeOptions = IndexOptions;
+const API_SET_TAB_BAR_BADGE = "setTabBarBadge";
+const SetTabBarBadgeProtocol = /* @__PURE__ */ extend({
+  text: {
+    type: String,
+    required: true
+  }
+}, IndexProtocol);
+const SetTabBarBadgeOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: /* @__PURE__ */ extend({
+    text(value, params) {
+      if (getLen(value) >= 4) {
+        params.text = "...";
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
+const initIntersectionObserverPolyfill = function() {
+  if (typeof window !== "object") {
+    return;
+  }
+  if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype) {
+    if (!("isIntersecting" in window.IntersectionObserverEntry.prototype)) {
+      Object.defineProperty(window.IntersectionObserverEntry.prototype, "isIntersecting", {
+        get: function() {
+          return this.intersectionRatio > 0;
+        }
+      });
+    }
+    return;
+  }
+  function getFrameElement(doc) {
+    try {
+      return doc.defaultView && doc.defaultView.frameElement || null;
+    } catch (e2) {
+      return null;
+    }
+  }
+  var document2 = function(startDoc) {
+    var doc = startDoc;
+    var frame = getFrameElement(doc);
+    while (frame) {
+      doc = frame.ownerDocument;
+      frame = getFrameElement(doc);
+    }
+    return doc;
+  }(window.document);
+  var registry = [];
+  var crossOriginUpdater = null;
+  var crossOriginRect = null;
+  function IntersectionObserverEntry(entry) {
+    this.time = entry.time;
+    this.target = entry.target;
+    this.rootBounds = ensureDOMRect(entry.rootBounds);
+    this.boundingClientRect = ensureDOMRect(entry.boundingClientRect);
+    this.intersectionRect = ensureDOMRect(entry.intersectionRect || getEmptyRect());
+    this.isIntersecting = !!entry.intersectionRect;
+    var targetRect = this.boundingClientRect;
+    var targetArea = targetRect.width * targetRect.height;
+    var intersectionRect = this.intersectionRect;
+    var intersectionArea = intersectionRect.width * intersectionRect.height;
+    if (targetArea) {
+      this.intersectionRatio = Number((intersectionArea / targetArea).toFixed(4));
+    } else {
+      this.intersectionRatio = this.isIntersecting ? 1 : 0;
+    }
+  }
+  function IntersectionObserver2(callback, opt_options) {
+    var options = opt_options || {};
+    if (typeof callback != "function") {
+      throw new Error("callback must be a function");
+    }
+    if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
+      throw new Error("root must be a Document or Element");
+    }
+    this._checkForIntersections = throttle2(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
+    this._callback = callback;
+    this._observationTargets = [];
+    this._queuedEntries = [];
+    this._rootMarginValues = this._parseRootMargin(options.rootMargin);
+    this.thresholds = this._initThresholds(options.threshold);
+    this.root = options.root || null;
+    this.rootMargin = this._rootMarginValues.map(function(margin) {
+      return margin.value + margin.unit;
+    }).join(" ");
+    this._monitoringDocuments = [];
+    this._monitoringUnsubscribes = [];
+  }
+  IntersectionObserver2.prototype.THROTTLE_TIMEOUT = 100;
+  IntersectionObserver2.prototype.POLL_INTERVAL = null;
+  IntersectionObserver2.prototype.USE_MUTATION_OBSERVER = true;
+  IntersectionObserver2._setupCrossOriginUpdater = function() {
+    if (!crossOriginUpdater) {
+      crossOriginUpdater = function(boundingClientRect, intersectionRect) {
+        if (!boundingClientRect || !intersectionRect) {
+          crossOriginRect = getEmptyRect();
+        } else {
+          crossOriginRect = convertFromParentRect(boundingClientRect, intersectionRect);
+        }
+        registry.forEach(function(observer) {
+          observer._checkForIntersections();
+        });
+      };
+    }
+    return crossOriginUpdater;
+  };
+  IntersectionObserver2._resetCrossOriginUpdater = function() {
+    crossOriginUpdater = null;
+    crossOriginRect = null;
+  };
+  IntersectionObserver2.prototype.observe = function(target) {
+    var isTargetAlreadyObserved = this._observationTargets.some(function(item) {
+      return item.element == target;
+    });
+    if (isTargetAlreadyObserved) {
+      return;
+    }
+    if (!(target && target.nodeType == 1)) {
+      throw new Error("target must be an Element");
+    }
+    this._registerInstance();
+    this._observationTargets.push({element: target, entry: null});
+    this._monitorIntersections(target.ownerDocument);
+    this._checkForIntersections();
+  };
+  IntersectionObserver2.prototype.unobserve = function(target) {
+    this._observationTargets = this._observationTargets.filter(function(item) {
+      return item.element != target;
+    });
+    this._unmonitorIntersections(target.ownerDocument);
+    if (this._observationTargets.length == 0) {
+      this._unregisterInstance();
+    }
+  };
+  IntersectionObserver2.prototype.disconnect = function() {
+    this._observationTargets = [];
+    this._unmonitorAllIntersections();
+    this._unregisterInstance();
+  };
+  IntersectionObserver2.prototype.takeRecords = function() {
+    var records = this._queuedEntries.slice();
+    this._queuedEntries = [];
+    return records;
+  };
+  IntersectionObserver2.prototype._initThresholds = function(opt_threshold) {
+    var threshold = opt_threshold || [0];
+    if (!Array.isArray(threshold))
+      threshold = [threshold];
+    return threshold.sort().filter(function(t2, i, a2) {
+      if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
+        throw new Error("threshold must be a number between 0 and 1 inclusively");
+      }
+      return t2 !== a2[i - 1];
+    });
+  };
+  IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
+    var marginString = opt_rootMargin || "0px";
+    var margins = marginString.split(/\s+/).map(function(margin) {
+      var parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
+      if (!parts) {
+        throw new Error("rootMargin must be specified in pixels or percent");
+      }
+      return {value: parseFloat(parts[1]), unit: parts[2]};
+    });
+    margins[1] = margins[1] || margins[0];
+    margins[2] = margins[2] || margins[0];
+    margins[3] = margins[3] || margins[1];
+    return margins;
+  };
+  IntersectionObserver2.prototype._monitorIntersections = function(doc) {
+    var win = doc.defaultView;
+    if (!win) {
+      return;
+    }
+    if (this._monitoringDocuments.indexOf(doc) != -1) {
+      return;
+    }
+    var callback = this._checkForIntersections;
+    var monitoringInterval = null;
+    var domObserver = null;
+    if (this.POLL_INTERVAL) {
+      monitoringInterval = win.setInterval(callback, this.POLL_INTERVAL);
+    } else {
+      addEvent(win, "resize", callback, true);
+      addEvent(doc, "scroll", callback, true);
+      if (this.USE_MUTATION_OBSERVER && "MutationObserver" in win) {
+        domObserver = new win.MutationObserver(callback);
+        domObserver.observe(doc, {
+          attributes: true,
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      }
+    }
+    this._monitoringDocuments.push(doc);
+    this._monitoringUnsubscribes.push(function() {
+      var win2 = doc.defaultView;
+      if (win2) {
+        if (monitoringInterval) {
+          win2.clearInterval(monitoringInterval);
+        }
+        removeEvent(win2, "resize", callback, true);
+      }
+      removeEvent(doc, "scroll", callback, true);
+      if (domObserver) {
+        domObserver.disconnect();
+      }
+    });
+    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
+    if (doc != rootDoc) {
+      var frame = getFrameElement(doc);
+      if (frame) {
+        this._monitorIntersections(frame.ownerDocument);
+      }
+    }
+  };
+  IntersectionObserver2.prototype._unmonitorIntersections = function(doc) {
+    var index2 = this._monitoringDocuments.indexOf(doc);
+    if (index2 == -1) {
+      return;
+    }
+    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
+    var hasDependentTargets = this._observationTargets.some(function(item) {
+      var itemDoc = item.element.ownerDocument;
+      if (itemDoc == doc) {
+        return true;
+      }
+      while (itemDoc && itemDoc != rootDoc) {
+        var frame2 = getFrameElement(itemDoc);
+        itemDoc = frame2 && frame2.ownerDocument;
+        if (itemDoc == doc) {
+          return true;
+        }
+      }
+      return false;
+    });
+    if (hasDependentTargets) {
+      return;
+    }
+    var unsubscribe = this._monitoringUnsubscribes[index2];
+    this._monitoringDocuments.splice(index2, 1);
+    this._monitoringUnsubscribes.splice(index2, 1);
+    unsubscribe();
+    if (doc != rootDoc) {
+      var frame = getFrameElement(doc);
+      if (frame) {
+        this._unmonitorIntersections(frame.ownerDocument);
+      }
+    }
+  };
+  IntersectionObserver2.prototype._unmonitorAllIntersections = function() {
+    var unsubscribes = this._monitoringUnsubscribes.slice(0);
+    this._monitoringDocuments.length = 0;
+    this._monitoringUnsubscribes.length = 0;
+    for (var i = 0; i < unsubscribes.length; i++) {
+      unsubscribes[i]();
+    }
+  };
+  IntersectionObserver2.prototype._checkForIntersections = function() {
+    if (!this.root && crossOriginUpdater && !crossOriginRect) {
+      return;
+    }
+    var rootIsInDom = this._rootIsInDom();
+    var rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect();
+    this._observationTargets.forEach(function(item) {
+      var target = item.element;
+      var targetRect = getBoundingClientRect(target);
+      var rootContainsTarget = this._rootContainsTarget(target);
+      var oldEntry = item.entry;
+      var intersectionRect = rootIsInDom && rootContainsTarget && this._computeTargetAndRootIntersection(target, targetRect, rootRect);
+      var rootBounds = null;
+      if (!this._rootContainsTarget(target)) {
+        rootBounds = getEmptyRect();
+      } else if (!crossOriginUpdater || this.root) {
+        rootBounds = rootRect;
+      }
+      var newEntry = item.entry = new IntersectionObserverEntry({
+        time: now(),
+        target,
+        boundingClientRect: targetRect,
+        rootBounds,
+        intersectionRect
+      });
+      if (!oldEntry) {
+        this._queuedEntries.push(newEntry);
+      } else if (rootIsInDom && rootContainsTarget) {
+        if (this._hasCrossedThreshold(oldEntry, newEntry)) {
+          this._queuedEntries.push(newEntry);
+        }
+      } else {
+        if (oldEntry && oldEntry.isIntersecting) {
+          this._queuedEntries.push(newEntry);
+        }
+      }
+    }, this);
+    if (this._queuedEntries.length) {
+      this._callback(this.takeRecords(), this);
+    }
+  };
+  IntersectionObserver2.prototype._computeTargetAndRootIntersection = function(target, targetRect, rootRect) {
+    if (window.getComputedStyle(target).display == "none")
+      return;
+    var intersectionRect = targetRect;
+    var parent = getParentNode(target);
+    var atRoot = false;
+    while (!atRoot && parent) {
+      var parentRect = null;
+      var parentComputedStyle = parent.nodeType == 1 ? window.getComputedStyle(parent) : {};
+      if (parentComputedStyle.display == "none")
+        return null;
+      if (parent == this.root || parent.nodeType == 9) {
+        atRoot = true;
+        if (parent == this.root || parent == document2) {
+          if (crossOriginUpdater && !this.root) {
+            if (!crossOriginRect || crossOriginRect.width == 0 && crossOriginRect.height == 0) {
+              parent = null;
+              parentRect = null;
+              intersectionRect = null;
+            } else {
+              parentRect = crossOriginRect;
+            }
+          } else {
+            parentRect = rootRect;
+          }
+        } else {
+          var frame = getParentNode(parent);
+          var frameRect = frame && getBoundingClientRect(frame);
+          var frameIntersect = frame && this._computeTargetAndRootIntersection(frame, frameRect, rootRect);
+          if (frameRect && frameIntersect) {
+            parent = frame;
+            parentRect = convertFromParentRect(frameRect, frameIntersect);
+          } else {
+            parent = null;
+            intersectionRect = null;
+          }
+        }
+      } else {
+        var doc = parent.ownerDocument;
+        if (parent != doc.body && parent != doc.documentElement && parentComputedStyle.overflow != "visible") {
+          parentRect = getBoundingClientRect(parent);
+        }
+      }
+      if (parentRect) {
+        intersectionRect = computeRectIntersection(parentRect, intersectionRect);
+      }
+      if (!intersectionRect)
+        break;
+      parent = parent && getParentNode(parent);
+    }
+    return intersectionRect;
+  };
+  IntersectionObserver2.prototype._getRootRect = function() {
+    var rootRect;
+    if (this.root && !isDoc(this.root)) {
+      rootRect = getBoundingClientRect(this.root);
+    } else {
+      var doc = isDoc(this.root) ? this.root : document2;
+      var html = doc.documentElement;
+      var body = doc.body;
+      rootRect = {
+        top: 0,
+        left: 0,
+        right: html.clientWidth || body.clientWidth,
+        width: html.clientWidth || body.clientWidth,
+        bottom: html.clientHeight || body.clientHeight,
+        height: html.clientHeight || body.clientHeight
+      };
+    }
+    return this._expandRectByRootMargin(rootRect);
+  };
+  IntersectionObserver2.prototype._expandRectByRootMargin = function(rect) {
+    var margins = this._rootMarginValues.map(function(margin, i) {
+      return margin.unit == "px" ? margin.value : margin.value * (i % 2 ? rect.width : rect.height) / 100;
+    });
+    var newRect = {
+      top: rect.top - margins[0],
+      right: rect.right + margins[1],
+      bottom: rect.bottom + margins[2],
+      left: rect.left - margins[3]
+    };
+    newRect.width = newRect.right - newRect.left;
+    newRect.height = newRect.bottom - newRect.top;
+    return newRect;
+  };
+  IntersectionObserver2.prototype._hasCrossedThreshold = function(oldEntry, newEntry) {
+    var oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1;
+    var newRatio = newEntry.isIntersecting ? newEntry.intersectionRatio || 0 : -1;
+    if (oldRatio === newRatio)
+      return;
+    for (var i = 0; i < this.thresholds.length; i++) {
+      var threshold = this.thresholds[i];
+      if (threshold == oldRatio || threshold == newRatio || threshold < oldRatio !== threshold < newRatio) {
+        return true;
+      }
+    }
+  };
+  IntersectionObserver2.prototype._rootIsInDom = function() {
+    return !this.root || containsDeep(document2, this.root);
+  };
+  IntersectionObserver2.prototype._rootContainsTarget = function(target) {
+    var rootDoc = this.root && (this.root.ownerDocument || this.root) || document2;
+    return containsDeep(rootDoc, target) && (!this.root || rootDoc == target.ownerDocument);
+  };
+  IntersectionObserver2.prototype._registerInstance = function() {
+    if (registry.indexOf(this) < 0) {
+      registry.push(this);
+    }
+  };
+  IntersectionObserver2.prototype._unregisterInstance = function() {
+    var index2 = registry.indexOf(this);
+    if (index2 != -1)
+      registry.splice(index2, 1);
+  };
+  function now() {
+    return window.performance && performance.now && performance.now();
+  }
+  function throttle2(fn, timeout) {
+    var timer = null;
+    return function() {
+      if (!timer) {
+        timer = setTimeout(function() {
+          fn();
+          timer = null;
+        }, timeout);
+      }
+    };
+  }
+  function addEvent(node, event, fn, opt_useCapture) {
+    if (typeof node.addEventListener == "function") {
+      node.addEventListener(event, fn, opt_useCapture || false);
+    } else if (typeof node.attachEvent == "function") {
+      node.attachEvent("on" + event, fn);
+    }
+  }
+  function removeEvent(node, event, fn, opt_useCapture) {
+    if (typeof node.removeEventListener == "function") {
+      node.removeEventListener(event, fn, opt_useCapture || false);
+    } else if (typeof node.detatchEvent == "function") {
+      node.detatchEvent("on" + event, fn);
+    }
+  }
+  function computeRectIntersection(rect1, rect2) {
+    var top = Math.max(rect1.top, rect2.top);
+    var bottom = Math.min(rect1.bottom, rect2.bottom);
+    var left = Math.max(rect1.left, rect2.left);
+    var right = Math.min(rect1.right, rect2.right);
+    var width = right - left;
+    var height = bottom - top;
+    return width >= 0 && height >= 0 && {
+      top,
+      bottom,
+      left,
+      right,
+      width,
+      height
+    } || null;
+  }
+  function getBoundingClientRect(el) {
+    var rect;
+    try {
+      rect = el.getBoundingClientRect();
+    } catch (err) {
+    }
+    if (!rect)
+      return getEmptyRect();
+    if (!(rect.width && rect.height)) {
+      rect = {
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        left: rect.left,
+        width: rect.right - rect.left,
+        height: rect.bottom - rect.top
+      };
+    }
+    return rect;
+  }
+  function getEmptyRect() {
+    return {
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      width: 0,
+      height: 0
+    };
+  }
+  function ensureDOMRect(rect) {
+    if (!rect || "x" in rect) {
+      return rect;
+    }
+    return {
+      top: rect.top,
+      y: rect.top,
+      bottom: rect.bottom,
+      left: rect.left,
+      x: rect.left,
+      right: rect.right,
+      width: rect.width,
+      height: rect.height
+    };
+  }
+  function convertFromParentRect(parentBoundingRect, parentIntersectionRect) {
+    var top = parentIntersectionRect.top - parentBoundingRect.top;
+    var left = parentIntersectionRect.left - parentBoundingRect.left;
+    return {
+      top,
+      left,
+      height: parentIntersectionRect.height,
+      width: parentIntersectionRect.width,
+      bottom: top + parentIntersectionRect.height,
+      right: left + parentIntersectionRect.width
+    };
+  }
+  function containsDeep(parent, child) {
+    var node = child;
+    while (node) {
+      if (node == parent)
+        return true;
+      node = getParentNode(node);
+    }
+    return false;
+  }
+  function getParentNode(node) {
+    var parent = node.parentNode;
+    if (node.nodeType == 9 && node != document2) {
+      return getFrameElement(node);
+    }
+    if (parent && parent.assignedSlot) {
+      parent = parent.assignedSlot.parentNode;
+    }
+    if (parent && parent.nodeType == 11 && parent.host) {
+      return parent.host;
+    }
+    return parent;
+  }
+  function isDoc(node) {
+    return node && node.nodeType === 9;
+  }
+  window.IntersectionObserver = IntersectionObserver2;
+  window.IntersectionObserverEntry = IntersectionObserverEntry;
+};
+function normalizeRect(rect) {
+  const {bottom, height, left, right, top, width} = rect || {};
+  return {
+    bottom,
+    height,
+    left,
+    right,
+    top,
+    width
+  };
+}
+function requestComponentObserver($el, options, callback) {
+  initIntersectionObserverPolyfill();
+  const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
+  const intersectionObserver = new IntersectionObserver((entries2) => {
+    entries2.forEach((entrie) => {
+      callback({
+        intersectionRatio: entrie.intersectionRatio,
+        intersectionRect: normalizeRect(entrie.intersectionRect),
+        boundingClientRect: normalizeRect(entrie.boundingClientRect),
+        relativeRect: normalizeRect(entrie.rootBounds),
+        time: Date.now()
+      });
+    });
+  }, {
+    root,
+    rootMargin: options.rootMargin,
+    threshold: options.thresholds
+  });
+  if (options.observeAll) {
+    intersectionObserver.USE_MUTATION_OBSERVER = true;
+    const nodeList = $el.querySelectorAll(options.selector);
+    for (let i = 0; i < nodeList.length; i++) {
+      intersectionObserver.observe(nodeList[i]);
+    }
+  } else {
+    intersectionObserver.USE_MUTATION_OBSERVER = false;
+    const el = $el.querySelector(options.selector);
+    if (!el) {
+      console.warn(`Node ${options.selector} is not found. Intersection observer will not trigger.`);
+    } else {
+      intersectionObserver.observe(el);
+    }
+  }
+  return intersectionObserver;
+}
+const supports = window.CSS && window.CSS.supports;
+function cssSupports(css) {
+  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
+}
+const cssVar = /* @__PURE__ */ cssSupports("--a:0");
+const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
+const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
+const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
+const SCHEMA_CSS = {
+  "css.var": cssVar,
+  "css.env": cssEnv,
+  "css.constant": cssConstant,
+  "css.backdrop-filter": cssBackdropFilter
+};
+const canIUse = /* @__PURE__ */ defineSyncApi(API_CAN_I_USE, (schema) => {
+  if (hasOwn(SCHEMA_CSS, schema)) {
+    return SCHEMA_CSS[schema];
+  }
+  return true;
+}, CanIUseProtocol);
+const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
+function updateCurPageCssVar(pageMeta) {
+  let windowTopValue = 0;
+  let windowBottomValue = 0;
+  if (__UNI_FEATURE_NAVIGATIONBAR__ && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
+    windowTopValue = NAVBAR_HEIGHT;
+  }
+  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
+    const tabBar2 = useTabBar();
+    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
+  }
+  updatePageCssVar({
+    "--window-top": normalizeWindowBottom(windowTopValue),
+    "--window-bottom": normalizeWindowBottom(windowBottomValue)
+  });
+}
+function normalizeWindowBottom(windowBottom) {
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+const SEP = "$$";
+const currentPagesMap = new Map();
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
+}
+function getCurrentPages$1() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, "onUnload");
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    const {path: path2, alias} = __uniRoutes[0];
+    return {
+      id: meta.id,
+      path: path2,
+      route: alias.substr(1),
+      fullPath: path2,
+      options: {},
+      meta
+    };
+  }
+  const {path} = route;
+  return {
+    id: meta.id,
+    path,
+    route: route.meta.route,
+    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
+    options: {},
+    meta
+  };
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  vm.$vm = vm;
+  vm.$page = page;
+  vm.__isTabBar = page.meta.isTabBar;
+  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = useRoute();
+  const routeKey = computed(() => normalizeRouteKey(route.path, getStateId()));
+  const isTabBar = computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function onPageShow(instance2, pageMeta) {
+  updateBodyScopeId(instance2);
+  updateCurPageCssVar(pageMeta);
+  initPageScrollListener(instance2, pageMeta);
+}
+function onPageReady(instance2) {
+  const scopeId = getScopeId(instance2);
+  scopeId && updateCurPageBodyScopeId(scopeId);
+}
+function updateCurPageBodyScopeId(scopeId) {
+  const pageBodyEl = document.querySelector("uni-page-body");
+  if (pageBodyEl) {
+    pageBodyEl.setAttribute(scopeId, "");
+  } else if (process.env.NODE_ENV !== "production") {
+    console.warn("uni-page-body not found");
+  }
+}
+function getScopeId(instance2) {
+  return instance2.type.__scopeId;
+}
+let curScopeId;
+function updateBodyScopeId(instance2) {
+  const scopeId = getScopeId(instance2);
+  const {body} = document;
+  curScopeId && body.removeAttribute(curScopeId);
+  scopeId && body.setAttribute(scopeId, "");
+  curScopeId = scopeId;
+}
+let curScrollListener;
+function initPageScrollListener(instance2, pageMeta) {
+  document.removeEventListener("touchmove", disableScrollListener);
+  if (curScrollListener) {
+    document.removeEventListener("scroll", curScrollListener);
+  }
+  if (pageMeta.disableScroll) {
+    return document.addEventListener("touchmove", disableScrollListener);
+  }
+  const {onPageScroll, onReachBottom} = instance2;
+  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
+  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
+    return;
+  }
+  const opts = {};
+  const pageId = instance2.proxy.$page.id;
+  if (onPageScroll || navigationBarTransparent) {
+    opts.onPageScroll = createOnPageScroll(pageId, onPageScroll, navigationBarTransparent);
+  }
+  if (onReachBottom) {
+    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+    opts.onReachBottom = () => UniViewJSBridge.publishHandler("onReachBottom", {}, pageId);
+  }
+  curScrollListener = createScrollListener(opts);
+  requestAnimationFrame(() => document.addEventListener("scroll", curScrollListener));
+}
+function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
+  return (scrollTop) => {
+    if (onPageScroll) {
+      UniViewJSBridge.publishHandler("onPageScroll", {scrollTop}, pageId);
+    }
+    if (navigationBarTransparent) {
+      UniViewJSBridge.emit(pageId + ".onPageScroll", {
+        scrollTop
+      });
+    }
+  };
+}
+function initRouter(app) {
+  const router = createRouter(createRouterOptions());
+  app.router = router;
+  app.use(router);
+}
+const scrollBehavior = (_to, _from, savedPosition) => {
+  if (savedPosition) {
+    return savedPosition;
+  }
+};
+function createRouterOptions() {
+  return {
+    history: initHistory(),
+    strict: !!__uniConfig.router.strict,
+    routes: __uniRoutes,
+    scrollBehavior
+  };
+}
+function removeCurrentPages(delta = 1) {
+  const keys = getCurrentPages$1();
+  const start = keys.length - 1;
+  const end = start - delta;
+  for (let i = start; i > end; i--) {
+    const page = keys[i].$page;
+    removePage(normalizeRouteKey(page.path, page.id), false);
+  }
+}
+function initHistory() {
+  let {base} = __uniConfig.router;
+  if (base === "/") {
+    base = "";
+  }
+  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(base) : createWebHashHistory(base);
+  history2.listen((_to, _from, info) => {
+    if (info.direction === "back") {
+      removeCurrentPages(Math.abs(info.delta));
+    }
+  });
+  return history2;
+}
+var index$6 = {
+  install(app) {
+    initApp$1(app);
+    initView(app);
+    initService(app);
+    if (__UNI_FEATURE_PAGES__) {
+      initRouter(app);
+    }
+  }
+};
+let appVm;
+function getApp$1() {
+  return appVm;
+}
+function initApp(vm) {
+  appVm = vm;
+  appVm.$vm = vm;
+  appVm.globalData = appVm.$options.globalData || {};
+}
+function wrapperComponentSetup(comp, {init: init2, setup, after}) {
+  const oldSetup = comp.setup;
+  comp.setup = (props2, ctx) => {
+    const instance2 = getCurrentInstance();
+    init2(instance2.proxy);
+    const query = setup(instance2);
+    if (oldSetup) {
+      return oldSetup(query, ctx);
+    }
+  };
+  after && after(comp);
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    wrapperComponentSetup(comp.default, options);
+  } else {
+    wrapperComponentSetup(comp, options);
+  }
+  return comp;
+}
+function setupPage(comp) {
+  return setupComponent(comp, {
+    init: initPage,
+    setup(instance2) {
+      instance2.__isPage = true;
+      instance2.root = instance2;
+      const route = usePageRoute();
+      if (route.meta.isTabBar) {
+        instance2.__isActive = true;
+      }
+      const pageMeta = usePageMeta();
+      onBeforeMount(() => {
+        onPageShow(instance2, pageMeta);
+        const {onLoad, onShow} = instance2;
+        onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
+        instance2.__isVisible = true;
+        onShow && invokeArrayFns$1(onShow);
+      });
+      onMounted(() => {
+        onPageReady(instance2);
+        const {onReady} = instance2;
+        onReady && invokeArrayFns$1(onReady);
+      });
+      onBeforeActivate(() => {
+        if (!instance2.__isVisible) {
+          onPageShow(instance2, pageMeta);
+          instance2.__isVisible = true;
+          const {onShow} = instance2;
+          onShow && invokeArrayFns$1(onShow);
+        }
+      });
+      onBeforeDeactivate(() => {
+        if (instance2.__isVisible && !instance2.__isUnload) {
+          instance2.__isVisible = false;
+          const {onHide} = instance2;
+          onHide && invokeArrayFns$1(onHide);
+        }
+      });
+      return route.query;
+    }
+  });
+}
+function setupApp(comp) {
+  return setupComponent(comp, {
+    init: initApp,
+    setup(instance2) {
+      const route = usePageRoute();
+      const onLaunch = () => {
+        const {onLaunch: onLaunch2, onShow} = instance2;
+        const path = route.path.substr(1);
+        const launchOptions = {
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query),
+          scene: 1001
+        };
+        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions);
+        onShow && invokeArrayFns$1(onShow, launchOptions);
+      };
+      if (__UNI_FEATURE_PAGES__) {
+        useRouter().isReady().then(onLaunch);
+      } else {
+        onBeforeMount(onLaunch);
+      }
+      onMounted(() => {
+        document.addEventListener("visibilitychange", function() {
+          if (document.visibilityState === "visible") {
+            UniServiceJSBridge.emit("onAppEnterForeground");
+          } else {
+            UniServiceJSBridge.emit("onAppEnterBackground");
+          }
+        });
+      });
+      return route.query;
+    },
+    after(comp2) {
+      comp2.mpType = "app";
+      comp2.render = () => (openBlock(), createBlock(LayoutComponent));
+    }
+  });
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -13132,6 +13473,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     requestFullScreen,
     exitFullScreen
   };
+  const id2 = useContextInfo();
   useSubscribe((type, data) => {
     let options;
     switch (type) {
@@ -13148,7 +13490,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     if (type in methods) {
       methods[type](options);
     }
-  });
+  }, id2, true);
 }
 const props$d = {
   id: {
@@ -13517,26 +13859,6 @@ function useWebViewSize(rootRef, iframeRef) {
   };
   return _resize;
 }
-function callback(options, data) {
-  options = options || {};
-  if (typeof data === "string") {
-    data = {
-      errMsg: data
-    };
-  }
-  if (/:ok$/.test(data.errMsg)) {
-    if (typeof options.success === "function") {
-      options.success(data);
-    }
-  } else {
-    if (typeof options.fail === "function") {
-      options.fail(data);
-    }
-  }
-  if (typeof options.complete === "function") {
-    options.complete(data);
-  }
-}
 function createCallout(maps2) {
   const overlay = new maps2.Overlay();
   class Callout {
@@ -13576,8 +13898,8 @@ function createCallout(maps2) {
         this.setMap(map);
       }
     }
-    set onclick(callback2) {
-      this.div.onclick = callback2;
+    set onclick(callback) {
+      this.div.onclick = callback;
     }
     get onclick() {
       return this.div.onclick;
@@ -13640,23 +13962,23 @@ function createCallout(maps2) {
 let maps;
 const callbacks = [];
 const QQ_MAP_CALLBACKNAME = "__qq_map_callback__";
-function loadMaps(callback2) {
+function loadMaps(callback) {
   if (maps) {
-    callback2(maps);
+    callback(maps);
   } else if (window.qq && window.qq.maps) {
     maps = window.qq.maps;
-    callback2(maps);
+    callback(maps);
   } else if (callbacks.length) {
-    callbacks.push(callback2);
+    callbacks.push(callback);
   } else {
-    callbacks.push(callback2);
+    callbacks.push(callback);
     const key = __uniConfig.qqMapKey;
     const globalExt = window;
     globalExt[QQ_MAP_CALLBACKNAME] = function() {
       delete globalExt[QQ_MAP_CALLBACKNAME];
       maps = window.qq.maps;
       maps.Callout = createCallout(maps);
-      callbacks.forEach((callback22) => callback22(maps));
+      callbacks.forEach((callback2) => callback2(maps));
       callbacks.length = 0;
     };
     const script = document.createElement("script");
@@ -14288,8 +14610,8 @@ class InnerAudioContext {
           return;
         }
         const EventName = `on${eventName.substr(0, 1).toUpperCase()}${eventName.substr(1)}`;
-        this._events[EventName].forEach((callback2) => {
-          callback2();
+        this._events[EventName].forEach((callback) => {
+          callback();
         });
       }, false);
     });
@@ -14305,8 +14627,8 @@ class InnerAudioContext {
     this._stoping = true;
     this._audio.pause();
     this._audio.currentTime = 0;
-    this._events.onStop.forEach((callback2) => {
-      callback2();
+    this._events.onStop.forEach((callback) => {
+      callback();
     });
   }
   seek(position) {
@@ -14321,16 +14643,16 @@ class InnerAudioContext {
   }
 }
 innerAudioContextEventNames.forEach((eventName) => {
-  InnerAudioContext.prototype[eventName] = function(callback2) {
-    if (typeof callback2 === "function") {
-      this._events[eventName].push(callback2);
+  InnerAudioContext.prototype[eventName] = function(callback) {
+    if (typeof callback === "function") {
+      this._events[eventName].push(callback);
     }
   };
 });
 innerAudioContextOffEventNames.forEach((eventName) => {
-  InnerAudioContext.prototype[eventName] = function(callback2) {
+  InnerAudioContext.prototype[eventName] = function(callback) {
     var handle = this._events[eventName.replace("off", "on")];
-    var index2 = handle.indexOf(callback2);
+    var index2 = handle.indexOf(callback);
     if (index2 >= 0) {
       handle.splice(index2, 1);
     }
@@ -14352,7 +14674,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -14465,12 +14787,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -14490,10 +14812,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -15044,8 +15366,8 @@ function useKeyboard() {
   };
 }
 const VNODE_MASK = /* @__PURE__ */ createVNode("div", {class: "uni-mask"}, null, -1);
-function createRootApp(component, rootState, callback2) {
-  const onClose = (...args) => (rootState.visible = false, callback2.apply(null, args));
+function createRootApp(component, rootState, callback) {
+  const onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(defineComponent({
     setup() {
       return () => (openBlock(), createBlock(component, mergeProps({
@@ -15465,10 +15787,10 @@ class RequestTask {
       delete this._xhr;
     }
   }
-  onHeadersReceived(callback2) {
+  onHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
-  offHeadersReceived(callback2) {
+  offHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
 }
@@ -15488,14 +15810,14 @@ class DownloadTask {
     this._callbacks = [];
     this._xhr = xhr;
   }
-  onProgressUpdate(callback2) {
-    if (typeof callback2 !== "function") {
+  onProgressUpdate(callback) {
+    if (typeof callback !== "function") {
       return;
     }
-    this._callbacks.push(callback2);
+    this._callbacks.push(callback);
   }
-  offProgressUpdate(callback2) {
-    const index2 = this._callbacks.indexOf(callback2);
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
     if (index2 >= 0) {
       this._callbacks.splice(index2, 1);
     }
@@ -15506,10 +15828,10 @@ class DownloadTask {
       delete this._xhr;
     }
   }
-  onHeadersReceived(callback2) {
+  onHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
-  offHeadersReceived(callback2) {
+  offHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
 }
@@ -15549,11 +15871,11 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({url, hea
     reject();
   };
   xhr.onprogress = function(event) {
-    downloadTask._callbacks.forEach((callback2) => {
+    downloadTask._callbacks.forEach((callback) => {
       var totalBytesWritten = event.loaded;
       var totalBytesExpectedToWrite = event.total;
       var progress = Math.round(totalBytesWritten / totalBytesExpectedToWrite * 100);
-      callback2({
+      callback({
         progress,
         totalBytesWritten,
         totalBytesExpectedToWrite
@@ -15573,14 +15895,14 @@ class UploadTask {
     this._callbacks = [];
     this._xhr = xhr;
   }
-  onProgressUpdate(callback2) {
-    if (typeof callback2 !== "function") {
+  onProgressUpdate(callback) {
+    if (typeof callback !== "function") {
       return;
     }
-    this._callbacks.push(callback2);
+    this._callbacks.push(callback);
   }
-  offProgressUpdate(callback2) {
-    const index2 = this._callbacks.indexOf(callback2);
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
     if (index2 >= 0) {
       this._callbacks.splice(index2, 1);
     }
@@ -15592,10 +15914,10 @@ class UploadTask {
       delete this._xhr;
     }
   }
-  onHeadersReceived(callback2) {
+  onHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
-  offHeadersReceived(callback2) {
+  offHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
 }
@@ -15635,11 +15957,11 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
       xhr.setRequestHeader(key, header[key]);
     });
     xhr.upload.onprogress = function(event) {
-      uploadTask._callbacks.forEach((callback2) => {
+      uploadTask._callbacks.forEach((callback) => {
         var totalBytesSent = event.loaded;
         var totalBytesExpectedToSend = event.total;
         var progress = Math.round(totalBytesSent / totalBytesExpectedToSend * 100);
-        callback2({
+        callback({
           progress,
           totalBytesSent,
           totalBytesExpectedToSend
@@ -15689,7 +16011,7 @@ const globalEvent = {
   message: ""
 };
 class SocketTask {
-  constructor(url, protocols, callback2) {
+  constructor(url, protocols, callback) {
     this._callbacks = {
       open: [],
       close: [],
@@ -15707,9 +16029,9 @@ class SocketTask {
           const res = name === "message" ? {
             data: event.data
           } : {};
-          this._callbacks[name].forEach((callback3) => {
+          this._callbacks[name].forEach((callback2) => {
             try {
-              callback3(res);
+              callback2(res);
             } catch (e2) {
               console.error(`thirdScriptError
 ${e2};at socketTask.on${capitalize(name)} callback function
@@ -15744,7 +16066,7 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     } catch (e2) {
       error = e2;
     }
-    callback2 && callback2(error, this);
+    callback && callback(error, this);
   }
   send(options) {
     const data = (options || {}).data;
@@ -15754,9 +16076,9 @@ ${e2};at socketTask.on${capitalize(name)} callback function
         throw new Error("SocketTask.readyState is not OPEN");
       }
       ws.send(data);
-      callback(options, "sendSocketMessage:ok");
+      callOptions(options, "sendSocketMessage:ok");
     } catch (error) {
-      callback(options, `sendSocketMessage:fail ${error}`);
+      callOptions(options, `sendSocketMessage:fail ${error}`);
     }
   }
   close(options = {}) {
@@ -15769,22 +16091,22 @@ ${e2};at socketTask.on${capitalize(name)} callback function
       } else {
         ws.close(code);
       }
-      callback(options, "closeSocket:ok");
+      callOptions(options, "closeSocket:ok");
     } catch (error) {
-      callback(options, `closeSocket:fail ${error}`);
+      callOptions(options, `closeSocket:fail ${error}`);
     }
   }
-  onOpen(callback2) {
-    this._callbacks.open.push(callback2);
+  onOpen(callback) {
+    this._callbacks.open.push(callback);
   }
-  onMessage(callback2) {
-    this._callbacks.message.push(callback2);
+  onMessage(callback) {
+    this._callbacks.message.push(callback);
   }
-  onError(callback2) {
-    this._callbacks.error.push(callback2);
+  onError(callback) {
+    this._callbacks.error.push(callback);
   }
-  onClose(callback2) {
-    this._callbacks.close.push(callback2);
+  onClose(callback) {
+    this._callbacks.close.push(callback);
   }
 }
 const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({url, protocols}, {resolve, reject}) => {
@@ -17351,25 +17673,25 @@ function useMap(props2, rootRef, emit2) {
   });
   const onMapReadyCallbacks = [];
   let isMapReady;
-  function onMapReady(callback2) {
+  function onMapReady(callback) {
     if (isMapReady) {
-      callback2(map, maps2, trigger);
+      callback(map, maps2, trigger);
     } else {
-      onMapReadyCallbacks.push(callback2);
+      onMapReadyCallbacks.push(callback);
     }
   }
   function emitMapReady() {
     isMapReady = true;
-    onMapReadyCallbacks.forEach((callback2) => callback2(map, maps2, trigger));
+    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
     onMapReadyCallbacks.length = 0;
   }
   let isBoundsReady;
   const onBoundsReadyCallbacks = [];
-  function onBoundsReady(callback2) {
+  function onBoundsReady(callback) {
     if (isBoundsReady) {
-      callback2();
+      callback();
     } else {
-      onMapReadyCallbacks.push(callback2);
+      onMapReadyCallbacks.push(callback);
     }
   }
   const contexts = {};
@@ -17400,7 +17722,7 @@ function useMap(props2, rootRef, emit2) {
   });
   function emitBoundsReady() {
     isBoundsReady = true;
-    onBoundsReadyCallbacks.forEach((callback2) => callback2());
+    onBoundsReadyCallbacks.forEach((callback) => callback());
     onBoundsReadyCallbacks.length = 0;
   }
   function getMapInfo() {
@@ -17487,12 +17809,13 @@ function useMap(props2, rootRef, emit2) {
     return map2;
   }
   try {
+    const id2 = useContextInfo();
     useSubscribe((type, data = {}) => {
       switch (type) {
         case "getCenterLocation":
           onMapReady(() => {
             const center = map.getCenter();
-            callback(data, {
+            callOptions(data, {
               latitude: center.getLat(),
               longitude: center.getLng(),
               errMsg: `${type}:ok`
@@ -17517,10 +17840,10 @@ function useMap(props2, rootRef, emit2) {
                 map.setCenter(new maps2.LatLng(latitude, longitude));
               }
               onMapReady(() => {
-                callback(data, `${type}:ok`);
+                callOptions(data, `${type}:ok`);
               });
             } else {
-              callback(data, `${type}:fail`);
+              callOptions(data, `${type}:fail`);
             }
           }
           break;
@@ -17531,11 +17854,11 @@ function useMap(props2, rootRef, emit2) {
               try {
                 context.translate(data);
               } catch (error) {
-                callback(data, `${type}:fail ${error.message}`);
+                callOptions(data, `${type}:fail ${error.message}`);
               }
-              callback(data, `${type}:ok`);
+              callOptions(data, `${type}:ok`);
             } else {
-              callback(data, `${type}:fail not found`);
+              callOptions(data, `${type}:fail not found`);
             }
           });
           break;
@@ -17545,7 +17868,7 @@ function useMap(props2, rootRef, emit2) {
             updateBounds();
           }
           onBoundsReady(() => {
-            callback(data, `${type}:ok`);
+            callOptions(data, `${type}:ok`);
           });
           break;
         case "getRegion":
@@ -17553,7 +17876,7 @@ function useMap(props2, rootRef, emit2) {
             const latLngBounds = map.getBounds();
             const southwest = latLngBounds.getSouthWest();
             const northeast = latLngBounds.getNorthEast();
-            callback(data, {
+            callOptions(data, {
               southwest: {
                 latitude: southwest.getLat(),
                 longitude: southwest.getLng()
@@ -17568,14 +17891,14 @@ function useMap(props2, rootRef, emit2) {
           break;
         case "getScale":
           onMapReady(() => {
-            callback(data, {
+            callOptions(data, {
               scale: map.getZoom(),
               errMsg: `${type}:ok`
             });
           });
           break;
       }
-    });
+    }, id2, true);
   } catch (error) {
   }
   onMounted(() => {
@@ -19462,7 +19785,7 @@ function usePageRefresh(refreshRef) {
       refreshing();
     }
   });
-  function aborting(callback2) {
+  function aborting(callback) {
     if (!refreshControllerElem) {
       return;
     }
@@ -19473,12 +19796,12 @@ function usePageRefresh(refreshRef) {
         timeout && clearTimeout(timeout);
         refreshControllerElem.removeEventListener("webkitTransitionEnd", abortTransitionEnd);
         refreshControllerElemStyle.transition = "";
-        callback2();
+        callback();
       };
       refreshControllerElem.addEventListener("webkitTransitionEnd", abortTransitionEnd);
       const timeout = setTimeout(abortTransitionEnd, 350);
     } else {
-      callback2();
+      callback();
     }
   }
   function refreshing() {
@@ -19489,7 +19812,7 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
     invokeHook(id2, "onPullDownRefresh");
   }
-  function restoring(callback2) {
+  function restoring(callback) {
     if (!refreshControllerElem) {
       return;
     }
@@ -19500,7 +19823,7 @@ function usePageRefresh(refreshRef) {
       refreshControllerElem.removeEventListener("webkitTransitionEnd", restoreTransitionEnd);
       refreshControllerElemStyle.transition = "";
       refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      callback2();
+      callback();
     };
     refreshControllerElem.addEventListener("webkitTransitionEnd", restoreTransitionEnd);
     const timeout = setTimeout(restoreTransitionEnd, 350);
@@ -19569,4 +19892,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$k as Button, _sfc_main$7 as Canvas, index$h as Checkbox, index$j as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$g as Editor, index$l as Form, Friction, index$f as Icon, index$e as Image, Input, index$i as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$d as Progress, index$b as Radio, index$c as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$a as Slider, Spring, Swiper, SwiperItem, index$9 as Switch, index$8 as Text, index$7 as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$6 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$m as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$n as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$m as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$l as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

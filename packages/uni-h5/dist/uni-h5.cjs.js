@@ -118,21 +118,21 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
 const E = function() {
 };
 E.prototype = {
-  on: function(name, callback2, ctx) {
+  on: function(name, callback, ctx) {
     var e2 = this.e || (this.e = {});
     (e2[name] || (e2[name] = [])).push({
-      fn: callback2,
+      fn: callback,
       ctx
     });
     return this;
   },
-  once: function(name, callback2, ctx) {
+  once: function(name, callback, ctx) {
     var self = this;
     function listener() {
       self.off(name, listener);
-      callback2.apply(ctx, arguments);
+      callback.apply(ctx, arguments);
     }
-    listener._ = callback2;
+    listener._ = callback;
     return this.on(name, listener, ctx);
   },
   emit: function(name) {
@@ -145,13 +145,13 @@ E.prototype = {
     }
     return this;
   },
-  off: function(name, callback2) {
+  off: function(name, callback) {
     var e2 = this.e || (this.e = {});
     var evts = e2[name];
     var liveEvents = [];
-    if (evts && callback2) {
+    if (evts && callback) {
       for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback2 && evts[i].fn._ !== callback2)
+        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
           liveEvents.push(evts[i]);
       }
     }
@@ -162,11 +162,11 @@ E.prototype = {
 function initBridge(namespace) {
   const emitter = new E();
   return shared.extend(emitter, {
-    subscribe(event, callback2) {
-      emitter.on(`${namespace}.${event}`, callback2);
+    subscribe(event, callback) {
+      emitter.on(`${namespace}.${event}`, callback);
     },
-    unsubscribe(event, callback2) {
-      emitter.off(`${namespace}.${event}`, callback2);
+    unsubscribe(event, callback) {
+      emitter.off(`${namespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
@@ -269,15 +269,15 @@ function createCallbacks(namespace) {
       return scopedCallbacks.callbacks[id];
     },
     pop(id) {
-      const callback2 = scopedCallbacks.callbacks[id];
-      if (callback2) {
+      const callback = scopedCallbacks.callbacks[id];
+      if (callback) {
         delete scopedCallbacks.callbacks[id];
       }
-      return callback2;
+      return callback;
     },
-    push(callback2) {
+    push(callback) {
       const id = scopedCallbacks.id++;
-      scopedCallbacks.callbacks[id] = callback2;
+      scopedCallbacks.callbacks[id] = callback;
       return id;
     }
   };
@@ -618,11 +618,11 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback2, keepAlive = false) {
+function addInvokeCallback(id, name, callback, keepAlive = false) {
   invokeCallbacks[id] = {
     name,
     keepAlive,
-    callback: callback2
+    callback
   };
   return id;
 }
@@ -808,437 +808,6 @@ function getRealPath(filePath) {
     return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
   }
   return filePath;
-}
-function saveImage(base64, dirname, callback2) {
-  callback2(null, base64);
-}
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, {type});
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (shared.hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function getSameOriginUrl(url) {
-  const a2 = document.createElement("a");
-  a2.href = url;
-  if (a2.origin === location.origin) {
-    return Promise.resolve(url);
-  }
-  return urlToFile(url).then(fileToUrl);
-}
-const API_UPX2PX = "upx2px";
-const Upx2pxProtocol = [
-  {
-    name: "upx",
-    type: [Number, String],
-    required: true
-  }
-];
-const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  {
-    return number;
-  }
-}, Upx2pxProtocol);
-const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
-  const callback2 = canvasEventCallbacks.pop(callbackId);
-  if (callback2) {
-    callback2(data);
-  }
-});
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
-  const callback2 = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback2) {
-    callback2(data);
-  }
-});
-const API_GET_STORAGE = "getStorage";
-const GetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  }
-};
-const API_GET_STORAGE_SYNC = "getStorageSync";
-const GetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  }
-];
-const API_SET_STORAGE = "setStorage";
-const SetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  },
-  data: {
-    required: true
-  }
-};
-const API_SET_STORAGE_SYNC = "setStorageSync";
-const SetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  },
-  {
-    name: "data",
-    required: true
-  }
-];
-const API_REMOVE_STORAGE = "removeStorage";
-const RemoveStorageProtocol = GetStorageProtocol;
-const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
-const API_REQUEST = "request";
-const dataType = {
-  JSON: "json"
-};
-const RESPONSE_TYPE = ["text", "arraybuffer"];
-const DEFAULT_RESPONSE_TYPE = "text";
-const encode = encodeURIComponent;
-function stringifyQuery(url, data) {
-  let str = url.split("#");
-  const hash = str[1] || "";
-  str = str[0].split("?");
-  let query = str[1] || "";
-  url = str[0];
-  const search = query.split("&").filter((item) => item);
-  const params = {};
-  search.forEach((item) => {
-    const part = item.split("=");
-    params[part[0]] = part[1];
-  });
-  for (const key in data) {
-    if (shared.hasOwn(data, key)) {
-      let v2 = data[key];
-      if (typeof v2 === "undefined" || v2 === null) {
-        v2 = "";
-      } else if (shared.isPlainObject(v2)) {
-        v2 = JSON.stringify(v2);
-      }
-      params[encode(key)] = encode(v2);
-    }
-  }
-  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
-  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
-}
-const RequestProtocol = {
-  method: String,
-  data: [Object, String, Array, ArrayBuffer],
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  dataType: String,
-  responseType: String,
-  withCredentials: Boolean
-};
-const RequestOptions = {
-  formatArgs: {
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    data(value, params) {
-      params.data = value || "";
-    },
-    url(value, params) {
-      if (params.method === HTTP_METHODS[0] && shared.isPlainObject(params.data) && Object.keys(params.data).length) {
-        params.url = stringifyQuery(value, params.data);
-      }
-    },
-    header(value, params) {
-      const header = params.header = value || {};
-      if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
-          header["Content-Type"] = "application/json";
-        }
-      }
-    },
-    dataType(value, params) {
-      params.dataType = (value || dataType.JSON).toLowerCase();
-    },
-    responseType(value, params) {
-      params.responseType = (value || "").toLowerCase();
-      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-        params.responseType = DEFAULT_RESPONSE_TYPE;
-      }
-    }
-  }
-};
-const envMethod = /* @__PURE__ */ (() => "env")();
-function normalizeWindowBottom(windowBottom) {
-  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
-}
-const SEP = "$$";
-const currentPagesMap = new Map();
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    const {path: path2, alias} = __uniRoutes[0];
-    return {
-      id: meta.id,
-      path: path2,
-      route: alias.substr(1),
-      fullPath: path2,
-      options: {},
-      meta
-    };
-  }
-  const {path} = route;
-  return {
-    id: meta.id,
-    path,
-    route: route.meta.route,
-    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
-    options: {},
-    meta
-  };
-}
-function initPage(vm) {
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  vm.$vm = vm;
-  vm.$page = page;
-  vm.__isTabBar = page.meta.isTabBar;
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = vueRouter.useRoute();
-  const routeKey = vue.computed(() => normalizeRouteKey(route.path, getStateId()));
-  const isTabBar = vue.computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      vue.nextTick(() => pruneCurrentPages());
-    }
-  });
-}
-function initRouter(app) {
-  const router = vueRouter.createRouter(createRouterOptions());
-  app.router = router;
-  app.use(router);
-}
-const scrollBehavior = (_to, _from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  }
-};
-function createRouterOptions() {
-  return {
-    history: initHistory(),
-    strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
-  };
-}
-function initHistory() {
-  let {base} = __uniConfig.router;
-  if (base === "/") {
-    base = "";
-  }
-  {
-    return vueRouter.createMemoryHistory(base);
-  }
-}
-var index$q = {
-  install(app) {
-    initApp$1(app);
-    if (__UNI_FEATURE_PAGES__) {
-      initRouter(app);
-    }
-  }
-};
-let appVm;
-function getApp$1() {
-  return appVm;
-}
-function initApp(vm) {
-  appVm = vm;
-  appVm.$vm = vm;
-  appVm.globalData = appVm.$options.globalData || {};
-}
-function wrapperComponentSetup(comp, {init, setup, after}) {
-  const oldSetup = comp.setup;
-  comp.setup = (props2, ctx) => {
-    const instance = vue.getCurrentInstance();
-    init(instance.proxy);
-    const query = setup(instance);
-    if (oldSetup) {
-      return oldSetup(query, ctx);
-    }
-  };
-  after && after(comp);
-}
-function setupComponent(comp, options) {
-  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    wrapperComponentSetup(comp.default, options);
-  } else {
-    wrapperComponentSetup(comp, options);
-  }
-  return comp;
-}
-function setupPage(comp) {
-  return setupComponent(comp, {
-    init: initPage,
-    setup(instance) {
-      instance.__isPage = true;
-      instance.root = instance;
-      const route = usePageRoute();
-      if (route.meta.isTabBar) {
-        instance.__isActive = true;
-      }
-      {
-        return route.query;
-      }
-    }
-  });
-}
-function setupApp(comp) {
-  return setupComponent(comp, {
-    init: initApp,
-    setup(instance) {
-      const route = usePageRoute();
-      {
-        return route.query;
-      }
-    },
-    after(comp2) {
-      comp2.mpType = "app";
-      comp2.render = () => (vue.openBlock(), vue.createBlock(LayoutComponent));
-    }
-  });
 }
 var subscriber = {
   mounted() {
@@ -1555,7 +1124,7 @@ function useBooleanAttr(props2, keys) {
   }, Object.create(null));
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1594,7 +1163,7 @@ function provideForm(emit2) {
   });
   return fields2;
 }
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1846,7 +1415,8 @@ var _sfc_main$7 = {
   created() {
     this._actionsDefer = [];
     this._images = {};
-    useSubscribe(this._handleSubscribe);
+    const id = useContextInfo();
+    useSubscribe(this._handleSubscribe, id, true);
   },
   mounted() {
     this.$trigger = useNativeEvent(this.$emit);
@@ -2266,7 +1836,7 @@ const props$p = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2327,7 +1897,7 @@ const props$o = {
     default: ""
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$o,
   setup(props2, {
@@ -2396,7 +1966,7 @@ const props$n = {
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$n,
   setup(props2, {
@@ -2635,7 +2205,26 @@ function useQuill(props2, rootRef, trigger) {
   });
   vue.watch(() => props2.placeholder, (value) => {
   });
-  useSubscribe();
+  const id = useContextInfo();
+  useSubscribe((type, data) => {
+    const {
+      options,
+      callbackId
+    } = data;
+    let res;
+    let errMsg;
+    {
+      errMsg = "not ready";
+    }
+    if (callbackId) {
+      UniViewJSBridge.publishHandler("onEditorMethodCallback", {
+        callbackId,
+        data: Object.assign({}, res, {
+          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
+        })
+      });
+    }
+  }, id, true);
 }
 const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
   id: {
@@ -2663,7 +2252,7 @@ const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
     default: false
   }
 });
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$l,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2724,7 +2313,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2788,7 +2377,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$k,
   setup(props2, {
@@ -3433,7 +3022,7 @@ const props$h = {
     default: false
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: props$h,
@@ -3629,10 +3218,10 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const addListenerToElement = function(element, type, callback2, capture) {
+const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(type, ($event) => {
-    if (typeof callback2 === "function") {
-      if (callback2($event) === false) {
+    if (typeof callback === "function") {
+      if (callback($event) === false) {
         if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
           $event.preventDefault();
         }
@@ -4076,7 +3665,7 @@ const props$g = {
     default: true
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: props$g,
   emits: ["change", "scale"],
@@ -5490,7 +5079,7 @@ const props$e = {
     }
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: props$e,
   setup(props2) {
@@ -5569,7 +5158,7 @@ const props$d = {
     default: ""
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$d,
   setup(props2, {
@@ -5669,7 +5258,7 @@ const props$c = {
     default: ""
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$c,
   setup(props2, {
@@ -6524,7 +6113,7 @@ const props$b = {
     default: false
   }
 };
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$b,
   emits: ["changing", "change"],
@@ -6947,7 +6536,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   function scheduleAutoplay() {
     cancelSchedule();
     const items = swiperContexts.value;
-    const callback2 = function() {
+    const callback = function() {
       timer = null;
       currentChangeSource = "autoplay";
       if (circularEnabled.value) {
@@ -6956,10 +6545,10 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
         state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
       }
       animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback2, state.interval);
+      timer = setTimeout(callback, state.interval);
     };
     if (!(invalid || items.length <= state.displayMultipleItems)) {
-      timer = setTimeout(callback2, state.interval);
+      timer = setTimeout(callback, state.interval);
     }
   }
   function resetLayout() {
@@ -7066,7 +6655,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     onSwiperDotClick
   };
 }
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$a,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7169,7 +6758,7 @@ const props$9 = {
     default: ""
   }
 };
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$9,
   setup(props2, {
@@ -7214,7 +6803,7 @@ const props$8 = {
     default: "#007aff"
   }
 };
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$8,
   emits: ["change"],
@@ -7304,7 +6893,7 @@ function normalizeText(text, {
   }
   return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$8 = /* @__PURE__ */ defineBuiltInComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7371,7 +6960,7 @@ const props$7 = /* @__PURE__ */ shared.extend({}, props$j, {
     default: ""
   }
 });
-var index$7 = /* @__PURE__ */ defineBuiltInComponent({
+var index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$7,
   emit: ["confirm", "linechange", ...emit],
@@ -7491,7 +7080,7 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$6 = /* @__PURE__ */ defineBuiltInComponent({
+var index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -7512,12 +7101,455 @@ var index$6 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useSubscribe(callback2, name) {
+function useSubscribe(callback, name, multiple) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
-  name ? 0 : useCurrentPageId();
+  multiple || !name ? useCurrentPageId() : 0;
 }
-function useOn(name, callback2) {
+function useOn(name, callback) {
+}
+let index$7 = 0;
+function useContextInfo() {
+  const page = useCurrentPageId();
+  const instance = vue.getCurrentInstance();
+  const vm = instance.proxy;
+  const type = vm.$options.name.toLowerCase();
+  const id = vm.id || `context${index$7++}`;
+  return `${page}.${type}.${id}`;
+}
+function getContextInfo(el) {
+  return el.__uniContextInfo;
+}
+function saveImage(base64, dirname, callback) {
+  callback(null, base64);
+}
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (shared.hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a2 = document.createElement("a");
+  a2.href = url;
+  if (a2.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
+const API_UPX2PX = "upx2px";
+const Upx2pxProtocol = [
+  {
+    name: "upx",
+    type: [Number, String],
+    required: true
+  }
+];
+const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+  {
+    return number;
+  }
+}, Upx2pxProtocol);
+const canvasEventCallbacks = createCallbacks("canvasEvent");
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
+  const callback = canvasEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
+ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
+  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const API_GET_STORAGE = "getStorage";
+const GetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  }
+};
+const API_GET_STORAGE_SYNC = "getStorageSync";
+const GetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  }
+];
+const API_SET_STORAGE = "setStorage";
+const SetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  },
+  data: {
+    required: true
+  }
+};
+const API_SET_STORAGE_SYNC = "setStorageSync";
+const SetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  },
+  {
+    name: "data",
+    required: true
+  }
+];
+const API_REMOVE_STORAGE = "removeStorage";
+const RemoveStorageProtocol = GetStorageProtocol;
+const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
+const API_REQUEST = "request";
+const dataType = {
+  JSON: "json"
+};
+const RESPONSE_TYPE = ["text", "arraybuffer"];
+const DEFAULT_RESPONSE_TYPE = "text";
+const encode = encodeURIComponent;
+function stringifyQuery(url, data) {
+  let str = url.split("#");
+  const hash = str[1] || "";
+  str = str[0].split("?");
+  let query = str[1] || "";
+  url = str[0];
+  const search = query.split("&").filter((item) => item);
+  const params = {};
+  search.forEach((item) => {
+    const part = item.split("=");
+    params[part[0]] = part[1];
+  });
+  for (const key in data) {
+    if (shared.hasOwn(data, key)) {
+      let v2 = data[key];
+      if (typeof v2 === "undefined" || v2 === null) {
+        v2 = "";
+      } else if (shared.isPlainObject(v2)) {
+        v2 = JSON.stringify(v2);
+      }
+      params[encode(key)] = encode(v2);
+    }
+  }
+  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
+  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
+}
+const RequestProtocol = {
+  method: String,
+  data: [Object, String, Array, ArrayBuffer],
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean
+};
+const RequestOptions = {
+  formatArgs: {
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    data(value, params) {
+      params.data = value || "";
+    },
+    url(value, params) {
+      if (params.method === HTTP_METHODS[0] && shared.isPlainObject(params.data) && Object.keys(params.data).length) {
+        params.url = stringifyQuery(value, params.data);
+      }
+    },
+    header(value, params) {
+      const header = params.header = value || {};
+      if (params.method !== HTTP_METHODS[0]) {
+        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+          header["Content-Type"] = "application/json";
+        }
+      }
+    },
+    dataType(value, params) {
+      params.dataType = (value || dataType.JSON).toLowerCase();
+    },
+    responseType(value, params) {
+      params.responseType = (value || "").toLowerCase();
+      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+        params.responseType = DEFAULT_RESPONSE_TYPE;
+      }
+    }
+  }
+};
+const envMethod = /* @__PURE__ */ (() => "env")();
+function normalizeWindowBottom(windowBottom) {
+  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
+}
+const SEP = "$$";
+const currentPagesMap = new Map();
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPages$1() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    const {path: path2, alias} = __uniRoutes[0];
+    return {
+      id: meta.id,
+      path: path2,
+      route: alias.substr(1),
+      fullPath: path2,
+      options: {},
+      meta
+    };
+  }
+  const {path} = route;
+  return {
+    id: meta.id,
+    path,
+    route: route.meta.route,
+    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
+    options: {},
+    meta
+  };
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  vm.$vm = vm;
+  vm.$page = page;
+  vm.__isTabBar = page.meta.isTabBar;
+  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = vueRouter.useRoute();
+  const routeKey = vue.computed(() => normalizeRouteKey(route.path, getStateId()));
+  const isTabBar = vue.computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      vue.nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function initRouter(app) {
+  const router = vueRouter.createRouter(createRouterOptions());
+  app.router = router;
+  app.use(router);
+}
+const scrollBehavior = (_to, _from, savedPosition) => {
+  if (savedPosition) {
+    return savedPosition;
+  }
+};
+function createRouterOptions() {
+  return {
+    history: initHistory(),
+    strict: !!__uniConfig.router.strict,
+    routes: __uniRoutes,
+    scrollBehavior
+  };
+}
+function initHistory() {
+  let {base} = __uniConfig.router;
+  if (base === "/") {
+    base = "";
+  }
+  {
+    return vueRouter.createMemoryHistory(base);
+  }
+}
+var index$6 = {
+  install(app) {
+    initApp$1(app);
+    if (__UNI_FEATURE_PAGES__) {
+      initRouter(app);
+    }
+  }
+};
+let appVm;
+function getApp$1() {
+  return appVm;
+}
+function initApp(vm) {
+  appVm = vm;
+  appVm.$vm = vm;
+  appVm.globalData = appVm.$options.globalData || {};
+}
+function wrapperComponentSetup(comp, {init, setup, after}) {
+  const oldSetup = comp.setup;
+  comp.setup = (props2, ctx) => {
+    const instance = vue.getCurrentInstance();
+    init(instance.proxy);
+    const query = setup(instance);
+    if (oldSetup) {
+      return oldSetup(query, ctx);
+    }
+  };
+  after && after(comp);
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    wrapperComponentSetup(comp.default, options);
+  } else {
+    wrapperComponentSetup(comp, options);
+  }
+  return comp;
+}
+function setupPage(comp) {
+  return setupComponent(comp, {
+    init: initPage,
+    setup(instance) {
+      instance.__isPage = true;
+      instance.root = instance;
+      const route = usePageRoute();
+      if (route.meta.isTabBar) {
+        instance.__isActive = true;
+      }
+      {
+        return route.query;
+      }
+    }
+  });
+}
+function setupApp(comp) {
+  return setupComponent(comp, {
+    init: initApp,
+    setup(instance) {
+      const route = usePageRoute();
+      {
+        return route.query;
+      }
+    },
+    after(comp2) {
+      comp2.mpType = "app";
+      comp2.render = () => (vue.openBlock(), vue.createBlock(LayoutComponent));
+    }
+  });
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -7981,7 +8013,33 @@ function useDanmu(props2, videoState) {
   };
 }
 function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
-  useSubscribe();
+  const methods = {
+    play,
+    pause,
+    seek,
+    sendDanmu,
+    playbackRate,
+    requestFullScreen,
+    exitFullScreen
+  };
+  const id = useContextInfo();
+  useSubscribe((type, data) => {
+    let options;
+    switch (type) {
+      case "seek":
+        options = data.position;
+        break;
+      case "sendDanmu":
+        options = data;
+        break;
+      case "playbackRate":
+        options = data.rate;
+        break;
+    }
+    if (type in methods) {
+      methods[type](options);
+    }
+  }, id, true);
 }
 const props$6 = {
   id: {
@@ -8137,7 +8195,7 @@ var index$5 = /* @__PURE__ */ defineBuiltInComponent({
       clickProgress,
       toggleControls
     } = useControls(props2, videoState, seek);
-    useContext();
+    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,
@@ -8340,26 +8398,6 @@ function useWebViewSize(rootRef, iframeRef) {
     });
   };
   return _resize;
-}
-function callback(options, data) {
-  options = options || {};
-  if (typeof data === "string") {
-    data = {
-      errMsg: data
-    };
-  }
-  if (/:ok$/.test(data.errMsg)) {
-    if (typeof options.success === "function") {
-      options.success(data);
-    }
-  } else {
-    if (typeof options.fail === "function") {
-      options.fail(data);
-    }
-  }
-  if (typeof options.complete === "function") {
-    options.complete(data);
-  }
 }
 const props$4 = {
   id: {
@@ -8968,10 +9006,10 @@ function useMap(props2, rootRef, emit2) {
     longitude: Number(props2.longitude),
     includePoints: getPoints(props2.includePoints)
   });
-  function onMapReady(callback2) {
+  function onMapReady(callback) {
   }
   let isBoundsReady;
-  function onBoundsReady(callback2) {
+  function onBoundsReady(callback) {
   }
   const contexts = {};
   function addMapChidlContext(context) {
@@ -9005,12 +9043,13 @@ function useMap(props2, rootRef, emit2) {
     map.fitBounds(bounds);
   }
   try {
+    const id = useContextInfo();
     useSubscribe((type, data = {}) => {
       switch (type) {
         case "getCenterLocation":
           onMapReady(() => {
             const center = map.getCenter();
-            callback(data, {
+            uniShared.callOptions(data, {
               latitude: center.getLat(),
               longitude: center.getLng(),
               errMsg: `${type}:ok`
@@ -9034,10 +9073,10 @@ function useMap(props2, rootRef, emit2) {
               if (map)
                 ;
               onMapReady(() => {
-                callback(data, `${type}:ok`);
+                uniShared.callOptions(data, `${type}:ok`);
               });
             } else {
-              callback(data, `${type}:fail`);
+              uniShared.callOptions(data, `${type}:fail`);
             }
           }
           break;
@@ -9048,11 +9087,11 @@ function useMap(props2, rootRef, emit2) {
               try {
                 context.translate(data);
               } catch (error) {
-                callback(data, `${type}:fail ${error.message}`);
+                uniShared.callOptions(data, `${type}:fail ${error.message}`);
               }
-              callback(data, `${type}:ok`);
+              uniShared.callOptions(data, `${type}:ok`);
             } else {
-              callback(data, `${type}:fail not found`);
+              uniShared.callOptions(data, `${type}:fail not found`);
             }
           });
           break;
@@ -9061,7 +9100,7 @@ function useMap(props2, rootRef, emit2) {
           if (isBoundsReady)
             ;
           onBoundsReady(() => {
-            callback(data, `${type}:ok`);
+            uniShared.callOptions(data, `${type}:ok`);
           });
           break;
         case "getRegion":
@@ -9069,7 +9108,7 @@ function useMap(props2, rootRef, emit2) {
             const latLngBounds = map.getBounds();
             const southwest = latLngBounds.getSouthWest();
             const northeast = latLngBounds.getNorthEast();
-            callback(data, {
+            uniShared.callOptions(data, {
               southwest: {
                 latitude: southwest.getLat(),
                 longitude: southwest.getLng()
@@ -9084,14 +9123,14 @@ function useMap(props2, rootRef, emit2) {
           break;
         case "getScale":
           onMapReady(() => {
-            callback(data, {
+            uniShared.callOptions(data, {
               scale: map.getZoom(),
               errMsg: `${type}:ok`
             });
           });
           break;
       }
-    });
+    }, id, true);
   } catch (error) {
   }
   vue.provide("onMapReady", onMapReady);
@@ -10142,10 +10181,10 @@ class RequestTask {
       delete this._xhr;
     }
   }
-  onHeadersReceived(callback2) {
+  onHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
-  offHeadersReceived(callback2) {
+  offHeadersReceived(callback) {
     throw new Error("Method not implemented.");
   }
 }
@@ -11143,46 +11182,46 @@ var index = /* @__PURE__ */ defineSystemComponent({
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
 exports.Audio = _sfc_main$8;
-exports.Button = index$o;
+exports.Button = index$q;
 exports.Canvas = _sfc_main$7;
-exports.Checkbox = index$l;
-exports.CheckboxGroup = index$n;
+exports.Checkbox = index$n;
+exports.CheckboxGroup = index$p;
 exports.CoverImage = _sfc_main$2;
 exports.CoverView = _sfc_main$3;
-exports.Editor = index$k;
-exports.Form = index$p;
+exports.Editor = index$m;
+exports.Form = index$r;
 exports.Friction = Friction;
-exports.Icon = index$j;
-exports.Image = index$i;
+exports.Icon = index$l;
+exports.Image = index$k;
 exports.Input = Input;
-exports.Label = index$m;
+exports.Label = index$o;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
-exports.MovableArea = index$h;
-exports.MovableView = index$g;
+exports.MovableArea = index$j;
+exports.MovableView = index$i;
 exports.Navigator = _sfc_main$6;
 exports.PageComponent = index$2;
 exports.Picker = _sfc_main$1;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$f;
-exports.Radio = index$d;
-exports.RadioGroup = index$e;
+exports.Progress = index$h;
+exports.Radio = index$f;
+exports.RadioGroup = index$g;
 exports.ResizeSensor = ResizeSensor;
 exports.RichText = _sfc_main$5;
 exports.ScrollView = _sfc_main$4;
 exports.Scroller = Scroller;
-exports.Slider = index$c;
+exports.Slider = index$e;
 exports.Spring = Spring;
-exports.Swiper = index$b;
-exports.SwiperItem = index$a;
-exports.Switch = index$9;
-exports.Text = index$8;
-exports.Textarea = index$7;
+exports.Swiper = index$d;
+exports.SwiperItem = index$c;
+exports.Switch = index$b;
+exports.Text = index$a;
+exports.Textarea = index$9;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$5;
-exports.View = index$6;
+exports.View = index$8;
 exports.WebView = index$4;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
@@ -11190,6 +11229,7 @@ exports.defineBuiltInComponent = defineBuiltInComponent;
 exports.defineSystemComponent = defineSystemComponent;
 exports.disableScrollBounce = disableScrollBounce;
 exports.getApp = getApp$1;
+exports.getContextInfo = getContextInfo;
 exports.getCurrentPages = getCurrentPages$1;
 exports.getStorage = getStorage;
 exports.getStorageInfo = getStorageInfo;
@@ -11197,7 +11237,7 @@ exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
 exports.initScrollBounce = initScrollBounce;
-exports.plugin = index$q;
+exports.plugin = index$6;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;
@@ -11209,6 +11249,7 @@ exports.uni = uni$1;
 exports.uniFormKey = uniFormKey;
 exports.useAttrs = useAttrs;
 exports.useBooleanAttr = useBooleanAttr;
+exports.useContextInfo = useContextInfo;
 exports.useCustomEvent = useCustomEvent;
 exports.useNativeEvent = useNativeEvent;
 exports.useOn = useOn;
