@@ -1,5 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
-import { getCurrentPageVm } from '@dcloudio/uni-core'
+import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
 import { operateVideoPlayer } from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
 import {
@@ -11,39 +10,39 @@ const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0]
 
 export class VideoContext {
   private id: string
-  private vm: ComponentPublicInstance
-  constructor(id: string, vm: ComponentPublicInstance) {
+  private pageId: number
+  constructor(id: string, pageId: number) {
     this.id = id
-    this.vm = vm
+    this.pageId = pageId
   }
 
   play() {
-    operateVideoPlayer(this.id, this.vm, 'play')
+    operateVideoPlayer(this.id, this.pageId, 'play')
   }
 
   pause() {
-    operateVideoPlayer(this.id, this.vm, 'pause')
+    operateVideoPlayer(this.id, this.pageId, 'pause')
   }
 
   stop() {
-    operateVideoPlayer(this.id, this.vm, 'stop')
+    operateVideoPlayer(this.id, this.pageId, 'stop')
   }
 
   seek(position?: number) {
-    operateVideoPlayer(this.id, this.vm, 'seek', {
+    operateVideoPlayer(this.id, this.pageId, 'seek', {
       position,
     })
   }
 
   sendDanmu(args: WechatMiniprogram.Danmu) {
-    operateVideoPlayer(this.id, this.vm, 'sendDanmu', args)
+    operateVideoPlayer(this.id, this.pageId, 'sendDanmu', args)
   }
 
   playbackRate(rate: number) {
     if (!~RATES.indexOf(rate)) {
       rate = 1.0
     }
-    operateVideoPlayer(this.id, this.vm, 'playbackRate', {
+    operateVideoPlayer(this.id, this.pageId, 'playbackRate', {
       rate,
     })
   }
@@ -51,19 +50,19 @@ export class VideoContext {
   requestFullScreen(
     args: WechatMiniprogram.VideoContextRequestFullScreenOption = {}
   ) {
-    operateVideoPlayer(this.id, this.vm, 'requestFullScreen', args)
+    operateVideoPlayer(this.id, this.pageId, 'requestFullScreen', args)
   }
 
   exitFullScreen() {
-    operateVideoPlayer(this.id, this.vm, 'exitFullScreen')
+    operateVideoPlayer(this.id, this.pageId, 'exitFullScreen')
   }
 
   showStatusBar() {
-    operateVideoPlayer(this.id, this.vm, 'showStatusBar')
+    operateVideoPlayer(this.id, this.pageId, 'showStatusBar')
   }
 
   hideStatusBar() {
-    operateVideoPlayer(this.id, this.vm, 'hideStatusBar')
+    operateVideoPlayer(this.id, this.pageId, 'hideStatusBar')
   }
 }
 
@@ -71,8 +70,8 @@ export const createVideoContext = defineSyncApi<API_TYPE_CREATE_VIDEO_CONTEXT>(
   API_CREATE_VIDEO_CONTEXT,
   (id, context) => {
     if (context) {
-      return new VideoContext(id, context)
+      return new VideoContext(id, getPageIdByVm(context)!)
     }
-    return new VideoContext(id, getCurrentPageVm()!)
+    return new VideoContext(id, getPageIdByVm(getCurrentPageVm()!)!)
   }
 )

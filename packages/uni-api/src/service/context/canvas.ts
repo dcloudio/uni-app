@@ -28,7 +28,8 @@ import type {
 import { hasOwn } from '@vue/shared'
 
 import {
-  getCurrentPageId,
+  getPageIdByVm,
+  getCurrentPageVm,
   createCallbacks,
   ServiceJSBridge,
 } from '@dcloudio/uni-core'
@@ -1005,9 +1006,9 @@ export const createCanvasContext =
     API_CREATE_CANVAS_CONTEXT,
     (canvasId, componentInstance): any => {
       if (componentInstance) {
-        return new CanvasContext(canvasId, componentInstance.$page.id)
+        return new CanvasContext(canvasId, getPageIdByVm(componentInstance)!)
       }
-      const pageId = getCurrentPageId()
+      const pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (pageId) {
         return new CanvasContext(canvasId, pageId)
       } else {
@@ -1021,7 +1022,7 @@ export const canvasGetImageData =
   defineAsyncApi<API_TYPE_CANVAS_GET_IMAGE_DATA>(
     API_CANVAS_GET_IMAGE_DATA,
     ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-      const pageId = getCurrentPageId()
+      const pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
         return
@@ -1056,7 +1057,7 @@ export const canvasPutImageData =
   defineAsyncApi<API_TYPE_CANVAS_PUT_IMAGE_DATA>(
     API_CANVAS_PUT_IMAGE_DATA,
     async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-      var pageId = getCurrentPageId()
+      var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
         return
@@ -1111,7 +1112,7 @@ export const canvasToTempFilePath =
       },
       { resolve, reject }
     ) => {
-      var pageId = getCurrentPageId()
+      var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
         return

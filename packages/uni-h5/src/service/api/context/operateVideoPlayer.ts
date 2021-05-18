@@ -1,13 +1,9 @@
-import { ComponentPublicInstance } from 'vue'
-import { getPageIdByVm } from '@dcloudio/uni-core'
-
 export function operateVideoPlayer(
   videoId: string,
-  vm: ComponentPublicInstance,
+  pageId: number,
   type: string,
   data?: unknown
 ) {
-  const pageId = getPageIdByVm(vm)!
   UniServiceJSBridge.publishHandler(
     'video.' + videoId,
     {

@@ -1,5 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
-import { getCurrentPageVm } from '@dcloudio/uni-core'
+import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
 import { operateMap } from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
 import {
@@ -8,30 +7,30 @@ import {
   CreateMapContextProtocol,
 } from '../../protocols/context/context'
 
-class MapContext implements UniApp.MapContext {
+export class MapContext implements UniApp.MapContext {
   private id: string
-  private vm: ComponentPublicInstance
-  constructor(id: string, vm: ComponentPublicInstance) {
+  private pageId: number
+  constructor(id: string, pageId: number) {
     this.id = id
-    this.vm = vm
+    this.pageId = pageId
   }
   getCenterLocation(options: any) {
-    operateMap(this.id, this.vm, 'getCenterLocation', options)
+    operateMap(this.id, this.pageId, 'getCenterLocation', options)
   }
   moveToLocation() {
-    operateMap(this.id, this.vm, 'moveToLocation')
+    operateMap(this.id, this.pageId, 'moveToLocation')
   }
   getScale(options: any) {
-    operateMap(this.id, this.vm, 'getScale', options)
+    operateMap(this.id, this.pageId, 'getScale', options)
   }
   getRegion(options: any) {
-    operateMap(this.id, this.vm, 'getRegion', options)
+    operateMap(this.id, this.pageId, 'getRegion', options)
   }
   includePoints(options: any) {
-    operateMap(this.id, this.vm, 'includePoints', options)
+    operateMap(this.id, this.pageId, 'includePoints', options)
   }
   translateMarker(options: any) {
-    operateMap(this.id, this.vm, 'translateMarker', options)
+    operateMap(this.id, this.pageId, 'translateMarker', options)
   }
   addCustomLayer() {}
   removeCustomLayer() {}
@@ -50,9 +49,9 @@ export const createMapContext = <API_TYPE_CREATE_MAP_CONTEXT>defineSyncApi(
   API_CREATE_MAP_CONTEXT,
   (id, context) => {
     if (context) {
-      return new MapContext(id, context)
+      return new MapContext(id, getPageIdByVm(context)!)
     }
-    return new MapContext(id, getCurrentPageVm()!)
+    return new MapContext(id, getPageIdByVm(getCurrentPageVm()!)!)
   },
   CreateMapContextProtocol
 )
