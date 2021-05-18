@@ -19,19 +19,25 @@ uniCloud分为客户端和云端两部分，有些接口名称相同，参数也
 
 ### 获取当前用户信息getCurrentUserInfo@client-getcurrentuserinfo
 
-新增于HBuilderX 3.1.0版本，通过解析客户端token获取用户信息，不会发送网络请求，**注意这个仅仅是客户端接口，不校验token的合法性**
+> HBuilderX 3.1.0+
 
-> 需要搭配uni-id使用并要求客户端必须将token存储在storage内的`uni_id_token`内
+解析客户端token获取用户信息。常用于在前端判断当前登录的用户状态和用户权限，比如根据不同的权限显示隐藏某些按钮。
+
+注意：不会发送网络请求，**注意这个仅仅是客户端接口，不校验token的合法性**
+
+注意：需要搭配uni-id使用并要求客户端必须将token存储在storage内的`uni_id_token`内
 
 用法：`uniCloud.getCurrentUserInfo()`
 
+该方法为同步方法。
+
 **响应参数**
 
-| 字段			| 类型	| 必填| 说明														|
-| ---				| ---		| ---	| ---															|
-| uid				| Number| 是	|当前用户uid											|
-| role			| Array	| 是	|用户角色列表											|
-| permission| Array	| 是	|用户权限列表，admin角色此数组为空|
+| 字段			| 类型	| 说明							|
+| ---			| ---	| ---							|
+| uid			| Number|当前用户uid						|
+| role			| Array	|用户角色列表。admin用户返回["admin"]			|
+| permission	| Array	|用户权限列表。注意admin角色此数组为空|
 
 未能获取用户信息时返回以下结果
 
@@ -41,6 +47,11 @@ uniCloud分为客户端和云端两部分，有些接口名称相同，参数也
   role: [],
   permission: []
 }
+```
+
+**示例**
+```js
+console.log(uniCloud.getCurrentUserInfo().role.indexOf('admin')>-1); // 如果是admin用户的话，打印结果为true
 ```
 
 ## 属性
