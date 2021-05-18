@@ -579,13 +579,13 @@ rewardedVideoAd.onVerify(e => {
 
 1. 登陆 [uniCloud](https://unicloud.dcloud.net.cn/) web控制台，新建服务空间或选择已有服务空间，然后新建云函数用于接收广告的回调
 2. 在 [uniAD](https://uniad-dev.dcloud.net.cn/) web控制台开通服务器回调并选择上一步新建的云函数
-3. 开通后将在选择的服务空间下自动部署一个加密云函数 `uniad-callback`
-4. `uniad-callback` 接收广告商服务器回调验证签名并抹平穿山甲/优量汇/快手参数差异，然后以 [callFunction](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=callbyfunction) 方式调用用户云函数
+3. 开通后将在选择的服务空间下自动部署一个加密云函数 `uniAdCallback`
+4. `uniAdCallback` 接收广告商服务器回调验证签名并抹平穿山甲/优量汇/快手参数差异，然后以 [callFunction](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=callbyfunction) 方式调用用户云函数
 5. 用户在自己的云函数中处理业务
 
 注意：服务器通信和前端事件是并行的，前端需要轮询向服务器请求并验证结果
 
-### 云函数ad-callback传递的参数
+### 云函数uniAdCallback传递的参数
 
 |字段定义|类型|字段名称|备注|
 |:-:|:-:|:-:|:-:|
