@@ -4,6 +4,13 @@ export declare function addFont(family: string, source: string, desc?: FontFaceD
 
 export declare const BUILT_IN_TAGS: string[];
 
+export declare function callOptions(options: Options, errMsg: string): void;
+
+export declare function callOptions(options: Options, data: {
+    [key: string]: any;
+    errMsg: string;
+}): void;
+
 export declare const COMPONENT_NAME_PREFIX = "VUni";
 
 export declare const COMPONENT_PREFIX: string;
@@ -65,6 +72,12 @@ export declare function normalizeTarget(el: HTMLElement): {
 export declare const ON_REACH_BOTTOM_DISTANCE = 50;
 
 export declare function once<T extends (...args: any[]) => any>(fn: T, ctx?: unknown): T;
+
+declare interface Options {
+    success?: (res: any) => void;
+    fail?: (res: any) => void;
+    complete?: (res: any) => void;
+}
 
 /**
  * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts

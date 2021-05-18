@@ -224,6 +224,27 @@ function formatDateTime({ date = new Date(), mode = 'date' }) {
             _completeValue(date.getDate()));
     }
 }
+function callOptions(options, data) {
+    options = options || {};
+    if (typeof data === 'string') {
+        data = {
+            errMsg: data,
+        };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+        if (typeof options.success === 'function') {
+            options.success(data);
+        }
+    }
+    else {
+        if (typeof options.fail === 'function') {
+            options.fail(data);
+        }
+    }
+    if (typeof options.complete === 'function') {
+        options.complete(data);
+    }
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -338,4 +359,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

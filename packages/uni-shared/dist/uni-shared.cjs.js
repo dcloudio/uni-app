@@ -228,6 +228,27 @@ function formatDateTime({ date = new Date(), mode = 'date' }) {
             _completeValue(date.getDate()));
     }
 }
+function callOptions(options, data) {
+    options = options || {};
+    if (typeof data === 'string') {
+        data = {
+            errMsg: data,
+        };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+        if (typeof options.success === 'function') {
+            options.success(data);
+        }
+    }
+    else {
+        if (typeof options.fail === 'function') {
+            options.fail(data);
+        }
+    }
+    if (typeof options.complete === 'function') {
+        options.complete(data);
+    }
+}
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -358,6 +379,7 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.addFont = addFont;
+exports.callOptions = callOptions;
 exports.createRpx2Unit = createRpx2Unit;
 exports.debounce = debounce;
 exports.decode = decode;
