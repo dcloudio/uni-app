@@ -51,10 +51,10 @@ export function useSubscribe(
     addSubscribe(name || normalizeEvent(pageId, vm)!, callback)
     if (!name) {
       watch(
-        () => (instance as any).id,
+        () => (vm as any).id,
         (value, oldValue) => {
           addSubscribe(normalizeEvent(pageId, vm, value)!, callback)
-          removeSubscribe(normalizeEvent(pageId, vm, oldValue)!)
+          removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue)!)
         }
       )
     }
