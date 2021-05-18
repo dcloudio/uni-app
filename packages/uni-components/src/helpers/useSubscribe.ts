@@ -42,14 +42,15 @@ function removeSubscribe(name: string) {
 
 export function useSubscribe(
   callback: (type: string, data: unknown) => void,
-  name?: string
+  name?: string,
+  multiple?: boolean
 ) {
   const instance = getCurrentInstance()!
   const vm = instance.proxy!
-  const pageId = name ? 0 : useCurrentPageId()
+  const pageId = multiple || !name ? useCurrentPageId() : 0
   onMounted(() => {
     addSubscribe(name || normalizeEvent(pageId, vm)!, callback)
-    if (!name) {
+    if (multiple || !name) {
       watch(
         () => (vm as any).id,
         (value, oldValue) => {

@@ -14,6 +14,7 @@ import { useI18n, initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   defineBuiltInComponent,
+  useContextInfo,
   useSubscribe,
   useCustomEvent,
   EmitEvent,
@@ -683,6 +684,7 @@ function useContext(
     requestFullScreen,
     exitFullScreen,
   }
+  const id = useContextInfo()
   useSubscribe((type: string, data: any) => {
     let options
     switch (type) {
@@ -699,7 +701,7 @@ function useContext(
     if (type in methods) {
       methods[type as keyof typeof methods](options)
     }
-  })
+  }, id, true)
 }
 
 const props = {
@@ -875,6 +877,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             onTouchstart={onTouchstart}
             onTouchend={onTouchend}
             onTouchmove={onTouchmove}
+            // @ts-ignore
             onFullscreenchange={withModifiers(onFullscreenChange, ['stop'])}
             onWebkitfullscreenchange={withModifiers(
               ($event: Event) => onFullscreenChange($event, true),
@@ -883,6 +886,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           >
             <video
               ref={videoRef}
+              // @ts-ignore
               style={{ 'object-fit': props.objectFit }}
               muted={!!props.muted}
               loop={!!props.loop}

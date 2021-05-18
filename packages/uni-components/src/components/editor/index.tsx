@@ -5,7 +5,7 @@ import QuillClass, {
   RangeStatic,
   StringMap,
 } from 'quill'
-import { useSubscribe } from '@dcloudio/uni-components'
+import { useContextInfo, useSubscribe } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
@@ -256,6 +256,7 @@ function useQuill(
       }
     })
   })
+  const id = useContextInfo()
   useSubscribe((type: string, data: any) => {
     const { options, callbackId } = data
     let res
@@ -412,7 +413,7 @@ function useQuill(
         }),
       })
     }
-  })
+  }, id, true)
 }
 
 const props = /*#__PURE__*/ Object.assign({}, keyboardProps, {

@@ -10,6 +10,7 @@ import {
 } from 'vue'
 import {
   defineBuiltInComponent,
+  useContextInfo,
   useSubscribe,
   useCustomEvent,
 } from '@dcloudio/uni-components'
@@ -299,6 +300,7 @@ function useMap(
   }
   try {
     // TODO 支持在页面外使用
+    const id = useContextInfo()
     useSubscribe((type, data: any = {}) => {
       switch (type) {
         case 'getCenterLocation':
@@ -391,7 +393,7 @@ function useMap(
           })
           break
       }
-    })
+    }, id, true)
   } catch (error) {}
   onMounted(() => {
     loadMaps((result) => {

@@ -23,7 +23,7 @@
 </template>
 <script lang="ts">
 import { ref } from "vue";
-import { useAttrs, useSubscribe, withWebEvent } from "@dcloudio/uni-components";
+import { useAttrs, useContextInfo, useSubscribe, withWebEvent } from "@dcloudio/uni-components";
 import { getCurrentPageVm, getCurrentPageId, onEventPrevent } from "@dcloudio/uni-core";
 import { saveImage, getSameOriginUrl } from "@dcloudio/uni-platform";
 import ResizeSensor from "../resize-sensor";
@@ -144,7 +144,8 @@ export default {
   created() {
     this._actionsDefer = [];
     this._images = {};
-    useSubscribe(this._handleSubscribe);
+    const id = useContextInfo();
+    useSubscribe(this._handleSubscribe, id, true);
   },
   mounted() {
     this.$trigger = useNativeEvent(this.$emit);

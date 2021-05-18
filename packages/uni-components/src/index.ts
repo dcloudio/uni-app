@@ -1,5 +1,6 @@
 export * from './components'
 export { useOn, useSubscribe } from './helpers/useSubscribe'
+export { useContextInfo, getContextInfo } from './helpers/useContextInfo'
 export {
   withWebEvent,
   useCustomEvent,
