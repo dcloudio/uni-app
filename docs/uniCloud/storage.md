@@ -562,7 +562,7 @@ let result = await uniCloud.getTempFileURL({
 // 云函数删除文件示例代码
 let result = await uniCloud.deleteFile({
     fileList: [
-        "cloud://test-28farb/a.png"
+        "cloud://test-28farb/a.png" // 阿里云fileID是url形式，例：https://xxx.com/xxx.png
     ]
 });
 ```
