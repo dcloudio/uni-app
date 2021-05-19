@@ -130,41 +130,53 @@ function f(t: HTMLElement, n: HTMLElement): number {
 function v(a: number, b: number) {
   return +((1000 * a - 1000 * b) / 1000).toFixed(1)
 }
-function g(e: Friction | STD, t: Function, n: Function) {
-  type R = {
-    id: number
-    cancelled: boolean
-  }
-  let i = function (e: R) {
-    if (e && e.id) {
-      cancelAnimationFrame(e.id)
-    }
-    if (e) {
-      e.cancelled = true
-    }
-  }
-  let r: R = {
+type FrictionCallback = (friction: Friction | STD) => void
+type Record = {
+  id: number
+  cancelled: boolean
+}
+function g(
+  friction: Friction | STD,
+  execute: FrictionCallback,
+  endCallback: FrictionCallback
+) {
+  let record: Record = {
     id: 0,
     cancelled: false,
   }
-  function fn(n: R, i: Friction | STD, r: Function, o: Function) {
-    if (!n || !n.cancelled) {
-      r(i)
-      let a = e.done()
-      if (!a) {
-        if (!n.cancelled) {
-          n.id = requestAnimationFrame(fn.bind(null, n, i, r, o))
+  let cancel = function (record: Record) {
+    if (record && record.id) {
+      cancelAnimationFrame(record.id)
+    }
+    if (record) {
+      record.cancelled = true
+    }
+  }
+  function fn(
+    record: Record,
+    friction: Friction | STD,
+    execute: FrictionCallback,
+    endCallback: FrictionCallback
+  ) {
+    if (!record || !record.cancelled) {
+      execute(friction)
+      let isDone = friction.done()
+      if (!isDone) {
+        if (!record.cancelled) {
+          record.id = requestAnimationFrame(
+            fn.bind(null, record, friction, execute, endCallback)
+          )
         }
       }
-      if (a && o) {
-        o(i)
+      if (isDone && endCallback) {
+        endCallback(friction)
       }
     }
   }
-  fn(r, e, t, n)
+  fn(record, friction, execute, endCallback)
   return {
-    cancel: i.bind(null, r),
-    model: e,
+    cancel: cancel.bind(null, record),
+    model: friction,
   }
 }
 function _getPx(val: Props['x'] | Props['y']) {
@@ -301,6 +313,15 @@ function useMovableViewState(
     _setScaleMinOrMax()
   })
 
+  function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel()
+    }
+    if (_SFA) {
+      _SFA.cancel()
+    }
+  }
+
   function _setX(val: number) {
     if (xMove.value) {
       if (val + _scaleOffset.x === _translateX) {
@@ -349,12 +370,7 @@ function useMovableViewState(
         disableScrollBounce({
           disable: true,
         })
-        if (_FA) {
-          _FA.cancel()
-        }
-        if (_SFA) {
-          _SFA.cancel()
-        }
+        FAandSFACancel()
         __touchInfo.historyX = [0, 0]
         __touchInfo.historyY = [0, 0]
         __touchInfo.historyT = [0, 0]
@@ -494,6 +510,10 @@ function useMovableViewState(
         )
       }
     }
+
+    if (!props.outOfBounds && !props.inertia) {
+      FAandSFACancel()
+    }
   }
   function _getLimitXY(x: number, y: number) {
     let outOfBounds = false
@@ -584,12 +604,7 @@ function useMovableViewState(
     r?: boolean,
     o?: boolean
   ) {
-    if (_FA) {
-      _FA.cancel()
-    }
-    if (_SFA) {
-      _SFA.cancel()
-    }
+    FAandSFACancel()
     if (!xMove.value) {
       x = _translateX
     }
@@ -683,7 +698,6 @@ function useMovableViewState(
       'px) translateZ(0px) scale(' +
       scale +
       ')'
-    // TODO 使用 uni.previewImage 点击关闭时，由于组件销毁此处会报错
     rootRef.value!.style.transform = transform
     rootRef.value!.style.webkitTransform = transform
     _translateX = x
@@ -695,12 +709,7 @@ function useMovableViewState(
     if (!_isMounted.value) {
       return
     }
-    if (_FA) {
-      _FA.cancel()
-    }
-    if (_SFA) {
-      _SFA.cancel()
-    }
+    FAandSFACancel()
     let scale = props.scale ? scaleValueSync.value : 1
     _updateOffset()
     _updateWH(scale)
@@ -759,6 +768,9 @@ function useMovableViewState(
     onUnmounted(() => {
       removeMovableViewContext(context)
     })
+  })
+  onUnmounted(() => {
+    FAandSFACancel()
   })
 
   return {

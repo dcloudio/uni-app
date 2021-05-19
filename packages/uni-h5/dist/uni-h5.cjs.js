@@ -3715,37 +3715,37 @@ function f(t2, n) {
 function v(a2, b) {
   return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
-function g(e2, t2, n) {
-  let i = function(e3) {
-    if (e3 && e3.id) {
-      cancelAnimationFrame(e3.id);
-    }
-    if (e3) {
-      e3.cancelled = true;
-    }
-  };
-  let r = {
+function g(friction, execute, endCallback) {
+  let record = {
     id: 0,
     cancelled: false
   };
-  function fn(n2, i2, r2, o2) {
-    if (!n2 || !n2.cancelled) {
-      r2(i2);
-      let a2 = e2.done();
-      if (!a2) {
-        if (!n2.cancelled) {
-          n2.id = requestAnimationFrame(fn.bind(null, n2, i2, r2, o2));
+  let cancel = function(record2) {
+    if (record2 && record2.id) {
+      cancelAnimationFrame(record2.id);
+    }
+    if (record2) {
+      record2.cancelled = true;
+    }
+  };
+  function fn(record2, friction2, execute2, endCallback2) {
+    if (!record2 || !record2.cancelled) {
+      execute2(friction2);
+      let isDone = friction2.done();
+      if (!isDone) {
+        if (!record2.cancelled) {
+          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
         }
       }
-      if (a2 && o2) {
-        o2(i2);
+      if (isDone && endCallback2) {
+        endCallback2(friction2);
       }
     }
   }
-  fn(r, e2, t2, n);
+  fn(record, friction, execute, endCallback);
   return {
-    cancel: i.bind(null, r),
-    model: e2
+    cancel: cancel.bind(null, record),
+    model: friction
   };
 }
 function _getPx(val) {
@@ -3828,6 +3828,11 @@ function useMovableViewState(props2, trigger, rootRef) {
   vue.watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
+  function FAandSFACancel() {
+    if (_SFA) {
+      _SFA.cancel();
+    }
+  }
   function _setX(val) {
     if (xMove.value) {
       if (val + _scaleOffset.x === _translateX) {
@@ -3942,9 +3947,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     return scale;
   }
   function _animationTo(x, y, scale, source, r, o2) {
-    if (_SFA) {
-      _SFA.cancel();
-    }
+    FAandSFACancel();
     if (!xMove.value) {
       x = _translateX;
     }
@@ -4020,9 +4023,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     if (!_isMounted.value) {
       return;
     }
-    if (_SFA) {
-      _SFA.cancel();
-    }
+    FAandSFACancel();
     let scale = props2.scale ? scaleValueSync.value : 1;
     _updateOffset();
     _updateWH(scale);
