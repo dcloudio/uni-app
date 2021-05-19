@@ -839,14 +839,13 @@ function $nne(evt) {
   return res;
 }
 function createNativeEvent(evt) {
-  const {type, timeStamp, currentTarget} = evt;
-  const target = normalizeTarget(currentTarget);
+  const {type, timeStamp, target, currentTarget} = evt;
   const event = {
     type,
     timeStamp,
-    target,
+    target: normalizeTarget(target),
     detail: {},
-    currentTarget: target
+    currentTarget: normalizeTarget(currentTarget)
   };
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;

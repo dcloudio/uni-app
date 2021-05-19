@@ -283,14 +283,13 @@ function createCallbacks(namespace) {
   };
 }
 function createNativeEvent(evt) {
-  const {type, timeStamp, currentTarget} = evt;
-  const target = uniShared.normalizeTarget(currentTarget);
+  const {type, timeStamp, target, currentTarget} = evt;
   const event = {
     type,
     timeStamp,
-    target,
+    target: uniShared.normalizeTarget(target),
     detail: {},
-    currentTarget: target
+    currentTarget: uniShared.normalizeTarget(currentTarget)
   };
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;
