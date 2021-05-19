@@ -257,163 +257,167 @@ function useQuill(
     })
   })
   const id = useContextInfo()
-  useSubscribe((type: string, data: any) => {
-    const { options, callbackId } = data
-    let res
-    let range: RangeStatic | undefined
-    let errMsg
-    if (quillReady) {
-      const Quill = (window as WindowExt).Quill as typeof QuillClass
-      switch (type) {
-        case 'format':
-          {
-            let { name = '', value = false } = options
-            range = quill.getSelection(true)
-            let format = quill.getFormat(range)[name] || false
-            if (
-              ['bold', 'italic', 'underline', 'strike', 'ins'].includes(name)
-            ) {
-              value = !format
-            } else if (name === 'direction') {
-              value = value === 'rtl' && format ? false : value
-              const align = quill.getFormat(range).align
-              if (value === 'rtl' && !align) {
-                quill.format('align', 'right', 'user')
-              } else if (!value && align === 'right') {
-                quill.format('align', false, 'user')
-              }
-            } else if (name === 'indent') {
-              const rtl = quill.getFormat(range).direction === 'rtl'
-              value = value === '+1'
-              if (rtl) {
-                value = !value
-              }
-              value = value ? '+1' : '-1'
-            } else {
-              if (name === 'list') {
-                value = value === 'check' ? 'unchecked' : value
-                format = format === 'checked' ? 'unchecked' : format
-              }
-              value =
-                (format && format !== (value || false)) || (!format && value)
-                  ? value
-                  : !format
-            }
-            quill.format(name, value, 'user')
-          }
-          break
-        case 'insertDivider':
-          range = quill.getSelection(true)
-          quill.insertText(range.index, '\n', 'user')
-          quill.insertEmbed(range.index + 1, 'divider', true, 'user')
-          quill.setSelection(range.index + 2, 0, 'silent')
-          break
-        case 'insertImage':
-          {
-            range = quill.getSelection(true)
-            const {
-              src = '',
-              alt = '',
-              width = '',
-              height = '',
-              extClass = '',
-              data = {},
-            } = options
-            const path = getRealPath(src)
-            quill.insertEmbed(range.index, 'image', path, 'user')
-            const local = /^(file|blob):/.test(path) ? path : false
-            quill.formatText(range.index, 1, 'data-local', local)
-            quill.formatText(range.index, 1, 'alt', alt)
-            quill.formatText(range.index, 1, 'width', width)
-            quill.formatText(range.index, 1, 'height', height)
-            quill.formatText(range.index, 1, 'class', extClass)
-            quill.formatText(
-              range.index,
-              1,
-              'data-custom',
-              Object.keys(data)
-                .map((key) => `${key}=${data[key]}`)
-                .join('&')
-            )
-            quill.setSelection(range.index + 1, 0, 'silent')
-          }
-          break
-        case 'insertText':
-          {
-            range = quill.getSelection(true)
-            const { text = '' } = options
-            quill.insertText(range.index, text, 'user')
-            quill.setSelection(range.index + text.length, 0, 'silent')
-          }
-          break
-        case 'setContents':
-          {
-            const { delta, html } = options
-            if (typeof delta === 'object') {
-              quill.setContents(delta, 'silent')
-            } else if (typeof html === 'string') {
-              quill.setContents(html2delta(html), 'silent')
-            } else {
-              errMsg = 'contents is missing'
-            }
-          }
-          break
-        case 'getContents':
-          res = getContents()
-          break
-        case 'clear':
-          quill.setText('')
-          break
-        case 'removeFormat':
-          {
-            range = quill.getSelection(true)
-            const parchment = Quill.import('parchment')
-            if (range.length) {
-              quill.removeFormat(range.index, range.length, 'user')
-            } else {
-              Object.keys(quill.getFormat(range)).forEach((key) => {
-                if (parchment.query(key, parchment.Scope.INLINE)) {
-                  quill.format(key, false)
+  useSubscribe(
+    (type: string, data: any) => {
+      const { options, callbackId } = data
+      let res
+      let range: RangeStatic | undefined
+      let errMsg
+      if (quillReady) {
+        const Quill = (window as WindowExt).Quill as typeof QuillClass
+        switch (type) {
+          case 'format':
+            {
+              let { name = '', value = false } = options
+              range = quill.getSelection(true)
+              let format = quill.getFormat(range)[name] || false
+              if (
+                ['bold', 'italic', 'underline', 'strike', 'ins'].includes(name)
+              ) {
+                value = !format
+              } else if (name === 'direction') {
+                value = value === 'rtl' && format ? false : value
+                const align = quill.getFormat(range).align
+                if (value === 'rtl' && !align) {
+                  quill.format('align', 'right', 'user')
+                } else if (!value && align === 'right') {
+                  quill.format('align', false, 'user')
                 }
-              })
+              } else if (name === 'indent') {
+                const rtl = quill.getFormat(range).direction === 'rtl'
+                value = value === '+1'
+                if (rtl) {
+                  value = !value
+                }
+                value = value ? '+1' : '-1'
+              } else {
+                if (name === 'list') {
+                  value = value === 'check' ? 'unchecked' : value
+                  format = format === 'checked' ? 'unchecked' : format
+                }
+                value =
+                  (format && format !== (value || false)) || (!format && value)
+                    ? value
+                    : !format
+              }
+              quill.format(name, value, 'user')
             }
-          }
-          break
-        case 'undo':
-          quill.history.undo()
-          break
-        case 'redo':
-          quill.history.redo()
-          break
-        case 'blur':
-          quill.blur()
-          break
-        case 'getSelectionText':
-          range = quill.selection.savedRange
-          res = { text: '' }
-          if (range && range.length !== 0) {
-            res.text = quill.getText(range.index, range.length)
-          }
-          break
-        case 'scrollIntoView':
-          quill.scrollIntoView()
-          break
-        default:
-          break
+            break
+          case 'insertDivider':
+            range = quill.getSelection(true)
+            quill.insertText(range.index, '\n', 'user')
+            quill.insertEmbed(range.index + 1, 'divider', true, 'user')
+            quill.setSelection(range.index + 2, 0, 'silent')
+            break
+          case 'insertImage':
+            {
+              range = quill.getSelection(true)
+              const {
+                src = '',
+                alt = '',
+                width = '',
+                height = '',
+                extClass = '',
+                data = {},
+              } = options
+              const path = getRealPath(src)
+              quill.insertEmbed(range.index, 'image', path, 'user')
+              const local = /^(file|blob):/.test(path) ? path : false
+              quill.formatText(range.index, 1, 'data-local', local)
+              quill.formatText(range.index, 1, 'alt', alt)
+              quill.formatText(range.index, 1, 'width', width)
+              quill.formatText(range.index, 1, 'height', height)
+              quill.formatText(range.index, 1, 'class', extClass)
+              quill.formatText(
+                range.index,
+                1,
+                'data-custom',
+                Object.keys(data)
+                  .map((key) => `${key}=${data[key]}`)
+                  .join('&')
+              )
+              quill.setSelection(range.index + 1, 0, 'silent')
+            }
+            break
+          case 'insertText':
+            {
+              range = quill.getSelection(true)
+              const { text = '' } = options
+              quill.insertText(range.index, text, 'user')
+              quill.setSelection(range.index + text.length, 0, 'silent')
+            }
+            break
+          case 'setContents':
+            {
+              const { delta, html } = options
+              if (typeof delta === 'object') {
+                quill.setContents(delta, 'silent')
+              } else if (typeof html === 'string') {
+                quill.setContents(html2delta(html), 'silent')
+              } else {
+                errMsg = 'contents is missing'
+              }
+            }
+            break
+          case 'getContents':
+            res = getContents()
+            break
+          case 'clear':
+            quill.setText('')
+            break
+          case 'removeFormat':
+            {
+              range = quill.getSelection(true)
+              const parchment = Quill.import('parchment')
+              if (range.length) {
+                quill.removeFormat(range.index, range.length, 'user')
+              } else {
+                Object.keys(quill.getFormat(range)).forEach((key) => {
+                  if (parchment.query(key, parchment.Scope.INLINE)) {
+                    quill.format(key, false)
+                  }
+                })
+              }
+            }
+            break
+          case 'undo':
+            quill.history.undo()
+            break
+          case 'redo':
+            quill.history.redo()
+            break
+          case 'blur':
+            quill.blur()
+            break
+          case 'getSelectionText':
+            range = quill.selection.savedRange
+            res = { text: '' }
+            if (range && range.length !== 0) {
+              res.text = quill.getText(range.index, range.length)
+            }
+            break
+          case 'scrollIntoView':
+            quill.scrollIntoView()
+            break
+          default:
+            break
+        }
+        updateStatus(range)
+      } else {
+        errMsg = 'not ready'
       }
-      updateStatus(range)
-    } else {
-      errMsg = 'not ready'
-    }
-    if (callbackId) {
-      UniViewJSBridge.publishHandler('onEditorMethodCallback', {
-        callbackId,
-        data: Object.assign({}, res, {
-          errMsg: `${type}:${errMsg ? 'fail ' + errMsg : 'ok'}`,
-        }),
-      })
-    }
-  }, id, true)
+      if (callbackId) {
+        UniViewJSBridge.publishHandler('onEditorMethodCallback', {
+          callbackId,
+          data: Object.assign({}, res, {
+            errMsg: `${type}:${errMsg ? 'fail ' + errMsg : 'ok'}`,
+          }),
+        })
+      }
+    },
+    id,
+    true
+  )
 }
 
 const props = /*#__PURE__*/ Object.assign({}, keyboardProps, {

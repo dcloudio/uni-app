@@ -1,13 +1,10 @@
-import {
-  onMounted,
-  getCurrentInstance,
-} from 'vue'
+import { onMounted, getCurrentInstance } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 
 type ContextType = 'canvas' | 'map' | 'video' | 'editor'
 
 export interface ContextInfo {
-  id: string,
+  id: string
   type: ContextType
   page: number
 }
@@ -27,7 +24,7 @@ export function useContextInfo() {
     el.__uniContextInfo = {
       id,
       type,
-      page
+      page,
     }
   })
   return `${page}.${type}.${id}`

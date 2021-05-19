@@ -685,23 +685,27 @@ function useContext(
     exitFullScreen,
   }
   const id = useContextInfo()
-  useSubscribe((type: string, data: any) => {
-    let options
-    switch (type) {
-      case 'seek':
-        options = data.position
-        break
-      case 'sendDanmu':
-        options = data
-        break
-      case 'playbackRate':
-        options = data.rate
-        break
-    }
-    if (type in methods) {
-      methods[type as keyof typeof methods](options)
-    }
-  }, id, true)
+  useSubscribe(
+    (type: string, data: any) => {
+      let options
+      switch (type) {
+        case 'seek':
+          options = data.position
+          break
+        case 'sendDanmu':
+          options = data
+          break
+        case 'playbackRate':
+          options = data.rate
+          break
+      }
+      if (type in methods) {
+        methods[type as keyof typeof methods](options)
+      }
+    },
+    id,
+    true
+  )
 }
 
 const props = {

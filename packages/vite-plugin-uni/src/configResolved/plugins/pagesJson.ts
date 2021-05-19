@@ -160,11 +160,9 @@ function generateCssCode(
 }
 
 function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
-  return `const ${normalizePageIdentifier(
-    pageOptions.path
-  )} = defineAsyncComponent(extend({loader:()=>import('./${
-    pageOptions.path
-  }?mpType=page')},AsyncComponentOptions))`
+  const pageIdent = normalizePageIdentifier(pageOptions.path)
+  return `const ${pageIdent}Loader = ()=>import('./${pageOptions.path}?mpType=page')
+const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 
 function generatePagesDefineCode(
@@ -230,6 +228,7 @@ function generatePageRoute({ name, path, meta }: PageRouteOptions) {
   return `{
   path:'/${isEntry ? '' : path}',${alias}
   component:{render(){return renderPage(${name})}},
+  loader: ${normalizePageIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`
 }
