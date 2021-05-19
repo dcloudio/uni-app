@@ -8356,7 +8356,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       } = state2;
       return createVNode("uni-slider", {
         "ref": sliderRef,
-        "onClick": _onClick
+        "onClick": withWebEvent(_onClick)
       }, [createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [createVNode("div", {

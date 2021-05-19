@@ -6,6 +6,7 @@ import {
   CustomEventTrigger,
   useCustomEvent,
   EmitEvent,
+  withWebEvent,
 } from '../../helpers/useEvent'
 import { UniFormCtx, uniFormKey } from '../form'
 
@@ -95,7 +96,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const { setBgColor, setBlockBg, setActiveColor, setBlockStyle } = state
 
       return (
-        <uni-slider ref={sliderRef} onClick={_onClick}>
+        <uni-slider ref={sliderRef} onClick={withWebEvent(_onClick)}>
           <div class="uni-slider-wrapper">
             <div class="uni-slider-tap-area">
               <div style={setBgColor.value} class="uni-slider-handle-wrapper">

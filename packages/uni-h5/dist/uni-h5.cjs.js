@@ -6140,7 +6140,7 @@ var index$e = /* @__PURE__ */ defineBuiltInComponent({
       } = state;
       return vue.createVNode("uni-slider", {
         "ref": sliderRef,
-        "onClick": _onClick
+        "onClick": withWebEvent(_onClick)
       }, [vue.createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [vue.createVNode("div", {
