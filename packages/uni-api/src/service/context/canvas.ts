@@ -27,6 +27,8 @@ import type {
 
 import { hasOwn } from '@vue/shared'
 
+import { once } from '@dcloudio/uni-shared'
+
 import {
   getPageIdByVm,
   getCurrentPageVm,
@@ -794,217 +796,235 @@ export class CanvasContext implements UniApp.CanvasContext {
   'setTransform': UniApp.CanvasContext['setTransform']
 }
 
-;[...methods1, ...methods2].forEach(function (method) {
-  function get(method: string) {
-    switch (method) {
-      case 'fill':
-      case 'stroke':
-        return function () {
-          // @ts-ignore
-          this.actions.push({
-            method: method + 'Path',
+const initCanvasContextProperty = /*#__PURE__*/ once(() => {
+  ;[...methods1, ...methods2].forEach(function (method) {
+    function get(method: string) {
+      switch (method) {
+        case 'fill':
+        case 'stroke':
+          return function () {
             // @ts-ignore
-            data: [...this.path],
-          })
-        }
-      case 'fillRect':
-        return function (x: number, y: number, width: number, height: number) {
-          // @ts-ignore
-          this.actions.push({
-            method: 'fillPath',
-            data: [
-              {
-                method: 'rect',
-                data: [x, y, width, height],
-              },
-            ],
-          })
-        }
-      case 'strokeRect':
-        return function (x: number, y: number, width: number, height: number) {
-          // @ts-ignore
-          this.actions.push({
-            method: 'strokePath',
-            data: [
-              {
-                method: 'rect',
-                data: [x, y, width, height],
-              },
-            ],
-          })
-        }
-      case 'fillText':
-      case 'strokeText':
-        return function (text: string, x: number, y: number, maxWidth: number) {
-          var data = [text.toString(), x, y]
-          if (typeof maxWidth === 'number') {
-            data.push(maxWidth)
+            this.actions.push({
+              method: method + 'Path',
+              // @ts-ignore
+              data: [...this.path],
+            })
           }
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data,
-          })
-        }
-      case 'drawImage':
-        return function (
-          imageResource: string,
-          dx: number | undefined,
-          dy: number | undefined,
-          dWidth: number | undefined,
-          dHeight: number | undefined,
-          sx: number | undefined,
-          sy: number | undefined,
-          sWidth: number | undefined,
-          sHeight: number | undefined
-        ) {
-          if (sHeight === undefined) {
-            sx = dx
-            sy = dy
-            sWidth = dWidth
-            sHeight = dHeight
-            dx = undefined
-            dy = undefined
-            dWidth = undefined
-            dHeight = undefined
+        case 'fillRect':
+          return function (
+            x: number,
+            y: number,
+            width: number,
+            height: number
+          ) {
+            // @ts-ignore
+            this.actions.push({
+              method: 'fillPath',
+              data: [
+                {
+                  method: 'rect',
+                  data: [x, y, width, height],
+                },
+              ],
+            })
           }
-          var data
+        case 'strokeRect':
+          return function (
+            x: number,
+            y: number,
+            width: number,
+            height: number
+          ) {
+            // @ts-ignore
+            this.actions.push({
+              method: 'strokePath',
+              data: [
+                {
+                  method: 'rect',
+                  data: [x, y, width, height],
+                },
+              ],
+            })
+          }
+        case 'fillText':
+        case 'strokeText':
+          return function (
+            text: string,
+            x: number,
+            y: number,
+            maxWidth: number
+          ) {
+            var data = [text.toString(), x, y]
+            if (typeof maxWidth === 'number') {
+              data.push(maxWidth)
+            }
+            // @ts-ignore
+            this.actions.push({
+              method,
+              data,
+            })
+          }
+        case 'drawImage':
+          return function (
+            imageResource: string,
+            dx: number | undefined,
+            dy: number | undefined,
+            dWidth: number | undefined,
+            dHeight: number | undefined,
+            sx: number | undefined,
+            sy: number | undefined,
+            sWidth: number | undefined,
+            sHeight: number | undefined
+          ) {
+            if (sHeight === undefined) {
+              sx = dx
+              sy = dy
+              sWidth = dWidth
+              sHeight = dHeight
+              dx = undefined
+              dy = undefined
+              dWidth = undefined
+              dHeight = undefined
+            }
+            var data
 
-          function isNumber(e: any) {
-            return typeof e === 'number'
-          }
-          data =
-            isNumber(dx) &&
-            isNumber(dy) &&
-            isNumber(dWidth) &&
-            isNumber(dHeight)
-              ? [
-                  imageResource,
-                  sx,
-                  sy,
-                  sWidth,
-                  sHeight,
-                  dx,
-                  dy,
-                  dWidth,
-                  dHeight,
-                ]
-              : isNumber(sWidth) && isNumber(sHeight)
-              ? [imageResource, sx, sy, sWidth, sHeight]
-              : [imageResource, sx, sy]
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data,
-          })
-        }
-      default:
-        return function (...data: any) {
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data,
-          })
-        }
-    }
-  }
-  ;(CanvasContext.prototype as any)[method] = get(method)
-})
-methods3.forEach(function (method) {
-  function get(method: string) {
-    switch (method) {
-      case 'setFillStyle':
-      case 'setStrokeStyle':
-        return function (color: string | Data) {
-          if (typeof color !== 'object') {
+            function isNumber(e: any) {
+              return typeof e === 'number'
+            }
+            data =
+              isNumber(dx) &&
+              isNumber(dy) &&
+              isNumber(dWidth) &&
+              isNumber(dHeight)
+                ? [
+                    imageResource,
+                    sx,
+                    sy,
+                    sWidth,
+                    sHeight,
+                    dx,
+                    dy,
+                    dWidth,
+                    dHeight,
+                  ]
+                : isNumber(sWidth) && isNumber(sHeight)
+                ? [imageResource, sx, sy, sWidth, sHeight]
+                : [imageResource, sx, sy]
             // @ts-ignore
             this.actions.push({
               method,
-              data: ['normal', checkColor(color)],
+              data,
             })
-          } else {
+          }
+        default:
+          return function (...data: any) {
             // @ts-ignore
             this.actions.push({
               method,
-              data: [color.type, color.data, color.colorStop],
+              data,
             })
           }
-        }
-      case 'setGlobalAlpha':
-        return function (alpha: number) {
-          alpha = Math.floor(255 * parseFloat(alpha as unknown as string))
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data: [alpha],
-          })
-        }
-      case 'setShadow':
-        return function (
-          offsetX: number,
-          offsetY: number,
-          blur: number,
-          color: string
-        ) {
-          color = checkColor(color) as any
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data: [offsetX, offsetY, blur, color],
-          })
-          // @ts-ignore
-          this.state.shadowBlur = blur
-          // @ts-ignore
-          this.state.shadowColor = color
-          // @ts-ignore
-          this.state.shadowOffsetX = offsetX
-          // @ts-ignore
-          this.state.shadowOffsetY = offsetY
-        }
-      case 'setLineDash':
-        return function (pattern: Array<number> | undefined, offset: number) {
-          pattern = pattern || [0, 0]
-          offset = offset || 0
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data: [pattern, offset],
-          })
-          // @ts-ignore
-          this.state.lineDash = pattern
-        }
-      case 'setFontSize':
-        return function (fontSize: number) {
-          // @ts-ignore
-          this.state.font = this.state.font.replace(
-            /\d+\.?\d*px/,
-            fontSize + 'px'
-          )
-          // @ts-ignore
-          this.state.fontSize = fontSize
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data: [fontSize],
-          })
-        }
-      default:
-        return function (...data: any) {
-          // @ts-ignore
-          this.actions.push({
-            method,
-            data,
-          })
-        }
+      }
     }
-  }
-  ;(CanvasContext.prototype as any)[method] = get(method)
+    ;(CanvasContext.prototype as any)[method] = get(method)
+  })
+  methods3.forEach(function (method) {
+    function get(method: string) {
+      switch (method) {
+        case 'setFillStyle':
+        case 'setStrokeStyle':
+          return function (color: string | Data) {
+            if (typeof color !== 'object') {
+              // @ts-ignore
+              this.actions.push({
+                method,
+                data: ['normal', checkColor(color)],
+              })
+            } else {
+              // @ts-ignore
+              this.actions.push({
+                method,
+                data: [color.type, color.data, color.colorStop],
+              })
+            }
+          }
+        case 'setGlobalAlpha':
+          return function (alpha: number) {
+            alpha = Math.floor(255 * parseFloat(alpha as unknown as string))
+            // @ts-ignore
+            this.actions.push({
+              method,
+              data: [alpha],
+            })
+          }
+        case 'setShadow':
+          return function (
+            offsetX: number,
+            offsetY: number,
+            blur: number,
+            color: string
+          ) {
+            color = checkColor(color) as any
+            // @ts-ignore
+            this.actions.push({
+              method,
+              data: [offsetX, offsetY, blur, color],
+            })
+            // @ts-ignore
+            this.state.shadowBlur = blur
+            // @ts-ignore
+            this.state.shadowColor = color
+            // @ts-ignore
+            this.state.shadowOffsetX = offsetX
+            // @ts-ignore
+            this.state.shadowOffsetY = offsetY
+          }
+        case 'setLineDash':
+          return function (pattern: Array<number> | undefined, offset: number) {
+            pattern = pattern || [0, 0]
+            offset = offset || 0
+            // @ts-ignore
+            this.actions.push({
+              method,
+              data: [pattern, offset],
+            })
+            // @ts-ignore
+            this.state.lineDash = pattern
+          }
+        case 'setFontSize':
+          return function (fontSize: number) {
+            // @ts-ignore
+            this.state.font = this.state.font.replace(
+              /\d+\.?\d*px/,
+              fontSize + 'px'
+            )
+            // @ts-ignore
+            this.state.fontSize = fontSize
+            // @ts-ignore
+            this.actions.push({
+              method,
+              data: [fontSize],
+            })
+          }
+        default:
+          return function (...data: any) {
+            // @ts-ignore
+            this.actions.push({
+              method,
+              data,
+            })
+          }
+      }
+    }
+    ;(CanvasContext.prototype as any)[method] = get(method)
+  })
 })
 
 export const createCanvasContext =
   defineSyncApi<API_TYPE_CREATE_CANVAS_CONTEXT>(
     API_CREATE_CANVAS_CONTEXT,
     (canvasId, componentInstance): any => {
+      initCanvasContextProperty()
       if (componentInstance) {
         return new CanvasContext(canvasId, getPageIdByVm(componentInstance)!)
       }

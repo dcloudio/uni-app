@@ -5,6 +5,7 @@ import {
   CreateAnimationOptions,
 } from '../../protocols/ui/createAnimation'
 import { defineSyncApi } from '../../helpers/api'
+import { once } from '@dcloudio/uni-shared'
 
 const defaultOption: Option = {
   duration: 400,
@@ -120,48 +121,53 @@ export class MPAnimation implements UniApp.Animation {
   'left': UniApp.Animation['left']
 }
 
-const animateTypes1 = [
-  'matrix',
-  'matrix3d',
-  'rotate',
-  'rotate3d',
-  'rotateX',
-  'rotateY',
-  'rotateZ',
-  'scale',
-  'scale3d',
-  'scaleX',
-  'scaleY',
-  'scaleZ',
-  'skew',
-  'skewX',
-  'skewY',
-  'translate',
-  'translate3d',
-  'translateX',
-  'translateY',
-  'translateZ',
-]
-const animateTypes2 = ['opacity', 'backgroundColor']
-const animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom']
-animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
-  ;(MPAnimation.prototype as any)[type] = function (...args: AnimatesArgs) {
-    let _this = this as MPAnimation
-    if (animateTypes2.concat(animateTypes3).includes(type)) {
-      _this._pushAnimates('style', [
-        _this._converType(type),
-        animateTypes3.includes(type) ? _this._getValue(args[0]) : args[0],
-      ])
-    } else {
-      _this._pushAnimates(type, args)
+const initAnimationProperty = /*#__PURE__*/ once(() => {
+  const animateTypes1 = [
+    'matrix',
+    'matrix3d',
+    'rotate',
+    'rotate3d',
+    'rotateX',
+    'rotateY',
+    'rotateZ',
+    'scale',
+    'scale3d',
+    'scaleX',
+    'scaleY',
+    'scaleZ',
+    'skew',
+    'skewX',
+    'skewY',
+    'translate',
+    'translate3d',
+    'translateX',
+    'translateY',
+    'translateZ',
+  ]
+  const animateTypes2 = ['opacity', 'backgroundColor']
+  const animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom']
+  animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
+    ;(MPAnimation.prototype as any)[type] = function (
+      this: MPAnimation,
+      ...args: AnimatesArgs
+    ) {
+      if (animateTypes2.concat(animateTypes3).includes(type)) {
+        this._pushAnimates('style', [
+          this._converType(type),
+          animateTypes3.includes(type) ? this._getValue(args[0]) : args[0],
+        ])
+      } else {
+        this._pushAnimates(type, args)
+      }
+      return this
     }
-    return _this
-  }
+  })
 })
 
 export const createAnimation = defineSyncApi<API_TYPE_CREATE_ANIMATION>(
   API_CREATE_ANIMATION,
   (option) => {
+    initAnimationProperty()
     return new MPAnimation(option)
   },
   CreateAnimationProtocol,

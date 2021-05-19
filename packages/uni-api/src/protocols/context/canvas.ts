@@ -62,7 +62,12 @@ export const CanvasPutImageDataProtocol: ApiProtocol<API_TYPE_CANVAS_PUT_IMAGE_D
         required: true,
       },
     },
-    CanvasGetImageDataProtocol
+    CanvasGetImageDataProtocol,
+    {
+      height: {
+        type: Number,
+      },
+    }
   )
 //#endregion
 
