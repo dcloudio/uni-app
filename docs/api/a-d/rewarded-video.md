@@ -577,8 +577,8 @@ rewardedVideoAd.onVerify(e => {
 
 服务器回调基于[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README)，详细流程如下:
 
-1. 登陆 [uniCloud](https://unicloud.dcloud.net.cn/) web控制台，新建服务空间或选择已有服务空间，然后新建云函数用于接收广告的回调
-2. 在 [uniAD](https://uniad-dev.dcloud.net.cn/) web控制台开通服务器回调并选择上一步新建的云函数
+1. 登陆 [uniCloud](https://unicloud.dcloud.net.cn/) web控制台，新建服务空间或选择已有服务空间，然后在HBuilderX中新建uni-app项目并关联服务空间，新建云函数上传，用于接收广告的回调
+2. 在 [uniAD](https://uniad.dcloud.net.cn/) web控制台开通服务器回调并选择上一步新建的云函数
 3. 开通后将在选择的服务空间下自动部署一个加密云函数 `uniAdCallback`
 4. `uniAdCallback` 接收广告商服务器回调验证签名并抹平穿山甲/优量汇/快手参数差异，然后以 [callFunction](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=callbyfunction) 方式调用用户云函数
 5. 用户在自己的云函数中处理业务
