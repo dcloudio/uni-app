@@ -13,7 +13,7 @@ const props = {
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Label',
   props,
-  setup(props, { emit, slots }) {
+  setup(props, { slots }) {
     const pageId = useCurrentPageId()
     const handlers = useProvideLabel()
 
@@ -44,9 +44,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           true
         )
       } else {
-        handlers.forEach((handler) => {
-          handler($event, true)
-        })
+        handlers[0]($event, true)
       }
     })
 

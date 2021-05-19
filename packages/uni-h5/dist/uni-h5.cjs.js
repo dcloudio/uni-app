@@ -1905,7 +1905,6 @@ var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: props$o,
   setup(props2, {
-    emit: emit2,
     slots
   }) {
     const pageId = useCurrentPageId();
@@ -1923,9 +1922,7 @@ var index$o = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.for) {
         UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
       } else {
-        handlers.forEach((handler) => {
-          handler($event, true);
-        });
+        handlers[0]($event, true);
       }
     });
     return () => vue.createVNode("uni-label", {
