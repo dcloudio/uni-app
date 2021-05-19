@@ -2236,10 +2236,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   const id = useContextInfo();
   useSubscribe((type, data) => {
-    const {
-      options,
-      callbackId
-    } = data;
+    const {options, callbackId} = data;
     let res;
     let errMsg;
     {

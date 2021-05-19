@@ -3465,6 +3465,26 @@ function makeMap(str) {
   }
   return obj;
 }
+const scripts = {};
+function loadScript(globalName, src, callback) {
+  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
+  if (globalObject) {
+    callback();
+    return;
+  }
+  let callbacks2 = scripts[src];
+  if (!callbacks2) {
+    callbacks2 = scripts[src] = [];
+    const script = document.createElement("script");
+    script.src = src;
+    document.body.appendChild(script);
+    script.onload = function() {
+      callbacks2.forEach((callback2) => callback2());
+      delete scripts[src];
+    };
+  }
+  callbacks2.push(callback);
+}
 function divider(Quill) {
   const BlockEmbed = Quill.import("blots/block/embed");
   class Divider extends BlockEmbed {
@@ -3721,26 +3741,6 @@ function register(Quill) {
   Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
   Quill.register(options, true);
 }
-const scripts = {};
-function loadScript(globalName, src, callback) {
-  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
-  if (globalObject) {
-    callback();
-    return;
-  }
-  let callbacks2 = scripts[src];
-  if (!callbacks2) {
-    callbacks2 = scripts[src] = [];
-    const script = document.createElement("script");
-    script.src = src;
-    document.body.appendChild(script);
-    script.onload = function() {
-      callbacks2.forEach((callback2) => callback2());
-      delete scripts[src];
-    };
-  }
-  callbacks2.push(callback);
-}
 function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
@@ -3759,7 +3759,34 @@ function useQuill(props2, rootRef, trigger) {
     }
   });
   function html2delta(html) {
-    const tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
+    const tags = [
+      "span",
+      "strong",
+      "b",
+      "ins",
+      "em",
+      "i",
+      "u",
+      "a",
+      "del",
+      "s",
+      "sub",
+      "sup",
+      "img",
+      "div",
+      "p",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "hr",
+      "ol",
+      "ul",
+      "li",
+      "br"
+    ];
     let content = "";
     let disable;
     HTMLParser(html, {
@@ -3769,10 +3796,7 @@ function useQuill(props2, rootRef, trigger) {
           return;
         }
         disable = false;
-        const arrts = attrs2.map(({
-          name,
-          value
-        }) => `${name}="${value}"`).join(" ");
+        const arrts = attrs2.map(({name, value}) => `${name}="${value}"`).join(" ");
         const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
         content += start;
       },
@@ -3853,13 +3877,7 @@ function useQuill(props2, rootRef, trigger) {
         return delta;
       }
       if (delta.ops) {
-        delta.ops = delta.ops.filter(({
-          insert
-        }) => typeof insert === "string").map(({
-          insert
-        }) => ({
-          insert
-        }));
+        delta.ops = delta.ops.filter(({insert}) => typeof insert === "string").map(({insert}) => ({insert}));
       }
       return delta;
     });
@@ -3891,10 +3909,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   const id2 = useContextInfo();
   useSubscribe((type, data) => {
-    const {
-      options,
-      callbackId
-    } = data;
+    const {options, callbackId} = data;
     let res;
     let range;
     let errMsg;
@@ -3903,10 +3918,7 @@ function useQuill(props2, rootRef, trigger) {
       switch (type) {
         case "format":
           {
-            let {
-              name = "",
-              value = false
-            } = options;
+            let {name = "", value = false} = options;
             range = quill.getSelection(true);
             let format = quill.getFormat(range)[name] || false;
             if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
@@ -3968,19 +3980,14 @@ function useQuill(props2, rootRef, trigger) {
         case "insertText":
           {
             range = quill.getSelection(true);
-            const {
-              text: text2 = ""
-            } = options;
+            const {text: text2 = ""} = options;
             quill.insertText(range.index, text2, "user");
             quill.setSelection(range.index + text2.length, 0, "silent");
           }
           break;
         case "setContents":
           {
-            const {
-              delta,
-              html
-            } = options;
+            const {delta, html} = options;
             if (typeof delta === "object") {
               quill.setContents(delta, "silent");
             } else if (typeof html === "string") {
@@ -4022,9 +4029,7 @@ function useQuill(props2, rootRef, trigger) {
           break;
         case "getSelectionText":
           range = quill.selection.savedRange;
-          res = {
-            text: ""
-          };
+          res = {text: ""};
           if (range && range.length !== 0) {
             res.text = quill.getText(range.index, range.length);
           }
