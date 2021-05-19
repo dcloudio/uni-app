@@ -797,11 +797,35 @@ db.collection('article,comment')
 [{
   "content": "content1",
   "article_id": {
-    "comment": [{ 使用副本foreignKey联查时此处会自动插入一层副表表名
+    "comment": [{ // 使用副本foreignKey联查时此处会自动插入一层副表表名
       "content": "comment1-1"
     },
     {
       "content": "comment1-2"
+    }]
+  }
+}]
+
+```
+
+副表内的字段也可以使用`as`进行重命名，例如上述查询中如果希望将副表的content重命名为value可以使用如下写法
+
+```js
+// 重命名副表字段
+db.collection('article,comment')
+.where('article_id=="1"')
+.field('content,article_id{comment{content as value}}')
+.get()
+
+// 查询结果如下
+[{
+  "content": "content1",
+  "article_id": {
+    "comment": [{ // 使用副本foreignKey联查时此处会自动插入一层副表表名
+      "value": "comment1-1"
+    },
+    {
+      "value": "comment1-2"
     }]
   }
 }]
