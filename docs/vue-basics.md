@@ -1463,8 +1463,7 @@ Vue 提供了一种更通用的方式来观察和响应 Vue 实例上的数据�
 		data() {
 			return {
 				firstName: 'Foo',
-				lastName: 'Bar',
-				fullName: 'Foo Bar'
+				lastName: 'Bar'
 			}
 		},
 		computed: {
