@@ -66,6 +66,7 @@ export * from './protocols/ui/showToast'
 export * from './protocols/ui/startPullDownRefresh'
 export * from './protocols/ui/stopPullDownRefresh'
 export * from './protocols/ui/tabBar'
+export * from './protocols/ui/window'
 // helpers
 export {
   defineOnApi,

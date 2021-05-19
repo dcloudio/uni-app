@@ -58,6 +58,7 @@ export * from './ui/pageScrollTo'
 export * from './ui/startPullDownRefresh'
 export * from './ui/stopPullDownRefresh'
 export * from './ui/tabBar'
+export * from './ui/window'
 
 export {
   upx2px,

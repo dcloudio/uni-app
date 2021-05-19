@@ -266,7 +266,7 @@ function converType(type) {
   }).replace("webkit", "-webkit");
 }
 function getStyle(action) {
-  const animateTypes12 = [
+  const animateTypes1 = [
     "matrix",
     "matrix3d",
     "scale",
@@ -276,7 +276,7 @@ function getStyle(action) {
     "translate",
     "translate3d"
   ];
-  const animateTypes22 = [
+  const animateTypes2 = [
     "scaleX",
     "scaleY",
     "scaleZ",
@@ -290,7 +290,7 @@ function getStyle(action) {
     "translateY",
     "translateZ"
   ];
-  const animateTypes32 = ["opacity", "background-color"];
+  const animateTypes3 = ["opacity", "background-color"];
   const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
   const animates = action.animates;
   const option = action.option;
@@ -300,17 +300,17 @@ function getStyle(action) {
   animates.forEach((animate) => {
     let type = animate.type;
     let args = [...animate.args];
-    if (animateTypes12.concat(animateTypes22).includes(type)) {
+    if (animateTypes1.concat(animateTypes2).includes(type)) {
       if (type.startsWith("rotate") || type.startsWith("skew")) {
         args = args.map((value) => parseFloat(value) + "deg");
       } else if (type.startsWith("translate")) {
         args = args.map(converPx);
       }
-      if (animateTypes22.indexOf(type) >= 0) {
+      if (animateTypes2.indexOf(type) >= 0) {
         args.length = 1;
       }
       transform.push(`${type}(${args.join(",")})`);
-    } else if (animateTypes32.concat(animateTypes4).includes(args[0])) {
+    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
       type = args[0];
       const value = args[1];
       style[type] = animateTypes4.includes(type) ? converPx(value) : value;
@@ -9365,7 +9365,7 @@ var index$a = /* @__PURE__ */ defineBuiltInComponent({
         el.style.height = height + "px";
       }
     });
-    function onResize({
+    function onResize2({
       height
     }) {
       heightRef.value = height;
@@ -9440,7 +9440,7 @@ var index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-textarea-compute"
       }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
         "initial": true,
-        "onResize": onResize
+        "onResize": onResize2
       }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
         "action": "",
         "onSubmit": () => false,
@@ -10106,7 +10106,11 @@ const CanvasPutImageDataProtocol = /* @__PURE__ */ extend({
     type: Uint8ClampedArray,
     required: true
   }
-}, CanvasGetImageDataProtocol);
+}, CanvasGetImageDataProtocol, {
+  height: {
+    type: Number
+  }
+});
 const fileTypes = {
   PNG: "png",
   JPG: "jpg",
@@ -10718,165 +10722,168 @@ class CanvasContext {
     });
   }
 }
-[...methods1, ...methods2].forEach(function(method) {
-  function get(method2) {
-    switch (method2) {
-      case "fill":
-      case "stroke":
-        return function() {
-          this.actions.push({
-            method: method2 + "Path",
-            data: [...this.path]
-          });
-        };
-      case "fillRect":
-        return function(x, y, width, height) {
-          this.actions.push({
-            method: "fillPath",
-            data: [
-              {
-                method: "rect",
-                data: [x, y, width, height]
-              }
-            ]
-          });
-        };
-      case "strokeRect":
-        return function(x, y, width, height) {
-          this.actions.push({
-            method: "strokePath",
-            data: [
-              {
-                method: "rect",
-                data: [x, y, width, height]
-              }
-            ]
-          });
-        };
-      case "fillText":
-      case "strokeText":
-        return function(text2, x, y, maxWidth) {
-          var data = [text2.toString(), x, y];
-          if (typeof maxWidth === "number") {
-            data.push(maxWidth);
-          }
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-      case "drawImage":
-        return function(imageResource, dx, dy, dWidth, dHeight, sx, sy, sWidth, sHeight) {
-          if (sHeight === void 0) {
-            sx = dx;
-            sy = dy;
-            sWidth = dWidth;
-            sHeight = dHeight;
-            dx = void 0;
-            dy = void 0;
-            dWidth = void 0;
-            dHeight = void 0;
-          }
-          var data;
-          function isNumber(e2) {
-            return typeof e2 === "number";
-          }
-          data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [
-            imageResource,
-            sx,
-            sy,
-            sWidth,
-            sHeight,
-            dx,
-            dy,
-            dWidth,
-            dHeight
-          ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-      default:
-        return function(...data) {
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
-    }
-  }
-  CanvasContext.prototype[method] = get(method);
-});
-methods3.forEach(function(method) {
-  function get(method2) {
-    switch (method2) {
-      case "setFillStyle":
-      case "setStrokeStyle":
-        return function(color) {
-          if (typeof color !== "object") {
+const initCanvasContextProperty = /* @__PURE__ */ once(() => {
+  [...methods1, ...methods2].forEach(function(method) {
+    function get(method2) {
+      switch (method2) {
+        case "fill":
+        case "stroke":
+          return function() {
+            this.actions.push({
+              method: method2 + "Path",
+              data: [...this.path]
+            });
+          };
+        case "fillRect":
+          return function(x, y, width, height) {
+            this.actions.push({
+              method: "fillPath",
+              data: [
+                {
+                  method: "rect",
+                  data: [x, y, width, height]
+                }
+              ]
+            });
+          };
+        case "strokeRect":
+          return function(x, y, width, height) {
+            this.actions.push({
+              method: "strokePath",
+              data: [
+                {
+                  method: "rect",
+                  data: [x, y, width, height]
+                }
+              ]
+            });
+          };
+        case "fillText":
+        case "strokeText":
+          return function(text2, x, y, maxWidth) {
+            var data = [text2.toString(), x, y];
+            if (typeof maxWidth === "number") {
+              data.push(maxWidth);
+            }
             this.actions.push({
               method: method2,
-              data: ["normal", checkColor(color)]
+              data
             });
-          } else {
+          };
+        case "drawImage":
+          return function(imageResource, dx, dy, dWidth, dHeight, sx, sy, sWidth, sHeight) {
+            if (sHeight === void 0) {
+              sx = dx;
+              sy = dy;
+              sWidth = dWidth;
+              sHeight = dHeight;
+              dx = void 0;
+              dy = void 0;
+              dWidth = void 0;
+              dHeight = void 0;
+            }
+            var data;
+            function isNumber(e2) {
+              return typeof e2 === "number";
+            }
+            data = isNumber(dx) && isNumber(dy) && isNumber(dWidth) && isNumber(dHeight) ? [
+              imageResource,
+              sx,
+              sy,
+              sWidth,
+              sHeight,
+              dx,
+              dy,
+              dWidth,
+              dHeight
+            ] : isNumber(sWidth) && isNumber(sHeight) ? [imageResource, sx, sy, sWidth, sHeight] : [imageResource, sx, sy];
             this.actions.push({
               method: method2,
-              data: [color.type, color.data, color.colorStop]
+              data
             });
-          }
-        };
-      case "setGlobalAlpha":
-        return function(alpha) {
-          alpha = Math.floor(255 * parseFloat(alpha));
-          this.actions.push({
-            method: method2,
-            data: [alpha]
-          });
-        };
-      case "setShadow":
-        return function(offsetX, offsetY, blur, color) {
-          color = checkColor(color);
-          this.actions.push({
-            method: method2,
-            data: [offsetX, offsetY, blur, color]
-          });
-          this.state.shadowBlur = blur;
-          this.state.shadowColor = color;
-          this.state.shadowOffsetX = offsetX;
-          this.state.shadowOffsetY = offsetY;
-        };
-      case "setLineDash":
-        return function(pattern, offset) {
-          pattern = pattern || [0, 0];
-          offset = offset || 0;
-          this.actions.push({
-            method: method2,
-            data: [pattern, offset]
-          });
-          this.state.lineDash = pattern;
-        };
-      case "setFontSize":
-        return function(fontSize) {
-          this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
-          this.state.fontSize = fontSize;
-          this.actions.push({
-            method: method2,
-            data: [fontSize]
-          });
-        };
-      default:
-        return function(...data) {
-          this.actions.push({
-            method: method2,
-            data
-          });
-        };
+          };
+        default:
+          return function(...data) {
+            this.actions.push({
+              method: method2,
+              data
+            });
+          };
+      }
     }
-  }
-  CanvasContext.prototype[method] = get(method);
+    CanvasContext.prototype[method] = get(method);
+  });
+  methods3.forEach(function(method) {
+    function get(method2) {
+      switch (method2) {
+        case "setFillStyle":
+        case "setStrokeStyle":
+          return function(color) {
+            if (typeof color !== "object") {
+              this.actions.push({
+                method: method2,
+                data: ["normal", checkColor(color)]
+              });
+            } else {
+              this.actions.push({
+                method: method2,
+                data: [color.type, color.data, color.colorStop]
+              });
+            }
+          };
+        case "setGlobalAlpha":
+          return function(alpha) {
+            alpha = Math.floor(255 * parseFloat(alpha));
+            this.actions.push({
+              method: method2,
+              data: [alpha]
+            });
+          };
+        case "setShadow":
+          return function(offsetX, offsetY, blur, color) {
+            color = checkColor(color);
+            this.actions.push({
+              method: method2,
+              data: [offsetX, offsetY, blur, color]
+            });
+            this.state.shadowBlur = blur;
+            this.state.shadowColor = color;
+            this.state.shadowOffsetX = offsetX;
+            this.state.shadowOffsetY = offsetY;
+          };
+        case "setLineDash":
+          return function(pattern, offset) {
+            pattern = pattern || [0, 0];
+            offset = offset || 0;
+            this.actions.push({
+              method: method2,
+              data: [pattern, offset]
+            });
+            this.state.lineDash = pattern;
+          };
+        case "setFontSize":
+          return function(fontSize) {
+            this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
+            this.state.fontSize = fontSize;
+            this.actions.push({
+              method: method2,
+              data: [fontSize]
+            });
+          };
+        default:
+          return function(...data) {
+            this.actions.push({
+              method: method2,
+              data
+            });
+          };
+      }
+    }
+    CanvasContext.prototype[method] = get(method);
+  });
 });
 const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
+  initCanvasContextProperty();
   if (componentInstance) {
     return new CanvasContext(canvasId, getPageIdByVm(componentInstance));
   }
@@ -11266,45 +11273,47 @@ class MPAnimation {
     return this;
   }
 }
-const animateTypes1 = [
-  "matrix",
-  "matrix3d",
-  "rotate",
-  "rotate3d",
-  "rotateX",
-  "rotateY",
-  "rotateZ",
-  "scale",
-  "scale3d",
-  "scaleX",
-  "scaleY",
-  "scaleZ",
-  "skew",
-  "skewX",
-  "skewY",
-  "translate",
-  "translate3d",
-  "translateX",
-  "translateY",
-  "translateZ"
-];
-const animateTypes2 = ["opacity", "backgroundColor"];
-const animateTypes3 = ["width", "height", "left", "right", "top", "bottom"];
-animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
-  MPAnimation.prototype[type] = function(...args) {
-    let _this = this;
-    if (animateTypes2.concat(animateTypes3).includes(type)) {
-      _this._pushAnimates("style", [
-        _this._converType(type),
-        animateTypes3.includes(type) ? _this._getValue(args[0]) : args[0]
-      ]);
-    } else {
-      _this._pushAnimates(type, args);
-    }
-    return _this;
-  };
+const initAnimationProperty = /* @__PURE__ */ once(() => {
+  const animateTypes1 = [
+    "matrix",
+    "matrix3d",
+    "rotate",
+    "rotate3d",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "scale",
+    "scale3d",
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "skew",
+    "skewX",
+    "skewY",
+    "translate",
+    "translate3d",
+    "translateX",
+    "translateY",
+    "translateZ"
+  ];
+  const animateTypes2 = ["opacity", "backgroundColor"];
+  const animateTypes3 = ["width", "height", "left", "right", "top", "bottom"];
+  animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
+    MPAnimation.prototype[type] = function(...args) {
+      if (animateTypes2.concat(animateTypes3).includes(type)) {
+        this._pushAnimates("style", [
+          this._converType(type),
+          animateTypes3.includes(type) ? this._getValue(args[0]) : args[0]
+        ]);
+      } else {
+        this._pushAnimates(type, args);
+      }
+      return this;
+    };
+  });
 });
 const createAnimation = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (option) => {
+  initAnimationProperty();
   return new MPAnimation(option);
 }, CreateAnimationProtocol, CreateAnimationOptions);
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
@@ -12175,6 +12184,8 @@ const SetTabBarBadgeOptions = {
     }
   }, IndexOptions.formatArgs)
 };
+const API_ON_WINDOW_RESIZE = "onWindowResize";
+const API_OFF_WINDOW_RESIZE = "offWindowResize";
 const initIntersectionObserverPolyfill = function() {
   if (typeof window !== "object") {
     return;
@@ -17632,6 +17643,31 @@ const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADG
 const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, {resolve}) => {
   setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+var tasks = [];
+function onResize() {
+  tasks.push(setTimeout(() => {
+    tasks.forEach((task) => clearTimeout(task));
+    tasks.length = 0;
+    const {windowWidth, windowHeight, screenWidth, screenHeight} = uni.getSystemInfoSync();
+    var landscape = Math.abs(Number(window.orientation)) === 90;
+    var deviceOrientation = landscape ? "landscape" : "portrait";
+    UniServiceJSBridge.invokeOnCallback(API_ON_WINDOW_RESIZE, {
+      deviceOrientation,
+      size: {
+        windowWidth,
+        windowHeight,
+        screenWidth,
+        screenHeight
+      }
+    });
+  }, 20));
+}
+const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
+  window.addEventListener("resize", onResize);
+});
+const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
+  window.removeEventListener("resize", onResize);
+});
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
@@ -17736,7 +17772,9 @@ var api = /* @__PURE__ */ Object.freeze({
   hideTabBarRedDot,
   showTabBarRedDot,
   removeTabBarBadge,
-  setTabBarBadge
+  setTabBarBadge,
+  onWindowResize,
+  offWindowResize
 });
 const CONTEXT_ID = "MAP_LOCATION";
 const ICON_PATH = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
@@ -20092,4 +20130,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$n as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$m as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$l as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$n as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$m as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$l as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
