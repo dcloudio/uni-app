@@ -1322,6 +1322,9 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
+function $getRealPath(src) {
+  return src ? getRealPath(src) : src;
+}
 function resolveColor(color) {
   color = color.slice(0);
   color[3] = color[3] / 255;
@@ -1583,11 +1586,11 @@ var _sfc_main$7 = {
         var src = "";
         if (method === "drawImage") {
           src = data[0];
-          src = self.$getRealPath(src);
+          src = $getRealPath(src);
           data[0] = src;
         } else if (method === "setFillStyle" && data[0] === "pattern") {
           src = data[1];
-          src = self.$getRealPath(src);
+          src = $getRealPath(src);
           data[1] = src;
         }
         if (src && !self._images[src]) {

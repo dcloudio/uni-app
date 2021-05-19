@@ -23,14 +23,23 @@
 </template>
 <script lang="ts">
 import { ref } from "vue";
-import { useAttrs, useContextInfo, useSubscribe, withWebEvent } from "@dcloudio/uni-components";
+import {
+  useAttrs,
+  useContextInfo,
+  useSubscribe,
+  withWebEvent,
+} from "@dcloudio/uni-components";
 import { getCurrentPageVm, getCurrentPageId, onEventPrevent } from "@dcloudio/uni-core";
-import { saveImage, getSameOriginUrl } from "@dcloudio/uni-platform";
+import { saveImage, getSameOriginUrl, getRealPath } from "@dcloudio/uni-platform";
 import ResizeSensor from "../resize-sensor";
 import { useNativeEvent } from "../../helpers/useEvent";
 import { pixelRatio, wrapper, initHidpi } from "../../helpers/hidpi";
 
 !__NODE_JS__ && initHidpi();
+
+function $getRealPath(src){
+  return src ? getRealPath(src) : src
+}
 
 function resolveColor(color) {
   color = color.slice(0);
@@ -63,7 +72,7 @@ export default {
   name: "Canvas",
   inheritAttrs: false,
   compatConfig: {
-    MODE: 3
+    MODE: 3,
   },
   components: {
     ResizeSensor,
@@ -336,11 +345,11 @@ export default {
         var src = "";
         if (method === "drawImage") {
           src = data[0];
-          src = self.$getRealPath(src);
+          src = $getRealPath(src);
           data[0] = src;
         } else if (method === "setFillStyle" && data[0] === "pattern") {
           src = data[1];
-          src = self.$getRealPath(src);
+          src = $getRealPath(src);
           data[1] = src;
         }
         if (src && !self._images[src]) {
