@@ -1,4 +1,32 @@
-import { isString, isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
+import { camelize, isString, isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
+
+function formatKey(key) {
+    return camelize(key.substring(5));
+}
+function initCostomDataset() {
+    const prototype = HTMLElement.prototype;
+    const setAttribute = prototype.setAttribute;
+    prototype.setAttribute = function (key, value) {
+        if (key.startsWith('data-') && this.tagName.startsWith('UNI-')) {
+            const dataset = (this.__uniDataset =
+                this.__uniDataset || {});
+            dataset[formatKey(key)] = value;
+        }
+        setAttribute.call(this, key, value);
+    };
+    const removeAttribute = prototype.removeAttribute;
+    prototype.removeAttribute = function (key) {
+        if (this.__uniDataset &&
+            key.startsWith('data-') &&
+            this.tagName.startsWith('UNI-')) {
+            delete this.__uniDataset[formatKey(key)];
+        }
+        removeAttribute.call(this, key);
+    };
+}
+function getCostomDataset(el) {
+    return Object.assign({}, el.dataset, el.__uniDataset);
+}
 
 const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
 function toFixed(number, precision) {
@@ -32,7 +60,7 @@ function normalizeTarget(el) {
     const { id, offsetTop, offsetLeft } = el;
     return {
         id,
-        dataset: normalizeDataset(el),
+        dataset: getCostomDataset(el),
         offsetTop,
         offsetLeft,
     };
@@ -359,4 +387,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getEnvLocale, getLen, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getCostomDataset, getEnvLocale, getLen, initCostomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

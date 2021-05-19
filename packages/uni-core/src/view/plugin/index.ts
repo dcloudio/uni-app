@@ -2,8 +2,7 @@ import { App } from 'vue'
 
 import { initLongPress } from './longPress'
 import { initAppConfig } from './appConfig'
-import { initCostomDataset } from './costomDataset'
-export { getCostomDataset } from './costomDataset'
+import { initCostomDataset } from '@dcloudio/uni-shared'
 
 export function initView(app: App) {
   if (__NODE_JS__) {

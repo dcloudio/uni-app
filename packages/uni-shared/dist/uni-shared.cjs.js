@@ -4,6 +4,34 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
+function formatKey(key) {
+    return shared.camelize(key.substring(5));
+}
+function initCostomDataset() {
+    const prototype = HTMLElement.prototype;
+    const setAttribute = prototype.setAttribute;
+    prototype.setAttribute = function (key, value) {
+        if (key.startsWith('data-') && this.tagName.startsWith('UNI-')) {
+            const dataset = (this.__uniDataset =
+                this.__uniDataset || {});
+            dataset[formatKey(key)] = value;
+        }
+        setAttribute.call(this, key, value);
+    };
+    const removeAttribute = prototype.removeAttribute;
+    prototype.removeAttribute = function (key) {
+        if (this.__uniDataset &&
+            key.startsWith('data-') &&
+            this.tagName.startsWith('UNI-')) {
+            delete this.__uniDataset[formatKey(key)];
+        }
+        removeAttribute.call(this, key);
+    };
+}
+function getCostomDataset(el) {
+    return Object.assign({}, el.dataset, el.__uniDataset);
+}
+
 const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
 function toFixed(number, precision) {
     const multiplier = Math.pow(10, precision + 1);
@@ -36,7 +64,7 @@ function normalizeTarget(el) {
     const { id, offsetTop, offsetLeft } = el;
     return {
         id,
-        dataset: normalizeDataset(el),
+        dataset: getCostomDataset(el),
         offsetTop,
         offsetLeft,
     };
@@ -386,8 +414,10 @@ exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.formatDateTime = formatDateTime;
+exports.getCostomDataset = getCostomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
+exports.initCostomDataset = initCostomDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;

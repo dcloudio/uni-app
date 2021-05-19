@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
-import { getWindowOffset, getCostomDataset } from '@dcloudio/uni-core'
+import { getCostomDataset } from '@dcloudio/uni-shared'
+import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
 
 type NodeField = UniApp.NodeField

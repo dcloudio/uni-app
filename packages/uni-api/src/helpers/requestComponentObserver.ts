@@ -38,7 +38,7 @@ export function requestComponentObserver(
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds!),
           time: Date.now(),
-          //   dataset: normalizeDataset(entrie.target),
+          //   dataset: getCostomDataset(entrie.target),
           //   id: entrie.target.id,
         })
       })

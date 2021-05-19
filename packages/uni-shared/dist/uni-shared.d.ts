@@ -46,9 +46,17 @@ export declare function formatDateTime({ date, mode }: {
     mode?: string | undefined;
 }): string;
 
+export declare function getCostomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
+
 export declare function getEnvLocale(): string;
 
 export declare function getLen(str?: string): number;
+
+declare interface HTMLElementWithDataset extends HTMLElement {
+    __uniDataset?: Record<string, any>;
+}
+
+export declare function initCostomDataset(): void;
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
@@ -64,7 +72,7 @@ export declare function normalizeDataset(el: Element): any;
 
 export declare function normalizeTarget(el: HTMLElement): {
     id: string;
-    dataset: any;
+    dataset: DOMStringMap & Record<string, any>;
     offsetTop: number;
     offsetLeft: number;
 };

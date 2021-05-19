@@ -1,6 +1,6 @@
-import {isFunction, extend, hyphenate, isPlainObject, camelize, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
+import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
 import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, watch, onActivated, onMounted, nextTick, resolveComponent, toHandlers, renderSlot, onUnmounted, computed, onBeforeUnmount, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
-import {once, passive, normalizeTarget, isBuiltInComponent, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
+import {once, passive, normalizeTarget, isBuiltInComponent, initCostomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCostomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -958,30 +958,6 @@ function initAppConfig$1(appConfig) {
   if (__UNI_FEATURE_WXS__) {
     globalProperties.$gcd = getComponentDescriptor;
   }
-}
-function formatKey(key) {
-  return camelize(key.substring(5));
-}
-function initCostomDataset() {
-  const prototype = HTMLElement.prototype;
-  const setAttribute = prototype.setAttribute;
-  prototype.setAttribute = function(key, value) {
-    if (key.startsWith("data-") && this.tagName.startsWith("UNI-")) {
-      const dataset = this.__uniDataset = this.__uniDataset || {};
-      dataset[formatKey(key)] = value;
-    }
-    setAttribute.call(this, key, value);
-  };
-  const removeAttribute = prototype.removeAttribute;
-  prototype.removeAttribute = function(key) {
-    if (this.__uniDataset && key.startsWith("data-") && this.tagName.startsWith("UNI-")) {
-      delete this.__uniDataset[formatKey(key)];
-    }
-    removeAttribute.call(this, key);
-  };
-}
-function getCostomDataset(el) {
-  return Object.assign({}, el.dataset, el.__uniDataset);
 }
 function initView(app) {
   initCostomDataset();
