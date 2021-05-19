@@ -250,6 +250,115 @@ function initBridge(namespace) {
   });
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("view");
+function converPx(value) {
+  if (/^-?\d+[ur]px$/i.test(value)) {
+    return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  } else if (/^-?[\d\.]+$/.test(value)) {
+    return `${value}px`;
+  }
+  return value || "";
+}
+function converType(type) {
+  return type.replace(/[A-Z]/g, (text2) => {
+    return `-${text2.toLowerCase()}`;
+  }).replace("webkit", "-webkit");
+}
+function getStyle(action) {
+  const animateTypes12 = [
+    "matrix",
+    "matrix3d",
+    "scale",
+    "scale3d",
+    "rotate3d",
+    "skew",
+    "translate",
+    "translate3d"
+  ];
+  const animateTypes22 = [
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "rotate",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "skewX",
+    "skewY",
+    "translateX",
+    "translateY",
+    "translateZ"
+  ];
+  const animateTypes32 = ["opacity", "background-color"];
+  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
+  const animates = action.animates;
+  const option = action.option;
+  const transition = option.transition;
+  const style = {};
+  const transform = [];
+  animates.forEach((animate) => {
+    let type = animate.type;
+    let args = [...animate.args];
+    if (animateTypes12.concat(animateTypes22).includes(type)) {
+      if (type.startsWith("rotate") || type.startsWith("skew")) {
+        args = args.map((value) => parseFloat(value) + "deg");
+      } else if (type.startsWith("translate")) {
+        args = args.map(converPx);
+      }
+      if (animateTypes22.indexOf(type) >= 0) {
+        args.length = 1;
+      }
+      transform.push(`${type}(${args.join(",")})`);
+    } else if (animateTypes32.concat(animateTypes4).includes(args[0])) {
+      type = args[0];
+      const value = args[1];
+      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
+    }
+  });
+  style.transform = style.webkitTransform = transform.join(" ");
+  style.transition = style.webkitTransition = Object.keys(style).map((type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`).join(",");
+  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
+  return style;
+}
+function startAnimation(context) {
+  const animation2 = context.animation;
+  if (!animation2 || !animation2.actions || !animation2.actions.length) {
+    return;
+  }
+  let index2 = 0;
+  const actions = animation2.actions;
+  const length = animation2.actions.length;
+  function animate() {
+    const action = actions[index2];
+    const transition = action.option.transition;
+    const style = getStyle(action);
+    Object.keys(style).forEach((key) => {
+      context.$el.style[key] = style[key];
+    });
+    index2 += 1;
+    if (index2 < length) {
+      setTimeout(animate, transition.duration + transition.delay);
+    }
+  }
+  setTimeout(() => {
+    animate();
+  }, 0);
+}
+var animation = {
+  props: ["animation"],
+  watch: {
+    animation: {
+      deep: true,
+      handler() {
+        startAnimation(this);
+      }
+    }
+  },
+  mounted() {
+    startAnimation(this);
+  }
+};
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = passive(true);
@@ -485,7 +594,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +606,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -965,6 +1074,7 @@ function initView(app) {
     initLongPress();
   }
   initAppConfig$1(app._context.config);
+  app.mixin(animation);
 }
 const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
   invokeOnCallback(name, res) {
@@ -1182,7 +1292,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -6585,18 +6695,18 @@ class Scroll {
     return e2;
   }
 }
-function createAnimation(scroll, onScroll, onEnd) {
+function createAnimation$1(scroll, onScroll, onEnd) {
   const state2 = {
     id: 0,
     cancelled: false
   };
-  function startAnimation(state22, scroll2, onScroll2, onEnd2) {
+  function startAnimation2(state22, scroll2, onScroll2, onEnd2) {
     if (!state22 || !state22.cancelled) {
       onScroll2(scroll2);
       const isDone = scroll2.done();
       if (!isDone) {
         if (!state22.cancelled) {
-          state22.id = requestAnimationFrame(startAnimation.bind(null, state22, scroll2, onScroll2, onEnd2));
+          state22.id = requestAnimationFrame(startAnimation2.bind(null, state22, scroll2, onScroll2, onEnd2));
         }
       }
       if (isDone && onEnd2) {
@@ -6612,7 +6722,7 @@ function createAnimation(scroll, onScroll, onEnd) {
       state22.cancelled = true;
     }
   }
-  startAnimation(state2, scroll, onScroll, onEnd);
+  startAnimation2(state2, scroll, onScroll, onEnd);
   return {
     cancel: cancel.bind(null, state2),
     model: scroll
@@ -6702,7 +6812,7 @@ class Scroller {
     this._scrolling = true;
     this._lastChangePos = this._position;
     this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
-    this._animation = createAnimation(this._scroll, () => {
+    this._animation = createAnimation$1(this._scroll, () => {
       const e2 = Date.now();
       const i = (e2 - this._scroll._startTime) / 1e3;
       const r = this._scroll.x(i);
@@ -11084,6 +11194,116 @@ const createSelectorQuery = /* @__PURE__ */ defineSyncApi("createSelectorQuery",
   }
   return new SelectorQuery(context || getCurrentPageVm());
 });
+const API_CREATE_ANIMATION = "createAnimation";
+const CreateAnimationOptions = {
+  formatArgs: {}
+};
+const CreateAnimationProtocol = {
+  duration: Number,
+  timingFunction: String,
+  delay: Number,
+  transformOrigin: String
+};
+const defaultOption = {
+  duration: 400,
+  timingFunction: "linear",
+  delay: 0,
+  transformOrigin: "50% 50% 0"
+};
+class MPAnimation {
+  constructor(option) {
+    this.actions = [];
+    this.currentTransform = {};
+    this.currentStepAnimates = [];
+    this.option = Object.assign({}, defaultOption, option);
+  }
+  _getOption(option) {
+    const _option = {
+      transition: Object.assign({}, this.option, option),
+      transformOrigin: ""
+    };
+    _option.transformOrigin = _option.transition.transformOrigin;
+    delete _option.transition.transformOrigin;
+    return _option;
+  }
+  _pushAnimates(type, args) {
+    this.currentStepAnimates.push({
+      type,
+      args
+    });
+  }
+  _converType(type) {
+    return type.replace(/[A-Z]/g, (text2) => {
+      return `-${text2.toLowerCase()}`;
+    });
+  }
+  _getValue(value) {
+    return typeof value === "number" ? `${value}px` : value;
+  }
+  export() {
+    const actions = this.actions;
+    this.actions = [];
+    return {
+      actions
+    };
+  }
+  step(option) {
+    this.currentStepAnimates.forEach((animate) => {
+      if (animate.type !== "style") {
+        this.currentTransform[animate.type] = animate;
+      } else {
+        this.currentTransform[`${animate.type}.${animate.args[0]}`] = animate;
+      }
+    });
+    this.actions.push({
+      animates: Object.values(this.currentTransform),
+      option: this._getOption(option)
+    });
+    this.currentStepAnimates = [];
+    return this;
+  }
+}
+const animateTypes1 = [
+  "matrix",
+  "matrix3d",
+  "rotate",
+  "rotate3d",
+  "rotateX",
+  "rotateY",
+  "rotateZ",
+  "scale",
+  "scale3d",
+  "scaleX",
+  "scaleY",
+  "scaleZ",
+  "skew",
+  "skewX",
+  "skewY",
+  "translate",
+  "translate3d",
+  "translateX",
+  "translateY",
+  "translateZ"
+];
+const animateTypes2 = ["opacity", "backgroundColor"];
+const animateTypes3 = ["width", "height", "left", "right", "top", "bottom"];
+animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
+  MPAnimation.prototype[type] = function(...args) {
+    let _this = this;
+    if (animateTypes2.concat(animateTypes3).includes(type)) {
+      _this._pushAnimates("style", [
+        _this._converType(type),
+        animateTypes3.includes(type) ? _this._getValue(args[0]) : args[0]
+      ]);
+    } else {
+      _this._pushAnimates(type, args);
+    }
+    return _this;
+  };
+});
+const createAnimation = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (option) => {
+  return new MPAnimation(option);
+}, CreateAnimationProtocol, CreateAnimationOptions);
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
 });
@@ -11716,13 +11936,13 @@ const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const SetNavigationBarColorOptions = {
   formatArgs: {
-    animation(animation, params) {
-      if (!animation) {
-        animation = {duration: 0, timingFunc: "linear"};
+    animation(animation2, params) {
+      if (!animation2) {
+        animation2 = {duration: 0, timingFunc: "linear"};
       }
       params.animation = {
-        duration: animation.duration || 0,
-        timingFunc: animation.timingFunc || "linear"
+        duration: animation2.duration || 0,
+        timingFunc: animation2.timingFunc || "linear"
       };
     }
   }
@@ -14650,7 +14870,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -14763,12 +14983,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -14788,10 +15008,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -17264,8 +17484,8 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   const {navigationBar} = pageMeta;
   switch (type) {
     case API_SET_NAVIGATION_BAR_COLOR:
-      const {frontColor, backgroundColor, animation} = args;
-      const {duration, timingFunc} = animation;
+      const {frontColor, backgroundColor, animation: animation2} = args;
+      const {duration, timingFunc} = animation2;
       if (frontColor) {
         navigationBar.titleColor = frontColor === "#000000" ? "#000" : "#fff";
       }
@@ -17422,6 +17642,7 @@ var api = /* @__PURE__ */ Object.freeze({
   createSelectorQuery,
   createVideoContext,
   createMapContext,
+  createAnimation,
   onTabBarMidButtonTap,
   createCanvasContext,
   canvasGetImageData,
@@ -19868,4 +20089,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$n as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$m as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$l as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$n as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$m as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$l as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

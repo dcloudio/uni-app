@@ -9,6 +9,7 @@ export * from './service/context/canvas'
 
 export * from './service/ui/createIntersectionObserver'
 export * from './service/ui/createSelectorQuery'
+export * from './service/ui/createAnimation'
 export * from './service/ui/tabBar'
 
 export * from './service/keyboard/getSelectedTextRange'

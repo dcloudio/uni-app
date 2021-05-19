@@ -1,3 +1,11 @@
+import {
+  API_CREATE_ANIMATION,
+  API_TYPE_CREATE_ANIMATION,
+  CreateAnimationProtocol,
+  CreateAnimationOptions,
+} from '../../protocols/ui/createAnimation'
+import { defineSyncApi } from '../../helpers/api'
+
 const defaultOption: Option = {
   duration: 400,
   timingFunction: 'linear',
@@ -7,18 +15,19 @@ const defaultOption: Option = {
 
 type Option = UniApp.CreateAnimationOptions
 type AnimatesArgs = string[]
-type Action = {
-  animates: string[]
+export type CurrentStepAnimates = Array<{ type: string; args: AnimatesArgs }>
+export type AnimationAction = {
+  animates: CurrentStepAnimates
   option: ReturnType<MPAnimation['_getOption']>
 }
 
-class MPAnimation implements UniApp.Animation {
-  actions: Array<Action>
+export class MPAnimation implements UniApp.Animation {
+  actions: Array<AnimationAction>
   currentTransform: Data
-  currentStepAnimates: Array<{ type: string; args: AnimatesArgs }>
+  currentStepAnimates: CurrentStepAnimates
   option: Option
 
-  constructor(option: Option) {
+  constructor(option?: Option) {
     this.actions = []
     this.currentTransform = {}
     this.currentStepAnimates = []
@@ -72,7 +81,9 @@ class MPAnimation implements UniApp.Animation {
       }
     })
     this.actions.push({
-      animates: Object.values(this.currentTransform) as Action['animates'],
+      animates: Object.values(
+        this.currentTransform
+      ) as AnimationAction['animates'],
       option: this._getOption(option),
     })
     this.currentStepAnimates = []
@@ -144,10 +155,15 @@ animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
     } else {
       _this._pushAnimates(type, args)
     }
-    return this
+    return _this
   }
 })
 
-export function createAnimation(option: Option) {
-  return new MPAnimation(option)
-}
+export const createAnimation = defineSyncApi<API_TYPE_CREATE_ANIMATION>(
+  API_CREATE_ANIMATION,
+  (option) => {
+    return new MPAnimation(option)
+  },
+  CreateAnimationProtocol,
+  CreateAnimationOptions
+)

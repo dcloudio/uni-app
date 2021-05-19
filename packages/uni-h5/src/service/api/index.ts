@@ -70,6 +70,7 @@ export {
   createSelectorQuery,
   createVideoContext,
   createMapContext,
+  createAnimation,
   onTabBarMidButtonTap,
   createCanvasContext,
   canvasGetImageData,
