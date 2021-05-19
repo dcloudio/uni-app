@@ -4,8 +4,9 @@ import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 
-import { matchMedia } from './transforms/matchMedia'
+import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { VitePluginUniResolvedOptions } from '..'
+import { createTransformEvent } from './transforms/transformEvent'
 
 function createUniVueTransformAssetUrls(
   base: string
@@ -60,7 +61,11 @@ export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
     compatConfig
   )
 
-  compilerOptions.nodeTransforms.unshift(matchMedia)
+  compilerOptions.nodeTransforms.unshift(createTransformEvent({}))
+  if (options.platform !== 'mp-weixin') {
+    compilerOptions.nodeTransforms.unshift(transformMatchMedia)
+  }
+
   return vueOptions
 }
 

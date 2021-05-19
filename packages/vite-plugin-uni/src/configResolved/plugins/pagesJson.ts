@@ -63,7 +63,7 @@ function generatePagesJsonCode(
   const globalName = getGlobal(ssr)
   const pagesJson = normalizePagesJson(jsonStr, options.platform)
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
-  const uniRoutesCode = generateRoutes(globalName, pagesJson)
+  const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
   const uniConfigCode = generateConfig(globalName, pagesJson, options)
   const manifestJsonPath = slash(
     path.resolve(options.inputDir, 'manifest.json.js')
@@ -173,9 +173,9 @@ function generatePagesDefineCode(
   if (!define.__UNI_FEATURE_PAGES__) {
     // single page
     const pagePath = pagesJson.pages[0].path
-    return `import {default as ${normalizePageIdentifier(
+    return `import ${normalizePageIdentifier(
       pagePath
-    )}} from './${pagePath}.vue?mpType=page'`
+    )} from './${pagePath}.vue?mpType=page'`
   }
   const { pages } = pagesJson
   return (
@@ -222,28 +222,44 @@ function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
   })
 }
 
-function generatePageRoute({ name, path, meta }: PageRouteOptions) {
+function generatePageRoute(
+  { name, path, meta }: PageRouteOptions,
+  config: ResolvedConfig
+) {
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
   return `{
   path:'/${isEntry ? '' : path}',${alias}
   component:{render(){return renderPage(${name})}},
-  loader: ${normalizePageIdentifier(path)}Loader,
+  loader: ${
+    config.define!.__UNI_FEATURE_PAGES__
+      ? normalizePageIdentifier(path) + 'Loader'
+      : 'null'
+  },
   meta: ${JSON.stringify(meta)}
 }`
 }
 
-function generatePagesRoute(pagesRouteOptions: PageRouteOptions[]) {
-  return pagesRouteOptions.map((pageOptions) => generatePageRoute(pageOptions))
+function generatePagesRoute(
+  pagesRouteOptions: PageRouteOptions[],
+  config: ResolvedConfig
+) {
+  return pagesRouteOptions.map((pageOptions) =>
+    generatePageRoute(pageOptions, config)
+  )
 }
 
-function generateRoutes(globalName: string, pagesJson: UniApp.PagesJson) {
+function generateRoutes(
+  globalName: string,
+  pagesJson: UniApp.PagesJson,
+  config: ResolvedConfig
+) {
   return `
 function renderPage(component){
   return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, { ref: "page" }, null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
 }
 ${globalName}.__uniRoutes=[${[
-    ...generatePagesRoute(normalizePagesRoute(pagesJson)),
+    ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
   ].join(',')}]`
 }
 

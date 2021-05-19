@@ -18,7 +18,8 @@ export function uniRenderjsPlugin(): Plugin {
       const type = isWxs ? 'wxs' : 'renderjs'
       const { query } = parseVueRequest(id)
       debugRenderjs(id)
-      if (!(query as any).name) {
+      const name: string = (query as any).name
+      if (!name) {
         this.error(
           `<script module="missing module name" lang="${type}">
 ${code}
@@ -29,11 +30,22 @@ ${code}
         code.replace(/module\.exports\s*=/, 'export default '),
         '_sfc_' + type
       )}
-export default Comp => {
-  if(!Comp.mixins){Comp.mixins = []}
-  Comp.mixins.push({beforeCreate(){ this['${(query as any).name}'] = this }})
-  Comp.mixins.push(_sfc_${type})
-}`
+${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`
     },
   }
+}
+
+function genRenderjsCode(name: string) {
+  return `export default Comp => {
+  if(!Comp.mixins){Comp.mixins = []}
+  Comp.mixins.push({beforeCreate(){ this['${name}'] = this }})
+  Comp.mixins.push(_sfc_renderjs)
+}`
+}
+
+function genWxsCode(name: string) {
+  return `export default Comp => {
+  if(!Comp.mixins){Comp.mixins = []}
+  Comp.mixins.push({beforeCreate(){ this['${name}'] = _sfc_wxs }})
+}`
 }

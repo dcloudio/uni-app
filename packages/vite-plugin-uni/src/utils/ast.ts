@@ -9,7 +9,14 @@ import {
   ExportSpecifier,
 } from 'estree'
 
-import { Node, TextModes, NodeTypes, ElementNode } from '@vue/compiler-core'
+import {
+  Node,
+  TextModes,
+  NodeTypes,
+  ElementNode,
+  DirectiveNode,
+  SimpleExpressionNode,
+} from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
 
 export const isProperty = (node: BaseNode): node is Property =>
@@ -69,4 +76,14 @@ export function parseVue(code: string, errors: SyntaxError[]) {
 
 export function isElementNode(node: Node): node is ElementNode {
   return node.type === NodeTypes.ELEMENT
+}
+
+export function isDirectiveNode(node: Node): node is DirectiveNode {
+  return node.type === NodeTypes.DIRECTIVE
+}
+
+export function isSimpleExpressionNode(
+  node: Node
+): node is SimpleExpressionNode {
+  return node.type === NodeTypes.SIMPLE_EXPRESSION
 }
