@@ -1297,7 +1297,9 @@ function withWebEvent(fn) {
 }
 function useCustomEvent(ref, emit2) {
   return (name, evt, detail) => {
-    emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    if (ref.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    }
   };
 }
 function useNativeEvent(emit2) {

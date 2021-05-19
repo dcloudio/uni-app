@@ -16,10 +16,9 @@ export function useCustomEvent<E extends EmitsOptions>(
   emit: SetupContext<E>['emit']
 ) {
   return (name: string, evt: Event, detail?: EventDetail) => {
-    emit(
-      name,
-      normalizeCustomEvent(name, evt, ref.value as HTMLElement, detail || {})
-    )
+    if (ref.value) {
+      emit(name, normalizeCustomEvent(name, evt, ref.value, detail || {}))
+    }
   }
 }
 
