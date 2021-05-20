@@ -8,8 +8,8 @@ function initCostomDataset() {
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
         if (key.startsWith('data-') && this.tagName.startsWith('UNI-')) {
-            const dataset = (this.__uniDataset =
-                this.__uniDataset || {});
+            const dataset = this.__uniDataset ||
+                (this.__uniDataset = {});
             dataset[formatKey(key)] = value;
         }
         setAttribute.call(this, key, value);

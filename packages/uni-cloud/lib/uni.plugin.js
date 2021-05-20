@@ -1,13 +1,43 @@
 const { once } = require('@dcloudio/uni-shared')
-
-module.exports = {
-  init,
-  define,
-  inject,
-  done: once(done),
+const { uniInjectPlugin } = require('@dcloudio/vite-plugin-uni')
+/**
+ * @type {import('vite').Plugin}
+ */
+const UniCloudPlugin = {
+  name: 'vite:uni-cloud',
+  config() {
+    initUniCloudEnv()
+    return {
+      define: {
+        'process.env.UNI_CLOUD_PROVIDER': JSON.stringify(
+          process.env.UNI_CLOUD_PROVIDER
+        ),
+        'process.env.UNICLOUD_DEBUG': JSON.stringify(
+          process.env.UNICLOUD_DEBUG
+        ),
+      },
+    }
+  },
+  configureServer(server) {
+    server.httpServer &&
+      server.httpServer.on('listening', () => {
+        if (!process.UNI_CLOUD) {
+          return
+        }
+        process.nextTick(() => {
+          initUniCloudWarningOnce()
+        })
+      })
+  },
 }
 
-function init() {
+const initUniCloudWarningOnce = once(() => {
+  console.warn(
+    '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+  )
+})
+
+function initUniCloudEnv() {
   process.UNI_CLOUD = false
   process.UNI_CLOUD_TCB = false
   process.UNI_CLOUD_ALIYUN = false
@@ -59,25 +89,9 @@ function init() {
   }
 }
 
-function define() {
-  return {
-    'process.env.UNI_CLOUD_PROVIDER': JSON.stringify(
-      process.env.UNI_CLOUD_PROVIDER
-    ),
-    'process.env.UNICLOUD_DEBUG': JSON.stringify(process.env.UNICLOUD_DEBUG),
-  }
-}
-
-function inject() {
-  return {
+module.exports = [
+  UniCloudPlugin,
+  uniInjectPlugin({
     uniCloud: ['@dcloudio/uni-cloud', 'default'],
-  }
-}
-
-function done() {
-  if (process.UNI_CLOUD) {
-    console.warn(
-      '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
-    )
-  }
-}
+  }),
+]

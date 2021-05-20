@@ -1,5 +1,4 @@
 import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import { UniCompiler, initUniCompiler } from '@dcloudio/uni-cli-shared'
 import { Options as VueOptions } from '@vitejs/plugin-vue'
 import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
@@ -10,6 +9,7 @@ import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 import { createHandleHotUpdate } from './handleHotUpdate'
+import { initExtraPlugins } from './utils'
 export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
@@ -25,7 +25,6 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   outputDir: string
   assetsDir: string
   devServer?: ViteDevServer
-  compiler: UniCompiler
 }
 
 export * from './vue'
@@ -51,9 +50,6 @@ export default function uniPlugin(
     outputDir: '',
     command: 'serve',
     platform: 'h5',
-    compiler: initUniCompiler({
-      root: process.env.UNI_CLI_CONTEXT || process.cwd(),
-    }),
   }
   const plugins: Plugin[] = []
 
@@ -75,5 +71,13 @@ export default function uniPlugin(
     configureServer: createConfigureServer(options),
     handleHotUpdate: createHandleHotUpdate(options),
   })
+  plugins.push(
+    ...initExtraPlugins(
+      process.env.UNI_CLI_CONTEXT || process.cwd(),
+      (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
+    )
+  )
   return plugins
 }
+
+export { uniInjectPlugin } from './configResolved/plugins/inject'

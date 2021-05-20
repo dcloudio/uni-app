@@ -1,5 +1,4 @@
 export * from './ssr'
-export * from './uni'
 export * from './url'
 export * from './deps'
 export * from './json'

@@ -122,24 +122,9 @@ export function initPlugins(
   addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')
   addPlugin(plugins, uniRenderjsPlugin(), 'vite:vue')
 
-  const injectOptions = options.compiler.inject()
   // 可以考虑使用apply:'build'
   if (command === 'build') {
-    addPlugin(
-      plugins,
-      uniInjectPlugin(extend(uniInjectPluginOptions, injectOptions)),
-      'vite:vue'
-    )
-  } else {
-    if (injectOptions && Object.keys(injectOptions).length) {
-      addPlugin(
-        plugins,
-        uniInjectPlugin(
-          extend({ exclude: [...COMMON_EXCLUDE] }, injectOptions)
-        ),
-        'vite:vue'
-      )
-    }
+    addPlugin(plugins, uniInjectPlugin(uniInjectPluginOptions), 'vite:vue')
   }
 
   addPlugin(

@@ -1,5 +1,4 @@
 import path from 'path'
-import { extend } from '@vue/shared'
 import { Plugin, UserConfig } from 'vite'
 
 import { normalizePath, parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
@@ -44,14 +43,13 @@ export function createConfig(
     options.vueOptions = initPluginVueOptions(options)
     options.vueJsxOptions = initPluginVueJsxOptions(options)
     options.viteLegacyOptions = initPluginViteLegacyOptions(options)
-    options.compiler.init()
 
     const define = createDefine(options, config, env)
 
     return {
       base,
       publicDir: config.publicDir || false,
-      define: extend(define, options.compiler.define()),
+      define,
       resolve: createResolve(options, config),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),
