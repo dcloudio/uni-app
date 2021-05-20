@@ -114,6 +114,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             type={type.value}
             maxlength={state.maxlength}
             step={step.value}
+            // @ts-ignore
             enterkeyhint={props.confirmType}
             class="uni-input-input"
             autocomplete="off"
@@ -132,7 +133,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {props.placeholder}
             </div>
             {props.confirmType === 'search' ? (
-              <form action="" onSubmit={() => false} class="uni-input-form">
+              <form
+                action=""
+                onSubmit={(event) => event.preventDefault()}
+                class="uni-input-form"
+              >
                 {inputNode}
               </form>
             ) : (

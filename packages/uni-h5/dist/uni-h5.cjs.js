@@ -3110,7 +3110,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || !valid.value)]]), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
-        "onSubmit": () => false,
+        "onSubmit": (event) => event.preventDefault(),
         "class": "uni-input-form"
       }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
     };

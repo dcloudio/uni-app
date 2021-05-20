@@ -4883,7 +4883,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
         "action": "",
-        "onSubmit": () => false,
+        "onSubmit": (event) => event.preventDefault(),
         "class": "uni-input-form"
       }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
     };
