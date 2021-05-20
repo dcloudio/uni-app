@@ -708,9 +708,19 @@ exports.main = async (event, context) => {
     platform: event.platform,
     provider: event.provider,
     trans_id: event.trans_id,
+    sign: event.sign,
     user_id: event.user_id,
     extra: event.extra,
   }
+
+  // 注意::必须验签请求来源
+  const secret = "";// uniad 后台开通激励视频回调后生成的 secret
+  const trans_id = event.trans_id;
+  const sign2 = crypto.createHash('sha256').update(`${secret}:${trans_id}`).digest('hex');
+  if (event.sign !== sign2) {
+    return null;
+  }
+
 
   // 可选将回调记录保存到uniCloud，避免用户服务器没有响应时有日志可查，如果选择了保存记录需要做定时清理日志，避免日志过多影响性能
   // try {
