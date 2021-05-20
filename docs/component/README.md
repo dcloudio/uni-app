@@ -422,7 +422,7 @@ datacom组件是一种数据驱动的、可云端一体的组件。
 
 ### 如何封装组件
 
-封装组件涉及的知识点较多，相关文档详见：[vue组件详解](/vue-componets)
+封装组件涉及的知识点较多，相关文档详见：[vue组件详解](https://uniapp.dcloud.io/vue-components)
 
 
 ### 扩展组件（uni-ui）@uniui
