@@ -60,3 +60,6 @@ uni.addInterceptor('request', {
 uni.removeInterceptor('request')
 
 ```
+
+##### 拦截器的适用场景非常多，比如路由拦截，权限引导等。
+> 你可以参考插件市场,拦截器应用示例：图片选择api时无权限，引导用户快捷打开系统设置：[https://ext.dcloud.net.cn/plugin?id=5095](https://ext.dcloud.net.cn/plugin?id=5095)
