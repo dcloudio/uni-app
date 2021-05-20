@@ -14,11 +14,9 @@ export default {
     // minify: false,
     rollupOptions: {
       // external: ['vue', '@vue/shared'],
-      // output: {
-      //   entryFileNames: `assets/[name].js`,
-      //   chunkFileNames: `assets/[name].js`,
-      //   assetFileNames: `assets/[name].[ext]`,
-      // },
+      output: {
+        inlineDynamicImports: true,
+      },
     },
   },
 
