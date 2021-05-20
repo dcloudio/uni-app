@@ -265,7 +265,7 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
   ```js
   const db = uniCloud.database()
 
-  // 上面的示例中的where条件可以使用以下写法
+  // 使用`jql`查询list表内`name`字段值为`hello-uni-app`的记录
   db.collection('list')
     .where('name == "hello-uni-app"')
     .get()
@@ -295,11 +295,11 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 以下变量同[前端环境变量](uniCloud/database.md?id=variable)
 
-|参数名			|说明				|
-|:-:			|:-:				|
-|$env.uid		|用户uid，依赖uni-id|
-|$env.now		|服务器时间戳		|
-|$env.clientIP|当前客户端IP		|
+|参数名							|说明								|
+|:-:								|:-:								|
+|$cloudEnv_uid			|用户uid，依赖uni-id|
+|$cloudEnv_now			|服务器时间戳				|
+|$cloudEnv_clientIP	|当前客户端IP				|
 
 **jql条件语句的运算符**
 
@@ -320,8 +320,6 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 这里的test方法比较强大，格式为：`正则规则.test(fieldname)`。
 
 具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like '%abc%'`，即查询所有字段content包含abc的数据记录。
-
-**云函数中node版本为8.9不支持正则断言**
 
 **注意编写查询条件时，除test外，均为运算符左侧为数据库字段，右侧为常量**
 
@@ -391,7 +389,7 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 ### JQL联表查询@lookup
 
-> clientDB将于2021年4月26日优化联表查询策略，详情参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
+> clientDB于2021年4月28日优化了联表查询策略，详情参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
 
 `JQL`提供了更简单的联表查询方案。不需要学习join、lookup等复杂方法。
 
@@ -601,6 +599,15 @@ db.collection('order')
 
 不止js，`<unicloud-db>`组件也支持所有`jql`功能，包括联表查询。
 
+在前端页面调试JQL联表查询且不过滤字段时会受权限影响，导致调试比较困难。可以通过HBuilderX提供的[JQL数据库管理](uniCloud/jql-runner.md)功能方便的查看联表查询时的虚拟表结构。
+
+如上述查询可以直接在`JQL文件`中执行以下代码查看完整的虚拟表字段
+
+```js
+db.collection('order,book').get()
+```
+
+
 #### 手动指定使用的foreignKey@lookup-foreign-key
 
 如果存在多个foreignKey且只希望部分生效，可以使用foreignKey来指定要使用的foreignKey
@@ -617,7 +624,6 @@ db.collection('comment,user')
 
 **注意**
 
-- field参数字符串内没有冒号
 - 联表查询时关联字段会被替换成被关联表的内容，因此不可在where内使用关联字段作为条件。举个例子，在上面的示例，`where({book_id:"1"})`，但是可以使用`where({'book_id._id':"1"})`
 - 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 - 各个表的_id字段会默认带上，即使没有指定返回
@@ -630,6 +636,8 @@ db.collection('comment,user')
 `2021年4月28日`调整后，新版支持副表foreignKey联查。副表的数据以数组的方式嵌入到主表中。
 
 **关联查询后的数据结构如下：**
+
+> 通过HBuilderX提供的[JQL数据库管理](uniCloud/jql-runner.md)功能方便的查看联表查询时的虚拟表结构
 
 主表某字段foreignKey指向副表时
 

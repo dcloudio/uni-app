@@ -103,6 +103,8 @@ js中敲下代码块`cdb`，即可快速输入上述代码。
 
 **DBOptions参数说明**
 
+> DBOptions仅腾讯云在云函数内可用
+
 |字段		|类型		|必填	|描述											|平台差异说明	|
 |:-:		|:-:		|:-:	|:-:											|:-:					|
 |spaceId|String	|否		|同一账号下的，服务空间ID	|仅腾讯云支持	|
@@ -293,7 +295,7 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
         "MgoIsSparse": false // 是否为稀疏索引，请参考 https://uniapp.dcloud.net.cn/uniCloud/db-index.md?id=sparse
       }
     }],
-    "schema": {
+    "schema": { // HBuilderX 3.0.0以上版本schema不在此处，而是放在database目录下单独的`表名.schema.json`文件内
       "bsonType": "object",
       "permission": {
         ".read": true,
@@ -352,8 +354,6 @@ uniCloud数据库提供了多种数据导入导出和备份方案。
 ```
 
 ### 数据库回档备份和恢复@backup
-
-**此功能暂时只有腾讯云支持**
 
 uniCloud腾讯云版会在每天自动备份一次数据库，最多保留7天。这让开发者不再担心数据丢失。
 
