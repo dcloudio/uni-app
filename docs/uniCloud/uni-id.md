@@ -394,7 +394,7 @@ const uniID = require('uni-id')
 exports.main = async function(event,context) {
   const uniIDIns = uniID.createInstance({ // 创建uni-id实例，其上方法同uniID
     context: context,
-    config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
+    // config: {} // 完整uni-id配置信息，使用config.json进行配置时无需传此参数
   })
   payload = await uniIDIns.checkToken(event.uniIdToken) // 后续使用uniIDIns调用相关接口
   if (payload.code) {
@@ -1017,7 +1017,7 @@ InitParams格式与config.json完全相同
 ```js
 // 云函数代码
 const uniID = require('uni-id')
-uniID.init({
+uniID.init({ // 如果在此处传入配置信息则不会再使用config.json作为配置
 	"passwordSecret": "passwordSecret-demo", // 用于加密用户密码
 	"tokenSecret": "tokenSecret-demo", // 用于生成token
 	"tokenExpiresIn": 7200, // token过期时间
