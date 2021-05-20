@@ -34,11 +34,14 @@ import { saveImage, getSameOriginUrl, getRealPath } from "@dcloudio/uni-platform
 import ResizeSensor from "../resize-sensor";
 import { useNativeEvent } from "../../helpers/useEvent";
 import { pixelRatio, wrapper, initHidpi } from "../../helpers/hidpi";
+import { once } from "@dcloudio/uni-shared";
 
-!__NODE_JS__ && initHidpi();
+const initHidpiOnce = /*#__PURE__*/ once(initHidpi)
 
-function $getRealPath(src){
-  return src ? getRealPath(src) : src
+!__NODE_JS__ && initHidpiOnce();
+
+function $getRealPath(src) {
+  return src ? getRealPath(src) : src;
 }
 
 function resolveColor(color) {
