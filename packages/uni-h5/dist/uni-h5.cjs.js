@@ -1131,6 +1131,31 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, Object.create(null));
 }
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref, emit2) {
+  return (name, evt, detail) => {
+    if (ref.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = uniShared.normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1170,31 +1195,6 @@ function provideForm(emit2) {
     }
   });
   return fields2;
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref, emit2) {
-  return (name, evt, detail) => {
-    if (ref.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = uniShared.normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
 const props$p = {
@@ -1247,45 +1247,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const {excludeListeners = false, excludeKeys = []} = params;
-  const instance = vue.getCurrentInstance();
-  const attrs = vue.shallowRef({});
-  const listeners = vue.shallowRef({});
-  const excludeAttrs = vue.shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance.attrs = vue.reactive(instance.attrs);
-  vue.watchEffect(() => {
-    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
-          acc.attrs[key] = val;
-        }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
-      }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
-    attrs.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return {$attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs};
-};
 var index$p = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
   name: "Button",
   props: {
     id: {
@@ -1319,11 +1281,14 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     openType: {
       type: String,
       default: ""
+    },
+    loading: {
+      type: [Boolean, String],
+      default: false
     }
   },
   setup(props2, {
-    slots,
-    emit: emit2
+    slots
   }) {
     const rootRef = vue.ref(null);
     const uniForm = vue.inject(uniFormKey, false);
@@ -1332,9 +1297,9 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
       binding
     } = useHover(props2);
     useI18n();
-    const onClick = (e2, isLabelClick) => {
+    const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
-        return;
+        return e2.stopImmediatePropagation();
       }
       if (isLabelClick) {
         rootRef.value.click();
@@ -1351,37 +1316,21 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
         }
         return;
       }
-    };
-    const uniLabel = vue.inject(uniLabelKey, false);
-    if (!!uniLabel) {
-      uniLabel.addHandler(onClick);
-    }
-    const {
-      $listeners,
-      $attrs,
-      $excludeAttrs
-    } = useAttrs({
-      excludeListeners: true
     });
-    const _listeners = Object.create(null);
-    let events = ["onClick", "onTap"];
-    if ($listeners.value) {
-      Object.keys($listeners.value).forEach((e2) => {
-        if (props2.disabled && events.includes(e2)) {
-          return;
-        }
-        _listeners[e2] = $listeners.value[e2];
-      });
+    const uniLabel = vue.inject(uniLabelKey, false);
+    if (uniLabel) {
+      uniLabel.addHandler(onClick);
     }
     return () => {
       const hoverClass = props2.hoverClass;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const loadingAttrs = useBooleanAttr(props2, "loading");
       const hasHoverClass = hoverClass && hoverClass !== "none";
       return vue.createVNode("uni-button", vue.mergeProps({
         "ref": rootRef,
         "onClick": onClick,
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, _listeners, $attrs.value, $excludeAttrs.value), [slots.default && slots.default()], 16, ["onClick"]);
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
@@ -3054,6 +3003,43 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const {excludeListeners = false, excludeKeys = []} = params;
+  const instance = vue.getCurrentInstance();
+  const attrs = vue.shallowRef({});
+  const listeners = vue.shallowRef({});
+  const excludeAttrs = vue.shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance.attrs = vue.reactive(instance.attrs);
+  vue.watchEffect(() => {
+    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return {$attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs};
+};
 function initScrollBounce() {
 }
 function disableScrollBounce({disable}) {
