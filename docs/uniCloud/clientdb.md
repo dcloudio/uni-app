@@ -633,7 +633,7 @@ db.collection('comment,user')
 
 `2021年4月28日`之前的clientDB版本，只支持主表的foreignKey，把副表内容嵌入主表的foreignKey字段下面。不支持处理副本的foreignKey。
 
-`2021年4月28日`调整后，新版支持副表foreignKey联查。副表的数据以数组的方式嵌入到主表中。
+`2021年4月28日`调整后，新版支持副表foreignKey联查。副表的数据以数组的方式嵌入到主表中作为一个虚拟表使用。
 
 **关联查询后的数据结构如下：**
 
