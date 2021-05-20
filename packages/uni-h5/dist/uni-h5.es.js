@@ -250,115 +250,6 @@ function initBridge(namespace) {
   });
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("view");
-function converPx(value) {
-  if (/^-?\d+[ur]px$/i.test(value)) {
-    return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  } else if (/^-?[\d\.]+$/.test(value)) {
-    return `${value}px`;
-  }
-  return value || "";
-}
-function converType(type) {
-  return type.replace(/[A-Z]/g, (text2) => {
-    return `-${text2.toLowerCase()}`;
-  }).replace("webkit", "-webkit");
-}
-function getStyle(action) {
-  const animateTypes1 = [
-    "matrix",
-    "matrix3d",
-    "scale",
-    "scale3d",
-    "rotate3d",
-    "skew",
-    "translate",
-    "translate3d"
-  ];
-  const animateTypes2 = [
-    "scaleX",
-    "scaleY",
-    "scaleZ",
-    "rotate",
-    "rotateX",
-    "rotateY",
-    "rotateZ",
-    "skewX",
-    "skewY",
-    "translateX",
-    "translateY",
-    "translateZ"
-  ];
-  const animateTypes3 = ["opacity", "background-color"];
-  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
-  const animates = action.animates;
-  const option = action.option;
-  const transition = option.transition;
-  const style = {};
-  const transform = [];
-  animates.forEach((animate) => {
-    let type = animate.type;
-    let args = [...animate.args];
-    if (animateTypes1.concat(animateTypes2).includes(type)) {
-      if (type.startsWith("rotate") || type.startsWith("skew")) {
-        args = args.map((value) => parseFloat(value) + "deg");
-      } else if (type.startsWith("translate")) {
-        args = args.map(converPx);
-      }
-      if (animateTypes2.indexOf(type) >= 0) {
-        args.length = 1;
-      }
-      transform.push(`${type}(${args.join(",")})`);
-    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
-      type = args[0];
-      const value = args[1];
-      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
-    }
-  });
-  style.transform = style.webkitTransform = transform.join(" ");
-  style.transition = style.webkitTransition = Object.keys(style).map((type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`).join(",");
-  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
-  return style;
-}
-function startAnimation(context) {
-  const animation2 = context.animation;
-  if (!animation2 || !animation2.actions || !animation2.actions.length) {
-    return;
-  }
-  let index2 = 0;
-  const actions = animation2.actions;
-  const length = animation2.actions.length;
-  function animate() {
-    const action = actions[index2];
-    const transition = action.option.transition;
-    const style = getStyle(action);
-    Object.keys(style).forEach((key) => {
-      context.$el.style[key] = style[key];
-    });
-    index2 += 1;
-    if (index2 < length) {
-      setTimeout(animate, transition.duration + transition.delay);
-    }
-  }
-  setTimeout(() => {
-    animate();
-  }, 0);
-}
-var animation = {
-  props: ["animation"],
-  watch: {
-    animation: {
-      deep: true,
-      handler() {
-        startAnimation(this);
-      }
-    }
-  },
-  mounted() {
-    startAnimation(this);
-  }
-};
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = passive(true);
@@ -1082,7 +973,6 @@ function initView(app) {
     initLongPress();
   }
   initAppConfig$1(app._context.config);
-  app.mixin(animation);
 }
 const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
   invokeOnCallback(name, res) {
@@ -2090,7 +1980,119 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["id", "controls"]);
 }
 _sfc_main$8.render = _sfc_render$8;
+function converPx(value) {
+  if (/^-?\d+[ur]px$/i.test(value)) {
+    return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  } else if (/^-?[\d\.]+$/.test(value)) {
+    return `${value}px`;
+  }
+  return value || "";
+}
+function converType(type) {
+  return type.replace(/[A-Z]/g, (text2) => {
+    return `-${text2.toLowerCase()}`;
+  }).replace("webkit", "-webkit");
+}
+function getStyle(action) {
+  const animateTypes1 = [
+    "matrix",
+    "matrix3d",
+    "scale",
+    "scale3d",
+    "rotate3d",
+    "skew",
+    "translate",
+    "translate3d"
+  ];
+  const animateTypes2 = [
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "rotate",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "skewX",
+    "skewY",
+    "translateX",
+    "translateY",
+    "translateZ"
+  ];
+  const animateTypes3 = ["opacity", "background-color"];
+  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
+  const animates = action.animates;
+  const option = action.option;
+  const transition = option.transition;
+  const style = {};
+  const transform = [];
+  animates.forEach((animate) => {
+    let type = animate.type;
+    let args = [...animate.args];
+    if (animateTypes1.concat(animateTypes2).includes(type)) {
+      if (type.startsWith("rotate") || type.startsWith("skew")) {
+        args = args.map((value) => parseFloat(value) + "deg");
+      } else if (type.startsWith("translate")) {
+        args = args.map(converPx);
+      }
+      if (animateTypes2.indexOf(type) >= 0) {
+        args.length = 1;
+      }
+      transform.push(`${type}(${args.join(",")})`);
+    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
+      type = args[0];
+      const value = args[1];
+      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
+    }
+  });
+  style.transform = style.webkitTransform = transform.join(" ");
+  style.transition = style.webkitTransition = Object.keys(style).map((type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`).join(",");
+  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
+  return style;
+}
+function startAnimation(context) {
+  const animation2 = context.animation;
+  if (!animation2 || !animation2.actions || !animation2.actions.length) {
+    return;
+  }
+  let index2 = 0;
+  const actions = animation2.actions;
+  const length = animation2.actions.length;
+  function animate() {
+    const action = actions[index2];
+    const transition = action.option.transition;
+    const style = getStyle(action);
+    Object.keys(style).forEach((key) => {
+      context.$el.style[key] = style[key];
+    });
+    index2 += 1;
+    if (index2 < length) {
+      setTimeout(animate, transition.duration + transition.delay);
+    }
+  }
+  setTimeout(() => {
+    animate();
+  }, 0);
+}
+var animation = {
+  props: ["animation"],
+  watch: {
+    animation: {
+      deep: true,
+      handler() {
+        startAnimation(this);
+      }
+    }
+  },
+  mounted() {
+    startAnimation(this);
+  }
+};
 const defineBuiltInComponent = (options) => {
+  if (!options.props || typeof options.props.animation === "undefined") {
+    typeof options.mixins !== "undefined" ? options.mixins.push(animation) : options.mixins = [animation];
+  }
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
