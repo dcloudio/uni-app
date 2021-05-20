@@ -4602,7 +4602,14 @@ const props$q = /* @__PURE__ */ Object.assign({}, {
     default: "done"
   }
 }, props$t);
-const emit = ["input", "focus", "blur", "update:value", "update:modelValue", ...emit$1];
+const emit = [
+  "input",
+  "focus",
+  "blur",
+  "update:value",
+  "update:modelValue",
+  ...emit$1
+];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
@@ -11886,6 +11893,7 @@ const NavigateBackProtocol = /* @__PURE__ */ extend({
 const RedirectToProtocol = BaseRouteProtocol;
 const ReLaunchProtocol = BaseRouteProtocol;
 const SwitchTabProtocol = BaseRouteProtocol;
+const PreloadPageProtocol = BaseRouteProtocol;
 const NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
 const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
 const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
@@ -16958,6 +16966,22 @@ function getTabBarPageId(url) {
 const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
+const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({url}, {resolve, reject}) => {
+  const path = url.split("?")[0];
+  const route = __uniRoutes.find((item) => item.path === path);
+  if (!route) {
+    reject(`${url}}`);
+    return;
+  }
+  route.loader && route.loader().then(() => {
+    resolve({
+      url,
+      errMsg: "preloadPage:ok"
+    });
+  }).catch((err) => {
+    reject(`${url} ${String(err)}`);
+  });
+}, PreloadPageProtocol);
 const props$3 = {
   title: {
     type: String,
@@ -17790,6 +17814,7 @@ var api = /* @__PURE__ */ Object.freeze({
   redirectTo,
   reLaunch,
   switchTab,
+  preloadPage,
   showModal,
   showToast,
   showLoading,
@@ -20169,4 +20194,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$m as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$l as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$n as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$m as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$l as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$n as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$6 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

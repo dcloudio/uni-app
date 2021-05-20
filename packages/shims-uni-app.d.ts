@@ -50,6 +50,7 @@ declare namespace UniApp {
     alias?: string
     meta: PageRouteMeta
     component?: any
+    loader: () => Promise<any>
   }
 
   type UniRoutes = UniRoute[]

@@ -2838,7 +2838,14 @@ const props$j = /* @__PURE__ */ Object.assign({}, {
     default: "done"
   }
 }, props$m);
-const emit = ["input", "focus", "blur", "update:value", "update:modelValue", ...emit$1];
+const emit = [
+  "input",
+  "focus",
+  "blur",
+  "update:value",
+  "update:modelValue",
+  ...emit$1
+];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = vue.ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
