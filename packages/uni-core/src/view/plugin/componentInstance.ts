@@ -49,6 +49,10 @@ export function createNativeEvent(evt: Event | TouchEvent) {
     detail: {},
     currentTarget: normalizeTarget(currentTarget as HTMLElement),
   }
+  // merge stopImmediatePropagation
+  if ((evt as any)._stopped) {
+    ;(event as any)._stopped = true
+  }
   if (evt.type.startsWith('touch')) {
     ;(event as any).touches = (evt as TouchEvent).touches
     ;(event as any).changedTouches = (evt as TouchEvent).changedTouches

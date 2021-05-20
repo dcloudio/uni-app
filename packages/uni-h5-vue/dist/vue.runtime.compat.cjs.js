@@ -10678,17 +10678,18 @@ function createInvoker(initialValue, instance) {
             // fixed by xxxxxx
             const proxy = instance && instance.proxy;
             const normalizeNativeEvent = proxy && proxy.$nne;
-            if (normalizeNativeEvent && isArray(invoker.value)) {
-                const fns = invoker.value;
+            const { value } = invoker;
+            if (normalizeNativeEvent && isArray(value)) {
+                const fns = patchStopImmediatePropagation(e, value);
                 for (let i = 0; i < fns.length; i++) {
                     const fn = fns[i];
                     callWithAsyncErrorHandling(fn, instance, 5 /* NATIVE_EVENT_HANDLER */, [!fn.__wwe ? normalizeNativeEvent(e) : e]);
                 }
                 return;
             }
-            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5 /* NATIVE_EVENT_HANDLER */, [
+            callWithAsyncErrorHandling(patchStopImmediatePropagation(e, value), instance, 5 /* NATIVE_EVENT_HANDLER */, [
                 // fixed by xxxxxx
-                normalizeNativeEvent && !invoker.value.__wwe
+                normalizeNativeEvent && !value.__wwe
                     ? normalizeNativeEvent(e)
                     : e
             ]);
@@ -10705,7 +10706,11 @@ function patchStopImmediatePropagation(e, value) {
             originalStop.call(e);
             e._stopped = true;
         };
-        return value.map(fn => (e) => !e._stopped && fn(e));
+        return value.map(fn => {
+            const patchedFn = (e) => !e._stopped && fn(e);
+            patchedFn.__wwe = fn.__wwe;
+            return patchedFn;
+        });
     }
     else {
         return value;

@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, watch, onActivated, onMounted, nextTick, resolveComponent, toHandlers, renderSlot, onUnmounted, computed, onBeforeUnmount, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, shallowRef, watchEffect, onBeforeUnmount, onActivated, onMounted, nextTick, resolveComponent, toHandlers, renderSlot, onBeforeMount, withDirectives, vShow, isVNode, Fragment, markRaw, createCommentVNode, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, initCostomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCostomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -853,6 +853,9 @@ function createNativeEvent(evt) {
     detail: {},
     currentTarget: normalizeTarget(currentTarget)
   };
+  if (evt._stopped) {
+    event._stopped = true;
+  }
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
@@ -2219,7 +2222,175 @@ function provideForm(emit2) {
   });
   return fields2;
 }
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref2, emit2) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+const props$w = {
+  for: {
+    type: String,
+    default: ""
+  }
+};
 var index$n = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Label",
+  props: props$w,
+  setup(props2, {
+    slots
+  }) {
+    const pageId = useCurrentPageId();
+    const handlers = useProvideLabel();
+    const pointer = computed(() => props2.for || slots.default && slots.default.length);
+    const _onClick = withWebEvent(($event) => {
+      const EventTarget = $event.target;
+      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
+      if (!stopPropagation) {
+        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
+      }
+      if (stopPropagation) {
+        return;
+      }
+      if (props2.for) {
+        UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
+      } else {
+        handlers[0]($event, true);
+      }
+    });
+    return () => createVNode("uni-label", {
+      "class": {
+        "uni-label-pointer": pointer
+      },
+      "onClick": _onClick
+    }, [slots.default && slots.default()], 10, ["onClick"]);
+  }
+});
+function useProvideLabel() {
+  const handlers = [];
+  provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
+function useListeners(props2, listeners) {
+  _addListeners(props2.id, listeners);
+  watch(() => props2.id, (newId, oldId) => {
+    _removeListeners(oldId, listeners, true);
+    _addListeners(newId, listeners, true);
+  });
+  onUnmounted(() => {
+    _removeListeners(props2.id, listeners);
+  });
+}
+function _addListeners(id2, listeners, watch2) {
+  const pageId = useCurrentPageId();
+  if (watch2 && !id2) {
+    return;
+  }
+  if (!isPlainObject(listeners)) {
+    return;
+  }
+  Object.keys(listeners).forEach((name) => {
+    if (watch2) {
+      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+      }
+    } else {
+      if (name.indexOf("uni-") === 0) {
+        UniViewJSBridge.on(name, listeners[name]);
+      } else if (id2) {
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+      }
+    }
+  });
+}
+function _removeListeners(id2, listeners, watch2) {
+  const pageId = useCurrentPageId();
+  if (watch2 && !id2) {
+    return;
+  }
+  if (!isPlainObject(listeners)) {
+    return;
+  }
+  Object.keys(listeners).forEach((name) => {
+    if (watch2) {
+      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+      }
+    } else {
+      if (name.indexOf("uni-") === 0) {
+        UniViewJSBridge.off(name, listeners[name]);
+      } else if (id2) {
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
+      }
+    }
+  });
+}
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const {excludeListeners = false, excludeKeys = []} = params;
+  const instance2 = getCurrentInstance();
+  const attrs2 = shallowRef({});
+  const listeners = shallowRef({});
+  const excludeAttrs = shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance2.attrs = reactive(instance2.attrs);
+  watchEffect(() => {
+    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs2.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return {$attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs};
+};
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
   name: "Button",
   props: {
     id: {
@@ -2256,17 +2427,22 @@ var index$n = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2, {
-    slots
+    slots,
+    emit: emit2
   }) {
+    const rootRef = ref(null);
     const uniForm = inject(uniFormKey, false);
     const {
       hovering,
       binding
     } = useHover(props2);
     useI18n();
-    function onClick() {
+    const onClick = (e2, isLabelClick) => {
       if (props2.disabled) {
         return;
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
       }
       const formType = props2.formType;
       if (formType) {
@@ -2280,19 +2456,43 @@ var index$n = /* @__PURE__ */ defineBuiltInComponent({
         }
         return;
       }
+    };
+    const uniLabel = inject(uniLabelKey, false);
+    if (!!uniLabel) {
+      uniLabel.addHandler(onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(onClick);
+      });
+    }
+    useListeners(props2, {
+      "label-click": onClick
+    });
+    const {
+      $listeners,
+      $attrs,
+      $excludeAttrs
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const _listeners = Object.create(null);
+    let events = ["onClick", "onTap"];
+    if ($listeners.value) {
+      Object.keys($listeners.value).forEach((e2) => {
+        if (props2.disabled && events.includes(e2)) {
+          return;
+        }
+        _listeners[e2] = $listeners.value[e2];
+      });
     }
     return () => {
       const hoverClass = props2.hoverClass;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
-      if (hoverClass && hoverClass !== "none") {
-        return createVNode("uni-button", mergeProps({
-          "onClick": onClick,
-          "class": hovering.value ? hoverClass : ""
-        }, binding, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
-      }
+      const hasHoverClass = hoverClass && hoverClass !== "none";
       return createVNode("uni-button", mergeProps({
-        "onClick": onClick
-      }, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+        "ref": rootRef,
+        "onClick": onClick,
+        "class": hasHoverClass && hovering.value ? hoverClass : ""
+      }, hasHoverClass && binding, booleanAttrs, _listeners, $attrs.value, $excludeAttrs.value), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
@@ -2364,31 +2564,6 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
       reset();
     }
   });
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref2, emit2) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const pixelRatio = /* @__PURE__ */ function() {
   const canvas = document.createElement("canvas");
@@ -3039,70 +3214,16 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["canvas-id", "disable-scroll"]);
 }
 _sfc_main$7.render = _sfc_render$7;
-function useListeners(props2, listeners) {
-  _addListeners(props2.id, listeners);
-  watch(() => props2.id, (newId, oldId) => {
-    _removeListeners(oldId, listeners, true);
-    _addListeners(newId, listeners, true);
-  });
-  onUnmounted(() => {
-    _removeListeners(props2.id, listeners);
-  });
-}
-function _addListeners(id2, listeners, watch2) {
-  const pageId = useCurrentPageId();
-  if (watch2 && !id2) {
-    return;
-  }
-  if (!isPlainObject(listeners)) {
-    return;
-  }
-  Object.keys(listeners).forEach((name) => {
-    if (watch2) {
-      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
-      }
-    } else {
-      if (name.indexOf("uni-") === 0) {
-        UniViewJSBridge.on(name, listeners[name]);
-      } else if (id2) {
-        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
-      }
-    }
-  });
-}
-function _removeListeners(id2, listeners, watch2) {
-  const pageId = useCurrentPageId();
-  if (watch2 && !id2) {
-    return;
-  }
-  if (!isPlainObject(listeners)) {
-    return;
-  }
-  Object.keys(listeners).forEach((name) => {
-    if (watch2) {
-      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
-      }
-    } else {
-      if (name.indexOf("uni-") === 0) {
-        UniViewJSBridge.off(name, listeners[name]);
-      } else if (id2) {
-        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
-      }
-    }
-  });
-}
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$v = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$v,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -3153,57 +3274,6 @@ function useProvideCheckGroup(props2, trigger) {
     });
   }
   return getFieldsValue;
-}
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$v = {
-  for: {
-    type: String,
-    default: ""
-  }
-};
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Label",
-  props: props$v,
-  setup(props2, {
-    slots
-  }) {
-    const pageId = useCurrentPageId();
-    const handlers = useProvideLabel();
-    const pointer = computed(() => props2.for || slots.default && slots.default.length);
-    const _onClick = withWebEvent(($event) => {
-      const EventTarget = $event.target;
-      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
-      if (!stopPropagation) {
-        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
-      }
-      if (stopPropagation) {
-        return;
-      }
-      if (props2.for) {
-        UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
-      } else {
-        handlers[0]($event, true);
-      }
-    });
-    return () => createVNode("uni-label", {
-      "class": {
-        "uni-label-pointer": pointer
-      },
-      "onClick": _onClick
-    }, [slots.default && slots.default()], 10, ["onClick"]);
-  }
-});
-function useProvideLabel() {
-  const handlers = [];
-  provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
 }
 const props$u = {
   checked: {
@@ -4867,43 +4937,6 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const {excludeListeners = false, excludeKeys = []} = params;
-  const instance2 = getCurrentInstance();
-  const attrs2 = shallowRef({});
-  const listeners = shallowRef({});
-  const excludeAttrs = shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance2.attrs = reactive(instance2.attrs);
-  watchEffect(() => {
-    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
-          acc.attrs[key] = val;
-        }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
-      }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
-    attrs2.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return {$attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs};
-};
 function initScrollBounce() {
 }
 function disableScrollBounce({disable}) {
@@ -20141,4 +20174,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$n as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$m as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$l as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$m as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$l as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$n as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$6 as plugin, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

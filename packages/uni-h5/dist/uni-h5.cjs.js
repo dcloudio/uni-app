@@ -297,6 +297,9 @@ function createNativeEvent(evt) {
     detail: {},
     currentTarget: uniShared.normalizeTarget(currentTarget)
   };
+  if (evt._stopped) {
+    event._stopped = true;
+  }
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
@@ -1168,7 +1171,121 @@ function provideForm(emit2) {
   });
   return fields2;
 }
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref, emit2) {
+  return (name, evt, detail) => {
+    if (ref.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = uniShared.normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
+const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+const props$p = {
+  for: {
+    type: String,
+    default: ""
+  }
+};
 var index$q = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Label",
+  props: props$p,
+  setup(props2, {
+    slots
+  }) {
+    const pageId = useCurrentPageId();
+    const handlers = useProvideLabel();
+    const pointer = vue.computed(() => props2.for || slots.default && slots.default.length);
+    const _onClick = withWebEvent(($event) => {
+      const EventTarget = $event.target;
+      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
+      if (!stopPropagation) {
+        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
+      }
+      if (stopPropagation) {
+        return;
+      }
+      if (props2.for) {
+        UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
+      } else {
+        handlers[0]($event, true);
+      }
+    });
+    return () => vue.createVNode("uni-label", {
+      "class": {
+        "uni-label-pointer": pointer
+      },
+      "onClick": _onClick
+    }, [slots.default && slots.default()], 10, ["onClick"]);
+  }
+});
+function useProvideLabel() {
+  const handlers = [];
+  vue.provide(uniLabelKey, {
+    addHandler(handler) {
+      handlers.push(handler);
+    },
+    removeHandler(handler) {
+      handlers.splice(handlers.indexOf(handler), 1);
+    }
+  });
+  return handlers;
+}
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const {excludeListeners = false, excludeKeys = []} = params;
+  const instance = vue.getCurrentInstance();
+  const attrs = vue.shallowRef({});
+  const listeners = vue.shallowRef({});
+  const excludeAttrs = vue.shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance.attrs = vue.reactive(instance.attrs);
+  vue.watchEffect(() => {
+    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return {$attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs};
+};
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
   name: "Button",
   props: {
     id: {
@@ -1205,17 +1322,22 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2, {
-    slots
+    slots,
+    emit: emit2
   }) {
+    const rootRef = vue.ref(null);
     const uniForm = vue.inject(uniFormKey, false);
     const {
       hovering,
       binding
     } = useHover(props2);
     useI18n();
-    function onClick() {
+    const onClick = (e2, isLabelClick) => {
       if (props2.disabled) {
         return;
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
       }
       const formType = props2.formType;
       if (formType) {
@@ -1229,19 +1351,37 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
         }
         return;
       }
+    };
+    const uniLabel = vue.inject(uniLabelKey, false);
+    if (!!uniLabel) {
+      uniLabel.addHandler(onClick);
+    }
+    const {
+      $listeners,
+      $attrs,
+      $excludeAttrs
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const _listeners = Object.create(null);
+    let events = ["onClick", "onTap"];
+    if ($listeners.value) {
+      Object.keys($listeners.value).forEach((e2) => {
+        if (props2.disabled && events.includes(e2)) {
+          return;
+        }
+        _listeners[e2] = $listeners.value[e2];
+      });
     }
     return () => {
       const hoverClass = props2.hoverClass;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
-      if (hoverClass && hoverClass !== "none") {
-        return vue.createVNode("uni-button", vue.mergeProps({
-          "onClick": onClick,
-          "class": hovering.value ? hoverClass : ""
-        }, binding, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
-      }
+      const hasHoverClass = hoverClass && hoverClass !== "none";
       return vue.createVNode("uni-button", vue.mergeProps({
-        "onClick": onClick
-      }, booleanAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+        "ref": rootRef,
+        "onClick": onClick,
+        "class": hasHoverClass && hovering.value ? hoverClass : ""
+      }, hasHoverClass && binding, booleanAttrs, _listeners, $attrs.value, $excludeAttrs.value), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
@@ -1296,31 +1436,6 @@ function useResizeSensorReset(rootRef) {
     firstElementChild.scrollTop = 1e5;
     lastElementChild.scrollLeft = 1e5;
     lastElementChild.scrollTop = 1e5;
-  };
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref, emit2) {
-  return (name, evt, detail) => {
-    if (ref.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = uniShared.normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
   };
 }
 const pixelRatio = 1;
@@ -1868,15 +1983,15 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
 }
 _sfc_main$7.render = _sfc_render$7;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$o = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$p,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -1927,57 +2042,6 @@ function useProvideCheckGroup(props2, trigger) {
     });
   }
   return getFieldsValue;
-}
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$o = {
-  for: {
-    type: String,
-    default: ""
-  }
-};
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Label",
-  props: props$o,
-  setup(props2, {
-    slots
-  }) {
-    const pageId = useCurrentPageId();
-    const handlers = useProvideLabel();
-    const pointer = vue.computed(() => props2.for || slots.default && slots.default.length);
-    const _onClick = withWebEvent(($event) => {
-      const EventTarget = $event.target;
-      let stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
-      if (!stopPropagation) {
-        stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
-      }
-      if (stopPropagation) {
-        return;
-      }
-      if (props2.for) {
-        UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
-      } else {
-        handlers[0]($event, true);
-      }
-    });
-    return () => vue.createVNode("uni-label", {
-      "class": {
-        "uni-label-pointer": pointer
-      },
-      "onClick": _onClick
-    }, [slots.default && slots.default()], 10, ["onClick"]);
-  }
-});
-function useProvideLabel() {
-  const handlers = [];
-  vue.provide(uniLabelKey, {
-    addHandler(handler) {
-      handlers.push(handler);
-    },
-    removeHandler(handler) {
-      handlers.splice(handlers.indexOf(handler), 1);
-    }
-  });
-  return handlers;
 }
 const props$n = {
   checked: {
@@ -2990,43 +3054,6 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const {excludeListeners = false, excludeKeys = []} = params;
-  const instance = vue.getCurrentInstance();
-  const attrs = vue.shallowRef({});
-  const listeners = vue.shallowRef({});
-  const excludeAttrs = vue.shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance.attrs = vue.reactive(instance.attrs);
-  vue.watchEffect(() => {
-    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
-          acc.attrs[key] = val;
-        }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
-      }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
-    attrs.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return {$attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs};
-};
 function initScrollBounce() {
 }
 function disableScrollBounce({disable}) {
@@ -11215,10 +11242,10 @@ var index = /* @__PURE__ */ defineSystemComponent({
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
 exports.Audio = _sfc_main$8;
-exports.Button = index$q;
+exports.Button = index$p;
 exports.Canvas = _sfc_main$7;
 exports.Checkbox = index$n;
-exports.CheckboxGroup = index$p;
+exports.CheckboxGroup = index$o;
 exports.CoverImage = _sfc_main$2;
 exports.CoverView = _sfc_main$3;
 exports.Editor = index$m;
@@ -11227,7 +11254,7 @@ exports.Friction = Friction;
 exports.Icon = index$l;
 exports.Image = index$k;
 exports.Input = Input;
-exports.Label = index$o;
+exports.Label = index$q;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$3;
 exports.MovableArea = index$j;
