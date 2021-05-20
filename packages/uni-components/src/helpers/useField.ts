@@ -76,6 +76,10 @@ export const props = /*#__PURE__*/ Object.assign(
       type: String,
       default: '',
     },
+    modelValue: {
+      type: [String, Number],
+      default: '',
+    },
     value: {
       type: [String, Number],
       default: '',
@@ -139,7 +143,14 @@ export const props = /*#__PURE__*/ Object.assign(
   keyboardProps
 )
 
-export const emit = ['input', 'focus', 'blur', ...keyboardEmit]
+export const emit = [
+  'input',
+  'focus',
+  'blur',
+  'update:value',
+  'update:modelValue',
+  ...keyboardEmit,
+]
 
 type Props = Record<keyof typeof props, any>
 
@@ -176,7 +187,7 @@ function useBase(
     var maxlength = Number(props.maxlength)
     return isNaN(maxlength) ? 140 : maxlength
   })
-  const value = getValueString(props.value)
+  const value = getValueString(props.modelValue || props.value)
   const state: State = reactive({
     value,
     valueOrigin: value,
@@ -211,8 +222,10 @@ function useValueSync(
   const valueChangeFn = debounce((val: any) => {
     state.value = getValueString(val)
   }, 100)
+  watch(() => props.modelValue, valueChangeFn)
   watch(() => props.value, valueChangeFn)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {
+    emit('update:modelValue', detail.value)
     emit('update:value', detail.value)
     trigger('input', event, detail)
   }, 100)

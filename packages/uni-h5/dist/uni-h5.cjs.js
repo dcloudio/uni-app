@@ -2777,6 +2777,10 @@ const props$j = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: ""
   },
+  modelValue: {
+    type: [String, Number],
+    default: ""
+  },
   value: {
     type: [String, Number],
     default: ""
@@ -2834,7 +2838,7 @@ const props$j = /* @__PURE__ */ Object.assign({}, {
     default: "done"
   }
 }, props$m);
-const emit = ["input", "focus", "blur", ...emit$1];
+const emit = ["input", "focus", "blur", "update:value", "update:modelValue", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = vue.ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
@@ -2854,7 +2858,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.value);
+  const value = getValueString(props2.modelValue || props2.value);
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -2877,8 +2881,10 @@ function useValueSync(props2, state, emit2, trigger) {
   const valueChangeFn = uniShared.debounce((val) => {
     state.value = getValueString(val);
   }, 100);
+  vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
+    emit2("update:modelValue", detail.value);
     emit2("update:value", detail.value);
     trigger("input", event, detail);
   }, 100);

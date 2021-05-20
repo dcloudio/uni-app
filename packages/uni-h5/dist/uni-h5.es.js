@@ -4541,6 +4541,10 @@ const props$q = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: ""
   },
+  modelValue: {
+    type: [String, Number],
+    default: ""
+  },
   value: {
     type: [String, Number],
     default: ""
@@ -4598,7 +4602,7 @@ const props$q = /* @__PURE__ */ Object.assign({}, {
     default: "done"
   }
 }, props$t);
-const emit = ["input", "focus", "blur", ...emit$1];
+const emit = ["input", "focus", "blur", "update:value", "update:modelValue", ...emit$1];
 function useBase(props2, rootRef, emit2) {
   const fieldRef = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
@@ -4618,7 +4622,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.value);
+  const value = getValueString(props2.modelValue || props2.value);
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -4641,8 +4645,10 @@ function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = debounce((val) => {
     state2.value = getValueString(val);
   }, 100);
+  watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
+    emit2("update:modelValue", detail.value);
     emit2("update:value", detail.value);
     trigger("input", event, detail);
   }, 100);
