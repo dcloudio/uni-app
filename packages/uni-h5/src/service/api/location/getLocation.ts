@@ -85,15 +85,16 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
         })
       })
       .then((coords: GeolocationCoordinates) => {
-        resolve(
-          Object.assign({}, coords, {
-            speed: coords.altitude || 0,
-            altitude: coords.altitude || 0,
-            verticalAccuracy: coords.altitudeAccuracy || 0,
-            // 无专门水平精度，使用位置精度替代
-            horizontalAccuracy: coords.accuracy || 0,
-          })
-        )
+        resolve({
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          accuracy: coords.accuracy,
+          speed: coords.altitude || 0,
+          altitude: coords.altitude || 0,
+          verticalAccuracy: coords.altitudeAccuracy || 0,
+          // 无专门水平精度，使用位置精度替代
+          horizontalAccuracy: coords.accuracy || 0,
+        })
       })
       .catch((error) => {
         reject(error.message)

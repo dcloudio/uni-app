@@ -16478,12 +16478,15 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
       }, () => resolve2(coords));
     });
   }).then((coords) => {
-    resolve(Object.assign({}, coords, {
+    resolve({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      accuracy: coords.accuracy,
       speed: coords.altitude || 0,
       altitude: coords.altitude || 0,
       verticalAccuracy: coords.altitudeAccuracy || 0,
       horizontalAccuracy: coords.accuracy || 0
-    }));
+    });
   }).catch((error) => {
     reject(error.message);
   });
