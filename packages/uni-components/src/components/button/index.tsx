@@ -1,11 +1,15 @@
-import { inject } from 'vue'
+import { inject, onBeforeUnmount, ref } from 'vue'
 import { useI18n, initI18nButtonMsgsOnce } from '@dcloudio/uni-core'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniFormCtx, uniFormKey } from '../form'
+import { uniLabelKey, UniLabelCtx } from '../label'
+import { useListeners } from '../../helpers/useListeners'
+import { useAttrs } from '../../helpers/useAttrs'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
+  inheritAttrs: false,
   name: 'Button',
   props: {
     id: {
@@ -41,7 +45,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       default: '',
     },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, emit }) {
+    const rootRef = ref<HTMLElement | null>(null)
     if (__PLATFORM__ === 'app') {
       initI18nButtonMsgsOnce()
     }
@@ -51,9 +56,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     const { hovering, binding } = useHover(props)
     const { t } = useI18n()
-    function onClick() {
+    const onClick = (e: Event, isLabelClick: boolean) => {
       if (props.disabled) {
         return
+      }
+      if (isLabelClick) {
+        rootRef.value!.click()
       }
       const formType = props.formType
       if (formType) {
@@ -74,23 +82,49 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         )
       }
     }
+
+    const uniLabel = inject<UniLabelCtx>(
+      uniLabelKey,
+      false as unknown as UniLabelCtx
+    )
+    if (!!uniLabel) {
+      uniLabel.addHandler(onClick)
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(onClick)
+      })
+    }
+    useListeners(props, { 'label-click': onClick })
+
+    const { $listeners, $attrs, $excludeAttrs } = useAttrs({
+      excludeListeners: true,
+    })
+    const _listeners = Object.create(null)
+    let events = ['onClick', 'onTap']
+    if ($listeners.value) {
+      Object.keys($listeners.value).forEach((e) => {
+        if (props.disabled && events.includes(e)) {
+          return
+        }
+        _listeners[e] = ($listeners.value as any)[e]
+      })
+    }
+
     return () => {
       const hoverClass = props.hoverClass
       const booleanAttrs = useBooleanAttr(props, 'disabled')
-      if (hoverClass && hoverClass !== 'none') {
-        return (
-          <uni-button
-            onClick={onClick}
-            class={hovering.value ? hoverClass : ''}
-            {...binding}
-            {...booleanAttrs}
-          >
-            {slots.default && slots.default()}
-          </uni-button>
-        )
-      }
+      const hasHoverClass = hoverClass && hoverClass !== 'none'
+
       return (
-        <uni-button onClick={onClick} {...booleanAttrs}>
+        <uni-button
+          ref={rootRef}
+          onClick={onClick}
+          class={hasHoverClass && hovering.value ? hoverClass : ''}
+          {...(hasHoverClass && binding)}
+          {...booleanAttrs}
+          {..._listeners}
+          {...$attrs.value}
+          {...$excludeAttrs.value}
+        >
           {slots.default && slots.default()}
         </uni-button>
       )
@@ -100,6 +134,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
 function openFeedback(titleText: string, sendText: string) {
   const feedback = plus.webview.create(
+    // @ts-ignore
     'https://service.dcloud.net.cn/uniapp/feedback.html',
     'feedback',
     {
