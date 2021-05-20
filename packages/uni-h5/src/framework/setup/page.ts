@@ -184,12 +184,24 @@ function pruneRouteCache(key: string) {
   })
 }
 
+function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
+  const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue['flex-direction']
+  if (pageMeta.isNVue) {
+    document.body.setAttribute('nvue', '')
+    document.body.setAttribute(nvueDirKey, '')
+  } else {
+    document.body.removeAttribute('nvue')
+    document.body.removeAttribute(nvueDirKey)
+  }
+}
+
 export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
+  updateCurPageAttrs(pageMeta)
   initPageScrollListener(instance, pageMeta)
 }
 

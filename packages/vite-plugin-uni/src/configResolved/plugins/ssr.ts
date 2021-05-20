@@ -16,8 +16,8 @@ import {
   isIdentifier,
   isCallExpression,
   isMemberExpression,
-  generateSSRDefineCode,
-  generateSSREntryServerCode,
+  generateSsrDefineCode,
+  generateSsrEntryServerCode,
 } from '../../utils'
 
 const debugSSR = debug('vite:uni:ssr')
@@ -32,7 +32,7 @@ export function uniSSRPlugin(
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
   const entryServerJs = path.join(options.inputDir, ENTRY_SERVER_JS)
-  const entryServerJsCode = generateSSREntryServerCode()
+  const entryServerJsCode = generateSsrEntryServerCode()
   return {
     name: 'vite:uni-ssr',
     resolveId(id) {
@@ -85,7 +85,7 @@ export function uniSSRPlugin(
       const chunk = bundle['entry-server.js'] as OutputChunk
       if (chunk) {
         chunk.code =
-          generateSSRDefineCode(config, parseRpx2UnitOnce(options.inputDir)) +
+          generateSsrDefineCode(config, parseRpx2UnitOnce(options.inputDir)) +
           '\n' +
           chunk.code
       }

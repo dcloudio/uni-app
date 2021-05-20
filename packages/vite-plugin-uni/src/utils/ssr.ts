@@ -50,29 +50,29 @@ function serializeDefine(define: Record<string, any>): string {
   return res + `}`
 }
 
-export function generateSSRDefineCode(
+function normalizeSsrDefine(config: ResolvedConfig) {
+  const defines = extend(
+    {
+      __IMPORT_META_ENV_BASE_URL__: JSON.stringify(config.env.BASE_URL),
+    },
+    config.define!
+  )
+  delete defines['import.meta.env.LEGACY']
+  return defines
+}
+export function generateSsrDefineCode(
   config: ResolvedConfig,
   { unit, unitRatio, unitPrecision }: Rpx2UnitOptions
 ): string {
   return fs
     .readFileSync(path.join(__dirname, '../../lib/ssr/define.js'), 'utf8')
-    .replace(
-      '__DEFINES__',
-      serializeDefine(
-        extend(
-          {
-            __IMPORT_META_ENV_BASE_URL__: JSON.stringify(config.env.BASE_URL),
-          },
-          config.define!
-        )
-      )
-    )
+    .replace('__DEFINES__', serializeDefine(normalizeSsrDefine(config)))
     .replace('__UNIT__', JSON.stringify(unit))
     .replace('__UNIT_RATIO__', JSON.stringify(unitRatio))
     .replace('__UNIT_PRECISION__', JSON.stringify(unitPrecision))
 }
 
-export function generateSSREntryServerCode() {
+export function generateSsrEntryServerCode() {
   return fs.readFileSync(
     path.join(__dirname, '../../lib/ssr/entry-server.js'),
     'utf8'

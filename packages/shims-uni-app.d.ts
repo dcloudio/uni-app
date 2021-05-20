@@ -27,6 +27,9 @@ declare namespace UniApp {
       strict: boolean
       base: string
     }
+    nvue: {
+      'flex-direction': 'column' | 'row'
+    }
     globalStyle: {
       navigationBar: PageNavigationBar
       refreshOptions?: PageRefreshOptions

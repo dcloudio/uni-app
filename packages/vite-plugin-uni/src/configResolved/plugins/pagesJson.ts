@@ -61,9 +61,13 @@ function generatePagesJsonCode(
   options: VitePluginUniResolvedOptions
 ) {
   const globalName = getGlobal(ssr)
-  const pagesJson = normalizePagesJson(jsonStr, options.platform)
+  const pagesJson = normalizePagesJson(
+    jsonStr,
+    options.inputDir,
+    options.platform
+  )
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
-  const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
+  const uniRoutesCode = generateRoutes(globalName, pagesJson, config, options)
   const uniConfigCode = generateConfig(globalName, pagesJson, options)
   const manifestJsonPath = slash(
     path.resolve(options.inputDir, 'manifest.json.js')
@@ -71,9 +75,7 @@ function generatePagesJsonCode(
   const cssCode = generateCssCode(config, options)
 
   return `
-import { ${
-    config.define!.__UNI_FEATURE_PAGES__ ? 'defineAsyncComponent, ' : ''
-  }resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
+import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
 const extend = Object.assign
@@ -124,9 +126,9 @@ function generateCssCode(
 ) {
   const define = config.define! as FEATURE_DEFINES
   const cssFiles = [H5_FRAMEWORK_STYLE_PATH + 'base.css']
-  if (define.__UNI_FEATURE_PAGES__) {
-    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'async.css')
-  }
+  // if (define.__UNI_FEATURE_PAGES__) {
+  cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'async.css')
+  // }
   if (define.__UNI_FEATURE_RESPONSIVE__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'layout.css')
   }
@@ -167,16 +169,16 @@ const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},Asy
 
 function generatePagesDefineCode(
   pagesJson: UniApp.PagesJson,
-  config: ResolvedConfig
+  _config: ResolvedConfig
 ) {
-  const define = config.define! as FEATURE_DEFINES
-  if (!define.__UNI_FEATURE_PAGES__) {
-    // single page
-    const pagePath = pagesJson.pages[0].path
-    return `import ${normalizePageIdentifier(
-      pagePath
-    )} from './${pagePath}.vue?mpType=page'`
-  }
+  // const define = config.define! as FEATURE_DEFINES
+  // if (!define.__UNI_FEATURE_PAGES__) {
+  //   // single page
+  //   const pagePath = pagesJson.pages[0].path
+  //   return `import ${normalizePageIdentifier(
+  //     pagePath
+  //   )} from './${pagePath}.vue?mpType=page'`
+  // }
   const { pages } = pagesJson
   return (
     `const AsyncComponentOptions = {
@@ -190,22 +192,28 @@ function generatePagesDefineCode(
   )
 }
 
-function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
+function normalizePagesRoute(
+  pagesJson: UniApp.PagesJson,
+  options: VitePluginUniResolvedOptions
+): PageRouteOptions[] {
   const firstPagePath = pagesJson.pages[0].path
   const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || []
   return pagesJson.pages.map((pageOptions) => {
-    const path = pageOptions.path
-    const name = normalizePageIdentifier(path)
-    const isEntry = firstPagePath === path ? true : undefined
+    const pagePath = pageOptions.path
+    const name = normalizePageIdentifier(pagePath)
+    const isEntry = firstPagePath === pagePath ? true : undefined
     const tabBarIndex = tabBarList.findIndex(
-      (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === path
+      (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === pagePath
     )
     const isTabBar = tabBarIndex !== -1 ? true : undefined
-
+    const isNVue = fs.existsSync(
+      path.join(options.inputDir, pagePath + '.nvue')
+    )
     let windowTop = 0
     const meta = Object.assign(
       {
         route: pageOptions.path,
+        isNVue: isNVue ? true : undefined,
         isQuit: isEntry || isTabBar ? true : undefined,
         isEntry,
         isTabBar,
@@ -231,11 +239,7 @@ function generatePageRoute(
   return `{
   path:'/${isEntry ? '' : path}',${alias}
   component:{render(){return renderPage(${name})}},
-  loader: ${
-    config.define!.__UNI_FEATURE_PAGES__
-      ? normalizePageIdentifier(path) + 'Loader'
-      : 'null'
-  },
+  loader: ${normalizePageIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`
 }
@@ -252,14 +256,15 @@ function generatePagesRoute(
 function generateRoutes(
   globalName: string,
   pagesJson: UniApp.PagesJson,
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  options: VitePluginUniResolvedOptions
 ) {
   return `
 function renderPage(component){
   return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, { ref: "page" }, null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
 }
 ${globalName}.__uniRoutes=[${[
-    ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
+    ...generatePagesRoute(normalizePagesRoute(pagesJson, options), config),
   ].join(',')}]`
 }
 
