@@ -838,12 +838,18 @@ function $nne(evt) {
   }
   return res;
 }
+function findUniTarget(target) {
+  while (target && target.tagName.indexOf("UNI-") !== 0) {
+    target = target.parentElement;
+  }
+  return target;
+}
 function createNativeEvent(evt) {
   const {type, timeStamp, target, currentTarget} = evt;
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(target),
+    target: normalizeTarget(findUniTarget(target)),
     detail: {},
     currentTarget: normalizeTarget(currentTarget)
   };

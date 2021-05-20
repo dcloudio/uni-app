@@ -282,12 +282,18 @@ function createCallbacks(namespace) {
     }
   };
 }
+function findUniTarget(target) {
+  while (target && target.tagName.indexOf("UNI-") !== 0) {
+    target = target.parentElement;
+  }
+  return target;
+}
 function createNativeEvent(evt) {
   const {type, timeStamp, target, currentTarget} = evt;
   const event = {
     type,
     timeStamp,
-    target: uniShared.normalizeTarget(target),
+    target: uniShared.normalizeTarget(findUniTarget(target)),
     detail: {},
     currentTarget: uniShared.normalizeTarget(currentTarget)
   };

@@ -33,12 +33,19 @@ export function $nne(this: ComponentPublicInstance, evt: Event) {
   return res
 }
 
+function findUniTarget(target: HTMLElement): HTMLElement {
+  while (target && target.tagName.indexOf('UNI-') !== 0) {
+    target = target.parentElement as HTMLElement
+  }
+  return target
+}
+
 export function createNativeEvent(evt: Event | TouchEvent) {
   const { type, timeStamp, target, currentTarget } = evt
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(target as HTMLElement),
+    target: normalizeTarget(findUniTarget(target as HTMLElement)),
     detail: {},
     currentTarget: normalizeTarget(currentTarget as HTMLElement),
   }
