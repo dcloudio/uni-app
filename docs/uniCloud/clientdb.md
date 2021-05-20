@@ -625,14 +625,47 @@ db.collection('comment,user')
 
 #### 副表foreignKey联查@st-foreign-key
 
-`2021年4月28日`之前的clientDB版本，只支持主表的foreignKey，把副本内容嵌入主表的foreignKey字段下面。不支持处理副本的foreignKey。（如果你觉得能用，其实是bug，查出来的数是乱的，别依赖这种写法）
+`2021年4月28日`之前的clientDB版本，只支持主表的foreignKey，把副表内容嵌入主表的foreignKey字段下面。不支持处理副本的foreignKey。
 
-调整后，新版将正式支持副表foreignKey联查。将把副表的数据以数组的方式嵌入到主表中。
+`2021年4月28日`调整后，新版支持副表foreignKey联查。副表的数据以数组的方式嵌入到主表中。
+
+**关联查询后的数据结构如下：**
+
+主表某字段foreignKey指向副表时
+
+```js
+{
+  "主表字段名1": "xxx",
+  "主表字段名2": "xxx",
+  "主表内foreignKey指向副表的字段名": [{
+    "副表字段名1": "xxx",
+    "副表字段名2": "xxx",
+  }]
+}
+```
+
+副表某字段foreignKey指向主表时
+
+```js
+{
+  "主表字段名1": "xxx",
+  "主表字段名2": "xxx",
+  "副表foreignKey指向的主表字段名": { 
+    "副表1表名": [{ // 一个主表字段可能对应多个副表字段的foreignKey
+      "副表1字段名1": "xxx",
+      "副表1字段名2": "xxx",
+    }],
+    "副表2表名": [{ // 一个主表字段可能对应多个副表字段的foreignKey
+      "副表2字段名1": "xxx",
+      "副表2字段名2": "xxx",
+    }]
+  }
+}
+```
 
 例：
 
 数据库内schema及数据如下：
-
 
 ```js
 // comment - 评论表
@@ -766,7 +799,7 @@ db.collection('article,comment')
 [{
   "content": "content1",
   "article_id": {
-    "comment": [{ // 逆向foreignKey查询时此处会自动插入一层副表表名
+    "comment": [{ // 使用副表foreignKey查询时此处会自动插入一层副表表名
       "comment_id": "1-1",
       "content": "comment1-1",
       "article": "1",
@@ -797,7 +830,7 @@ db.collection('article,comment')
 [{
   "content": "content1",
   "article_id": {
-    "comment": [{ // 使用副本foreignKey联查时此处会自动插入一层副表表名
+    "comment": [{ // 使用副表foreignKey联查时此处会自动插入一层副表表名
       "content": "comment1-1"
     },
     {
