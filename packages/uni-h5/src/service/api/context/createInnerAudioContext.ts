@@ -41,7 +41,6 @@ type Property =
 
 type InnerAudioProperty = keyof Pick<HTMLMediaElement, Property>
 
-type VoidFunction = (callback: (result: any) => void) => void
 //#endregion
 
 /**
@@ -73,17 +72,6 @@ const innerAudioContextOffEventNames: InnerAudioContextOff[] = [
   'offSeeked',
 ]
 
-// 和audio对象同名同效果的属性
-const propertys: InnerAudioProperty[] = [
-  'src',
-  'autoplay',
-  'loop',
-  'duration',
-  'currentTime',
-  'paused',
-  'volume',
-]
-
 /**
  * 音频上下文对象
  */
@@ -91,39 +79,39 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
   /**
    * 当前音频的长度（单位：s），只有在当前有合法的 src 时返回
    */
-  duration!: number
+  'duration': UniApp.InnerAudioContext['duration']
   /**
    * 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回
    */
-  currentTime!: number
+  'currentTime': UniApp.InnerAudioContext['currentTime']
   /**
    * 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放
    */
-  paused!: boolean
+  'paused': UniApp.InnerAudioContext['paused']
   /**
    * 音频的数据链接，用于直接播放。
    */
-  src!: string
+  'src': UniApp.InnerAudioContext['src']
   /**
    * 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲
    */
-  buffered!: number
+  'buffered': UniApp.InnerAudioContext['buffered']
   /**
    * 是否自动开始播放，默认 false
    */
-  autoplay!: boolean
+  'autoplay': UniApp.InnerAudioContext['autoplay']
   /**
    * 是否循环播放，默认 false
    */
-  loop!: boolean
+  'loop': UniApp.InnerAudioContext['loop']
   /**
    * 是否遵循系统静音开关，当此参数为 false 时，即使用户打开了静音开关，也能继续发出声音，默认值 true
    */
-  obeyMuteSwitch!: boolean
+  'obeyMuteSwitch': UniApp.InnerAudioContext['obeyMuteSwitch']
   /**
    * 音量。范围 0~1。
    */
-  volume!: number
+  'volume': UniApp.InnerAudioContext['volume']
   /**
    * 原始音频对象
    */
@@ -150,6 +138,16 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
   constructor() {
     var audio = (this._audio = new Audio())
     this._stoping = false
+    // 和audio对象同名同效果的属性
+    const propertys: InnerAudioProperty[] = [
+      'src',
+      'autoplay',
+      'loop',
+      'duration',
+      'currentTime',
+      'paused',
+      'volume',
+    ]
     propertys.forEach((property) => {
       Object.defineProperty(this, property, {
         set:
@@ -160,8 +158,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
                 return src
               }
             : (val) => {
-                // audio[property] = val
-                audio.setAttribute(property, val)
+                ;(audio as any)[property] = val
                 return val
               },
         get:
@@ -180,7 +177,6 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
       get: () => false,
     })
     Object.defineProperty(this, 'buffered', {
-      set: () => false,
       get() {
         var buffered = audio.buffered
         if (buffered.length) {
@@ -202,18 +198,14 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
       }
     })
     // 和audio对象同名同效果的事件
-    var eventNames = [
-      'canplay',
+
+    var stopEventNames = ['canplay', 'pause', 'seeking', 'seeked', 'timeUpdate']
+    var eventNames = stopEventNames.concat([
       'play',
-      'pause',
       'ended',
-      'timeUpdate',
       'error',
       'waiting',
-      'seeking',
-      'seeked',
-    ]
-    var stopEventNames = ['canplay', 'pause', 'seeking', 'seeked', 'timeUpdate']
+    ])
     eventNames.forEach((eventName) => {
       audio.addEventListener(
         eventName.toLowerCase(),
@@ -280,27 +272,27 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
     this.stop()
   }
 
-  'onCanplay': VoidFunction
-  'onPlay': VoidFunction
-  'onPause': VoidFunction
-  'onStop': VoidFunction
-  'onEnded': VoidFunction
-  'onTimeUpdate': VoidFunction
-  'onError': VoidFunction
-  'onWaiting': VoidFunction
-  'onSeeking': VoidFunction
-  'onSeeked': VoidFunction
+  'onCanplay': UniApp.InnerAudioContext['onCanplay']
+  'onPlay': UniApp.InnerAudioContext['onPlay']
+  'onPause': UniApp.InnerAudioContext['onPause']
+  'onStop': UniApp.InnerAudioContext['onStop']
+  'onEnded': UniApp.InnerAudioContext['onEnded']
+  'onTimeUpdate': UniApp.InnerAudioContext['onTimeUpdate']
+  'onError': UniApp.InnerAudioContext['onError']
+  'onWaiting': UniApp.InnerAudioContext['onWaiting']
+  'onSeeking': UniApp.InnerAudioContext['onSeeking']
+  'onSeeked': UniApp.InnerAudioContext['onSeeked']
 
-  'offCanplay': VoidFunction
-  'offPlay': VoidFunction
-  'offPause': VoidFunction
-  'offStop': VoidFunction
-  'offEnded': VoidFunction
-  'offTimeUpdate': VoidFunction
-  'offError': VoidFunction
-  'offWaiting': VoidFunction
-  'offSeeking': VoidFunction
-  'offSeeked': VoidFunction
+  'offCanplay': UniApp.InnerAudioContext['offCanplay']
+  'offPlay': UniApp.InnerAudioContext['offPlay']
+  'offPause': UniApp.InnerAudioContext['offPause']
+  'offStop': UniApp.InnerAudioContext['offStop']
+  'offEnded': UniApp.InnerAudioContext['offEnded']
+  'offTimeUpdate': UniApp.InnerAudioContext['offTimeUpdate']
+  'offError': UniApp.InnerAudioContext['offError']
+  'offWaiting': UniApp.InnerAudioContext['offWaiting']
+  'offSeeking': UniApp.InnerAudioContext['offSeeking']
+  'offSeeked': UniApp.InnerAudioContext['offSeeked']
 }
 
 // 批量设置音频上下文事件监听方法

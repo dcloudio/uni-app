@@ -1,4 +1,4 @@
-import { computed, inject, onMounted, onBeforeUnmount, ref } from 'vue'
+import { computed, inject, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
@@ -77,6 +77,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const sliderValueRef: HTMLRef = ref(null)
     const sliderHandleRef: HTMLRef = ref(null)
     const sliderValue = ref(Number(props.value))
+    watch(
+      () => props.value,
+      (val) => {
+        sliderValue.value = Number(val)
+      }
+    )
+
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(sliderRef, emit)
 
     const state = useSliderState(props, sliderValue)

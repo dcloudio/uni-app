@@ -6283,6 +6283,9 @@ var index$e = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = vue.ref(null);
     const sliderHandleRef = vue.ref(null);
     const sliderValue = vue.ref(Number(props2.value));
+    vue.watch(() => props2.value, (val) => {
+      sliderValue.value = Number(val);
+    });
     const trigger = useCustomEvent(sliderRef, emit2);
     const state = useSliderState(props2, sliderValue);
     const {
