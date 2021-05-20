@@ -594,7 +594,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -606,10 +606,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1291,7 +1291,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -2520,7 +2520,6 @@ function initHidpi() {
   }
 }
 const initHidpiOnce = /* @__PURE__ */ once(initHidpi);
-initHidpiOnce();
 function $getRealPath(src) {
   return src ? getRealPath(src) : src;
 }
@@ -2619,6 +2618,9 @@ var _sfc_main$7 = {
     this._images = {};
     const id2 = useContextInfo();
     useSubscribe(this._handleSubscribe, id2, true);
+  },
+  beforeMount() {
+    initHidpiOnce();
   },
   mounted() {
     this.$trigger = useNativeEvent(this.$emit);
@@ -14882,7 +14884,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -14995,12 +14997,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15020,10 +15022,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });

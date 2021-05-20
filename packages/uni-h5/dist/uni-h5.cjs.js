@@ -1323,6 +1323,31 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
+let isHidpi = false;
+function initHidpi() {
+  if (isHidpi) {
+    return;
+  }
+  isHidpi = true;
+  const proto = CanvasRenderingContext2D.prototype;
+  proto.drawImageByCanvas = function(_super) {
+    return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+      srcx *= pixelRatio;
+      srcy *= pixelRatio;
+      srcw *= pixelRatio;
+      srch *= pixelRatio;
+      desx *= pixelRatio;
+      desy *= pixelRatio;
+      desw = isScale ? desw * pixelRatio : desw;
+      desh = isScale ? desh * pixelRatio : desh;
+      _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
+    };
+  }(proto.drawImage);
+}
+const initHidpiOnce = /* @__PURE__ */ uniShared.once(initHidpi);
 function $getRealPath(src) {
   return src ? getRealPath(src) : src;
 }
@@ -1421,6 +1446,9 @@ var _sfc_main$7 = {
     this._images = {};
     const id = useContextInfo();
     useSubscribe(this._handleSubscribe, id, true);
+  },
+  beforeMount() {
+    initHidpiOnce();
   },
   mounted() {
     this.$trigger = useNativeEvent(this.$emit);

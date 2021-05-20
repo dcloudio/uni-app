@@ -29,7 +29,7 @@ import {
   useSubscribe,
   withWebEvent,
 } from "@dcloudio/uni-components";
-import { getCurrentPageVm, getCurrentPageId, onEventPrevent } from "@dcloudio/uni-core";
+import { getCurrentPageId, onEventPrevent } from "@dcloudio/uni-core";
 import { saveImage, getSameOriginUrl, getRealPath } from "@dcloudio/uni-platform";
 import ResizeSensor from "../resize-sensor";
 import { useNativeEvent } from "../../helpers/useEvent";
@@ -37,8 +37,6 @@ import { pixelRatio, wrapper, initHidpi } from "../../helpers/hidpi";
 import { once } from "@dcloudio/uni-shared";
 
 const initHidpiOnce = /*#__PURE__*/ once(initHidpi)
-
-!__NODE_JS__ && initHidpiOnce();
 
 function $getRealPath(src) {
   return src ? getRealPath(src) : src;
@@ -159,6 +157,10 @@ export default {
     const id = useContextInfo();
     useSubscribe(this._handleSubscribe, id, true);
   },
+  beforeMount() {
+    // 将来放在onBeforeMount时，编译至cjs时，会自动摇树掉
+    initHidpiOnce();
+  },
   mounted() {
     this.$trigger = useNativeEvent(this.$emit);
 
@@ -220,7 +222,7 @@ export default {
               color = resolveColor(data[1]);
             } else if (data[0] === "linear") {
               const LinearGradient = c2d.createLinearGradient(...data[1]);
-              data[2].forEach(function (data2) {
+              data[2].forEach(function(data2) {
                 const offset = data2[0];
                 const color = resolveColor(data2[1]);
                 LinearGradient.addColorStop(offset, color);
@@ -231,7 +233,7 @@ export default {
               const y = data[1][1];
               const r = data[1][2];
               const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
-              data[2].forEach(function (data2) {
+              data[2].forEach(function(data2) {
                 const offset = data2[0];
                 const color = resolveColor(data2[1]);
                 LinearGradient.addColorStop(offset, color);
@@ -242,7 +244,7 @@ export default {
                 data[1],
                 actions.slice(index + 1),
                 callbackId,
-                function (image) {
+                function(image) {
                   if (image) {
                     c2d[method1] = c2d.createPattern(image, data[2]);
                   }
@@ -258,7 +260,7 @@ export default {
             c2d[method1] = data[0] / 255;
           } else if (method1 === "shadow") {
             var _ = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
-            data.forEach(function (color_, method_) {
+            data.forEach(function(color_, method_) {
               c2d[_[method_]] =
                 _[method_] === "shadowColor" ? resolveColor(color_) : color_;
             });
@@ -281,14 +283,14 @@ export default {
         } else if (method === "fillPath" || method === "strokePath") {
           method = method.replace(/Path/, "");
           c2d.beginPath();
-          data.forEach(function (data_) {
+          data.forEach(function(data_) {
             c2d[data_.method].apply(c2d, data_.data);
           });
           c2d[method]();
         } else if (method === "fillText") {
           c2d.fillText.apply(c2d, data);
         } else if (method === "drawImage") {
-          var A = (function () {
+          var A = (function() {
             var dataArray = [...data];
             var url = dataArray[0];
             var otherData = dataArray.slice(1);
@@ -298,7 +300,7 @@ export default {
                 url,
                 actions.slice(index + 1),
                 callbackId,
-                function (image) {
+                function(image) {
                   if (image) {
                     c2d.drawImage.apply(
                       c2d,
@@ -318,7 +320,7 @@ export default {
           }
         } else {
           if (method === "clip") {
-            data.forEach(function (data_) {
+            data.forEach(function(data_) {
               c2d[data_.method].apply(c2d, data_.data);
             });
             c2d.clip();
@@ -340,9 +342,9 @@ export default {
         );
       }
     },
-    preloadImage: function (actions) {
+    preloadImage: function(actions) {
       var self = this;
-      actions.forEach(function (action) {
+      actions.forEach(function(action) {
         var method = action.method;
         var data = action.data;
         var src = "";
@@ -363,7 +365,7 @@ export default {
          */
         function loadImage() {
           const image = (self._images[src] = new Image());
-          image.onload = function () {
+          image.onload = function() {
             image.ready = true;
           };
 
@@ -385,7 +387,7 @@ export default {
         }
       });
     },
-    checkImageLoaded: function (src, actions, callbackId, fn) {
+    checkImageLoaded: function(src, actions, callbackId, fn) {
       var self = this;
       var image = this._images[src];
       if (image.ready) {
@@ -394,13 +396,13 @@ export default {
       } else {
         this._actionsDefer.unshift([actions, true]);
         this.actionsWaiting = true;
-        image.onload = function () {
+        image.onload = function() {
           image.ready = true;
           fn(image);
           self.actionsWaiting = false;
           var actions = self._actionsDefer.slice(0);
           self._actionsDefer = [];
-          for (var action = actions.shift(); action; ) {
+          for (var action = actions.shift(); action;) {
             self.actionsChanged({
               actions: action[0],
               reserve: action[1],
