@@ -1149,8 +1149,9 @@ var animation = {
   }
 };
 const defineBuiltInComponent = (options) => {
-  if (!options.props || typeof options.props.animation === "undefined") {
-    typeof options.mixins !== "undefined" ? options.mixins.push(animation) : options.mixins = [animation];
+  const {props: props2, mixins} = options;
+  if (!props2 || !props2.animation) {
+    (mixins || (options.mixins = [])).push(animation);
   }
   return defineSystemComponent(options);
 };

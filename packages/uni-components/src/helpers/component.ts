@@ -9,11 +9,10 @@ export const defineBuiltInComponent: typeof defineComponent = (
   options: any
 ) => {
   // TODO 可能会补充特殊标记
-  if (!options.props || typeof options.props.animation === 'undefined') {
-    // 补充内置组件animation
-    typeof options.mixins !== 'undefined'
-      ? options.mixins.push(animation)
-      : (options.mixins = [animation])
+  const { props, mixins } = options
+  // 补充内置组件animation
+  if (!props || !props.animation) {
+    ;(mixins || (options.mixins = [])).push(animation)
   }
   return defineSystemComponent(options)
 }
