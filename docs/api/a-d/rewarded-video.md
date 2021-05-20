@@ -627,6 +627,8 @@ exports.main = async (event, context) => {
 ```js
 'use strict';
 
+const crypto = require('crypto');
+
 const db = uniCloud.database();
 
 const DEFAUTL_TIMEOUT = 30000;
