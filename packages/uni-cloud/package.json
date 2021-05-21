@@ -5,7 +5,8 @@
   "main": "dist/uni-cloud.cjs.js",
   "module": "dist/uni-cloud.es.js",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "sideEffects": false,
   "repository": {
