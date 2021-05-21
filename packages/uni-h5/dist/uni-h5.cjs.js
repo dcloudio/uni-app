@@ -883,7 +883,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$8 = {
+const _sfc_main$5 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1002,13 +1002,13 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$6 = {class: "uni-audio-default"};
+const _hoisted_1$4 = {class: "uni-audio-default"};
 const _hoisted_2$3 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1018,7 +1018,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    vue.createVNode("div", _hoisted_1$6, [
+    vue.createVNode("div", _hoisted_1$4, [
       vue.createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1038,7 +1038,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$5.render = _sfc_render$5;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -1270,7 +1270,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1310,15 +1310,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$p = {
+const props$r = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$p,
+  props: props$r,
   setup(props2, {
     slots
   }) {
@@ -1360,7 +1360,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1558,7 +1558,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$7 = {
+var _sfc_main$4 = {
   name: "Canvas",
   inheritAttrs: false,
   compatConfig: {
@@ -2020,20 +2020,20 @@ var _sfc_main$7 = {
     };
   }
 };
-const _hoisted_1$5 = {
+const _hoisted_1$3 = {
   class: "uni-canvas-canvas",
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
   return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, __spreadValues(__spreadValues({}, $setup.Attrs), $setup.ExcludeAttrs), vue.toHandlers($options._listeners)), [
-    vue.createVNode("canvas", _hoisted_1$5, null, 512),
+    vue.createVNode("canvas", _hoisted_1$3, null, 512),
     vue.createVNode("div", _hoisted_2$2, [
       vue.renderSlot(_ctx.$slots, "default")
     ]),
@@ -2043,17 +2043,17 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$4.render = _sfc_render$4;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
+const props$q = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$o,
+  props: props$q,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2105,7 +2105,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$n = {
+const props$p = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2127,9 +2127,9 @@ const props$n = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$n,
+  props: props$p,
   setup(props2, {
     slots
   }) {
@@ -2198,7 +2198,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$m = {
+const props$o = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2384,7 +2384,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id, true);
 }
-const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
+const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
   id: {
     type: String,
     default: ""
@@ -2410,9 +2410,9 @@ const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
     default: false
   }
 });
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$l,
+  props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2471,7 +2471,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2498,7 +2498,7 @@ var index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$k = {
+const props$m = {
   src: {
     type: String,
     default: ""
@@ -2535,9 +2535,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$k,
+  props: props$m,
   setup(props2, {
     emit: emit2
   }) {
@@ -2772,7 +2772,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$j = /* @__PURE__ */ Object.assign({}, {
+const props$l = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -2837,7 +2837,7 @@ const props$j = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$m);
+}, props$o);
 const emit = [
   "input",
   "focus",
@@ -3023,7 +3023,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
+const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3031,7 +3031,7 @@ const props$i = /* @__PURE__ */ Object.assign({}, props$j, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$i,
+  props: props$k,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3187,16 +3187,16 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$h = {
+const props$j = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$h,
+  props: props$j,
   setup(props2, {
     slots
   }) {
@@ -3782,7 +3782,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$g = {
+const props$i = {
   direction: {
     type: String,
     default: "none"
@@ -3836,9 +3836,9 @@ const props$g = {
     default: true
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$g,
+  props: props$i,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -4210,109 +4210,104 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const _sfc_main$6 = {
+const props$h = {
+  hoverClass: {
+    type: String,
+    default: "navigator-hover"
+  },
+  url: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: "navigate",
+    validator(value) {
+      return Boolean(~OPEN_TYPES.indexOf(value));
+    }
+  },
+  delta: {
+    type: Number,
+    default: 1
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 50
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 600
+  },
+  exists: {
+    type: String,
+    default: ""
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  }
+};
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    hoverClass: {
-      type: String,
-      default: "navigator-hover"
-    },
-    url: {
-      type: String,
-      default: ""
-    },
-    openType: {
-      type: String,
-      default: "navigate",
-      validator(value) {
-        return ~OPEN_TYPES.indexOf(value);
-      }
-    },
-    delta: {
-      type: Number,
-      default: 1
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 50
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 600
-    },
-    exists: {
-      type: String,
-      default: ""
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false
-    }
-  },
-  methods: {
-    _onClick($event) {
-      if (this.openType !== "navigateBack" && !this.url) {
+  props: props$h,
+  setup(props2, {
+    slots
+  }) {
+    const {
+      hovering,
+      binding
+    } = useHover(props2);
+    function onClick($event) {
+      if (props2.openType !== "navigateBack" && !props2.url) {
         console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
         return;
       }
-      switch (this.openType) {
+      switch (props2.openType) {
         case "navigate":
           uni.navigateTo({
-            url: this.url
+            url: props2.url
           });
           break;
         case "redirect":
           uni.redirectTo({
-            url: this.url,
-            exists: this.exists
+            url: props2.url,
+            exists: props2.exists
           });
           break;
         case "switchTab":
           uni.switchTab({
-            url: this.url
+            url: props2.url
           });
           break;
         case "reLaunch":
           uni.reLaunch({
-            url: this.url
+            url: props2.url
           });
           break;
         case "navigateBack":
           uni.navigateBack({
-            delta: this.delta
+            delta: props2.delta
           });
           break;
       }
     }
-  },
-  setup(props2) {
-    const {hovering, binding} = useHover(props2);
-    return {
-      hovering,
-      binding
+    return () => {
+      const {
+        hoverClass
+      } = props2;
+      const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
+      return vue.createVNode("uni-navigator", vue.mergeProps({
+        "class": hasHoverClass && hovering.value ? hoverClass : ""
+      }, hasHoverClass && binding, {
+        "onClick": onClick
+      }), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
-};
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
-  return $props.hoverClass && $props.hoverClass !== "none" ? (vue.openBlock(), vue.createBlock("uni-navigator", vue.mergeProps({
-    key: 0,
-    class: [$setup.hovering ? $props.hoverClass : ""]
-  }, $setup.binding, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    vue.renderSlot(_ctx.$slots, "default")
-  ], 16)) : (vue.openBlock(), vue.createBlock("uni-navigator", {
-    key: 1,
-    onClick: _cache[2] || (_cache[2] = (...args) => $options._onClick && $options._onClick(...args))
-  }, [
-    vue.renderSlot(_ctx.$slots, "default")
-  ]));
-}
-_sfc_main$6.render = _sfc_render$6;
-const props$f = {
+});
+const props$g = {
   value: {
     type: Array,
     default() {
@@ -4359,7 +4354,7 @@ function useState$1(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$f,
+  props: props$g,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -5204,7 +5199,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$e = {
+const props$f = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -5251,9 +5246,9 @@ const props$e = {
     }
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$e,
+  props: props$f,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -5324,15 +5319,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$d = {
+const props$e = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$d,
+  props: props$e,
   setup(props2, {
     emit: emit2,
     slots
@@ -5408,7 +5403,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$c = {
+const props$d = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5430,9 +5425,9 @@ const props$c = {
     default: ""
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$c,
+  props: props$d,
   setup(props2, {
     slots
   }) {
@@ -5716,7 +5711,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$5 = {
+const _sfc_main$3 = {
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -5748,15 +5743,15 @@ const _sfc_main$5 = {
     }
   }
 };
-const _hoisted_1$4 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$2 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$4
+    _hoisted_1$2
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$3.render = _sfc_render$3;
 const passiveOptions = uniShared.passive(true);
-const _sfc_main$4 = {
+const _sfc_main$2 = {
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -6148,7 +6143,7 @@ const _sfc_main$4 = {
     };
   }
 };
-const _hoisted_1$3 = {ref: "rootRef"};
+const _hoisted_1$1 = {ref: "rootRef"};
 const _hoisted_2$1 = {
   ref: "wrap",
   class: "uni-scroll-view"
@@ -6182,8 +6177,8 @@ const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
   style: {"color": "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$3, [
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$1, [
     vue.createVNode("div", _hoisted_2$1, [
       vue.createVNode("div", {
         ref: "main",
@@ -6230,8 +6225,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 512);
 }
-_sfc_main$4.render = _sfc_render$4;
-const props$b = {
+_sfc_main$2.render = _sfc_render$2;
+const props$c = {
   name: {
     type: String,
     default: ""
@@ -6285,9 +6280,9 @@ const props$b = {
     default: false
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$b,
+  props: props$c,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -6449,7 +6444,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$a = {
+const props$b = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -6830,9 +6825,9 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     onSwiperDotClick
   };
 }
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$a,
+  props: props$b,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -6927,15 +6922,15 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$9 = {
+const props$a = {
   itemId: {
     type: String,
     default: ""
   }
 };
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$9,
+  props: props$a,
   setup(props2, {
     slots
   }) {
@@ -6952,7 +6947,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$8 = {
+const props$9 = {
   name: {
     type: String,
     default: ""
@@ -6978,9 +6973,9 @@ const props$8 = {
     default: "#007aff"
   }
 };
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$8,
+  props: props$9,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -7068,7 +7063,7 @@ function normalizeText(text, {
   }
   return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7121,7 +7116,7 @@ var index$a = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$7 = /* @__PURE__ */ shared.extend({}, props$j, {
+const props$8 = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -7135,9 +7130,9 @@ const props$7 = /* @__PURE__ */ shared.extend({}, props$j, {
     default: ""
   }
 });
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$7,
+  props: props$8,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -7255,7 +7250,7 @@ var index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$8 = /* @__PURE__ */ defineBuiltInComponent({
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -7283,13 +7278,13 @@ function useSubscribe(callback, name, multiple) {
 }
 function useOn(name, callback) {
 }
-let index$7 = 0;
+let index$9 = 0;
 function useContextInfo() {
   const page = useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id = vm.id || `context${index$7++}`;
+  const id = vm.id || `context${index$9++}`;
   return `${page}.${type}.${id}`;
 }
 function getContextInfo(el) {
@@ -7658,7 +7653,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(base);
   }
 }
-var index$6 = {
+var index$8 = {
   install(app) {
     initApp$1(app);
     if (__UNI_FEATURE_PAGES__) {
@@ -8216,7 +8211,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   }, id, true);
 }
-const props$6 = {
+const props$7 = {
   id: {
     type: String,
     default: ""
@@ -8300,9 +8295,9 @@ const props$6 = {
     default: true
   }
 };
-var index$5 = /* @__PURE__ */ defineBuiltInComponent({
+var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$6,
+  props: props$7,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -8515,16 +8510,16 @@ var index$5 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$5 = {
+const props$6 = {
   src: {
     type: String,
     default: ""
   }
 };
-var index$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$5,
+  props: props$6,
   setup(props2, {
     attrs
   }) {
@@ -8574,7 +8569,7 @@ function useWebViewSize(rootRef, iframeRef) {
   };
   return _resize;
 }
-const props$4 = {
+const props$5 = {
   id: {
     type: [Number, String],
     default: ""
@@ -8638,7 +8633,7 @@ const props$4 = {
 };
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$4,
+  props: props$5,
   setup(props2) {
     const id = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
@@ -8836,7 +8831,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props$4 = {
   points: {
     type: Array,
     require: true
@@ -8882,7 +8877,7 @@ const props$3 = {
 };
 var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$3,
+  props: props$4,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let polyline;
@@ -8934,7 +8929,7 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$2 = {
+const props$3 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -8966,7 +8961,7 @@ const props$2 = {
 };
 var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$2,
+  props: props$3,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let circle;
@@ -9009,7 +9004,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$1 = {
+const props$2 = {
   id: {
     type: [Number, String],
     default: ""
@@ -9029,7 +9024,7 @@ const props$1 = {
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$1,
+  props: props$2,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let control;
@@ -9106,7 +9101,7 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props = {
+const props$1 = {
   id: {
     type: String,
     default: ""
@@ -9316,9 +9311,9 @@ function useMap(props2, rootRef, emit2) {
     mapRef
   };
 }
-var index$3 = /* @__PURE__ */ defineBuiltInComponent({
+var index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props,
+  props: props$1,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
   setup(props2, {
     emit: emit2,
@@ -9343,61 +9338,51 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _sfc_main$3 = {
+const props = {
+  scrollTop: {
+    type: [String, Number],
+    default: 0
+  }
+};
+var index$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    scrollTop: {
-      type: [String, Number],
-      default: 0
-    }
-  },
-  watch: {
-    scrollTop(val) {
-      this.setScrollTop(val);
-    }
-  },
-  mounted() {
-    this.setScrollTop(this.scrollTop);
-  },
-  methods: {
-    setScrollTop(val) {
-      var content = this.content;
-      if (getComputedStyle(content).overflowY === "scroll") {
-        content.scrollTop = this._upx2pxNum(val);
+  props,
+  setup(props2, {
+    slots
+  }) {
+    const content = vue.ref(null);
+    vue.watch(() => props2.scrollTop, (val) => {
+      setScrollTop(val);
+    });
+    function setScrollTop(val) {
+      let _content = content.value;
+      if (getComputedStyle(_content).overflowY === "scroll") {
+        _content.scrollTop = _upx2pxNum(val);
       }
-    },
-    _upx2pxNum(val) {
-      if (/\d+[ur]px$/i.test(val)) {
-        val.replace(/\d+[ur]px$/i, (text) => {
-          return uni.upx2px(parseFloat(text));
+    }
+    function _upx2pxNum(val) {
+      let _val = String(val);
+      if (/\d+[ur]px$/i.test(_val)) {
+        _val.replace(/\d+[ur]px$/i, (text) => {
+          return String(uni.upx2px(parseFloat(text)));
         });
       }
-      return parseFloat(val) || 0;
+      return parseFloat(_val) || 0;
     }
-  },
-  setup() {
-    const content = vue.ref(null);
-    return {
-      content
+    return () => {
+      return vue.createVNode("uni-cover-view", {
+        "scroll-top": props2.scrollTop
+      }, [vue.createVNode("div", {
+        "ref": content,
+        "class": "uni-cover-view"
+      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
     };
   }
-};
-const _hoisted_1$2 = {
-  ref: "content",
-  class: "uni-cover-view"
-};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-cover-view", {"scroll-top": $props.scrollTop}, [
-    vue.createVNode("div", _hoisted_1$2, [
-      vue.renderSlot(_ctx.$slots, "default")
-    ], 512)
-  ], 8, ["scroll-top"]);
-}
-_sfc_main$3.render = _sfc_render$3;
-const _sfc_main$2 = {
+});
+var index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -9408,42 +9393,35 @@ const _sfc_main$2 = {
       default: ""
     }
   },
-  methods: {
-    getRealPath,
-    _load($event) {
-      this.$trigger("load", $event);
-    },
-    _error($event) {
-      this.$trigger("error", $event);
-    }
-  },
-  mounted() {
-    this.$trigger = useCustomEvent({value: this.root}, this.$emit);
-  },
-  setup() {
+  emits: ["load", "error"],
+  setup(props2, {
+    emit: emit2
+  }) {
     const root = vue.ref(null);
-    return {
-      root
+    const trigger = useCustomEvent(root, emit2);
+    function load($event) {
+      trigger("load", $event);
+    }
+    function error($event) {
+      trigger("error", $event);
+    }
+    return () => {
+      const {
+        src
+      } = props2;
+      return vue.createVNode("uni-cover-image", {
+        "ref": root,
+        "src": src
+      }, [vue.createVNode("div", {
+        "class": "uni-cover-image"
+      }, [src ? vue.createVNode("img", {
+        "src": getRealPath(src),
+        "onLoad": load,
+        "onError": error
+      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
     };
   }
-};
-const _hoisted_1$1 = {class: "uni-cover-image"};
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-cover-image", {
-    ref: "root",
-    src: $props.src
-  }, [
-    vue.createVNode("div", _hoisted_1$1, [
-      $props.src ? (vue.openBlock(), vue.createBlock("img", {
-        key: 0,
-        src: $options.getRealPath($props.src),
-        onLoad: _cache[1] || (_cache[1] = (...args) => $options._load && $options._load(...args)),
-        onError: _cache[2] || (_cache[2] = (...args) => $options._error && $options._error(...args))
-      }, null, 40, ["src"])) : vue.createCommentVNode("", true)
-    ])
-  ], 8, ["src"]);
-}
-_sfc_main$2.render = _sfc_render$2;
+});
 function useKeyboard() {
   const key = vue.ref("");
   const disable = vue.ref(false);
@@ -11356,48 +11334,48 @@ var index = /* @__PURE__ */ defineSystemComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$8;
-exports.Button = index$p;
-exports.Canvas = _sfc_main$7;
-exports.Checkbox = index$n;
-exports.CheckboxGroup = index$o;
-exports.CoverImage = _sfc_main$2;
-exports.CoverView = _sfc_main$3;
-exports.Editor = index$m;
-exports.Form = index$r;
+exports.Audio = _sfc_main$5;
+exports.Button = index$s;
+exports.Canvas = _sfc_main$4;
+exports.Checkbox = index$q;
+exports.CheckboxGroup = index$r;
+exports.CoverImage = index$3;
+exports.CoverView = index$4;
+exports.Editor = index$p;
+exports.Form = index$u;
 exports.Friction = Friction;
-exports.Icon = index$l;
-exports.Image = index$k;
+exports.Icon = index$o;
+exports.Image = index$n;
 exports.Input = Input;
-exports.Label = index$q;
+exports.Label = index$t;
 exports.LayoutComponent = LayoutComponent;
-exports.Map = index$3;
-exports.MovableArea = index$j;
-exports.MovableView = index$i;
-exports.Navigator = _sfc_main$6;
+exports.Map = index$5;
+exports.MovableArea = index$m;
+exports.MovableView = index$l;
+exports.Navigator = index$k;
 exports.PageComponent = index$2;
 exports.Picker = _sfc_main$1;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$h;
-exports.Radio = index$f;
-exports.RadioGroup = index$g;
+exports.Progress = index$j;
+exports.Radio = index$h;
+exports.RadioGroup = index$i;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = _sfc_main$5;
-exports.ScrollView = _sfc_main$4;
+exports.RichText = _sfc_main$3;
+exports.ScrollView = _sfc_main$2;
 exports.Scroller = Scroller;
-exports.Slider = index$e;
+exports.Slider = index$g;
 exports.Spring = Spring;
-exports.Swiper = index$d;
-exports.SwiperItem = index$c;
-exports.Switch = index$b;
-exports.Text = index$a;
-exports.Textarea = index$9;
+exports.Swiper = index$f;
+exports.SwiperItem = index$e;
+exports.Switch = index$d;
+exports.Text = index$c;
+exports.Textarea = index$b;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$5;
-exports.View = index$8;
-exports.WebView = index$4;
+exports.Video = index$7;
+exports.View = index$a;
+exports.WebView = index$6;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.defineBuiltInComponent = defineBuiltInComponent;
@@ -11412,7 +11390,7 @@ exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
 exports.initScrollBounce = initScrollBounce;
-exports.plugin = index$6;
+exports.plugin = index$8;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;
