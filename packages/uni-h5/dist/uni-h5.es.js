@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -993,6 +993,9 @@ function querySelectorAll(vm, selector) {
 function createSelectorQuery$1() {
   return uni.createSelectorQuery().in(this);
 }
+function createMediaQueryObserver$1() {
+  return uni.createMediaQueryObserver(this);
+}
 function createIntersectionObserver$1(options) {
   return uni.createIntersectionObserver(this, options);
 }
@@ -1006,6 +1009,7 @@ var wxInstance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   createSelectorQuery: createSelectorQuery$1,
+  createMediaQueryObserver: createMediaQueryObserver$1,
   createIntersectionObserver: createIntersectionObserver$1,
   selectComponent,
   selectAllComponents
@@ -1190,7 +1194,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -9708,6 +9712,44 @@ function removeIntersectionObserver({reqId, component}, _pageId) {
     delete $el.__io[reqId];
   }
 }
+let mediaQueryObserver;
+let listener$2;
+function handleMediaQueryStr($props) {
+  const mediaQueryArr = [];
+  const propsMenu = [
+    "width",
+    "minWidth",
+    "maxWidth",
+    "height",
+    "minHeight",
+    "maxHeight",
+    "orientation"
+  ];
+  for (const item of propsMenu) {
+    if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
+    }
+    if (item === "orientation" && $props[item]) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
+    }
+  }
+  const mediaQueryStr = mediaQueryArr.join(" and ");
+  return mediaQueryStr;
+}
+function humpToLine(name) {
+  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+function addMediaQueryObserver({reqId, component, options, callback}, _pageId) {
+  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
+  listener$2 = (observer) => callback(observer.matches);
+  listener$2(mediaQueryObserver);
+  mediaQueryObserver.addListener(listener$2);
+}
+function removeMediaQueryObserver({reqId, component}, _pageId) {
+  if (mediaQueryObserver) {
+    mediaQueryObserver.removeListener(listener$2);
+  }
+}
 function saveImage(base64, dirname, callback) {
   callback(null, base64);
 }
@@ -11021,7 +11063,7 @@ const defaultOptions = {
   observeAll: false
 };
 const MARGINS = ["top", "right", "bottom", "left"];
-let reqComponentObserverId = 1;
+let reqComponentObserverId$1 = 1;
 function normalizeRootMargin(margins = {}) {
   return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
 }
@@ -11046,7 +11088,7 @@ class ServiceIntersectionObserver {
       return;
     }
     this._options.selector = selector;
-    this._reqId = reqComponentObserverId++;
+    this._reqId = reqComponentObserverId$1++;
     addIntersectionObserver({
       reqId: this._reqId,
       component: this._component,
@@ -11067,6 +11109,40 @@ const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersec
     return new ServiceIntersectionObserver(context, options);
   }
   return new ServiceIntersectionObserver(getCurrentPageVm(), options);
+});
+let reqComponentObserverId = 1;
+class ServiceMediaQueryObserver {
+  constructor(component) {
+    this._pageId = component.$page && component.$page.id;
+    this._component = component;
+  }
+  observe(options, callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._reqId = reqComponentObserverId++;
+    addMediaQueryObserver({
+      reqId: this._reqId,
+      component: this._component,
+      options,
+      callback
+    }, this._pageId);
+  }
+  disconnect() {
+    this._reqId && removeMediaQueryObserver({
+      reqId: this._reqId,
+      component: this._component
+    }, this._pageId);
+  }
+}
+const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQueryObserver", (context) => {
+  if (context && !getPageIdByVm(context)) {
+    context = null;
+  }
+  if (context) {
+    return new ServiceMediaQueryObserver(context);
+  }
+  return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
 let eventReady = false;
 let index$9 = 0;
@@ -14934,7 +15010,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -15047,12 +15123,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15072,10 +15148,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -17747,6 +17823,7 @@ var api = /* @__PURE__ */ Object.freeze({
   arrayBufferToBase64,
   base64ToArrayBuffer,
   createIntersectionObserver,
+  createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
   createMapContext,
@@ -20186,4 +20263,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$5 as Audio, index$p as Button, _sfc_main$4 as Canvas, index$n as Checkbox, index$o as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$m as Editor, index$r as Form, Friction, index$l as Icon, index$k as Image, Input, index$q as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$j as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$i as Progress, index$g as Radio, index$h as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$5 as Audio, index$p as Button, _sfc_main$4 as Canvas, index$n as Checkbox, index$o as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$m as Editor, index$r as Form, Friction, index$l as Icon, index$k as Image, Input, index$q as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$j as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$i as Progress, index$g as Radio, index$h as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

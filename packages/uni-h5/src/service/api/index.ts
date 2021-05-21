@@ -69,6 +69,7 @@ export {
   arrayBufferToBase64,
   base64ToArrayBuffer,
   createIntersectionObserver,
+  createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
   createMapContext,
