@@ -607,6 +607,49 @@ db.collection('order')
 db.collection('order,book').get()
 ```
 
+#### 设置字段别名@lookup-field-alias
+
+联表查询时也可以在field内对字段进行重命名，写法和简单查询时别名写法类似，`原字段名 as 新字段名`即可。[简单查询时的字段别名](uniCloud/clientdb.md?id=alias)
+
+仍以上述order、book两个表为例，以下查询将联表查询时order表的quantity字段重命名为order_quantity，将book表的title重命名为book_title、author重命名为book_author
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id{title as book_title,author as book_author},quantity as order_quantity')
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+查询结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 555
+	}, {
+		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 333
+	}]
+}
+```
 
 #### 手动指定使用的foreignKey@lookup-foreign-key
 
@@ -1093,6 +1136,26 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
   .get()
 ```
 
+**不使用`{}`过滤副表字段**
+
+> 此写法于2021年4月28日起支持
+
+field方法内可以不使用`{}`进行副表字段过滤，以上面示例为例可以写为
+
+```js
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id.title,book_id.author,quantity as order_quantity') // book_id.title、book_id.author为副表字段，使用别名时效果和上一个示例不同，请见下方说明
+  .orderBy('order_quantity desc') // 按照order_quantity降序排列
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
 ### 字段别名as@alias
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
@@ -1100,6 +1163,71 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
 用法形如：`author as book_author`，意思是将数据库的author字段重命名为book_author。
 
 仍以上面的order表和book表为例
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('book')
+  .where('title == "三国演义"')
+  .field('title as book_title,author as book_author')
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+上述查询返回结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+      "_id": "3",
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}]
+}
+```
+
+> _id是比较特殊的字段，如果对_id设置别名会同时返回_id和设置的别名字段
+
+例：
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('book')
+  .where('title == "三国演义"')
+  .field('_id as book_id,title as book_title,author as book_author')
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+上述查询返回结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+      "_id": "3",
+      "book_id": "3",
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}]
+}
+```
+
+#### 联表查询时字段别名
+
+联表查询时字段别名写法和简单查询类似
 
 ```js
 // 客户端联表查询
@@ -1140,25 +1268,6 @@ db.collection('order,book')
 }
 ```
 
-**不使用`{}`过滤副表字段**
-
-> 此写法于2021年4月28日起支持
-
-field方法可以不使用`{}`进行副表字段过滤，以上面示例为例可以写为
-
-```js
-const db = uniCloud.database()
-db.collection('order,book')
-  .where('book_id.title == "三国演义"')
-  .field('book_id.title,book_id.author,quantity as order_quantity') // book_id.title、book_id.author为副表字段，使用别名时效果和上一个示例不同，请见下方说明
-  .orderBy('order_quantity desc') // 按照order_quantity降序排列
-  .get()
-  .then(res => {
-    console.log(res);
-  }).catch(err => {
-    console.error(err)
-  })
-```
 
 副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
 
@@ -1199,7 +1308,7 @@ db.collection('order,book')
 **注意**
 
 - as后面的别名，不可以和表schema中已经存在的字段重名
-- 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
+- mongoDB查询指令中，上一阶段处理完毕将结果输出到下一阶段。在上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
 - 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
 
 ### 各种字段运算方法@operator
