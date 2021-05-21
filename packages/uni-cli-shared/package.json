@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0",
+  "version": "3.0.0-alpha-3000020210521005",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,6 +29,6 @@
     "xregexp": "3.1.0"
   },
   "peerDependencies": {
-    "@dcloudio/uni-shared": "^3.0.0"
+    "@dcloudio/uni-shared": "^3.0.0-alpha-3000020210521005"
   }
 }
