@@ -300,27 +300,27 @@ function initLongPress() {
   window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
   window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
 }
-var attrs = ["top", "left", "right", "bottom"];
-var inited$1;
-var elementComputedStyle = {};
-var support;
-function getSupport() {
+var attrs$1 = ["top", "left", "right", "bottom"];
+var inited$2;
+var elementComputedStyle$1 = {};
+var support$1;
+function getSupport$1() {
   if (!("CSS" in window) || typeof CSS.supports != "function") {
-    support = "";
+    support$1 = "";
   } else if (CSS.supports("top: env(safe-area-inset-top)")) {
-    support = "env";
+    support$1 = "env";
   } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
-    support = "constant";
+    support$1 = "constant";
   } else {
-    support = "";
+    support$1 = "";
   }
-  return support;
+  return support$1;
 }
-function init() {
-  support = typeof support === "string" ? support : getSupport();
-  if (!support) {
-    attrs.forEach(function(attr2) {
-      elementComputedStyle[attr2] = 0;
+function init$1() {
+  support$1 = typeof support$1 === "string" ? support$1 : getSupport$1();
+  if (!support$1) {
+    attrs$1.forEach(function(attr2) {
+      elementComputedStyle$1[attr2] = 0;
     });
     return;
   }
@@ -364,7 +364,7 @@ function init() {
       height: "200px",
       boxSizing: "border-box",
       overflow: "hidden",
-      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
+      paddingBottom: support$1 + "(safe-area-inset-" + attr2 + ")"
     };
     setStyle(a1, aStyle);
     setStyle(a2, aStyle);
@@ -395,13 +395,13 @@ function init() {
         a1.scrollTop = a2.scrollTop = MAX;
         a1LastScrollTop = a1.scrollTop;
         a2LastScrollTop = a2.scrollTop;
-        attrChange(attr2);
+        attrChange$1(attr2);
       }
       a1.addEventListener("scroll", onScroll, passiveEvents);
       a2.addEventListener("scroll", onScroll, passiveEvents);
     });
     var computedStyle = getComputedStyle(a1);
-    Object.defineProperty(elementComputedStyle, attr2, {
+    Object.defineProperty(elementComputedStyle$1, attr2, {
       configurable: true,
       get: function() {
         return parseFloat(computedStyle.paddingBottom);
@@ -419,73 +419,73 @@ function init() {
     overflow: "hidden",
     visibility: "hidden"
   });
-  attrs.forEach(function(key) {
+  attrs$1.forEach(function(key) {
     addChild(parentDiv, key);
   });
   document.body.appendChild(parentDiv);
   parentReady();
-  inited$1 = true;
+  inited$2 = true;
 }
-function getAttr(attr2) {
-  if (!inited$1) {
-    init();
+function getAttr$1(attr2) {
+  if (!inited$2) {
+    init$1();
   }
-  return elementComputedStyle[attr2];
+  return elementComputedStyle$1[attr2];
 }
-var changeAttrs = [];
-function attrChange(attr2) {
-  if (!changeAttrs.length) {
+var changeAttrs$1 = [];
+function attrChange$1(attr2) {
+  if (!changeAttrs$1.length) {
     setTimeout(function() {
       var style = {};
-      changeAttrs.forEach(function(attr3) {
-        style[attr3] = elementComputedStyle[attr3];
+      changeAttrs$1.forEach(function(attr3) {
+        style[attr3] = elementComputedStyle$1[attr3];
       });
-      changeAttrs.length = 0;
-      callbacks$3.forEach(function(callback) {
+      changeAttrs$1.length = 0;
+      callbacks$4.forEach(function(callback) {
         callback(style);
       });
     }, 0);
   }
-  changeAttrs.push(attr2);
+  changeAttrs$1.push(attr2);
 }
-var callbacks$3 = [];
-function onChange(callback) {
-  if (!getSupport()) {
+var callbacks$4 = [];
+function onChange$1(callback) {
+  if (!getSupport$1()) {
     return;
   }
-  if (!inited$1) {
-    init();
+  if (!inited$2) {
+    init$1();
   }
   if (typeof callback === "function") {
-    callbacks$3.push(callback);
+    callbacks$4.push(callback);
   }
 }
-function offChange(callback) {
-  var index2 = callbacks$3.indexOf(callback);
+function offChange$1(callback) {
+  var index2 = callbacks$4.indexOf(callback);
   if (index2 >= 0) {
-    callbacks$3.splice(index2, 1);
+    callbacks$4.splice(index2, 1);
   }
 }
-var safeAreaInsets = {
+var safeAreaInsets$1 = {
   get support() {
-    return (typeof support === "string" ? support : getSupport()).length != 0;
+    return (typeof support$1 === "string" ? support$1 : getSupport$1()).length != 0;
   },
   get top() {
-    return getAttr("top");
+    return getAttr$1("top");
   },
   get left() {
-    return getAttr("left");
+    return getAttr$1("left");
   },
   get right() {
-    return getAttr("right");
+    return getAttr$1("right");
   },
   get bottom() {
-    return getAttr("bottom");
+    return getAttr$1("bottom");
   },
-  onChange,
-  offChange
+  onChange: onChange$1,
+  offChange: offChange$1
 };
-var out = safeAreaInsets;
+var out$1 = safeAreaInsets$1;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + out$1.top : 0,
+    bottom: bottom ? bottom + out$1.bottom : 0,
+    left: left ? left + out$1.left : 0,
+    right: right ? right + out$1.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -679,15 +679,15 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-const callbacks$2 = {};
+const callbacks$3 = {};
 function createCallbacks(namespace) {
-  let scopedCallbacks = callbacks$2[namespace];
+  let scopedCallbacks = callbacks$3[namespace];
   if (!scopedCallbacks) {
     scopedCallbacks = {
       id: 1,
       callbacks: Object.create(null)
     };
-    callbacks$2[namespace] = scopedCallbacks;
+    callbacks$3[namespace] = scopedCallbacks;
   }
   return {
     get(id2) {
@@ -1131,6 +1131,192 @@ function initApp$1(app) {
     globalProperties.$applyOptions = applyOptions;
   }
 }
+var attrs = ["top", "left", "right", "bottom"];
+var inited$1;
+var elementComputedStyle = {};
+var support;
+function getSupport() {
+  if (!("CSS" in window) || typeof CSS.supports != "function") {
+    support = "";
+  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
+    support = "env";
+  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
+    support = "constant";
+  } else {
+    support = "";
+  }
+  return support;
+}
+function init() {
+  support = typeof support === "string" ? support : getSupport();
+  if (!support) {
+    attrs.forEach(function(attr2) {
+      elementComputedStyle[attr2] = 0;
+    });
+    return;
+  }
+  function setStyle(el, style) {
+    var elStyle = el.style;
+    Object.keys(style).forEach(function(key) {
+      var val = style[key];
+      elStyle[key] = val;
+    });
+  }
+  var cbs = [];
+  function parentReady(callback) {
+    if (callback) {
+      cbs.push(callback);
+    } else {
+      cbs.forEach(function(cb) {
+        cb();
+      });
+    }
+  }
+  var passiveEvents = false;
+  try {
+    var opts = Object.defineProperty({}, "passive", {
+      get: function() {
+        passiveEvents = {passive: true};
+      }
+    });
+    window.addEventListener("test", null, opts);
+  } catch (e2) {
+  }
+  function addChild(parent, attr2) {
+    var a1 = document.createElement("div");
+    var a2 = document.createElement("div");
+    var a1Children = document.createElement("div");
+    var a2Children = document.createElement("div");
+    var W = 100;
+    var MAX = 1e4;
+    var aStyle = {
+      position: "absolute",
+      width: W + "px",
+      height: "200px",
+      boxSizing: "border-box",
+      overflow: "hidden",
+      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
+    };
+    setStyle(a1, aStyle);
+    setStyle(a2, aStyle);
+    setStyle(a1Children, {
+      transition: "0s",
+      animation: "none",
+      width: "400px",
+      height: "400px"
+    });
+    setStyle(a2Children, {
+      transition: "0s",
+      animation: "none",
+      width: "250%",
+      height: "250%"
+    });
+    a1.appendChild(a1Children);
+    a2.appendChild(a2Children);
+    parent.appendChild(a1);
+    parent.appendChild(a2);
+    parentReady(function() {
+      a1.scrollTop = a2.scrollTop = MAX;
+      var a1LastScrollTop = a1.scrollTop;
+      var a2LastScrollTop = a2.scrollTop;
+      function onScroll() {
+        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
+          return;
+        }
+        a1.scrollTop = a2.scrollTop = MAX;
+        a1LastScrollTop = a1.scrollTop;
+        a2LastScrollTop = a2.scrollTop;
+        attrChange(attr2);
+      }
+      a1.addEventListener("scroll", onScroll, passiveEvents);
+      a2.addEventListener("scroll", onScroll, passiveEvents);
+    });
+    var computedStyle = getComputedStyle(a1);
+    Object.defineProperty(elementComputedStyle, attr2, {
+      configurable: true,
+      get: function() {
+        return parseFloat(computedStyle.paddingBottom);
+      }
+    });
+  }
+  var parentDiv = document.createElement("div");
+  setStyle(parentDiv, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: "0",
+    height: "0",
+    zIndex: "-1",
+    overflow: "hidden",
+    visibility: "hidden"
+  });
+  attrs.forEach(function(key) {
+    addChild(parentDiv, key);
+  });
+  document.body.appendChild(parentDiv);
+  parentReady();
+  inited$1 = true;
+}
+function getAttr(attr2) {
+  if (!inited$1) {
+    init();
+  }
+  return elementComputedStyle[attr2];
+}
+var changeAttrs = [];
+function attrChange(attr2) {
+  if (!changeAttrs.length) {
+    setTimeout(function() {
+      var style = {};
+      changeAttrs.forEach(function(attr3) {
+        style[attr3] = elementComputedStyle[attr3];
+      });
+      changeAttrs.length = 0;
+      callbacks$2.forEach(function(callback) {
+        callback(style);
+      });
+    }, 0);
+  }
+  changeAttrs.push(attr2);
+}
+var callbacks$2 = [];
+function onChange(callback) {
+  if (!getSupport()) {
+    return;
+  }
+  if (!inited$1) {
+    init();
+  }
+  if (typeof callback === "function") {
+    callbacks$2.push(callback);
+  }
+}
+function offChange(callback) {
+  var index2 = callbacks$2.indexOf(callback);
+  if (index2 >= 0) {
+    callbacks$2.splice(index2, 1);
+  }
+}
+var safeAreaInsets = {
+  get support() {
+    return (typeof support === "string" ? support : getSupport()).length != 0;
+  },
+  get top() {
+    return getAttr("top");
+  },
+  get left() {
+    return getAttr("left");
+  },
+  get right() {
+    return getAttr("right");
+  },
+  get bottom() {
+    return getAttr("bottom");
+  },
+  onChange,
+  offChange
+};
+var out = safeAreaInsets;
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
   return inject(pageMetaKey);
