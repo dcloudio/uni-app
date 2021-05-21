@@ -45,7 +45,7 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
     }
   })
   if (matched.length) {
-    return matched
+    return matched.sort((a, b) => priority[b] - priority[a])
   } else {
     console.log()
     console.error(
