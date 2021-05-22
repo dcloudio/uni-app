@@ -1,0 +1,75 @@
+import { ComponentPublicInstance } from 'vue'
+import { isFunction } from '@vue/shared'
+import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
+import { defineSyncApi } from '../../helpers/api'
+import {
+  addMediaQueryObserver,
+  removeMediaQueryObserver,
+} from '@dcloudio/uni-platform'
+
+export interface AddMediaQueryObserverArgs {
+  reqId: number
+  component: ComponentPublicInstance
+  options: UniApp.DescriptorOptions
+  callback: WechatMiniprogram.MediaQueryObserverObserveCallback
+}
+
+export interface RemoveMediaQueryObserverArgs {
+  reqId: number
+  component: ComponentPublicInstance
+}
+
+let reqComponentObserverId = 1
+
+class ServiceMediaQueryObserver {
+  private _reqId?: number
+  private _pageId: number
+  private _component: ComponentPublicInstance
+
+  constructor(component: ComponentPublicInstance) {
+    this._pageId = component.$page && component.$page.id
+    this._component = component
+  }
+
+  observe(
+    options: UniApp.DescriptorOptions,
+    callback: WechatMiniprogram.MediaQueryObserverObserveCallback
+  ) {
+    if (!isFunction(callback)) {
+      return
+    }
+    this._reqId = reqComponentObserverId++
+    addMediaQueryObserver(
+      {
+        reqId: this._reqId,
+        component: this._component,
+        options,
+        callback,
+      },
+      this._pageId
+    )
+  }
+
+  disconnect() {
+    this._reqId &&
+      removeMediaQueryObserver(
+        {
+          reqId: this._reqId,
+          component: this._component,
+        },
+        this._pageId
+      )
+  }
+}
+
+export const createMediaQueryObserver = defineSyncApi<
+  typeof uni.createMediaQueryObserver
+>('createMediaQueryObserver', (context?: any) => {
+  if (context && !getPageIdByVm(context)) {
+    context = null
+  }
+  if (context) {
+    return new ServiceMediaQueryObserver(context)
+  }
+  return new ServiceMediaQueryObserver(getCurrentPageVm()!)
+})

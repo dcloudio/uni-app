@@ -993,6 +993,9 @@ function querySelectorAll(vm, selector) {
 function createSelectorQuery$1() {
   return uni.createSelectorQuery().in(this);
 }
+function createMediaQueryObserver$1() {
+  return uni.createMediaQueryObserver(this);
+}
 function createIntersectionObserver$1(options) {
   return uni.createIntersectionObserver(this, options);
 }
@@ -1006,6 +1009,7 @@ var wxInstance = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   createSelectorQuery: createSelectorQuery$1,
+  createMediaQueryObserver: createMediaQueryObserver$1,
   createIntersectionObserver: createIntersectionObserver$1,
   selectComponent,
   selectAllComponents
@@ -2010,7 +2014,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$8 = {
+const _sfc_main$5 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -2129,13 +2133,13 @@ const _sfc_main$8 = {
     }
   }
 };
-const _hoisted_1$6 = {class: "uni-audio-default"};
+const _hoisted_1$4 = {class: "uni-audio-default"};
 const _hoisted_2$3 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -2145,7 +2149,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$6, [
+    createVNode("div", _hoisted_1$4, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -2165,7 +2169,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$8.render = _sfc_render$8;
+_sfc_main$5.render = _sfc_render$5;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -2397,7 +2401,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -2437,15 +2441,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$w = {
+const props$y = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$w,
+  props: props$y,
   setup(props2, {
     slots
   }) {
@@ -2541,7 +2545,7 @@ function _removeListeners(id2, listeners, watch2) {
     }
   });
 }
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -2866,7 +2870,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$7 = {
+var _sfc_main$4 = {
   name: "Canvas",
   inheritAttrs: false,
   compatConfig: {
@@ -3328,20 +3332,20 @@ var _sfc_main$7 = {
     };
   }
 };
-const _hoisted_1$5 = {
+const _hoisted_1$3 = {
   class: "uni-canvas-canvas",
   ref: "canvas",
   width: "300",
   height: "150"
 };
 const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ResizeSensor = resolveComponent("ResizeSensor");
   return openBlock(), createBlock("uni-canvas", mergeProps({
     "canvas-id": $props.canvasId,
     "disable-scroll": $props.disableScroll
   }, {...$setup.Attrs, ...$setup.ExcludeAttrs}, toHandlers($options._listeners)), [
-    createVNode("canvas", _hoisted_1$5, null, 512),
+    createVNode("canvas", _hoisted_1$3, null, 512),
     createVNode("div", _hoisted_2$2, [
       renderSlot(_ctx.$slots, "default")
     ]),
@@ -3351,17 +3355,17 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["onResize"])
   ], 16, ["canvas-id", "disable-scroll"]);
 }
-_sfc_main$7.render = _sfc_render$7;
+_sfc_main$4.render = _sfc_render$4;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$v = {
+const props$x = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$v,
+  props: props$x,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -3413,7 +3417,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$u = {
+const props$w = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3435,9 +3439,9 @@ const props$u = {
     default: ""
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$u,
+  props: props$w,
   setup(props2, {
     slots
   }) {
@@ -3516,7 +3520,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$t = {
+const props$v = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -4266,7 +4270,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
+const props$u = /* @__PURE__ */ Object.assign({}, props$v, {
   id: {
     type: String,
     default: ""
@@ -4292,9 +4296,9 @@ const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
     default: false
   }
 });
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$s,
+  props: props$u,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -4354,7 +4358,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4381,7 +4385,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$r = {
+const props$t = {
   src: {
     type: String,
     default: ""
@@ -4418,9 +4422,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$r,
+  props: props$t,
   setup(props2, {
     emit: emit2
   }) {
@@ -4722,7 +4726,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$q = /* @__PURE__ */ Object.assign({}, {
+const props$s = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -4787,7 +4791,7 @@ const props$q = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$t);
+}, props$v);
 const emit = [
   "input",
   "focus",
@@ -4982,7 +4986,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
+const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -4990,7 +4994,7 @@ const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$p,
+  props: props$r,
   emit: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -5146,7 +5150,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$o = {
+const props$q = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -5155,7 +5159,7 @@ const props$o = {
 var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$o,
+  props: props$q,
   setup(props2, {
     slots
   }) {
@@ -5756,7 +5760,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$n = {
+const props$p = {
   direction: {
     type: String,
     default: "none"
@@ -5812,7 +5816,7 @@ const props$n = {
 };
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$n,
+  props: props$p,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -6395,109 +6399,104 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const _sfc_main$6 = {
+const props$o = {
+  hoverClass: {
+    type: String,
+    default: "navigator-hover"
+  },
+  url: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: "navigate",
+    validator(value) {
+      return Boolean(~OPEN_TYPES.indexOf(value));
+    }
+  },
+  delta: {
+    type: Number,
+    default: 1
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 50
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 600
+  },
+  exists: {
+    type: String,
+    default: ""
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  }
+};
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    hoverClass: {
-      type: String,
-      default: "navigator-hover"
-    },
-    url: {
-      type: String,
-      default: ""
-    },
-    openType: {
-      type: String,
-      default: "navigate",
-      validator(value) {
-        return ~OPEN_TYPES.indexOf(value);
-      }
-    },
-    delta: {
-      type: Number,
-      default: 1
-    },
-    hoverStartTime: {
-      type: [Number, String],
-      default: 50
-    },
-    hoverStayTime: {
-      type: [Number, String],
-      default: 600
-    },
-    exists: {
-      type: String,
-      default: ""
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      default: false
-    }
-  },
-  methods: {
-    _onClick($event) {
-      if (this.openType !== "navigateBack" && !this.url) {
+  props: props$o,
+  setup(props2, {
+    slots
+  }) {
+    const {
+      hovering,
+      binding
+    } = useHover(props2);
+    function onClick($event) {
+      if (props2.openType !== "navigateBack" && !props2.url) {
         console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
         return;
       }
-      switch (this.openType) {
+      switch (props2.openType) {
         case "navigate":
           uni.navigateTo({
-            url: this.url
+            url: props2.url
           });
           break;
         case "redirect":
           uni.redirectTo({
-            url: this.url,
-            exists: this.exists
+            url: props2.url,
+            exists: props2.exists
           });
           break;
         case "switchTab":
           uni.switchTab({
-            url: this.url
+            url: props2.url
           });
           break;
         case "reLaunch":
           uni.reLaunch({
-            url: this.url
+            url: props2.url
           });
           break;
         case "navigateBack":
           uni.navigateBack({
-            delta: this.delta
+            delta: props2.delta
           });
           break;
       }
     }
-  },
-  setup(props2) {
-    const {hovering, binding} = useHover(props2);
-    return {
-      hovering,
-      binding
+    return () => {
+      const {
+        hoverClass
+      } = props2;
+      const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
+      return createVNode("uni-navigator", mergeProps({
+        "class": hasHoverClass && hovering.value ? hoverClass : ""
+      }, hasHoverClass && binding, {
+        "onClick": onClick
+      }), [slots.default && slots.default()], 16, ["onClick"]);
     };
   }
-};
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
-  return $props.hoverClass && $props.hoverClass !== "none" ? (openBlock(), createBlock("uni-navigator", mergeProps({
-    key: 0,
-    class: [$setup.hovering ? $props.hoverClass : ""]
-  }, $setup.binding, {
-    onClick: _cache[1] || (_cache[1] = (...args) => $options._onClick && $options._onClick(...args))
-  }), [
-    renderSlot(_ctx.$slots, "default")
-  ], 16)) : (openBlock(), createBlock("uni-navigator", {
-    key: 1,
-    onClick: _cache[2] || (_cache[2] = (...args) => $options._onClick && $options._onClick(...args))
-  }, [
-    renderSlot(_ctx.$slots, "default")
-  ]));
-}
-_sfc_main$6.render = _sfc_render$6;
-const props$m = {
+});
+const props$n = {
   value: {
     type: Array,
     default() {
@@ -6544,7 +6543,7 @@ function useState$2(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$m,
+  props: props$n,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -7470,7 +7469,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$l = {
+const props$m = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7517,9 +7516,9 @@ const props$l = {
     }
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$l,
+  props: props$m,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -7590,15 +7589,15 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$k = {
+const props$l = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$k,
+  props: props$l,
   setup(props2, {
     emit: emit2,
     slots
@@ -7674,7 +7673,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$j = {
+const props$k = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7696,9 +7695,9 @@ const props$j = {
     default: ""
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$j,
+  props: props$k,
   setup(props2, {
     slots
   }) {
@@ -7992,7 +7991,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$5 = {
+const _sfc_main$3 = {
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -8024,15 +8023,15 @@ const _sfc_main$5 = {
     }
   }
 };
-const _hoisted_1$4 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$2 = /* @__PURE__ */ createVNode("div", null, null, -1);
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$4
+    _hoisted_1$2
   ], 16);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$3.render = _sfc_render$3;
 const passiveOptions = passive(true);
-const _sfc_main$4 = {
+const _sfc_main$2 = {
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -8424,7 +8423,7 @@ const _sfc_main$4 = {
     };
   }
 };
-const _hoisted_1$3 = {ref: "rootRef"};
+const _hoisted_1$1 = {ref: "rootRef"};
 const _hoisted_2$1 = {
   ref: "wrap",
   class: "uni-scroll-view"
@@ -8458,8 +8457,8 @@ const _hoisted_9 = /* @__PURE__ */ createVNode("circle", {
   style: {"color": "#2bd009"},
   "stroke-width": "3"
 }, null, -1);
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-scroll-view", _hoisted_1$3, [
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createBlock("uni-scroll-view", _hoisted_1$1, [
     createVNode("div", _hoisted_2$1, [
       createVNode("div", {
         ref: "main",
@@ -8506,8 +8505,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512)
   ], 512);
 }
-_sfc_main$4.render = _sfc_render$4;
-const props$i = {
+_sfc_main$2.render = _sfc_render$2;
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -8561,9 +8560,9 @@ const props$i = {
     default: false
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$i,
+  props: props$j,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -8731,7 +8730,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$h = {
+const props$i = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -9220,7 +9219,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 var Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$h,
+  props: props$i,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -9315,7 +9314,7 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$h = {
   itemId: {
     type: String,
     default: ""
@@ -9323,7 +9322,7 @@ const props$g = {
 };
 var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$g,
+  props: props$h,
   setup(props2, {
     slots
   }) {
@@ -9372,7 +9371,7 @@ var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -9398,9 +9397,9 @@ const props$f = {
     default: "#007aff"
   }
 };
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$f,
+  props: props$g,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -9497,7 +9496,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -9550,7 +9549,7 @@ var index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$e = /* @__PURE__ */ extend({}, props$q, {
+const props$f = /* @__PURE__ */ extend({}, props$s, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9564,9 +9563,9 @@ const props$e = /* @__PURE__ */ extend({}, props$q, {
     default: ""
   }
 });
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$e,
+  props: props$f,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -9684,7 +9683,7 @@ var index$a = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -9749,13 +9748,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$8 = 0;
+let index$a = 0;
 function useContextInfo() {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$8++}`;
+  const id2 = vm.id || `context${index$a++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -9897,6 +9896,44 @@ function removeIntersectionObserver({reqId, component}, _pageId) {
   if (intersectionObserver) {
     intersectionObserver.disconnect();
     delete $el.__io[reqId];
+  }
+}
+let mediaQueryObserver;
+let listener$2;
+function handleMediaQueryStr($props) {
+  const mediaQueryArr = [];
+  const propsMenu = [
+    "width",
+    "minWidth",
+    "maxWidth",
+    "height",
+    "minHeight",
+    "maxHeight",
+    "orientation"
+  ];
+  for (const item of propsMenu) {
+    if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
+    }
+    if (item === "orientation" && $props[item]) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
+    }
+  }
+  const mediaQueryStr = mediaQueryArr.join(" and ");
+  return mediaQueryStr;
+}
+function humpToLine(name) {
+  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+function addMediaQueryObserver({reqId, component, options, callback}, _pageId) {
+  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
+  listener$2 = (observer) => callback(observer.matches);
+  listener$2(mediaQueryObserver);
+  mediaQueryObserver.addListener(listener$2);
+}
+function removeMediaQueryObserver({reqId, component}, _pageId) {
+  if (mediaQueryObserver) {
+    mediaQueryObserver.removeListener(listener$2);
   }
 }
 function saveImage(base64, dirname, callback) {
@@ -11212,7 +11249,7 @@ const defaultOptions = {
   observeAll: false
 };
 const MARGINS = ["top", "right", "bottom", "left"];
-let reqComponentObserverId = 1;
+let reqComponentObserverId$1 = 1;
 function normalizeRootMargin(margins = {}) {
   return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
 }
@@ -11237,7 +11274,7 @@ class ServiceIntersectionObserver {
       return;
     }
     this._options.selector = selector;
-    this._reqId = reqComponentObserverId++;
+    this._reqId = reqComponentObserverId$1++;
     addIntersectionObserver({
       reqId: this._reqId,
       component: this._component,
@@ -11259,13 +11296,47 @@ const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersec
   }
   return new ServiceIntersectionObserver(getCurrentPageVm(), options);
 });
+let reqComponentObserverId = 1;
+class ServiceMediaQueryObserver {
+  constructor(component) {
+    this._pageId = component.$page && component.$page.id;
+    this._component = component;
+  }
+  observe(options, callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._reqId = reqComponentObserverId++;
+    addMediaQueryObserver({
+      reqId: this._reqId,
+      component: this._component,
+      options,
+      callback
+    }, this._pageId);
+  }
+  disconnect() {
+    this._reqId && removeMediaQueryObserver({
+      reqId: this._reqId,
+      component: this._component
+    }, this._pageId);
+  }
+}
+const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQueryObserver", (context) => {
+  if (context && !getPageIdByVm(context)) {
+    context = null;
+  }
+  if (context) {
+    return new ServiceMediaQueryObserver(context);
+  }
+  return new ServiceMediaQueryObserver(getCurrentPageVm());
+});
 let eventReady = false;
-let index$7 = 0;
+let index$9 = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = {};
   if (options && ("success" in options || "fail" in options || "complete" in options)) {
-    const callbackId = String(index$7++);
+    const callbackId = String(index$9++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
     if (!eventReady) {
@@ -13281,7 +13352,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$6 = {
+var index$8 = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -13949,7 +14020,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   }, id2, true);
 }
-const props$d = {
+const props$e = {
   id: {
     type: String,
     default: ""
@@ -14033,9 +14104,9 @@ const props$d = {
     default: true
   }
 };
-var index$5 = /* @__PURE__ */ defineBuiltInComponent({
+var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$d,
+  props: props$e,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -14248,16 +14319,16 @@ var index$5 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$c = {
+const props$d = {
   src: {
     type: String,
     default: ""
   }
 };
-var index$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$c,
+  props: props$d,
   setup(props2, {
     attrs: attrs2
   }) {
@@ -14443,7 +14514,7 @@ function loadMaps(callback) {
     document.body.appendChild(script);
   }
 }
-const props$b = {
+const props$c = {
   id: {
     type: [Number, String],
     default: ""
@@ -14507,7 +14578,7 @@ const props$b = {
 };
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$b,
+  props: props$c,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14718,7 +14789,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$a = {
+const props$b = {
   points: {
     type: Array,
     require: true
@@ -14764,7 +14835,7 @@ const props$a = {
 };
 var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$a,
+  props: props$b,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14817,7 +14888,7 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$9 = {
+const props$a = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14849,7 +14920,7 @@ const props$9 = {
 };
 var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14893,7 +14964,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$8 = {
+const props$9 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14913,7 +14984,7 @@ const props$8 = {
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -15854,13 +15925,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$3 = 0;
+let index$5 = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$3;
-  index$3 += prevent ? 1 : -1;
-  index$3 = Math.max(0, index$3);
-  if (index$3 > 0) {
+  let before = index$5;
+  index$5 += prevent ? 1 : -1;
+  index$5 = Math.max(0, index$5);
+  if (index$5 > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -15874,7 +15945,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$7 = {
+const props$8 = {
   src: {
     type: String,
     default: ""
@@ -15882,7 +15953,7 @@ const props$7 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$7,
+  props: props$8,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -15972,7 +16043,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$6 = {
+const props$7 = {
   urls: {
     type: Array,
     default() {
@@ -15991,7 +16062,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$6,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16702,7 +16773,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
-const props$5 = {
+const props$6 = {
   latitude: {
     type: Number
   },
@@ -16724,7 +16795,7 @@ const props$5 = {
 };
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$5,
+  props: props$6,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16816,7 +16887,7 @@ function _isSlot(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
-const props$4 = {
+const props$5 = {
   latitude: {
     type: Number
   },
@@ -16916,7 +16987,7 @@ function useList(state2) {
 }
 var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$4,
+  props: props$5,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -17054,7 +17125,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
           state2.searching = false;
           state2.keyword = "";
         }
-      }, [createTextVNode("\u53D6\u6D88")], 8, ["onClick"])]), createVNode(_sfc_main$4, {
+      }, [createTextVNode("\u53D6\u6D88")], 8, ["onClick"])]), createVNode(_sfc_main$2, {
         "scroll-y": true,
         "class": "list",
         "onScrolltolower": loadMore
@@ -17179,7 +17250,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({url}, {re
     reject(`${url} ${String(err)}`);
   });
 }, PreloadPageProtocol);
-const props$3 = {
+const props$4 = {
   title: {
     type: String,
     default: ""
@@ -17213,7 +17284,7 @@ const props$3 = {
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
-  props: props$3,
+  props: props$4,
   setup(props2, {
     emit: emit2
   }) {
@@ -17285,7 +17356,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, {resolve
     showModalState.visible = true;
   }
 }, ShowModalProtocol, ShowModalOptions);
-const props$2 = {
+const props$3 = {
   title: {
     type: String,
     default: ""
@@ -17315,7 +17386,7 @@ const props$2 = {
 const ToastIconClassName = "uni-toast__icon";
 var Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$2,
+  props: props$3,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -17517,7 +17588,7 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const props$1 = {
+const props$2 = {
   title: {
     type: String,
     default: ""
@@ -17543,7 +17614,7 @@ const props$1 = {
 };
 var actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
-  props: props$1,
+  props: props$2,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -17938,6 +18009,7 @@ var api = /* @__PURE__ */ Object.freeze({
   arrayBufferToBase64,
   base64ToArrayBuffer,
   createIntersectionObserver,
+  createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
   createMapContext,
@@ -18094,7 +18166,7 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props = {
+const props$1 = {
   id: {
     type: String,
     default: ""
@@ -18418,7 +18490,7 @@ function useMap(props2, rootRef, emit2) {
 }
 var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props,
+  props: props$1,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
   setup(props2, {
     emit: emit2,
@@ -18443,61 +18515,54 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _sfc_main$3 = {
+const props = {
+  scrollTop: {
+    type: [String, Number],
+    default: 0
+  }
+};
+var index$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    scrollTop: {
-      type: [String, Number],
-      default: 0
-    }
-  },
-  watch: {
-    scrollTop(val) {
-      this.setScrollTop(val);
-    }
-  },
-  mounted() {
-    this.setScrollTop(this.scrollTop);
-  },
-  methods: {
-    setScrollTop(val) {
-      var content = this.content;
-      if (getComputedStyle(content).overflowY === "scroll") {
-        content.scrollTop = this._upx2pxNum(val);
+  props,
+  setup(props2, {
+    slots
+  }) {
+    const content = ref(null);
+    watch(() => props2.scrollTop, (val) => {
+      setScrollTop(val);
+    });
+    function setScrollTop(val) {
+      let _content = content.value;
+      if (getComputedStyle(_content).overflowY === "scroll") {
+        _content.scrollTop = _upx2pxNum(val);
       }
-    },
-    _upx2pxNum(val) {
-      if (/\d+[ur]px$/i.test(val)) {
-        val.replace(/\d+[ur]px$/i, (text2) => {
-          return uni.upx2px(parseFloat(text2));
+    }
+    function _upx2pxNum(val) {
+      let _val = String(val);
+      if (/\d+[ur]px$/i.test(_val)) {
+        _val.replace(/\d+[ur]px$/i, (text2) => {
+          return String(uni.upx2px(parseFloat(text2)));
         });
       }
-      return parseFloat(val) || 0;
+      return parseFloat(_val) || 0;
     }
-  },
-  setup() {
-    const content = ref(null);
-    return {
-      content
+    onMounted(() => {
+      setScrollTop(props2.scrollTop);
+    });
+    return () => {
+      return createVNode("uni-cover-view", {
+        "scroll-top": props2.scrollTop
+      }, [createVNode("div", {
+        "ref": content,
+        "class": "uni-cover-view"
+      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
     };
   }
-};
-const _hoisted_1$2 = {
-  ref: "content",
-  class: "uni-cover-view"
-};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-cover-view", {"scroll-top": $props.scrollTop}, [
-    createVNode("div", _hoisted_1$2, [
-      renderSlot(_ctx.$slots, "default")
-    ], 512)
-  ], 8, ["scroll-top"]);
-}
-_sfc_main$3.render = _sfc_render$3;
-const _sfc_main$2 = {
+});
+var index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -18508,42 +18573,35 @@ const _sfc_main$2 = {
       default: ""
     }
   },
-  methods: {
-    getRealPath,
-    _load($event) {
-      this.$trigger("load", $event);
-    },
-    _error($event) {
-      this.$trigger("error", $event);
-    }
-  },
-  mounted() {
-    this.$trigger = useCustomEvent({value: this.root}, this.$emit);
-  },
-  setup() {
+  emits: ["load", "error"],
+  setup(props2, {
+    emit: emit2
+  }) {
     const root = ref(null);
-    return {
-      root
+    const trigger = useCustomEvent(root, emit2);
+    function load($event) {
+      trigger("load", $event);
+    }
+    function error($event) {
+      trigger("error", $event);
+    }
+    return () => {
+      const {
+        src
+      } = props2;
+      return createVNode("uni-cover-image", {
+        "ref": root,
+        "src": src
+      }, [createVNode("div", {
+        "class": "uni-cover-image"
+      }, [src ? createVNode("img", {
+        "src": getRealPath(src),
+        "onLoad": load,
+        "onError": error
+      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
     };
   }
-};
-const _hoisted_1$1 = {class: "uni-cover-image"};
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-cover-image", {
-    ref: "root",
-    src: $props.src
-  }, [
-    createVNode("div", _hoisted_1$1, [
-      $props.src ? (openBlock(), createBlock("img", {
-        key: 0,
-        src: $options.getRealPath($props.src),
-        onLoad: _cache[1] || (_cache[1] = (...args) => $options._load && $options._load(...args)),
-        onError: _cache[2] || (_cache[2] = (...args) => $options._error && $options._error(...args))
-      }, null, 40, ["src"])) : createCommentVNode("", true)
-    ])
-  ], 8, ["src"]);
-}
-_sfc_main$2.render = _sfc_render$2;
+});
 const {t, getLocale} = useI18n();
 function getDefaultStartValue() {
   if (this.mode === mode.TIME) {
@@ -20391,4 +20449,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$8 as Audio, index$m as Button, _sfc_main$7 as Canvas, index$k as Checkbox, index$l as CheckboxGroup, _sfc_main$2 as CoverImage, _sfc_main$3 as CoverView, index$j as Editor, index$o as Form, Friction, index$i as Icon, index$h as Image, Input, index$n as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, _sfc_main$6 as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$g as Progress, index$e as Radio, index$f as RadioGroup, ResizeSensor, _sfc_main$5 as RichText, _sfc_main$4 as ScrollView, Scroller, index$d as Slider, Spring, Swiper, SwiperItem, index$c as Switch, index$b as Text, index$a as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$5 as Video, index$9 as View, index$4 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$6 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$5 as Audio, index$p as Button, _sfc_main$4 as Canvas, index$n as Checkbox, index$o as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$m as Editor, index$r as Form, Friction, index$l as Icon, index$k as Image, Input, index$q as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$j as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$i as Progress, index$g as Radio, index$h as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

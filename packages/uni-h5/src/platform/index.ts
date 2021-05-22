@@ -7,6 +7,10 @@ export {
   addIntersectionObserver,
   removeIntersectionObserver,
 } from '../service/api/ui/intersectionObserver'
+export {
+  addMediaQueryObserver,
+  removeMediaQueryObserver,
+} from '../service/api/ui/mediaQueryObserver'
 export * from './saveImage'
 export * from './constants'
 export { getSameOriginUrl } from '../helpers/file'

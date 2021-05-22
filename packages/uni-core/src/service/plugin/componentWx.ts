@@ -20,6 +20,10 @@ export function createSelectorQuery(this: ComponentPublicInstance) {
   return uni.createSelectorQuery().in(this)
 }
 
+export function createMediaQueryObserver(this: ComponentPublicInstance) {
+  return uni.createMediaQueryObserver(this)
+}
+
 export function createIntersectionObserver(
   this: ComponentPublicInstance,
   options: UniApp.CreateIntersectionObserverOptions
