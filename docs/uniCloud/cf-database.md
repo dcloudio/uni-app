@@ -1765,8 +1765,6 @@ let res = await db.collection('user').where({
 
 > 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
 
-> 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
-
 ### runTransaction
 
 **阿里云不支持此用法，请换成startTransaction以使用事务**
