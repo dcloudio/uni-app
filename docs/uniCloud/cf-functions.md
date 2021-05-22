@@ -466,6 +466,7 @@ package.json是一个标准json文件，不可带注释。下面是一个package
 - 在web控制台修改云函数配置后，通过HBuilderX的下载云函数菜单会在package.json内添加修改后的云函数配置
 - 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
 - package.json只有云端部署才生效，本地运行不生效。
+- cloudfunction-config不可删除云端配置。例：云端已配置triggers（定时触发器），删除cloudfunction-config内的trigger不会删掉云端的定时触发器
 
 ## 使用cloudfunctions_init初始化云函数@init
 
