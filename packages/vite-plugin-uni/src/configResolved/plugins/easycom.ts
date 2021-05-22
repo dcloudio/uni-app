@@ -80,10 +80,14 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
             }
             const source = matchEasycom(name)
             if (source) {
-              return addImportDeclaration(
-                importDeclarations,
-                `__easycom_${i++}`,
-                source
+              return (
+                // 解决局部引入组件优先级(理论上让开发者使用script setup就可以解决局部引入)
+                `typeof ${name} !== 'undefined' ? ${name} : ` +
+                addImportDeclaration(
+                  importDeclarations,
+                  `__easycom_${i++}`,
+                  source
+                )
               )
             }
           }
