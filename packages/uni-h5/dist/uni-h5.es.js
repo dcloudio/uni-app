@@ -13185,7 +13185,8 @@ function initApp(vm) {
   appVm.$vm = vm;
   appVm.globalData = appVm.$options.globalData || {};
 }
-function wrapperComponentSetup(comp, {init: init2, setup, after}) {
+function wrapperComponentSetup(comp, {init: init2, setup, before}) {
+  before && before(comp);
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
     const instance2 = getCurrentInstance();
@@ -13195,7 +13196,6 @@ function wrapperComponentSetup(comp, {init: init2, setup, after}) {
       return oldSetup(query, ctx);
     }
   };
-  after && after(comp);
 }
 function setupComponent(comp, options) {
   if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
@@ -13279,9 +13279,11 @@ function setupApp(comp) {
       });
       return route.query;
     },
-    after(comp2) {
+    before(comp2) {
       comp2.mpType = "app";
-      comp2.render = () => (openBlock(), createBlock(LayoutComponent));
+      comp2.setup = () => () => {
+        return openBlock(), createBlock(LayoutComponent);
+      };
     }
   });
 }

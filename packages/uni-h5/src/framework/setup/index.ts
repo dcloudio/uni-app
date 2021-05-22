@@ -21,13 +21,14 @@ import { usePageMeta, usePageRoute } from './provide'
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
   setup: (instance: ComponentInternalInstance) => Record<string, any>
-  after?: (comp: DefineComponent) => void
+  before?: (comp: DefineComponent) => void
 }
 
 function wrapperComponentSetup(
   comp: DefineComponent,
-  { init, setup, after }: SetupComponentOptions
+  { init, setup, before }: SetupComponentOptions
 ) {
+  before && before(comp)
   const oldSetup = comp.setup
   comp.setup = (props, ctx) => {
     const instance = getCurrentInstance()!
@@ -37,7 +38,6 @@ function wrapperComponentSetup(
       return oldSetup(query, ctx)
     }
   }
-  after && after(comp)
 }
 
 function setupComponent(comp: any, options: SetupComponentOptions) {
@@ -137,9 +137,11 @@ export function setupApp(comp: any) {
       })
       return route.query
     },
-    after(comp) {
+    before(comp) {
       comp.mpType = 'app'
-      comp.render = () => (openBlock(), createBlock(LayoutComponent))
+      comp.setup = () => () => {
+        return openBlock(), createBlock(LayoutComponent)
+      }
     },
   })
 }

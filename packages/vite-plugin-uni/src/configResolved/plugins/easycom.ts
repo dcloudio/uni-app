@@ -49,6 +49,8 @@ const baseComponents = [
   'view',
 ]
 
+const identifierRE = /^([a-zA-Z_$][a-zA-Z\\d_$]*)$/
+
 export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
@@ -82,7 +84,9 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
             if (source) {
               return (
                 // 解决局部引入组件优先级(理论上让开发者使用script setup就可以解决局部引入)
-                `typeof ${name} !== 'undefined' ? ${name} : ` +
+                (identifierRE.test(name)
+                  ? `typeof ${name} !== 'undefined' ? ${name} : `
+                  : '') +
                 addImportDeclaration(
                   importDeclarations,
                   `__easycom_${i++}`,

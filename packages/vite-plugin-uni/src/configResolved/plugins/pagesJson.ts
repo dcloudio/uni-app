@@ -238,7 +238,7 @@ function generatePageRoute(
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{render(){return renderPage(${name})}},
+  component:{setup(){return ()=>renderPage(${name})}},
   loader: ${normalizePageIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`
