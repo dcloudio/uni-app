@@ -139,7 +139,7 @@ uniCloud最吸引人的是，它将开发效率提升了10倍以上。
 
 开发效率提升10倍，并非某个杀手功能的功劳，而是庞大的生态共同的作用。本章节篇幅较长，请耐心阅读。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/c50d2741-6a47-4dcd-a02c-fdd683fa4ea4.png)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/80364c0b-2dd8-4629-b0f7-cbead0df7922.png)
 
 #### 一个故事
 2020年初，uniCloud刚发布，新冠肺炎突然来袭，各地涌现大量抗疫项目需求。
