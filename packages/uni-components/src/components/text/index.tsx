@@ -87,7 +87,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         })
       }
       return (
-        <uni-text selectable={props.selectable}>
+        <uni-text selectable={props.selectable ? true : null}>
           {createVNode('span', null, children)}
         </uni-text>
       )

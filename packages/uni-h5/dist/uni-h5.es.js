@@ -9358,7 +9358,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
         });
       }
       return createVNode("uni-text", {
-        "selectable": props2.selectable
+        "selectable": props2.selectable ? true : null
       }, [createVNode("span", null, children)], 8, ["selectable"]);
     };
   }

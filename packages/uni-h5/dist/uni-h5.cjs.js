@@ -7111,7 +7111,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
         });
       }
       return vue.createVNode("uni-text", {
-        "selectable": props2.selectable
+        "selectable": props2.selectable ? true : null
       }, [vue.createVNode("span", null, children)], 8, ["selectable"]);
     };
   }
