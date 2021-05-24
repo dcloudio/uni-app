@@ -867,7 +867,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -986,13 +986,13 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-audio-default"};
+const _hoisted_1$2 = {class: "uni-audio-default"};
 const _hoisted_2$2 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1002,7 +1002,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    vue.createVNode("div", _hoisted_1$3, [
+    vue.createVNode("div", _hoisted_1$2, [
       vue.createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1022,7 +1022,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$3.render = _sfc_render$3;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -1254,7 +1254,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$v = /* @__PURE__ */ defineBuiltInComponent({
+var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1294,15 +1294,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$s = {
+const props$t = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$s,
+  props: props$t,
   setup(props2, {
     slots
   }) {
@@ -1344,7 +1344,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1543,7 +1543,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$r = {
+const props$s = {
   canvasId: {
     type: String,
     default: ""
@@ -1553,13 +1553,13 @@ const props$r = {
     default: false
   }
 };
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
     MODE: 3
   },
-  props: props$r,
+  props: props$s,
   computed: {
     id() {
       return this.canvasId;
@@ -2035,15 +2035,15 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$r = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$r,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2095,7 +2095,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$p = {
+const props$q = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2117,9 +2117,9 @@ const props$p = {
     default: ""
   }
 };
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$q,
   setup(props2, {
     slots
   }) {
@@ -2188,7 +2188,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$p = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2374,7 +2374,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id, true);
 }
-const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
+const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
   id: {
     type: String,
     default: ""
@@ -2400,9 +2400,9 @@ const props$n = /* @__PURE__ */ Object.assign({}, props$o, {
     default: false
   }
 });
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$n,
+  props: props$o,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2461,7 +2461,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2488,7 +2488,7 @@ var index$o = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$m = {
+const props$n = {
   src: {
     type: String,
     default: ""
@@ -2525,9 +2525,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$m,
+  props: props$n,
   setup(props2, {
     emit: emit2
   }) {
@@ -2762,7 +2762,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$l = /* @__PURE__ */ Object.assign({}, {
+const props$m = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -2827,7 +2827,7 @@ const props$l = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$o);
+}, props$p);
 const emit = [
   "input",
   "focus",
@@ -3014,7 +3014,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
+const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3022,7 +3022,7 @@ const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$k,
+  props: props$l,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3178,16 +3178,16 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$j = {
+const props$k = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$j,
+  props: props$k,
   setup(props2, {
     slots
   }) {
@@ -3773,7 +3773,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$i = {
+const props$j = {
   direction: {
     type: String,
     default: "none"
@@ -3827,9 +3827,9 @@ const props$i = {
     default: true
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$i,
+  props: props$j,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -4201,7 +4201,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$h = {
+const props$i = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -4238,12 +4238,12 @@ const props$h = {
     default: false
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
   },
-  props: props$h,
+  props: props$i,
   setup(props2, {
     slots
   }) {
@@ -4298,7 +4298,7 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$h = {
   value: {
     type: Array,
     default() {
@@ -4345,7 +4345,7 @@ function useState$1(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$g,
+  props: props$h,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -5190,7 +5190,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$f = {
+const props$g = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -5237,9 +5237,9 @@ const props$f = {
     }
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$f,
+  props: props$g,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -5310,15 +5310,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$e = {
+const props$f = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$e,
+  props: props$f,
   setup(props2, {
     emit: emit2,
     slots
@@ -5394,7 +5394,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$d = {
+const props$e = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5416,9 +5416,9 @@ const props$d = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$d,
+  props: props$e,
   setup(props2, {
     slots
   }) {
@@ -5702,45 +5702,40 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$3 = {
+const props$d = {
+  nodes: {
+    type: [Array, String],
+    default: function() {
+      return [];
+    }
+  }
+};
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    nodes: {
-      type: [Array, String],
-      default: function() {
-        return [];
-      }
-    }
-  },
-  watch: {
-    nodes(value) {
-      this._renderNodes(value);
-    }
-  },
-  mounted() {
-    this._renderNodes(this.nodes);
-  },
-  methods: {
-    _renderNodes(nodes) {
+  props: props$d,
+  setup(props2) {
+    const rootRef = vue.ref(null);
+    function _renderNodes(nodes) {
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
       const nodeList = parseNodes(nodes, document.createDocumentFragment());
-      this.$el.firstChild.innerHTML = "";
-      this.$el.firstChild.appendChild(nodeList);
+      rootRef.value.firstElementChild.innerHTML = "";
+      rootRef.value.firstElementChild.appendChild(nodeList);
     }
+    vue.watch(() => props2.nodes, (value) => {
+      _renderNodes(value);
+    });
+    return () => {
+      return vue.createVNode("uni-rich-text", {
+        "ref": rootRef
+      }, [vue.createVNode("div", null, null)], 512);
+    };
   }
-};
-const _hoisted_1$2 = /* @__PURE__ */ vue.createVNode("div", null, null, -1);
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$2
-  ], 16);
-}
-_sfc_main$3.render = _sfc_render$3;
+});
 const passiveOptions = uniShared.passive(true);
 const _sfc_main$2 = {
   name: "ScrollView",
@@ -7107,7 +7102,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$8 = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$8 = /* @__PURE__ */ shared.extend({}, props$m, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11327,34 +11322,34 @@ var index = /* @__PURE__ */ defineSystemComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$4;
-exports.Button = index$t;
-exports.Canvas = index$s;
-exports.Checkbox = index$q;
-exports.CheckboxGroup = index$r;
+exports.Audio = _sfc_main$3;
+exports.Button = index$u;
+exports.Canvas = index$t;
+exports.Checkbox = index$r;
+exports.CheckboxGroup = index$s;
 exports.CoverImage = index$3;
 exports.CoverView = index$4;
-exports.Editor = index$p;
-exports.Form = index$v;
+exports.Editor = index$q;
+exports.Form = index$w;
 exports.Friction = Friction;
-exports.Icon = index$o;
-exports.Image = index$n;
+exports.Icon = index$p;
+exports.Image = index$o;
 exports.Input = Input;
-exports.Label = index$u;
+exports.Label = index$v;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$5;
-exports.MovableArea = index$m;
-exports.MovableView = index$l;
-exports.Navigator = index$k;
+exports.MovableArea = index$n;
+exports.MovableView = index$m;
+exports.Navigator = index$l;
 exports.PageComponent = index$2;
 exports.Picker = _sfc_main$1;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$j;
-exports.Radio = index$h;
-exports.RadioGroup = index$i;
+exports.Progress = index$k;
+exports.Radio = index$i;
+exports.RadioGroup = index$j;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = _sfc_main$3;
+exports.RichText = index$h;
 exports.ScrollView = _sfc_main$2;
 exports.Scroller = Scroller;
 exports.Slider = index$g;

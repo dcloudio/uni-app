@@ -1828,7 +1828,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$4 = {
+const _sfc_main$3 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1947,13 +1947,13 @@ const _sfc_main$4 = {
     }
   }
 };
-const _hoisted_1$3 = {class: "uni-audio-default"};
+const _hoisted_1$2 = {class: "uni-audio-default"};
 const _hoisted_2$2 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1963,7 +1963,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$3, [
+    createVNode("div", _hoisted_1$2, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1983,7 +1983,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$4.render = _sfc_render$4;
+_sfc_main$3.render = _sfc_render$3;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -2215,7 +2215,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -2255,15 +2255,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$z = {
+const props$A = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$z,
+  props: props$A,
   setup(props2, {
     slots
   }) {
@@ -2359,7 +2359,7 @@ function _removeListeners(id2, listeners, watch2) {
     }
   });
 }
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -2685,7 +2685,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$y = {
+const props$z = {
   canvasId: {
     type: String,
     default: ""
@@ -2695,13 +2695,13 @@ const props$y = {
     default: false
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
     MODE: 3
   },
-  props: props$y,
+  props: props$z,
   computed: {
     id() {
       return this.canvasId;
@@ -3180,15 +3180,15 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$x = {
+const props$y = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$x,
+  props: props$y,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -3240,7 +3240,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$w = {
+const props$x = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3262,9 +3262,9 @@ const props$w = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$w,
+  props: props$x,
   setup(props2, {
     slots
   }) {
@@ -3343,7 +3343,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$v = {
+const props$w = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -4093,7 +4093,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$u = /* @__PURE__ */ Object.assign({}, props$v, {
+const props$v = /* @__PURE__ */ Object.assign({}, props$w, {
   id: {
     type: String,
     default: ""
@@ -4119,9 +4119,9 @@ const props$u = /* @__PURE__ */ Object.assign({}, props$v, {
     default: false
   }
 });
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$u,
+  props: props$v,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -4181,7 +4181,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4208,7 +4208,7 @@ var index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$t = {
+const props$u = {
   src: {
     type: String,
     default: ""
@@ -4245,9 +4245,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$t,
+  props: props$u,
   setup(props2, {
     emit: emit2
   }) {
@@ -4549,7 +4549,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$s = /* @__PURE__ */ Object.assign({}, {
+const props$t = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -4614,7 +4614,7 @@ const props$s = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$v);
+}, props$w);
 const emit = [
   "input",
   "focus",
@@ -4810,7 +4810,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
+const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -4818,7 +4818,7 @@ const props$r = /* @__PURE__ */ Object.assign({}, props$s, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$r,
+  props: props$s,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -4974,7 +4974,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$q = {
+const props$r = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -4983,7 +4983,7 @@ const props$q = {
 var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$q,
+  props: props$r,
   setup(props2, {
     slots
   }) {
@@ -5584,7 +5584,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$p = {
+const props$q = {
   direction: {
     type: String,
     default: "none"
@@ -5640,7 +5640,7 @@ const props$p = {
 };
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$p,
+  props: props$q,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -6223,7 +6223,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$o = {
+const props$p = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -6260,12 +6260,12 @@ const props$o = {
     default: false
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
   },
-  props: props$o,
+  props: props$p,
   setup(props2, {
     slots
   }) {
@@ -6320,7 +6320,7 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$n = {
+const props$o = {
   value: {
     type: Array,
     default() {
@@ -6367,7 +6367,7 @@ function useState$2(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$n,
+  props: props$o,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -7293,7 +7293,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$m = {
+const props$n = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7340,9 +7340,9 @@ const props$m = {
     }
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$m,
+  props: props$n,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -7413,15 +7413,15 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$l = {
+const props$m = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$l,
+  props: props$m,
   setup(props2, {
     emit: emit2,
     slots
@@ -7497,7 +7497,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$k = {
+const props$l = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7519,9 +7519,9 @@ const props$k = {
     default: ""
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$k,
+  props: props$l,
   setup(props2, {
     slots
   }) {
@@ -7815,45 +7815,43 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const _sfc_main$3 = {
+const props$k = {
+  nodes: {
+    type: [Array, String],
+    default: function() {
+      return [];
+    }
+  }
+};
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    nodes: {
-      type: [Array, String],
-      default: function() {
-        return [];
-      }
-    }
-  },
-  watch: {
-    nodes(value) {
-      this._renderNodes(value);
-    }
-  },
-  mounted() {
-    this._renderNodes(this.nodes);
-  },
-  methods: {
-    _renderNodes(nodes) {
+  props: props$k,
+  setup(props2) {
+    const rootRef = ref(null);
+    function _renderNodes(nodes) {
       if (typeof nodes === "string") {
         nodes = parseHtml(nodes);
       }
       const nodeList = parseNodes(nodes, document.createDocumentFragment());
-      this.$el.firstChild.innerHTML = "";
-      this.$el.firstChild.appendChild(nodeList);
+      rootRef.value.firstElementChild.innerHTML = "";
+      rootRef.value.firstElementChild.appendChild(nodeList);
     }
+    watch(() => props2.nodes, (value) => {
+      _renderNodes(value);
+    });
+    onMounted(() => {
+      _renderNodes(props2.nodes);
+    });
+    return () => {
+      return createVNode("uni-rich-text", {
+        "ref": rootRef
+      }, [createVNode("div", null, null)], 512);
+    };
   }
-};
-const _hoisted_1$2 = /* @__PURE__ */ createVNode("div", null, null, -1);
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-rich-text", _ctx.$attrs, [
-    _hoisted_1$2
-  ], 16);
-}
-_sfc_main$3.render = _sfc_render$3;
+});
 const passiveOptions = passive(true);
 const _sfc_main$2 = {
   name: "ScrollView",
@@ -9373,7 +9371,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = /* @__PURE__ */ extend({}, props$s, {
+const props$f = /* @__PURE__ */ extend({}, props$t, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -20275,4 +20273,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$4 as Audio, index$q as Button, index$p as Canvas, index$n as Checkbox, index$o as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$m as Editor, index$s as Form, Friction, index$l as Icon, index$k as Image, Input, index$r as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$j as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$i as Progress, index$g as Radio, index$h as RadioGroup, ResizeSensor, _sfc_main$3 as RichText, _sfc_main$2 as ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$3 as Audio, index$r as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$n as Editor, index$t as Form, Friction, index$m as Icon, index$l as Image, Input, index$s as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, _sfc_main$2 as ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
