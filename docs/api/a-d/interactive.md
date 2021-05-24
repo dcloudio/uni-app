@@ -30,6 +30,99 @@
 4. 实物奖品发放后,快递配送请在24小时内收货,如有质量问题,请于签收后48小时内进行售后申请,超出时间不予赔付。
 5. 用户不得使用任何外挂、插件以及其他破坏破坏活动规则、违背活动公平原则的方式参加本次活动，否则服务商有权取消用户参与活动的资格以及清空获得的奖励。
 
+### 活动分类表
+<table>
+	<thead>
+		<tr>
+			<td>活动分类</td>
+			<td>活动名称</td>
+			<td>发放奖励</td>
+			<td>活动周期</td>
+			<td>是否支持积分打通</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td rowspan="3"></td>
+			<td>集碎片</td>
+			<td>多奖品</td>
+			<td>7天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>印钞机</td>
+			<td>现金</td>
+			<td>7天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>扭蛋机</td>
+			<td>多奖品</td>
+			<td>7天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td rowspan="4">游戏</td>
+			<td>大富翁</td>
+			<td>现金</td>
+			<td>7天</td>
+			<td>支持</td>
+		</tr>
+		<tr>
+			<td>成语大赢家</td>
+			<td>现金</td>
+			<td>7天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>合成招财猫</td>
+			<td>现金</td>
+			<td>7天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>捕鱼达人</td>
+			<td>现金</td>
+			<td>长期</td>
+			<td>新增支持</td>
+		</tr>
+		<tr>
+			<td rowspan="5">养成</td>
+			<td>福牛</td>
+			<td>现金</td>
+			<td>7天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>果园</td>
+			<td>水果</td>
+			<td>长期</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>农场</td>
+			<td>现金</td>
+			<td>30天</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>养鸡</td>
+			<td>现金</td>
+			<td>长期</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>走路赚</td>
+			<td>现金</td>
+			<td>7天</td>
+			<td>支持</td>
+		</tr>
+	</tbody>
+</table>
+
+注：活动名称在开通时不能选择，如需修改，请邮件联系[uniad@dcloud.io](mailto:uniad@dcloud.io)
+
+
 ### 用户奖励对接App积分
 
 积分对接需要开发者业务系统与三方服务商的互动游戏进行对接，需要一定的开发工作量，请邮件联系[uniad@dcloud.io](mailto:uniad@dcloud.io)
