@@ -24,6 +24,7 @@ import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
 import { uniSSRPlugin } from './ssr'
 import { uniResolveIdPlugin } from './resolveId'
+import { uniCssPlugin, buildInCssSet, isCombineBuiltInCss } from './css'
 
 const debugPlugin = debug('vite:uni:plugin')
 
@@ -70,7 +71,13 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
   getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
   UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],
   UniViewJSBridge: ['@dcloudio/uni-h5', 'UniViewJSBridge'],
-  callback(imports, mod) {
+}
+
+function createUniInjectCallback(
+  config: ResolvedConfig
+): InjectOptions['callback'] {
+  const needCombineBuiltInCss = isCombineBuiltInCss(config)
+  return (imports, mod) => {
     const styles =
       mod[0] === '@dcloudio/uni-h5' &&
       API_DEPS_CSS[mod[1] as keyof typeof API_DEPS_CSS]
@@ -78,11 +85,15 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
       return
     }
     styles.forEach((style) => {
-      if (!imports.has(style)) {
-        imports.set(style, `import '${style}';`)
+      if (needCombineBuiltInCss) {
+        buildInCssSet.add(style)
+      } else {
+        if (!imports.has(style)) {
+          imports.set(style, `import '${style}';`)
+        }
       }
     })
-  },
+  }
 }
 
 export function initPlugins(
@@ -124,7 +135,15 @@ export function initPlugins(
 
   // 可以考虑使用apply:'build'
   if (command === 'build') {
-    addPlugin(plugins, uniInjectPlugin(uniInjectPluginOptions), 'vite:vue')
+    addPlugin(
+      plugins,
+      uniInjectPlugin(
+        extend(uniInjectPluginOptions, {
+          callback: createUniInjectCallback(config),
+        })
+      ),
+      'vite:vue'
+    )
   }
 
   addPlugin(
@@ -135,12 +154,17 @@ export function initPlugins(
 
   addPlugin(
     plugins,
-    uniEasycomPlugin(extend(uniEasycomPluginOptions, options)),
+    uniEasycomPlugin(extend(uniEasycomPluginOptions, options), config),
     'vite:vue'
   )
   addPlugin(plugins, uniPageVuePlugin(options), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
+
+  if (isCombineBuiltInCss(config)) {
+    addPlugin(plugins, uniCssPlugin(config), 'vite:asset')
+  }
+
   if (command === 'build' && !config.build.ssr) {
     addPlugin(plugins, uniCopyPlugin(options), plugins.length)
   }

@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
@@ -14,6 +14,7 @@ import {
 
 import { UniPluginFilterOptions } from '.'
 import { debugEasycom, matchEasycom } from '../../utils'
+import { buildInCssSet, isCombineBuiltInCss } from './css'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
@@ -51,8 +52,12 @@ const baseComponents = [
 
 const identifierRE = /^([a-zA-Z_$][a-zA-Z\\d_$]*)$/
 
-export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
+export function uniEasycomPlugin(
+  options: UniPluginFilterOptions,
+  config: ResolvedConfig
+): Plugin {
   const filter = createFilter(options.include, options.exclude)
+  const needCombineBuiltInCss = isCombineBuiltInCss(config)
   return {
     name: 'vite:uni-easycom',
     transform(code, id) {
@@ -74,9 +79,22 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
         (str, name) => {
           if (name && !name.startsWith('_')) {
             if (isBuiltInComponent(name)) {
+              const local = `__syscom_${i++}`
+              if (needCombineBuiltInCss) {
+                // 发行模式下，应该将内置组件css输出到入口css中
+                resolveBuiltInCssImport(name).forEach((cssImport) =>
+                  buildInCssSet.add(cssImport)
+                )
+                return addImportDeclaration(
+                  importDeclarations,
+                  local,
+                  H5_COMPONENTS_PATH,
+                  capitalize(camelize(name))
+                )
+              }
               return addBuiltInImportDeclaration(
                 importDeclarations,
-                `__syscom_${i++}`,
+                local,
                 name
               )
             }
@@ -106,24 +124,26 @@ export function uniEasycomPlugin(options: UniPluginFilterOptions): Plugin {
   }
 }
 
+function resolveBuiltInCssImport(name: string) {
+  const cssImports: string[] = []
+  if (baseComponents.includes(name)) {
+    cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
+  } else {
+    cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
+  }
+  const deps = COMPONENT_DEPS_CSS[name as keyof typeof COMPONENT_DEPS_CSS]
+  deps && deps.forEach((dep) => cssImports.push(dep))
+  return cssImports
+}
+
 function addBuiltInImportDeclaration(
   importDeclarations: string[],
   local: string,
   name: string
 ) {
-  if (baseComponents.includes(name)) {
-    importDeclarations.push(
-      `import '${BASE_COMPONENTS_STYLE_PATH + name + '.css'}';`
-    )
-  } else {
-    importDeclarations.push(
-      `import '${H5_COMPONENTS_STYLE_PATH + name + '.css'}';`
-    )
-  }
-  const deps = COMPONENT_DEPS_CSS[name as keyof typeof COMPONENT_DEPS_CSS]
-  if (deps) {
-    deps.forEach((dep) => importDeclarations.push(`import '${dep}';`))
-  }
+  resolveBuiltInCssImport(name).forEach((cssImport) =>
+    importDeclarations.push(`import '${cssImport}';`)
+  )
   return addImportDeclaration(
     importDeclarations,
     local,
