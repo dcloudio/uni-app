@@ -16,7 +16,7 @@ const props = /*#__PURE__*/ Object.assign({}, fieldProps, {
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Input',
   props,
-  emit: ['confirm', ...fieldEmit],
+  emits: ['confirm', ...fieldEmit],
   setup(props, { emit }) {
     const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
     const type = computed(() => {

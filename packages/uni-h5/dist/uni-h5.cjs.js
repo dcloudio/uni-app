@@ -2834,6 +2834,7 @@ const emit = [
   "blur",
   "update:value",
   "update:modelValue",
+  "update:focus",
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
@@ -3022,7 +3023,7 @@ const props$k = /* @__PURE__ */ Object.assign({}, props$l, {
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$k,
-  emit: ["confirm", ...emit],
+  emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
   }) {

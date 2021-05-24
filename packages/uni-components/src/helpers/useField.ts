@@ -7,6 +7,7 @@ import {
   onBeforeMount,
   computed,
   reactive,
+  nextTick,
 } from 'vue'
 import { debounce } from '@dcloudio/uni-shared'
 import { throttle } from './throttle'
@@ -149,6 +150,7 @@ export const emit = [
   'blur',
   'update:value',
   'update:modelValue',
+  'update:focus',
   ...keyboardEmit,
 ]
 
@@ -296,7 +298,8 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
   onMounted(() => {
     startTime = startTime || Date.now()
     if (needFocus.value) {
-      focus()
+      // nextTick 为了保证逻辑在initField之后执行
+      nextTick(focus)
     }
   })
 }
