@@ -1,6 +1,6 @@
 import Audio from './audio/index.vue'
 import Button from './button/index'
-import Canvas from './canvas/index.vue'
+import Canvas from './canvas/index'
 import Checkbox from './checkbox/index'
 import CheckboxGroup from './checkbox-group/index'
 import Editor from './editor/index'

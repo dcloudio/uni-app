@@ -361,6 +361,7 @@ type ActionsItem = {
   method: string
   data: ActionsItemData | Array<ActionsItem>
 }
+export type Actions = Array<ActionsItem>
 type DefaultState = typeof defaultState
 type Callback = (result: any) => void | undefined
 type LineCapType = 'butt' | 'round' | 'square'
@@ -371,8 +372,8 @@ type TextBaselineType = 'top' | 'bottom' | 'middle' | 'normal'
 export class CanvasContext implements UniApp.CanvasContext {
   id: string
   pageId: number
-  actions: Array<ActionsItem>
-  path: Array<ActionsItem>
+  actions: Actions
+  path: Actions
   subpath: Array<ActionsItem['data']>
   state: DefaultState
   drawingState: Array<DefaultState>
@@ -656,7 +657,7 @@ export class CanvasContext implements UniApp.CanvasContext {
       var style = fontFormat[1].trim().split(/\s/)
       var fontSize = parseFloat(fontFormat[3])
       var fontFamily = fontFormat[7]
-      var actions: Array<ActionsItem> = []
+      var actions: Actions = []
       style.forEach(function (value, index) {
         if (['italic', 'oblique', 'normal'].indexOf(value) > -1) {
           actions.push({
