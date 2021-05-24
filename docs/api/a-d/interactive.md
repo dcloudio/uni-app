@@ -43,7 +43,7 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="3"></td>
+			<td rowspan="3">抽奖</td>
 			<td>集碎片</td>
 			<td>多奖品</td>
 			<td>7天</td>
