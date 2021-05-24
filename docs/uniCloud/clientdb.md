@@ -709,7 +709,8 @@ db.collection('comment,user')
     "副表2表名": [{ // 一个主表字段可能对应多个副表字段的foreignKey
       "副表2字段名1": "xxx",
       "副表2字段名2": "xxx",
-    }]
+    }],
+    "_value": "主表字段原始值" // 使用副表foreignKey查询时会在关联的主表字段内以_value存储该字段的原始值，新增于HBuilderX 3.1.16-alpha
   }
 }
 ```
@@ -839,7 +840,7 @@ db.collection('comment,user')
 
 ```js
 db.collection('article,comment')
-.where('article_id=="1"')
+.where('article_id._value=="1"')
 .field('content,article_id')
 .get()
 ```
@@ -863,7 +864,8 @@ db.collection('article,comment')
       "article": "1",
       "sender": "2",
       "receiver": "1"
-    }]
+    }],
+    "_value": "1"
   }
 }]
 ```
@@ -873,7 +875,7 @@ db.collection('article,comment')
 ```js
 // 过滤副表字段
 db.collection('article,comment')
-.where('article_id=="1"')
+.where('article_id._value=="1"')
 .field('content,article_id{comment{content}}')
 .get()
 
@@ -886,7 +888,8 @@ db.collection('article,comment')
     },
     {
       "content": "comment1-2"
-    }]
+    }],
+    "_value": "1"
   }
 }]
 
@@ -897,7 +900,7 @@ db.collection('article,comment')
 ```js
 // 重命名副表字段
 db.collection('article,comment')
-.where('article_id=="1"')
+.where('article_id._value=="1"')
 .field('content,article_id{comment{content as value}}')
 .get()
 
