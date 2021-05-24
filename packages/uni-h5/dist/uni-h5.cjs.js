@@ -1,20 +1,4 @@
 "use strict";
-var __defProp = Object.defineProperty;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, {enumerable: true, configurable: true, writable: true, value}) : obj[key] = value;
-var __spreadValues = (a2, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a2, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a2, prop, b[prop]);
-    }
-  return a2;
-};
 Object.defineProperty(exports, "__esModule", {value: true});
 exports[Symbol.toStringTag] = "Module";
 var shared = require("@vue/shared");
@@ -883,7 +867,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$5 = {
+const _sfc_main$4 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1002,13 +986,13 @@ const _sfc_main$5 = {
     }
   }
 };
-const _hoisted_1$4 = {class: "uni-audio-default"};
-const _hoisted_2$3 = {class: "uni-audio-right"};
+const _hoisted_1$3 = {class: "uni-audio-default"};
+const _hoisted_2$2 = {class: "uni-audio-right"};
 const _hoisted_3$2 = {class: "uni-audio-time"};
 const _hoisted_4$2 = {class: "uni-audio-info"};
 const _hoisted_5$1 = {class: "uni-audio-name"};
 const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1018,7 +1002,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    vue.createVNode("div", _hoisted_1$4, [
+    vue.createVNode("div", _hoisted_1$3, [
       vue.createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1028,7 +1012,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      vue.createVNode("div", _hoisted_2$3, [
+      vue.createVNode("div", _hoisted_2$2, [
         vue.createVNode("div", _hoisted_3$2, vue.toDisplayString($data.currentTime), 1),
         vue.createVNode("div", _hoisted_4$2, [
           vue.createVNode("div", _hoisted_5$1, vue.toDisplayString($props.name), 1),
@@ -1038,7 +1022,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$5.render = _sfc_render$5;
+_sfc_main$4.render = _sfc_render$4;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -1270,7 +1254,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1310,15 +1294,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$r = {
+const props$s = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$r,
+  props: props$s,
   setup(props2, {
     slots
   }) {
@@ -1360,7 +1344,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1540,8 +1524,9 @@ function resolveColor(color) {
   return "rgba(" + color.join(",") + ")";
 }
 function processTouches(target, touches) {
-  return [].map.call(touches, (touch) => {
-    var boundingClientRect = target.getBoundingClientRect();
+  const eventTarget = target;
+  return Array.from(touches).map((touch) => {
+    let boundingClientRect = eventTarget.getBoundingClientRect();
     return {
       identifier: touch.identifier,
       x: touch.clientX - boundingClientRect.left,
@@ -1549,7 +1534,7 @@ function processTouches(target, touches) {
     };
   });
 }
-var tempCanvas;
+let tempCanvas;
 function getTempCanvas(width = 0, height = 0) {
   if (!tempCanvas) {
     tempCanvas = document.createElement("canvas");
@@ -1558,492 +1543,497 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-var _sfc_main$4 = {
-  name: "Canvas",
+const props$r = {
+  canvasId: {
+    type: String,
+    default: ""
+  },
+  disableScroll: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
+  name: "Canvas",
   compatConfig: {
     MODE: 3
   },
-  components: {
-    ResizeSensor
-  },
-  props: {
-    canvasId: {
-      type: String,
-      default: ""
-    },
-    disableScroll: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data() {
-    return {
-      actionsWaiting: false
-    };
-  },
+  props: props$r,
   computed: {
     id() {
       return this.canvasId;
-    },
-    _listeners() {
-      let events = ["touchstart", "touchmove", "touchend"];
-      let _$listeners = this.Listeners;
-      let $listeners = Object.assign({}, (() => {
-        let obj = {};
-        for (const key in _$listeners) {
-          if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
-            const event = _$listeners[key];
-            obj[key.replace("on", "").toLowerCase()] = event;
-          }
-        }
-        return obj;
-      })());
-      events.forEach((event) => {
-        let existing = $listeners[event];
-        let eventHandler = [];
-        if (existing) {
-          eventHandler.push(withWebEvent(($event) => {
-            this.$trigger(event, Object.assign({}, (() => {
-              let obj = {};
-              for (const key in $event) {
-                obj[key] = $event[key];
-              }
-              return obj;
-            })(), {
-              touches: processTouches($event.currentTarget, $event.touches),
-              changedTouches: processTouches($event.currentTarget, $event.changedTouches)
-            }));
-          }));
-        }
-        if (this.disableScroll && event === "touchmove") {
-          eventHandler.push(onEventPrevent);
-        }
-        $listeners[event] = eventHandler;
-      });
-      return $listeners;
     }
   },
-  created() {
-    this._actionsDefer = [];
-    this._images = {};
-    const id = useContextInfo();
-    useSubscribe(this._handleSubscribe, id, true);
-  },
-  beforeMount() {
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
     initHidpiOnce();
-  },
-  mounted() {
-    this.$trigger = useNativeEvent(this.$emit);
-    this._resize();
-  },
-  beforeUnmount() {
-    const canvas = this.canvas;
-    canvas.height = canvas.width = 0;
-  },
-  methods: {
-    _handleSubscribe(type, data = {}) {
-      var method = this[type];
-      if (type.indexOf("_") !== 0 && typeof method === "function") {
-        method(data);
+    const canvas = vue.ref(null);
+    const sensor = vue.ref(null);
+    const actionsWaiting = vue.ref(false);
+    const trigger = useNativeEvent(emit2);
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const {
+      _listeners
+    } = useListeners(props2, $listeners, trigger);
+    const {
+      _handleSubscribe,
+      _resize
+    } = useMethods(canvas, actionsWaiting);
+    useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
+    return () => {
+      const {
+        canvasId,
+        disableScroll
+      } = props2;
+      return vue.createVNode("uni-canvas", vue.mergeProps({
+        "canvas-id": canvasId,
+        "disable-scroll": disableScroll
+      }, $attrs.value, $excludeAttrs.value, _listeners.value), [vue.createVNode("canvas", {
+        "ref": canvas,
+        "class": "uni-canvas-canvas",
+        "width": "300",
+        "height": "150"
+      }, null, 512), vue.createVNode("div", {
+        "style": "position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;"
+      }, [slots.default && slots.default()]), vue.createVNode(ResizeSensor, {
+        "ref": sensor,
+        "onResize": _resize
+      }, null, 8, ["onResize"])], 16, ["canvas-id", "disable-scroll"]);
+    };
+  }
+});
+function useListeners(props2, Listeners, trigger) {
+  const _listeners = vue.computed(() => {
+    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+    let _$listeners = Listeners.value;
+    let $listeners = Object.assign({}, (() => {
+      let obj = {};
+      for (const key in _$listeners) {
+        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+          const event = _$listeners[key];
+          obj[key] = event;
+        }
       }
-    },
-    _resize() {
-      var canvas = this.canvas;
-      if (canvas.width > 0 && canvas.height > 0) {
-        var context = canvas.getContext("2d");
-        var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        wrapper(canvas);
-        context.putImageData(imageData, 0, 0);
-      } else {
-        wrapper(canvas);
-      }
-    },
-    actionsChanged({actions, reserve, callbackId}) {
-      var self = this;
-      if (!actions) {
-        return;
-      }
-      if (this.actionsWaiting) {
-        this._actionsDefer.push([actions, reserve, callbackId]);
-        return;
-      }
-      var canvas = this.canvas;
-      var c2d = canvas.getContext("2d");
-      if (!reserve) {
-        c2d.fillStyle = "#000000";
-        c2d.strokeStyle = "#000000";
-        c2d.shadowColor = "#000000";
-        c2d.shadowBlur = 0;
-        c2d.shadowOffsetX = 0;
-        c2d.shadowOffsetY = 0;
-        c2d.setTransform(1, 0, 0, 1, 0, 0);
-        c2d.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      this.preloadImage(actions);
-      for (let index2 = 0; index2 < actions.length; index2++) {
-        const action = actions[index2];
-        let method = action.method;
-        const data = action.data;
-        if (/^set/.test(method) && method !== "setTransform") {
-          const method1 = method[3].toLowerCase() + method.slice(4);
-          let color;
-          if (method1 === "fillStyle" || method1 === "strokeStyle") {
-            if (data[0] === "normal") {
-              color = resolveColor(data[1]);
-            } else if (data[0] === "linear") {
-              const LinearGradient = c2d.createLinearGradient(...data[1]);
-              data[2].forEach(function(data2) {
-                const offset = data2[0];
-                const color2 = resolveColor(data2[1]);
-                LinearGradient.addColorStop(offset, color2);
-              });
-              color = LinearGradient;
-            } else if (data[0] === "radial") {
-              const x = data[1][0];
-              const y = data[1][1];
-              const r = data[1][2];
-              const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
-              data[2].forEach(function(data2) {
-                const offset = data2[0];
-                const color2 = resolveColor(data2[1]);
-                LinearGradient.addColorStop(offset, color2);
-              });
-              color = LinearGradient;
-            } else if (data[0] === "pattern") {
-              const loaded = this.checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image) {
-                if (image) {
-                  c2d[method1] = c2d.createPattern(image, data[2]);
-                }
-              });
-              if (!loaded) {
-                break;
-              }
-              continue;
+      return obj;
+    })());
+    events.forEach((event) => {
+      let existing = $listeners[event];
+      let eventHandler = [];
+      if (existing) {
+        eventHandler.push(withWebEvent(($event) => {
+          trigger(event.replace("on", "").toLocaleLowerCase(), Object.assign({}, (() => {
+            let obj = {};
+            for (const key in $event) {
+              obj[key] = $event[key];
             }
-            c2d[method1] = color;
-          } else if (method1 === "globalAlpha") {
-            c2d[method1] = data[0] / 255;
-          } else if (method1 === "shadow") {
-            var _ = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
-            data.forEach(function(color_, method_) {
-              c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
+            return obj;
+          })(), {
+            touches: processTouches($event.currentTarget, $event.touches),
+            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
+          }));
+        }));
+      }
+      if (props2.disableScroll && event === "onTouchmove") {
+        eventHandler.push(onEventPrevent);
+      }
+      $listeners[event] = eventHandler;
+    });
+    return $listeners;
+  });
+  return {
+    _listeners
+  };
+}
+function useMethods(canvasRef, actionsWaiting) {
+  let _actionsDefer = [];
+  let _images = {};
+  function _resize() {
+    var canvas = canvasRef.value;
+    if (canvas.width > 0 && canvas.height > 0) {
+      var context = canvas.getContext("2d");
+      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      wrapper(canvas);
+      context.putImageData(imageData, 0, 0);
+    } else {
+      wrapper(canvas);
+    }
+  }
+  function actionsChanged({
+    actions,
+    reserve,
+    callbackId
+  }) {
+    if (!actions) {
+      return;
+    }
+    if (actionsWaiting.value) {
+      _actionsDefer.push([actions, reserve, callbackId]);
+      return;
+    }
+    var canvas = canvasRef.value;
+    var c2d = canvas.getContext("2d");
+    if (!reserve) {
+      c2d.fillStyle = "#000000";
+      c2d.strokeStyle = "#000000";
+      c2d.shadowColor = "#000000";
+      c2d.shadowBlur = 0;
+      c2d.shadowOffsetX = 0;
+      c2d.shadowOffsetY = 0;
+      c2d.setTransform(1, 0, 0, 1, 0, 0);
+      c2d.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    preloadImage(actions);
+    for (let index2 = 0; index2 < actions.length; index2++) {
+      const action = actions[index2];
+      let method = action.method;
+      const data = action.data;
+      if (/^set/.test(method) && method !== "setTransform") {
+        const method1 = method[3].toLowerCase() + method.slice(4);
+        let color;
+        if (method1 === "fillStyle" || method1 === "strokeStyle") {
+          if (data[0] === "normal") {
+            color = resolveColor(data[1]);
+          } else if (data[0] === "linear") {
+            const LinearGradient = c2d.createLinearGradient(...data[1]);
+            data[2].forEach(function(data2) {
+              const offset = data2[0];
+              const color2 = resolveColor(data2[1]);
+              LinearGradient.addColorStop(offset, color2);
             });
-          } else if (method1 === "fontSize") {
-            const font = c2d.__font__ || c2d.font;
-            c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, data[0] + "px");
-          } else if (method1 === "lineDash") {
-            c2d.setLineDash(data[0]);
-            c2d.lineDashOffset = data[1] || 0;
-          } else if (method1 === "textBaseline") {
-            if (data[0] === "normal") {
-              data[0] = "alphabetic";
+            color = LinearGradient;
+          } else if (data[0] === "radial") {
+            const x = data[1][0];
+            const y = data[1][1];
+            const r = data[1][2];
+            const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
+            data[2].forEach(function(data2) {
+              const offset = data2[0];
+              const color2 = resolveColor(data2[1]);
+              LinearGradient.addColorStop(offset, color2);
+            });
+            color = LinearGradient;
+          } else if (data[0] === "pattern") {
+            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image) {
+              if (image) {
+                c2d[method1] = c2d.createPattern(image, data[2]);
+              }
+            });
+            if (!loaded) {
+              break;
             }
-            c2d[method1] = data[0];
-          } else if (method1 === "font") {
-            c2d.__font__ = c2d.font = data[0];
-          } else {
-            c2d[method1] = data[0];
+            continue;
           }
-        } else if (method === "fillPath" || method === "strokePath") {
-          method = method.replace(/Path/, "");
-          c2d.beginPath();
+          c2d[method1] = color;
+        } else if (method1 === "globalAlpha") {
+          c2d[method1] = Number(data[0]) / 255;
+        } else if (method1 === "shadow") {
+          var _ = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
+          data.forEach(function(color_, method_) {
+            c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
+          });
+        } else if (method1 === "fontSize") {
+          const font = c2d.__font__ || c2d.font;
+          c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, data[0] + "px");
+        } else if (method1 === "lineDash") {
+          c2d.setLineDash(data[0]);
+          c2d.lineDashOffset = data[1] || 0;
+        } else if (method1 === "textBaseline") {
+          if (data[0] === "normal") {
+            data[0] = "alphabetic";
+          }
+          c2d[method1] = data[0];
+        } else if (method1 === "font") {
+          c2d.__font__ = c2d.font = data[0];
+        } else {
+          c2d[method1] = data[0];
+        }
+      } else if (method === "fillPath" || method === "strokePath") {
+        method = method.replace(/Path/, "");
+        c2d.beginPath();
+        data.forEach(function(data_) {
+          c2d[data_.method].apply(c2d, data_.data);
+        });
+        c2d[method]();
+      } else if (method === "fillText") {
+        c2d.fillText.apply(c2d, data);
+      } else if (method === "drawImage") {
+        var A = function() {
+          var dataArray = [...data];
+          var url = dataArray[0];
+          var otherData = dataArray.slice(1);
+          _images = _images || {};
+          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image) {
+            if (image) {
+              c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
+            }
+          }))
+            return "break";
+        }();
+        if (A === "break") {
+          break;
+        }
+      } else {
+        if (method === "clip") {
           data.forEach(function(data_) {
             c2d[data_.method].apply(c2d, data_.data);
           });
-          c2d[method]();
-        } else if (method === "fillText") {
-          c2d.fillText.apply(c2d, data);
-        } else if (method === "drawImage") {
-          var A = function() {
-            var dataArray = [...data];
-            var url = dataArray[0];
-            var otherData = dataArray.slice(1);
-            self._images = self._images || {};
-            if (!self.checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image) {
-              if (image) {
-                c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
-              }
-            }))
-              return "break";
-          }();
-          if (A === "break") {
-            break;
-          }
+          c2d.clip();
         } else {
-          if (method === "clip") {
-            data.forEach(function(data_) {
-              c2d[data_.method].apply(c2d, data_.data);
-            });
-            c2d.clip();
-          } else {
-            c2d[method].apply(c2d, data);
-          }
+          c2d[method].apply(c2d, data);
         }
       }
-      if (!this.actionsWaiting && callbackId) {
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: "drawCanvas:ok"
-          }
-        }, getCurrentPageId());
+    }
+    if (!actionsWaiting.value && callbackId) {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg: "drawCanvas:ok"
+        }
+      }, getCurrentPageId());
+    }
+  }
+  function preloadImage(actions) {
+    actions.forEach(function(action) {
+      var method = action.method;
+      var data = action.data;
+      var src = "";
+      if (method === "drawImage") {
+        src = data[0];
+        src = $getRealPath(src);
+        data[0] = src;
+      } else if (method === "setFillStyle" && data[0] === "pattern") {
+        src = data[1];
+        src = $getRealPath(src);
+        data[1] = src;
       }
-    },
-    preloadImage: function(actions) {
-      var self = this;
-      actions.forEach(function(action) {
-        var method = action.method;
-        var data = action.data;
-        var src = "";
-        if (method === "drawImage") {
-          src = data[0];
-          src = $getRealPath(src);
-          data[0] = src;
-        } else if (method === "setFillStyle" && data[0] === "pattern") {
-          src = data[1];
-          src = $getRealPath(src);
-          data[1] = src;
-        }
-        if (src && !self._images[src]) {
-          loadImage();
-        }
-        function loadImage() {
-          const image = self._images[src] = new Image();
-          image.onload = function() {
-            image.ready = true;
-          };
-          getSameOriginUrl(src).then((src2) => {
-            image.src = src2;
-          }).catch(() => {
-            image.src = src;
-          });
-        }
-      });
-    },
-    checkImageLoaded: function(src, actions, callbackId, fn) {
-      var self = this;
-      var image = this._images[src];
-      if (image.ready) {
-        fn(image);
-        return true;
-      } else {
-        this._actionsDefer.unshift([actions, true]);
-        this.actionsWaiting = true;
+      if (src && !_images[src]) {
+        loadImage();
+      }
+      function loadImage() {
+        const image = _images[src] = new Image();
         image.onload = function() {
           image.ready = true;
-          fn(image);
-          self.actionsWaiting = false;
-          var actions2 = self._actionsDefer.slice(0);
-          self._actionsDefer = [];
-          for (var action = actions2.shift(); action; ) {
-            self.actionsChanged({
-              actions: action[0],
-              reserve: action[1],
-              callbackId
-            });
-            action = actions2.shift();
-          }
         };
-        return false;
+        getSameOriginUrl(src).then((src2) => {
+          image.src = src2;
+        }).catch(() => {
+          image.src = src;
+        });
       }
-    },
-    getImageData({
-      x = 0,
-      y = 0,
+    });
+  }
+  function checkImageLoaded(src, actions, callbackId, fn) {
+    var image = _images[src];
+    if (image.ready) {
+      fn(image);
+      return true;
+    } else {
+      _actionsDefer.unshift([actions, true]);
+      actionsWaiting.value = true;
+      image.onload = function() {
+        image.ready = true;
+        fn(image);
+        actionsWaiting.value = false;
+        var actions2 = _actionsDefer.slice(0);
+        _actionsDefer = [];
+        for (var action = actions2.shift(); action; ) {
+          actionsChanged({
+            actions: action[0],
+            reserve: action[1],
+            callbackId
+          });
+          action = actions2.shift();
+        }
+      };
+      return false;
+    }
+  }
+  function getImageData({
+    x = 0,
+    y = 0,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    hidpi = true,
+    dataType: dataType2,
+    quality = 1,
+    type = "png",
+    callbackId
+  }) {
+    const canvas = canvasRef.value;
+    let data;
+    const maxWidth = canvas.offsetWidth - x;
+    width = width ? Math.min(width, maxWidth) : maxWidth;
+    const maxHeight = canvas.offsetHeight - y;
+    height = height ? Math.min(height, maxHeight) : maxHeight;
+    if (!hidpi) {
+      if (!destWidth && !destHeight) {
+        destWidth = Math.round(width * pixelRatio);
+        destHeight = Math.round(height * pixelRatio);
+      } else if (!destWidth) {
+        destWidth = Math.round(width / height * destHeight);
+      } else if (!destHeight) {
+        destHeight = Math.round(height / width * destWidth);
+      }
+    } else {
+      destWidth = width;
+      destHeight = height;
+    }
+    const newCanvas = getTempCanvas(destWidth, destHeight);
+    const context = newCanvas.getContext("2d");
+    if (type === "jpeg" || type === "jpg") {
+      type = "jpeg";
+      context.fillStyle = "#fff";
+      context.fillRect(0, 0, destWidth, destHeight);
+    }
+    context.__hidpi__ = true;
+    context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
+    let result;
+    try {
+      let compressed;
+      if (dataType2 === "base64") {
+        data = newCanvas.toDataURL(`image/${type}`, quality);
+      } else {
+        const imgData = context.getImageData(0, 0, destWidth, destHeight);
+        if (false)
+          ;
+        else {
+          data = Array.prototype.slice.call(imgData.data);
+        }
+      }
+      result = {
+        errMsg: "canvasGetImageData:ok",
+        data,
+        compressed,
+        width: destWidth,
+        height: destHeight
+      };
+    } catch (error) {
+      result = {
+        errMsg: `canvasGetImageData:fail ${error}`
+      };
+    }
+    newCanvas.height = newCanvas.width = 0;
+    context.__hidpi__ = false;
+    if (!callbackId) {
+      return result;
+    } else {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: result
+      }, getCurrentPageId());
+    }
+  }
+  function putImageData({
+    data,
+    x,
+    y,
+    width,
+    height,
+    compressed,
+    callbackId
+  }) {
+    try {
+      if (!height) {
+        height = Math.round(data.length / 4 / width);
+      }
+      const canvas = getTempCanvas(width, height);
+      const context = canvas.getContext("2d");
+      if (false)
+        ;
+      context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
+      canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
+      canvas.height = canvas.width = 0;
+    } catch (error) {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg: "canvasPutImageData:fail"
+        }
+      }, getCurrentPageId());
+      return;
+    }
+    UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      callbackId,
+      data: {
+        errMsg: "canvasPutImageData:ok"
+      }
+    }, getCurrentPageId());
+  }
+  function toTempFilePath({
+    x = 0,
+    y = 0,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    fileType,
+    quality,
+    dirname,
+    callbackId
+  }) {
+    const res = getImageData({
+      x,
+      y,
       width,
       height,
       destWidth,
       destHeight,
-      hidpi = true,
-      dataType: dataType2,
-      quality = 1,
-      type = "png",
-      callbackId
-    }) {
-      const canvas = this.canvas;
-      let data;
-      const maxWidth = canvas.offsetWidth - x;
-      width = width ? Math.min(width, maxWidth) : maxWidth;
-      const maxHeight = canvas.offsetHeight - y;
-      height = height ? Math.min(height, maxHeight) : maxHeight;
-      if (!hidpi) {
-        if (!destWidth && !destHeight) {
-          destWidth = Math.round(width * pixelRatio);
-          destHeight = Math.round(height * pixelRatio);
-        } else if (!destWidth) {
-          destWidth = Math.round(width / height * destHeight);
-        } else if (!destHeight) {
-          destHeight = Math.round(height / width * destWidth);
+      hidpi: false,
+      dataType: "base64",
+      type: fileType,
+      quality
+    });
+    if (!res.data || !res.data.length) {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         }
-      } else {
-        destWidth = width;
-        destHeight = height;
-      }
-      const newCanvas = getTempCanvas(destWidth, destHeight);
-      const context = newCanvas.getContext("2d");
-      if (type === "jpeg" || type === "jpg") {
-        type = "jpeg";
-        context.fillStyle = "#fff";
-        context.fillRect(0, 0, destWidth, destHeight);
-      }
-      context.__hidpi__ = true;
-      context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
-      let result;
-      try {
-        let compressed;
-        if (dataType2 === "base64") {
-          data = newCanvas.toDataURL(`image/${type}`, quality);
-        } else {
-          const imgData = context.getImageData(0, 0, destWidth, destHeight);
-          if (false)
-            ;
-          else {
-            data = Array.prototype.slice.call(imgData.data);
-          }
-        }
-        result = {
-          errMsg: "canvasGetImageData:ok",
-          data,
-          compressed,
-          width: destWidth,
-          height: destHeight
-        };
-      } catch (error) {
-        result = {
-          errMsg: `canvasGetImageData:fail ${error}`
-        };
-      }
-      newCanvas.height = newCanvas.width = 0;
-      context.__hidpi__ = false;
-      if (!callbackId) {
-        return result;
-      } else {
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: result
-        }, getCurrentPageId());
-      }
-    },
-    putImageData({data, x, y, width, height, compressed, callbackId}) {
-      try {
-        if (!height) {
-          height = Math.round(data.length / 4 / width);
-        }
-        const canvas = getTempCanvas(width, height);
-        const context = canvas.getContext("2d");
-        if (false)
-          ;
-        context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
-        this.canvas.getContext("2d").drawImage(canvas, x, y, width, height);
-        canvas.height = canvas.width = 0;
-      } catch (error) {
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: "canvasPutImageData:fail"
-          }
-        }, getCurrentPageId());
-        return;
+      }, getCurrentPageId());
+      return;
+    }
+    saveImage(res.data, dirname, (error, tempFilePath) => {
+      let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
+      if (error) {
+        errMsg += ` ${error.message}`;
       }
       UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
         callbackId,
         data: {
-          errMsg: "canvasPutImageData:ok"
+          errMsg,
+          tempFilePath
         }
       }, getCurrentPageId());
-    },
-    toTempFilePath({
-      x = 0,
-      y = 0,
-      width,
-      height,
-      destWidth,
-      destHeight,
-      fileType,
-      quality,
-      dirname,
-      callbackId
-    }) {
-      const res = this.getImageData({
-        x,
-        y,
-        width,
-        height,
-        destWidth,
-        destHeight,
-        hidpi: false,
-        dataType: "base64",
-        type: fileType,
-        quality
-      });
-      if (!res.data || !res.data.length) {
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
-          }
-        }, getCurrentPageId());
-        return;
-      }
-      saveImage(res.data, dirname, (error, tempFilePath) => {
-        let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
-        if (error) {
-          errMsg += ` ${error.message}`;
-        }
-        UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-          callbackId,
-          data: {
-            errMsg,
-            tempFilePath
-          }
-        }, getCurrentPageId());
-      });
-    }
-  },
-  setup() {
-    const canvas = vue.ref(null);
-    const sensor = vue.ref(null);
-    const {
-      $attrs: Attrs,
-      $excludeAttrs: ExcludeAttrs,
-      $listeners: Listeners
-    } = useAttrs({
-      excludeListeners: true
     });
-    return {
-      canvas,
-      sensor,
-      Attrs,
-      ExcludeAttrs,
-      Listeners
-    };
   }
-};
-const _hoisted_1$3 = {
-  class: "uni-canvas-canvas",
-  ref: "canvas",
-  width: "300",
-  height: "150"
-};
-const _hoisted_2$2 = {style: {"position": "absolute", "top": "0", "left": "0", "width": "100%", "height": "100%", "overflow": "hidden"}};
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_ResizeSensor = vue.resolveComponent("ResizeSensor");
-  return vue.openBlock(), vue.createBlock("uni-canvas", vue.mergeProps({
-    "canvas-id": $props.canvasId,
-    "disable-scroll": $props.disableScroll
-  }, __spreadValues(__spreadValues({}, $setup.Attrs), $setup.ExcludeAttrs), vue.toHandlers($options._listeners)), [
-    vue.createVNode("canvas", _hoisted_1$3, null, 512),
-    vue.createVNode("div", _hoisted_2$2, [
-      vue.renderSlot(_ctx.$slots, "default")
-    ]),
-    vue.createVNode(_component_ResizeSensor, {
-      ref: "sensor",
-      onResize: $options._resize
-    }, null, 8, ["onResize"])
-  ], 16, ["canvas-id", "disable-scroll"]);
+  const methods = {
+    actionsChanged,
+    getImageData,
+    putImageData,
+    toTempFilePath
+  };
+  function _handleSubscribe(type, data = {}) {
+    let method = methods[type];
+    if (type.indexOf("_") !== 0 && typeof method === "function") {
+      method(data);
+    }
+  }
+  return shared.extend(methods, {
+    _resize,
+    _handleSubscribe
+  });
 }
-_sfc_main$4.render = _sfc_render$4;
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
 const props$q = {
   name: {
@@ -7279,12 +7269,12 @@ function useSubscribe(callback, name, multiple) {
 function useOn(name, callback) {
 }
 let index$9 = 0;
-function useContextInfo() {
+function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id = vm.id || `context${index$9++}`;
+  const id = _id || vm.id || `context${index$9++}`;
   return `${page}.${type}.${id}`;
 }
 function getContextInfo(el) {
@@ -11336,20 +11326,20 @@ var index = /* @__PURE__ */ defineSystemComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$5;
-exports.Button = index$s;
-exports.Canvas = _sfc_main$4;
+exports.Audio = _sfc_main$4;
+exports.Button = index$t;
+exports.Canvas = index$s;
 exports.Checkbox = index$q;
 exports.CheckboxGroup = index$r;
 exports.CoverImage = index$3;
 exports.CoverView = index$4;
 exports.Editor = index$p;
-exports.Form = index$u;
+exports.Form = index$v;
 exports.Friction = Friction;
 exports.Icon = index$o;
 exports.Image = index$n;
 exports.Input = Input;
-exports.Label = index$t;
+exports.Label = index$u;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$5;
 exports.MovableArea = index$m;

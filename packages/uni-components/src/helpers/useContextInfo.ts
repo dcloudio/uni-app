@@ -13,12 +13,12 @@ export interface HTMLElementWithContextInfo extends HTMLElement {
   __uniContextInfo?: ContextInfo
 }
 let index = 0
-export function useContextInfo() {
+export function useContextInfo(_id?: string) {
   const page = useCurrentPageId()
   const instance = getCurrentInstance()!
   const vm = instance.proxy!
   const type = vm.$options.name!.toLowerCase() as ContextType
-  const id = (vm as any).id || `context${index++}`
+  const id = _id || (vm as any).id || `context${index++}`
   onMounted(() => {
     const el = vm.$el as HTMLElementWithContextInfo
     el.__uniContextInfo = {
