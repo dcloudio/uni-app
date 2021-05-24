@@ -5818,9 +5818,14 @@ var index$h = /* @__PURE__ */ defineBuiltInComponent({
       scrollLeftNumber
     } = useScrollViewState(props2);
     useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    const mainStyle = vue.computed(() => {
+      let style = "";
+      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      return style;
+    });
     return () => {
       const {
-        scrollX,
         refresherEnabled,
         refresherBackground,
         refresherDefaultStyle
@@ -5837,10 +5842,7 @@ var index$h = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-scroll-view"
       }, [vue.createVNode("div", {
         "ref": main,
-        "style": {
-          overflowX: scrollX ? "auto" : "hidden",
-          overflowY: scrollY ? "auto" : "hidden"
-        },
+        "style": mainStyle.value,
         "class": "uni-scroll-view"
       }, [vue.createVNode("div", {
         "ref": content,

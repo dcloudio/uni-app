@@ -121,26 +121,26 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       content
     )
 
+    const mainStyle = computed(() => {
+      let style = ''
+      props.scrollX
+        ? (style += 'overflow-x:auto;')
+        : (style += 'overflow-x:hidden;')
+      props.scrollY
+        ? (style += 'overflow-y:auto;')
+        : (style += 'overflow-y:hidden;')
+      return style
+    })
+
     return () => {
-      const {
-        scrollX,
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-      } = props
+      const { refresherEnabled, refresherBackground, refresherDefaultStyle } =
+        props
       const { refresherHeight, refreshState, refreshRotate } = state
 
       return (
         <uni-scroll-view ref={rootRef}>
           <div ref={wrap} class="uni-scroll-view">
-            <div
-              ref={main}
-              style={{
-                overflowX: scrollX ? 'auto' : 'hidden',
-                overflowY: scrollY ? 'auto' : 'hidden',
-              }}
-              class="uni-scroll-view"
-            >
+            <div ref={main} style={mainStyle.value} class="uni-scroll-view">
               <div ref={content} class="uni-scroll-view-content">
                 {refresherEnabled ? (
                   <div

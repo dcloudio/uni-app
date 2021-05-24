@@ -606,8 +606,8 @@ function createScrollListener({
   const isReachBottom = () => {
     const {scrollHeight} = document.documentElement;
     const windowHeight = window.innerHeight;
-    const scrollY2 = window.scrollY;
-    const isBottom = scrollY2 > 0 && scrollHeight > windowHeight && scrollY2 + windowHeight + onReachBottomDistance >= scrollHeight;
+    const scrollY = window.scrollY;
+    const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
     const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
     if (isBottom && (!hasReachBottom || heightChanged)) {
       lastScrollHeight = scrollHeight;
@@ -7934,9 +7934,14 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       scrollLeftNumber
     } = useScrollViewState(props2);
     useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    const mainStyle = computed(() => {
+      let style = "";
+      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      return style;
+    });
     return () => {
       const {
-        scrollX,
         refresherEnabled,
         refresherBackground,
         refresherDefaultStyle
@@ -7953,10 +7958,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-scroll-view"
       }, [createVNode("div", {
         "ref": main,
-        "style": {
-          overflowX: scrollX ? "auto" : "hidden",
-          overflowY: scrollY ? "auto" : "hidden"
-        },
+        "style": mainStyle.value,
         "class": "uni-scroll-view"
       }, [createVNode("div", {
         "ref": content,
