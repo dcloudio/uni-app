@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createCommentVNode, renderSlot, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, resolveComponent, withCtx, KeepAlive, resolveDynamicComponent} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, resolveComponent, withCtx, createCommentVNode, renderSlot, KeepAlive, resolveDynamicComponent} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, initCostomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCostomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -200,9 +200,9 @@ E.prototype = {
     return this;
   },
   once: function(name, callback, ctx) {
-    var self = this;
+    var self2 = this;
     function listener2() {
-      self.off(name, listener2);
+      self2.off(name, listener2);
       callback.apply(ctx, arguments);
     }
     listener2._ = callback;
@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -606,8 +606,8 @@ function createScrollListener({
   const isReachBottom = () => {
     const {scrollHeight} = document.documentElement;
     const windowHeight = window.innerHeight;
-    const scrollY = window.scrollY;
-    const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
+    const scrollY2 = window.scrollY;
+    const isBottom = scrollY2 > 0 && scrollHeight > windowHeight && scrollY2 + windowHeight + onReachBottomDistance >= scrollHeight;
     const heightChanged = Math.abs(scrollHeight - lastScrollHeight) > onReachBottomDistance;
     if (isBottom && (!hasReachBottom || heightChanged)) {
       lastScrollHeight = scrollHeight;
@@ -1194,7 +1194,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1828,7 +1828,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$3 = {
+const _sfc_main$2 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -1947,13 +1947,13 @@ const _sfc_main$3 = {
     }
   }
 };
-const _hoisted_1$2 = {class: "uni-audio-default"};
-const _hoisted_2$2 = {class: "uni-audio-right"};
-const _hoisted_3$2 = {class: "uni-audio-time"};
-const _hoisted_4$2 = {class: "uni-audio-info"};
-const _hoisted_5$1 = {class: "uni-audio-name"};
-const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$1 = {class: "uni-audio-default"};
+const _hoisted_2$1 = {class: "uni-audio-right"};
+const _hoisted_3$1 = {class: "uni-audio-time"};
+const _hoisted_4$1 = {class: "uni-audio-info"};
+const _hoisted_5 = {class: "uni-audio-name"};
+const _hoisted_6 = {class: "uni-audio-author"};
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1963,7 +1963,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$2, [
+    createVNode("div", _hoisted_1$1, [
       createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1973,17 +1973,17 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      createVNode("div", _hoisted_2$2, [
-        createVNode("div", _hoisted_3$2, toDisplayString($data.currentTime), 1),
-        createVNode("div", _hoisted_4$2, [
-          createVNode("div", _hoisted_5$1, toDisplayString($props.name), 1),
-          createVNode("div", _hoisted_6$1, toDisplayString($props.author), 1)
+      createVNode("div", _hoisted_2$1, [
+        createVNode("div", _hoisted_3$1, toDisplayString($data.currentTime), 1),
+        createVNode("div", _hoisted_4$1, [
+          createVNode("div", _hoisted_5, toDisplayString($props.name), 1),
+          createVNode("div", _hoisted_6, toDisplayString($props.author), 1)
         ])
       ])
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$3.render = _sfc_render$3;
+_sfc_main$2.render = _sfc_render$2;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -2255,7 +2255,7 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$A = {
+const props$B = {
   for: {
     type: String,
     default: ""
@@ -2263,7 +2263,7 @@ const props$A = {
 };
 var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$A,
+  props: props$B,
   setup(props2, {
     slots
   }) {
@@ -2685,7 +2685,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$z = {
+const props$A = {
   canvasId: {
     type: String,
     default: ""
@@ -2701,7 +2701,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$z,
+  props: props$A,
   computed: {
     id() {
       return this.canvasId;
@@ -3180,7 +3180,7 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$y = {
+const props$z = {
   name: {
     type: String,
     default: ""
@@ -3188,7 +3188,7 @@ const props$y = {
 };
 var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$y,
+  props: props$z,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -3240,7 +3240,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$x = {
+const props$y = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3264,7 +3264,7 @@ const props$x = {
 };
 var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$x,
+  props: props$y,
   setup(props2, {
     slots
   }) {
@@ -3343,7 +3343,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$w = {
+const props$x = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -4093,7 +4093,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$v = /* @__PURE__ */ Object.assign({}, props$w, {
+const props$w = /* @__PURE__ */ Object.assign({}, props$x, {
   id: {
     type: String,
     default: ""
@@ -4121,7 +4121,7 @@ const props$v = /* @__PURE__ */ Object.assign({}, props$w, {
 });
 var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$v,
+  props: props$w,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -4208,7 +4208,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$u = {
+const props$v = {
   src: {
     type: String,
     default: ""
@@ -4247,7 +4247,7 @@ const IMAGE_MODES = {
 };
 var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$u,
+  props: props$v,
   setup(props2, {
     emit: emit2
   }) {
@@ -4549,7 +4549,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$t = /* @__PURE__ */ Object.assign({}, {
+const props$u = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -4614,7 +4614,7 @@ const props$t = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$w);
+}, props$x);
 const emit = [
   "input",
   "focus",
@@ -4810,7 +4810,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
+const props$t = /* @__PURE__ */ Object.assign({}, props$u, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -4818,7 +4818,7 @@ const props$s = /* @__PURE__ */ Object.assign({}, props$t, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$s,
+  props: props$t,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -4974,7 +4974,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$r = {
+const props$s = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -4983,7 +4983,7 @@ const props$r = {
 var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$r,
+  props: props$s,
   setup(props2, {
     slots
   }) {
@@ -5584,7 +5584,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$q = {
+const props$r = {
   direction: {
     type: String,
     default: "none"
@@ -5640,7 +5640,7 @@ const props$q = {
 };
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$q,
+  props: props$r,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -6223,7 +6223,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$p = {
+const props$q = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -6265,7 +6265,7 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$p,
+  props: props$q,
   setup(props2, {
     slots
   }) {
@@ -6320,7 +6320,7 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$o = {
+const props$p = {
   value: {
     type: Array,
     default() {
@@ -6367,7 +6367,7 @@ function useState$2(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$o,
+  props: props$p,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -7293,7 +7293,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$n = {
+const props$o = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7342,7 +7342,7 @@ const props$n = {
 };
 var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$n,
+  props: props$o,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -7413,7 +7413,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$m = {
+const props$n = {
   name: {
     type: String,
     default: ""
@@ -7421,7 +7421,7 @@ const props$m = {
 };
 var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$m,
+  props: props$n,
   setup(props2, {
     emit: emit2,
     slots
@@ -7497,7 +7497,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$l = {
+const props$m = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7521,7 +7521,7 @@ const props$l = {
 };
 var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$l,
+  props: props$m,
   setup(props2, {
     slots
   }) {
@@ -7815,7 +7815,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const props$k = {
+const props$l = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -7828,7 +7828,7 @@ var index$g = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: props$l,
   setup(props2) {
     const rootRef = ref(null);
     function _renderNodes(nodes) {
@@ -7853,140 +7853,370 @@ var index$g = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = passive(true);
-const _sfc_main$2 = {
+const props$k = {
+  scrollX: {
+    type: [Boolean, String],
+    default: false
+  },
+  scrollY: {
+    type: [Boolean, String],
+    default: false
+  },
+  upperThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  lowerThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  scrollTop: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollLeft: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
+  scrollWithAnimation: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableBackToTop: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherEnabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherThreshold: {
+    type: Number,
+    default: 45
+  },
+  refresherDefaultStyle: {
+    type: String,
+    default: "back"
+  },
+  refresherBackground: {
+    type: String,
+    default: "#fff"
+  },
+  refresherTriggered: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    scrollX: {
-      type: [Boolean, String],
-      default: false
-    },
-    scrollY: {
-      type: [Boolean, String],
-      default: false
-    },
-    upperThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    lowerThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    scrollTop: {
-      type: [Number, String],
-      default: 0
-    },
-    scrollLeft: {
-      type: [Number, String],
-      default: 0
-    },
-    scrollIntoView: {
-      type: String,
-      default: ""
-    },
-    scrollWithAnimation: {
-      type: [Boolean, String],
-      default: false
-    },
-    enableBackToTop: {
-      type: [Boolean, String],
-      default: false
-    },
-    refresherEnabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      default: "back"
-    },
-    refresherBackground: {
-      type: String,
-      default: "#fff"
-    },
-    refresherTriggered: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data() {
-    return {
-      lastScrollTop: this.scrollTopNumber,
-      lastScrollLeft: this.scrollLeftNumber,
-      lastScrollToUpperTime: 0,
-      lastScrollToLowerTime: 0,
-      refresherHeight: 0,
-      refreshRotate: 0,
-      refreshState: ""
+  props: props$k,
+  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherabort"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const main = ref(null);
+    const wrap = ref(null);
+    const content = ref(null);
+    const refresherinner = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      state: state2,
+      scrollTopNumber,
+      scrollLeftNumber
+    } = useScrollViewState(props2);
+    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    return () => {
+      const {
+        scrollX,
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState,
+        refreshRotate
+      } = state2;
+      return createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, [createVNode("div", {
+        "ref": wrap,
+        "class": "uni-scroll-view"
+      }, [createVNode("div", {
+        "ref": main,
+        "style": {
+          overflowX: scrollX ? "auto" : "hidden",
+          overflowY: scrollY ? "auto" : "hidden"
+        },
+        "class": "uni-scroll-view"
+      }, [createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [refresherEnabled ? createVNode("div", {
+        "ref": refresherinner,
+        "style": {
+          backgroundColor: refresherBackground,
+          height: refresherHeight + "px"
+        },
+        "class": "uni-scroll-view-refresher"
+      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [refreshState == "pulling" ? createVNode("svg", {
+        "style": {
+          transform: "rotate(" + refreshRotate + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
     };
-  },
-  computed: {
-    upperThresholdNumber() {
-      var val = Number(this.upperThreshold);
-      return isNaN(val) ? 50 : val;
-    },
-    lowerThresholdNumber() {
-      var val = Number(this.lowerThreshold);
-      return isNaN(val) ? 50 : val;
-    },
-    scrollTopNumber() {
-      return Number(this.scrollTop) || 0;
-    },
-    scrollLeftNumber() {
-      return Number(this.scrollLeft) || 0;
+  }
+});
+function useScrollViewState(props2) {
+  const scrollTopNumber = computed(() => {
+    return Number(props2.scrollTop) || 0;
+  });
+  const scrollLeftNumber = computed(() => {
+    return Number(props2.scrollLeft) || 0;
+  });
+  const state2 = reactive({
+    lastScrollTop: scrollTopNumber.value,
+    lastScrollLeft: scrollLeftNumber.value,
+    lastScrollToUpperTime: 0,
+    lastScrollToLowerTime: 0,
+    refresherHeight: 0,
+    refreshRotate: 0,
+    refreshState: ""
+  });
+  return {
+    state: state2,
+    scrollTopNumber,
+    scrollLeftNumber
+  };
+}
+function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
+  let _lastScrollTime = 0;
+  let __transitionEnd = () => {
+  };
+  const upperThresholdNumber = computed(() => {
+    var val = Number(props2.upperThreshold);
+    return isNaN(val) ? 50 : val;
+  });
+  const lowerThresholdNumber = computed(() => {
+    var val = Number(props2.lowerThreshold);
+    return isNaN(val) ? 50 : val;
+  });
+  function scrollTo2(t2, n) {
+    var i = main.value;
+    t2 < 0 ? t2 = 0 : n === "x" && t2 > i.scrollWidth - i.offsetWidth ? t2 = i.scrollWidth - i.offsetWidth : n === "y" && t2 > i.scrollHeight - i.offsetHeight && (t2 = i.scrollHeight - i.offsetHeight);
+    var r = 0;
+    var o2 = "";
+    n === "x" ? r = i.scrollLeft - t2 : n === "y" && (r = i.scrollTop - t2);
+    if (r !== 0) {
+      content.value.style.transition = "transform .3s ease-out";
+      content.value.style.webkitTransition = "-webkit-transform .3s ease-out";
+      if (n === "x") {
+        o2 = "translateX(" + r + "px) translateZ(0)";
+      } else {
+        n === "y" && (o2 = "translateY(" + r + "px) translateZ(0)");
+      }
+      content.value.removeEventListener("transitionend", __transitionEnd);
+      content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
+      __transitionEnd = () => _transitionEnd(t2, n);
+      content.value.addEventListener("transitionend", __transitionEnd);
+      content.value.addEventListener("webkitTransitionEnd", __transitionEnd);
+      if (n === "x") {
+        i.style.overflowX = "hidden";
+      } else if (n === "y") {
+        i.style.overflowY = "hidden";
+      }
+      content.value.style.transform = o2;
+      content.value.style.webkitTransform = o2;
     }
-  },
-  watch: {
-    scrollTopNumber(val) {
-      this._scrollTopChanged(val);
-    },
-    scrollLeftNumber(val) {
-      this._scrollLeftChanged(val);
-    },
-    scrollIntoView(val) {
-      this._scrollIntoViewChanged(val);
-    },
-    refresherTriggered(val) {
-      if (val === true) {
-        this._setRefreshState("refreshing");
-      } else if (val === false) {
-        this._setRefreshState("restore");
+  }
+  function _handleScroll($event) {
+    if ($event.timeStamp - _lastScrollTime > 20) {
+      _lastScrollTime = $event.timeStamp;
+      const target = $event.target;
+      trigger("scroll", $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: state2.lastScrollLeft - target.scrollLeft,
+        deltaY: state2.lastScrollTop - target.scrollTop
+      });
+      if (props2.scrollY) {
+        if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+          trigger("scrolltoupper", $event, {
+            direction: "top"
+          });
+          state2.lastScrollToUpperTime = $event.timeStamp;
+        }
+        if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+          trigger("scrolltolower", $event, {
+            direction: "bottom"
+          });
+          state2.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+      if (props2.scrollX) {
+        if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+          trigger("scrolltoupper", $event, {
+            direction: "left"
+          });
+          state2.lastScrollToUpperTime = $event.timeStamp;
+        }
+        if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+          trigger("scrolltolower", $event, {
+            direction: "right"
+          });
+          state2.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+      state2.lastScrollTop = target.scrollTop;
+      state2.lastScrollLeft = target.scrollLeft;
+    }
+  }
+  function _scrollTopChanged(val) {
+    if (props2.scrollY) {
+      {
+        if (props2.scrollWithAnimation) {
+          scrollTo2(val, "y");
+        } else {
+          main.value.scrollTop = val;
+        }
       }
     }
-  },
-  mounted() {
-    this.$trigger = useCustomEvent({
-      value: this.rootRef
-    }, this.$emit);
-    var self = this;
-    this._attached = true;
-    this._scrollTopChanged(this.scrollTopNumber);
-    this._scrollLeftChanged(this.scrollLeftNumber);
-    this._scrollIntoViewChanged(this.scrollIntoView);
-    this.__handleScroll = function(event) {
+  }
+  function _scrollLeftChanged(val) {
+    if (props2.scrollX) {
+      {
+        if (props2.scrollWithAnimation) {
+          scrollTo2(val, "x");
+        } else {
+          main.value.scrollLeft = val;
+        }
+      }
+    }
+  }
+  function _scrollIntoViewChanged(val) {
+    if (val) {
+      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+        console.error(`id error: scroll-into-view=${val}`);
+        return;
+      }
+      var element = rootRef.value.querySelector("#" + val);
+      if (element) {
+        var mainRect = main.value.getBoundingClientRect();
+        var elRect = element.getBoundingClientRect();
+        if (props2.scrollX) {
+          var left = elRect.left - mainRect.left;
+          var scrollLeft = main.value.scrollLeft;
+          var x = scrollLeft + left;
+          if (props2.scrollWithAnimation) {
+            scrollTo2(x, "x");
+          } else {
+            main.value.scrollLeft = x;
+          }
+        }
+        if (props2.scrollY) {
+          var top = elRect.top - mainRect.top;
+          var scrollTop = main.value.scrollTop;
+          var y = scrollTop + top;
+          if (props2.scrollWithAnimation) {
+            scrollTo2(y, "y");
+          } else {
+            main.value.scrollTop = y;
+          }
+        }
+      }
+    }
+  }
+  function _transitionEnd(val, type) {
+    content.value.style.transition = "";
+    content.value.style.webkitTransition = "";
+    content.value.style.transform = "";
+    content.value.style.webkitTransform = "";
+    let _main = main.value;
+    if (type === "x") {
+      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.scrollLeft = val;
+    } else if (type === "y") {
+      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.scrollTop = val;
+    }
+    content.value.removeEventListener("transitionend", __transitionEnd);
+    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
+  }
+  function _setRefreshState(_state) {
+    switch (_state) {
+      case "refreshing":
+        state2.refresherHeight = props2.refresherThreshold;
+        trigger("refresherrefresh", {}, {});
+        break;
+      case "restore":
+        state2.refresherHeight = 0;
+        trigger("refresherrestore", {}, {});
+        break;
+    }
+    state2.refreshState = _state;
+  }
+  onMounted(() => {
+    _scrollTopChanged(scrollTopNumber.value);
+    _scrollLeftChanged(scrollLeftNumber.value);
+    _scrollIntoViewChanged(props2.scrollIntoView);
+    let __handleScroll = function(event) {
       event.stopPropagation();
-      self._handleScroll.bind(self, event)();
+      _handleScroll(event);
     };
-    var touchStart = null;
-    var needStop = null;
-    this.__handleTouchMove = function(event) {
+    let touchStart = {
+      x: 0,
+      y: 0
+    };
+    let needStop = null;
+    let __handleTouchMove = function(_event) {
+      const event = _event;
       var x = event.touches[0].pageX;
       var y = event.touches[0].pageY;
-      var main = self.main;
+      var _main = main.value;
       if (needStop === null) {
         if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
           if (self.scrollX) {
-            if (main.scrollLeft === 0 && x > touchStart.x) {
+            if (_main.scrollLeft === 0 && x > touchStart.x) {
               needStop = false;
               return;
-            } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
+            } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
               needStop = false;
               return;
             }
@@ -7996,10 +8226,10 @@ const _sfc_main$2 = {
           }
         } else {
           if (self.scrollY) {
-            if (main.scrollTop === 0 && y > touchStart.y) {
+            if (_main.scrollTop === 0 && y > touchStart.y) {
               needStop = false;
               return;
-            } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
+            } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
               needStop = false;
               return;
             }
@@ -8012,322 +8242,79 @@ const _sfc_main$2 = {
       if (needStop) {
         event.stopPropagation();
       }
-      if (self.refresherEnabled && self.refreshState === "pulling") {
+      if (props2.refresherEnabled && state2.refreshState === "pulling") {
         const dy = y - touchStart.y;
-        self.refresherHeight = dy;
-        let rotate = dy / self.refresherThreshold;
+        state2.refresherHeight = dy;
+        let rotate = dy / props2.refresherThreshold;
         if (rotate > 1) {
           rotate = 1;
         } else {
           rotate = rotate * 360;
         }
-        self.refreshRotate = rotate;
-        self.$trigger("refresherpulling", event, {
+        state2.refreshRotate = rotate;
+        trigger("refresherpulling", event, {
           deltaY: dy
         });
       }
     };
-    this.__handleTouchStart = function(event) {
+    let __handleTouchStart = function(_event) {
+      const event = _event;
       if (event.touches.length === 1) {
         needStop = null;
         touchStart = {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY
         };
-        if (self.refresherEnabled && self.refreshState !== "refreshing" && self.main.scrollTop === 0) {
-          self.refreshState = "pulling";
+        if (props2.refresherEnabled && state2.refreshState !== "refreshing" && main.value.scrollTop === 0) {
+          state2.refreshState = "pulling";
         }
       }
     };
-    this.__handleTouchEnd = function(event) {
-      touchStart = null;
-      if (self.refresherHeight >= self.refresherThreshold) {
-        self._setRefreshState("refreshing");
-      } else {
-        self.refresherHeight = 0;
-        self.$trigger("refresherabort", event, {});
-      }
-    };
-    this.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.main.addEventListener("scroll", this.__handleScroll, passiveOptions);
-    this.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
-  },
-  activated() {
-    this.scrollY && (this.main.scrollTop = this.lastScrollTop);
-    this.scrollX && (this.main.scrollLeft = this.lastScrollLeft);
-  },
-  beforeUnmount() {
-    this.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.main.removeEventListener("scroll", this.__handleScroll, passiveOptions);
-    this.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
-  },
-  methods: {
-    scrollTo: function(t2, n) {
-      var i = this.main;
-      t2 < 0 ? t2 = 0 : n === "x" && t2 > i.scrollWidth - i.offsetWidth ? t2 = i.scrollWidth - i.offsetWidth : n === "y" && t2 > i.scrollHeight - i.offsetHeight && (t2 = i.scrollHeight - i.offsetHeight);
-      var r = 0;
-      var o2 = "";
-      n === "x" ? r = i.scrollLeft - t2 : n === "y" && (r = i.scrollTop - t2);
-      if (r !== 0) {
-        this.content.style.transition = "transform .3s ease-out";
-        this.content.style.webkitTransition = "-webkit-transform .3s ease-out";
-        if (n === "x") {
-          o2 = "translateX(" + r + "px) translateZ(0)";
-        } else {
-          n === "y" && (o2 = "translateY(" + r + "px) translateZ(0)");
-        }
-        this.content.removeEventListener("transitionend", this.__transitionEnd);
-        this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
-        this.__transitionEnd = this._transitionEnd.bind(this, t2, n);
-        this.content.addEventListener("transitionend", this.__transitionEnd);
-        this.content.addEventListener("webkitTransitionEnd", this.__transitionEnd);
-        if (n === "x") {
-          i.style.overflowX = "hidden";
-        } else if (n === "y") {
-          i.style.overflowY = "hidden";
-        }
-        this.content.style.transform = o2;
-        this.content.style.webkitTransform = o2;
-      }
-    },
-    _handleScroll: function($event) {
-      if (!($event.timeStamp - this._lastScrollTime < 20)) {
-        this._lastScrollTime = $event.timeStamp;
-        const target = $event.target;
-        this.$trigger("scroll", $event, {
-          scrollLeft: target.scrollLeft,
-          scrollTop: target.scrollTop,
-          scrollHeight: target.scrollHeight,
-          scrollWidth: target.scrollWidth,
-          deltaX: this.lastScrollLeft - target.scrollLeft,
-          deltaY: this.lastScrollTop - target.scrollTop
-        });
-        if (this.scrollY) {
-          if (target.scrollTop <= this.upperThresholdNumber && this.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
-            this.$trigger("scrolltoupper", $event, {
-              direction: "top"
-            });
-            this.lastScrollToUpperTime = $event.timeStamp;
-          }
-          if (target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >= target.scrollHeight && this.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
-            this.$trigger("scrolltolower", $event, {
-              direction: "bottom"
-            });
-            this.lastScrollToLowerTime = $event.timeStamp;
-          }
-        }
-        if (this.scrollX) {
-          if (target.scrollLeft <= this.upperThresholdNumber && this.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
-            this.$trigger("scrolltoupper", $event, {
-              direction: "left"
-            });
-            this.lastScrollToUpperTime = $event.timeStamp;
-          }
-          if (target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >= target.scrollWidth && this.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
-            this.$trigger("scrolltolower", $event, {
-              direction: "right"
-            });
-            this.lastScrollToLowerTime = $event.timeStamp;
-          }
-        }
-        this.lastScrollTop = target.scrollTop;
-        this.lastScrollLeft = target.scrollLeft;
-      }
-    },
-    _scrollTopChanged: function(val) {
-      if (this.scrollY) {
-        if (this._innerSetScrollTop) {
-          this._innerSetScrollTop = false;
-        } else {
-          if (this.scrollWithAnimation) {
-            this.scrollTo(val, "y");
-          } else {
-            this.main.scrollTop = val;
-          }
-        }
-      }
-    },
-    _scrollLeftChanged: function(val) {
-      if (this.scrollX) {
-        if (this._innerSetScrollLeft) {
-          this._innerSetScrollLeft = false;
-        } else {
-          if (this.scrollWithAnimation) {
-            this.scrollTo(val, "x");
-          } else {
-            this.main.scrollLeft = val;
-          }
-        }
-      }
-    },
-    _scrollIntoViewChanged: function(val) {
-      if (val) {
-        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.error(`id error: scroll-into-view=${val}`);
-          return;
-        }
-        var element = this.rootRef.querySelector("#" + val);
-        if (element) {
-          var mainRect = this.main.getBoundingClientRect();
-          var elRect = element.getBoundingClientRect();
-          if (this.scrollX) {
-            var left = elRect.left - mainRect.left;
-            var scrollLeft = this.main.scrollLeft;
-            var x = scrollLeft + left;
-            if (this.scrollWithAnimation) {
-              this.scrollTo(x, "x");
-            } else {
-              this.main.scrollLeft = x;
-            }
-          }
-          if (this.scrollY) {
-            var top = elRect.top - mainRect.top;
-            var scrollTop = this.main.scrollTop;
-            var y = scrollTop + top;
-            if (this.scrollWithAnimation) {
-              this.scrollTo(y, "y");
-            } else {
-              this.main.scrollTop = y;
-            }
-          }
-        }
-      }
-    },
-    _transitionEnd: function(val, type) {
-      this.content.style.transition = "";
-      this.content.style.webkitTransition = "";
-      this.content.style.transform = "";
-      this.content.style.webkitTransform = "";
-      var main = this.main;
-      if (type === "x") {
-        main.style.overflowX = this.scrollX ? "auto" : "hidden";
-        main.scrollLeft = val;
-      } else if (type === "y") {
-        main.style.overflowY = this.scrollY ? "auto" : "hidden";
-        main.scrollTop = val;
-      }
-      this.content.removeEventListener("transitionend", this.__transitionEnd);
-      this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
-    },
-    _setRefreshState(state2) {
-      switch (state2) {
-        case "refreshing":
-          this.refresherHeight = this.refresherThreshold;
-          this.$trigger("refresherrefresh", {}, {});
-          break;
-        case "restore":
-          this.refresherHeight = 0;
-          this.$trigger("refresherrestore", {}, {});
-          break;
-      }
-      this.refreshState = state2;
-    },
-    getScrollPosition() {
-      const main = this.main;
-      return {
-        scrollLeft: main.scrollLeft,
-        scrollTop: main.scrollTop,
-        scrollHeight: main.scrollHeight,
-        scrollWidth: main.scrollWidth
+    let __handleTouchEnd = function(_event) {
+      const event = _event;
+      touchStart = {
+        x: 0,
+        y: 0
       };
-    }
-  },
-  setup(props2) {
-    const rootRef = ref(null);
-    const main = ref(null);
-    const content = ref(null);
-    return {
-      rootRef,
-      main,
-      content
+      if (state2.refresherHeight >= props2.refresherThreshold) {
+        _setRefreshState("refreshing");
+      } else {
+        state2.refresherHeight = 0;
+        trigger("refresherabort", event, {});
+      }
     };
-  }
-};
-const _hoisted_1$1 = {ref: "rootRef"};
-const _hoisted_2$1 = {
-  ref: "wrap",
-  class: "uni-scroll-view"
-};
-const _hoisted_3$1 = {
-  ref: "content",
-  class: "uni-scroll-view-content"
-};
-const _hoisted_4$1 = {
-  key: 0,
-  class: "uni-scroll-view-refresh"
-};
-const _hoisted_5 = {class: "uni-scroll-view-refresh-inner"};
-const _hoisted_6 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
-const _hoisted_7 = /* @__PURE__ */ createVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_8 = {
-  key: 1,
-  class: "uni-scroll-view-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_9 = /* @__PURE__ */ createVNode("circle", {
-  cx: "50",
-  cy: "50",
-  r: "20",
-  fill: "none",
-  style: {"color": "#2bd009"},
-  "stroke-width": "3"
-}, null, -1);
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-scroll-view", _hoisted_1$1, [
-    createVNode("div", _hoisted_2$1, [
-      createVNode("div", {
-        ref: "main",
-        style: {
-          "overflow-x": $props.scrollX ? "auto" : "hidden",
-          "overflow-y": $props.scrollY ? "auto" : "hidden"
-        },
-        class: "uni-scroll-view"
-      }, [
-        createVNode("div", _hoisted_3$1, [
-          $props.refresherEnabled ? (openBlock(), createBlock("div", {
-            key: 0,
-            ref: "refresherinner",
-            style: {
-              "background-color": $props.refresherBackground,
-              height: $data.refresherHeight + "px"
-            },
-            class: "uni-scroll-view-refresher"
-          }, [
-            $props.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", _hoisted_4$1, [
-              createVNode("div", _hoisted_5, [
-                $data.refreshState == "pulling" ? (openBlock(), createBlock("svg", {
-                  key: 0,
-                  style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
-                  fill: "#2BD009",
-                  class: "uni-scroll-view-refresh__icon",
-                  width: "24",
-                  height: "24",
-                  viewBox: "0 0 24 24"
-                }, [
-                  _hoisted_6,
-                  _hoisted_7
-                ], 4)) : createCommentVNode("", true),
-                $data.refreshState == "refreshing" ? (openBlock(), createBlock("svg", _hoisted_8, [
-                  _hoisted_9
-                ])) : createCommentVNode("", true)
-              ])
-            ])) : createCommentVNode("", true),
-            $props.refresherDefaultStyle == "none" ? renderSlot(_ctx.$slots, "refresher", {key: 1}) : createCommentVNode("", true)
-          ], 4)) : createCommentVNode("", true),
-          renderSlot(_ctx.$slots, "default")
-        ], 512)
-      ], 4)
-    ], 512)
-  ], 512);
+    main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
+    main.value.addEventListener("touchmove", __handleTouchMove, passiveOptions);
+    main.value.addEventListener("scroll", __handleScroll, passiveOptions);
+    main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+    onBeforeUnmount(() => {
+      main.value.removeEventListener("touchstart", __handleTouchStart);
+      main.value.removeEventListener("touchmove", __handleTouchMove);
+      main.value.removeEventListener("scroll", __handleScroll);
+      main.value.removeEventListener("touchend", __handleTouchEnd);
+    });
+  });
+  onActivated(() => {
+    props2.scrollY && (main.value.scrollTop = state2.lastScrollTop);
+    props2.scrollX && (main.value.scrollLeft = state2.lastScrollLeft);
+  });
+  watch(scrollTopNumber, (val) => {
+    _scrollTopChanged(val);
+  });
+  watch(scrollLeftNumber, (val) => {
+    _scrollLeftChanged(val);
+  });
+  watch(() => props2.scrollIntoView, (val) => {
+    _scrollIntoViewChanged(val);
+  });
+  watch(() => props2.refresherTriggered, (val) => {
+    if (val === true) {
+      _setRefreshState("refreshing");
+    } else if (val === false) {
+      _setRefreshState("restore");
+    }
+  });
 }
-_sfc_main$2.render = _sfc_render$2;
 const props$j = {
   name: {
     type: String,
@@ -9371,7 +9358,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = /* @__PURE__ */ extend({}, props$t, {
+const props$f = /* @__PURE__ */ extend({}, props$u, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -10709,7 +10696,7 @@ class CanvasContext {
     });
   }
   set font(value) {
-    var self = this;
+    var self2 = this;
     this.state.font = value;
     var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
     if (fontFormat) {
@@ -10723,19 +10710,19 @@ class CanvasContext {
             method: "setFontStyle",
             data: [value2]
           });
-          self.state.fontStyle = value2;
+          self2.state.fontStyle = value2;
         } else if (["bold", "normal"].indexOf(value2) > -1) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
           });
-          self.state.fontWeight = value2;
+          self2.state.fontWeight = value2;
         } else if (index2 === 0) {
           actions.push({
             method: "setFontStyle",
             data: ["normal"]
           });
-          self.state.fontStyle = "normal";
+          self2.state.fontStyle = "normal";
         } else if (index2 === 1) {
           pushAction();
         }
@@ -10760,7 +10747,7 @@ class CanvasContext {
         method: "setFontWeight",
         data: ["normal"]
       });
-      self.state.fontWeight = "normal";
+      self2.state.fontWeight = "normal";
     }
   }
   get font() {
@@ -15020,7 +15007,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15133,12 +15120,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15158,10 +15145,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -16949,7 +16936,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
           state2.searching = false;
           state2.keyword = "";
         }
-      }, [createTextVNode("\u53D6\u6D88")], 8, ["onClick"])]), createVNode(_sfc_main$2, {
+      }, [createTextVNode("\u53D6\u6D88")], 8, ["onClick"])]), createVNode(ScrollView, {
         "scroll-y": true,
         "class": "list",
         "onScrolltolower": loadMore
@@ -20273,4 +20260,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$3 as Audio, index$r as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$n as Editor, index$t as Form, Friction, index$m as Icon, index$l as Image, Input, index$s as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, _sfc_main$2 as ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$2 as Audio, index$r as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$n as Editor, index$t as Form, Friction, index$m as Icon, index$l as Image, Input, index$s as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLocation, getNetworkType, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getVideoInfo, hideKeyboard, hideLoading, hideNavigationBarLoading, hideTabBar, hideTabBarRedDot, hideToast, initScrollBounce, loadFontFace, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeStorage, removeStorageSync, removeTabBarBadge, request, sendSocketMessage, setNavigationBarColor, setNavigationBarTitle, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setupApp, setupPage, showActionSheet, showLoading, showModal, showNavigationBarLoading, showTabBar, showTabBarRedDot, showToast, startAccelerometer, startCompass, startPullDownRefresh, stopAccelerometer, stopCompass, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

@@ -867,7 +867,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$3 = {
+const _sfc_main$2 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -986,13 +986,13 @@ const _sfc_main$3 = {
     }
   }
 };
-const _hoisted_1$2 = {class: "uni-audio-default"};
-const _hoisted_2$2 = {class: "uni-audio-right"};
-const _hoisted_3$2 = {class: "uni-audio-time"};
-const _hoisted_4$2 = {class: "uni-audio-info"};
-const _hoisted_5$1 = {class: "uni-audio-name"};
-const _hoisted_6$1 = {class: "uni-audio-author"};
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$1 = {class: "uni-audio-default"};
+const _hoisted_2$1 = {class: "uni-audio-right"};
+const _hoisted_3$1 = {class: "uni-audio-time"};
+const _hoisted_4$1 = {class: "uni-audio-info"};
+const _hoisted_5 = {class: "uni-audio-name"};
+const _hoisted_6 = {class: "uni-audio-author"};
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -1002,7 +1002,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       loop: $props.loop,
       style: {"display": "none"}
     }, null, 8, ["loop"]),
-    vue.createVNode("div", _hoisted_1$2, [
+    vue.createVNode("div", _hoisted_1$1, [
       vue.createVNode("div", {
         style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
         class: "uni-audio-left"
@@ -1012,17 +1012,17 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
-      vue.createVNode("div", _hoisted_2$2, [
-        vue.createVNode("div", _hoisted_3$2, vue.toDisplayString($data.currentTime), 1),
-        vue.createVNode("div", _hoisted_4$2, [
-          vue.createVNode("div", _hoisted_5$1, vue.toDisplayString($props.name), 1),
-          vue.createVNode("div", _hoisted_6$1, vue.toDisplayString($props.author), 1)
+      vue.createVNode("div", _hoisted_2$1, [
+        vue.createVNode("div", _hoisted_3$1, vue.toDisplayString($data.currentTime), 1),
+        vue.createVNode("div", _hoisted_4$1, [
+          vue.createVNode("div", _hoisted_5, vue.toDisplayString($props.name), 1),
+          vue.createVNode("div", _hoisted_6, vue.toDisplayString($props.author), 1)
         ])
       ])
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$3.render = _sfc_render$3;
+_sfc_main$2.render = _sfc_render$2;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -1254,7 +1254,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$w = /* @__PURE__ */ defineBuiltInComponent({
+var index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -1294,15 +1294,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$t = {
+const props$u = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$v = /* @__PURE__ */ defineBuiltInComponent({
+var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$t,
+  props: props$u,
   setup(props2, {
     slots
   }) {
@@ -1344,7 +1344,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -1543,7 +1543,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$s = {
+const props$t = {
   canvasId: {
     type: String,
     default: ""
@@ -1553,13 +1553,13 @@ const props$s = {
     default: false
   }
 };
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
     MODE: 3
   },
-  props: props$s,
+  props: props$t,
   computed: {
     id() {
       return this.canvasId;
@@ -2035,15 +2035,15 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$r = {
+const props$s = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$r,
+  props: props$s,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2095,7 +2095,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$q = {
+const props$r = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2117,9 +2117,9 @@ const props$q = {
     default: ""
   }
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$q,
+  props: props$r,
   setup(props2, {
     slots
   }) {
@@ -2188,7 +2188,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$p = {
+const props$q = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2374,7 +2374,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id, true);
 }
-const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
+const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
   id: {
     type: String,
     default: ""
@@ -2400,9 +2400,9 @@ const props$o = /* @__PURE__ */ Object.assign({}, props$p, {
     default: false
   }
 });
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$o,
+  props: props$p,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -2461,7 +2461,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2488,7 +2488,7 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$n = {
+const props$o = {
   src: {
     type: String,
     default: ""
@@ -2525,9 +2525,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$n,
+  props: props$o,
   setup(props2, {
     emit: emit2
   }) {
@@ -2762,7 +2762,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$m = /* @__PURE__ */ Object.assign({}, {
+const props$n = /* @__PURE__ */ Object.assign({}, {
   name: {
     type: String,
     default: ""
@@ -2827,7 +2827,7 @@ const props$m = /* @__PURE__ */ Object.assign({}, {
     type: String,
     default: "done"
   }
-}, props$p);
+}, props$q);
 const emit = [
   "input",
   "focus",
@@ -3014,7 +3014,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
+const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3022,7 +3022,7 @@ const props$l = /* @__PURE__ */ Object.assign({}, props$m, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$l,
+  props: props$m,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -3178,16 +3178,16 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$k = {
+const props$l = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$k,
+  props: props$l,
   setup(props2, {
     slots
   }) {
@@ -3773,7 +3773,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$j = {
+const props$k = {
   direction: {
     type: String,
     default: "none"
@@ -3827,9 +3827,9 @@ const props$j = {
     default: true
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$j,
+  props: props$k,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -4201,7 +4201,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$i = {
+const props$j = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -4238,12 +4238,12 @@ const props$i = {
     default: false
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
   },
-  props: props$i,
+  props: props$j,
   setup(props2, {
     slots
   }) {
@@ -4298,7 +4298,7 @@ var index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = {
+const props$i = {
   value: {
     type: Array,
     default() {
@@ -4345,7 +4345,7 @@ function useState$1(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$h,
+  props: props$i,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -5190,7 +5190,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$g = {
+const props$h = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -5237,9 +5237,9 @@ const props$g = {
     }
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$g,
+  props: props$h,
   setup(props2) {
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
@@ -5310,15 +5310,15 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$f = {
+const props$g = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$f,
+  props: props$g,
   setup(props2, {
     emit: emit2,
     slots
@@ -5394,7 +5394,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$e = {
+const props$f = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -5416,9 +5416,9 @@ const props$e = {
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$e,
+  props: props$f,
   setup(props2, {
     slots
   }) {
@@ -5702,7 +5702,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const props$d = {
+const props$e = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -5710,12 +5710,12 @@ const props$d = {
     }
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$d,
+  props: props$e,
   setup(props2) {
     const rootRef = vue.ref(null);
     function _renderNodes(nodes) {
@@ -5736,482 +5736,318 @@ var index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const passiveOptions = uniShared.passive(true);
-const _sfc_main$2 = {
+uniShared.passive(true);
+const props$d = {
+  scrollX: {
+    type: [Boolean, String],
+    default: false
+  },
+  scrollY: {
+    type: [Boolean, String],
+    default: false
+  },
+  upperThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  lowerThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  scrollTop: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollLeft: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
+  scrollWithAnimation: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableBackToTop: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherEnabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherThreshold: {
+    type: Number,
+    default: 45
+  },
+  refresherDefaultStyle: {
+    type: String,
+    default: "back"
+  },
+  refresherBackground: {
+    type: String,
+    default: "#fff"
+  },
+  refresherTriggered: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  props: {
-    scrollX: {
-      type: [Boolean, String],
-      default: false
-    },
-    scrollY: {
-      type: [Boolean, String],
-      default: false
-    },
-    upperThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    lowerThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    scrollTop: {
-      type: [Number, String],
-      default: 0
-    },
-    scrollLeft: {
-      type: [Number, String],
-      default: 0
-    },
-    scrollIntoView: {
-      type: String,
-      default: ""
-    },
-    scrollWithAnimation: {
-      type: [Boolean, String],
-      default: false
-    },
-    enableBackToTop: {
-      type: [Boolean, String],
-      default: false
-    },
-    refresherEnabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      default: "back"
-    },
-    refresherBackground: {
-      type: String,
-      default: "#fff"
-    },
-    refresherTriggered: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data() {
-    return {
-      lastScrollTop: this.scrollTopNumber,
-      lastScrollLeft: this.scrollLeftNumber,
-      lastScrollToUpperTime: 0,
-      lastScrollToLowerTime: 0,
-      refresherHeight: 0,
-      refreshRotate: 0,
-      refreshState: ""
-    };
-  },
-  computed: {
-    upperThresholdNumber() {
-      var val = Number(this.upperThreshold);
-      return isNaN(val) ? 50 : val;
-    },
-    lowerThresholdNumber() {
-      var val = Number(this.lowerThreshold);
-      return isNaN(val) ? 50 : val;
-    },
-    scrollTopNumber() {
-      return Number(this.scrollTop) || 0;
-    },
-    scrollLeftNumber() {
-      return Number(this.scrollLeft) || 0;
-    }
-  },
-  watch: {
-    scrollTopNumber(val) {
-      this._scrollTopChanged(val);
-    },
-    scrollLeftNumber(val) {
-      this._scrollLeftChanged(val);
-    },
-    scrollIntoView(val) {
-      this._scrollIntoViewChanged(val);
-    },
-    refresherTriggered(val) {
-      if (val === true) {
-        this._setRefreshState("refreshing");
-      } else if (val === false) {
-        this._setRefreshState("restore");
-      }
-    }
-  },
-  mounted() {
-    this.$trigger = useCustomEvent({
-      value: this.rootRef
-    }, this.$emit);
-    var self = this;
-    this._attached = true;
-    this._scrollTopChanged(this.scrollTopNumber);
-    this._scrollLeftChanged(this.scrollLeftNumber);
-    this._scrollIntoViewChanged(this.scrollIntoView);
-    this.__handleScroll = function(event) {
-      event.stopPropagation();
-      self._handleScroll.bind(self, event)();
-    };
-    var touchStart = null;
-    var needStop = null;
-    this.__handleTouchMove = function(event) {
-      var x = event.touches[0].pageX;
-      var y = event.touches[0].pageY;
-      var main = self.main;
-      if (needStop === null) {
-        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          if (self.scrollX) {
-            if (main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false;
-              return;
-            } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
-              needStop = false;
-              return;
-            }
-            needStop = true;
-          } else {
-            needStop = false;
-          }
-        } else {
-          if (self.scrollY) {
-            if (main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false;
-              return;
-            } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
-              needStop = false;
-              return;
-            }
-            needStop = true;
-          } else {
-            needStop = false;
-          }
-        }
-      }
-      if (needStop) {
-        event.stopPropagation();
-      }
-      if (self.refresherEnabled && self.refreshState === "pulling") {
-        const dy = y - touchStart.y;
-        self.refresherHeight = dy;
-        let rotate = dy / self.refresherThreshold;
-        if (rotate > 1) {
-          rotate = 1;
-        } else {
-          rotate = rotate * 360;
-        }
-        self.refreshRotate = rotate;
-        self.$trigger("refresherpulling", event, {
-          deltaY: dy
-        });
-      }
-    };
-    this.__handleTouchStart = function(event) {
-      if (event.touches.length === 1) {
-        needStop = null;
-        touchStart = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY
-        };
-        if (self.refresherEnabled && self.refreshState !== "refreshing" && self.main.scrollTop === 0) {
-          self.refreshState = "pulling";
-        }
-      }
-    };
-    this.__handleTouchEnd = function(event) {
-      touchStart = null;
-      if (self.refresherHeight >= self.refresherThreshold) {
-        self._setRefreshState("refreshing");
-      } else {
-        self.refresherHeight = 0;
-        self.$trigger("refresherabort", event, {});
-      }
-    };
-    this.main.addEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.main.addEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.main.addEventListener("scroll", this.__handleScroll, passiveOptions);
-    this.main.addEventListener("touchend", this.__handleTouchEnd, passiveOptions);
-  },
-  activated() {
-    this.scrollY && (this.main.scrollTop = this.lastScrollTop);
-    this.scrollX && (this.main.scrollLeft = this.lastScrollLeft);
-  },
-  beforeUnmount() {
-    this.main.removeEventListener("touchstart", this.__handleTouchStart, passiveOptions);
-    this.main.removeEventListener("touchmove", this.__handleTouchMove, passiveOptions);
-    this.main.removeEventListener("scroll", this.__handleScroll, passiveOptions);
-    this.main.removeEventListener("touchend", this.__handleTouchEnd, passiveOptions);
-  },
-  methods: {
-    scrollTo: function(t2, n) {
-      var i = this.main;
-      t2 < 0 ? t2 = 0 : n === "x" && t2 > i.scrollWidth - i.offsetWidth ? t2 = i.scrollWidth - i.offsetWidth : n === "y" && t2 > i.scrollHeight - i.offsetHeight && (t2 = i.scrollHeight - i.offsetHeight);
-      var r = 0;
-      var o2 = "";
-      n === "x" ? r = i.scrollLeft - t2 : n === "y" && (r = i.scrollTop - t2);
-      if (r !== 0) {
-        this.content.style.transition = "transform .3s ease-out";
-        this.content.style.webkitTransition = "-webkit-transform .3s ease-out";
-        if (n === "x") {
-          o2 = "translateX(" + r + "px) translateZ(0)";
-        } else {
-          n === "y" && (o2 = "translateY(" + r + "px) translateZ(0)");
-        }
-        this.content.removeEventListener("transitionend", this.__transitionEnd);
-        this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
-        this.__transitionEnd = this._transitionEnd.bind(this, t2, n);
-        this.content.addEventListener("transitionend", this.__transitionEnd);
-        this.content.addEventListener("webkitTransitionEnd", this.__transitionEnd);
-        if (n === "x") {
-          i.style.overflowX = "hidden";
-        } else if (n === "y") {
-          i.style.overflowY = "hidden";
-        }
-        this.content.style.transform = o2;
-        this.content.style.webkitTransform = o2;
-      }
-    },
-    _handleScroll: function($event) {
-      if (!($event.timeStamp - this._lastScrollTime < 20)) {
-        this._lastScrollTime = $event.timeStamp;
-        const target = $event.target;
-        this.$trigger("scroll", $event, {
-          scrollLeft: target.scrollLeft,
-          scrollTop: target.scrollTop,
-          scrollHeight: target.scrollHeight,
-          scrollWidth: target.scrollWidth,
-          deltaX: this.lastScrollLeft - target.scrollLeft,
-          deltaY: this.lastScrollTop - target.scrollTop
-        });
-        if (this.scrollY) {
-          if (target.scrollTop <= this.upperThresholdNumber && this.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
-            this.$trigger("scrolltoupper", $event, {
-              direction: "top"
-            });
-            this.lastScrollToUpperTime = $event.timeStamp;
-          }
-          if (target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >= target.scrollHeight && this.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
-            this.$trigger("scrolltolower", $event, {
-              direction: "bottom"
-            });
-            this.lastScrollToLowerTime = $event.timeStamp;
-          }
-        }
-        if (this.scrollX) {
-          if (target.scrollLeft <= this.upperThresholdNumber && this.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
-            this.$trigger("scrolltoupper", $event, {
-              direction: "left"
-            });
-            this.lastScrollToUpperTime = $event.timeStamp;
-          }
-          if (target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >= target.scrollWidth && this.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
-            this.$trigger("scrolltolower", $event, {
-              direction: "right"
-            });
-            this.lastScrollToLowerTime = $event.timeStamp;
-          }
-        }
-        this.lastScrollTop = target.scrollTop;
-        this.lastScrollLeft = target.scrollLeft;
-      }
-    },
-    _scrollTopChanged: function(val) {
-      if (this.scrollY) {
-        if (this._innerSetScrollTop) {
-          this._innerSetScrollTop = false;
-        } else {
-          if (this.scrollWithAnimation) {
-            this.scrollTo(val, "y");
-          } else {
-            this.main.scrollTop = val;
-          }
-        }
-      }
-    },
-    _scrollLeftChanged: function(val) {
-      if (this.scrollX) {
-        if (this._innerSetScrollLeft) {
-          this._innerSetScrollLeft = false;
-        } else {
-          if (this.scrollWithAnimation) {
-            this.scrollTo(val, "x");
-          } else {
-            this.main.scrollLeft = val;
-          }
-        }
-      }
-    },
-    _scrollIntoViewChanged: function(val) {
-      if (val) {
-        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.error(`id error: scroll-into-view=${val}`);
-          return;
-        }
-        var element = this.rootRef.querySelector("#" + val);
-        if (element) {
-          var mainRect = this.main.getBoundingClientRect();
-          var elRect = element.getBoundingClientRect();
-          if (this.scrollX) {
-            var left = elRect.left - mainRect.left;
-            var scrollLeft = this.main.scrollLeft;
-            var x = scrollLeft + left;
-            if (this.scrollWithAnimation) {
-              this.scrollTo(x, "x");
-            } else {
-              this.main.scrollLeft = x;
-            }
-          }
-          if (this.scrollY) {
-            var top = elRect.top - mainRect.top;
-            var scrollTop = this.main.scrollTop;
-            var y = scrollTop + top;
-            if (this.scrollWithAnimation) {
-              this.scrollTo(y, "y");
-            } else {
-              this.main.scrollTop = y;
-            }
-          }
-        }
-      }
-    },
-    _transitionEnd: function(val, type) {
-      this.content.style.transition = "";
-      this.content.style.webkitTransition = "";
-      this.content.style.transform = "";
-      this.content.style.webkitTransform = "";
-      var main = this.main;
-      if (type === "x") {
-        main.style.overflowX = this.scrollX ? "auto" : "hidden";
-        main.scrollLeft = val;
-      } else if (type === "y") {
-        main.style.overflowY = this.scrollY ? "auto" : "hidden";
-        main.scrollTop = val;
-      }
-      this.content.removeEventListener("transitionend", this.__transitionEnd);
-      this.content.removeEventListener("webkitTransitionEnd", this.__transitionEnd);
-    },
-    _setRefreshState(state) {
-      switch (state) {
-        case "refreshing":
-          this.refresherHeight = this.refresherThreshold;
-          this.$trigger("refresherrefresh", {}, {});
-          break;
-        case "restore":
-          this.refresherHeight = 0;
-          this.$trigger("refresherrestore", {}, {});
-          break;
-      }
-      this.refreshState = state;
-    },
-    getScrollPosition() {
-      const main = this.main;
-      return {
-        scrollLeft: main.scrollLeft,
-        scrollTop: main.scrollTop,
-        scrollHeight: main.scrollHeight,
-        scrollWidth: main.scrollWidth
-      };
-    }
-  },
-  setup(props2) {
+  props: props$d,
+  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherabort"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
     const rootRef = vue.ref(null);
     const main = vue.ref(null);
+    const wrap = vue.ref(null);
     const content = vue.ref(null);
-    return {
-      rootRef,
-      main,
-      content
+    const refresherinner = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      state,
+      scrollTopNumber,
+      scrollLeftNumber
+    } = useScrollViewState(props2);
+    useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    return () => {
+      const {
+        scrollX,
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState,
+        refreshRotate
+      } = state;
+      return vue.createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, [vue.createVNode("div", {
+        "ref": wrap,
+        "class": "uni-scroll-view"
+      }, [vue.createVNode("div", {
+        "ref": main,
+        "style": {
+          overflowX: scrollX ? "auto" : "hidden",
+          overflowY: scrollY ? "auto" : "hidden"
+        },
+        "class": "uni-scroll-view"
+      }, [vue.createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [refresherEnabled ? vue.createVNode("div", {
+        "ref": refresherinner,
+        "style": {
+          backgroundColor: refresherBackground,
+          height: refresherHeight + "px"
+        },
+        "class": "uni-scroll-view-refresher"
+      }, [refresherDefaultStyle !== "none" ? vue.createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [vue.createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [refreshState == "pulling" ? vue.createVNode("svg", {
+        "style": {
+          transform: "rotate(" + refreshRotate + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [vue.createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), vue.createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [vue.createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
     };
   }
-};
-const _hoisted_1$1 = {ref: "rootRef"};
-const _hoisted_2$1 = {
-  ref: "wrap",
-  class: "uni-scroll-view"
-};
-const _hoisted_3$1 = {
-  ref: "content",
-  class: "uni-scroll-view-content"
-};
-const _hoisted_4$1 = {
-  key: 0,
-  class: "uni-scroll-view-refresh"
-};
-const _hoisted_5 = {class: "uni-scroll-view-refresh-inner"};
-const _hoisted_6 = /* @__PURE__ */ vue.createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
-const _hoisted_7 = /* @__PURE__ */ vue.createVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_8 = {
-  key: 1,
-  class: "uni-scroll-view-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_9 = /* @__PURE__ */ vue.createVNode("circle", {
-  cx: "50",
-  cy: "50",
-  r: "20",
-  fill: "none",
-  style: {"color": "#2bd009"},
-  "stroke-width": "3"
-}, null, -1);
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-scroll-view", _hoisted_1$1, [
-    vue.createVNode("div", _hoisted_2$1, [
-      vue.createVNode("div", {
-        ref: "main",
-        style: {
-          "overflow-x": $props.scrollX ? "auto" : "hidden",
-          "overflow-y": $props.scrollY ? "auto" : "hidden"
-        },
-        class: "uni-scroll-view"
-      }, [
-        vue.createVNode("div", _hoisted_3$1, [
-          $props.refresherEnabled ? (vue.openBlock(), vue.createBlock("div", {
-            key: 0,
-            ref: "refresherinner",
-            style: {
-              "background-color": $props.refresherBackground,
-              height: $data.refresherHeight + "px"
-            },
-            class: "uni-scroll-view-refresher"
-          }, [
-            $props.refresherDefaultStyle !== "none" ? (vue.openBlock(), vue.createBlock("div", _hoisted_4$1, [
-              vue.createVNode("div", _hoisted_5, [
-                $data.refreshState == "pulling" ? (vue.openBlock(), vue.createBlock("svg", {
-                  key: 0,
-                  style: {transform: "rotate(" + $data.refreshRotate + "deg)"},
-                  fill: "#2BD009",
-                  class: "uni-scroll-view-refresh__icon",
-                  width: "24",
-                  height: "24",
-                  viewBox: "0 0 24 24"
-                }, [
-                  _hoisted_6,
-                  _hoisted_7
-                ], 4)) : vue.createCommentVNode("", true),
-                $data.refreshState == "refreshing" ? (vue.openBlock(), vue.createBlock("svg", _hoisted_8, [
-                  _hoisted_9
-                ])) : vue.createCommentVNode("", true)
-              ])
-            ])) : vue.createCommentVNode("", true),
-            $props.refresherDefaultStyle == "none" ? vue.renderSlot(_ctx.$slots, "refresher", {key: 1}) : vue.createCommentVNode("", true)
-          ], 4)) : vue.createCommentVNode("", true),
-          vue.renderSlot(_ctx.$slots, "default")
-        ], 512)
-      ], 4)
-    ], 512)
-  ], 512);
+});
+function useScrollViewState(props2) {
+  const scrollTopNumber = vue.computed(() => {
+    return Number(props2.scrollTop) || 0;
+  });
+  const scrollLeftNumber = vue.computed(() => {
+    return Number(props2.scrollLeft) || 0;
+  });
+  const state = vue.reactive({
+    lastScrollTop: scrollTopNumber.value,
+    lastScrollLeft: scrollLeftNumber.value,
+    lastScrollToUpperTime: 0,
+    lastScrollToLowerTime: 0,
+    refresherHeight: 0,
+    refreshRotate: 0,
+    refreshState: ""
+  });
+  return {
+    state,
+    scrollTopNumber,
+    scrollLeftNumber
+  };
 }
-_sfc_main$2.render = _sfc_render$2;
+function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
+  let __transitionEnd = () => {
+  };
+  vue.computed(() => {
+    var val = Number(props2.upperThreshold);
+    return isNaN(val) ? 50 : val;
+  });
+  vue.computed(() => {
+    var val = Number(props2.lowerThreshold);
+    return isNaN(val) ? 50 : val;
+  });
+  function scrollTo(t2, n) {
+    var i = main.value;
+    t2 < 0 ? t2 = 0 : n === "x" && t2 > i.scrollWidth - i.offsetWidth ? t2 = i.scrollWidth - i.offsetWidth : n === "y" && t2 > i.scrollHeight - i.offsetHeight && (t2 = i.scrollHeight - i.offsetHeight);
+    var r = 0;
+    var o2 = "";
+    n === "x" ? r = i.scrollLeft - t2 : n === "y" && (r = i.scrollTop - t2);
+    if (r !== 0) {
+      content.value.style.transition = "transform .3s ease-out";
+      content.value.style.webkitTransition = "-webkit-transform .3s ease-out";
+      if (n === "x") {
+        o2 = "translateX(" + r + "px) translateZ(0)";
+      } else {
+        n === "y" && (o2 = "translateY(" + r + "px) translateZ(0)");
+      }
+      content.value.removeEventListener("transitionend", __transitionEnd);
+      content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
+      __transitionEnd = () => _transitionEnd(t2, n);
+      content.value.addEventListener("transitionend", __transitionEnd);
+      content.value.addEventListener("webkitTransitionEnd", __transitionEnd);
+      if (n === "x") {
+        i.style.overflowX = "hidden";
+      } else if (n === "y") {
+        i.style.overflowY = "hidden";
+      }
+      content.value.style.transform = o2;
+      content.value.style.webkitTransform = o2;
+    }
+  }
+  function _scrollTopChanged(val) {
+    if (props2.scrollY) {
+      {
+        if (props2.scrollWithAnimation) {
+          scrollTo(val, "y");
+        } else {
+          main.value.scrollTop = val;
+        }
+      }
+    }
+  }
+  function _scrollLeftChanged(val) {
+    if (props2.scrollX) {
+      {
+        if (props2.scrollWithAnimation) {
+          scrollTo(val, "x");
+        } else {
+          main.value.scrollLeft = val;
+        }
+      }
+    }
+  }
+  function _scrollIntoViewChanged(val) {
+    if (val) {
+      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+        console.error(`id error: scroll-into-view=${val}`);
+        return;
+      }
+      var element = rootRef.value.querySelector("#" + val);
+      if (element) {
+        var mainRect = main.value.getBoundingClientRect();
+        var elRect = element.getBoundingClientRect();
+        if (props2.scrollX) {
+          var left = elRect.left - mainRect.left;
+          var scrollLeft = main.value.scrollLeft;
+          var x = scrollLeft + left;
+          if (props2.scrollWithAnimation) {
+            scrollTo(x, "x");
+          } else {
+            main.value.scrollLeft = x;
+          }
+        }
+        if (props2.scrollY) {
+          var top = elRect.top - mainRect.top;
+          var scrollTop = main.value.scrollTop;
+          var y = scrollTop + top;
+          if (props2.scrollWithAnimation) {
+            scrollTo(y, "y");
+          } else {
+            main.value.scrollTop = y;
+          }
+        }
+      }
+    }
+  }
+  function _transitionEnd(val, type) {
+    content.value.style.transition = "";
+    content.value.style.webkitTransition = "";
+    content.value.style.transform = "";
+    content.value.style.webkitTransform = "";
+    let _main = main.value;
+    if (type === "x") {
+      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.scrollLeft = val;
+    } else if (type === "y") {
+      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.scrollTop = val;
+    }
+    content.value.removeEventListener("transitionend", __transitionEnd);
+    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
+  }
+  function _setRefreshState(_state) {
+    switch (_state) {
+      case "refreshing":
+        state.refresherHeight = props2.refresherThreshold;
+        trigger("refresherrefresh", {}, {});
+        break;
+      case "restore":
+        state.refresherHeight = 0;
+        trigger("refresherrestore", {}, {});
+        break;
+    }
+    state.refreshState = _state;
+  }
+  vue.watch(scrollTopNumber, (val) => {
+    _scrollTopChanged(val);
+  });
+  vue.watch(scrollLeftNumber, (val) => {
+    _scrollLeftChanged(val);
+  });
+  vue.watch(() => props2.scrollIntoView, (val) => {
+    _scrollIntoViewChanged(val);
+  });
+  vue.watch(() => props2.refresherTriggered, (val) => {
+    if (val === true) {
+      _setRefreshState("refreshing");
+    } else if (val === false) {
+      _setRefreshState("restore");
+    }
+  });
+}
 const props$c = {
   name: {
     type: String,
@@ -7102,7 +6938,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$8 = /* @__PURE__ */ shared.extend({}, props$m, {
+const props$8 = /* @__PURE__ */ shared.extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11322,35 +11158,35 @@ var index = /* @__PURE__ */ defineSystemComponent({
 });
 exports.AsyncErrorComponent = index$1;
 exports.AsyncLoadingComponent = index;
-exports.Audio = _sfc_main$3;
-exports.Button = index$u;
-exports.Canvas = index$t;
-exports.Checkbox = index$r;
-exports.CheckboxGroup = index$s;
+exports.Audio = _sfc_main$2;
+exports.Button = index$v;
+exports.Canvas = index$u;
+exports.Checkbox = index$s;
+exports.CheckboxGroup = index$t;
 exports.CoverImage = index$3;
 exports.CoverView = index$4;
-exports.Editor = index$q;
-exports.Form = index$w;
+exports.Editor = index$r;
+exports.Form = index$x;
 exports.Friction = Friction;
-exports.Icon = index$p;
-exports.Image = index$o;
+exports.Icon = index$q;
+exports.Image = index$p;
 exports.Input = Input;
-exports.Label = index$v;
+exports.Label = index$w;
 exports.LayoutComponent = LayoutComponent;
 exports.Map = index$5;
-exports.MovableArea = index$n;
-exports.MovableView = index$m;
-exports.Navigator = index$l;
+exports.MovableArea = index$o;
+exports.MovableView = index$n;
+exports.Navigator = index$m;
 exports.PageComponent = index$2;
 exports.Picker = _sfc_main$1;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$k;
-exports.Radio = index$i;
-exports.RadioGroup = index$j;
+exports.Progress = index$l;
+exports.Radio = index$j;
+exports.RadioGroup = index$k;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$h;
-exports.ScrollView = _sfc_main$2;
+exports.RichText = index$i;
+exports.ScrollView = index$h;
 exports.Scroller = Scroller;
 exports.Slider = index$g;
 exports.Spring = Spring;
