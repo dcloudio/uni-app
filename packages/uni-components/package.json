@@ -4,7 +4,8 @@
   "description": "@dcloudio/uni-components",
   "main": "index.js",
   "files": [
-    "style"
+    "style",
+    "lib"
   ],
   "repository": {
     "type": "git",
