@@ -1,11 +1,12 @@
+import { Plugin } from 'vite'
 import { extend, hasOwn, isArray } from '@vue/shared'
 import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
 
-import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { VitePluginUniResolvedOptions } from '..'
+import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { createTransformEvent } from './transforms/transformEvent'
 
 function createUniVueTransformAssetUrls(
@@ -31,7 +32,16 @@ function createUniVueTransformAssetUrls(
   }
 }
 
-export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
+interface UniPlugin extends Plugin {
+  uni?: {
+    transformEvent?: Record<string, string>
+  }
+}
+
+export function initPluginVueOptions(
+  options: VitePluginUniResolvedOptions,
+  uniPlugins: UniPlugin[]
+) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
   if (!vueOptions.include) {
     vueOptions.include = []
@@ -61,7 +71,14 @@ export function initPluginVueOptions(options: VitePluginUniResolvedOptions) {
     compatConfig
   )
 
-  compilerOptions.nodeTransforms.unshift(createTransformEvent({}))
+  const eventOpts = uniPlugins.reduce<Record<string, string>>(
+    (eventOpts, uniPlugin) => {
+      return extend(eventOpts, uniPlugin.uni?.transformEvent || {})
+    },
+    {}
+  )
+
+  compilerOptions.nodeTransforms.unshift(createTransformEvent(eventOpts))
   if (options.platform !== 'mp-weixin') {
     compilerOptions.nodeTransforms.unshift(transformMatchMedia)
   }

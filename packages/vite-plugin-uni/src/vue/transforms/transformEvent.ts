@@ -7,8 +7,8 @@ export function createTransformEvent(options: Record<string, string>) {
       return
     }
     node.props.forEach((prop) => {
-      const { arg } = prop as DirectiveNode
-      if (arg && isSimpleExpressionNode(arg)) {
+      const { name, arg } = prop as DirectiveNode
+      if (name === 'on' && arg && isSimpleExpressionNode(arg)) {
         const eventType = options[arg.content]
         if (eventType) {
           // e.g tap => click

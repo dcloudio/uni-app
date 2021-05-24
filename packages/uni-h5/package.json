@@ -30,5 +30,9 @@
   "peerDependencies": {
     "@vue/shared": "^3.1.0-beta.3",
     "vue-router": "^4.0.8"
+  },
+  "uni-app": {
+    "name": "uni-h5",
+    "apply": "h5"
   }
 }

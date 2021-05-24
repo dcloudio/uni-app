@@ -32,6 +32,7 @@ function initPlugin(plugin: PluginConfig): Plugin | void {
 function initPlugins(plugins: PluginConfig[]): Plugin[] {
   return plugins
     .map((plugin) => initPlugin(plugin))
+    .flat()
     .filter<Plugin>(Boolean as any)
 }
 

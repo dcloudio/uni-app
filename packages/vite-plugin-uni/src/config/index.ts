@@ -25,7 +25,8 @@ function normalizeInputDir(config: UserConfig) {
   return process.env.UNI_INPUT_DIR || path.resolve(normalizeRoot(config), 'src')
 }
 export function createConfig(
-  options: VitePluginUniResolvedOptions
+  options: VitePluginUniResolvedOptions,
+  uniPlugins: Plugin[]
 ): Plugin['config'] {
   return (config, env) => {
     options.command = env.command
@@ -40,7 +41,7 @@ export function createConfig(
       base = '/'
     }
     options.base = base!
-    options.vueOptions = initPluginVueOptions(options)
+    options.vueOptions = initPluginVueOptions(options, uniPlugins)
     options.vueJsxOptions = initPluginVueJsxOptions(options)
     options.viteLegacyOptions = initPluginViteLegacyOptions(options)
 

@@ -1,3 +1,4 @@
+import debug from 'debug'
 import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { Options as VueOptions } from '@vitejs/plugin-vue'
 import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
@@ -10,6 +11,9 @@ import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 import { createHandleHotUpdate } from './handleHotUpdate'
 import { initExtraPlugins } from './utils'
+
+const debugUni = debug('vite:uni:plugin')
+
 export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string
@@ -64,19 +68,19 @@ export default function uniPlugin(
   if (createVueJsxPlugin && options.vueJsxOptions !== false) {
     plugins.push(createVueJsxPlugin(options.vueJsxOptions))
   }
+  const uniPlugins = initExtraPlugins(
+    process.env.UNI_CLI_CONTEXT || process.cwd(),
+    (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
+  )
+  debugUni(uniPlugins)
   plugins.push({
     name: 'vite:uni',
-    config: createConfig(options),
+    config: createConfig(options, uniPlugins),
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
     handleHotUpdate: createHandleHotUpdate(options),
   })
-  plugins.push(
-    ...initExtraPlugins(
-      process.env.UNI_CLI_CONTEXT || process.cwd(),
-      (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
-    )
-  )
+  plugins.push(...uniPlugins)
   return plugins
 }
 
