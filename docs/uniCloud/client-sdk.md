@@ -54,6 +54,81 @@ uniCloud分为客户端和云端两部分，有些接口名称相同，参数也
 console.log(uniCloud.getCurrentUserInfo().role.indexOf('admin')>-1); // 如果是admin用户的话，打印结果为true
 ```
 
+<!-- ### 新增拦截器@add-interceptor
+
+```
++ clientDB客户端sdk 新增 添加拦截器、移除拦截器API [详情](https://uniapp.dcloud.net.cn/uniCloud/client-sdk?id=add-interceptor)
+```
+
+接口形式：`uniCloud.addInterceptor(String apiName, Object interceptorMap)`
+
+**平台兼容性**
+
+|阿里云	|腾讯云	|
+|----		|----		|
+|√			|√			|
+
+
+**入参说明**
+
+| 字段					| 类型	| 必填| 说明																												|
+| ---						| ---		| ---	| ---																													|
+| apiName				| string| 是	| 要拦截的Api名称，可选值：callFunction、database、uploadFile	|
+| interceptorMap| object| 是	| 要添加的拦截器																							|
+
+**interceptorMap参数说明**
+
+|参数名		|类型			|必填	|默认值	|说明					|平台差异说明	|
+|---			|---			|---	|---		|---					|---					|
+|invoke		|Function	|否		|				|拦截前触发		|							|
+|success	|Function	|否		|				|成功回调拦截	|							|
+|fail			|Function	|否		|				|失败回调拦截	|							|
+|complete	|Function	|否		|				|完成回调拦截	|							|
+
+示例
+
+```js
+uniCloud.addInterceptor('callFunction', {
+  invoke(param) {
+    // param为拦截Api的参数 例 {name: 'functionName', data: {'functionParam1': 1, 'functionParam2': 2}}
+    // 此处返回错误可终止api执行
+  },
+  success(res) {
+    // res为callFunction的返回值，此处可以对返回值进行修改
+  },
+  fail(err) {
+    // err为callFunction抛出的错误
+  },
+  complete(res){
+    // complete内res为上面的res或err
+  }
+})
+```
+
+### 移除拦截器@remove-interceptor
+
+接口形式：`uniCloud.removeInterceptor(String apiName, Object interceptorMap)`
+
+**入参说明**
+
+| 字段					| 类型	| 必填| 说明																												|
+| ---						| ---		| ---	| ---																													|
+| apiName				| string| 是	| 要拦截的Api名称，可选值：callFunction、database、uploadFile	|
+| interceptorMap| object| 是	| 要移除的拦截器，选填，不传递此参数时移除此Api所有拦截器			|
+
+**interceptorMap参数说明**
+
+|参数名		|类型			|必填	|默认值	|说明					|平台差异说明	|
+|---			|---			|---	|---		|---					|---					|
+|invoke		|Function	|否		|				|拦截前触发		|							|
+|success	|Function	|否		|				|成功回调拦截	|							|
+|fail			|Function	|否		|				|失败回调拦截	|							|
+|complete	|Function	|否		|				|完成回调拦截	|							|
+
+**注意：**
+
+- 要移除的拦截器内方法需和添加的方法一致才可以移除 -->
+
 ## 属性
 
 ### 获取当前uniCloud实例的服务商
