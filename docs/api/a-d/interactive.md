@@ -32,7 +32,7 @@
 
 ### 活动分类表
 <table>
-	<thead>
+	<thead style="background-color: #f8f8f8;">
 		<tr>
 			<td>活动分类</td>
 			<td>活动名称</td>
