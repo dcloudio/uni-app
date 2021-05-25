@@ -1460,6 +1460,15 @@ function createDevtoolsComponentHook(hook) {
         exports.devtools.emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
     };
 }
+const devtoolsPerfStart = /*#__PURE__*/ createDevtoolsPerformanceHook("perf:start" /* PERFORMANCE_START */);
+const devtoolsPerfEnd = /*#__PURE__*/ createDevtoolsPerformanceHook("perf:end" /* PERFORMANCE_END */);
+function createDevtoolsPerformanceHook(hook) {
+    return (component, type, time) => {
+        if (!exports.devtools)
+            return;
+        exports.devtools.emit(hook, component.appContext.app, component.uid, component, type, time);
+    };
+}
 function devtoolsComponentEmit(component, event, params) {
     if (!exports.devtools)
         return;
@@ -2029,12 +2038,16 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot // false on
         if (!isRenderingCompiledSlot) {
             closeBlock();
         }
+        {
+            devtoolsComponentUpdated(ctx);
+        }
         return res;
     };
     // mark this as a compiled slot function.
     // this is used in vnode.ts -> normalizeChildren() to set the slot
     // rendering flag.
-    renderFnWithContext._c = true;
+    // also used to cache the normalized results to avoid repeated normalization
+    renderFnWithContext._c = renderFnWithContext;
     return renderFnWithContext;
 }
 
@@ -3880,7 +3893,8 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
         instance.render = render;
     }
     // fixed by xxxxxx
-    const customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
+    const customApplyOptions = instance.appContext.config.globalProperties
+        .$applyOptions;
     if (customApplyOptions) {
         customApplyOptions(options, instance, publicThis);
     }
@@ -4284,7 +4298,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
                     }
                     else {
                         const camelizedKey = shared.camelize(key);
-                        props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance);
+                        props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance, false /* isAbsent */);
                     }
                 }
                 else {
@@ -4317,7 +4331,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
                         (rawPrevProps[key] !== undefined ||
                             // for kebab-case
                             rawPrevProps[kebabKey] !== undefined)) {
-                        props[key] = resolvePropValue(options, rawProps || shared.EMPTY_OBJ, key, undefined, instance);
+                        props[key] = resolvePropValue(options, rawCurrentProps, key, undefined, instance, true /* isAbsent */);
                     }
                 }
                 else {
@@ -4347,6 +4361,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
 function setFullProps(instance, rawProps, props, attrs) {
     const [options, needCastKeys] = instance.propsOptions;
     let hasAttrsChanged = false;
+    let rawCastValues;
     if (rawProps) {
         for (let key in rawProps) {
             // key, ref are reserved and never passed down
@@ -4358,7 +4373,12 @@ function setFullProps(instance, rawProps, props, attrs) {
             // kebab -> camel conversion here we need to camelize the key.
             let camelKey;
             if (options && shared.hasOwn(options, (camelKey = shared.camelize(key)))) {
-                props[camelKey] = value;
+                if (!needCastKeys || !needCastKeys.includes(camelKey)) {
+                    props[camelKey] = value;
+                }
+                else {
+                    (rawCastValues || (rawCastValues = {}))[camelKey] = value;
+                }
             }
             else if (!isEmitListener(instance.emitsOptions, key)) {
                 if (value !== attrs[key]) {
@@ -4370,14 +4390,15 @@ function setFullProps(instance, rawProps, props, attrs) {
     }
     if (needCastKeys) {
         const rawCurrentProps = toRaw(props);
+        const castValues = rawCastValues || shared.EMPTY_OBJ;
         for (let i = 0; i < needCastKeys.length; i++) {
             const key = needCastKeys[i];
-            props[key] = resolvePropValue(options, rawCurrentProps, key, rawCurrentProps[key], instance);
+            props[key] = resolvePropValue(options, rawCurrentProps, key, castValues[key], instance, !shared.hasOwn(castValues, key));
         }
     }
     return hasAttrsChanged;
 }
-function resolvePropValue(options, props, key, value, instance) {
+function resolvePropValue(options, props, key, value, instance, isAbsent) {
     const opt = options[key];
     if (opt != null) {
         const hasDefault = shared.hasOwn(opt, 'default');
@@ -4401,7 +4422,7 @@ function resolvePropValue(options, props, key, value, instance) {
         }
         // boolean casting
         if (opt[0 /* shouldCast */]) {
-            if (!shared.hasOwn(props, key) && !hasDefault) {
+            if (isAbsent && !hasDefault) {
                 value = false;
             }
             else if (opt[1 /* shouldCastTrue */] &&
@@ -4638,14 +4659,15 @@ const isInternalKey = (key) => key[0] === '_' || key === '$stable';
 const normalizeSlotValue = (value) => shared.isArray(value)
     ? value.map(normalizeVNode)
     : [normalizeVNode(value)];
-const normalizeSlot = (key, rawSlot, ctx) => withCtx((props) => {
-    if (currentInstance) {
-        warn(`Slot "${key}" invoked outside of the render function: ` +
-            `this will not track dependencies used in the slot. ` +
-            `Invoke the slot function inside the render function instead.`);
-    }
-    return normalizeSlotValue(rawSlot(props));
-}, ctx);
+const normalizeSlot = (key, rawSlot, ctx) => rawSlot._c ||
+    withCtx((props) => {
+        if (currentInstance) {
+            warn(`Slot "${key}" invoked outside of the render function: ` +
+                `this will not track dependencies used in the slot. ` +
+                `Invoke the slot function inside the render function instead.`);
+        }
+        return normalizeSlotValue(rawSlot(props));
+    }, ctx);
 const normalizeObjectSlots = (rawSlots, slots, instance) => {
     const ctx = rawSlots._ctx;
     for (const key in rawSlots) {
@@ -4678,7 +4700,9 @@ const initSlots = (instance, children) => {
     if (instance.vnode.shapeFlag & 32 /* SLOTS_CHILDREN */) {
         const type = children._;
         if (type) {
-            instance.slots = children;
+            // users can get the shallow readonly version of the slots object through `this.$slots`,
+            // we should avoid the proxy object polluting the slots of the internal instance
+            instance.slots = toRaw(children);
             // make compiler marker non-enumerable
             shared.def(children, '_', type);
         }
@@ -5282,6 +5306,9 @@ function startMeasure(instance, type) {
     if (instance.appContext.config.performance && isSupported()) {
         perf.mark(`vue-${type}-${instance.uid}`);
     }
+    {
+        devtoolsPerfStart(instance, type, supported ? perf.now() : Date.now());
+    }
 }
 function endMeasure(instance, type) {
     if (instance.appContext.config.performance && isSupported()) {
@@ -5291,6 +5318,9 @@ function endMeasure(instance, type) {
         perf.measure(`<${formatComponentName(instance, instance.type)}> ${type}`, startTag, endTag);
         perf.clearMarks(startTag);
         perf.clearMarks(endTag);
+    }
+    {
+        devtoolsPerfEnd(instance, type, supported ? perf.now() : Date.now());
     }
 }
 function isSupported() {
@@ -8388,7 +8418,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.0-beta.3";
+const version = "3.1.0-beta.4";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
