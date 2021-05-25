@@ -19,6 +19,7 @@ declare namespace UniApp {
       minWidth?: number
     }
     style?: Record<string, any>
+    component: any
   }
 
   interface UniConfig {

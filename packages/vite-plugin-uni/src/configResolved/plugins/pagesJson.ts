@@ -65,6 +65,8 @@ function generatePagesJsonCode(
     options.inputDir,
     options.platform
   )
+  const { importLayoutComponentsCode, defineLayoutComponentsCode } =
+    generateLayoutComponentsCode(globalName, pagesJson)
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
   const uniRoutesCode = generateRoutes(globalName, pagesJson, config, options)
   const uniConfigCode = generateConfig(globalName, pagesJson, options)
@@ -77,9 +79,11 @@ function generatePagesJsonCode(
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
+${importLayoutComponentsCode}
 const extend = Object.assign
 ${cssCode}
 ${uniConfigCode}
+${defineLayoutComponentsCode}
 ${definePagesCode}
 ${uniRoutesCode}
 ${options.command === 'serve' ? hmrCode : ''}
@@ -158,6 +162,31 @@ function generateCssCode(
     })
   }
   return cssFiles.map((file) => `import '${file}'`).join('\n')
+}
+
+function generateLayoutComponentsCode(
+  globalName: string,
+  pagesJson: UniApp.PagesJson
+) {
+  const windowNames: Array<'topWindow' | 'leftWindow' | 'rightWindow'> = [
+    'topWindow',
+    'leftWindow',
+    'rightWindow',
+  ]
+  let importLayoutComponentsCode = ''
+  let defineLayoutComponentsCode = `${globalName}.__uniLayout = ${globalName}.__uniLayout || {}\n`
+  windowNames.forEach((name) => {
+    const windowConfig = pagesJson[name]
+    if (windowConfig && windowConfig.path) {
+      importLayoutComponentsCode += `import ${name} from './${windowConfig.path}'\n`
+      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = ${name}\n`
+    }
+  })
+
+  return {
+    importLayoutComponentsCode,
+    defineLayoutComponentsCode,
+  }
 }
 
 function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {

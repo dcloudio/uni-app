@@ -451,6 +451,19 @@ function normalizePageMeta(pageMeta) {
   }
   return pageMeta;
 }
+const screen = window.screen;
+const documentElement = document.documentElement;
+function checkMinWidth(minWidth) {
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen.width,
+    screen.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ];
+  return Math.max.apply(null, sizes) > minWidth;
+}
 function getStateId() {
   {
     return 1;
@@ -4324,7 +4337,7 @@ const props$i = {
     default: ""
   }
 };
-function useState$1(props2) {
+function useState$2(props2) {
   const value = vue.reactive([...props2.value]);
   const state = vue.reactive({
     value,
@@ -4352,7 +4365,7 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = vue.ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state = useState$1(props2);
+    const state = useState$2(props2);
     const resizeSensorRef = vue.ref(null);
     let columnVNodes = [];
     function getItemIndex(vnode) {
@@ -6337,7 +6350,7 @@ function upx2pxStr(val) {
   }
   return val || "";
 }
-function useState(props2) {
+function useState$1(props2) {
   const interval = vue.computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -6660,7 +6673,7 @@ var index$f = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = vue.ref(null);
     const slideFrameRef = vue.ref(null);
-    const state = useState(props2);
+    const state = useState$1(props2);
     const slidesStyle = vue.computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -10563,16 +10576,23 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   setup(_props, {
     emit: emit2
   }) {
+    const rootRef = vue.ref(null);
     const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
-    __UNI_FEATURE_TOPWINDOW__ && useTopWindow();
-    __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow();
-    __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow();
+    const {
+      layoutState,
+      windowState
+    } = useState();
+    useMaxWidth(layoutState, rootRef);
+    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
+    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
+    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const showTabBar = __UNI_FEATURE_TABBAR__ && useShowTabBar();
     const clazz2 = useAppClass(showTabBar);
     return () => {
-      const layoutTsx = createLayoutTsx(keepAliveRoute);
+      const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar);
       return vue.createVNode("uni-app", {
+        "ref": rootRef,
         "class": clazz2.value
       }, [layoutTsx, tabBarTsx], 2);
     };
@@ -10587,14 +10607,119 @@ function useAppClass(showTabBar) {
     };
   });
 }
-function createLayoutTsx(keepAliveRoute, topWindow, leftWindow, rightWindow) {
+function initMediaQuery(minWidth, callback) {
+  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+  if (mediaQueryList.addEventListener) {
+    mediaQueryList.addEventListener("change", callback);
+  } else {
+    mediaQueryList.addListener(callback);
+  }
+  return mediaQueryList.matches;
+}
+function useMaxWidth(layoutState, rootRef) {
+  const route = vueRouter.useRoute();
+  function checkMaxWidth() {
+    const windowWidth = document.body.clientWidth;
+    const maxWidth = parseInt(String(route.meta.maxWidth || 1190));
+    let showMaxWidth = false;
+    if (windowWidth > maxWidth) {
+      showMaxWidth = true;
+    } else {
+      showMaxWidth = false;
+    }
+    if (showMaxWidth && maxWidth) {
+      layoutState.marginWidth = (windowWidth - maxWidth) / 2;
+      vue.nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.setAttribute("style", "max-width:" + maxWidth + "px;margin:0 auto;");
+        }
+      });
+    } else {
+      layoutState.marginWidth = 0;
+      vue.nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.removeAttribute("style");
+        }
+      });
+    }
+  }
+  vue.watch([() => route.path], checkMaxWidth);
+  window.addEventListener("resize", checkMaxWidth);
+}
+function useState() {
+  const topWindowMediaQuery = vue.ref(false);
+  const leftWindowMediaQuery = vue.ref(false);
+  const rightWindowMediaQuery = vue.ref(false);
+  const showTopWindow = vue.computed(() => __UNI_FEATURE_TOPWINDOW__ && topWindowMediaQuery.value);
+  const showLeftWindow = vue.computed(() => __UNI_FEATURE_LEFTWINDOW__ && leftWindowMediaQuery.value);
+  const showRightWindow = vue.computed(() => __UNI_FEATURE_RIGHTWINDOW__ && rightWindowMediaQuery.value);
+  const layoutState = vue.reactive({
+    topWindowMediaQuery,
+    showTopWindow,
+    apiShowTopWindow: false,
+    leftWindowMediaQuery,
+    showLeftWindow,
+    apiShowLeftWindow: false,
+    rightWindowMediaQuery,
+    showRightWindow,
+    apiShowRightWindow: false,
+    topWindowHeight: 0,
+    marginWidth: 0,
+    leftWindowWidth: 0,
+    rightWindowWidth: 0,
+    topWindowStyle: {},
+    leftWindowStyle: {},
+    rightWindowStyle: {}
+  });
+  const props2 = ["topWindow", "leftWindow", "rightWindow"];
+  props2.forEach((prop) => {
+    var _a;
+    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+    let topWindowMinWidth = uniShared.RESPONSIVE_MIN_WIDTH;
+    if (matchMedia && shared.hasOwn(matchMedia, "minWidth")) {
+      const minWidth = matchMedia.minWidth;
+      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
+    }
+    const matches = initMediaQuery(topWindowMinWidth, (ev) => {
+      layoutState[`${prop}MediaQuery`] = ev.matches;
+    });
+    layoutState[`${prop}MediaQuery`] = matches;
+  });
+  vue.watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
+    "--top-window-height": value + "px"
+  }));
+  vue.watch(() => layoutState.marginWidth, (value) => updateCssVar({
+    "--window-margin": value + "px"
+  }));
+  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
+    "--window-left": value + "px"
+  }));
+  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
+    "--window-right": value + "px"
+  }));
+  const windowState = vue.reactive({
+    matchTopWindow: layoutState.topWindowMediaQuery,
+    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
+    matchLeftWindow: layoutState.leftWindowMediaQuery,
+    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
+    matchRightWindow: layoutState.rightWindowMediaQuery,
+    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
+  });
+  return {
+    layoutState,
+    windowState
+  };
+}
+function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow) {
   const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx() : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx() : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx() : null;
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
   return vue.createVNode("uni-layout", null, [topWindowTsx, vue.createVNode("uni-content", null, [vue.createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])]);
 }
 function useShowTabBar(emit2) {
@@ -10627,36 +10752,119 @@ function createRouterViewVNode({
     _: 1
   });
 }
-function useTopWindow() {
-  const component = vue.resolveComponent("VUniTopWindow");
+function useTopWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.topWindow;
+  const windowRef = vue.ref(null);
+  function updateWindow() {
+    const instalce = windowRef.value;
+    const el = instalce.$el;
+    const height = el.getBoundingClientRect().height;
+    layoutState.topWindowHeight = height;
+  }
+  vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
+  layoutState.topWindowStyle = style;
   return {
     component,
-    style: component.style,
-    height: 0,
-    show: false
+    windowRef
   };
 }
-function useLeftWindow() {
-  const component = vue.resolveComponent("VUniLeftWindow");
+function useLeftWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.leftWindow;
+  const windowRef = vue.ref(null);
+  function updateWindow() {
+    const instalce = windowRef.value;
+    const el = instalce.$el;
+    const width = el.getBoundingClientRect().width;
+    layoutState.leftWindowWidth = width;
+  }
+  vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
+  layoutState.leftWindowStyle = style;
   return {
     component,
-    style: component.style,
-    height: 0
+    windowRef
   };
 }
-function useRightWindow() {
-  const component = vue.resolveComponent("VUniRightWindow");
+function useRightWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.rightWindow;
+  const windowRef = vue.ref(null);
+  function updateWindow() {
+    const instalce = windowRef.value;
+    const el = instalce.$el;
+    const width = el.getBoundingClientRect().width;
+    layoutState.rightWindowWidth = width;
+  }
+  vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
+  layoutState.rightWindowStyle = style;
   return {
     component,
-    style: component.style,
-    height: 0
+    windowRef
   };
 }
-function createTopWindowTsx(topWindow) {
+function createTopWindowTsx(topWindow, layoutState, windowState) {
+  if (topWindow) {
+    const {
+      component: TopWindow,
+      windowRef
+    } = topWindow;
+    return vue.withDirectives(vue.createVNode("uni-top-window", null, [vue.createVNode("div", {
+      "class": "uni-top-window",
+      "style": layoutState.topWindowStyle
+    }, [vue.createVNode(TopWindow, vue.mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)], 4), vue.createVNode("div", {
+      "class": "uni-top-window--placeholder",
+      "style": {
+        height: layoutState.topWindowHeight + "px"
+      }
+    }, null, 4)], 512), [[vue.vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
+  }
 }
-function createLeftWindowTsx(leftWindow) {
+function createLeftWindowTsx(leftWindow, layoutState, windowState) {
+  if (leftWindow) {
+    const {
+      component: LeftWindow,
+      windowRef
+    } = leftWindow;
+    return vue.withDirectives(vue.createVNode("uni-left-window", {
+      "data-show": layoutState.apiShowLeftWindow || void 0,
+      "style": layoutState.leftWindowStyle
+    }, [vue.withDirectives(vue.createVNode("div", {
+      "class": "uni-mask",
+      "onClick": () => layoutState.apiShowLeftWindow = false
+    }, null, 8, ["onClick"]), [[vue.vShow, layoutState.apiShowLeftWindow]]), vue.createVNode("div", {
+      "class": "uni-left-window"
+    }, [vue.createVNode(LeftWindow, vue.mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
+  }
 }
-function createRightWindowTsx(leftWindow) {
+function createRightWindowTsx(rightWindow, layoutState, windowState) {
+  if (rightWindow) {
+    const {
+      component: RightWindow,
+      windowRef
+    } = rightWindow;
+    return vue.withDirectives(vue.createVNode("uni-right-window", {
+      "data-show": layoutState.apiShowRightWindow || void 0,
+      "style": layoutState.rightWindowStyle
+    }, [vue.withDirectives(vue.createVNode("div", {
+      "class": "uni-mask",
+      "onClick": () => layoutState.apiShowRightWindow = false
+    }, null, 8, ["onClick"]), [[vue.vShow, layoutState.apiShowRightWindow]]), vue.createVNode("div", {
+      "class": "uni-right-window"
+    }, [vue.createVNode(RightWindow, vue.mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
+  }
 }
 function hexToRgba(hex) {
   let r;

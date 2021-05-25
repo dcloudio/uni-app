@@ -7,5 +7,6 @@ declare module 'vue-router' {
     topWindow?: boolean
     leftWindow?: boolean
     rightWindow?: boolean
+    maxWidth?: string | number
   }
 }
