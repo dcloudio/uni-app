@@ -18092,13 +18092,16 @@ function initCssVar() {
   });
 }
 function initMediaQuery(minWidth, callback) {
-  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-  if (mediaQueryList.addEventListener) {
-    mediaQueryList.addEventListener("change", callback);
-  } else {
-    mediaQueryList.addListener(callback);
+  if (typeof window === "object" && window.matchMedia) {
+    const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
+    return mediaQueryList.matches;
   }
-  return mediaQueryList.matches;
+  return false;
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = useRoute();
@@ -18130,8 +18133,10 @@ function useMaxWidth(layoutState, rootRef) {
     }
   }
   watch([() => route.path], checkMaxWidth);
-  onMounted(checkMaxWidth);
-  window.addEventListener("resize", checkMaxWidth);
+  onMounted(() => {
+    checkMaxWidth();
+    window.addEventListener("resize", checkMaxWidth);
+  });
 }
 function useState() {
   const topWindowMediaQuery = ref(false);
