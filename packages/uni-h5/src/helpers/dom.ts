@@ -2,6 +2,9 @@ const screen = window.screen
 const documentElement = document.documentElement
 
 export function checkMinWidth(minWidth: number) {
+  if (__NODE_JS__) {
+    return false
+  }
   const sizes = [
     window.outerWidth,
     window.outerHeight,

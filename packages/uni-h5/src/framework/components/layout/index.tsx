@@ -130,16 +130,16 @@ function initMediaQuery(
   minWidth: number,
   callback: (ev: MediaQueryListEvent) => void
 ) {
-  if (typeof window === 'object' && window.matchMedia) {
-    const mediaQueryList = window.matchMedia('(min-width: ' + minWidth + 'px)')
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener('change', callback)
-    } else {
-      mediaQueryList.addListener(callback)
-    }
-    return mediaQueryList.matches
+  if (__NODE_JS__) {
+    return false
   }
-  return false
+  const mediaQueryList = window.matchMedia('(min-width: ' + minWidth + 'px)')
+  if (mediaQueryList.addEventListener) {
+    mediaQueryList.addEventListener('change', callback)
+  } else {
+    mediaQueryList.addListener(callback)
+  }
+  return mediaQueryList.matches
 }
 
 function useMaxWidth(

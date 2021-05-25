@@ -18095,16 +18095,13 @@ function initCssVar() {
   });
 }
 function initMediaQuery(minWidth, callback) {
-  if (typeof window === "object" && window.matchMedia) {
-    const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener("change", callback);
-    } else {
-      mediaQueryList.addListener(callback);
-    }
-    return mediaQueryList.matches;
+  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+  if (mediaQueryList.addEventListener) {
+    mediaQueryList.addEventListener("change", callback);
+  } else {
+    mediaQueryList.addListener(callback);
   }
-  return false;
+  return mediaQueryList.matches;
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();

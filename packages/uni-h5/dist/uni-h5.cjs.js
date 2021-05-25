@@ -451,19 +451,6 @@ function normalizePageMeta(pageMeta) {
   }
   return pageMeta;
 }
-const screen = window.screen;
-const documentElement = document.documentElement;
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen.width,
-    screen.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
-}
 function getStateId() {
   {
     return 1;
@@ -10608,16 +10595,9 @@ function useAppClass(showTabBar) {
   });
 }
 function initMediaQuery(minWidth, callback) {
-  if (typeof window === "object" && window.matchMedia) {
-    const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener("change", callback);
-    } else {
-      mediaQueryList.addListener(callback);
-    }
-    return mediaQueryList.matches;
+  {
+    return false;
   }
-  return false;
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
@@ -10679,14 +10659,10 @@ function useState() {
   props2.forEach((prop) => {
     var _a;
     const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-    let topWindowMinWidth = uniShared.RESPONSIVE_MIN_WIDTH;
     if (matchMedia && shared.hasOwn(matchMedia, "minWidth")) {
-      const minWidth = matchMedia.minWidth;
-      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
+      matchMedia.minWidth;
     }
-    const matches = initMediaQuery(topWindowMinWidth, (ev) => {
-      layoutState[`${prop}MediaQuery`] = ev.matches;
-    });
+    const matches = initMediaQuery();
     layoutState[`${prop}MediaQuery`] = matches;
   });
   vue.watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
