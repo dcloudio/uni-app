@@ -4656,7 +4656,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.modelValue || props2.value);
+  const value = getValueString(props2.modelValue) || getValueString(props2.value);
   const state2 = reactive({
     value,
     valueOrigin: value,
