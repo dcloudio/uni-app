@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
-import { parse } from 'jsonc-parser'
 import { camelize, capitalize } from '@vue/shared'
 import {
   H5_FRAMEWORK_STYLE_PATH,
@@ -42,7 +41,7 @@ export function uniPagesJsonPlugin(
     },
     load(id) {
       if (id.endsWith(PAGES_JSON_JS)) {
-        return JSON.stringify(parse(fs.readFileSync(pagesJsonPath, 'utf8')))
+        return fs.readFileSync(pagesJsonPath, 'utf8')
       }
     },
   }
