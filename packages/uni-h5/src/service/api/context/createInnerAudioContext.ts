@@ -4,6 +4,7 @@ import {
   defineSyncApi,
 } from '@dcloudio/uni-api'
 import type { API_TYPE_CREATEE_INNER_AUDIO_CONTEXT } from '@dcloudio/uni-api'
+import { once } from '@dcloudio/uni-shared'
 
 //#region types
 type InnerAudioContextEvent =
@@ -72,6 +73,28 @@ const innerAudioContextOffEventNames: InnerAudioContextOff[] = [
   'offSeeked',
 ]
 
+const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
+  // 批量设置音频上下文事件监听方法
+  innerAudioContextEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function (callback: Function) {
+      if (typeof callback === 'function') {
+        this._events[eventName]!.push(callback)
+      }
+    }
+  })
+
+  // 批量设置音频上下文事件取消监听方法
+  innerAudioContextOffEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function (callback: Function) {
+      var handle =
+        this._events[eventName.replace('off', 'on') as InnerAudioContextEvent]
+      var index = handle!.indexOf(callback)
+      if (index >= 0) {
+        handle!.splice(index, 1)
+      }
+    }
+  })
+})
 /**
  * 音频上下文对象
  */
@@ -136,6 +159,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
    * 音频上下文初始化
    */
   constructor() {
+    initInnerAudioContextEventOnce()
     var audio = (this._audio = new Audio())
     this._stoping = false
     // 和audio对象同名同效果的属性
@@ -294,27 +318,6 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
   'offSeeking': UniApp.InnerAudioContext['offSeeking']
   'offSeeked': UniApp.InnerAudioContext['offSeeked']
 }
-
-// 批量设置音频上下文事件监听方法
-innerAudioContextEventNames.forEach((eventName) => {
-  InnerAudioContext.prototype[eventName] = function (callback: Function) {
-    if (typeof callback === 'function') {
-      this._events[eventName]!.push(callback)
-    }
-  }
-})
-
-// 批量设置音频上下文事件取消监听方法
-innerAudioContextOffEventNames.forEach((eventName) => {
-  InnerAudioContext.prototype[eventName] = function (callback: Function) {
-    var handle =
-      this._events[eventName.replace('off', 'on') as InnerAudioContextEvent]
-    var index = handle!.indexOf(callback)
-    if (index >= 0) {
-      handle!.splice(index, 1)
-    }
-  }
-})
 
 /**
  * 创建音频上下文

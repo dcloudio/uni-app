@@ -1,4 +1,4 @@
-import { camelize } from '@vue/shared'
+import { extend, camelize } from '@vue/shared'
 interface HTMLElementWithDataset extends HTMLElement {
   __uniDataset?: Record<string, any>
 }
@@ -33,9 +33,5 @@ export function initCostomDataset() {
 }
 
 export function getCostomDataset(el: HTMLElement | HTMLElementWithDataset) {
-  return Object.assign(
-    {},
-    el.dataset,
-    (el as HTMLElementWithDataset).__uniDataset
-  )
+  return extend({}, el.dataset, (el as HTMLElementWithDataset).__uniDataset)
 }

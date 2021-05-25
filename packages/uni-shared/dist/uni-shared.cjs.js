@@ -29,7 +29,7 @@ function initCostomDataset() {
     };
 }
 function getCostomDataset(el) {
-    return Object.assign({}, el.dataset, el.__uniDataset);
+    return shared.extend({}, el.dataset, el.__uniDataset);
 }
 
 const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');

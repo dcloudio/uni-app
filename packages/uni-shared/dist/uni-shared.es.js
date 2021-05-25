@@ -1,4 +1,4 @@
-import { camelize, isString, isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
+import { camelize, extend, isString, isHTMLTag, isSVGTag, isPlainObject, isArray } from '@vue/shared';
 
 function formatKey(key) {
     return camelize(key.substring(5));
@@ -25,7 +25,7 @@ function initCostomDataset() {
     };
 }
 function getCostomDataset(el) {
-    return Object.assign({}, el.dataset, el.__uniDataset);
+    return extend({}, el.dataset, el.__uniDataset);
 }
 
 const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');

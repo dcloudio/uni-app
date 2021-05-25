@@ -4656,7 +4656,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.modelValue || props2.value);
+  const value = getValueString(props2.modelValue) || getValueString(props2.value);
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -14888,9 +14888,28 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
+const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
+  innerAudioContextEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function(callback) {
+      if (typeof callback === "function") {
+        this._events[eventName].push(callback);
+      }
+    };
+  });
+  innerAudioContextOffEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function(callback) {
+      var handle = this._events[eventName.replace("off", "on")];
+      var index2 = handle.indexOf(callback);
+      if (index2 >= 0) {
+        handle.splice(index2, 1);
+      }
+    };
+  });
+});
 class InnerAudioContext {
   constructor() {
     this._src = "";
+    initInnerAudioContextEventOnce();
     var audio = this._audio = new Audio();
     this._stoping = false;
     const propertys = [
@@ -14989,22 +15008,6 @@ class InnerAudioContext {
     this.stop();
   }
 }
-innerAudioContextEventNames.forEach((eventName) => {
-  InnerAudioContext.prototype[eventName] = function(callback) {
-    if (typeof callback === "function") {
-      this._events[eventName].push(callback);
-    }
-  };
-});
-innerAudioContextOffEventNames.forEach((eventName) => {
-  InnerAudioContext.prototype[eventName] = function(callback) {
-    var handle = this._events[eventName.replace("off", "on")];
-    var index2 = handle.indexOf(callback);
-    if (index2 >= 0) {
-      handle.splice(index2, 1);
-    }
-  };
-});
 const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
   return new InnerAudioContext();
 });
@@ -18054,7 +18057,7 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const {
       layoutState,
       windowState
-    } = useState();
+    } = __UNI_FEATURE_RESPONSIVE__ ? useState() : {};
     useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
@@ -18092,13 +18095,16 @@ function initCssVar() {
   });
 }
 function initMediaQuery(minWidth, callback) {
-  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-  if (mediaQueryList.addEventListener) {
-    mediaQueryList.addEventListener("change", callback);
-  } else {
-    mediaQueryList.addListener(callback);
+  if (typeof window === "object" && window.matchMedia) {
+    const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
+    return mediaQueryList.matches;
   }
-  return mediaQueryList.matches;
+  return false;
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
@@ -18130,8 +18136,10 @@ function useMaxWidth(layoutState, rootRef) {
     }
   }
   watch([() => route.path], checkMaxWidth);
-  onMounted(checkMaxWidth);
-  window.addEventListener("resize", checkMaxWidth);
+  onMounted(() => {
+    checkMaxWidth();
+    window.addEventListener("resize", checkMaxWidth);
+  });
 }
 function useState() {
   const topWindowMediaQuery = ref(false);

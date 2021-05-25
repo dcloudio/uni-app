@@ -189,7 +189,7 @@ function useBase(
     var maxlength = Number(props.maxlength)
     return isNaN(maxlength) ? 140 : maxlength
   })
-  const value = getValueString(props.modelValue || props.value)
+  const value = getValueString(props.modelValue) || getValueString(props.value)
   const state: State = reactive({
     value,
     valueOrigin: value,

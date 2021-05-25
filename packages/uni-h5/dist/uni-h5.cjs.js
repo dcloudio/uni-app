@@ -2869,7 +2869,7 @@ function useBase(props2, rootRef, emit2) {
     var maxlength2 = Number(props2.maxlength);
     return isNaN(maxlength2) ? 140 : maxlength2;
   });
-  const value = getValueString(props2.modelValue || props2.value);
+  const value = getValueString(props2.modelValue) || getValueString(props2.value);
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -10581,7 +10581,7 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const {
       layoutState,
       windowState
-    } = useState();
+    } = __UNI_FEATURE_RESPONSIVE__ ? useState() : {};
     useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
@@ -10608,13 +10608,16 @@ function useAppClass(showTabBar) {
   });
 }
 function initMediaQuery(minWidth, callback) {
-  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-  if (mediaQueryList.addEventListener) {
-    mediaQueryList.addEventListener("change", callback);
-  } else {
-    mediaQueryList.addListener(callback);
+  if (typeof window === "object" && window.matchMedia) {
+    const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
+    return mediaQueryList.matches;
   }
-  return mediaQueryList.matches;
+  return false;
 }
 function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
@@ -10646,7 +10649,6 @@ function useMaxWidth(layoutState, rootRef) {
     }
   }
   vue.watch([() => route.path], checkMaxWidth);
-  window.addEventListener("resize", checkMaxWidth);
 }
 function useState() {
   const topWindowMediaQuery = vue.ref(false);
