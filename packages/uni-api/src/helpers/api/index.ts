@@ -233,3 +233,23 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
     wrapperAsyncApi(name, fn as any, __DEV__ ? protocol : undefined, options)
   ) as AsyncApi<P>
 }
+
+function createUnsupportedMsg(name: string) {
+  return `method 'uni.${name}' not supported`
+}
+
+export function createUnsupportedSyncApi(name: string) {
+  return (): any => {
+    console.error(createUnsupportedMsg(name))
+  }
+}
+
+export const createUnsupportedOnApi = createUnsupportedSyncApi
+export const createUnsupportedOffApi = createUnsupportedSyncApi
+export const createUnsupportedTaskApi = createUnsupportedSyncApi
+
+export function createUnsupportedAsyncApi(name: string) {
+  return (_args: unknown, { reject }: { reject: (err?: string) => void }) => {
+    return reject(createUnsupportedMsg(name))
+  }
+}

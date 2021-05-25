@@ -10568,8 +10568,8 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const {
       layoutState,
       windowState
-    } = __UNI_FEATURE_RESPONSIVE__ ? useState() : {};
-    layoutState && useMaxWidth(layoutState, rootRef);
+    } = useState();
+    useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
@@ -10631,6 +10631,17 @@ function useMaxWidth(layoutState, rootRef) {
   vue.watch([() => route.path], checkMaxWidth);
 }
 function useState() {
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    const layoutState2 = vue.reactive({
+      marginWidth: 0
+    });
+    vue.watch(() => layoutState2.marginWidth, (value) => updateCssVar({
+      "--window-margin": value + "px"
+    }));
+    return {
+      layoutState: layoutState2
+    };
+  }
   const topWindowMediaQuery = vue.ref(false);
   const leftWindowMediaQuery = vue.ref(false);
   const rightWindowMediaQuery = vue.ref(false);

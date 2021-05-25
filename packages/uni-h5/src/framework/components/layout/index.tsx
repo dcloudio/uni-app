@@ -47,10 +47,8 @@ export default /*#__PURE__*/ defineSystemComponent({
     !__NODE_JS__ && initCssVar()
     const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
       useKeepAliveRoute()) as KeepAliveRoute
-    const { layoutState, windowState } = __UNI_FEATURE_RESPONSIVE__
-      ? useState()
-      : ({} as { layoutState: undefined; windowState: undefined })
-    layoutState && useMaxWidth(layoutState, rootRef)
+    const { layoutState, windowState } = useState()
+    useMaxWidth(layoutState, rootRef)
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState!)
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState!)
     const rightWindow =
@@ -185,6 +183,17 @@ function useMaxWidth(
 }
 
 function useState() {
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    // max width
+    const layoutState = reactive({
+      marginWidth: 0,
+    }) as LayoutState
+    watch(
+      () => layoutState.marginWidth,
+      (value) => updateCssVar({ '--window-margin': value + 'px' })
+    )
+    return { layoutState }
+  }
   const topWindowMediaQuery = ref(false)
   const leftWindowMediaQuery = ref(false)
   const rightWindowMediaQuery = ref(false)

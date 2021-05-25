@@ -45,6 +45,8 @@ export * from './protocols/media/chooseFile'
 export * from './protocols/media/getImageInfo'
 export * from './protocols/media/previewImage'
 export * from './protocols/media/getVideoInfo'
+export * from './protocols/media/saveImageToPhotosAlbum'
+export * from './protocols/media/saveVideoToPhotosAlbum'
 
 export * from './protocols/network/request'
 export * from './protocols/network/downloadFile'
@@ -75,6 +77,11 @@ export {
   defineTaskApi,
   defineSyncApi,
   defineAsyncApi,
+  createUnsupportedOnApi,
+  createUnsupportedOffApi,
+  createUnsupportedTaskApi,
+  createUnsupportedSyncApi,
+  createUnsupportedAsyncApi,
 } from './helpers/api'
 
 export { handlePromise } from './helpers/api/promise'
