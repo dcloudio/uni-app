@@ -10569,7 +10569,7 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
       layoutState,
       windowState
     } = __UNI_FEATURE_RESPONSIVE__ ? useState() : {};
-    useMaxWidth(layoutState, rootRef);
+    layoutState && useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);

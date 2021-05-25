@@ -35,7 +35,7 @@ type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
 const DEFAULT_CSS_VAR_VALUE = '0px'
 
-let globalLayoutState: LayoutState
+let globalLayoutState: LayoutState | undefined = undefined
 export function getLayoutState() {
   return globalLayoutState
 }
@@ -49,12 +49,12 @@ export default /*#__PURE__*/ defineSystemComponent({
       useKeepAliveRoute()) as KeepAliveRoute
     const { layoutState, windowState } = __UNI_FEATURE_RESPONSIVE__
       ? useState()
-      : ({} as ReturnType<typeof useState>)
-    useMaxWidth(layoutState, rootRef)
-    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState)
-    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState)
+      : ({} as { layoutState: undefined; windowState: undefined })
+    layoutState && useMaxWidth(layoutState, rootRef)
+    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState!)
+    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState!)
     const rightWindow =
-      __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState)
+      __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState!)
     const showTabBar = (__UNI_FEATURE_TABBAR__ &&
       useShowTabBar(emit)) as ComputedRef<boolean>
     const clazz = useAppClass(showTabBar)
@@ -269,8 +269,8 @@ function useState() {
 
 function createLayoutTsx(
   keepAliveRoute: KeepAliveRoute,
-  layoutState: LayoutState,
-  windowState: WindowState,
+  layoutState?: LayoutState,
+  windowState?: WindowState,
   topWindow?: unknown,
   leftWindow?: unknown,
   rightWindow?: unknown
@@ -283,13 +283,13 @@ function createLayoutTsx(
     return routerVNode
   }
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__
-    ? createTopWindowTsx(topWindow, layoutState, windowState)
+    ? createTopWindowTsx(topWindow, layoutState!, windowState!)
     : null
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__
-    ? createLeftWindowTsx(leftWindow, layoutState, windowState)
+    ? createLeftWindowTsx(leftWindow, layoutState!, windowState!)
     : null
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__
-    ? createRightWindowTsx(rightWindow, layoutState, windowState)
+    ? createRightWindowTsx(rightWindow, layoutState!, windowState!)
     : null
   return (
     <uni-layout>

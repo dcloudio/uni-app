@@ -137,41 +137,47 @@ export const hideRightWindow = <typeof uni.hideRightWindow>(
 export const getTopWindowStyle = <typeof uni.getTopWindowStyle>(
   defineSyncApi('getTopWindowStyle', () => {
     const state = getLayoutState()
-    return Object.assign({}, state.topWindowStyle)
+    return Object.assign({}, state && state.topWindowStyle)
   })
 )
 
 export const setTopWindowStyle = <typeof uni.setTopWindowStyle>(
   defineSyncApi('setTopWindowStyle', (style) => {
     const state = getLayoutState()
-    state.topWindowStyle = style
+    if (state) {
+      state.topWindowStyle = style
+    }
   })
 )
 
 export const getLeftWindowStyle = <typeof uni.getLeftWindowStyle>(
   defineSyncApi('getLeftWindowStyle', () => {
     const state = getLayoutState()
-    return Object.assign({}, state.leftWindowStyle)
+    return Object.assign({}, state && state.leftWindowStyle)
   })
 )
 
 export const setLeftWindowStyle = <typeof uni.setLeftWindowStyle>(
   defineSyncApi('setLeftWindowStyle', (style) => {
     const state = getLayoutState()
-    state.leftWindowStyle = style
+    if (state) {
+      state.leftWindowStyle = style
+    }
   })
 )
 
 export const getRightWindowStyle = <typeof uni.getRightWindowStyle>(
   defineSyncApi('getRightWindowStyle', () => {
     const state = getLayoutState()
-    return Object.assign({}, state.rightWindowStyle)
+    return Object.assign({}, state && state.rightWindowStyle)
   })
 )
 
 export const setRightWindowStyle = <typeof uni.setRightWindowStyle>(
   defineSyncApi('setRightWindowStyle', (style) => {
     const state = getLayoutState()
-    state.rightWindowStyle = style
+    if (state) {
+      state.rightWindowStyle = style
+    }
   })
 )

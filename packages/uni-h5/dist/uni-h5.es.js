@@ -18042,7 +18042,7 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
-let globalLayoutState;
+let globalLayoutState = void 0;
 function getLayoutState() {
   return globalLayoutState;
 }
@@ -18058,7 +18058,7 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
       layoutState,
       windowState
     } = __UNI_FEATURE_RESPONSIVE__ ? useState() : {};
-    useMaxWidth(layoutState, rootRef);
+    layoutState && useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
@@ -18442,27 +18442,33 @@ const hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, {r
 });
 const getTopWindowStyle = /* @__PURE__ */ defineSyncApi("getTopWindowStyle", () => {
   const state2 = getLayoutState();
-  return Object.assign({}, state2.topWindowStyle);
+  return Object.assign({}, state2 && state2.topWindowStyle);
 });
 const setTopWindowStyle = /* @__PURE__ */ defineSyncApi("setTopWindowStyle", (style) => {
   const state2 = getLayoutState();
-  state2.topWindowStyle = style;
+  if (state2) {
+    state2.topWindowStyle = style;
+  }
 });
 const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi("getLeftWindowStyle", () => {
   const state2 = getLayoutState();
-  return Object.assign({}, state2.leftWindowStyle);
+  return Object.assign({}, state2 && state2.leftWindowStyle);
 });
 const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi("setLeftWindowStyle", (style) => {
   const state2 = getLayoutState();
-  state2.leftWindowStyle = style;
+  if (state2) {
+    state2.leftWindowStyle = style;
+  }
 });
 const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
   const state2 = getLayoutState();
-  return Object.assign({}, state2.rightWindowStyle);
+  return Object.assign({}, state2 && state2.rightWindowStyle);
 });
 const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
   const state2 = getLayoutState();
-  state2.rightWindowStyle = style;
+  if (state2) {
+    state2.rightWindowStyle = style;
+  }
 });
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
