@@ -29,6 +29,7 @@ import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
 
 import TabBar from './tabBar'
+import { usePageRoute } from '../../setup/provide'
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
@@ -140,7 +141,7 @@ function useMaxWidth(
   layoutState: LayoutState,
   rootRef: Ref<HTMLElement | null>
 ) {
-  const route = useRoute()
+  const route = usePageRoute()
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth
     const maxWidth = parseInt(String(route.meta.maxWidth || 1190))

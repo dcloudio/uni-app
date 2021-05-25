@@ -152,6 +152,7 @@ declare namespace UniApp {
     topWindow?: boolean
     leftWindow?: boolean
     rightWindow?: boolean
+    maxWidth?: string | number
   }
 
   interface PagesJsonPageOptions {

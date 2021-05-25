@@ -50,7 +50,7 @@ const baseComponents = [
   'view',
 ]
 
-const identifierRE = /^([a-zA-Z_$][a-zA-Z\\d_$]*)$/
+// const identifierRE = /^([a-zA-Z_$][a-zA-Z\\d_$]*)$/
 
 export function uniEasycomPlugin(
   options: UniPluginFilterOptions,
@@ -100,11 +100,10 @@ export function uniEasycomPlugin(
             }
             const source = matchEasycom(name)
             if (source) {
-              return (
-                // 解决局部引入组件优先级(理论上让开发者使用script setup就可以解决局部引入)
-                (identifierRE.test(name)
-                  ? `typeof ${name} !== 'undefined' ? ${name} : `
-                  : '') +
+              // 处理easycom组件优先级
+              return genResolveEasycomCode(
+                importDeclarations,
+                str,
                 addImportDeclaration(
                   importDeclarations,
                   `__easycom_${i++}`,
@@ -122,6 +121,19 @@ export function uniEasycomPlugin(
       return code
     },
   }
+}
+
+const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveEasycom } from '@dcloudio/uni-app';`
+
+function genResolveEasycomCode(
+  importDeclarations: string[],
+  code: string,
+  name: string
+) {
+  if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
+    importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
+  }
+  return `resolveEasycom(${code},${name})`
 }
 
 function resolveBuiltInCssImport(name: string) {

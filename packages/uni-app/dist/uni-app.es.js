@@ -1,5 +1,5 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
-import { hasOwn } from '@vue/shared';
+import { hasOwn, isString } from '@vue/shared';
 
 const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 const UNI_SSR = '__uniSSR';
@@ -39,6 +39,10 @@ const shallowSsrRef = (value, key) => {
 };
 function getSsrGlobalData() {
     return sanitise(globalData);
+}
+
+function resolveEasycom(component, easycom) {
+    return isString(component) ? easycom : component;
 }
 
 // @ts-ignore
@@ -96,4 +100,4 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(ON_NAVIGATION
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
 const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
-export { getSsrGlobalData, onAddToFavorites, onBackPress, onError, onHide, onLaunch, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, shallowSsrRef, ssrRef };
+export { getSsrGlobalData, onAddToFavorites, onBackPress, onError, onHide, onLaunch, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, resolveEasycom, shallowSsrRef, ssrRef };

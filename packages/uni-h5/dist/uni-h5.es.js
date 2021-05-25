@@ -18101,7 +18101,7 @@ function initMediaQuery(minWidth, callback) {
   return mediaQueryList.matches;
 }
 function useMaxWidth(layoutState, rootRef) {
-  const route = useRoute();
+  const route = usePageRoute();
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth;
     const maxWidth = parseInt(String(route.meta.maxWidth || 1190));

@@ -76,6 +76,10 @@ function getSsrGlobalData() {
     return sanitise(globalData);
 }
 
+function resolveEasycom(component, easycom) {
+    return shared.isString(component) ? easycom : component;
+}
+
 // @ts-ignore
 // App and Page
 const ON_SHOW = 'onShow';
@@ -155,5 +159,6 @@ exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
+exports.resolveEasycom = resolveEasycom;
 exports.shallowSsrRef = shallowSsrRef;
 exports.ssrRef = ssrRef;
