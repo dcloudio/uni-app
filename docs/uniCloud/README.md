@@ -17,7 +17,7 @@
 
 ### 看视频，只需25分钟，快速入门uniCloud
 
-<a target="_blank" href="https://ke.qq.com/course/3416784?taid=11123338234831568&amp;tuin=4025c735">
+<a target="_blank" href="https://www.bilibili.com/video/BV17p4y1a71x?p=9">
     <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/707756af-e9a9-4d08-8db9-5d1f34b84ea6.jpg" alt="腾讯课堂uniCloud视频教程" style="width: 70%;">
 </a>
 
