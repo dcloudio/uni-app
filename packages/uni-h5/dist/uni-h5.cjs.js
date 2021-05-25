@@ -3060,7 +3060,6 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       const input = event.target;
       if (NUMBER_TYPES.includes(props2.type)) {
         valid.value = input.validity && input.validity.valid;
-        state2.value;
       }
       if (type.value === "number") {
         const maxlength = state2.maxlength;

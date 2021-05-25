@@ -73,7 +73,7 @@ export function initPluginVueOptions(
 
   const eventOpts = uniPlugins.reduce<Record<string, string>>(
     (eventOpts, uniPlugin) => {
-      return extend(eventOpts, uniPlugin.uni?.transformEvent || {})
+      return extend(eventOpts, uniPlugin.uni?.transformEvent)
     },
     {}
   )
