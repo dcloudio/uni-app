@@ -125,6 +125,7 @@ declare namespace UniApp {
   interface PagesJsonPagePlatformStyle {
     h5?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
+    'app-plus'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
     'mp-qq'?: PagesJsonPageStyle

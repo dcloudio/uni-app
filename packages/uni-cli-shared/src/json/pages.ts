@@ -105,7 +105,7 @@ function normalizePageStyle(
 ) {
   if (pageStyle) {
     if (platform === 'h5') {
-      Object.assign(pageStyle, pageStyle['app'] || {})
+      Object.assign(pageStyle, pageStyle['app'] || pageStyle['app-plus'] || {})
     }
     Object.assign(pageStyle, pageStyle[platform] || {})
     if (['h5', 'app'].includes(platform)) {
