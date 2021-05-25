@@ -94,7 +94,7 @@ function initPagesFeature({
   if (command === 'build') {
     if (
       !pages.find((page) =>
-        fs.existsSync(path.resolve(inputDir, page.path, '.nvue'))
+        fs.existsSync(path.resolve(inputDir, page.path + '.nvue'))
       )
     ) {
       features.nvue = false
