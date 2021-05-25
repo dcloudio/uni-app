@@ -305,9 +305,9 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/types@^2.2.6":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.6.tgz#52baebf6713565d22742ca82fa7f4906219a1a93"
+"@dcloudio/types@^2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.7.tgz#80d815b673e5e839c087fe252127cf79f9761eb8"
 
 "@eslint/eslintrc@^0.4.1":
   version "0.4.1"
