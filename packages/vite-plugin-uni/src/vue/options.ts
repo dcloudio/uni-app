@@ -72,6 +72,8 @@ export function initPluginVueOptions(
     compatConfig
   )
 
+  compilerOptions.isCustomElement = isCustomElement
+
   const eventOpts = uniPlugins.reduce<Record<string, string>>(
     (eventOpts, uniPlugin) => {
       return extend(eventOpts, uniPlugin.uni?.transformEvent)
