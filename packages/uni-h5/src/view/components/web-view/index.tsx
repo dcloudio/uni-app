@@ -5,7 +5,12 @@ import {
   useAttrs,
 } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { updateElementStyle } from '@dcloudio/uni-shared'
+import { updateElementStyle, once } from '@dcloudio/uni-shared'
+import { onWebInvokeAppService } from '../../../service/onWebInvokeAppService'
+
+const Invoke = /*#__PURE__*/ once(() =>
+  UniServiceJSBridge.on('onWebInvokeAppService', onWebInvokeAppService)
+)
 
 const props = {
   src: {
@@ -21,6 +26,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'WebView',
   props,
   setup(props, { attrs }) {
+    Invoke()
     const rootRef: RootRef = ref(null)
     const iframeRef: RootRef = ref(null)
     const _resize = useWebViewSize(rootRef, iframeRef)

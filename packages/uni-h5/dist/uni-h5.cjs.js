@@ -350,6 +350,431 @@ function invokeHook(vm, name, args) {
   const hooks = vm.$[name];
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
+function errorHandler(err, instance, info) {
+  if (!instance) {
+    throw err;
+  }
+  const app = getApp();
+  if (!app || !app.$vm) {
+    throw err;
+  }
+  {
+    invokeHook(app.$vm, "onError", err);
+  }
+}
+function initApp$1(app) {
+  const appConfig = app._context.config;
+  if (shared.isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler;
+  }
+  const globalProperties = appConfig.globalProperties;
+  {
+    globalProperties.$set = set;
+    globalProperties.$applyOptions = applyOptions;
+  }
+}
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return vue.inject(pageMetaKey);
+}
+function providePageMeta(id) {
+  const pageMeta = initPageMeta(id);
+  vue.provide(pageMetaKey, pageMeta);
+  return pageMeta;
+}
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return vueRouter.useRoute();
+  }
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
+  }
+  const {meta} = __uniRoutes[0];
+  return {
+    meta,
+    query,
+    path: "/" + meta.route
+  };
+}
+function initPageMeta(id) {
+  if (__UNI_FEATURE_PAGES__) {
+    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, vueRouter.useRoute().meta)))));
+  }
+  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))));
+}
+const PAGE_META_KEYS = [
+  "navigationBar",
+  "refreshOptions"
+];
+function mergePageMeta(id, pageMeta) {
+  const res = shared.extend({id}, __uniConfig.globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = shared.extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
+  });
+  return res;
+}
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const {enablePullDownRefresh, navigationBar} = pageMeta;
+    if (enablePullDownRefresh) {
+      const refreshOptions = shared.extend({
+        support: true,
+        color: "#2BD009",
+        style: "circle",
+        height: 70,
+        range: 150,
+        offset: 0
+      }, pageMeta.refreshOptions);
+      let offset = rpx2px(refreshOptions.offset);
+      const {type} = navigationBar;
+      if (type !== "transparent" && type !== "none") {
+        offset += uniShared.NAVBAR_HEIGHT + 0;
+      }
+      refreshOptions.offset = offset;
+      refreshOptions.height = rpx2px(refreshOptions.height);
+      refreshOptions.range = rpx2px(refreshOptions.range);
+      pageMeta.refreshOptions = refreshOptions;
+    }
+  }
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const {navigationBar} = pageMeta;
+    const {titleSize, titleColor, backgroundColor} = navigationBar;
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.backButton = pageMeta.isQuit ? false : true;
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+  }
+  return pageMeta;
+}
+function getStateId() {
+  {
+    return 1;
+  }
+}
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && vue.reactive(__uniConfig.tabBar);
+  }
+  return tabBar;
+}
+const HTTP_METHODS = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
+function elemInArray(str, arr) {
+  if (!str || arr.indexOf(str) === -1) {
+    return arr[0];
+  }
+  return str;
+}
+function validateProtocolFail(name, msg) {
+  console.warn(`${name}: ${msg}`);
+}
+function validateProtocol(name, data, protocol, onFail) {
+  if (!onFail) {
+    onFail = validateProtocolFail;
+  }
+  for (const key in protocol) {
+    const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
+    if (shared.isString(errMsg)) {
+      onFail(name, errMsg);
+    }
+  }
+}
+function validateProtocols(name, args, protocol, onFail) {
+  if (!protocol) {
+    return;
+  }
+  if (!shared.isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+  }
+  const len = protocol.length;
+  const argsLen = args.length;
+  for (let i = 0; i < len; i++) {
+    const opts = protocol[i];
+    const data = Object.create(null);
+    if (argsLen > i) {
+      data[opts.name] = args[i];
+    }
+    validateProtocol(name, data, {[opts.name]: opts}, onFail);
+  }
+}
+function validateProp(name, value, prop, isAbsent) {
+  if (!shared.isPlainObject(prop)) {
+    prop = {type: prop};
+  }
+  const {type, required, validator} = prop;
+  if (required && isAbsent) {
+    return 'Missing required args: "' + name + '"';
+  }
+  if (value == null && !required) {
+    return;
+  }
+  if (type != null) {
+    let isValid = false;
+    const types = shared.isArray(type) ? type : [type];
+    const expectedTypes = [];
+    for (let i = 0; i < types.length && !isValid; i++) {
+      const {valid, expectedType} = assertType(value, types[i]);
+      expectedTypes.push(expectedType || "");
+      isValid = valid;
+    }
+    if (!isValid) {
+      return getInvalidTypeMessage(name, value, expectedTypes);
+    }
+  }
+  if (validator) {
+    return validator(value);
+  }
+}
+const isSimpleType = /* @__PURE__ */ shared.makeMap("String,Number,Boolean,Function,Symbol");
+function assertType(value, type) {
+  let valid;
+  const expectedType = getType(type);
+  if (isSimpleType(expectedType)) {
+    const t2 = typeof value;
+    valid = t2 === expectedType.toLowerCase();
+    if (!valid && t2 === "object") {
+      valid = value instanceof type;
+    }
+  } else if (expectedType === "Object") {
+    valid = shared.isObject(value);
+  } else if (expectedType === "Array") {
+    valid = shared.isArray(value);
+  } else {
+    {
+      valid = value instanceof type;
+    }
+  }
+  return {
+    valid,
+    expectedType
+  };
+}
+function getInvalidTypeMessage(name, value, expectedTypes) {
+  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(shared.capitalize).join(", ")}`;
+  const expectedType = expectedTypes[0];
+  const receivedType = shared.toRawType(value);
+  const expectedValue = styleValue(value, expectedType);
+  const receivedValue = styleValue(value, receivedType);
+  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+    message += ` with value ${expectedValue}`;
+  }
+  message += `, got ${receivedType} `;
+  if (isExplicable(receivedType)) {
+    message += `with value ${receivedValue}.`;
+  }
+  return message;
+}
+function getType(ctor) {
+  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+  return match ? match[1] : "";
+}
+function styleValue(value, type) {
+  if (type === "String") {
+    return `"${value}"`;
+  } else if (type === "Number") {
+    return `${Number(value)}`;
+  } else {
+    return `${value}`;
+  }
+}
+function isExplicable(type) {
+  const explicitTypes = ["string", "number", "boolean"];
+  return explicitTypes.some((elem) => type.toLowerCase() === elem);
+}
+function isBoolean(...args) {
+  return args.some((elem) => elem.toLowerCase() === "boolean");
+}
+function tryCatch(fn) {
+  return function() {
+    try {
+      return fn.apply(fn, arguments);
+    } catch (e2) {
+      console.error(e2);
+    }
+  };
+}
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+  invokeCallbacks[id] = {
+    name,
+    keepAlive,
+    callback
+  };
+  return id;
+}
+function invokeCallback(id, res, extras) {
+  if (typeof id === "number") {
+    const opts = invokeCallbacks[id];
+    if (opts) {
+      if (!opts.keepAlive) {
+        delete invokeCallbacks[id];
+      }
+      return opts.callback(res, extras);
+    }
+  }
+  return res;
+}
+const API_SUCCESS = "success";
+const API_FAIL = "fail";
+const API_COMPLETE = "complete";
+function getApiCallbacks(args) {
+  const apiCallbacks = {};
+  for (const name in args) {
+    const fn = args[name];
+    if (shared.isFunction(fn)) {
+      apiCallbacks[name] = tryCatch(fn);
+      delete args[name];
+    }
+  }
+  return apiCallbacks;
+}
+function normalizeErrMsg(errMsg, name) {
+  if (!errMsg || errMsg.indexOf(":fail") === -1) {
+    return name + ":ok";
+  }
+  return name + errMsg.substring(errMsg.indexOf(":fail"));
+}
+function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
+  if (!shared.isPlainObject(args)) {
+    args = {};
+  }
+  const {success, fail, complete} = getApiCallbacks(args);
+  const hasSuccess = shared.isFunction(success);
+  const hasFail = shared.isFunction(fail);
+  const hasComplete = shared.isFunction(complete);
+  const callbackId = invokeCallbackId++;
+  addInvokeCallback(callbackId, name, (res) => {
+    res = res || {};
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    shared.isFunction(beforeAll) && beforeAll(res);
+    if (res.errMsg === name + ":ok") {
+      shared.isFunction(beforeSuccess) && beforeSuccess(res);
+      hasSuccess && success(res);
+    } else {
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  return callbackId;
+}
+const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
+function hasCallback(args) {
+  if (shared.isPlainObject(args) && callbacks.find((cb) => shared.isFunction(args[cb]))) {
+    return true;
+  }
+  return false;
+}
+function handlePromise(promise) {
+  if (__UNI_FEATURE_PROMISE__) {
+    return promise.then((data) => {
+      return [null, data];
+    }).catch((err) => [err]);
+  }
+  return promise;
+}
+function promisify(fn) {
+  return (args = {}) => {
+    if (hasCallback(args)) {
+      return fn(args);
+    }
+    return handlePromise(new Promise((resolve, reject) => {
+      fn(shared.extend(args, {success: resolve, fail: reject}));
+    }));
+  };
+}
+function formatApiArgs(args, options) {
+  const params = args[0];
+  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+    return;
+  }
+  const formatArgs = options.formatArgs;
+  const keys = Object.keys(formatArgs);
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i];
+    const formatterOrDefaultValue = formatArgs[name];
+    if (shared.isFunction(formatterOrDefaultValue)) {
+      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      if (shared.isString(errMsg)) {
+        return errMsg;
+      }
+    } else {
+      if (!shared.hasOwn(params, name)) {
+        params[name] = formatterOrDefaultValue;
+      }
+    }
+  }
+}
+function invokeSuccess(id, name, res) {
+  return invokeCallback(id, shared.extend(res || {}, {errMsg: name + ":ok"}));
+}
+function invokeFail(id, name, err) {
+  return invokeCallback(id, {errMsg: name + ":fail" + (err ? " " + err : "")});
+}
+function beforeInvokeApi(name, args, protocol, options) {
+  if (process.env.NODE_ENV !== "production") {
+    validateProtocols(name, args, protocol);
+  }
+  if (options && options.beforeInvoke) {
+    const errMsg2 = options.beforeInvoke(args);
+    if (shared.isString(errMsg2)) {
+      return errMsg2;
+    }
+  }
+  const errMsg = formatApiArgs(args, options);
+  if (errMsg) {
+    return errMsg;
+  }
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+  return (args) => {
+    const id = createAsyncApiCallback(name, args, options);
+    const errMsg = beforeInvokeApi(name, [args], protocol, options);
+    if (errMsg) {
+      return invokeFail(id, name, errMsg);
+    }
+    return fn(args, {
+      resolve: (res) => invokeSuccess(id, name, res),
+      reject: (err) => invokeFail(id, name, err)
+    });
+  };
+}
+function wrapperSyncApi(name, fn, protocol, options) {
+  return (...args) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
+function wrapperAsyncApi(name, fn, protocol, options) {
+  return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
 const SCHEME_RE = /^([a-z-]+:)?\/\//i;
 const DATA_RE = /^data:.*,.*/;
 const baseUrl = __IMPORT_META_ENV_BASE_URL__;
@@ -5843,462 +6268,6 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const HTTP_METHODS = [
-  "GET",
-  "OPTIONS",
-  "HEAD",
-  "POST",
-  "PUT",
-  "DELETE",
-  "TRACE",
-  "CONNECT"
-];
-function elemInArray(str, arr) {
-  if (!str || arr.indexOf(str) === -1) {
-    return arr[0];
-  }
-  return str;
-}
-function validateProtocolFail(name, msg) {
-  console.warn(`${name}: ${msg}`);
-}
-function validateProtocol(name, data, protocol, onFail) {
-  if (!onFail) {
-    onFail = validateProtocolFail;
-  }
-  for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
-    if (shared.isString(errMsg)) {
-      onFail(name, errMsg);
-    }
-  }
-}
-function validateProtocols(name, args, protocol, onFail) {
-  if (!protocol) {
-    return;
-  }
-  if (!shared.isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
-  }
-  const len = protocol.length;
-  const argsLen = args.length;
-  for (let i = 0; i < len; i++) {
-    const opts = protocol[i];
-    const data = Object.create(null);
-    if (argsLen > i) {
-      data[opts.name] = args[i];
-    }
-    validateProtocol(name, data, {[opts.name]: opts}, onFail);
-  }
-}
-function validateProp(name, value, prop, isAbsent) {
-  if (!shared.isPlainObject(prop)) {
-    prop = {type: prop};
-  }
-  const {type, required, validator} = prop;
-  if (required && isAbsent) {
-    return 'Missing required args: "' + name + '"';
-  }
-  if (value == null && !required) {
-    return;
-  }
-  if (type != null) {
-    let isValid = false;
-    const types = shared.isArray(type) ? type : [type];
-    const expectedTypes = [];
-    for (let i = 0; i < types.length && !isValid; i++) {
-      const {valid, expectedType} = assertType(value, types[i]);
-      expectedTypes.push(expectedType || "");
-      isValid = valid;
-    }
-    if (!isValid) {
-      return getInvalidTypeMessage(name, value, expectedTypes);
-    }
-  }
-  if (validator) {
-    return validator(value);
-  }
-}
-const isSimpleType = /* @__PURE__ */ shared.makeMap("String,Number,Boolean,Function,Symbol");
-function assertType(value, type) {
-  let valid;
-  const expectedType = getType(type);
-  if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
-      valid = value instanceof type;
-    }
-  } else if (expectedType === "Object") {
-    valid = shared.isObject(value);
-  } else if (expectedType === "Array") {
-    valid = shared.isArray(value);
-  } else {
-    {
-      valid = value instanceof type;
-    }
-  }
-  return {
-    valid,
-    expectedType
-  };
-}
-function getInvalidTypeMessage(name, value, expectedTypes) {
-  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(shared.capitalize).join(", ")}`;
-  const expectedType = expectedTypes[0];
-  const receivedType = shared.toRawType(value);
-  const expectedValue = styleValue(value, expectedType);
-  const receivedValue = styleValue(value, receivedType);
-  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-    message += ` with value ${expectedValue}`;
-  }
-  message += `, got ${receivedType} `;
-  if (isExplicable(receivedType)) {
-    message += `with value ${receivedValue}.`;
-  }
-  return message;
-}
-function getType(ctor) {
-  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : "";
-}
-function styleValue(value, type) {
-  if (type === "String") {
-    return `"${value}"`;
-  } else if (type === "Number") {
-    return `${Number(value)}`;
-  } else {
-    return `${value}`;
-  }
-}
-function isExplicable(type) {
-  const explicitTypes = ["string", "number", "boolean"];
-  return explicitTypes.some((elem) => type.toLowerCase() === elem);
-}
-function isBoolean(...args) {
-  return args.some((elem) => elem.toLowerCase() === "boolean");
-}
-function tryCatch(fn) {
-  return function() {
-    try {
-      return fn.apply(fn, arguments);
-    } catch (e2) {
-      console.error(e2);
-    }
-  };
-}
-let invokeCallbackId = 1;
-const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback, keepAlive = false) {
-  invokeCallbacks[id] = {
-    name,
-    keepAlive,
-    callback
-  };
-  return id;
-}
-function invokeCallback(id, res, extras) {
-  if (typeof id === "number") {
-    const opts = invokeCallbacks[id];
-    if (opts) {
-      if (!opts.keepAlive) {
-        delete invokeCallbacks[id];
-      }
-      return opts.callback(res, extras);
-    }
-  }
-  return res;
-}
-const API_SUCCESS = "success";
-const API_FAIL = "fail";
-const API_COMPLETE = "complete";
-function getApiCallbacks(args) {
-  const apiCallbacks = {};
-  for (const name in args) {
-    const fn = args[name];
-    if (shared.isFunction(fn)) {
-      apiCallbacks[name] = tryCatch(fn);
-      delete args[name];
-    }
-  }
-  return apiCallbacks;
-}
-function normalizeErrMsg(errMsg, name) {
-  if (!errMsg || errMsg.indexOf(":fail") === -1) {
-    return name + ":ok";
-  }
-  return name + errMsg.substring(errMsg.indexOf(":fail"));
-}
-function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
-  if (!shared.isPlainObject(args)) {
-    args = {};
-  }
-  const {success, fail, complete} = getApiCallbacks(args);
-  const hasSuccess = shared.isFunction(success);
-  const hasFail = shared.isFunction(fail);
-  const hasComplete = shared.isFunction(complete);
-  const callbackId = invokeCallbackId++;
-  addInvokeCallback(callbackId, name, (res) => {
-    res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
-    shared.isFunction(beforeAll) && beforeAll(res);
-    if (res.errMsg === name + ":ok") {
-      shared.isFunction(beforeSuccess) && beforeSuccess(res);
-      hasSuccess && success(res);
-    } else {
-      hasFail && fail(res);
-    }
-    hasComplete && complete(res);
-  });
-  return callbackId;
-}
-const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
-function hasCallback(args) {
-  if (shared.isPlainObject(args) && callbacks.find((cb) => shared.isFunction(args[cb]))) {
-    return true;
-  }
-  return false;
-}
-function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
-  return promise;
-}
-function promisify(fn) {
-  return (args = {}) => {
-    if (hasCallback(args)) {
-      return fn(args);
-    }
-    return handlePromise(new Promise((resolve, reject) => {
-      fn(shared.extend(args, {success: resolve, fail: reject}));
-    }));
-  };
-}
-function formatApiArgs(args, options) {
-  const params = args[0];
-  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
-    return;
-  }
-  const formatArgs = options.formatArgs;
-  const keys = Object.keys(formatArgs);
-  for (let i = 0; i < keys.length; i++) {
-    const name = keys[i];
-    const formatterOrDefaultValue = formatArgs[name];
-    if (shared.isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
-      if (shared.isString(errMsg)) {
-        return errMsg;
-      }
-    } else {
-      if (!shared.hasOwn(params, name)) {
-        params[name] = formatterOrDefaultValue;
-      }
-    }
-  }
-}
-function invokeSuccess(id, name, res) {
-  return invokeCallback(id, shared.extend(res || {}, {errMsg: name + ":ok"}));
-}
-function invokeFail(id, name, err) {
-  return invokeCallback(id, {errMsg: name + ":fail" + (err ? " " + err : "")});
-}
-function beforeInvokeApi(name, args, protocol, options) {
-  if (process.env.NODE_ENV !== "production") {
-    validateProtocols(name, args, protocol);
-  }
-  if (options && options.beforeInvoke) {
-    const errMsg2 = options.beforeInvoke(args);
-    if (shared.isString(errMsg2)) {
-      return errMsg2;
-    }
-  }
-  const errMsg = formatApiArgs(args, options);
-  if (errMsg) {
-    return errMsg;
-  }
-}
-function wrapperTaskApi(name, fn, protocol, options) {
-  return (args) => {
-    const id = createAsyncApiCallback(name, args, options);
-    const errMsg = beforeInvokeApi(name, [args], protocol, options);
-    if (errMsg) {
-      return invokeFail(id, name, errMsg);
-    }
-    return fn(args, {
-      resolve: (res) => invokeSuccess(id, name, res),
-      reject: (err) => invokeFail(id, name, err)
-    });
-  };
-}
-function wrapperSyncApi(name, fn, protocol, options) {
-  return (...args) => {
-    const errMsg = beforeInvokeApi(name, args, protocol, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    return fn.apply(null, args);
-  };
-}
-function wrapperAsyncApi(name, fn, protocol, options) {
-  return wrapperTaskApi(name, fn, protocol, options);
-}
-function defineTaskApi(name, fn, protocol, options) {
-  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function defineSyncApi(name, fn, protocol, options) {
-  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
-}
-function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-const API_UPX2PX = "upx2px";
-const Upx2pxProtocol = [
-  {
-    name: "upx",
-    type: [Number, String],
-    required: true
-  }
-];
-const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  {
-    return number;
-  }
-}, Upx2pxProtocol);
-const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
-  const callback = canvasEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
-});
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
-  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
-});
-const API_GET_STORAGE = "getStorage";
-const GetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  }
-};
-const API_GET_STORAGE_SYNC = "getStorageSync";
-const GetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  }
-];
-const API_SET_STORAGE = "setStorage";
-const SetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  },
-  data: {
-    required: true
-  }
-};
-const API_SET_STORAGE_SYNC = "setStorageSync";
-const SetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  },
-  {
-    name: "data",
-    required: true
-  }
-];
-const API_REMOVE_STORAGE = "removeStorage";
-const RemoveStorageProtocol = GetStorageProtocol;
-const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
-const API_REQUEST = "request";
-const dataType = {
-  JSON: "json"
-};
-const RESPONSE_TYPE = ["text", "arraybuffer"];
-const DEFAULT_RESPONSE_TYPE = "text";
-const encode = encodeURIComponent;
-function stringifyQuery(url, data) {
-  let str = url.split("#");
-  const hash = str[1] || "";
-  str = str[0].split("?");
-  let query = str[1] || "";
-  url = str[0];
-  const search = query.split("&").filter((item) => item);
-  const params = {};
-  search.forEach((item) => {
-    const part = item.split("=");
-    params[part[0]] = part[1];
-  });
-  for (const key in data) {
-    if (shared.hasOwn(data, key)) {
-      let v2 = data[key];
-      if (typeof v2 === "undefined" || v2 === null) {
-        v2 = "";
-      } else if (shared.isPlainObject(v2)) {
-        v2 = JSON.stringify(v2);
-      }
-      params[encode(key)] = encode(v2);
-    }
-  }
-  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
-  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
-}
-const RequestProtocol = {
-  method: String,
-  data: [Object, String, Array, ArrayBuffer],
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  dataType: String,
-  responseType: String,
-  withCredentials: Boolean
-};
-const RequestOptions = {
-  formatArgs: {
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    data(value, params) {
-      params.data = value || "";
-    },
-    url(value, params) {
-      if (params.method === HTTP_METHODS[0] && shared.isPlainObject(params.data) && Object.keys(params.data).length) {
-        params.url = stringifyQuery(value, params.data);
-      }
-    },
-    header(value, params) {
-      const header = params.header = value || {};
-      if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
-          header["Content-Type"] = "application/json";
-        }
-      }
-    },
-    dataType(value, params) {
-      params.dataType = (value || dataType.JSON).toLowerCase();
-    },
-    responseType(value, params) {
-      params.responseType = (value || "").toLowerCase();
-      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-        params.responseType = DEFAULT_RESPONSE_TYPE;
-      }
-    }
-  }
-};
 const props$b = {
   indicatorDots: {
     type: [Boolean, String],
@@ -7225,120 +7194,151 @@ function getSameOriginUrl(url) {
   }
   return urlToFile(url).then(fileToUrl);
 }
-function errorHandler(err, instance, info) {
-  if (!instance) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
+const API_UPX2PX = "upx2px";
+const Upx2pxProtocol = [
   {
-    invokeHook(app.$vm, "onError", err);
+    name: "upx",
+    type: [Number, String],
+    required: true
   }
-}
-function initApp$1(app) {
-  const appConfig = app._context.config;
-  if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
-  const globalProperties = appConfig.globalProperties;
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-  }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return vue.inject(pageMetaKey);
-}
-function providePageMeta(id) {
-  const pageMeta = initPageMeta(id);
-  vue.provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return vueRouter.useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
-  }
-  const {meta} = __uniRoutes[0];
-  return {
-    meta,
-    query,
-    path: "/" + meta.route
-  };
-}
-function initPageMeta(id) {
-  if (__UNI_FEATURE_PAGES__) {
-    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, vueRouter.useRoute().meta)))));
-  }
-  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
 ];
-function mergePageMeta(id, pageMeta) {
-  const res = shared.extend({id}, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = shared.extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
+const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+  {
+    return number;
+  }
+}, Upx2pxProtocol);
+const canvasEventCallbacks = createCallbacks("canvasEvent");
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
+  const callback = canvasEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
+ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
+  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const API_GET_STORAGE = "getStorage";
+const GetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  }
+};
+const API_GET_STORAGE_SYNC = "getStorageSync";
+const GetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  }
+];
+const API_SET_STORAGE = "setStorage";
+const SetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  },
+  data: {
+    required: true
+  }
+};
+const API_SET_STORAGE_SYNC = "setStorageSync";
+const SetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  },
+  {
+    name: "data",
+    required: true
+  }
+];
+const API_REMOVE_STORAGE = "removeStorage";
+const RemoveStorageProtocol = GetStorageProtocol;
+const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
+const API_REQUEST = "request";
+const dataType = {
+  JSON: "json"
+};
+const RESPONSE_TYPE = ["text", "arraybuffer"];
+const DEFAULT_RESPONSE_TYPE = "text";
+const encode = encodeURIComponent;
+function stringifyQuery(url, data) {
+  let str = url.split("#");
+  const hash = str[1] || "";
+  str = str[0].split("?");
+  let query = str[1] || "";
+  url = str[0];
+  const search = query.split("&").filter((item) => item);
+  const params = {};
+  search.forEach((item) => {
+    const part = item.split("=");
+    params[part[0]] = part[1];
   });
-  return res;
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const {enablePullDownRefresh, navigationBar} = pageMeta;
-    if (enablePullDownRefresh) {
-      const refreshOptions = shared.extend({
-        support: true,
-        color: "#2BD009",
-        style: "circle",
-        height: 70,
-        range: 150,
-        offset: 0
-      }, pageMeta.refreshOptions);
-      let offset = rpx2px(refreshOptions.offset);
-      const {type} = navigationBar;
-      if (type !== "transparent" && type !== "none") {
-        offset += uniShared.NAVBAR_HEIGHT + 0;
+  for (const key in data) {
+    if (shared.hasOwn(data, key)) {
+      let v2 = data[key];
+      if (typeof v2 === "undefined" || v2 === null) {
+        v2 = "";
+      } else if (shared.isPlainObject(v2)) {
+        v2 = JSON.stringify(v2);
       }
-      refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
-      pageMeta.refreshOptions = refreshOptions;
+      params[encode(key)] = encode(v2);
     }
   }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const {navigationBar} = pageMeta;
-    const {titleSize, titleColor, backgroundColor} = navigationBar;
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.backButton = pageMeta.isQuit ? false : true;
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#fff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
-  }
-  return pageMeta;
+  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
+  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
 }
-function getStateId() {
-  {
-    return 1;
+const RequestProtocol = {
+  method: String,
+  data: [Object, String, Array, ArrayBuffer],
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean
+};
+const RequestOptions = {
+  formatArgs: {
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    data(value, params) {
+      params.data = value || "";
+    },
+    url(value, params) {
+      if (params.method === HTTP_METHODS[0] && shared.isPlainObject(params.data) && Object.keys(params.data).length) {
+        params.url = stringifyQuery(value, params.data);
+      }
+    },
+    header(value, params) {
+      const header = params.header = value || {};
+      if (params.method !== HTTP_METHODS[0]) {
+        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+          header["Content-Type"] = "application/json";
+        }
+      }
+    },
+    dataType(value, params) {
+      params.dataType = (value || dataType.JSON).toLowerCase();
+    },
+    responseType(value, params) {
+      params.responseType = (value || "").toLowerCase();
+      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+        params.responseType = DEFAULT_RESPONSE_TYPE;
+      }
+    }
   }
-}
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && vue.reactive(__uniConfig.tabBar);
-  }
-  return tabBar;
-}
+};
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
@@ -8336,6 +8336,14 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const onWebInvokeAppService = ({name, arg}, pageId) => {
+  if (name === "postMessage")
+    ;
+  else {
+    uni[name](arg);
+  }
+};
+const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on("onWebInvokeAppService", onWebInvokeAppService));
 const props$6 = {
   src: {
     type: String,
@@ -8349,6 +8357,7 @@ var index$6 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     attrs
   }) {
+    Invoke();
     const rootRef = vue.ref(null);
     const iframeRef = vue.ref(null);
     const _resize = useWebViewSize(rootRef, iframeRef);

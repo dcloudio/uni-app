@@ -14,4 +14,3 @@ export {
 export * from './saveImage'
 export * from './constants'
 export { getSameOriginUrl } from '../helpers/file'
-export { onWebInvokeAppService } from '../service/onWebInvokeAppService'
