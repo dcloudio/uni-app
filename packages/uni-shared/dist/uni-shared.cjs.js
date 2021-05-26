@@ -7,7 +7,7 @@ var shared = require('@vue/shared');
 function formatKey(key) {
     return shared.camelize(key.substring(5));
 }
-function initCostomDataset() {
+function initCustomDataset() {
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
@@ -28,7 +28,7 @@ function initCostomDataset() {
         removeAttribute.call(this, key);
     };
 }
-function getCostomDataset(el) {
+function getCustomDataset(el) {
     return shared.extend({}, el.dataset, el.__uniDataset);
 }
 
@@ -64,7 +64,7 @@ function normalizeTarget(el) {
     const { id, offsetTop, offsetLeft } = el;
     return {
         id,
-        dataset: getCostomDataset(el),
+        dataset: getCustomDataset(el),
         offsetTop,
         offsetLeft,
     };
@@ -414,10 +414,10 @@ exports.decode = decode;
 exports.decodedQuery = decodedQuery;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.formatDateTime = formatDateTime;
-exports.getCostomDataset = getCostomDataset;
+exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;
-exports.initCostomDataset = initCostomDataset;
+exports.initCustomDataset = initCustomDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;

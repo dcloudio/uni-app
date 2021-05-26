@@ -1,7 +1,7 @@
 import { FontFaceDescriptors } from 'css-font-loading-module'
 import { isString } from '@vue/shared'
-import { getCostomDataset } from './costomDataset'
-export { initCostomDataset, getCostomDataset } from './costomDataset'
+import { getCustomDataset } from './CustomDataset'
+export { initCustomDataset, getCustomDataset } from './CustomDataset'
 
 export * from './style'
 
@@ -18,7 +18,7 @@ export function normalizeTarget(el: HTMLElement) {
   const { id, offsetTop, offsetLeft } = el
   return {
     id,
-    dataset: getCostomDataset(el),
+    dataset: getCustomDataset(el),
     offsetTop,
     offsetLeft,
   }

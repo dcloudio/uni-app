@@ -2,13 +2,13 @@ import { App } from 'vue'
 
 import { initLongPress } from './longPress'
 import { initAppConfig } from './appConfig'
-import { initCostomDataset } from '@dcloudio/uni-shared'
+import { initCustomDataset } from '@dcloudio/uni-shared'
 
 export function initView(app: App) {
   if (__NODE_JS__) {
     return
   }
-  initCostomDataset()
+  initCustomDataset()
   if (__UNI_FEATURE_LONGPRESS__) {
     initLongPress()
   }

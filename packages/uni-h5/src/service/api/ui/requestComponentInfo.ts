@@ -1,5 +1,5 @@
 import { ComponentPublicInstance } from 'vue'
-import { getCostomDataset } from '@dcloudio/uni-shared'
+import { getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
 
@@ -57,7 +57,7 @@ function getNodeInfo(el: HTMLElement, fields: NodeField): NodeInfo {
     info.id = el.id
   }
   if (fields.dataset) {
-    info.dataset = getCostomDataset(el)
+    info.dataset = getCustomDataset(el)
   }
   if (fields.rect || fields.size) {
     const rect = el.getBoundingClientRect()

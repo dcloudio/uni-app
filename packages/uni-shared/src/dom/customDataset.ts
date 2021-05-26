@@ -7,7 +7,7 @@ function formatKey(key: string) {
   return camelize(key.substring(5))
 }
 
-export function initCostomDataset() {
+export function initCustomDataset() {
   const prototype = HTMLElement.prototype
   const setAttribute = prototype.setAttribute
   prototype.setAttribute = function (key, value) {
@@ -32,6 +32,6 @@ export function initCostomDataset() {
   }
 }
 
-export function getCostomDataset(el: HTMLElement | HTMLElementWithDataset) {
+export function getCustomDataset(el: HTMLElement | HTMLElementWithDataset) {
   return extend({}, el.dataset, (el as HTMLElementWithDataset).__uniDataset)
 }

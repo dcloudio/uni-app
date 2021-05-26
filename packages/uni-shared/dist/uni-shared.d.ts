@@ -46,7 +46,7 @@ export declare function formatDateTime({ date, mode }: {
     mode?: string | undefined;
 }): string;
 
-export declare function getCostomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
+export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
 
 export declare function getEnvLocale(): string;
 
@@ -56,7 +56,7 @@ declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
 }
 
-export declare function initCostomDataset(): void;
+export declare function initCustomDataset(): void;
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
