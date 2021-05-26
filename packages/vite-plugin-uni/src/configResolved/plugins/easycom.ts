@@ -133,7 +133,10 @@ function genResolveEasycomCode(
   if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
     importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
   }
-  return `resolveEasycom(${code},${name})`
+  return `resolveEasycom(${code.replace(
+    '_resolveComponent',
+    '_resolveDynamicComponent'
+  )}, ${name})`
 }
 
 function resolveBuiltInCssImport(name: string) {

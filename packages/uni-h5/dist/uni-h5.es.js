@@ -7943,7 +7943,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$k,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherabort"],
+  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort"],
   setup(props2, {
     emit: emit2,
     slots
@@ -8064,33 +8064,34 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     var val = Number(props2.lowerThreshold);
     return isNaN(val) ? 50 : val;
   });
-  function scrollTo2(t2, n) {
-    var i = main.value;
-    t2 < 0 ? t2 = 0 : n === "x" && t2 > i.scrollWidth - i.offsetWidth ? t2 = i.scrollWidth - i.offsetWidth : n === "y" && t2 > i.scrollHeight - i.offsetHeight && (t2 = i.scrollHeight - i.offsetHeight);
-    var r = 0;
-    var o2 = "";
-    n === "x" ? r = i.scrollLeft - t2 : n === "y" && (r = i.scrollTop - t2);
-    if (r !== 0) {
-      content.value.style.transition = "transform .3s ease-out";
-      content.value.style.webkitTransition = "-webkit-transform .3s ease-out";
-      if (n === "x") {
-        o2 = "translateX(" + r + "px) translateZ(0)";
-      } else {
-        n === "y" && (o2 = "translateY(" + r + "px) translateZ(0)");
-      }
-      content.value.removeEventListener("transitionend", __transitionEnd);
-      content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
-      __transitionEnd = () => _transitionEnd(t2, n);
-      content.value.addEventListener("transitionend", __transitionEnd);
-      content.value.addEventListener("webkitTransitionEnd", __transitionEnd);
-      if (n === "x") {
-        i.style.overflowX = "hidden";
-      } else if (n === "y") {
-        i.style.overflowY = "hidden";
-      }
-      content.value.style.transform = o2;
-      content.value.style.webkitTransform = o2;
+  function scrollTo2(scrollToValue, direction2) {
+    const container = main.value;
+    let transformValue = 0;
+    let transform = "";
+    scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
+    direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
+    if (transformValue === 0)
+      return;
+    let _content = content.value;
+    _content.style.transition = "transform .3s ease-out";
+    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
+    if (direction2 === "x") {
+      transform = "translateX(" + transformValue + "px) translateZ(0)";
+    } else {
+      direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
     }
+    _content.removeEventListener("transitionend", __transitionEnd);
+    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
+    __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
+    _content.addEventListener("transitionend", __transitionEnd);
+    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
+    if (direction2 === "x") {
+      container.style.overflowX = "hidden";
+    } else if (direction2 === "y") {
+      container.style.overflowY = "hidden";
+    }
+    _content.style.transform = transform;
+    _content.style.webkitTransform = transform;
   }
   function _handleScroll($event) {
     if ($event.timeStamp - _lastScrollTime > 20) {
@@ -8191,16 +8192,16 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       }
     }
   }
-  function _transitionEnd(val, type) {
+  function _transitionEnd(val, direction2) {
     content.value.style.transition = "";
     content.value.style.webkitTransition = "";
     content.value.style.transform = "";
     content.value.style.webkitTransform = "";
     let _main = main.value;
-    if (type === "x") {
+    if (direction2 === "x") {
       _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
       _main.scrollLeft = val;
-    } else if (type === "y") {
+    } else if (direction2 === "y") {
       _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
       _main.scrollTop = val;
     }
@@ -8233,8 +8234,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       y: 0
     };
     let needStop = null;
-    let __handleTouchMove = function(_event) {
-      const event = _event;
+    let __handleTouchMove = function(event) {
       var x = event.touches[0].pageX;
       var y = event.touches[0].pageY;
       var _main = main.value;
@@ -8285,8 +8285,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         });
       }
     };
-    let __handleTouchStart = function(_event) {
-      const event = _event;
+    let __handleTouchStart = function(event) {
       if (event.touches.length === 1) {
         needStop = null;
         touchStart = {
@@ -8298,8 +8297,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         }
       }
     };
-    let __handleTouchEnd = function(_event) {
-      const event = _event;
+    let __handleTouchEnd = function(event) {
       touchStart = {
         x: 0,
         y: 0
