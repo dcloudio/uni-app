@@ -2497,7 +2497,6 @@ let res = await db.collection('items').aggregate()
 |----								|----			|----		|----	|----																																														|
 |near								|GeoPoint	|				|是		|GeoJSON Point，用于判断距离的点																																|
 |spherical					|true			|				|是		|必填，值为 true																																								|
-|limit							|number		|				|否		|限制返回记录数																																									|
 |maxDistance				|number		|				|否		|距离最大值																																											|
 |minDistance				|number		|				|否		|距离最小值																																											|
 |query							|Object		|				|否		|要求记录必须同时满足该条件（语法同 where）																											|
