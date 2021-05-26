@@ -1,3 +1,9 @@
+#### 2021-05-26
+  + clientDB 新增 使用副表 foreignKey 进行联表查询时增加 _value 用于存储主表关联字段原始值 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=st-foreign-key)
+  + clientDB 修复 部分情况下 action.after 会重复执行一次的bug
+  + JQL数据管理 修复 使用云端 schema 时找不到 schema 的Bug [详情](https://ask.dcloud.net.cn/question/123285)
+  + web控制台 腾讯云 调整 云函数超时时间最大可配置为900秒
+
 #### 2021-05-25
   + web控制台 腾讯云 调整 云函数Url化需要配置CNAME为腾讯云给定的域名，此前配置为默认域名 [详情](https://uniapp.dcloud.net.cn/uniCloud/http)
 

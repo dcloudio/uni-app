@@ -1,3 +1,17 @@
+#### 3.1.16.20210526-alpha
+* 【uni-app】
+  + 【重要】H5端 新增 支持在 CLI 工程使用 vue3/vite [详情](https://ask.dcloud.net.cn/article/37834)
+  + 补充 addInterceptor 拦截器文档 [详情](https://uniapp.dcloud.io/api/interceptor)
+  + App-Android平台 修复 nvue swiper 组件动态加载数据时会跳到第一个 swiper-item 的bug [详情](https://ask.dcloud.net.cn/question/121687)
+* 【uniCloud】
+  + clientDB 新增 使用副表 foreignKey 进行联表查询时增加 _value 用于存储主表关联字段原始值 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=st-foreign-key)
+  + clientDB 修复 部分情况下 action.after 会重复执行一次的bug
+  + JQL数据管理 修复 使用云端 schema 时找不到 schema 的Bug [详情](https://ask.dcloud.net.cn/question/123285)
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 修复 3.1.15 版本引出的 云端打包同时勾选 UniPush 和 一键登录 模块会引起打包失败的Bug
+  + iOS平台 更新 百度语音识别 SDK 为 3.0.10.0 版
+  + iOS平台 优化 相册目录选择操作界面
+
 #### 3.1.15.20210518-alpha
 * 【uni-app】
   + App平台 新增 uni-AD 互动游戏，无需自行设计激励视频场景，快速嵌入激励视频变现 [详情](https://uniapp.dcloud.net.cn/api/a-d/interactive)
