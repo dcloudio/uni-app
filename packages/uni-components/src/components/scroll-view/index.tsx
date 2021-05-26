@@ -21,6 +21,7 @@ import { defineBuiltInComponent } from '@dcloudio/uni-components'
 type HTMLRef = Ref<HTMLElement | null>
 type Props = ExtractPropTypes<typeof props>
 type RefreshState = 'refreshing' | 'restore' | 'pulling' | ''
+type Direction = 'x' | 'y'
 interface State {
   lastScrollTop: number
   lastScrollLeft: number
@@ -98,7 +99,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props,
-  emits: ['scroll', 'scrolltoupper', 'scrolltolower', 'refresherabort'],
+  emits: [
+    'scroll',
+    'scrolltoupper',
+    'scrolltolower',
+    'refresherrefresh',
+    'refresherrestore',
+    'refresherpulling',
+    'refresherabort',
+  ],
   setup(props, { emit, slots }) {
     const rootRef: HTMLRef = ref(null)
     const main: HTMLRef = ref(null)
@@ -252,42 +261,52 @@ function useScrollViewLoader(
     return isNaN(val) ? 50 : val
   })
 
-  function scrollTo(t: number, n: 'x' | 'y') {
-    var i = main.value!
-    t < 0
-      ? (t = 0)
-      : n === 'x' && t > i.scrollWidth - i.offsetWidth
-      ? (t = i.scrollWidth - i.offsetWidth)
-      : n === 'y' &&
-        t > i.scrollHeight - i.offsetHeight &&
-        (t = i.scrollHeight - i.offsetHeight)
-    var r = 0
-    var o = ''
-    n === 'x' ? (r = i.scrollLeft - t) : n === 'y' && (r = i.scrollTop - t)
-    if (r !== 0) {
-      content.value!.style.transition = 'transform .3s ease-out'
-      content.value!.style.webkitTransition = '-webkit-transform .3s ease-out'
-      if (n === 'x') {
-        o = 'translateX(' + r + 'px) translateZ(0)'
-      } else {
-        n === 'y' && (o = 'translateY(' + r + 'px) translateZ(0)')
-      }
-      content.value!.removeEventListener('transitionend', __transitionEnd)
-      content.value!.removeEventListener('webkitTransitionEnd', __transitionEnd)
-      __transitionEnd = () => _transitionEnd(t, n)
-      content.value!.addEventListener('transitionend', __transitionEnd)
-      content.value!.addEventListener('webkitTransitionEnd', __transitionEnd)
-      if (n === 'x') {
-        // if (e !== 'ios') {
-        i.style.overflowX = 'hidden'
-        // }
-      } else if (n === 'y') {
-        i.style.overflowY = 'hidden'
-      }
+  function scrollTo(scrollToValue: number, direction: Direction) {
+    const container = main.value!
+    let transformValue = 0
+    let transform = ''
 
-      content.value!.style.transform = o
-      content.value!.style.webkitTransform = o
+    scrollToValue < 0
+      ? (scrollToValue = 0)
+      : direction === 'x' &&
+        scrollToValue > container.scrollWidth - container.offsetWidth
+      ? (scrollToValue = container.scrollWidth - container.offsetWidth)
+      : direction === 'y' &&
+        scrollToValue > container.scrollHeight - container.offsetHeight &&
+        (scrollToValue = container.scrollHeight - container.offsetHeight)
+
+    direction === 'x'
+      ? (transformValue = container.scrollLeft - scrollToValue)
+      : direction === 'y' &&
+        (transformValue = container.scrollTop - scrollToValue)
+
+    if (transformValue === 0) return
+
+    let _content = content.value!
+
+    _content.style.transition = 'transform .3s ease-out'
+    _content.style.webkitTransition = '-webkit-transform .3s ease-out'
+    if (direction === 'x') {
+      transform = 'translateX(' + transformValue + 'px) translateZ(0)'
+    } else {
+      direction === 'y' &&
+        (transform = 'translateY(' + transformValue + 'px) translateZ(0)')
     }
+    _content.removeEventListener('transitionend', __transitionEnd)
+    _content.removeEventListener('webkitTransitionEnd', __transitionEnd)
+    __transitionEnd = () => _transitionEnd(scrollToValue, direction)
+    _content.addEventListener('transitionend', __transitionEnd)
+    _content.addEventListener('webkitTransitionEnd', __transitionEnd)
+    if (direction === 'x') {
+      // if (e !== 'ios') {
+      container.style.overflowX = 'hidden'
+      // }
+    } else if (direction === 'y') {
+      container.style.overflowY = 'hidden'
+    }
+
+    _content.style.transform = transform
+    _content.style.webkitTransform = transform
   }
   function _handleScroll($event: MouseEvent) {
     if ($event.timeStamp - _lastScrollTime > 20) {
@@ -410,16 +429,16 @@ function useScrollViewLoader(
       }
     }
   }
-  function _transitionEnd(val: number, type: 'x' | 'y') {
+  function _transitionEnd(val: number, direction: Direction) {
     content.value!.style.transition = ''
     content.value!.style.webkitTransition = ''
     content.value!.style.transform = ''
     content.value!.style.webkitTransform = ''
     let _main = main.value!
-    if (type === 'x') {
+    if (direction === 'x') {
       _main.style.overflowX = props.scrollX ? 'auto' : 'hidden'
       _main.scrollLeft = val
-    } else if (type === 'y') {
+    } else if (direction === 'y') {
       _main.style.overflowY = props.scrollY ? 'auto' : 'hidden'
       _main.scrollTop = val
     }
@@ -467,8 +486,7 @@ function useScrollViewLoader(
       y: 0,
     }
     let needStop: boolean | null = null
-    let __handleTouchMove = function (_event: Event) {
-      const event = _event as TouchEvent
+    let __handleTouchMove = function (event: TouchEvent) {
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
       var _main = main.value!
@@ -530,8 +548,7 @@ function useScrollViewLoader(
         })
       }
     }
-    let __handleTouchStart = function (_event: Event) {
-      const event = _event as TouchEvent
+    let __handleTouchStart = function (event: TouchEvent) {
       if (event.touches.length === 1) {
         disableScrollBounce({
           disable: true,
@@ -550,8 +567,7 @@ function useScrollViewLoader(
         }
       }
     }
-    let __handleTouchEnd = function (_event: Event) {
-      const event = _event as TouchEvent
+    let __handleTouchEnd = function (event: TouchEvent) {
       touchStart = {
         x: 0,
         y: 0,
