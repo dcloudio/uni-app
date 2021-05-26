@@ -5,8 +5,8 @@ const { uniInjectPlugin } = require('@dcloudio/vite-plugin-uni')
  */
 const UniCloudPlugin = {
   name: 'vite:uni-cloud',
-  config() {
-    initUniCloudEnv()
+  config(config) {
+    initUniCloudEnv(config)
     return {
       define: {
         'process.env.UNI_CLOUD_PROVIDER': JSON.stringify(
@@ -19,7 +19,7 @@ const UniCloudPlugin = {
     }
   },
   configureServer(server) {
-    server.httpServer &&
+    if (server.httpServer) {
       server.httpServer.on('listening', () => {
         if (!process.UNI_CLOUD) {
           return
@@ -28,6 +28,18 @@ const UniCloudPlugin = {
           initUniCloudWarningOnce()
         })
       })
+    } else {
+      initUniCloudWarningOnce()
+    }
+  },
+  closeBundle() {
+    if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
+      console.log()
+      console.log(
+        '欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：'
+      )
+      console.log('https://uniapp.dcloud.io/uniCloud/hosting')
+    }
   },
 }
 
@@ -37,7 +49,7 @@ const initUniCloudWarningOnce = once(() => {
   )
 })
 
-function initUniCloudEnv() {
+function initUniCloudEnv(config) {
   process.UNI_CLOUD = false
   process.UNI_CLOUD_TCB = false
   process.UNI_CLOUD_ALIYUN = false
@@ -46,6 +58,7 @@ function initUniCloudEnv() {
   if (!process.env.UNI_CLOUD_SPACES) {
     return
   }
+  const silent = config.build && config.build.ssr ? true : false
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
     if (Array.isArray(spaces)) {
@@ -54,7 +67,10 @@ function initUniCloudEnv() {
       process.UNI_CLOUD_ALIYUN = !!spaces.find((space) => space.clientSecret)
       if (spaces.length === 1) {
         const space = spaces[0]
-        console.log(`本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`)
+        !silent &&
+          console.log(
+            `本项目的uniCloud使用的默认服务空间spaceId为：${space.id}`
+          )
       }
       process.env.UNI_CLOUD_PROVIDER = JSON.stringify(
         spaces.map((space) => {
@@ -83,9 +99,10 @@ function initUniCloudEnv() {
     process.env.UNI_PLATFORM === 'h5' &&
     process.env.NODE_ENV === 'production'
   ) {
-    console.warn(
-      '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
-    )
+    !silent &&
+      console.warn(
+        '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+      )
   }
 }
 
