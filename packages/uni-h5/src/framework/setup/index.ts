@@ -1,4 +1,4 @@
-import { invokeArrayFns } from '@vue/shared'
+import { invokeArrayFns, isPlainObject } from '@vue/shared'
 import {
   ComponentInternalInstance,
   ComponentPublicInstance,
@@ -127,6 +127,23 @@ export function setupApp(comp: any) {
         onBeforeMount(onLaunch)
       }
       onMounted(() => {
+        window.addEventListener(
+          'message',
+          function (evt: {
+            data?: { type: string; data: any; pageId: number }
+          }) {
+            if (
+              isPlainObject(evt.data) &&
+              evt.data.type === 'WEB_INVOKE_APPSERVICE'
+            ) {
+              UniServiceJSBridge.emit(
+                'onWebInvokeAppService',
+                evt.data.data,
+                evt.data.pageId
+              )
+            }
+          }
+        )
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') {
             UniServiceJSBridge.emit('onAppEnterForeground')

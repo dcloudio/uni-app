@@ -1,6 +1,6 @@
-import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, createCommentVNode, renderSlot} from "vue";
-import {once, passive, normalizeTarget, isBuiltInComponent, initCostomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCostomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime} from "@dcloudio/uni-shared";
+import {isFunction, extend, hyphenate, isPlainObject, isString, hasOwn, isArray, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, createCommentVNode, renderSlot} from "vue";
+import {once, passive, normalizeTarget, isBuiltInComponent, initCostomDataset, invokeArrayFns, PRIMARY_COLOR, debounce, callOptions, removeLeadingSlash, getLen, getCostomDataset, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
 function applyOptions(options, instance2, publicThis) {
@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1074,648 +1074,6 @@ function invokeHook(vm, name, args) {
   const hooks = vm.$[name];
   return hooks && invokeArrayFns(hooks, args);
 }
-function initOn() {
-  UniServiceJSBridge.on("onAppEnterForeground", onAppEnterForeground);
-  UniServiceJSBridge.on("onAppEnterBackground", onAppEnterBackground);
-}
-function onAppEnterForeground() {
-  const page = getCurrentPage();
-  const showOptions = {
-    path: "",
-    query: {}
-  };
-  if (page) {
-    showOptions.path = page.$page.route;
-    showOptions.query = page.$page.options;
-  }
-  invokeHook(getApp(), "onShow", showOptions);
-  invokeHook(page, "onShow");
-}
-function onAppEnterBackground() {
-  invokeHook(getApp(), "onHide");
-  invokeHook(getCurrentPage(), "onHide");
-}
-const SUBSCRIBE_LIFECYCLE_HOOKS = ["onPageScroll", "onReachBottom"];
-function initSubscribe() {
-  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
-}
-function createPageEvent(name) {
-  return (args, pageId) => {
-    const vm = getPageVmById(pageId);
-    if (vm) {
-      invokeHook(vm, name, args);
-    }
-  };
-}
-function initService(app) {
-  initOn();
-  initSubscribe();
-  initAppConfig(app._context.config);
-}
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, "onError", err);
-  }
-}
-function initApp$1(app) {
-  const appConfig = app._context.config;
-  if (isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
-  const globalProperties = appConfig.globalProperties;
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-  }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
-  }
-  const {meta} = __uniRoutes[0];
-  return {
-    meta,
-    query,
-    path: "/" + meta.route
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
-  }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
-];
-function mergePageMeta(id2, pageMeta) {
-  const res = extend({id: id2}, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
-  });
-  return res;
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const {enablePullDownRefresh, navigationBar} = pageMeta;
-    if (enablePullDownRefresh) {
-      const refreshOptions = extend({
-        support: true,
-        color: "#2BD009",
-        style: "circle",
-        height: 70,
-        range: 150,
-        offset: 0
-      }, pageMeta.refreshOptions);
-      let offset = rpx2px(refreshOptions.offset);
-      const {type} = navigationBar;
-      if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
-      }
-      refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
-      pageMeta.refreshOptions = refreshOptions;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const {navigationBar} = pageMeta;
-    const {titleSize, titleColor, backgroundColor} = navigationBar;
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.backButton = pageMeta.isQuit ? false : true;
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#fff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
-  }
-  if (__UNI_FEATURE_PAGES__ && history.state) {
-    const type = history.state.__type__;
-    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
-      pageMeta.isEntry = true;
-      pageMeta.isQuit = true;
-    }
-  }
-  return pageMeta;
-}
-const screen$1 = window.screen;
-const documentElement = document.documentElement;
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen$1.width,
-    screen$1.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
-}
-function getStateId() {
-  return history.state && history.state.__id__ || 1;
-}
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(__uniConfig.tabBar);
-  }
-  return tabBar;
-}
-var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var lookup = /* @__PURE__ */ function() {
-  const lookup2 = new Uint8Array(256);
-  for (var i = 0; i < chars.length; i++) {
-    lookup2[chars.charCodeAt(i)] = i;
-  }
-  return lookup2;
-}();
-function encode$1(arraybuffer) {
-  var bytes = new Uint8Array(arraybuffer), i, len = bytes.length, base64 = "";
-  for (i = 0; i < len; i += 3) {
-    base64 += chars[bytes[i] >> 2];
-    base64 += chars[(bytes[i] & 3) << 4 | bytes[i + 1] >> 4];
-    base64 += chars[(bytes[i + 1] & 15) << 2 | bytes[i + 2] >> 6];
-    base64 += chars[bytes[i + 2] & 63];
-  }
-  if (len % 3 === 2) {
-    base64 = base64.substring(0, base64.length - 1) + "=";
-  } else if (len % 3 === 1) {
-    base64 = base64.substring(0, base64.length - 2) + "==";
-  }
-  return base64;
-}
-function decode(base64) {
-  var bufferLength = base64.length * 0.75, len = base64.length, i, p2 = 0, encoded1, encoded2, encoded3, encoded4;
-  if (base64[base64.length - 1] === "=") {
-    bufferLength--;
-    if (base64[base64.length - 2] === "=") {
-      bufferLength--;
-    }
-  }
-  var arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
-  for (i = 0; i < len; i += 4) {
-    encoded1 = lookup[base64.charCodeAt(i)];
-    encoded2 = lookup[base64.charCodeAt(i + 1)];
-    encoded3 = lookup[base64.charCodeAt(i + 2)];
-    encoded4 = lookup[base64.charCodeAt(i + 3)];
-    bytes[p2++] = encoded1 << 2 | encoded2 >> 4;
-    bytes[p2++] = (encoded2 & 15) << 4 | encoded3 >> 2;
-    bytes[p2++] = (encoded3 & 3) << 6 | encoded4 & 63;
-  }
-  return arraybuffer;
-}
-const CHOOSE_SIZE_TYPES = ["original", "compressed"];
-const CHOOSE_SOURCE_TYPES = ["album", "camera"];
-const HTTP_METHODS = [
-  "GET",
-  "OPTIONS",
-  "HEAD",
-  "POST",
-  "PUT",
-  "DELETE",
-  "TRACE",
-  "CONNECT"
-];
-function elemInArray(str, arr) {
-  if (!str || arr.indexOf(str) === -1) {
-    return arr[0];
-  }
-  return str;
-}
-function elemsInArray(strArr, optionalVal) {
-  if (!isArray(strArr) || strArr.length === 0 || strArr.find((val) => optionalVal.indexOf(val) === -1)) {
-    return optionalVal;
-  }
-  return strArr;
-}
-function validateProtocolFail(name, msg) {
-  console.warn(`${name}: ${msg}`);
-}
-function validateProtocol(name, data, protocol, onFail) {
-  if (!onFail) {
-    onFail = validateProtocolFail;
-  }
-  for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
-    if (isString(errMsg)) {
-      onFail(name, errMsg);
-    }
-  }
-}
-function validateProtocols(name, args, protocol, onFail) {
-  if (!protocol) {
-    return;
-  }
-  if (!isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
-  }
-  const len = protocol.length;
-  const argsLen = args.length;
-  for (let i = 0; i < len; i++) {
-    const opts = protocol[i];
-    const data = Object.create(null);
-    if (argsLen > i) {
-      data[opts.name] = args[i];
-    }
-    validateProtocol(name, data, {[opts.name]: opts}, onFail);
-  }
-}
-function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject(prop)) {
-    prop = {type: prop};
-  }
-  const {type, required, validator: validator2} = prop;
-  if (required && isAbsent) {
-    return 'Missing required args: "' + name + '"';
-  }
-  if (value == null && !required) {
-    return;
-  }
-  if (type != null) {
-    let isValid = false;
-    const types = isArray(type) ? type : [type];
-    const expectedTypes = [];
-    for (let i = 0; i < types.length && !isValid; i++) {
-      const {valid, expectedType} = assertType(value, types[i]);
-      expectedTypes.push(expectedType || "");
-      isValid = valid;
-    }
-    if (!isValid) {
-      return getInvalidTypeMessage(name, value, expectedTypes);
-    }
-  }
-  if (validator2) {
-    return validator2(value);
-  }
-}
-const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
-function assertType(value, type) {
-  let valid;
-  const expectedType = getType(type);
-  if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
-      valid = value instanceof type;
-    }
-  } else if (expectedType === "Object") {
-    valid = isObject(value);
-  } else if (expectedType === "Array") {
-    valid = isArray(value);
-  } else {
-    {
-      valid = value instanceof type;
-    }
-  }
-  return {
-    valid,
-    expectedType
-  };
-}
-function getInvalidTypeMessage(name, value, expectedTypes) {
-  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
-  const expectedType = expectedTypes[0];
-  const receivedType = toRawType(value);
-  const expectedValue = styleValue(value, expectedType);
-  const receivedValue = styleValue(value, receivedType);
-  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-    message += ` with value ${expectedValue}`;
-  }
-  message += `, got ${receivedType} `;
-  if (isExplicable(receivedType)) {
-    message += `with value ${receivedValue}.`;
-  }
-  return message;
-}
-function getType(ctor) {
-  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : "";
-}
-function styleValue(value, type) {
-  if (type === "String") {
-    return `"${value}"`;
-  } else if (type === "Number") {
-    return `${Number(value)}`;
-  } else {
-    return `${value}`;
-  }
-}
-function isExplicable(type) {
-  const explicitTypes = ["string", "number", "boolean"];
-  return explicitTypes.some((elem) => type.toLowerCase() === elem);
-}
-function isBoolean(...args) {
-  return args.some((elem) => elem.toLowerCase() === "boolean");
-}
-function tryCatch(fn) {
-  return function() {
-    try {
-      return fn.apply(fn, arguments);
-    } catch (e2) {
-      console.error(e2);
-    }
-  };
-}
-let invokeCallbackId = 1;
-const invokeCallbacks = {};
-function addInvokeCallback(id2, name, callback, keepAlive = false) {
-  invokeCallbacks[id2] = {
-    name,
-    keepAlive,
-    callback
-  };
-  return id2;
-}
-function invokeCallback(id2, res, extras) {
-  if (typeof id2 === "number") {
-    const opts = invokeCallbacks[id2];
-    if (opts) {
-      if (!opts.keepAlive) {
-        delete invokeCallbacks[id2];
-      }
-      return opts.callback(res, extras);
-    }
-  }
-  return res;
-}
-function findInvokeCallbackByName(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      return true;
-    }
-  }
-  return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-  for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
-}
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
-    for (const key in invokeCallbacks) {
-      const opts = invokeCallbacks[key];
-      if (opts.name === name) {
-        opts.callback(res);
-      }
-    }
-  });
-}
-function createKeepAliveApiCallback(name, callback) {
-  return addInvokeCallback(invokeCallbackId++, name, callback, true);
-}
-const API_SUCCESS = "success";
-const API_FAIL = "fail";
-const API_COMPLETE = "complete";
-function getApiCallbacks(args) {
-  const apiCallbacks = {};
-  for (const name in args) {
-    const fn = args[name];
-    if (isFunction(fn)) {
-      apiCallbacks[name] = tryCatch(fn);
-      delete args[name];
-    }
-  }
-  return apiCallbacks;
-}
-function normalizeErrMsg(errMsg, name) {
-  if (!errMsg || errMsg.indexOf(":fail") === -1) {
-    return name + ":ok";
-  }
-  return name + errMsg.substring(errMsg.indexOf(":fail"));
-}
-function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
-  if (!isPlainObject(args)) {
-    args = {};
-  }
-  const {success, fail, complete} = getApiCallbacks(args);
-  const hasSuccess = isFunction(success);
-  const hasFail = isFunction(fail);
-  const hasComplete = isFunction(complete);
-  const callbackId = invokeCallbackId++;
-  addInvokeCallback(callbackId, name, (res) => {
-    res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
-    isFunction(beforeAll) && beforeAll(res);
-    if (res.errMsg === name + ":ok") {
-      isFunction(beforeSuccess) && beforeSuccess(res);
-      hasSuccess && success(res);
-    } else {
-      hasFail && fail(res);
-    }
-    hasComplete && complete(res);
-  });
-  return callbackId;
-}
-const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
-function hasCallback(args) {
-  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
-    return true;
-  }
-  return false;
-}
-function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
-  return promise;
-}
-function promisify(fn) {
-  return (args = {}) => {
-    if (hasCallback(args)) {
-      return fn(args);
-    }
-    return handlePromise(new Promise((resolve, reject) => {
-      fn(extend(args, {success: resolve, fail: reject}));
-    }));
-  };
-}
-function formatApiArgs(args, options) {
-  const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
-    return;
-  }
-  const formatArgs = options.formatArgs;
-  const keys = Object.keys(formatArgs);
-  for (let i = 0; i < keys.length; i++) {
-    const name = keys[i];
-    const formatterOrDefaultValue = formatArgs[name];
-    if (isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
-      if (isString(errMsg)) {
-        return errMsg;
-      }
-    } else {
-      if (!hasOwn(params, name)) {
-        params[name] = formatterOrDefaultValue;
-      }
-    }
-  }
-}
-function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
-}
-function invokeFail(id2, name, err) {
-  return invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
-}
-function beforeInvokeApi(name, args, protocol, options) {
-  if (process.env.NODE_ENV !== "production") {
-    validateProtocols(name, args, protocol);
-  }
-  if (options && options.beforeInvoke) {
-    const errMsg2 = options.beforeInvoke(args);
-    if (isString(errMsg2)) {
-      return errMsg2;
-    }
-  }
-  const errMsg = formatApiArgs(args, options);
-  if (errMsg) {
-    return errMsg;
-  }
-}
-function checkCallback(callback) {
-  if (!isFunction(callback)) {
-    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
-  }
-}
-function wrapperOnApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback);
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name);
-      fn();
-    }
-  };
-}
-function wrapperOffApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    const hasInvokeOnApi = findInvokeCallbackByName(name);
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
-      fn();
-    }
-  };
-}
-function wrapperTaskApi(name, fn, protocol, options) {
-  return (args) => {
-    const id2 = createAsyncApiCallback(name, args, options);
-    const errMsg = beforeInvokeApi(name, [args], protocol, options);
-    if (errMsg) {
-      return invokeFail(id2, name, errMsg);
-    }
-    return fn(args, {
-      resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (err) => invokeFail(id2, name, err)
-    });
-  };
-}
-function wrapperSyncApi(name, fn, protocol, options) {
-  return (...args) => {
-    const errMsg = beforeInvokeApi(name, args, protocol, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    return fn.apply(null, args);
-  };
-}
-function wrapperAsyncApi(name, fn, protocol, options) {
-  return wrapperTaskApi(name, fn, protocol, options);
-}
-function defineOnApi(name, fn, options) {
-  return wrapperOnApi(name, fn, options);
-}
-function defineOffApi(name, fn, options) {
-  return wrapperOffApi(name, fn, options);
-}
-function defineTaskApi(name, fn, protocol, options) {
-  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function defineSyncApi(name, fn, protocol, options) {
-  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
-}
-function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function createUnsupportedMsg(name) {
-  return `method 'uni.${name}' not supported`;
-}
-function createUnsupportedSyncApi(name) {
-  return () => {
-    console.error(createUnsupportedMsg(name));
-  };
-}
-const createUnsupportedOnApi = createUnsupportedSyncApi;
-function createUnsupportedAsyncApi(name) {
-  return (_args, {reject}) => {
-    return reject(createUnsupportedMsg(name));
-  };
-}
-const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
-const Base64ToArrayBufferProtocol = [
-  {
-    name: "base64",
-    type: String,
-    required: true
-  }
-];
-const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
-const ArrayBufferToBase64Protocol = [
-  {
-    name: "arrayBuffer",
-    type: [ArrayBuffer, Uint8Array],
-    required: true
-  }
-];
-const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
-  return decode(base64);
-}, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
-  return encode$1(arrayBuffer);
-}, ArrayBufferToBase64Protocol);
 function findElem(vm) {
   return vm.$el;
 }
@@ -8565,1303 +7923,478 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$i = {
-  indicatorDots: {
-    type: [Boolean, String],
-    default: false
-  },
-  vertical: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoplay: {
-    type: [Boolean, String],
-    default: false
-  },
-  circular: {
-    type: [Boolean, String],
-    default: false
-  },
-  interval: {
-    type: [Number, String],
-    default: 5e3
-  },
-  duration: {
-    type: [Number, String],
-    default: 500
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  },
-  indicatorColor: {
-    type: String,
-    default: ""
-  },
-  indicatorActiveColor: {
-    type: String,
-    default: ""
-  },
-  previousMargin: {
-    type: String,
-    default: ""
-  },
-  nextMargin: {
-    type: String,
-    default: ""
-  },
-  currentItemId: {
-    type: String,
-    default: ""
-  },
-  skipHiddenItemLayout: {
-    type: [Boolean, String],
-    default: false
-  },
-  displayMultipleItems: {
-    type: [Number, String],
-    default: 1
-  },
-  disableTouch: {
-    type: [Boolean, String],
-    default: false
+var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var lookup = /* @__PURE__ */ function() {
+  const lookup2 = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup2[chars.charCodeAt(i)] = i;
   }
-};
-function upx2pxStr(val) {
-  if (/\d+[ur]px$/i.test(val)) {
-    val.replace(/\d+[ur]px$/i, (text2) => {
-      return `${upx2px(parseFloat(text2))}px`;
-    });
+  return lookup2;
+}();
+function encode$1(arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer), i, len = bytes.length, base64 = "";
+  for (i = 0; i < len; i += 3) {
+    base64 += chars[bytes[i] >> 2];
+    base64 += chars[(bytes[i] & 3) << 4 | bytes[i + 1] >> 4];
+    base64 += chars[(bytes[i + 1] & 15) << 2 | bytes[i + 2] >> 6];
+    base64 += chars[bytes[i + 2] & 63];
   }
-  return val || "";
+  if (len % 3 === 2) {
+    base64 = base64.substring(0, base64.length - 1) + "=";
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + "==";
+  }
+  return base64;
 }
-function useState$2(props2) {
-  const interval = computed(() => {
-    const interval2 = Number(props2.interval);
-    return isNaN(interval2) ? 5e3 : interval2;
-  });
-  const duration = computed(() => {
-    const duration2 = Number(props2.duration);
-    return isNaN(duration2) ? 500 : duration2;
-  });
-  const displayMultipleItems = computed(() => {
-    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
-    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
-  });
-  const state2 = reactive({
-    interval,
-    duration,
-    displayMultipleItems,
-    current: Math.round(props2.current) || 0,
-    currentItemId: props2.currentItemId,
-    userTracking: false
-  });
-  return state2;
+function decode(base64) {
+  var bufferLength = base64.length * 0.75, len = base64.length, i, p2 = 0, encoded1, encoded2, encoded3, encoded4;
+  if (base64[base64.length - 1] === "=") {
+    bufferLength--;
+    if (base64[base64.length - 2] === "=") {
+      bufferLength--;
+    }
+  }
+  var arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
+  for (i = 0; i < len; i += 4) {
+    encoded1 = lookup[base64.charCodeAt(i)];
+    encoded2 = lookup[base64.charCodeAt(i + 1)];
+    encoded3 = lookup[base64.charCodeAt(i + 2)];
+    encoded4 = lookup[base64.charCodeAt(i + 3)];
+    bytes[p2++] = encoded1 << 2 | encoded2 >> 4;
+    bytes[p2++] = (encoded2 & 15) << 4 | encoded3 >> 2;
+    bytes[p2++] = (encoded3 & 3) << 6 | encoded4 & 63;
+  }
+  return arraybuffer;
 }
-function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger) {
-  function cancelSchedule() {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
+const CHOOSE_SIZE_TYPES = ["original", "compressed"];
+const CHOOSE_SOURCE_TYPES = ["album", "camera"];
+const HTTP_METHODS = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
+function elemInArray(str, arr) {
+  if (!str || arr.indexOf(str) === -1) {
+    return arr[0];
+  }
+  return str;
+}
+function elemsInArray(strArr, optionalVal) {
+  if (!isArray(strArr) || strArr.length === 0 || strArr.find((val) => optionalVal.indexOf(val) === -1)) {
+    return optionalVal;
+  }
+  return strArr;
+}
+function validateProtocolFail(name, msg) {
+  console.warn(`${name}: ${msg}`);
+}
+function validateProtocol(name, data, protocol, onFail) {
+  if (!onFail) {
+    onFail = validateProtocolFail;
+  }
+  for (const key in protocol) {
+    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
+    if (isString(errMsg)) {
+      onFail(name, errMsg);
     }
   }
-  let timer = null;
-  let invalid = true;
-  let viewportPosition = 0;
-  let viewportMoveRatio = 1;
-  let animating = null;
-  let requestedAnimation = false;
-  let contentTrackViewport = 0;
-  let transitionStart;
-  let currentChangeSource = "";
-  let animationFrame;
-  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
-  function checkCircularLayout(index2) {
-    if (!invalid) {
-      for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
-        const item = items[r];
-        const s = Math.floor(index2 / n) * n + r;
-        const l = s + n;
-        const c = s - n;
-        const u = Math.max(index2 - (s + 1), s - i, 0);
-        const d = Math.max(index2 - (l + 1), l - i, 0);
-        const h = Math.max(index2 - (c + 1), c - i, 0);
-        const p2 = Math.min(u, d, h);
-        const position = [s, l, c][[u, d, h].indexOf(p2)];
-        item.updatePosition(position, props2.vertical);
-      }
+}
+function validateProtocols(name, args, protocol, onFail) {
+  if (!protocol) {
+    return;
+  }
+  if (!isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+  }
+  const len = protocol.length;
+  const argsLen = args.length;
+  for (let i = 0; i < len; i++) {
+    const opts = protocol[i];
+    const data = Object.create(null);
+    if (argsLen > i) {
+      data[opts.name] = args[i];
+    }
+    validateProtocol(name, data, {[opts.name]: opts}, onFail);
+  }
+}
+function validateProp(name, value, prop, isAbsent) {
+  if (!isPlainObject(prop)) {
+    prop = {type: prop};
+  }
+  const {type, required, validator: validator2} = prop;
+  if (required && isAbsent) {
+    return 'Missing required args: "' + name + '"';
+  }
+  if (value == null && !required) {
+    return;
+  }
+  if (type != null) {
+    let isValid = false;
+    const types = isArray(type) ? type : [type];
+    const expectedTypes = [];
+    for (let i = 0; i < types.length && !isValid; i++) {
+      const {valid, expectedType} = assertType(value, types[i]);
+      expectedTypes.push(expectedType || "");
+      isValid = valid;
+    }
+    if (!isValid) {
+      return getInvalidTypeMessage(name, value, expectedTypes);
     }
   }
-  function updateViewport(index2) {
-    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
-      if (circularEnabled.value) {
-        checkCircularLayout(index2);
-      }
-    }
-    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
-    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
-    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
-    const slideFrame = slideFrameRef.value;
-    if (slideFrame) {
-      slideFrame.style.webkitTransform = transform;
-      slideFrame.style.transform = transform;
-    }
-    viewportPosition = index2;
-    if (!transitionStart) {
-      if (index2 % 1 === 0) {
-        return;
-      }
-      transitionStart = index2;
-    }
-    index2 -= Math.floor(transitionStart);
-    const items = swiperContexts.value;
-    if (index2 <= -(items.length - 1)) {
-      index2 += items.length;
-    } else if (index2 >= items.length) {
-      index2 -= items.length;
-    }
-    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
-    trigger("transition", {}, {
-      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
-      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
-    });
+  if (validator2) {
+    return validator2(value);
   }
-  function endViewportAnimation() {
-    if (animating) {
-      updateViewport(animating.toPos);
-      animating = null;
+}
+const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
+function assertType(value, type) {
+  let valid;
+  const expectedType = getType(type);
+  if (isSimpleType(expectedType)) {
+    const t2 = typeof value;
+    valid = t2 === expectedType.toLowerCase();
+    if (!valid && t2 === "object") {
+      valid = value instanceof type;
     }
-  }
-  function normalizeCurrentValue(current) {
-    const length = swiperContexts.value.length;
-    if (!length) {
-      return -1;
+  } else if (expectedType === "Object") {
+    valid = isObject(value);
+  } else if (expectedType === "Array") {
+    valid = isArray(value);
+  } else {
+    {
+      valid = value instanceof type;
     }
-    const index2 = (Math.round(current) % length + length) % length;
-    if (circularEnabled.value) {
-      if (length <= state2.displayMultipleItems) {
-        return 0;
-      }
-    } else if (index2 > length - state2.displayMultipleItems) {
-      return length - state2.displayMultipleItems;
-    }
-    return index2;
-  }
-  function cancelViewportAnimation() {
-    animating = null;
-  }
-  function animateFrameFuncProto() {
-    if (!animating) {
-      requestedAnimation = false;
-      return;
-    }
-    const _animating = animating;
-    const toPos = _animating.toPos;
-    const acc = _animating.acc;
-    const endTime = _animating.endTime;
-    const source = _animating.source;
-    const time = endTime - Date.now();
-    if (time <= 0) {
-      updateViewport(toPos);
-      animating = null;
-      requestedAnimation = false;
-      transitionStart = null;
-      const item = swiperContexts.value[state2.current];
-      if (item) {
-        const currentItemId = item.getItemId();
-        trigger("animationfinish", {}, {
-          current: state2.current,
-          currentItemId,
-          source
-        });
-      }
-      return;
-    }
-    const s = acc * time * time / 2;
-    const l = toPos + s;
-    updateViewport(l);
-    animationFrame = requestAnimationFrame(animateFrameFuncProto);
-  }
-  function animateViewport(current, source, n) {
-    cancelViewportAnimation();
-    const duration = state2.duration;
-    const length = swiperContexts.value.length;
-    let position = viewportPosition;
-    if (circularEnabled.value) {
-      if (n < 0) {
-        for (; position < current; ) {
-          position += length;
-        }
-        for (; position - length > current; ) {
-          position -= length;
-        }
-      } else if (n > 0) {
-        for (; position > current; ) {
-          position -= length;
-        }
-        for (; position + length < current; ) {
-          position += length;
-        }
-      } else {
-        for (; position + length < current; ) {
-          position += length;
-        }
-        for (; position - length > current; ) {
-          position -= length;
-        }
-        if (position + length - current < current - position) {
-          position += length;
-        }
-      }
-    }
-    animating = {
-      toPos: current,
-      acc: 2 * (position - current) / (duration * duration),
-      endTime: Date.now() + duration,
-      source
-    };
-    if (!requestedAnimation) {
-      requestedAnimation = true;
-      animationFrame = requestAnimationFrame(animateFrameFuncProto);
-    }
-  }
-  function scheduleAutoplay() {
-    cancelSchedule();
-    const items = swiperContexts.value;
-    const callback = function() {
-      timer = null;
-      currentChangeSource = "autoplay";
-      if (circularEnabled.value) {
-        state2.current = normalizeCurrentValue(state2.current + 1);
-      } else {
-        state2.current = state2.current + state2.displayMultipleItems < items.length ? state2.current + 1 : 0;
-      }
-      animateViewport(state2.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback, state2.interval);
-    };
-    if (!(invalid || items.length <= state2.displayMultipleItems)) {
-      timer = setTimeout(callback, state2.interval);
-    }
-  }
-  function resetLayout() {
-    cancelSchedule();
-    endViewportAnimation();
-    const items = swiperContexts.value;
-    for (let i = 0; i < items.length; i++) {
-      items[i].updatePosition(i, props2.vertical);
-    }
-    viewportMoveRatio = 1;
-    const slideFrameEl = slideFrameRef.value;
-    if (state2.displayMultipleItems === 1 && items.length) {
-      const itemRect = items[0].getBoundingClientRect();
-      const slideFrameRect = slideFrameEl.getBoundingClientRect();
-      viewportMoveRatio = itemRect.width / slideFrameRect.width;
-      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
-        viewportMoveRatio = 1;
-      }
-    }
-    const position = viewportPosition;
-    viewportPosition = -2;
-    const current = state2.current;
-    if (current >= 0) {
-      invalid = false;
-      if (state2.userTracking) {
-        updateViewport(position + current - contentTrackViewport);
-        contentTrackViewport = current;
-      } else {
-        updateViewport(current);
-        if (props2.autoplay) {
-          scheduleAutoplay();
-        }
-      }
-    } else {
-      invalid = true;
-      updateViewport(-state2.displayMultipleItems - 1);
-    }
-  }
-  watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
-    let current = -1;
-    if (props2.currentItemId) {
-      for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
-        const itemId = items[i].getItemId();
-        if (itemId === props2.currentItemId) {
-          current = i;
-          break;
-        }
-      }
-    }
-    if (current < 0) {
-      current = Math.round(props2.current) || 0;
-    }
-    current = current < 0 ? 0 : current;
-    if (state2.current !== current) {
-      currentChangeSource = "";
-      state2.current = current;
-    }
-  });
-  watch([() => props2.vertical, () => circularEnabled.value, () => state2.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
-  watch(() => state2.interval, () => {
-    if (timer) {
-      cancelSchedule();
-      scheduleAutoplay();
-    }
-  });
-  function currentChanged(current, history2) {
-    const source = currentChangeSource;
-    currentChangeSource = "";
-    const items = swiperContexts.value;
-    if (!source) {
-      const length = items.length;
-      animateViewport(current, "", circularEnabled.value && history2 + (length - current) % length > length / 2 ? 1 : 0);
-    }
-    const item = items[current];
-    if (item) {
-      const currentItemId = state2.currentItemId = item.getItemId();
-      trigger("change", {}, {
-        current: state2.current,
-        currentItemId,
-        source
-      });
-    }
-  }
-  watch(() => state2.current, (val, oldVal) => {
-    currentChanged(val, oldVal);
-    emit2("update:current", val);
-  });
-  watch(() => state2.currentItemId, (val) => {
-    emit2("update:currentItemId", val);
-  });
-  function inintAutoplay(enable) {
-    if (enable) {
-      scheduleAutoplay();
-    } else {
-      cancelSchedule();
-    }
-  }
-  watch(() => props2.autoplay && !state2.userTracking, inintAutoplay);
-  inintAutoplay(props2.autoplay && !state2.userTracking);
-  onMounted(() => {
-    let userDirectionChecked = false;
-    let contentTrackSpeed = 0;
-    let contentTrackT = 0;
-    function handleTrackStart() {
-      cancelSchedule();
-      contentTrackViewport = viewportPosition;
-      contentTrackSpeed = 0;
-      contentTrackT = Date.now();
-      cancelViewportAnimation();
-    }
-    function handleTrackMove(data) {
-      const oldContentTrackT = contentTrackT;
-      contentTrackT = Date.now();
-      const length = swiperContexts.value.length;
-      const other = length - state2.displayMultipleItems;
-      function calc2(val) {
-        return 0.5 - 0.25 / (val + 0.5);
-      }
-      function move(oldVal, newVal) {
-        let val = contentTrackViewport + oldVal;
-        contentTrackSpeed = 0.6 * contentTrackSpeed + 0.4 * newVal;
-        if (!circularEnabled.value) {
-          if (val < 0 || val > other) {
-            if (val < 0) {
-              val = -calc2(-val);
-            } else {
-              if (val > other) {
-                val = other + calc2(val - other);
-              }
-            }
-            contentTrackSpeed = 0;
-          }
-        }
-        updateViewport(val);
-      }
-      const time = contentTrackT - oldContentTrackT || 1;
-      const slideFrameEl = slideFrameRef.value;
-      if (props2.vertical) {
-        move(-data.dy / slideFrameEl.offsetHeight, -data.ddy / time);
-      } else {
-        move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
-      }
-    }
-    function handleTrackEnd(isCancel) {
-      state2.userTracking = false;
-      const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
-      let n = 0;
-      if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
-        n = 0.5 * t2;
-      }
-      const current = normalizeCurrentValue(viewportPosition + n);
-      if (isCancel) {
-        updateViewport(contentTrackViewport);
-      } else {
-        currentChangeSource = "touch";
-        state2.current = current;
-        animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
-      }
-    }
-    useTouchtrack(slideFrameRef.value, (event) => {
-      if (props2.disableTouch) {
-        return;
-      }
-      if (!invalid) {
-        if (event.detail.state === "start") {
-          state2.userTracking = true;
-          userDirectionChecked = false;
-          return handleTrackStart();
-        }
-        if (event.detail.state === "end") {
-          return handleTrackEnd(false);
-        }
-        if (event.detail.state === "cancel") {
-          return handleTrackEnd(true);
-        }
-        if (state2.userTracking) {
-          if (!userDirectionChecked) {
-            userDirectionChecked = true;
-            const t2 = Math.abs(event.detail.dx);
-            const n = Math.abs(event.detail.dy);
-            if (t2 >= n && props2.vertical) {
-              state2.userTracking = false;
-            } else {
-              if (t2 <= n && !props2.vertical) {
-                state2.userTracking = false;
-              }
-            }
-            if (!state2.userTracking) {
-              if (props2.autoplay) {
-                scheduleAutoplay();
-              }
-              return;
-            }
-          }
-          handleTrackMove(event.detail);
-          return false;
-        }
-      }
-    });
-  });
-  onUnmounted(() => {
-    cancelSchedule();
-    cancelAnimationFrame(animationFrame);
-  });
-  function onSwiperDotClick(index2) {
-    animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
   }
   return {
-    onSwiperDotClick
+    valid,
+    expectedType
   };
 }
-var Swiper = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Swiper",
-  props: props$i,
-  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const slidesWrapperRef = ref(null);
-    const slideFrameRef = ref(null);
-    const state2 = useState$2(props2);
-    const slidesStyle = computed(() => {
-      let style = {};
-      if (props2.nextMargin || props2.previousMargin) {
-        style = props2.vertical ? {
-          left: 0,
-          right: 0,
-          top: upx2pxStr(props2.previousMargin),
-          bottom: upx2pxStr(props2.nextMargin)
-        } : {
-          top: 0,
-          bottom: 0,
-          left: upx2pxStr(props2.previousMargin),
-          right: upx2pxStr(props2.nextMargin)
-        };
-      }
-      return style;
-    });
-    const slideFrameStyle = computed(() => {
-      const value = Math.abs(100 / state2.displayMultipleItems) + "%";
-      return {
-        width: props2.vertical ? "100%" : value,
-        height: !props2.vertical ? "100%" : value
-      };
-    });
-    let swiperItems = [];
-    const originSwiperContexts = [];
-    const swiperContexts = ref([]);
-    function updateSwiperContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < swiperItems.length; index2++) {
-        const swiperItem = swiperItems[index2];
-        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
-        if (swiperContext) {
-          contexts.push(markRaw(swiperContext));
-        }
-      }
-      swiperContexts.value = contexts;
-    }
-    const addSwiperContext = function(swiperContext) {
-      originSwiperContexts.push(swiperContext);
-      updateSwiperContexts();
-    };
-    provide("addSwiperContext", addSwiperContext);
-    const removeSwiperContext = function(swiperContext) {
-      const index2 = originSwiperContexts.indexOf(swiperContext);
-      if (index2 >= 0) {
-        originSwiperContexts.splice(index2, 1);
-        updateSwiperContexts();
-      }
-    };
-    provide("removeSwiperContext", removeSwiperContext);
-    const {
-      onSwiperDotClick
-    } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
-      return createVNode("uni-swiper", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "ref": slidesWrapperRef,
-        "class": "uni-swiper-wrapper"
-      }, [createVNode("div", {
-        "class": "uni-swiper-slides",
-        "style": slidesStyle.value
-      }, [createVNode("div", {
-        "ref": slideFrameRef,
-        "class": "uni-swiper-slide-frame",
-        "style": slideFrameStyle.value
-      }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
-        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
-      }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
-        "onClick": () => onSwiperDotClick(index2),
-        "class": {
-          "uni-swiper-dot": true,
-          "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
-        },
-        "style": {
-          background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
-        }
-      }, null, 14, ["onClick"]))], 2)], 512)], 512);
-    };
+function getInvalidTypeMessage(name, value, expectedTypes) {
+  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
+  const expectedType = expectedTypes[0];
+  const receivedType = toRawType(value);
+  const expectedValue = styleValue(value, expectedType);
+  const receivedValue = styleValue(value, receivedType);
+  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+    message += ` with value ${expectedValue}`;
   }
-});
-const props$h = {
-  itemId: {
-    type: String,
-    default: ""
+  message += `, got ${receivedType} `;
+  if (isExplicable(receivedType)) {
+    message += `with value ${receivedValue}.`;
   }
-};
-var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
-  name: "SwiperItem",
-  props: props$h,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    const context = {
-      rootRef,
-      getItemId() {
-        return props2.itemId;
-      },
-      getBoundingClientRect() {
-        const el = rootRef.value;
-        return el.getBoundingClientRect();
-      },
-      updatePosition(position, vertical) {
-        const x = vertical ? "0" : 100 * position + "%";
-        const y = vertical ? 100 * position + "%" : "0";
-        const rootEl = rootRef.value;
-        const value = `translate(${x},${y}) translateZ(0)`;
-        if (rootEl) {
-          rootEl.style.webkitTransform = value;
-          rootEl.style.transform = value;
-        }
-      }
-    };
-    onMounted(() => {
-      const addSwiperContext = inject("addSwiperContext");
-      if (addSwiperContext) {
-        addSwiperContext(context);
-      }
-    });
-    onUnmounted(() => {
-      const removeSwiperContext = inject("removeSwiperContext");
-      if (removeSwiperContext) {
-        removeSwiperContext(context);
-      }
-    });
-    return () => {
-      return createVNode("uni-swiper-item", {
-        "ref": rootRef,
-        "style": {
-          position: "absolute",
-          width: "100%",
-          height: "100%"
-        }
-      }, [slots.default && slots.default()], 512);
-    };
-  }
-});
-const props$g = {
-  name: {
-    type: String,
-    default: ""
-  },
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  type: {
-    type: String,
-    default: "switch"
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: {
-    type: String,
-    default: "#007aff"
-  }
-};
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Switch",
-  props: props$g,
-  emits: ["change"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const switchChecked = ref(props2.checked);
-    const uniLabel = useSwitchInject(props2, switchChecked);
-    const trigger = useCustomEvent(rootRef, emit2);
-    watch(() => props2.checked, (val) => {
-      switchChecked.value = val;
-    });
-    const _onClick = ($event) => {
-      if (props2.disabled) {
-        return;
-      }
-      switchChecked.value = !switchChecked.value;
-      trigger("change", $event, {
-        value: switchChecked.value
-      });
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-      onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
-    }
-    useListeners$1(props2, {
-      "label-click": _onClick
-    });
-    return () => {
-      const {
-        color,
-        type
-      } = props2;
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-switch", mergeProps({
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": _onClick
-      }), [createVNode("div", {
-        "class": "uni-switch-wrapper"
-      }, [withDirectives(createVNode("div", {
-        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
-          backgroundColor: switchChecked.value ? color : "#DFDFDF",
-          borderColor: switchChecked.value ? color : "#DFDFDF"
-        }
-      }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
-        "class": "uni-checkbox-input"
-      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
-    };
-  }
-});
-function useSwitchInject(props2, switchChecked) {
-  const uniForm = inject(uniFormKey, false);
-  const uniLabel = inject(uniLabelKey, false);
-  const formField = {
-    submit: () => {
-      const data = ["", null];
-      if (props2.name) {
-        data[0] = props2.name;
-        data[1] = switchChecked.value;
-      }
-      return data;
-    },
-    reset: () => {
-      switchChecked.value = false;
-    }
-  };
-  if (!!uniForm) {
-    uniForm.addField(formField);
-    onUnmounted(() => {
-      uniForm.removeField(formField);
-    });
-  }
-  return uniLabel;
+  return message;
 }
-const SPACE_UNICODE = {
-  ensp: "\u2002",
-  emsp: "\u2003",
-  nbsp: "\xA0"
-};
-function normalizeText(text2, {
-  space,
-  decode: decode2
-}) {
-  if (space && SPACE_UNICODE[space]) {
-    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
-  }
-  if (!decode2) {
-    return text2;
-  }
-  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+function getType(ctor) {
+  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+  return match ? match[1] : "";
 }
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Text",
-  props: {
-    selectable: {
-      type: [Boolean, String],
-      default: false
-    },
-    space: {
-      type: String,
-      default: ""
-    },
-    decode: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  setup(props2, {
-    slots
-  }) {
-    return () => {
-      const children = [];
-      if (slots.default) {
-        slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8) {
-            const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
-            const len = lines.length - 1;
-            lines.forEach((text2, index2) => {
-              if (index2 === 0 && !text2)
-                ;
-              else {
-                children.push(createTextVNode(normalizeText(text2, {
-                  space: props2.space,
-                  decode: props2.decode
-                })));
-              }
-              if (index2 !== len) {
-                children.push(createVNode("br"));
-              }
-            });
-          } else {
-            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
-              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
-            }
-            children.push(vnode);
-          }
-        });
-      }
-      return createVNode("uni-text", {
-        "selectable": props2.selectable ? true : null
-      }, [createVNode("span", null, children)], 8, ["selectable"]);
-    };
-  }
-});
-const props$f = /* @__PURE__ */ extend({}, props$u, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  autoHeight: {
-    type: [Boolean, String],
-    default: false
-  },
-  confirmType: {
-    type: String,
-    default: ""
-  }
-});
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$f,
-  emit: ["confirm", "linechange", ...emit],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const {
-      fieldRef,
-      state: state2,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state2.value.split("\n"));
-    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
-    const heightRef = ref(0);
-    const lineRef = ref(null);
-    watch(() => heightRef.value, (height) => {
-      const el = rootRef.value;
-      const lineEl = lineRef.value;
-      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
-      if (isNaN(lineHeight)) {
-        lineHeight = lineEl.offsetHeight;
-      }
-      var lineCount = Math.round(height / lineHeight);
-      trigger("linechange", {}, {
-        height,
-        heightRpx: 750 / window.innerWidth * height,
-        lineCount
-      });
-      if (props2.autoHeight) {
-        el.style.height = height + "px";
-      }
-    });
-    function onResize2({
-      height
-    }) {
-      heightRef.value = height;
-    }
-    function confirm(event) {
-      trigger("confirm", event, {
-        value: state2.value
-      });
-    }
-    function onKeyDownEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        event.preventDefault();
-      }
-    }
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        confirm(event);
-        const textarea = event.target;
-        textarea.blur();
-      }
-    }
-    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
-    return () => {
-      let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
-        "ref": fieldRef,
-        "value": state2.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "maxlength": state2.maxlength,
-        "class": {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
-        },
-        "onFocus": (event) => event.target.blur()
-      }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
-        "ref": fieldRef,
-        "value": state2.value,
-        "disabled": !!props2.disabled,
-        "maxlength": state2.maxlength,
-        "enterkeyhint": props2.confirmType,
-        "class": {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
-        },
-        "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
-      return createVNode("uni-textarea", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "class": "uni-textarea-wrapper"
-      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-textarea-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
-        "ref": lineRef,
-        "class": "uni-textarea-line"
-      }, [" "], 512), createVNode("div", {
-        "class": "uni-textarea-compute"
-      }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": onResize2
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": () => false,
-        "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
-    };
-  }
-});
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
-  name: "View",
-  props: extend({}, hoverProps),
-  setup(props2, {
-    slots
-  }) {
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
-    return () => {
-      const hoverClass = props2.hoverClass;
-      if (hoverClass && hoverClass !== "none") {
-        return createVNode("uni-view", mergeProps({
-          "class": hovering.value ? hoverClass : ""
-        }, binding), [slots.default && slots.default()], 16);
-      }
-      return createVNode("uni-view", null, [slots.default && slots.default()]);
-    };
-  }
-});
-function normalizeEvent(pageId, vm, id2) {
-  if (!id2) {
-    id2 = vm.id;
-  }
-  if (!id2) {
-    return;
-  }
-  return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
-}
-function addSubscribe(name, callback) {
-  if (!name) {
-    return;
-  }
-  UniViewJSBridge.subscribe(name, ({type, data}) => {
-    callback(type, data);
-  });
-}
-function removeSubscribe(name) {
-  if (!name) {
-    return;
-  }
-  UniViewJSBridge.unsubscribe(name);
-}
-function useSubscribe(callback, name, multiple) {
-  const instance2 = getCurrentInstance();
-  const vm = instance2.proxy;
-  const pageId = multiple || !name ? useCurrentPageId() : 0;
-  onMounted(() => {
-    addSubscribe(name || normalizeEvent(pageId, vm), callback);
-    if (multiple || !name) {
-      watch(() => vm.id, (value, oldValue) => {
-        addSubscribe(normalizeEvent(pageId, vm, value), callback);
-        removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
-      });
-    }
-  });
-  onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(pageId, vm));
-  });
-}
-function useOn(name, callback) {
-  onMounted(() => UniViewJSBridge.on(name, callback));
-  onBeforeUnmount(() => UniViewJSBridge.off(name));
-}
-let index$a = 0;
-function useContextInfo(_id) {
-  const page = useCurrentPageId();
-  const instance2 = getCurrentInstance();
-  const vm = instance2.proxy;
-  const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$a++}`;
-  onMounted(() => {
-    const el = vm.$el;
-    el.__uniContextInfo = {
-      id: id2,
-      type,
-      page
-    };
-  });
-  return `${page}.${type}.${id2}`;
-}
-function getContextInfo(el) {
-  return el.__uniContextInfo;
-}
-function getRootInfo(fields2) {
-  const info = {};
-  if (fields2.id) {
-    info.id = "";
-  }
-  if (fields2.dataset) {
-    info.dataset = {};
-  }
-  if (fields2.rect) {
-    info.left = 0;
-    info.right = 0;
-    info.top = 0;
-    info.bottom = 0;
-  }
-  if (fields2.size) {
-    info.width = document.documentElement.clientWidth;
-    info.height = document.documentElement.clientHeight;
-  }
-  if (fields2.scrollOffset) {
-    const documentElement2 = document.documentElement;
-    const body = document.body;
-    info.scrollLeft = documentElement2.scrollLeft || body.scrollLeft || 0;
-    info.scrollTop = documentElement2.scrollTop || body.scrollTop || 0;
-    info.scrollHeight = documentElement2.scrollHeight || body.scrollHeight || 0;
-    info.scrollWidth = documentElement2.scrollWidth || body.scrollWidth || 0;
-  }
-  return info;
-}
-function getNodeInfo(el, fields2) {
-  const info = {};
-  const {top} = getWindowOffset();
-  if (fields2.id) {
-    info.id = el.id;
-  }
-  if (fields2.dataset) {
-    info.dataset = getCostomDataset(el);
-  }
-  if (fields2.rect || fields2.size) {
-    const rect = el.getBoundingClientRect();
-    if (fields2.rect) {
-      info.left = rect.left;
-      info.right = rect.right;
-      info.top = rect.top - top;
-      info.bottom = rect.bottom - top;
-    }
-    if (fields2.size) {
-      info.width = rect.width;
-      info.height = rect.height;
-    }
-  }
-  if (Array.isArray(fields2.properties)) {
-    fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
-        return t2.toUpperCase();
-      });
-    });
-  }
-  if (fields2.scrollOffset) {
-    if (el.tagName === "UNI-SCROLL-VIEW") {
-      const scroll = el.children[0].children[0];
-      info.scrollLeft = scroll.scrollLeft;
-      info.scrollTop = scroll.scrollTop;
-      info.scrollHeight = scroll.scrollHeight;
-      info.scrollWidth = scroll.scrollWidth;
-    } else {
-      info.scrollLeft = 0;
-      info.scrollTop = 0;
-      info.scrollHeight = 0;
-      info.scrollWidth = 0;
-    }
-  }
-  if (Array.isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
-    fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
-    });
-  }
-  if (fields2.context) {
-    info.contextInfo = getContextInfo(el);
-  }
-  return info;
-}
-function findElm(component, pageVm) {
-  return component ? component.$el : pageVm.$el;
-}
-function getNodesInfo(pageVm, component, selector, single, fields2) {
-  const parentElement = findElm(component, pageVm).parentElement;
-  if (!parentElement) {
-    return single ? null : [];
-  }
-  if (single) {
-    const node = parentElement.querySelector(selector);
-    if (node) {
-      return getNodeInfo(node, fields2);
-    }
-    return null;
+function styleValue(value, type) {
+  if (type === "String") {
+    return `"${value}"`;
+  } else if (type === "Number") {
+    return `${Number(value)}`;
   } else {
-    let infos = [];
-    const nodeList = parentElement.querySelectorAll(selector);
-    if (nodeList && nodeList.length) {
-      [].forEach.call(nodeList, (node) => {
-        infos.push(getNodeInfo(node, fields2));
-      });
-    }
-    return infos;
+    return `${value}`;
   }
 }
-function requestComponentInfo(page, reqs, callback) {
-  const result = [];
-  reqs.forEach(({component, selector, single, fields: fields2}) => {
-    if (component === null) {
-      result.push(getRootInfo(fields2));
-    } else {
-      result.push(getNodesInfo(page, component, selector, single, fields2));
-    }
-  });
-  callback(result);
+function isExplicable(type) {
+  const explicitTypes = ["string", "number", "boolean"];
+  return explicitTypes.some((elem) => type.toLowerCase() === elem);
 }
-function addIntersectionObserver({reqId, component, options, callback}, _pageId) {
-  const $el = findElem(component);
-  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
+function isBoolean(...args) {
+  return args.some((elem) => elem.toLowerCase() === "boolean");
 }
-function removeIntersectionObserver({reqId, component}, _pageId) {
-  const $el = findElem(component);
-  const intersectionObserver = $el.__io && $el.__io[reqId];
-  if (intersectionObserver) {
-    intersectionObserver.disconnect();
-    delete $el.__io[reqId];
-  }
-}
-let mediaQueryObserver;
-let listener$2;
-function handleMediaQueryStr($props) {
-  const mediaQueryArr = [];
-  const propsMenu = [
-    "width",
-    "minWidth",
-    "maxWidth",
-    "height",
-    "minHeight",
-    "maxHeight",
-    "orientation"
-  ];
-  for (const item of propsMenu) {
-    if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
-      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
-    }
-    if (item === "orientation" && $props[item]) {
-      mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
-    }
-  }
-  const mediaQueryStr = mediaQueryArr.join(" and ");
-  return mediaQueryStr;
-}
-function humpToLine(name) {
-  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
-}
-function addMediaQueryObserver({reqId, component, options, callback}, _pageId) {
-  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
-  listener$2 = (observer) => callback(observer.matches);
-  listener$2(mediaQueryObserver);
-  mediaQueryObserver.addListener(listener$2);
-}
-function removeMediaQueryObserver({reqId, component}, _pageId) {
-  if (mediaQueryObserver) {
-    mediaQueryObserver.removeListener(listener$2);
-  }
-}
-function saveImage(base64, dirname, callback) {
-  callback(null, base64);
-}
-const TEMP_PATH = "";
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
+function tryCatch(fn) {
+  return function() {
     try {
-      file = new File([blob], filename, {type});
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
-      file = blob;
-      file.name = file.name || filename;
+      return fn.apply(fn, arguments);
+    } catch (e2) {
+      console.error(e2);
+    }
+  };
+}
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id2, name, callback, keepAlive = false) {
+  invokeCallbacks[id2] = {
+    name,
+    keepAlive,
+    callback
+  };
+  return id2;
+}
+function invokeCallback(id2, res, extras) {
+  if (typeof id2 === "number") {
+    const opts = invokeCallbacks[id2];
+    if (opts) {
+      if (!opts.keepAlive) {
+        delete invokeCallbacks[id2];
+      }
+      return opts.callback(res, extras);
     }
   }
-  return file;
+  return res;
 }
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
+function findInvokeCallbackByName(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name) {
+  UniServiceJSBridge.off("api." + name);
+}
+function onKeepAliveApiCallback(name) {
+  UniServiceJSBridge.on("api." + name, (res) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
+  });
+}
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
+const API_SUCCESS = "success";
+const API_FAIL = "fail";
+const API_COMPLETE = "complete";
+function getApiCallbacks(args) {
+  const apiCallbacks = {};
+  for (const name in args) {
+    const fn = args[name];
+    if (isFunction(fn)) {
+      apiCallbacks[name] = tryCatch(fn);
+      delete args[name];
+    }
+  }
+  return apiCallbacks;
+}
+function normalizeErrMsg(errMsg, name) {
+  if (!errMsg || errMsg.indexOf(":fail") === -1) {
+    return name + ":ok";
+  }
+  return name + errMsg.substring(errMsg.indexOf(":fail"));
+}
+function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
+  if (!isPlainObject(args)) {
+    args = {};
+  }
+  const {success, fail, complete} = getApiCallbacks(args);
+  const hasSuccess = isFunction(success);
+  const hasFail = isFunction(fail);
+  const hasComplete = isFunction(complete);
+  const callbackId = invokeCallbackId++;
+  addInvokeCallback(callbackId, name, (res) => {
+    res = res || {};
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    isFunction(beforeAll) && beforeAll(res);
+    if (res.errMsg === name + ":ok") {
+      isFunction(beforeSuccess) && beforeSuccess(res);
+      hasSuccess && success(res);
+    } else {
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  return callbackId;
+}
+const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
+function hasCallback(args) {
+  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
+    return true;
+  }
+  return false;
+}
+function handlePromise(promise) {
+  if (__UNI_FEATURE_PROMISE__) {
+    return promise.then((data) => {
+      return [null, data];
+    }).catch((err) => [err]);
+  }
+  return promise;
+}
+function promisify(fn) {
+  return (args = {}) => {
+    if (hasCallback(args)) {
+      return fn(args);
+    }
+    return handlePromise(new Promise((resolve, reject) => {
+      fn(extend(args, {success: resolve, fail: reject}));
+    }));
+  };
+}
+function formatApiArgs(args, options) {
+  const params = args[0];
+  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+    return;
+  }
+  const formatArgs = options.formatArgs;
+  const keys = Object.keys(formatArgs);
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i];
+    const formatterOrDefaultValue = formatArgs[name];
+    if (isFunction(formatterOrDefaultValue)) {
+      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      if (isString(errMsg)) {
+        return errMsg;
+      }
+    } else {
+      if (!hasOwn(params, name)) {
+        params[name] = formatterOrDefaultValue;
       }
     }
   }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
 }
-function getSameOriginUrl(url) {
-  const a2 = document.createElement("a");
-  a2.href = url;
-  if (a2.origin === location.origin) {
-    return Promise.resolve(url);
+function invokeSuccess(id2, name, res) {
+  return invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
+}
+function invokeFail(id2, name, err) {
+  return invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
+}
+function beforeInvokeApi(name, args, protocol, options) {
+  if (process.env.NODE_ENV !== "production") {
+    validateProtocols(name, args, protocol);
   }
-  return urlToFile(url).then(fileToUrl);
+  if (options && options.beforeInvoke) {
+    const errMsg2 = options.beforeInvoke(args);
+    if (isString(errMsg2)) {
+      return errMsg2;
+    }
+  }
+  const errMsg = formatApiArgs(args, options);
+  if (errMsg) {
+    return errMsg;
+  }
 }
-function revokeObjectURL(url) {
-  const URL = window.URL || window.webkitURL;
-  URL.revokeObjectURL(url);
-  delete files[url];
+function checkCallback(callback) {
+  if (!isFunction(callback)) {
+    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+  }
 }
+function wrapperOnApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    name = name.replace("off", "on");
+    removeKeepAliveApiCallback(name, callback);
+    const hasInvokeOnApi = findInvokeCallbackByName(name);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+  return (args) => {
+    const id2 = createAsyncApiCallback(name, args, options);
+    const errMsg = beforeInvokeApi(name, [args], protocol, options);
+    if (errMsg) {
+      return invokeFail(id2, name, errMsg);
+    }
+    return fn(args, {
+      resolve: (res) => invokeSuccess(id2, name, res),
+      reject: (err) => invokeFail(id2, name, err)
+    });
+  };
+}
+function wrapperSyncApi(name, fn, protocol, options) {
+  return (...args) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
+function wrapperAsyncApi(name, fn, protocol, options) {
+  return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineOnApi(name, fn, options) {
+  return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+  return wrapperOffApi(name, fn, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function createUnsupportedMsg(name) {
+  return `method 'uni.${name}' not supported`;
+}
+function createUnsupportedSyncApi(name) {
+  return () => {
+    console.error(createUnsupportedMsg(name));
+  };
+}
+const createUnsupportedOnApi = createUnsupportedSyncApi;
+function createUnsupportedAsyncApi(name) {
+  return (_args, {reject}) => {
+    return reject(createUnsupportedMsg(name));
+  };
+}
+const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
+const Base64ToArrayBufferProtocol = [
+  {
+    name: "base64",
+    type: String,
+    required: true
+  }
+];
+const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
+const ArrayBufferToBase64Protocol = [
+  {
+    name: "arrayBuffer",
+    type: [ArrayBuffer, Uint8Array],
+    required: true
+  }
+];
+const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
+  return decode(base64);
+}, Base64ToArrayBufferProtocol);
+const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
+  return encode$1(arrayBuffer);
+}, ArrayBufferToBase64Protocol);
 const API_UPX2PX = "upx2px";
 const Upx2pxProtocol = [
   {
@@ -11166,12 +9699,12 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
 let eventReady = false;
-let index$9 = 0;
+let index$e = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = {};
   if (options && ("success" in options || "fail" in options || "complete" in options)) {
-    const callbackId = String(index$9++);
+    const callbackId = String(index$e++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
     if (!eventReady) {
@@ -12902,6 +11435,1481 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
+const props$i = {
+  indicatorDots: {
+    type: [Boolean, String],
+    default: false
+  },
+  vertical: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  circular: {
+    type: [Boolean, String],
+    default: false
+  },
+  interval: {
+    type: [Number, String],
+    default: 5e3
+  },
+  duration: {
+    type: [Number, String],
+    default: 500
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  },
+  indicatorColor: {
+    type: String,
+    default: ""
+  },
+  indicatorActiveColor: {
+    type: String,
+    default: ""
+  },
+  previousMargin: {
+    type: String,
+    default: ""
+  },
+  nextMargin: {
+    type: String,
+    default: ""
+  },
+  currentItemId: {
+    type: String,
+    default: ""
+  },
+  skipHiddenItemLayout: {
+    type: [Boolean, String],
+    default: false
+  },
+  displayMultipleItems: {
+    type: [Number, String],
+    default: 1
+  },
+  disableTouch: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+function upx2pxStr(val) {
+  if (/\d+[ur]px$/i.test(val)) {
+    val.replace(/\d+[ur]px$/i, (text2) => {
+      return `${upx2px(parseFloat(text2))}px`;
+    });
+  }
+  return val || "";
+}
+function useState$2(props2) {
+  const interval = computed(() => {
+    const interval2 = Number(props2.interval);
+    return isNaN(interval2) ? 5e3 : interval2;
+  });
+  const duration = computed(() => {
+    const duration2 = Number(props2.duration);
+    return isNaN(duration2) ? 500 : duration2;
+  });
+  const displayMultipleItems = computed(() => {
+    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
+    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
+  });
+  const state2 = reactive({
+    interval,
+    duration,
+    displayMultipleItems,
+    current: Math.round(props2.current) || 0,
+    currentItemId: props2.currentItemId,
+    userTracking: false
+  });
+  return state2;
+}
+function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger) {
+  function cancelSchedule() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  let timer = null;
+  let invalid = true;
+  let viewportPosition = 0;
+  let viewportMoveRatio = 1;
+  let animating = null;
+  let requestedAnimation = false;
+  let contentTrackViewport = 0;
+  let transitionStart;
+  let currentChangeSource = "";
+  let animationFrame;
+  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
+  function checkCircularLayout(index2) {
+    if (!invalid) {
+      for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
+        const item = items[r];
+        const s = Math.floor(index2 / n) * n + r;
+        const l = s + n;
+        const c = s - n;
+        const u = Math.max(index2 - (s + 1), s - i, 0);
+        const d = Math.max(index2 - (l + 1), l - i, 0);
+        const h = Math.max(index2 - (c + 1), c - i, 0);
+        const p2 = Math.min(u, d, h);
+        const position = [s, l, c][[u, d, h].indexOf(p2)];
+        item.updatePosition(position, props2.vertical);
+      }
+    }
+  }
+  function updateViewport(index2) {
+    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
+      if (circularEnabled.value) {
+        checkCircularLayout(index2);
+      }
+    }
+    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
+    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
+    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
+    const slideFrame = slideFrameRef.value;
+    if (slideFrame) {
+      slideFrame.style.webkitTransform = transform;
+      slideFrame.style.transform = transform;
+    }
+    viewportPosition = index2;
+    if (!transitionStart) {
+      if (index2 % 1 === 0) {
+        return;
+      }
+      transitionStart = index2;
+    }
+    index2 -= Math.floor(transitionStart);
+    const items = swiperContexts.value;
+    if (index2 <= -(items.length - 1)) {
+      index2 += items.length;
+    } else if (index2 >= items.length) {
+      index2 -= items.length;
+    }
+    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
+    trigger("transition", {}, {
+      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
+      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
+    });
+  }
+  function endViewportAnimation() {
+    if (animating) {
+      updateViewport(animating.toPos);
+      animating = null;
+    }
+  }
+  function normalizeCurrentValue(current) {
+    const length = swiperContexts.value.length;
+    if (!length) {
+      return -1;
+    }
+    const index2 = (Math.round(current) % length + length) % length;
+    if (circularEnabled.value) {
+      if (length <= state2.displayMultipleItems) {
+        return 0;
+      }
+    } else if (index2 > length - state2.displayMultipleItems) {
+      return length - state2.displayMultipleItems;
+    }
+    return index2;
+  }
+  function cancelViewportAnimation() {
+    animating = null;
+  }
+  function animateFrameFuncProto() {
+    if (!animating) {
+      requestedAnimation = false;
+      return;
+    }
+    const _animating = animating;
+    const toPos = _animating.toPos;
+    const acc = _animating.acc;
+    const endTime = _animating.endTime;
+    const source = _animating.source;
+    const time = endTime - Date.now();
+    if (time <= 0) {
+      updateViewport(toPos);
+      animating = null;
+      requestedAnimation = false;
+      transitionStart = null;
+      const item = swiperContexts.value[state2.current];
+      if (item) {
+        const currentItemId = item.getItemId();
+        trigger("animationfinish", {}, {
+          current: state2.current,
+          currentItemId,
+          source
+        });
+      }
+      return;
+    }
+    const s = acc * time * time / 2;
+    const l = toPos + s;
+    updateViewport(l);
+    animationFrame = requestAnimationFrame(animateFrameFuncProto);
+  }
+  function animateViewport(current, source, n) {
+    cancelViewportAnimation();
+    const duration = state2.duration;
+    const length = swiperContexts.value.length;
+    let position = viewportPosition;
+    if (circularEnabled.value) {
+      if (n < 0) {
+        for (; position < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+      } else if (n > 0) {
+        for (; position > current; ) {
+          position -= length;
+        }
+        for (; position + length < current; ) {
+          position += length;
+        }
+      } else {
+        for (; position + length < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+        if (position + length - current < current - position) {
+          position += length;
+        }
+      }
+    }
+    animating = {
+      toPos: current,
+      acc: 2 * (position - current) / (duration * duration),
+      endTime: Date.now() + duration,
+      source
+    };
+    if (!requestedAnimation) {
+      requestedAnimation = true;
+      animationFrame = requestAnimationFrame(animateFrameFuncProto);
+    }
+  }
+  function scheduleAutoplay() {
+    cancelSchedule();
+    const items = swiperContexts.value;
+    const callback = function() {
+      timer = null;
+      currentChangeSource = "autoplay";
+      if (circularEnabled.value) {
+        state2.current = normalizeCurrentValue(state2.current + 1);
+      } else {
+        state2.current = state2.current + state2.displayMultipleItems < items.length ? state2.current + 1 : 0;
+      }
+      animateViewport(state2.current, "autoplay", circularEnabled.value ? 1 : 0);
+      timer = setTimeout(callback, state2.interval);
+    };
+    if (!(invalid || items.length <= state2.displayMultipleItems)) {
+      timer = setTimeout(callback, state2.interval);
+    }
+  }
+  function resetLayout() {
+    cancelSchedule();
+    endViewportAnimation();
+    const items = swiperContexts.value;
+    for (let i = 0; i < items.length; i++) {
+      items[i].updatePosition(i, props2.vertical);
+    }
+    viewportMoveRatio = 1;
+    const slideFrameEl = slideFrameRef.value;
+    if (state2.displayMultipleItems === 1 && items.length) {
+      const itemRect = items[0].getBoundingClientRect();
+      const slideFrameRect = slideFrameEl.getBoundingClientRect();
+      viewportMoveRatio = itemRect.width / slideFrameRect.width;
+      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
+        viewportMoveRatio = 1;
+      }
+    }
+    const position = viewportPosition;
+    viewportPosition = -2;
+    const current = state2.current;
+    if (current >= 0) {
+      invalid = false;
+      if (state2.userTracking) {
+        updateViewport(position + current - contentTrackViewport);
+        contentTrackViewport = current;
+      } else {
+        updateViewport(current);
+        if (props2.autoplay) {
+          scheduleAutoplay();
+        }
+      }
+    } else {
+      invalid = true;
+      updateViewport(-state2.displayMultipleItems - 1);
+    }
+  }
+  watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
+    let current = -1;
+    if (props2.currentItemId) {
+      for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
+        const itemId = items[i].getItemId();
+        if (itemId === props2.currentItemId) {
+          current = i;
+          break;
+        }
+      }
+    }
+    if (current < 0) {
+      current = Math.round(props2.current) || 0;
+    }
+    current = current < 0 ? 0 : current;
+    if (state2.current !== current) {
+      currentChangeSource = "";
+      state2.current = current;
+    }
+  });
+  watch([() => props2.vertical, () => circularEnabled.value, () => state2.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+  watch(() => state2.interval, () => {
+    if (timer) {
+      cancelSchedule();
+      scheduleAutoplay();
+    }
+  });
+  function currentChanged(current, history2) {
+    const source = currentChangeSource;
+    currentChangeSource = "";
+    const items = swiperContexts.value;
+    if (!source) {
+      const length = items.length;
+      animateViewport(current, "", circularEnabled.value && history2 + (length - current) % length > length / 2 ? 1 : 0);
+    }
+    const item = items[current];
+    if (item) {
+      const currentItemId = state2.currentItemId = item.getItemId();
+      trigger("change", {}, {
+        current: state2.current,
+        currentItemId,
+        source
+      });
+    }
+  }
+  watch(() => state2.current, (val, oldVal) => {
+    currentChanged(val, oldVal);
+    emit2("update:current", val);
+  });
+  watch(() => state2.currentItemId, (val) => {
+    emit2("update:currentItemId", val);
+  });
+  function inintAutoplay(enable) {
+    if (enable) {
+      scheduleAutoplay();
+    } else {
+      cancelSchedule();
+    }
+  }
+  watch(() => props2.autoplay && !state2.userTracking, inintAutoplay);
+  inintAutoplay(props2.autoplay && !state2.userTracking);
+  onMounted(() => {
+    let userDirectionChecked = false;
+    let contentTrackSpeed = 0;
+    let contentTrackT = 0;
+    function handleTrackStart() {
+      cancelSchedule();
+      contentTrackViewport = viewportPosition;
+      contentTrackSpeed = 0;
+      contentTrackT = Date.now();
+      cancelViewportAnimation();
+    }
+    function handleTrackMove(data) {
+      const oldContentTrackT = contentTrackT;
+      contentTrackT = Date.now();
+      const length = swiperContexts.value.length;
+      const other = length - state2.displayMultipleItems;
+      function calc2(val) {
+        return 0.5 - 0.25 / (val + 0.5);
+      }
+      function move(oldVal, newVal) {
+        let val = contentTrackViewport + oldVal;
+        contentTrackSpeed = 0.6 * contentTrackSpeed + 0.4 * newVal;
+        if (!circularEnabled.value) {
+          if (val < 0 || val > other) {
+            if (val < 0) {
+              val = -calc2(-val);
+            } else {
+              if (val > other) {
+                val = other + calc2(val - other);
+              }
+            }
+            contentTrackSpeed = 0;
+          }
+        }
+        updateViewport(val);
+      }
+      const time = contentTrackT - oldContentTrackT || 1;
+      const slideFrameEl = slideFrameRef.value;
+      if (props2.vertical) {
+        move(-data.dy / slideFrameEl.offsetHeight, -data.ddy / time);
+      } else {
+        move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
+      }
+    }
+    function handleTrackEnd(isCancel) {
+      state2.userTracking = false;
+      const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
+      let n = 0;
+      if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
+        n = 0.5 * t2;
+      }
+      const current = normalizeCurrentValue(viewportPosition + n);
+      if (isCancel) {
+        updateViewport(contentTrackViewport);
+      } else {
+        currentChangeSource = "touch";
+        state2.current = current;
+        animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
+      }
+    }
+    useTouchtrack(slideFrameRef.value, (event) => {
+      if (props2.disableTouch) {
+        return;
+      }
+      if (!invalid) {
+        if (event.detail.state === "start") {
+          state2.userTracking = true;
+          userDirectionChecked = false;
+          return handleTrackStart();
+        }
+        if (event.detail.state === "end") {
+          return handleTrackEnd(false);
+        }
+        if (event.detail.state === "cancel") {
+          return handleTrackEnd(true);
+        }
+        if (state2.userTracking) {
+          if (!userDirectionChecked) {
+            userDirectionChecked = true;
+            const t2 = Math.abs(event.detail.dx);
+            const n = Math.abs(event.detail.dy);
+            if (t2 >= n && props2.vertical) {
+              state2.userTracking = false;
+            } else {
+              if (t2 <= n && !props2.vertical) {
+                state2.userTracking = false;
+              }
+            }
+            if (!state2.userTracking) {
+              if (props2.autoplay) {
+                scheduleAutoplay();
+              }
+              return;
+            }
+          }
+          handleTrackMove(event.detail);
+          return false;
+        }
+      }
+    });
+  });
+  onUnmounted(() => {
+    cancelSchedule();
+    cancelAnimationFrame(animationFrame);
+  });
+  function onSwiperDotClick(index2) {
+    animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
+  }
+  return {
+    onSwiperDotClick
+  };
+}
+var Swiper = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Swiper",
+  props: props$i,
+  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const slidesWrapperRef = ref(null);
+    const slideFrameRef = ref(null);
+    const state2 = useState$2(props2);
+    const slidesStyle = computed(() => {
+      let style = {};
+      if (props2.nextMargin || props2.previousMargin) {
+        style = props2.vertical ? {
+          left: 0,
+          right: 0,
+          top: upx2pxStr(props2.previousMargin),
+          bottom: upx2pxStr(props2.nextMargin)
+        } : {
+          top: 0,
+          bottom: 0,
+          left: upx2pxStr(props2.previousMargin),
+          right: upx2pxStr(props2.nextMargin)
+        };
+      }
+      return style;
+    });
+    const slideFrameStyle = computed(() => {
+      const value = Math.abs(100 / state2.displayMultipleItems) + "%";
+      return {
+        width: props2.vertical ? "100%" : value,
+        height: !props2.vertical ? "100%" : value
+      };
+    });
+    let swiperItems = [];
+    const originSwiperContexts = [];
+    const swiperContexts = ref([]);
+    function updateSwiperContexts() {
+      const contexts = [];
+      for (let index2 = 0; index2 < swiperItems.length; index2++) {
+        const swiperItem = swiperItems[index2];
+        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
+        if (swiperContext) {
+          contexts.push(markRaw(swiperContext));
+        }
+      }
+      swiperContexts.value = contexts;
+    }
+    const addSwiperContext = function(swiperContext) {
+      originSwiperContexts.push(swiperContext);
+      updateSwiperContexts();
+    };
+    provide("addSwiperContext", addSwiperContext);
+    const removeSwiperContext = function(swiperContext) {
+      const index2 = originSwiperContexts.indexOf(swiperContext);
+      if (index2 >= 0) {
+        originSwiperContexts.splice(index2, 1);
+        updateSwiperContexts();
+      }
+    };
+    provide("removeSwiperContext", removeSwiperContext);
+    const {
+      onSwiperDotClick
+    } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      swiperItems = flatVNode(defaultSlots);
+      return createVNode("uni-swiper", {
+        "ref": rootRef
+      }, [createVNode("div", {
+        "ref": slidesWrapperRef,
+        "class": "uni-swiper-wrapper"
+      }, [createVNode("div", {
+        "class": "uni-swiper-slides",
+        "style": slidesStyle.value
+      }, [createVNode("div", {
+        "ref": slideFrameRef,
+        "class": "uni-swiper-slide-frame",
+        "style": slideFrameStyle.value
+      }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
+        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+      }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
+        "onClick": () => onSwiperDotClick(index2),
+        "class": {
+          "uni-swiper-dot": true,
+          "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
+        },
+        "style": {
+          background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
+        }
+      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+    };
+  }
+});
+const props$h = {
+  itemId: {
+    type: String,
+    default: ""
+  }
+};
+var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
+  name: "SwiperItem",
+  props: props$h,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const context = {
+      rootRef,
+      getItemId() {
+        return props2.itemId;
+      },
+      getBoundingClientRect() {
+        const el = rootRef.value;
+        return el.getBoundingClientRect();
+      },
+      updatePosition(position, vertical) {
+        const x = vertical ? "0" : 100 * position + "%";
+        const y = vertical ? 100 * position + "%" : "0";
+        const rootEl = rootRef.value;
+        const value = `translate(${x},${y}) translateZ(0)`;
+        if (rootEl) {
+          rootEl.style.webkitTransform = value;
+          rootEl.style.transform = value;
+        }
+      }
+    };
+    onMounted(() => {
+      const addSwiperContext = inject("addSwiperContext");
+      if (addSwiperContext) {
+        addSwiperContext(context);
+      }
+    });
+    onUnmounted(() => {
+      const removeSwiperContext = inject("removeSwiperContext");
+      if (removeSwiperContext) {
+        removeSwiperContext(context);
+      }
+    });
+    return () => {
+      return createVNode("uni-swiper-item", {
+        "ref": rootRef,
+        "style": {
+          position: "absolute",
+          width: "100%",
+          height: "100%"
+        }
+      }, [slots.default && slots.default()], 512);
+    };
+  }
+});
+const props$g = {
+  name: {
+    type: String,
+    default: ""
+  },
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  type: {
+    type: String,
+    default: "switch"
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  }
+};
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Switch",
+  props: props$g,
+  emits: ["change"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const switchChecked = ref(props2.checked);
+    const uniLabel = useSwitchInject(props2, switchChecked);
+    const trigger = useCustomEvent(rootRef, emit2);
+    watch(() => props2.checked, (val) => {
+      switchChecked.value = val;
+    });
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      switchChecked.value = !switchChecked.value;
+      trigger("change", $event, {
+        value: switchChecked.value
+      });
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners$1(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        color,
+        type
+      } = props2;
+      const {
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-switch", mergeProps({
+        "ref": rootRef
+      }, booleanAttrs, {
+        "onClick": _onClick
+      }), [createVNode("div", {
+        "class": "uni-switch-wrapper"
+      }, [withDirectives(createVNode("div", {
+        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+        "style": {
+          backgroundColor: switchChecked.value ? color : "#DFDFDF",
+          borderColor: switchChecked.value ? color : "#DFDFDF"
+        }
+      }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+        "class": "uni-checkbox-input"
+      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
+    };
+  }
+});
+function useSwitchInject(props2, switchChecked) {
+  const uniForm = inject(uniFormKey, false);
+  const uniLabel = inject(uniLabelKey, false);
+  const formField = {
+    submit: () => {
+      const data = ["", null];
+      if (props2.name) {
+        data[0] = props2.name;
+        data[1] = switchChecked.value;
+      }
+      return data;
+    },
+    reset: () => {
+      switchChecked.value = false;
+    }
+  };
+  if (!!uniForm) {
+    uniForm.addField(formField);
+    onUnmounted(() => {
+      uniForm.removeField(formField);
+    });
+  }
+  return uniLabel;
+}
+const SPACE_UNICODE = {
+  ensp: "\u2002",
+  emsp: "\u2003",
+  nbsp: "\xA0"
+};
+function normalizeText(text2, {
+  space,
+  decode: decode2
+}) {
+  if (space && SPACE_UNICODE[space]) {
+    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+  }
+  if (!decode2) {
+    return text2;
+  }
+  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Text",
+  props: {
+    selectable: {
+      type: [Boolean, String],
+      default: false
+    },
+    space: {
+      type: String,
+      default: ""
+    },
+    decode: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    return () => {
+      const children = [];
+      if (slots.default) {
+        slots.default().forEach((vnode) => {
+          if (vnode.shapeFlag & 8) {
+            const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
+            const len = lines.length - 1;
+            lines.forEach((text2, index2) => {
+              if (index2 === 0 && !text2)
+                ;
+              else {
+                children.push(createTextVNode(normalizeText(text2, {
+                  space: props2.space,
+                  decode: props2.decode
+                })));
+              }
+              if (index2 !== len) {
+                children.push(createVNode("br"));
+              }
+            });
+          } else {
+            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
+              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
+            }
+            children.push(vnode);
+          }
+        });
+      }
+      return createVNode("uni-text", {
+        "selectable": props2.selectable ? true : null
+      }, [createVNode("span", null, children)], 8, ["selectable"]);
+    };
+  }
+});
+const props$f = /* @__PURE__ */ extend({}, props$u, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  autoHeight: {
+    type: [Boolean, String],
+    default: false
+  },
+  confirmType: {
+    type: String,
+    default: ""
+  }
+});
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$f,
+  emit: ["confirm", "linechange", ...emit],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const {
+      fieldRef,
+      state: state2,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger
+    } = useField(props2, rootRef, emit2);
+    const valueCompute = computed(() => state2.value.split("\n"));
+    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const heightRef = ref(0);
+    const lineRef = ref(null);
+    watch(() => heightRef.value, (height) => {
+      const el = rootRef.value;
+      const lineEl = lineRef.value;
+      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      if (isNaN(lineHeight)) {
+        lineHeight = lineEl.offsetHeight;
+      }
+      var lineCount = Math.round(height / lineHeight);
+      trigger("linechange", {}, {
+        height,
+        heightRpx: 750 / window.innerWidth * height,
+        lineCount
+      });
+      if (props2.autoHeight) {
+        el.style.height = height + "px";
+      }
+    });
+    function onResize2({
+      height
+    }) {
+      heightRef.value = height;
+    }
+    function confirm(event) {
+      trigger("confirm", event, {
+        value: state2.value
+      });
+    }
+    function onKeyDownEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        event.preventDefault();
+      }
+    }
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        confirm(event);
+        const textarea = event.target;
+        textarea.blur();
+      }
+    }
+    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
+    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+    return () => {
+      let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        "ref": fieldRef,
+        "value": state2.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "maxlength": state2.maxlength,
+        "class": {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        "style": {
+          overflowY: props2.autoHeight ? "hidden" : "auto"
+        },
+        "onFocus": (event) => event.target.blur()
+      }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        "ref": fieldRef,
+        "value": state2.value,
+        "disabled": !!props2.disabled,
+        "maxlength": state2.maxlength,
+        "enterkeyhint": props2.confirmType,
+        "class": {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        "style": {
+          overflowY: props2.autoHeight ? "hidden" : "auto"
+        },
+        "onKeydown": onKeyDownEnter,
+        "onKeyup": onKeyUpEnter
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
+      return createVNode("uni-textarea", {
+        "ref": rootRef
+      }, [createVNode("div", {
+        "class": "uni-textarea-wrapper"
+      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        "style": props2.placeholderStyle,
+        "class": ["uni-textarea-placeholder", props2.placeholderClass]
+      }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
+        "ref": lineRef,
+        "class": "uni-textarea-line"
+      }, [" "], 512), createVNode("div", {
+        "class": "uni-textarea-compute"
+      }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
+        "initial": true,
+        "onResize": onResize2
+      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+        "action": "",
+        "onSubmit": () => false,
+        "class": "uni-input-form"
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+    };
+  }
+});
+var index$a = /* @__PURE__ */ defineBuiltInComponent({
+  name: "View",
+  props: extend({}, hoverProps),
+  setup(props2, {
+    slots
+  }) {
+    const {
+      hovering,
+      binding
+    } = useHover(props2);
+    return () => {
+      const hoverClass = props2.hoverClass;
+      if (hoverClass && hoverClass !== "none") {
+        return createVNode("uni-view", mergeProps({
+          "class": hovering.value ? hoverClass : ""
+        }, binding), [slots.default && slots.default()], 16);
+      }
+      return createVNode("uni-view", null, [slots.default && slots.default()]);
+    };
+  }
+});
+function normalizeEvent(pageId, vm, id2) {
+  if (!id2) {
+    id2 = vm.id;
+  }
+  if (!id2) {
+    return;
+  }
+  return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
+}
+function addSubscribe(name, callback) {
+  if (!name) {
+    return;
+  }
+  UniViewJSBridge.subscribe(name, ({type, data}) => {
+    callback(type, data);
+  });
+}
+function removeSubscribe(name) {
+  if (!name) {
+    return;
+  }
+  UniViewJSBridge.unsubscribe(name);
+}
+function useSubscribe(callback, name, multiple) {
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const pageId = multiple || !name ? useCurrentPageId() : 0;
+  onMounted(() => {
+    addSubscribe(name || normalizeEvent(pageId, vm), callback);
+    if (multiple || !name) {
+      watch(() => vm.id, (value, oldValue) => {
+        addSubscribe(normalizeEvent(pageId, vm, value), callback);
+        removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
+      });
+    }
+  });
+  onBeforeUnmount(() => {
+    removeSubscribe(name || normalizeEvent(pageId, vm));
+  });
+}
+function useOn(name, callback) {
+  onMounted(() => UniViewJSBridge.on(name, callback));
+  onBeforeUnmount(() => UniViewJSBridge.off(name));
+}
+let index$9 = 0;
+function useContextInfo(_id) {
+  const page = useCurrentPageId();
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const type = vm.$options.name.toLowerCase();
+  const id2 = _id || vm.id || `context${index$9++}`;
+  onMounted(() => {
+    const el = vm.$el;
+    el.__uniContextInfo = {
+      id: id2,
+      type,
+      page
+    };
+  });
+  return `${page}.${type}.${id2}`;
+}
+function getContextInfo(el) {
+  return el.__uniContextInfo;
+}
+function getRootInfo(fields2) {
+  const info = {};
+  if (fields2.id) {
+    info.id = "";
+  }
+  if (fields2.dataset) {
+    info.dataset = {};
+  }
+  if (fields2.rect) {
+    info.left = 0;
+    info.right = 0;
+    info.top = 0;
+    info.bottom = 0;
+  }
+  if (fields2.size) {
+    info.width = document.documentElement.clientWidth;
+    info.height = document.documentElement.clientHeight;
+  }
+  if (fields2.scrollOffset) {
+    const documentElement2 = document.documentElement;
+    const body = document.body;
+    info.scrollLeft = documentElement2.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement2.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement2.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement2.scrollWidth || body.scrollWidth || 0;
+  }
+  return info;
+}
+function getNodeInfo(el, fields2) {
+  const info = {};
+  const {top} = getWindowOffset();
+  if (fields2.id) {
+    info.id = el.id;
+  }
+  if (fields2.dataset) {
+    info.dataset = getCostomDataset(el);
+  }
+  if (fields2.rect || fields2.size) {
+    const rect = el.getBoundingClientRect();
+    if (fields2.rect) {
+      info.left = rect.left;
+      info.right = rect.right;
+      info.top = rect.top - top;
+      info.bottom = rect.bottom - top;
+    }
+    if (fields2.size) {
+      info.width = rect.width;
+      info.height = rect.height;
+    }
+  }
+  if (Array.isArray(fields2.properties)) {
+    fields2.properties.forEach((prop) => {
+      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+        return t2.toUpperCase();
+      });
+    });
+  }
+  if (fields2.scrollOffset) {
+    if (el.tagName === "UNI-SCROLL-VIEW") {
+      const scroll = el.children[0].children[0];
+      info.scrollLeft = scroll.scrollLeft;
+      info.scrollTop = scroll.scrollTop;
+      info.scrollHeight = scroll.scrollHeight;
+      info.scrollWidth = scroll.scrollWidth;
+    } else {
+      info.scrollLeft = 0;
+      info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
+    }
+  }
+  if (Array.isArray(fields2.computedStyle)) {
+    const sytle = getComputedStyle(el);
+    fields2.computedStyle.forEach((name) => {
+      info[name] = sytle[name];
+    });
+  }
+  if (fields2.context) {
+    info.contextInfo = getContextInfo(el);
+  }
+  return info;
+}
+function findElm(component, pageVm) {
+  return component ? component.$el : pageVm.$el;
+}
+function getNodesInfo(pageVm, component, selector, single, fields2) {
+  const parentElement = findElm(component, pageVm).parentElement;
+  if (!parentElement) {
+    return single ? null : [];
+  }
+  if (single) {
+    const node = parentElement.querySelector(selector);
+    if (node) {
+      return getNodeInfo(node, fields2);
+    }
+    return null;
+  } else {
+    let infos = [];
+    const nodeList = parentElement.querySelectorAll(selector);
+    if (nodeList && nodeList.length) {
+      [].forEach.call(nodeList, (node) => {
+        infos.push(getNodeInfo(node, fields2));
+      });
+    }
+    return infos;
+  }
+}
+function requestComponentInfo(page, reqs, callback) {
+  const result = [];
+  reqs.forEach(({component, selector, single, fields: fields2}) => {
+    if (component === null) {
+      result.push(getRootInfo(fields2));
+    } else {
+      result.push(getNodesInfo(page, component, selector, single, fields2));
+    }
+  });
+  callback(result);
+}
+function addIntersectionObserver({reqId, component, options, callback}, _pageId) {
+  const $el = findElem(component);
+  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
+}
+function removeIntersectionObserver({reqId, component}, _pageId) {
+  const $el = findElem(component);
+  const intersectionObserver = $el.__io && $el.__io[reqId];
+  if (intersectionObserver) {
+    intersectionObserver.disconnect();
+    delete $el.__io[reqId];
+  }
+}
+let mediaQueryObserver;
+let listener$2;
+function handleMediaQueryStr($props) {
+  const mediaQueryArr = [];
+  const propsMenu = [
+    "width",
+    "minWidth",
+    "maxWidth",
+    "height",
+    "minHeight",
+    "maxHeight",
+    "orientation"
+  ];
+  for (const item of propsMenu) {
+    if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
+    }
+    if (item === "orientation" && $props[item]) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
+    }
+  }
+  const mediaQueryStr = mediaQueryArr.join(" and ");
+  return mediaQueryStr;
+}
+function humpToLine(name) {
+  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+function addMediaQueryObserver({reqId, component, options, callback}, _pageId) {
+  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
+  listener$2 = (observer) => callback(observer.matches);
+  listener$2(mediaQueryObserver);
+  mediaQueryObserver.addListener(listener$2);
+}
+function removeMediaQueryObserver({reqId, component}, _pageId) {
+  if (mediaQueryObserver) {
+    mediaQueryObserver.removeListener(listener$2);
+  }
+}
+function saveImage(base64, dirname, callback) {
+  callback(null, base64);
+}
+const TEMP_PATH = "";
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, {type});
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a2 = document.createElement("a");
+  a2.href = url;
+  if (a2.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
+function onWebInvokeAppService({name, arg}, pageId) {
+  if (name === "postMessage")
+    ;
+  else {
+    uni[name](arg);
+  }
+}
+function initOn() {
+  UniServiceJSBridge.on("onAppEnterForeground", onAppEnterForeground);
+  UniServiceJSBridge.on("onAppEnterBackground", onAppEnterBackground);
+  UniServiceJSBridge.on("onWebInvokeAppService", onWebInvokeAppService);
+}
+function onAppEnterForeground() {
+  const page = getCurrentPage();
+  const showOptions = {
+    path: "",
+    query: {}
+  };
+  if (page) {
+    showOptions.path = page.$page.route;
+    showOptions.query = page.$page.options;
+  }
+  invokeHook(getApp(), "onShow", showOptions);
+  invokeHook(page, "onShow");
+}
+function onAppEnterBackground() {
+  invokeHook(getApp(), "onHide");
+  invokeHook(getCurrentPage(), "onHide");
+}
+const SUBSCRIBE_LIFECYCLE_HOOKS = ["onPageScroll", "onReachBottom"];
+function initSubscribe() {
+  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
+}
+function createPageEvent(name) {
+  return (args, pageId) => {
+    const vm = getPageVmById(pageId);
+    if (vm) {
+      invokeHook(vm, name, args);
+    }
+  };
+}
+function initService(app) {
+  initOn();
+  initSubscribe();
+  initAppConfig(app._context.config);
+}
+function errorHandler(err, instance2, info) {
+  if (!instance2) {
+    throw err;
+  }
+  const app = getApp();
+  if (!app || !app.$vm) {
+    throw err;
+  }
+  {
+    invokeHook(app.$vm, "onError", err);
+  }
+}
+function initApp$1(app) {
+  const appConfig = app._context.config;
+  if (isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler;
+  }
+  const globalProperties = appConfig.globalProperties;
+  {
+    globalProperties.$set = set;
+    globalProperties.$applyOptions = applyOptions;
+  }
+}
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return inject(pageMetaKey);
+}
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  provide(pageMetaKey, pageMeta);
+  return pageMeta;
+}
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return useRoute();
+  }
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
+  }
+  const {meta} = __uniRoutes[0];
+  return {
+    meta,
+    query,
+    path: "/" + meta.route
+  };
+}
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
+  }
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
+}
+const PAGE_META_KEYS = [
+  "navigationBar",
+  "refreshOptions"
+];
+function mergePageMeta(id2, pageMeta) {
+  const res = extend({id: id2}, __uniConfig.globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
+  });
+  return res;
+}
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const {enablePullDownRefresh, navigationBar} = pageMeta;
+    if (enablePullDownRefresh) {
+      const refreshOptions = extend({
+        support: true,
+        color: "#2BD009",
+        style: "circle",
+        height: 70,
+        range: 150,
+        offset: 0
+      }, pageMeta.refreshOptions);
+      let offset = rpx2px(refreshOptions.offset);
+      const {type} = navigationBar;
+      if (type !== "transparent" && type !== "none") {
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+      }
+      refreshOptions.offset = offset;
+      refreshOptions.height = rpx2px(refreshOptions.height);
+      refreshOptions.range = rpx2px(refreshOptions.range);
+      pageMeta.refreshOptions = refreshOptions;
+    }
+  }
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const {navigationBar} = pageMeta;
+    const {titleSize, titleColor, backgroundColor} = navigationBar;
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.backButton = pageMeta.isQuit ? false : true;
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+  }
+  if (__UNI_FEATURE_PAGES__ && history.state) {
+    const type = history.state.__type__;
+    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
+      pageMeta.isEntry = true;
+      pageMeta.isQuit = true;
+    }
+  }
+  return pageMeta;
+}
+const screen$1 = window.screen;
+const documentElement = document.documentElement;
+function checkMinWidth(minWidth) {
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen$1.width,
+    screen$1.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ];
+  return Math.max.apply(null, sizes) > minWidth;
+}
+function getStateId() {
+  return history.state && history.state.__id__ || 1;
+}
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && reactive(__uniConfig.tabBar);
+  }
+  return tabBar;
+}
 const supports = window.CSS && window.CSS.supports;
 function cssSupports(css) {
   return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
@@ -13292,6 +13300,11 @@ function setupApp(comp) {
         onBeforeMount(onLaunch);
       }
       onMounted(() => {
+        window.addEventListener("message", function(evt) {
+          if (isPlainObject(evt.data) && evt.data.type === "WEB_INVOKE_APPSERVICE") {
+            UniServiceJSBridge.emit("onWebInvokeAppService", evt.data.data, evt.data.pageId);
+          }
+        });
         document.addEventListener("visibilitychange", function() {
           if (document.visibilityState === "visible") {
             UniServiceJSBridge.emit("onAppEnterForeground");
@@ -15038,7 +15051,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15151,12 +15164,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15176,10 +15189,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -20664,4 +20677,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$2 as Audio, index$r as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$n as Editor, index$t as Form, Friction, index$m as Icon, index$l as Image, Input, index$s as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$2 as Audio, index$r as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$n as Editor, index$t as Form, Friction, index$m as Icon, index$l as Image, Input, index$s as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$d as Switch, index$c as Text, index$b as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$a as View, index$6 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

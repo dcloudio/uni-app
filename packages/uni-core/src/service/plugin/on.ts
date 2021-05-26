@@ -1,9 +1,11 @@
 import { ComponentPublicInstance } from '@vue/runtime-core'
 import { getCurrentPage, invokeHook } from './page'
+import { onWebInvokeAppService } from '@dcloudio/uni-platform'
 
 export function initOn() {
   UniServiceJSBridge.on('onAppEnterForeground', onAppEnterForeground)
   UniServiceJSBridge.on('onAppEnterBackground', onAppEnterBackground)
+  UniServiceJSBridge.on('onWebInvokeAppService', onWebInvokeAppService)
 }
 
 function onAppEnterForeground() {
