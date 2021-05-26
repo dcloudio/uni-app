@@ -1,4 +1,4 @@
-import { capitalize } from '@vue/shared'
+import { extend, capitalize } from '@vue/shared'
 import {
   defineTaskApi,
   defineAsyncApi,
@@ -188,7 +188,7 @@ function callSocketTask(
   if (typeof fn === 'function') {
     fn.call(
       socketTask,
-      Object.assign({}, option, {
+      extend({}, option, {
         success() {
           resolve()
         },

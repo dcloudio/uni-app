@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import {
   onMounted,
   reactive,
@@ -266,7 +267,7 @@ function useMap(
       trigger(
         'regionchange',
         {} as Event,
-        Object.assign(
+        extend(
           {
             type: 'end',
             causedBy: 'drag',
@@ -280,7 +281,7 @@ function useMap(
       trigger(
         'regionchange',
         {} as Event,
-        Object.assign(
+        extend(
           {
             type: 'end',
             causedBy: 'scale',

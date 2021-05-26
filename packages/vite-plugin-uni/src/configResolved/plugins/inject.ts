@@ -13,7 +13,7 @@ import {
 import { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
-
+import { extend } from '@vue/shared'
 import { MagicString } from '@vue/compiler-sfc'
 
 import {
@@ -52,7 +52,7 @@ export function uniInjectPlugin(options: InjectOptions): Plugin {
   if (!options) throw new Error('Missing options')
 
   const filter = createFilter(options.include, options.exclude)
-  const modules = Object.assign({}, options) as { [str: string]: Injectment }
+  const modules = extend({}, options) as { [str: string]: Injectment }
   delete modules.include
   delete modules.exclude
   delete modules.sourceMap

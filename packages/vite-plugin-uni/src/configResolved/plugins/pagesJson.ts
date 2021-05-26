@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
-import { camelize, capitalize } from '@vue/shared'
+import { extend, camelize, capitalize } from '@vue/shared'
 import {
   H5_FRAMEWORK_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
@@ -238,7 +238,7 @@ function normalizePagesRoute(
       path.join(options.inputDir, pagePath + '.nvue')
     )
     let windowTop = 0
-    const meta = Object.assign(
+    const meta = extend(
       {
         route: pageOptions.path,
         isNVue: isNVue ? true : undefined,
@@ -311,7 +311,7 @@ function generateConfig(
       : `${globalName}['____'+appid+'____']=true
 delete ${globalName}['____'+appid+'____']
 `) +
-    `${globalName}.__uniConfig=Object.assign(${JSON.stringify(pagesJson)},{
+    `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
   async,
   debug,
   networkTimeout,

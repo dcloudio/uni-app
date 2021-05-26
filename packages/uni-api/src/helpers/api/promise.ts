@@ -1,4 +1,4 @@
-import { isPlainObject, isFunction } from '@vue/shared'
+import { extend, isPlainObject, isFunction } from '@vue/shared'
 
 import { API_SUCCESS, API_FAIL, API_COMPLETE } from './callback'
 
@@ -32,7 +32,7 @@ export function promisify(fn: Function) {
     }
     return handlePromise(
       new Promise((resolve, reject) => {
-        fn(Object.assign(args, { success: resolve, fail: reject }))
+        fn(extend(args, { success: resolve, fail: reject }))
       })
     )
   }

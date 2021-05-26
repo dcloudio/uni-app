@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { ref, ExtractPropTypes, reactive, computed, watch } from 'vue'
 import { debounce } from '@dcloudio/uni-shared'
 import {
@@ -184,7 +185,7 @@ export default /*#__PURE__*/ defineSystemComponent({
     }
 
     function onChoose() {
-      emit('close', Object.assign({}, listState.selected))
+      emit('close', extend({}, listState.selected))
     }
 
     function onBack() {

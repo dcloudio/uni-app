@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { reactive, provide, inject } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -65,12 +66,12 @@ const PAGE_META_KEYS: ['navigationBar', 'refreshOptions'] = [
 ]
 
 function mergePageMeta(id: number, pageMeta: UniApp.PageRouteMeta) {
-  const res = Object.assign({ id }, __uniConfig.globalStyle, pageMeta)
+  const res = extend({ id }, __uniConfig.globalStyle, pageMeta)
   PAGE_META_KEYS.forEach((name) => {
-    ;(res as any)[name] = Object.assign(
+    ;(res as any)[name] = extend(
       {},
-      __uniConfig.globalStyle[name] || {},
-      pageMeta[name] || {}
+      __uniConfig.globalStyle[name],
+      pageMeta[name]
     )
   })
   return res
@@ -80,7 +81,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta
     if (enablePullDownRefresh) {
-      const refreshOptions = Object.assign(
+      const refreshOptions = extend(
         {
           support: true,
           color: '#2BD009',
@@ -89,7 +90,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
           range: 150,
           offset: 0,
         },
-        pageMeta.refreshOptions || {}
+        pageMeta.refreshOptions
       )
       let offset = rpx2px(refreshOptions.offset)
       const { type } = navigationBar

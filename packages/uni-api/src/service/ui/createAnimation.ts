@@ -1,3 +1,5 @@
+import { extend } from '@vue/shared'
+import { once } from '@dcloudio/uni-shared'
 import {
   API_CREATE_ANIMATION,
   API_TYPE_CREATE_ANIMATION,
@@ -5,7 +7,6 @@ import {
   CreateAnimationOptions,
 } from '../../protocols/ui/createAnimation'
 import { defineSyncApi } from '../../helpers/api'
-import { once } from '@dcloudio/uni-shared'
 
 const defaultOption: Option = {
   duration: 400,
@@ -32,7 +33,7 @@ export class MPAnimation implements UniApp.Animation {
     this.actions = []
     this.currentTransform = {}
     this.currentStepAnimates = []
-    this.option = Object.assign({}, defaultOption, option)
+    this.option = extend({}, defaultOption, option)
   }
 
   _getOption(option: Option) {
@@ -40,7 +41,7 @@ export class MPAnimation implements UniApp.Animation {
       transition: Option
       transformOrigin: Option['transformOrigin']
     } = {
-      transition: Object.assign({}, this.option, option),
+      transition: extend({}, this.option, option),
       transformOrigin: '',
     }
     _option.transformOrigin = _option.transition.transformOrigin

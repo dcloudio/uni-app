@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { onMounted, Ref, watch } from 'vue'
 import QuillClass, {
   QuillOptionsStatic,
@@ -404,7 +405,7 @@ export function useQuill(
       if (callbackId) {
         UniViewJSBridge.publishHandler('onEditorMethodCallback', {
           callbackId,
-          data: Object.assign({}, res, {
+          data: extend({}, res, {
             errMsg: `${type}:${errMsg ? 'fail ' + errMsg : 'ok'}`,
           }),
         })

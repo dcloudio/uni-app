@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import {
   defineAsyncApi,
   API_GET_LOCATION,
@@ -71,7 +72,7 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
               ) {
                 const location = res.detail.points[0]
                 resolve(
-                  Object.assign({}, coords, {
+                  extend({}, coords, {
                     longitude: location.lng,
                     latitude: location.lat,
                   })

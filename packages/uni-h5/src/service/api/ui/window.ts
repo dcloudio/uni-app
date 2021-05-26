@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { nextTick } from 'vue'
 import {
   API_ON_WINDOW_RESIZE,
@@ -137,7 +138,7 @@ export const hideRightWindow = <typeof uni.hideRightWindow>(
 export const getTopWindowStyle = <typeof uni.getTopWindowStyle>(
   defineSyncApi('getTopWindowStyle', () => {
     const state = getLayoutState()
-    return Object.assign({}, state && state.topWindowStyle)
+    return extend({}, state && state.topWindowStyle)
   })
 )
 
@@ -153,7 +154,7 @@ export const setTopWindowStyle = <typeof uni.setTopWindowStyle>(
 export const getLeftWindowStyle = <typeof uni.getLeftWindowStyle>(
   defineSyncApi('getLeftWindowStyle', () => {
     const state = getLayoutState()
-    return Object.assign({}, state && state.leftWindowStyle)
+    return extend({}, state && state.leftWindowStyle)
   })
 )
 
@@ -169,7 +170,7 @@ export const setLeftWindowStyle = <typeof uni.setLeftWindowStyle>(
 export const getRightWindowStyle = <typeof uni.getRightWindowStyle>(
   defineSyncApi('getRightWindowStyle', () => {
     const state = getLayoutState()
-    return Object.assign({}, state && state.rightWindowStyle)
+    return extend({}, state && state.rightWindowStyle)
   })
 )
 

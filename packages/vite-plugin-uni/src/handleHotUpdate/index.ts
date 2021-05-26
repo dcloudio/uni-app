@@ -2,7 +2,7 @@ import path from 'path'
 import debug from 'debug'
 import slash from 'slash'
 import { ModuleGraph, Plugin } from 'vite'
-
+import { extend } from '@vue/shared'
 import { parseManifestJson, parsePagesJson } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
@@ -51,7 +51,7 @@ export function createHandleHotUpdate(
       define,
       server: { middlewareMode },
     } = server.config
-    Object.assign(
+    extend(
       define,
       initFeatures({
         inputDir,

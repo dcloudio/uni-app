@@ -1173,9 +1173,9 @@ const PAGE_META_KEYS = [
   "refreshOptions"
 ];
 function mergePageMeta(id2, pageMeta) {
-  const res = Object.assign({id: id2}, __uniConfig.globalStyle, pageMeta);
+  const res = extend({id: id2}, __uniConfig.globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
-    res[name] = Object.assign({}, __uniConfig.globalStyle[name] || {}, pageMeta[name] || {});
+    res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
   });
   return res;
 }
@@ -1183,14 +1183,14 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const {enablePullDownRefresh, navigationBar} = pageMeta;
     if (enablePullDownRefresh) {
-      const refreshOptions = Object.assign({
+      const refreshOptions = extend({
         support: true,
         color: "#2BD009",
         style: "circle",
         height: 70,
         range: 150,
         offset: 0
-      }, pageMeta.refreshOptions || {});
+      }, pageMeta.refreshOptions);
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
@@ -1557,7 +1557,7 @@ function promisify(fn) {
       return fn(args);
     }
     return handlePromise(new Promise((resolve, reject) => {
-      fn(Object.assign(args, {success: resolve, fail: reject}));
+      fn(extend(args, {success: resolve, fail: reject}));
     }));
   };
 }
@@ -2787,7 +2787,7 @@ function useListeners(props2, Listeners, trigger) {
   const _listeners = computed(() => {
     let events = ["onTouchstart", "onTouchmove", "onTouchend"];
     let _$listeners = Listeners.value;
-    let $listeners = Object.assign({}, (() => {
+    let $listeners = extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
         if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
@@ -2802,7 +2802,7 @@ function useListeners(props2, Listeners, trigger) {
       let eventHandler = [];
       if (existing) {
         eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), Object.assign({}, (() => {
+          trigger(event.replace("on", "").toLocaleLowerCase(), extend({}, (() => {
             let obj = {};
             for (const key in $event) {
               obj[key] = $event[key];
@@ -3806,7 +3806,7 @@ function register(Quill) {
     image
   };
   const options = {};
-  Object.values(formats).forEach((value) => Object.assign(options, value(Quill)));
+  Object.values(formats).forEach((value) => extend(options, value(Quill)));
   Quill.register(options, true);
 }
 function useQuill(props2, rootRef, trigger) {
@@ -4113,14 +4113,14 @@ function useQuill(props2, rootRef, trigger) {
     if (callbackId) {
       UniViewJSBridge.publishHandler("onEditorMethodCallback", {
         callbackId,
-        data: Object.assign({}, res, {
+        data: extend({}, res, {
           errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
         })
       });
     }
   }, id2, true);
 }
-const props$w = /* @__PURE__ */ Object.assign({}, props$x, {
+const props$w = /* @__PURE__ */ extend({}, props$x, {
   id: {
     type: String,
     default: ""
@@ -4576,7 +4576,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$u = /* @__PURE__ */ Object.assign({}, {
+const props$u = /* @__PURE__ */ extend({}, {
   name: {
     type: String,
     default: ""
@@ -4837,7 +4837,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$t = /* @__PURE__ */ Object.assign({}, props$u, {
+const props$t = /* @__PURE__ */ extend({}, props$u, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11366,11 +11366,11 @@ class MPAnimation {
     this.actions = [];
     this.currentTransform = {};
     this.currentStepAnimates = [];
-    this.option = Object.assign({}, defaultOption, option);
+    this.option = extend({}, defaultOption, option);
   }
   _getOption(option) {
     const _option = {
-      transition: Object.assign({}, this.option, option),
+      transition: extend({}, this.option, option),
       transformOrigin: ""
     };
     _option.transformOrigin = _option.transition.transformOrigin;
@@ -16032,7 +16032,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({sourceTyp
       const filePath2 = fileToUrl(file);
       video.onloadedmetadata = function() {
         revokeObjectURL(filePath2);
-        resolve(Object.assign(callbackResult, {
+        resolve(extend(callbackResult, {
           duration: video.duration || 0,
           width: video.videoWidth || 0,
           height: video.videoHeight || 0
@@ -16486,7 +16486,7 @@ const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({url, p
 function callSocketTask(socketTask, method, option, resolve, reject) {
   const fn = socketTask[method];
   if (typeof fn === "function") {
-    fn.call(socketTask, Object.assign({}, option, {
+    fn.call(socketTask, extend({}, option, {
       success() {
         resolve();
       },
@@ -16592,7 +16592,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
       }, (res) => {
         if ("detail" in res && "points" in res.detail && res.detail.points.length) {
           const location2 = res.detail.points[0];
-          resolve2(Object.assign({}, coords, {
+          resolve2(extend({}, coords, {
             longitude: location2.lng,
             latitude: location2.lat
           }));
@@ -16860,7 +16860,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
       search();
     }
     function onChoose() {
-      emit2("close", Object.assign({}, listState.selected));
+      emit2("close", extend({}, listState.selected));
     }
     function onBack() {
       emit2("close");
@@ -17379,7 +17379,7 @@ function usePopupStyle(props2) {
       return Number(value) || 0;
     }
     if (isDesktop.value && popover) {
-      Object.assign(triangleStyle, {
+      extend(triangleStyle, {
         position: "absolute",
         width: "0",
         height: "0",
@@ -18467,7 +18467,7 @@ const hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, {r
 });
 const getTopWindowStyle = /* @__PURE__ */ defineSyncApi("getTopWindowStyle", () => {
   const state2 = getLayoutState();
-  return Object.assign({}, state2 && state2.topWindowStyle);
+  return extend({}, state2 && state2.topWindowStyle);
 });
 const setTopWindowStyle = /* @__PURE__ */ defineSyncApi("setTopWindowStyle", (style) => {
   const state2 = getLayoutState();
@@ -18477,7 +18477,7 @@ const setTopWindowStyle = /* @__PURE__ */ defineSyncApi("setTopWindowStyle", (st
 });
 const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi("getLeftWindowStyle", () => {
   const state2 = getLayoutState();
-  return Object.assign({}, state2 && state2.leftWindowStyle);
+  return extend({}, state2 && state2.leftWindowStyle);
 });
 const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi("setLeftWindowStyle", (style) => {
   const state2 = getLayoutState();
@@ -18487,7 +18487,7 @@ const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi("setLeftWindowStyle", (
 });
 const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
   const state2 = getLayoutState();
-  return Object.assign({}, state2 && state2.rightWindowStyle);
+  return extend({}, state2 && state2.rightWindowStyle);
 });
 const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
   const state2 = getLayoutState();
@@ -18927,14 +18927,14 @@ function useMap(props2, rootRef, emit2) {
       });
     });
     maps2.event.addListener(map2, "dragend", () => {
-      trigger("regionchange", {}, Object.assign({
+      trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "drag"
       }, getMapInfo()));
     });
     maps2.event.addListener(map2, "zoom_changed", () => {
       emit2("update:scale", map2.getZoom());
-      trigger("regionchange", {}, Object.assign({
+      trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "scale"
       }, getMapInfo()));

@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { Ref, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent } from '../../helpers/useEvent'
@@ -8,7 +9,7 @@ import {
 } from '../../helpers/useKeyboard'
 import { useQuill } from './quill'
 
-const props = /*#__PURE__*/ Object.assign({}, keyboardProps, {
+const props = /*#__PURE__*/ extend({}, keyboardProps, {
   id: {
     type: String,
     default: '',

@@ -1,4 +1,4 @@
-import { isFunction } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 
 import { invokeApi, handlePromise, wrapperReturnValue } from '@dcloudio/uni-api'
 
@@ -77,7 +77,7 @@ export function promisify(name: string, api: unknown) {
           invokeApi(
             name,
             api,
-            Object.assign({}, options, {
+            extend({}, options, {
               success: resolve,
               fail: reject,
             })

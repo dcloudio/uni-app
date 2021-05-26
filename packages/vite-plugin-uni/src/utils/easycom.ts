@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import slash from 'slash'
-
+import { extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { once } from '@dcloudio/uni-shared'
@@ -115,10 +115,10 @@ function initEasycom({
   clearEasycom()
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {
-    Object.assign(easycomsObj, initAutoScanEasycoms(dirs, rootDir, extensions))
+    extend(easycomsObj, initAutoScanEasycoms(dirs, rootDir, extensions))
   }
   if (custom) {
-    Object.assign(easycomsObj, custom)
+    extend(easycomsObj, custom)
   }
   Object.keys(easycomsObj).forEach((name) => {
     easycoms.push({

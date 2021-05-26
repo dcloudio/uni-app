@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { Ref, ref, computed } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
@@ -6,7 +7,7 @@ import {
   useField,
 } from '../../helpers/useField'
 
-const props = /*#__PURE__*/ Object.assign({}, fieldProps, {
+const props = /*#__PURE__*/ extend({}, fieldProps, {
   placeholderClass: {
     type: String,
     default: 'input-placeholder',

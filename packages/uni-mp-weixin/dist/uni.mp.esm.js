@@ -640,7 +640,7 @@ function wrapper(event) {
         event.detail.markerId = event.markerId;
     }
     if (isPlainObject(event.detail)) {
-        event.target = Object.assign({}, event.target, event.detail);
+        event.target = extend({}, event.target, event.detail);
     }
     return event;
 }

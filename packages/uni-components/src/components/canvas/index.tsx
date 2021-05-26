@@ -136,7 +136,7 @@ function useListeners(
   const _listeners = computed(() => {
     let events = ['onTouchstart', 'onTouchmove', 'onTouchend']
     let _$listeners = Listeners.value
-    let $listeners = Object.assign(
+    let $listeners = extend(
       {},
       (() => {
         let obj = {}
@@ -157,7 +157,7 @@ function useListeners(
           withWebEvent(($event) => {
             trigger(
               event.replace('on', '').toLocaleLowerCase(),
-              Object.assign(
+              extend(
                 {},
                 // $event无法直接assign
                 (() => {

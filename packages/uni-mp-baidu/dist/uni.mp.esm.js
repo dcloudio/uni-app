@@ -659,7 +659,7 @@ function wrapper(event) {
         }
     }
     if (isPlainObject(event.detail)) {
-        event.target = Object.assign({}, event.target, event.detail);
+        event.target = extend({}, event.target, event.detail);
     }
     return event;
 }

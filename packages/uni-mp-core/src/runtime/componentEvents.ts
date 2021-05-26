@@ -1,4 +1,11 @@
-import { hasOwn, NOOP, isArray, isPlainObject, isFunction } from '@vue/shared'
+import {
+  extend,
+  hasOwn,
+  NOOP,
+  isArray,
+  isPlainObject,
+  isFunction,
+} from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
 import { MPComponentInstance } from './component'
 
@@ -216,7 +223,7 @@ function wrapper(event: Event) {
   }
 
   if (isPlainObject(event.detail)) {
-    event.target = Object.assign({}, event.target, event.detail)
+    event.target = extend({}, event.target, event.detail)
   }
 
   return event

@@ -240,7 +240,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     navigationBarButtons,
     navigationBarSearchInput,
     navigationBarTransparent,
-  } = Object.assign(
+  } = extend(
     initManifestFeature(options),
     initPagesFeature(options),
     initProjectFeature(options)

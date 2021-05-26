@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend } from '@vue/shared';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -470,7 +470,7 @@ function promisify(name, api) {
             return wrapperReturnValue(name, invokeApi(name, api, options));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, api, Object.assign({}, options, {
+            invokeApi(name, api, extend({}, options, {
                 success: resolve,
                 fail: reject,
             }));

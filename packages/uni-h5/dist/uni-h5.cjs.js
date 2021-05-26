@@ -411,9 +411,9 @@ const PAGE_META_KEYS = [
   "refreshOptions"
 ];
 function mergePageMeta(id, pageMeta) {
-  const res = Object.assign({id}, __uniConfig.globalStyle, pageMeta);
+  const res = shared.extend({id}, __uniConfig.globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
-    res[name] = Object.assign({}, __uniConfig.globalStyle[name] || {}, pageMeta[name] || {});
+    res[name] = shared.extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
   });
   return res;
 }
@@ -421,14 +421,14 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const {enablePullDownRefresh, navigationBar} = pageMeta;
     if (enablePullDownRefresh) {
-      const refreshOptions = Object.assign({
+      const refreshOptions = shared.extend({
         support: true,
         color: "#2BD009",
         style: "circle",
         height: 70,
         range: 150,
         offset: 0
-      }, pageMeta.refreshOptions || {});
+      }, pageMeta.refreshOptions);
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
@@ -694,7 +694,7 @@ function promisify(fn) {
       return fn(args);
     }
     return handlePromise(new Promise((resolve, reject) => {
-      fn(Object.assign(args, {success: resolve, fail: reject}));
+      fn(shared.extend(args, {success: resolve, fail: reject}));
     }));
   };
 }
@@ -1615,7 +1615,7 @@ function useListeners(props2, Listeners, trigger) {
   const _listeners = vue.computed(() => {
     let events = ["onTouchstart", "onTouchmove", "onTouchend"];
     let _$listeners = Listeners.value;
-    let $listeners = Object.assign({}, (() => {
+    let $listeners = shared.extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
         if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
@@ -1630,7 +1630,7 @@ function useListeners(props2, Listeners, trigger) {
       let eventHandler = [];
       if (existing) {
         eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), Object.assign({}, (() => {
+          trigger(event.replace("on", "").toLocaleLowerCase(), shared.extend({}, (() => {
             let obj = {};
             for (const key in $event) {
               obj[key] = $event[key];
@@ -2367,14 +2367,14 @@ function useQuill(props2, rootRef, trigger) {
     if (callbackId) {
       UniViewJSBridge.publishHandler("onEditorMethodCallback", {
         callbackId,
-        data: Object.assign({}, res, {
+        data: shared.extend({}, res, {
           errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
         })
       });
     }
   }, id, true);
 }
-const props$p = /* @__PURE__ */ Object.assign({}, props$q, {
+const props$p = /* @__PURE__ */ shared.extend({}, props$q, {
   id: {
     type: String,
     default: ""
@@ -2762,7 +2762,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$n = /* @__PURE__ */ Object.assign({}, {
+const props$n = /* @__PURE__ */ shared.extend({}, {
   name: {
     type: String,
     default: ""
@@ -3014,7 +3014,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$m = /* @__PURE__ */ Object.assign({}, props$n, {
+const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9283,7 +9283,7 @@ function usePopupStyle(props2) {
       return Number(value) || 0;
     }
     if (isDesktop.value && popover) {
-      Object.assign(triangleStyle, {
+      shared.extend(triangleStyle, {
         position: "absolute",
         width: "0",
         height: "0",

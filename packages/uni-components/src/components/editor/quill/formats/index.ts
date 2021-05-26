@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import QuillClass from 'quill'
 
 import divider from './divider'
@@ -25,8 +26,6 @@ export function register(Quill: typeof QuillClass) {
     image,
   }
   const options = {}
-  Object.values(formats).forEach((value) =>
-    Object.assign(options, value(Quill))
-  )
+  Object.values(formats).forEach((value) => extend(options, value(Quill)))
   Quill.register(options, true)
 }

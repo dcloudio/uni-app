@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { onMounted, computed, ref, onUnmounted } from 'vue'
 
 type Popover = {
@@ -53,7 +54,7 @@ export function usePopupStyle(props: Data) {
       return Number(value) || 0
     }
     if (isDesktop.value && popover) {
-      Object.assign(triangleStyle, {
+      extend(triangleStyle, {
         position: 'absolute',
         width: '0',
         height: '0',

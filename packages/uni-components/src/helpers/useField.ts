@@ -9,6 +9,7 @@ import {
   reactive,
   nextTick,
 } from 'vue'
+import { extend } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
 import { throttle } from './throttle'
 import { useCustomEvent, CustomEventTrigger } from './useEvent'
@@ -70,7 +71,7 @@ interface InputEventDetail {
 
 type HTMLFieldElement = HTMLInputElement | HTMLTextAreaElement
 
-export const props = /*#__PURE__*/ Object.assign(
+export const props = /*#__PURE__*/ extend(
   {},
   {
     name: {

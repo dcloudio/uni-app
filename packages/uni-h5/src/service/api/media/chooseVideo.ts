@@ -1,4 +1,5 @@
 //#region functions
+import { extend } from '@vue/shared'
 import {
   API_CHOOSE_VIDEO,
   ChooseVideoOptions,
@@ -59,7 +60,7 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
         video.onloadedmetadata = function () {
           revokeObjectURL(filePath)
           resolve(
-            Object.assign(callbackResult, {
+            extend(callbackResult, {
               duration: video.duration || 0,
               width: video.videoWidth || 0,
               height: video.videoHeight || 0,

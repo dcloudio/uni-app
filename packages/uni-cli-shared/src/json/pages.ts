@@ -105,9 +105,9 @@ function normalizePageStyle(
 ) {
   if (pageStyle) {
     if (platform === 'h5') {
-      Object.assign(pageStyle, pageStyle['app'] || pageStyle['app-plus'] || {})
+      extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'] || {})
     }
-    Object.assign(pageStyle, pageStyle[platform] || {})
+    extend(pageStyle, pageStyle[platform] || {})
     if (['h5', 'app'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
     }
@@ -140,7 +140,7 @@ function normalizeNavigationBar(
 
   const { titleNView } = pageStyle
   if (isPlainObject(titleNView)) {
-    Object.assign(navigationBar, titleNView)
+    extend(navigationBar, titleNView)
     delete pageStyle.titleNView
   }
   if (!navigationBar.titleColor && hasOwn(navigationBar, 'textStyle')) {
@@ -198,7 +198,7 @@ function normalizeNavigationBarButton(
 function normalizeNavigationBarSearchInput(
   searchInput: UniApp.PageNavigationBarSearchInput
 ) {
-  return Object.assign(
+  return extend(
     {
       autoFocus: false,
       align: 'center',
