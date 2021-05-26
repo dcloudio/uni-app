@@ -1,7 +1,7 @@
 import { FontFaceDescriptors } from 'css-font-loading-module'
 import { isString } from '@vue/shared'
-import { getCustomDataset } from './CustomDataset'
-export { initCustomDataset, getCustomDataset } from './CustomDataset'
+import { getCustomDataset } from './customDataset'
+export { initCustomDataset, getCustomDataset } from './customDataset'
 
 export * from './style'
 
