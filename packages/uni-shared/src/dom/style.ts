@@ -22,6 +22,7 @@ export function createRpx2Unit(
   unitRatio: number,
   unitPrecision: number
 ) {
+  // ignore: rpxCalcIncludeWidth
   return (val: string) =>
     val.replace(unitRE, (m, $1) => {
       if (!$1) {

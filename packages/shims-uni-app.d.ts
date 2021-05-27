@@ -34,6 +34,10 @@ declare namespace UniApp {
     globalStyle: {
       navigationBar: PageNavigationBar
       refreshOptions?: PageRefreshOptions
+      maxWidth?: number
+      rpxCalcMaxDeviceWidth?: number
+      rpxCalcBaseDeviceWidth?: number
+      // rpxCalcIncludeWidth?: number
     }
     topWindow?: LayoutWindowOptions
     leftWindow?: LayoutWindowOptions

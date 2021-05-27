@@ -967,7 +967,33 @@ function initAppConfig$1(appConfig) {
     globalProperties.$gcd = getComponentDescriptor;
   }
 }
+function checkValue$1(value, defaultValue) {
+  const newValue = Number(value);
+  return isNaN(newValue) ? defaultValue : newValue;
+}
+function getWindowWidth$1() {
+  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+  const landscape = screenFix && Math.abs(window.orientation) === 90;
+  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+  return windowWidth;
+}
+function useRem() {
+  function updateRem() {
+    const config = __uniConfig.globalStyle || {};
+    const maxWidth = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+    const baseWidth = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
+    let width = getWindowWidth$1();
+    width = width <= maxWidth ? width : baseWidth;
+    document.documentElement.style.fontSize = width / 23.4375 + "px";
+  }
+  updateRem();
+  document.addEventListener("DOMContentLoaded", updateRem);
+  window.addEventListener("load", updateRem);
+  window.addEventListener("resize", updateRem);
+}
 function initView(app) {
+  useRem();
   initCustomDataset();
   if (__UNI_FEATURE_LONGPRESS__) {
     initLongPress();
@@ -9881,6 +9907,10 @@ function checkDeviceWidth() {
   deviceDPR = pixelRatio2;
   isIOS = platform === "ios";
 }
+function checkValue(value, defaultValue) {
+  const newValue = Number(value);
+  return isNaN(newValue) ? defaultValue : newValue;
+}
 const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
@@ -9889,7 +9919,12 @@ const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth
   if (number === 0) {
     return 0;
   }
-  let result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
+  const config = __uniConfig.globalStyle || {};
+  const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+  const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+  let width = newDeviceWidth || deviceWidth;
+  width = width <= maxWidth ? width : baseWidth;
+  let result = number / BASE_DEVICE_WIDTH * width;
   if (result < 0) {
     result = -result;
   }

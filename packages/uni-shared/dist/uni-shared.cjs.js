@@ -44,6 +44,7 @@ const defaultRpx2Unit = {
     unitPrecision: 5,
 };
 function createRpx2Unit(unit, unitRatio, unitPrecision) {
+    // ignore: rpxCalcIncludeWidth
     return (val) => val.replace(unitRE, (m, $1) => {
         if (!$1) {
             return m;
