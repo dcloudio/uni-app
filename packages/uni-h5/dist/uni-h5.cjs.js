@@ -10866,8 +10866,11 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
   }
 }
 function useDocumentTitle(pageMeta) {
+  const ctx = vue.useSSRContext();
   function update() {
-    document.title = pageMeta.navigationBar.titleText;
+    {
+      ctx[uniShared.UNI_SSR_TITLE] = pageMeta.navigationBar.titleText;
+    }
   }
   vue.watchEffect(update);
 }

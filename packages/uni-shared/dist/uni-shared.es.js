@@ -378,6 +378,7 @@ const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
 const UNI_SSR = '__uniSSR';
+const UNI_SSR_TITLE = 'title';
 const UNI_SSR_STORE = 'store';
 const UNI_SSR_DATA = 'data';
 const UNI_SSR_GLOBAL_DATA = 'globalData';
@@ -388,4 +389,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, addFont, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, addFont, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

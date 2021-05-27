@@ -4,6 +4,7 @@ import {
   UNI_SSR,
   UNI_SSR_DATA,
   UNI_SSR_STORE,
+  UNI_SSR_TITLE,
   UNI_SSR_GLOBAL_DATA,
 } from '@dcloudio/uni-shared'
 import { plugin } from '@dcloudio/uni-h5'
@@ -39,7 +40,7 @@ export async function render(url, manifest = {}) {
     __uniSSR[UNI_SSR_STORE] = store.state
   }
   const appContext = renderAppContext(ctx)
-  return [html, preloadLinks, appContext]
+  return [html, preloadLinks, appContext, ctx[UNI_SSR_TITLE] || '']
 }
 
 function renderPreloadLinks(modules, manifest) {

@@ -63,9 +63,10 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
         )
       ).render
 
-      const [appHtml, preloadLinks, appContext] = await render(url)
+      const [appHtml, preloadLinks, appContext, title] = await render(url)
 
       const html = template
+        .replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`)
         .replace(`<!--preload-links-->`, preloadLinks)
         .replace(`<!--app-html-->`, appHtml)
         .replace(`<!--app-context-->`, appContext)

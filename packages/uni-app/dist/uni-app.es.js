@@ -82,7 +82,7 @@ const onError = /*#__PURE__*/ createHook(ON_ERROR);
 const onThemeChange = /*#__PURE__*/ createHook(ON_THEME_CHANGE);
 const onPageNotFound = /*#__PURE__*/ createHook(ON_PAGE_NOT_FOUND);
 const onUnhandledRejection = /*#__PURE__*/ createHook(ON_UNHANDLE_REJECTION);
-// export const onLoad = /*#__PURE__*/ createHook(ON_LOAD)
+
 const onReady = /*#__PURE__*/ createHook(ON_READY);
 const onUnload = /*#__PURE__*/ createHook(ON_UNLOAD);
 const onResize = /*#__PURE__*/ createHook(ON_RESIZE);
