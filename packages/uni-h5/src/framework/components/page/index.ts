@@ -7,6 +7,7 @@ import {
   SetupContext,
 } from 'vue'
 import { defineSystemComponent } from '@dcloudio/uni-components'
+import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
 
 import PageHead from './pageHead'
 import PageBody from './pageBody'
@@ -16,7 +17,9 @@ import { getStateId } from '../../../helpers/dom'
 export default defineSystemComponent({
   name: 'Page',
   setup(_props, ctx) {
-    const { navigationBar } = providePageMeta(getStateId())
+    const pageMeta = providePageMeta(getStateId())
+    const navigationBar = pageMeta.navigationBar
+    useDocumentTitle(pageMeta)
     return () =>
       createVNode(
         'uni-page',

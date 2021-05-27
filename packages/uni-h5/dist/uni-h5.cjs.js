@@ -10865,6 +10865,12 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
+function useDocumentTitle(pageMeta) {
+  function update() {
+    document.title = pageMeta.navigationBar.titleText;
+  }
+  vue.watchEffect(update);
+}
 function hexToRgba(hex) {
   let r;
   let g2;
@@ -11330,7 +11336,9 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 var index$2 = defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
-    const {navigationBar} = providePageMeta(getStateId());
+    const pageMeta = providePageMeta(getStateId());
+    const navigationBar = pageMeta.navigationBar;
+    useDocumentTitle(pageMeta);
     return () => vue.createVNode("uni-page", null, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
   }
 });
