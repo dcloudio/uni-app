@@ -49,7 +49,7 @@ function createLegacyApp(code: string) {
 }
 
 function createSSRClientApp(code: string) {
-  return `import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';const { app as __app, store as __store } = createApp();__app.use(plugin);__store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && __store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);__app.router.isReady().then(() => __app.mount("#app"));${code}`
+  return `import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';const { app: __app, store: __store } = createApp();__app.use(plugin);__store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && __store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);__app.router.isReady().then(() => __app.mount("#app"));${code}`
 }
 
 function createSSRServerApp(code: string) {
