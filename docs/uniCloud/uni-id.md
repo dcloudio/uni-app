@@ -374,6 +374,8 @@ function hasPermission(token, permission) {
 
 注意：**在uniCloud admin中，封装了可视化的用户、权限、角色的管理，新增删除修改均支持。**无需自己维护。[详见](https://uniapp.dcloud.net.cn/uniCloud/admin?id=mutiladmin)
 
+**如果需要管理多端的用户，建议使用type在uni-id-users表内进行区分，不要分多个表**
+
 # uni-id的API列表@api
 
 `uni-id`作为一个云函数的公共模块，暴露了各种API，供云函数调用。
