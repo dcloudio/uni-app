@@ -309,3 +309,102 @@ HBuilder基座的测试广告位 adpid: `1042956255` (游戏); `1620839118` (抽
 
 取消监听错误事件
 
+
+### 积分对接
+
+### 开通
+
+1. 开发者需要提供广告位 `adpid`
+2. 开发者需要提供服务器接口
+  1. 获取积分接口
+  2. 操作积分接口
+4. 三方服务商需要提供 `secretKey` 让开发者来验签请求来源
+
+
+### 获取积分
+
+简要描述：
+
+该接口用于获取用户总积分数量；
+
+开发者提供url用户查询积分
+
+请求方式 `GET`
+
+参数：
+
+|参数名|必选|类型|说明|
+|:-:|:-:|:-:|:-:|
+|appUserId|是|String|app用户Id|
+|appId|是|String|SSP后台注册的appId|
+|timestamp|是|String|时间戳（自1970年起，精确到毫秒）|
+|sign|是|String|签名,用于验证身份。按照按 secretKey + timestamp 的进行MD5加密（注意加密后字符串要转大写，不要加上“+”号）|
+
+返回参数说明
+
+|参数名|类型|说明|
+|:-:|:-:|:-:|
+|appUserId|String|app用户Id|
+|avatar|String|用户头像|
+|nickname|String|用户昵称|
+|amount|Long|用户总积分|
+
+示例
+
+```json
+  {
+   "appUserId" : "dcloud",
+   "avatar": "https://xxx.yyy.com/xxxx.jpg",
+   "nickname": "jack",
+   "amount": 100
+  }
+```
+
+### 操作积分
+
+简要描述：
+
+此接口用于操作用户积分数量，如增加、扣除；
+请求参数放在body里，以JSON格式提交；
+考虑到接口的安全，建议开发者采用IP白名单+签名的方式校验来源，以防备被第三方利用。
+
+
+失败情况：
+
+- URL存在特殊字符或无法通过外网访问；
+- 没有按照响应格式要求返回的内容；
+- 接口返回状态码非`200`的情况；
+- 接口响应时间超过`3`秒。
+
+开发者提供url用户查询积分
+
+请求方式 `POST`
+
+参数：
+
+|参数名|必选|类型|说明|
+|:-:|:-:|:-:|:-:|
+|appUserId|是|String|App用户Id(唯一标识)|
+|appId|是|String|SSP后台注册的appId|
+|operateType|是|Long|操作类型：1.增加 2.扣除|
+|amount|是|Long|本次操作的积分值|
+|timestamp|是|String|时间戳（自1970年起，精确到毫秒）|
+|sign|是|String|签名，用于验证身份。按照按 secretKey + timestamp 进行MD5加密（注意加密后字符串要转大写，不要加上“+”号）|
+
+返回参数说明
+
+|参数名|类型|说明|
+|:-:|:-:|:-:|
+|appUserId|String|App用户Id(唯一标识)|
+|status|int|状态码：0. 处理失败 1. 处理成功|
+|message|String|失败原因|
+|amount|Long|操作后的用户总积分|
+
+返回结果示例
+```json
+{
+  "appUserId": "dcloud",
+  "status": 1,
+  "amount": 100
+}
+```
