@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, resolveComponent, createCommentVNode, renderSlot, useSSRContext} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, useSSRContext, renderSlot} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCustomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1220,7 +1220,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -1881,7 +1881,7 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
-const _sfc_main$2 = {
+const _sfc_main$1 = {
   name: "Audio",
   mixins: [subscriber],
   props: {
@@ -2006,7 +2006,7 @@ const _hoisted_3$1 = {class: "uni-audio-time"};
 const _hoisted_4$1 = {class: "uni-audio-info"};
 const _hoisted_5 = {class: "uni-audio-name"};
 const _hoisted_6 = {class: "uni-audio-author"};
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
     controls: !!$props.controls
@@ -2036,7 +2036,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ], 16, ["id", "controls"]);
 }
-_sfc_main$2.render = _sfc_render$2;
+_sfc_main$1.render = _sfc_render$1;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -2268,7 +2268,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   setup(_props, {
     slots,
@@ -2308,15 +2308,15 @@ function provideForm(emit2) {
   return fields2;
 }
 const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
-const props$B = {
+const props$C = {
   for: {
     type: String,
     default: ""
   }
 };
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
-  props: props$B,
+  props: props$C,
   setup(props2, {
     slots
   }) {
@@ -2412,7 +2412,7 @@ function _removeListeners(id2, listeners, watch2) {
     }
   });
 }
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: {
     id: {
@@ -2738,7 +2738,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$A = {
+const props$B = {
   canvasId: {
     type: String,
     default: ""
@@ -2748,13 +2748,13 @@ const props$A = {
     default: false
   }
 };
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
     MODE: 3
   },
-  props: props$A,
+  props: props$B,
   computed: {
     id() {
       return this.canvasId;
@@ -3233,15 +3233,15 @@ function useMethods(canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$z = {
+const props$A = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$z,
+  props: props$A,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -3293,7 +3293,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$y = {
+const props$z = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3315,9 +3315,9 @@ const props$y = {
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$y,
+  props: props$z,
   setup(props2, {
     slots
   }) {
@@ -3396,7 +3396,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$x = {
+const props$y = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -4146,7 +4146,7 @@ function useQuill(props2, rootRef, trigger) {
     }
   }, id2, true);
 }
-const props$w = /* @__PURE__ */ extend({}, props$x, {
+const props$x = /* @__PURE__ */ extend({}, props$y, {
   id: {
     type: String,
     default: ""
@@ -4172,9 +4172,9 @@ const props$w = /* @__PURE__ */ extend({}, props$x, {
     default: false
   }
 });
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$w,
+  props: props$x,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -4234,7 +4234,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4261,7 +4261,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$v = {
+const props$w = {
   src: {
     type: String,
     default: ""
@@ -4298,9 +4298,9 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$v,
+  props: props$w,
   setup(props2, {
     emit: emit2
   }) {
@@ -4602,7 +4602,7 @@ const UniViewJSBridgeSubscribe = function() {
 function getValueString(value) {
   return value === null ? "" : String(value);
 }
-const props$u = /* @__PURE__ */ extend({}, {
+const props$v = /* @__PURE__ */ extend({}, {
   name: {
     type: String,
     default: ""
@@ -4667,7 +4667,7 @@ const props$u = /* @__PURE__ */ extend({}, {
     type: String,
     default: "done"
   }
-}, props$x);
+}, props$y);
 const emit = [
   "input",
   "focus",
@@ -4863,7 +4863,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$t = /* @__PURE__ */ extend({}, props$u, {
+const props$u = /* @__PURE__ */ extend({}, props$v, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -4871,7 +4871,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$t,
+  props: props$u,
   emits: ["confirm", ...emit],
   setup(props2, {
     emit: emit2
@@ -5026,7 +5026,7 @@ function flatVNode(nodes) {
   }
   return array;
 }
-const props$s = {
+const props$t = {
   scaleArea: {
     type: Boolean,
     default: false
@@ -5035,7 +5035,7 @@ const props$s = {
 var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
-  props: props$s,
+  props: props$t,
   setup(props2, {
     slots
   }) {
@@ -5344,7 +5344,7 @@ function useTouchtrack(element, method, useCancel) {
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
-function t$1(t2, n) {
+function t(t2, n) {
   return e(t2, 0, n);
 }
 function Decline() {
@@ -5526,23 +5526,23 @@ Spring$1.prototype.setEnd = function(e2, n, i) {
   if (!i) {
     i = new Date().getTime();
   }
-  if (e2 !== this._endPosition || !t$1(n, 0.1)) {
+  if (e2 !== this._endPosition || !t(n, 0.1)) {
     n = n || 0;
     var r = this._endPosition;
     if (this._solution) {
-      if (t$1(n, 0.1)) {
+      if (t(n, 0.1)) {
         n = this._solution.dx((i - this._startTime) / 1e3);
       }
       r = this._solution.x((i - this._startTime) / 1e3);
-      if (t$1(n, 0.1)) {
+      if (t(n, 0.1)) {
         n = 0;
       }
-      if (t$1(r, 0.1)) {
+      if (t(r, 0.1)) {
         r = 0;
       }
       r += this._endPosition;
     }
-    if (!(this._solution && t$1(r - e2, 0.1) && t$1(n, 0.1))) {
+    if (!(this._solution && t(r - e2, 0.1) && t(n, 0.1))) {
       this._endPosition = e2;
       this._solution = this._solve(r - this._endPosition, n);
       this._startTime = i;
@@ -5565,7 +5565,7 @@ Spring$1.prototype.done = function(n) {
   if (!n) {
     n = new Date().getTime();
   }
-  return e(this.x(), this._endPosition, 0.1) && t$1(this.dx(), 0.1);
+  return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
 Spring$1.prototype.reconfigure = function(m, t2, c) {
   this._m = m;
@@ -5636,7 +5636,7 @@ STD.prototype.reconfigure = function(e2, t2, n) {
   this._springY.reconfigure(e2, t2, n);
   this._springScale.reconfigure(e2, t2, n);
 };
-const props$r = {
+const props$s = {
   direction: {
     type: String,
     default: "none"
@@ -5692,7 +5692,7 @@ const props$r = {
 };
 var MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
-  props: props$r,
+  props: props$s,
   emits: ["change", "scale"],
   setup(props2, {
     slots,
@@ -6275,7 +6275,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   };
 }
 const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$q = {
+const props$r = {
   hoverClass: {
     type: String,
     default: "navigator-hover"
@@ -6312,12 +6312,12 @@ const props$q = {
     default: false
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   compatConfig: {
     MODE: 3
   },
-  props: props$q,
+  props: props$r,
   setup(props2, {
     slots
   }) {
@@ -6372,7 +6372,7 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$p = {
+const props$q = {
   value: {
     type: Array,
     default() {
@@ -6419,7 +6419,7 @@ function useState$3(props2) {
 }
 var PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
-  props: props$p,
+  props: props$q,
   emits: ["change", "pickstart", "pickend", "update:value"],
   setup(props2, {
     slots,
@@ -7345,7 +7345,7 @@ const VALUES = {
   backgroundColor: "#EBEBEB",
   activeMode: "backwards"
 };
-const props$o = {
+const props$p = {
   percent: {
     type: [Number, String],
     default: 0,
@@ -7392,9 +7392,9 @@ const props$o = {
     }
   }
 };
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
-  props: props$o,
+  props: props$p,
   setup(props2) {
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
@@ -7465,15 +7465,15 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$n = {
+const props$o = {
   name: {
     type: String,
     default: ""
   }
 };
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$n,
+  props: props$o,
   setup(props2, {
     emit: emit2,
     slots
@@ -7549,7 +7549,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$m = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7571,9 +7571,9 @@ const props$m = {
     default: ""
   }
 };
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$m,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -7867,7 +7867,7 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
-const props$l = {
+const props$m = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -7875,12 +7875,12 @@ const props$l = {
     }
   }
 };
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$l,
+  props: props$m,
   setup(props2) {
     const rootRef = ref(null);
     function _renderNodes(nodes) {
@@ -7905,7 +7905,7 @@ var index$g = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = passive(true);
-const props$k = {
+const props$l = {
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -7968,7 +7968,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: props$l,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort"],
   setup(props2, {
     emit: emit2,
@@ -8367,7 +8367,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     }
   });
 }
-const props$j = {
+const props$k = {
   name: {
     type: String,
     default: ""
@@ -8421,9 +8421,9 @@ const props$j = {
     default: false
   }
 };
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$j,
+  props: props$k,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -8591,7 +8591,7 @@ var computeController = {
     return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
   }
 };
-const props$i = {
+const props$j = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -9080,7 +9080,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 var Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$i,
+  props: props$j,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -9175,7 +9175,7 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = {
+const props$i = {
   itemId: {
     type: String,
     default: ""
@@ -9183,7 +9183,7 @@ const props$h = {
 };
 var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$h,
+  props: props$i,
   setup(props2, {
     slots
   }) {
@@ -9232,7 +9232,7 @@ var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$h = {
   name: {
     type: String,
     default: ""
@@ -9258,9 +9258,9 @@ const props$g = {
     default: "#007aff"
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$g,
+  props: props$h,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -9357,7 +9357,7 @@ function normalizeText(text2, {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -9410,7 +9410,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = /* @__PURE__ */ extend({}, props$u, {
+const props$g = /* @__PURE__ */ extend({}, props$v, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9424,9 +9424,9 @@ const props$f = /* @__PURE__ */ extend({}, props$u, {
     default: ""
   }
 });
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$f,
+  props: props$g,
   emit: ["confirm", "linechange", ...emit],
   setup(props2, {
     emit: emit2
@@ -9544,7 +9544,7 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -9609,13 +9609,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$a = 0;
+let index$b = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$a++}`;
+  const id2 = _id || vm.id || `context${index$b++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -11201,12 +11201,12 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
 let eventReady = false;
-let index$9 = 0;
+let index$a = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = {};
   if (options && ("success" in options || "fail" in options || "complete" in options)) {
-    const callbackId = String(index$9++);
+    const callbackId = String(index$a++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
     if (!eventReady) {
@@ -13224,7 +13224,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$8 = {
+var index$9 = {
   install(app) {
     initApp$1(app);
     initView(app);
@@ -13899,7 +13899,7 @@ function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScree
     }
   }, id2, true);
 }
-const props$e = {
+const props$f = {
   id: {
     type: String,
     default: ""
@@ -13983,9 +13983,9 @@ const props$e = {
     default: true
   }
 };
-var index$7 = /* @__PURE__ */ defineBuiltInComponent({
+var index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$e,
+  props: props$f,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -14206,16 +14206,16 @@ const onWebInvokeAppService = ({name, arg}, pageId) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on("onWebInvokeAppService", onWebInvokeAppService));
-const props$d = {
+const props$e = {
   src: {
     type: String,
     default: ""
   }
 };
-var index$6 = /* @__PURE__ */ defineBuiltInComponent({
+var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$d,
+  props: props$e,
   setup(props2, {
     attrs: attrs2
   }) {
@@ -14402,7 +14402,7 @@ function loadMaps(callback) {
     document.body.appendChild(script);
   }
 }
-const props$c = {
+const props$d = {
   id: {
     type: [Number, String],
     default: ""
@@ -14466,7 +14466,7 @@ const props$c = {
 };
 var MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$c,
+  props: props$d,
   setup(props2) {
     const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14677,7 +14677,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$b = {
+const props$c = {
   points: {
     type: Array,
     require: true
@@ -14723,7 +14723,7 @@ const props$b = {
 };
 var MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$b,
+  props: props$c,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14776,7 +14776,7 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$a = {
+const props$b = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14808,7 +14808,7 @@ const props$a = {
 };
 var MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$a,
+  props: props$b,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14852,7 +14852,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$9 = {
+const props$a = {
   id: {
     type: [Number, String],
     default: ""
@@ -14872,7 +14872,7 @@ const props$9 = {
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let control;
@@ -15087,7 +15087,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15200,12 +15200,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15225,10 +15225,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -15817,13 +15817,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$5 = 0;
+let index$6 = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$5;
-  index$5 += prevent ? 1 : -1;
-  index$5 = Math.max(0, index$5);
-  if (index$5 > 0) {
+  let before = index$6;
+  index$6 += prevent ? 1 : -1;
+  index$6 = Math.max(0, index$6);
+  if (index$6 > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -15837,7 +15837,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$8 = {
+const props$9 = {
   src: {
     type: String,
     default: ""
@@ -15845,7 +15845,7 @@ const props$8 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$8,
+  props: props$9,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -15932,10 +15932,10 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot$1(s) {
+function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$7 = {
+const props$8 = {
   urls: {
     type: Array,
     default() {
@@ -15954,7 +15954,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$7,
+  props: props$8,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16017,7 +16017,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
           width: "100%",
           height: "100%"
         }
-      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
           "src": src
         }, null, 8, ["src"])]
@@ -16665,7 +16665,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, alt
     reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
-const props$6 = {
+const props$7 = {
   latitude: {
     type: Number
   },
@@ -16687,7 +16687,7 @@ const props$6 = {
 };
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$6,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16775,11 +16775,11 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, {r
   }
   resolve();
 }, OpenLocationProtocol, OpenLocationOptions);
-function _isSlot(s) {
+function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
-const props$5 = {
+const props$6 = {
   latitude: {
     type: Number
   },
@@ -16879,7 +16879,7 @@ function useList(state2) {
 }
 var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$5,
+  props: props$6,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -17021,7 +17021,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
         "scroll-y": true,
         "class": "list",
         "onScrolltolower": loadMore
-      }, _isSlot(content) ? content : {
+      }, _isSlot$1(content) ? content : {
         default: () => [content],
         _: 2
       }, 8, ["scroll-y", "onScrolltolower"])])]);
@@ -17142,7 +17142,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({url}, {re
     reject(`${url} ${String(err)}`);
   });
 }, PreloadPageProtocol);
-const props$4 = {
+const props$5 = {
   title: {
     type: String,
     default: ""
@@ -17176,7 +17176,7 @@ const props$4 = {
   }
 };
 var modal = /* @__PURE__ */ defineComponent({
-  props: props$4,
+  props: props$5,
   setup(props2, {
     emit: emit2
   }) {
@@ -17248,7 +17248,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, {resolve
     showModalState.visible = true;
   }
 }, ShowModalProtocol, ShowModalOptions);
-const props$3 = {
+const props$4 = {
   title: {
     type: String,
     default: ""
@@ -17278,7 +17278,7 @@ const props$3 = {
 const ToastIconClassName = "uni-toast__icon";
 var Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$3,
+  props: props$4,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -17480,7 +17480,7 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const props$2 = {
+const props$3 = {
   title: {
     type: String,
     default: ""
@@ -17506,7 +17506,7 @@ const props$2 = {
 };
 var actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
-  props: props$2,
+  props: props$3,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18785,7 +18785,7 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$1 = {
+const props$2 = {
   id: {
     type: String,
     default: ""
@@ -19109,7 +19109,7 @@ function useMap(props2, rootRef, emit2) {
 }
 var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$1,
+  props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
   setup(props2, {
     emit: emit2,
@@ -19134,18 +19134,18 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props = {
+const props$1 = {
   scrollTop: {
     type: [String, Number],
     default: 0
   }
 };
-var index$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
   },
-  props,
+  props: props$1,
   setup(props2, {
     slots
   }) {
@@ -19181,7 +19181,7 @@ var index$4 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$3 = /* @__PURE__ */ defineBuiltInComponent({
+var index$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -19221,14 +19221,16 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const {t, getLocale} = useI18n();
-function getDefaultStartValue() {
-  if (this.mode === mode.TIME) {
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function getDefaultStartValue(props2) {
+  if (props2.mode === mode.TIME) {
     return "00:00";
   }
-  if (this.mode === mode.DATE) {
+  if (props2.mode === mode.DATE) {
     const year = new Date().getFullYear() - 100;
-    switch (this.fields) {
+    switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
       case fields.MONTH:
@@ -19239,13 +19241,13 @@ function getDefaultStartValue() {
   }
   return "";
 }
-function getDefaultEndValue() {
-  if (this.mode === mode.TIME) {
+function getDefaultEndValue(props2) {
+  if (props2.mode === mode.TIME) {
     return "23:59";
   }
-  if (this.mode === mode.DATE) {
+  if (props2.mode === mode.DATE) {
     const year = new Date().getFullYear() + 100;
-    switch (this.fields) {
+    switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
       case fields.MONTH:
@@ -19255,6 +19257,36 @@ function getDefaultEndValue() {
     }
   }
   return "";
+}
+function getDateValueArray(props2, state2, valueStr, defaultValue) {
+  const splitStr = props2.mode === mode.DATE ? "-" : ":";
+  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
+  let max;
+  if (props2.mode === mode.TIME) {
+    max = 2;
+  } else {
+    switch (props2.fields) {
+      case fields.YEAR:
+        max = 1;
+        break;
+      case fields.MONTH:
+        max = 2;
+        break;
+      default:
+        max = 3;
+        break;
+    }
+  }
+  const inputArray = String(valueStr).split(splitStr);
+  let value = [];
+  for (let i = 0; i < max; i++) {
+    const val = inputArray[i];
+    value.push(array[i].indexOf(val));
+  }
+  if (value.indexOf(-1) >= 0) {
+    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
+  }
+  return value;
 }
 const mode = {
   SELECTOR: "selector",
@@ -19271,564 +19303,637 @@ const selectorType = {
   PICKER: "picker",
   SELECT: "select"
 };
-var _sfc_main$1 = {
+const props = {
+  name: {
+    type: String,
+    default: ""
+  },
+  range: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  rangeKey: {
+    type: String,
+    default: ""
+  },
+  value: {
+    type: [Number, String, Array],
+    default: 0
+  },
+  mode: {
+    type: String,
+    default: mode.SELECTOR,
+    validator(val) {
+      return Object.values(mode).includes(val);
+    }
+  },
+  fields: {
+    type: String,
+    default: ""
+  },
+  start: {
+    type: String,
+    default: (props2) => {
+      return getDefaultStartValue(props2);
+    }
+  },
+  end: {
+    type: String,
+    default: (props2) => {
+      return getDefaultEndValue(props2);
+    }
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  selectorType: {
+    type: String,
+    default: ""
+  }
+};
+var index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
   },
-  components: {PickerView, PickerViewColumn},
-  props: {
-    name: {
-      type: String,
-      default: ""
-    },
-    range: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
-    rangeKey: {
-      type: String,
-      default: ""
-    },
-    value: {
-      type: [Number, String, Array],
-      default: 0
-    },
-    mode: {
-      type: String,
-      default: mode.SELECTOR,
-      validator(val) {
-        return Object.values(mode).includes(val);
-      }
-    },
-    fields: {
-      type: String,
-      default: ""
-    },
-    start: {
-      type: String,
-      default: (props2) => {
-        return getDefaultStartValue.call(props2);
-      }
-    },
-    end: {
-      type: String,
-      default: (props2) => {
-        return getDefaultEndValue.call(props2);
-      }
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    selectorType: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      valueSync: null,
-      visible: false,
-      contentVisible: false,
-      popover: null,
-      valueChangeSource: "",
-      timeArray: [],
-      dateArray: [],
-      valueArray: [],
-      oldValueArray: [],
-      isDesktop: false,
-      popupStyle: {
-        content: {},
-        triangle: {}
-      }
-    };
-  },
-  computed: {
-    rangeArray() {
-      var val = this.range;
-      switch (this.mode) {
-        case mode.SELECTOR:
-          return [val];
-        case mode.MULTISELECTOR:
-          return val;
-        case mode.TIME:
-          return this.timeArray;
-        case mode.DATE: {
-          const dateArray = this.dateArray;
-          switch (this.fields) {
-            case fields.YEAR:
-              return [dateArray[0]];
-            case fields.MONTH:
-              return [dateArray[0], dateArray[1]];
-            default:
-              return [dateArray[0], dateArray[1], dateArray[2]];
-          }
-        }
-      }
-      return [];
-    },
-    startArray() {
-      return this._getDateValueArray(this.start, getDefaultStartValue.bind(this)());
-    },
-    endArray() {
-      return this._getDateValueArray(this.end, getDefaultEndValue.bind(this)());
-    },
-    selectorTypeComputed() {
-      const type = this.selectorType;
-      if (Object.values(selectorType).includes(type)) {
-        return type;
-      }
-      return String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT;
-    },
-    system() {
-      if (this.mode === mode.DATE && !Object.values(fields).includes(this.fields) && this.isDesktop && /win|mac/i.test(navigator.platform)) {
-        if (navigator.vendor === "Google Inc.") {
-          return "chrome";
-        } else if (/Firefox/.test(navigator.userAgent)) {
-          return "firefox";
-        }
-      }
-      return "";
-    }
-  },
-  watch: {
-    visible(val) {
-      if (val) {
-        clearTimeout(this.__contentVisibleDelay);
-        this.contentVisible = val;
-        this._select();
-      } else {
-        this.__contentVisibleDelay = setTimeout(() => {
-          this.contentVisible = val;
-        }, 300);
-      }
-    },
-    value: {
-      deep: true,
-      handler() {
-        this._setValueSync();
-      }
-    },
-    mode() {
-      this._setValueSync();
-    },
-    range: {
-      deep: true,
-      handler() {
-        this._setValueSync();
-      }
-    },
-    valueSync: {
-      deep: true,
-      handler() {
-        this._setValueArray();
-      }
-    },
-    valueArray: {
-      deep: true,
-      handler(val) {
-        if (this.mode === mode.TIME || this.mode === mode.DATE) {
-          const getValue = this.mode === mode.TIME ? this._getTimeValue : this._getDateValue;
-          const valueArray = this.valueArray;
-          const startArray = this.startArray;
-          const endArray = this.endArray;
-          if (this.mode === mode.DATE) {
-            const dateArray = this.dateArray;
-            const max = dateArray[2].length;
-            const day = Number(dateArray[2][valueArray[2]]) || 1;
-            const realDay = new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`).getDate();
-            if (realDay < day) {
-              valueArray[2] -= realDay + max - day;
-            }
-          }
-          if (getValue(valueArray) < getValue(startArray)) {
-            this._cloneArray(valueArray, startArray);
-          } else if (getValue(valueArray) > getValue(endArray)) {
-            this._cloneArray(valueArray, endArray);
-          }
-        }
-        val.forEach((value, column) => {
-          if (value !== this.oldValueArray[column]) {
-            this.oldValueArray[column] = value;
-            if (this.mode === mode.MULTISELECTOR) {
-              this.$trigger("columnchange", {}, {
-                column,
-                value
-              });
-            }
-          }
-        });
-      }
-    }
-  },
-  created() {
+  props,
+  emits: ["change", "cancel", "columnchange"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
     initI18nPickerMsgsOnce();
-    this._createTime();
-    this._createDate();
-    this._setValueSync();
-    usePickerWatch.call(this);
-    usePickerForm.call(this);
-    const popup = usePopupStyle(this);
-    this.isDesktop = popup.isDesktop;
-    this.popupStyle = popup.popupStyle;
-  },
-  mounted() {
-    this.$trigger = useCustomEvent({value: this.$refs.root}, this.$emit);
-  },
-  beforeUnmount() {
-    this.$refs.picker.remove();
-  },
-  methods: {
-    withWebEvent,
-    $$t: t,
-    _show(event) {
-      if (this.disabled) {
-        return;
-      }
-      this.valueChangeSource = "";
-      var $picker = this.$refs.picker;
-      $picker.remove();
-      (document.querySelector("uni-app") || document.body).appendChild($picker);
-      $picker.style.display = "block";
-      const rect = event.currentTarget.getBoundingClientRect();
-      this.popover = {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height
-      };
-      setTimeout(() => {
-        this.visible = true;
-      }, 20);
-    },
-    _getFormData() {
-      return {
-        value: this.valueSync,
-        key: this.name
-      };
-    },
-    _resetFormData() {
-      switch (this.mode) {
-        case mode.SELECTOR:
-          this.valueSync = 0;
-          break;
-        case mode.MULTISELECTOR:
-          this.valueSync = this.value.map((val) => 0);
-          break;
-        case mode.DATE:
-        case mode.TIME:
-          this.valueSync = "";
-          break;
-      }
-    },
-    _createTime() {
-      var hours = [];
-      var minutes = [];
-      hours.splice(0, hours.length);
-      for (let i = 0; i < 24; i++) {
-        hours.push((i < 10 ? "0" : "") + i);
-      }
-      minutes.splice(0, minutes.length);
-      for (let i = 0; i < 60; i++) {
-        minutes.push((i < 10 ? "0" : "") + i);
-      }
-      this.timeArray.push(hours, minutes);
-    },
-    _createDate() {
-      var years = [];
-      var year = new Date().getFullYear();
-      for (let i = year - 150, end = year + 150; i <= end; i++) {
-        years.push(String(i));
-      }
-      var months = [];
-      for (let i = 1; i <= 12; i++) {
-        months.push((i < 10 ? "0" : "") + i);
-      }
-      var days = [];
-      for (let i = 1; i <= 31; i++) {
-        days.push((i < 10 ? "0" : "") + i);
-      }
-      this.dateArray.push(years, months, days);
-    },
-    _getTimeValue(val) {
-      return val[0] * 60 + val[1];
-    },
-    _getDateValue(val) {
-      const DAY = 31;
-      return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
-    },
-    _cloneArray(val1, val2) {
-      for (let i = 0; i < val1.length && i < val2.length; i++) {
-        val1[i] = val2[i];
-      }
-    },
-    _setValueSync() {
-      let val = this.value;
-      switch (this.mode) {
-        case mode.MULTISELECTOR:
-          {
-            if (!Array.isArray(val)) {
-              val = [];
-            }
-            if (!Array.isArray(this.valueSync)) {
-              this.valueSync = [];
-            }
-            const length = this.valueSync.length = Math.max(val.length, this.range.length);
-            for (let index2 = 0; index2 < length; index2++) {
-              const val0 = Number(val[index2]);
-              const val1 = Number(this.valueSync[index2]);
-              const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
-              const maxVal = this.range[index2] ? this.range[index2].length - 1 : 0;
-              this.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
-            }
-          }
-          break;
-        case mode.TIME:
-        case mode.DATE:
-          this.valueSync = String(val);
-          break;
-        default: {
-          const valueSync = Number(val);
-          this.valueSync = valueSync < 0 ? 0 : valueSync;
-          break;
+    const {
+      t: t2
+    } = useI18n();
+    const rootRef = ref(null);
+    const pickerRef = ref(null);
+    const selectRef = ref(null);
+    const inputRef = ref(null);
+    const {
+      state: state2,
+      rangeArray
+    } = usePickerState(props2);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      system,
+      selectorTypeComputed,
+      _show,
+      _l10nColumn,
+      _l10nItem,
+      _input,
+      _fixInputPosition,
+      _pickerViewChange,
+      _cancel,
+      _change,
+      _resetFormData,
+      _getFormData,
+      _createTime,
+      _createDate,
+      _setValueSync
+    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
+    usePickerWatch(state2, _cancel, _change);
+    usePickerForm(_resetFormData, _getFormData);
+    _createTime();
+    _createDate();
+    _setValueSync();
+    const popup = usePopupStyle(props2);
+    watchEffect(() => {
+      state2.isDesktop = popup.isDesktop.value;
+      state2.popupStyle = popup.popupStyle.value;
+    });
+    onBeforeUnmount(() => {
+      pickerRef.value && pickerRef.value.remove();
+    });
+    return () => {
+      let _slot2;
+      const {
+        visible,
+        contentVisible,
+        valueArray,
+        popupStyle,
+        valueSync
+      } = state2;
+      const {
+        rangeKey,
+        mode: mode2,
+        start,
+        end
+      } = props2;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-picker", mergeProps({
+        "ref": rootRef
+      }, booleanAttrs, {
+        "onClick": withWebEvent(_show)
+      }), [createVNode("div", {
+        "ref": pickerRef,
+        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
+        "onWheel": onEventPrevent,
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-picker-mask",
+          "onClick": withWebEvent(_cancel),
+          "onMousemove": _fixInputPosition
+        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
+      }), !system.value ? createVNode("div", {
+        "class": [{
+          "uni-picker-toggle": visible
+        }, "uni-picker-custom"],
+        "style": popupStyle.content
+      }, [createVNode("div", {
+        "class": "uni-picker-header",
+        "onClick": onEventStop
+      }, [createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-cancel",
+        "onClick": withWebEvent(_cancel)
+      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-confirm",
+        "onClick": _change
+      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
+        "value": _l10nColumn(valueArray),
+        "class": "uni-picker-content",
+        "onChange": _pickerViewChange
+      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
+        let _slot;
+        return createVNode(PickerViewColumn, {
+          "key": index0
+        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
+          "key": index2,
+          "class": "uni-picker-item"
+        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
+          default: () => [_slot],
+          _: 1
+        });
+      })) ? _slot2 : {
+        default: () => [_slot2],
+        _: 1
+      }, 8, ["value", "onChange"]) : null, createVNode("div", {
+        "ref": selectRef,
+        "class": "uni-picker-select",
+        "onWheel": onEventStop,
+        "onTouchmove": onEventStop
+      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
+        "key": index2,
+        "class": ["uni-picker-item", {
+          selected: valueArray[0] === index2
+        }],
+        "onClick": () => {
+          valueArray[0] = index2;
+          _change();
         }
-      }
-    },
-    _setValueArray() {
-      var val = this.valueSync;
-      var valueArray;
-      switch (this.mode) {
-        case mode.MULTISELECTOR:
-          valueArray = [...val];
-          break;
-        case mode.TIME:
-          valueArray = this._getDateValueArray(val, formatDateTime({
-            mode: mode.TIME
-          }));
-          break;
-        case mode.DATE:
-          valueArray = this._getDateValueArray(val, formatDateTime({
-            mode: mode.DATE
-          }));
-          break;
-        default:
-          valueArray = [val];
-          break;
-      }
-      this.oldValueArray = [...valueArray];
-      this.valueArray = [...valueArray];
-    },
-    _getValue() {
-      var val = this.valueArray;
-      switch (this.mode) {
-        case mode.SELECTOR:
-          return val[0];
-        case mode.MULTISELECTOR:
-          return val.map((val2) => val2);
-        case mode.TIME:
-          return this.valueArray.map((val2, i) => this.timeArray[i][val2]).join(":");
-        case mode.DATE:
-          return this.valueArray.map((val2, i) => this.dateArray[i][val2]).join("-");
-      }
-    },
-    _getDateValueArray(valueStr, defaultValue) {
-      const splitStr = this.mode === mode.DATE ? "-" : ":";
-      const array = this.mode === mode.DATE ? this.dateArray : this.timeArray;
-      let max;
-      if (this.mode === mode.TIME) {
-        max = 2;
-      } else {
-        switch (this.fields) {
-          case fields.YEAR:
-            max = 1;
-            break;
-          case fields.MONTH:
-            max = 2;
-            break;
-          default:
-            max = 3;
-            break;
+      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
+        "style": popupStyle.triangle
+      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]), createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+        "class": "uni-picker-system",
+        "onMousemove": withWebEvent(_fixInputPosition)
+      }, [createVNode("input", {
+        "class": ["uni-picker-system_input", system.value],
+        "ref": inputRef,
+        "value": valueSync,
+        "type": mode2,
+        "tabindex": "-1",
+        "min": start,
+        "max": end,
+        "onChange": ($event) => {
+          _input($event);
+          onEventStop($event);
         }
-      }
-      const inputArray = String(valueStr).split(splitStr);
-      let value = [];
-      for (let i = 0; i < max; i++) {
-        const val = inputArray[i];
-        value.push(array[i].indexOf(val));
-      }
-      if (value.indexOf(-1) >= 0) {
-        value = defaultValue ? this._getDateValueArray(defaultValue) : value.map(() => 0);
-      }
-      return value;
-    },
-    _change() {
-      this._close();
-      this.valueChangeSource = "click";
-      const value = this._getValue();
-      this.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
-      this.$trigger("change", {}, {
-        value
-      });
-    },
-    _cancel($event) {
-      if (this.system === "firefox") {
-        const {top, left, width, height} = this.popover;
-        const {pageX, pageY} = $event;
-        if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
-          return;
-        }
-      }
-      this._close();
-      this.$trigger("cancel", {}, {});
-    },
-    _close() {
-      this.visible = false;
-      setTimeout(() => {
-        var $picker = this.$refs.picker;
-        $picker.remove();
-        this.$el.prepend($picker);
-        $picker.style.display = "none";
-      }, 260);
-    },
-    _select() {
-      if (this.mode === mode.SELECTOR && this.selectorTypeComputed === selectorType.SELECT) {
-        this.$refs.select.scrollTop = this.valueArray[0] * 34;
-      }
-    },
-    _input($event) {
-      this.valueSync = $event.target.value;
-      this.$nextTick(() => {
-        this._change();
-      });
-    },
-    _fixInputPosition($event) {
-      if (this.system === "chrome") {
-        const rect = this.$el.getBoundingClientRect();
-        const style = this.$refs.input.style;
-        const fontSize = 32;
-        style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
-        style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
-      }
-    },
-    _pickerViewChange(event) {
-      this.valueArray = this._l10nColumn(event.detail.value, true);
-    },
-    _l10nColumn(array, normalize) {
-      if (this.mode === mode.DATE) {
-        const locale = getLocale();
-        if (!locale.startsWith("zh")) {
-          switch (this.fields) {
-            case fields.YEAR:
-              return array;
-            case fields.MONTH:
-              return [array[1], array[0]];
-            default:
-              switch (locale) {
-                case "es":
-                case "fr":
-                  return [array[2], array[1], array[0]];
-                default:
-                  return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
-              }
-          }
-        }
-      }
-      return array;
-    },
-    _l10nItem(item, index2) {
-      if (this.mode === mode.DATE) {
-        const locale = getLocale();
-        if (locale.startsWith("zh")) {
-          const array = ["\u5E74", "\u6708", "\u65E5"];
-          return item + array[index2];
-        } else if (this.fields !== fields.YEAR && index2 === (this.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
-          let array;
-          switch (locale) {
-            case "es":
-              array = [
-                "enero",
-                "febrero",
-                "marzo",
-                "abril",
-                "mayo",
-                "junio",
-                "\u200B\u200Bjulio",
-                "agosto",
-                "septiembre",
-                "octubre",
-                "noviembre",
-                "diciembre"
-              ];
-              break;
-            case "fr":
-              array = [
-                "janvier",
-                "f\xE9vrier",
-                "mars",
-                "avril",
-                "mai",
-                "juin",
-                "juillet",
-                "ao\xFBt",
-                "septembre",
-                "octobre",
-                "novembre",
-                "d\xE9cembre"
-              ];
-              break;
-            default:
-              array = [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December"
-              ];
-              break;
-          }
-          return array[Number(item) - 1];
-        }
-      }
-      return item;
-    }
-  },
-  setup(props2) {
-    const booleanAttrs = useBooleanAttr(props2, "disabled");
-    return {
-      booleanAttrs
+      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
     };
   }
-};
-function usePickerWatch() {
-  const {key, disable} = useKeyboard();
-  watch(() => this.visible, (value) => disable.value = !value);
+});
+function usePickerState(props2) {
+  const state2 = reactive({
+    valueSync: void 0,
+    visible: false,
+    contentVisible: false,
+    popover: null,
+    valueChangeSource: "",
+    timeArray: [],
+    dateArray: [],
+    valueArray: [],
+    oldValueArray: [],
+    isDesktop: false,
+    popupStyle: {
+      content: {},
+      triangle: {}
+    }
+  });
+  const rangeArray = computed(() => {
+    let val = props2.range;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return [val];
+      case mode.MULTISELECTOR:
+        return val;
+      case mode.TIME:
+        return state2.timeArray;
+      case mode.DATE: {
+        const dateArray = state2.dateArray;
+        switch (props2.fields) {
+          case fields.YEAR:
+            return [dateArray[0]];
+          case fields.MONTH:
+            return [dateArray[0], dateArray[1]];
+          default:
+            return [dateArray[0], dateArray[1], dateArray[2]];
+        }
+      }
+    }
+    return [];
+  });
+  return {
+    state: state2,
+    rangeArray
+  };
+}
+let __contentVisibleDelay;
+function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
+  const selectorTypeComputed = computed(() => {
+    const type = props2.selectorType;
+    if (Object.values(selectorType).includes(type)) {
+      return type;
+    }
+    return String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT;
+  });
+  const system = computed(() => {
+    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop && /win|mac/i.test(navigator.platform)) {
+      if (navigator.vendor === "Google Inc.") {
+        return "chrome";
+      } else if (/Firefox/.test(navigator.userAgent)) {
+        return "firefox";
+      }
+    }
+    return "";
+  });
+  const startArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
+  });
+  const endArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
+  });
+  function _show(event) {
+    if (props2.disabled) {
+      return;
+    }
+    state2.valueChangeSource = "";
+    let $picker = pickerRef.value;
+    let _currentTarget = event.currentTarget;
+    $picker.remove();
+    (document.querySelector("uni-app") || document.body).appendChild($picker);
+    $picker.style.display = "block";
+    const rect = _currentTarget.getBoundingClientRect();
+    state2.popover = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height
+    };
+    setTimeout(() => {
+      state2.visible = true;
+    }, 20);
+  }
+  function _getFormData() {
+    return {
+      value: state2.valueSync,
+      key: props2.name
+    };
+  }
+  function _resetFormData() {
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        state2.valueSync = 0;
+        break;
+      case mode.MULTISELECTOR:
+        state2.valueSync = props2.value.map((val) => 0);
+        break;
+      case mode.DATE:
+      case mode.TIME:
+        state2.valueSync = "";
+        break;
+    }
+  }
+  function _createTime() {
+    let hours = [];
+    let minutes = [];
+    for (let i = 0; i < 24; i++) {
+      hours.push((i < 10 ? "0" : "") + i);
+    }
+    for (let i = 0; i < 60; i++) {
+      minutes.push((i < 10 ? "0" : "") + i);
+    }
+    state2.timeArray.push(hours, minutes);
+  }
+  function _createDate() {
+    let years = [];
+    let year = new Date().getFullYear();
+    for (let i = year - 150, end = year + 150; i <= end; i++) {
+      years.push(String(i));
+    }
+    let months = [];
+    for (let i = 1; i <= 12; i++) {
+      months.push((i < 10 ? "0" : "") + i);
+    }
+    let days = [];
+    for (let i = 1; i <= 31; i++) {
+      days.push((i < 10 ? "0" : "") + i);
+    }
+    state2.dateArray.push(years, months, days);
+  }
+  function _getTimeValue(val) {
+    return val[0] * 60 + val[1];
+  }
+  function _getDateValue(val) {
+    const DAY = 31;
+    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
+  }
+  function _cloneArray(val1, val2) {
+    for (let i = 0; i < val1.length && i < val2.length; i++) {
+      val1[i] = val2[i];
+    }
+  }
+  function _setValueSync() {
+    let val = props2.value;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        {
+          if (!Array.isArray(val)) {
+            val = [];
+          }
+          if (!Array.isArray(state2.valueSync)) {
+            state2.valueSync = [];
+          }
+          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
+          for (let index2 = 0; index2 < length; index2++) {
+            const val0 = Number(val[index2]);
+            const val1 = Number(state2.valueSync[index2]);
+            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
+            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
+          }
+        }
+        break;
+      case mode.TIME:
+      case mode.DATE:
+        state2.valueSync = String(val);
+        break;
+      default: {
+        const valueSync = Number(val);
+        state2.valueSync = valueSync < 0 ? 0 : valueSync;
+        break;
+      }
+    }
+  }
+  function _setValueArray() {
+    let val = state2.valueSync;
+    let valueArray;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        valueArray = [...val];
+        break;
+      case mode.TIME:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.TIME
+        }));
+        break;
+      case mode.DATE:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.DATE
+        }));
+        break;
+      default:
+        valueArray = [val];
+        break;
+    }
+    state2.oldValueArray = [...valueArray];
+    state2.valueArray = [...valueArray];
+  }
+  function _getValue() {
+    let val = state2.valueArray;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return val[0];
+      case mode.MULTISELECTOR:
+        return val.map((val2) => val2);
+      case mode.TIME:
+        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
+      case mode.DATE:
+        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
+    }
+  }
+  function _change() {
+    _close();
+    state2.valueChangeSource = "click";
+    const value = _getValue();
+    state2.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    trigger("change", {}, {
+      value
+    });
+  }
+  function _cancel($event) {
+    if (system.value === "firefox" && $event) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = state2.popover;
+      const {
+        pageX,
+        pageY
+      } = $event;
+      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
+        return;
+      }
+    }
+    _close();
+    trigger("cancel", {}, {});
+  }
+  function _close() {
+    state2.visible = false;
+    setTimeout(() => {
+      let $picker = pickerRef.value;
+      $picker.remove();
+      rootRef.value.prepend($picker);
+      $picker.style.display = "none";
+    }, 260);
+  }
+  function _select() {
+    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
+      selectRef.value.scrollTop = state2.valueArray[0] * 34;
+    }
+  }
+  function _input($event) {
+    const EventTarget = $event.target;
+    state2.valueSync = EventTarget.value;
+    nextTick(() => {
+      _change();
+    });
+  }
+  function _fixInputPosition($event) {
+    if (system.value === "chrome") {
+      const rect = rootRef.value.getBoundingClientRect();
+      const fontSize = 32;
+      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
+      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
+    }
+  }
+  function _pickerViewChange(event) {
+    state2.valueArray = _l10nColumn(event.detail.value, true);
+  }
+  function _l10nColumn(array, normalize) {
+    const {
+      getLocale
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale();
+      if (!locale.startsWith("zh")) {
+        switch (props2.fields) {
+          case fields.YEAR:
+            return array;
+          case fields.MONTH:
+            return [array[1], array[0]];
+          default:
+            switch (locale) {
+              case "es":
+              case "fr":
+                return [array[2], array[1], array[0]];
+              default:
+                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
+            }
+        }
+      }
+    }
+    return array;
+  }
+  function _l10nItem(item, index2) {
+    const {
+      getLocale
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale();
+      if (locale.startsWith("zh")) {
+        const array = ["\u5E74", "\u6708", "\u65E5"];
+        return item + array[index2];
+      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
+        let array;
+        switch (locale) {
+          case "es":
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "\u200B\u200Bjulio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            break;
+          case "fr":
+            array = ["janvier", "f\xE9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\xFBt", "septembre", "octobre", "novembre", "d\xE9cembre"];
+            break;
+          default:
+            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            break;
+        }
+        return array[Number(item) - 1];
+      }
+    }
+    return item;
+  }
+  watch(() => state2.visible, (val) => {
+    if (val) {
+      clearTimeout(__contentVisibleDelay);
+      state2.contentVisible = val;
+      _select();
+    } else {
+      __contentVisibleDelay = setTimeout(() => {
+        state2.contentVisible = val;
+      }, 300);
+    }
+  });
+  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
+    deep: true
+  });
+  watch(() => state2.valueSync, _setValueArray, {
+    deep: true
+  });
+  watch(() => state2.valueArray, (val) => {
+    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
+      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
+      const valueArray = state2.valueArray;
+      const _startArray = startArray.value;
+      const _endArray = endArray.value;
+      if (props2.mode === mode.DATE) {
+        const dateArray = state2.dateArray;
+        const max = dateArray[2].length;
+        const day = Number(dateArray[2][valueArray[2]]) || 1;
+        const realDay = new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`).getDate();
+        if (realDay < day) {
+          valueArray[2] -= realDay + max - day;
+        }
+      }
+      if (getValue(valueArray) < getValue(_startArray)) {
+        _cloneArray(valueArray, _startArray);
+      } else if (getValue(valueArray) > getValue(_endArray)) {
+        _cloneArray(valueArray, _endArray);
+      }
+    }
+    val.forEach((value, column) => {
+      if (value !== state2.oldValueArray[column]) {
+        state2.oldValueArray[column] = value;
+        if (props2.mode === mode.MULTISELECTOR) {
+          trigger("columnchange", {}, {
+            column,
+            value
+          });
+        }
+      }
+    });
+  });
+  return {
+    selectorTypeComputed,
+    system,
+    _show,
+    _cancel,
+    _change,
+    _l10nColumn,
+    _l10nItem,
+    _input,
+    _resetFormData,
+    _getFormData,
+    _createTime,
+    _createDate,
+    _setValueSync,
+    _fixInputPosition,
+    _pickerViewChange
+  };
+}
+function usePickerWatch(state2, _cancel, _change) {
+  const {
+    key,
+    disable
+  } = useKeyboard();
   watchEffect(() => {
-    const {value} = key;
+    disable.value = !state2.visible;
+  });
+  watch(key, (value) => {
     if (value === "esc") {
-      this._cancel && this._cancel();
+      _cancel();
     } else if (value === "enter") {
-      this._change && this._change();
+      _change();
     }
   });
 }
-function usePickerForm() {
+function usePickerForm(_resetFormData, _getFormData) {
   const uniForm = inject(uniFormKey, false);
-  if (!!uniForm) {
+  if (uniForm) {
     const field = {
-      reset: this._resetFormData,
+      reset: _resetFormData,
       submit: () => {
         const data = ["", null];
-        const {key, value} = this._getFormData();
+        const {
+          key,
+          value
+        } = _getFormData();
         if (key !== "") {
           data[0] = key;
           data[1] = value;
@@ -19842,120 +19947,6 @@ function usePickerForm() {
     });
   }
 }
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_PickerViewColumn = resolveComponent("PickerViewColumn");
-  const _component_PickerView = resolveComponent("PickerView");
-  return openBlock(), createBlock("uni-picker", mergeProps({ref: "root"}, $setup.booleanAttrs, {
-    onClick: _cache[13] || (_cache[13] = (() => $options.withWebEvent($options._show))())
-  }), [
-    createVNode("div", {
-      ref: "picker",
-      class: ["uni-picker-container", `uni-${$props.mode}-${$options.selectorTypeComputed}`],
-      onWheel: _cache[9] || (_cache[9] = withModifiers(() => {
-      }, ["prevent"])),
-      onTouchmove: _cache[10] || (_cache[10] = withModifiers(() => {
-      }, ["prevent"]))
-    }, [
-      createVNode(Transition, {name: "uni-fade"}, {
-        default: withCtx(() => [
-          withDirectives(createVNode("div", {
-            class: "uni-mask uni-picker-mask",
-            onClick: _cache[1] || (_cache[1] = (() => $options.withWebEvent($options._cancel))()),
-            onMousemove: _cache[2] || (_cache[2] = (...args) => $options._fixInputPosition && $options._fixInputPosition(...args))
-          }, null, 544), [
-            [vShow, $data.visible]
-          ])
-        ]),
-        _: 1
-      }),
-      !$options.system ? (openBlock(), createBlock("div", {
-        key: 0,
-        class: [{"uni-picker-toggle": $data.visible}, "uni-picker-custom"],
-        style: $data.popupStyle.content
-      }, [
-        createVNode("div", {
-          class: "uni-picker-header",
-          onClick: _cache[5] || (_cache[5] = withModifiers(() => {
-          }, ["stop"]))
-        }, [
-          createVNode("div", {
-            class: "uni-picker-action uni-picker-action-cancel",
-            onClick: _cache[3] || (_cache[3] = (() => $options.withWebEvent($options._cancel))())
-          }, toDisplayString($options.$$t("uni.picker.cancel")), 1),
-          createVNode("div", {
-            class: "uni-picker-action uni-picker-action-confirm",
-            onClick: _cache[4] || (_cache[4] = (...args) => $options._change && $options._change(...args))
-          }, toDisplayString($options.$$t("uni.picker.done")), 1)
-        ]),
-        $data.contentVisible ? (openBlock(), createBlock(_component_PickerView, {
-          key: 0,
-          value: $options._l10nColumn($data.valueArray),
-          class: "uni-picker-content",
-          onChange: _cache[6] || (_cache[6] = (() => $options.withWebEvent($options._pickerViewChange))())
-        }, {
-          default: withCtx(() => [
-            (openBlock(true), createBlock(Fragment, null, renderList($options._l10nColumn($options.rangeArray), (rangeItem, index0) => {
-              return openBlock(), createBlock(_component_PickerViewColumn, {key: index0}, {
-                default: withCtx(() => [
-                  (openBlock(true), createBlock(Fragment, null, renderList(rangeItem, (item, index2) => {
-                    return openBlock(), createBlock("div", {
-                      key: index2,
-                      class: "uni-picker-item"
-                    }, toDisplayString(typeof item === "object" ? item[$props.rangeKey] || "" : $options._l10nItem(item, index0)), 1);
-                  }), 128))
-                ]),
-                _: 2
-              }, 1024);
-            }), 128))
-          ]),
-          _: 1
-        }, 8, ["value"])) : createCommentVNode("", true),
-        createVNode("div", {
-          ref: "select",
-          class: "uni-picker-select",
-          onWheel: _cache[7] || (_cache[7] = withModifiers(() => {
-          }, ["stop"])),
-          onTouchmove: _cache[8] || (_cache[8] = withModifiers(() => {
-          }, ["stop"]))
-        }, [
-          (openBlock(true), createBlock(Fragment, null, renderList($options.rangeArray[0], (item, index2) => {
-            return openBlock(), createBlock("div", {
-              key: index2,
-              class: ["uni-picker-item", {selected: $data.valueArray[0] === index2}],
-              onClick: ($event) => {
-                $data.valueArray[0] = index2;
-                $options._change();
-              }
-            }, toDisplayString(typeof item === "object" ? item[$props.rangeKey] || "" : item), 11, ["onClick"]);
-          }), 128))
-        ], 544),
-        createVNode("div", {
-          style: $data.popupStyle.triangle
-        }, null, 4)
-      ], 6)) : createCommentVNode("", true)
-    ], 34),
-    createVNode("div", null, [
-      renderSlot(_ctx.$slots, "default")
-    ]),
-    $options.system ? (openBlock(), createBlock("div", {
-      key: 0,
-      class: "uni-picker-system",
-      onMousemove: _cache[12] || (_cache[12] = (() => $options.withWebEvent($options._fixInputPosition))())
-    }, [
-      createVNode("input", {
-        ref: "input",
-        value: $data.valueSync,
-        type: $props.mode,
-        tabindex: "-1",
-        min: $props.start,
-        max: $props.end,
-        class: [$options.system, $data.popupStyle.dock],
-        onChange: _cache[11] || (_cache[11] = withModifiers((() => $options.withWebEvent($options._input))(), ["stop"]))
-      }, null, 42, ["value", "type", "min", "max"])
-    ], 32)) : createCommentVNode("", true)
-  ], 16);
-}
-_sfc_main$1.render = _sfc_render$1;
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -20726,4 +20717,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$2 as Audio, index$r as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$3 as CoverImage, index$4 as CoverView, index$n as Editor, index$t as Form, Friction, index$m as Icon, index$l as Image, Input, index$s as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, _sfc_main$1 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, Scroller, index$f as Slider, Spring, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$7 as Video, index$b as View, index$6 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$8 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTabBar, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$r as Canvas, index$p as Checkbox, index$q as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$o as Editor, index$u as Form, Friction, index$n as Icon, index$m as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$l as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$k as Progress, index$i as Radio, index$j as RadioGroup, ResizeSensor, index$h as RichText, ScrollView, Scroller, index$g as Slider, Spring, Swiper, SwiperItem, index$f as Switch, index$e as Text, index$d as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$c as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTabBar, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};

@@ -127,7 +127,7 @@ uni-picker[disabled] {
   overflow: hidden;
 }
 
-.uni-picker-system > input {
+.uni-picker-system > .uni-picker-system_input {
   position: absolute;
   border: none;
   height: 100%;
@@ -136,13 +136,13 @@ uni-picker[disabled] {
   cursor: pointer;
 }
 
-.uni-picker-system > input.firefox {
+.uni-picker-system > .uni-picker-system_input.firefox {
   top: 0;
   left: 0;
   width: 100%;
 }
 
-.uni-picker-system > input.chrome {
+.uni-picker-system > .uni-picker-system_input.chrome {
   /* 日历空白位置宽度 32px */
   top: 0;
   left: 0;
