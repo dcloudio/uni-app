@@ -1,5 +1,5 @@
 import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, useSSRContext, renderSlot} from "vue";
+import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot} from "vue";
 import {once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCustomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime} from "@dcloudio/uni-shared";
 import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
 import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
@@ -485,7 +485,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -497,10 +497,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1220,7 +1220,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const {type} = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        offset += NAVBAR_HEIGHT + out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -15087,7 +15087,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -15200,12 +15200,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const {top: windowTop, bottom: windowBottom} = getWindowOffset();
   windowHeight -= windowTop;
@@ -15225,10 +15225,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });
@@ -19959,7 +19959,6 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
   }
 });
 function useDocumentTitle(pageMeta) {
-  useSSRContext();
   function update() {
     {
       document.title = pageMeta.navigationBar.titleText;
