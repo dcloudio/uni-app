@@ -3165,6 +3165,15 @@ module.exports = {
 
 **如需在before和after内传参，建议直接在state上挂载。但是切勿覆盖上述属性**
 
+### action内可以使用的公共模块
+
+目前clientDB依赖了`uni-id`，uni-id 3.0.7及以上版本又依赖了`uni-config-center`，这两个公共模块是可以在action内使用的。
+
+**参考：**
+
+- [uni-id 文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
+- [uni-config-center 文档](https://ext.dcloud.net.cn/plugin?id=4425)
+
 ## 数据库运算方法列表@aggregate-operator
 
 uniCloud的云数据库，提供了一批强大的运算方法。这些方法是数据库执行的，而不是云函数执行的。
