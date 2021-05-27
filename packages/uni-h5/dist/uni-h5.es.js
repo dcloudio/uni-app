@@ -17714,6 +17714,18 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({family
     reject(`loadFontFace:fail ${err}`);
   });
 }, LoadFontFaceProtocol);
+function updateDocumentTitle(title) {
+  {
+    document.title = title;
+  }
+}
+function useDocumentTitle(pageMeta) {
+  function update() {
+    updateDocumentTitle(pageMeta.navigationBar.titleText);
+  }
+  watchEffect(update);
+  onActivated(update);
+}
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
     return reject("page not found");
@@ -19958,15 +19970,6 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(pageId + "." + event, args, pageId);
   }
 });
-function useDocumentTitle(pageMeta) {
-  function update() {
-    {
-      document.title = pageMeta.navigationBar.titleText;
-    }
-  }
-  watchEffect(update);
-  onActivated(update);
-}
 function hexToRgba(hex) {
   let r;
   let g2;

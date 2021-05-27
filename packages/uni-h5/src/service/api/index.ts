@@ -7,6 +7,7 @@ global.XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest
 export * from './network/request'
 export * from './storage/storage'
 export * from './device/getSystemInfoSync'
+export { setNavigationBarTitle } from './ui/navigationBar'
 //#else
 export * from './base/canIUse'
 

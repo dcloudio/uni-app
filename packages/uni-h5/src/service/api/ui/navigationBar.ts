@@ -13,6 +13,7 @@ import {
   SetNavigationBarTitleProtocol,
 } from '@dcloudio/uni-api'
 import { getCurrentPageMeta } from '@dcloudio/uni-core'
+import { updateDocumentTitle } from '../../../helpers/useDocumentTitle'
 
 function setNavigationBar(
   pageMeta: UniApp.PageRouteMeta | undefined,
@@ -53,6 +54,10 @@ function setNavigationBar(
     case API_SET_NAVIGATION_BAR_TITLE:
       const { title } = args
       navigationBar.titleText = title
+      if (__NODE_JS__) {
+        // watch 无效，主动更新 title
+        updateDocumentTitle(args.title)
+      }
       // TODO isCurrentPage逻辑主要是navigationBar组件使用
       // if (isCurrentPage(page)) {
       //   // 仅当前页面

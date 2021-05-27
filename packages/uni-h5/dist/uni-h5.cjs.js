@@ -7341,6 +7341,16 @@ const RequestOptions = {
     }
   }
 };
+const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+const SetNavigationBarTitleProtocol = {
+  title: {
+    type: String,
+    required: true
+  }
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
+const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
@@ -10288,11 +10298,61 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     };
   }
 });
+function updateDocumentTitle(title) {
+  {
+    const ctx = vue.useSSRContext();
+    ctx[uniShared.UNI_SSR_TITLE] = title;
+  }
+}
+function useDocumentTitle(pageMeta) {
+  function update() {
+    updateDocumentTitle(pageMeta.navigationBar.titleText);
+  }
+  vue.watchEffect(update);
+}
+function setNavigationBar(pageMeta, type, args, resolve, reject) {
+  if (!pageMeta) {
+    return reject("page not found");
+  }
+  const {navigationBar} = pageMeta;
+  switch (type) {
+    case API_SET_NAVIGATION_BAR_COLOR:
+      const {frontColor, backgroundColor, animation: animation2} = args;
+      const {duration, timingFunc} = animation2;
+      if (frontColor) {
+        navigationBar.titleColor = frontColor === "#000000" ? "#000" : "#fff";
+      }
+      if (backgroundColor) {
+        navigationBar.backgroundColor = backgroundColor;
+      }
+      navigationBar.duration = duration + "ms";
+      navigationBar.timingFunc = timingFunc;
+      break;
+    case API_SHOW_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = true;
+      break;
+    case API_HIDE_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = false;
+      break;
+    case API_SET_NAVIGATION_BAR_TITLE:
+      const {title} = args;
+      navigationBar.titleText = title;
+      {
+        updateDocumentTitle(args.title);
+      }
+      break;
+  }
+  resolve();
+}
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
+  setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
+}, SetNavigationBarTitleProtocol);
 require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var api = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
+  setNavigationBarTitle,
   request,
   setStorageSync,
   setStorage,
@@ -10847,15 +10907,6 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
       "ref": windowRef
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
-}
-function useDocumentTitle(pageMeta) {
-  const ctx = vue.useSSRContext();
-  function update() {
-    {
-      ctx[uniShared.UNI_SSR_TITLE] = pageMeta.navigationBar.titleText;
-    }
-  }
-  vue.watchEffect(update);
 }
 function hexToRgba(hex) {
   let r;
@@ -11421,6 +11472,7 @@ exports.plugin = index$9;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;
+exports.setNavigationBarTitle = setNavigationBarTitle;
 exports.setStorage = setStorage;
 exports.setStorageSync = setStorageSync;
 exports.setupApp = setupApp;
