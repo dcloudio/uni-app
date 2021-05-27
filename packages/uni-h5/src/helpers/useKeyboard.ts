@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const KEY_MAPS = {
   esc: ['Esc', 'Escape'],
@@ -26,6 +26,8 @@ export function useKeyboard() {
     if (res) {
       key.value = res
     }
+    // reset key.value
+    nextTick(() => (key.value = ''))
   }
   onMounted(() => {
     document.addEventListener('keyup', onKeyup)
