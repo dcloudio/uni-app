@@ -2933,6 +2933,14 @@ uniCloud admin可以平滑升级到uni-id 3.0.0。如果要缓存角色权限到
 - uni-id会优先使用uni-config-center内添加的配置
 - 如果批量上传后报“请在公用模块uni-id的config.json或init方法中内添加配置项”，请重新上传一次`uni-id`
 
+**uni-id配置优先级**
+
+1. `uniID.init`、`uniID.createInstance`传入的配置（此配置不会对clientDB依赖的uni-id生效，不推荐使用）
+2. uni-config-center内配置的`uni-id/config.json`（推荐使用的配置方式）
+3. uni-id插件下配置的config.json（已不推荐使用的配置方式）
+
+以上三个配置不会进行合并，优先级高的先生效
+
 #### 忽略用户名邮箱大小写@case-sensitive
 
 > uni-id 3.1.0及以上版本
