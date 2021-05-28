@@ -1,4 +1,6 @@
 <template>
+  <text v-if="item">{{ item.title }}</text>
+  <text v-else>...</text>
   <ssr-cover-image />
   <ssr-cover-view />
   <ssr-icon />
@@ -14,14 +16,39 @@
 </template>
 
 <script>
+const id = 1;
 export default {
   data() {
     return {
       title: 'Hello',
     }
   },
-  onLoad() { },
-  methods: {},
+  computed: {
+    // display the item from store state.
+    item() {
+      return this.$store.state.items[id]
+    }
+  },
+  // Server-side only
+  // This will be called by the server renderer automatically
+  serverPrefetch() {
+    // return the Promise from the action
+    // so that the component waits before rendering
+    return this.fetchItem()
+  },
+  // Client-side only
+  mounted() {
+    // If we didn't already do it on the server
+    // we fetch the item (will first show the loading text)
+    if (!this.item) {
+      this.fetchItem()
+    }
+  },
+  methods: {
+    fetchItem() {
+      return this.$store.dispatch('fetchItem', id)
+    }
+  }
 }
 </script>
 

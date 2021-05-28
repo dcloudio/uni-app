@@ -17,7 +17,8 @@
     "@dcloudio/uni-i18n": "../../uni-i18n",
     "@dcloudio/uni-shared": "../../uni-shared",
     "@vue/shared": "^3.1.0-beta.5",
-    "vue": "^3.1.0-beta.5"
+    "vue": "^3.1.0-beta.5",
+    "vuex": "^4.0.1"
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
