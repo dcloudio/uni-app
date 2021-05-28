@@ -1,11 +1,8 @@
 import path from 'path'
-import debug from 'debug'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '../..'
 import { isSsr, isSsrManifest } from '../../utils'
-
-const debugMain = debug('vite:uni:main')
 
 export function uniMainJsPlugin(
   config: ResolvedConfig,
@@ -28,8 +25,7 @@ export function uniMainJsPlugin(
         } else {
           code = ssr ? createSSRServerApp(code) : createSSRClientApp(code)
         }
-        code = `import { plugin } from '@dcloudio/uni-h5';import '${pagesJsonJsPath}';${code}`
-        debugMain(code)
+        code = `import '${pagesJsonJsPath}';${code}`
         return {
           code,
           map: this.getCombinedSourcemap(),
@@ -40,21 +36,21 @@ export function uniMainJsPlugin(
 }
 
 function createApp(code: string) {
-  return `createApp().app.use(plugin).mount("#app");${code.replace(
+  return `import { plugin } from '@dcloudio/uni-h5';createApp().app.use(plugin).mount("#app");${code.replace(
     'createSSRApp',
     'createVueApp as createSSRApp'
   )}`
 }
 
 function createLegacyApp(code: string) {
-  return `function createApp(rootComponent,rootProps){return createVueApp(rootComponent, rootProps).use(plugin)};${code.replace(
+  return `import { plugin } from '@dcloudio/uni-h5';function createApp(rootComponent,rootProps){return createVueApp(rootComponent, rootProps).use(plugin)};${code.replace(
     'createApp',
     'createVueApp'
   )}`
 }
 
 function createSSRClientApp(code: string) {
-  return `import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';const { app: __app, store: __store } = createApp();__app.use(plugin);__store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && __store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);__app.router.isReady().then(() => __app.mount("#app"));${code}`
+  return `import { plugin } from '@dcloudio/uni-h5';import { UNI_SSR, UNI_SSR_STORE } from '@dcloudio/uni-shared';const { app: __app, store: __store } = createApp();__app.use(plugin);__store && window[UNI_SSR] && window[UNI_SSR][UNI_SSR_STORE] && __store.replaceState(window[UNI_SSR][UNI_SSR_STORE]);__app.router.isReady().then(() => __app.mount("#app"));${code}`
 }
 
 function createSSRServerApp(code: string) {
