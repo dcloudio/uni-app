@@ -28,8 +28,5 @@
     "tapable": "^2.2.0",
     "xregexp": "3.1.0"
   },
-  "peerDependencies": {
-    "@dcloudio/uni-shared": "^3.0.0-alpha-3000020210528002"
-  },
   "gitHead": "0eff378978e778420c7d2bfc9b039a387d15aac9"
 }
