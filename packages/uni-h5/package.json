@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-alpha-3000020210528001",
+  "version": "3.0.0-alpha-3000020210528002",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
@@ -34,5 +34,6 @@
   "uni-app": {
     "name": "uni-h5",
     "apply": "h5"
-  }
+  },
+  "gitHead": "0eff378978e778420c7d2bfc9b039a387d15aac9"
 }
