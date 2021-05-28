@@ -15,7 +15,17 @@ const EMPTY_COMPONENT = 'Component({})'
 
 const usingComponentsMap = {}
 
-function analyzeUsingComponents () {
+// 百度小程序动态组件库 usingSwanComponents 引用组件
+const mpBaiduDynamicLibs = [
+  'dynamicLib://editorLib/editor',
+  'dynamicLib://echartsLib/chart',
+  'dynamicLib://myModelviewer/modelviewer',
+  'dynamicLib://myDynamicLib/panoviewer',
+  'dynamicLib://myDynamicLib/spintileviewer',
+  'dynamicLib://myDynamicLib/vrvideo'
+]
+
+function analyzeUsingComponents() {
   if (!process.env.UNI_OPT_SUBPACKAGES) {
     return
   }
@@ -85,7 +95,7 @@ function analyzeUsingComponents () {
   //   }, {})
 }
 
-function normalizeUsingComponents (file, usingComponents) {
+function normalizeUsingComponents(file, usingComponents) {
   const names = Object.keys(usingComponents)
   if (!names.length) {
     return usingComponents
@@ -97,7 +107,7 @@ function normalizeUsingComponents (file, usingComponents) {
   return usingComponents
 }
 
-module.exports = function generateJson (compilation) {
+module.exports = function generateJson(compilation) {
   analyzeUsingComponents()
 
   const jsonFileMap = getChangedJsonFileMap()
@@ -130,13 +140,15 @@ module.exports = function generateJson (compilation) {
         const value = usingComponents[key]
         if (value.includes('://')) {
           /**
-           * 百度小程序部分组件（如：editor）使用‘usingSwanComponents’ 引入
-           * 部分组件（如：swan-sitemap-list）使用'usingComponents'引入
-           * 经测试，两者保留都不会报错，因此去除以下 delete 语句
+           * 部分动态库组件（如：editor）使用‘usingSwanComponents’ 引入
+           * 部分动态库组件（如：swan-sitemap-list）使用'usingComponents'引入
+           * 做白名单机制
            */
-          // delete usingComponents[key]
-          jsonObj.usingSwanComponents = jsonObj.usingSwanComponents || {}
-          jsonObj.usingSwanComponents[key] = value
+          if (mpBaiduDynamicLibs.includes(value)) {
+            delete usingComponents[key]
+            jsonObj.usingSwanComponents = jsonObj.usingSwanComponents || {}
+            jsonObj.usingSwanComponents[key] = value
+          }
         }
       })
     }
@@ -168,10 +180,10 @@ module.exports = function generateJson (compilation) {
 
       scopedSlotComponents.forEach(scopedSlotComponent => {
         compilation.assets[scopedSlotComponent] = {
-          size () {
+          size() {
             return Buffer.byteLength(scopedSlotComponentJsonSource, 'utf8')
           },
-          source () {
+          source() {
             return scopedSlotComponentJsonSource
           }
         }
@@ -203,20 +215,20 @@ module.exports = function generateJson (compilation) {
       !compilation.assets[jsFile]
     ) {
       const jsFileAsset = {
-        size () {
+        size() {
           return Buffer.byteLength(EMPTY_COMPONENT, 'utf8')
         },
-        source () {
+        source() {
           return EMPTY_COMPONENT
         }
       }
       compilation.assets[jsFile] = jsFileAsset
     }
     const jsonAsset = {
-      size () {
+      size() {
         return Buffer.byteLength(source, 'utf8')
       },
-      source () {
+      source() {
         return source
       }
     }
