@@ -65,10 +65,10 @@
     lodash.once "^4.1.1"
 
 "@dcloudio/uni-app@../../uni-app":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
 
 "@dcloudio/uni-cli-shared@../../uni-cli-shared":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
   dependencies:
     debug "^4.3.1"
     jsonc-parser "^3.0.0"
@@ -77,16 +77,16 @@
     xregexp "3.1.0"
 
 "@dcloudio/uni-cloud@../../uni-cloud":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
 
 "@dcloudio/uni-components@../../uni-components":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
 
 "@dcloudio/uni-h5-vue@../../uni-h5-vue":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
 
 "@dcloudio/uni-h5@../../uni-h5":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
   dependencies:
     localstorage-polyfill "^1.0.1"
     pako "^2.0.3"
@@ -94,13 +94,13 @@
     xmlhttprequest "^1.8.0"
 
 "@dcloudio/uni-i18n@../../uni-i18n":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
 
 "@dcloudio/uni-shared@../../uni-shared":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
 
 "@dcloudio/vite-plugin-uni@../../vite-plugin-uni":
-  version "3.0.0-alpha-3000020210524001"
+  version "3.0.0-alpha-3000020210528002"
   dependencies:
     "@rollup/pluginutils" "^4.1.0"
     autoprefixer "^10.2.5"
@@ -856,9 +856,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.723:
-  version "1.3.740"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.740.tgz#e38b7d2b848f632191b643e6dabca51be2162922"
-  integrity sha512-Mi2m55JrX2BFbNZGKYR+2ItcGnR4O5HhrvgoRRyZQlaMGQULqDhoGkLWHzJoshSzi7k1PUofxcDbNhlFrDZNhg==
+  version "1.3.741"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.741.tgz#dc1024b19b31e27fb2c8c0a1f120cb05fc6ca695"
+  integrity sha512-4i3T0cwnHo1O4Mnp9JniEco8bZiXoqbm3PhW5hv7uu8YLg35iajYrRnNyKFaN8/8SSTskU2hYqVTeYVPceSpUA==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
@@ -2082,9 +2082,9 @@ rollup-plugin-copy@^3.4.0:
     is-plain-object "^3.0.0"
 
 rollup@^2.38.5:
-  version "2.50.1"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.50.1.tgz#5d52d5c65ade19164d56efec98f16a461c6df38e"
-  integrity sha512-3MQhSdGpms4xjYrtR3WNHMT+VrWWM4oqUxUC770MmLo1FWFR2pr/OL81HSPC/ifmiu0uMFk0qPGLmjkSMRIESw==
+  version "2.50.3"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.50.3.tgz#71021dedf2e3423bee28e795860783feea2be63e"
+  integrity sha512-58KiHnaCzZn6F5yRMjHe7WTZuFj6r4iJVJz5UwvKD6f/xfTy2IdtbR2AVHN6cyfK1tBy//hJ66ebXy6Y1h7HlQ==
   optionalDependencies:
     fsevents "~2.3.1"
 

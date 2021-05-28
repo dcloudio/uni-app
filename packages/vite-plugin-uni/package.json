@@ -41,6 +41,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.12",
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.0",
     "@types/sass": "^1.16.0"
