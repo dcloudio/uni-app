@@ -232,7 +232,8 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     if (number === 0) {
         return 0;
     }
-    let result = (number / BASE_DEVICE_WIDTH) * (newDeviceWidth || deviceWidth);
+    let width = newDeviceWidth || deviceWidth;
+    let result = (number / BASE_DEVICE_WIDTH) * width;
     if (result < 0) {
         result = -result;
     }

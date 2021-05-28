@@ -39,12 +39,14 @@ export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
     if (number === 0) {
       return 0
     }
-    const config = __uniConfig.globalStyle || {}
-    // ignore rpxCalcIncludeWidth
-    const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960)
-    const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375)
     let width = newDeviceWidth || deviceWidth
-    width = width <= maxWidth ? width : baseWidth
+    if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+      const config = __uniConfig.globalStyle || {}
+      // ignore rpxCalcIncludeWidth
+      const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960)
+      const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375)
+      width = width <= maxWidth ? width : baseWidth
+    }
     let result = (number / BASE_DEVICE_WIDTH) * width
     if (result < 0) {
       result = -result

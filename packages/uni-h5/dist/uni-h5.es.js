@@ -9919,11 +9919,13 @@ const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth
   if (number === 0) {
     return 0;
   }
-  const config = __uniConfig.globalStyle || {};
-  const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
-  const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
   let width = newDeviceWidth || deviceWidth;
-  width = width <= maxWidth ? width : baseWidth;
+  {
+    const config = __uniConfig.globalStyle || {};
+    const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+    const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+    width = width <= maxWidth ? width : baseWidth;
+  }
   let result = number / BASE_DEVICE_WIDTH * width;
   if (result < 0) {
     result = -result;
