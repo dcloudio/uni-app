@@ -40,3 +40,5 @@ web体验地址：[https://duolingo.91ddedu.com](https://duolingo.91ddedu.com)�
 - 优悦学课堂：高效学习考证。支持iOS、Android App及小程序多端连接uniCloud，[详见](https://school.youyuexue.com/#/downLoad)
 - 柠檬趣味测：心理性格测试。微信小程序搜索“柠檬趣味测”、QQ小程序搜索“柠檬测试”
 - 小森林集：壁纸、皮肤小程序。微信小程序搜索“小森林集”
+- MOODA心情日记：随时随地记录心情。微信小程序搜索“MOODA心情日记”
+- 柳州市人民医院流行病学调查表：调查登记小程序。微信小程序搜索“柳州市人民医院流行病学调查表	”
