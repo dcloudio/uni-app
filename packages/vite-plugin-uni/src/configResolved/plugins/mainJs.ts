@@ -1,8 +1,11 @@
 import path from 'path'
+import debug from 'debug'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '../..'
 import { isSsr, isSsrManifest } from '../../utils'
+
+const debugMain = debug('vite:uni:main')
 
 export function uniMainJsPlugin(
   config: ResolvedConfig,
@@ -25,8 +28,10 @@ export function uniMainJsPlugin(
         } else {
           code = ssr ? createSSRServerApp(code) : createSSRClientApp(code)
         }
+        code = `import { plugin } from '@dcloudio/uni-h5';import '${pagesJsonJsPath}';${code}`
+        debugMain(code)
         return {
-          code: `import { plugin } from '@dcloudio/uni-h5';import '${pagesJsonJsPath}';${code}`,
+          code,
           map: this.getCombinedSourcemap(),
         }
       }

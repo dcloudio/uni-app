@@ -16,7 +16,8 @@ const priority = {
   'uni-cli-shared': 60,
   'uni-h5': 50,
   'uni-h5-vue': 40,
-  'vite-plugin-uni': 30,
+  'uni-app-plus': 30,
+  'vite-plugin-uni': 20,
   'size-check': 1,
 }
 

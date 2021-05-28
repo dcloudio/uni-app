@@ -56,11 +56,11 @@ export async function buildSSR(options: CliOptions) {
     build: ssrBuildServerOptions,
   })
   // copy ssr-manfiest.json to server
-  const ssrManifestFile = path.join(ssrClientDir, 'ssr-manifest.json')
-  if (fs.existsSync(ssrManifestFile)) {
-    fs.copyFileSync(
-      ssrManifestFile,
-      path.join(ssrServerDir, 'ssr-manifest.json')
-    )
-  }
+  const assets = ['ssr-manifest.json', 'index.html']
+  assets.forEach((asset) => {
+    const ssrManifestFile = path.join(ssrClientDir, asset)
+    if (fs.existsSync(ssrManifestFile)) {
+      fs.copyFileSync(ssrManifestFile, path.join(ssrServerDir, asset))
+    }
+  })
 }
