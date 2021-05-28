@@ -18421,10 +18421,10 @@ function createLeftWindowTsx(leftWindow, layoutState, windowState) {
     return withDirectives(createVNode("uni-left-window", {
       "data-show": layoutState.apiShowLeftWindow || void 0,
       "style": layoutState.leftWindowStyle
-    }, [withDirectives(createVNode("div", {
+    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
       "class": "uni-mask",
       "onClick": () => layoutState.apiShowLeftWindow = false
-    }, null, 8, ["onClick"]), [[vShow, layoutState.apiShowLeftWindow]]), createVNode("div", {
+    }, null, 8, ["onClick"]) : null, createVNode("div", {
       "class": "uni-left-window"
     }, [createVNode(LeftWindow, mergeProps({
       "ref": windowRef
@@ -18440,10 +18440,10 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     return withDirectives(createVNode("uni-right-window", {
       "data-show": layoutState.apiShowRightWindow || void 0,
       "style": layoutState.rightWindowStyle
-    }, [withDirectives(createVNode("div", {
+    }, [layoutState.apiShowRightWindow ? createVNode("div", {
       "class": "uni-mask",
       "onClick": () => layoutState.apiShowRightWindow = false
-    }, null, 8, ["onClick"]), [[vShow, layoutState.apiShowRightWindow]]), createVNode("div", {
+    }, null, 8, ["onClick"]) : null, createVNode("div", {
       "class": "uni-right-window"
     }, [createVNode(RightWindow, mergeProps({
       "ref": windowRef

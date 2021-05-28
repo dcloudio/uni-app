@@ -10879,10 +10879,10 @@ function createLeftWindowTsx(leftWindow, layoutState, windowState) {
     return vue.withDirectives(vue.createVNode("uni-left-window", {
       "data-show": layoutState.apiShowLeftWindow || void 0,
       "style": layoutState.leftWindowStyle
-    }, [vue.withDirectives(vue.createVNode("div", {
+    }, [layoutState.apiShowLeftWindow ? vue.createVNode("div", {
       "class": "uni-mask",
       "onClick": () => layoutState.apiShowLeftWindow = false
-    }, null, 8, ["onClick"]), [[vue.vShow, layoutState.apiShowLeftWindow]]), vue.createVNode("div", {
+    }, null, 8, ["onClick"]) : null, vue.createVNode("div", {
       "class": "uni-left-window"
     }, [vue.createVNode(LeftWindow, vue.mergeProps({
       "ref": windowRef
@@ -10898,10 +10898,10 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     return vue.withDirectives(vue.createVNode("uni-right-window", {
       "data-show": layoutState.apiShowRightWindow || void 0,
       "style": layoutState.rightWindowStyle
-    }, [vue.withDirectives(vue.createVNode("div", {
+    }, [layoutState.apiShowRightWindow ? vue.createVNode("div", {
       "class": "uni-mask",
       "onClick": () => layoutState.apiShowRightWindow = false
-    }, null, 8, ["onClick"]), [[vue.vShow, layoutState.apiShowRightWindow]]), vue.createVNode("div", {
+    }, null, 8, ["onClick"]) : null, vue.createVNode("div", {
       "class": "uni-right-window"
     }, [vue.createVNode(RightWindow, vue.mergeProps({
       "ref": windowRef

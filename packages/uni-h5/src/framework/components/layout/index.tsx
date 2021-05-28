@@ -460,11 +460,12 @@ function createLeftWindowTsx(
         data-show={layoutState.apiShowLeftWindow || undefined}
         style={layoutState.leftWindowStyle as any}
       >
-        <div
-          v-show={layoutState.apiShowLeftWindow}
-          class="uni-mask"
-          onClick={() => (layoutState.apiShowLeftWindow = false)}
-        />
+        {layoutState.apiShowLeftWindow ? (
+          <div
+            class="uni-mask"
+            onClick={() => (layoutState.apiShowLeftWindow = false)}
+          />
+        ) : null}
         <div class="uni-left-window">
           <LeftWindow ref={windowRef} {...windowState} />
         </div>
@@ -486,11 +487,12 @@ function createRightWindowTsx(
         data-show={layoutState.apiShowRightWindow || undefined}
         style={layoutState.rightWindowStyle as any}
       >
-        <div
-          v-show={layoutState.apiShowRightWindow}
-          class="uni-mask"
-          onClick={() => (layoutState.apiShowRightWindow = false)}
-        />
+        {layoutState.apiShowRightWindow ? (
+          <div
+            class="uni-mask"
+            onClick={() => (layoutState.apiShowRightWindow = false)}
+          />
+        ) : null}
         <div class="uni-right-window">
           <RightWindow ref={windowRef} {...windowState} />
         </div>
