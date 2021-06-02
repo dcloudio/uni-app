@@ -1,20 +1,15 @@
 import path from 'path'
 
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
 import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
 
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+
 import { stripOptions } from '@dcloudio/uni-cli-shared'
 import { isCustomElement } from '@dcloudio/uni-shared'
-
-const moduleAlias = require('module-alias')
-moduleAlias.addAlias(
-  '@vue/babel-plugin-jsx',
-  path.join(__dirname, 'lib/babel-plugin-jsx')
-)
-const vueJsx = require('@vitejs/plugin-vue-jsx')
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)

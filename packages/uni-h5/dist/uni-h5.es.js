@@ -1,8 +1,8 @@
-import {isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1} from "@vue/shared";
-import {injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot} from "vue";
-import {once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCustomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime} from "@dcloudio/uni-shared";
-import {initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT} from "@dcloudio/uni-i18n";
-import {useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView} from "vue-router";
+import { isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
+import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCustomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
+import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 function applyOptions(options, instance2, publicThis) {
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
@@ -54,28 +54,28 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"}));
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"}));
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
   }
 });
 const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showActionSheet.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {cancel: "Cancel"}));
+    i18n.add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {cancel: "Cancelar"}));
+    i18n.add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {cancel: "Annuler"}));
+    i18n.add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {cancel: "\u53D6\u6D88"}));
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {cancel: "\u53D6\u6D88"}));
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88" }));
   }
 });
 const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
@@ -137,55 +137,55 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showModal.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {cancel: "Cancel", confirm: "OK"}));
+    i18n.add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel", confirm: "OK" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {cancel: "Cancelar", confirm: "OK"}));
+    i18n.add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar", confirm: "OK" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {cancel: "Annuler", confirm: "OK"}));
+    i18n.add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler", confirm: "OK" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {cancel: "\u53D6\u6D88", confirm: "\u786E\u5B9A"}));
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u786E\u5B9A" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A"}));
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A" }));
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.picker.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {done: "Done", cancel: "Cancel"}));
+    i18n.add(LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {done: "OK", cancel: "Cancelar"}));
+    i18n.add(LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {done: "OK", cancel: "Annuler"}));
+    i18n.add(LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {done: "\u5B8C\u6210", cancel: "\u53D6\u6D88"}));
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {done: "\u5B8C\u6210", cancel: "\u53D6\u6D88"}));
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.video.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {danmu: "Danmu", volume: "Volume"}));
+    i18n.add(LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {danmu: "Danmu", volume: "Volumen"}));
+    i18n.add(LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {danmu: "Danmu", volume: "Le Volume"}));
+    i18n.add(LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF"}));
+    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF"}));
+    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
 const E = function() {
@@ -267,7 +267,7 @@ function touchstart(evt) {
   if (evt.touches.length !== 1) {
     return;
   }
-  const {pageX, pageY} = evt.touches[0];
+  const { pageX, pageY } = evt.touches[0];
   startPageX = pageX;
   startPageY = pageY;
   longPressTimer = setTimeout(function() {
@@ -289,7 +289,7 @@ function touchmove(evt) {
   if (evt.touches.length !== 1) {
     return clearLongPressTimer();
   }
-  const {pageX, pageY} = evt.touches[0];
+  const { pageX, pageY } = evt.touches[0];
   if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
     return clearLongPressTimer();
   }
@@ -345,7 +345,7 @@ function init() {
   try {
     var opts = Object.defineProperty({}, "passive", {
       get: function() {
-        passiveEvents = {passive: true};
+        passiveEvents = { passive: true };
       }
     });
     window.addEventListener("test", null, opts);
@@ -604,7 +604,7 @@ function createScrollListener({
   let hasReachBottom = false;
   let reachBottomLocking = true;
   const isReachBottom = () => {
-    const {scrollHeight} = document.documentElement;
+    const { scrollHeight } = document.documentElement;
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY;
     const isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
@@ -710,7 +710,7 @@ function createCallbacks(namespace) {
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
 function $nne(evt) {
-  const {currentTarget} = evt;
+  const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return evt;
   }
@@ -723,7 +723,7 @@ function $nne(evt) {
   } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res, evt);
   } else if (evt instanceof TouchEvent) {
-    const {top} = getWindowOffset();
+    const { top } = getWindowOffset();
     res.touches = normalizeTouchEvent(evt.touches, top);
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
@@ -736,7 +736,7 @@ function findUniTarget(target) {
   return target;
 }
 function createNativeEvent(evt) {
-  const {type, timeStamp, target, currentTarget} = evt;
+  const { type, timeStamp, target, currentTarget } = evt;
   const event = {
     type,
     timeStamp,
@@ -764,13 +764,13 @@ function createNativeEvent(evt) {
   return event;
 }
 function normalizeClickEvent(evt, mouseEvt) {
-  const {x, y} = mouseEvt;
-  const {top} = getWindowOffset();
-  evt.detail = {x, y: y - top};
+  const { x, y } = mouseEvt;
+  const { top } = getWindowOffset();
+  evt.detail = { x, y: y - top };
   evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
 }
 function normalizeMouseEvent(evt, mouseEvt) {
-  const {top} = getWindowOffset();
+  const { top } = getWindowOffset();
   evt.pageX = mouseEvt.pageX;
   evt.pageY = mouseEvt.pageY - top;
   evt.clientX = mouseEvt.clientX;
@@ -789,7 +789,7 @@ function createTouchEvent(evt) {
 function normalizeTouchEvent(touches, top) {
   const res = [];
   for (let i = 0; i < touches.length; i++) {
-    const {identifier, pageX, pageY, clientX, clientY, force} = touches[i];
+    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
     res.push({
       identifier,
       pageX,
@@ -1181,7 +1181,7 @@ function usePageRoute() {
   if (searchPos > -1) {
     query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
   }
-  const {meta} = __uniRoutes[0];
+  const { meta } = __uniRoutes[0];
   return {
     meta,
     query,
@@ -1199,7 +1199,7 @@ const PAGE_META_KEYS = [
   "refreshOptions"
 ];
 function mergePageMeta(id2, pageMeta) {
-  const res = extend({id: id2}, __uniConfig.globalStyle, pageMeta);
+  const res = extend({ id: id2 }, __uniConfig.globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
     res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
   });
@@ -1207,7 +1207,7 @@ function mergePageMeta(id2, pageMeta) {
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const {enablePullDownRefresh, navigationBar} = pageMeta;
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
     if (enablePullDownRefresh) {
       const refreshOptions = extend({
         support: true,
@@ -1218,7 +1218,7 @@ function normalizePageMeta(pageMeta) {
         offset: 0
       }, pageMeta.refreshOptions);
       let offset = rpx2px(refreshOptions.offset);
-      const {type} = navigationBar;
+      const { type } = navigationBar;
       if (type !== "transparent" && type !== "none") {
         offset += NAVBAR_HEIGHT + out.top;
       }
@@ -1229,8 +1229,8 @@ function normalizePageMeta(pageMeta) {
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const {navigationBar} = pageMeta;
-    const {titleSize, titleColor, backgroundColor} = navigationBar;
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
     navigationBar.type = navigationBar.type || "default";
     navigationBar.backButton = pageMeta.isQuit ? false : true;
     navigationBar.titleSize = titleSize || "16px";
@@ -1366,14 +1366,14 @@ function validateProtocols(name, args, protocol, onFail) {
     if (argsLen > i) {
       data[opts.name] = args[i];
     }
-    validateProtocol(name, data, {[opts.name]: opts}, onFail);
+    validateProtocol(name, data, { [opts.name]: opts }, onFail);
   }
 }
 function validateProp(name, value, prop, isAbsent) {
   if (!isPlainObject(prop)) {
-    prop = {type: prop};
+    prop = { type: prop };
   }
-  const {type, required, validator: validator2} = prop;
+  const { type, required, validator: validator2 } = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
@@ -1385,7 +1385,7 @@ function validateProp(name, value, prop, isAbsent) {
     const types = isArray(type) ? type : [type];
     const expectedTypes = [];
     for (let i = 0; i < types.length && !isValid; i++) {
-      const {valid, expectedType} = assertType(value, types[i]);
+      const { valid, expectedType } = assertType(value, types[i]);
       expectedTypes.push(expectedType || "");
       isValid = valid;
     }
@@ -1539,11 +1539,11 @@ function normalizeErrMsg(errMsg, name) {
   }
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
-function createAsyncApiCallback(name, args = {}, {beforeAll, beforeSuccess} = {}) {
+function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
   if (!isPlainObject(args)) {
     args = {};
   }
-  const {success, fail, complete} = getApiCallbacks(args);
+  const { success, fail, complete } = getApiCallbacks(args);
   const hasSuccess = isFunction(success);
   const hasFail = isFunction(fail);
   const hasComplete = isFunction(complete);
@@ -1583,7 +1583,7 @@ function promisify(fn) {
       return fn(args);
     }
     return handlePromise(new Promise((resolve, reject) => {
-      fn(extend(args, {success: resolve, fail: reject}));
+      fn(extend(args, { success: resolve, fail: reject }));
     }));
   };
 }
@@ -1610,10 +1610,10 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, {errMsg: name + ":ok"}));
+  return invokeCallback(id2, extend(res || {}, { errMsg: name + ":ok" }));
 }
 function invokeFail(id2, name, err) {
-  return invokeCallback(id2, {errMsg: name + ":fail" + (err ? " " + err : "")});
+  return invokeCallback(id2, { errMsg: name + ":fail" + (err ? " " + err : "") });
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -1716,7 +1716,7 @@ function createUnsupportedSyncApi(name) {
 }
 const createUnsupportedOnApi = createUnsupportedSyncApi;
 function createUnsupportedAsyncApi(name) {
-  return (_args, {reject}) => {
+  return (_args, { reject }) => {
     return reject(createUnsupportedMsg(name));
   };
 }
@@ -2000,12 +2000,12 @@ const _sfc_main$1 = {
     }
   }
 };
-const _hoisted_1$1 = {class: "uni-audio-default"};
-const _hoisted_2$1 = {class: "uni-audio-right"};
-const _hoisted_3$1 = {class: "uni-audio-time"};
-const _hoisted_4$1 = {class: "uni-audio-info"};
-const _hoisted_5 = {class: "uni-audio-name"};
-const _hoisted_6 = {class: "uni-audio-author"};
+const _hoisted_1$1 = { class: "uni-audio-default" };
+const _hoisted_2$1 = { class: "uni-audio-right" };
+const _hoisted_3$1 = { class: "uni-audio-time" };
+const _hoisted_4$1 = { class: "uni-audio-info" };
+const _hoisted_5 = { class: "uni-audio-name" };
+const _hoisted_6 = { class: "uni-audio-author" };
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-audio", mergeProps({
     id: $props.id,
@@ -2014,7 +2014,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode("audio", {
       ref: "audio",
       loop: $props.loop,
-      style: {"display": "none"}
+      style: { "display": "none" }
     }, null, 8, ["loop"]),
     createVNode("div", _hoisted_1$1, [
       createVNode("div", {
@@ -2022,7 +2022,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
         class: "uni-audio-left"
       }, [
         createVNode("div", {
-          class: [{play: !$data.playing, pause: $data.playing}, "uni-audio-button"],
+          class: [{ play: !$data.playing, pause: $data.playing }, "uni-audio-button"],
           onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
         }, null, 2)
       ], 4),
@@ -2147,7 +2147,7 @@ var animation = {
   }
 };
 const defineBuiltInComponent = (options) => {
-  const {props: props2, mixins} = options;
+  const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
@@ -2275,7 +2275,9 @@ var index$u = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2
   }) {
     provideForm(emit2);
-    return () => createVNode("uni-form", null, [createVNode("span", null, [slots.default && slots.default()])]);
+    return () => createVNode("uni-form", null, {
+      default: () => [createVNode("span", null, [slots.default && slots.default()])]
+    });
   }
 });
 function provideForm(emit2) {
@@ -2343,7 +2345,9 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
         "uni-label-pointer": pointer
       },
       "onClick": _onClick
-    }, [slots.default && slots.default()], 10, ["onClick"]);
+    }, {
+      default: () => [slots.default && slots.default()]
+    }, 8, ["class", "onClick"]);
   }
 });
 function useProvideLabel() {
@@ -2501,7 +2505,9 @@ var index$s = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef,
         "onClick": onClick,
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, loadingAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs), {
+        default: () => [slots.default && slots.default()]
+      }, 16, ["onClick", "class"]);
     };
   }
 });
@@ -2524,11 +2530,14 @@ var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => createVNode("uni-resize-sensor", {
       "ref": rootRef,
       "onAnimationstartOnce": update
-    }, [createVNode("div", {
-      "onScroll": update
-    }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-      "onScroll": update
-    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+    }, {
+      default: () => [createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"])],
+      _: 1
+    }, 8, ["onAnimationstartOnce"]);
   }
 });
 function useResizeSensorUpdate(rootRef, emit2, reset) {
@@ -2795,17 +2804,20 @@ var index$r = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-canvas", mergeProps({
         "canvas-id": canvasId,
         "disable-scroll": disableScroll
-      }, $attrs.value, $excludeAttrs.value, _listeners.value), [createVNode("canvas", {
-        "ref": canvas,
-        "class": "uni-canvas-canvas",
-        "width": "300",
-        "height": "150"
-      }, null, 512), createVNode("div", {
-        "style": "position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;"
-      }, [slots.default && slots.default()]), createVNode(ResizeSensor, {
-        "ref": sensor,
-        "onResize": _resize
-      }, null, 8, ["onResize"])], 16, ["canvas-id", "disable-scroll"]);
+      }, $attrs.value, $excludeAttrs.value, _listeners.value), {
+        default: () => [createVNode("canvas", {
+          "ref": canvas,
+          "class": "uni-canvas-canvas",
+          "width": "300",
+          "height": "150"
+        }, null, 512), createVNode("div", {
+          "style": "position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;"
+        }, [slots.default && slots.default()]), createVNode(ResizeSensor, {
+          "ref": sensor,
+          "onResize": _resize
+        }, null, 8, ["onResize"])],
+        _: 1
+      }, 16, ["canvas-id", "disable-scroll"]);
     };
   }
 });
@@ -3253,7 +3265,9 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-checkbox-group", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, {
+        default: () => [slots.default && slots.default()]
+      }, 512);
     };
   }
 });
@@ -3356,13 +3370,15 @@ var index$p = /* @__PURE__ */ defineBuiltInComponent({
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
         "onClick": _onClick
-      }), [createVNode("div", {
-        "class": "uni-checkbox-wrapper"
-      }, [createVNode("div", {
-        "class": ["uni-checkbox-input", {
-          "uni-checkbox-input-disabled": props2.disabled
-        }]
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])], 16, ["onClick"]);
+      }), {
+        default: () => [createVNode("div", {
+          "class": "uni-checkbox-wrapper"
+        }, [createVNode("div", {
+          "class": ["uni-checkbox-input", {
+            "uni-checkbox-input-disabled": props2.disabled
+          }]
+        }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])]
+      }, 16, ["onClick"]);
     };
   }
 });
@@ -3600,7 +3616,7 @@ function ins(Quill) {
   };
 }
 function align(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
+  const { Scope, Attributor } = Quill.import("parchment");
   const config = {
     scope: Scope.BLOCK,
     whitelist: ["left", "right", "center", "justify"]
@@ -3611,7 +3627,7 @@ function align(Quill) {
   };
 }
 function direction(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
+  const { Scope, Attributor } = Quill.import("parchment");
   const config = {
     scope: Scope.BLOCK,
     whitelist: ["rtl"]
@@ -3667,7 +3683,7 @@ function list(Quill) {
       }
     }
     formats() {
-      return {[this.statics.blotName]: this.statics.formats(this.domNode)};
+      return { [this.statics.blotName]: this.statics.formats(this.domNode) };
     }
     insertBefore(blot, ref2) {
       if (blot instanceof ListItem) {
@@ -3705,7 +3721,7 @@ function list(Quill) {
   };
 }
 function background(Quill) {
-  const {Scope} = Quill.import("parchment");
+  const { Scope } = Quill.import("parchment");
   const BackgroundStyle = Quill.import("formats/background");
   const BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
     scope: Scope.INLINE
@@ -3715,7 +3731,7 @@ function background(Quill) {
   };
 }
 function box(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
+  const { Scope, Attributor } = Quill.import("parchment");
   const config = {
     scope: Scope.BLOCK
   };
@@ -3740,7 +3756,7 @@ function box(Quill) {
   return result;
 }
 function font(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
+  const { Scope, Attributor } = Quill.import("parchment");
   const config = {
     scope: Scope.INLINE
   };
@@ -3759,7 +3775,7 @@ function font(Quill) {
   return result;
 }
 function text(Quill) {
-  const {Scope, Attributor} = Quill.import("parchment");
+  const { Scope, Attributor } = Quill.import("parchment");
   const text2 = [
     {
       name: "lineHeight",
@@ -3779,7 +3795,7 @@ function text(Quill) {
     }
   ];
   const result = {};
-  text2.forEach(({name, scope}) => {
+  text2.forEach(({ name, scope }) => {
     result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), {
       scope
     });
@@ -3890,7 +3906,7 @@ function useQuill(props2, rootRef, trigger) {
           return;
         }
         disable = false;
-        const arrts = attrs2.map(({name, value}) => `${name}="${value}"`).join(" ");
+        const arrts = attrs2.map(({ name, value }) => `${name}="${value}"`).join(" ");
         const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
         content += start;
       },
@@ -3971,7 +3987,7 @@ function useQuill(props2, rootRef, trigger) {
         return delta;
       }
       if (delta.ops) {
-        delta.ops = delta.ops.filter(({insert}) => typeof insert === "string").map(({insert}) => ({insert}));
+        delta.ops = delta.ops.filter(({ insert }) => typeof insert === "string").map(({ insert }) => ({ insert }));
       }
       return delta;
     });
@@ -4003,7 +4019,7 @@ function useQuill(props2, rootRef, trigger) {
   });
   const id2 = useContextInfo();
   useSubscribe((type, data) => {
-    const {options, callbackId} = data;
+    const { options, callbackId } = data;
     let res;
     let range;
     let errMsg;
@@ -4012,7 +4028,7 @@ function useQuill(props2, rootRef, trigger) {
       switch (type) {
         case "format":
           {
-            let {name = "", value = false} = options;
+            let { name = "", value = false } = options;
             range = quill.getSelection(true);
             let format = quill.getFormat(range)[name] || false;
             if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
@@ -4074,14 +4090,14 @@ function useQuill(props2, rootRef, trigger) {
         case "insertText":
           {
             range = quill.getSelection(true);
-            const {text: text2 = ""} = options;
+            const { text: text2 = "" } = options;
             quill.insertText(range.index, text2, "user");
             quill.setSelection(range.index + text2.length, 0, "silent");
           }
           break;
         case "setContents":
           {
-            const {delta, html} = options;
+            const { delta, html } = options;
             if (typeof delta === "object") {
               quill.setContents(delta, "silent");
             } else if (typeof html === "string") {
@@ -4123,7 +4139,7 @@ function useQuill(props2, rootRef, trigger) {
           break;
         case "getSelectionText":
           range = quill.selection.savedRange;
-          res = {text: ""};
+          res = { text: "" };
           if (range && range.length !== 0) {
             res.text = quill.getText(range.index, range.length);
           }
@@ -4257,7 +4273,9 @@ var index$n = /* @__PURE__ */ defineBuiltInComponent({
       const {
         value
       } = path;
-      return createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
+      return createVNode("uni-icon", null, {
+        default: () => [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]
+      });
     };
   }
 });
@@ -4324,14 +4342,17 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
       } = state2;
       return createVNode("uni-image", {
         "ref": rootRef
-      }, [createVNode("div", {
-        "style": modeStyle
-      }, null, 4), imgSrc ? createVNode("img", {
-        "src": imgSrc,
-        "draggable": props2.draggable
-      }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode2] ? createVNode(ResizeSensor, {
-        "onResize": fixSize
-      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
+      }, {
+        default: () => [createVNode("div", {
+          "style": modeStyle
+        }, null, 4), imgSrc ? createVNode("img", {
+          "src": imgSrc,
+          "draggable": props2.draggable
+        }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode2] ? createVNode(ResizeSensor, {
+          "onResize": fixSize
+        }, null, 8, ["onResize"]) : createVNode("span", null, null)],
+        _: 1
+      }, 512);
     };
   }
 });
@@ -4582,7 +4603,7 @@ const UniViewJSBridgeSubscribe = function() {
   if (pageIds.includes(pageId))
     return;
   pageIds.push(pageId);
-  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({pageId: pageId2, callbackId}) {
+  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({ pageId: pageId2, callbackId }) {
     const activeElement = document.activeElement;
     if (!activeElement)
       return;
@@ -4847,11 +4868,11 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
 }
 function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
-  const {fieldRef, state: state2, trigger} = useBase(props2, rootRef, emit2);
-  const {triggerInput} = useValueSync(props2, state2, emit2, trigger);
+  const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
+  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
   useAutoFocus(props2, fieldRef);
   useKeyboard$1(props2, fieldRef);
-  const {state: scopedAttrsState} = useScopedAttrs();
+  const { state: scopedAttrsState } = useScopedAttrs();
   useFormField("name", state2);
   useEvent(fieldRef, state2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
@@ -4955,16 +4976,18 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
       return createVNode("uni-input", {
         "ref": rootRef
-      }, [createVNode("div", {
-        "class": "uni-input-wrapper"
-      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-input-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": (event) => event.preventDefault(),
-        "class": "uni-input-form"
-      }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-input-wrapper"
+        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "style": props2.placeholderStyle,
+          "class": ["uni-input-placeholder", props2.placeholderClass]
+        }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
+          "action": "",
+          "onSubmit": (event) => event.preventDefault(),
+          "class": "uni-input-form"
+        }, [inputNode], 40, ["onSubmit"]) : inputNode])]
+      }, 512);
     };
   }
 });
@@ -4974,7 +4997,7 @@ function entries(obj) {
 const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
 const LISTENER_PREFIX = /^on[A-Z]+/;
 const useAttrs = (params = {}) => {
-  const {excludeListeners = false, excludeKeys = []} = params;
+  const { excludeListeners = false, excludeKeys = [] } = params;
   const instance2 = getCurrentInstance();
   const attrs2 = shallowRef({});
   const listeners = shallowRef({});
@@ -5003,11 +5026,11 @@ const useAttrs = (params = {}) => {
     listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return {$attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs};
+  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
 function initScrollBounce() {
 }
-function disableScrollBounce({disable}) {
+function disableScrollBounce({ disable }) {
 }
 function flatVNode(nodes) {
   const array = [];
@@ -5094,9 +5117,12 @@ var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
       movableViewItems = flatVNode(defaultSlots);
       return createVNode("uni-movable-area", mergeProps({
         "ref": rootRef
-      }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-        "onReize": movableAreaEvents._resize
-      }, null, 8, ["onReize"]), movableViewItems], 16);
+      }, $attrs.value, $excludeAttrs.value, _listeners), {
+        default: () => [createVNode(ResizeSensor, {
+          "onReize": movableAreaEvents._resize
+        }, null, 8, ["onReize"]), movableViewItems],
+        _: 2
+      }, 16);
     };
   }
 });
@@ -5706,9 +5732,12 @@ var MovableView = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-movable-view", {
         "ref": rootRef
-      }, [createVNode(ResizeSensor, {
-        "onResize": setParent
-      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+      }, {
+        default: () => [createVNode(ResizeSensor, {
+          "onResize": setParent
+        }, null, 8, ["onResize"]), slots.default && slots.default()],
+        _: 1
+      }, 512);
     };
   }
 });
@@ -6368,7 +6397,9 @@ var index$l = /* @__PURE__ */ defineBuiltInComponent({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
       }, hasHoverClass && binding, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
+      }), {
+        default: () => [slots.default && slots.default()]
+      }, 16, ["class", "onClick"]);
     };
   }
 });
@@ -6466,14 +6497,17 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
       columnVNodes = flatVNode(defaultSlots);
       return createVNode("uni-picker-view", {
         "ref": rootRef
-      }, [createVNode(ResizeSensor, {
-        "ref": resizeSensorRef,
-        "onResize": ({
-          height
-        }) => state2.height = height
-      }, null, 8, ["onResize"]), createVNode("div", {
-        "class": "uni-picker-view-wrapper"
-      }, [defaultSlots])], 512);
+      }, {
+        default: () => [createVNode(ResizeSensor, {
+          "ref": resizeSensorRef,
+          "onResize": ({
+            height
+          }) => state2.height = height
+        }, null, 8, ["onResize"]), createVNode("div", {
+          "class": "uni-picker-view-wrapper"
+        }, [defaultSlots])],
+        _: 2
+      }, 512);
     };
   }
 });
@@ -7315,28 +7349,30 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       const padding = `${maskSize.value}px 0`;
       return createVNode("uni-picker-view-column", {
         "ref": rootRef
-      }, [createVNode("div", {
-        "onWheel": handleWheel,
-        "onClick": handleTap,
-        "class": "uni-picker-view-group"
-      }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
-        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
-      }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-        "style": pickerViewProps.indicatorStyle
-      }), [createVNode(ResizeSensor, {
-        "ref": resizeSensorRef,
-        "onResize": ({
-          height
-        }) => indicatorHeight.value = height
-      }, null, 8, ["onResize"])], 16), createVNode("div", {
-        "ref": contentRef,
-        "class": ["uni-picker-view-content", className],
-        "style": {
-          padding
-        }
-      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+      }, {
+        default: () => [createVNode("div", {
+          "onWheel": handleWheel,
+          "onClick": handleTap,
+          "class": "uni-picker-view-group"
+        }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
+          "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+          "style": pickerViewProps.indicatorStyle
+        }), [createVNode(ResizeSensor, {
+          "ref": resizeSensorRef,
+          "onResize": ({
+            height
+          }) => indicatorHeight.value = height
+        }, null, 8, ["onResize"])], 16), createVNode("div", {
+          "ref": contentRef,
+          "class": ["uni-picker-view-content", className],
+          "style": {
+            padding
+          }
+        }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])]
+      }, 512);
     };
   }
 });
@@ -7414,15 +7450,18 @@ var index$k = /* @__PURE__ */ defineBuiltInComponent({
       } = state2;
       return createVNode("uni-progress", {
         "class": "uni-progress"
-      }, [createVNode("div", {
-        "style": outerBarStyle,
-        "class": "uni-progress-bar"
-      }, [createVNode("div", {
-        "style": innerBarStyle,
-        "class": "uni-progress-inner-bar"
-      }, null, 4)], 4), showInfo ? createVNode("p", {
-        "class": "uni-progress-info"
-      }, [currentPercent + "%"]) : ""]);
+      }, {
+        default: () => [createVNode("div", {
+          "style": outerBarStyle,
+          "class": "uni-progress-bar"
+        }, [createVNode("div", {
+          "style": innerBarStyle,
+          "class": "uni-progress-inner-bar"
+        }, null, 4)], 4), showInfo ? createVNode("p", {
+          "class": "uni-progress-info"
+        }, [currentPercent + "%"]) : ""],
+        _: 1
+      });
     };
   }
 });
@@ -7484,7 +7523,9 @@ var index$j = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-radio-group", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, {
+        default: () => [slots.default && slots.default()]
+      }, 512);
     };
   }
 });
@@ -7614,14 +7655,16 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       } = useBooleanAttr(props2, "disabled");
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick
-      }), [createVNode("div", {
-        "class": "uni-radio-wrapper"
-      }, [createVNode("div", {
-        "class": ["uni-radio-input", {
-          "uni-radio-input-disabled": props2.disabled
-        }],
-        "style": radioChecked.value ? checkedStyle.value : ""
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+      }), {
+        default: () => [createVNode("div", {
+          "class": "uni-radio-wrapper"
+        }, [createVNode("div", {
+          "class": ["uni-radio-input", {
+            "uni-radio-input-disabled": props2.disabled
+          }],
+          "style": radioChecked.value ? checkedStyle.value : ""
+        }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])]
+      }, 16, ["onClick"]);
     };
   }
 });
@@ -7900,7 +7943,9 @@ var index$h = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-rich-text", {
         "ref": rootRef
-      }, [createVNode("div", null, null)], 512);
+      }, {
+        default: () => [createVNode("div", null, null)]
+      }, 512);
     };
   }
 });
@@ -8005,54 +8050,56 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       } = state2;
       return createVNode("uni-scroll-view", {
         "ref": rootRef
-      }, [createVNode("div", {
-        "ref": wrap,
-        "class": "uni-scroll-view"
-      }, [createVNode("div", {
-        "ref": main,
-        "style": mainStyle.value,
-        "class": "uni-scroll-view"
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
-      }, [refresherEnabled ? createVNode("div", {
-        "ref": refresherinner,
-        "style": {
-          backgroundColor: refresherBackground,
-          height: refresherHeight + "px"
-        },
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? createVNode("svg", {
-        "style": {
-          transform: "rotate(" + refreshRotate + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, {
+        default: () => [createVNode("div", {
+          "ref": wrap,
+          "class": "uni-scroll-view"
+        }, [createVNode("div", {
+          "ref": main,
+          "style": mainStyle.value,
+          "class": "uni-scroll-view"
+        }, [createVNode("div", {
+          "ref": content,
+          "class": "uni-scroll-view-content"
+        }, [refresherEnabled ? createVNode("div", {
+          "ref": refresherinner,
+          "style": {
+            backgroundColor: refresherBackground,
+            height: refresherHeight + "px"
+          },
+          "class": "uni-scroll-view-refresher"
+        }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+          "class": "uni-scroll-view-refresh"
+        }, [createVNode("div", {
+          "class": "uni-scroll-view-refresh-inner"
+        }, [refreshState == "pulling" ? createVNode("svg", {
+          "style": {
+            transform: "rotate(" + refreshRotate + "deg)"
+          },
+          "fill": "#2BD009",
+          "class": "uni-scroll-view-refresh__icon",
+          "width": "24",
+          "height": "24",
+          "viewBox": "0 0 24 24"
+        }, [createVNode("path", {
+          "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+        }, null), createVNode("path", {
+          "d": "M0 0h24v24H0z",
+          "fill": "none"
+        }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+          "class": "uni-scroll-view-refresh__spinner",
+          "width": "24",
+          "height": "24",
+          "viewBox": "25 25 50 50"
+        }, [createVNode("circle", {
+          "cx": "50",
+          "cy": "50",
+          "r": "20",
+          "fill": "none",
+          "style": "color: #2bd009",
+          "stroke-width": "3"
+        }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)]
+      }, 512);
     };
   }
 });
@@ -8454,27 +8501,30 @@ var index$g = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-slider", {
         "ref": sliderRef,
         "onClick": withWebEvent(_onClick)
-      }, [createVNode("div", {
-        "class": "uni-slider-wrapper"
-      }, [createVNode("div", {
-        "class": "uni-slider-tap-area"
-      }, [createVNode("div", {
-        "style": setBgColor.value,
-        "class": "uni-slider-handle-wrapper"
-      }, [createVNode("div", {
-        "ref": sliderHandleRef,
-        "style": setBlockBg.value,
-        "class": "uni-slider-handle"
-      }, null, 4), createVNode("div", {
-        "style": setBlockStyle.value,
-        "class": "uni-slider-thumb"
-      }, null, 4), createVNode("div", {
-        "style": setActiveColor.value,
-        "class": "uni-slider-track"
-      }, null, 4)], 4)]), withDirectives(createVNode("span", {
-        "ref": sliderValueRef,
-        "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-slider-wrapper"
+        }, [createVNode("div", {
+          "class": "uni-slider-tap-area"
+        }, [createVNode("div", {
+          "style": setBgColor.value,
+          "class": "uni-slider-handle-wrapper"
+        }, [createVNode("div", {
+          "ref": sliderHandleRef,
+          "style": setBlockBg.value,
+          "class": "uni-slider-handle"
+        }, null, 4), createVNode("div", {
+          "style": setBlockStyle.value,
+          "class": "uni-slider-thumb"
+        }, null, 4), createVNode("div", {
+          "style": setActiveColor.value,
+          "class": "uni-slider-track"
+        }, null, 4)], 4)]), withDirectives(createVNode("span", {
+          "ref": sliderValueRef,
+          "class": "uni-slider-value"
+        }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)],
+        _: 1
+      }, 8, ["onClick"]);
     };
   }
 });
@@ -9150,28 +9200,30 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
       swiperItems = flatVNode(defaultSlots);
       return createVNode("uni-swiper", {
         "ref": rootRef
-      }, [createVNode("div", {
-        "ref": slidesWrapperRef,
-        "class": "uni-swiper-wrapper"
-      }, [createVNode("div", {
-        "class": "uni-swiper-slides",
-        "style": slidesStyle.value
-      }, [createVNode("div", {
-        "ref": slideFrameRef,
-        "class": "uni-swiper-slide-frame",
-        "style": slideFrameStyle.value
-      }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
-        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
-      }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
-        "onClick": () => onSwiperDotClick(index2),
-        "class": {
-          "uni-swiper-dot": true,
-          "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
-        },
-        "style": {
-          background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
-        }
-      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+      }, {
+        default: () => [createVNode("div", {
+          "ref": slidesWrapperRef,
+          "class": "uni-swiper-wrapper"
+        }, [createVNode("div", {
+          "class": "uni-swiper-slides",
+          "style": slidesStyle.value
+        }, [createVNode("div", {
+          "ref": slideFrameRef,
+          "class": "uni-swiper-slide-frame",
+          "style": slideFrameStyle.value
+        }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
+          "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+        }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
+          "onClick": () => onSwiperDotClick(index2),
+          "class": {
+            "uni-swiper-dot": true,
+            "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
+          },
+          "style": {
+            background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
+          }
+        }, null, 14, ["onClick"]))], 2)], 512)]
+      }, 512);
     };
   }
 });
@@ -9228,7 +9280,9 @@ var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
           width: "100%",
           height: "100%"
         }
-      }, [slots.default && slots.default()], 512);
+      }, {
+        default: () => [slots.default && slots.default()]
+      }, 512);
     };
   }
 });
@@ -9302,17 +9356,19 @@ var index$f = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, booleanAttrs, {
         "onClick": _onClick
-      }), [createVNode("div", {
-        "class": "uni-switch-wrapper"
-      }, [withDirectives(createVNode("div", {
-        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
-          backgroundColor: switchChecked.value ? color : "#DFDFDF",
-          borderColor: switchChecked.value ? color : "#DFDFDF"
-        }
-      }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
-        "class": "uni-checkbox-input"
-      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
+      }), {
+        default: () => [createVNode("div", {
+          "class": "uni-switch-wrapper"
+        }, [withDirectives(createVNode("div", {
+          "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+          "style": {
+            backgroundColor: switchChecked.value ? color : "#DFDFDF",
+            borderColor: switchChecked.value ? color : "#DFDFDF"
+          }
+        }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+          "class": "uni-checkbox-input"
+        }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])]
+      }, 16, ["onClick"]);
     };
   }
 });
@@ -9339,6 +9395,9 @@ function useSwitchInject(props2, switchChecked) {
     });
   }
   return uniLabel;
+}
+function _isSlot$5(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 const SPACE_UNICODE = {
   ensp: "\u2002",
@@ -9377,6 +9436,7 @@ var index$e = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     return () => {
+      let _slot;
       const children = [];
       if (slots.default) {
         slots.default().forEach((vnode) => {
@@ -9406,7 +9466,10 @@ var index$e = /* @__PURE__ */ defineBuiltInComponent({
       }
       return createVNode("uni-text", {
         "selectable": props2.selectable ? true : null
-      }, [createVNode("span", null, children)], 8, ["selectable"]);
+      }, _isSlot$5(_slot = createVNode("span", null, children)) ? _slot : {
+        default: () => [_slot],
+        _: 1
+      }, 8, ["selectable"]);
     };
   }
 });
@@ -9523,24 +9586,26 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
       return createVNode("uni-textarea", {
         "ref": rootRef
-      }, [createVNode("div", {
-        "class": "uni-textarea-wrapper"
-      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-textarea-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
-        "ref": lineRef,
-        "class": "uni-textarea-line"
-      }, [" "], 512), createVNode("div", {
-        "class": "uni-textarea-compute"
-      }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": onResize2
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": () => false,
-        "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode])], 512);
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-textarea-wrapper"
+        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "style": props2.placeholderStyle,
+          "class": ["uni-textarea-placeholder", props2.placeholderClass]
+        }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
+          "ref": lineRef,
+          "class": "uni-textarea-line"
+        }, [" "], 512), createVNode("div", {
+          "class": "uni-textarea-compute"
+        }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
+          "initial": true,
+          "onResize": onResize2
+        }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+          "action": "",
+          "onSubmit": () => false,
+          "class": "uni-input-form"
+        }, [textareaNode], 40, ["onSubmit"]) : textareaNode])]
+      }, 512);
     };
   }
 });
@@ -9559,9 +9624,13 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-view", mergeProps({
           "class": hovering.value ? hoverClass : ""
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), {
+          default: () => [slots.default && slots.default()]
+        }, 16, ["class"]);
       }
-      return createVNode("uni-view", null, [slots.default && slots.default()]);
+      return createVNode("uni-view", null, {
+        default: () => [slots.default && slots.default()]
+      });
     };
   }
 });
@@ -9578,7 +9647,7 @@ function addSubscribe(name, callback) {
   if (!name) {
     return;
   }
-  UniViewJSBridge.subscribe(name, ({type, data}) => {
+  UniViewJSBridge.subscribe(name, ({ type, data }) => {
     callback(type, data);
   });
 }
@@ -9659,7 +9728,7 @@ function getRootInfo(fields2) {
 }
 function getNodeInfo(el, fields2) {
   const info = {};
-  const {top} = getWindowOffset();
+  const { top } = getWindowOffset();
   if (fields2.id) {
     info.id = el.id;
   }
@@ -9738,7 +9807,7 @@ function getNodesInfo(pageVm, component, selector, single, fields2) {
 }
 function requestComponentInfo(page, reqs, callback) {
   const result = [];
-  reqs.forEach(({component, selector, single, fields: fields2}) => {
+  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
     if (component === null) {
       result.push(getRootInfo(fields2));
     } else {
@@ -9747,11 +9816,11 @@ function requestComponentInfo(page, reqs, callback) {
   });
   callback(result);
 }
-function addIntersectionObserver({reqId, component, options, callback}, _pageId) {
+function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);
   ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
 }
-function removeIntersectionObserver({reqId, component}, _pageId) {
+function removeIntersectionObserver({ reqId, component }, _pageId) {
   const $el = findElem(component);
   const intersectionObserver = $el.__io && $el.__io[reqId];
   if (intersectionObserver) {
@@ -9786,13 +9855,13 @@ function handleMediaQueryStr($props) {
 function humpToLine(name) {
   return name.replace(/([A-Z])/g, "-$1").toLowerCase();
 }
-function addMediaQueryObserver({reqId, component, options, callback}, _pageId) {
+function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
   mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
   listener$2 = (observer) => callback(observer.matches);
   listener$2(mediaQueryObserver);
   mediaQueryObserver.addListener(listener$2);
 }
-function removeMediaQueryObserver({reqId, component}, _pageId) {
+function removeMediaQueryObserver({ reqId, component }, _pageId) {
   if (mediaQueryObserver) {
     mediaQueryObserver.removeListener(listener$2);
   }
@@ -9853,9 +9922,9 @@ function blobToFile(blob, type) {
     type = type || blob.type || "";
     const filename = `${Date.now()}${getExtname(type)}`;
     try {
-      file = new File([blob], filename, {type});
+      file = new File([blob], filename, { type });
     } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], {type});
+      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
       file = blob;
       file.name = file.name || filename;
     }
@@ -9902,7 +9971,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-  const {platform, pixelRatio: pixelRatio2, windowWidth} = getBaseSystemInfo();
+  const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
   isIOS = platform === "ios";
@@ -10297,7 +10366,7 @@ const CanvasToTempFilePathProtocol = {
   quality: Number
 };
 const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({callbackId, data}) => {
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
   const callback = canvasEventCallbacks.pop(callbackId);
   if (callback) {
     callback(data);
@@ -11038,7 +11107,7 @@ const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONT
     UniServiceJSBridge.emit("onError", "createCanvasContext:fail");
   }
 }, CreateCanvasContextProtocol);
-const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({canvasId, x, y, width, height}, {resolve, reject}) => {
+const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
   const pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -11059,7 +11128,7 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
     callbackId: cId
   });
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({canvasId, data, x, y, width, height}, {resolve, reject}) => {
+const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -11092,7 +11161,7 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
   canvasId,
   fileType,
   quality
-}, {resolve, reject}) => {
+}, { resolve, reject }) => {
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -11155,7 +11224,7 @@ class ServiceIntersectionObserver {
     }, this._pageId);
   }
   disconnect() {
-    this._reqId && removeIntersectionObserver({reqId: this._reqId, component: this._component}, this._pageId);
+    this._reqId && removeIntersectionObserver({ reqId: this._reqId, component: this._component }, this._pageId);
   }
 }
 const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
@@ -11212,7 +11281,7 @@ function operateEditor(componentId, pageId, type, options) {
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
     if (!eventReady) {
-      ServiceJSBridge.subscribe("onEditorMethodCallback", ({callbackId: callbackId2, data: data2}) => {
+      ServiceJSBridge.subscribe("onEditorMethodCallback", ({ callbackId: callbackId2, data: data2 }) => {
         callOptions(optionsCache[callbackId2], data2);
         delete optionsCache[callbackId2];
       });
@@ -11285,7 +11354,7 @@ const ContextClasss = {
 };
 function convertContext(result) {
   if (result && result.contextInfo) {
-    const {id: id2, type, page} = result.contextInfo;
+    const { id: id2, type, page } = result.contextInfo;
     const ContextClass = ContextClasss[type];
     result.context = new ContextClass(id2, page);
     delete result.contextInfo;
@@ -11499,13 +11568,13 @@ const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTT
 });
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({callbackId, data}) => {
+ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
   const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
   if (callback) {
     callback(data);
   }
 });
-const getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, {resolve, reject}) => {
+const getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
   const pageId = getCurrentPageId();
   ServiceJSBridge.publishHandler && ServiceJSBridge.publishHandler("getSelectedTextRange", {
     pageId,
@@ -12071,7 +12140,7 @@ function createNormalizeUrl(type) {
     }
     url = getRealRoute(url);
     const pagePath = url.split("?")[0];
-    const routeOptions = __uniRoutes.find(({path, alias}) => path === pagePath || alias === pagePath);
+    const routeOptions = __uniRoutes.find(({ path, alias }) => path === pagePath || alias === pagePath);
     if (!routeOptions) {
       return "page `" + url + "` is not found";
     }
@@ -12131,7 +12200,7 @@ const SetNavigationBarColorOptions = {
   formatArgs: {
     animation(animation2, params) {
       if (!animation2) {
-        animation2 = {duration: 0, timingFunc: "linear"};
+        animation2 = { duration: 0, timingFunc: "linear" };
       }
       params.animation = {
         duration: animation2.duration || 0,
@@ -12224,14 +12293,14 @@ const ShowModalOptions = {
     showCancel: true,
     cancelText(_value, params) {
       if (!hasOwn(params, "cancelText")) {
-        const {t: t2} = useI18n();
+        const { t: t2 } = useI18n();
         params.cancelText = t2("uni.showModal.cancel");
       }
     },
     cancelColor: "#000",
     confirmText(_value, params) {
       if (!hasOwn(params, "confirmText")) {
-        const {t: t2} = useI18n();
+        const { t: t2 } = useI18n();
         params.confirmText = t2("uni.showModal.confirm");
       }
     },
@@ -12471,7 +12540,7 @@ const initIntersectionObserverPolyfill = function() {
       throw new Error("target must be an Element");
     }
     this._registerInstance();
-    this._observationTargets.push({element: target, entry: null});
+    this._observationTargets.push({ element: target, entry: null });
     this._monitorIntersections(target.ownerDocument);
     this._checkForIntersections();
   };
@@ -12512,7 +12581,7 @@ const initIntersectionObserverPolyfill = function() {
       if (!parts) {
         throw new Error("rootMargin must be specified in pixels or percent");
       }
-      return {value: parseFloat(parts[1]), unit: parts[2]};
+      return { value: parseFloat(parts[1]), unit: parts[2] };
     });
     margins[1] = margins[1] || margins[0];
     margins[2] = margins[2] || margins[0];
@@ -12894,7 +12963,7 @@ const initIntersectionObserverPolyfill = function() {
   window.IntersectionObserverEntry = IntersectionObserverEntry;
 };
 function normalizeRect(rect) {
-  const {bottom, height, left, right, top, width} = rect || {};
+  const { bottom, height, left, right, top, width } = rect || {};
   return {
     bottom,
     height,
@@ -13028,7 +13097,7 @@ function createPageState(type, __id__) {
 function initPublicPage(route) {
   const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
-    const {path: path2, alias} = __uniRoutes[0];
+    const { path: path2, alias } = __uniRoutes[0];
     return {
       id: meta.id,
       path: path2,
@@ -13038,7 +13107,7 @@ function initPublicPage(route) {
       meta
     };
   }
-  const {path} = route;
+  const { path } = route;
   return {
     id: meta.id,
     path,
@@ -13143,7 +13212,7 @@ function getScopeId(instance2) {
 let curScopeId;
 function updateBodyScopeId(instance2) {
   const scopeId = getScopeId(instance2);
-  const {body} = document;
+  const { body } = document;
   curScopeId && body.removeAttribute(curScopeId);
   scopeId && body.setAttribute(scopeId, "");
   curScopeId = scopeId;
@@ -13157,7 +13226,7 @@ function initPageScrollListener(instance2, pageMeta) {
   if (pageMeta.disableScroll) {
     return document.addEventListener("touchmove", disableScrollListener);
   }
-  const {onPageScroll, onReachBottom} = instance2;
+  const { onPageScroll, onReachBottom } = instance2;
   const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
   if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
     return;
@@ -13177,7 +13246,7 @@ function initPageScrollListener(instance2, pageMeta) {
 function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
   return (scrollTop) => {
     if (onPageScroll) {
-      UniViewJSBridge.publishHandler("onPageScroll", {scrollTop}, pageId);
+      UniViewJSBridge.publishHandler("onPageScroll", { scrollTop }, pageId);
     }
     if (navigationBarTransparent) {
       UniViewJSBridge.emit(pageId + ".onPageScroll", {
@@ -13214,7 +13283,7 @@ function removeCurrentPages(delta = 1) {
   }
 }
 function initHistory() {
-  let {base} = __uniConfig.router;
+  let { base } = __uniConfig.router;
   if (base === "/") {
     base = "";
   }
@@ -13245,7 +13314,7 @@ function initApp(vm) {
   appVm.$vm = vm;
   appVm.globalData = appVm.$options.globalData || {};
 }
-function wrapperComponentSetup(comp, {init: init2, setup, before}) {
+function wrapperComponentSetup(comp, { init: init2, setup, before }) {
   before && before(comp);
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
@@ -13278,28 +13347,28 @@ function setupPage(comp) {
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
-        const {onLoad, onShow} = instance2;
+        const { onLoad, onShow } = instance2;
         onLoad && invokeArrayFns$1(onLoad, decodedQuery(route.query));
         instance2.__isVisible = true;
         onShow && invokeArrayFns$1(onShow);
       });
       onMounted(() => {
         onPageReady(instance2);
-        const {onReady} = instance2;
+        const { onReady } = instance2;
         onReady && invokeArrayFns$1(onReady);
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
           onPageShow(instance2, pageMeta);
           instance2.__isVisible = true;
-          const {onShow} = instance2;
+          const { onShow } = instance2;
           onShow && invokeArrayFns$1(onShow);
         }
       });
       onBeforeDeactivate(() => {
         if (instance2.__isVisible && !instance2.__isUnload) {
           instance2.__isVisible = false;
-          const {onHide} = instance2;
+          const { onHide } = instance2;
           onHide && invokeArrayFns$1(onHide);
         }
       });
@@ -13313,7 +13382,7 @@ function setupApp(comp) {
     setup(instance2) {
       const route = usePageRoute();
       const onLaunch = () => {
-        const {onLaunch: onLaunch2, onShow} = instance2;
+        const { onLaunch: onLaunch2, onShow } = instance2;
         const path = route.path.substr(1);
         const launchOptions = {
           path: path || __uniRoutes[0].meta.route,
@@ -14060,147 +14129,149 @@ var index$8 = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-video", {
         "ref": rootRef,
         "id": props2.id
-      }, [createVNode("div", {
-        "ref": containerRef,
-        "class": "uni-video-container",
-        "onTouchstart": onTouchstart,
-        "onTouchend": onTouchend,
-        "onTouchmove": onTouchmove,
-        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
-        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
-      }, [createVNode("video", mergeProps({
-        "ref": videoRef,
-        "style": {
-          "object-fit": props2.objectFit
-        },
-        "muted": !!props2.muted,
-        "loop": !!props2.loop,
-        "src": videoState.src,
-        "poster": props2.poster,
-        "autoplay": !!props2.autoplay
-      }, videoAttrs.value, {
-        "class": "uni-video-video",
-        "webkit-playsinline": true,
-        "playsinline": true,
-        "onClick": toggleControls,
-        "onDurationchange": onDurationChange,
-        "onLoadedmetadata": onLoadedMetadata,
-        "onProgress": onProgress,
-        "onWaiting": onWaiting,
-        "onError": onVideoError,
-        "onPlay": onPlay,
-        "onPause": onPause,
-        "onEnded": onEnded,
-        "onTimeupdate": (event) => {
-          onTimeUpdate(event);
-          updateDanmu(event);
-        },
-        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
-        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
-        "onWebkitendfullscreen": () => emitFullscreenChange(false),
-        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
-        "class": "uni-video-bar uni-video-bar-full",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-controls"
-      }, [withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-control-button": true,
-          "uni-video-control-button-play": !videoState.playing,
-          "uni-video-control-button-pause": videoState.playing
-        },
-        "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
-        "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)]), createVNode("div", {
-        "ref": progressRef,
-        "class": "uni-video-progress-container",
-        "onClick": withModifiers(clickProgress, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-progress"
-      }, [createVNode("div", {
-        "style": {
-          width: videoState.buffered + "%"
-        },
-        "class": "uni-video-progress-buffered"
-      }, null, 4), createVNode("div", {
-        "ref": ballRef,
-        "style": {
-          left: videoState.progress + "%"
-        },
-        "class": "uni-video-ball"
-      }, [createVNode("div", {
-        "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-danmu-button": true,
-          "uni-video-danmu-button-active": danmuState.enable
-        },
-        "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-fullscreen": true,
-          "uni-video-type-fullscreen": fullscreenState.fullscreen
-        },
-        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
-        "ref": danmuRef,
-        "style": "z-index: 0;",
-        "class": "uni-video-danmu"
-      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
-        "class": "uni-video-cover",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
-        "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
-        },
-        "class": "uni-video-toast-value-content"
-      }, [createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [renderList(10, () => createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
-        "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
+      }, {
+        default: () => [createVNode("div", {
+          "ref": containerRef,
+          "class": "uni-video-container",
+          "onTouchstart": onTouchstart,
+          "onTouchend": onTouchend,
+          "onTouchmove": onTouchmove,
+          "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
+          "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+        }, [createVNode("video", mergeProps({
+          "ref": videoRef,
+          "style": {
+            "object-fit": props2.objectFit
+          },
+          "muted": !!props2.muted,
+          "loop": !!props2.loop,
+          "src": videoState.src,
+          "poster": props2.poster,
+          "autoplay": !!props2.autoplay
+        }, videoAttrs.value, {
+          "class": "uni-video-video",
+          "webkit-playsinline": true,
+          "playsinline": true,
+          "onClick": toggleControls,
+          "onDurationchange": onDurationChange,
+          "onLoadedmetadata": onLoadedMetadata,
+          "onProgress": onProgress,
+          "onWaiting": onWaiting,
+          "onError": onVideoError,
+          "onPlay": onPlay,
+          "onPause": onPause,
+          "onEnded": onEnded,
+          "onTimeupdate": (event) => {
+            onTimeUpdate(event);
+            updateDanmu(event);
+          },
+          "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
+          "onX5videoenterfullscreen": () => emitFullscreenChange(true),
+          "onWebkitendfullscreen": () => emitFullscreenChange(false),
+          "onX5videoexitfullscreen": () => emitFullscreenChange(false)
+        }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
+          "class": "uni-video-bar uni-video-bar-full",
+          "onClick": withModifiers(() => {
+          }, ["stop"])
+        }, [createVNode("div", {
+          "class": "uni-video-controls"
+        }, [withDirectives(createVNode("div", {
+          "class": {
+            "uni-video-control-button": true,
+            "uni-video-control-button-play": !videoState.playing,
+            "uni-video-control-button-pause": videoState.playing
+          },
+          "onClick": withModifiers(toggle, ["stop"])
+        }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
+          "class": "uni-video-current-time"
+        }, [formatTime(videoState.currentTime)]), createVNode("div", {
+          "ref": progressRef,
+          "class": "uni-video-progress-container",
+          "onClick": withModifiers(clickProgress, ["stop"])
+        }, [createVNode("div", {
+          "class": "uni-video-progress"
+        }, [createVNode("div", {
+          "style": {
+            width: videoState.buffered + "%"
+          },
+          "class": "uni-video-progress-buffered"
+        }, null, 4), createVNode("div", {
+          "ref": ballRef,
+          "style": {
+            left: videoState.progress + "%"
+          },
+          "class": "uni-video-ball"
+        }, [createVNode("div", {
+          "class": "uni-video-inner"
+        }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
+          "class": "uni-video-duration"
+        }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
+          "class": {
+            "uni-video-danmu-button": true,
+            "uni-video-danmu-button-active": danmuState.enable
+          },
+          "onClick": withModifiers(toggleDanmu, ["stop"])
+        }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+          "class": {
+            "uni-video-fullscreen": true,
+            "uni-video-type-fullscreen": fullscreenState.fullscreen
+          },
+          "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+        }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
+          "ref": danmuRef,
+          "style": "z-index: 0;",
+          "class": "uni-video-danmu"
+        }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
+          "class": "uni-video-cover",
+          "onClick": withModifiers(() => {
+          }, ["stop"])
+        }, [createVNode("div", {
+          "class": "uni-video-cover-play-button",
+          "onClick": withModifiers(play, ["stop"])
+        }, null, 8, ["onClick"]), createVNode("p", {
+          "class": "uni-video-cover-duration"
+        }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+          "class": {
+            "uni-video-toast": true,
+            "uni-video-toast-volume": gestureState.gestureType === "volume"
+          }
+        }, [createVNode("div", {
+          "class": "uni-video-toast-title"
+        }, [t2("uni.video.volume")]), createVNode("svg", {
+          "class": "uni-video-toast-icon",
+          "width": "200px",
+          "height": "200px",
+          "viewBox": "0 0 1024 1024",
+          "version": "1.1",
+          "xmlns": "http://www.w3.org/2000/svg"
+        }, [createVNode("path", {
+          "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+        }, null)]), createVNode("div", {
+          "class": "uni-video-toast-value"
+        }, [createVNode("div", {
+          "style": {
+            width: gestureState.volumeNew * 100 + "%"
+          },
+          "class": "uni-video-toast-value-content"
+        }, [createVNode("div", {
+          "class": "uni-video-toast-volume-grids"
+        }, [renderList(10, () => createVNode("div", {
+          "class": "uni-video-toast-volume-grids-item"
+        }, null))])], 4)])], 2), createVNode("div", {
+          "class": {
+            "uni-video-toast": true,
+            "uni-video-toast-progress": gestureState.gestureType === "progress"
+          }
+        }, [createVNode("div", {
+          "class": "uni-video-toast-title"
+        }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+          "class": "uni-video-slots"
+        }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])]
+      }, 8, ["id"]);
     };
   }
 });
-const onWebInvokeAppService = ({name, arg}, pageId) => {
+const onWebInvokeAppService = ({ name, arg }, pageId) => {
   if (name === "postMessage")
     ;
   else {
@@ -14244,9 +14315,11 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
         "ref": rootRef
-      }), [createVNode(ResizeSensor, {
-        "onResize": _resize
-      }, null, 8, ["onResize"])], 16), createVNode(Teleport, {
+      }), {
+        default: () => [createVNode(ResizeSensor, {
+          "onResize": _resize
+        }, null, 8, ["onResize"])]
+      }, 16), createVNode(Teleport, {
         "to": "body"
       }, {
         default: () => [createVNode("iframe", mergeProps({
@@ -15076,7 +15149,7 @@ class InnerAudioContext {
 const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
   return new InnerAudioContext();
 });
-const makePhoneCall = /* @__PURE__ */ defineAsyncApi(API_MAKE_PHONE_CALL, ({phoneNumber}, {resolve}) => {
+const makePhoneCall = /* @__PURE__ */ defineAsyncApi(API_MAKE_PHONE_CALL, ({ phoneNumber }, { resolve }) => {
   window.location.href = `tel:${phoneNumber}`;
   return resolve();
 }, MakePhoneCallProtocol);
@@ -15209,7 +15282,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     width: windowWidth - out.left - out.right,
     height: windowHeight - out.top - out.bottom
   };
-  const {top: windowTop, bottom: windowBottom} = getWindowOffset();
+  const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
   windowHeight -= windowBottom;
   return {
@@ -15234,12 +15307,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     }
   };
 });
-const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, {resolve}) => {
+const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
   return resolve(getSystemInfoSync());
 });
 const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
 function networkListener() {
-  getNetworkType().then(({networkType}) => {
+  getNetworkType().then(({ networkType }) => {
     UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
       isConnected: networkType !== "none",
       networkType
@@ -15267,7 +15340,7 @@ const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusCha
     window.removeEventListener("online", networkListener);
   }
 });
-const getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, {resolve}) => {
+const getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, { resolve }) => {
   const connection = getConnection();
   let networkType = "unknown";
   if (connection) {
@@ -15280,7 +15353,7 @@ const getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, 
   } else if (navigator.onLine === false) {
     networkType = "none";
   }
-  return resolve({networkType});
+  return resolve({ networkType });
 });
 let listener$1 = null;
 const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
@@ -15289,7 +15362,7 @@ const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, 
 const offAccelerometerChange = /* @__PURE__ */ defineOnApi(API_OFF_ACCELEROMETER, () => {
   stopAccelerometer();
 });
-const startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETER, (_, {resolve, reject}) => {
+const startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
   if (!window.DeviceMotionEvent) {
     reject();
     return;
@@ -15323,7 +15396,7 @@ const startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETE
   }
   resolve();
 });
-const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(API_STOP_ACCELEROMETER, (_, {resolve}) => {
+const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
   if (listener$1) {
     window.removeEventListener("devicemotion", listener$1, false);
     listener$1 = null;
@@ -15337,7 +15410,7 @@ const onCompassChange = /* @__PURE__ */ defineOnApi(API_ON_COMPASS, () => {
 const offCompassChange = /* @__PURE__ */ defineOnApi(API_OFF_COMPASS, () => {
   stopCompass();
 });
-const startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, {resolve, reject}) => {
+const startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
   if (!window.DeviceOrientationEvent) {
     reject();
     return;
@@ -15369,7 +15442,7 @@ const startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, {reso
   }
   resolve();
 });
-const stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, {resolve}) => {
+const stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
   if (listener) {
     window.removeEventListener("deviceorientation", listener, false);
     listener = null;
@@ -15377,14 +15450,14 @@ const stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, {resolv
   resolve();
 });
 const _isSupport = !!window.navigator.vibrate;
-const vibrateShort = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_SHORT, (args, {resolve, reject}) => {
+const vibrateShort = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_SHORT, (args, { resolve, reject }) => {
   if (_isSupport && window.navigator.vibrate(15)) {
     resolve();
   } else {
     reject("vibrateLong:fail");
   }
 });
-const vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, {resolve, reject}) => {
+const vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, { resolve, reject }) => {
   if (_isSupport && window.navigator.vibrate(400)) {
     resolve();
   } else {
@@ -15421,7 +15494,7 @@ const setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key,
   });
   localStorage.setItem(key, value);
 }, SetStorageSyncProtocol);
-const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({key, data}, {resolve, reject}) => {
+const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
   try {
     setStorageSync(key, data);
     resolve();
@@ -15452,7 +15525,7 @@ const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key,
     return "";
   }
 }, GetStorageSyncProtocol);
-const getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({key}, {resolve, reject}) => {
+const getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
   try {
     const data = getStorageOrigin(key);
     resolve({
@@ -15467,7 +15540,7 @@ const removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key
     localStorage.removeItem(key);
   }
 }, RemoveStorageSyncProtocol);
-const removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({key}, {resolve}) => {
+const removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
   removeStorageSync(key);
   resolve();
 }, RemoveStorageProtocol);
@@ -15476,7 +15549,7 @@ const clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () =>
     localStorage.clear();
   }
 });
-const clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, {resolve}) => {
+const clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, { resolve }) => {
   clearStorageSync();
   resolve();
 });
@@ -15498,10 +15571,10 @@ const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", (
     limitSize: Number.MAX_VALUE
   };
 });
-const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, {resolve}) => {
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
   resolve(getStorageInfoSync());
 });
-const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({filePath}, {resolve, reject}) => {
+const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({ filePath }, { resolve, reject }) => {
   urlToFile(filePath).then((res) => {
     resolve({
       size: res.size
@@ -15510,11 +15583,11 @@ const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({filePath
     reject(String(err));
   });
 }, GetFileInfoProtocol, GetFileInfoOptions);
-const openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({filePath}, {resolve}) => {
+const openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath }, { resolve }) => {
   window.open(filePath);
   return resolve();
 }, OpenDocumentProtocol, OpenDocumentOptions);
-const hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, {resolve, reject}) => {
+const hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, { resolve, reject }) => {
   const activeElement = document.activeElement;
   if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
     activeElement.blur();
@@ -15524,7 +15597,7 @@ const hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, {r
 function getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({src}, {resolve, reject}) => {
+const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({ src }, { resolve, reject }) => {
   const img = new Image();
   img.onload = function() {
     resolve({
@@ -15538,7 +15611,7 @@ const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({src}, 
   };
   img.src = src;
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const getVideoInfo = /* @__PURE__ */ defineAsyncApi(API_GET_VIDEO_INFO, ({src}, {resolve, reject}) => {
+const getVideoInfo = /* @__PURE__ */ defineAsyncApi(API_GET_VIDEO_INFO, ({ src }, { resolve, reject }) => {
   urlToFile(src, true).then((file) => {
     return file;
   }).catch(() => {
@@ -15667,7 +15740,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
   sourceType,
   type,
   extension
-}, {resolve, reject}) => {
+}, { resolve, reject }) => {
   if (fileInput) {
     document.body.removeChild(fileInput);
     fileInput = null;
@@ -15699,7 +15772,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
     }
     const res = {
       get tempFilePaths() {
-        return tempFiles.map(({path}) => path);
+        return tempFiles.map(({ path }) => path);
       },
       tempFiles
     };
@@ -15712,7 +15785,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
   count,
   sourceType,
   extension
-}, {resolve, reject}) => {
+}, { resolve, reject }) => {
   if (imageInput) {
     document.body.removeChild(imageInput);
     imageInput = null;
@@ -15744,7 +15817,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
     }
     const res = {
       get tempFilePaths() {
-        return tempFiles.map(({path}) => path);
+        return tempFiles.map(({ path }) => path);
       },
       tempFiles
     };
@@ -15781,7 +15854,7 @@ function useKeyboard() {
     disable
   };
 }
-const VNODE_MASK = /* @__PURE__ */ createVNode("div", {class: "uni-mask"}, null, -1);
+const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
 function createRootApp(component, rootState, callback) {
   const onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(defineComponent({
@@ -15806,11 +15879,11 @@ function usePopup(props2, {
   onEnter
 }) {
   const visible = ref(props2.visible);
-  const {key, disable} = useKeyboard();
+  const { key, disable } = useKeyboard();
   watch(() => props2.visible, (value) => visible.value = value);
   watch(() => visible.value, (value) => disable.value = !value);
   watchEffect(() => {
-    const {value} = key;
+    const { value } = key;
     if (value === "esc") {
       onEsc && onEsc();
     } else if (value === "enter") {
@@ -15934,7 +16007,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot$2(s) {
+function _isSlot$4(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 const props$8 = {
@@ -16019,7 +16092,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
           width: "100%",
           height: "100%"
         }
-      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+      }, _isSlot$4(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
           "src": src
         }, null, 8, ["src"])]
@@ -16031,7 +16104,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let state$2 = null;
-const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {resolve}) => {
+const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, { resolve }) => {
   if (!state$2) {
     state$2 = reactive(args);
     nextTick(() => {
@@ -16049,7 +16122,7 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, {r
   resolve();
 }, PreviewImageProtocol, PreviewImageOptions);
 let videoInput = null;
-const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({sourceType, extension}, {resolve, reject}) => {
+const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, extension }, { resolve, reject }) => {
   if (videoInput) {
     document.body.removeChild(videoInput);
     videoInput = null;
@@ -16111,7 +16184,7 @@ const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
   responseType,
   withCredentials,
   timeout = __uniConfig.networkTimeout.request
-}, {resolve, reject}) => {
+}, { resolve, reject }) => {
   let body = null;
   const contentType = normalizeContentType(header);
   if (method !== "GET") {
@@ -16251,7 +16324,7 @@ class DownloadTask {
     throw new Error("Method not implemented.");
   }
 }
-const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({url, header, timeout = __uniConfig.networkTimeout.downloadFile}, {resolve, reject}) => {
+const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
   var timer;
   var xhr = new XMLHttpRequest();
   var downloadTask = new DownloadTask(xhr);
@@ -16346,7 +16419,7 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
   header,
   formData,
   timeout = __uniConfig.networkTimeout.uploadFile
-}, {resolve, reject}) => {
+}, { resolve, reject }) => {
   var uploadTask = new UploadTask();
   if (!Array.isArray(files2) || !files2.length) {
     files2 = [
@@ -16364,7 +16437,7 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
     Object.keys(formData).forEach((key) => {
       form.append(key, formData[key]);
     });
-    Object.values(files2).forEach(({name: name2}, index2) => {
+    Object.values(files2).forEach(({ name: name2 }, index2) => {
       const file2 = realFiles[index2];
       form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
     });
@@ -16412,7 +16485,7 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
       reject("abort");
     }
   }
-  Promise.all(files2.map(({file: file2, uri}) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri))).then(upload).catch(() => {
+  Promise.all(files2.map(({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri))).then(upload).catch(() => {
     setTimeout(() => {
       reject("file error");
     }, 0);
@@ -16525,7 +16598,7 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     this._callbacks.close.push(callback);
   }
 }
-const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({url, protocols}, {resolve, reject}) => {
+const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({ url, protocols }, { resolve, reject }) => {
   return new SocketTask(url, protocols, (error, socketTask) => {
     if (error) {
       reject(error.toString());
@@ -16542,14 +16615,14 @@ function callSocketTask(socketTask, method, option, resolve, reject) {
       success() {
         resolve();
       },
-      fail({errMsg}) {
+      fail({ errMsg }) {
         reject(errMsg.replace("sendSocketMessage:fail ", ""));
       },
       complete: void 0
     }));
   }
 }
-const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, {resolve, reject}) => {
+const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, { resolve, reject }) => {
   const socketTask = socketTasks[0];
   if (socketTask && socketTask.readyState === socketTask.OPEN) {
     callSocketTask(socketTask, "send", options, resolve, reject);
@@ -16557,7 +16630,7 @@ const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE
     reject("WebSocket is not connected");
   }
 }, SendSocketMessageProtocol);
-const closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, {resolve, reject}) => {
+const closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, { resolve, reject }) => {
   const socketTask = socketTasks[0];
   if (socketTask) {
     callSocketTask(socketTask, "send", options, resolve, reject);
@@ -16607,7 +16680,7 @@ function getJSONP(url, options, success, error) {
   js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
   document.body.appendChild(js);
 }
-const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({type, altitude}, {resolve, reject}) => {
+const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude }, { resolve, reject }) => {
   const key = __uniConfig.qqMapKey;
   new Promise((resolve2, reject2) => {
     if (navigator.geolocation) {
@@ -16760,7 +16833,7 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let state$1 = null;
-const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, {resolve}) => {
+const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { resolve }) => {
   if (!state$1) {
     state$1 = reactive(args);
     nextTick(() => {
@@ -16777,7 +16850,7 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, {r
   }
   resolve();
 }, OpenLocationProtocol, OpenLocationOptions);
-function _isSlot$1(s) {
+function _isSlot$3(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
@@ -17023,7 +17096,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
         "scroll-y": true,
         "class": "list",
         "onScrolltolower": loadMore
-      }, _isSlot$1(content) ? content : {
+      }, _isSlot$3(content) ? content : {
         default: () => [content],
         _: 2
       }, 8, ["scroll-y", "onScrolltolower"])])]);
@@ -17031,7 +17104,7 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let state = null;
-const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args, {resolve, reject}) => {
+const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
   if (!state) {
     state = reactive(args);
     nextTick(() => {
@@ -17048,7 +17121,7 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args
     reject("cancel");
   }
 }, ChooseLocationProtocol);
-const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({delta}, {resolve, reject}) => {
+const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({ delta }, { resolve, reject }) => {
   let canBack = true;
   if (invokeHook("onBackPress") === true) {
     canBack = false;
@@ -17074,7 +17147,7 @@ function navigate(type, url, __id__) {
     });
   });
 }
-const navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({url}, {resolve, reject}) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
+const navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({ url }, { resolve, reject }) => navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
 function removeLastPage() {
   const page = getCurrentPage();
   if (!page) {
@@ -17083,7 +17156,7 @@ function removeLastPage() {
   const $page = page.$page;
   removePage(normalizeRouteKey($page.path, $page.id));
 }
-const redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({url}, {resolve, reject}) => {
+const redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
   return removeLastPage(), navigate(API_REDIRECT_TO, url).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
 function removeAllPages() {
@@ -17092,7 +17165,7 @@ function removeAllPages() {
     removePage(routeKey);
   }
 }
-const reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({url}, {resolve, reject}) => {
+const reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({ url }, { resolve, reject }) => {
   return removeAllPages(), navigate(API_RE_LAUNCH, url).then(resolve).catch(reject);
 }, ReLaunchProtocol, ReLaunchOptions);
 function removeNonTabBarPages() {
@@ -17125,10 +17198,10 @@ function getTabBarPageId(url) {
     }
   }
 }
-const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({url}, {resolve, reject}) => {
+const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({ url }, { resolve, reject }) => {
   return removeNonTabBarPages(), navigate(API_SWITCH_TAB, url, getTabBarPageId(url)).then(resolve).catch(reject);
 }, SwitchTabProtocol, SwitchTabOptions);
-const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({url}, {resolve, reject}) => {
+const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
   const path = url.split("?")[0];
   const route = __uniRoutes.find((item) => item.path === path);
   if (!route) {
@@ -17202,32 +17275,35 @@ var modal = /* @__PURE__ */ defineComponent({
       }, {
         default: () => [withDirectives(createVNode("uni-modal", {
           "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: props2.cancelColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+        }, {
+          default: () => [VNODE_MASK, createVNode("div", {
+            "class": "uni-modal"
+          }, [title && createVNode("div", {
+            "class": "uni-modal__hd"
+          }, [createVNode("strong", {
+            "class": "uni-modal__title",
+            "textContent": title
+          }, null, 8, ["textContent"])]), createVNode("div", {
+            "class": "uni-modal__bd",
+            "onTouchmovePassive": onEventStop,
+            "textContent": content
+          }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+            "class": "uni-modal__ft"
+          }, [showCancel && createVNode("div", {
+            "style": {
+              color: props2.cancelColor
+            },
+            "class": "uni-modal__btn uni-modal__btn_default",
+            "onClick": cancel
+          }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+            "style": {
+              color: confirmColor
+            },
+            "class": "uni-modal__btn uni-modal__btn_primary",
+            "onClick": confirm
+          }, [confirmText], 12, ["onClick"])])])],
+          _: 2
+        }, 8, ["onTouchmove"]), [[vShow, visible.value]])]
       });
     };
   }
@@ -17240,7 +17316,7 @@ function onModalClose(type) {
     cancel: type === "cancel"
   });
 }
-const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, {resolve}) => {
+const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
   currentShowModalResolve = resolve;
   if (!showModalState) {
     showModalState = reactive(args);
@@ -17300,22 +17376,25 @@ var Toast = /* @__PURE__ */ defineComponent({
       }, {
         default: () => [withDirectives(createVNode("uni-toast", {
           "data-duration": duration
-        }, [mask ? createVNode("div", {
-          "class": "uni-mask",
-          "style": "background: transparent;",
-          "onTouchmove": onEventPrevent
-        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
-          "class": "uni-sample-toast"
-        }, [createVNode("p", {
-          "class": "uni-simple-toast__text"
-        }, [title])]) : createVNode("div", {
-          "class": "uni-toast"
-        }, [image2 ? createVNode("img", {
-          "src": image2,
-          "class": ToastIconClassName
-        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
-          "class": "uni-toast__content"
-        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
+        }, {
+          default: () => [mask ? createVNode("div", {
+            "class": "uni-mask",
+            "style": "background: transparent;",
+            "onTouchmove": onEventPrevent
+          }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
+            "class": "uni-sample-toast"
+          }, [createVNode("p", {
+            "class": "uni-simple-toast__text"
+          }, [title])]) : createVNode("div", {
+            "class": "uni-toast"
+          }, [image2 ? createVNode("img", {
+            "src": image2,
+            "class": ToastIconClassName
+          }, null, 10, ["src"]) : Icon.value, createVNode("p", {
+            "class": "uni-toast__content"
+          }, [title])])],
+          _: 2
+        }, 8, ["data-duration"]), [[vShow, visible.value]])]
       });
     };
   }
@@ -17361,7 +17440,7 @@ function createToast(args) {
   });
   onHidePopupOnce();
 }
-const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, {resolve, reject}) => {
+const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
   createToast(args);
   showType = "onShowToast";
   resolve();
@@ -17371,22 +17450,22 @@ const showLoadingDefaultState = {
   duration: 1e8,
   image: ""
 };
-const showLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_LOADING, (args, {resolve, reject}) => {
+const showLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_LOADING, (args, { resolve, reject }) => {
   extend(args, showLoadingDefaultState);
   createToast(args);
   showType = "onShowLoading";
   resolve();
 }, ShowLoadingProtocol, ShowLoadingOptions);
-const hideToast = /* @__PURE__ */ defineAsyncApi(API_HIDE_TOAST, (args, {resolve, reject}) => {
+const hideToast = /* @__PURE__ */ defineAsyncApi(API_HIDE_TOAST, (args, { resolve, reject }) => {
   hidePopup("onHideToast");
   resolve();
 });
-const hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, (args, {resolve, reject}) => {
+const hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, (args, { resolve, reject }) => {
   hidePopup("onHideLoading");
   resolve();
 });
 function hidePopup(type) {
-  const {t: t2} = useI18n();
+  const { t: t2 } = useI18n();
   if (!showType) {
     return;
   }
@@ -17467,7 +17546,7 @@ function usePopupStyle(props2) {
   });
   onMounted(() => {
     const fixSize = () => {
-      const {windowWidth, windowHeight, windowTop} = uni.getSystemInfoSync();
+      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
       popupWidth.value = windowWidth;
       popupHeight.value = windowHeight + windowTop;
     };
@@ -17589,54 +17668,57 @@ var actionSheet = /* @__PURE__ */ defineComponent({
     return () => {
       return createVNode("uni-actionsheet", {
         "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
       }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
+        default: () => [createVNode(Transition, {
+          "name": "uni-fade"
+        }, {
+          default: () => [withDirectives(createVNode("div", {
+            "class": "uni-mask uni-actionsheet__mask",
+            "onClick": () => _close(-1)
+          }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
+        }), createVNode("div", {
+          "class": ["uni-actionsheet", {
+            "uni-actionsheet_toggle": props2.visible
+          }],
+          "style": popupStyle.value.content
+        }, [createVNode("div", {
+          "ref": main,
+          "class": "uni-actionsheet__menu",
+          "onWheel": _handleWheel
+        }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
+          "class": "uni-actionsheet__cell",
+          "style": {
+            height: `${titleHeight.value}px`
+          }
+        }, null), createVNode("div", {
+          "class": "uni-actionsheet__title"
+        }, [props2.title])]) : "", createVNode("div", {
+          "style": {
+            maxHeight: `${HEIGHT.value}px`,
+            overflow: "hidden"
+          }
+        }, [createVNode("div", {
+          "ref": content
+        }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
+          "key": index2,
+          "style": {
+            color: props2.itemColor
+          },
+          "class": "uni-actionsheet__cell",
+          "onClick": () => _close(index2)
+        }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
+          "class": "uni-actionsheet__action"
+        }, [createVNode("div", {
+          "style": {
+            color: props2.itemColor
+          },
+          "class": "uni-actionsheet__cell",
           "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: props2.itemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: props2.itemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
+        }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
+          "style": popupStyle.value.triangle
+        }, null, 4)], 6)],
+        _: 1
+      }, 8, ["onTouchmove"]);
     };
   }
 });
@@ -17695,10 +17777,10 @@ function onActionSheetClose(tapIndex) {
   if (tapIndex === -1) {
     rejectAction && rejectAction("cancel");
   } else {
-    resolveAction && resolveAction({tapIndex});
+    resolveAction && resolveAction({ tapIndex });
   }
 }
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, {resolve, reject}) => {
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, { resolve, reject }) => {
   resolveAction = resolve;
   rejectAction = reject;
   if (!showActionSheetState) {
@@ -17709,7 +17791,7 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (a
     showActionSheetState.visible = true;
   }
 }, ShowActionSheetProtocol, ShowActionSheetOptions);
-const loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({family, source, desc}, {resolve, reject}) => {
+const loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({ family, source, desc }, { resolve, reject }) => {
   addFont(family, source, desc).then(() => {
     resolve();
   }).catch((err) => {
@@ -17732,11 +17814,11 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
     return reject("page not found");
   }
-  const {navigationBar} = pageMeta;
+  const { navigationBar } = pageMeta;
   switch (type) {
     case API_SET_NAVIGATION_BAR_COLOR:
-      const {frontColor, backgroundColor, animation: animation2} = args;
-      const {duration, timingFunc} = animation2;
+      const { frontColor, backgroundColor, animation: animation2 } = args;
+      const { duration, timingFunc } = animation2;
       if (frontColor) {
         navigationBar.titleColor = frontColor === "#000000" ? "#000" : "#fff";
       }
@@ -17753,33 +17835,33 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
       navigationBar.loading = false;
       break;
     case API_SET_NAVIGATION_BAR_TITLE:
-      const {title} = args;
+      const { title } = args;
       navigationBar.titleText = title;
       break;
   }
   resolve();
 }
-const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, {resolve, reject}) => {
+const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, { resolve, reject }) => {
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_COLOR, args, resolve, reject);
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
-const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
+const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
   setNavigationBar(getCurrentPageMeta(), API_SHOW_NAVIGATION_BAR_LOADING, args, resolve, reject);
 });
-const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, {resolve, reject}) => {
+const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
   setNavigationBar(getCurrentPageMeta(), API_HIDE_NAVIGATION_BAR_LOADING, args, resolve, reject);
 });
-const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, {resolve, reject}) => {
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
   setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
-const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({scrollTop, selector, duration}, {resolve}) => {
+const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrollTop, selector, duration }, { resolve }) => {
   scrollTo(selector || scrollTop || 0, duration);
   resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, {resolve}) => {
+const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
   UniServiceJSBridge.publishHandler(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
-const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {resolve}) => {
+const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, { resolve }) => {
   UniServiceJSBridge.publishHandler(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
@@ -17801,13 +17883,13 @@ function setProperties(item, props2, propsData) {
 function normalizeRoute(index2, oldPagePath, newPagePath) {
   const oldTabBarRoute = __uniRoutes.find((item) => item.meta.route === oldPagePath);
   if (oldTabBarRoute) {
-    const {meta} = oldTabBarRoute;
+    const { meta } = oldTabBarRoute;
     delete meta.tabBarIndex;
     meta.isQuit = meta.isTabBar = false;
   }
   const newTabBarRoute = __uniRoutes.find((item) => item.meta.route === newPagePath);
   if (newTabBarRoute) {
-    const {meta} = newTabBarRoute;
+    const { meta } = newTabBarRoute;
     meta.tabBarIndex = index2;
     meta.isQuit = meta.isTabBar = false;
   }
@@ -17822,11 +17904,11 @@ function setTabBar(type, args, resolve) {
       tabBar2.shown = false;
       break;
     case API_SET_TAB_BAR_ITEM:
-      const {index: index2} = args;
+      const { index: index2 } = args;
       const tabBarItem = tabBar2.list[index2];
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
-      const {pagePath} = args;
+      const { pagePath } = args;
       if (pagePath && pagePath !== oldPagePath) {
         normalizeRoute(index2, oldPagePath, pagePath);
       }
@@ -17856,28 +17938,28 @@ function setTabBar(type, args, resolve) {
   }
   resolve();
 }
-const setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, {resolve}) => {
+const setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, { resolve }) => {
   setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
-const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, {resolve}) => {
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, { resolve }) => {
   setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
-const hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, {resolve}) => {
+const hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve }) => {
   setTabBar(API_HIDE_TAB_BAR, args, resolve);
 }, HideTabBarProtocol);
-const showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, {resolve}) => {
+const showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve }) => {
   setTabBar(API_SHOW_TAB_BAR, args, resolve);
 }, ShowTabBarProtocol);
-const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, {resolve}) => {
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, { resolve }) => {
   setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, {resolve}) => {
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, { resolve }) => {
   setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, {resolve}) => {
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, { resolve }) => {
   setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, {resolve}) => {
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, { resolve }) => {
   setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 var TabBar = /* @__PURE__ */ defineSystemComponent({
@@ -17895,16 +17977,19 @@ var TabBar = /* @__PURE__ */ defineSystemComponent({
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab);
       return createVNode("uni-tabbar", {
         "class": "uni-tabbar-" + tabBar2.position
-      }, [createVNode("div", {
-        "class": "uni-tabbar",
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-tabbar-border",
-        "style": borderStyle.value
-      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
-        "class": "uni-placeholder",
-        "style": placeholderStyle.value
-      }, null, 4)], 2);
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-tabbar",
+          "style": style.value
+        }, [createVNode("div", {
+          "class": "uni-tabbar-border",
+          "style": borderStyle.value
+        }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
+          "class": "uni-placeholder",
+          "style": placeholderStyle.value
+        }, null, 4)],
+        _: 2
+      }, 8, ["class"]);
     };
   }
 });
@@ -18119,6 +18204,9 @@ function createTabBarMidButtonTsx(color, iconPath, midButton, tabBar2, index2, o
     "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, midButton, tabBar2)], 12, ["onClick"]);
 }
+function _isSlot$2(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
 const DEFAULT_CSS_VAR_VALUE = "0px";
 let globalLayoutState = void 0;
 function getLayoutState() {
@@ -18149,7 +18237,10 @@ var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
       return createVNode("uni-app", {
         "ref": rootRef,
         "class": clazz2.value
-      }, [layoutTsx, tabBarTsx], 2);
+      }, {
+        default: () => [layoutTsx, tabBarTsx],
+        _: 2
+      }, 8, ["class"]);
     };
   }
 });
@@ -18298,7 +18389,16 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
-  return createVNode("uni-layout", null, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])]);
+  return createVNode("uni-layout", null, {
+    default: () => [topWindowTsx, createVNode("uni-content", null, {
+      default: () => [createVNode("uni-main", null, _isSlot$2(routerVNode) ? routerVNode : {
+        default: () => [routerVNode],
+        _: 2
+      }), leftWindowTsx, rightWindowTsx],
+      _: 2
+    })],
+    _: 2
+  });
 }
 function useShowTabBar(emit2) {
   const route = useRoute();
@@ -18399,17 +18499,20 @@ function createTopWindowTsx(topWindow, layoutState, windowState) {
       component: TopWindow,
       windowRef
     } = topWindow;
-    return withDirectives(createVNode("uni-top-window", null, [createVNode("div", {
-      "class": "uni-top-window",
-      "style": layoutState.topWindowStyle
-    }, [createVNode(TopWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)], 4), createVNode("div", {
-      "class": "uni-top-window--placeholder",
-      "style": {
-        height: layoutState.topWindowHeight + "px"
-      }
-    }, null, 4)], 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
+    return withDirectives(createVNode("uni-top-window", null, {
+      default: () => [createVNode("div", {
+        "class": "uni-top-window",
+        "style": layoutState.topWindowStyle
+      }, [createVNode(TopWindow, mergeProps({
+        "ref": windowRef
+      }, windowState), null, 16)], 4), createVNode("div", {
+        "class": "uni-top-window--placeholder",
+        "style": {
+          height: layoutState.topWindowHeight + "px"
+        }
+      }, null, 4)],
+      _: 2
+    }, 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
   }
 }
 function createLeftWindowTsx(leftWindow, layoutState, windowState) {
@@ -18421,14 +18524,17 @@ function createLeftWindowTsx(leftWindow, layoutState, windowState) {
     return withDirectives(createVNode("uni-left-window", {
       "data-show": layoutState.apiShowLeftWindow || void 0,
       "style": layoutState.leftWindowStyle
-    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowLeftWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-left-window"
-    }, [createVNode(LeftWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
+    }, {
+      default: () => [layoutState.apiShowLeftWindow ? createVNode("div", {
+        "class": "uni-mask",
+        "onClick": () => layoutState.apiShowLeftWindow = false
+      }, null, 8, ["onClick"]) : null, createVNode("div", {
+        "class": "uni-left-window"
+      }, [createVNode(LeftWindow, mergeProps({
+        "ref": windowRef
+      }, windowState), null, 16)])],
+      _: 2
+    }, 8, ["data-show", "style"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
   }
 }
 function createRightWindowTsx(rightWindow, layoutState, windowState) {
@@ -18440,14 +18546,17 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     return withDirectives(createVNode("uni-right-window", {
       "data-show": layoutState.apiShowRightWindow || void 0,
       "style": layoutState.rightWindowStyle
-    }, [layoutState.apiShowRightWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowRightWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-right-window"
-    }, [createVNode(RightWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
+    }, {
+      default: () => [layoutState.apiShowRightWindow ? createVNode("div", {
+        "class": "uni-mask",
+        "onClick": () => layoutState.apiShowRightWindow = false
+      }, null, 8, ["onClick"]) : null, createVNode("div", {
+        "class": "uni-right-window"
+      }, [createVNode(RightWindow, mergeProps({
+        "ref": windowRef
+      }, windowState), null, 16)])],
+      _: 2
+    }, 8, ["data-show", "style"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
 var tasks = [];
@@ -18455,7 +18564,7 @@ function onResize() {
   tasks.push(setTimeout(() => {
     tasks.forEach((task) => clearTimeout(task));
     tasks.length = 0;
-    const {windowWidth, windowHeight, screenWidth, screenHeight} = uni.getSystemInfoSync();
+    const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
     var landscape = Math.abs(Number(window.orientation)) === 90;
     var deviceOrientation = landscape ? "landscape" : "portrait";
     UniServiceJSBridge.invokeOnCallback(API_ON_WINDOW_RESIZE, {
@@ -18475,7 +18584,7 @@ const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
 const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
   window.removeEventListener("resize", onResize);
 });
-const showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, {resolve, reject}) => {
+const showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
     reject();
@@ -18484,7 +18593,7 @@ const showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, {resol
   state2.apiShowTopWindow = true;
   nextTick(resolve);
 });
-const hideTopWindow = /* @__PURE__ */ defineAsyncApi("hideTopWindow", (_, {resolve, reject}) => {
+const hideTopWindow = /* @__PURE__ */ defineAsyncApi("hideTopWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
     reject();
@@ -18493,7 +18602,7 @@ const hideTopWindow = /* @__PURE__ */ defineAsyncApi("hideTopWindow", (_, {resol
   state2.apiShowTopWindow = false;
   nextTick(resolve);
 });
-const showLeftWindow = /* @__PURE__ */ defineAsyncApi("showLeftWindow", (_, {resolve, reject}) => {
+const showLeftWindow = /* @__PURE__ */ defineAsyncApi("showLeftWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
     reject();
@@ -18502,7 +18611,7 @@ const showLeftWindow = /* @__PURE__ */ defineAsyncApi("showLeftWindow", (_, {res
   state2.apiShowLeftWindow = true;
   nextTick(resolve);
 });
-const hideLeftWindow = /* @__PURE__ */ defineAsyncApi("hideLeftWindow", (_, {resolve, reject}) => {
+const hideLeftWindow = /* @__PURE__ */ defineAsyncApi("hideLeftWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
     reject();
@@ -18511,7 +18620,7 @@ const hideLeftWindow = /* @__PURE__ */ defineAsyncApi("hideLeftWindow", (_, {res
   state2.apiShowLeftWindow = false;
   nextTick(resolve);
 });
-const showRightWindow = /* @__PURE__ */ defineAsyncApi("showRightWindow", (_, {resolve, reject}) => {
+const showRightWindow = /* @__PURE__ */ defineAsyncApi("showRightWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
     reject();
@@ -18520,7 +18629,7 @@ const showRightWindow = /* @__PURE__ */ defineAsyncApi("showRightWindow", (_, {r
   state2.apiShowRightWindow = true;
   nextTick(resolve);
 });
-const hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, {resolve, reject}) => {
+const hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
     reject();
@@ -19137,14 +19246,17 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-map", {
         "ref": rootRef,
         "id": props2.id
-      }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
+      }, {
+        default: () => [createVNode("div", {
+          "ref": mapRef,
+          "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
+        }, null, 512), props2.markers.map((item) => item.id && createVNode(MapMarker, mergeProps({
+          "key": item.id
+        }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), createVNode("div", {
+          "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+        }, [slots.default && slots.default()])],
+        _: 1
+      }, 8, ["id"]);
     };
   }
 });
@@ -19188,10 +19300,12 @@ var index$5 = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-cover-view", {
         "scroll-top": props2.scrollTop
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-cover-view"
-      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+      }, {
+        default: () => [createVNode("div", {
+          "ref": content,
+          "class": "uni-cover-view"
+        }, [slots.default && slots.default()], 512)]
+      }, 8, ["scroll-top"]);
     };
   }
 });
@@ -19225,17 +19339,19 @@ var index$4 = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-cover-image", {
         "ref": root,
         "src": src
-      }, [createVNode("div", {
-        "class": "uni-cover-image"
-      }, [src ? createVNode("img", {
-        "src": getRealPath(src),
-        "onLoad": load,
-        "onError": error
-      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-cover-image"
+        }, [src ? createVNode("img", {
+          "src": getRealPath(src),
+          "onLoad": load,
+          "onError": error
+        }, null, 40, ["src", "onLoad", "onError"]) : null])]
+      }, 8, ["src"]);
     };
   }
 });
-function _isSlot(s) {
+function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 function getDefaultStartValue(props2) {
@@ -19442,83 +19558,86 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, booleanAttrs, {
         "onClick": withWebEvent(_show)
-      }), [createVNode("div", {
-        "ref": pickerRef,
-        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
-        "onWheel": onEventPrevent,
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-picker-mask",
-          "onClick": withWebEvent(_cancel),
-          "onMousemove": _fixInputPosition
-        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
-      }), !system.value ? createVNode("div", {
-        "class": [{
-          "uni-picker-toggle": visible
-        }, "uni-picker-custom"],
-        "style": popupStyle.content
-      }, [createVNode("div", {
-        "class": "uni-picker-header",
-        "onClick": onEventStop
-      }, [createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-cancel",
-        "onClick": withWebEvent(_cancel)
-      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-confirm",
-        "onClick": _change
-      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
-        "value": _l10nColumn(valueArray),
-        "class": "uni-picker-content",
-        "onChange": _pickerViewChange
-      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
-        let _slot;
-        return createVNode(PickerViewColumn, {
-          "key": index0
-        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
-          "key": index2,
-          "class": "uni-picker-item"
-        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
-          default: () => [_slot],
+      }), {
+        default: () => [createVNode("div", {
+          "ref": pickerRef,
+          "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
+          "onWheel": onEventPrevent,
+          "onTouchmove": onEventPrevent
+        }, [createVNode(Transition, {
+          "name": "uni-fade"
+        }, {
+          default: () => [withDirectives(createVNode("div", {
+            "class": "uni-mask uni-picker-mask",
+            "onClick": withWebEvent(_cancel),
+            "onMousemove": _fixInputPosition
+          }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
+        }), !system.value ? createVNode("div", {
+          "class": [{
+            "uni-picker-toggle": visible
+          }, "uni-picker-custom"],
+          "style": popupStyle.content
+        }, [createVNode("div", {
+          "class": "uni-picker-header",
+          "onClick": onEventStop
+        }, [createVNode("div", {
+          "class": "uni-picker-action uni-picker-action-cancel",
+          "onClick": withWebEvent(_cancel)
+        }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
+          "class": "uni-picker-action uni-picker-action-confirm",
+          "onClick": _change
+        }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
+          "value": _l10nColumn(valueArray),
+          "class": "uni-picker-content",
+          "onChange": _pickerViewChange
+        }, _isSlot$1(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
+          let _slot;
+          return createVNode(PickerViewColumn, {
+            "key": index0
+          }, _isSlot$1(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
+            "key": index2,
+            "class": "uni-picker-item"
+          }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
+            default: () => [_slot],
+            _: 1
+          });
+        })) ? _slot2 : {
+          default: () => [_slot2],
           _: 1
-        });
-      })) ? _slot2 : {
-        default: () => [_slot2],
+        }, 8, ["value", "onChange"]) : null, createVNode("div", {
+          "ref": selectRef,
+          "class": "uni-picker-select",
+          "onWheel": onEventStop,
+          "onTouchmove": onEventStop
+        }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
+          "key": index2,
+          "class": ["uni-picker-item", {
+            selected: valueArray[0] === index2
+          }],
+          "onClick": () => {
+            valueArray[0] = index2;
+            _change();
+          }
+        }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
+          "style": popupStyle.triangle
+        }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]), createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+          "class": "uni-picker-system",
+          "onMousemove": withWebEvent(_fixInputPosition)
+        }, [createVNode("input", {
+          "class": ["uni-picker-system_input", system.value],
+          "ref": inputRef,
+          "value": valueSync,
+          "type": mode2,
+          "tabindex": "-1",
+          "min": start,
+          "max": end,
+          "onChange": ($event) => {
+            _input($event);
+            onEventStop($event);
+          }
+        }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null],
         _: 1
-      }, 8, ["value", "onChange"]) : null, createVNode("div", {
-        "ref": selectRef,
-        "class": "uni-picker-select",
-        "onWheel": onEventStop,
-        "onTouchmove": onEventStop
-      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
-        "key": index2,
-        "class": ["uni-picker-item", {
-          selected: valueArray[0] === index2
-        }],
-        "onClick": () => {
-          valueArray[0] = index2;
-          _change();
-        }
-      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
-        "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]), createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
-        "class": "uni-picker-system",
-        "onMousemove": withWebEvent(_fixInputPosition)
-      }, [createVNode("input", {
-        "class": ["uni-picker-system_input", system.value],
-        "ref": inputRef,
-        "value": valueSync,
-        "type": mode2,
-        "tabindex": "-1",
-        "min": start,
-        "max": end,
-        "onChange": ($event) => {
-          _input($event);
-          onEventStop($event);
-        }
-      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
+      }, 16, ["onClick"]);
     };
   }
 });
@@ -19986,7 +20105,7 @@ function hexToRgba(hex) {
     g2 = hex.substring(1, 2);
     b = hex.substring(2, 3);
   } else {
-    return {r: 0, g: 0, b: 0};
+    return { r: 0, g: 0, b: 0 };
   }
   if (r.length === 1) {
     r += r;
@@ -20007,12 +20126,12 @@ function hexToRgba(hex) {
   };
 }
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
-  const {r, g: g2, b} = hexToRgba(backgroundColor);
+  const { r, g: g2, b } = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;
 }
 function usePageHeadTransparent(headRef, {
   id: id2,
-  navigationBar: {titleColor, coverage, backgroundColor}
+  navigationBar: { titleColor, coverage, backgroundColor }
 }) {
   let A = 0;
   const rgb = computed(() => hexToRgba(backgroundColor));
@@ -20037,7 +20156,7 @@ function usePageHeadTransparent(headRef, {
       borderRadiusElemsStyles.push(borderRadiusElem.style);
     }
   });
-  useOn(id2 + ".onPageScroll", ({scrollTop}) => {
+  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
     const alpha = Math.min(scrollTop / offset, 1);
     if (alpha === 1 && A === 1) {
       return;
@@ -20101,15 +20220,18 @@ var PageHead = /* @__PURE__ */ defineSystemComponent({
       }, null, 2);
       return createVNode("uni-page-head", {
         "uni-page-head-type": type
-      }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+      }, {
+        default: () => [createVNode("div", {
+          "ref": headRef,
+          "class": clazz2.value,
+          "style": style.value
+        }, [createVNode("div", {
+          "class": "uni-page-head-hd"
+        }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
+          "class": "uni-page-head-ft"
+        }, [...rightButtonsTsx])], 6), placeholderTsx],
+        _: 2
+      }, 8, ["uni-page-head-type"]);
     };
   }
 });
@@ -20411,15 +20533,15 @@ function usePageHeadSearchInput({
 var _sfc_main = {
   name: "PageRefresh",
   setup() {
-    const {refreshOptions} = usePageMeta();
+    const { refreshOptions } = usePageMeta();
     return {
       offset: refreshOptions.offset,
       color: refreshOptions.color
     };
   }
 };
-const _hoisted_1 = {class: "uni-page-refresh-inner"};
-const _hoisted_2 = /* @__PURE__ */ createVNode("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}, null, -1);
+const _hoisted_1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2 = /* @__PURE__ */ createVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
 const _hoisted_3 = /* @__PURE__ */ createVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
@@ -20433,7 +20555,7 @@ const _hoisted_4 = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock("uni-page-refresh", null, [
     createVNode("div", {
-      style: {"margin-top": $setup.offset + "px"},
+      style: { "margin-top": $setup.offset + "px" },
       class: "uni-page-refresh"
     }, [
       createVNode("div", _hoisted_1, [
@@ -20478,8 +20600,8 @@ const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
 function usePageRefresh(refreshRef) {
-  const {id: id2, refreshOptions} = usePageMeta();
-  const {range, height} = refreshOptions;
+  const { id: id2, refreshOptions } = usePageMeta();
+  const { range, height } = refreshOptions;
   let refreshContainerElem;
   let refreshControllerElem;
   let refreshControllerElemStyle;
@@ -20562,7 +20684,7 @@ function usePageRefresh(refreshRef) {
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }
-    let {deltaY} = ev;
+    let { deltaY } = ev;
     if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
       touchId = null;
       return;
@@ -20662,6 +20784,9 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
 var PageBody = defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -20669,8 +20794,14 @@ var PageBody = defineSystemComponent({
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
     const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
     return () => {
+      let _slot;
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, {
+        default: () => [createVNode("uni-page-body", null, _isSlot(_slot = renderSlot(ctx.slots, "default")) ? _slot : {
+          default: () => [_slot],
+          _: 1
+        })]
+      }, 16)]);
     };
   }
 });
@@ -20692,7 +20823,7 @@ var index$2 = defineSystemComponent({
   }
 });
 function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(PageBody, {key: 0}, {
+  return openBlock(), createBlock(PageBody, { key: 0 }, {
     default: withCtx(() => [renderSlot(ctx.slots, "page")]),
     _: 3
   });
@@ -20713,12 +20844,12 @@ var index$1 = /* @__PURE__ */ defineSystemComponent({
     }, [t2("uni.async.error")], 8, ["onClick"]);
   }
 });
-const clazz = {class: "uni-async-loading"};
-const loadingVNode = /* @__PURE__ */ createVNode("i", {class: "uni-loading"}, null, -1);
+const clazz = { class: "uni-async-loading" };
+const loadingVNode = /* @__PURE__ */ createVNode("i", { class: "uni-loading" }, null, -1);
 var index = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
   render() {
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export {$emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$r as Canvas, index$p as Checkbox, index$q as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$o as Editor, index$u as Form, Friction, index$n as Icon, index$m as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$l as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$k as Progress, index$i as Radio, index$j as RadioGroup, ResizeSensor, index$h as RichText, ScrollView, Scroller, index$g as Slider, Spring, Swiper, SwiperItem, index$f as Switch, index$e as Text, index$d as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$c as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTabBar, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent};
+export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$r as Canvas, index$p as Checkbox, index$q as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$o as Editor, index$u as Form, Friction, index$n as Icon, index$m as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$l as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$k as Progress, index$i as Radio, index$j as RadioGroup, ResizeSensor, index$h as RichText, ScrollView, Scroller, index$g as Slider, Spring, Swiper, SwiperItem, index$f as Switch, index$e as Text, index$d as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$c as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTabBar, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent };
