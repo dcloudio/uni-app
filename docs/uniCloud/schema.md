@@ -442,6 +442,10 @@ enum支持3种数据格式：
 ```
 
 
+**注意**
+
+- enum内对普通的二维数据表枚举时，此表数据不可超过500条
+
 #### 默认值defaultValue/forceDefaultValue@defaultvalue
 
 - defaultValue指定新增时当前字段默认值，客户端可以修改此值。
