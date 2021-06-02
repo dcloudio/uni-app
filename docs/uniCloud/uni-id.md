@@ -597,7 +597,7 @@ exports.main = async function(event,context) {
 // 云函数logout代码
 const uniID = require('uni-id')
 exports.main = async function(event,context) {
-	const res = await uniID.logout(uniIdToken)
+	const res = await uniID.logout(event.uniIdToken)
 	return res
 }
 
