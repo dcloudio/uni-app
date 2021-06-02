@@ -1,8 +1,39 @@
+export {
+  Audio,
+  Button,
+  Canvas,
+  Checkbox,
+  CheckboxGroup,
+  Editor,
+  Form,
+  Icon,
+  Image,
+  Input,
+  Label,
+  MovableArea,
+  MovableView,
+  Navigator,
+  PickerView,
+  PickerViewColumn,
+  Progress,
+  Radio,
+  RadioGroup,
+  ResizeSensor,
+  RichText,
+  ScrollView,
+  Slider,
+  Swiper,
+  SwiperItem,
+  Switch,
+  Text,
+  Textarea,
+  View,
+} from '@dcloudio/uni-components'
+
 export { default as plugin } from './framework/plugin'
 
 export * from './framework/setup'
 
-export * from '@dcloudio/uni-components'
 export * from './view/components'
 
 export * from './view/bridge'

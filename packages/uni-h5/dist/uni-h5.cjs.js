@@ -2,23 +2,232 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports[Symbol.toStringTag] = "Module";
 var shared = require("@vue/shared");
-var vue = require("vue");
 var uniShared = require("@dcloudio/uni-shared");
+var vue = require("vue");
 var uniI18n = require("@dcloudio/uni-i18n");
 var vueRouter = require("vue-router");
-function applyOptions(options, instance, publicThis) {
-  Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
-      const hook = options[name];
-      if (shared.isFunction(hook)) {
-        vue.injectHook(name, hook.bind(publicThis), instance);
+var subscriber = {
+  mounted() {
+    this._toggleListeners("subscribe", this.id);
+    this.$watch("id", (newId, oldId) => {
+      this._toggleListeners("unsubscribe", oldId, true);
+      this._toggleListeners("subscribe", newId, true);
+    });
+  },
+  beforeDestroy() {
+    this._toggleListeners("unsubscribe", this.id);
+    if (this._contextId) {
+      this._toggleListeners("unsubscribe", this._contextId);
+    }
+  },
+  methods: {
+    _toggleListeners(type, id, watch) {
+      if (watch && !id) {
+        return;
+      }
+      if (!shared.isFunction(this._handleSubscribe)) {
+        return;
+      }
+      UniViewJSBridge[type](this.$page.id + "-" + this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + id, this._handleSubscribe);
+    },
+    _getContextInfo() {
+      const id = `context-${this._uid}`;
+      if (!this._contextId) {
+        this._toggleListeners("subscribe", id);
+        this._contextId = id;
+      }
+      return {
+        name: this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase(),
+        id,
+        page: this.$page.id
+      };
+    }
+  }
+};
+function throttle(fn, wait) {
+  let last = 0;
+  let timeout;
+  let waitCallback;
+  const newFn = function(...arg) {
+    const now = Date.now();
+    clearTimeout(timeout);
+    waitCallback = () => {
+      waitCallback = null;
+      last = now;
+      fn.apply(this, arg);
+    };
+    if (now - last < wait) {
+      timeout = setTimeout(waitCallback, wait - (now - last));
+      return;
+    }
+    waitCallback();
+  };
+  newFn.cancel = function() {
+    clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
+  };
+  return newFn;
+}
+const _sfc_main$1 = {
+  name: "Audio",
+  mixins: [subscriber],
+  props: {
+    id: {
+      type: String,
+      default: ""
+    },
+    src: {
+      type: String,
+      default: ""
+    },
+    loop: {
+      type: [Boolean, String],
+      default: false
+    },
+    controls: {
+      type: [Boolean, String],
+      default: false
+    },
+    poster: {
+      type: String,
+      default: ""
+    },
+    name: {
+      type: String,
+      default: ""
+    },
+    author: {
+      type: String,
+      default: ""
+    }
+  },
+  data() {
+    return {
+      playing: false,
+      currentTime: this.getTime(0)
+    };
+  },
+  watch: {
+    src(val) {
+      if (this.$refs.audio) {
+        this.$refs.audio.src = this.$getRealPath(val);
       }
     }
-  });
+  },
+  mounted() {
+    const audio = this.$refs.audio;
+    audio.addEventListener("error", ($event) => {
+      this.playing = false;
+      this.$trigger("error", $event, {});
+    });
+    audio.addEventListener("play", ($event) => {
+      this.playing = true;
+      this.$trigger("play", $event, {});
+    });
+    audio.addEventListener("pause", ($event) => {
+      this.playing = false;
+      this.$trigger("pause", $event, {});
+    });
+    audio.addEventListener("ended", ($event) => {
+      this.playing = false;
+      this.$trigger("ended", $event, {});
+    });
+    audio.addEventListener("timeupdate", ($event) => {
+      var currentTime = audio.currentTime;
+      this.currentTime = this.getTime(currentTime);
+      var duration = audio.duration;
+      this.$trigger("timeupdate", $event, {
+        currentTime,
+        duration
+      });
+    });
+    audio.src = this.$getRealPath(this.src);
+  },
+  methods: {
+    _handleSubscribe({
+      type,
+      data = {}
+    }) {
+      var audio = this.$refs.audio;
+      switch (type) {
+        case "setSrc":
+          audio.src = this.$getRealPath(data.src);
+          this.$emit("update:src", data.src);
+          break;
+        case "play":
+          audio.play();
+          break;
+        case "pause":
+          audio.pause();
+          break;
+        case "seek":
+          audio.currentTime = data.position;
+          break;
+      }
+    },
+    trigger() {
+      if (this.playing) {
+        this.$refs.audio.pause();
+      } else {
+        this.$refs.audio.play();
+      }
+    },
+    getTime(time) {
+      var h = Math.floor(time / 3600);
+      var m = Math.floor(time % 3600 / 60);
+      var s = Math.floor(time % 3600 % 60);
+      h = (h < 10 ? "0" : "") + h;
+      m = (m < 10 ? "0" : "") + m;
+      s = (s < 10 ? "0" : "") + s;
+      var str = m + ":" + s;
+      if (h !== "00") {
+        str = h + ":" + str;
+      }
+      return str;
+    }
+  }
+};
+const _hoisted_1$1 = { class: "uni-audio-default" };
+const _hoisted_2$1 = { class: "uni-audio-right" };
+const _hoisted_3$1 = { class: "uni-audio-time" };
+const _hoisted_4$1 = { class: "uni-audio-info" };
+const _hoisted_5 = { class: "uni-audio-name" };
+const _hoisted_6 = { class: "uni-audio-author" };
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
+    id: $props.id,
+    controls: !!$props.controls
+  }, _ctx.$attrs), [
+    vue.createVNode("audio", {
+      ref: "audio",
+      loop: $props.loop,
+      style: { "display": "none" }
+    }, null, 8, ["loop"]),
+    vue.createVNode("div", _hoisted_1$1, [
+      vue.createVNode("div", {
+        style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
+        class: "uni-audio-left"
+      }, [
+        vue.createVNode("div", {
+          class: [{ play: !$data.playing, pause: $data.playing }, "uni-audio-button"],
+          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
+        }, null, 2)
+      ], 4),
+      vue.createVNode("div", _hoisted_2$1, [
+        vue.createVNode("div", _hoisted_3$1, vue.toDisplayString($data.currentTime), 1),
+        vue.createVNode("div", _hoisted_4$1, [
+          vue.createVNode("div", _hoisted_5, vue.toDisplayString($props.name), 1),
+          vue.createVNode("div", _hoisted_6, vue.toDisplayString($props.author), 1)
+        ])
+      ])
+    ])
+  ], 16, ["id", "controls"]);
 }
-function set(target, key, val) {
-  return target[key] = val;
-}
+_sfc_main$1.render = _sfc_render$1;
 let i18n$1;
 function useI18n() {
   if (!i18n$1) {
@@ -352,679 +561,6 @@ function invokeHook(vm, name, args) {
   const hooks = vm.$[name];
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
-function errorHandler(err, instance, info) {
-  if (!instance) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, "onError", err);
-  }
-}
-function initApp$1(app) {
-  const appConfig = app._context.config;
-  if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
-  const globalProperties = appConfig.globalProperties;
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-  }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return vue.inject(pageMetaKey);
-}
-function providePageMeta(id) {
-  const pageMeta = initPageMeta(id);
-  vue.provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return vueRouter.useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
-  }
-  const { meta } = __uniRoutes[0];
-  return {
-    meta,
-    query,
-    path: "/" + meta.route
-  };
-}
-function initPageMeta(id) {
-  if (__UNI_FEATURE_PAGES__) {
-    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, vueRouter.useRoute().meta)))));
-  }
-  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
-];
-function mergePageMeta(id, pageMeta) {
-  const res = shared.extend({ id }, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = shared.extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
-  });
-  return res;
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    if (enablePullDownRefresh) {
-      const refreshOptions = shared.extend({
-        support: true,
-        color: "#2BD009",
-        style: "circle",
-        height: 70,
-        range: 150,
-        offset: 0
-      }, pageMeta.refreshOptions);
-      let offset = rpx2px(refreshOptions.offset);
-      const { type } = navigationBar;
-      if (type !== "transparent" && type !== "none") {
-        offset += uniShared.NAVBAR_HEIGHT + 0;
-      }
-      refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
-      pageMeta.refreshOptions = refreshOptions;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.backButton = pageMeta.isQuit ? false : true;
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#fff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
-  }
-  return pageMeta;
-}
-function getStateId() {
-  {
-    return 1;
-  }
-}
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && vue.reactive(__uniConfig.tabBar);
-  }
-  return tabBar;
-}
-const HTTP_METHODS = [
-  "GET",
-  "OPTIONS",
-  "HEAD",
-  "POST",
-  "PUT",
-  "DELETE",
-  "TRACE",
-  "CONNECT"
-];
-function elemInArray(str, arr) {
-  if (!str || arr.indexOf(str) === -1) {
-    return arr[0];
-  }
-  return str;
-}
-function validateProtocolFail(name, msg) {
-  console.warn(`${name}: ${msg}`);
-}
-function validateProtocol(name, data, protocol, onFail) {
-  if (!onFail) {
-    onFail = validateProtocolFail;
-  }
-  for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
-    if (shared.isString(errMsg)) {
-      onFail(name, errMsg);
-    }
-  }
-}
-function validateProtocols(name, args, protocol, onFail) {
-  if (!protocol) {
-    return;
-  }
-  if (!shared.isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
-  }
-  const len = protocol.length;
-  const argsLen = args.length;
-  for (let i = 0; i < len; i++) {
-    const opts = protocol[i];
-    const data = Object.create(null);
-    if (argsLen > i) {
-      data[opts.name] = args[i];
-    }
-    validateProtocol(name, data, { [opts.name]: opts }, onFail);
-  }
-}
-function validateProp(name, value, prop, isAbsent) {
-  if (!shared.isPlainObject(prop)) {
-    prop = { type: prop };
-  }
-  const { type, required, validator } = prop;
-  if (required && isAbsent) {
-    return 'Missing required args: "' + name + '"';
-  }
-  if (value == null && !required) {
-    return;
-  }
-  if (type != null) {
-    let isValid = false;
-    const types = shared.isArray(type) ? type : [type];
-    const expectedTypes = [];
-    for (let i = 0; i < types.length && !isValid; i++) {
-      const { valid, expectedType } = assertType(value, types[i]);
-      expectedTypes.push(expectedType || "");
-      isValid = valid;
-    }
-    if (!isValid) {
-      return getInvalidTypeMessage(name, value, expectedTypes);
-    }
-  }
-  if (validator) {
-    return validator(value);
-  }
-}
-const isSimpleType = /* @__PURE__ */ shared.makeMap("String,Number,Boolean,Function,Symbol");
-function assertType(value, type) {
-  let valid;
-  const expectedType = getType(type);
-  if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
-      valid = value instanceof type;
-    }
-  } else if (expectedType === "Object") {
-    valid = shared.isObject(value);
-  } else if (expectedType === "Array") {
-    valid = shared.isArray(value);
-  } else {
-    {
-      valid = value instanceof type;
-    }
-  }
-  return {
-    valid,
-    expectedType
-  };
-}
-function getInvalidTypeMessage(name, value, expectedTypes) {
-  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(shared.capitalize).join(", ")}`;
-  const expectedType = expectedTypes[0];
-  const receivedType = shared.toRawType(value);
-  const expectedValue = styleValue(value, expectedType);
-  const receivedValue = styleValue(value, receivedType);
-  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-    message += ` with value ${expectedValue}`;
-  }
-  message += `, got ${receivedType} `;
-  if (isExplicable(receivedType)) {
-    message += `with value ${receivedValue}.`;
-  }
-  return message;
-}
-function getType(ctor) {
-  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : "";
-}
-function styleValue(value, type) {
-  if (type === "String") {
-    return `"${value}"`;
-  } else if (type === "Number") {
-    return `${Number(value)}`;
-  } else {
-    return `${value}`;
-  }
-}
-function isExplicable(type) {
-  const explicitTypes = ["string", "number", "boolean"];
-  return explicitTypes.some((elem) => type.toLowerCase() === elem);
-}
-function isBoolean(...args) {
-  return args.some((elem) => elem.toLowerCase() === "boolean");
-}
-function tryCatch(fn) {
-  return function() {
-    try {
-      return fn.apply(fn, arguments);
-    } catch (e2) {
-      console.error(e2);
-    }
-  };
-}
-let invokeCallbackId = 1;
-const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback, keepAlive = false) {
-  invokeCallbacks[id] = {
-    name,
-    keepAlive,
-    callback
-  };
-  return id;
-}
-function invokeCallback(id, res, extras) {
-  if (typeof id === "number") {
-    const opts = invokeCallbacks[id];
-    if (opts) {
-      if (!opts.keepAlive) {
-        delete invokeCallbacks[id];
-      }
-      return opts.callback(res, extras);
-    }
-  }
-  return res;
-}
-const API_SUCCESS = "success";
-const API_FAIL = "fail";
-const API_COMPLETE = "complete";
-function getApiCallbacks(args) {
-  const apiCallbacks = {};
-  for (const name in args) {
-    const fn = args[name];
-    if (shared.isFunction(fn)) {
-      apiCallbacks[name] = tryCatch(fn);
-      delete args[name];
-    }
-  }
-  return apiCallbacks;
-}
-function normalizeErrMsg(errMsg, name) {
-  if (!errMsg || errMsg.indexOf(":fail") === -1) {
-    return name + ":ok";
-  }
-  return name + errMsg.substring(errMsg.indexOf(":fail"));
-}
-function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!shared.isPlainObject(args)) {
-    args = {};
-  }
-  const { success, fail, complete } = getApiCallbacks(args);
-  const hasSuccess = shared.isFunction(success);
-  const hasFail = shared.isFunction(fail);
-  const hasComplete = shared.isFunction(complete);
-  const callbackId = invokeCallbackId++;
-  addInvokeCallback(callbackId, name, (res) => {
-    res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
-    shared.isFunction(beforeAll) && beforeAll(res);
-    if (res.errMsg === name + ":ok") {
-      shared.isFunction(beforeSuccess) && beforeSuccess(res);
-      hasSuccess && success(res);
-    } else {
-      hasFail && fail(res);
-    }
-    hasComplete && complete(res);
-  });
-  return callbackId;
-}
-const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
-function hasCallback(args) {
-  if (shared.isPlainObject(args) && callbacks.find((cb) => shared.isFunction(args[cb]))) {
-    return true;
-  }
-  return false;
-}
-function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
-  return promise;
-}
-function promisify(fn) {
-  return (args = {}) => {
-    if (hasCallback(args)) {
-      return fn(args);
-    }
-    return handlePromise(new Promise((resolve, reject) => {
-      fn(shared.extend(args, { success: resolve, fail: reject }));
-    }));
-  };
-}
-function formatApiArgs(args, options) {
-  const params = args[0];
-  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
-    return;
-  }
-  const formatArgs = options.formatArgs;
-  const keys = Object.keys(formatArgs);
-  for (let i = 0; i < keys.length; i++) {
-    const name = keys[i];
-    const formatterOrDefaultValue = formatArgs[name];
-    if (shared.isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
-      if (shared.isString(errMsg)) {
-        return errMsg;
-      }
-    } else {
-      if (!shared.hasOwn(params, name)) {
-        params[name] = formatterOrDefaultValue;
-      }
-    }
-  }
-}
-function invokeSuccess(id, name, res) {
-  return invokeCallback(id, shared.extend(res || {}, { errMsg: name + ":ok" }));
-}
-function invokeFail(id, name, err) {
-  return invokeCallback(id, { errMsg: name + ":fail" + (err ? " " + err : "") });
-}
-function beforeInvokeApi(name, args, protocol, options) {
-  if (process.env.NODE_ENV !== "production") {
-    validateProtocols(name, args, protocol);
-  }
-  if (options && options.beforeInvoke) {
-    const errMsg2 = options.beforeInvoke(args);
-    if (shared.isString(errMsg2)) {
-      return errMsg2;
-    }
-  }
-  const errMsg = formatApiArgs(args, options);
-  if (errMsg) {
-    return errMsg;
-  }
-}
-function wrapperTaskApi(name, fn, protocol, options) {
-  return (args) => {
-    const id = createAsyncApiCallback(name, args, options);
-    const errMsg = beforeInvokeApi(name, [args], protocol, options);
-    if (errMsg) {
-      return invokeFail(id, name, errMsg);
-    }
-    return fn(args, {
-      resolve: (res) => invokeSuccess(id, name, res),
-      reject: (err) => invokeFail(id, name, err)
-    });
-  };
-}
-function wrapperSyncApi(name, fn, protocol, options) {
-  return (...args) => {
-    const errMsg = beforeInvokeApi(name, args, protocol, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    return fn.apply(null, args);
-  };
-}
-function wrapperAsyncApi(name, fn, protocol, options) {
-  return wrapperTaskApi(name, fn, protocol, options);
-}
-function defineTaskApi(name, fn, protocol, options) {
-  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function defineSyncApi(name, fn, protocol, options) {
-  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
-}
-function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-const baseUrl = __IMPORT_META_ENV_BASE_URL__;
-function addBase(filePath) {
-  return baseUrl + filePath;
-}
-function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
-  }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.substr(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
-  }
-  return filePath;
-}
-var subscriber = {
-  mounted() {
-    this._toggleListeners("subscribe", this.id);
-    this.$watch("id", (newId, oldId) => {
-      this._toggleListeners("unsubscribe", oldId, true);
-      this._toggleListeners("subscribe", newId, true);
-    });
-  },
-  beforeDestroy() {
-    this._toggleListeners("unsubscribe", this.id);
-    if (this._contextId) {
-      this._toggleListeners("unsubscribe", this._contextId);
-    }
-  },
-  methods: {
-    _toggleListeners(type, id, watch) {
-      if (watch && !id) {
-        return;
-      }
-      if (!shared.isFunction(this._handleSubscribe)) {
-        return;
-      }
-      UniViewJSBridge[type](this.$page.id + "-" + this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + id, this._handleSubscribe);
-    },
-    _getContextInfo() {
-      const id = `context-${this._uid}`;
-      if (!this._contextId) {
-        this._toggleListeners("subscribe", id);
-        this._contextId = id;
-      }
-      return {
-        name: this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase(),
-        id,
-        page: this.$page.id
-      };
-    }
-  }
-};
-function throttle(fn, wait) {
-  let last = 0;
-  let timeout;
-  let waitCallback;
-  const newFn = function(...arg) {
-    const now = Date.now();
-    clearTimeout(timeout);
-    waitCallback = () => {
-      waitCallback = null;
-      last = now;
-      fn.apply(this, arg);
-    };
-    if (now - last < wait) {
-      timeout = setTimeout(waitCallback, wait - (now - last));
-      return;
-    }
-    waitCallback();
-  };
-  newFn.cancel = function() {
-    clearTimeout(timeout);
-    waitCallback = null;
-  };
-  newFn.flush = function() {
-    clearTimeout(timeout);
-    waitCallback && waitCallback();
-  };
-  return newFn;
-}
-const _sfc_main$1 = {
-  name: "Audio",
-  mixins: [subscriber],
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    src: {
-      type: String,
-      default: ""
-    },
-    loop: {
-      type: [Boolean, String],
-      default: false
-    },
-    controls: {
-      type: [Boolean, String],
-      default: false
-    },
-    poster: {
-      type: String,
-      default: ""
-    },
-    name: {
-      type: String,
-      default: ""
-    },
-    author: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      playing: false,
-      currentTime: this.getTime(0)
-    };
-  },
-  watch: {
-    src(val) {
-      if (this.$refs.audio) {
-        this.$refs.audio.src = this.$getRealPath(val);
-      }
-    }
-  },
-  mounted() {
-    const audio = this.$refs.audio;
-    audio.addEventListener("error", ($event) => {
-      this.playing = false;
-      this.$trigger("error", $event, {});
-    });
-    audio.addEventListener("play", ($event) => {
-      this.playing = true;
-      this.$trigger("play", $event, {});
-    });
-    audio.addEventListener("pause", ($event) => {
-      this.playing = false;
-      this.$trigger("pause", $event, {});
-    });
-    audio.addEventListener("ended", ($event) => {
-      this.playing = false;
-      this.$trigger("ended", $event, {});
-    });
-    audio.addEventListener("timeupdate", ($event) => {
-      var currentTime = audio.currentTime;
-      this.currentTime = this.getTime(currentTime);
-      var duration = audio.duration;
-      this.$trigger("timeupdate", $event, {
-        currentTime,
-        duration
-      });
-    });
-    audio.src = this.$getRealPath(this.src);
-  },
-  methods: {
-    _handleSubscribe({
-      type,
-      data = {}
-    }) {
-      var audio = this.$refs.audio;
-      switch (type) {
-        case "setSrc":
-          audio.src = this.$getRealPath(data.src);
-          this.$emit("update:src", data.src);
-          break;
-        case "play":
-          audio.play();
-          break;
-        case "pause":
-          audio.pause();
-          break;
-        case "seek":
-          audio.currentTime = data.position;
-          break;
-      }
-    },
-    trigger() {
-      if (this.playing) {
-        this.$refs.audio.pause();
-      } else {
-        this.$refs.audio.play();
-      }
-    },
-    getTime(time) {
-      var h = Math.floor(time / 3600);
-      var m = Math.floor(time % 3600 / 60);
-      var s = Math.floor(time % 3600 % 60);
-      h = (h < 10 ? "0" : "") + h;
-      m = (m < 10 ? "0" : "") + m;
-      s = (s < 10 ? "0" : "") + s;
-      var str = m + ":" + s;
-      if (h !== "00") {
-        str = h + ":" + str;
-      }
-      return str;
-    }
-  }
-};
-const _hoisted_1$1 = { class: "uni-audio-default" };
-const _hoisted_2$1 = { class: "uni-audio-right" };
-const _hoisted_3$1 = { class: "uni-audio-time" };
-const _hoisted_4$1 = { class: "uni-audio-info" };
-const _hoisted_5 = { class: "uni-audio-name" };
-const _hoisted_6 = { class: "uni-audio-author" };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createBlock("uni-audio", vue.mergeProps({
-    id: $props.id,
-    controls: !!$props.controls
-  }, _ctx.$attrs), [
-    vue.createVNode("audio", {
-      ref: "audio",
-      loop: $props.loop,
-      style: { "display": "none" }
-    }, null, 8, ["loop"]),
-    vue.createVNode("div", _hoisted_1$1, [
-      vue.createVNode("div", {
-        style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
-        class: "uni-audio-left"
-      }, [
-        vue.createVNode("div", {
-          class: [{ play: !$data.playing, pause: $data.playing }, "uni-audio-button"],
-          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
-        }, null, 2)
-      ], 4),
-      vue.createVNode("div", _hoisted_2$1, [
-        vue.createVNode("div", _hoisted_3$1, vue.toDisplayString($data.currentTime), 1),
-        vue.createVNode("div", _hoisted_4$1, [
-          vue.createVNode("div", _hoisted_5, vue.toDisplayString($props.name), 1),
-          vue.createVNode("div", _hoisted_6, vue.toDisplayString($props.author), 1)
-        ])
-      ])
-    ])
-  ], 16, ["id", "controls"]);
-}
-_sfc_main$1.render = _sfc_render$1;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -1439,6 +975,578 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+const baseUrl = __IMPORT_META_ENV_BASE_URL__;
+function addBase(filePath) {
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  if (__uniConfig.router.base === "./") {
+    filePath = filePath.replace(/^\.\/static\//, "/static/");
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.substr(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentPages();
+  if (pages.length) {
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+  }
+  return filePath;
+}
+const HTTP_METHODS = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
+function elemInArray(str, arr) {
+  if (!str || arr.indexOf(str) === -1) {
+    return arr[0];
+  }
+  return str;
+}
+function validateProtocolFail(name, msg) {
+  console.warn(`${name}: ${msg}`);
+}
+function validateProtocol(name, data, protocol, onFail) {
+  if (!onFail) {
+    onFail = validateProtocolFail;
+  }
+  for (const key in protocol) {
+    const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
+    if (shared.isString(errMsg)) {
+      onFail(name, errMsg);
+    }
+  }
+}
+function validateProtocols(name, args, protocol, onFail) {
+  if (!protocol) {
+    return;
+  }
+  if (!shared.isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+  }
+  const len = protocol.length;
+  const argsLen = args.length;
+  for (let i = 0; i < len; i++) {
+    const opts = protocol[i];
+    const data = Object.create(null);
+    if (argsLen > i) {
+      data[opts.name] = args[i];
+    }
+    validateProtocol(name, data, { [opts.name]: opts }, onFail);
+  }
+}
+function validateProp(name, value, prop, isAbsent) {
+  if (!shared.isPlainObject(prop)) {
+    prop = { type: prop };
+  }
+  const { type, required, validator } = prop;
+  if (required && isAbsent) {
+    return 'Missing required args: "' + name + '"';
+  }
+  if (value == null && !required) {
+    return;
+  }
+  if (type != null) {
+    let isValid = false;
+    const types = shared.isArray(type) ? type : [type];
+    const expectedTypes = [];
+    for (let i = 0; i < types.length && !isValid; i++) {
+      const { valid, expectedType } = assertType(value, types[i]);
+      expectedTypes.push(expectedType || "");
+      isValid = valid;
+    }
+    if (!isValid) {
+      return getInvalidTypeMessage(name, value, expectedTypes);
+    }
+  }
+  if (validator) {
+    return validator(value);
+  }
+}
+const isSimpleType = /* @__PURE__ */ shared.makeMap("String,Number,Boolean,Function,Symbol");
+function assertType(value, type) {
+  let valid;
+  const expectedType = getType(type);
+  if (isSimpleType(expectedType)) {
+    const t2 = typeof value;
+    valid = t2 === expectedType.toLowerCase();
+    if (!valid && t2 === "object") {
+      valid = value instanceof type;
+    }
+  } else if (expectedType === "Object") {
+    valid = shared.isObject(value);
+  } else if (expectedType === "Array") {
+    valid = shared.isArray(value);
+  } else {
+    {
+      valid = value instanceof type;
+    }
+  }
+  return {
+    valid,
+    expectedType
+  };
+}
+function getInvalidTypeMessage(name, value, expectedTypes) {
+  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(shared.capitalize).join(", ")}`;
+  const expectedType = expectedTypes[0];
+  const receivedType = shared.toRawType(value);
+  const expectedValue = styleValue(value, expectedType);
+  const receivedValue = styleValue(value, receivedType);
+  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+    message += ` with value ${expectedValue}`;
+  }
+  message += `, got ${receivedType} `;
+  if (isExplicable(receivedType)) {
+    message += `with value ${receivedValue}.`;
+  }
+  return message;
+}
+function getType(ctor) {
+  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+  return match ? match[1] : "";
+}
+function styleValue(value, type) {
+  if (type === "String") {
+    return `"${value}"`;
+  } else if (type === "Number") {
+    return `${Number(value)}`;
+  } else {
+    return `${value}`;
+  }
+}
+function isExplicable(type) {
+  const explicitTypes = ["string", "number", "boolean"];
+  return explicitTypes.some((elem) => type.toLowerCase() === elem);
+}
+function isBoolean(...args) {
+  return args.some((elem) => elem.toLowerCase() === "boolean");
+}
+function tryCatch(fn) {
+  return function() {
+    try {
+      return fn.apply(fn, arguments);
+    } catch (e2) {
+      console.error(e2);
+    }
+  };
+}
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+  invokeCallbacks[id] = {
+    name,
+    keepAlive,
+    callback
+  };
+  return id;
+}
+function invokeCallback(id, res, extras) {
+  if (typeof id === "number") {
+    const opts = invokeCallbacks[id];
+    if (opts) {
+      if (!opts.keepAlive) {
+        delete invokeCallbacks[id];
+      }
+      return opts.callback(res, extras);
+    }
+  }
+  return res;
+}
+const API_SUCCESS = "success";
+const API_FAIL = "fail";
+const API_COMPLETE = "complete";
+function getApiCallbacks(args) {
+  const apiCallbacks = {};
+  for (const name in args) {
+    const fn = args[name];
+    if (shared.isFunction(fn)) {
+      apiCallbacks[name] = tryCatch(fn);
+      delete args[name];
+    }
+  }
+  return apiCallbacks;
+}
+function normalizeErrMsg(errMsg, name) {
+  if (!errMsg || errMsg.indexOf(":fail") === -1) {
+    return name + ":ok";
+  }
+  return name + errMsg.substring(errMsg.indexOf(":fail"));
+}
+function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
+  if (!shared.isPlainObject(args)) {
+    args = {};
+  }
+  const { success, fail, complete } = getApiCallbacks(args);
+  const hasSuccess = shared.isFunction(success);
+  const hasFail = shared.isFunction(fail);
+  const hasComplete = shared.isFunction(complete);
+  const callbackId = invokeCallbackId++;
+  addInvokeCallback(callbackId, name, (res) => {
+    res = res || {};
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    shared.isFunction(beforeAll) && beforeAll(res);
+    if (res.errMsg === name + ":ok") {
+      shared.isFunction(beforeSuccess) && beforeSuccess(res);
+      hasSuccess && success(res);
+    } else {
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  return callbackId;
+}
+const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
+function hasCallback(args) {
+  if (shared.isPlainObject(args) && callbacks.find((cb) => shared.isFunction(args[cb]))) {
+    return true;
+  }
+  return false;
+}
+function handlePromise(promise) {
+  if (__UNI_FEATURE_PROMISE__) {
+    return promise.then((data) => {
+      return [null, data];
+    }).catch((err) => [err]);
+  }
+  return promise;
+}
+function promisify(fn) {
+  return (args = {}) => {
+    if (hasCallback(args)) {
+      return fn(args);
+    }
+    return handlePromise(new Promise((resolve, reject) => {
+      fn(shared.extend(args, { success: resolve, fail: reject }));
+    }));
+  };
+}
+function formatApiArgs(args, options) {
+  const params = args[0];
+  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+    return;
+  }
+  const formatArgs = options.formatArgs;
+  const keys = Object.keys(formatArgs);
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i];
+    const formatterOrDefaultValue = formatArgs[name];
+    if (shared.isFunction(formatterOrDefaultValue)) {
+      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      if (shared.isString(errMsg)) {
+        return errMsg;
+      }
+    } else {
+      if (!shared.hasOwn(params, name)) {
+        params[name] = formatterOrDefaultValue;
+      }
+    }
+  }
+}
+function invokeSuccess(id, name, res) {
+  return invokeCallback(id, shared.extend(res || {}, { errMsg: name + ":ok" }));
+}
+function invokeFail(id, name, err) {
+  return invokeCallback(id, { errMsg: name + ":fail" + (err ? " " + err : "") });
+}
+function beforeInvokeApi(name, args, protocol, options) {
+  if (process.env.NODE_ENV !== "production") {
+    validateProtocols(name, args, protocol);
+  }
+  if (options && options.beforeInvoke) {
+    const errMsg2 = options.beforeInvoke(args);
+    if (shared.isString(errMsg2)) {
+      return errMsg2;
+    }
+  }
+  const errMsg = formatApiArgs(args, options);
+  if (errMsg) {
+    return errMsg;
+  }
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+  return (args) => {
+    const id = createAsyncApiCallback(name, args, options);
+    const errMsg = beforeInvokeApi(name, [args], protocol, options);
+    if (errMsg) {
+      return invokeFail(id, name, errMsg);
+    }
+    return fn(args, {
+      resolve: (res) => invokeSuccess(id, name, res),
+      reject: (err) => invokeFail(id, name, err)
+    });
+  };
+}
+function wrapperSyncApi(name, fn, protocol, options) {
+  return (...args) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
+function wrapperAsyncApi(name, fn, protocol, options) {
+  return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+const API_UPX2PX = "upx2px";
+const Upx2pxProtocol = [
+  {
+    name: "upx",
+    type: [Number, String],
+    required: true
+  }
+];
+const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+  {
+    return number;
+  }
+}, Upx2pxProtocol);
+const canvasEventCallbacks = createCallbacks("canvasEvent");
+ServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
+  const callback = canvasEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
+ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
+  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+  if (callback) {
+    callback(data);
+  }
+});
+const API_GET_STORAGE = "getStorage";
+const GetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  }
+};
+const API_GET_STORAGE_SYNC = "getStorageSync";
+const GetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  }
+];
+const API_SET_STORAGE = "setStorage";
+const SetStorageProtocol = {
+  key: {
+    type: String,
+    required: true
+  },
+  data: {
+    required: true
+  }
+};
+const API_SET_STORAGE_SYNC = "setStorageSync";
+const SetStorageSyncProtocol = [
+  {
+    name: "key",
+    type: String,
+    required: true
+  },
+  {
+    name: "data",
+    required: true
+  }
+];
+const API_REMOVE_STORAGE = "removeStorage";
+const RemoveStorageProtocol = GetStorageProtocol;
+const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
+const API_REQUEST = "request";
+const dataType = {
+  JSON: "json"
+};
+const RESPONSE_TYPE = ["text", "arraybuffer"];
+const DEFAULT_RESPONSE_TYPE = "text";
+const encode = encodeURIComponent;
+function stringifyQuery(url, data) {
+  let str = url.split("#");
+  const hash = str[1] || "";
+  str = str[0].split("?");
+  let query = str[1] || "";
+  url = str[0];
+  const search = query.split("&").filter((item) => item);
+  const params = {};
+  search.forEach((item) => {
+    const part = item.split("=");
+    params[part[0]] = part[1];
+  });
+  for (const key in data) {
+    if (shared.hasOwn(data, key)) {
+      let v2 = data[key];
+      if (typeof v2 === "undefined" || v2 === null) {
+        v2 = "";
+      } else if (shared.isPlainObject(v2)) {
+        v2 = JSON.stringify(v2);
+      }
+      params[encode(key)] = encode(v2);
+    }
+  }
+  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
+  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
+}
+const RequestProtocol = {
+  method: String,
+  data: [Object, String, Array, ArrayBuffer],
+  url: {
+    type: String,
+    required: true
+  },
+  header: Object,
+  dataType: String,
+  responseType: String,
+  withCredentials: Boolean
+};
+const RequestOptions = {
+  formatArgs: {
+    method(value, params) {
+      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+    },
+    data(value, params) {
+      params.data = value || "";
+    },
+    url(value, params) {
+      if (params.method === HTTP_METHODS[0] && shared.isPlainObject(params.data) && Object.keys(params.data).length) {
+        params.url = stringifyQuery(value, params.data);
+      }
+    },
+    header(value, params) {
+      const header = params.header = value || {};
+      if (params.method !== HTTP_METHODS[0]) {
+        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+          header["Content-Type"] = "application/json";
+        }
+      }
+    },
+    dataType(value, params) {
+      params.dataType = (value || dataType.JSON).toLowerCase();
+    },
+    responseType(value, params) {
+      params.responseType = (value || "").toLowerCase();
+      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+        params.responseType = DEFAULT_RESPONSE_TYPE;
+      }
+    }
+  }
+};
+const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+const SetNavigationBarTitleProtocol = {
+  title: {
+    type: String,
+    required: true
+  }
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
+const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+function saveImage(base64, dirname, callback) {
+  callback(null, base64);
+}
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, { type });
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (shared.hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a = document.createElement("a");
+  a.href = url;
+  if (a.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
 var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -3181,10 +3289,6 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
-function initScrollBounce() {
-}
-function disableScrollBounce({ disable }) {
-}
 function flatVNode(nodes) {
   const array = [];
   if (Array.isArray(nodes)) {
@@ -3407,122 +3511,19 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const addListenerToElement = function(element, type, callback, capture) {
-  element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
-      if (callback($event) === false) {
-        if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
-          $event.preventDefault();
-        }
-        $event.stopPropagation();
-      }
-    }
-  }, {
-    passive: false
-  });
-};
-function useTouchtrack(element, method, useCancel) {
-  let x0 = 0;
-  let y0 = 0;
-  let x1 = 0;
-  let y1 = 0;
-  const fn = function($event, state, x, y) {
-    if (method({
-      target: $event.target,
-      currentTarget: $event.currentTarget,
-      preventDefault: $event.preventDefault.bind($event),
-      stopPropagation: $event.stopPropagation.bind($event),
-      touches: $event.touches,
-      changedTouches: $event.changedTouches,
-      detail: {
-        state,
-        x,
-        y,
-        dx: x - x0,
-        dy: y - y0,
-        ddx: x - x1,
-        ddy: y - y1,
-        timeStamp: $event.timeStamp
-      }
-    }) === false) {
-      return false;
-    }
-  };
-  let $eventOld = null;
-  let hasTouchStart;
-  let hasMouseDown;
-  addListenerToElement(element, "touchstart", function($event) {
-    hasTouchStart = true;
-    if ($event.touches.length === 1 && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.touches[0].pageX;
-      y0 = y1 = $event.touches[0].pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "mousedown", function($event) {
-    hasMouseDown = true;
-    if (!hasTouchStart && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.pageX;
-      y0 = y1 = $event.pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "touchmove", function($event) {
-    if ($event.touches.length === 1 && $eventOld) {
-      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
-      x1 = $event.touches[0].pageX;
-      y1 = $event.touches[0].pageY;
-      return res;
-    }
-  });
-  const mouseMoveEventListener = function($event) {
-    if (!hasTouchStart && hasMouseDown && $eventOld) {
-      const res = fn($event, "move", $event.pageX, $event.pageY);
-      x1 = $event.pageX;
-      y1 = $event.pageY;
-      return res;
-    }
-  };
-  document.addEventListener("mousemove", mouseMoveEventListener);
-  addListenerToElement(element, "touchend", function($event) {
-    if ($event.touches.length === 0 && $eventOld) {
-      hasTouchStart = false;
-      $eventOld = null;
-      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
-    }
-  });
-  const mouseUpEventListener = function($event) {
-    hasMouseDown = false;
-    if (!hasTouchStart && $eventOld) {
-      $eventOld = null;
-      return fn($event, "end", $event.pageX, $event.pageY);
-    }
-  };
-  document.addEventListener("mouseup", mouseUpEventListener);
-  addListenerToElement(element, "touchcancel", function($event) {
-    if ($eventOld) {
-      hasTouchStart = false;
-      const $eventTemp = $eventOld;
-      $eventOld = null;
-      return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
-    }
-  });
-}
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
 function t(t2, n) {
   return e(t2, 0, n);
 }
-function Friction$1(e2, t2) {
+function Friction(e2, t2) {
   this._m = e2;
   this._f = 1e3 * t2;
   this._startTime = 0;
   this._v = 0;
 }
-Friction$1.prototype.setV = function(x, y) {
+Friction.prototype.setV = function(x, y) {
   var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
@@ -3532,11 +3533,11 @@ Friction$1.prototype.setV = function(x, y) {
   this._lastDt = null;
   this._startTime = new Date().getTime();
 };
-Friction$1.prototype.setS = function(x, y) {
+Friction.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t2) {
+Friction.prototype.s = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -3557,7 +3558,7 @@ Friction$1.prototype.s = function(t2) {
     y
   };
 };
-Friction$1.prototype.ds = function(t2) {
+Friction.prototype.ds = function(t2) {
   if (t2 === void 0) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
@@ -3569,29 +3570,29 @@ Friction$1.prototype.ds = function(t2) {
     dy: this._y_v + this._y_a * t2
   };
 };
-Friction$1.prototype.delta = function() {
+Friction.prototype.delta = function() {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   };
 };
-Friction$1.prototype.dt = function() {
+Friction.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
-Friction$1.prototype.done = function() {
+Friction.prototype.done = function() {
   var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
-Friction$1.prototype.setEnd = function(x, y) {
+Friction.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
   this._endPositionY = y;
 };
-Friction$1.prototype.reconfigure = function(m, f2) {
+Friction.prototype.reconfigure = function(m, f2) {
   this._m = m;
   this._f = 1e3 * f2;
 };
-function Spring$1(m, k, c) {
+function Spring(m, k, c) {
   this._m = m;
   this._k = k;
   this._c = c;
@@ -3599,28 +3600,28 @@ function Spring$1(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring$1.prototype._solve = function(e2, t2) {
+Spring.prototype._solve = function(e2, t2) {
   var n = this._c;
   var i = this._m;
   var r = this._k;
-  var o2 = n * n - 4 * i * r;
-  if (o2 === 0) {
-    const a2 = -n / (2 * i);
+  var o = n * n - 4 * i * r;
+  if (o === 0) {
+    const a = -n / (2 * i);
     const s = e2;
-    const l = t2 / (a2 * e2);
+    const l = t2 / (a * e2);
     return {
       x: function(e3) {
-        return (s + l * e3) * Math.pow(Math.E, a2 * e3);
+        return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        var t3 = Math.pow(Math.E, a2 * e3);
-        return a2 * (s + l * e3) * t3 + l * t3;
+        var t3 = Math.pow(Math.E, a * e3);
+        return a * (s + l * e3) * t3 + l * t3;
       }
     };
   }
-  if (o2 > 0) {
-    const c = (-n - Math.sqrt(o2)) / (2 * i);
-    const u = (-n + Math.sqrt(o2)) / (2 * i);
+  if (o > 0) {
+    const c = (-n - Math.sqrt(o)) / (2 * i);
+    const u = (-n + Math.sqrt(o)) / (2 * i);
     const d = (t2 - c * e2) / (u - c);
     const h = e2 - d;
     return {
@@ -3674,19 +3675,19 @@ Spring$1.prototype._solve = function(e2, t2) {
     }
   };
 };
-Spring$1.prototype.x = function(e2) {
+Spring.prototype.x = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
-Spring$1.prototype.dx = function(e2) {
+Spring.prototype.dx = function(e2) {
   if (e2 === void 0) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
 };
-Spring$1.prototype.setEnd = function(e2, n, i) {
+Spring.prototype.setEnd = function(e2, n, i) {
   if (!i) {
     i = new Date().getTime();
   }
@@ -3713,7 +3714,7 @@ Spring$1.prototype.setEnd = function(e2, n, i) {
     }
   }
 };
-Spring$1.prototype.snap = function(e2) {
+Spring.prototype.snap = function(e2) {
   this._startTime = new Date().getTime();
   this._endPosition = e2;
   this._solution = {
@@ -3725,13 +3726,13 @@ Spring$1.prototype.snap = function(e2) {
     }
   };
 };
-Spring$1.prototype.done = function(n) {
+Spring.prototype.done = function(n) {
   if (!n) {
     n = new Date().getTime();
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring$1.prototype.reconfigure = function(m, t2, c) {
+Spring.prototype.reconfigure = function(m, t2, c) {
   this._m = m;
   this._k = t2;
   this._c = c;
@@ -3740,13 +3741,13 @@ Spring$1.prototype.reconfigure = function(m, t2, c) {
     this._startTime = new Date().getTime();
   }
 };
-Spring$1.prototype.springConstant = function() {
+Spring.prototype.springConstant = function() {
   return this._k;
 };
-Spring$1.prototype.damping = function() {
+Spring.prototype.damping = function() {
   return this._c;
 };
-Spring$1.prototype.configuration = function() {
+Spring.prototype.configuration = function() {
   function e2(e3, t3) {
     e3.reconfigure(1, t3, e3.damping());
   }
@@ -3771,9 +3772,9 @@ Spring$1.prototype.configuration = function() {
   ];
 };
 function STD(e2, t2, n) {
-  this._springX = new Spring$1(e2, t2, n);
-  this._springY = new Spring$1(e2, t2, n);
-  this._springScale = new Spring$1(e2, t2, n);
+  this._springX = new Spring(e2, t2, n);
+  this._springY = new Spring(e2, t2, n);
+  this._springScale = new Spring(e2, t2, n);
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i) {
@@ -3903,8 +3904,8 @@ function f(t2, n) {
   let i = t2.offsetTop;
   return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
 }
-function v(a2, b) {
-  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
+function v(a, b) {
+  return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -3994,7 +3995,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
   const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  new Friction$1(1, frictionNumber.value);
+  new Friction(1, frictionNumber.value);
   vue.watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -4137,7 +4138,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }
-  function _animationTo(x, y, scale, source, r, o2) {
+  function _animationTo(x, y, scale, source, r, o) {
     FAandSFACancel();
     if (!xMove.value) {
       x = _translateX;
@@ -4152,7 +4153,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     x = limitXY.x;
     y = limitXY.y;
     if (!props2.animation) {
-      _setTransform(x, y, scale, source, r, o2);
+      _setTransform(x, y, scale, source, r, o);
       return;
     }
     _STD._springX._solution = null;
@@ -4167,12 +4168,12 @@ function useMovableViewState(props2, trigger, rootRef) {
       let x2 = data.x;
       let y2 = data.y;
       let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o2);
+      _setTransform(x2, y2, scale2, source, r, o);
     }, function() {
       _SFA.cancel();
     });
   }
-  function _setTransform(x, y, scale, source = "", r, o2) {
+  function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
       x = _translateX || 0;
     }
@@ -4196,7 +4197,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
     scale = _adjustScale(scale);
     scale = +scale.toFixed(3);
-    if (o2 && scale !== _scale) {
+    if (o && scale !== _scale) {
       trigger("scale", {}, {
         x,
         y,
@@ -4434,686 +4435,6 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class Friction {
-  constructor(drag) {
-    this._drag = drag;
-    this._dragLog = Math.log(drag);
-    this._x = 0;
-    this._v = 0;
-    this._startTime = 0;
-  }
-  set(x, v2) {
-    this._x = x;
-    this._v = v2;
-    this._startTime = new Date().getTime();
-  }
-  setVelocityByEnd(e2) {
-    this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
-  }
-  x(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
-    this._dt = e2;
-    return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
-  }
-  dx(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
-    this._dt = e2;
-    return this._v * t2;
-  }
-  done() {
-    return Math.abs(this.dx()) < 3;
-  }
-  reconfigure(e2) {
-    const t2 = this.x();
-    const n = this.dx();
-    this._drag = e2;
-    this._dragLog = Math.log(e2);
-    this.set(t2, n);
-  }
-  configuration() {
-    const e2 = this;
-    return [
-      {
-        label: "Friction",
-        read: function() {
-          return e2._drag;
-        },
-        write: function(t2) {
-          e2.reconfigure(t2);
-        },
-        min: 1e-3,
-        max: 0.1,
-        step: 1e-3
-      }
-    ];
-  }
-}
-function o(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
-}
-function a(e2, t2) {
-  return o(e2, 0, t2);
-}
-class Spring {
-  constructor(m, k, c) {
-    this._m = m;
-    this._k = k;
-    this._c = c;
-    this._solution = null;
-    this._endPosition = 0;
-    this._startTime = 0;
-  }
-  _solve(e2, t2) {
-    const n = this._c;
-    const i = this._m;
-    const r = this._k;
-    const o2 = n * n - 4 * i * r;
-    if (o2 === 0) {
-      const a3 = -n / (2 * i);
-      const s2 = e2;
-      const l2 = t2 / (a3 * e2);
-      return {
-        x: function(e22) {
-          return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
-        },
-        dx: function(e22) {
-          const t22 = Math.pow(Math.E, a3 * e22);
-          return a3 * (s2 + l2 * e22) * t22 + l2 * t22;
-        }
-      };
-    }
-    if (o2 > 0) {
-      const c = (-n - Math.sqrt(o2)) / (2 * i);
-      const u = (-n + Math.sqrt(o2)) / (2 * i);
-      const l2 = (t2 - c * e2) / (u - c);
-      const s2 = e2 - l2;
-      return {
-        x: function(e22) {
-          let t22;
-          let n2;
-          if (e22 === this._t) {
-            t22 = this._powER1T;
-            n2 = this._powER2T;
-          }
-          this._t = e22;
-          if (!t22) {
-            t22 = this._powER1T = Math.pow(Math.E, c * e22);
-          }
-          if (!n2) {
-            n2 = this._powER2T = Math.pow(Math.E, u * e22);
-          }
-          return s2 * t22 + l2 * n2;
-        },
-        dx: function(e22) {
-          let t22;
-          let n2;
-          if (e22 === this._t) {
-            t22 = this._powER1T;
-            n2 = this._powER2T;
-          }
-          this._t = e22;
-          if (!t22) {
-            t22 = this._powER1T = Math.pow(Math.E, c * e22);
-          }
-          if (!n2) {
-            n2 = this._powER2T = Math.pow(Math.E, u * e22);
-          }
-          return s2 * c * t22 + l2 * u * n2;
-        }
-      };
-    }
-    const d = Math.sqrt(4 * i * r - n * n) / (2 * i);
-    const a2 = -n / 2 * i;
-    const s = e2;
-    const l = (t2 - a2 * e2) / d;
-    return {
-      x: function(e22) {
-        return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
-      },
-      dx: function(e22) {
-        const t22 = Math.pow(Math.E, a2 * e22);
-        const n2 = Math.cos(d * e22);
-        const i2 = Math.sin(d * e22);
-        return t22 * (l * d * n2 - s * d * i2) + a2 * t22 * (l * i2 + s * n2);
-      }
-    };
-  }
-  x(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    return this._solution ? this._endPosition + this._solution.x(e2) : 0;
-  }
-  dx(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    return this._solution ? this._solution.dx(e2) : 0;
-  }
-  setEnd(e2, t2, n) {
-    if (!n) {
-      n = new Date().getTime();
-    }
-    if (e2 !== this._endPosition || !a(t2, 0.4)) {
-      t2 = t2 || 0;
-      let i = this._endPosition;
-      if (this._solution) {
-        if (a(t2, 0.4)) {
-          t2 = this._solution.dx((n - this._startTime) / 1e3);
-        }
-        i = this._solution.x((n - this._startTime) / 1e3);
-        if (a(t2, 0.4)) {
-          t2 = 0;
-        }
-        if (a(i, 0.4)) {
-          i = 0;
-        }
-        i += this._endPosition;
-      }
-      if (!(this._solution && a(i - e2, 0.4) && a(t2, 0.4))) {
-        this._endPosition = e2;
-        this._solution = this._solve(i - this._endPosition, t2);
-        this._startTime = n;
-      }
-    }
-  }
-  snap(e2) {
-    this._startTime = new Date().getTime();
-    this._endPosition = e2;
-    this._solution = {
-      x: function() {
-        return 0;
-      },
-      dx: function() {
-        return 0;
-      }
-    };
-  }
-  done(e2) {
-    if (!e2) {
-      e2 = new Date().getTime();
-    }
-    return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
-  }
-  reconfigure(e2, t2, n) {
-    this._m = e2;
-    this._k = t2;
-    this._c = n;
-    if (!this.done()) {
-      this._solution = this._solve(this.x() - this._endPosition, this.dx());
-      this._startTime = new Date().getTime();
-    }
-  }
-  springConstant() {
-    return this._k;
-  }
-  damping() {
-    return this._c;
-  }
-  configuration() {
-    function e2(e22, t22) {
-      e22.reconfigure(1, t22, e22.damping());
-    }
-    function t2(e22, t22) {
-      e22.reconfigure(1, e22.springConstant(), t22);
-    }
-    return [
-      {
-        label: "Spring Constant",
-        read: this.springConstant.bind(this),
-        write: e2.bind(this, this),
-        min: 100,
-        max: 1e3
-      },
-      {
-        label: "Damping",
-        read: this.damping.bind(this),
-        write: t2.bind(this, this),
-        min: 1,
-        max: 500
-      }
-    ];
-  }
-}
-class Scroll {
-  constructor(extent, friction, spring) {
-    this._extent = extent;
-    this._friction = friction || new Friction(0.01);
-    this._spring = spring || new Spring(1, 90, 20);
-    this._startTime = 0;
-    this._springing = false;
-    this._springOffset = 0;
-  }
-  snap(e2, t2) {
-    this._springOffset = 0;
-    this._springing = true;
-    this._spring.snap(e2);
-    this._spring.setEnd(t2);
-  }
-  set(e2, t2) {
-    this._friction.set(e2, t2);
-    if (e2 > 0 && t2 >= 0) {
-      this._springOffset = 0;
-      this._springing = true;
-      this._spring.snap(e2);
-      this._spring.setEnd(0);
-    } else {
-      if (e2 < -this._extent && t2 <= 0) {
-        this._springOffset = 0;
-        this._springing = true;
-        this._spring.snap(e2);
-        this._spring.setEnd(-this._extent);
-      } else {
-        this._springing = false;
-      }
-    }
-    this._startTime = new Date().getTime();
-  }
-  x(e2) {
-    if (!this._startTime) {
-      return 0;
-    }
-    if (!e2) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    if (this._springing) {
-      return this._spring.x() + this._springOffset;
-    }
-    let t2 = this._friction.x(e2);
-    let n = this.dx(e2);
-    if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
-      this._springing = true;
-      this._spring.setEnd(0, n);
-      if (t2 < -this._extent) {
-        this._springOffset = -this._extent;
-      } else {
-        this._springOffset = 0;
-      }
-      t2 = this._spring.x() + this._springOffset;
-    }
-    return t2;
-  }
-  dx(e2) {
-    let t2;
-    if (this._lastTime === e2) {
-      t2 = this._lastDx;
-    } else {
-      t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
-    }
-    this._lastTime = e2;
-    this._lastDx = t2;
-    return t2;
-  }
-  done() {
-    return this._springing ? this._spring.done() : this._friction.done();
-  }
-  setVelocityByEnd(e2) {
-    this._friction.setVelocityByEnd(e2);
-  }
-  configuration() {
-    const e2 = this._friction.configuration();
-    e2.push.apply(e2, this._spring.configuration());
-    return e2;
-  }
-}
-function createAnimation(scroll, onScroll, onEnd) {
-  const state = {
-    id: 0,
-    cancelled: false
-  };
-  function startAnimation2(state2, scroll2, onScroll2, onEnd2) {
-    if (!state2 || !state2.cancelled) {
-      onScroll2(scroll2);
-      const isDone = scroll2.done();
-      if (!isDone) {
-        if (!state2.cancelled) {
-          state2.id = requestAnimationFrame(startAnimation2.bind(null, state2, scroll2, onScroll2, onEnd2));
-        }
-      }
-      if (isDone && onEnd2) {
-        onEnd2(scroll2);
-      }
-    }
-  }
-  function cancel(state2) {
-    if (state2 && state2.id) {
-      cancelAnimationFrame(state2.id);
-    }
-    if (state2) {
-      state2.cancelled = true;
-    }
-  }
-  startAnimation2(state, scroll, onScroll, onEnd);
-  return {
-    cancel: cancel.bind(null, state),
-    model: scroll
-  };
-}
-class Scroller {
-  constructor(element, options) {
-    options = options || {};
-    this._element = element;
-    this._options = options;
-    this._enableSnap = options.enableSnap || false;
-    this._itemSize = options.itemSize || 0;
-    this._enableX = options.enableX || false;
-    this._enableY = options.enableY || false;
-    this._shouldDispatchScrollEvent = !!options.onScroll;
-    if (this._enableX) {
-      this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
-      this._scrollWidth = options.scrollWidth;
-    } else {
-      this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
-      this._scrollHeight = options.scrollHeight;
-    }
-    this._position = 0;
-    this._scroll = new Scroll(this._extent, options.friction, options.spring);
-    this._onTransitionEnd = this.onTransitionEnd.bind(this);
-    this.updatePosition();
-  }
-  onTouchStart() {
-    this._startPosition = this._position;
-    this._lastChangePos = this._startPosition;
-    if (this._startPosition > 0) {
-      this._startPosition /= 0.5;
-    } else {
-      if (this._startPosition < -this._extent) {
-        this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
-      }
-    }
-    if (this._animation) {
-      this._animation.cancel();
-      this._scrolling = false;
-    }
-    this.updatePosition();
-  }
-  onTouchMove(x, y) {
-    let startPosition = this._startPosition;
-    if (this._enableX) {
-      startPosition += x;
-    } else if (this._enableY) {
-      startPosition += y;
-    }
-    if (startPosition > 0) {
-      startPosition *= 0.5;
-    } else if (startPosition < -this._extent) {
-      startPosition = 0.5 * (startPosition + this._extent) - this._extent;
-    }
-    this._position = startPosition;
-    this.updatePosition();
-    this.dispatchScroll();
-  }
-  onTouchEnd(x, y, o2) {
-    if (this._enableSnap && this._position > -this._extent && this._position < 0) {
-      if (this._enableY && (Math.abs(y) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
-        this.snap();
-        return;
-      }
-      if (this._enableX && (Math.abs(x) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
-        this.snap();
-        return;
-      }
-    }
-    if (this._enableX) {
-      this._scroll.set(this._position, o2.x);
-    } else if (this._enableY) {
-      this._scroll.set(this._position, o2.y);
-    }
-    let c;
-    if (this._enableSnap) {
-      const s = this._scroll._friction.x(100);
-      const l = s % this._itemSize;
-      c = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
-      if (c <= 0 && c >= -this._extent) {
-        this._scroll.setVelocityByEnd(c);
-      }
-    }
-    this._lastTime = Date.now();
-    this._lastDelay = 0;
-    this._scrolling = true;
-    this._lastChangePos = this._position;
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
-    this._animation = createAnimation(this._scroll, () => {
-      const e2 = Date.now();
-      const i = (e2 - this._scroll._startTime) / 1e3;
-      const r = this._scroll.x(i);
-      this._position = r;
-      this.updatePosition();
-      const o22 = this._scroll.dx(i);
-      if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
-        this.dispatchScroll();
-        this._lastDelay = Math.abs(2e3 / o22);
-        this._lastTime = e2;
-      }
-    }, () => {
-      if (this._enableSnap) {
-        if (c <= 0 && c >= -this._extent) {
-          this._position = c;
-          this.updatePosition();
-        }
-        if (typeof this._options.onSnap === "function") {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-        }
-      }
-      if (this._shouldDispatchScrollEvent) {
-        this.dispatchScroll();
-      }
-      this._scrolling = false;
-    });
-  }
-  onTransitionEnd() {
-    this._element.style.webkitTransition = "";
-    this._element.style.transition = "";
-    this._element.removeEventListener("transitionend", this._onTransitionEnd);
-    if (this._snapping) {
-      this._snapping = false;
-    }
-    this.dispatchScroll();
-  }
-  snap() {
-    const itemSize = this._itemSize;
-    const position = this._position % itemSize;
-    const i = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
-    if (this._position !== i) {
-      this._snapping = true;
-      this.scrollTo(-i);
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-      }
-    }
-  }
-  scrollTo(position, time) {
-    if (this._animation) {
-      this._animation.cancel();
-      this._scrolling = false;
-    }
-    if (typeof position === "number") {
-      this._position = -position;
-    }
-    if (this._position < -this._extent) {
-      this._position = -this._extent;
-    } else {
-      if (this._position > 0) {
-        this._position = 0;
-      }
-    }
-    const transition = "transform " + (time || 0.2) + "s ease-out";
-    this._element.style.webkitTransition = "-webkit-" + transition;
-    this._element.style.transition = transition;
-    this.updatePosition();
-    this._element.addEventListener("transitionend", this._onTransitionEnd);
-  }
-  dispatchScroll() {
-    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
-      this._lastPos = this._position;
-      const event = {
-        target: {
-          scrollLeft: this._enableX ? -this._position : 0,
-          scrollTop: this._enableY ? -this._position : 0,
-          scrollHeight: this._scrollHeight || this._element.offsetHeight,
-          scrollWidth: this._scrollWidth || this._element.offsetWidth,
-          offsetHeight: this._element.parentElement.offsetHeight,
-          offsetWidth: this._element.parentElement.offsetWidth
-        }
-      };
-      this._options.onScroll(event);
-    }
-  }
-  update(height, scrollHeight, itemSize) {
-    let extent = 0;
-    const position = this._position;
-    if (this._enableX) {
-      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
-      this._scrollWidth = scrollHeight;
-    } else {
-      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
-      this._scrollHeight = scrollHeight;
-    }
-    if (typeof height === "number") {
-      this._position = -height;
-    }
-    if (this._position < -extent) {
-      this._position = -extent;
-    } else {
-      if (this._position > 0) {
-        this._position = 0;
-      }
-    }
-    this._itemSize = itemSize || this._itemSize;
-    this.updatePosition();
-    if (position !== this._position) {
-      this.dispatchScroll();
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-      }
-    }
-    this._extent = extent;
-    this._scroll._extent = extent;
-  }
-  updatePosition() {
-    let transform = "";
-    if (this._enableX) {
-      transform = "translateX(" + this._position + "px) translateZ(0)";
-    } else {
-      if (this._enableY) {
-        transform = "translateY(" + this._position + "px) translateZ(0)";
-      }
-    }
-    this._element.style.webkitTransform = transform;
-    this._element.style.transform = transform;
-  }
-  isScrolling() {
-    return this._scrolling || this._snapping;
-  }
-}
-function useScroller(element, options) {
-  const touchInfo = {
-    trackingID: -1,
-    maxDy: 0,
-    maxDx: 0
-  };
-  const scroller = new Scroller(element, options);
-  function findDelta(event) {
-    const touchtrackEvent = event;
-    const mouseEvent = event;
-    return touchtrackEvent.detail.state === "move" || touchtrackEvent.detail.state === "end" ? {
-      x: touchtrackEvent.detail.dx,
-      y: touchtrackEvent.detail.dy
-    } : {
-      x: mouseEvent.screenX - touchInfo.x,
-      y: mouseEvent.screenY - touchInfo.y
-    };
-  }
-  function handleTouchStart(event) {
-    const touchtrackEvent = event;
-    const mouseEvent = event;
-    if (touchtrackEvent.detail.state === "start") {
-      touchInfo.trackingID = "touch";
-      touchInfo.x = touchtrackEvent.detail.x;
-      touchInfo.y = touchtrackEvent.detail.y;
-    } else {
-      touchInfo.trackingID = "mouse";
-      touchInfo.x = mouseEvent.screenX;
-      touchInfo.y = mouseEvent.screenY;
-    }
-    touchInfo.maxDx = 0;
-    touchInfo.maxDy = 0;
-    touchInfo.historyX = [0];
-    touchInfo.historyY = [0];
-    touchInfo.historyTime = [
-      touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
-    ];
-    touchInfo.listener = scroller;
-    if (scroller.onTouchStart) {
-      scroller.onTouchStart();
-    }
-    event.preventDefault();
-  }
-  function handleTouchMove(event) {
-    const touchtrackEvent = event;
-    const mouseEvent = event;
-    if (touchInfo.trackingID !== -1) {
-      event.preventDefault();
-      const delta = findDelta(event);
-      if (delta) {
-        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
-          touchInfo.historyTime.shift();
-          touchInfo.historyX.shift();
-          touchInfo.historyY.shift();
-        }
-        if (touchInfo.listener && touchInfo.listener.onTouchMove) {
-          touchInfo.listener.onTouchMove(delta.x, delta.y);
-        }
-      }
-    }
-  }
-  function handleTouchEnd(event) {
-    if (touchInfo.trackingID !== -1) {
-      event.preventDefault();
-      const delta = findDelta(event);
-      if (delta) {
-        const listener = touchInfo.listener;
-        touchInfo.trackingID = -1;
-        touchInfo.listener = null;
-        const length = touchInfo.historyTime.length;
-        const o2 = {
-          x: 0,
-          y: 0
-        };
-        if (length > 2) {
-          for (let i = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i], x = touchInfo.historyX[i], y = touchInfo.historyY[i]; i > 0; ) {
-            i--;
-            const time0 = touchInfo.historyTime[i];
-            const time = time1 - time0;
-            if (time > 30 && time < 50) {
-              o2.x = (x - touchInfo.historyX[i]) / (time / 1e3);
-              o2.y = (y - touchInfo.historyY[i]) / (time / 1e3);
-              break;
-            }
-          }
-        }
-        touchInfo.historyTime = [];
-        touchInfo.historyX = [];
-        touchInfo.historyY = [];
-        if (listener && listener.onTouchEnd) {
-          listener.onTouchEnd(delta.x, delta.y, o2);
-        }
-      }
-    }
-  }
-  return {
-    scroller,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd
-  };
-}
 let scopedIndex = 0;
 function useScopedClass(indicatorHeightRef) {
   const className = `uni-picker-view-content-${scopedIndex++}`;
@@ -5179,10 +4500,10 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       if (!scroller.isScrolling()) {
         const rect = el.getBoundingClientRect();
         const r = clientY - rect.top - pickerViewState.height / 2;
-        const o2 = indicatorHeight.value / 2;
-        if (!(Math.abs(r) <= o2)) {
-          const a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
-          const s = r < 0 ? -a2 : a2;
+        const o = indicatorHeight.value / 2;
+        if (!(Math.abs(r) <= o)) {
+          const a = Math.ceil((Math.abs(r) - o) / indicatorHeight.value);
+          const s = r < 0 ? -a : a;
           let current = Math.min(state.current + s, state.length - 1);
           state.current = current = Math.max(current, 0);
           scroller.scrollTo(current * indicatorHeight.value);
@@ -7171,8 +6492,6 @@ function useSubscribe(callback, name, multiple) {
   instance.proxy;
   multiple || !name ? useCurrentPageId() : 0;
 }
-function useOn(name, callback) {
-}
 let index$a = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
@@ -7182,244 +6501,133 @@ function useContextInfo(_id) {
   const id = _id || vm.id || `context${index$a++}`;
   return `${page}.${type}.${id}`;
 }
-function getContextInfo(el) {
-  return el.__uniContextInfo;
-}
-function saveImage(base64, dirname, callback) {
-  callback(null, base64);
-}
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
+function applyOptions(options, instance, publicThis) {
+  Object.keys(options).forEach((name) => {
+    if (name.indexOf("on") === 0) {
+      const hook = options[name];
+      if (shared.isFunction(hook)) {
+        vue.injectHook(name, hook.bind(publicThis), instance);
+      }
+    }
   });
 }
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
+function set(target, key, val) {
+  return target[key] = val;
+}
+function errorHandler(err, instance, info) {
+  if (!instance) {
+    throw err;
   }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, { type });
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
-      file = blob;
-      file.name = file.name || filename;
-    }
+  const app = getApp();
+  if (!app || !app.$vm) {
+    throw err;
   }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (shared.hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function getSameOriginUrl(url) {
-  const a2 = document.createElement("a");
-  a2.href = url;
-  if (a2.origin === location.origin) {
-    return Promise.resolve(url);
-  }
-  return urlToFile(url).then(fileToUrl);
-}
-const API_UPX2PX = "upx2px";
-const Upx2pxProtocol = [
   {
-    name: "upx",
-    type: [Number, String],
-    required: true
+    invokeHook(app.$vm, "onError", err);
   }
+}
+function initApp$1(app) {
+  const appConfig = app._context.config;
+  if (shared.isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler;
+  }
+  const globalProperties = appConfig.globalProperties;
+  {
+    globalProperties.$set = set;
+    globalProperties.$applyOptions = applyOptions;
+  }
+}
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return vue.inject(pageMetaKey);
+}
+function providePageMeta(id) {
+  const pageMeta = initPageMeta(id);
+  vue.provide(pageMetaKey, pageMeta);
+  return pageMeta;
+}
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return vueRouter.useRoute();
+  }
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
+  }
+  const { meta } = __uniRoutes[0];
+  return {
+    meta,
+    query,
+    path: "/" + meta.route
+  };
+}
+function initPageMeta(id) {
+  if (__UNI_FEATURE_PAGES__) {
+    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, vueRouter.useRoute().meta)))));
+  }
+  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))));
+}
+const PAGE_META_KEYS = [
+  "navigationBar",
+  "refreshOptions"
 ];
-const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  {
-    return number;
-  }
-}, Upx2pxProtocol);
-const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
-  const callback = canvasEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
-});
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
-  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
-});
-const API_GET_STORAGE = "getStorage";
-const GetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  }
-};
-const API_GET_STORAGE_SYNC = "getStorageSync";
-const GetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  }
-];
-const API_SET_STORAGE = "setStorage";
-const SetStorageProtocol = {
-  key: {
-    type: String,
-    required: true
-  },
-  data: {
-    required: true
-  }
-};
-const API_SET_STORAGE_SYNC = "setStorageSync";
-const SetStorageSyncProtocol = [
-  {
-    name: "key",
-    type: String,
-    required: true
-  },
-  {
-    name: "data",
-    required: true
-  }
-];
-const API_REMOVE_STORAGE = "removeStorage";
-const RemoveStorageProtocol = GetStorageProtocol;
-const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
-const API_REQUEST = "request";
-const dataType = {
-  JSON: "json"
-};
-const RESPONSE_TYPE = ["text", "arraybuffer"];
-const DEFAULT_RESPONSE_TYPE = "text";
-const encode = encodeURIComponent;
-function stringifyQuery(url, data) {
-  let str = url.split("#");
-  const hash = str[1] || "";
-  str = str[0].split("?");
-  let query = str[1] || "";
-  url = str[0];
-  const search = query.split("&").filter((item) => item);
-  const params = {};
-  search.forEach((item) => {
-    const part = item.split("=");
-    params[part[0]] = part[1];
+function mergePageMeta(id, pageMeta) {
+  const res = shared.extend({ id }, __uniConfig.globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = shared.extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
   });
-  for (const key in data) {
-    if (shared.hasOwn(data, key)) {
-      let v2 = data[key];
-      if (typeof v2 === "undefined" || v2 === null) {
-        v2 = "";
-      } else if (shared.isPlainObject(v2)) {
-        v2 = JSON.stringify(v2);
-      }
-      params[encode(key)] = encode(v2);
-    }
-  }
-  query = Object.keys(params).map((item) => `${item}=${params[item]}`).join("&");
-  return url + (query ? "?" + query : "") + (hash ? "#" + hash : "");
+  return res;
 }
-const RequestProtocol = {
-  method: String,
-  data: [Object, String, Array, ArrayBuffer],
-  url: {
-    type: String,
-    required: true
-  },
-  header: Object,
-  dataType: String,
-  responseType: String,
-  withCredentials: Boolean
-};
-const RequestOptions = {
-  formatArgs: {
-    method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
-    },
-    data(value, params) {
-      params.data = value || "";
-    },
-    url(value, params) {
-      if (params.method === HTTP_METHODS[0] && shared.isPlainObject(params.data) && Object.keys(params.data).length) {
-        params.url = stringifyQuery(value, params.data);
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
+    if (enablePullDownRefresh) {
+      const refreshOptions = shared.extend({
+        support: true,
+        color: "#2BD009",
+        style: "circle",
+        height: 70,
+        range: 150,
+        offset: 0
+      }, pageMeta.refreshOptions);
+      let offset = rpx2px(refreshOptions.offset);
+      const { type } = navigationBar;
+      if (type !== "transparent" && type !== "none") {
+        offset += uniShared.NAVBAR_HEIGHT + 0;
       }
-    },
-    header(value, params) {
-      const header = params.header = value || {};
-      if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
-          header["Content-Type"] = "application/json";
-        }
-      }
-    },
-    dataType(value, params) {
-      params.dataType = (value || dataType.JSON).toLowerCase();
-    },
-    responseType(value, params) {
-      params.responseType = (value || "").toLowerCase();
-      if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-        params.responseType = DEFAULT_RESPONSE_TYPE;
-      }
+      refreshOptions.offset = offset;
+      refreshOptions.height = rpx2px(refreshOptions.height);
+      refreshOptions.range = rpx2px(refreshOptions.range);
+      pageMeta.refreshOptions = refreshOptions;
     }
   }
-};
-const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
-const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
-const SetNavigationBarTitleProtocol = {
-  title: {
-    type: String,
-    required: true
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.backButton = pageMeta.isQuit ? false : true;
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
   }
-};
-const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
-const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+  return pageMeta;
+}
+function getStateId() {
+  {
+    return 1;
+  }
+}
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && vue.reactive(__uniConfig.tabBar);
+  }
+  return tabBar;
+}
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
@@ -8020,8 +7228,8 @@ function useDanmu(props2, videoState) {
     index: -1
   };
   const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
-  danmuList.sort(function(a2, b) {
-    return (a2.time || 0) - (b.time || 0);
+  danmuList.sort(function(a, b) {
+    return (a.time || 0) - (b.time || 0);
   });
   function toggleDanmu() {
     state.enable = !state.enable;
@@ -8698,9 +7906,9 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const autoRotate = !!data.autoRotate;
             let rotate = Number(data.rotate) || 0;
             const rotation = marker.getRotation();
-            const a2 = marker.getPosition();
+            const a = marker.getPosition();
             const b = new maps.LatLng(destination.latitude, destination.longitude);
-            const distance = maps.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
             const speed = distance / time;
             const movingEvent = maps.event.addListener(marker, "moving", (e2) => {
@@ -8717,7 +7925,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const event = maps.event.addListener(marker, "moveend", () => {
               event.remove();
               movingEvent.remove();
-              marker.lastPosition = a2;
+              marker.lastPosition = a;
               marker.setPosition(b);
               const label = marker.label;
               if (label) {
@@ -8735,9 +7943,9 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             let lastRtate = 0;
             if (autoRotate) {
               if (marker.lastPosition) {
-                lastRtate = maps.geometry.spherical.computeHeading(marker.lastPosition, a2);
+                lastRtate = maps.geometry.spherical.computeHeading(marker.lastPosition, a);
               }
-              rotate = maps.geometry.spherical.computeHeading(a2, b) - lastRtate;
+              rotate = maps.geometry.spherical.computeHeading(a, b) - lastRtate;
             }
             marker.setRotation(rotation + rotate);
             marker.moveTo(b, speed);
@@ -11542,7 +10750,6 @@ exports.CoverImage = index$4;
 exports.CoverView = index$5;
 exports.Editor = index$s;
 exports.Form = index$y;
-exports.Friction = Friction;
 exports.Icon = index$r;
 exports.Image = index$q;
 exports.Input = Input;
@@ -11562,9 +10769,7 @@ exports.RadioGroup = index$l;
 exports.ResizeSensor = ResizeSensor;
 exports.RichText = index$j;
 exports.ScrollView = index$i;
-exports.Scroller = Scroller;
 exports.Slider = index$h;
-exports.Spring = Spring;
 exports.Swiper = index$g;
 exports.SwiperItem = index$f;
 exports.Switch = index$e;
@@ -11577,11 +10782,7 @@ exports.View = index$b;
 exports.WebView = index$7;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
-exports.defineBuiltInComponent = defineBuiltInComponent;
-exports.defineSystemComponent = defineSystemComponent;
-exports.disableScrollBounce = disableScrollBounce;
 exports.getApp = getApp$1;
-exports.getContextInfo = getContextInfo;
 exports.getCurrentPages = getCurrentPages$1;
 exports.getRealPath = getRealPath;
 exports.getStorage = getStorage;
@@ -11589,7 +10790,6 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.initScrollBounce = initScrollBounce;
 exports.plugin = index$9;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
@@ -11600,16 +10800,4 @@ exports.setStorageSync = setStorageSync;
 exports.setupApp = setupApp;
 exports.setupPage = setupPage;
 exports.uni = uni$1;
-exports.uniFormKey = uniFormKey;
-exports.useAttrs = useAttrs;
-exports.useBooleanAttr = useBooleanAttr;
-exports.useContextInfo = useContextInfo;
-exports.useCustomEvent = useCustomEvent;
-exports.useNativeEvent = useNativeEvent;
-exports.useOn = useOn;
-exports.useScroller = useScroller;
-exports.useSubscribe = useSubscribe;
 exports.useTabBar = useTabBar;
-exports.useTouchtrack = useTouchtrack;
-exports.useUserAction = useUserAction;
-exports.withWebEvent = withWebEvent;

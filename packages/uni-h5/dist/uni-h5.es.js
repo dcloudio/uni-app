@@ -1,21 +1,230 @@
 import { isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { injectHook, withModifiers, createVNode, getCurrentInstance, inject, provide, reactive, openBlock, createBlock, mergeProps, toDisplayString, defineComponent, ref, computed, watch, onUnmounted, onBeforeUnmount, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
-import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, NAVBAR_HEIGHT, parseQuery, PRIMARY_COLOR, debounce, getCustomDataset, callOptions, removeLeadingSlash, getLen, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
-function applyOptions(options, instance2, publicThis) {
-  Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
-      const hook = options[name];
-      if (isFunction(hook)) {
-        injectHook(name, hook.bind(publicThis), instance2);
+var subscriber = {
+  mounted() {
+    this._toggleListeners("subscribe", this.id);
+    this.$watch("id", (newId, oldId) => {
+      this._toggleListeners("unsubscribe", oldId, true);
+      this._toggleListeners("subscribe", newId, true);
+    });
+  },
+  beforeDestroy() {
+    this._toggleListeners("unsubscribe", this.id);
+    if (this._contextId) {
+      this._toggleListeners("unsubscribe", this._contextId);
+    }
+  },
+  methods: {
+    _toggleListeners(type, id2, watch2) {
+      if (watch2 && !id2) {
+        return;
+      }
+      if (!isFunction(this._handleSubscribe)) {
+        return;
+      }
+      UniViewJSBridge[type](this.$page.id + "-" + this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + id2, this._handleSubscribe);
+    },
+    _getContextInfo() {
+      const id2 = `context-${this._uid}`;
+      if (!this._contextId) {
+        this._toggleListeners("subscribe", id2);
+        this._contextId = id2;
+      }
+      return {
+        name: this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase(),
+        id: id2,
+        page: this.$page.id
+      };
+    }
+  }
+};
+function throttle(fn, wait) {
+  let last = 0;
+  let timeout;
+  let waitCallback;
+  const newFn = function(...arg) {
+    const now = Date.now();
+    clearTimeout(timeout);
+    waitCallback = () => {
+      waitCallback = null;
+      last = now;
+      fn.apply(this, arg);
+    };
+    if (now - last < wait) {
+      timeout = setTimeout(waitCallback, wait - (now - last));
+      return;
+    }
+    waitCallback();
+  };
+  newFn.cancel = function() {
+    clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
+  };
+  return newFn;
+}
+const _sfc_main$1 = {
+  name: "Audio",
+  mixins: [subscriber],
+  props: {
+    id: {
+      type: String,
+      default: ""
+    },
+    src: {
+      type: String,
+      default: ""
+    },
+    loop: {
+      type: [Boolean, String],
+      default: false
+    },
+    controls: {
+      type: [Boolean, String],
+      default: false
+    },
+    poster: {
+      type: String,
+      default: ""
+    },
+    name: {
+      type: String,
+      default: ""
+    },
+    author: {
+      type: String,
+      default: ""
+    }
+  },
+  data() {
+    return {
+      playing: false,
+      currentTime: this.getTime(0)
+    };
+  },
+  watch: {
+    src(val) {
+      if (this.$refs.audio) {
+        this.$refs.audio.src = this.$getRealPath(val);
       }
     }
-  });
+  },
+  mounted() {
+    const audio = this.$refs.audio;
+    audio.addEventListener("error", ($event) => {
+      this.playing = false;
+      this.$trigger("error", $event, {});
+    });
+    audio.addEventListener("play", ($event) => {
+      this.playing = true;
+      this.$trigger("play", $event, {});
+    });
+    audio.addEventListener("pause", ($event) => {
+      this.playing = false;
+      this.$trigger("pause", $event, {});
+    });
+    audio.addEventListener("ended", ($event) => {
+      this.playing = false;
+      this.$trigger("ended", $event, {});
+    });
+    audio.addEventListener("timeupdate", ($event) => {
+      var currentTime = audio.currentTime;
+      this.currentTime = this.getTime(currentTime);
+      var duration = audio.duration;
+      this.$trigger("timeupdate", $event, {
+        currentTime,
+        duration
+      });
+    });
+    audio.src = this.$getRealPath(this.src);
+  },
+  methods: {
+    _handleSubscribe({
+      type,
+      data = {}
+    }) {
+      var audio = this.$refs.audio;
+      switch (type) {
+        case "setSrc":
+          audio.src = this.$getRealPath(data.src);
+          this.$emit("update:src", data.src);
+          break;
+        case "play":
+          audio.play();
+          break;
+        case "pause":
+          audio.pause();
+          break;
+        case "seek":
+          audio.currentTime = data.position;
+          break;
+      }
+    },
+    trigger() {
+      if (this.playing) {
+        this.$refs.audio.pause();
+      } else {
+        this.$refs.audio.play();
+      }
+    },
+    getTime(time) {
+      var h = Math.floor(time / 3600);
+      var m = Math.floor(time % 3600 / 60);
+      var s = Math.floor(time % 3600 % 60);
+      h = (h < 10 ? "0" : "") + h;
+      m = (m < 10 ? "0" : "") + m;
+      s = (s < 10 ? "0" : "") + s;
+      var str = m + ":" + s;
+      if (h !== "00") {
+        str = h + ":" + str;
+      }
+      return str;
+    }
+  }
+};
+const _hoisted_1$1 = { class: "uni-audio-default" };
+const _hoisted_2$1 = { class: "uni-audio-right" };
+const _hoisted_3$1 = { class: "uni-audio-time" };
+const _hoisted_4$1 = { class: "uni-audio-info" };
+const _hoisted_5 = { class: "uni-audio-name" };
+const _hoisted_6 = { class: "uni-audio-author" };
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createBlock("uni-audio", mergeProps({
+    id: $props.id,
+    controls: !!$props.controls
+  }, _ctx.$attrs), [
+    createVNode("audio", {
+      ref: "audio",
+      loop: $props.loop,
+      style: { "display": "none" }
+    }, null, 8, ["loop"]),
+    createVNode("div", _hoisted_1$1, [
+      createVNode("div", {
+        style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
+        class: "uni-audio-left"
+      }, [
+        createVNode("div", {
+          class: [{ play: !$data.playing, pause: $data.playing }, "uni-audio-button"],
+          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
+        }, null, 2)
+      ], 4),
+      createVNode("div", _hoisted_2$1, [
+        createVNode("div", _hoisted_3$1, toDisplayString($data.currentTime), 1),
+        createVNode("div", _hoisted_4$1, [
+          createVNode("div", _hoisted_5, toDisplayString($props.name), 1),
+          createVNode("div", _hoisted_6, toDisplayString($props.author), 1)
+        ])
+      ])
+    ])
+  ], 16, ["id", "controls"]);
 }
-function set(target, key, val) {
-  return target[key] = val;
-}
+_sfc_main$1.render = _sfc_render$1;
 let i18n$1;
 function useI18n() {
   if (!i18n$1) {
@@ -1138,905 +1347,6 @@ function initService(app) {
   initSubscribe();
   initAppConfig(app._context.config);
 }
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, "onError", err);
-  }
-}
-function initApp$1(app) {
-  const appConfig = app._context.config;
-  if (isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
-  const globalProperties = appConfig.globalProperties;
-  {
-    globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
-  }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
-  }
-  const { meta } = __uniRoutes[0];
-  return {
-    meta,
-    query,
-    path: "/" + meta.route
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
-  }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
-];
-function mergePageMeta(id2, pageMeta) {
-  const res = extend({ id: id2 }, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
-  });
-  return res;
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    if (enablePullDownRefresh) {
-      const refreshOptions = extend({
-        support: true,
-        color: "#2BD009",
-        style: "circle",
-        height: 70,
-        range: 150,
-        offset: 0
-      }, pageMeta.refreshOptions);
-      let offset = rpx2px(refreshOptions.offset);
-      const { type } = navigationBar;
-      if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
-      }
-      refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
-      pageMeta.refreshOptions = refreshOptions;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.backButton = pageMeta.isQuit ? false : true;
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#fff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
-  }
-  if (__UNI_FEATURE_PAGES__ && history.state) {
-    const type = history.state.__type__;
-    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
-      pageMeta.isEntry = true;
-      pageMeta.isQuit = true;
-    }
-  }
-  return pageMeta;
-}
-const screen$1 = window.screen;
-const documentElement = document.documentElement;
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen$1.width,
-    screen$1.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
-}
-function getStateId() {
-  return history.state && history.state.__id__ || 1;
-}
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(__uniConfig.tabBar);
-  }
-  return tabBar;
-}
-var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var lookup = /* @__PURE__ */ function() {
-  const lookup2 = new Uint8Array(256);
-  for (var i = 0; i < chars.length; i++) {
-    lookup2[chars.charCodeAt(i)] = i;
-  }
-  return lookup2;
-}();
-function encode$1(arraybuffer) {
-  var bytes = new Uint8Array(arraybuffer), i, len = bytes.length, base64 = "";
-  for (i = 0; i < len; i += 3) {
-    base64 += chars[bytes[i] >> 2];
-    base64 += chars[(bytes[i] & 3) << 4 | bytes[i + 1] >> 4];
-    base64 += chars[(bytes[i + 1] & 15) << 2 | bytes[i + 2] >> 6];
-    base64 += chars[bytes[i + 2] & 63];
-  }
-  if (len % 3 === 2) {
-    base64 = base64.substring(0, base64.length - 1) + "=";
-  } else if (len % 3 === 1) {
-    base64 = base64.substring(0, base64.length - 2) + "==";
-  }
-  return base64;
-}
-function decode(base64) {
-  var bufferLength = base64.length * 0.75, len = base64.length, i, p2 = 0, encoded1, encoded2, encoded3, encoded4;
-  if (base64[base64.length - 1] === "=") {
-    bufferLength--;
-    if (base64[base64.length - 2] === "=") {
-      bufferLength--;
-    }
-  }
-  var arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
-  for (i = 0; i < len; i += 4) {
-    encoded1 = lookup[base64.charCodeAt(i)];
-    encoded2 = lookup[base64.charCodeAt(i + 1)];
-    encoded3 = lookup[base64.charCodeAt(i + 2)];
-    encoded4 = lookup[base64.charCodeAt(i + 3)];
-    bytes[p2++] = encoded1 << 2 | encoded2 >> 4;
-    bytes[p2++] = (encoded2 & 15) << 4 | encoded3 >> 2;
-    bytes[p2++] = (encoded3 & 3) << 6 | encoded4 & 63;
-  }
-  return arraybuffer;
-}
-const CHOOSE_SIZE_TYPES = ["original", "compressed"];
-const CHOOSE_SOURCE_TYPES = ["album", "camera"];
-const HTTP_METHODS = [
-  "GET",
-  "OPTIONS",
-  "HEAD",
-  "POST",
-  "PUT",
-  "DELETE",
-  "TRACE",
-  "CONNECT"
-];
-function elemInArray(str, arr) {
-  if (!str || arr.indexOf(str) === -1) {
-    return arr[0];
-  }
-  return str;
-}
-function elemsInArray(strArr, optionalVal) {
-  if (!isArray(strArr) || strArr.length === 0 || strArr.find((val) => optionalVal.indexOf(val) === -1)) {
-    return optionalVal;
-  }
-  return strArr;
-}
-function validateProtocolFail(name, msg) {
-  console.warn(`${name}: ${msg}`);
-}
-function validateProtocol(name, data, protocol, onFail) {
-  if (!onFail) {
-    onFail = validateProtocolFail;
-  }
-  for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
-    if (isString(errMsg)) {
-      onFail(name, errMsg);
-    }
-  }
-}
-function validateProtocols(name, args, protocol, onFail) {
-  if (!protocol) {
-    return;
-  }
-  if (!isArray(protocol)) {
-    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
-  }
-  const len = protocol.length;
-  const argsLen = args.length;
-  for (let i = 0; i < len; i++) {
-    const opts = protocol[i];
-    const data = Object.create(null);
-    if (argsLen > i) {
-      data[opts.name] = args[i];
-    }
-    validateProtocol(name, data, { [opts.name]: opts }, onFail);
-  }
-}
-function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject(prop)) {
-    prop = { type: prop };
-  }
-  const { type, required, validator: validator2 } = prop;
-  if (required && isAbsent) {
-    return 'Missing required args: "' + name + '"';
-  }
-  if (value == null && !required) {
-    return;
-  }
-  if (type != null) {
-    let isValid = false;
-    const types = isArray(type) ? type : [type];
-    const expectedTypes = [];
-    for (let i = 0; i < types.length && !isValid; i++) {
-      const { valid, expectedType } = assertType(value, types[i]);
-      expectedTypes.push(expectedType || "");
-      isValid = valid;
-    }
-    if (!isValid) {
-      return getInvalidTypeMessage(name, value, expectedTypes);
-    }
-  }
-  if (validator2) {
-    return validator2(value);
-  }
-}
-const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
-function assertType(value, type) {
-  let valid;
-  const expectedType = getType(type);
-  if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
-      valid = value instanceof type;
-    }
-  } else if (expectedType === "Object") {
-    valid = isObject(value);
-  } else if (expectedType === "Array") {
-    valid = isArray(value);
-  } else {
-    {
-      valid = value instanceof type;
-    }
-  }
-  return {
-    valid,
-    expectedType
-  };
-}
-function getInvalidTypeMessage(name, value, expectedTypes) {
-  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
-  const expectedType = expectedTypes[0];
-  const receivedType = toRawType(value);
-  const expectedValue = styleValue(value, expectedType);
-  const receivedValue = styleValue(value, receivedType);
-  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-    message += ` with value ${expectedValue}`;
-  }
-  message += `, got ${receivedType} `;
-  if (isExplicable(receivedType)) {
-    message += `with value ${receivedValue}.`;
-  }
-  return message;
-}
-function getType(ctor) {
-  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : "";
-}
-function styleValue(value, type) {
-  if (type === "String") {
-    return `"${value}"`;
-  } else if (type === "Number") {
-    return `${Number(value)}`;
-  } else {
-    return `${value}`;
-  }
-}
-function isExplicable(type) {
-  const explicitTypes = ["string", "number", "boolean"];
-  return explicitTypes.some((elem) => type.toLowerCase() === elem);
-}
-function isBoolean(...args) {
-  return args.some((elem) => elem.toLowerCase() === "boolean");
-}
-function tryCatch(fn) {
-  return function() {
-    try {
-      return fn.apply(fn, arguments);
-    } catch (e2) {
-      console.error(e2);
-    }
-  };
-}
-let invokeCallbackId = 1;
-const invokeCallbacks = {};
-function addInvokeCallback(id2, name, callback, keepAlive = false) {
-  invokeCallbacks[id2] = {
-    name,
-    keepAlive,
-    callback
-  };
-  return id2;
-}
-function invokeCallback(id2, res, extras) {
-  if (typeof id2 === "number") {
-    const opts = invokeCallbacks[id2];
-    if (opts) {
-      if (!opts.keepAlive) {
-        delete invokeCallbacks[id2];
-      }
-      return opts.callback(res, extras);
-    }
-  }
-  return res;
-}
-function findInvokeCallbackByName(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      return true;
-    }
-  }
-  return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-  for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
-}
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
-    for (const key in invokeCallbacks) {
-      const opts = invokeCallbacks[key];
-      if (opts.name === name) {
-        opts.callback(res);
-      }
-    }
-  });
-}
-function createKeepAliveApiCallback(name, callback) {
-  return addInvokeCallback(invokeCallbackId++, name, callback, true);
-}
-const API_SUCCESS = "success";
-const API_FAIL = "fail";
-const API_COMPLETE = "complete";
-function getApiCallbacks(args) {
-  const apiCallbacks = {};
-  for (const name in args) {
-    const fn = args[name];
-    if (isFunction(fn)) {
-      apiCallbacks[name] = tryCatch(fn);
-      delete args[name];
-    }
-  }
-  return apiCallbacks;
-}
-function normalizeErrMsg(errMsg, name) {
-  if (!errMsg || errMsg.indexOf(":fail") === -1) {
-    return name + ":ok";
-  }
-  return name + errMsg.substring(errMsg.indexOf(":fail"));
-}
-function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject(args)) {
-    args = {};
-  }
-  const { success, fail, complete } = getApiCallbacks(args);
-  const hasSuccess = isFunction(success);
-  const hasFail = isFunction(fail);
-  const hasComplete = isFunction(complete);
-  const callbackId = invokeCallbackId++;
-  addInvokeCallback(callbackId, name, (res) => {
-    res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
-    isFunction(beforeAll) && beforeAll(res);
-    if (res.errMsg === name + ":ok") {
-      isFunction(beforeSuccess) && beforeSuccess(res);
-      hasSuccess && success(res);
-    } else {
-      hasFail && fail(res);
-    }
-    hasComplete && complete(res);
-  });
-  return callbackId;
-}
-const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
-function hasCallback(args) {
-  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
-    return true;
-  }
-  return false;
-}
-function handlePromise(promise) {
-  if (__UNI_FEATURE_PROMISE__) {
-    return promise.then((data) => {
-      return [null, data];
-    }).catch((err) => [err]);
-  }
-  return promise;
-}
-function promisify(fn) {
-  return (args = {}) => {
-    if (hasCallback(args)) {
-      return fn(args);
-    }
-    return handlePromise(new Promise((resolve, reject) => {
-      fn(extend(args, { success: resolve, fail: reject }));
-    }));
-  };
-}
-function formatApiArgs(args, options) {
-  const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
-    return;
-  }
-  const formatArgs = options.formatArgs;
-  const keys = Object.keys(formatArgs);
-  for (let i = 0; i < keys.length; i++) {
-    const name = keys[i];
-    const formatterOrDefaultValue = formatArgs[name];
-    if (isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
-      if (isString(errMsg)) {
-        return errMsg;
-      }
-    } else {
-      if (!hasOwn(params, name)) {
-        params[name] = formatterOrDefaultValue;
-      }
-    }
-  }
-}
-function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, { errMsg: name + ":ok" }));
-}
-function invokeFail(id2, name, err) {
-  return invokeCallback(id2, { errMsg: name + ":fail" + (err ? " " + err : "") });
-}
-function beforeInvokeApi(name, args, protocol, options) {
-  if (process.env.NODE_ENV !== "production") {
-    validateProtocols(name, args, protocol);
-  }
-  if (options && options.beforeInvoke) {
-    const errMsg2 = options.beforeInvoke(args);
-    if (isString(errMsg2)) {
-      return errMsg2;
-    }
-  }
-  const errMsg = formatApiArgs(args, options);
-  if (errMsg) {
-    return errMsg;
-  }
-}
-function checkCallback(callback) {
-  if (!isFunction(callback)) {
-    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
-  }
-}
-function wrapperOnApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback);
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name);
-      fn();
-    }
-  };
-}
-function wrapperOffApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    const hasInvokeOnApi = findInvokeCallbackByName(name);
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
-      fn();
-    }
-  };
-}
-function wrapperTaskApi(name, fn, protocol, options) {
-  return (args) => {
-    const id2 = createAsyncApiCallback(name, args, options);
-    const errMsg = beforeInvokeApi(name, [args], protocol, options);
-    if (errMsg) {
-      return invokeFail(id2, name, errMsg);
-    }
-    return fn(args, {
-      resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (err) => invokeFail(id2, name, err)
-    });
-  };
-}
-function wrapperSyncApi(name, fn, protocol, options) {
-  return (...args) => {
-    const errMsg = beforeInvokeApi(name, args, protocol, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    return fn.apply(null, args);
-  };
-}
-function wrapperAsyncApi(name, fn, protocol, options) {
-  return wrapperTaskApi(name, fn, protocol, options);
-}
-function defineOnApi(name, fn, options) {
-  return wrapperOnApi(name, fn, options);
-}
-function defineOffApi(name, fn, options) {
-  return wrapperOffApi(name, fn, options);
-}
-function defineTaskApi(name, fn, protocol, options) {
-  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function defineSyncApi(name, fn, protocol, options) {
-  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
-}
-function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
-}
-function createUnsupportedMsg(name) {
-  return `method 'uni.${name}' not supported`;
-}
-function createUnsupportedSyncApi(name) {
-  return () => {
-    console.error(createUnsupportedMsg(name));
-  };
-}
-const createUnsupportedOnApi = createUnsupportedSyncApi;
-function createUnsupportedAsyncApi(name) {
-  return (_args, { reject }) => {
-    return reject(createUnsupportedMsg(name));
-  };
-}
-const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
-const Base64ToArrayBufferProtocol = [
-  {
-    name: "base64",
-    type: String,
-    required: true
-  }
-];
-const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
-const ArrayBufferToBase64Protocol = [
-  {
-    name: "arrayBuffer",
-    type: [ArrayBuffer, Uint8Array],
-    required: true
-  }
-];
-const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
-  return decode(base64);
-}, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
-  return encode$1(arrayBuffer);
-}, ArrayBufferToBase64Protocol);
-function findElem(vm) {
-  return vm.$el;
-}
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-const baseUrl = import.meta.env.BASE_URL;
-function addBase(filePath) {
-  return baseUrl + filePath;
-}
-function getRealPath(filePath) {
-  if (__uniConfig.router.base === "./") {
-    filePath = filePath.replace(/^\.\/static\//, "/static/");
-  }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.substr(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
-  }
-  return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
-  return {
-    platform: isIOS$1 ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
-}
-function operateVideoPlayer(videoId, pageId, type, data) {
-  UniServiceJSBridge.publishHandler("video." + videoId, {
-    videoId,
-    type,
-    data
-  }, pageId);
-}
-function operateMap(id2, pageId, type, data) {
-  UniServiceJSBridge.publishHandler("map." + id2, {
-    type,
-    data
-  }, pageId);
-}
-var subscriber = {
-  mounted() {
-    this._toggleListeners("subscribe", this.id);
-    this.$watch("id", (newId, oldId) => {
-      this._toggleListeners("unsubscribe", oldId, true);
-      this._toggleListeners("subscribe", newId, true);
-    });
-  },
-  beforeDestroy() {
-    this._toggleListeners("unsubscribe", this.id);
-    if (this._contextId) {
-      this._toggleListeners("unsubscribe", this._contextId);
-    }
-  },
-  methods: {
-    _toggleListeners(type, id2, watch2) {
-      if (watch2 && !id2) {
-        return;
-      }
-      if (!isFunction(this._handleSubscribe)) {
-        return;
-      }
-      UniViewJSBridge[type](this.$page.id + "-" + this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase() + "-" + id2, this._handleSubscribe);
-    },
-    _getContextInfo() {
-      const id2 = `context-${this._uid}`;
-      if (!this._contextId) {
-        this._toggleListeners("subscribe", id2);
-        this._contextId = id2;
-      }
-      return {
-        name: this.$options.name.replace(/VUni([A-Z])/, "$1").toLowerCase(),
-        id: id2,
-        page: this.$page.id
-      };
-    }
-  }
-};
-function throttle(fn, wait) {
-  let last = 0;
-  let timeout;
-  let waitCallback;
-  const newFn = function(...arg) {
-    const now = Date.now();
-    clearTimeout(timeout);
-    waitCallback = () => {
-      waitCallback = null;
-      last = now;
-      fn.apply(this, arg);
-    };
-    if (now - last < wait) {
-      timeout = setTimeout(waitCallback, wait - (now - last));
-      return;
-    }
-    waitCallback();
-  };
-  newFn.cancel = function() {
-    clearTimeout(timeout);
-    waitCallback = null;
-  };
-  newFn.flush = function() {
-    clearTimeout(timeout);
-    waitCallback && waitCallback();
-  };
-  return newFn;
-}
-const _sfc_main$1 = {
-  name: "Audio",
-  mixins: [subscriber],
-  props: {
-    id: {
-      type: String,
-      default: ""
-    },
-    src: {
-      type: String,
-      default: ""
-    },
-    loop: {
-      type: [Boolean, String],
-      default: false
-    },
-    controls: {
-      type: [Boolean, String],
-      default: false
-    },
-    poster: {
-      type: String,
-      default: ""
-    },
-    name: {
-      type: String,
-      default: ""
-    },
-    author: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      playing: false,
-      currentTime: this.getTime(0)
-    };
-  },
-  watch: {
-    src(val) {
-      if (this.$refs.audio) {
-        this.$refs.audio.src = this.$getRealPath(val);
-      }
-    }
-  },
-  mounted() {
-    const audio = this.$refs.audio;
-    audio.addEventListener("error", ($event) => {
-      this.playing = false;
-      this.$trigger("error", $event, {});
-    });
-    audio.addEventListener("play", ($event) => {
-      this.playing = true;
-      this.$trigger("play", $event, {});
-    });
-    audio.addEventListener("pause", ($event) => {
-      this.playing = false;
-      this.$trigger("pause", $event, {});
-    });
-    audio.addEventListener("ended", ($event) => {
-      this.playing = false;
-      this.$trigger("ended", $event, {});
-    });
-    audio.addEventListener("timeupdate", ($event) => {
-      var currentTime = audio.currentTime;
-      this.currentTime = this.getTime(currentTime);
-      var duration = audio.duration;
-      this.$trigger("timeupdate", $event, {
-        currentTime,
-        duration
-      });
-    });
-    audio.src = this.$getRealPath(this.src);
-  },
-  methods: {
-    _handleSubscribe({
-      type,
-      data = {}
-    }) {
-      var audio = this.$refs.audio;
-      switch (type) {
-        case "setSrc":
-          audio.src = this.$getRealPath(data.src);
-          this.$emit("update:src", data.src);
-          break;
-        case "play":
-          audio.play();
-          break;
-        case "pause":
-          audio.pause();
-          break;
-        case "seek":
-          audio.currentTime = data.position;
-          break;
-      }
-    },
-    trigger() {
-      if (this.playing) {
-        this.$refs.audio.pause();
-      } else {
-        this.$refs.audio.play();
-      }
-    },
-    getTime(time) {
-      var h = Math.floor(time / 3600);
-      var m = Math.floor(time % 3600 / 60);
-      var s = Math.floor(time % 3600 % 60);
-      h = (h < 10 ? "0" : "") + h;
-      m = (m < 10 ? "0" : "") + m;
-      s = (s < 10 ? "0" : "") + s;
-      var str = m + ":" + s;
-      if (h !== "00") {
-        str = h + ":" + str;
-      }
-      return str;
-    }
-  }
-};
-const _hoisted_1$1 = { class: "uni-audio-default" };
-const _hoisted_2$1 = { class: "uni-audio-right" };
-const _hoisted_3$1 = { class: "uni-audio-time" };
-const _hoisted_4$1 = { class: "uni-audio-info" };
-const _hoisted_5 = { class: "uni-audio-name" };
-const _hoisted_6 = { class: "uni-audio-author" };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("uni-audio", mergeProps({
-    id: $props.id,
-    controls: !!$props.controls
-  }, _ctx.$attrs), [
-    createVNode("audio", {
-      ref: "audio",
-      loop: $props.loop,
-      style: { "display": "none" }
-    }, null, 8, ["loop"]),
-    createVNode("div", _hoisted_1$1, [
-      createVNode("div", {
-        style: "background-image: url(" + _ctx.$getRealPath($props.poster) + ");",
-        class: "uni-audio-left"
-      }, [
-        createVNode("div", {
-          class: [{ play: !$data.playing, pause: $data.playing }, "uni-audio-button"],
-          onClick: _cache[1] || (_cache[1] = (...args) => $options.trigger && $options.trigger(...args))
-        }, null, 2)
-      ], 4),
-      createVNode("div", _hoisted_2$1, [
-        createVNode("div", _hoisted_3$1, toDisplayString($data.currentTime), 1),
-        createVNode("div", _hoisted_4$1, [
-          createVNode("div", _hoisted_5, toDisplayString($props.name), 1),
-          createVNode("div", _hoisted_6, toDisplayString($props.author), 1)
-        ])
-      ])
-    ])
-  ], 16, ["id", "controls"]);
-}
-_sfc_main$1.render = _sfc_render$1;
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -2511,7192 +1821,78 @@ var index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, {
-      default: () => [createVNode("div", {
-        "onScroll": update
-      }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-        "onScroll": update
-      }, [createVNode("div", null, null)], 40, ["onScroll"])],
-      _: 1
-    }, 8, ["onAnimationstartOnce"]);
+function findElem(vm) {
+  return vm.$el;
+}
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+const baseUrl = import.meta.env.BASE_URL;
+function addBase(filePath) {
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  if (__uniConfig.router.base === "./") {
+    filePath = filePath.replace(/^\.\/static\//, "/static/");
   }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const {
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    size.width = width;
-    size.height = height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  onActivated(reset);
-  onMounted(() => {
-    if (props2.initial) {
-      nextTick(update);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
-}
-const pixelRatio = /* @__PURE__ */ function() {
-  const canvas = document.createElement("canvas");
-  canvas.height = canvas.width = 0;
-  const context = canvas.getContext("2d");
-  const backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
-  return (window.devicePixelRatio || 1) / backingStore;
-}();
-function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio;
-  canvas.height = canvas.offsetHeight * pixelRatio;
-  canvas.getContext("2d").__hidpi__ = true;
-}
-let isHidpi = false;
-function initHidpi() {
-  if (isHidpi) {
-    return;
-  }
-  isHidpi = true;
-  const forEach = function(obj, func) {
-    for (const key in obj) {
-      if (hasOwn(obj, key)) {
-        func(obj[key], key);
-      }
-    }
-  };
-  const ratioArgs = {
-    fillRect: "all",
-    clearRect: "all",
-    strokeRect: "all",
-    moveTo: "all",
-    lineTo: "all",
-    arc: [0, 1, 2],
-    arcTo: "all",
-    bezierCurveTo: "all",
-    isPointinPath: "all",
-    isPointinStroke: "all",
-    quadraticCurveTo: "all",
-    rect: "all",
-    translate: "all",
-    createRadialGradient: "all",
-    createLinearGradient: "all",
-    setTransform: [4, 5]
-  };
-  const proto = CanvasRenderingContext2D.prototype;
-  proto.drawImageByCanvas = function(_super) {
-    return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
-      if (!this.__hidpi__) {
-        return _super.apply(this, arguments);
-      }
-      srcx *= pixelRatio;
-      srcy *= pixelRatio;
-      srcw *= pixelRatio;
-      srch *= pixelRatio;
-      desx *= pixelRatio;
-      desy *= pixelRatio;
-      desw = isScale ? desw * pixelRatio : desw;
-      desh = isScale ? desh * pixelRatio : desh;
-      _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
-    };
-  }(proto.drawImage);
-  if (pixelRatio !== 1) {
-    forEach(ratioArgs, function(value, key) {
-      proto[key] = function(_super) {
-        return function() {
-          if (!this.__hidpi__) {
-            return _super.apply(this, arguments);
-          }
-          let args = Array.prototype.slice.call(arguments);
-          if (value === "all") {
-            args = args.map(function(a2) {
-              return a2 * pixelRatio;
-            });
-          } else if (Array.isArray(value)) {
-            for (let i = 0; i < value.length; i++) {
-              args[value[i]] *= pixelRatio;
-            }
-          }
-          return _super.apply(this, args);
-        };
-      }(proto[key]);
-    });
-    proto.stroke = function(_super) {
-      return function() {
-        if (!this.__hidpi__) {
-          return _super.apply(this, arguments);
-        }
-        this.lineWidth *= pixelRatio;
-        _super.apply(this, arguments);
-        this.lineWidth /= pixelRatio;
-      };
-    }(proto.stroke);
-    proto.fillText = function(_super) {
-      return function() {
-        if (!this.__hidpi__) {
-          return _super.apply(this, arguments);
-        }
-        const args = Array.prototype.slice.call(arguments);
-        args[1] *= pixelRatio;
-        args[2] *= pixelRatio;
-        var font2 = this.font;
-        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
-          return m * pixelRatio + u;
-        });
-        _super.apply(this, args);
-        this.font = font2;
-      };
-    }(proto.fillText);
-    proto.strokeText = function(_super) {
-      return function() {
-        if (!this.__hidpi__) {
-          return _super.apply(this, arguments);
-        }
-        var args = Array.prototype.slice.call(arguments);
-        args[1] *= pixelRatio;
-        args[2] *= pixelRatio;
-        var font2 = this.font;
-        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
-          return m * pixelRatio + u;
-        });
-        _super.apply(this, args);
-        this.font = font2;
-      };
-    }(proto.strokeText);
-    proto.drawImage = function(_super) {
-      return function() {
-        if (!this.__hidpi__) {
-          return _super.apply(this, arguments);
-        }
-        this.scale(pixelRatio, pixelRatio);
-        _super.apply(this, arguments);
-        this.scale(1 / pixelRatio, 1 / pixelRatio);
-      };
-    }(proto.drawImage);
-  }
-}
-const initHidpiOnce = /* @__PURE__ */ once(initHidpi);
-function $getRealPath(src) {
-  return src ? getRealPath(src) : src;
-}
-function resolveColor(color) {
-  color = color.slice(0);
-  color[3] = color[3] / 255;
-  return "rgba(" + color.join(",") + ")";
-}
-function processTouches(target, touches) {
-  const eventTarget = target;
-  return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect();
-    return {
-      identifier: touch.identifier,
-      x: touch.clientX - boundingClientRect.left,
-      y: touch.clientY - boundingClientRect.top
-    };
-  });
-}
-let tempCanvas;
-function getTempCanvas(width = 0, height = 0) {
-  if (!tempCanvas) {
-    tempCanvas = document.createElement("canvas");
-  }
-  tempCanvas.width = width;
-  tempCanvas.height = height;
-  return tempCanvas;
-}
-const props$B = {
-  canvasId: {
-    type: String,
-    default: ""
-  },
-  disableScroll: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "Canvas",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$B,
-  computed: {
-    id() {
-      return this.canvasId;
-    }
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    initHidpiOnce();
-    const canvas = ref(null);
-    const sensor = ref(null);
-    const actionsWaiting = ref(false);
-    const trigger = useNativeEvent(emit2);
-    const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
-      _listeners
-    } = useListeners(props2, $listeners, trigger);
-    const {
-      _handleSubscribe,
-      _resize
-    } = useMethods(canvas, actionsWaiting);
-    useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
-    onMounted(() => {
-      _resize();
-    });
-    return () => {
-      const {
-        canvasId,
-        disableScroll
-      } = props2;
-      return createVNode("uni-canvas", mergeProps({
-        "canvas-id": canvasId,
-        "disable-scroll": disableScroll
-      }, $attrs.value, $excludeAttrs.value, _listeners.value), {
-        default: () => [createVNode("canvas", {
-          "ref": canvas,
-          "class": "uni-canvas-canvas",
-          "width": "300",
-          "height": "150"
-        }, null, 512), createVNode("div", {
-          "style": "position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;"
-        }, [slots.default && slots.default()]), createVNode(ResizeSensor, {
-          "ref": sensor,
-          "onResize": _resize
-        }, null, 8, ["onResize"])],
-        _: 1
-      }, 16, ["canvas-id", "disable-scroll"]);
-    };
-  }
-});
-function useListeners(props2, Listeners, trigger) {
-  const _listeners = computed(() => {
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
-    let _$listeners = Listeners.value;
-    let $listeners = extend({}, (() => {
-      let obj = {};
-      for (const key in _$listeners) {
-        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
-          const event = _$listeners[key];
-          obj[key] = event;
-        }
-      }
-      return obj;
-    })());
-    events.forEach((event) => {
-      let existing = $listeners[event];
-      let eventHandler = [];
-      if (existing) {
-        eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), extend({}, (() => {
-            let obj = {};
-            for (const key in $event) {
-              obj[key] = $event[key];
-            }
-            return obj;
-          })(), {
-            touches: processTouches($event.currentTarget, $event.touches),
-            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
-          }));
-        }));
-      }
-      if (props2.disableScroll && event === "onTouchmove") {
-        eventHandler.push(onEventPrevent);
-      }
-      $listeners[event] = eventHandler;
-    });
-    return $listeners;
-  });
-  return {
-    _listeners
-  };
-}
-function useMethods(canvasRef, actionsWaiting) {
-  let _actionsDefer = [];
-  let _images = {};
-  function _resize() {
-    var canvas = canvasRef.value;
-    if (canvas.width > 0 && canvas.height > 0) {
-      var context = canvas.getContext("2d");
-      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      wrapper(canvas);
-      context.putImageData(imageData, 0, 0);
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
     } else {
-      wrapper(canvas);
+      return addBase(filePath.substr(1));
     }
   }
-  function actionsChanged({
-    actions,
-    reserve,
-    callbackId
-  }) {
-    if (!actions) {
-      return;
-    }
-    if (actionsWaiting.value) {
-      _actionsDefer.push([actions, reserve, callbackId]);
-      return;
-    }
-    var canvas = canvasRef.value;
-    var c2d = canvas.getContext("2d");
-    if (!reserve) {
-      c2d.fillStyle = "#000000";
-      c2d.strokeStyle = "#000000";
-      c2d.shadowColor = "#000000";
-      c2d.shadowBlur = 0;
-      c2d.shadowOffsetX = 0;
-      c2d.shadowOffsetY = 0;
-      c2d.setTransform(1, 0, 0, 1, 0, 0);
-      c2d.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    preloadImage(actions);
-    for (let index2 = 0; index2 < actions.length; index2++) {
-      const action = actions[index2];
-      let method = action.method;
-      const data = action.data;
-      if (/^set/.test(method) && method !== "setTransform") {
-        const method1 = method[3].toLowerCase() + method.slice(4);
-        let color;
-        if (method1 === "fillStyle" || method1 === "strokeStyle") {
-          if (data[0] === "normal") {
-            color = resolveColor(data[1]);
-          } else if (data[0] === "linear") {
-            const LinearGradient = c2d.createLinearGradient(...data[1]);
-            data[2].forEach(function(data2) {
-              const offset = data2[0];
-              const color2 = resolveColor(data2[1]);
-              LinearGradient.addColorStop(offset, color2);
-            });
-            color = LinearGradient;
-          } else if (data[0] === "radial") {
-            const x = data[1][0];
-            const y = data[1][1];
-            const r = data[1][2];
-            const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
-            data[2].forEach(function(data2) {
-              const offset = data2[0];
-              const color2 = resolveColor(data2[1]);
-              LinearGradient.addColorStop(offset, color2);
-            });
-            color = LinearGradient;
-          } else if (data[0] === "pattern") {
-            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image2) {
-              if (image2) {
-                c2d[method1] = c2d.createPattern(image2, data[2]);
-              }
-            });
-            if (!loaded) {
-              break;
-            }
-            continue;
-          }
-          c2d[method1] = color;
-        } else if (method1 === "globalAlpha") {
-          c2d[method1] = Number(data[0]) / 255;
-        } else if (method1 === "shadow") {
-          var _ = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
-          data.forEach(function(color_, method_) {
-            c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
-          });
-        } else if (method1 === "fontSize") {
-          const font2 = c2d.__font__ || c2d.font;
-          c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, data[0] + "px");
-        } else if (method1 === "lineDash") {
-          c2d.setLineDash(data[0]);
-          c2d.lineDashOffset = data[1] || 0;
-        } else if (method1 === "textBaseline") {
-          if (data[0] === "normal") {
-            data[0] = "alphabetic";
-          }
-          c2d[method1] = data[0];
-        } else if (method1 === "font") {
-          c2d.__font__ = c2d.font = data[0];
-        } else {
-          c2d[method1] = data[0];
-        }
-      } else if (method === "fillPath" || method === "strokePath") {
-        method = method.replace(/Path/, "");
-        c2d.beginPath();
-        data.forEach(function(data_) {
-          c2d[data_.method].apply(c2d, data_.data);
-        });
-        c2d[method]();
-      } else if (method === "fillText") {
-        c2d.fillText.apply(c2d, data);
-      } else if (method === "drawImage") {
-        var A = function() {
-          var dataArray = [...data];
-          var url = dataArray[0];
-          var otherData = dataArray.slice(1);
-          _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image2) {
-            if (image2) {
-              c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
-            }
-          }))
-            return "break";
-        }();
-        if (A === "break") {
-          break;
-        }
-      } else {
-        if (method === "clip") {
-          data.forEach(function(data_) {
-            c2d[data_.method].apply(c2d, data_.data);
-          });
-          c2d.clip();
-        } else {
-          c2d[method].apply(c2d, data);
-        }
-      }
-    }
-    if (!actionsWaiting.value && callbackId) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-        callbackId,
-        data: {
-          errMsg: "drawCanvas:ok"
-        }
-      }, getCurrentPageId());
-    }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
   }
-  function preloadImage(actions) {
-    actions.forEach(function(action) {
-      var method = action.method;
-      var data = action.data;
-      var src = "";
-      if (method === "drawImage") {
-        src = data[0];
-        src = $getRealPath(src);
-        data[0] = src;
-      } else if (method === "setFillStyle" && data[0] === "pattern") {
-        src = data[1];
-        src = $getRealPath(src);
-        data[1] = src;
-      }
-      if (src && !_images[src]) {
-        loadImage();
-      }
-      function loadImage() {
-        const image2 = _images[src] = new Image();
-        image2.onload = function() {
-          image2.ready = true;
-        };
-        getSameOriginUrl(src).then((src2) => {
-          image2.src = src2;
-        }).catch(() => {
-          image2.src = src;
-        });
-      }
-    });
+  const pages = getCurrentPages();
+  if (pages.length) {
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
   }
-  function checkImageLoaded(src, actions, callbackId, fn) {
-    var image2 = _images[src];
-    if (image2.ready) {
-      fn(image2);
-      return true;
-    } else {
-      _actionsDefer.unshift([actions, true]);
-      actionsWaiting.value = true;
-      image2.onload = function() {
-        image2.ready = true;
-        fn(image2);
-        actionsWaiting.value = false;
-        var actions2 = _actionsDefer.slice(0);
-        _actionsDefer = [];
-        for (var action = actions2.shift(); action; ) {
-          actionsChanged({
-            actions: action[0],
-            reserve: action[1],
-            callbackId
-          });
-          action = actions2.shift();
-        }
-      };
-      return false;
-    }
-  }
-  function getImageData({
-    x = 0,
-    y = 0,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    hidpi = true,
-    dataType: dataType2,
-    quality = 1,
-    type = "png",
-    callbackId
-  }) {
-    const canvas = canvasRef.value;
-    let data;
-    const maxWidth = canvas.offsetWidth - x;
-    width = width ? Math.min(width, maxWidth) : maxWidth;
-    const maxHeight = canvas.offsetHeight - y;
-    height = height ? Math.min(height, maxHeight) : maxHeight;
-    if (!hidpi) {
-      if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * pixelRatio);
-        destHeight = Math.round(height * pixelRatio);
-      } else if (!destWidth) {
-        destWidth = Math.round(width / height * destHeight);
-      } else if (!destHeight) {
-        destHeight = Math.round(height / width * destWidth);
-      }
-    } else {
-      destWidth = width;
-      destHeight = height;
-    }
-    const newCanvas = getTempCanvas(destWidth, destHeight);
-    const context = newCanvas.getContext("2d");
-    if (type === "jpeg" || type === "jpg") {
-      type = "jpeg";
-      context.fillStyle = "#fff";
-      context.fillRect(0, 0, destWidth, destHeight);
-    }
-    context.__hidpi__ = true;
-    context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
-    let result;
-    try {
-      let compressed;
-      if (dataType2 === "base64") {
-        data = newCanvas.toDataURL(`image/${type}`, quality);
-      } else {
-        const imgData = context.getImageData(0, 0, destWidth, destHeight);
-        if (false)
-          ;
-        else {
-          data = Array.prototype.slice.call(imgData.data);
-        }
-      }
-      result = {
-        errMsg: "canvasGetImageData:ok",
-        data,
-        compressed,
-        width: destWidth,
-        height: destHeight
-      };
-    } catch (error) {
-      result = {
-        errMsg: `canvasGetImageData:fail ${error}`
-      };
-    }
-    newCanvas.height = newCanvas.width = 0;
-    context.__hidpi__ = false;
-    if (!callbackId) {
-      return result;
-    } else {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-        callbackId,
-        data: result
-      }, getCurrentPageId());
-    }
-  }
-  function putImageData({
-    data,
-    x,
-    y,
-    width,
-    height,
-    compressed,
-    callbackId
-  }) {
-    try {
-      if (!height) {
-        height = Math.round(data.length / 4 / width);
-      }
-      const canvas = getTempCanvas(width, height);
-      const context = canvas.getContext("2d");
-      if (false)
-        ;
-      context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
-      canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
-      canvas.height = canvas.width = 0;
-    } catch (error) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-        callbackId,
-        data: {
-          errMsg: "canvasPutImageData:fail"
-        }
-      }, getCurrentPageId());
-      return;
-    }
-    UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-      callbackId,
-      data: {
-        errMsg: "canvasPutImageData:ok"
-      }
-    }, getCurrentPageId());
-  }
-  function toTempFilePath({
-    x = 0,
-    y = 0,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    fileType,
-    quality,
-    dirname,
-    callbackId
-  }) {
-    const res = getImageData({
-      x,
-      y,
-      width,
-      height,
-      destWidth,
-      destHeight,
-      hidpi: false,
-      dataType: "base64",
-      type: fileType,
-      quality
-    });
-    if (!res.data || !res.data.length) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-        callbackId,
-        data: {
-          errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
-        }
-      }, getCurrentPageId());
-      return;
-    }
-    saveImage(res.data, dirname, (error, tempFilePath) => {
-      let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
-      if (error) {
-        errMsg += ` ${error.message}`;
-      }
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
-        callbackId,
-        data: {
-          errMsg,
-          tempFilePath
-        }
-      }, getCurrentPageId());
-    });
-  }
-  const methods = {
-    actionsChanged,
-    getImageData,
-    putImageData,
-    toTempFilePath
-  };
-  function _handleSubscribe(type, data = {}) {
-    let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
-      method(data);
-    }
-  }
-  return extend(methods, {
-    _resize,
-    _handleSubscribe
-  });
+  return filePath;
 }
-const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$A = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CheckboxGroup",
-  props: props$A,
-  emits: ["change"],
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useProvideCheckGroup(props2, trigger);
-    return () => {
-      return createVNode("uni-checkbox-group", {
-        "ref": rootRef
-      }, {
-        default: () => [slots.default && slots.default()]
-      }, 512);
-    };
-  }
-});
-function useProvideCheckGroup(props2, trigger) {
-  const fields2 = [];
-  const getFieldsValue = () => fields2.reduce((res, field) => {
-    if (field.value.checkboxChecked) {
-      res.push(field.value.value);
-    }
-    return res;
-  }, new Array());
-  provide(uniCheckGroupKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    checkboxChange($event) {
-      trigger("change", $event, {
-        value: getFieldsValue()
-      });
-    }
-  });
-  const uniForm = inject(uniFormKey, false);
-  if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = getFieldsValue();
-        }
-        return data;
-      }
-    });
-  }
-  return getFieldsValue;
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
-const props$z = {
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: {
-    type: String,
-    default: "#007aff"
-  },
-  value: {
-    type: String,
-    default: ""
-  }
-};
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Checkbox",
-  props: props$z,
-  setup(props2, {
-    slots
-  }) {
-    const checkboxChecked = ref(props2.checked);
-    const checkboxValue = ref(props2.value);
-    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      checkboxChecked.value = newChecked;
-      checkboxValue.value = newModelValue;
-    });
-    const reset = () => {
-      checkboxChecked.value = false;
-    };
-    const {
-      uniCheckGroup,
-      uniLabel
-    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
-    const _onClick = ($event) => {
-      if (props2.disabled) {
-        return;
-      }
-      checkboxChecked.value = !checkboxChecked.value;
-      uniCheckGroup && uniCheckGroup.checkboxChange($event);
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-      onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
-    }
-    useListeners$1(props2, {
-      "label-click": _onClick
-    });
-    return () => {
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
-        "onClick": _onClick
-      }), {
-        default: () => [createVNode("div", {
-          "class": "uni-checkbox-wrapper"
-        }, [createVNode("div", {
-          "class": ["uni-checkbox-input", {
-            "uni-checkbox-input-disabled": props2.disabled
-          }]
-        }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])]
-      }, 16, ["onClick"]);
-    };
-  }
-});
-function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
-  const field = computed(() => ({
-    checkboxChecked: Boolean(checkboxChecked.value),
-    value: checkboxValue.value
-  }));
-  const formField = {
-    reset
-  };
-  const uniCheckGroup = inject(uniCheckGroupKey, false);
-  if (!!uniCheckGroup) {
-    uniCheckGroup.addField(field);
-  }
-  const uniForm = inject(uniFormKey, false);
-  if (!!uniForm) {
-    uniForm.addField(formField);
-  }
-  const uniLabel = inject(uniLabelKey, false);
-  onBeforeUnmount(() => {
-    uniCheckGroup && uniCheckGroup.removeField(field);
-    uniForm && uniForm.removeField(formField);
-  });
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
   return {
-    uniCheckGroup,
-    uniForm,
-    uniLabel
-  };
-}
-let resetTimer;
-function iosHideKeyboard() {
-}
-const props$y = {
-  cursorSpacing: {
-    type: [Number, String],
-    default: 0
-  },
-  showConfirmBar: {
-    type: [Boolean, String],
-    default: "auto"
-  },
-  adjustPosition: {
-    type: [Boolean, String],
-    default: true
-  },
-  autoBlur: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-const emit$1 = ["keyboardheightchange"];
-function useKeyboard$1(props2, elRef, trigger) {
-  function initKeyboard(el) {
-    el.addEventListener("focus", () => {
-      clearTimeout(resetTimer);
-      document.addEventListener("click", iosHideKeyboard, false);
-    });
-    const onKeyboardHide = () => {
-      document.removeEventListener("click", iosHideKeyboard, false);
-      if (String(navigator.vendor).indexOf("Apple") === 0) {
-        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
-      }
-    };
-    el.addEventListener("blur", () => {
-      onKeyboardHide();
-    });
-  }
-  watch(() => elRef.value, (el) => initKeyboard(el));
-}
-var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
-var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
-var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
-var special = /* @__PURE__ */ makeMap("script,style");
-function HTMLParser(html, handler) {
-  var index2;
-  var chars2;
-  var match;
-  var stack = [];
-  var last = html;
-  stack.last = function() {
-    return this[this.length - 1];
-  };
-  while (html) {
-    chars2 = true;
-    if (!stack.last() || !special[stack.last()]) {
-      if (html.indexOf("<!--") == 0) {
-        index2 = html.indexOf("-->");
-        if (index2 >= 0) {
-          if (handler.comment) {
-            handler.comment(html.substring(4, index2));
-          }
-          html = html.substring(index2 + 3);
-          chars2 = false;
-        }
-      } else if (html.indexOf("</") == 0) {
-        match = html.match(endTag);
-        if (match) {
-          html = html.substring(match[0].length);
-          match[0].replace(endTag, parseEndTag);
-          chars2 = false;
-        }
-      } else if (html.indexOf("<") == 0) {
-        match = html.match(startTag);
-        if (match) {
-          html = html.substring(match[0].length);
-          match[0].replace(startTag, parseStartTag);
-          chars2 = false;
-        }
-      }
-      if (chars2) {
-        index2 = html.indexOf("<");
-        var text2 = index2 < 0 ? html : html.substring(0, index2);
-        html = index2 < 0 ? "" : html.substring(index2);
-        if (handler.chars) {
-          handler.chars(text2);
-        }
-      }
-    } else {
-      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text3) {
-        text3 = text3.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
-        if (handler.chars) {
-          handler.chars(text3);
-        }
-        return "";
-      });
-      parseEndTag("", stack.last());
-    }
-    if (html == last) {
-      throw "Parse Error: " + html;
-    }
-    last = html;
-  }
-  parseEndTag();
-  function parseStartTag(tag, tagName, rest, unary) {
-    tagName = tagName.toLowerCase();
-    if (block[tagName]) {
-      while (stack.last() && inline[stack.last()]) {
-        parseEndTag("", stack.last());
-      }
-    }
-    if (closeSelf[tagName] && stack.last() == tagName) {
-      parseEndTag("", tagName);
-    }
-    unary = empty[tagName] || !!unary;
-    if (!unary) {
-      stack.push(tagName);
-    }
-    if (handler.start) {
-      var attrs2 = [];
-      rest.replace(attr, function(match2, name) {
-        var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
-        attrs2.push({
-          name,
-          value,
-          escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
-        });
-      });
-      if (handler.start) {
-        handler.start(tagName, attrs2, unary);
-      }
-    }
-  }
-  function parseEndTag(tag, tagName) {
-    if (!tagName) {
-      var pos = 0;
-    } else {
-      for (var pos = stack.length - 1; pos >= 0; pos--) {
-        if (stack[pos] == tagName) {
-          break;
-        }
-      }
-    }
-    if (pos >= 0) {
-      for (var i = stack.length - 1; i >= pos; i--) {
-        if (handler.end) {
-          handler.end(stack[i]);
-        }
-      }
-      stack.length = pos;
-    }
-  }
-}
-function makeMap(str) {
-  var obj = {};
-  var items = str.split(",");
-  for (var i = 0; i < items.length; i++) {
-    obj[items[i]] = true;
-  }
-  return obj;
-}
-const scripts = {};
-function loadScript(globalName, src, callback) {
-  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
-  if (globalObject) {
-    callback();
-    return;
-  }
-  let callbacks2 = scripts[src];
-  if (!callbacks2) {
-    callbacks2 = scripts[src] = [];
-    const script = document.createElement("script");
-    script.src = src;
-    document.body.appendChild(script);
-    script.onload = function() {
-      callbacks2.forEach((callback2) => callback2());
-      delete scripts[src];
-    };
-  }
-  callbacks2.push(callback);
-}
-function divider(Quill) {
-  const BlockEmbed = Quill.import("blots/block/embed");
-  class Divider extends BlockEmbed {
-  }
-  Divider.blotName = "divider";
-  Divider.tagName = "HR";
-  return {
-    "formats/divider": Divider
-  };
-}
-function ins(Quill) {
-  const Inline = Quill.import("blots/inline");
-  class Ins extends Inline {
-  }
-  Ins.blotName = "ins";
-  Ins.tagName = "INS";
-  return {
-    "formats/ins": Ins
-  };
-}
-function align(Quill) {
-  const { Scope, Attributor } = Quill.import("parchment");
-  const config = {
-    scope: Scope.BLOCK,
-    whitelist: ["left", "right", "center", "justify"]
-  };
-  const AlignStyle = new Attributor.Style("align", "text-align", config);
-  return {
-    "formats/align": AlignStyle
-  };
-}
-function direction(Quill) {
-  const { Scope, Attributor } = Quill.import("parchment");
-  const config = {
-    scope: Scope.BLOCK,
-    whitelist: ["rtl"]
-  };
-  const DirectionStyle = new Attributor.Style("direction", "direction", config);
-  return {
-    "formats/direction": DirectionStyle
-  };
-}
-function list(Quill) {
-  const Parchment = Quill.import("parchment");
-  const Container = Quill.import("blots/container");
-  const ListItem = Quill.import("formats/list/item");
-  class List extends Container {
-    static create(value) {
-      const tagName = value === "ordered" ? "OL" : "UL";
-      const node = super.create(tagName);
-      if (value === "checked" || value === "unchecked") {
-        node.setAttribute("data-checked", value === "checked");
-      }
-      return node;
-    }
-    static formats(domNode) {
-      if (domNode.tagName === "OL")
-        return "ordered";
-      if (domNode.tagName === "UL") {
-        if (domNode.hasAttribute("data-checked")) {
-          return domNode.getAttribute("data-checked") === "true" ? "checked" : "unchecked";
-        } else {
-          return "bullet";
-        }
-      }
-      return void 0;
-    }
-    constructor(domNode) {
-      super(domNode);
-      const listEventHandler = (e2) => {
-        if (e2.target.parentNode !== domNode)
-          return;
-        const format = this.statics.formats(domNode);
-        const blot = Parchment.find(e2.target);
-        if (format === "checked") {
-          blot.format("list", "unchecked");
-        } else if (format === "unchecked") {
-          blot.format("list", "checked");
-        }
-      };
-      domNode.addEventListener("click", listEventHandler);
-    }
-    format(name, value) {
-      if (this.children.length > 0) {
-        this.children.tail.format(name, value);
-      }
-    }
-    formats() {
-      return { [this.statics.blotName]: this.statics.formats(this.domNode) };
-    }
-    insertBefore(blot, ref2) {
-      if (blot instanceof ListItem) {
-        super.insertBefore(blot, ref2);
-      } else {
-        const index2 = ref2 == null ? this.length() : ref2.offset(this);
-        const after = this.split(index2);
-        after.parent.insertBefore(blot, after);
-      }
-    }
-    optimize(context) {
-      super.optimize(context);
-      const next = this.next;
-      if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
-        next.moveChildren(this);
-        next.remove();
-      }
-    }
-    replace(target) {
-      if (target.statics.blotName !== this.statics.blotName) {
-        const item = Parchment.create(this.statics.defaultChild);
-        target.moveChildren(item);
-        this.appendChild(item);
-      }
-      super.replace(target);
-    }
-  }
-  List.blotName = "list";
-  List.scope = Parchment.Scope.BLOCK_BLOT;
-  List.tagName = ["OL", "UL"];
-  List.defaultChild = "list-item";
-  List.allowedChildren = [ListItem];
-  return {
-    "formats/list": List
-  };
-}
-function background(Quill) {
-  const { Scope } = Quill.import("parchment");
-  const BackgroundStyle = Quill.import("formats/background");
-  const BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
-    scope: Scope.INLINE
-  });
-  return {
-    "formats/backgroundColor": BackgroundColorStyle
-  };
-}
-function box(Quill) {
-  const { Scope, Attributor } = Quill.import("parchment");
-  const config = {
-    scope: Scope.BLOCK
-  };
-  const margin = [
-    "margin",
-    "marginTop",
-    "marginBottom",
-    "marginLeft",
-    "marginRight"
-  ];
-  const padding = [
-    "padding",
-    "paddingTop",
-    "paddingBottom",
-    "paddingLeft",
-    "paddingRight"
-  ];
-  const result = {};
-  margin.concat(padding).forEach((name) => {
-    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), config);
-  });
-  return result;
-}
-function font(Quill) {
-  const { Scope, Attributor } = Quill.import("parchment");
-  const config = {
-    scope: Scope.INLINE
-  };
-  const font2 = [
-    "font",
-    "fontSize",
-    "fontStyle",
-    "fontVariant",
-    "fontWeight",
-    "fontFamily"
-  ];
-  const result = {};
-  font2.forEach((name) => {
-    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), config);
-  });
-  return result;
-}
-function text(Quill) {
-  const { Scope, Attributor } = Quill.import("parchment");
-  const text2 = [
-    {
-      name: "lineHeight",
-      scope: Scope.BLOCK
-    },
-    {
-      name: "letterSpacing",
-      scope: Scope.INLINE
-    },
-    {
-      name: "textDecoration",
-      scope: Scope.INLINE
-    },
-    {
-      name: "textIndent",
-      scope: Scope.BLOCK
-    }
-  ];
-  const result = {};
-  text2.forEach(({ name, scope }) => {
-    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), {
-      scope
-    });
-  });
-  return result;
-}
-function image(Quill) {
-  const Image2 = Quill.import("formats/image");
-  const ATTRIBUTES = [
-    "alt",
-    "height",
-    "width",
-    "data-custom",
-    "class",
-    "data-local"
-  ];
-  Image2.sanitize = (url) => url;
-  Image2.formats = function formats(domNode) {
-    return ATTRIBUTES.reduce(function(formats2, attribute) {
-      if (domNode.hasAttribute(attribute)) {
-        formats2[attribute] = domNode.getAttribute(attribute);
-      }
-      return formats2;
-    }, {});
-  };
-  const format = Image2.prototype.format;
-  Image2.prototype.format = function(name, value) {
-    if (ATTRIBUTES.indexOf(name) > -1) {
-      if (value) {
-        this.domNode.setAttribute(name, value);
-      } else {
-        this.domNode.removeAttribute(name);
-      }
-    } else {
-      format.call(this, name, value);
-    }
-  };
-}
-function register(Quill) {
-  const formats = {
-    divider,
-    ins,
-    align,
-    direction,
-    list,
-    background,
-    box,
-    font,
-    text,
-    image
-  };
-  const options = {};
-  Object.values(formats).forEach((value) => extend(options, value(Quill)));
-  Quill.register(options, true);
-}
-function useQuill(props2, rootRef, trigger) {
-  let quillReady;
-  let skipMatcher;
-  let quill;
-  watch(() => props2.readOnly, (value) => {
-    if (quillReady) {
-      quill.enable(!value);
-      if (!value) {
-        quill.blur();
-      }
-    }
-  });
-  watch(() => props2.placeholder, (value) => {
-    if (quillReady) {
-      quill.root.setAttribute("data-placeholder", value);
-    }
-  });
-  function html2delta(html) {
-    const tags = [
-      "span",
-      "strong",
-      "b",
-      "ins",
-      "em",
-      "i",
-      "u",
-      "a",
-      "del",
-      "s",
-      "sub",
-      "sup",
-      "img",
-      "div",
-      "p",
-      "h1",
-      "h2",
-      "h3",
-      "h4",
-      "h5",
-      "h6",
-      "hr",
-      "ol",
-      "ul",
-      "li",
-      "br"
-    ];
-    let content = "";
-    let disable;
-    HTMLParser(html, {
-      start: function(tag, attrs2, unary) {
-        if (!tags.includes(tag)) {
-          disable = !unary;
-          return;
-        }
-        disable = false;
-        const arrts = attrs2.map(({ name, value }) => `${name}="${value}"`).join(" ");
-        const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
-        content += start;
-      },
-      end: function(tag) {
-        if (!disable) {
-          content += `</${tag}>`;
-        }
-      },
-      chars: function(text2) {
-        if (!disable) {
-          content += text2;
-        }
-      }
-    });
-    skipMatcher = true;
-    const delta = quill.clipboard.convert(content);
-    skipMatcher = false;
-    return delta;
-  }
-  function getContents() {
-    const html = quill.root.innerHTML;
-    const text2 = quill.getText();
-    const delta = quill.getContents();
-    return {
-      html,
-      text: text2,
-      delta
-    };
-  }
-  let oldStatus = {};
-  function updateStatus(range) {
-    const status = range ? quill.getFormat(range) : {};
-    const keys = Object.keys(status);
-    if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
-      oldStatus = status;
-      trigger("statuschange", {}, status);
-    }
-  }
-  function initQuill(imageResizeModules) {
-    const Quill = window.Quill;
-    register(Quill);
-    const options = {
-      toolbar: false,
-      readOnly: props2.readOnly,
-      placeholder: props2.placeholder
-    };
-    if (imageResizeModules.length) {
-      Quill.register("modules/ImageResize", window.ImageResize.default);
-      options.modules = {
-        ImageResize: {
-          modules: imageResizeModules
-        }
-      };
-    }
-    const rootEl = rootRef.value;
-    quill = new Quill(rootEl, options);
-    const $el = quill.root;
-    const events = ["focus", "blur", "input"];
-    events.forEach((name) => {
-      $el.addEventListener(name, ($event) => {
-        if (name === "input") {
-          $event.stopPropagation();
-        } else {
-          trigger(name, $event, getContents());
-        }
-      });
-    });
-    quill.on("text-change", () => {
-      trigger("input", {}, getContents());
-    });
-    quill.on("selection-change", updateStatus);
-    quill.on("scroll-optimize", () => {
-      const range = quill.selection.getRange()[0];
-      updateStatus(range);
-    });
-    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-      if (skipMatcher) {
-        return delta;
-      }
-      if (delta.ops) {
-        delta.ops = delta.ops.filter(({ insert }) => typeof insert === "string").map(({ insert }) => ({ insert }));
-      }
-      return delta;
-    });
-    quillReady = true;
-    trigger("ready", {}, {});
-  }
-  onMounted(() => {
-    const imageResizeModules = [];
-    if (props2.showImgSize) {
-      imageResizeModules.push("DisplaySize");
-    }
-    if (props2.showImgToolbar) {
-      imageResizeModules.push("Toolbar");
-    }
-    if (props2.showImgResize) {
-      imageResizeModules.push("Resize");
-    }
-    const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-        loadScript(window.ImageResize, imageResizeSrc, () => {
-          initQuill(imageResizeModules);
-        });
-      } else {
-        initQuill(imageResizeModules);
-      }
-    });
-  });
-  const id2 = useContextInfo();
-  useSubscribe((type, data) => {
-    const { options, callbackId } = data;
-    let res;
-    let range;
-    let errMsg;
-    if (quillReady) {
-      const Quill = window.Quill;
-      switch (type) {
-        case "format":
-          {
-            let { name = "", value = false } = options;
-            range = quill.getSelection(true);
-            let format = quill.getFormat(range)[name] || false;
-            if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
-              value = !format;
-            } else if (name === "direction") {
-              value = value === "rtl" && format ? false : value;
-              const align2 = quill.getFormat(range).align;
-              if (value === "rtl" && !align2) {
-                quill.format("align", "right", "user");
-              } else if (!value && align2 === "right") {
-                quill.format("align", false, "user");
-              }
-            } else if (name === "indent") {
-              const rtl = quill.getFormat(range).direction === "rtl";
-              value = value === "+1";
-              if (rtl) {
-                value = !value;
-              }
-              value = value ? "+1" : "-1";
-            } else {
-              if (name === "list") {
-                value = value === "check" ? "unchecked" : value;
-                format = format === "checked" ? "unchecked" : format;
-              }
-              value = format && format !== (value || false) || !format && value ? value : !format;
-            }
-            quill.format(name, value, "user");
-          }
-          break;
-        case "insertDivider":
-          range = quill.getSelection(true);
-          quill.insertText(range.index, "\n", "user");
-          quill.insertEmbed(range.index + 1, "divider", true, "user");
-          quill.setSelection(range.index + 2, 0, "silent");
-          break;
-        case "insertImage":
-          {
-            range = quill.getSelection(true);
-            const {
-              src = "",
-              alt = "",
-              width = "",
-              height = "",
-              extClass = "",
-              data: data2 = {}
-            } = options;
-            const path = getRealPath(src);
-            quill.insertEmbed(range.index, "image", path, "user");
-            const local = /^(file|blob):/.test(path) ? path : false;
-            quill.formatText(range.index, 1, "data-local", local);
-            quill.formatText(range.index, 1, "alt", alt);
-            quill.formatText(range.index, 1, "width", width);
-            quill.formatText(range.index, 1, "height", height);
-            quill.formatText(range.index, 1, "class", extClass);
-            quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
-            quill.setSelection(range.index + 1, 0, "silent");
-          }
-          break;
-        case "insertText":
-          {
-            range = quill.getSelection(true);
-            const { text: text2 = "" } = options;
-            quill.insertText(range.index, text2, "user");
-            quill.setSelection(range.index + text2.length, 0, "silent");
-          }
-          break;
-        case "setContents":
-          {
-            const { delta, html } = options;
-            if (typeof delta === "object") {
-              quill.setContents(delta, "silent");
-            } else if (typeof html === "string") {
-              quill.setContents(html2delta(html), "silent");
-            } else {
-              errMsg = "contents is missing";
-            }
-          }
-          break;
-        case "getContents":
-          res = getContents();
-          break;
-        case "clear":
-          quill.setText("");
-          break;
-        case "removeFormat":
-          {
-            range = quill.getSelection(true);
-            const parchment = Quill.import("parchment");
-            if (range.length) {
-              quill.removeFormat(range.index, range.length, "user");
-            } else {
-              Object.keys(quill.getFormat(range)).forEach((key) => {
-                if (parchment.query(key, parchment.Scope.INLINE)) {
-                  quill.format(key, false);
-                }
-              });
-            }
-          }
-          break;
-        case "undo":
-          quill.history.undo();
-          break;
-        case "redo":
-          quill.history.redo();
-          break;
-        case "blur":
-          quill.blur();
-          break;
-        case "getSelectionText":
-          range = quill.selection.savedRange;
-          res = { text: "" };
-          if (range && range.length !== 0) {
-            res.text = quill.getText(range.index, range.length);
-          }
-          break;
-        case "scrollIntoView":
-          quill.scrollIntoView();
-          break;
-      }
-      updateStatus(range);
-    } else {
-      errMsg = "not ready";
-    }
-    if (callbackId) {
-      UniViewJSBridge.publishHandler("onEditorMethodCallback", {
-        callbackId,
-        data: extend({}, res, {
-          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
-        })
-      });
-    }
-  }, id2, true);
-}
-const props$x = /* @__PURE__ */ extend({}, props$y, {
-  id: {
-    type: String,
-    default: ""
-  },
-  readOnly: {
-    type: [Boolean, String],
-    default: false
-  },
-  placeholder: {
-    type: String,
-    default: ""
-  },
-  showImgSize: {
-    type: [Boolean, String],
-    default: false
-  },
-  showImgToolbar: {
-    type: [Boolean, String],
-    default: false
-  },
-  showImgResize: {
-    type: [Boolean, String],
-    default: false
-  }
-});
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Editor",
-  props: props$x,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useQuill(props2, rootRef, trigger);
-    useKeyboard$1(props2, rootRef);
-    return () => {
-      return createVNode("uni-editor", {
-        "ref": rootRef,
-        "id": props2.id,
-        "class": "ql-container"
-      }, null, 8, ["id"]);
-    };
-  }
-});
-const INFO_COLOR = "#10aeff";
-const WARN_COLOR = "#f76260";
-const GREY_COLOR = "#b2b2b2";
-const CANCEL_COLOR = "#f43530";
-const ICONS = {
-  success: {
-    d: ICON_PATH_SUCCESS,
-    c: PRIMARY_COLOR
-  },
-  success_no_circle: {
-    d: ICON_PATH_SUCCESS_NO_CIRCLE,
-    c: PRIMARY_COLOR
-  },
-  info: {
-    d: ICON_PATH_INFO,
-    c: INFO_COLOR
-  },
-  warn: {
-    d: ICON_PATH_WARN,
-    c: WARN_COLOR
-  },
-  waiting: {
-    d: ICON_PATH_WAITING,
-    c: INFO_COLOR
-  },
-  cancel: {
-    d: ICON_PATH_CANCEL,
-    c: CANCEL_COLOR
-  },
-  download: {
-    d: ICON_PATH_DOWNLOAD,
-    c: PRIMARY_COLOR
-  },
-  search: {
-    d: ICON_PATH_SEARCH,
-    c: GREY_COLOR
-  },
-  clear: {
-    d: ICON_PATH_CLEAR,
-    c: GREY_COLOR
-  }
-};
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Icon",
-  props: {
-    type: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    size: {
-      type: [String, Number],
-      default: 23
-    },
-    color: {
-      type: String,
-      default: ""
-    }
-  },
-  setup(props2) {
-    const path = computed(() => ICONS[props2.type]);
-    return () => {
-      const {
-        value
-      } = path;
-      return createVNode("uni-icon", null, {
-        default: () => [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]
-      });
-    };
-  }
-});
-const props$w = {
-  src: {
-    type: String,
-    default: ""
-  },
-  mode: {
-    type: String,
-    default: "scaleToFill"
-  },
-  lazyLoad: {
-    type: [Boolean, String],
-    default: false
-  },
-  draggable: {
-    type: Boolean,
-    default: true
-  }
-};
-const FIX_MODES = {
-  widthFix: ["width", "height"],
-  heightFix: ["height", "width"]
-};
-const IMAGE_MODES = {
-  aspectFit: ["center center", "contain"],
-  aspectFill: ["center center", "cover"],
-  widthFix: [, "100% 100%"],
-  heightFix: [, "100% 100%"],
-  top: ["center top"],
-  bottom: ["center bottom"],
-  center: ["center center"],
-  left: ["left center"],
-  right: ["right center"],
-  "top left": ["left top"],
-  "top right": ["right top"],
-  "bottom left": ["left bottom"],
-  "bottom right": ["right bottom"]
-};
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Image",
-  props: props$w,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const state2 = useImageState(rootRef, props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      fixSize
-    } = useImageSize(rootRef, props2, state2);
-    useImageLoader(state2, {
-      trigger,
-      fixSize
-    });
-    return () => {
-      const {
-        mode: mode2
-      } = props2;
-      const {
-        imgSrc,
-        modeStyle
-      } = state2;
-      return createVNode("uni-image", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", {
-          "style": modeStyle
-        }, null, 4), imgSrc ? createVNode("img", {
-          "src": imgSrc,
-          "draggable": props2.draggable
-        }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode2] ? createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"]) : createVNode("span", null, null)],
-        _: 1
-      }, 512);
-    };
-  }
-});
-function useImageState(rootRef, props2) {
-  const imgSrc = ref("");
-  const modeStyleRef = computed(() => {
-    let size = "auto";
-    let position = "";
-    const opts = IMAGE_MODES[props2.mode];
-    if (!opts) {
-      position = "0% 0%";
-      size = "100% 100%";
-    } else {
-      opts[0] && (position = opts[0]);
-      opts[1] && (size = opts[1]);
-    }
-    const srcVal = imgSrc.value;
-    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
-  });
-  const state2 = reactive({
-    rootEl: rootRef,
-    src: computed(() => props2.src ? getRealPath(props2.src) : ""),
-    origWidth: 0,
-    origHeight: 0,
-    origStyle: {
-      width: "",
-      height: ""
-    },
-    modeStyle: modeStyleRef,
-    imgSrc
-  });
-  onMounted(() => {
-    const rootEl = rootRef.value;
-    const style = rootEl.style;
-    state2.origWidth = Number(style.width) || 0;
-    state2.origHeight = Number(style.height) || 0;
-  });
-  return state2;
-}
-function useImageLoader(state2, {
-  trigger,
-  fixSize
-}) {
-  let img;
-  const setState = (width = 0, height = 0, imgSrc = "") => {
-    state2.origWidth = width;
-    state2.origHeight = height;
-    state2.imgSrc = imgSrc;
-  };
-  const loadImage = (src) => {
-    if (!src) {
-      resetImage();
-      setState();
-      return;
-    }
-    if (!img) {
-      img = new Image();
-    }
-    img.onload = (evt) => {
-      const {
-        width,
-        height
-      } = img;
-      setState(width, height, src);
-      fixSize();
-      resetImage();
-      trigger("load", evt, {
-        width,
-        height
-      });
-    };
-    img.onerror = (evt) => {
-      setState();
-      resetImage();
-      trigger("error", evt, {
-        errMsg: `GET ${state2.src} 404 (Not Found)`
-      });
-    };
-    img.src = src;
-  };
-  const resetImage = () => {
-    if (img) {
-      img.onload = null;
-      img.onerror = null;
-      img = null;
-    }
-  };
-  watch(() => state2.src, (value) => loadImage(value));
-  onMounted(() => loadImage(state2.src));
-  onBeforeUnmount(() => resetImage());
-}
-const isChrome = navigator.vendor === "Google Inc.";
-function fixNumber(num) {
-  if (isChrome && num > 10) {
-    num = Math.round(num / 2) * 2;
-  }
-  return num;
-}
-function useImageSize(rootRef, props2, state2) {
-  const fixSize = () => {
-    const {
-      mode: mode2
-    } = props2;
-    const names = FIX_MODES[mode2];
-    if (!names) {
-      return;
-    }
-    const {
-      origWidth,
-      origHeight
-    } = state2;
-    const ratio = origWidth && origHeight ? origWidth / origHeight : 0;
-    if (!ratio) {
-      return;
-    }
-    const rootEl = rootRef.value;
-    const rect = rootEl.getBoundingClientRect();
-    const value = rect[names[0]];
-    if (value) {
-      rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
-    }
-  };
-  const resetSize = () => {
-    const {
-      style
-    } = rootRef.value;
-    const {
-      origStyle: {
-        width,
-        height
-      }
-    } = state2;
-    style.width = width;
-    style.height = height;
-  };
-  watch(() => props2.mode, (value, oldValue) => {
-    if (FIX_MODES[oldValue]) {
-      resetSize();
-    }
-    if (FIX_MODES[value]) {
-      fixSize();
-    }
-  });
-  return {
-    fixSize,
-    resetSize
-  };
-}
-const passiveOptions$1 = passive(true);
-const states = [];
-let userInteract = 0;
-let inited;
-function addInteractListener(vm) {
-  if (!inited) {
-    const eventNames = [
-      "touchstart",
-      "touchmove",
-      "touchend",
-      "mousedown",
-      "mouseup"
-    ];
-    eventNames.forEach((eventName) => {
-      document.addEventListener(eventName, function() {
-        states.forEach((vm2) => {
-          vm2.userAction = true;
-          userInteract++;
-          setTimeout(() => {
-            userInteract--;
-            if (!userInteract) {
-              vm2.userAction = false;
-            }
-          }, 0);
-        });
-      }, passiveOptions$1);
-    });
-    inited = true;
-  }
-  states.push(vm);
-}
-function removeInteractListener(vm) {
-  const index2 = states.indexOf(vm);
-  if (index2 >= 0) {
-    states.splice(index2, 1);
-  }
-}
-function useUserAction() {
-  const state2 = reactive({
-    userAction: false
-  });
-  onMounted(() => {
-    addInteractListener(state2);
-  });
-  onBeforeUnmount(() => {
-    removeInteractListener(state2);
-  });
-  return {
-    state: state2
-  };
-}
-function useScopedAttrs() {
-  const state2 = reactive({
-    attrs: {}
-  });
-  onMounted(() => {
-    let instance2 = getCurrentInstance();
-    while (instance2) {
-      const scopeId = instance2.type.__scopeId;
-      if (scopeId) {
-        state2.attrs[scopeId] = "";
-      }
-      instance2 = instance2.__isPage ? null : instance2.parent;
-    }
-  });
-  return {
-    state: state2
-  };
-}
-function useFormField(nameKey, value) {
-  const uniForm = inject(uniFormKey, false);
-  if (!uniForm) {
-    return;
-  }
-  const instance2 = getCurrentInstance();
-  const ctx = {
-    submit() {
-      const proxy = instance2.proxy;
-      return [
-        proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
-      ];
-    },
-    reset() {
-      if (typeof value === "string") {
-        instance2.proxy[value] = "";
-      } else {
-        value.value = "";
-      }
-    }
-  };
-  uniForm.addField(ctx);
-  onBeforeUnmount(() => {
-    uniForm.removeField(ctx);
-  });
-}
-const pageIds = [];
-const UniViewJSBridgeSubscribe = function() {
-  const pageId = getCurrentPageId();
-  if (pageIds.includes(pageId))
-    return;
-  pageIds.push(pageId);
-  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({ pageId: pageId2, callbackId }) {
-    const activeElement = document.activeElement;
-    if (!activeElement)
-      return;
-    const tagName = activeElement.tagName.toLowerCase();
-    const tagNames = ["input", "textarea"];
-    const data = {};
-    if (tagNames.includes(tagName)) {
-      data.start = activeElement.selectionStart;
-      data.end = activeElement.selectionEnd;
-    }
-    UniViewJSBridge.publishHandler("onGetSelectedTextRange", {
-      callbackId,
-      data
-    }, pageId2);
-  });
-};
-function getValueString(value) {
-  return value === null ? "" : String(value);
-}
-const props$v = /* @__PURE__ */ extend({}, {
-  name: {
-    type: String,
-    default: ""
-  },
-  modelValue: {
-    type: [String, Number],
-    default: ""
-  },
-  value: {
-    type: [String, Number],
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoFocus: {
-    type: [Boolean, String],
-    default: false
-  },
-  focus: {
-    type: [Boolean, String],
-    default: false
-  },
-  cursor: {
-    type: [Number, String],
-    default: -1
-  },
-  selectionStart: {
-    type: [Number, String],
-    default: -1
-  },
-  selectionEnd: {
-    type: [Number, String],
-    default: -1
-  },
-  type: {
-    type: String,
-    default: "text"
-  },
-  password: {
-    type: [Boolean, String],
-    default: false
-  },
-  placeholder: {
-    type: String,
-    default: ""
-  },
-  placeholderStyle: {
-    type: String,
-    default: ""
-  },
-  placeholderClass: {
-    type: String,
-    default: ""
-  },
-  maxlength: {
-    type: [Number, String],
-    default: 140
-  },
-  confirmType: {
-    type: String,
-    default: "done"
-  }
-}, props$y);
-const emit = [
-  "input",
-  "focus",
-  "blur",
-  "update:value",
-  "update:modelValue",
-  "update:focus",
-  ...emit$1
-];
-function useBase(props2, rootRef, emit2) {
-  const fieldRef = ref(null);
-  const trigger = useCustomEvent(rootRef, emit2);
-  const selectionStart = computed(() => {
-    const selectionStart2 = Number(props2.selectionStart);
-    return isNaN(selectionStart2) ? -1 : selectionStart2;
-  });
-  const selectionEnd = computed(() => {
-    const selectionEnd2 = Number(props2.selectionEnd);
-    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
-  });
-  const cursor = computed(() => {
-    const cursor2 = Number(props2.cursor);
-    return isNaN(cursor2) ? -1 : cursor2;
-  });
-  const maxlength = computed(() => {
-    var maxlength2 = Number(props2.maxlength);
-    return isNaN(maxlength2) ? 140 : maxlength2;
-  });
-  const value = getValueString(props2.modelValue) || getValueString(props2.value);
-  const state2 = reactive({
-    value,
-    valueOrigin: value,
-    maxlength,
-    focus: props2.focus,
-    composing: false,
-    selectionStart,
-    selectionEnd,
-    cursor
-  });
-  watch(() => state2.focus, (val) => emit2("update:focus", val));
-  watch(() => state2.maxlength, (val) => state2.value = state2.value.slice(0, val));
-  return {
-    fieldRef,
-    state: state2,
-    trigger
-  };
-}
-function useValueSync(props2, state2, emit2, trigger) {
-  const valueChangeFn = debounce((val) => {
-    state2.value = getValueString(val);
-  }, 100);
-  watch(() => props2.modelValue, valueChangeFn);
-  watch(() => props2.value, valueChangeFn);
-  const triggerInputFn = throttle((event, detail) => {
-    emit2("update:modelValue", detail.value);
-    emit2("update:value", detail.value);
-    trigger("input", event, detail);
-  }, 100);
-  const triggerInput = (event, detail, force) => {
-    valueChangeFn.cancel();
-    triggerInputFn(event, detail);
-    if (force) {
-      triggerInputFn.flush();
-    }
-  };
-  onBeforeMount(() => {
-    valueChangeFn.cancel();
-    triggerInputFn.cancel();
-  });
-  return {
-    trigger,
-    triggerInput
-  };
-}
-function useAutoFocus(props2, fieldRef) {
-  useUserAction();
-  const needFocus = computed(() => props2.autoFocus || props2.focus);
-  function focus() {
-    if (!needFocus.value) {
-      return;
-    }
-    const field = fieldRef.value;
-    if (!field || false) {
-      setTimeout(focus, 100);
-      return;
-    }
-    {
-      field.focus();
-    }
-  }
-  function blur() {
-    const field = fieldRef.value;
-    if (field) {
-      field.blur();
-    }
-  }
-  watch(() => props2.focus, (value) => {
-    if (value) {
-      focus();
-    } else {
-      blur();
-    }
-  });
-  onMounted(() => {
-    if (needFocus.value) {
-      nextTick(focus);
-    }
-  });
-}
-function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
-  function checkSelection() {
-    const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1) {
-      field.selectionStart = state2.selectionStart;
-      field.selectionEnd = state2.selectionEnd;
-    }
-  }
-  function checkCursor() {
-    const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1) {
-      field.selectionEnd = field.selectionStart = state2.cursor;
-    }
-  }
-  function initField() {
-    const field = fieldRef.value;
-    const onFocus = function(event) {
-      state2.focus = true;
-      trigger("focus", event, {
-        value: state2.value
-      });
-      checkSelection();
-      checkCursor();
-    };
-    const onInput = function(event, force) {
-      event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
-        return;
-      }
-      state2.value = field.value;
-      if (!state2.composing) {
-        triggerInput(event, {
-          value: field.value,
-          cursor: field.selectionEnd
-        }, force);
-      }
-    };
-    const onBlur = function(event) {
-      if (state2.composing) {
-        state2.composing = false;
-        onInput(event, true);
-      }
-      state2.focus = false;
-      trigger("blur", event, {
-        value: state2.value,
-        cursor: event.target.selectionEnd
-      });
-    };
-    field.addEventListener("change", (event) => event.stopPropagation());
-    field.addEventListener("focus", onFocus);
-    field.addEventListener("blur", onBlur);
-    field.addEventListener("input", onInput);
-    field.addEventListener("compositionstart", (event) => {
-      event.stopPropagation();
-      state2.composing = true;
-    });
-    field.addEventListener("compositionend", (event) => {
-      event.stopPropagation();
-      if (state2.composing) {
-        state2.composing = false;
-        onInput(event);
-      }
-    });
-  }
-  watch([() => state2.selectionStart, () => state2.selectionEnd], checkSelection);
-  watch(() => state2.cursor, checkCursor);
-  watch(() => fieldRef.value, initField);
-}
-function useField(props2, rootRef, emit2, beforeInput) {
-  UniViewJSBridgeSubscribe();
-  const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
-  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
-  useAutoFocus(props2, fieldRef);
-  useKeyboard$1(props2, fieldRef);
-  const { state: scopedAttrsState } = useScopedAttrs();
-  useFormField("name", state2);
-  useEvent(fieldRef, state2, trigger, triggerInput, beforeInput);
-  const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
-  return {
-    fieldRef,
-    state: state2,
-    scopedAttrsState,
-    fixDisabledColor,
-    trigger
-  };
-}
-const props$u = /* @__PURE__ */ extend({}, props$v, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  }
-});
-var Input = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Input",
-  props: props$u,
-  emits: ["confirm", ...emit],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
-    const type = computed(() => {
-      let type2 = "";
-      switch (props2.type) {
-        case "text":
-          if (props2.confirmType === "search") {
-            type2 = "search";
-          }
-          break;
-        case "idcard":
-          type2 = "text";
-          break;
-        case "digit":
-          type2 = "number";
-          break;
-        default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-          break;
-      }
-      return props2.password ? "password" : type2;
-    });
-    const valid = ref(true);
-    const rootRef = ref(null);
-    const {
-      fieldRef,
-      state: state2,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2, (event, state3) => {
-      const input = event.target;
-      if (NUMBER_TYPES.includes(props2.type)) {
-        valid.value = input.validity && input.validity.valid;
-      }
-      if (type.value === "number") {
-        const maxlength = state3.maxlength;
-        if (maxlength > 0 && input.value.length > maxlength) {
-          input.value = input.value.slice(0, maxlength);
-          state3.value = input.value;
-          return false;
-        }
-      }
-    });
-    const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      event.stopPropagation();
-      trigger("confirm", event, {
-        value: event.target.value
-      });
-    }
-    return () => {
-      let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
-        "ref": fieldRef,
-        "value": state2.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "type": type.value,
-        "maxlength": state2.maxlength,
-        "step": step.value,
-        "class": "uni-input-input",
-        "onFocus": (event) => event.target.blur()
-      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
-        "ref": fieldRef,
-        "value": state2.value,
-        "disabled": !!props2.disabled,
-        "type": type.value,
-        "maxlength": state2.maxlength,
-        "step": step.value,
-        "enterkeyhint": props2.confirmType,
-        "class": "uni-input-input",
-        "autocomplete": "off",
-        "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
-      return createVNode("uni-input", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", {
-          "class": "uni-input-wrapper"
-        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-          "style": props2.placeholderStyle,
-          "class": ["uni-input-placeholder", props2.placeholderClass]
-        }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
-          "action": "",
-          "onSubmit": (event) => event.preventDefault(),
-          "class": "uni-input-form"
-        }, [inputNode], 40, ["onSubmit"]) : inputNode])]
-      }, 512);
-    };
-  }
-});
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const { excludeListeners = false, excludeKeys = [] } = params;
-  const instance2 = getCurrentInstance();
-  const attrs2 = shallowRef({});
-  const listeners = shallowRef({});
-  const excludeAttrs = shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance2.attrs = reactive(instance2.attrs);
-  watchEffect(() => {
-    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
-          acc.attrs[key] = val;
-        }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
-      }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
-    attrs2.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
-};
-function initScrollBounce() {
-}
-function disableScrollBounce({ disable }) {
-}
-function flatVNode(nodes) {
-  const array = [];
-  if (Array.isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (isVNode(vnode)) {
-        if (vnode.type === Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (Array.isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
-const props$t = {
-  scaleArea: {
-    type: Boolean,
-    default: false
-  }
-};
-var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: props$t,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    const _isMounted = ref(false);
-    let {
-      setContexts,
-      events: movableAreaEvents
-    } = useMovableAreaState(props2, rootRef);
-    const {
-      $listeners,
-      $attrs,
-      $excludeAttrs
-    } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    onMounted(() => {
-      movableAreaEvents._resize();
-      _isMounted.value = true;
-    });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        const movableViewItem = movableViewItems[index2];
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem.el === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
-    }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
-    provide("_isMounted", _isMounted);
-    provide("movableAreaRootRef", rootRef);
-    provide("addMovableViewContext", addMovableViewContext);
-    provide("removeMovableViewContext", removeMovableViewContext);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      movableViewItems = flatVNode(defaultSlots);
-      return createVNode("uni-movable-area", mergeProps({
-        "ref": rootRef
-      }, $attrs.value, $excludeAttrs.value, _listeners), {
-        default: () => [createVNode(ResizeSensor, {
-          "onReize": movableAreaEvents._resize
-        }, null, 8, ["onReize"]), movableViewItems],
-        _: 2
-      }, 16);
-    };
-  }
-});
-function calc(e2) {
-  return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
-}
-function useMovableAreaState(props2, rootRef) {
-  const width = ref(0);
-  const height = ref(0);
-  const gapV = reactive({
-    x: null,
-    y: null
-  });
-  const pinchStartLen = ref(null);
-  let _scaleMovableView = null;
-  let movableViewContexts = [];
-  function _updateScale(e2) {
-    if (e2 && e2 !== 1) {
-      if (props2.scaleArea) {
-        movableViewContexts.forEach(function(item) {
-          item._setScale(e2);
-        });
-      } else {
-        if (_scaleMovableView) {
-          _scaleMovableView._setScale(e2);
-        }
-      }
-    }
-  }
-  function _find(target, items = movableViewContexts) {
-    let root = rootRef.value;
-    function get(node) {
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (node === item.rootRef.value) {
-          return item;
-        }
-      }
-      if (node === root || node === document.body || node === document) {
-        return null;
-      }
-      return get(node.parentNode);
-    }
-    return get(target);
-  }
-  const _onTouchstart = withWebEvent((t2) => {
-    let i = t2.touches;
-    if (i) {
-      if (i.length > 1) {
-        let r = {
-          x: i[1].pageX - i[0].pageX,
-          y: i[1].pageY - i[0].pageY
-        };
-        pinchStartLen.value = calc(r);
-        gapV.x = r.x;
-        gapV.y = r.y;
-        if (!props2.scaleArea) {
-          let touch0 = _find(i[0].target);
-          let touch1 = _find(i[1].target);
-          _scaleMovableView = touch0 && touch0 === touch1 ? touch0 : null;
-        }
-      }
-    }
-  });
-  const _onTouchmove = withWebEvent((t2) => {
-    let n = t2.touches;
-    if (n) {
-      if (n.length > 1) {
-        t2.preventDefault();
-        let i = {
-          x: n[1].pageX - n[0].pageX,
-          y: n[1].pageY - n[0].pageY
-        };
-        if (gapV.x !== null && pinchStartLen.value && pinchStartLen.value > 0) {
-          let r = calc(i) / pinchStartLen.value;
-          _updateScale(r);
-        }
-        gapV.x = i.x;
-        gapV.y = i.y;
-      }
-    }
-  });
-  const _onTouchend = withWebEvent((e2) => {
-    let t2 = e2.touches;
-    if (!(t2 && t2.length)) {
-      if (e2.changedTouches) {
-        gapV.x = 0;
-        gapV.y = 0;
-        pinchStartLen.value = null;
-        if (props2.scaleArea) {
-          movableViewContexts.forEach(function(item) {
-            item._endScale();
-          });
-        } else {
-          if (_scaleMovableView) {
-            _scaleMovableView._endScale();
-          }
-        }
-      }
-    }
-  });
-  function _resize() {
-    _getWH();
-    movableViewContexts.forEach(function(item, index2) {
-      item.setParent();
-    });
-  }
-  function _getWH() {
-    let style = window.getComputedStyle(rootRef.value);
-    let rect = rootRef.value.getBoundingClientRect();
-    width.value = rect.width - ["Left", "Right"].reduce(function(all, item) {
-      const LEFT = "border" + item + "Width";
-      const RIGHT = "padding" + item;
-      return all + parseFloat(style[LEFT]) + parseFloat(style[RIGHT]);
-    }, 0);
-    height.value = rect.height - ["Top", "Bottom"].reduce(function(all, item) {
-      const TOP = "border" + item + "Width";
-      const BOTTOM = "padding" + item;
-      return all + parseFloat(style[TOP]) + parseFloat(style[BOTTOM]);
-    }, 0);
-  }
-  provide("movableAreaWidth", width);
-  provide("movableAreaHeight", height);
-  return {
-    setContexts(contexts) {
-      movableViewContexts = contexts;
-    },
-    events: {
-      _onTouchstart,
-      _onTouchmove,
-      _onTouchend,
-      _resize
-    }
-  };
-}
-const addListenerToElement = function(element, type, callback, capture) {
-  element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
-      if (callback($event) === false) {
-        if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
-          $event.preventDefault();
-        }
-        $event.stopPropagation();
-      }
-    }
-  }, {
-    passive: false
-  });
-};
-let __mouseMoveEventListener;
-let __mouseUpEventListener;
-function useTouchtrack(element, method, useCancel) {
-  onBeforeUnmount(() => {
-    document.removeEventListener("mousemove", __mouseMoveEventListener);
-    document.removeEventListener("mouseup", __mouseUpEventListener);
-  });
-  let x0 = 0;
-  let y0 = 0;
-  let x1 = 0;
-  let y1 = 0;
-  const fn = function($event, state2, x, y) {
-    if (method({
-      target: $event.target,
-      currentTarget: $event.currentTarget,
-      preventDefault: $event.preventDefault.bind($event),
-      stopPropagation: $event.stopPropagation.bind($event),
-      touches: $event.touches,
-      changedTouches: $event.changedTouches,
-      detail: {
-        state: state2,
-        x,
-        y,
-        dx: x - x0,
-        dy: y - y0,
-        ddx: x - x1,
-        ddy: y - y1,
-        timeStamp: $event.timeStamp
-      }
-    }) === false) {
-      return false;
-    }
-  };
-  let $eventOld = null;
-  let hasTouchStart;
-  let hasMouseDown;
-  addListenerToElement(element, "touchstart", function($event) {
-    hasTouchStart = true;
-    if ($event.touches.length === 1 && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.touches[0].pageX;
-      y0 = y1 = $event.touches[0].pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "mousedown", function($event) {
-    hasMouseDown = true;
-    if (!hasTouchStart && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.pageX;
-      y0 = y1 = $event.pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "touchmove", function($event) {
-    if ($event.touches.length === 1 && $eventOld) {
-      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
-      x1 = $event.touches[0].pageX;
-      y1 = $event.touches[0].pageY;
-      return res;
-    }
-  });
-  const mouseMoveEventListener = __mouseMoveEventListener = function($event) {
-    if (!hasTouchStart && hasMouseDown && $eventOld) {
-      const res = fn($event, "move", $event.pageX, $event.pageY);
-      x1 = $event.pageX;
-      y1 = $event.pageY;
-      return res;
-    }
-  };
-  document.addEventListener("mousemove", mouseMoveEventListener);
-  addListenerToElement(element, "touchend", function($event) {
-    if ($event.touches.length === 0 && $eventOld) {
-      hasTouchStart = false;
-      $eventOld = null;
-      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
-    }
-  });
-  const mouseUpEventListener = __mouseUpEventListener = function($event) {
-    hasMouseDown = false;
-    if (!hasTouchStart && $eventOld) {
-      $eventOld = null;
-      return fn($event, "end", $event.pageX, $event.pageY);
-    }
-  };
-  document.addEventListener("mouseup", mouseUpEventListener);
-  addListenerToElement(element, "touchcancel", function($event) {
-    if ($eventOld) {
-      hasTouchStart = false;
-      const $eventTemp = $eventOld;
-      $eventOld = null;
-      return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
-    }
-  });
-}
-function e(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
-}
-function t(t2, n) {
-  return e(t2, 0, n);
-}
-function Decline() {
-}
-Decline.prototype.x = function(e2) {
-  return Math.sqrt(e2);
-};
-function Friction$1(e2, t2) {
-  this._m = e2;
-  this._f = 1e3 * t2;
-  this._startTime = 0;
-  this._v = 0;
-}
-Friction$1.prototype.setV = function(x, y) {
-  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
-  this._x_v = x;
-  this._y_v = y;
-  this._x_a = -this._f * this._x_v / n;
-  this._y_a = -this._f * this._y_v / n;
-  this._t = Math.abs(x / this._x_a) || Math.abs(y / this._y_a);
-  this._lastDt = null;
-  this._startTime = new Date().getTime();
-};
-Friction$1.prototype.setS = function(x, y) {
-  this._x_s = x;
-  this._y_s = y;
-};
-Friction$1.prototype.s = function(t2) {
-  if (t2 === void 0) {
-    t2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  if (t2 > this._t) {
-    t2 = this._t;
-    this._lastDt = t2;
-  }
-  var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
-  if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
-    x = this._endPositionX;
-  }
-  if (this._y_a > 0 && y < this._endPositionY || this._y_a < 0 && y > this._endPositionY) {
-    y = this._endPositionY;
-  }
-  return {
-    x,
-    y
-  };
-};
-Friction$1.prototype.ds = function(t2) {
-  if (t2 === void 0) {
-    t2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  if (t2 > this._t) {
-    t2 = this._t;
-  }
-  return {
-    dx: this._x_v + this._x_a * t2,
-    dy: this._y_v + this._y_a * t2
-  };
-};
-Friction$1.prototype.delta = function() {
-  return {
-    x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
-    y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
-  };
-};
-Friction$1.prototype.dt = function() {
-  return -this._x_v / this._x_a;
-};
-Friction$1.prototype.done = function() {
-  var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
-  this._lastDt = null;
-  return t2;
-};
-Friction$1.prototype.setEnd = function(x, y) {
-  this._endPositionX = x;
-  this._endPositionY = y;
-};
-Friction$1.prototype.reconfigure = function(m, f2) {
-  this._m = m;
-  this._f = 1e3 * f2;
-};
-function Spring$1(m, k, c) {
-  this._m = m;
-  this._k = k;
-  this._c = c;
-  this._solution = null;
-  this._endPosition = 0;
-  this._startTime = 0;
-}
-Spring$1.prototype._solve = function(e2, t2) {
-  var n = this._c;
-  var i = this._m;
-  var r = this._k;
-  var o2 = n * n - 4 * i * r;
-  if (o2 === 0) {
-    const a2 = -n / (2 * i);
-    const s = e2;
-    const l = t2 / (a2 * e2);
-    return {
-      x: function(e3) {
-        return (s + l * e3) * Math.pow(Math.E, a2 * e3);
-      },
-      dx: function(e3) {
-        var t3 = Math.pow(Math.E, a2 * e3);
-        return a2 * (s + l * e3) * t3 + l * t3;
-      }
-    };
-  }
-  if (o2 > 0) {
-    const c = (-n - Math.sqrt(o2)) / (2 * i);
-    const u = (-n + Math.sqrt(o2)) / (2 * i);
-    const d = (t2 - c * e2) / (u - c);
-    const h = e2 - d;
-    return {
-      x: function(e3) {
-        var t3;
-        var n2;
-        if (e3 === this._t) {
-          t3 = this._powER1T;
-          n2 = this._powER2T;
-        }
-        this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
-        }
-        if (!n2) {
-          n2 = this._powER2T = Math.pow(Math.E, u * e3);
-        }
-        return h * t3 + d * n2;
-      },
-      dx: function(e3) {
-        var t3;
-        var n2;
-        if (e3 === this._t) {
-          t3 = this._powER1T;
-          n2 = this._powER2T;
-        }
-        this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
-        }
-        if (!n2) {
-          n2 = this._powER2T = Math.pow(Math.E, u * e3);
-        }
-        return h * c * t3 + d * u * n2;
-      }
-    };
-  }
-  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
-  var f2 = -n / 2 * i;
-  var v2 = e2;
-  var g2 = (t2 - f2 * e2) / p2;
-  return {
-    x: function(e3) {
-      return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
-    },
-    dx: function(e3) {
-      var t3 = Math.pow(Math.E, f2 * e3);
-      var n2 = Math.cos(p2 * e3);
-      var i2 = Math.sin(p2 * e3);
-      return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
-    }
-  };
-};
-Spring$1.prototype.x = function(e2) {
-  if (e2 === void 0) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  return this._solution ? this._endPosition + this._solution.x(e2) : 0;
-};
-Spring$1.prototype.dx = function(e2) {
-  if (e2 === void 0) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
-  }
-  return this._solution ? this._solution.dx(e2) : 0;
-};
-Spring$1.prototype.setEnd = function(e2, n, i) {
-  if (!i) {
-    i = new Date().getTime();
-  }
-  if (e2 !== this._endPosition || !t(n, 0.1)) {
-    n = n || 0;
-    var r = this._endPosition;
-    if (this._solution) {
-      if (t(n, 0.1)) {
-        n = this._solution.dx((i - this._startTime) / 1e3);
-      }
-      r = this._solution.x((i - this._startTime) / 1e3);
-      if (t(n, 0.1)) {
-        n = 0;
-      }
-      if (t(r, 0.1)) {
-        r = 0;
-      }
-      r += this._endPosition;
-    }
-    if (!(this._solution && t(r - e2, 0.1) && t(n, 0.1))) {
-      this._endPosition = e2;
-      this._solution = this._solve(r - this._endPosition, n);
-      this._startTime = i;
-    }
-  }
-};
-Spring$1.prototype.snap = function(e2) {
-  this._startTime = new Date().getTime();
-  this._endPosition = e2;
-  this._solution = {
-    x: function() {
-      return 0;
-    },
-    dx: function() {
-      return 0;
-    }
-  };
-};
-Spring$1.prototype.done = function(n) {
-  if (!n) {
-    n = new Date().getTime();
-  }
-  return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
-};
-Spring$1.prototype.reconfigure = function(m, t2, c) {
-  this._m = m;
-  this._k = t2;
-  this._c = c;
-  if (!this.done()) {
-    this._solution = this._solve(this.x() - this._endPosition, this.dx());
-    this._startTime = new Date().getTime();
-  }
-};
-Spring$1.prototype.springConstant = function() {
-  return this._k;
-};
-Spring$1.prototype.damping = function() {
-  return this._c;
-};
-Spring$1.prototype.configuration = function() {
-  function e2(e3, t3) {
-    e3.reconfigure(1, t3, e3.damping());
-  }
-  function t2(e3, t3) {
-    e3.reconfigure(1, e3.springConstant(), t3);
-  }
-  return [
-    {
-      label: "Spring Constant",
-      read: this.springConstant.bind(this),
-      write: e2.bind(this, this),
-      min: 100,
-      max: 1e3
-    },
-    {
-      label: "Damping",
-      read: this.damping.bind(this),
-      write: t2.bind(this, this),
-      min: 1,
-      max: 500
-    }
-  ];
-};
-function STD(e2, t2, n) {
-  this._springX = new Spring$1(e2, t2, n);
-  this._springY = new Spring$1(e2, t2, n);
-  this._springScale = new Spring$1(e2, t2, n);
-  this._startTime = 0;
-}
-STD.prototype.setEnd = function(e2, t2, n, i) {
-  var r = new Date().getTime();
-  this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t2, i, r);
-  this._springScale.setEnd(n, i, r);
-  this._startTime = r;
-};
-STD.prototype.x = function() {
-  var e2 = (new Date().getTime() - this._startTime) / 1e3;
-  return {
-    x: this._springX.x(e2),
-    y: this._springY.x(e2),
-    scale: this._springScale.x(e2)
-  };
-};
-STD.prototype.done = function() {
-  var e2 = new Date().getTime();
-  return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
-};
-STD.prototype.reconfigure = function(e2, t2, n) {
-  this._springX.reconfigure(e2, t2, n);
-  this._springY.reconfigure(e2, t2, n);
-  this._springScale.reconfigure(e2, t2, n);
-};
-const props$s = {
-  direction: {
-    type: String,
-    default: "none"
-  },
-  inertia: {
-    type: [Boolean, String],
-    default: false
-  },
-  outOfBounds: {
-    type: [Boolean, String],
-    default: false
-  },
-  x: {
-    type: [Number, String],
-    default: 0
-  },
-  y: {
-    type: [Number, String],
-    default: 0
-  },
-  damping: {
-    type: [Number, String],
-    default: 20
-  },
-  friction: {
-    type: [Number, String],
-    default: 2
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  scale: {
-    type: [Boolean, String],
-    default: false
-  },
-  scaleMin: {
-    type: [Number, String],
-    default: 0.5
-  },
-  scaleMax: {
-    type: [Number, String],
-    default: 10
-  },
-  scaleValue: {
-    type: [Number, String],
-    default: 1
-  },
-  animation: {
-    type: [Boolean, String],
-    default: true
-  }
-};
-var MovableView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: props$s,
-  emits: ["change", "scale"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      setParent
-    } = useMovableViewState(props2, trigger, rootRef);
-    return () => {
-      return createVNode("uni-movable-view", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode(ResizeSensor, {
-          "onResize": setParent
-        }, null, 8, ["onResize"]), slots.default && slots.default()],
-        _: 1
-      }, 512);
-    };
-  }
-});
-let requesting = false;
-function _requestAnimationFrame(e2) {
-  if (!requesting) {
-    requesting = true;
-    requestAnimationFrame(function() {
-      e2();
-      requesting = false;
-    });
-  }
-}
-function p(t2, n) {
-  if (t2 === n) {
-    return 0;
-  }
-  let i = t2.offsetLeft;
-  return t2.offsetParent ? i += p(t2.offsetParent, n) : 0;
-}
-function f(t2, n) {
-  if (t2 === n) {
-    return 0;
-  }
-  let i = t2.offsetTop;
-  return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
-}
-function v(a2, b) {
-  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
-}
-function g(friction, execute, endCallback) {
-  let record = {
-    id: 0,
-    cancelled: false
-  };
-  let cancel = function(record2) {
-    if (record2 && record2.id) {
-      cancelAnimationFrame(record2.id);
-    }
-    if (record2) {
-      record2.cancelled = true;
-    }
-  };
-  function fn(record2, friction2, execute2, endCallback2) {
-    if (!record2 || !record2.cancelled) {
-      execute2(friction2);
-      let isDone = friction2.done();
-      if (!isDone) {
-        if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
-        }
-      }
-      if (isDone && endCallback2) {
-        endCallback2(friction2);
-      }
-    }
-  }
-  fn(record, friction, execute, endCallback);
-  return {
-    cancel: cancel.bind(null, record),
-    model: friction
-  };
-}
-function _getPx(val) {
-  if (/\d+[ur]px$/i.test(val)) {
-    return uni.upx2px(parseFloat(val));
-  }
-  return Number(val) || 0;
-}
-function useMovableViewState(props2, trigger, rootRef) {
-  const movableAreaWidth = inject("movableAreaWidth", ref(0));
-  const movableAreaHeight = inject("movableAreaHeight", ref(0));
-  const _isMounted = inject("_isMounted", ref(false));
-  const movableAreaRootRef = inject("movableAreaRootRef");
-  const addMovableViewContext = inject("addMovableViewContext", () => {
-  });
-  const removeMovableViewContext = inject("removeMovableViewContext", () => {
-  });
-  const xSync = ref(_getPx(props2.x));
-  const ySync = ref(_getPx(props2.y));
-  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
-  const width = ref(0);
-  const height = ref(0);
-  const minX = ref(0);
-  const minY = ref(0);
-  const maxX = ref(0);
-  const maxY = ref(0);
-  let _SFA = null;
-  let _FA = null;
-  const _offset = {
-    x: 0,
-    y: 0
-  };
-  const _scaleOffset = {
-    x: 0,
-    y: 0
-  };
-  let _scale = 1;
-  let _oldScale = 1;
-  let _translateX = 0;
-  let _translateY = 0;
-  let _isScaling = false;
-  let _isTouching = false;
-  let __baseX;
-  let __baseY;
-  let _checkCanMove = null;
-  let _firstMoveDirection = null;
-  const _declineX = new Decline();
-  const _declineY = new Decline();
-  const __touchInfo = {
-    historyX: [0, 0],
-    historyY: [0, 0],
-    historyT: [0, 0]
-  };
-  const dampingNumber = computed(() => {
-    let val = Number(props2.damping);
-    return isNaN(val) ? 20 : val;
-  });
-  const frictionNumber = computed(() => {
-    let val = Number(props2.friction);
-    return isNaN(val) || val <= 0 ? 2 : val;
-  });
-  const scaleMinNumber = computed(() => {
-    let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
-  });
-  const scaleMaxNumber = computed(() => {
-    let val = Number(props2.scaleMax);
-    return isNaN(val) ? 10 : val;
-  });
-  const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  const _friction = new Friction$1(1, frictionNumber.value);
-  watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
-  watch(xSync, (val) => {
-    _setX(val);
-  });
-  watch(ySync, (val) => {
-    _setY(val);
-  });
-  watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
-  watch(scaleValueSync, (val) => {
-    _setScaleValue(val);
-  });
-  watch(scaleMinNumber, () => {
-    _setScaleMinOrMax();
-  });
-  watch(scaleMaxNumber, () => {
-    _setScaleMinOrMax();
-  });
-  function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
-    if (_SFA) {
-      _SFA.cancel();
-    }
-  }
-  function _setX(val) {
-    if (xMove.value) {
-      if (val + _scaleOffset.x === _translateX) {
-        return _translateX;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
-  }
-  function _setY(val) {
-    if (yMove.value) {
-      if (val + _scaleOffset.y === _translateY) {
-        return _translateY;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
-  }
-  function _setScaleMinOrMax() {
-    if (!props2.scale) {
-      return false;
-    }
-    _updateScale(_scale, true);
-    _updateOldScale(_scale);
-  }
-  function _setScaleValue(scale) {
-    if (!props2.scale) {
-      return false;
-    }
-    scale = _adjustScale(scale);
-    _updateScale(scale, true);
-    _updateOldScale(scale);
-    return scale;
-  }
-  function __handleTouchStart() {
-    if (!_isScaling) {
-      if (!props2.disabled) {
-        FAandSFACancel();
-        __touchInfo.historyX = [0, 0];
-        __touchInfo.historyY = [0, 0];
-        __touchInfo.historyT = [0, 0];
-        if (xMove.value) {
-          __baseX = _translateX;
-        }
-        if (yMove.value) {
-          __baseY = _translateY;
-        }
-        rootRef.value.style.willChange = "transform";
-        _checkCanMove = null;
-        _firstMoveDirection = null;
-        _isTouching = true;
-      }
-    }
-  }
-  function __handleTouchMove(event) {
-    if (!_isScaling && !props2.disabled && _isTouching) {
-      let x = _translateX;
-      let y = _translateY;
-      if (_firstMoveDirection === null) {
-        _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
-      }
-      if (xMove.value) {
-        x = event.detail.dx + __baseX;
-        __touchInfo.historyX.shift();
-        __touchInfo.historyX.push(x);
-        if (!yMove.value && _checkCanMove === null) {
-          _checkCanMove = Math.abs(event.detail.dx / event.detail.dy) < 1;
-        }
-      }
-      if (yMove.value) {
-        y = event.detail.dy + __baseY;
-        __touchInfo.historyY.shift();
-        __touchInfo.historyY.push(y);
-        if (!xMove.value && _checkCanMove === null) {
-          _checkCanMove = Math.abs(event.detail.dy / event.detail.dx) < 1;
-        }
-      }
-      __touchInfo.historyT.shift();
-      __touchInfo.historyT.push(event.detail.timeStamp);
-      if (!_checkCanMove) {
-        event.preventDefault();
-        let source = "touch";
-        if (x < minX.value) {
-          if (props2.outOfBounds) {
-            source = "touch-out-of-bounds";
-            x = minX.value - _declineX.x(minX.value - x);
-          } else {
-            x = minX.value;
-          }
-        } else if (x > maxX.value) {
-          if (props2.outOfBounds) {
-            source = "touch-out-of-bounds";
-            x = maxX.value + _declineX.x(x - maxX.value);
-          } else {
-            x = maxX.value;
-          }
-        }
-        if (y < minY.value) {
-          if (props2.outOfBounds) {
-            source = "touch-out-of-bounds";
-            y = minY.value - _declineY.x(minY.value - y);
-          } else {
-            y = minY.value;
-          }
-        } else {
-          if (y > maxY.value) {
-            if (props2.outOfBounds) {
-              source = "touch-out-of-bounds";
-              y = maxY.value + _declineY.x(y - maxY.value);
-            } else {
-              y = maxY.value;
-            }
-          }
-        }
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, _scale, source);
-        });
-      }
-    }
-  }
-  function __handleTouchEnd() {
-    if (!_isScaling && !props2.disabled && _isTouching) {
-      rootRef.value.style.willChange = "auto";
-      _isTouching = false;
-      if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
-        const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
-        const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
-        _friction.setV(xv, yv);
-        _friction.setS(_translateX, _translateY);
-        const x0 = _friction.delta().x;
-        const y0 = _friction.delta().y;
-        let x = x0 + _translateX;
-        let y = y0 + _translateY;
-        if (x < minX.value) {
-          x = minX.value;
-          y = _translateY + (minX.value - _translateX) * y0 / x0;
-        } else {
-          if (x > maxX.value) {
-            x = maxX.value;
-            y = _translateY + (maxX.value - _translateX) * y0 / x0;
-          }
-        }
-        if (y < minY.value) {
-          y = minY.value;
-          x = _translateX + (minY.value - _translateY) * x0 / y0;
-        } else {
-          if (y > maxY.value) {
-            y = maxY.value;
-            x = _translateX + (maxY.value - _translateY) * x0 / y0;
-          }
-        }
-        _friction.setEnd(x, y);
-        _FA = g(_friction, function() {
-          let t2 = _friction.s();
-          let x2 = t2.x;
-          let y2 = t2.y;
-          _setTransform(x2, y2, _scale, "friction");
-        }, function() {
-          _FA.cancel();
-        });
-      }
-    }
-    if (!props2.outOfBounds && !props2.inertia) {
-      FAandSFACancel();
-    }
-  }
-  function _getLimitXY(x, y) {
-    let outOfBounds = false;
-    if (x > maxX.value) {
-      x = maxX.value;
-      outOfBounds = true;
-    } else {
-      if (x < minX.value) {
-        x = minX.value;
-        outOfBounds = true;
-      }
-    }
-    if (y > maxY.value) {
-      y = maxY.value;
-      outOfBounds = true;
-    } else {
-      if (y < minY.value) {
-        y = minY.value;
-        outOfBounds = true;
-      }
-    }
-    return {
-      x,
-      y,
-      outOfBounds
-    };
-  }
-  function _updateOffset() {
-    _offset.x = p(rootRef.value, movableAreaRootRef.value);
-    _offset.y = f(rootRef.value, movableAreaRootRef.value);
-  }
-  function _updateWH(scale) {
-    scale = scale || _scale;
-    scale = _adjustScale(scale);
-    let rect = rootRef.value.getBoundingClientRect();
-    height.value = rect.height / _scale;
-    width.value = rect.width / _scale;
-    let _height = height.value * scale;
-    let _width = width.value * scale;
-    _scaleOffset.x = (_width - width.value) / 2;
-    _scaleOffset.y = (_height - height.value) / 2;
-  }
-  function _updateBoundary() {
-    let x = 0 - _offset.x + _scaleOffset.x;
-    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
-    minX.value = Math.min(x, _width);
-    maxX.value = Math.max(x, _width);
-    let y = 0 - _offset.y + _scaleOffset.y;
-    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
-    minY.value = Math.min(y, _height);
-    maxY.value = Math.max(y, _height);
-  }
-  function _beginScale() {
-    _isScaling = true;
-  }
-  function _updateScale(scale, animat) {
-    if (props2.scale) {
-      scale = _adjustScale(scale);
-      _updateWH(scale);
-      _updateBoundary();
-      const limitXY = _getLimitXY(_translateX, _translateY);
-      const x = limitXY.x;
-      const y = limitXY.y;
-      if (animat) {
-        _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
-      }
-    }
-  }
-  function _updateOldScale(scale) {
-    _oldScale = scale;
-  }
-  function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
-    scale = Math.min(10, scaleMaxNumber.value, scale);
-    return scale;
-  }
-  function _animationTo(x, y, scale, source, r, o2) {
-    FAandSFACancel();
-    if (!xMove.value) {
-      x = _translateX;
-    }
-    if (!yMove.value) {
-      y = _translateY;
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    let limitXY = _getLimitXY(x, y);
-    x = limitXY.x;
-    y = limitXY.y;
-    if (!props2.animation) {
-      _setTransform(x, y, scale, source, r, o2);
-      return;
-    }
-    _STD._springX._solution = null;
-    _STD._springY._solution = null;
-    _STD._springScale._solution = null;
-    _STD._springX._endPosition = _translateX;
-    _STD._springY._endPosition = _translateY;
-    _STD._springScale._endPosition = _scale;
-    _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o2);
-    }, function() {
-      _SFA.cancel();
-    });
-  }
-  function _revise(source) {
-    let limitXY = _getLimitXY(_translateX, _translateY);
-    let x = limitXY.x;
-    let y = limitXY.y;
-    let outOfBounds = limitXY.outOfBounds;
-    if (outOfBounds) {
-      _animationTo(x, y, _scale, source);
-    }
-    return outOfBounds;
-  }
-  function _setTransform(x, y, scale, source = "", r, o2) {
-    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
-      x = _translateX || 0;
-    }
-    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
-      y = _translateY || 0;
-    }
-    x = Number(x.toFixed(1));
-    y = Number(y.toFixed(1));
-    scale = Number(scale.toFixed(1));
-    if (!(_translateX === x && _translateY === y)) {
-      if (!r) {
-        trigger("change", {}, {
-          x: v(x, _scaleOffset.x),
-          y: v(y, _scaleOffset.y),
-          source
-        });
-      }
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    scale = _adjustScale(scale);
-    scale = +scale.toFixed(3);
-    if (o2 && scale !== _scale) {
-      trigger("scale", {}, {
-        x,
-        y,
-        scale
-      });
-    }
-    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-    rootRef.value.style.transform = transform;
-    rootRef.value.style.webkitTransform = transform;
-    _translateX = x;
-    _translateY = y;
-    _scale = scale;
-  }
-  function setParent() {
-    if (!_isMounted.value) {
-      return;
-    }
-    FAandSFACancel();
-    let scale = props2.scale ? scaleValueSync.value : 1;
-    _updateOffset();
-    _updateWH(scale);
-    _updateBoundary();
-    _translateX = xSync.value + _scaleOffset.x;
-    _translateY = ySync.value + _scaleOffset.y;
-    let limitXY = _getLimitXY(_translateX, _translateY);
-    let x = limitXY.x;
-    let y = limitXY.y;
-    _setTransform(x, y, scale, "", true);
-    _updateOldScale(scale);
-  }
-  function _endScale() {
-    _isScaling = false;
-    _updateOldScale(_scale);
-  }
-  function _setScale(scale) {
-    if (scale) {
-      scale = _oldScale * scale;
-      _beginScale();
-      _updateScale(scale);
-    }
-  }
-  onMounted(() => {
-    useTouchtrack(rootRef.value, (event) => {
-      switch (event.detail.state) {
-        case "start":
-          __handleTouchStart();
-          break;
-        case "move":
-          __handleTouchMove(event);
-          break;
-        case "end":
-          __handleTouchEnd();
-      }
-    });
-    setParent();
-    _friction.reconfigure(1, frictionNumber.value);
-    _STD.reconfigure(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-    rootRef.value.style.transformOrigin = "center";
-    const context = {
-      rootRef,
-      setParent,
-      _endScale,
-      _setScale
-    };
-    addMovableViewContext(context);
-    onUnmounted(() => {
-      removeMovableViewContext(context);
-    });
-  });
-  onUnmounted(() => {
-    FAandSFACancel();
-  });
-  return {
-    setParent
-  };
-}
-const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-const props$r = {
-  hoverClass: {
-    type: String,
-    default: "navigator-hover"
-  },
-  url: {
-    type: String,
-    default: ""
-  },
-  openType: {
-    type: String,
-    default: "navigate",
-    validator(value) {
-      return Boolean(~OPEN_TYPES.indexOf(value));
-    }
-  },
-  delta: {
-    type: Number,
-    default: 1
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 50
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 600
-  },
-  exists: {
-    type: String,
-    default: ""
-  },
-  hoverStopPropagation: {
-    type: Boolean,
-    default: false
-  }
-};
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Navigator",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$r,
-  setup(props2, {
-    slots
-  }) {
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
-    function onClick($event) {
-      if (props2.openType !== "navigateBack" && !props2.url) {
-        console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
-        return;
-      }
-      switch (props2.openType) {
-        case "navigate":
-          uni.navigateTo({
-            url: props2.url
-          });
-          break;
-        case "redirect":
-          uni.redirectTo({
-            url: props2.url,
-            exists: props2.exists
-          });
-          break;
-        case "switchTab":
-          uni.switchTab({
-            url: props2.url
-          });
-          break;
-        case "reLaunch":
-          uni.reLaunch({
-            url: props2.url
-          });
-          break;
-        case "navigateBack":
-          uni.navigateBack({
-            delta: props2.delta
-          });
-          break;
-      }
-    }
-    return () => {
-      const {
-        hoverClass
-      } = props2;
-      const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      return createVNode("uni-navigator", mergeProps({
-        "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, {
-        "onClick": onClick
-      }), {
-        default: () => [slots.default && slots.default()]
-      }, 16, ["class", "onClick"]);
-    };
-  }
-});
-const props$q = {
-  value: {
-    type: Array,
-    default() {
-      return [];
-    },
-    validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
-    }
-  },
-  indicatorStyle: {
-    type: String,
-    default: ""
-  },
-  indicatorClass: {
-    type: String,
-    default: ""
-  },
-  maskStyle: {
-    type: String,
-    default: ""
-  },
-  maskClass: {
-    type: String,
-    default: ""
-  }
-};
-function useState$3(props2) {
-  const value = reactive([...props2.value]);
-  const state2 = reactive({
-    value,
-    height: 34
-  });
-  watch(() => props2.value, (val, oldVal) => {
-    {
-      state2.value.length = val.length;
-      val.forEach((val2, index2) => {
-        if (val2 !== state2.value[index2]) {
-          state2.value.splice(index2, 1, val2);
-        }
-      });
-    }
-  });
-  return state2;
-}
-var PickerView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "PickerView",
-  props: props$q,
-  emits: ["change", "pickstart", "pickend", "update:value"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const state2 = useState$3(props2);
-    const resizeSensorRef = ref(null);
-    onMounted(() => {
-      const resizeSensor = resizeSensorRef.value;
-      state2.height = resizeSensor.$el.getBoundingClientRect().height;
-    });
-    let columnVNodes = [];
-    function getItemIndex(vnode) {
-      return columnVNodes.indexOf(vnode);
-    }
-    const getPickerViewColumn = function(columnInstance) {
-      const ref2 = computed({
-        get() {
-          const index2 = getItemIndex(columnInstance.vnode);
-          return state2.value[index2] || 0;
-        },
-        set(current) {
-          const index2 = getItemIndex(columnInstance.vnode);
-          const oldCurrent = state2.value[index2];
-          if (oldCurrent !== current) {
-            state2.value.splice(index2, 1, current);
-            const value = state2.value.map((val) => val);
-            emit2("update:value", value);
-            trigger("change", {}, {
-              value
-            });
-          }
-        }
-      });
-      return ref2;
-    };
-    provide("getPickerViewColumn", getPickerViewColumn);
-    provide("pickerViewProps", props2);
-    provide("pickerViewState", state2);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      columnVNodes = flatVNode(defaultSlots);
-      return createVNode("uni-picker-view", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode(ResizeSensor, {
-          "ref": resizeSensorRef,
-          "onResize": ({
-            height
-          }) => state2.height = height
-        }, null, 8, ["onResize"]), createVNode("div", {
-          "class": "uni-picker-view-wrapper"
-        }, [defaultSlots])],
-        _: 2
-      }, 512);
-    };
-  }
-});
-class Friction {
-  constructor(drag) {
-    this._drag = drag;
-    this._dragLog = Math.log(drag);
-    this._x = 0;
-    this._v = 0;
-    this._startTime = 0;
-  }
-  set(x, v2) {
-    this._x = x;
-    this._v = v2;
-    this._startTime = new Date().getTime();
-  }
-  setVelocityByEnd(e2) {
-    this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
-  }
-  x(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
-    this._dt = e2;
-    return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
-  }
-  dx(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
-    this._dt = e2;
-    return this._v * t2;
-  }
-  done() {
-    return Math.abs(this.dx()) < 3;
-  }
-  reconfigure(e2) {
-    const t2 = this.x();
-    const n = this.dx();
-    this._drag = e2;
-    this._dragLog = Math.log(e2);
-    this.set(t2, n);
-  }
-  configuration() {
-    const e2 = this;
-    return [
-      {
-        label: "Friction",
-        read: function() {
-          return e2._drag;
-        },
-        write: function(t2) {
-          e2.reconfigure(t2);
-        },
-        min: 1e-3,
-        max: 0.1,
-        step: 1e-3
-      }
-    ];
-  }
-}
-function o(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
-}
-function a(e2, t2) {
-  return o(e2, 0, t2);
-}
-class Spring {
-  constructor(m, k, c) {
-    this._m = m;
-    this._k = k;
-    this._c = c;
-    this._solution = null;
-    this._endPosition = 0;
-    this._startTime = 0;
-  }
-  _solve(e2, t2) {
-    const n = this._c;
-    const i = this._m;
-    const r = this._k;
-    const o2 = n * n - 4 * i * r;
-    if (o2 === 0) {
-      const a3 = -n / (2 * i);
-      const s2 = e2;
-      const l2 = t2 / (a3 * e2);
-      return {
-        x: function(e22) {
-          return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
-        },
-        dx: function(e22) {
-          const t22 = Math.pow(Math.E, a3 * e22);
-          return a3 * (s2 + l2 * e22) * t22 + l2 * t22;
-        }
-      };
-    }
-    if (o2 > 0) {
-      const c = (-n - Math.sqrt(o2)) / (2 * i);
-      const u = (-n + Math.sqrt(o2)) / (2 * i);
-      const l2 = (t2 - c * e2) / (u - c);
-      const s2 = e2 - l2;
-      return {
-        x: function(e22) {
-          let t22;
-          let n2;
-          if (e22 === this._t) {
-            t22 = this._powER1T;
-            n2 = this._powER2T;
-          }
-          this._t = e22;
-          if (!t22) {
-            t22 = this._powER1T = Math.pow(Math.E, c * e22);
-          }
-          if (!n2) {
-            n2 = this._powER2T = Math.pow(Math.E, u * e22);
-          }
-          return s2 * t22 + l2 * n2;
-        },
-        dx: function(e22) {
-          let t22;
-          let n2;
-          if (e22 === this._t) {
-            t22 = this._powER1T;
-            n2 = this._powER2T;
-          }
-          this._t = e22;
-          if (!t22) {
-            t22 = this._powER1T = Math.pow(Math.E, c * e22);
-          }
-          if (!n2) {
-            n2 = this._powER2T = Math.pow(Math.E, u * e22);
-          }
-          return s2 * c * t22 + l2 * u * n2;
-        }
-      };
-    }
-    const d = Math.sqrt(4 * i * r - n * n) / (2 * i);
-    const a2 = -n / 2 * i;
-    const s = e2;
-    const l = (t2 - a2 * e2) / d;
-    return {
-      x: function(e22) {
-        return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
-      },
-      dx: function(e22) {
-        const t22 = Math.pow(Math.E, a2 * e22);
-        const n2 = Math.cos(d * e22);
-        const i2 = Math.sin(d * e22);
-        return t22 * (l * d * n2 - s * d * i2) + a2 * t22 * (l * i2 + s * n2);
-      }
-    };
-  }
-  x(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    return this._solution ? this._endPosition + this._solution.x(e2) : 0;
-  }
-  dx(e2) {
-    if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    return this._solution ? this._solution.dx(e2) : 0;
-  }
-  setEnd(e2, t2, n) {
-    if (!n) {
-      n = new Date().getTime();
-    }
-    if (e2 !== this._endPosition || !a(t2, 0.4)) {
-      t2 = t2 || 0;
-      let i = this._endPosition;
-      if (this._solution) {
-        if (a(t2, 0.4)) {
-          t2 = this._solution.dx((n - this._startTime) / 1e3);
-        }
-        i = this._solution.x((n - this._startTime) / 1e3);
-        if (a(t2, 0.4)) {
-          t2 = 0;
-        }
-        if (a(i, 0.4)) {
-          i = 0;
-        }
-        i += this._endPosition;
-      }
-      if (!(this._solution && a(i - e2, 0.4) && a(t2, 0.4))) {
-        this._endPosition = e2;
-        this._solution = this._solve(i - this._endPosition, t2);
-        this._startTime = n;
-      }
-    }
-  }
-  snap(e2) {
-    this._startTime = new Date().getTime();
-    this._endPosition = e2;
-    this._solution = {
-      x: function() {
-        return 0;
-      },
-      dx: function() {
-        return 0;
-      }
-    };
-  }
-  done(e2) {
-    if (!e2) {
-      e2 = new Date().getTime();
-    }
-    return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
-  }
-  reconfigure(e2, t2, n) {
-    this._m = e2;
-    this._k = t2;
-    this._c = n;
-    if (!this.done()) {
-      this._solution = this._solve(this.x() - this._endPosition, this.dx());
-      this._startTime = new Date().getTime();
-    }
-  }
-  springConstant() {
-    return this._k;
-  }
-  damping() {
-    return this._c;
-  }
-  configuration() {
-    function e2(e22, t22) {
-      e22.reconfigure(1, t22, e22.damping());
-    }
-    function t2(e22, t22) {
-      e22.reconfigure(1, e22.springConstant(), t22);
-    }
-    return [
-      {
-        label: "Spring Constant",
-        read: this.springConstant.bind(this),
-        write: e2.bind(this, this),
-        min: 100,
-        max: 1e3
-      },
-      {
-        label: "Damping",
-        read: this.damping.bind(this),
-        write: t2.bind(this, this),
-        min: 1,
-        max: 500
-      }
-    ];
-  }
-}
-class Scroll {
-  constructor(extent, friction, spring) {
-    this._extent = extent;
-    this._friction = friction || new Friction(0.01);
-    this._spring = spring || new Spring(1, 90, 20);
-    this._startTime = 0;
-    this._springing = false;
-    this._springOffset = 0;
-  }
-  snap(e2, t2) {
-    this._springOffset = 0;
-    this._springing = true;
-    this._spring.snap(e2);
-    this._spring.setEnd(t2);
-  }
-  set(e2, t2) {
-    this._friction.set(e2, t2);
-    if (e2 > 0 && t2 >= 0) {
-      this._springOffset = 0;
-      this._springing = true;
-      this._spring.snap(e2);
-      this._spring.setEnd(0);
-    } else {
-      if (e2 < -this._extent && t2 <= 0) {
-        this._springOffset = 0;
-        this._springing = true;
-        this._spring.snap(e2);
-        this._spring.setEnd(-this._extent);
-      } else {
-        this._springing = false;
-      }
-    }
-    this._startTime = new Date().getTime();
-  }
-  x(e2) {
-    if (!this._startTime) {
-      return 0;
-    }
-    if (!e2) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
-    }
-    if (this._springing) {
-      return this._spring.x() + this._springOffset;
-    }
-    let t2 = this._friction.x(e2);
-    let n = this.dx(e2);
-    if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
-      this._springing = true;
-      this._spring.setEnd(0, n);
-      if (t2 < -this._extent) {
-        this._springOffset = -this._extent;
-      } else {
-        this._springOffset = 0;
-      }
-      t2 = this._spring.x() + this._springOffset;
-    }
-    return t2;
-  }
-  dx(e2) {
-    let t2;
-    if (this._lastTime === e2) {
-      t2 = this._lastDx;
-    } else {
-      t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
-    }
-    this._lastTime = e2;
-    this._lastDx = t2;
-    return t2;
-  }
-  done() {
-    return this._springing ? this._spring.done() : this._friction.done();
-  }
-  setVelocityByEnd(e2) {
-    this._friction.setVelocityByEnd(e2);
-  }
-  configuration() {
-    const e2 = this._friction.configuration();
-    e2.push.apply(e2, this._spring.configuration());
-    return e2;
-  }
-}
-function createAnimation$1(scroll, onScroll, onEnd) {
-  const state2 = {
-    id: 0,
-    cancelled: false
-  };
-  function startAnimation2(state22, scroll2, onScroll2, onEnd2) {
-    if (!state22 || !state22.cancelled) {
-      onScroll2(scroll2);
-      const isDone = scroll2.done();
-      if (!isDone) {
-        if (!state22.cancelled) {
-          state22.id = requestAnimationFrame(startAnimation2.bind(null, state22, scroll2, onScroll2, onEnd2));
-        }
-      }
-      if (isDone && onEnd2) {
-        onEnd2(scroll2);
-      }
-    }
-  }
-  function cancel(state22) {
-    if (state22 && state22.id) {
-      cancelAnimationFrame(state22.id);
-    }
-    if (state22) {
-      state22.cancelled = true;
-    }
-  }
-  startAnimation2(state2, scroll, onScroll, onEnd);
-  return {
-    cancel: cancel.bind(null, state2),
-    model: scroll
-  };
-}
-class Scroller {
-  constructor(element, options) {
-    options = options || {};
-    this._element = element;
-    this._options = options;
-    this._enableSnap = options.enableSnap || false;
-    this._itemSize = options.itemSize || 0;
-    this._enableX = options.enableX || false;
-    this._enableY = options.enableY || false;
-    this._shouldDispatchScrollEvent = !!options.onScroll;
-    if (this._enableX) {
-      this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
-      this._scrollWidth = options.scrollWidth;
-    } else {
-      this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
-      this._scrollHeight = options.scrollHeight;
-    }
-    this._position = 0;
-    this._scroll = new Scroll(this._extent, options.friction, options.spring);
-    this._onTransitionEnd = this.onTransitionEnd.bind(this);
-    this.updatePosition();
-  }
-  onTouchStart() {
-    this._startPosition = this._position;
-    this._lastChangePos = this._startPosition;
-    if (this._startPosition > 0) {
-      this._startPosition /= 0.5;
-    } else {
-      if (this._startPosition < -this._extent) {
-        this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
-      }
-    }
-    if (this._animation) {
-      this._animation.cancel();
-      this._scrolling = false;
-    }
-    this.updatePosition();
-  }
-  onTouchMove(x, y) {
-    let startPosition = this._startPosition;
-    if (this._enableX) {
-      startPosition += x;
-    } else if (this._enableY) {
-      startPosition += y;
-    }
-    if (startPosition > 0) {
-      startPosition *= 0.5;
-    } else if (startPosition < -this._extent) {
-      startPosition = 0.5 * (startPosition + this._extent) - this._extent;
-    }
-    this._position = startPosition;
-    this.updatePosition();
-    this.dispatchScroll();
-  }
-  onTouchEnd(x, y, o2) {
-    if (this._enableSnap && this._position > -this._extent && this._position < 0) {
-      if (this._enableY && (Math.abs(y) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
-        this.snap();
-        return;
-      }
-      if (this._enableX && (Math.abs(x) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
-        this.snap();
-        return;
-      }
-    }
-    if (this._enableX) {
-      this._scroll.set(this._position, o2.x);
-    } else if (this._enableY) {
-      this._scroll.set(this._position, o2.y);
-    }
-    let c;
-    if (this._enableSnap) {
-      const s = this._scroll._friction.x(100);
-      const l = s % this._itemSize;
-      c = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
-      if (c <= 0 && c >= -this._extent) {
-        this._scroll.setVelocityByEnd(c);
-      }
-    }
-    this._lastTime = Date.now();
-    this._lastDelay = 0;
-    this._scrolling = true;
-    this._lastChangePos = this._position;
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
-    this._animation = createAnimation$1(this._scroll, () => {
-      const e2 = Date.now();
-      const i = (e2 - this._scroll._startTime) / 1e3;
-      const r = this._scroll.x(i);
-      this._position = r;
-      this.updatePosition();
-      const o22 = this._scroll.dx(i);
-      if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
-        this.dispatchScroll();
-        this._lastDelay = Math.abs(2e3 / o22);
-        this._lastTime = e2;
-      }
-    }, () => {
-      if (this._enableSnap) {
-        if (c <= 0 && c >= -this._extent) {
-          this._position = c;
-          this.updatePosition();
-        }
-        if (typeof this._options.onSnap === "function") {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-        }
-      }
-      if (this._shouldDispatchScrollEvent) {
-        this.dispatchScroll();
-      }
-      this._scrolling = false;
-    });
-  }
-  onTransitionEnd() {
-    this._element.style.webkitTransition = "";
-    this._element.style.transition = "";
-    this._element.removeEventListener("transitionend", this._onTransitionEnd);
-    if (this._snapping) {
-      this._snapping = false;
-    }
-    this.dispatchScroll();
-  }
-  snap() {
-    const itemSize = this._itemSize;
-    const position = this._position % itemSize;
-    const i = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
-    if (this._position !== i) {
-      this._snapping = true;
-      this.scrollTo(-i);
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-      }
-    }
-  }
-  scrollTo(position, time) {
-    if (this._animation) {
-      this._animation.cancel();
-      this._scrolling = false;
-    }
-    if (typeof position === "number") {
-      this._position = -position;
-    }
-    if (this._position < -this._extent) {
-      this._position = -this._extent;
-    } else {
-      if (this._position > 0) {
-        this._position = 0;
-      }
-    }
-    const transition = "transform " + (time || 0.2) + "s ease-out";
-    this._element.style.webkitTransition = "-webkit-" + transition;
-    this._element.style.transition = transition;
-    this.updatePosition();
-    this._element.addEventListener("transitionend", this._onTransitionEnd);
-  }
-  dispatchScroll() {
-    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
-      this._lastPos = this._position;
-      const event = {
-        target: {
-          scrollLeft: this._enableX ? -this._position : 0,
-          scrollTop: this._enableY ? -this._position : 0,
-          scrollHeight: this._scrollHeight || this._element.offsetHeight,
-          scrollWidth: this._scrollWidth || this._element.offsetWidth,
-          offsetHeight: this._element.parentElement.offsetHeight,
-          offsetWidth: this._element.parentElement.offsetWidth
-        }
-      };
-      this._options.onScroll(event);
-    }
-  }
-  update(height, scrollHeight, itemSize) {
-    let extent = 0;
-    const position = this._position;
-    if (this._enableX) {
-      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
-      this._scrollWidth = scrollHeight;
-    } else {
-      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
-      this._scrollHeight = scrollHeight;
-    }
-    if (typeof height === "number") {
-      this._position = -height;
-    }
-    if (this._position < -extent) {
-      this._position = -extent;
-    } else {
-      if (this._position > 0) {
-        this._position = 0;
-      }
-    }
-    this._itemSize = itemSize || this._itemSize;
-    this.updatePosition();
-    if (position !== this._position) {
-      this.dispatchScroll();
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
-      }
-    }
-    this._extent = extent;
-    this._scroll._extent = extent;
-  }
-  updatePosition() {
-    let transform = "";
-    if (this._enableX) {
-      transform = "translateX(" + this._position + "px) translateZ(0)";
-    } else {
-      if (this._enableY) {
-        transform = "translateY(" + this._position + "px) translateZ(0)";
-      }
-    }
-    this._element.style.webkitTransform = transform;
-    this._element.style.transform = transform;
-  }
-  isScrolling() {
-    return this._scrolling || this._snapping;
-  }
-}
-function useScroller(element, options) {
-  const touchInfo = {
-    trackingID: -1,
-    maxDy: 0,
-    maxDx: 0
-  };
-  const scroller = new Scroller(element, options);
-  function findDelta(event) {
-    const touchtrackEvent = event;
-    const mouseEvent = event;
-    return touchtrackEvent.detail.state === "move" || touchtrackEvent.detail.state === "end" ? {
-      x: touchtrackEvent.detail.dx,
-      y: touchtrackEvent.detail.dy
-    } : {
-      x: mouseEvent.screenX - touchInfo.x,
-      y: mouseEvent.screenY - touchInfo.y
-    };
-  }
-  function handleTouchStart(event) {
-    const touchtrackEvent = event;
-    const mouseEvent = event;
-    if (touchtrackEvent.detail.state === "start") {
-      touchInfo.trackingID = "touch";
-      touchInfo.x = touchtrackEvent.detail.x;
-      touchInfo.y = touchtrackEvent.detail.y;
-    } else {
-      touchInfo.trackingID = "mouse";
-      touchInfo.x = mouseEvent.screenX;
-      touchInfo.y = mouseEvent.screenY;
-    }
-    touchInfo.maxDx = 0;
-    touchInfo.maxDy = 0;
-    touchInfo.historyX = [0];
-    touchInfo.historyY = [0];
-    touchInfo.historyTime = [
-      touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
-    ];
-    touchInfo.listener = scroller;
-    if (scroller.onTouchStart) {
-      scroller.onTouchStart();
-    }
-    event.preventDefault();
-  }
-  function handleTouchMove(event) {
-    const touchtrackEvent = event;
-    const mouseEvent = event;
-    if (touchInfo.trackingID !== -1) {
-      event.preventDefault();
-      const delta = findDelta(event);
-      if (delta) {
-        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
-          touchInfo.historyTime.shift();
-          touchInfo.historyX.shift();
-          touchInfo.historyY.shift();
-        }
-        if (touchInfo.listener && touchInfo.listener.onTouchMove) {
-          touchInfo.listener.onTouchMove(delta.x, delta.y);
-        }
-      }
-    }
-  }
-  function handleTouchEnd(event) {
-    if (touchInfo.trackingID !== -1) {
-      event.preventDefault();
-      const delta = findDelta(event);
-      if (delta) {
-        const listener2 = touchInfo.listener;
-        touchInfo.trackingID = -1;
-        touchInfo.listener = null;
-        const length = touchInfo.historyTime.length;
-        const o2 = {
-          x: 0,
-          y: 0
-        };
-        if (length > 2) {
-          for (let i = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i], x = touchInfo.historyX[i], y = touchInfo.historyY[i]; i > 0; ) {
-            i--;
-            const time0 = touchInfo.historyTime[i];
-            const time = time1 - time0;
-            if (time > 30 && time < 50) {
-              o2.x = (x - touchInfo.historyX[i]) / (time / 1e3);
-              o2.y = (y - touchInfo.historyY[i]) / (time / 1e3);
-              break;
-            }
-          }
-        }
-        touchInfo.historyTime = [];
-        touchInfo.historyX = [];
-        touchInfo.historyY = [];
-        if (listener2 && listener2.onTouchEnd) {
-          listener2.onTouchEnd(delta.x, delta.y, o2);
-        }
-      }
-    }
-  }
-  return {
-    scroller,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd
-  };
-}
-let scopedIndex = 0;
-function useScopedClass(indicatorHeightRef) {
-  const className = `uni-picker-view-content-${scopedIndex++}`;
-  function updateStyle2() {
-    const style = document.createElement("style");
-    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
-    document.head.appendChild(style);
-  }
-  watch(() => indicatorHeightRef.value, updateStyle2);
-  return className;
-}
-function useCustomClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const options = {
-        bubbles: true,
-        cancelable: true,
-        target: event.target,
-        currentTarget: event.currentTarget
-      };
-      const customClick = new CustomEvent("click", options);
-      const props2 = ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"];
-      props2.forEach((key) => {
-        customClick[key] = info[key];
-      });
-      event.target.dispatchEvent(customClick);
-    }
-  });
-}
-var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
-  name: "PickerViewColumn",
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const contentRef = ref(null);
-    const getPickerViewColumn = inject("getPickerViewColumn");
-    const instance2 = getCurrentInstance();
-    const currentRef = getPickerViewColumn ? getPickerViewColumn(instance2) : ref(0);
-    const pickerViewProps = inject("pickerViewProps");
-    const pickerViewState = inject("pickerViewState");
-    const indicatorHeight = ref(34);
-    const resizeSensorRef = ref(null);
-    onMounted(() => {
-      const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
-    });
-    const maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
-    const {
-      state: scopedAttrsState
-    } = useScopedAttrs();
-    const className = useScopedClass(indicatorHeight);
-    let scroller;
-    const state2 = reactive({
-      current: currentRef.value,
-      length: 0
-    });
-    function updatesScroller() {
-      if (scroller) {
-        nextTick(() => {
-          let current = Math.min(state2.current, state2.length - 1);
-          current = Math.max(current, 0);
-          scroller.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
-        });
-      }
-    }
-    watch(() => currentRef.value, (current) => {
-      if (current !== state2.current) {
-        state2.current = current;
-        updatesScroller();
-      }
-    });
-    watch(() => state2.current, (current) => currentRef.value = current);
-    watch([() => indicatorHeight.value, () => state2.length, () => pickerViewState.height], updatesScroller);
-    let oldDeltaY = 0;
-    function handleWheel(event) {
-      const deltaY = oldDeltaY + event.deltaY;
-      if (Math.abs(deltaY) > 10) {
-        oldDeltaY = 0;
-        let current = Math.min(state2.current + (deltaY < 0 ? -1 : 1), state2.length - 1);
-        state2.current = current = Math.max(current, 0);
-        scroller.scrollTo(current * indicatorHeight.value);
-      } else {
-        oldDeltaY = deltaY;
-      }
-      event.preventDefault();
-    }
-    function handleTap({
-      clientY
-    }) {
-      const el = rootRef.value;
-      if (!scroller.isScrolling()) {
-        const rect = el.getBoundingClientRect();
-        const r = clientY - rect.top - pickerViewState.height / 2;
-        const o2 = indicatorHeight.value / 2;
-        if (!(Math.abs(r) <= o2)) {
-          const a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
-          const s = r < 0 ? -a2 : a2;
-          let current = Math.min(state2.current + s, state2.length - 1);
-          state2.current = current = Math.max(current, 0);
-          scroller.scrollTo(current * indicatorHeight.value);
-        }
-      }
-    }
-    onMounted(() => {
-      const el = rootRef.value;
-      const content = contentRef.value;
-      const {
-        scroller: scrollerOrigin,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content, {
-        enableY: true,
-        enableX: false,
-        enableSnap: true,
-        itemSize: indicatorHeight.value,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onSnap: (index2) => {
-          if (!isNaN(index2) && index2 !== state2.current) {
-            state2.current = index2;
-          }
-        }
-      });
-      scroller = scrollerOrigin;
-      useTouchtrack(el, (e2) => {
-        switch (e2.detail.state) {
-          case "start":
-            handleTouchStart(e2);
-            break;
-          case "move":
-            handleTouchMove(e2);
-            break;
-          case "end":
-          case "cancel":
-            handleTouchEnd(e2);
-        }
-      }, true);
-      useCustomClick(el);
-      updatesScroller();
-    });
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      state2.length = flatVNode(defaultSlots).length;
-      const padding = `${maskSize.value}px 0`;
-      return createVNode("uni-picker-view-column", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", {
-          "onWheel": handleWheel,
-          "onClick": handleTap,
-          "class": "uni-picker-view-group"
-        }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
-          "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
-          "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
-        }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
-          "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
-          "style": pickerViewProps.indicatorStyle
-        }), [createVNode(ResizeSensor, {
-          "ref": resizeSensorRef,
-          "onResize": ({
-            height
-          }) => indicatorHeight.value = height
-        }, null, 8, ["onResize"])], 16), createVNode("div", {
-          "ref": contentRef,
-          "class": ["uni-picker-view-content", className],
-          "style": {
-            padding
-          }
-        }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])]
-      }, 512);
-    };
-  }
-});
-const VALUES = {
-  activeColor: PRIMARY_COLOR,
-  backgroundColor: "#EBEBEB",
-  activeMode: "backwards"
-};
-const props$p = {
-  percent: {
-    type: [Number, String],
-    default: 0,
-    validator(value) {
-      return !isNaN(parseFloat(value));
-    }
-  },
-  showInfo: {
-    type: [Boolean, String],
-    default: false
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: 6,
-    validator(value) {
-      return !isNaN(parseFloat(value));
-    }
-  },
-  color: {
-    type: String,
-    default: VALUES.activeColor
-  },
-  activeColor: {
-    type: String,
-    default: VALUES.activeColor
-  },
-  backgroundColor: {
-    type: String,
-    default: VALUES.backgroundColor
-  },
-  active: {
-    type: [Boolean, String],
-    default: false
-  },
-  activeMode: {
-    type: String,
-    default: VALUES.activeMode
-  },
-  duration: {
-    type: [Number, String],
-    default: 30,
-    validator(value) {
-      return !isNaN(parseFloat(value));
-    }
-  }
-};
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Progress",
-  props: props$p,
-  setup(props2) {
-    const state2 = useProgressState(props2);
-    _activeAnimation(state2, props2);
-    watch(() => state2.realPercent, (newValue, oldValue) => {
-      state2.strokeTimer && clearInterval(state2.strokeTimer);
-      state2.lastPercent = oldValue || 0;
-      _activeAnimation(state2, props2);
-    });
-    return () => {
-      const {
-        showInfo
-      } = props2;
-      const {
-        outerBarStyle,
-        innerBarStyle,
-        currentPercent
-      } = state2;
-      return createVNode("uni-progress", {
-        "class": "uni-progress"
-      }, {
-        default: () => [createVNode("div", {
-          "style": outerBarStyle,
-          "class": "uni-progress-bar"
-        }, [createVNode("div", {
-          "style": innerBarStyle,
-          "class": "uni-progress-inner-bar"
-        }, null, 4)], 4), showInfo ? createVNode("p", {
-          "class": "uni-progress-info"
-        }, [currentPercent + "%"]) : ""],
-        _: 1
-      });
-    };
-  }
-});
-function useProgressState(props2) {
-  const currentPercent = ref(0);
-  const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
-  const innerBarStyle = computed(() => {
-    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
-    return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
-  });
-  const realPercent = computed(() => {
-    let realValue = parseFloat(props2.percent);
-    realValue < 0 && (realValue = 0);
-    realValue > 100 && (realValue = 100);
-    return realValue;
-  });
-  const state2 = reactive({
-    outerBarStyle,
-    innerBarStyle,
-    realPercent,
-    currentPercent,
-    strokeTimer: 0,
-    lastPercent: 0
-  });
-  return state2;
-}
-function _activeAnimation(state2, props2) {
-  if (props2.active) {
-    state2.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state2.lastPercent;
-    state2.strokeTimer = setInterval(() => {
-      if (state2.currentPercent + 1 > state2.realPercent) {
-        state2.currentPercent = state2.realPercent;
-        state2.strokeTimer && clearInterval(state2.strokeTimer);
-      } else {
-        state2.currentPercent += 1;
-      }
-    }, parseFloat(props2.duration));
-  } else {
-    state2.currentPercent = state2.realPercent;
-  }
-}
-const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
-  name: "RadioGroup",
-  props: props$o,
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useProvideRadioGroup(props2, trigger);
-    return () => {
-      return createVNode("uni-radio-group", {
-        "ref": rootRef
-      }, {
-        default: () => [slots.default && slots.default()]
-      }, 512);
-    };
-  }
-});
-function useProvideRadioGroup(props2, trigger) {
-  const fields2 = [];
-  onMounted(() => {
-    _resetRadioGroupValue(fields2.length - 1);
-  });
-  const getFieldsValue = () => fields2.find((field) => field.value.radioChecked)?.value.value;
-  provide(uniRadioGroupKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    radioChange($event, field) {
-      const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2, true);
-      trigger("change", $event, {
-        value: getFieldsValue()
-      });
-    }
-  });
-  const uniForm = inject(uniFormKey, false);
-  if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = getFieldsValue();
-        }
-        return data;
-      }
-    });
-  }
-  function setFieldChecked(field, radioChecked) {
-    field.value = {
-      radioChecked,
-      value: field.value.value
-    };
-  }
-  function _resetRadioGroupValue(key, change) {
-    fields2.forEach((value, index2) => {
-      if (index2 === key) {
-        return;
-      }
-      if (change) {
-        setFieldChecked(fields2[index2], false);
-      } else {
-        fields2.forEach((v2, i) => {
-          if (index2 >= i) {
-            return;
-          }
-          if (fields2[i].value.radioChecked) {
-            setFieldChecked(fields2[index2], false);
-          }
-        });
-      }
-    });
-  }
-  return fields2;
-}
-const props$n = {
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: {
-    type: String,
-    default: "#007aff"
-  },
-  value: {
-    type: String,
-    default: ""
-  }
-};
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Radio",
-  props: props$n,
-  setup(props2, {
-    slots
-  }) {
-    const radioChecked = ref(props2.checked);
-    const radioValue = ref(props2.value);
-    const checkedStyle = computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
-    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      radioChecked.value = newChecked;
-      radioValue.value = newModelValue;
-    });
-    const reset = () => {
-      radioChecked.value = false;
-    };
-    const {
-      uniCheckGroup,
-      uniLabel,
-      field
-    } = useRadioInject(radioChecked, radioValue, reset);
-    const _onClick = ($event) => {
-      if (props2.disabled) {
-        return;
-      }
-      radioChecked.value = true;
-      uniCheckGroup && uniCheckGroup.radioChange($event, field);
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-      onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
-    }
-    useListeners$1(props2, {
-      "label-click": _onClick
-    });
-    return () => {
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-radio", mergeProps(booleanAttrs, {
-        "onClick": _onClick
-      }), {
-        default: () => [createVNode("div", {
-          "class": "uni-radio-wrapper"
-        }, [createVNode("div", {
-          "class": ["uni-radio-input", {
-            "uni-radio-input-disabled": props2.disabled
-          }],
-          "style": radioChecked.value ? checkedStyle.value : ""
-        }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])]
-      }, 16, ["onClick"]);
-    };
-  }
-});
-function useRadioInject(radioChecked, radioValue, reset) {
-  const field = computed({
-    get: () => ({
-      radioChecked: Boolean(radioChecked.value),
-      value: radioValue.value
-    }),
-    set: ({
-      radioChecked: checked
-    }) => {
-      radioChecked.value = checked;
-    }
-  });
-  const formField = {
-    reset
-  };
-  const uniCheckGroup = inject(uniRadioGroupKey, false);
-  if (!!uniCheckGroup) {
-    uniCheckGroup.addField(field);
-  }
-  const uniForm = inject(uniFormKey, false);
-  if (!!uniForm) {
-    uniForm.addField(formField);
-  }
-  const uniLabel = inject(uniLabelKey, false);
-  onBeforeUnmount(() => {
-    uniCheckGroup && uniCheckGroup.removeField(field);
-    uniForm && uniForm.removeField(formField);
-  });
-  return {
-    uniCheckGroup,
-    uniForm,
-    uniLabel,
-    field
-  };
-}
-function removeDOCTYPE(html) {
-  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-}
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
-    let value = attr2.value;
-    const name = attr2.name;
-    if (value.match(/ /) && name !== "style") {
-      value = value.split(" ");
-    }
-    if (pre[name]) {
-      if (Array.isArray(pre[name])) {
-        pre[name].push(value);
-      } else {
-        pre[name] = [pre[name], value];
-      }
-    } else {
-      pre[name] = value;
-    }
-    return pre;
-  }, {});
-}
-function parseHtml(html) {
-  html = removeDOCTYPE(html);
-  const stacks = [];
-  const results = {
-    node: "root",
-    children: []
-  };
-  HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
-      const node = {
-        name: tag
-      };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
-      }
-      if (unary) {
-        const parent = stacks[0] || results;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      } else {
-        stacks.unshift(node);
-      }
-    },
-    end: function(tag) {
-      const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    chars: function(text2) {
-      const node = {
-        type: "text",
-        text: text2
-      };
-      if (stacks.length === 0) {
-        results.children.push(node);
-      } else {
-        const parent = stacks[0];
-        if (!parent.children) {
-          parent.children = [];
-        }
-        parent.children.push(node);
-      }
-    },
-    comment: function(text2) {
-      const node = {
-        node: "comment",
-        text: text2
-      };
-      const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
-      }
-      parent.children.push(node);
-    }
-  });
-  return results.children;
-}
-const TAGS = {
-  a: "",
-  abbr: "",
-  b: "",
-  blockquote: "",
-  br: "",
-  code: "",
-  col: ["span", "width"],
-  colgroup: ["span", "width"],
-  dd: "",
-  del: "",
-  div: "",
-  dl: "",
-  dt: "",
-  em: "",
-  fieldset: "",
-  h1: "",
-  h2: "",
-  h3: "",
-  h4: "",
-  h5: "",
-  h6: "",
-  hr: "",
-  i: "",
-  img: ["alt", "src", "height", "width"],
-  ins: "",
-  label: "",
-  legend: "",
-  li: "",
-  ol: ["start", "type"],
-  p: "",
-  q: "",
-  span: "",
-  strong: "",
-  sub: "",
-  sup: "",
-  table: ["width"],
-  tbody: "",
-  td: ["colspan", "rowspan", "height", "width"],
-  tfoot: "",
-  th: ["colspan", "rowspan", "height", "width"],
-  thead: "",
-  tr: "",
-  ul: ""
-};
-const CHARS = {
-  amp: "&",
-  gt: ">",
-  lt: "<",
-  nbsp: " ",
-  quot: '"',
-  apos: "'"
-};
-function decodeEntities(htmlString) {
-  return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
-    if (hasOwn(CHARS, stage) && CHARS[stage]) {
-      return CHARS[stage];
-    }
-    if (/^#[0-9]{1,4}$/.test(stage)) {
-      return String.fromCharCode(stage.slice(1));
-    }
-    if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-      return String.fromCharCode("0" + stage.slice(1));
-    }
-    const wrap = document.createElement("div");
-    wrap.innerHTML = match;
-    return wrap.innerText || wrap.textContent;
-  });
-}
-function parseNodes(nodes, parentNode) {
-  nodes.forEach(function(node) {
-    if (!isPlainObject(node)) {
-      return;
-    }
-    if (!hasOwn(node, "type") || node.type === "node") {
-      if (!(typeof node.name === "string" && node.name)) {
-        return;
-      }
-      const tagName = node.name.toLowerCase();
-      if (!hasOwn(TAGS, tagName)) {
-        return;
-      }
-      const elem = document.createElement(tagName);
-      if (!elem) {
-        return;
-      }
-      const attrs2 = node.attrs;
-      if (isPlainObject(attrs2)) {
-        const tagAttrs = TAGS[tagName] || [];
-        Object.keys(attrs2).forEach(function(name) {
-          let value = attrs2[name];
-          switch (name) {
-            case "class":
-              Array.isArray(value) && (value = value.join(" "));
-            case "style":
-              elem.setAttribute(name, value);
-              break;
-            default:
-              if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, value);
-              }
-          }
-        });
-      }
-      const children = node.children;
-      if (Array.isArray(children) && children.length) {
-        parseNodes(node.children, elem);
-      }
-      parentNode.appendChild(elem);
-    } else {
-      if (node.type === "text" && typeof node.text === "string" && node.text !== "") {
-        parentNode.appendChild(document.createTextNode(decodeEntities(node.text)));
-      }
-    }
-  });
-  return parentNode;
-}
-const props$m = {
-  nodes: {
-    type: [Array, String],
-    default: function() {
-      return [];
-    }
-  }
-};
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
-  name: "RichText",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$m,
-  setup(props2) {
-    const rootRef = ref(null);
-    function _renderNodes(nodes) {
-      if (typeof nodes === "string") {
-        nodes = parseHtml(nodes);
-      }
-      const nodeList = parseNodes(nodes, document.createDocumentFragment());
-      rootRef.value.firstElementChild.innerHTML = "";
-      rootRef.value.firstElementChild.appendChild(nodeList);
-    }
-    watch(() => props2.nodes, (value) => {
-      _renderNodes(value);
-    });
-    onMounted(() => {
-      _renderNodes(props2.nodes);
-    });
-    return () => {
-      return createVNode("uni-rich-text", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", null, null)]
-      }, 512);
-    };
-  }
-});
-const passiveOptions = passive(true);
-const props$l = {
-  scrollX: {
-    type: [Boolean, String],
-    default: false
-  },
-  scrollY: {
-    type: [Boolean, String],
-    default: false
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableBackToTop: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    default: "back"
-  },
-  refresherBackground: {
-    type: String,
-    default: "#fff"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ScrollView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$l,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort"],
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const main = ref(null);
-    const wrap = ref(null);
-    const content = ref(null);
-    const refresherinner = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: state2,
-      scrollTopNumber,
-      scrollLeftNumber
-    } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
-    const mainStyle = computed(() => {
-      let style = "";
-      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-      return style;
-    });
-    return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState,
-        refreshRotate
-      } = state2;
-      return createVNode("uni-scroll-view", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", {
-          "ref": wrap,
-          "class": "uni-scroll-view"
-        }, [createVNode("div", {
-          "ref": main,
-          "style": mainStyle.value,
-          "class": "uni-scroll-view"
-        }, [createVNode("div", {
-          "ref": content,
-          "class": "uni-scroll-view-content"
-        }, [refresherEnabled ? createVNode("div", {
-          "ref": refresherinner,
-          "style": {
-            backgroundColor: refresherBackground,
-            height: refresherHeight + "px"
-          },
-          "class": "uni-scroll-view-refresher"
-        }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-          "class": "uni-scroll-view-refresh"
-        }, [createVNode("div", {
-          "class": "uni-scroll-view-refresh-inner"
-        }, [refreshState == "pulling" ? createVNode("svg", {
-          "style": {
-            transform: "rotate(" + refreshRotate + "deg)"
-          },
-          "fill": "#2BD009",
-          "class": "uni-scroll-view-refresh__icon",
-          "width": "24",
-          "height": "24",
-          "viewBox": "0 0 24 24"
-        }, [createVNode("path", {
-          "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-        }, null), createVNode("path", {
-          "d": "M0 0h24v24H0z",
-          "fill": "none"
-        }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-          "class": "uni-scroll-view-refresh__spinner",
-          "width": "24",
-          "height": "24",
-          "viewBox": "25 25 50 50"
-        }, [createVNode("circle", {
-          "cx": "50",
-          "cy": "50",
-          "r": "20",
-          "fill": "none",
-          "style": "color: #2bd009",
-          "stroke-width": "3"
-        }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)]
-      }, 512);
-    };
-  }
-});
-function useScrollViewState(props2) {
-  const scrollTopNumber = computed(() => {
-    return Number(props2.scrollTop) || 0;
-  });
-  const scrollLeftNumber = computed(() => {
-    return Number(props2.scrollLeft) || 0;
-  });
-  const state2 = reactive({
-    lastScrollTop: scrollTopNumber.value,
-    lastScrollLeft: scrollLeftNumber.value,
-    lastScrollToUpperTime: 0,
-    lastScrollToLowerTime: 0,
-    refresherHeight: 0,
-    refreshRotate: 0,
-    refreshState: ""
-  });
-  return {
-    state: state2,
-    scrollTopNumber,
-    scrollLeftNumber
-  };
-}
-function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
-  let _lastScrollTime = 0;
-  let __transitionEnd = () => {
-  };
-  const upperThresholdNumber = computed(() => {
-    var val = Number(props2.upperThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  const lowerThresholdNumber = computed(() => {
-    var val = Number(props2.lowerThreshold);
-    return isNaN(val) ? 50 : val;
-  });
-  function scrollTo2(scrollToValue, direction2) {
-    const container = main.value;
-    let transformValue = 0;
-    let transform = "";
-    scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-    direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
-    let _content = content.value;
-    _content.style.transition = "transform .3s ease-out";
-    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-    if (direction2 === "x") {
-      transform = "translateX(" + transformValue + "px) translateZ(0)";
-    } else {
-      direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
-    }
-    _content.removeEventListener("transitionend", __transitionEnd);
-    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-    __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
-    _content.addEventListener("transitionend", __transitionEnd);
-    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-    if (direction2 === "x") {
-      container.style.overflowX = "hidden";
-    } else if (direction2 === "y") {
-      container.style.overflowY = "hidden";
-    }
-    _content.style.transform = transform;
-    _content.style.webkitTransform = transform;
-  }
-  function _handleScroll($event) {
-    if ($event.timeStamp - _lastScrollTime > 20) {
-      _lastScrollTime = $event.timeStamp;
-      const target = $event.target;
-      trigger("scroll", $event, {
-        scrollLeft: target.scrollLeft,
-        scrollTop: target.scrollTop,
-        scrollHeight: target.scrollHeight,
-        scrollWidth: target.scrollWidth,
-        deltaX: state2.lastScrollLeft - target.scrollLeft,
-        deltaY: state2.lastScrollTop - target.scrollTop
-      });
-      if (props2.scrollY) {
-        if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
-          trigger("scrolltoupper", $event, {
-            direction: "top"
-          });
-          state2.lastScrollToUpperTime = $event.timeStamp;
-        }
-        if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
-          trigger("scrolltolower", $event, {
-            direction: "bottom"
-          });
-          state2.lastScrollToLowerTime = $event.timeStamp;
-        }
-      }
-      if (props2.scrollX) {
-        if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
-          trigger("scrolltoupper", $event, {
-            direction: "left"
-          });
-          state2.lastScrollToUpperTime = $event.timeStamp;
-        }
-        if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
-          trigger("scrolltolower", $event, {
-            direction: "right"
-          });
-          state2.lastScrollToLowerTime = $event.timeStamp;
-        }
-      }
-      state2.lastScrollTop = target.scrollTop;
-      state2.lastScrollLeft = target.scrollLeft;
-    }
-  }
-  function _scrollTopChanged(val) {
-    if (props2.scrollY) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo2(val, "y");
-        } else {
-          main.value.scrollTop = val;
-        }
-      }
-    }
-  }
-  function _scrollLeftChanged(val) {
-    if (props2.scrollX) {
-      {
-        if (props2.scrollWithAnimation) {
-          scrollTo2(val, "x");
-        } else {
-          main.value.scrollLeft = val;
-        }
-      }
-    }
-  }
-  function _scrollIntoViewChanged(val) {
-    if (val) {
-      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-        console.error(`id error: scroll-into-view=${val}`);
-        return;
-      }
-      var element = rootRef.value.querySelector("#" + val);
-      if (element) {
-        var mainRect = main.value.getBoundingClientRect();
-        var elRect = element.getBoundingClientRect();
-        if (props2.scrollX) {
-          var left = elRect.left - mainRect.left;
-          var scrollLeft = main.value.scrollLeft;
-          var x = scrollLeft + left;
-          if (props2.scrollWithAnimation) {
-            scrollTo2(x, "x");
-          } else {
-            main.value.scrollLeft = x;
-          }
-        }
-        if (props2.scrollY) {
-          var top = elRect.top - mainRect.top;
-          var scrollTop = main.value.scrollTop;
-          var y = scrollTop + top;
-          if (props2.scrollWithAnimation) {
-            scrollTo2(y, "y");
-          } else {
-            main.value.scrollTop = y;
-          }
-        }
-      }
-    }
-  }
-  function _transitionEnd(val, direction2) {
-    content.value.style.transition = "";
-    content.value.style.webkitTransition = "";
-    content.value.style.transform = "";
-    content.value.style.webkitTransform = "";
-    let _main = main.value;
-    if (direction2 === "x") {
-      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
-      _main.scrollLeft = val;
-    } else if (direction2 === "y") {
-      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
-      _main.scrollTop = val;
-    }
-    content.value.removeEventListener("transitionend", __transitionEnd);
-    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
-  }
-  function _setRefreshState(_state) {
-    switch (_state) {
-      case "refreshing":
-        state2.refresherHeight = props2.refresherThreshold;
-        trigger("refresherrefresh", {}, {});
-        break;
-      case "restore":
-        state2.refresherHeight = 0;
-        trigger("refresherrestore", {}, {});
-        break;
-    }
-    state2.refreshState = _state;
-  }
-  onMounted(() => {
-    _scrollTopChanged(scrollTopNumber.value);
-    _scrollLeftChanged(scrollLeftNumber.value);
-    _scrollIntoViewChanged(props2.scrollIntoView);
-    let __handleScroll = function(event) {
-      event.stopPropagation();
-      _handleScroll(event);
-    };
-    let touchStart = {
-      x: 0,
-      y: 0
-    };
-    let needStop = null;
-    let __handleTouchMove = function(event) {
-      var x = event.touches[0].pageX;
-      var y = event.touches[0].pageY;
-      var _main = main.value;
-      if (needStop === null) {
-        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          if (self.scrollX) {
-            if (_main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false;
-              return;
-            } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
-              needStop = false;
-              return;
-            }
-            needStop = true;
-          } else {
-            needStop = false;
-          }
-        } else {
-          if (self.scrollY) {
-            if (_main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false;
-              return;
-            } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
-              needStop = false;
-              return;
-            }
-            needStop = true;
-          } else {
-            needStop = false;
-          }
-        }
-      }
-      if (needStop) {
-        event.stopPropagation();
-      }
-      if (props2.refresherEnabled && state2.refreshState === "pulling") {
-        const dy = y - touchStart.y;
-        state2.refresherHeight = dy;
-        let rotate = dy / props2.refresherThreshold;
-        if (rotate > 1) {
-          rotate = 1;
-        } else {
-          rotate = rotate * 360;
-        }
-        state2.refreshRotate = rotate;
-        trigger("refresherpulling", event, {
-          deltaY: dy
-        });
-      }
-    };
-    let __handleTouchStart = function(event) {
-      if (event.touches.length === 1) {
-        needStop = null;
-        touchStart = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY
-        };
-        if (props2.refresherEnabled && state2.refreshState !== "refreshing" && main.value.scrollTop === 0) {
-          state2.refreshState = "pulling";
-        }
-      }
-    };
-    let __handleTouchEnd = function(event) {
-      touchStart = {
-        x: 0,
-        y: 0
-      };
-      if (state2.refresherHeight >= props2.refresherThreshold) {
-        _setRefreshState("refreshing");
-      } else {
-        state2.refresherHeight = 0;
-        trigger("refresherabort", event, {});
-      }
-    };
-    main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
-    main.value.addEventListener("touchmove", __handleTouchMove, passiveOptions);
-    main.value.addEventListener("scroll", __handleScroll, passiveOptions);
-    main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
-    onBeforeUnmount(() => {
-      main.value.removeEventListener("touchstart", __handleTouchStart);
-      main.value.removeEventListener("touchmove", __handleTouchMove);
-      main.value.removeEventListener("scroll", __handleScroll);
-      main.value.removeEventListener("touchend", __handleTouchEnd);
-    });
-  });
-  onActivated(() => {
-    props2.scrollY && (main.value.scrollTop = state2.lastScrollTop);
-    props2.scrollX && (main.value.scrollLeft = state2.lastScrollLeft);
-  });
-  watch(scrollTopNumber, (val) => {
-    _scrollTopChanged(val);
-  });
-  watch(scrollLeftNumber, (val) => {
-    _scrollLeftChanged(val);
-  });
-  watch(() => props2.scrollIntoView, (val) => {
-    _scrollIntoViewChanged(val);
-  });
-  watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
-    }
-  });
-}
-const props$k = {
-  name: {
-    type: String,
-    default: ""
-  },
-  min: {
-    type: [Number, String],
-    default: 0
-  },
-  max: {
-    type: [Number, String],
-    default: 100
-  },
-  value: {
-    type: [Number, String],
-    default: 0
-  },
-  step: {
-    type: [Number, String],
-    default: 1
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: {
-    type: String,
-    default: "#e9e9e9"
-  },
-  backgroundColor: {
-    type: String,
-    default: "#e9e9e9"
-  },
-  activeColor: {
-    type: String,
-    default: "#007aff"
-  },
-  selectedColor: {
-    type: String,
-    default: "#007aff"
-  },
-  blockColor: {
-    type: String,
-    default: "#ffffff"
-  },
-  blockSize: {
-    type: [Number, String],
-    default: 28
-  },
-  showValue: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-var index$g = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Slider",
-  props: props$k,
-  emits: ["changing", "change"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const sliderRef = ref(null);
-    const sliderValueRef = ref(null);
-    const sliderHandleRef = ref(null);
-    const sliderValue = ref(Number(props2.value));
-    watch(() => props2.value, (val) => {
-      sliderValue.value = Number(val);
-    });
-    const trigger = useCustomEvent(sliderRef, emit2);
-    const state2 = useSliderState(props2, sliderValue);
-    const {
-      _onClick,
-      _onTrack
-    } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
-    onMounted(() => {
-      useTouchtrack(sliderHandleRef.value, _onTrack);
-    });
-    return () => {
-      const {
-        setBgColor,
-        setBlockBg,
-        setActiveColor,
-        setBlockStyle
-      } = state2;
-      return createVNode("uni-slider", {
-        "ref": sliderRef,
-        "onClick": withWebEvent(_onClick)
-      }, {
-        default: () => [createVNode("div", {
-          "class": "uni-slider-wrapper"
-        }, [createVNode("div", {
-          "class": "uni-slider-tap-area"
-        }, [createVNode("div", {
-          "style": setBgColor.value,
-          "class": "uni-slider-handle-wrapper"
-        }, [createVNode("div", {
-          "ref": sliderHandleRef,
-          "style": setBlockBg.value,
-          "class": "uni-slider-handle"
-        }, null, 4), createVNode("div", {
-          "style": setBlockStyle.value,
-          "class": "uni-slider-thumb"
-        }, null, 4), createVNode("div", {
-          "style": setActiveColor.value,
-          "class": "uni-slider-track"
-        }, null, 4)], 4)]), withDirectives(createVNode("span", {
-          "ref": sliderValueRef,
-          "class": "uni-slider-value"
-        }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)],
-        _: 1
-      }, 8, ["onClick"]);
-    };
-  }
-});
-function useSliderState(props2, sliderValue) {
-  const _getValueWidth = () => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    return 100 * (sliderValue.value - min) / (max - min) + "%";
-  };
-  const _getBgColor = () => {
-    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
-  };
-  const _getActiveColor = () => {
-    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
-  };
-  const state2 = {
-    setBgColor: computed(() => ({
-      backgroundColor: _getBgColor()
-    })),
-    setBlockBg: computed(() => ({
-      left: _getValueWidth()
-    })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor(),
-      width: _getValueWidth()
-    })),
-    setBlockStyle: computed(() => ({
-      width: props2.blockSize + "px",
-      height: props2.blockSize + "px",
-      marginLeft: -props2.blockSize / 2 + "px",
-      marginTop: -props2.blockSize / 2 + "px",
-      left: _getValueWidth(),
-      backgroundColor: props2.blockColor
-    }))
-  };
-  return state2;
-}
-function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
-  const _onClick = ($event) => {
-    if (props2.disabled) {
-      return;
-    }
-    _onUserChangedValue($event);
-    trigger("change", $event, {
-      value: sliderValue.value
-    });
-  };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
-  };
-  const _onUserChangedValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const sliderRightBox = sliderValueRef.value;
-    const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
-    let sliderRightBoxWidth = sliderRightBox.offsetWidth;
-    sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
-    const slider = sliderRef.value;
-    const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
-    const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
-  };
-  const _onTrack = (e2) => {
-    if (!props2.disabled) {
-      return e2.detail.state === "move" ? (_onUserChangedValue({
-        x: e2.detail.x
-      }), trigger("changing", e2, {
-        value: sliderValue.value
-      }), false) : e2.detail.state === "end" && trigger("change", e2, {
-        value: sliderValue.value
-      });
-    }
-  };
-  const uniForm = inject(uniFormKey, false);
-  if (!!uniForm) {
-    const field = {
-      reset: () => sliderValue.value = Number(props2.min),
-      submit: () => {
-        const data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = sliderValue.value;
-        }
-        return data;
-      }
-    };
-    uniForm.addField(field);
-    onBeforeUnmount(() => {
-      uniForm.removeField(field);
-    });
-  }
-  return {
-    _onClick,
-    _onTrack
-  };
-}
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
-const props$j = {
-  indicatorDots: {
-    type: [Boolean, String],
-    default: false
-  },
-  vertical: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoplay: {
-    type: [Boolean, String],
-    default: false
-  },
-  circular: {
-    type: [Boolean, String],
-    default: false
-  },
-  interval: {
-    type: [Number, String],
-    default: 5e3
-  },
-  duration: {
-    type: [Number, String],
-    default: 500
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  },
-  indicatorColor: {
-    type: String,
-    default: ""
-  },
-  indicatorActiveColor: {
-    type: String,
-    default: ""
-  },
-  previousMargin: {
-    type: String,
-    default: ""
-  },
-  nextMargin: {
-    type: String,
-    default: ""
-  },
-  currentItemId: {
-    type: String,
-    default: ""
-  },
-  skipHiddenItemLayout: {
-    type: [Boolean, String],
-    default: false
-  },
-  displayMultipleItems: {
-    type: [Number, String],
-    default: 1
-  },
-  disableTouch: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-function upx2pxStr(val) {
-  if (/\d+[ur]px$/i.test(val)) {
-    val.replace(/\d+[ur]px$/i, (text2) => {
-      return `${upx2px(parseFloat(text2))}px`;
-    });
-  }
-  return val || "";
-}
-function useState$2(props2) {
-  const interval = computed(() => {
-    const interval2 = Number(props2.interval);
-    return isNaN(interval2) ? 5e3 : interval2;
-  });
-  const duration = computed(() => {
-    const duration2 = Number(props2.duration);
-    return isNaN(duration2) ? 500 : duration2;
-  });
-  const displayMultipleItems = computed(() => {
-    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
-    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
-  });
-  const state2 = reactive({
-    interval,
-    duration,
-    displayMultipleItems,
-    current: Math.round(props2.current) || 0,
-    currentItemId: props2.currentItemId,
-    userTracking: false
-  });
-  return state2;
-}
-function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger) {
-  function cancelSchedule() {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-  let timer = null;
-  let invalid = true;
-  let viewportPosition = 0;
-  let viewportMoveRatio = 1;
-  let animating = null;
-  let requestedAnimation = false;
-  let contentTrackViewport = 0;
-  let transitionStart;
-  let currentChangeSource = "";
-  let animationFrame;
-  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
-  function checkCircularLayout(index2) {
-    if (!invalid) {
-      for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
-        const item = items[r];
-        const s = Math.floor(index2 / n) * n + r;
-        const l = s + n;
-        const c = s - n;
-        const u = Math.max(index2 - (s + 1), s - i, 0);
-        const d = Math.max(index2 - (l + 1), l - i, 0);
-        const h = Math.max(index2 - (c + 1), c - i, 0);
-        const p2 = Math.min(u, d, h);
-        const position = [s, l, c][[u, d, h].indexOf(p2)];
-        item.updatePosition(position, props2.vertical);
-      }
-    }
-  }
-  function updateViewport(index2) {
-    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
-      if (circularEnabled.value) {
-        checkCircularLayout(index2);
-      }
-    }
-    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
-    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
-    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
-    const slideFrame = slideFrameRef.value;
-    if (slideFrame) {
-      slideFrame.style.webkitTransform = transform;
-      slideFrame.style.transform = transform;
-    }
-    viewportPosition = index2;
-    if (!transitionStart) {
-      if (index2 % 1 === 0) {
-        return;
-      }
-      transitionStart = index2;
-    }
-    index2 -= Math.floor(transitionStart);
-    const items = swiperContexts.value;
-    if (index2 <= -(items.length - 1)) {
-      index2 += items.length;
-    } else if (index2 >= items.length) {
-      index2 -= items.length;
-    }
-    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
-    trigger("transition", {}, {
-      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
-      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
-    });
-  }
-  function endViewportAnimation() {
-    if (animating) {
-      updateViewport(animating.toPos);
-      animating = null;
-    }
-  }
-  function normalizeCurrentValue(current) {
-    const length = swiperContexts.value.length;
-    if (!length) {
-      return -1;
-    }
-    const index2 = (Math.round(current) % length + length) % length;
-    if (circularEnabled.value) {
-      if (length <= state2.displayMultipleItems) {
-        return 0;
-      }
-    } else if (index2 > length - state2.displayMultipleItems) {
-      return length - state2.displayMultipleItems;
-    }
-    return index2;
-  }
-  function cancelViewportAnimation() {
-    animating = null;
-  }
-  function animateFrameFuncProto() {
-    if (!animating) {
-      requestedAnimation = false;
-      return;
-    }
-    const _animating = animating;
-    const toPos = _animating.toPos;
-    const acc = _animating.acc;
-    const endTime = _animating.endTime;
-    const source = _animating.source;
-    const time = endTime - Date.now();
-    if (time <= 0) {
-      updateViewport(toPos);
-      animating = null;
-      requestedAnimation = false;
-      transitionStart = null;
-      const item = swiperContexts.value[state2.current];
-      if (item) {
-        const currentItemId = item.getItemId();
-        trigger("animationfinish", {}, {
-          current: state2.current,
-          currentItemId,
-          source
-        });
-      }
-      return;
-    }
-    const s = acc * time * time / 2;
-    const l = toPos + s;
-    updateViewport(l);
-    animationFrame = requestAnimationFrame(animateFrameFuncProto);
-  }
-  function animateViewport(current, source, n) {
-    cancelViewportAnimation();
-    const duration = state2.duration;
-    const length = swiperContexts.value.length;
-    let position = viewportPosition;
-    if (circularEnabled.value) {
-      if (n < 0) {
-        for (; position < current; ) {
-          position += length;
-        }
-        for (; position - length > current; ) {
-          position -= length;
-        }
-      } else if (n > 0) {
-        for (; position > current; ) {
-          position -= length;
-        }
-        for (; position + length < current; ) {
-          position += length;
-        }
-      } else {
-        for (; position + length < current; ) {
-          position += length;
-        }
-        for (; position - length > current; ) {
-          position -= length;
-        }
-        if (position + length - current < current - position) {
-          position += length;
-        }
-      }
-    }
-    animating = {
-      toPos: current,
-      acc: 2 * (position - current) / (duration * duration),
-      endTime: Date.now() + duration,
-      source
-    };
-    if (!requestedAnimation) {
-      requestedAnimation = true;
-      animationFrame = requestAnimationFrame(animateFrameFuncProto);
-    }
-  }
-  function scheduleAutoplay() {
-    cancelSchedule();
-    const items = swiperContexts.value;
-    const callback = function() {
-      timer = null;
-      currentChangeSource = "autoplay";
-      if (circularEnabled.value) {
-        state2.current = normalizeCurrentValue(state2.current + 1);
-      } else {
-        state2.current = state2.current + state2.displayMultipleItems < items.length ? state2.current + 1 : 0;
-      }
-      animateViewport(state2.current, "autoplay", circularEnabled.value ? 1 : 0);
-      timer = setTimeout(callback, state2.interval);
-    };
-    if (!(invalid || items.length <= state2.displayMultipleItems)) {
-      timer = setTimeout(callback, state2.interval);
-    }
-  }
-  function resetLayout() {
-    cancelSchedule();
-    endViewportAnimation();
-    const items = swiperContexts.value;
-    for (let i = 0; i < items.length; i++) {
-      items[i].updatePosition(i, props2.vertical);
-    }
-    viewportMoveRatio = 1;
-    const slideFrameEl = slideFrameRef.value;
-    if (state2.displayMultipleItems === 1 && items.length) {
-      const itemRect = items[0].getBoundingClientRect();
-      const slideFrameRect = slideFrameEl.getBoundingClientRect();
-      viewportMoveRatio = itemRect.width / slideFrameRect.width;
-      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
-        viewportMoveRatio = 1;
-      }
-    }
-    const position = viewportPosition;
-    viewportPosition = -2;
-    const current = state2.current;
-    if (current >= 0) {
-      invalid = false;
-      if (state2.userTracking) {
-        updateViewport(position + current - contentTrackViewport);
-        contentTrackViewport = current;
-      } else {
-        updateViewport(current);
-        if (props2.autoplay) {
-          scheduleAutoplay();
-        }
-      }
-    } else {
-      invalid = true;
-      updateViewport(-state2.displayMultipleItems - 1);
-    }
-  }
-  watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
-    let current = -1;
-    if (props2.currentItemId) {
-      for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
-        const itemId = items[i].getItemId();
-        if (itemId === props2.currentItemId) {
-          current = i;
-          break;
-        }
-      }
-    }
-    if (current < 0) {
-      current = Math.round(props2.current) || 0;
-    }
-    current = current < 0 ? 0 : current;
-    if (state2.current !== current) {
-      currentChangeSource = "";
-      state2.current = current;
-    }
-  });
-  watch([() => props2.vertical, () => circularEnabled.value, () => state2.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
-  watch(() => state2.interval, () => {
-    if (timer) {
-      cancelSchedule();
-      scheduleAutoplay();
-    }
-  });
-  function currentChanged(current, history2) {
-    const source = currentChangeSource;
-    currentChangeSource = "";
-    const items = swiperContexts.value;
-    if (!source) {
-      const length = items.length;
-      animateViewport(current, "", circularEnabled.value && history2 + (length - current) % length > length / 2 ? 1 : 0);
-    }
-    const item = items[current];
-    if (item) {
-      const currentItemId = state2.currentItemId = item.getItemId();
-      trigger("change", {}, {
-        current: state2.current,
-        currentItemId,
-        source
-      });
-    }
-  }
-  watch(() => state2.current, (val, oldVal) => {
-    currentChanged(val, oldVal);
-    emit2("update:current", val);
-  });
-  watch(() => state2.currentItemId, (val) => {
-    emit2("update:currentItemId", val);
-  });
-  function inintAutoplay(enable) {
-    if (enable) {
-      scheduleAutoplay();
-    } else {
-      cancelSchedule();
-    }
-  }
-  watch(() => props2.autoplay && !state2.userTracking, inintAutoplay);
-  inintAutoplay(props2.autoplay && !state2.userTracking);
-  onMounted(() => {
-    let userDirectionChecked = false;
-    let contentTrackSpeed = 0;
-    let contentTrackT = 0;
-    function handleTrackStart() {
-      cancelSchedule();
-      contentTrackViewport = viewportPosition;
-      contentTrackSpeed = 0;
-      contentTrackT = Date.now();
-      cancelViewportAnimation();
-    }
-    function handleTrackMove(data) {
-      const oldContentTrackT = contentTrackT;
-      contentTrackT = Date.now();
-      const length = swiperContexts.value.length;
-      const other = length - state2.displayMultipleItems;
-      function calc2(val) {
-        return 0.5 - 0.25 / (val + 0.5);
-      }
-      function move(oldVal, newVal) {
-        let val = contentTrackViewport + oldVal;
-        contentTrackSpeed = 0.6 * contentTrackSpeed + 0.4 * newVal;
-        if (!circularEnabled.value) {
-          if (val < 0 || val > other) {
-            if (val < 0) {
-              val = -calc2(-val);
-            } else {
-              if (val > other) {
-                val = other + calc2(val - other);
-              }
-            }
-            contentTrackSpeed = 0;
-          }
-        }
-        updateViewport(val);
-      }
-      const time = contentTrackT - oldContentTrackT || 1;
-      const slideFrameEl = slideFrameRef.value;
-      if (props2.vertical) {
-        move(-data.dy / slideFrameEl.offsetHeight, -data.ddy / time);
-      } else {
-        move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
-      }
-    }
-    function handleTrackEnd(isCancel) {
-      state2.userTracking = false;
-      const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
-      let n = 0;
-      if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
-        n = 0.5 * t2;
-      }
-      const current = normalizeCurrentValue(viewportPosition + n);
-      if (isCancel) {
-        updateViewport(contentTrackViewport);
-      } else {
-        currentChangeSource = "touch";
-        state2.current = current;
-        animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
-      }
-    }
-    useTouchtrack(slideFrameRef.value, (event) => {
-      if (props2.disableTouch) {
-        return;
-      }
-      if (!invalid) {
-        if (event.detail.state === "start") {
-          state2.userTracking = true;
-          userDirectionChecked = false;
-          return handleTrackStart();
-        }
-        if (event.detail.state === "end") {
-          return handleTrackEnd(false);
-        }
-        if (event.detail.state === "cancel") {
-          return handleTrackEnd(true);
-        }
-        if (state2.userTracking) {
-          if (!userDirectionChecked) {
-            userDirectionChecked = true;
-            const t2 = Math.abs(event.detail.dx);
-            const n = Math.abs(event.detail.dy);
-            if (t2 >= n && props2.vertical) {
-              state2.userTracking = false;
-            } else {
-              if (t2 <= n && !props2.vertical) {
-                state2.userTracking = false;
-              }
-            }
-            if (!state2.userTracking) {
-              if (props2.autoplay) {
-                scheduleAutoplay();
-              }
-              return;
-            }
-          }
-          handleTrackMove(event.detail);
-          return false;
-        }
-      }
-    });
-  });
-  onUnmounted(() => {
-    cancelSchedule();
-    cancelAnimationFrame(animationFrame);
-  });
-  function onSwiperDotClick(index2) {
-    animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
-  }
-  return {
-    onSwiperDotClick
-  };
-}
-var Swiper = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Swiper",
-  props: props$j,
-  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const slidesWrapperRef = ref(null);
-    const slideFrameRef = ref(null);
-    const state2 = useState$2(props2);
-    const slidesStyle = computed(() => {
-      let style = {};
-      if (props2.nextMargin || props2.previousMargin) {
-        style = props2.vertical ? {
-          left: 0,
-          right: 0,
-          top: upx2pxStr(props2.previousMargin),
-          bottom: upx2pxStr(props2.nextMargin)
-        } : {
-          top: 0,
-          bottom: 0,
-          left: upx2pxStr(props2.previousMargin),
-          right: upx2pxStr(props2.nextMargin)
-        };
-      }
-      return style;
-    });
-    const slideFrameStyle = computed(() => {
-      const value = Math.abs(100 / state2.displayMultipleItems) + "%";
-      return {
-        width: props2.vertical ? "100%" : value,
-        height: !props2.vertical ? "100%" : value
-      };
-    });
-    let swiperItems = [];
-    const originSwiperContexts = [];
-    const swiperContexts = ref([]);
-    function updateSwiperContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < swiperItems.length; index2++) {
-        const swiperItem = swiperItems[index2];
-        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
-        if (swiperContext) {
-          contexts.push(markRaw(swiperContext));
-        }
-      }
-      swiperContexts.value = contexts;
-    }
-    const addSwiperContext = function(swiperContext) {
-      originSwiperContexts.push(swiperContext);
-      updateSwiperContexts();
-    };
-    provide("addSwiperContext", addSwiperContext);
-    const removeSwiperContext = function(swiperContext) {
-      const index2 = originSwiperContexts.indexOf(swiperContext);
-      if (index2 >= 0) {
-        originSwiperContexts.splice(index2, 1);
-        updateSwiperContexts();
-      }
-    };
-    provide("removeSwiperContext", removeSwiperContext);
-    const {
-      onSwiperDotClick
-    } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
-    return () => {
-      const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
-      return createVNode("uni-swiper", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", {
-          "ref": slidesWrapperRef,
-          "class": "uni-swiper-wrapper"
-        }, [createVNode("div", {
-          "class": "uni-swiper-slides",
-          "style": slidesStyle.value
-        }, [createVNode("div", {
-          "ref": slideFrameRef,
-          "class": "uni-swiper-slide-frame",
-          "style": slideFrameStyle.value
-        }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
-          "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
-        }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
-          "onClick": () => onSwiperDotClick(index2),
-          "class": {
-            "uni-swiper-dot": true,
-            "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
-          },
-          "style": {
-            background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
-          }
-        }, null, 14, ["onClick"]))], 2)], 512)]
-      }, 512);
-    };
-  }
-});
-const props$i = {
-  itemId: {
-    type: String,
-    default: ""
-  }
-};
-var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
-  name: "SwiperItem",
-  props: props$i,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    const context = {
-      rootRef,
-      getItemId() {
-        return props2.itemId;
-      },
-      getBoundingClientRect() {
-        const el = rootRef.value;
-        return el.getBoundingClientRect();
-      },
-      updatePosition(position, vertical) {
-        const x = vertical ? "0" : 100 * position + "%";
-        const y = vertical ? 100 * position + "%" : "0";
-        const rootEl = rootRef.value;
-        const value = `translate(${x},${y}) translateZ(0)`;
-        if (rootEl) {
-          rootEl.style.webkitTransform = value;
-          rootEl.style.transform = value;
-        }
-      }
-    };
-    onMounted(() => {
-      const addSwiperContext = inject("addSwiperContext");
-      if (addSwiperContext) {
-        addSwiperContext(context);
-      }
-    });
-    onUnmounted(() => {
-      const removeSwiperContext = inject("removeSwiperContext");
-      if (removeSwiperContext) {
-        removeSwiperContext(context);
-      }
-    });
-    return () => {
-      return createVNode("uni-swiper-item", {
-        "ref": rootRef,
-        "style": {
-          position: "absolute",
-          width: "100%",
-          height: "100%"
-        }
-      }, {
-        default: () => [slots.default && slots.default()]
-      }, 512);
-    };
-  }
-});
-const props$h = {
-  name: {
-    type: String,
-    default: ""
-  },
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  type: {
-    type: String,
-    default: "switch"
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  color: {
-    type: String,
-    default: "#007aff"
-  }
-};
-var index$f = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Switch",
-  props: props$h,
-  emits: ["change"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const switchChecked = ref(props2.checked);
-    const uniLabel = useSwitchInject(props2, switchChecked);
-    const trigger = useCustomEvent(rootRef, emit2);
-    watch(() => props2.checked, (val) => {
-      switchChecked.value = val;
-    });
-    const _onClick = ($event) => {
-      if (props2.disabled) {
-        return;
-      }
-      switchChecked.value = !switchChecked.value;
-      trigger("change", $event, {
-        value: switchChecked.value
-      });
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-      onBeforeUnmount(() => {
-        uniLabel.removeHandler(_onClick);
-      });
-    }
-    useListeners$1(props2, {
-      "label-click": _onClick
-    });
-    return () => {
-      const {
-        color,
-        type
-      } = props2;
-      const {
-        booleanAttrs
-      } = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-switch", mergeProps({
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": _onClick
-      }), {
-        default: () => [createVNode("div", {
-          "class": "uni-switch-wrapper"
-        }, [withDirectives(createVNode("div", {
-          "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-          "style": {
-            backgroundColor: switchChecked.value ? color : "#DFDFDF",
-            borderColor: switchChecked.value ? color : "#DFDFDF"
-          }
-        }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
-          "class": "uni-checkbox-input"
-        }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])]
-      }, 16, ["onClick"]);
-    };
-  }
-});
-function useSwitchInject(props2, switchChecked) {
-  const uniForm = inject(uniFormKey, false);
-  const uniLabel = inject(uniLabelKey, false);
-  const formField = {
-    submit: () => {
-      const data = ["", null];
-      if (props2.name) {
-        data[0] = props2.name;
-        data[1] = switchChecked.value;
-      }
-      return data;
-    },
-    reset: () => {
-      switchChecked.value = false;
-    }
-  };
-  if (!!uniForm) {
-    uniForm.addField(formField);
-    onUnmounted(() => {
-      uniForm.removeField(formField);
-    });
-  }
-  return uniLabel;
-}
-function _isSlot$5(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const SPACE_UNICODE = {
-  ensp: "\u2002",
-  emsp: "\u2003",
-  nbsp: "\xA0"
-};
-function normalizeText(text2, {
-  space,
-  decode: decode2
-}) {
-  if (space && SPACE_UNICODE[space]) {
-    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
-  }
-  if (!decode2) {
-    return text2;
-  }
-  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
-}
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Text",
-  props: {
-    selectable: {
-      type: [Boolean, String],
-      default: false
-    },
-    space: {
-      type: String,
-      default: ""
-    },
-    decode: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  setup(props2, {
-    slots
-  }) {
-    return () => {
-      let _slot;
-      const children = [];
-      if (slots.default) {
-        slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8) {
-            const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
-            const len = lines.length - 1;
-            lines.forEach((text2, index2) => {
-              if (index2 === 0 && !text2)
-                ;
-              else {
-                children.push(createTextVNode(normalizeText(text2, {
-                  space: props2.space,
-                  decode: props2.decode
-                })));
-              }
-              if (index2 !== len) {
-                children.push(createVNode("br"));
-              }
-            });
-          } else {
-            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
-              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
-            }
-            children.push(vnode);
-          }
-        });
-      }
-      return createVNode("uni-text", {
-        "selectable": props2.selectable ? true : null
-      }, _isSlot$5(_slot = createVNode("span", null, children)) ? _slot : {
-        default: () => [_slot],
-        _: 1
-      }, 8, ["selectable"]);
-    };
-  }
-});
-const props$g = /* @__PURE__ */ extend({}, props$v, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  autoHeight: {
-    type: [Boolean, String],
-    default: false
-  },
-  confirmType: {
-    type: String,
-    default: ""
-  }
-});
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$g,
-  emit: ["confirm", "linechange", ...emit],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const {
-      fieldRef,
-      state: state2,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state2.value.split("\n"));
-    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
-    const heightRef = ref(0);
-    const lineRef = ref(null);
-    watch(() => heightRef.value, (height) => {
-      const el = rootRef.value;
-      const lineEl = lineRef.value;
-      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
-      if (isNaN(lineHeight)) {
-        lineHeight = lineEl.offsetHeight;
-      }
-      var lineCount = Math.round(height / lineHeight);
-      trigger("linechange", {}, {
-        height,
-        heightRpx: 750 / window.innerWidth * height,
-        lineCount
-      });
-      if (props2.autoHeight) {
-        el.style.height = height + "px";
-      }
-    });
-    function onResize2({
-      height
-    }) {
-      heightRef.value = height;
-    }
-    function confirm(event) {
-      trigger("confirm", event, {
-        value: state2.value
-      });
-    }
-    function onKeyDownEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        event.preventDefault();
-      }
-    }
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        confirm(event);
-        const textarea = event.target;
-        textarea.blur();
-      }
-    }
-    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
-    return () => {
-      let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
-        "ref": fieldRef,
-        "value": state2.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "maxlength": state2.maxlength,
-        "class": {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
-        },
-        "onFocus": (event) => event.target.blur()
-      }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
-        "ref": fieldRef,
-        "value": state2.value,
-        "disabled": !!props2.disabled,
-        "maxlength": state2.maxlength,
-        "enterkeyhint": props2.confirmType,
-        "class": {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
-        },
-        "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
-      return createVNode("uni-textarea", {
-        "ref": rootRef
-      }, {
-        default: () => [createVNode("div", {
-          "class": "uni-textarea-wrapper"
-        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-          "style": props2.placeholderStyle,
-          "class": ["uni-textarea-placeholder", props2.placeholderClass]
-        }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
-          "ref": lineRef,
-          "class": "uni-textarea-line"
-        }, [" "], 512), createVNode("div", {
-          "class": "uni-textarea-compute"
-        }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
-          "initial": true,
-          "onResize": onResize2
-        }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
-          "action": "",
-          "onSubmit": () => false,
-          "class": "uni-input-form"
-        }, [textareaNode], 40, ["onSubmit"]) : textareaNode])]
-      }, 512);
-    };
-  }
-});
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "View",
-  props: extend({}, hoverProps),
-  setup(props2, {
-    slots
-  }) {
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
-    return () => {
-      const hoverClass = props2.hoverClass;
-      if (hoverClass && hoverClass !== "none") {
-        return createVNode("uni-view", mergeProps({
-          "class": hovering.value ? hoverClass : ""
-        }, binding), {
-          default: () => [slots.default && slots.default()]
-        }, 16, ["class"]);
-      }
-      return createVNode("uni-view", null, {
-        default: () => [slots.default && slots.default()]
-      });
-    };
-  }
-});
-function normalizeEvent(pageId, vm, id2) {
-  if (!id2) {
-    id2 = vm.id;
-  }
-  if (!id2) {
-    return;
-  }
-  return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
-}
-function addSubscribe(name, callback) {
-  if (!name) {
-    return;
-  }
-  UniViewJSBridge.subscribe(name, ({ type, data }) => {
-    callback(type, data);
-  });
-}
-function removeSubscribe(name) {
-  if (!name) {
-    return;
-  }
-  UniViewJSBridge.unsubscribe(name);
-}
-function useSubscribe(callback, name, multiple) {
-  const instance2 = getCurrentInstance();
-  const vm = instance2.proxy;
-  const pageId = multiple || !name ? useCurrentPageId() : 0;
-  onMounted(() => {
-    addSubscribe(name || normalizeEvent(pageId, vm), callback);
-    if (multiple || !name) {
-      watch(() => vm.id, (value, oldValue) => {
-        addSubscribe(normalizeEvent(pageId, vm, value), callback);
-        removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
-      });
-    }
-  });
-  onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(pageId, vm));
-  });
-}
-function useOn(name, callback) {
-  onMounted(() => UniViewJSBridge.on(name, callback));
-  onBeforeUnmount(() => UniViewJSBridge.off(name));
-}
-let index$b = 0;
-function useContextInfo(_id) {
-  const page = useCurrentPageId();
-  const instance2 = getCurrentInstance();
-  const vm = instance2.proxy;
-  const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$b++}`;
-  onMounted(() => {
-    const el = vm.$el;
-    el.__uniContextInfo = {
-      id: id2,
-      type,
-      page
-    };
-  });
-  return `${page}.${type}.${id2}`;
-}
-function getContextInfo(el) {
-  return el.__uniContextInfo;
+    platform: isIOS$1 ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function operateVideoPlayer(videoId, pageId, type, data) {
+  UniServiceJSBridge.publishHandler("video." + videoId, {
+    videoId,
+    type,
+    data
+  }, pageId);
+}
+function operateMap(id2, pageId, type, data) {
+  UniServiceJSBridge.publishHandler("map." + id2, {
+    type,
+    data
+  }, pageId);
 }
 function getRootInfo(fields2) {
   const info = {};
@@ -9816,147 +2012,478 @@ function requestComponentInfo(page, reqs, callback) {
   });
   callback(result);
 }
-function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
-  const $el = findElem(component);
-  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
-}
-function removeIntersectionObserver({ reqId, component }, _pageId) {
-  const $el = findElem(component);
-  const intersectionObserver = $el.__io && $el.__io[reqId];
-  if (intersectionObserver) {
-    intersectionObserver.disconnect();
-    delete $el.__io[reqId];
+var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var lookup = /* @__PURE__ */ function() {
+  const lookup2 = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup2[chars.charCodeAt(i)] = i;
   }
+  return lookup2;
+}();
+function encode$1(arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer), i, len = bytes.length, base64 = "";
+  for (i = 0; i < len; i += 3) {
+    base64 += chars[bytes[i] >> 2];
+    base64 += chars[(bytes[i] & 3) << 4 | bytes[i + 1] >> 4];
+    base64 += chars[(bytes[i + 1] & 15) << 2 | bytes[i + 2] >> 6];
+    base64 += chars[bytes[i + 2] & 63];
+  }
+  if (len % 3 === 2) {
+    base64 = base64.substring(0, base64.length - 1) + "=";
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + "==";
+  }
+  return base64;
 }
-let mediaQueryObserver;
-let listener$2;
-function handleMediaQueryStr($props) {
-  const mediaQueryArr = [];
-  const propsMenu = [
-    "width",
-    "minWidth",
-    "maxWidth",
-    "height",
-    "minHeight",
-    "maxHeight",
-    "orientation"
-  ];
-  for (const item of propsMenu) {
-    if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
-      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
-    }
-    if (item === "orientation" && $props[item]) {
-      mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
+function decode(base64) {
+  var bufferLength = base64.length * 0.75, len = base64.length, i, p2 = 0, encoded1, encoded2, encoded3, encoded4;
+  if (base64[base64.length - 1] === "=") {
+    bufferLength--;
+    if (base64[base64.length - 2] === "=") {
+      bufferLength--;
     }
   }
-  const mediaQueryStr = mediaQueryArr.join(" and ");
-  return mediaQueryStr;
+  var arraybuffer = new ArrayBuffer(bufferLength), bytes = new Uint8Array(arraybuffer);
+  for (i = 0; i < len; i += 4) {
+    encoded1 = lookup[base64.charCodeAt(i)];
+    encoded2 = lookup[base64.charCodeAt(i + 1)];
+    encoded3 = lookup[base64.charCodeAt(i + 2)];
+    encoded4 = lookup[base64.charCodeAt(i + 3)];
+    bytes[p2++] = encoded1 << 2 | encoded2 >> 4;
+    bytes[p2++] = (encoded2 & 15) << 4 | encoded3 >> 2;
+    bytes[p2++] = (encoded3 & 3) << 6 | encoded4 & 63;
+  }
+  return arraybuffer;
 }
-function humpToLine(name) {
-  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+const CHOOSE_SIZE_TYPES = ["original", "compressed"];
+const CHOOSE_SOURCE_TYPES = ["album", "camera"];
+const HTTP_METHODS = [
+  "GET",
+  "OPTIONS",
+  "HEAD",
+  "POST",
+  "PUT",
+  "DELETE",
+  "TRACE",
+  "CONNECT"
+];
+function elemInArray(str, arr) {
+  if (!str || arr.indexOf(str) === -1) {
+    return arr[0];
+  }
+  return str;
 }
-function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
-  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
-  listener$2 = (observer) => callback(observer.matches);
-  listener$2(mediaQueryObserver);
-  mediaQueryObserver.addListener(listener$2);
+function elemsInArray(strArr, optionalVal) {
+  if (!isArray(strArr) || strArr.length === 0 || strArr.find((val) => optionalVal.indexOf(val) === -1)) {
+    return optionalVal;
+  }
+  return strArr;
 }
-function removeMediaQueryObserver({ reqId, component }, _pageId) {
-  if (mediaQueryObserver) {
-    mediaQueryObserver.removeListener(listener$2);
+function validateProtocolFail(name, msg) {
+  console.warn(`${name}: ${msg}`);
+}
+function validateProtocol(name, data, protocol, onFail) {
+  if (!onFail) {
+    onFail = validateProtocolFail;
+  }
+  for (const key in protocol) {
+    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
+    if (isString(errMsg)) {
+      onFail(name, errMsg);
+    }
   }
 }
-function saveImage(base64, dirname, callback) {
-  callback(null, base64);
+function validateProtocols(name, args, protocol, onFail) {
+  if (!protocol) {
+    return;
+  }
+  if (!isArray(protocol)) {
+    return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+  }
+  const len = protocol.length;
+  const argsLen = args.length;
+  for (let i = 0; i < len; i++) {
+    const opts = protocol[i];
+    const data = Object.create(null);
+    if (argsLen > i) {
+      data[opts.name] = args[i];
+    }
+    validateProtocol(name, data, { [opts.name]: opts }, onFail);
+  }
 }
-const TEMP_PATH = "";
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
+function validateProp(name, value, prop, isAbsent) {
+  if (!isPlainObject(prop)) {
+    prop = { type: prop };
   }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
+  const { type, required, validator: validator2 } = prop;
+  if (required && isAbsent) {
+    return 'Missing required args: "' + name + '"';
   }
-  if (local) {
-    return Promise.reject(new Error("not find"));
+  if (value == null && !required) {
+    return;
   }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
+  if (type != null) {
+    let isValid = false;
+    const types = isArray(type) ? type : [type];
+    const expectedTypes = [];
+    for (let i = 0; i < types.length && !isValid; i++) {
+      const { valid, expectedType } = assertType(value, types[i]);
+      expectedTypes.push(expectedType || "");
+      isValid = valid;
+    }
+    if (!isValid) {
+      return getInvalidTypeMessage(name, value, expectedTypes);
+    }
+  }
+  if (validator2) {
+    return validator2(value);
+  }
+}
+const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
+function assertType(value, type) {
+  let valid;
+  const expectedType = getType(type);
+  if (isSimpleType(expectedType)) {
+    const t2 = typeof value;
+    valid = t2 === expectedType.toLowerCase();
+    if (!valid && t2 === "object") {
+      valid = value instanceof type;
+    }
+  } else if (expectedType === "Object") {
+    valid = isObject(value);
+  } else if (expectedType === "Array") {
+    valid = isArray(value);
+  } else {
+    {
+      valid = value instanceof type;
+    }
+  }
+  return {
+    valid,
+    expectedType
+  };
+}
+function getInvalidTypeMessage(name, value, expectedTypes) {
+  let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
+  const expectedType = expectedTypes[0];
+  const receivedType = toRawType(value);
+  const expectedValue = styleValue(value, expectedType);
+  const receivedValue = styleValue(value, receivedType);
+  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+    message += ` with value ${expectedValue}`;
+  }
+  message += `, got ${receivedType} `;
+  if (isExplicable(receivedType)) {
+    message += `with value ${receivedValue}.`;
+  }
+  return message;
+}
+function getType(ctor) {
+  const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+  return match ? match[1] : "";
+}
+function styleValue(value, type) {
+  if (type === "String") {
+    return `"${value}"`;
+  } else if (type === "Number") {
+    return `${Number(value)}`;
+  } else {
+    return `${value}`;
+  }
+}
+function isExplicable(type) {
+  const explicitTypes = ["string", "number", "boolean"];
+  return explicitTypes.some((elem) => type.toLowerCase() === elem);
+}
+function isBoolean(...args) {
+  return args.some((elem) => elem.toLowerCase() === "boolean");
+}
+function tryCatch(fn) {
+  return function() {
+    try {
+      return fn.apply(fn, arguments);
+    } catch (e2) {
+      console.error(e2);
+    }
+  };
+}
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id2, name, callback, keepAlive = false) {
+  invokeCallbacks[id2] = {
+    name,
+    keepAlive,
+    callback
+  };
+  return id2;
+}
+function invokeCallback(id2, res, extras) {
+  if (typeof id2 === "number") {
+    const opts = invokeCallbacks[id2];
+    if (opts) {
+      if (!opts.keepAlive) {
+        delete invokeCallbacks[id2];
+      }
+      return opts.callback(res, extras);
+    }
+  }
+  return res;
+}
+function findInvokeCallbackByName(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name) {
+  UniServiceJSBridge.off("api." + name);
+}
+function onKeepAliveApiCallback(name) {
+  UniServiceJSBridge.on("api." + name, (res) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
   });
 }
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
 }
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, { type });
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
-      file = blob;
-      file.name = file.name || filename;
+const API_SUCCESS = "success";
+const API_FAIL = "fail";
+const API_COMPLETE = "complete";
+function getApiCallbacks(args) {
+  const apiCallbacks = {};
+  for (const name in args) {
+    const fn = args[name];
+    if (isFunction(fn)) {
+      apiCallbacks[name] = tryCatch(fn);
+      delete args[name];
     }
   }
-  return file;
+  return apiCallbacks;
 }
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
+function normalizeErrMsg(errMsg, name) {
+  if (!errMsg || errMsg.indexOf(":fail") === -1) {
+    return name + ":ok";
+  }
+  return name + errMsg.substring(errMsg.indexOf(":fail"));
+}
+function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
+  if (!isPlainObject(args)) {
+    args = {};
+  }
+  const { success, fail, complete } = getApiCallbacks(args);
+  const hasSuccess = isFunction(success);
+  const hasFail = isFunction(fail);
+  const hasComplete = isFunction(complete);
+  const callbackId = invokeCallbackId++;
+  addInvokeCallback(callbackId, name, (res) => {
+    res = res || {};
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    isFunction(beforeAll) && beforeAll(res);
+    if (res.errMsg === name + ":ok") {
+      isFunction(beforeSuccess) && beforeSuccess(res);
+      hasSuccess && success(res);
+    } else {
+      hasFail && fail(res);
+    }
+    hasComplete && complete(res);
+  });
+  return callbackId;
+}
+const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
+function hasCallback(args) {
+  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
+    return true;
+  }
+  return false;
+}
+function handlePromise(promise) {
+  if (__UNI_FEATURE_PROMISE__) {
+    return promise.then((data) => {
+      return [null, data];
+    }).catch((err) => [err]);
+  }
+  return promise;
+}
+function promisify(fn) {
+  return (args = {}) => {
+    if (hasCallback(args)) {
+      return fn(args);
+    }
+    return handlePromise(new Promise((resolve, reject) => {
+      fn(extend(args, { success: resolve, fail: reject }));
+    }));
+  };
+}
+function formatApiArgs(args, options) {
+  const params = args[0];
+  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+    return;
+  }
+  const formatArgs = options.formatArgs;
+  const keys = Object.keys(formatArgs);
+  for (let i = 0; i < keys.length; i++) {
+    const name = keys[i];
+    const formatterOrDefaultValue = formatArgs[name];
+    if (isFunction(formatterOrDefaultValue)) {
+      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      if (isString(errMsg)) {
+        return errMsg;
+      }
+    } else {
+      if (!hasOwn(params, name)) {
+        params[name] = formatterOrDefaultValue;
       }
     }
   }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
 }
-function getSameOriginUrl(url) {
-  const a2 = document.createElement("a");
-  a2.href = url;
-  if (a2.origin === location.origin) {
-    return Promise.resolve(url);
+function invokeSuccess(id2, name, res) {
+  return invokeCallback(id2, extend(res || {}, { errMsg: name + ":ok" }));
+}
+function invokeFail(id2, name, err) {
+  return invokeCallback(id2, { errMsg: name + ":fail" + (err ? " " + err : "") });
+}
+function beforeInvokeApi(name, args, protocol, options) {
+  if (process.env.NODE_ENV !== "production") {
+    validateProtocols(name, args, protocol);
   }
-  return urlToFile(url).then(fileToUrl);
+  if (options && options.beforeInvoke) {
+    const errMsg2 = options.beforeInvoke(args);
+    if (isString(errMsg2)) {
+      return errMsg2;
+    }
+  }
+  const errMsg = formatApiArgs(args, options);
+  if (errMsg) {
+    return errMsg;
+  }
 }
-function revokeObjectURL(url) {
-  const URL = window.URL || window.webkitURL;
-  URL.revokeObjectURL(url);
-  delete files[url];
+function checkCallback(callback) {
+  if (!isFunction(callback)) {
+    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+  }
 }
+function wrapperOnApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    name = name.replace("off", "on");
+    removeKeepAliveApiCallback(name, callback);
+    const hasInvokeOnApi = findInvokeCallbackByName(name);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+  return (args) => {
+    const id2 = createAsyncApiCallback(name, args, options);
+    const errMsg = beforeInvokeApi(name, [args], protocol, options);
+    if (errMsg) {
+      return invokeFail(id2, name, errMsg);
+    }
+    return fn(args, {
+      resolve: (res) => invokeSuccess(id2, name, res),
+      reject: (err) => invokeFail(id2, name, err)
+    });
+  };
+}
+function wrapperSyncApi(name, fn, protocol, options) {
+  return (...args) => {
+    const errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
+function wrapperAsyncApi(name, fn, protocol, options) {
+  return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineOnApi(name, fn, options) {
+  return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+  return wrapperOffApi(name, fn, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+}
+function createUnsupportedMsg(name) {
+  return `method 'uni.${name}' not supported`;
+}
+function createUnsupportedSyncApi(name) {
+  return () => {
+    console.error(createUnsupportedMsg(name));
+  };
+}
+const createUnsupportedOnApi = createUnsupportedSyncApi;
+function createUnsupportedAsyncApi(name) {
+  return (_args, { reject }) => {
+    return reject(createUnsupportedMsg(name));
+  };
+}
+const API_BASE64_TO_ARRAY_BUFFER = "base64ToArrayBuffer";
+const Base64ToArrayBufferProtocol = [
+  {
+    name: "base64",
+    type: String,
+    required: true
+  }
+];
+const API_ARRAY_BUFFER_TO_BASE64 = "arrayBufferToBase64";
+const ArrayBufferToBase64Protocol = [
+  {
+    name: "arrayBuffer",
+    type: [ArrayBuffer, Uint8Array],
+    required: true
+  }
+];
+const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
+  return decode(base64);
+}, Base64ToArrayBufferProtocol);
+const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
+  return encode$1(arrayBuffer);
+}, ArrayBufferToBase64Protocol);
 const API_UPX2PX = "upx2px";
 const Upx2pxProtocol = [
   {
@@ -11272,12 +3799,12 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
 let eventReady = false;
-let index$a = 0;
+let index$r = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = {};
   if (options && ("success" in options || "fail" in options || "complete" in options)) {
-    const callbackId = String(index$a++);
+    const callbackId = String(index$r++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
     if (!eventReady) {
@@ -11559,7 +4086,7 @@ const initAnimationProperty = /* @__PURE__ */ once(() => {
     };
   });
 });
-const createAnimation = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (option) => {
+const createAnimation$1 = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (option) => {
   initAnimationProperty();
   return new MPAnimation(option);
 }, CreateAnimationProtocol, CreateAnimationOptions);
@@ -13007,6 +5534,7475 @@ function requestComponentObserver($el, options, callback) {
     }
   }
   return intersectionObserver;
+}
+function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
+  const $el = findElem(component);
+  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
+}
+function removeIntersectionObserver({ reqId, component }, _pageId) {
+  const $el = findElem(component);
+  const intersectionObserver = $el.__io && $el.__io[reqId];
+  if (intersectionObserver) {
+    intersectionObserver.disconnect();
+    delete $el.__io[reqId];
+  }
+}
+let mediaQueryObserver;
+let listener$2;
+function handleMediaQueryStr($props) {
+  const mediaQueryArr = [];
+  const propsMenu = [
+    "width",
+    "minWidth",
+    "maxWidth",
+    "height",
+    "minHeight",
+    "maxHeight",
+    "orientation"
+  ];
+  for (const item of propsMenu) {
+    if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
+    }
+    if (item === "orientation" && $props[item]) {
+      mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
+    }
+  }
+  const mediaQueryStr = mediaQueryArr.join(" and ");
+  return mediaQueryStr;
+}
+function humpToLine(name) {
+  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
+  mediaQueryObserver = window.matchMedia(handleMediaQueryStr(options));
+  listener$2 = (observer) => callback(observer.matches);
+  listener$2(mediaQueryObserver);
+  mediaQueryObserver.addListener(listener$2);
+}
+function removeMediaQueryObserver({ reqId, component }, _pageId) {
+  if (mediaQueryObserver) {
+    mediaQueryObserver.removeListener(listener$2);
+  }
+}
+function saveImage(base64, dirname, callback) {
+  callback(null, base64);
+}
+const TEMP_PATH = "";
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, { type });
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function getSameOriginUrl(url) {
+  const a2 = document.createElement("a");
+  a2.href = url;
+  if (a2.origin === location.origin) {
+    return Promise.resolve(url);
+  }
+  return urlToFile(url).then(fileToUrl);
+}
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
+var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    return () => createVNode("uni-resize-sensor", {
+      "ref": rootRef,
+      "onAnimationstartOnce": update
+    }, {
+      default: () => [createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"])],
+      _: 1
+    }, 8, ["onAnimationstartOnce"]);
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = reactive({
+    width: -1,
+    height: -1
+  });
+  watch(() => extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const {
+      width,
+      height
+    } = rootRef.value.getBoundingClientRect();
+    size.width = width;
+    size.height = height;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const {
+      firstElementChild,
+      lastElementChild
+    } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+  onActivated(reset);
+  onMounted(() => {
+    if (props2.initial) {
+      nextTick(update);
+    }
+    const rootEl = rootRef.value;
+    if (rootEl.offsetParent !== rootEl.parentElement) {
+      rootEl.parentElement.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      reset();
+    }
+  });
+}
+const pixelRatio = /* @__PURE__ */ function() {
+  const canvas = document.createElement("canvas");
+  canvas.height = canvas.width = 0;
+  const context = canvas.getContext("2d");
+  const backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
+  return (window.devicePixelRatio || 1) / backingStore;
+}();
+function wrapper(canvas) {
+  canvas.width = canvas.offsetWidth * pixelRatio;
+  canvas.height = canvas.offsetHeight * pixelRatio;
+  canvas.getContext("2d").__hidpi__ = true;
+}
+let isHidpi = false;
+function initHidpi() {
+  if (isHidpi) {
+    return;
+  }
+  isHidpi = true;
+  const forEach = function(obj, func) {
+    for (const key in obj) {
+      if (hasOwn(obj, key)) {
+        func(obj[key], key);
+      }
+    }
+  };
+  const ratioArgs = {
+    fillRect: "all",
+    clearRect: "all",
+    strokeRect: "all",
+    moveTo: "all",
+    lineTo: "all",
+    arc: [0, 1, 2],
+    arcTo: "all",
+    bezierCurveTo: "all",
+    isPointinPath: "all",
+    isPointinStroke: "all",
+    quadraticCurveTo: "all",
+    rect: "all",
+    translate: "all",
+    createRadialGradient: "all",
+    createLinearGradient: "all",
+    setTransform: [4, 5]
+  };
+  const proto = CanvasRenderingContext2D.prototype;
+  proto.drawImageByCanvas = function(_super) {
+    return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+      srcx *= pixelRatio;
+      srcy *= pixelRatio;
+      srcw *= pixelRatio;
+      srch *= pixelRatio;
+      desx *= pixelRatio;
+      desy *= pixelRatio;
+      desw = isScale ? desw * pixelRatio : desw;
+      desh = isScale ? desh * pixelRatio : desh;
+      _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
+    };
+  }(proto.drawImage);
+  if (pixelRatio !== 1) {
+    forEach(ratioArgs, function(value, key) {
+      proto[key] = function(_super) {
+        return function() {
+          if (!this.__hidpi__) {
+            return _super.apply(this, arguments);
+          }
+          let args = Array.prototype.slice.call(arguments);
+          if (value === "all") {
+            args = args.map(function(a2) {
+              return a2 * pixelRatio;
+            });
+          } else if (Array.isArray(value)) {
+            for (let i = 0; i < value.length; i++) {
+              args[value[i]] *= pixelRatio;
+            }
+          }
+          return _super.apply(this, args);
+        };
+      }(proto[key]);
+    });
+    proto.stroke = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        this.lineWidth *= pixelRatio;
+        _super.apply(this, arguments);
+        this.lineWidth /= pixelRatio;
+      };
+    }(proto.stroke);
+    proto.fillText = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        const args = Array.prototype.slice.call(arguments);
+        args[1] *= pixelRatio;
+        args[2] *= pixelRatio;
+        var font2 = this.font;
+        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          return m * pixelRatio + u;
+        });
+        _super.apply(this, args);
+        this.font = font2;
+      };
+    }(proto.fillText);
+    proto.strokeText = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        var args = Array.prototype.slice.call(arguments);
+        args[1] *= pixelRatio;
+        args[2] *= pixelRatio;
+        var font2 = this.font;
+        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          return m * pixelRatio + u;
+        });
+        _super.apply(this, args);
+        this.font = font2;
+      };
+    }(proto.strokeText);
+    proto.drawImage = function(_super) {
+      return function() {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+        this.scale(pixelRatio, pixelRatio);
+        _super.apply(this, arguments);
+        this.scale(1 / pixelRatio, 1 / pixelRatio);
+      };
+    }(proto.drawImage);
+  }
+}
+const initHidpiOnce = /* @__PURE__ */ once(initHidpi);
+function $getRealPath(src) {
+  return src ? getRealPath(src) : src;
+}
+function resolveColor(color) {
+  color = color.slice(0);
+  color[3] = color[3] / 255;
+  return "rgba(" + color.join(",") + ")";
+}
+function processTouches(target, touches) {
+  const eventTarget = target;
+  return Array.from(touches).map((touch) => {
+    let boundingClientRect = eventTarget.getBoundingClientRect();
+    return {
+      identifier: touch.identifier,
+      x: touch.clientX - boundingClientRect.left,
+      y: touch.clientY - boundingClientRect.top
+    };
+  });
+}
+let tempCanvas;
+function getTempCanvas(width = 0, height = 0) {
+  if (!tempCanvas) {
+    tempCanvas = document.createElement("canvas");
+  }
+  tempCanvas.width = width;
+  tempCanvas.height = height;
+  return tempCanvas;
+}
+const props$B = {
+  canvasId: {
+    type: String,
+    default: ""
+  },
+  disableScroll: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "Canvas",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$B,
+  computed: {
+    id() {
+      return this.canvasId;
+    }
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    initHidpiOnce();
+    const canvas = ref(null);
+    const sensor = ref(null);
+    const actionsWaiting = ref(false);
+    const trigger = useNativeEvent(emit2);
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const {
+      _listeners
+    } = useListeners(props2, $listeners, trigger);
+    const {
+      _handleSubscribe,
+      _resize
+    } = useMethods(canvas, actionsWaiting);
+    useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
+    onMounted(() => {
+      _resize();
+    });
+    return () => {
+      const {
+        canvasId,
+        disableScroll
+      } = props2;
+      return createVNode("uni-canvas", mergeProps({
+        "canvas-id": canvasId,
+        "disable-scroll": disableScroll
+      }, $attrs.value, $excludeAttrs.value, _listeners.value), {
+        default: () => [createVNode("canvas", {
+          "ref": canvas,
+          "class": "uni-canvas-canvas",
+          "width": "300",
+          "height": "150"
+        }, null, 512), createVNode("div", {
+          "style": "position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;"
+        }, [slots.default && slots.default()]), createVNode(ResizeSensor, {
+          "ref": sensor,
+          "onResize": _resize
+        }, null, 8, ["onResize"])],
+        _: 1
+      }, 16, ["canvas-id", "disable-scroll"]);
+    };
+  }
+});
+function useListeners(props2, Listeners, trigger) {
+  const _listeners = computed(() => {
+    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+    let _$listeners = Listeners.value;
+    let $listeners = extend({}, (() => {
+      let obj = {};
+      for (const key in _$listeners) {
+        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+          const event = _$listeners[key];
+          obj[key] = event;
+        }
+      }
+      return obj;
+    })());
+    events.forEach((event) => {
+      let existing = $listeners[event];
+      let eventHandler = [];
+      if (existing) {
+        eventHandler.push(withWebEvent(($event) => {
+          trigger(event.replace("on", "").toLocaleLowerCase(), extend({}, (() => {
+            let obj = {};
+            for (const key in $event) {
+              obj[key] = $event[key];
+            }
+            return obj;
+          })(), {
+            touches: processTouches($event.currentTarget, $event.touches),
+            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
+          }));
+        }));
+      }
+      if (props2.disableScroll && event === "onTouchmove") {
+        eventHandler.push(onEventPrevent);
+      }
+      $listeners[event] = eventHandler;
+    });
+    return $listeners;
+  });
+  return {
+    _listeners
+  };
+}
+function useMethods(canvasRef, actionsWaiting) {
+  let _actionsDefer = [];
+  let _images = {};
+  function _resize() {
+    var canvas = canvasRef.value;
+    if (canvas.width > 0 && canvas.height > 0) {
+      var context = canvas.getContext("2d");
+      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      wrapper(canvas);
+      context.putImageData(imageData, 0, 0);
+    } else {
+      wrapper(canvas);
+    }
+  }
+  function actionsChanged({
+    actions,
+    reserve,
+    callbackId
+  }) {
+    if (!actions) {
+      return;
+    }
+    if (actionsWaiting.value) {
+      _actionsDefer.push([actions, reserve, callbackId]);
+      return;
+    }
+    var canvas = canvasRef.value;
+    var c2d = canvas.getContext("2d");
+    if (!reserve) {
+      c2d.fillStyle = "#000000";
+      c2d.strokeStyle = "#000000";
+      c2d.shadowColor = "#000000";
+      c2d.shadowBlur = 0;
+      c2d.shadowOffsetX = 0;
+      c2d.shadowOffsetY = 0;
+      c2d.setTransform(1, 0, 0, 1, 0, 0);
+      c2d.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    preloadImage(actions);
+    for (let index2 = 0; index2 < actions.length; index2++) {
+      const action = actions[index2];
+      let method = action.method;
+      const data = action.data;
+      if (/^set/.test(method) && method !== "setTransform") {
+        const method1 = method[3].toLowerCase() + method.slice(4);
+        let color;
+        if (method1 === "fillStyle" || method1 === "strokeStyle") {
+          if (data[0] === "normal") {
+            color = resolveColor(data[1]);
+          } else if (data[0] === "linear") {
+            const LinearGradient = c2d.createLinearGradient(...data[1]);
+            data[2].forEach(function(data2) {
+              const offset = data2[0];
+              const color2 = resolveColor(data2[1]);
+              LinearGradient.addColorStop(offset, color2);
+            });
+            color = LinearGradient;
+          } else if (data[0] === "radial") {
+            const x = data[1][0];
+            const y = data[1][1];
+            const r = data[1][2];
+            const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
+            data[2].forEach(function(data2) {
+              const offset = data2[0];
+              const color2 = resolveColor(data2[1]);
+              LinearGradient.addColorStop(offset, color2);
+            });
+            color = LinearGradient;
+          } else if (data[0] === "pattern") {
+            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image2) {
+              if (image2) {
+                c2d[method1] = c2d.createPattern(image2, data[2]);
+              }
+            });
+            if (!loaded) {
+              break;
+            }
+            continue;
+          }
+          c2d[method1] = color;
+        } else if (method1 === "globalAlpha") {
+          c2d[method1] = Number(data[0]) / 255;
+        } else if (method1 === "shadow") {
+          var _ = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
+          data.forEach(function(color_, method_) {
+            c2d[_[method_]] = _[method_] === "shadowColor" ? resolveColor(color_) : color_;
+          });
+        } else if (method1 === "fontSize") {
+          const font2 = c2d.__font__ || c2d.font;
+          c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, data[0] + "px");
+        } else if (method1 === "lineDash") {
+          c2d.setLineDash(data[0]);
+          c2d.lineDashOffset = data[1] || 0;
+        } else if (method1 === "textBaseline") {
+          if (data[0] === "normal") {
+            data[0] = "alphabetic";
+          }
+          c2d[method1] = data[0];
+        } else if (method1 === "font") {
+          c2d.__font__ = c2d.font = data[0];
+        } else {
+          c2d[method1] = data[0];
+        }
+      } else if (method === "fillPath" || method === "strokePath") {
+        method = method.replace(/Path/, "");
+        c2d.beginPath();
+        data.forEach(function(data_) {
+          c2d[data_.method].apply(c2d, data_.data);
+        });
+        c2d[method]();
+      } else if (method === "fillText") {
+        c2d.fillText.apply(c2d, data);
+      } else if (method === "drawImage") {
+        var A = function() {
+          var dataArray = [...data];
+          var url = dataArray[0];
+          var otherData = dataArray.slice(1);
+          _images = _images || {};
+          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image2) {
+            if (image2) {
+              c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
+            }
+          }))
+            return "break";
+        }();
+        if (A === "break") {
+          break;
+        }
+      } else {
+        if (method === "clip") {
+          data.forEach(function(data_) {
+            c2d[data_.method].apply(c2d, data_.data);
+          });
+          c2d.clip();
+        } else {
+          c2d[method].apply(c2d, data);
+        }
+      }
+    }
+    if (!actionsWaiting.value && callbackId) {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg: "drawCanvas:ok"
+        }
+      }, getCurrentPageId());
+    }
+  }
+  function preloadImage(actions) {
+    actions.forEach(function(action) {
+      var method = action.method;
+      var data = action.data;
+      var src = "";
+      if (method === "drawImage") {
+        src = data[0];
+        src = $getRealPath(src);
+        data[0] = src;
+      } else if (method === "setFillStyle" && data[0] === "pattern") {
+        src = data[1];
+        src = $getRealPath(src);
+        data[1] = src;
+      }
+      if (src && !_images[src]) {
+        loadImage();
+      }
+      function loadImage() {
+        const image2 = _images[src] = new Image();
+        image2.onload = function() {
+          image2.ready = true;
+        };
+        getSameOriginUrl(src).then((src2) => {
+          image2.src = src2;
+        }).catch(() => {
+          image2.src = src;
+        });
+      }
+    });
+  }
+  function checkImageLoaded(src, actions, callbackId, fn) {
+    var image2 = _images[src];
+    if (image2.ready) {
+      fn(image2);
+      return true;
+    } else {
+      _actionsDefer.unshift([actions, true]);
+      actionsWaiting.value = true;
+      image2.onload = function() {
+        image2.ready = true;
+        fn(image2);
+        actionsWaiting.value = false;
+        var actions2 = _actionsDefer.slice(0);
+        _actionsDefer = [];
+        for (var action = actions2.shift(); action; ) {
+          actionsChanged({
+            actions: action[0],
+            reserve: action[1],
+            callbackId
+          });
+          action = actions2.shift();
+        }
+      };
+      return false;
+    }
+  }
+  function getImageData({
+    x = 0,
+    y = 0,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    hidpi = true,
+    dataType: dataType2,
+    quality = 1,
+    type = "png",
+    callbackId
+  }) {
+    const canvas = canvasRef.value;
+    let data;
+    const maxWidth = canvas.offsetWidth - x;
+    width = width ? Math.min(width, maxWidth) : maxWidth;
+    const maxHeight = canvas.offsetHeight - y;
+    height = height ? Math.min(height, maxHeight) : maxHeight;
+    if (!hidpi) {
+      if (!destWidth && !destHeight) {
+        destWidth = Math.round(width * pixelRatio);
+        destHeight = Math.round(height * pixelRatio);
+      } else if (!destWidth) {
+        destWidth = Math.round(width / height * destHeight);
+      } else if (!destHeight) {
+        destHeight = Math.round(height / width * destWidth);
+      }
+    } else {
+      destWidth = width;
+      destHeight = height;
+    }
+    const newCanvas = getTempCanvas(destWidth, destHeight);
+    const context = newCanvas.getContext("2d");
+    if (type === "jpeg" || type === "jpg") {
+      type = "jpeg";
+      context.fillStyle = "#fff";
+      context.fillRect(0, 0, destWidth, destHeight);
+    }
+    context.__hidpi__ = true;
+    context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
+    let result;
+    try {
+      let compressed;
+      if (dataType2 === "base64") {
+        data = newCanvas.toDataURL(`image/${type}`, quality);
+      } else {
+        const imgData = context.getImageData(0, 0, destWidth, destHeight);
+        if (false)
+          ;
+        else {
+          data = Array.prototype.slice.call(imgData.data);
+        }
+      }
+      result = {
+        errMsg: "canvasGetImageData:ok",
+        data,
+        compressed,
+        width: destWidth,
+        height: destHeight
+      };
+    } catch (error) {
+      result = {
+        errMsg: `canvasGetImageData:fail ${error}`
+      };
+    }
+    newCanvas.height = newCanvas.width = 0;
+    context.__hidpi__ = false;
+    if (!callbackId) {
+      return result;
+    } else {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: result
+      }, getCurrentPageId());
+    }
+  }
+  function putImageData({
+    data,
+    x,
+    y,
+    width,
+    height,
+    compressed,
+    callbackId
+  }) {
+    try {
+      if (!height) {
+        height = Math.round(data.length / 4 / width);
+      }
+      const canvas = getTempCanvas(width, height);
+      const context = canvas.getContext("2d");
+      if (false)
+        ;
+      context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
+      canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
+      canvas.height = canvas.width = 0;
+    } catch (error) {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg: "canvasPutImageData:fail"
+        }
+      }, getCurrentPageId());
+      return;
+    }
+    UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      callbackId,
+      data: {
+        errMsg: "canvasPutImageData:ok"
+      }
+    }, getCurrentPageId());
+  }
+  function toTempFilePath({
+    x = 0,
+    y = 0,
+    width,
+    height,
+    destWidth,
+    destHeight,
+    fileType,
+    quality,
+    dirname,
+    callbackId
+  }) {
+    const res = getImageData({
+      x,
+      y,
+      width,
+      height,
+      destWidth,
+      destHeight,
+      hidpi: false,
+      dataType: "base64",
+      type: fileType,
+      quality
+    });
+    if (!res.data || !res.data.length) {
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
+        }
+      }, getCurrentPageId());
+      return;
+    }
+    saveImage(res.data, dirname, (error, tempFilePath) => {
+      let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
+      if (error) {
+        errMsg += ` ${error.message}`;
+      }
+      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+        callbackId,
+        data: {
+          errMsg,
+          tempFilePath
+        }
+      }, getCurrentPageId());
+    });
+  }
+  const methods = {
+    actionsChanged,
+    getImageData,
+    putImageData,
+    toTempFilePath
+  };
+  function _handleSubscribe(type, data = {}) {
+    let method = methods[type];
+    if (type.indexOf("_") !== 0 && typeof method === "function") {
+      method(data);
+    }
+  }
+  return extend(methods, {
+    _resize,
+    _handleSubscribe
+  });
+}
+const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+const props$A = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CheckboxGroup",
+  props: props$A,
+  emits: ["change"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    useProvideCheckGroup(props2, trigger);
+    return () => {
+      return createVNode("uni-checkbox-group", {
+        "ref": rootRef
+      }, {
+        default: () => [slots.default && slots.default()]
+      }, 512);
+    };
+  }
+});
+function useProvideCheckGroup(props2, trigger) {
+  const fields2 = [];
+  const getFieldsValue = () => fields2.reduce((res, field) => {
+    if (field.value.checkboxChecked) {
+      res.push(field.value.value);
+    }
+    return res;
+  }, new Array());
+  provide(uniCheckGroupKey, {
+    addField(field) {
+      fields2.push(field);
+    },
+    removeField(field) {
+      fields2.splice(fields2.indexOf(field), 1);
+    },
+    checkboxChange($event) {
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
+    }
+  });
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
+    });
+  }
+  return getFieldsValue;
+}
+const props$z = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  value: {
+    type: String,
+    default: ""
+  }
+};
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Checkbox",
+  props: props$z,
+  setup(props2, {
+    slots
+  }) {
+    const checkboxChecked = ref(props2.checked);
+    const checkboxValue = ref(props2.value);
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      checkboxChecked.value = newChecked;
+      checkboxValue.value = newModelValue;
+    });
+    const reset = () => {
+      checkboxChecked.value = false;
+    };
+    const {
+      uniCheckGroup,
+      uniLabel
+    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      checkboxChecked.value = !checkboxChecked.value;
+      uniCheckGroup && uniCheckGroup.checkboxChange($event);
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners$1(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
+        "onClick": _onClick
+      }), {
+        default: () => [createVNode("div", {
+          "class": "uni-checkbox-wrapper"
+        }, [createVNode("div", {
+          "class": ["uni-checkbox-input", {
+            "uni-checkbox-input-disabled": props2.disabled
+          }]
+        }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])]
+      }, 16, ["onClick"]);
+    };
+  }
+});
+function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
+  const field = computed(() => ({
+    checkboxChecked: Boolean(checkboxChecked.value),
+    value: checkboxValue.value
+  }));
+  const formField = {
+    reset
+  };
+  const uniCheckGroup = inject(uniCheckGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field);
+  }
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = inject(uniLabelKey, false);
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field);
+    uniForm && uniForm.removeField(formField);
+  });
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel
+  };
+}
+let resetTimer;
+function iosHideKeyboard() {
+}
+const props$y = {
+  cursorSpacing: {
+    type: [Number, String],
+    default: 0
+  },
+  showConfirmBar: {
+    type: [Boolean, String],
+    default: "auto"
+  },
+  adjustPosition: {
+    type: [Boolean, String],
+    default: true
+  },
+  autoBlur: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const emit$1 = ["keyboardheightchange"];
+function useKeyboard$1(props2, elRef, trigger) {
+  function initKeyboard(el) {
+    el.addEventListener("focus", () => {
+      clearTimeout(resetTimer);
+      document.addEventListener("click", iosHideKeyboard, false);
+    });
+    const onKeyboardHide = () => {
+      document.removeEventListener("click", iosHideKeyboard, false);
+      if (String(navigator.vendor).indexOf("Apple") === 0) {
+        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
+      }
+    };
+    el.addEventListener("blur", () => {
+      onKeyboardHide();
+    });
+  }
+  watch(() => elRef.value, (el) => initKeyboard(el));
+}
+var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
+var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
+var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
+var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var special = /* @__PURE__ */ makeMap("script,style");
+function HTMLParser(html, handler) {
+  var index2;
+  var chars2;
+  var match;
+  var stack = [];
+  var last = html;
+  stack.last = function() {
+    return this[this.length - 1];
+  };
+  while (html) {
+    chars2 = true;
+    if (!stack.last() || !special[stack.last()]) {
+      if (html.indexOf("<!--") == 0) {
+        index2 = html.indexOf("-->");
+        if (index2 >= 0) {
+          if (handler.comment) {
+            handler.comment(html.substring(4, index2));
+          }
+          html = html.substring(index2 + 3);
+          chars2 = false;
+        }
+      } else if (html.indexOf("</") == 0) {
+        match = html.match(endTag);
+        if (match) {
+          html = html.substring(match[0].length);
+          match[0].replace(endTag, parseEndTag);
+          chars2 = false;
+        }
+      } else if (html.indexOf("<") == 0) {
+        match = html.match(startTag);
+        if (match) {
+          html = html.substring(match[0].length);
+          match[0].replace(startTag, parseStartTag);
+          chars2 = false;
+        }
+      }
+      if (chars2) {
+        index2 = html.indexOf("<");
+        var text2 = index2 < 0 ? html : html.substring(0, index2);
+        html = index2 < 0 ? "" : html.substring(index2);
+        if (handler.chars) {
+          handler.chars(text2);
+        }
+      }
+    } else {
+      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text3) {
+        text3 = text3.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+        if (handler.chars) {
+          handler.chars(text3);
+        }
+        return "";
+      });
+      parseEndTag("", stack.last());
+    }
+    if (html == last) {
+      throw "Parse Error: " + html;
+    }
+    last = html;
+  }
+  parseEndTag();
+  function parseStartTag(tag, tagName, rest, unary) {
+    tagName = tagName.toLowerCase();
+    if (block[tagName]) {
+      while (stack.last() && inline[stack.last()]) {
+        parseEndTag("", stack.last());
+      }
+    }
+    if (closeSelf[tagName] && stack.last() == tagName) {
+      parseEndTag("", tagName);
+    }
+    unary = empty[tagName] || !!unary;
+    if (!unary) {
+      stack.push(tagName);
+    }
+    if (handler.start) {
+      var attrs2 = [];
+      rest.replace(attr, function(match2, name) {
+        var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
+        attrs2.push({
+          name,
+          value,
+          escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+        });
+      });
+      if (handler.start) {
+        handler.start(tagName, attrs2, unary);
+      }
+    }
+  }
+  function parseEndTag(tag, tagName) {
+    if (!tagName) {
+      var pos = 0;
+    } else {
+      for (var pos = stack.length - 1; pos >= 0; pos--) {
+        if (stack[pos] == tagName) {
+          break;
+        }
+      }
+    }
+    if (pos >= 0) {
+      for (var i = stack.length - 1; i >= pos; i--) {
+        if (handler.end) {
+          handler.end(stack[i]);
+        }
+      }
+      stack.length = pos;
+    }
+  }
+}
+function makeMap(str) {
+  var obj = {};
+  var items = str.split(",");
+  for (var i = 0; i < items.length; i++) {
+    obj[items[i]] = true;
+  }
+  return obj;
+}
+const scripts = {};
+function loadScript(globalName, src, callback) {
+  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
+  if (globalObject) {
+    callback();
+    return;
+  }
+  let callbacks2 = scripts[src];
+  if (!callbacks2) {
+    callbacks2 = scripts[src] = [];
+    const script = document.createElement("script");
+    script.src = src;
+    document.body.appendChild(script);
+    script.onload = function() {
+      callbacks2.forEach((callback2) => callback2());
+      delete scripts[src];
+    };
+  }
+  callbacks2.push(callback);
+}
+function divider(Quill) {
+  const BlockEmbed = Quill.import("blots/block/embed");
+  class Divider extends BlockEmbed {
+  }
+  Divider.blotName = "divider";
+  Divider.tagName = "HR";
+  return {
+    "formats/divider": Divider
+  };
+}
+function ins(Quill) {
+  const Inline = Quill.import("blots/inline");
+  class Ins extends Inline {
+  }
+  Ins.blotName = "ins";
+  Ins.tagName = "INS";
+  return {
+    "formats/ins": Ins
+  };
+}
+function align(Quill) {
+  const { Scope, Attributor } = Quill.import("parchment");
+  const config = {
+    scope: Scope.BLOCK,
+    whitelist: ["left", "right", "center", "justify"]
+  };
+  const AlignStyle = new Attributor.Style("align", "text-align", config);
+  return {
+    "formats/align": AlignStyle
+  };
+}
+function direction(Quill) {
+  const { Scope, Attributor } = Quill.import("parchment");
+  const config = {
+    scope: Scope.BLOCK,
+    whitelist: ["rtl"]
+  };
+  const DirectionStyle = new Attributor.Style("direction", "direction", config);
+  return {
+    "formats/direction": DirectionStyle
+  };
+}
+function list(Quill) {
+  const Parchment = Quill.import("parchment");
+  const Container = Quill.import("blots/container");
+  const ListItem = Quill.import("formats/list/item");
+  class List extends Container {
+    static create(value) {
+      const tagName = value === "ordered" ? "OL" : "UL";
+      const node = super.create(tagName);
+      if (value === "checked" || value === "unchecked") {
+        node.setAttribute("data-checked", value === "checked");
+      }
+      return node;
+    }
+    static formats(domNode) {
+      if (domNode.tagName === "OL")
+        return "ordered";
+      if (domNode.tagName === "UL") {
+        if (domNode.hasAttribute("data-checked")) {
+          return domNode.getAttribute("data-checked") === "true" ? "checked" : "unchecked";
+        } else {
+          return "bullet";
+        }
+      }
+      return void 0;
+    }
+    constructor(domNode) {
+      super(domNode);
+      const listEventHandler = (e2) => {
+        if (e2.target.parentNode !== domNode)
+          return;
+        const format = this.statics.formats(domNode);
+        const blot = Parchment.find(e2.target);
+        if (format === "checked") {
+          blot.format("list", "unchecked");
+        } else if (format === "unchecked") {
+          blot.format("list", "checked");
+        }
+      };
+      domNode.addEventListener("click", listEventHandler);
+    }
+    format(name, value) {
+      if (this.children.length > 0) {
+        this.children.tail.format(name, value);
+      }
+    }
+    formats() {
+      return { [this.statics.blotName]: this.statics.formats(this.domNode) };
+    }
+    insertBefore(blot, ref2) {
+      if (blot instanceof ListItem) {
+        super.insertBefore(blot, ref2);
+      } else {
+        const index2 = ref2 == null ? this.length() : ref2.offset(this);
+        const after = this.split(index2);
+        after.parent.insertBefore(blot, after);
+      }
+    }
+    optimize(context) {
+      super.optimize(context);
+      const next = this.next;
+      if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
+        next.moveChildren(this);
+        next.remove();
+      }
+    }
+    replace(target) {
+      if (target.statics.blotName !== this.statics.blotName) {
+        const item = Parchment.create(this.statics.defaultChild);
+        target.moveChildren(item);
+        this.appendChild(item);
+      }
+      super.replace(target);
+    }
+  }
+  List.blotName = "list";
+  List.scope = Parchment.Scope.BLOCK_BLOT;
+  List.tagName = ["OL", "UL"];
+  List.defaultChild = "list-item";
+  List.allowedChildren = [ListItem];
+  return {
+    "formats/list": List
+  };
+}
+function background(Quill) {
+  const { Scope } = Quill.import("parchment");
+  const BackgroundStyle = Quill.import("formats/background");
+  const BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
+    scope: Scope.INLINE
+  });
+  return {
+    "formats/backgroundColor": BackgroundColorStyle
+  };
+}
+function box(Quill) {
+  const { Scope, Attributor } = Quill.import("parchment");
+  const config = {
+    scope: Scope.BLOCK
+  };
+  const margin = [
+    "margin",
+    "marginTop",
+    "marginBottom",
+    "marginLeft",
+    "marginRight"
+  ];
+  const padding = [
+    "padding",
+    "paddingTop",
+    "paddingBottom",
+    "paddingLeft",
+    "paddingRight"
+  ];
+  const result = {};
+  margin.concat(padding).forEach((name) => {
+    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), config);
+  });
+  return result;
+}
+function font(Quill) {
+  const { Scope, Attributor } = Quill.import("parchment");
+  const config = {
+    scope: Scope.INLINE
+  };
+  const font2 = [
+    "font",
+    "fontSize",
+    "fontStyle",
+    "fontVariant",
+    "fontWeight",
+    "fontFamily"
+  ];
+  const result = {};
+  font2.forEach((name) => {
+    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), config);
+  });
+  return result;
+}
+function text(Quill) {
+  const { Scope, Attributor } = Quill.import("parchment");
+  const text2 = [
+    {
+      name: "lineHeight",
+      scope: Scope.BLOCK
+    },
+    {
+      name: "letterSpacing",
+      scope: Scope.INLINE
+    },
+    {
+      name: "textDecoration",
+      scope: Scope.INLINE
+    },
+    {
+      name: "textIndent",
+      scope: Scope.BLOCK
+    }
+  ];
+  const result = {};
+  text2.forEach(({ name, scope }) => {
+    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), {
+      scope
+    });
+  });
+  return result;
+}
+function image(Quill) {
+  const Image2 = Quill.import("formats/image");
+  const ATTRIBUTES = [
+    "alt",
+    "height",
+    "width",
+    "data-custom",
+    "class",
+    "data-local"
+  ];
+  Image2.sanitize = (url) => url;
+  Image2.formats = function formats(domNode) {
+    return ATTRIBUTES.reduce(function(formats2, attribute) {
+      if (domNode.hasAttribute(attribute)) {
+        formats2[attribute] = domNode.getAttribute(attribute);
+      }
+      return formats2;
+    }, {});
+  };
+  const format = Image2.prototype.format;
+  Image2.prototype.format = function(name, value) {
+    if (ATTRIBUTES.indexOf(name) > -1) {
+      if (value) {
+        this.domNode.setAttribute(name, value);
+      } else {
+        this.domNode.removeAttribute(name);
+      }
+    } else {
+      format.call(this, name, value);
+    }
+  };
+}
+function register(Quill) {
+  const formats = {
+    divider,
+    ins,
+    align,
+    direction,
+    list,
+    background,
+    box,
+    font,
+    text,
+    image
+  };
+  const options = {};
+  Object.values(formats).forEach((value) => extend(options, value(Quill)));
+  Quill.register(options, true);
+}
+function useQuill(props2, rootRef, trigger) {
+  let quillReady;
+  let skipMatcher;
+  let quill;
+  watch(() => props2.readOnly, (value) => {
+    if (quillReady) {
+      quill.enable(!value);
+      if (!value) {
+        quill.blur();
+      }
+    }
+  });
+  watch(() => props2.placeholder, (value) => {
+    if (quillReady) {
+      quill.root.setAttribute("data-placeholder", value);
+    }
+  });
+  function html2delta(html) {
+    const tags = [
+      "span",
+      "strong",
+      "b",
+      "ins",
+      "em",
+      "i",
+      "u",
+      "a",
+      "del",
+      "s",
+      "sub",
+      "sup",
+      "img",
+      "div",
+      "p",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "hr",
+      "ol",
+      "ul",
+      "li",
+      "br"
+    ];
+    let content = "";
+    let disable;
+    HTMLParser(html, {
+      start: function(tag, attrs2, unary) {
+        if (!tags.includes(tag)) {
+          disable = !unary;
+          return;
+        }
+        disable = false;
+        const arrts = attrs2.map(({ name, value }) => `${name}="${value}"`).join(" ");
+        const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
+        content += start;
+      },
+      end: function(tag) {
+        if (!disable) {
+          content += `</${tag}>`;
+        }
+      },
+      chars: function(text2) {
+        if (!disable) {
+          content += text2;
+        }
+      }
+    });
+    skipMatcher = true;
+    const delta = quill.clipboard.convert(content);
+    skipMatcher = false;
+    return delta;
+  }
+  function getContents() {
+    const html = quill.root.innerHTML;
+    const text2 = quill.getText();
+    const delta = quill.getContents();
+    return {
+      html,
+      text: text2,
+      delta
+    };
+  }
+  let oldStatus = {};
+  function updateStatus(range) {
+    const status = range ? quill.getFormat(range) : {};
+    const keys = Object.keys(status);
+    if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
+      oldStatus = status;
+      trigger("statuschange", {}, status);
+    }
+  }
+  function initQuill(imageResizeModules) {
+    const Quill = window.Quill;
+    register(Quill);
+    const options = {
+      toolbar: false,
+      readOnly: props2.readOnly,
+      placeholder: props2.placeholder
+    };
+    if (imageResizeModules.length) {
+      Quill.register("modules/ImageResize", window.ImageResize.default);
+      options.modules = {
+        ImageResize: {
+          modules: imageResizeModules
+        }
+      };
+    }
+    const rootEl = rootRef.value;
+    quill = new Quill(rootEl, options);
+    const $el = quill.root;
+    const events = ["focus", "blur", "input"];
+    events.forEach((name) => {
+      $el.addEventListener(name, ($event) => {
+        if (name === "input") {
+          $event.stopPropagation();
+        } else {
+          trigger(name, $event, getContents());
+        }
+      });
+    });
+    quill.on("text-change", () => {
+      trigger("input", {}, getContents());
+    });
+    quill.on("selection-change", updateStatus);
+    quill.on("scroll-optimize", () => {
+      const range = quill.selection.getRange()[0];
+      updateStatus(range);
+    });
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      if (skipMatcher) {
+        return delta;
+      }
+      if (delta.ops) {
+        delta.ops = delta.ops.filter(({ insert }) => typeof insert === "string").map(({ insert }) => ({ insert }));
+      }
+      return delta;
+    });
+    quillReady = true;
+    trigger("ready", {}, {});
+  }
+  onMounted(() => {
+    const imageResizeModules = [];
+    if (props2.showImgSize) {
+      imageResizeModules.push("DisplaySize");
+    }
+    if (props2.showImgToolbar) {
+      imageResizeModules.push("Toolbar");
+    }
+    if (props2.showImgResize) {
+      imageResizeModules.push("Resize");
+    }
+    const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
+    loadScript(window.Quill, quillSrc, () => {
+      if (imageResizeModules.length) {
+        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
+        loadScript(window.ImageResize, imageResizeSrc, () => {
+          initQuill(imageResizeModules);
+        });
+      } else {
+        initQuill(imageResizeModules);
+      }
+    });
+  });
+  const id2 = useContextInfo();
+  useSubscribe((type, data) => {
+    const { options, callbackId } = data;
+    let res;
+    let range;
+    let errMsg;
+    if (quillReady) {
+      const Quill = window.Quill;
+      switch (type) {
+        case "format":
+          {
+            let { name = "", value = false } = options;
+            range = quill.getSelection(true);
+            let format = quill.getFormat(range)[name] || false;
+            if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
+              value = !format;
+            } else if (name === "direction") {
+              value = value === "rtl" && format ? false : value;
+              const align2 = quill.getFormat(range).align;
+              if (value === "rtl" && !align2) {
+                quill.format("align", "right", "user");
+              } else if (!value && align2 === "right") {
+                quill.format("align", false, "user");
+              }
+            } else if (name === "indent") {
+              const rtl = quill.getFormat(range).direction === "rtl";
+              value = value === "+1";
+              if (rtl) {
+                value = !value;
+              }
+              value = value ? "+1" : "-1";
+            } else {
+              if (name === "list") {
+                value = value === "check" ? "unchecked" : value;
+                format = format === "checked" ? "unchecked" : format;
+              }
+              value = format && format !== (value || false) || !format && value ? value : !format;
+            }
+            quill.format(name, value, "user");
+          }
+          break;
+        case "insertDivider":
+          range = quill.getSelection(true);
+          quill.insertText(range.index, "\n", "user");
+          quill.insertEmbed(range.index + 1, "divider", true, "user");
+          quill.setSelection(range.index + 2, 0, "silent");
+          break;
+        case "insertImage":
+          {
+            range = quill.getSelection(true);
+            const {
+              src = "",
+              alt = "",
+              width = "",
+              height = "",
+              extClass = "",
+              data: data2 = {}
+            } = options;
+            const path = getRealPath(src);
+            quill.insertEmbed(range.index, "image", path, "user");
+            const local = /^(file|blob):/.test(path) ? path : false;
+            quill.formatText(range.index, 1, "data-local", local);
+            quill.formatText(range.index, 1, "alt", alt);
+            quill.formatText(range.index, 1, "width", width);
+            quill.formatText(range.index, 1, "height", height);
+            quill.formatText(range.index, 1, "class", extClass);
+            quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
+            quill.setSelection(range.index + 1, 0, "silent");
+          }
+          break;
+        case "insertText":
+          {
+            range = quill.getSelection(true);
+            const { text: text2 = "" } = options;
+            quill.insertText(range.index, text2, "user");
+            quill.setSelection(range.index + text2.length, 0, "silent");
+          }
+          break;
+        case "setContents":
+          {
+            const { delta, html } = options;
+            if (typeof delta === "object") {
+              quill.setContents(delta, "silent");
+            } else if (typeof html === "string") {
+              quill.setContents(html2delta(html), "silent");
+            } else {
+              errMsg = "contents is missing";
+            }
+          }
+          break;
+        case "getContents":
+          res = getContents();
+          break;
+        case "clear":
+          quill.setText("");
+          break;
+        case "removeFormat":
+          {
+            range = quill.getSelection(true);
+            const parchment = Quill.import("parchment");
+            if (range.length) {
+              quill.removeFormat(range.index, range.length, "user");
+            } else {
+              Object.keys(quill.getFormat(range)).forEach((key) => {
+                if (parchment.query(key, parchment.Scope.INLINE)) {
+                  quill.format(key, false);
+                }
+              });
+            }
+          }
+          break;
+        case "undo":
+          quill.history.undo();
+          break;
+        case "redo":
+          quill.history.redo();
+          break;
+        case "blur":
+          quill.blur();
+          break;
+        case "getSelectionText":
+          range = quill.selection.savedRange;
+          res = { text: "" };
+          if (range && range.length !== 0) {
+            res.text = quill.getText(range.index, range.length);
+          }
+          break;
+        case "scrollIntoView":
+          quill.scrollIntoView();
+          break;
+      }
+      updateStatus(range);
+    } else {
+      errMsg = "not ready";
+    }
+    if (callbackId) {
+      UniViewJSBridge.publishHandler("onEditorMethodCallback", {
+        callbackId,
+        data: extend({}, res, {
+          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
+        })
+      });
+    }
+  }, id2, true);
+}
+const props$x = /* @__PURE__ */ extend({}, props$y, {
+  id: {
+    type: String,
+    default: ""
+  },
+  readOnly: {
+    type: [Boolean, String],
+    default: false
+  },
+  placeholder: {
+    type: String,
+    default: ""
+  },
+  showImgSize: {
+    type: [Boolean, String],
+    default: false
+  },
+  showImgToolbar: {
+    type: [Boolean, String],
+    default: false
+  },
+  showImgResize: {
+    type: [Boolean, String],
+    default: false
+  }
+});
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Editor",
+  props: props$x,
+  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    useQuill(props2, rootRef, trigger);
+    useKeyboard$1(props2, rootRef);
+    return () => {
+      return createVNode("uni-editor", {
+        "ref": rootRef,
+        "id": props2.id,
+        "class": "ql-container"
+      }, null, 8, ["id"]);
+    };
+  }
+});
+const INFO_COLOR = "#10aeff";
+const WARN_COLOR = "#f76260";
+const GREY_COLOR = "#b2b2b2";
+const CANCEL_COLOR = "#f43530";
+const ICONS = {
+  success: {
+    d: ICON_PATH_SUCCESS,
+    c: PRIMARY_COLOR
+  },
+  success_no_circle: {
+    d: ICON_PATH_SUCCESS_NO_CIRCLE,
+    c: PRIMARY_COLOR
+  },
+  info: {
+    d: ICON_PATH_INFO,
+    c: INFO_COLOR
+  },
+  warn: {
+    d: ICON_PATH_WARN,
+    c: WARN_COLOR
+  },
+  waiting: {
+    d: ICON_PATH_WAITING,
+    c: INFO_COLOR
+  },
+  cancel: {
+    d: ICON_PATH_CANCEL,
+    c: CANCEL_COLOR
+  },
+  download: {
+    d: ICON_PATH_DOWNLOAD,
+    c: PRIMARY_COLOR
+  },
+  search: {
+    d: ICON_PATH_SEARCH,
+    c: GREY_COLOR
+  },
+  clear: {
+    d: ICON_PATH_CLEAR,
+    c: GREY_COLOR
+  }
+};
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Icon",
+  props: {
+    type: {
+      type: String,
+      required: true,
+      default: ""
+    },
+    size: {
+      type: [String, Number],
+      default: 23
+    },
+    color: {
+      type: String,
+      default: ""
+    }
+  },
+  setup(props2) {
+    const path = computed(() => ICONS[props2.type]);
+    return () => {
+      const {
+        value
+      } = path;
+      return createVNode("uni-icon", null, {
+        default: () => [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]
+      });
+    };
+  }
+});
+const props$w = {
+  src: {
+    type: String,
+    default: ""
+  },
+  mode: {
+    type: String,
+    default: "scaleToFill"
+  },
+  lazyLoad: {
+    type: [Boolean, String],
+    default: false
+  },
+  draggable: {
+    type: Boolean,
+    default: true
+  }
+};
+const FIX_MODES = {
+  widthFix: ["width", "height"],
+  heightFix: ["height", "width"]
+};
+const IMAGE_MODES = {
+  aspectFit: ["center center", "contain"],
+  aspectFill: ["center center", "cover"],
+  widthFix: [, "100% 100%"],
+  heightFix: [, "100% 100%"],
+  top: ["center top"],
+  bottom: ["center bottom"],
+  center: ["center center"],
+  left: ["left center"],
+  right: ["right center"],
+  "top left": ["left top"],
+  "top right": ["right top"],
+  "bottom left": ["left bottom"],
+  "bottom right": ["right bottom"]
+};
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Image",
+  props: props$w,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const state2 = useImageState(rootRef, props2);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      fixSize
+    } = useImageSize(rootRef, props2, state2);
+    useImageLoader(state2, {
+      trigger,
+      fixSize
+    });
+    return () => {
+      const {
+        mode: mode2
+      } = props2;
+      const {
+        imgSrc,
+        modeStyle
+      } = state2;
+      return createVNode("uni-image", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", {
+          "style": modeStyle
+        }, null, 4), imgSrc ? createVNode("img", {
+          "src": imgSrc,
+          "draggable": props2.draggable
+        }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode2] ? createVNode(ResizeSensor, {
+          "onResize": fixSize
+        }, null, 8, ["onResize"]) : createVNode("span", null, null)],
+        _: 1
+      }, 512);
+    };
+  }
+});
+function useImageState(rootRef, props2) {
+  const imgSrc = ref("");
+  const modeStyleRef = computed(() => {
+    let size = "auto";
+    let position = "";
+    const opts = IMAGE_MODES[props2.mode];
+    if (!opts) {
+      position = "0% 0%";
+      size = "100% 100%";
+    } else {
+      opts[0] && (position = opts[0]);
+      opts[1] && (size = opts[1]);
+    }
+    const srcVal = imgSrc.value;
+    return `background-image:${srcVal ? 'url("' + srcVal + '")' : "none"};background-position:${position};background-size:${size};background-repeat:no-repeat;`;
+  });
+  const state2 = reactive({
+    rootEl: rootRef,
+    src: computed(() => props2.src ? getRealPath(props2.src) : ""),
+    origWidth: 0,
+    origHeight: 0,
+    origStyle: {
+      width: "",
+      height: ""
+    },
+    modeStyle: modeStyleRef,
+    imgSrc
+  });
+  onMounted(() => {
+    const rootEl = rootRef.value;
+    const style = rootEl.style;
+    state2.origWidth = Number(style.width) || 0;
+    state2.origHeight = Number(style.height) || 0;
+  });
+  return state2;
+}
+function useImageLoader(state2, {
+  trigger,
+  fixSize
+}) {
+  let img;
+  const setState = (width = 0, height = 0, imgSrc = "") => {
+    state2.origWidth = width;
+    state2.origHeight = height;
+    state2.imgSrc = imgSrc;
+  };
+  const loadImage = (src) => {
+    if (!src) {
+      resetImage();
+      setState();
+      return;
+    }
+    if (!img) {
+      img = new Image();
+    }
+    img.onload = (evt) => {
+      const {
+        width,
+        height
+      } = img;
+      setState(width, height, src);
+      fixSize();
+      resetImage();
+      trigger("load", evt, {
+        width,
+        height
+      });
+    };
+    img.onerror = (evt) => {
+      setState();
+      resetImage();
+      trigger("error", evt, {
+        errMsg: `GET ${state2.src} 404 (Not Found)`
+      });
+    };
+    img.src = src;
+  };
+  const resetImage = () => {
+    if (img) {
+      img.onload = null;
+      img.onerror = null;
+      img = null;
+    }
+  };
+  watch(() => state2.src, (value) => loadImage(value));
+  onMounted(() => loadImage(state2.src));
+  onBeforeUnmount(() => resetImage());
+}
+const isChrome = navigator.vendor === "Google Inc.";
+function fixNumber(num) {
+  if (isChrome && num > 10) {
+    num = Math.round(num / 2) * 2;
+  }
+  return num;
+}
+function useImageSize(rootRef, props2, state2) {
+  const fixSize = () => {
+    const {
+      mode: mode2
+    } = props2;
+    const names = FIX_MODES[mode2];
+    if (!names) {
+      return;
+    }
+    const {
+      origWidth,
+      origHeight
+    } = state2;
+    const ratio = origWidth && origHeight ? origWidth / origHeight : 0;
+    if (!ratio) {
+      return;
+    }
+    const rootEl = rootRef.value;
+    const rect = rootEl.getBoundingClientRect();
+    const value = rect[names[0]];
+    if (value) {
+      rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
+    }
+  };
+  const resetSize = () => {
+    const {
+      style
+    } = rootRef.value;
+    const {
+      origStyle: {
+        width,
+        height
+      }
+    } = state2;
+    style.width = width;
+    style.height = height;
+  };
+  watch(() => props2.mode, (value, oldValue) => {
+    if (FIX_MODES[oldValue]) {
+      resetSize();
+    }
+    if (FIX_MODES[value]) {
+      fixSize();
+    }
+  });
+  return {
+    fixSize,
+    resetSize
+  };
+}
+const passiveOptions$1 = passive(true);
+const states = [];
+let userInteract = 0;
+let inited;
+function addInteractListener(vm) {
+  if (!inited) {
+    const eventNames = [
+      "touchstart",
+      "touchmove",
+      "touchend",
+      "mousedown",
+      "mouseup"
+    ];
+    eventNames.forEach((eventName) => {
+      document.addEventListener(eventName, function() {
+        states.forEach((vm2) => {
+          vm2.userAction = true;
+          userInteract++;
+          setTimeout(() => {
+            userInteract--;
+            if (!userInteract) {
+              vm2.userAction = false;
+            }
+          }, 0);
+        });
+      }, passiveOptions$1);
+    });
+    inited = true;
+  }
+  states.push(vm);
+}
+function removeInteractListener(vm) {
+  const index2 = states.indexOf(vm);
+  if (index2 >= 0) {
+    states.splice(index2, 1);
+  }
+}
+function useUserAction() {
+  const state2 = reactive({
+    userAction: false
+  });
+  onMounted(() => {
+    addInteractListener(state2);
+  });
+  onBeforeUnmount(() => {
+    removeInteractListener(state2);
+  });
+  return {
+    state: state2
+  };
+}
+function useScopedAttrs() {
+  const state2 = reactive({
+    attrs: {}
+  });
+  onMounted(() => {
+    let instance2 = getCurrentInstance();
+    while (instance2) {
+      const scopeId = instance2.type.__scopeId;
+      if (scopeId) {
+        state2.attrs[scopeId] = "";
+      }
+      instance2 = instance2.__isPage ? null : instance2.parent;
+    }
+  });
+  return {
+    state: state2
+  };
+}
+function useFormField(nameKey, value) {
+  const uniForm = inject(uniFormKey, false);
+  if (!uniForm) {
+    return;
+  }
+  const instance2 = getCurrentInstance();
+  const ctx = {
+    submit() {
+      const proxy = instance2.proxy;
+      return [
+        proxy[nameKey],
+        typeof value === "string" ? proxy[value] : value.value
+      ];
+    },
+    reset() {
+      if (typeof value === "string") {
+        instance2.proxy[value] = "";
+      } else {
+        value.value = "";
+      }
+    }
+  };
+  uniForm.addField(ctx);
+  onBeforeUnmount(() => {
+    uniForm.removeField(ctx);
+  });
+}
+const pageIds = [];
+const UniViewJSBridgeSubscribe = function() {
+  const pageId = getCurrentPageId();
+  if (pageIds.includes(pageId))
+    return;
+  pageIds.push(pageId);
+  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({ pageId: pageId2, callbackId }) {
+    const activeElement = document.activeElement;
+    if (!activeElement)
+      return;
+    const tagName = activeElement.tagName.toLowerCase();
+    const tagNames = ["input", "textarea"];
+    const data = {};
+    if (tagNames.includes(tagName)) {
+      data.start = activeElement.selectionStart;
+      data.end = activeElement.selectionEnd;
+    }
+    UniViewJSBridge.publishHandler("onGetSelectedTextRange", {
+      callbackId,
+      data
+    }, pageId2);
+  });
+};
+function getValueString(value) {
+  return value === null ? "" : String(value);
+}
+const props$v = /* @__PURE__ */ extend({}, {
+  name: {
+    type: String,
+    default: ""
+  },
+  modelValue: {
+    type: [String, Number],
+    default: ""
+  },
+  value: {
+    type: [String, Number],
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoFocus: {
+    type: [Boolean, String],
+    default: false
+  },
+  focus: {
+    type: [Boolean, String],
+    default: false
+  },
+  cursor: {
+    type: [Number, String],
+    default: -1
+  },
+  selectionStart: {
+    type: [Number, String],
+    default: -1
+  },
+  selectionEnd: {
+    type: [Number, String],
+    default: -1
+  },
+  type: {
+    type: String,
+    default: "text"
+  },
+  password: {
+    type: [Boolean, String],
+    default: false
+  },
+  placeholder: {
+    type: String,
+    default: ""
+  },
+  placeholderStyle: {
+    type: String,
+    default: ""
+  },
+  placeholderClass: {
+    type: String,
+    default: ""
+  },
+  maxlength: {
+    type: [Number, String],
+    default: 140
+  },
+  confirmType: {
+    type: String,
+    default: "done"
+  }
+}, props$y);
+const emit = [
+  "input",
+  "focus",
+  "blur",
+  "update:value",
+  "update:modelValue",
+  "update:focus",
+  ...emit$1
+];
+function useBase(props2, rootRef, emit2) {
+  const fieldRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const selectionStart = computed(() => {
+    const selectionStart2 = Number(props2.selectionStart);
+    return isNaN(selectionStart2) ? -1 : selectionStart2;
+  });
+  const selectionEnd = computed(() => {
+    const selectionEnd2 = Number(props2.selectionEnd);
+    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
+  });
+  const cursor = computed(() => {
+    const cursor2 = Number(props2.cursor);
+    return isNaN(cursor2) ? -1 : cursor2;
+  });
+  const maxlength = computed(() => {
+    var maxlength2 = Number(props2.maxlength);
+    return isNaN(maxlength2) ? 140 : maxlength2;
+  });
+  const value = getValueString(props2.modelValue) || getValueString(props2.value);
+  const state2 = reactive({
+    value,
+    valueOrigin: value,
+    maxlength,
+    focus: props2.focus,
+    composing: false,
+    selectionStart,
+    selectionEnd,
+    cursor
+  });
+  watch(() => state2.focus, (val) => emit2("update:focus", val));
+  watch(() => state2.maxlength, (val) => state2.value = state2.value.slice(0, val));
+  return {
+    fieldRef,
+    state: state2,
+    trigger
+  };
+}
+function useValueSync(props2, state2, emit2, trigger) {
+  const valueChangeFn = debounce((val) => {
+    state2.value = getValueString(val);
+  }, 100);
+  watch(() => props2.modelValue, valueChangeFn);
+  watch(() => props2.value, valueChangeFn);
+  const triggerInputFn = throttle((event, detail) => {
+    emit2("update:modelValue", detail.value);
+    emit2("update:value", detail.value);
+    trigger("input", event, detail);
+  }, 100);
+  const triggerInput = (event, detail, force) => {
+    valueChangeFn.cancel();
+    triggerInputFn(event, detail);
+    if (force) {
+      triggerInputFn.flush();
+    }
+  };
+  onBeforeMount(() => {
+    valueChangeFn.cancel();
+    triggerInputFn.cancel();
+  });
+  return {
+    trigger,
+    triggerInput
+  };
+}
+function useAutoFocus(props2, fieldRef) {
+  useUserAction();
+  const needFocus = computed(() => props2.autoFocus || props2.focus);
+  function focus() {
+    if (!needFocus.value) {
+      return;
+    }
+    const field = fieldRef.value;
+    if (!field || false) {
+      setTimeout(focus, 100);
+      return;
+    }
+    {
+      field.focus();
+    }
+  }
+  function blur() {
+    const field = fieldRef.value;
+    if (field) {
+      field.blur();
+    }
+  }
+  watch(() => props2.focus, (value) => {
+    if (value) {
+      focus();
+    } else {
+      blur();
+    }
+  });
+  onMounted(() => {
+    if (needFocus.value) {
+      nextTick(focus);
+    }
+  });
+}
+function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
+  function checkSelection() {
+    const field = fieldRef.value;
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1) {
+      field.selectionStart = state2.selectionStart;
+      field.selectionEnd = state2.selectionEnd;
+    }
+  }
+  function checkCursor() {
+    const field = fieldRef.value;
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1) {
+      field.selectionEnd = field.selectionStart = state2.cursor;
+    }
+  }
+  function initField() {
+    const field = fieldRef.value;
+    const onFocus = function(event) {
+      state2.focus = true;
+      trigger("focus", event, {
+        value: state2.value
+      });
+      checkSelection();
+      checkCursor();
+    };
+    const onInput = function(event, force) {
+      event.stopPropagation();
+      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
+        return;
+      }
+      state2.value = field.value;
+      if (!state2.composing) {
+        triggerInput(event, {
+          value: field.value,
+          cursor: field.selectionEnd
+        }, force);
+      }
+    };
+    const onBlur = function(event) {
+      if (state2.composing) {
+        state2.composing = false;
+        onInput(event, true);
+      }
+      state2.focus = false;
+      trigger("blur", event, {
+        value: state2.value,
+        cursor: event.target.selectionEnd
+      });
+    };
+    field.addEventListener("change", (event) => event.stopPropagation());
+    field.addEventListener("focus", onFocus);
+    field.addEventListener("blur", onBlur);
+    field.addEventListener("input", onInput);
+    field.addEventListener("compositionstart", (event) => {
+      event.stopPropagation();
+      state2.composing = true;
+    });
+    field.addEventListener("compositionend", (event) => {
+      event.stopPropagation();
+      if (state2.composing) {
+        state2.composing = false;
+        onInput(event);
+      }
+    });
+  }
+  watch([() => state2.selectionStart, () => state2.selectionEnd], checkSelection);
+  watch(() => state2.cursor, checkCursor);
+  watch(() => fieldRef.value, initField);
+}
+function useField(props2, rootRef, emit2, beforeInput) {
+  UniViewJSBridgeSubscribe();
+  const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
+  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
+  useAutoFocus(props2, fieldRef);
+  useKeyboard$1(props2, fieldRef);
+  const { state: scopedAttrsState } = useScopedAttrs();
+  useFormField("name", state2);
+  useEvent(fieldRef, state2, trigger, triggerInput, beforeInput);
+  const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
+  return {
+    fieldRef,
+    state: state2,
+    scopedAttrsState,
+    fixDisabledColor,
+    trigger
+  };
+}
+const props$u = /* @__PURE__ */ extend({}, props$v, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  }
+});
+var Input = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$u,
+  emits: ["confirm", ...emit],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
+    const type = computed(() => {
+      let type2 = "";
+      switch (props2.type) {
+        case "text":
+          if (props2.confirmType === "search") {
+            type2 = "search";
+          }
+          break;
+        case "idcard":
+          type2 = "text";
+          break;
+        case "digit":
+          type2 = "number";
+          break;
+        default:
+          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          break;
+      }
+      return props2.password ? "password" : type2;
+    });
+    const valid = ref(true);
+    const rootRef = ref(null);
+    const {
+      fieldRef,
+      state: state2,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger
+    } = useField(props2, rootRef, emit2, (event, state3) => {
+      const input = event.target;
+      if (NUMBER_TYPES.includes(props2.type)) {
+        valid.value = input.validity && input.validity.valid;
+      }
+      if (type.value === "number") {
+        const maxlength = state3.maxlength;
+        if (maxlength > 0 && input.value.length > maxlength) {
+          input.value = input.value.slice(0, maxlength);
+          state3.value = input.value;
+          return false;
+        }
+      }
+    });
+    const NUMBER_TYPES = ["number", "digit"];
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      event.stopPropagation();
+      trigger("confirm", event, {
+        value: event.target.value
+      });
+    }
+    return () => {
+      let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
+        "ref": fieldRef,
+        "value": state2.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "type": type.value,
+        "maxlength": state2.maxlength,
+        "step": step.value,
+        "class": "uni-input-input",
+        "onFocus": (event) => event.target.blur()
+      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+        "ref": fieldRef,
+        "value": state2.value,
+        "disabled": !!props2.disabled,
+        "type": type.value,
+        "maxlength": state2.maxlength,
+        "step": step.value,
+        "enterkeyhint": props2.confirmType,
+        "class": "uni-input-input",
+        "autocomplete": "off",
+        "onKeyup": onKeyUpEnter
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
+      return createVNode("uni-input", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-input-wrapper"
+        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "style": props2.placeholderStyle,
+          "class": ["uni-input-placeholder", props2.placeholderClass]
+        }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
+          "action": "",
+          "onSubmit": (event) => event.preventDefault(),
+          "class": "uni-input-form"
+        }, [inputNode], 40, ["onSubmit"]) : inputNode])]
+      }, 512);
+    };
+  }
+});
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const { excludeListeners = false, excludeKeys = [] } = params;
+  const instance2 = getCurrentInstance();
+  const attrs2 = shallowRef({});
+  const listeners = shallowRef({});
+  const excludeAttrs = shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance2.attrs = reactive(instance2.attrs);
+  watchEffect(() => {
+    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
+      if (allExcludeKeys.includes(key)) {
+        acc.exclude[key] = val;
+      } else if (LISTENER_PREFIX.test(key)) {
+        if (!excludeListeners) {
+          acc.attrs[key] = val;
+        }
+        acc.listeners[key] = val;
+      } else {
+        acc.attrs[key] = val;
+      }
+      return acc;
+    }, {
+      exclude: {},
+      attrs: {},
+      listeners: {}
+    });
+    attrs2.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
+};
+function flatVNode(nodes) {
+  const array = [];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((vnode) => {
+      if (isVNode(vnode)) {
+        if (vnode.type === Fragment) {
+          array.push(...flatVNode(vnode.children));
+        } else {
+          array.push(vnode);
+        }
+      } else if (Array.isArray(vnode)) {
+        array.push(...flatVNode(vnode));
+      }
+    });
+  }
+  return array;
+}
+const props$t = {
+  scaleArea: {
+    type: Boolean,
+    default: false
+  }
+};
+var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: props$t,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const _isMounted = ref(false);
+    let {
+      setContexts,
+      events: movableAreaEvents
+    } = useMovableAreaState(props2, rootRef);
+    const {
+      $listeners,
+      $attrs,
+      $excludeAttrs
+    } = useAttrs();
+    const _listeners = $listeners.value;
+    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+    events.forEach((event) => {
+      let existing = _listeners[event];
+      let ours = movableAreaEvents[`_${event}`];
+      _listeners[event] = existing ? [].concat(existing, ours) : ours;
+    });
+    onMounted(() => {
+      movableAreaEvents._resize();
+      _isMounted.value = true;
+    });
+    let movableViewItems = [];
+    const originMovableViewContexts = [];
+    function updateMovableViewContexts() {
+      const contexts = [];
+      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
+        const movableViewItem = movableViewItems[index2];
+        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem.el === context.rootRef.value);
+        if (movableViewContext) {
+          contexts.push(markRaw(movableViewContext));
+        }
+      }
+      setContexts(contexts);
+    }
+    const addMovableViewContext = (movableViewContext) => {
+      originMovableViewContexts.push(movableViewContext);
+      updateMovableViewContexts();
+    };
+    const removeMovableViewContext = (movableViewContext) => {
+      const index2 = originMovableViewContexts.indexOf(movableViewContext);
+      if (index2 >= 0) {
+        originMovableViewContexts.splice(index2, 1);
+        updateMovableViewContexts();
+      }
+    };
+    provide("_isMounted", _isMounted);
+    provide("movableAreaRootRef", rootRef);
+    provide("addMovableViewContext", addMovableViewContext);
+    provide("removeMovableViewContext", removeMovableViewContext);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      movableViewItems = flatVNode(defaultSlots);
+      return createVNode("uni-movable-area", mergeProps({
+        "ref": rootRef
+      }, $attrs.value, $excludeAttrs.value, _listeners), {
+        default: () => [createVNode(ResizeSensor, {
+          "onReize": movableAreaEvents._resize
+        }, null, 8, ["onReize"]), movableViewItems],
+        _: 2
+      }, 16);
+    };
+  }
+});
+function calc(e2) {
+  return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
+}
+function useMovableAreaState(props2, rootRef) {
+  const width = ref(0);
+  const height = ref(0);
+  const gapV = reactive({
+    x: null,
+    y: null
+  });
+  const pinchStartLen = ref(null);
+  let _scaleMovableView = null;
+  let movableViewContexts = [];
+  function _updateScale(e2) {
+    if (e2 && e2 !== 1) {
+      if (props2.scaleArea) {
+        movableViewContexts.forEach(function(item) {
+          item._setScale(e2);
+        });
+      } else {
+        if (_scaleMovableView) {
+          _scaleMovableView._setScale(e2);
+        }
+      }
+    }
+  }
+  function _find(target, items = movableViewContexts) {
+    let root = rootRef.value;
+    function get(node) {
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (node === item.rootRef.value) {
+          return item;
+        }
+      }
+      if (node === root || node === document.body || node === document) {
+        return null;
+      }
+      return get(node.parentNode);
+    }
+    return get(target);
+  }
+  const _onTouchstart = withWebEvent((t2) => {
+    let i = t2.touches;
+    if (i) {
+      if (i.length > 1) {
+        let r = {
+          x: i[1].pageX - i[0].pageX,
+          y: i[1].pageY - i[0].pageY
+        };
+        pinchStartLen.value = calc(r);
+        gapV.x = r.x;
+        gapV.y = r.y;
+        if (!props2.scaleArea) {
+          let touch0 = _find(i[0].target);
+          let touch1 = _find(i[1].target);
+          _scaleMovableView = touch0 && touch0 === touch1 ? touch0 : null;
+        }
+      }
+    }
+  });
+  const _onTouchmove = withWebEvent((t2) => {
+    let n = t2.touches;
+    if (n) {
+      if (n.length > 1) {
+        t2.preventDefault();
+        let i = {
+          x: n[1].pageX - n[0].pageX,
+          y: n[1].pageY - n[0].pageY
+        };
+        if (gapV.x !== null && pinchStartLen.value && pinchStartLen.value > 0) {
+          let r = calc(i) / pinchStartLen.value;
+          _updateScale(r);
+        }
+        gapV.x = i.x;
+        gapV.y = i.y;
+      }
+    }
+  });
+  const _onTouchend = withWebEvent((e2) => {
+    let t2 = e2.touches;
+    if (!(t2 && t2.length)) {
+      if (e2.changedTouches) {
+        gapV.x = 0;
+        gapV.y = 0;
+        pinchStartLen.value = null;
+        if (props2.scaleArea) {
+          movableViewContexts.forEach(function(item) {
+            item._endScale();
+          });
+        } else {
+          if (_scaleMovableView) {
+            _scaleMovableView._endScale();
+          }
+        }
+      }
+    }
+  });
+  function _resize() {
+    _getWH();
+    movableViewContexts.forEach(function(item, index2) {
+      item.setParent();
+    });
+  }
+  function _getWH() {
+    let style = window.getComputedStyle(rootRef.value);
+    let rect = rootRef.value.getBoundingClientRect();
+    width.value = rect.width - ["Left", "Right"].reduce(function(all, item) {
+      const LEFT = "border" + item + "Width";
+      const RIGHT = "padding" + item;
+      return all + parseFloat(style[LEFT]) + parseFloat(style[RIGHT]);
+    }, 0);
+    height.value = rect.height - ["Top", "Bottom"].reduce(function(all, item) {
+      const TOP = "border" + item + "Width";
+      const BOTTOM = "padding" + item;
+      return all + parseFloat(style[TOP]) + parseFloat(style[BOTTOM]);
+    }, 0);
+  }
+  provide("movableAreaWidth", width);
+  provide("movableAreaHeight", height);
+  return {
+    setContexts(contexts) {
+      movableViewContexts = contexts;
+    },
+    events: {
+      _onTouchstart,
+      _onTouchmove,
+      _onTouchend,
+      _resize
+    }
+  };
+}
+const addListenerToElement = function(element, type, callback, capture) {
+  element.addEventListener(type, ($event) => {
+    if (typeof callback === "function") {
+      if (callback($event) === false) {
+        if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
+          $event.preventDefault();
+        }
+        $event.stopPropagation();
+      }
+    }
+  }, {
+    passive: false
+  });
+};
+let __mouseMoveEventListener;
+let __mouseUpEventListener;
+function useTouchtrack(element, method, useCancel) {
+  onBeforeUnmount(() => {
+    document.removeEventListener("mousemove", __mouseMoveEventListener);
+    document.removeEventListener("mouseup", __mouseUpEventListener);
+  });
+  let x0 = 0;
+  let y0 = 0;
+  let x1 = 0;
+  let y1 = 0;
+  const fn = function($event, state2, x, y) {
+    if (method({
+      target: $event.target,
+      currentTarget: $event.currentTarget,
+      preventDefault: $event.preventDefault.bind($event),
+      stopPropagation: $event.stopPropagation.bind($event),
+      touches: $event.touches,
+      changedTouches: $event.changedTouches,
+      detail: {
+        state: state2,
+        x,
+        y,
+        dx: x - x0,
+        dy: y - y0,
+        ddx: x - x1,
+        ddy: y - y1,
+        timeStamp: $event.timeStamp
+      }
+    }) === false) {
+      return false;
+    }
+  };
+  let $eventOld = null;
+  let hasTouchStart;
+  let hasMouseDown;
+  addListenerToElement(element, "touchstart", function($event) {
+    hasTouchStart = true;
+    if ($event.touches.length === 1 && !$eventOld) {
+      $eventOld = $event;
+      x0 = x1 = $event.touches[0].pageX;
+      y0 = y1 = $event.touches[0].pageY;
+      return fn($event, "start", x0, y0);
+    }
+  });
+  addListenerToElement(element, "mousedown", function($event) {
+    hasMouseDown = true;
+    if (!hasTouchStart && !$eventOld) {
+      $eventOld = $event;
+      x0 = x1 = $event.pageX;
+      y0 = y1 = $event.pageY;
+      return fn($event, "start", x0, y0);
+    }
+  });
+  addListenerToElement(element, "touchmove", function($event) {
+    if ($event.touches.length === 1 && $eventOld) {
+      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
+      x1 = $event.touches[0].pageX;
+      y1 = $event.touches[0].pageY;
+      return res;
+    }
+  });
+  const mouseMoveEventListener = __mouseMoveEventListener = function($event) {
+    if (!hasTouchStart && hasMouseDown && $eventOld) {
+      const res = fn($event, "move", $event.pageX, $event.pageY);
+      x1 = $event.pageX;
+      y1 = $event.pageY;
+      return res;
+    }
+  };
+  document.addEventListener("mousemove", mouseMoveEventListener);
+  addListenerToElement(element, "touchend", function($event) {
+    if ($event.touches.length === 0 && $eventOld) {
+      hasTouchStart = false;
+      $eventOld = null;
+      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
+    }
+  });
+  const mouseUpEventListener = __mouseUpEventListener = function($event) {
+    hasMouseDown = false;
+    if (!hasTouchStart && $eventOld) {
+      $eventOld = null;
+      return fn($event, "end", $event.pageX, $event.pageY);
+    }
+  };
+  document.addEventListener("mouseup", mouseUpEventListener);
+  addListenerToElement(element, "touchcancel", function($event) {
+    if ($eventOld) {
+      hasTouchStart = false;
+      const $eventTemp = $eventOld;
+      $eventOld = null;
+      return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
+    }
+  });
+}
+function e(e2, t2, n) {
+  return e2 > t2 - n && e2 < t2 + n;
+}
+function t(t2, n) {
+  return e(t2, 0, n);
+}
+function Decline() {
+}
+Decline.prototype.x = function(e2) {
+  return Math.sqrt(e2);
+};
+function Friction$1(e2, t2) {
+  this._m = e2;
+  this._f = 1e3 * t2;
+  this._startTime = 0;
+  this._v = 0;
+}
+Friction$1.prototype.setV = function(x, y) {
+  var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+  this._x_v = x;
+  this._y_v = y;
+  this._x_a = -this._f * this._x_v / n;
+  this._y_a = -this._f * this._y_v / n;
+  this._t = Math.abs(x / this._x_a) || Math.abs(y / this._y_a);
+  this._lastDt = null;
+  this._startTime = new Date().getTime();
+};
+Friction$1.prototype.setS = function(x, y) {
+  this._x_s = x;
+  this._y_s = y;
+};
+Friction$1.prototype.s = function(t2) {
+  if (t2 === void 0) {
+    t2 = (new Date().getTime() - this._startTime) / 1e3;
+  }
+  if (t2 > this._t) {
+    t2 = this._t;
+    this._lastDt = t2;
+  }
+  var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
+  var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
+    x = this._endPositionX;
+  }
+  if (this._y_a > 0 && y < this._endPositionY || this._y_a < 0 && y > this._endPositionY) {
+    y = this._endPositionY;
+  }
+  return {
+    x,
+    y
+  };
+};
+Friction$1.prototype.ds = function(t2) {
+  if (t2 === void 0) {
+    t2 = (new Date().getTime() - this._startTime) / 1e3;
+  }
+  if (t2 > this._t) {
+    t2 = this._t;
+  }
+  return {
+    dx: this._x_v + this._x_a * t2,
+    dy: this._y_v + this._y_a * t2
+  };
+};
+Friction$1.prototype.delta = function() {
+  return {
+    x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
+    y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
+  };
+};
+Friction$1.prototype.dt = function() {
+  return -this._x_v / this._x_a;
+};
+Friction$1.prototype.done = function() {
+  var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  this._lastDt = null;
+  return t2;
+};
+Friction$1.prototype.setEnd = function(x, y) {
+  this._endPositionX = x;
+  this._endPositionY = y;
+};
+Friction$1.prototype.reconfigure = function(m, f2) {
+  this._m = m;
+  this._f = 1e3 * f2;
+};
+function Spring$1(m, k, c) {
+  this._m = m;
+  this._k = k;
+  this._c = c;
+  this._solution = null;
+  this._endPosition = 0;
+  this._startTime = 0;
+}
+Spring$1.prototype._solve = function(e2, t2) {
+  var n = this._c;
+  var i = this._m;
+  var r = this._k;
+  var o2 = n * n - 4 * i * r;
+  if (o2 === 0) {
+    const a2 = -n / (2 * i);
+    const s = e2;
+    const l = t2 / (a2 * e2);
+    return {
+      x: function(e3) {
+        return (s + l * e3) * Math.pow(Math.E, a2 * e3);
+      },
+      dx: function(e3) {
+        var t3 = Math.pow(Math.E, a2 * e3);
+        return a2 * (s + l * e3) * t3 + l * t3;
+      }
+    };
+  }
+  if (o2 > 0) {
+    const c = (-n - Math.sqrt(o2)) / (2 * i);
+    const u = (-n + Math.sqrt(o2)) / (2 * i);
+    const d = (t2 - c * e2) / (u - c);
+    const h = e2 - d;
+    return {
+      x: function(e3) {
+        var t3;
+        var n2;
+        if (e3 === this._t) {
+          t3 = this._powER1T;
+          n2 = this._powER2T;
+        }
+        this._t = e3;
+        if (!t3) {
+          t3 = this._powER1T = Math.pow(Math.E, c * e3);
+        }
+        if (!n2) {
+          n2 = this._powER2T = Math.pow(Math.E, u * e3);
+        }
+        return h * t3 + d * n2;
+      },
+      dx: function(e3) {
+        var t3;
+        var n2;
+        if (e3 === this._t) {
+          t3 = this._powER1T;
+          n2 = this._powER2T;
+        }
+        this._t = e3;
+        if (!t3) {
+          t3 = this._powER1T = Math.pow(Math.E, c * e3);
+        }
+        if (!n2) {
+          n2 = this._powER2T = Math.pow(Math.E, u * e3);
+        }
+        return h * c * t3 + d * u * n2;
+      }
+    };
+  }
+  var p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
+  var f2 = -n / 2 * i;
+  var v2 = e2;
+  var g2 = (t2 - f2 * e2) / p2;
+  return {
+    x: function(e3) {
+      return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
+    },
+    dx: function(e3) {
+      var t3 = Math.pow(Math.E, f2 * e3);
+      var n2 = Math.cos(p2 * e3);
+      var i2 = Math.sin(p2 * e3);
+      return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
+    }
+  };
+};
+Spring$1.prototype.x = function(e2) {
+  if (e2 === void 0) {
+    e2 = (new Date().getTime() - this._startTime) / 1e3;
+  }
+  return this._solution ? this._endPosition + this._solution.x(e2) : 0;
+};
+Spring$1.prototype.dx = function(e2) {
+  if (e2 === void 0) {
+    e2 = (new Date().getTime() - this._startTime) / 1e3;
+  }
+  return this._solution ? this._solution.dx(e2) : 0;
+};
+Spring$1.prototype.setEnd = function(e2, n, i) {
+  if (!i) {
+    i = new Date().getTime();
+  }
+  if (e2 !== this._endPosition || !t(n, 0.1)) {
+    n = n || 0;
+    var r = this._endPosition;
+    if (this._solution) {
+      if (t(n, 0.1)) {
+        n = this._solution.dx((i - this._startTime) / 1e3);
+      }
+      r = this._solution.x((i - this._startTime) / 1e3);
+      if (t(n, 0.1)) {
+        n = 0;
+      }
+      if (t(r, 0.1)) {
+        r = 0;
+      }
+      r += this._endPosition;
+    }
+    if (!(this._solution && t(r - e2, 0.1) && t(n, 0.1))) {
+      this._endPosition = e2;
+      this._solution = this._solve(r - this._endPosition, n);
+      this._startTime = i;
+    }
+  }
+};
+Spring$1.prototype.snap = function(e2) {
+  this._startTime = new Date().getTime();
+  this._endPosition = e2;
+  this._solution = {
+    x: function() {
+      return 0;
+    },
+    dx: function() {
+      return 0;
+    }
+  };
+};
+Spring$1.prototype.done = function(n) {
+  if (!n) {
+    n = new Date().getTime();
+  }
+  return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
+};
+Spring$1.prototype.reconfigure = function(m, t2, c) {
+  this._m = m;
+  this._k = t2;
+  this._c = c;
+  if (!this.done()) {
+    this._solution = this._solve(this.x() - this._endPosition, this.dx());
+    this._startTime = new Date().getTime();
+  }
+};
+Spring$1.prototype.springConstant = function() {
+  return this._k;
+};
+Spring$1.prototype.damping = function() {
+  return this._c;
+};
+Spring$1.prototype.configuration = function() {
+  function e2(e3, t3) {
+    e3.reconfigure(1, t3, e3.damping());
+  }
+  function t2(e3, t3) {
+    e3.reconfigure(1, e3.springConstant(), t3);
+  }
+  return [
+    {
+      label: "Spring Constant",
+      read: this.springConstant.bind(this),
+      write: e2.bind(this, this),
+      min: 100,
+      max: 1e3
+    },
+    {
+      label: "Damping",
+      read: this.damping.bind(this),
+      write: t2.bind(this, this),
+      min: 1,
+      max: 500
+    }
+  ];
+};
+function STD(e2, t2, n) {
+  this._springX = new Spring$1(e2, t2, n);
+  this._springY = new Spring$1(e2, t2, n);
+  this._springScale = new Spring$1(e2, t2, n);
+  this._startTime = 0;
+}
+STD.prototype.setEnd = function(e2, t2, n, i) {
+  var r = new Date().getTime();
+  this._springX.setEnd(e2, i, r);
+  this._springY.setEnd(t2, i, r);
+  this._springScale.setEnd(n, i, r);
+  this._startTime = r;
+};
+STD.prototype.x = function() {
+  var e2 = (new Date().getTime() - this._startTime) / 1e3;
+  return {
+    x: this._springX.x(e2),
+    y: this._springY.x(e2),
+    scale: this._springScale.x(e2)
+  };
+};
+STD.prototype.done = function() {
+  var e2 = new Date().getTime();
+  return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
+};
+STD.prototype.reconfigure = function(e2, t2, n) {
+  this._springX.reconfigure(e2, t2, n);
+  this._springY.reconfigure(e2, t2, n);
+  this._springScale.reconfigure(e2, t2, n);
+};
+const props$s = {
+  direction: {
+    type: String,
+    default: "none"
+  },
+  inertia: {
+    type: [Boolean, String],
+    default: false
+  },
+  outOfBounds: {
+    type: [Boolean, String],
+    default: false
+  },
+  x: {
+    type: [Number, String],
+    default: 0
+  },
+  y: {
+    type: [Number, String],
+    default: 0
+  },
+  damping: {
+    type: [Number, String],
+    default: 20
+  },
+  friction: {
+    type: [Number, String],
+    default: 2
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  scale: {
+    type: [Boolean, String],
+    default: false
+  },
+  scaleMin: {
+    type: [Number, String],
+    default: 0.5
+  },
+  scaleMax: {
+    type: [Number, String],
+    default: 10
+  },
+  scaleValue: {
+    type: [Number, String],
+    default: 1
+  },
+  animation: {
+    type: [Boolean, String],
+    default: true
+  }
+};
+var MovableView = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: props$s,
+  emits: ["change", "scale"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      setParent
+    } = useMovableViewState(props2, trigger, rootRef);
+    return () => {
+      return createVNode("uni-movable-view", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode(ResizeSensor, {
+          "onResize": setParent
+        }, null, 8, ["onResize"]), slots.default && slots.default()],
+        _: 1
+      }, 512);
+    };
+  }
+});
+let requesting = false;
+function _requestAnimationFrame(e2) {
+  if (!requesting) {
+    requesting = true;
+    requestAnimationFrame(function() {
+      e2();
+      requesting = false;
+    });
+  }
+}
+function p(t2, n) {
+  if (t2 === n) {
+    return 0;
+  }
+  let i = t2.offsetLeft;
+  return t2.offsetParent ? i += p(t2.offsetParent, n) : 0;
+}
+function f(t2, n) {
+  if (t2 === n) {
+    return 0;
+  }
+  let i = t2.offsetTop;
+  return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
+}
+function v(a2, b) {
+  return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
+}
+function g(friction, execute, endCallback) {
+  let record = {
+    id: 0,
+    cancelled: false
+  };
+  let cancel = function(record2) {
+    if (record2 && record2.id) {
+      cancelAnimationFrame(record2.id);
+    }
+    if (record2) {
+      record2.cancelled = true;
+    }
+  };
+  function fn(record2, friction2, execute2, endCallback2) {
+    if (!record2 || !record2.cancelled) {
+      execute2(friction2);
+      let isDone = friction2.done();
+      if (!isDone) {
+        if (!record2.cancelled) {
+          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+        }
+      }
+      if (isDone && endCallback2) {
+        endCallback2(friction2);
+      }
+    }
+  }
+  fn(record, friction, execute, endCallback);
+  return {
+    cancel: cancel.bind(null, record),
+    model: friction
+  };
+}
+function _getPx(val) {
+  if (/\d+[ur]px$/i.test(val)) {
+    return uni.upx2px(parseFloat(val));
+  }
+  return Number(val) || 0;
+}
+function useMovableViewState(props2, trigger, rootRef) {
+  const movableAreaWidth = inject("movableAreaWidth", ref(0));
+  const movableAreaHeight = inject("movableAreaHeight", ref(0));
+  const _isMounted = inject("_isMounted", ref(false));
+  const movableAreaRootRef = inject("movableAreaRootRef");
+  const addMovableViewContext = inject("addMovableViewContext", () => {
+  });
+  const removeMovableViewContext = inject("removeMovableViewContext", () => {
+  });
+  const xSync = ref(_getPx(props2.x));
+  const ySync = ref(_getPx(props2.y));
+  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
+  const width = ref(0);
+  const height = ref(0);
+  const minX = ref(0);
+  const minY = ref(0);
+  const maxX = ref(0);
+  const maxY = ref(0);
+  let _SFA = null;
+  let _FA = null;
+  const _offset = {
+    x: 0,
+    y: 0
+  };
+  const _scaleOffset = {
+    x: 0,
+    y: 0
+  };
+  let _scale = 1;
+  let _oldScale = 1;
+  let _translateX = 0;
+  let _translateY = 0;
+  let _isScaling = false;
+  let _isTouching = false;
+  let __baseX;
+  let __baseY;
+  let _checkCanMove = null;
+  let _firstMoveDirection = null;
+  const _declineX = new Decline();
+  const _declineY = new Decline();
+  const __touchInfo = {
+    historyX: [0, 0],
+    historyY: [0, 0],
+    historyT: [0, 0]
+  };
+  const dampingNumber = computed(() => {
+    let val = Number(props2.damping);
+    return isNaN(val) ? 20 : val;
+  });
+  const frictionNumber = computed(() => {
+    let val = Number(props2.friction);
+    return isNaN(val) || val <= 0 ? 2 : val;
+  });
+  const scaleMinNumber = computed(() => {
+    let val = Number(props2.scaleMin);
+    return isNaN(val) ? 0.5 : val;
+  });
+  const scaleMaxNumber = computed(() => {
+    let val = Number(props2.scaleMax);
+    return isNaN(val) ? 10 : val;
+  });
+  const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
+  const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _friction = new Friction$1(1, frictionNumber.value);
+  watch(() => props2.x, (val) => {
+    xSync.value = _getPx(val);
+  });
+  watch(() => props2.y, (val) => {
+    ySync.value = _getPx(val);
+  });
+  watch(xSync, (val) => {
+    _setX(val);
+  });
+  watch(ySync, (val) => {
+    _setY(val);
+  });
+  watch(() => props2.scaleValue, (val) => {
+    scaleValueSync.value = Number(val) || 0;
+  });
+  watch(scaleValueSync, (val) => {
+    _setScaleValue(val);
+  });
+  watch(scaleMinNumber, () => {
+    _setScaleMinOrMax();
+  });
+  watch(scaleMaxNumber, () => {
+    _setScaleMinOrMax();
+  });
+  function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel();
+    }
+    if (_SFA) {
+      _SFA.cancel();
+    }
+  }
+  function _setX(val) {
+    if (xMove.value) {
+      if (val + _scaleOffset.x === _translateX) {
+        return _translateX;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
+      }
+    }
+    return val;
+  }
+  function _setY(val) {
+    if (yMove.value) {
+      if (val + _scaleOffset.y === _translateY) {
+        return _translateY;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
+      }
+    }
+    return val;
+  }
+  function _setScaleMinOrMax() {
+    if (!props2.scale) {
+      return false;
+    }
+    _updateScale(_scale, true);
+    _updateOldScale(_scale);
+  }
+  function _setScaleValue(scale) {
+    if (!props2.scale) {
+      return false;
+    }
+    scale = _adjustScale(scale);
+    _updateScale(scale, true);
+    _updateOldScale(scale);
+    return scale;
+  }
+  function __handleTouchStart() {
+    if (!_isScaling) {
+      if (!props2.disabled) {
+        FAandSFACancel();
+        __touchInfo.historyX = [0, 0];
+        __touchInfo.historyY = [0, 0];
+        __touchInfo.historyT = [0, 0];
+        if (xMove.value) {
+          __baseX = _translateX;
+        }
+        if (yMove.value) {
+          __baseY = _translateY;
+        }
+        rootRef.value.style.willChange = "transform";
+        _checkCanMove = null;
+        _firstMoveDirection = null;
+        _isTouching = true;
+      }
+    }
+  }
+  function __handleTouchMove(event) {
+    if (!_isScaling && !props2.disabled && _isTouching) {
+      let x = _translateX;
+      let y = _translateY;
+      if (_firstMoveDirection === null) {
+        _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
+      }
+      if (xMove.value) {
+        x = event.detail.dx + __baseX;
+        __touchInfo.historyX.shift();
+        __touchInfo.historyX.push(x);
+        if (!yMove.value && _checkCanMove === null) {
+          _checkCanMove = Math.abs(event.detail.dx / event.detail.dy) < 1;
+        }
+      }
+      if (yMove.value) {
+        y = event.detail.dy + __baseY;
+        __touchInfo.historyY.shift();
+        __touchInfo.historyY.push(y);
+        if (!xMove.value && _checkCanMove === null) {
+          _checkCanMove = Math.abs(event.detail.dy / event.detail.dx) < 1;
+        }
+      }
+      __touchInfo.historyT.shift();
+      __touchInfo.historyT.push(event.detail.timeStamp);
+      if (!_checkCanMove) {
+        event.preventDefault();
+        let source = "touch";
+        if (x < minX.value) {
+          if (props2.outOfBounds) {
+            source = "touch-out-of-bounds";
+            x = minX.value - _declineX.x(minX.value - x);
+          } else {
+            x = minX.value;
+          }
+        } else if (x > maxX.value) {
+          if (props2.outOfBounds) {
+            source = "touch-out-of-bounds";
+            x = maxX.value + _declineX.x(x - maxX.value);
+          } else {
+            x = maxX.value;
+          }
+        }
+        if (y < minY.value) {
+          if (props2.outOfBounds) {
+            source = "touch-out-of-bounds";
+            y = minY.value - _declineY.x(minY.value - y);
+          } else {
+            y = minY.value;
+          }
+        } else {
+          if (y > maxY.value) {
+            if (props2.outOfBounds) {
+              source = "touch-out-of-bounds";
+              y = maxY.value + _declineY.x(y - maxY.value);
+            } else {
+              y = maxY.value;
+            }
+          }
+        }
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, _scale, source);
+        });
+      }
+    }
+  }
+  function __handleTouchEnd() {
+    if (!_isScaling && !props2.disabled && _isTouching) {
+      rootRef.value.style.willChange = "auto";
+      _isTouching = false;
+      if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
+        const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+        const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+        _friction.setV(xv, yv);
+        _friction.setS(_translateX, _translateY);
+        const x0 = _friction.delta().x;
+        const y0 = _friction.delta().y;
+        let x = x0 + _translateX;
+        let y = y0 + _translateY;
+        if (x < minX.value) {
+          x = minX.value;
+          y = _translateY + (minX.value - _translateX) * y0 / x0;
+        } else {
+          if (x > maxX.value) {
+            x = maxX.value;
+            y = _translateY + (maxX.value - _translateX) * y0 / x0;
+          }
+        }
+        if (y < minY.value) {
+          y = minY.value;
+          x = _translateX + (minY.value - _translateY) * x0 / y0;
+        } else {
+          if (y > maxY.value) {
+            y = maxY.value;
+            x = _translateX + (maxY.value - _translateY) * x0 / y0;
+          }
+        }
+        _friction.setEnd(x, y);
+        _FA = g(_friction, function() {
+          let t2 = _friction.s();
+          let x2 = t2.x;
+          let y2 = t2.y;
+          _setTransform(x2, y2, _scale, "friction");
+        }, function() {
+          _FA.cancel();
+        });
+      }
+    }
+    if (!props2.outOfBounds && !props2.inertia) {
+      FAandSFACancel();
+    }
+  }
+  function _getLimitXY(x, y) {
+    let outOfBounds = false;
+    if (x > maxX.value) {
+      x = maxX.value;
+      outOfBounds = true;
+    } else {
+      if (x < minX.value) {
+        x = minX.value;
+        outOfBounds = true;
+      }
+    }
+    if (y > maxY.value) {
+      y = maxY.value;
+      outOfBounds = true;
+    } else {
+      if (y < minY.value) {
+        y = minY.value;
+        outOfBounds = true;
+      }
+    }
+    return {
+      x,
+      y,
+      outOfBounds
+    };
+  }
+  function _updateOffset() {
+    _offset.x = p(rootRef.value, movableAreaRootRef.value);
+    _offset.y = f(rootRef.value, movableAreaRootRef.value);
+  }
+  function _updateWH(scale) {
+    scale = scale || _scale;
+    scale = _adjustScale(scale);
+    let rect = rootRef.value.getBoundingClientRect();
+    height.value = rect.height / _scale;
+    width.value = rect.width / _scale;
+    let _height = height.value * scale;
+    let _width = width.value * scale;
+    _scaleOffset.x = (_width - width.value) / 2;
+    _scaleOffset.y = (_height - height.value) / 2;
+  }
+  function _updateBoundary() {
+    let x = 0 - _offset.x + _scaleOffset.x;
+    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+    minX.value = Math.min(x, _width);
+    maxX.value = Math.max(x, _width);
+    let y = 0 - _offset.y + _scaleOffset.y;
+    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+    minY.value = Math.min(y, _height);
+    maxY.value = Math.max(y, _height);
+  }
+  function _beginScale() {
+    _isScaling = true;
+  }
+  function _updateScale(scale, animat) {
+    if (props2.scale) {
+      scale = _adjustScale(scale);
+      _updateWH(scale);
+      _updateBoundary();
+      const limitXY = _getLimitXY(_translateX, _translateY);
+      const x = limitXY.x;
+      const y = limitXY.y;
+      if (animat) {
+        _animationTo(x, y, scale, "", true, true);
+      } else {
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, scale, "", true, true);
+        });
+      }
+    }
+  }
+  function _updateOldScale(scale) {
+    _oldScale = scale;
+  }
+  function _adjustScale(scale) {
+    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.min(10, scaleMaxNumber.value, scale);
+    return scale;
+  }
+  function _animationTo(x, y, scale, source, r, o2) {
+    FAandSFACancel();
+    if (!xMove.value) {
+      x = _translateX;
+    }
+    if (!yMove.value) {
+      y = _translateY;
+    }
+    if (!props2.scale) {
+      scale = _scale;
+    }
+    let limitXY = _getLimitXY(x, y);
+    x = limitXY.x;
+    y = limitXY.y;
+    if (!props2.animation) {
+      _setTransform(x, y, scale, source, r, o2);
+      return;
+    }
+    _STD._springX._solution = null;
+    _STD._springY._solution = null;
+    _STD._springScale._solution = null;
+    _STD._springX._endPosition = _translateX;
+    _STD._springY._endPosition = _translateY;
+    _STD._springScale._endPosition = _scale;
+    _STD.setEnd(x, y, scale, 1);
+    _SFA = g(_STD, function() {
+      let data = _STD.x();
+      let x2 = data.x;
+      let y2 = data.y;
+      let scale2 = data.scale;
+      _setTransform(x2, y2, scale2, source, r, o2);
+    }, function() {
+      _SFA.cancel();
+    });
+  }
+  function _revise(source) {
+    let limitXY = _getLimitXY(_translateX, _translateY);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    let outOfBounds = limitXY.outOfBounds;
+    if (outOfBounds) {
+      _animationTo(x, y, _scale, source);
+    }
+    return outOfBounds;
+  }
+  function _setTransform(x, y, scale, source = "", r, o2) {
+    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
+      x = _translateX || 0;
+    }
+    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
+      y = _translateY || 0;
+    }
+    x = Number(x.toFixed(1));
+    y = Number(y.toFixed(1));
+    scale = Number(scale.toFixed(1));
+    if (!(_translateX === x && _translateY === y)) {
+      if (!r) {
+        trigger("change", {}, {
+          x: v(x, _scaleOffset.x),
+          y: v(y, _scaleOffset.y),
+          source
+        });
+      }
+    }
+    if (!props2.scale) {
+      scale = _scale;
+    }
+    scale = _adjustScale(scale);
+    scale = +scale.toFixed(3);
+    if (o2 && scale !== _scale) {
+      trigger("scale", {}, {
+        x,
+        y,
+        scale
+      });
+    }
+    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
+    rootRef.value.style.transform = transform;
+    rootRef.value.style.webkitTransform = transform;
+    _translateX = x;
+    _translateY = y;
+    _scale = scale;
+  }
+  function setParent() {
+    if (!_isMounted.value) {
+      return;
+    }
+    FAandSFACancel();
+    let scale = props2.scale ? scaleValueSync.value : 1;
+    _updateOffset();
+    _updateWH(scale);
+    _updateBoundary();
+    _translateX = xSync.value + _scaleOffset.x;
+    _translateY = ySync.value + _scaleOffset.y;
+    let limitXY = _getLimitXY(_translateX, _translateY);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    _setTransform(x, y, scale, "", true);
+    _updateOldScale(scale);
+  }
+  function _endScale() {
+    _isScaling = false;
+    _updateOldScale(_scale);
+  }
+  function _setScale(scale) {
+    if (scale) {
+      scale = _oldScale * scale;
+      _beginScale();
+      _updateScale(scale);
+    }
+  }
+  onMounted(() => {
+    useTouchtrack(rootRef.value, (event) => {
+      switch (event.detail.state) {
+        case "start":
+          __handleTouchStart();
+          break;
+        case "move":
+          __handleTouchMove(event);
+          break;
+        case "end":
+          __handleTouchEnd();
+      }
+    });
+    setParent();
+    _friction.reconfigure(1, frictionNumber.value);
+    _STD.reconfigure(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+    rootRef.value.style.transformOrigin = "center";
+    const context = {
+      rootRef,
+      setParent,
+      _endScale,
+      _setScale
+    };
+    addMovableViewContext(context);
+    onUnmounted(() => {
+      removeMovableViewContext(context);
+    });
+  });
+  onUnmounted(() => {
+    FAandSFACancel();
+  });
+  return {
+    setParent
+  };
+}
+const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
+const props$r = {
+  hoverClass: {
+    type: String,
+    default: "navigator-hover"
+  },
+  url: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: "navigate",
+    validator(value) {
+      return Boolean(~OPEN_TYPES.indexOf(value));
+    }
+  },
+  delta: {
+    type: Number,
+    default: 1
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 50
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 600
+  },
+  exists: {
+    type: String,
+    default: ""
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  }
+};
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Navigator",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$r,
+  setup(props2, {
+    slots
+  }) {
+    const {
+      hovering,
+      binding
+    } = useHover(props2);
+    function onClick($event) {
+      if (props2.openType !== "navigateBack" && !props2.url) {
+        console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+        return;
+      }
+      switch (props2.openType) {
+        case "navigate":
+          uni.navigateTo({
+            url: props2.url
+          });
+          break;
+        case "redirect":
+          uni.redirectTo({
+            url: props2.url,
+            exists: props2.exists
+          });
+          break;
+        case "switchTab":
+          uni.switchTab({
+            url: props2.url
+          });
+          break;
+        case "reLaunch":
+          uni.reLaunch({
+            url: props2.url
+          });
+          break;
+        case "navigateBack":
+          uni.navigateBack({
+            delta: props2.delta
+          });
+          break;
+      }
+    }
+    return () => {
+      const {
+        hoverClass
+      } = props2;
+      const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
+      return createVNode("uni-navigator", mergeProps({
+        "class": hasHoverClass && hovering.value ? hoverClass : ""
+      }, hasHoverClass && binding, {
+        "onClick": onClick
+      }), {
+        default: () => [slots.default && slots.default()]
+      }, 16, ["class", "onClick"]);
+    };
+  }
+});
+const props$q = {
+  value: {
+    type: Array,
+    default() {
+      return [];
+    },
+    validator: function(val) {
+      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+    }
+  },
+  indicatorStyle: {
+    type: String,
+    default: ""
+  },
+  indicatorClass: {
+    type: String,
+    default: ""
+  },
+  maskStyle: {
+    type: String,
+    default: ""
+  },
+  maskClass: {
+    type: String,
+    default: ""
+  }
+};
+function useState$3(props2) {
+  const value = reactive([...props2.value]);
+  const state2 = reactive({
+    value,
+    height: 34
+  });
+  watch(() => props2.value, (val, oldVal) => {
+    {
+      state2.value.length = val.length;
+      val.forEach((val2, index2) => {
+        if (val2 !== state2.value[index2]) {
+          state2.value.splice(index2, 1, val2);
+        }
+      });
+    }
+  });
+  return state2;
+}
+var PickerView = /* @__PURE__ */ defineBuiltInComponent({
+  name: "PickerView",
+  props: props$q,
+  emits: ["change", "pickstart", "pickend", "update:value"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const state2 = useState$3(props2);
+    const resizeSensorRef = ref(null);
+    onMounted(() => {
+      const resizeSensor = resizeSensorRef.value;
+      state2.height = resizeSensor.$el.getBoundingClientRect().height;
+    });
+    let columnVNodes = [];
+    function getItemIndex(vnode) {
+      return columnVNodes.indexOf(vnode);
+    }
+    const getPickerViewColumn = function(columnInstance) {
+      const ref2 = computed({
+        get() {
+          const index2 = getItemIndex(columnInstance.vnode);
+          return state2.value[index2] || 0;
+        },
+        set(current) {
+          const index2 = getItemIndex(columnInstance.vnode);
+          const oldCurrent = state2.value[index2];
+          if (oldCurrent !== current) {
+            state2.value.splice(index2, 1, current);
+            const value = state2.value.map((val) => val);
+            emit2("update:value", value);
+            trigger("change", {}, {
+              value
+            });
+          }
+        }
+      });
+      return ref2;
+    };
+    provide("getPickerViewColumn", getPickerViewColumn);
+    provide("pickerViewProps", props2);
+    provide("pickerViewState", state2);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      columnVNodes = flatVNode(defaultSlots);
+      return createVNode("uni-picker-view", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode(ResizeSensor, {
+          "ref": resizeSensorRef,
+          "onResize": ({
+            height
+          }) => state2.height = height
+        }, null, 8, ["onResize"]), createVNode("div", {
+          "class": "uni-picker-view-wrapper"
+        }, [defaultSlots])],
+        _: 2
+      }, 512);
+    };
+  }
+});
+class Friction {
+  constructor(drag) {
+    this._drag = drag;
+    this._dragLog = Math.log(drag);
+    this._x = 0;
+    this._v = 0;
+    this._startTime = 0;
+  }
+  set(x, v2) {
+    this._x = x;
+    this._v = v2;
+    this._startTime = new Date().getTime();
+  }
+  setVelocityByEnd(e2) {
+    this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
+  }
+  x(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    this._dt = e2;
+    return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
+  }
+  dx(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    this._dt = e2;
+    return this._v * t2;
+  }
+  done() {
+    return Math.abs(this.dx()) < 3;
+  }
+  reconfigure(e2) {
+    const t2 = this.x();
+    const n = this.dx();
+    this._drag = e2;
+    this._dragLog = Math.log(e2);
+    this.set(t2, n);
+  }
+  configuration() {
+    const e2 = this;
+    return [
+      {
+        label: "Friction",
+        read: function() {
+          return e2._drag;
+        },
+        write: function(t2) {
+          e2.reconfigure(t2);
+        },
+        min: 1e-3,
+        max: 0.1,
+        step: 1e-3
+      }
+    ];
+  }
+}
+function o(e2, t2, n) {
+  return e2 > t2 - n && e2 < t2 + n;
+}
+function a(e2, t2) {
+  return o(e2, 0, t2);
+}
+class Spring {
+  constructor(m, k, c) {
+    this._m = m;
+    this._k = k;
+    this._c = c;
+    this._solution = null;
+    this._endPosition = 0;
+    this._startTime = 0;
+  }
+  _solve(e2, t2) {
+    const n = this._c;
+    const i = this._m;
+    const r = this._k;
+    const o2 = n * n - 4 * i * r;
+    if (o2 === 0) {
+      const a3 = -n / (2 * i);
+      const s2 = e2;
+      const l2 = t2 / (a3 * e2);
+      return {
+        x: function(e22) {
+          return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
+        },
+        dx: function(e22) {
+          const t22 = Math.pow(Math.E, a3 * e22);
+          return a3 * (s2 + l2 * e22) * t22 + l2 * t22;
+        }
+      };
+    }
+    if (o2 > 0) {
+      const c = (-n - Math.sqrt(o2)) / (2 * i);
+      const u = (-n + Math.sqrt(o2)) / (2 * i);
+      const l2 = (t2 - c * e2) / (u - c);
+      const s2 = e2 - l2;
+      return {
+        x: function(e22) {
+          let t22;
+          let n2;
+          if (e22 === this._t) {
+            t22 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e22;
+          if (!t22) {
+            t22 = this._powER1T = Math.pow(Math.E, c * e22);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e22);
+          }
+          return s2 * t22 + l2 * n2;
+        },
+        dx: function(e22) {
+          let t22;
+          let n2;
+          if (e22 === this._t) {
+            t22 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e22;
+          if (!t22) {
+            t22 = this._powER1T = Math.pow(Math.E, c * e22);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e22);
+          }
+          return s2 * c * t22 + l2 * u * n2;
+        }
+      };
+    }
+    const d = Math.sqrt(4 * i * r - n * n) / (2 * i);
+    const a2 = -n / 2 * i;
+    const s = e2;
+    const l = (t2 - a2 * e2) / d;
+    return {
+      x: function(e22) {
+        return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
+      },
+      dx: function(e22) {
+        const t22 = Math.pow(Math.E, a2 * e22);
+        const n2 = Math.cos(d * e22);
+        const i2 = Math.sin(d * e22);
+        return t22 * (l * d * n2 - s * d * i2) + a2 * t22 * (l * i2 + s * n2);
+      }
+    };
+  }
+  x(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._endPosition + this._solution.x(e2) : 0;
+  }
+  dx(e2) {
+    if (e2 === void 0) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._solution.dx(e2) : 0;
+  }
+  setEnd(e2, t2, n) {
+    if (!n) {
+      n = new Date().getTime();
+    }
+    if (e2 !== this._endPosition || !a(t2, 0.4)) {
+      t2 = t2 || 0;
+      let i = this._endPosition;
+      if (this._solution) {
+        if (a(t2, 0.4)) {
+          t2 = this._solution.dx((n - this._startTime) / 1e3);
+        }
+        i = this._solution.x((n - this._startTime) / 1e3);
+        if (a(t2, 0.4)) {
+          t2 = 0;
+        }
+        if (a(i, 0.4)) {
+          i = 0;
+        }
+        i += this._endPosition;
+      }
+      if (!(this._solution && a(i - e2, 0.4) && a(t2, 0.4))) {
+        this._endPosition = e2;
+        this._solution = this._solve(i - this._endPosition, t2);
+        this._startTime = n;
+      }
+    }
+  }
+  snap(e2) {
+    this._startTime = new Date().getTime();
+    this._endPosition = e2;
+    this._solution = {
+      x: function() {
+        return 0;
+      },
+      dx: function() {
+        return 0;
+      }
+    };
+  }
+  done(e2) {
+    if (!e2) {
+      e2 = new Date().getTime();
+    }
+    return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
+  }
+  reconfigure(e2, t2, n) {
+    this._m = e2;
+    this._k = t2;
+    this._c = n;
+    if (!this.done()) {
+      this._solution = this._solve(this.x() - this._endPosition, this.dx());
+      this._startTime = new Date().getTime();
+    }
+  }
+  springConstant() {
+    return this._k;
+  }
+  damping() {
+    return this._c;
+  }
+  configuration() {
+    function e2(e22, t22) {
+      e22.reconfigure(1, t22, e22.damping());
+    }
+    function t2(e22, t22) {
+      e22.reconfigure(1, e22.springConstant(), t22);
+    }
+    return [
+      {
+        label: "Spring Constant",
+        read: this.springConstant.bind(this),
+        write: e2.bind(this, this),
+        min: 100,
+        max: 1e3
+      },
+      {
+        label: "Damping",
+        read: this.damping.bind(this),
+        write: t2.bind(this, this),
+        min: 1,
+        max: 500
+      }
+    ];
+  }
+}
+class Scroll {
+  constructor(extent, friction, spring) {
+    this._extent = extent;
+    this._friction = friction || new Friction(0.01);
+    this._spring = spring || new Spring(1, 90, 20);
+    this._startTime = 0;
+    this._springing = false;
+    this._springOffset = 0;
+  }
+  snap(e2, t2) {
+    this._springOffset = 0;
+    this._springing = true;
+    this._spring.snap(e2);
+    this._spring.setEnd(t2);
+  }
+  set(e2, t2) {
+    this._friction.set(e2, t2);
+    if (e2 > 0 && t2 >= 0) {
+      this._springOffset = 0;
+      this._springing = true;
+      this._spring.snap(e2);
+      this._spring.setEnd(0);
+    } else {
+      if (e2 < -this._extent && t2 <= 0) {
+        this._springOffset = 0;
+        this._springing = true;
+        this._spring.snap(e2);
+        this._spring.setEnd(-this._extent);
+      } else {
+        this._springing = false;
+      }
+    }
+    this._startTime = new Date().getTime();
+  }
+  x(e2) {
+    if (!this._startTime) {
+      return 0;
+    }
+    if (!e2) {
+      e2 = (new Date().getTime() - this._startTime) / 1e3;
+    }
+    if (this._springing) {
+      return this._spring.x() + this._springOffset;
+    }
+    let t2 = this._friction.x(e2);
+    let n = this.dx(e2);
+    if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
+      this._springing = true;
+      this._spring.setEnd(0, n);
+      if (t2 < -this._extent) {
+        this._springOffset = -this._extent;
+      } else {
+        this._springOffset = 0;
+      }
+      t2 = this._spring.x() + this._springOffset;
+    }
+    return t2;
+  }
+  dx(e2) {
+    let t2;
+    if (this._lastTime === e2) {
+      t2 = this._lastDx;
+    } else {
+      t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
+    }
+    this._lastTime = e2;
+    this._lastDx = t2;
+    return t2;
+  }
+  done() {
+    return this._springing ? this._spring.done() : this._friction.done();
+  }
+  setVelocityByEnd(e2) {
+    this._friction.setVelocityByEnd(e2);
+  }
+  configuration() {
+    const e2 = this._friction.configuration();
+    e2.push.apply(e2, this._spring.configuration());
+    return e2;
+  }
+}
+function createAnimation(scroll, onScroll, onEnd) {
+  const state2 = {
+    id: 0,
+    cancelled: false
+  };
+  function startAnimation2(state22, scroll2, onScroll2, onEnd2) {
+    if (!state22 || !state22.cancelled) {
+      onScroll2(scroll2);
+      const isDone = scroll2.done();
+      if (!isDone) {
+        if (!state22.cancelled) {
+          state22.id = requestAnimationFrame(startAnimation2.bind(null, state22, scroll2, onScroll2, onEnd2));
+        }
+      }
+      if (isDone && onEnd2) {
+        onEnd2(scroll2);
+      }
+    }
+  }
+  function cancel(state22) {
+    if (state22 && state22.id) {
+      cancelAnimationFrame(state22.id);
+    }
+    if (state22) {
+      state22.cancelled = true;
+    }
+  }
+  startAnimation2(state2, scroll, onScroll, onEnd);
+  return {
+    cancel: cancel.bind(null, state2),
+    model: scroll
+  };
+}
+class Scroller {
+  constructor(element, options) {
+    options = options || {};
+    this._element = element;
+    this._options = options;
+    this._enableSnap = options.enableSnap || false;
+    this._itemSize = options.itemSize || 0;
+    this._enableX = options.enableX || false;
+    this._enableY = options.enableY || false;
+    this._shouldDispatchScrollEvent = !!options.onScroll;
+    if (this._enableX) {
+      this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
+      this._scrollWidth = options.scrollWidth;
+    } else {
+      this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
+      this._scrollHeight = options.scrollHeight;
+    }
+    this._position = 0;
+    this._scroll = new Scroll(this._extent, options.friction, options.spring);
+    this._onTransitionEnd = this.onTransitionEnd.bind(this);
+    this.updatePosition();
+  }
+  onTouchStart() {
+    this._startPosition = this._position;
+    this._lastChangePos = this._startPosition;
+    if (this._startPosition > 0) {
+      this._startPosition /= 0.5;
+    } else {
+      if (this._startPosition < -this._extent) {
+        this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
+      }
+    }
+    if (this._animation) {
+      this._animation.cancel();
+      this._scrolling = false;
+    }
+    this.updatePosition();
+  }
+  onTouchMove(x, y) {
+    let startPosition = this._startPosition;
+    if (this._enableX) {
+      startPosition += x;
+    } else if (this._enableY) {
+      startPosition += y;
+    }
+    if (startPosition > 0) {
+      startPosition *= 0.5;
+    } else if (startPosition < -this._extent) {
+      startPosition = 0.5 * (startPosition + this._extent) - this._extent;
+    }
+    this._position = startPosition;
+    this.updatePosition();
+    this.dispatchScroll();
+  }
+  onTouchEnd(x, y, o2) {
+    if (this._enableSnap && this._position > -this._extent && this._position < 0) {
+      if (this._enableY && (Math.abs(y) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
+        this.snap();
+        return;
+      }
+      if (this._enableX && (Math.abs(x) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
+        this.snap();
+        return;
+      }
+    }
+    if (this._enableX) {
+      this._scroll.set(this._position, o2.x);
+    } else if (this._enableY) {
+      this._scroll.set(this._position, o2.y);
+    }
+    let c;
+    if (this._enableSnap) {
+      const s = this._scroll._friction.x(100);
+      const l = s % this._itemSize;
+      c = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
+      if (c <= 0 && c >= -this._extent) {
+        this._scroll.setVelocityByEnd(c);
+      }
+    }
+    this._lastTime = Date.now();
+    this._lastDelay = 0;
+    this._scrolling = true;
+    this._lastChangePos = this._position;
+    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._animation = createAnimation(this._scroll, () => {
+      const e2 = Date.now();
+      const i = (e2 - this._scroll._startTime) / 1e3;
+      const r = this._scroll.x(i);
+      this._position = r;
+      this.updatePosition();
+      const o22 = this._scroll.dx(i);
+      if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
+        this.dispatchScroll();
+        this._lastDelay = Math.abs(2e3 / o22);
+        this._lastTime = e2;
+      }
+    }, () => {
+      if (this._enableSnap) {
+        if (c <= 0 && c >= -this._extent) {
+          this._position = c;
+          this.updatePosition();
+        }
+        if (typeof this._options.onSnap === "function") {
+          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+        }
+      }
+      if (this._shouldDispatchScrollEvent) {
+        this.dispatchScroll();
+      }
+      this._scrolling = false;
+    });
+  }
+  onTransitionEnd() {
+    this._element.style.webkitTransition = "";
+    this._element.style.transition = "";
+    this._element.removeEventListener("transitionend", this._onTransitionEnd);
+    if (this._snapping) {
+      this._snapping = false;
+    }
+    this.dispatchScroll();
+  }
+  snap() {
+    const itemSize = this._itemSize;
+    const position = this._position % itemSize;
+    const i = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
+    if (this._position !== i) {
+      this._snapping = true;
+      this.scrollTo(-i);
+      if (typeof this._options.onSnap === "function") {
+        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      }
+    }
+  }
+  scrollTo(position, time) {
+    if (this._animation) {
+      this._animation.cancel();
+      this._scrolling = false;
+    }
+    if (typeof position === "number") {
+      this._position = -position;
+    }
+    if (this._position < -this._extent) {
+      this._position = -this._extent;
+    } else {
+      if (this._position > 0) {
+        this._position = 0;
+      }
+    }
+    const transition = "transform " + (time || 0.2) + "s ease-out";
+    this._element.style.webkitTransition = "-webkit-" + transition;
+    this._element.style.transition = transition;
+    this.updatePosition();
+    this._element.addEventListener("transitionend", this._onTransitionEnd);
+  }
+  dispatchScroll() {
+    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+      this._lastPos = this._position;
+      const event = {
+        target: {
+          scrollLeft: this._enableX ? -this._position : 0,
+          scrollTop: this._enableY ? -this._position : 0,
+          scrollHeight: this._scrollHeight || this._element.offsetHeight,
+          scrollWidth: this._scrollWidth || this._element.offsetWidth,
+          offsetHeight: this._element.parentElement.offsetHeight,
+          offsetWidth: this._element.parentElement.offsetWidth
+        }
+      };
+      this._options.onScroll(event);
+    }
+  }
+  update(height, scrollHeight, itemSize) {
+    let extent = 0;
+    const position = this._position;
+    if (this._enableX) {
+      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
+      this._scrollWidth = scrollHeight;
+    } else {
+      extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
+      this._scrollHeight = scrollHeight;
+    }
+    if (typeof height === "number") {
+      this._position = -height;
+    }
+    if (this._position < -extent) {
+      this._position = -extent;
+    } else {
+      if (this._position > 0) {
+        this._position = 0;
+      }
+    }
+    this._itemSize = itemSize || this._itemSize;
+    this.updatePosition();
+    if (position !== this._position) {
+      this.dispatchScroll();
+      if (typeof this._options.onSnap === "function") {
+        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      }
+    }
+    this._extent = extent;
+    this._scroll._extent = extent;
+  }
+  updatePosition() {
+    let transform = "";
+    if (this._enableX) {
+      transform = "translateX(" + this._position + "px) translateZ(0)";
+    } else {
+      if (this._enableY) {
+        transform = "translateY(" + this._position + "px) translateZ(0)";
+      }
+    }
+    this._element.style.webkitTransform = transform;
+    this._element.style.transform = transform;
+  }
+  isScrolling() {
+    return this._scrolling || this._snapping;
+  }
+}
+function useScroller(element, options) {
+  const touchInfo = {
+    trackingID: -1,
+    maxDy: 0,
+    maxDx: 0
+  };
+  const scroller = new Scroller(element, options);
+  function findDelta(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    return touchtrackEvent.detail.state === "move" || touchtrackEvent.detail.state === "end" ? {
+      x: touchtrackEvent.detail.dx,
+      y: touchtrackEvent.detail.dy
+    } : {
+      x: mouseEvent.screenX - touchInfo.x,
+      y: mouseEvent.screenY - touchInfo.y
+    };
+  }
+  function handleTouchStart(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    if (touchtrackEvent.detail.state === "start") {
+      touchInfo.trackingID = "touch";
+      touchInfo.x = touchtrackEvent.detail.x;
+      touchInfo.y = touchtrackEvent.detail.y;
+    } else {
+      touchInfo.trackingID = "mouse";
+      touchInfo.x = mouseEvent.screenX;
+      touchInfo.y = mouseEvent.screenY;
+    }
+    touchInfo.maxDx = 0;
+    touchInfo.maxDy = 0;
+    touchInfo.historyX = [0];
+    touchInfo.historyY = [0];
+    touchInfo.historyTime = [
+      touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
+    ];
+    touchInfo.listener = scroller;
+    if (scroller.onTouchStart) {
+      scroller.onTouchStart();
+    }
+    event.preventDefault();
+  }
+  function handleTouchMove(event) {
+    const touchtrackEvent = event;
+    const mouseEvent = event;
+    if (touchInfo.trackingID !== -1) {
+      event.preventDefault();
+      const delta = findDelta(event);
+      if (delta) {
+        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
+          touchInfo.historyTime.shift();
+          touchInfo.historyX.shift();
+          touchInfo.historyY.shift();
+        }
+        if (touchInfo.listener && touchInfo.listener.onTouchMove) {
+          touchInfo.listener.onTouchMove(delta.x, delta.y);
+        }
+      }
+    }
+  }
+  function handleTouchEnd(event) {
+    if (touchInfo.trackingID !== -1) {
+      event.preventDefault();
+      const delta = findDelta(event);
+      if (delta) {
+        const listener2 = touchInfo.listener;
+        touchInfo.trackingID = -1;
+        touchInfo.listener = null;
+        const length = touchInfo.historyTime.length;
+        const o2 = {
+          x: 0,
+          y: 0
+        };
+        if (length > 2) {
+          for (let i = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i], x = touchInfo.historyX[i], y = touchInfo.historyY[i]; i > 0; ) {
+            i--;
+            const time0 = touchInfo.historyTime[i];
+            const time = time1 - time0;
+            if (time > 30 && time < 50) {
+              o2.x = (x - touchInfo.historyX[i]) / (time / 1e3);
+              o2.y = (y - touchInfo.historyY[i]) / (time / 1e3);
+              break;
+            }
+          }
+        }
+        touchInfo.historyTime = [];
+        touchInfo.historyX = [];
+        touchInfo.historyY = [];
+        if (listener2 && listener2.onTouchEnd) {
+          listener2.onTouchEnd(delta.x, delta.y, o2);
+        }
+      }
+    }
+  }
+  return {
+    scroller,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd
+  };
+}
+let scopedIndex = 0;
+function useScopedClass(indicatorHeightRef) {
+  const className = `uni-picker-view-content-${scopedIndex++}`;
+  function updateStyle2() {
+    const style = document.createElement("style");
+    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
+    document.head.appendChild(style);
+  }
+  watch(() => indicatorHeightRef.value, updateStyle2);
+  return className;
+}
+function useCustomClick(dom) {
+  const MAX_MOVE = 20;
+  let x = 0;
+  let y = 0;
+  dom.addEventListener("touchstart", (event) => {
+    const info = event.changedTouches[0];
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener("touchend", (event) => {
+    const info = event.changedTouches[0];
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      const options = {
+        bubbles: true,
+        cancelable: true,
+        target: event.target,
+        currentTarget: event.currentTarget
+      };
+      const customClick = new CustomEvent("click", options);
+      const props2 = ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"];
+      props2.forEach((key) => {
+        customClick[key] = info[key];
+      });
+      event.target.dispatchEvent(customClick);
+    }
+  });
+}
+var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
+  name: "PickerViewColumn",
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const contentRef = ref(null);
+    const getPickerViewColumn = inject("getPickerViewColumn");
+    const instance2 = getCurrentInstance();
+    const currentRef = getPickerViewColumn ? getPickerViewColumn(instance2) : ref(0);
+    const pickerViewProps = inject("pickerViewProps");
+    const pickerViewState = inject("pickerViewState");
+    const indicatorHeight = ref(34);
+    const resizeSensorRef = ref(null);
+    onMounted(() => {
+      const resizeSensor = resizeSensorRef.value;
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
+    });
+    const maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
+    const {
+      state: scopedAttrsState
+    } = useScopedAttrs();
+    const className = useScopedClass(indicatorHeight);
+    let scroller;
+    const state2 = reactive({
+      current: currentRef.value,
+      length: 0
+    });
+    function updatesScroller() {
+      if (scroller) {
+        nextTick(() => {
+          let current = Math.min(state2.current, state2.length - 1);
+          current = Math.max(current, 0);
+          scroller.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
+        });
+      }
+    }
+    watch(() => currentRef.value, (current) => {
+      if (current !== state2.current) {
+        state2.current = current;
+        updatesScroller();
+      }
+    });
+    watch(() => state2.current, (current) => currentRef.value = current);
+    watch([() => indicatorHeight.value, () => state2.length, () => pickerViewState.height], updatesScroller);
+    let oldDeltaY = 0;
+    function handleWheel(event) {
+      const deltaY = oldDeltaY + event.deltaY;
+      if (Math.abs(deltaY) > 10) {
+        oldDeltaY = 0;
+        let current = Math.min(state2.current + (deltaY < 0 ? -1 : 1), state2.length - 1);
+        state2.current = current = Math.max(current, 0);
+        scroller.scrollTo(current * indicatorHeight.value);
+      } else {
+        oldDeltaY = deltaY;
+      }
+      event.preventDefault();
+    }
+    function handleTap({
+      clientY
+    }) {
+      const el = rootRef.value;
+      if (!scroller.isScrolling()) {
+        const rect = el.getBoundingClientRect();
+        const r = clientY - rect.top - pickerViewState.height / 2;
+        const o2 = indicatorHeight.value / 2;
+        if (!(Math.abs(r) <= o2)) {
+          const a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
+          const s = r < 0 ? -a2 : a2;
+          let current = Math.min(state2.current + s, state2.length - 1);
+          state2.current = current = Math.max(current, 0);
+          scroller.scrollTo(current * indicatorHeight.value);
+        }
+      }
+    }
+    onMounted(() => {
+      const el = rootRef.value;
+      const content = contentRef.value;
+      const {
+        scroller: scrollerOrigin,
+        handleTouchStart,
+        handleTouchMove,
+        handleTouchEnd
+      } = useScroller(content, {
+        enableY: true,
+        enableX: false,
+        enableSnap: true,
+        itemSize: indicatorHeight.value,
+        friction: new Friction(1e-4),
+        spring: new Spring(2, 90, 20),
+        onSnap: (index2) => {
+          if (!isNaN(index2) && index2 !== state2.current) {
+            state2.current = index2;
+          }
+        }
+      });
+      scroller = scrollerOrigin;
+      useTouchtrack(el, (e2) => {
+        switch (e2.detail.state) {
+          case "start":
+            handleTouchStart(e2);
+            break;
+          case "move":
+            handleTouchMove(e2);
+            break;
+          case "end":
+          case "cancel":
+            handleTouchEnd(e2);
+        }
+      }, true);
+      useCustomClick(el);
+      updatesScroller();
+    });
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      state2.length = flatVNode(defaultSlots).length;
+      const padding = `${maskSize.value}px 0`;
+      return createVNode("uni-picker-view-column", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", {
+          "onWheel": handleWheel,
+          "onClick": handleTap,
+          "class": "uni-picker-view-group"
+        }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "class": ["uni-picker-view-mask", pickerViewProps.maskClass],
+          "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps.maskStyle}`
+        }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "class": ["uni-picker-view-indicator", pickerViewProps.indicatorClass],
+          "style": pickerViewProps.indicatorStyle
+        }), [createVNode(ResizeSensor, {
+          "ref": resizeSensorRef,
+          "onResize": ({
+            height
+          }) => indicatorHeight.value = height
+        }, null, 8, ["onResize"])], 16), createVNode("div", {
+          "ref": contentRef,
+          "class": ["uni-picker-view-content", className],
+          "style": {
+            padding
+          }
+        }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])]
+      }, 512);
+    };
+  }
+});
+const VALUES = {
+  activeColor: PRIMARY_COLOR,
+  backgroundColor: "#EBEBEB",
+  activeMode: "backwards"
+};
+const props$p = {
+  percent: {
+    type: [Number, String],
+    default: 0,
+    validator(value) {
+      return !isNaN(parseFloat(value));
+    }
+  },
+  showInfo: {
+    type: [Boolean, String],
+    default: false
+  },
+  strokeWidth: {
+    type: [Number, String],
+    default: 6,
+    validator(value) {
+      return !isNaN(parseFloat(value));
+    }
+  },
+  color: {
+    type: String,
+    default: VALUES.activeColor
+  },
+  activeColor: {
+    type: String,
+    default: VALUES.activeColor
+  },
+  backgroundColor: {
+    type: String,
+    default: VALUES.backgroundColor
+  },
+  active: {
+    type: [Boolean, String],
+    default: false
+  },
+  activeMode: {
+    type: String,
+    default: VALUES.activeMode
+  },
+  duration: {
+    type: [Number, String],
+    default: 30,
+    validator(value) {
+      return !isNaN(parseFloat(value));
+    }
+  }
+};
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Progress",
+  props: props$p,
+  setup(props2) {
+    const state2 = useProgressState(props2);
+    _activeAnimation(state2, props2);
+    watch(() => state2.realPercent, (newValue, oldValue) => {
+      state2.strokeTimer && clearInterval(state2.strokeTimer);
+      state2.lastPercent = oldValue || 0;
+      _activeAnimation(state2, props2);
+    });
+    return () => {
+      const {
+        showInfo
+      } = props2;
+      const {
+        outerBarStyle,
+        innerBarStyle,
+        currentPercent
+      } = state2;
+      return createVNode("uni-progress", {
+        "class": "uni-progress"
+      }, {
+        default: () => [createVNode("div", {
+          "style": outerBarStyle,
+          "class": "uni-progress-bar"
+        }, [createVNode("div", {
+          "style": innerBarStyle,
+          "class": "uni-progress-inner-bar"
+        }, null, 4)], 4), showInfo ? createVNode("p", {
+          "class": "uni-progress-info"
+        }, [currentPercent + "%"]) : ""],
+        _: 1
+      });
+    };
+  }
+});
+function useProgressState(props2) {
+  const currentPercent = ref(0);
+  const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
+  const innerBarStyle = computed(() => {
+    const backgroundColor = props2.color !== VALUES.activeColor && props2.activeColor === VALUES.activeColor ? props2.color : props2.activeColor;
+    return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
+  });
+  const realPercent = computed(() => {
+    let realValue = parseFloat(props2.percent);
+    realValue < 0 && (realValue = 0);
+    realValue > 100 && (realValue = 100);
+    return realValue;
+  });
+  const state2 = reactive({
+    outerBarStyle,
+    innerBarStyle,
+    realPercent,
+    currentPercent,
+    strokeTimer: 0,
+    lastPercent: 0
+  });
+  return state2;
+}
+function _activeAnimation(state2, props2) {
+  if (props2.active) {
+    state2.currentPercent = props2.activeMode === VALUES.activeMode ? 0 : state2.lastPercent;
+    state2.strokeTimer = setInterval(() => {
+      if (state2.currentPercent + 1 > state2.realPercent) {
+        state2.currentPercent = state2.realPercent;
+        state2.strokeTimer && clearInterval(state2.strokeTimer);
+      } else {
+        state2.currentPercent += 1;
+      }
+    }, parseFloat(props2.duration));
+  } else {
+    state2.currentPercent = state2.realPercent;
+  }
+}
+const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+const props$o = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
+  name: "RadioGroup",
+  props: props$o,
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    useProvideRadioGroup(props2, trigger);
+    return () => {
+      return createVNode("uni-radio-group", {
+        "ref": rootRef
+      }, {
+        default: () => [slots.default && slots.default()]
+      }, 512);
+    };
+  }
+});
+function useProvideRadioGroup(props2, trigger) {
+  const fields2 = [];
+  onMounted(() => {
+    _resetRadioGroupValue(fields2.length - 1);
+  });
+  const getFieldsValue = () => fields2.find((field) => field.value.radioChecked)?.value.value;
+  provide(uniRadioGroupKey, {
+    addField(field) {
+      fields2.push(field);
+    },
+    removeField(field) {
+      fields2.splice(fields2.indexOf(field), 1);
+    },
+    radioChange($event, field) {
+      const index2 = fields2.indexOf(field);
+      _resetRadioGroupValue(index2, true);
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
+    }
+  });
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
+    });
+  }
+  function setFieldChecked(field, radioChecked) {
+    field.value = {
+      radioChecked,
+      value: field.value.value
+    };
+  }
+  function _resetRadioGroupValue(key, change) {
+    fields2.forEach((value, index2) => {
+      if (index2 === key) {
+        return;
+      }
+      if (change) {
+        setFieldChecked(fields2[index2], false);
+      } else {
+        fields2.forEach((v2, i) => {
+          if (index2 >= i) {
+            return;
+          }
+          if (fields2[i].value.radioChecked) {
+            setFieldChecked(fields2[index2], false);
+          }
+        });
+      }
+    });
+  }
+  return fields2;
+}
+const props$n = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  value: {
+    type: String,
+    default: ""
+  }
+};
+var index$h = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Radio",
+  props: props$n,
+  setup(props2, {
+    slots
+  }) {
+    const radioChecked = ref(props2.checked);
+    const radioValue = ref(props2.value);
+    const checkedStyle = computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
+    watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      radioChecked.value = newChecked;
+      radioValue.value = newModelValue;
+    });
+    const reset = () => {
+      radioChecked.value = false;
+    };
+    const {
+      uniCheckGroup,
+      uniLabel,
+      field
+    } = useRadioInject(radioChecked, radioValue, reset);
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      radioChecked.value = true;
+      uniCheckGroup && uniCheckGroup.radioChange($event, field);
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners$1(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-radio", mergeProps(booleanAttrs, {
+        "onClick": _onClick
+      }), {
+        default: () => [createVNode("div", {
+          "class": "uni-radio-wrapper"
+        }, [createVNode("div", {
+          "class": ["uni-radio-input", {
+            "uni-radio-input-disabled": props2.disabled
+          }],
+          "style": radioChecked.value ? checkedStyle.value : ""
+        }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])]
+      }, 16, ["onClick"]);
+    };
+  }
+});
+function useRadioInject(radioChecked, radioValue, reset) {
+  const field = computed({
+    get: () => ({
+      radioChecked: Boolean(radioChecked.value),
+      value: radioValue.value
+    }),
+    set: ({
+      radioChecked: checked
+    }) => {
+      radioChecked.value = checked;
+    }
+  });
+  const formField = {
+    reset
+  };
+  const uniCheckGroup = inject(uniRadioGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field);
+  }
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = inject(uniLabelKey, false);
+  onBeforeUnmount(() => {
+    uniCheckGroup && uniCheckGroup.removeField(field);
+    uniForm && uniForm.removeField(formField);
+  });
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel,
+    field
+  };
+}
+function removeDOCTYPE(html) {
+  return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+}
+function parseAttrs(attrs2) {
+  return attrs2.reduce(function(pre, attr2) {
+    let value = attr2.value;
+    const name = attr2.name;
+    if (value.match(/ /) && name !== "style") {
+      value = value.split(" ");
+    }
+    if (pre[name]) {
+      if (Array.isArray(pre[name])) {
+        pre[name].push(value);
+      } else {
+        pre[name] = [pre[name], value];
+      }
+    } else {
+      pre[name] = value;
+    }
+    return pre;
+  }, {});
+}
+function parseHtml(html) {
+  html = removeDOCTYPE(html);
+  const stacks = [];
+  const results = {
+    node: "root",
+    children: []
+  };
+  HTMLParser(html, {
+    start: function(tag, attrs2, unary) {
+      const node = {
+        name: tag
+      };
+      if (attrs2.length !== 0) {
+        node.attrs = parseAttrs(attrs2);
+      }
+      if (unary) {
+        const parent = stacks[0] || results;
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      } else {
+        stacks.unshift(node);
+      }
+    },
+    end: function(tag) {
+      const node = stacks.shift();
+      if (node.name !== tag)
+        console.error("invalid state: mismatch end tag");
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    chars: function(text2) {
+      const node = {
+        type: "text",
+        text: text2
+      };
+      if (stacks.length === 0) {
+        results.children.push(node);
+      } else {
+        const parent = stacks[0];
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
+      }
+    },
+    comment: function(text2) {
+      const node = {
+        node: "comment",
+        text: text2
+      };
+      const parent = stacks[0];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(node);
+    }
+  });
+  return results.children;
+}
+const TAGS = {
+  a: "",
+  abbr: "",
+  b: "",
+  blockquote: "",
+  br: "",
+  code: "",
+  col: ["span", "width"],
+  colgroup: ["span", "width"],
+  dd: "",
+  del: "",
+  div: "",
+  dl: "",
+  dt: "",
+  em: "",
+  fieldset: "",
+  h1: "",
+  h2: "",
+  h3: "",
+  h4: "",
+  h5: "",
+  h6: "",
+  hr: "",
+  i: "",
+  img: ["alt", "src", "height", "width"],
+  ins: "",
+  label: "",
+  legend: "",
+  li: "",
+  ol: ["start", "type"],
+  p: "",
+  q: "",
+  span: "",
+  strong: "",
+  sub: "",
+  sup: "",
+  table: ["width"],
+  tbody: "",
+  td: ["colspan", "rowspan", "height", "width"],
+  tfoot: "",
+  th: ["colspan", "rowspan", "height", "width"],
+  thead: "",
+  tr: "",
+  ul: ""
+};
+const CHARS = {
+  amp: "&",
+  gt: ">",
+  lt: "<",
+  nbsp: " ",
+  quot: '"',
+  apos: "'"
+};
+function decodeEntities(htmlString) {
+  return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
+    if (hasOwn(CHARS, stage) && CHARS[stage]) {
+      return CHARS[stage];
+    }
+    if (/^#[0-9]{1,4}$/.test(stage)) {
+      return String.fromCharCode(stage.slice(1));
+    }
+    if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+      return String.fromCharCode("0" + stage.slice(1));
+    }
+    const wrap = document.createElement("div");
+    wrap.innerHTML = match;
+    return wrap.innerText || wrap.textContent;
+  });
+}
+function parseNodes(nodes, parentNode) {
+  nodes.forEach(function(node) {
+    if (!isPlainObject(node)) {
+      return;
+    }
+    if (!hasOwn(node, "type") || node.type === "node") {
+      if (!(typeof node.name === "string" && node.name)) {
+        return;
+      }
+      const tagName = node.name.toLowerCase();
+      if (!hasOwn(TAGS, tagName)) {
+        return;
+      }
+      const elem = document.createElement(tagName);
+      if (!elem) {
+        return;
+      }
+      const attrs2 = node.attrs;
+      if (isPlainObject(attrs2)) {
+        const tagAttrs = TAGS[tagName] || [];
+        Object.keys(attrs2).forEach(function(name) {
+          let value = attrs2[name];
+          switch (name) {
+            case "class":
+              Array.isArray(value) && (value = value.join(" "));
+            case "style":
+              elem.setAttribute(name, value);
+              break;
+            default:
+              if (tagAttrs.indexOf(name) !== -1) {
+                elem.setAttribute(name, value);
+              }
+          }
+        });
+      }
+      const children = node.children;
+      if (Array.isArray(children) && children.length) {
+        parseNodes(node.children, elem);
+      }
+      parentNode.appendChild(elem);
+    } else {
+      if (node.type === "text" && typeof node.text === "string" && node.text !== "") {
+        parentNode.appendChild(document.createTextNode(decodeEntities(node.text)));
+      }
+    }
+  });
+  return parentNode;
+}
+const props$m = {
+  nodes: {
+    type: [Array, String],
+    default: function() {
+      return [];
+    }
+  }
+};
+var index$g = /* @__PURE__ */ defineBuiltInComponent({
+  name: "RichText",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$m,
+  setup(props2) {
+    const rootRef = ref(null);
+    function _renderNodes(nodes) {
+      if (typeof nodes === "string") {
+        nodes = parseHtml(nodes);
+      }
+      const nodeList = parseNodes(nodes, document.createDocumentFragment());
+      rootRef.value.firstElementChild.innerHTML = "";
+      rootRef.value.firstElementChild.appendChild(nodeList);
+    }
+    watch(() => props2.nodes, (value) => {
+      _renderNodes(value);
+    });
+    onMounted(() => {
+      _renderNodes(props2.nodes);
+    });
+    return () => {
+      return createVNode("uni-rich-text", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", null, null)]
+      }, 512);
+    };
+  }
+});
+const passiveOptions = passive(true);
+const props$l = {
+  scrollX: {
+    type: [Boolean, String],
+    default: false
+  },
+  scrollY: {
+    type: [Boolean, String],
+    default: false
+  },
+  upperThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  lowerThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  scrollTop: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollLeft: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
+  scrollWithAnimation: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableBackToTop: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherEnabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherThreshold: {
+    type: Number,
+    default: 45
+  },
+  refresherDefaultStyle: {
+    type: String,
+    default: "back"
+  },
+  refresherBackground: {
+    type: String,
+    default: "#fff"
+  },
+  refresherTriggered: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$l,
+  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const main = ref(null);
+    const wrap = ref(null);
+    const content = ref(null);
+    const refresherinner = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      state: state2,
+      scrollTopNumber,
+      scrollLeftNumber
+    } = useScrollViewState(props2);
+    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    const mainStyle = computed(() => {
+      let style = "";
+      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      return style;
+    });
+    return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState,
+        refreshRotate
+      } = state2;
+      return createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", {
+          "ref": wrap,
+          "class": "uni-scroll-view"
+        }, [createVNode("div", {
+          "ref": main,
+          "style": mainStyle.value,
+          "class": "uni-scroll-view"
+        }, [createVNode("div", {
+          "ref": content,
+          "class": "uni-scroll-view-content"
+        }, [refresherEnabled ? createVNode("div", {
+          "ref": refresherinner,
+          "style": {
+            backgroundColor: refresherBackground,
+            height: refresherHeight + "px"
+          },
+          "class": "uni-scroll-view-refresher"
+        }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+          "class": "uni-scroll-view-refresh"
+        }, [createVNode("div", {
+          "class": "uni-scroll-view-refresh-inner"
+        }, [refreshState == "pulling" ? createVNode("svg", {
+          "style": {
+            transform: "rotate(" + refreshRotate + "deg)"
+          },
+          "fill": "#2BD009",
+          "class": "uni-scroll-view-refresh__icon",
+          "width": "24",
+          "height": "24",
+          "viewBox": "0 0 24 24"
+        }, [createVNode("path", {
+          "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+        }, null), createVNode("path", {
+          "d": "M0 0h24v24H0z",
+          "fill": "none"
+        }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+          "class": "uni-scroll-view-refresh__spinner",
+          "width": "24",
+          "height": "24",
+          "viewBox": "25 25 50 50"
+        }, [createVNode("circle", {
+          "cx": "50",
+          "cy": "50",
+          "r": "20",
+          "fill": "none",
+          "style": "color: #2bd009",
+          "stroke-width": "3"
+        }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)]
+      }, 512);
+    };
+  }
+});
+function useScrollViewState(props2) {
+  const scrollTopNumber = computed(() => {
+    return Number(props2.scrollTop) || 0;
+  });
+  const scrollLeftNumber = computed(() => {
+    return Number(props2.scrollLeft) || 0;
+  });
+  const state2 = reactive({
+    lastScrollTop: scrollTopNumber.value,
+    lastScrollLeft: scrollLeftNumber.value,
+    lastScrollToUpperTime: 0,
+    lastScrollToLowerTime: 0,
+    refresherHeight: 0,
+    refreshRotate: 0,
+    refreshState: ""
+  });
+  return {
+    state: state2,
+    scrollTopNumber,
+    scrollLeftNumber
+  };
+}
+function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
+  let _lastScrollTime = 0;
+  let __transitionEnd = () => {
+  };
+  const upperThresholdNumber = computed(() => {
+    var val = Number(props2.upperThreshold);
+    return isNaN(val) ? 50 : val;
+  });
+  const lowerThresholdNumber = computed(() => {
+    var val = Number(props2.lowerThreshold);
+    return isNaN(val) ? 50 : val;
+  });
+  function scrollTo2(scrollToValue, direction2) {
+    const container = main.value;
+    let transformValue = 0;
+    let transform = "";
+    scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
+    direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
+    if (transformValue === 0)
+      return;
+    let _content = content.value;
+    _content.style.transition = "transform .3s ease-out";
+    _content.style.webkitTransition = "-webkit-transform .3s ease-out";
+    if (direction2 === "x") {
+      transform = "translateX(" + transformValue + "px) translateZ(0)";
+    } else {
+      direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
+    }
+    _content.removeEventListener("transitionend", __transitionEnd);
+    _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
+    __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
+    _content.addEventListener("transitionend", __transitionEnd);
+    _content.addEventListener("webkitTransitionEnd", __transitionEnd);
+    if (direction2 === "x") {
+      container.style.overflowX = "hidden";
+    } else if (direction2 === "y") {
+      container.style.overflowY = "hidden";
+    }
+    _content.style.transform = transform;
+    _content.style.webkitTransform = transform;
+  }
+  function _handleScroll($event) {
+    if ($event.timeStamp - _lastScrollTime > 20) {
+      _lastScrollTime = $event.timeStamp;
+      const target = $event.target;
+      trigger("scroll", $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: state2.lastScrollLeft - target.scrollLeft,
+        deltaY: state2.lastScrollTop - target.scrollTop
+      });
+      if (props2.scrollY) {
+        if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+          trigger("scrolltoupper", $event, {
+            direction: "top"
+          });
+          state2.lastScrollToUpperTime = $event.timeStamp;
+        }
+        if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+          trigger("scrolltolower", $event, {
+            direction: "bottom"
+          });
+          state2.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+      if (props2.scrollX) {
+        if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+          trigger("scrolltoupper", $event, {
+            direction: "left"
+          });
+          state2.lastScrollToUpperTime = $event.timeStamp;
+        }
+        if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+          trigger("scrolltolower", $event, {
+            direction: "right"
+          });
+          state2.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+      state2.lastScrollTop = target.scrollTop;
+      state2.lastScrollLeft = target.scrollLeft;
+    }
+  }
+  function _scrollTopChanged(val) {
+    if (props2.scrollY) {
+      {
+        if (props2.scrollWithAnimation) {
+          scrollTo2(val, "y");
+        } else {
+          main.value.scrollTop = val;
+        }
+      }
+    }
+  }
+  function _scrollLeftChanged(val) {
+    if (props2.scrollX) {
+      {
+        if (props2.scrollWithAnimation) {
+          scrollTo2(val, "x");
+        } else {
+          main.value.scrollLeft = val;
+        }
+      }
+    }
+  }
+  function _scrollIntoViewChanged(val) {
+    if (val) {
+      if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+        console.error(`id error: scroll-into-view=${val}`);
+        return;
+      }
+      var element = rootRef.value.querySelector("#" + val);
+      if (element) {
+        var mainRect = main.value.getBoundingClientRect();
+        var elRect = element.getBoundingClientRect();
+        if (props2.scrollX) {
+          var left = elRect.left - mainRect.left;
+          var scrollLeft = main.value.scrollLeft;
+          var x = scrollLeft + left;
+          if (props2.scrollWithAnimation) {
+            scrollTo2(x, "x");
+          } else {
+            main.value.scrollLeft = x;
+          }
+        }
+        if (props2.scrollY) {
+          var top = elRect.top - mainRect.top;
+          var scrollTop = main.value.scrollTop;
+          var y = scrollTop + top;
+          if (props2.scrollWithAnimation) {
+            scrollTo2(y, "y");
+          } else {
+            main.value.scrollTop = y;
+          }
+        }
+      }
+    }
+  }
+  function _transitionEnd(val, direction2) {
+    content.value.style.transition = "";
+    content.value.style.webkitTransition = "";
+    content.value.style.transform = "";
+    content.value.style.webkitTransform = "";
+    let _main = main.value;
+    if (direction2 === "x") {
+      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.scrollLeft = val;
+    } else if (direction2 === "y") {
+      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.scrollTop = val;
+    }
+    content.value.removeEventListener("transitionend", __transitionEnd);
+    content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
+  }
+  function _setRefreshState(_state) {
+    switch (_state) {
+      case "refreshing":
+        state2.refresherHeight = props2.refresherThreshold;
+        trigger("refresherrefresh", {}, {});
+        break;
+      case "restore":
+        state2.refresherHeight = 0;
+        trigger("refresherrestore", {}, {});
+        break;
+    }
+    state2.refreshState = _state;
+  }
+  onMounted(() => {
+    _scrollTopChanged(scrollTopNumber.value);
+    _scrollLeftChanged(scrollLeftNumber.value);
+    _scrollIntoViewChanged(props2.scrollIntoView);
+    let __handleScroll = function(event) {
+      event.stopPropagation();
+      _handleScroll(event);
+    };
+    let touchStart = {
+      x: 0,
+      y: 0
+    };
+    let needStop = null;
+    let __handleTouchMove = function(event) {
+      var x = event.touches[0].pageX;
+      var y = event.touches[0].pageY;
+      var _main = main.value;
+      if (needStop === null) {
+        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
+          if (self.scrollX) {
+            if (_main.scrollLeft === 0 && x > touchStart.x) {
+              needStop = false;
+              return;
+            } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
+              needStop = false;
+              return;
+            }
+            needStop = true;
+          } else {
+            needStop = false;
+          }
+        } else {
+          if (self.scrollY) {
+            if (_main.scrollTop === 0 && y > touchStart.y) {
+              needStop = false;
+              return;
+            } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
+              needStop = false;
+              return;
+            }
+            needStop = true;
+          } else {
+            needStop = false;
+          }
+        }
+      }
+      if (needStop) {
+        event.stopPropagation();
+      }
+      if (props2.refresherEnabled && state2.refreshState === "pulling") {
+        const dy = y - touchStart.y;
+        state2.refresherHeight = dy;
+        let rotate = dy / props2.refresherThreshold;
+        if (rotate > 1) {
+          rotate = 1;
+        } else {
+          rotate = rotate * 360;
+        }
+        state2.refreshRotate = rotate;
+        trigger("refresherpulling", event, {
+          deltaY: dy
+        });
+      }
+    };
+    let __handleTouchStart = function(event) {
+      if (event.touches.length === 1) {
+        needStop = null;
+        touchStart = {
+          x: event.touches[0].pageX,
+          y: event.touches[0].pageY
+        };
+        if (props2.refresherEnabled && state2.refreshState !== "refreshing" && main.value.scrollTop === 0) {
+          state2.refreshState = "pulling";
+        }
+      }
+    };
+    let __handleTouchEnd = function(event) {
+      touchStart = {
+        x: 0,
+        y: 0
+      };
+      if (state2.refresherHeight >= props2.refresherThreshold) {
+        _setRefreshState("refreshing");
+      } else {
+        state2.refresherHeight = 0;
+        trigger("refresherabort", event, {});
+      }
+    };
+    main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
+    main.value.addEventListener("touchmove", __handleTouchMove, passiveOptions);
+    main.value.addEventListener("scroll", __handleScroll, passiveOptions);
+    main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+    onBeforeUnmount(() => {
+      main.value.removeEventListener("touchstart", __handleTouchStart);
+      main.value.removeEventListener("touchmove", __handleTouchMove);
+      main.value.removeEventListener("scroll", __handleScroll);
+      main.value.removeEventListener("touchend", __handleTouchEnd);
+    });
+  });
+  onActivated(() => {
+    props2.scrollY && (main.value.scrollTop = state2.lastScrollTop);
+    props2.scrollX && (main.value.scrollLeft = state2.lastScrollLeft);
+  });
+  watch(scrollTopNumber, (val) => {
+    _scrollTopChanged(val);
+  });
+  watch(scrollLeftNumber, (val) => {
+    _scrollLeftChanged(val);
+  });
+  watch(() => props2.scrollIntoView, (val) => {
+    _scrollIntoViewChanged(val);
+  });
+  watch(() => props2.refresherTriggered, (val) => {
+    if (val === true) {
+      _setRefreshState("refreshing");
+    } else if (val === false) {
+      _setRefreshState("restore");
+    }
+  });
+}
+const props$k = {
+  name: {
+    type: String,
+    default: ""
+  },
+  min: {
+    type: [Number, String],
+    default: 0
+  },
+  max: {
+    type: [Number, String],
+    default: 100
+  },
+  value: {
+    type: [Number, String],
+    default: 0
+  },
+  step: {
+    type: [Number, String],
+    default: 1
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#e9e9e9"
+  },
+  backgroundColor: {
+    type: String,
+    default: "#e9e9e9"
+  },
+  activeColor: {
+    type: String,
+    default: "#007aff"
+  },
+  selectedColor: {
+    type: String,
+    default: "#007aff"
+  },
+  blockColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  blockSize: {
+    type: [Number, String],
+    default: 28
+  },
+  showValue: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Slider",
+  props: props$k,
+  emits: ["changing", "change"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const sliderRef = ref(null);
+    const sliderValueRef = ref(null);
+    const sliderHandleRef = ref(null);
+    const sliderValue = ref(Number(props2.value));
+    watch(() => props2.value, (val) => {
+      sliderValue.value = Number(val);
+    });
+    const trigger = useCustomEvent(sliderRef, emit2);
+    const state2 = useSliderState(props2, sliderValue);
+    const {
+      _onClick,
+      _onTrack
+    } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
+    onMounted(() => {
+      useTouchtrack(sliderHandleRef.value, _onTrack);
+    });
+    return () => {
+      const {
+        setBgColor,
+        setBlockBg,
+        setActiveColor,
+        setBlockStyle
+      } = state2;
+      return createVNode("uni-slider", {
+        "ref": sliderRef,
+        "onClick": withWebEvent(_onClick)
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-slider-wrapper"
+        }, [createVNode("div", {
+          "class": "uni-slider-tap-area"
+        }, [createVNode("div", {
+          "style": setBgColor.value,
+          "class": "uni-slider-handle-wrapper"
+        }, [createVNode("div", {
+          "ref": sliderHandleRef,
+          "style": setBlockBg.value,
+          "class": "uni-slider-handle"
+        }, null, 4), createVNode("div", {
+          "style": setBlockStyle.value,
+          "class": "uni-slider-thumb"
+        }, null, 4), createVNode("div", {
+          "style": setActiveColor.value,
+          "class": "uni-slider-track"
+        }, null, 4)], 4)]), withDirectives(createVNode("span", {
+          "ref": sliderValueRef,
+          "class": "uni-slider-value"
+        }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)],
+        _: 1
+      }, 8, ["onClick"]);
+    };
+  }
+});
+function useSliderState(props2, sliderValue) {
+  const _getValueWidth = () => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    return 100 * (sliderValue.value - min) / (max - min) + "%";
+  };
+  const _getBgColor = () => {
+    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+  };
+  const _getActiveColor = () => {
+    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+  };
+  const state2 = {
+    setBgColor: computed(() => ({
+      backgroundColor: _getBgColor()
+    })),
+    setBlockBg: computed(() => ({
+      left: _getValueWidth()
+    })),
+    setActiveColor: computed(() => ({
+      backgroundColor: _getActiveColor(),
+      width: _getValueWidth()
+    })),
+    setBlockStyle: computed(() => ({
+      width: props2.blockSize + "px",
+      height: props2.blockSize + "px",
+      marginLeft: -props2.blockSize / 2 + "px",
+      marginTop: -props2.blockSize / 2 + "px",
+      left: _getValueWidth(),
+      backgroundColor: props2.blockColor
+    }))
+  };
+  return state2;
+}
+function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const _onClick = ($event) => {
+    if (props2.disabled) {
+      return;
+    }
+    _onUserChangedValue($event);
+    trigger("change", $event, {
+      value: sliderValue.value
+    });
+  };
+  const _filterValue = (e2) => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    const step = Number(props2.step);
+    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  };
+  const _onUserChangedValue = (e2) => {
+    const max = Number(props2.max);
+    const min = Number(props2.min);
+    const sliderRightBox = sliderValueRef.value;
+    const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
+    let sliderRightBoxWidth = sliderRightBox.offsetWidth;
+    sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
+    const slider = sliderRef.value;
+    const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
+    const boxLeft = slider.getBoundingClientRect().left;
+    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
+    sliderValue.value = _filterValue(value);
+  };
+  const _onTrack = (e2) => {
+    if (!props2.disabled) {
+      return e2.detail.state === "move" ? (_onUserChangedValue({
+        x: e2.detail.x
+      }), trigger("changing", e2, {
+        value: sliderValue.value
+      }), false) : e2.detail.state === "end" && trigger("change", e2, {
+        value: sliderValue.value
+      });
+    }
+  };
+  const uniForm = inject(uniFormKey, false);
+  if (!!uniForm) {
+    const field = {
+      reset: () => sliderValue.value = Number(props2.min),
+      submit: () => {
+        const data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = sliderValue.value;
+        }
+        return data;
+      }
+    };
+    uniForm.addField(field);
+    onBeforeUnmount(() => {
+      uniForm.removeField(field);
+    });
+  }
+  return {
+    _onClick,
+    _onTrack
+  };
+}
+var computeController = {
+  mul: function(arg) {
+    let m = 0;
+    let s1 = this.toString();
+    let s2 = arg.toString();
+    try {
+      m += s1.split(".")[1].length;
+    } catch (e2) {
+    }
+    try {
+      m += s2.split(".")[1].length;
+    } catch (e2) {
+    }
+    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+  }
+};
+const props$j = {
+  indicatorDots: {
+    type: [Boolean, String],
+    default: false
+  },
+  vertical: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  circular: {
+    type: [Boolean, String],
+    default: false
+  },
+  interval: {
+    type: [Number, String],
+    default: 5e3
+  },
+  duration: {
+    type: [Number, String],
+    default: 500
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  },
+  indicatorColor: {
+    type: String,
+    default: ""
+  },
+  indicatorActiveColor: {
+    type: String,
+    default: ""
+  },
+  previousMargin: {
+    type: String,
+    default: ""
+  },
+  nextMargin: {
+    type: String,
+    default: ""
+  },
+  currentItemId: {
+    type: String,
+    default: ""
+  },
+  skipHiddenItemLayout: {
+    type: [Boolean, String],
+    default: false
+  },
+  displayMultipleItems: {
+    type: [Number, String],
+    default: 1
+  },
+  disableTouch: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+function upx2pxStr(val) {
+  if (/\d+[ur]px$/i.test(val)) {
+    val.replace(/\d+[ur]px$/i, (text2) => {
+      return `${upx2px(parseFloat(text2))}px`;
+    });
+  }
+  return val || "";
+}
+function useState$2(props2) {
+  const interval = computed(() => {
+    const interval2 = Number(props2.interval);
+    return isNaN(interval2) ? 5e3 : interval2;
+  });
+  const duration = computed(() => {
+    const duration2 = Number(props2.duration);
+    return isNaN(duration2) ? 500 : duration2;
+  });
+  const displayMultipleItems = computed(() => {
+    const displayMultipleItems2 = Math.round(props2.displayMultipleItems);
+    return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
+  });
+  const state2 = reactive({
+    interval,
+    duration,
+    displayMultipleItems,
+    current: Math.round(props2.current) || 0,
+    currentItemId: props2.currentItemId,
+    userTracking: false
+  });
+  return state2;
+}
+function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger) {
+  function cancelSchedule() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  let timer = null;
+  let invalid = true;
+  let viewportPosition = 0;
+  let viewportMoveRatio = 1;
+  let animating = null;
+  let requestedAnimation = false;
+  let contentTrackViewport = 0;
+  let transitionStart;
+  let currentChangeSource = "";
+  let animationFrame;
+  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
+  function checkCircularLayout(index2) {
+    if (!invalid) {
+      for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
+        const item = items[r];
+        const s = Math.floor(index2 / n) * n + r;
+        const l = s + n;
+        const c = s - n;
+        const u = Math.max(index2 - (s + 1), s - i, 0);
+        const d = Math.max(index2 - (l + 1), l - i, 0);
+        const h = Math.max(index2 - (c + 1), c - i, 0);
+        const p2 = Math.min(u, d, h);
+        const position = [s, l, c][[u, d, h].indexOf(p2)];
+        item.updatePosition(position, props2.vertical);
+      }
+    }
+  }
+  function updateViewport(index2) {
+    if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index2) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index2))) {
+      if (circularEnabled.value) {
+        checkCircularLayout(index2);
+      }
+    }
+    const x = props2.vertical ? "0" : 100 * -index2 * viewportMoveRatio + "%";
+    const y = props2.vertical ? 100 * -index2 * viewportMoveRatio + "%" : "0";
+    const transform = "translate(" + x + ", " + y + ") translateZ(0)";
+    const slideFrame = slideFrameRef.value;
+    if (slideFrame) {
+      slideFrame.style.webkitTransform = transform;
+      slideFrame.style.transform = transform;
+    }
+    viewportPosition = index2;
+    if (!transitionStart) {
+      if (index2 % 1 === 0) {
+        return;
+      }
+      transitionStart = index2;
+    }
+    index2 -= Math.floor(transitionStart);
+    const items = swiperContexts.value;
+    if (index2 <= -(items.length - 1)) {
+      index2 += items.length;
+    } else if (index2 >= items.length) {
+      index2 -= items.length;
+    }
+    index2 = transitionStart % 1 > 0.5 || transitionStart < 0 ? index2 - 1 : index2;
+    trigger("transition", {}, {
+      dx: props2.vertical ? 0 : index2 * slideFrame.offsetWidth,
+      dy: props2.vertical ? index2 * slideFrame.offsetHeight : 0
+    });
+  }
+  function endViewportAnimation() {
+    if (animating) {
+      updateViewport(animating.toPos);
+      animating = null;
+    }
+  }
+  function normalizeCurrentValue(current) {
+    const length = swiperContexts.value.length;
+    if (!length) {
+      return -1;
+    }
+    const index2 = (Math.round(current) % length + length) % length;
+    if (circularEnabled.value) {
+      if (length <= state2.displayMultipleItems) {
+        return 0;
+      }
+    } else if (index2 > length - state2.displayMultipleItems) {
+      return length - state2.displayMultipleItems;
+    }
+    return index2;
+  }
+  function cancelViewportAnimation() {
+    animating = null;
+  }
+  function animateFrameFuncProto() {
+    if (!animating) {
+      requestedAnimation = false;
+      return;
+    }
+    const _animating = animating;
+    const toPos = _animating.toPos;
+    const acc = _animating.acc;
+    const endTime = _animating.endTime;
+    const source = _animating.source;
+    const time = endTime - Date.now();
+    if (time <= 0) {
+      updateViewport(toPos);
+      animating = null;
+      requestedAnimation = false;
+      transitionStart = null;
+      const item = swiperContexts.value[state2.current];
+      if (item) {
+        const currentItemId = item.getItemId();
+        trigger("animationfinish", {}, {
+          current: state2.current,
+          currentItemId,
+          source
+        });
+      }
+      return;
+    }
+    const s = acc * time * time / 2;
+    const l = toPos + s;
+    updateViewport(l);
+    animationFrame = requestAnimationFrame(animateFrameFuncProto);
+  }
+  function animateViewport(current, source, n) {
+    cancelViewportAnimation();
+    const duration = state2.duration;
+    const length = swiperContexts.value.length;
+    let position = viewportPosition;
+    if (circularEnabled.value) {
+      if (n < 0) {
+        for (; position < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+      } else if (n > 0) {
+        for (; position > current; ) {
+          position -= length;
+        }
+        for (; position + length < current; ) {
+          position += length;
+        }
+      } else {
+        for (; position + length < current; ) {
+          position += length;
+        }
+        for (; position - length > current; ) {
+          position -= length;
+        }
+        if (position + length - current < current - position) {
+          position += length;
+        }
+      }
+    }
+    animating = {
+      toPos: current,
+      acc: 2 * (position - current) / (duration * duration),
+      endTime: Date.now() + duration,
+      source
+    };
+    if (!requestedAnimation) {
+      requestedAnimation = true;
+      animationFrame = requestAnimationFrame(animateFrameFuncProto);
+    }
+  }
+  function scheduleAutoplay() {
+    cancelSchedule();
+    const items = swiperContexts.value;
+    const callback = function() {
+      timer = null;
+      currentChangeSource = "autoplay";
+      if (circularEnabled.value) {
+        state2.current = normalizeCurrentValue(state2.current + 1);
+      } else {
+        state2.current = state2.current + state2.displayMultipleItems < items.length ? state2.current + 1 : 0;
+      }
+      animateViewport(state2.current, "autoplay", circularEnabled.value ? 1 : 0);
+      timer = setTimeout(callback, state2.interval);
+    };
+    if (!(invalid || items.length <= state2.displayMultipleItems)) {
+      timer = setTimeout(callback, state2.interval);
+    }
+  }
+  function resetLayout() {
+    cancelSchedule();
+    endViewportAnimation();
+    const items = swiperContexts.value;
+    for (let i = 0; i < items.length; i++) {
+      items[i].updatePosition(i, props2.vertical);
+    }
+    viewportMoveRatio = 1;
+    const slideFrameEl = slideFrameRef.value;
+    if (state2.displayMultipleItems === 1 && items.length) {
+      const itemRect = items[0].getBoundingClientRect();
+      const slideFrameRect = slideFrameEl.getBoundingClientRect();
+      viewportMoveRatio = itemRect.width / slideFrameRect.width;
+      if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
+        viewportMoveRatio = 1;
+      }
+    }
+    const position = viewportPosition;
+    viewportPosition = -2;
+    const current = state2.current;
+    if (current >= 0) {
+      invalid = false;
+      if (state2.userTracking) {
+        updateViewport(position + current - contentTrackViewport);
+        contentTrackViewport = current;
+      } else {
+        updateViewport(current);
+        if (props2.autoplay) {
+          scheduleAutoplay();
+        }
+      }
+    } else {
+      invalid = true;
+      updateViewport(-state2.displayMultipleItems - 1);
+    }
+  }
+  watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
+    let current = -1;
+    if (props2.currentItemId) {
+      for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
+        const itemId = items[i].getItemId();
+        if (itemId === props2.currentItemId) {
+          current = i;
+          break;
+        }
+      }
+    }
+    if (current < 0) {
+      current = Math.round(props2.current) || 0;
+    }
+    current = current < 0 ? 0 : current;
+    if (state2.current !== current) {
+      currentChangeSource = "";
+      state2.current = current;
+    }
+  });
+  watch([() => props2.vertical, () => circularEnabled.value, () => state2.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+  watch(() => state2.interval, () => {
+    if (timer) {
+      cancelSchedule();
+      scheduleAutoplay();
+    }
+  });
+  function currentChanged(current, history2) {
+    const source = currentChangeSource;
+    currentChangeSource = "";
+    const items = swiperContexts.value;
+    if (!source) {
+      const length = items.length;
+      animateViewport(current, "", circularEnabled.value && history2 + (length - current) % length > length / 2 ? 1 : 0);
+    }
+    const item = items[current];
+    if (item) {
+      const currentItemId = state2.currentItemId = item.getItemId();
+      trigger("change", {}, {
+        current: state2.current,
+        currentItemId,
+        source
+      });
+    }
+  }
+  watch(() => state2.current, (val, oldVal) => {
+    currentChanged(val, oldVal);
+    emit2("update:current", val);
+  });
+  watch(() => state2.currentItemId, (val) => {
+    emit2("update:currentItemId", val);
+  });
+  function inintAutoplay(enable) {
+    if (enable) {
+      scheduleAutoplay();
+    } else {
+      cancelSchedule();
+    }
+  }
+  watch(() => props2.autoplay && !state2.userTracking, inintAutoplay);
+  inintAutoplay(props2.autoplay && !state2.userTracking);
+  onMounted(() => {
+    let userDirectionChecked = false;
+    let contentTrackSpeed = 0;
+    let contentTrackT = 0;
+    function handleTrackStart() {
+      cancelSchedule();
+      contentTrackViewport = viewportPosition;
+      contentTrackSpeed = 0;
+      contentTrackT = Date.now();
+      cancelViewportAnimation();
+    }
+    function handleTrackMove(data) {
+      const oldContentTrackT = contentTrackT;
+      contentTrackT = Date.now();
+      const length = swiperContexts.value.length;
+      const other = length - state2.displayMultipleItems;
+      function calc2(val) {
+        return 0.5 - 0.25 / (val + 0.5);
+      }
+      function move(oldVal, newVal) {
+        let val = contentTrackViewport + oldVal;
+        contentTrackSpeed = 0.6 * contentTrackSpeed + 0.4 * newVal;
+        if (!circularEnabled.value) {
+          if (val < 0 || val > other) {
+            if (val < 0) {
+              val = -calc2(-val);
+            } else {
+              if (val > other) {
+                val = other + calc2(val - other);
+              }
+            }
+            contentTrackSpeed = 0;
+          }
+        }
+        updateViewport(val);
+      }
+      const time = contentTrackT - oldContentTrackT || 1;
+      const slideFrameEl = slideFrameRef.value;
+      if (props2.vertical) {
+        move(-data.dy / slideFrameEl.offsetHeight, -data.ddy / time);
+      } else {
+        move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
+      }
+    }
+    function handleTrackEnd(isCancel) {
+      state2.userTracking = false;
+      const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
+      let n = 0;
+      if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
+        n = 0.5 * t2;
+      }
+      const current = normalizeCurrentValue(viewportPosition + n);
+      if (isCancel) {
+        updateViewport(contentTrackViewport);
+      } else {
+        currentChangeSource = "touch";
+        state2.current = current;
+        animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
+      }
+    }
+    useTouchtrack(slideFrameRef.value, (event) => {
+      if (props2.disableTouch) {
+        return;
+      }
+      if (!invalid) {
+        if (event.detail.state === "start") {
+          state2.userTracking = true;
+          userDirectionChecked = false;
+          return handleTrackStart();
+        }
+        if (event.detail.state === "end") {
+          return handleTrackEnd(false);
+        }
+        if (event.detail.state === "cancel") {
+          return handleTrackEnd(true);
+        }
+        if (state2.userTracking) {
+          if (!userDirectionChecked) {
+            userDirectionChecked = true;
+            const t2 = Math.abs(event.detail.dx);
+            const n = Math.abs(event.detail.dy);
+            if (t2 >= n && props2.vertical) {
+              state2.userTracking = false;
+            } else {
+              if (t2 <= n && !props2.vertical) {
+                state2.userTracking = false;
+              }
+            }
+            if (!state2.userTracking) {
+              if (props2.autoplay) {
+                scheduleAutoplay();
+              }
+              return;
+            }
+          }
+          handleTrackMove(event.detail);
+          return false;
+        }
+      }
+    });
+  });
+  onUnmounted(() => {
+    cancelSchedule();
+    cancelAnimationFrame(animationFrame);
+  });
+  function onSwiperDotClick(index2) {
+    animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
+  }
+  return {
+    onSwiperDotClick
+  };
+}
+var Swiper = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Swiper",
+  props: props$j,
+  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const slidesWrapperRef = ref(null);
+    const slideFrameRef = ref(null);
+    const state2 = useState$2(props2);
+    const slidesStyle = computed(() => {
+      let style = {};
+      if (props2.nextMargin || props2.previousMargin) {
+        style = props2.vertical ? {
+          left: 0,
+          right: 0,
+          top: upx2pxStr(props2.previousMargin),
+          bottom: upx2pxStr(props2.nextMargin)
+        } : {
+          top: 0,
+          bottom: 0,
+          left: upx2pxStr(props2.previousMargin),
+          right: upx2pxStr(props2.nextMargin)
+        };
+      }
+      return style;
+    });
+    const slideFrameStyle = computed(() => {
+      const value = Math.abs(100 / state2.displayMultipleItems) + "%";
+      return {
+        width: props2.vertical ? "100%" : value,
+        height: !props2.vertical ? "100%" : value
+      };
+    });
+    let swiperItems = [];
+    const originSwiperContexts = [];
+    const swiperContexts = ref([]);
+    function updateSwiperContexts() {
+      const contexts = [];
+      for (let index2 = 0; index2 < swiperItems.length; index2++) {
+        const swiperItem = swiperItems[index2];
+        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
+        if (swiperContext) {
+          contexts.push(markRaw(swiperContext));
+        }
+      }
+      swiperContexts.value = contexts;
+    }
+    const addSwiperContext = function(swiperContext) {
+      originSwiperContexts.push(swiperContext);
+      updateSwiperContexts();
+    };
+    provide("addSwiperContext", addSwiperContext);
+    const removeSwiperContext = function(swiperContext) {
+      const index2 = originSwiperContexts.indexOf(swiperContext);
+      if (index2 >= 0) {
+        originSwiperContexts.splice(index2, 1);
+        updateSwiperContexts();
+      }
+    };
+    provide("removeSwiperContext", removeSwiperContext);
+    const {
+      onSwiperDotClick
+    } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
+    return () => {
+      const defaultSlots = slots.default && slots.default();
+      swiperItems = flatVNode(defaultSlots);
+      return createVNode("uni-swiper", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", {
+          "ref": slidesWrapperRef,
+          "class": "uni-swiper-wrapper"
+        }, [createVNode("div", {
+          "class": "uni-swiper-slides",
+          "style": slidesStyle.value
+        }, [createVNode("div", {
+          "ref": slideFrameRef,
+          "class": "uni-swiper-slide-frame",
+          "style": slideFrameStyle.value
+        }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
+          "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+        }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
+          "onClick": () => onSwiperDotClick(index2),
+          "class": {
+            "uni-swiper-dot": true,
+            "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
+          },
+          "style": {
+            background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
+          }
+        }, null, 14, ["onClick"]))], 2)], 512)]
+      }, 512);
+    };
+  }
+});
+const props$i = {
+  itemId: {
+    type: String,
+    default: ""
+  }
+};
+var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
+  name: "SwiperItem",
+  props: props$i,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const context = {
+      rootRef,
+      getItemId() {
+        return props2.itemId;
+      },
+      getBoundingClientRect() {
+        const el = rootRef.value;
+        return el.getBoundingClientRect();
+      },
+      updatePosition(position, vertical) {
+        const x = vertical ? "0" : 100 * position + "%";
+        const y = vertical ? 100 * position + "%" : "0";
+        const rootEl = rootRef.value;
+        const value = `translate(${x},${y}) translateZ(0)`;
+        if (rootEl) {
+          rootEl.style.webkitTransform = value;
+          rootEl.style.transform = value;
+        }
+      }
+    };
+    onMounted(() => {
+      const addSwiperContext = inject("addSwiperContext");
+      if (addSwiperContext) {
+        addSwiperContext(context);
+      }
+    });
+    onUnmounted(() => {
+      const removeSwiperContext = inject("removeSwiperContext");
+      if (removeSwiperContext) {
+        removeSwiperContext(context);
+      }
+    });
+    return () => {
+      return createVNode("uni-swiper-item", {
+        "ref": rootRef,
+        "style": {
+          position: "absolute",
+          width: "100%",
+          height: "100%"
+        }
+      }, {
+        default: () => [slots.default && slots.default()]
+      }, 512);
+    };
+  }
+});
+const props$h = {
+  name: {
+    type: String,
+    default: ""
+  },
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  type: {
+    type: String,
+    default: "switch"
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  }
+};
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Switch",
+  props: props$h,
+  emits: ["change"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const switchChecked = ref(props2.checked);
+    const uniLabel = useSwitchInject(props2, switchChecked);
+    const trigger = useCustomEvent(rootRef, emit2);
+    watch(() => props2.checked, (val) => {
+      switchChecked.value = val;
+    });
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      switchChecked.value = !switchChecked.value;
+      trigger("change", $event, {
+        value: switchChecked.value
+      });
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+      onBeforeUnmount(() => {
+        uniLabel.removeHandler(_onClick);
+      });
+    }
+    useListeners$1(props2, {
+      "label-click": _onClick
+    });
+    return () => {
+      const {
+        color,
+        type
+      } = props2;
+      const {
+        booleanAttrs
+      } = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-switch", mergeProps({
+        "ref": rootRef
+      }, booleanAttrs, {
+        "onClick": _onClick
+      }), {
+        default: () => [createVNode("div", {
+          "class": "uni-switch-wrapper"
+        }, [withDirectives(createVNode("div", {
+          "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+          "style": {
+            backgroundColor: switchChecked.value ? color : "#DFDFDF",
+            borderColor: switchChecked.value ? color : "#DFDFDF"
+          }
+        }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+          "class": "uni-checkbox-input"
+        }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])]
+      }, 16, ["onClick"]);
+    };
+  }
+});
+function useSwitchInject(props2, switchChecked) {
+  const uniForm = inject(uniFormKey, false);
+  const uniLabel = inject(uniLabelKey, false);
+  const formField = {
+    submit: () => {
+      const data = ["", null];
+      if (props2.name) {
+        data[0] = props2.name;
+        data[1] = switchChecked.value;
+      }
+      return data;
+    },
+    reset: () => {
+      switchChecked.value = false;
+    }
+  };
+  if (!!uniForm) {
+    uniForm.addField(formField);
+    onUnmounted(() => {
+      uniForm.removeField(formField);
+    });
+  }
+  return uniLabel;
+}
+function _isSlot$5(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const SPACE_UNICODE = {
+  ensp: "\u2002",
+  emsp: "\u2003",
+  nbsp: "\xA0"
+};
+function normalizeText(text2, {
+  space,
+  decode: decode2
+}) {
+  if (space && SPACE_UNICODE[space]) {
+    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+  }
+  if (!decode2) {
+    return text2;
+  }
+  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+var index$d = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Text",
+  props: {
+    selectable: {
+      type: [Boolean, String],
+      default: false
+    },
+    space: {
+      type: String,
+      default: ""
+    },
+    decode: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    return () => {
+      let _slot;
+      const children = [];
+      if (slots.default) {
+        slots.default().forEach((vnode) => {
+          if (vnode.shapeFlag & 8) {
+            const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
+            const len = lines.length - 1;
+            lines.forEach((text2, index2) => {
+              if (index2 === 0 && !text2)
+                ;
+              else {
+                children.push(createTextVNode(normalizeText(text2, {
+                  space: props2.space,
+                  decode: props2.decode
+                })));
+              }
+              if (index2 !== len) {
+                children.push(createVNode("br"));
+              }
+            });
+          } else {
+            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
+              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
+            }
+            children.push(vnode);
+          }
+        });
+      }
+      return createVNode("uni-text", {
+        "selectable": props2.selectable ? true : null
+      }, _isSlot$5(_slot = createVNode("span", null, children)) ? _slot : {
+        default: () => [_slot],
+        _: 1
+      }, 8, ["selectable"]);
+    };
+  }
+});
+const props$g = /* @__PURE__ */ extend({}, props$v, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  autoHeight: {
+    type: [Boolean, String],
+    default: false
+  },
+  confirmType: {
+    type: String,
+    default: ""
+  }
+});
+var index$c = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$g,
+  emit: ["confirm", "linechange", ...emit],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const {
+      fieldRef,
+      state: state2,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger
+    } = useField(props2, rootRef, emit2);
+    const valueCompute = computed(() => state2.value.split("\n"));
+    const isDone = computed(() => ["done", "go", "next", "search", "send"].includes(props2.confirmType));
+    const heightRef = ref(0);
+    const lineRef = ref(null);
+    watch(() => heightRef.value, (height) => {
+      const el = rootRef.value;
+      const lineEl = lineRef.value;
+      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      if (isNaN(lineHeight)) {
+        lineHeight = lineEl.offsetHeight;
+      }
+      var lineCount = Math.round(height / lineHeight);
+      trigger("linechange", {}, {
+        height,
+        heightRpx: 750 / window.innerWidth * height,
+        lineCount
+      });
+      if (props2.autoHeight) {
+        el.style.height = height + "px";
+      }
+    });
+    function onResize2({
+      height
+    }) {
+      heightRef.value = height;
+    }
+    function confirm(event) {
+      trigger("confirm", event, {
+        value: state2.value
+      });
+    }
+    function onKeyDownEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        event.preventDefault();
+      }
+    }
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        confirm(event);
+        const textarea = event.target;
+        textarea.blur();
+      }
+    }
+    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
+    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+    return () => {
+      let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        "ref": fieldRef,
+        "value": state2.value,
+        "tabindex": "-1",
+        "readonly": !!props2.disabled,
+        "maxlength": state2.maxlength,
+        "class": {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        "style": {
+          overflowY: props2.autoHeight ? "hidden" : "auto"
+        },
+        "onFocus": (event) => event.target.blur()
+      }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        "ref": fieldRef,
+        "value": state2.value,
+        "disabled": !!props2.disabled,
+        "maxlength": state2.maxlength,
+        "enterkeyhint": props2.confirmType,
+        "class": {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        "style": {
+          overflowY: props2.autoHeight ? "hidden" : "auto"
+        },
+        "onKeydown": onKeyDownEnter,
+        "onKeyup": onKeyUpEnter
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
+      return createVNode("uni-textarea", {
+        "ref": rootRef
+      }, {
+        default: () => [createVNode("div", {
+          "class": "uni-textarea-wrapper"
+        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "style": props2.placeholderStyle,
+          "class": ["uni-textarea-placeholder", props2.placeholderClass]
+        }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
+          "ref": lineRef,
+          "class": "uni-textarea-line"
+        }, [" "], 512), createVNode("div", {
+          "class": "uni-textarea-compute"
+        }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
+          "initial": true,
+          "onResize": onResize2
+        }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+          "action": "",
+          "onSubmit": () => false,
+          "class": "uni-input-form"
+        }, [textareaNode], 40, ["onSubmit"]) : textareaNode])]
+      }, 512);
+    };
+  }
+});
+var index$b = /* @__PURE__ */ defineBuiltInComponent({
+  name: "View",
+  props: extend({}, hoverProps),
+  setup(props2, {
+    slots
+  }) {
+    const {
+      hovering,
+      binding
+    } = useHover(props2);
+    return () => {
+      const hoverClass = props2.hoverClass;
+      if (hoverClass && hoverClass !== "none") {
+        return createVNode("uni-view", mergeProps({
+          "class": hovering.value ? hoverClass : ""
+        }, binding), {
+          default: () => [slots.default && slots.default()]
+        }, 16, ["class"]);
+      }
+      return createVNode("uni-view", null, {
+        default: () => [slots.default && slots.default()]
+      });
+    };
+  }
+});
+function normalizeEvent(pageId, vm, id2) {
+  if (!id2) {
+    id2 = vm.id;
+  }
+  if (!id2) {
+    return;
+  }
+  return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
+}
+function addSubscribe(name, callback) {
+  if (!name) {
+    return;
+  }
+  UniViewJSBridge.subscribe(name, ({ type, data }) => {
+    callback(type, data);
+  });
+}
+function removeSubscribe(name) {
+  if (!name) {
+    return;
+  }
+  UniViewJSBridge.unsubscribe(name);
+}
+function useSubscribe(callback, name, multiple) {
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const pageId = multiple || !name ? useCurrentPageId() : 0;
+  onMounted(() => {
+    addSubscribe(name || normalizeEvent(pageId, vm), callback);
+    if (multiple || !name) {
+      watch(() => vm.id, (value, oldValue) => {
+        addSubscribe(normalizeEvent(pageId, vm, value), callback);
+        removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
+      });
+    }
+  });
+  onBeforeUnmount(() => {
+    removeSubscribe(name || normalizeEvent(pageId, vm));
+  });
+}
+function useOn(name, callback) {
+  onMounted(() => UniViewJSBridge.on(name, callback));
+  onBeforeUnmount(() => UniViewJSBridge.off(name));
+}
+let index$a = 0;
+function useContextInfo(_id) {
+  const page = useCurrentPageId();
+  const instance2 = getCurrentInstance();
+  const vm = instance2.proxy;
+  const type = vm.$options.name.toLowerCase();
+  const id2 = _id || vm.id || `context${index$a++}`;
+  onMounted(() => {
+    const el = vm.$el;
+    el.__uniContextInfo = {
+      id: id2,
+      type,
+      page
+    };
+  });
+  return `${page}.${type}.${id2}`;
+}
+function getContextInfo(el) {
+  return el.__uniContextInfo;
+}
+function applyOptions(options, instance2, publicThis) {
+  Object.keys(options).forEach((name) => {
+    if (name.indexOf("on") === 0) {
+      const hook = options[name];
+      if (isFunction(hook)) {
+        injectHook(name, hook.bind(publicThis), instance2);
+      }
+    }
+  });
+}
+function set(target, key, val) {
+  return target[key] = val;
+}
+function errorHandler(err, instance2, info) {
+  if (!instance2) {
+    throw err;
+  }
+  const app = getApp();
+  if (!app || !app.$vm) {
+    throw err;
+  }
+  {
+    invokeHook(app.$vm, "onError", err);
+  }
+}
+function initApp$1(app) {
+  const appConfig = app._context.config;
+  if (isFunction(app._component.onError)) {
+    appConfig.errorHandler = errorHandler;
+  }
+  const globalProperties = appConfig.globalProperties;
+  {
+    globalProperties.$set = set;
+    globalProperties.$applyOptions = applyOptions;
+  }
+}
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return inject(pageMetaKey);
+}
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  provide(pageMetaKey, pageMeta);
+  return pageMeta;
+}
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return useRoute();
+  }
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
+  }
+  const { meta } = __uniRoutes[0];
+  return {
+    meta,
+    query,
+    path: "/" + meta.route
+  };
+}
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
+  }
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
+}
+const PAGE_META_KEYS = [
+  "navigationBar",
+  "refreshOptions"
+];
+function mergePageMeta(id2, pageMeta) {
+  const res = extend({ id: id2 }, __uniConfig.globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
+  });
+  return res;
+}
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
+    if (enablePullDownRefresh) {
+      const refreshOptions = extend({
+        support: true,
+        color: "#2BD009",
+        style: "circle",
+        height: 70,
+        range: 150,
+        offset: 0
+      }, pageMeta.refreshOptions);
+      let offset = rpx2px(refreshOptions.offset);
+      const { type } = navigationBar;
+      if (type !== "transparent" && type !== "none") {
+        offset += NAVBAR_HEIGHT + out.top;
+      }
+      refreshOptions.offset = offset;
+      refreshOptions.height = rpx2px(refreshOptions.height);
+      refreshOptions.range = rpx2px(refreshOptions.range);
+      pageMeta.refreshOptions = refreshOptions;
+    }
+  }
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.backButton = pageMeta.isQuit ? false : true;
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+  }
+  if (__UNI_FEATURE_PAGES__ && history.state) {
+    const type = history.state.__type__;
+    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
+      pageMeta.isEntry = true;
+      pageMeta.isQuit = true;
+    }
+  }
+  return pageMeta;
+}
+const screen$1 = window.screen;
+const documentElement = document.documentElement;
+function checkMinWidth(minWidth) {
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen$1.width,
+    screen$1.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ];
+  return Math.max.apply(null, sizes) > minWidth;
+}
+function getStateId() {
+  return history.state && history.state.__id__ || 1;
+}
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && reactive(__uniConfig.tabBar);
+  }
+  return tabBar;
 }
 const supports = window.CSS && window.CSS.supports;
 function cssSupports(css) {
@@ -18722,7 +18718,7 @@ var api = /* @__PURE__ */ Object.freeze({
   createSelectorQuery,
   createVideoContext,
   createMapContext,
-  createAnimation,
+  createAnimation: createAnimation$1,
   onTabBarMidButtonTap,
   createCanvasContext,
   canvasGetImageData,
@@ -20852,4 +20848,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$r as Canvas, index$p as Checkbox, index$q as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$o as Editor, index$u as Form, Friction, index$n as Icon, index$m as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$l as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$k as Progress, index$i as Radio, index$j as RadioGroup, ResizeSensor, index$h as RichText, ScrollView, Scroller, index$g as Slider, Spring, Swiper, SwiperItem, index$f as Switch, index$e as Text, index$d as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$c as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, defineBuiltInComponent, defineSystemComponent, disableScrollBounce, downloadFile, getApp$1 as getApp, getContextInfo, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, initScrollBounce, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uniFormKey, uploadFile, upx2px, useAttrs, useBooleanAttr, useContextInfo, useCustomEvent, useNativeEvent, useOn, useScroller, useSubscribe, useTabBar, useTouchtrack, useUserAction, vibrateLong, vibrateShort, withWebEvent };
+export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useTabBar, vibrateLong, vibrateShort };
