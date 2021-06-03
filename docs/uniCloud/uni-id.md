@@ -415,11 +415,11 @@ exports.main = async function(event,context) {
 默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
 
 ### 用户注册 @register
-用户注册就是将客户端用户输入的用户名和密码，经服务端校验：
-1. 用户名是否与已经注册的用户名重复，如果重复就返回错误
+用户注册就是将客户端用户输入的用户名和密码，经服务端：
+1. 校验用户名是否与已经注册的用户名重复，如果重复就返回错误
 2. 加密密码
 3. 生成token
-最后将`用户名` `密码` `token`存储到数据库并返回token的过程
+最后将`用户名` `密码` `token`存储到数据库并返回token、uid等响应参数（详见下文“响应参数”表）的过程。
 
 如上操作uni-id的注册api内部会自动完成
 用法`uniID.register(Object RegisterParams)`
@@ -525,6 +525,9 @@ uniCloud.callFunction({
 
 
 ### 用户登录 @login
+登录就是通过查询数据库验证，客户端传递的“用户名”和“密码”是否匹配并返回token、uid等响应参数（详见下文“响应参数”表）的过程。
+如果你允许用户同时使用多种方式登录，需要注意：必须限制用户注册用户名不为邮箱格式且不为手机号格式，uni-id内部并未做出此类限制。否则用户可以使用他人的手机号码作为用户名注册账号，这就成了一个漏洞。具体做法可以参考[云端一体应用快速开发模版"uniStarter"](https://ext.dcloud.net.cn/plugin?id=5057)
+
 
 用法：`uniID.login(Object LoginParams)`
 
@@ -541,8 +544,6 @@ uniCloud.callFunction({
 | password	| String| 是	|密码	|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission）。`uni-id 3.0.0`起，如果配置`"removePermissionAndRoleFromToken": false`此选项不再生效	|
 | queryField	| Array| 否	|指定从哪些字段中比对username（传入参数均为username），不填默认与数据库内的username字段对比, 可取值'username'、'email'、'mobile'|
-
-> 如果希望使用queryField来允许用户同时使用多种方式登录，需要注意必须限制用户注册用户名不为邮箱格式且不为手机号格式，uni-id内部并未做出此类限制
 
 **注意**
 
@@ -569,7 +570,7 @@ exports.main = async function(event,context) {
 		username,
 		password
 	} = event
-	// username、password验证是否合法的逻辑
+	// 自动完成username、password验证是否合法的逻辑
 	const res = await uniID.login({
 		username,
 		password,
@@ -580,6 +581,10 @@ exports.main = async function(event,context) {
 ```
 
 ### 登出
+登出就是一个验证客户端uniCloud.callFunction自带的uniIdToken并获取user_id，将对应user_id的用户的token清空的过程（uniID登出api内部会自动完成，你传入uniIdToken即可）。
+
+#### 思考
+如果你并没有服务端开发经验，可能会想：为什么这里需要通过token去换取user_id，而不是让客户端直接传递user_id更方便？这里就涉及到安全问题，有一句话叫做：“前端传递的参数都是不可信任的”。比如：你去银行取款应当出示你的身份证来证明你是谁，而不是直接告诉银行柜台你是谁就管用。
 
 用法：`uniID.logout(String token);`
 
@@ -619,6 +624,7 @@ exports.main = async function(event,context) {
 
 
 ### token校验@checktoken
+理论上所有后端操作涉及账户信息都需要使用token校验。“前端传递的参数都是不可信任的”。比如：你去银行取款应当出示你的身份证来证明你是谁，而不是直接告诉银行柜台你是谁就管用。
 
 用法：`uniID.checkToken(String token, Object checkTokenOptions)`
 
