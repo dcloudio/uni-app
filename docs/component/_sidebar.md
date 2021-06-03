@@ -45,6 +45,7 @@
 * 广告
   * [ad](component/ad.md)
   * [ad-draw](component/ad-draw.md)
+  * [ad-content-page](component/ad-content-page.md)
   * [Grid 广告](component/ad-grid.md)
 * 页面属性配置节点
   * [page-meta](component/page-meta.md)
