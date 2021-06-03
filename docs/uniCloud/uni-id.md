@@ -415,7 +415,13 @@ exports.main = async function(event,context) {
 默认情况下uni-id某些接口会自动从全局context内获取客户端的PLATFORM（平台，如：app-plus、h5、mp-weixin）信息。但是在单实例多并发的场景下可能无法正确获取（全局对象会被后面的请求覆盖，可能会导致前面一次请求使用了后面一次请求的PLATFORM信息）。因此推荐在开启云函数单实例多并发后，自行为uni-id传入context。
 
 ### 用户注册 @register
+用户注册就是将客户端用户输入的用户名和密码，经服务端校验：
+1. 用户名是否与已经注册的用户名重复，如果重复就返回错误
+2. 加密密码
+3. 生成token
+最后将`用户名` `密码` `token`存储到数据库并返回token的过程
 
+如上操作uni-id的注册api内部会自动完成
 用法`uniID.register(Object RegisterParams)`
 
 **注意**
@@ -466,7 +472,15 @@ exports.main = async function(event,context) {
 		username,
 		password
 	} = event
-	// username、password验证是否合法的逻辑
+  //自己额外增加的校验密码规范的逻辑（可选）
+  //强弱密码校验,密码至少包含大写字母，小写字母，数字，且不少于6位
+  if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,16}$/.test(password)){
+    return {
+      code: 401,
+      msg: '密码至少包含大写字母，小写字母，数字，且不少于6位'
+    }
+  }
+	// 自动验证用户名是否与已经注册的用户名重复，如果重复会直接返回错误。否则会自动生成token并加密password存储username、password、token到数据表uni-id-users，并返回如上响应参数
 	const res = await uniID.register({
 		username,
 		password
