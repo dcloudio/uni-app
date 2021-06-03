@@ -1,7 +1,7 @@
 
 export function getClipboardData () {
   const pasteText = document.getElementById('#clipboard')
-  const data = pasteText?.value
+  const data = pasteText ? pasteText.value : undefined
   if (data) {
     return {
       data,
@@ -18,7 +18,7 @@ export function setClipboardData ({
   data
 }) {
   const pasteText = document.getElementById('#clipboard')
-  pasteText?.remove()
+  pasteText && pasteText.remove()
   const textarea = document.createElement('textarea')
   textarea.id = '#clipboard'
   textarea.style.position = 'absolute'
