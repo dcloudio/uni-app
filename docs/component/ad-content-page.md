@@ -1,4 +1,4 @@
-## ad-content-page 广告
+## 短视频内容联盟组件
 
 ### 简介
 
@@ -15,7 +15,6 @@
 1. 开通广告
 需在广告平台后台操作：
     * App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
-    * 小程序平台：在各自的小程序管理后台操作。
 2. 申请广告位id
 在各位后台申请广告位id
 3. 在页面合适位置编写代码，放置ad组件，配上广告位adpid
@@ -25,7 +24,35 @@
 
 |属性名|类型|默认值|说明|平台差异|
 |:-|:-|:-|:-|:-|
-|adpid|String||uni-AD App广告位id，在[uni-AD官网](https://uniad.dcloud.net.cn/)申请广告位|仅Android支持|
+|adpid|String||uni-AD App广告位id，在[uni-AD官网](https://uniad.dcloud.net.cn/)申请广告位|仅Android nvue支持|
 |@load|EventHandle||广告加载成功的回调||
 |@error|EventHandle||广告加载失败的回调||
 
+
+**示例：**
+
+```html
+<template>
+  <view class="content">
+    <ad-content-page adpid="" @load="onload" @error="onerror"></ad-content-page>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      title: 'ad-content-page'
+    }
+  },
+  methods: {
+    onload(e) {
+      console.log("onload");
+    },
+    onerror(e) {
+      console.log("onerror");
+    }
+  }
+}
+</script>
+```
