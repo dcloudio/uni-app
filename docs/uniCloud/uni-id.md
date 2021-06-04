@@ -580,51 +580,15 @@ exports.main = async function(event,context) {
 }
 ```
 
-### 登出
-登出就是一个验证客户端uniCloud.callFunction自带的uniIdToken并获取user_id，将对应user_id的用户的token清空的过程（uniID登出api内部会自动完成，你传入uniIdToken即可）。
+### token校验@checktoken
+这是一个校验客户端发起请求（uniCloud.callFunction）自带的uniIdToken，获得用户的uid、token、token的过期时间、角色、权限、用户信息(uni-id-users全部字段)的API。
+
+这是非常高频且重要的API通常用于换取操作当前云函数的用户Id。
 
 #### 思考
-如果你并没有服务端开发经验，可能会想：为什么这里需要通过token去换取user_id，而不是让客户端直接传递user_id更方便？这里就涉及到安全问题，有一句话叫做：“前端传递的参数都是不可信任的”。比如：你去银行取款应当出示你的身份证来证明你是谁，而不是直接告诉银行柜台你是谁就管用。
-
-用法：`uniID.logout(String token);`
-
-**注意**
-
-- 登出成功之后应删除持久化存储的token，键值为：`uni_id_token`，`uni.removeStorageSync('uni_id_token')`
-
-```js
-  uni.removeStorageSync('uni_id_token')
-  uni.removeStorageSync('uni_id_token_expired')
-```
-
-**参数说明**
-
-| 字段| 类型	| 必填| 说明	|
-| ---	| ---		| ---	| ---		|
-| token	| String| 是	|用户token|
-
-**响应参数**
-
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| message	| String| 是	|详细信息					|
-
-**示例代码**
-
-```js
-// 云函数logout代码
-const uniID = require('uni-id')
-exports.main = async function(event,context) {
-	const res = await uniID.logout(event.uniIdToken)
-	return res
-}
-
-```
-
-
-### token校验@checktoken
-理论上所有后端操作涉及账户信息都需要使用token校验。“前端传递的参数都是不可信任的”。比如：你去银行取款应当出示你的身份证来证明你是谁，而不是直接告诉银行柜台你是谁就管用。
+如果你并没有服务端开发经验，可能会想：为什么需要通过token去换取用户Id，而不是让客户端直接传递用户Id更方便？
+这里就涉及到安全问题，有一句话叫做：“前端传递的参数都是不可信任的”。比如：你去银行取款应当出示你的身份证来证明你是谁，而不是直接告诉银行柜台你是谁否则这是一个极大的安全漏洞。
+综上所述：所有服务端操作涉及账户信息相关内容，都需要使用token来获得，而不是使用前端传递的参数。
 
 用法：`uniID.checkToken(String token, Object checkTokenOptions)`
 
@@ -717,6 +681,46 @@ uniCloud.callFunction({
   }
   // 其他逻辑...
 })
+
+```
+
+
+### 登出
+登出就是一个验证客户端uniCloud.callFunction自带的uniIdToken通过token校验并获取uid，将对应uid的用户的token清除的过程（uniID登出api内部会自动完成，你传入uniIdToken即可）。
+
+用法：`uniID.logout(String token);`
+
+**注意**
+
+- 登出成功之后应删除持久化存储的token，键值为：`uni_id_token`，`uni.removeStorageSync('uni_id_token')`
+
+```js
+  uni.removeStorageSync('uni_id_token')
+  uni.removeStorageSync('uni_id_token_expired')
+```
+
+**参数说明**
+
+| 字段| 类型	| 必填| 说明	|
+| ---	| ---		| ---	| ---		|
+| token	| String| 是	|用户token|
+
+**响应参数**
+
+| 字段| 类型	| 必填| 说明						|
+| ---	| ---		| ---	| ---							|
+| code| Number| 是	|错误码，0表示成功|
+| message	| String| 是	|详细信息					|
+
+**示例代码**
+
+```js
+// 云函数logout代码
+const uniID = require('uni-id')
+exports.main = async function(event,context) {
+	const res = await uniID.logout(event.uniIdToken)
+	return res
+}
 
 ```
 
