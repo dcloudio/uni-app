@@ -25,7 +25,7 @@ const mpBaiduDynamicLibs = [
   'dynamicLib://myDynamicLib/vrvideo'
 ]
 
-function analyzeUsingComponents() {
+function analyzeUsingComponents () {
   if (!process.env.UNI_OPT_SUBPACKAGES) {
     return
   }
@@ -95,7 +95,7 @@ function analyzeUsingComponents() {
   //   }, {})
 }
 
-function normalizeUsingComponents(file, usingComponents) {
+function normalizeUsingComponents (file, usingComponents) {
   const names = Object.keys(usingComponents)
   if (!names.length) {
     return usingComponents
@@ -107,7 +107,7 @@ function normalizeUsingComponents(file, usingComponents) {
   return usingComponents
 }
 
-module.exports = function generateJson(compilation) {
+module.exports = function generateJson (compilation) {
   analyzeUsingComponents()
 
   const jsonFileMap = getChangedJsonFileMap()
@@ -180,10 +180,10 @@ module.exports = function generateJson(compilation) {
 
       scopedSlotComponents.forEach(scopedSlotComponent => {
         compilation.assets[scopedSlotComponent] = {
-          size() {
+          size () {
             return Buffer.byteLength(scopedSlotComponentJsonSource, 'utf8')
           },
-          source() {
+          source () {
             return scopedSlotComponentJsonSource
           }
         }
@@ -215,20 +215,20 @@ module.exports = function generateJson(compilation) {
       !compilation.assets[jsFile]
     ) {
       const jsFileAsset = {
-        size() {
+        size () {
           return Buffer.byteLength(EMPTY_COMPONENT, 'utf8')
         },
-        source() {
+        source () {
           return EMPTY_COMPONENT
         }
       }
       compilation.assets[jsFile] = jsFileAsset
     }
     const jsonAsset = {
-      size() {
+      size () {
         return Buffer.byteLength(source, 'utf8')
       },
-      source() {
+      source () {
         return source
       }
     }
