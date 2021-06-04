@@ -1244,7 +1244,7 @@ const res = await db.collection('query').doc('1').update({
 const res = await db.collection('query').where({
 	'students.id': '001'
 }).update({
-  // 将students内id为001的name改为li
+  // 将students内id为001的name改为li，$代表where内匹配到的数组项的序号
 	'students.$.name': 'li'
 })
 ```
