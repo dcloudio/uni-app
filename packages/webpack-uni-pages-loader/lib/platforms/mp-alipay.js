@@ -74,6 +74,10 @@ module.exports = function (pagesJson, manifestJson) {
     app.plugins = platformJson.plugins
   }
 
+  if (platformJson.useDynamicPlugins) {
+    app.useDynamicPlugins = true
+  }
+
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
@@ -81,6 +85,7 @@ module.exports = function (pagesJson, manifestJson) {
   const project = Object.assign({}, manifestJson['mp-alipay'] || {})
   delete project.usingComponents
   delete project.plugins
+  delete project.useDynamicPlugins
 
   return [{
     name: 'app',
