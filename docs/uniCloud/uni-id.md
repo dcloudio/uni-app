@@ -1121,8 +1121,7 @@ exports.main = async function(event,context) {
 ```
 
 ### 设置验证码@setVerifyCode
-
-如果你不想使用`uni-id`的sendSmsCode发送短信的话，可以使用此接口自行在库中创建验证码
+如果使用`uni-id`的sendSmsCode发送短信的话会自动设置验证码（在数据表：`opendb-verify-codes`添加一条记录)，否则你需要使用此接口自行在库中设置验证码。
 
 用法：`uniID.setVerifyCode(Object SetVerifyCodeParams)`
 
@@ -1167,6 +1166,7 @@ exports.main = async function(event,context) {
 ```
 
 ### 校验验证码@verifyCode
+一个查库校验：由`uni-id`的sendSmsCode发送短信自动设置或调用uniID.setVerifyCode手动设置的验证码的API
 
 uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验验证码方法，如果使用以上方法不需要再调用此接口，如需扩展类型请确保type和发送验证码/设置验证码时对应
 
