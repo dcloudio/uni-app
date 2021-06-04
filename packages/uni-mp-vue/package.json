@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-vue",
-  "version": "2.0.0-alpha-31920210604001",
+  "version": "2.0.0-alpha-31920210604002",
   "description": "@dcloudio/uni-mp-vue",
   "main": "dist/vue.runtime.esm.js",
   "module": "dist/vue.runtime.esm.js",
@@ -23,5 +23,5 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "gitHead": "ae1adf3d5a079b970dc469dfc61d8c3df2e5a4e3"
+  "gitHead": "2033cd540cff5d8469ff77e87779cd4daa5c9121"
 }
