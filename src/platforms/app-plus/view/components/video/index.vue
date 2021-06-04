@@ -61,7 +61,8 @@ const attrs = [
   'showLoading',
   'codec',
   'httpCache',
-  'playStrategy'
+  'playStrategy',
+  'header'
 ]
 
 export default {
@@ -169,6 +170,12 @@ export default {
     playStrategy: {
       type: [Number, String],
       default: 0
+    },
+    header: {
+      type: Object,
+      defult () {
+        return {}
+      }
     }
   },
   computed: {
