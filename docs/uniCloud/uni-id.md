@@ -581,13 +581,13 @@ exports.main = async function(event,context) {
 ```
 
 ### token校验@checktoken
-这是一个校验客户端发起请求（uniCloud.callFunction）自带的uniIdToken，获得用户的uid、token、token的过期时间、角色、权限、用户信息(uni-id-users全部字段)的API。
+一个校验客户端发起请求（uniCloud.callFunction）自带的uniIdToken，获得用户的uid、token、token的过期时间、角色、权限、用户信息(uni-id-users全部字段)的API。
 
 这是非常高频且重要的API通常用于换取操作当前云函数的用户Id。
 
 #### 思考
 如果你并没有服务端开发经验，可能会想：为什么需要通过token去换取用户Id，而不是让客户端直接传递用户Id更方便？
-这里就涉及到安全问题，有一句话叫做：“前端传递的参数都是不可信任的”。比如：你去银行取款应当出示你的身份证来证明你是谁，而不是直接告诉银行柜台你是谁否则这是一个极大的安全漏洞。
+这里就涉及到安全问题，有一句话叫做：“前端传递的参数都是不可信任的”。比如：你去银行取款，柜台会要求出示你的身份证来证明你是谁，而不是你直接告诉银行柜台你是谁就管用。否则这是一个极大的安全漏洞。
 综上所述：所有服务端操作涉及账户信息相关内容，都需要使用token来获得，而不是使用前端传递的参数。
 
 用法：`uniID.checkToken(String token, Object checkTokenOptions)`
