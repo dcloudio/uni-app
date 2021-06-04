@@ -208,6 +208,17 @@ univerifyStyle 数据结构：
                 "title": "用户服务协议" // 协议名称  
             }  
         ]  
+    },
+    "buttons": {  // 自定义登陆按钮
+      "iconWidth": "50px", // 图标宽度（高度等比例缩放） 默认值：45px
+      "list": [
+        {
+          "iconPath": "/static/apple.png" // 图标路径仅支持本地图片
+        }, 
+        {
+          "iconPath": "/static/wechat.png" // 图标路径仅支持本地图片
+        }
+      ]
     }
 }
 ```
@@ -241,6 +252,19 @@ univerifyStyle 属性对应配置的界面指示图
 uni.closeAuthView()
 ```
 
+### 用户点击一键登录自定义按钮
+
+`univerifyStyle`中如果配置了`"fullScreen": "true"`和`buttons`选项并且`buttons`数组不为空时，在全屏的时候会渲染出自定义按钮。
+
+当用户点击`自定义按钮`是，会触发`uni.login`的`fail`回调，返回数据如下：
+
+```json
+{
+  "code": "30008",
+  "errMsg": "用户点击了自定义按钮",
+  "index": 0 // 第几个按钮
+}
+```
 
 ### 用access_token换手机号
 
