@@ -9,6 +9,9 @@
 |√(3.1.17)|x|x|x|x|x|x|x|x|
 
 
+**仅Android nvue支持**
+
+
 **开通配置广告**
 
 开通广告步骤：
@@ -17,8 +20,8 @@
     * App平台：[https://uniad.dcloud.net.cn/](https://uniad.dcloud.net.cn/)
 2. 申请广告位id
 在各位后台申请广告位id
-3. 在页面合适位置编写代码，放置ad组件，配上广告位adpid
-4. App端打包后生效，打包时必须选择要集成的广告SDK（穿山甲、广点通、360联盟、快手）。
+3. 在页面合适位置编写代码，放置`ad-content-page`组件，配上广告位adpid
+4. App端打包后生效，打包时必须选择快手内容联盟。
 
 **属性说明**
 
@@ -29,12 +32,15 @@
 |@error|EventHandle||广告加载失败的回调||
 
 
+HBuilder 基座的测试广告位 `adpid` 为 `1111111112`
+
+
 **示例：**
 
 ```html
 <template>
   <view class="content">
-    <ad-content-page adpid="" @load="onload" @error="onerror"></ad-content-page>
+    <ad-content-page ref="adContentPage" adpid="1111111112" @load="onadload" @error="onaderror"></ad-content-page>
   </view>
 </template>
 
@@ -45,14 +51,25 @@ export default {
       title: 'ad-content-page'
     }
   },
+  onShow() {
+    // 需要在页面显示时调用广告组件的 show 方法
+    this.$refs.adContentPage.show();
+  },
+  onHide() {
+    // 需要在页面隐藏时调用广告组件的 hide 方法停止广告内容的声音
+    this.$refs.adContentPage.hide();
+  },
   methods: {
-    onload(e) {
+    onadload(e) {
       console.log("onload");
     },
-    onerror(e) {
+    onaderror(e) {
       console.log("onerror");
     }
   }
 }
 </script>
 ```
+
+**注意**
+- 需要在页面隐藏时调用组件的 `hide` 方法以停止广告内容的声音
