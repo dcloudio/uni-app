@@ -1,3 +1,16 @@
+#### 3.1.17.20210603-alpha
+* 【uni-app】
+  + App-Android平台 新增 nvue ad-content-page组件支持页面内显示快手短视频内容联盟 [规范](https://uniapp.dcloud.net.cn/component/ad-content-page)
+  + App-Android平台 修复 nvue map 组件 marker 上的 label 可能会被 marker 本身覆盖的Bug [详情](https://ask.dcloud.net.cn/question/122872)
+* 【uniCloud】
+  + 修复 HBuilderX 3.1.16 引出的未关联服务空间时无法获取 uniCloud.mixinDatacom 的Bug
+  + 修复 HBuilderX 3.1.16 引出的某些情况下关联腾讯云服务空间的项目运行报错的Bug
+  + uniCloud本地调试插件 修复 HBuilderX 3.1.16 引出的云函数日志内的文件链接点击无法跳转到对应文件的Bug
+* 【App插件(含5+App和uni-app的App端)】
+  + Android平台 优化 云端打包googleplay渠道使用 Android App Bundle (AAB) 格式 [详情](https://ask.dcloud.net.cn/article/39052)
+  + iOS平台 修复 视频播放控件 VideoPlayer 调用 playbackRate 方法设置倍数播放值为 1.25、1.5 不生效的Bug [详情](https://ask.dcloud.net.cn/question/107802)
+  + iOS平台 修复 扫码时息屏后再次打开引起扫描线动画停止的Bug [详情](https://ask.dcloud.net.cn/question/124001)
+
 #### 3.1.16.20210526-alpha
 * 【uni-app】
   + 【重要】H5端 新增 支持在 CLI 工程使用 vue3/vite [详情](https://ask.dcloud.net.cn/article/37834)
