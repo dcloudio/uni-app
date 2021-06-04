@@ -167,7 +167,7 @@ view.boundingClientRect(data => {
 ```
 
 **注意**
-- nvue 已经支持 uni.createSelectorQuery，无需再使用下面的方案
+- nvue 暂不支持 uni.createSelectorQuery，暂时使用下面的方案
 
 ```
 <template>
