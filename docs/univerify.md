@@ -213,9 +213,11 @@ univerifyStyle 数据结构：
       "iconWidth": "45px", // 图标宽度（高度等比例缩放） 默认值：45px
       "list": [
         {
+          "provider": "apple",
           "iconPath": "/static/apple.png" // 图标路径仅支持本地图片
         }, 
         {
+          "provider": "weixin",
           "iconPath": "/static/wechat.png" // 图标路径仅支持本地图片
         }
       ]
@@ -262,7 +264,8 @@ uni.closeAuthView()
 {
   "code": "30008",
   "errMsg": "用户点击了自定义按钮",
-  "index": 0 // 第几个按钮
+  "index": 0, // 第几个按钮
+  "provider": "apple",
 }
 ```
 
