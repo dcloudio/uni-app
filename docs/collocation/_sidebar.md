@@ -6,6 +6,7 @@
   * [uni.scss](collocation/uni-scss.md)
   * [App.vue](collocation/App.md)
   * [main.js](collocation/main.md)
+  * [env](collocation/env.md)
 * 框架接口
   * [日志打印](collocation/frame/log.md)
   * [定时器](collocation/frame/timer.md)
