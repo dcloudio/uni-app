@@ -9,7 +9,7 @@
 
 * 在 App 和 H5 端，可以使用API方式来调用全屏摄像头，而不是组件内嵌方式，详见：[uni.chooseImage](/api/media/image?id=chooseimage) 和 [uni.chooseVideo](/api/media/video?id=choosevideo) * 
 * 如开发身份证扫描、银行卡识别等ocr识别需求，在微信小程序和百度小程序中使用本camera组件，将图片发送给服务器识别，插件市场有封装好的[模板](https://ext.dcloud.net.cn/search?q=%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9B%B8%E6%9C%BA)；在App端使用[原生插件](https://ext.dcloud.net.cn/search?q=ocr)
-* 活体检测、人脸识别另见文档[生物认证](/api/other/authentication)
+* 活体检测、人脸识别另见文档[生物认证](/api/system/authentication)
 * app-nvue下支持barcode组件，可实现自定义扫码。[参考](https://uniapp.dcloud.io/component/barcode)
 
 **属性说明**

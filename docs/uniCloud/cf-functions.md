@@ -203,6 +203,33 @@ console.log(res)
 
 ```
 
+**发送formdata类型数据**
+
+实际业务中常有使用云函数发送formdata类型数据的需求，比如微信小程序提供的一些服务端接口（图片内容安全检测、识别图片二维码等），可以参考以下示例进行发送
+
+```js
+'use strict';
+const fs = require('fs')
+const path = require('path')
+const FormData = require('form-data'); // 此form-data需要使用npm安装，地址：https://www.npmjs.com/package/form-data
+exports.main = async (event, context) => {
+  const form = new FormData()
+  form.append('media', fs.readFileSync(path.resolve(__dirname, './test.jpg')), { // 为方便演示此处直接使用云函数目录下的test.jpg文件
+    filename: 'test.jpg',
+    contentType: 'image/jpeg'
+  });
+  form.append('otherParam', 'otherParam content');
+  const res = await uniCloud.httpclient.request('https://httpbin.org/post', {
+    method: 'POST',
+    content: form.getBuffer(), // 请求内容
+    headers: form.getHeaders(), // 请求头
+    dataType: 'json' // 此处指定为json表示将此请求的返回值解析为json
+  })
+  return res
+};
+
+```
+
 ## 使用npm
 
 云函数的运行环境是 `Node.js`，因此我们可以使用 `npm` 安装第三方依赖。
@@ -439,6 +466,7 @@ package.json是一个标准json文件，不可带注释。下面是一个package
 - 在web控制台修改云函数配置后，通过HBuilderX的下载云函数菜单会在package.json内添加修改后的云函数配置
 - 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
 - package.json只有云端部署才生效，本地运行不生效。
+- cloudfunction-config不可删除云端配置。例：云端已配置triggers（定时触发器），删除cloudfunction-config内的trigger不会删掉云端的定时触发器
 
 ## 使用cloudfunctions_init初始化云函数@init
 

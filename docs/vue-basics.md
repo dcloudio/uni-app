@@ -219,7 +219,7 @@ vue 是单页面应用，使页面局部刷新，不用每次跳转页面都要�
 
 ## 在 uni-app 中使用差异
 
-`uni-app` 在发布到H5时支持所有vue的语法；发布到App和小程序时，由于平台限制，无法实现全部vue语法，但 `uni-app` 仍是是对vue语法支持度最高的跨端框架。
+`uni-app` 在发布到H5时支持所有vue的语法；发布到App和小程序时，由于平台限制，无法实现全部vue语法，但 `uni-app` 仍是对vue语法支持度最高的跨端框架。
 
 相比Web平台， Vue.js 在 `uni-app` 中使用差异主要集中在两个方面：
 
@@ -1463,8 +1463,7 @@ Vue 提供了一种更通用的方式来观察和响应 Vue 实例上的数据�
 		data() {
 			return {
 				firstName: 'Foo',
-				lastName: 'Bar',
-				fullName: 'Foo Bar'
+				lastName: 'Bar'
 			}
 		},
 		computed: {

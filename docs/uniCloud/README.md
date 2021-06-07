@@ -17,8 +17,9 @@
 
 ### 看视频，只需25分钟，快速入门uniCloud
 
-- [腾讯课堂视频教程](https://ke.qq.com/course/3416784?taid=11123338234831568&tuin=4025c735)
-
+<a target="_blank" href="https://www.bilibili.com/video/BV17p4y1a71x?p=9">
+    <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/707756af-e9a9-4d08-8db9-5d1f34b84ea6.jpg" alt="腾讯课堂uniCloud视频教程" style="width: 70%;">
+</a>
 
 ### uniCloud是什么和不是什么
 
@@ -138,7 +139,7 @@ uniCloud最吸引人的是，它将开发效率提升了10倍以上。
 
 开发效率提升10倍，并非某个杀手功能的功劳，而是庞大的生态共同的作用。本章节篇幅较长，请耐心阅读。
 
-![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/c50d2741-6a47-4dcd-a02c-fdd683fa4ea4.png)
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/80364c0b-2dd8-4629-b0f7-cbead0df7922.png)
 
 #### 一个故事
 2020年初，uniCloud刚发布，新冠肺炎突然来袭，各地涌现大量抗疫项目需求。
@@ -181,7 +182,8 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 
 下面列举些常用的轮子
 
-1. 官方维护的插件
+**1. 官方维护的插件**
+
 - uni-id：不用再开发用户系统。用户注册、登录（含社交登录、短信验证码登录、App一键登录）、修改或重置密码、token管理、图形验证码、RBAC权限角色系统...所有与用户相关的，不管前端还是云端，代码都是现成的。[详见](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
 - uniPay：不管微信还是支付宝，不管App、微信小程序、还是支付宝小程序，不管前端还是服务端，一切都现成的，拿来即用。[详见](https://uniapp.dcloud.net.cn/uniCloud/unipay)
 - uSearch：云端一体搜索。搜索页面、输入联想、搜索历史记录、热搜词分析提取...一应俱全。[详见](https://ext.dcloud.net.cn/plugin?id=3851)
@@ -189,7 +191,8 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 - uni-file-picker：前端直传uniCloud存储组件。[详见](https://ext.dcloud.net.cn/plugin?id=4079)
 - uni-captcha：云端一体图形验证码组件。[详见](https://ext.dcloud.net.cn/plugin?id=4048)
 
-2. 社区的优秀插件
+**2. 社区的优秀插件**
+
 - cms
 - 城市选择
 - banner管理
@@ -200,9 +203,11 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 - push
 - 图表统计
 
-3. 项目模板
+**3. 项目模板**
+
 上面的轮子，是与业务无关的通用轮子。除此之外，还有大量的云端一体的项目模板。
 使用这些现成的项目模板，那开发效率更是极大幅的提升。过去5、6人月的项目，现在几天就能搞定上线！
+
 |				|			|					|
 |--				|--			|--					|
 |电商			|博客		|排班				|
@@ -213,7 +218,7 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 |新闻			|考勤打卡	|红包封面			|
 
 
-在这里，我们还必须提到2个新概念：uni_module和datacom。
+在这里，我们还必须提到2个新概念：`uni_module`和`datacom`。
 - uni_module：云端一体组件最佳的承载方式。传统的npm无法处理云端一体的需求，把前端和云端的代码，一起打包到一个uni_module中，整体传播与发布，对云端一体组件的生态有重大的帮助。[详见](https://uniapp.dcloud.net.cn/uni_modules)
 - datacom：datacom是一种在前端绑定后端数据源的组件。[详见](https://uniapp.dcloud.net.cn/component/datacom)
 
@@ -300,7 +305,7 @@ HBuilderX提升了uni-app的开发效率，自然也将提升uniCloud的开发�
 ![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/88f093d0-1abd-487d-bf24-e0627c471977.jpg)
 
 
-#### 第四层提效：语言统一的价值
+#### 第五层提效：语言统一的价值
 
 前端和云端都使用js编程语言，提高了沟通效率。
 
@@ -310,7 +315,7 @@ js和其他服务器语言，比如php或java，在过去需要Mock来翻译，�
 
 由于统一了技术栈，招聘效率、管理效率也会相应提升。。
 
-#### 第五层提效：测试效率的提升
+#### 第六层提效：测试效率的提升
 
 代码量的减少到原来的十分之一，这自然可以让code review效率和白盒测试的效率也提升了十倍。
 
@@ -318,7 +323,7 @@ js和其他服务器语言，比如php或java，在过去需要Mock来翻译，�
 
 现在，开发、测试都将变的更加轻松。
 
-#### 第六层提效：serverless让开发者专注于业务，无需分心运维
+#### 第七层提效：serverless让开发者专注于业务，无需分心运维
 
 因为serverless的免运维特点，开发商再也不用操心扩容、高并发、ddos攻击、安全漏洞补丁等一系列麻烦事。只需专注于自己的业务。
 

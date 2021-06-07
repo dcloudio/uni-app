@@ -97,7 +97,7 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 |enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。|
 |enumType|String|字段值枚举类型，可选值tree。设为tree时，代表enum里的数据为树形结构。此时schema2code可生成多级级联选择组件|
 |arrayType|String|数组项类型，bsonType="array" 时有效，HBuilderX 3.1.0+ 支持，具体见下表arrayType可用类型|
-|fileMediaType|String|文件类型，可选值 all&#124;image&#124;video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件，详情参考[文件上传示例](https://uniapp.dcloud.net.cn/uniCloud/schema?id=filepicker)  HBuilderX 3.1.0+ 支持|
+|fileMediaType|String|文件类型，可选值 all&#124;image&#124;video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件  HBuilderX 3.1.0+|
 |fileExtName|String|文件扩展名过滤，多个用 "," 分割，例如: jpg,png，HBuilderX 3.1.0+ 支持|
 |maximum|number|如果bsonType为数字时，可接受的最大值|
 |exclusiveMaximum|boolean|是否排除 maximum|
@@ -179,29 +179,107 @@ uniCloud推出了`openDB`开源数据库规范，包括用户表、文章表、�
 
 #### 字段类型bsonType@bsontype
 
-- bool （布尔值）
+- bool （布尔值，true|false）
 - string （字符串）
 - int （整数）
 - double （精度数。由于浮点精度问题，慎用）
-- object （对象。其中地理位置也属于object）
+- object （对象。地理位置也属于object）
 - array （数组）
 - timestamp （时间戳）
 - date （日期）
-- file 云存储文件的信息体。不直接存储文件，而是一个json object，包括云存储文件的名称、路径、文件体积等信息。
+- file 云存储文件的信息体。不直接存储文件，而是一个json object，包括云存储文件的名称、路径、文件体积等信息。（HBuilderX 3.1.0+ ）
 - password （一种特殊的string。这类字段不会通过clientDB传递给前端，所有用户都不能通过clientDB读写，即使是admin管理员）
 
-注意：
+复杂格式说明：
 - timestamp是一串数字的时间戳，一般通过如下js获取`var timestamp = new Date().getTime()；`。它的好处是屏蔽了时区差异。阿里云和腾讯云的云端时区是0，但在HBuilderX本地运行云函数时，如果是中国的电脑，时区则会变成8，导致显示错乱。所以推荐使用时间戳。但时间戳是一串记录毫秒的数字，不合适直接渲染到前端界面上。推荐的做法是在前端渲染时使用[`<uni-dateformat>`组件](https://ext.dcloud.net.cn/plugin?id=3279)。
-- 时间戳和地理位置在web控制台的数据库管理界面上无法直接在引号里录入值，需参考[文档](uniCloud/quickstart?id=editdb)
+- 日期和地理位置在web控制台的数据库管理界面上无法直接在引号里录入值，需参考[文档](uniCloud/quickstart?id=editdb)
 - double类型慎重，由于js不能精准处理浮点运算，0.1+0.2=0.30000000000000004。所以涉及金额时，建议使用int而不是double，以分为单位而不是以元为单位存储。比如微信支付默认就是以分为单位。如果使用[uniPay](uniCloud/unipay)处理支付的话，它的默认单位也是分。
+- file的json object格式存储文件的基本信息和路径，如下：
+```json
+{
+	"name": "filename.jpg",
+	"extname": "jpg",
+	"fileType": "image",
+	"url": "https://xxxx", // 必填
+	"size": 0, //单位是字节
+	"image": { //图片扩展
+		"width":10,//单位是像素
+		"height":10
+	},
+	"video":{ //video和image不会同时存在。此处仅为列举所有数据规范
+		"duration":123,//视频时长，单位是秒
+		"poster":"https://xxx" //视频封面
+	}
+}
+```
 
+在上述格式中，除了`url`外，其他均为非必填。
+
+`image`键是图片的扩展键，除了基本的宽高像素外，开发者可以自己扩展其他键，比如色位。同理`video`也可以自行扩展。
+
+举例：表的schema中定义了2个字段：_id和image，image为file类型，定义格式如下：
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": [],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "image": {
+        "bsonType": "file",
+        "title": "图片",
+        "description": "图片",
+        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
+      }
+    }
+  }
+}
+```
+
+前端配套组件：
+
+uni-ui组件库中包含组件：`<uni-file-picker>` 。该组件和file字段的数据库完美搭配。组件首先选择文件，并上传到uniCloud云存储，在表单提交后将上传文件的地址写入file字段中。详见：[https://ext.dcloud.net.cn/plugin?id=4079](https://ext.dcloud.net.cn/plugin?id=4079)
+
+schema2code：
+
+DB Schema定义好字段类型为file后，可以通过schema2code工具，直接生成上传表单页面，前端页面包含`<uni-file-picker>`组件，选择、上传、写库一气呵成。详见：[schema2code](/uniCloud/schema?id=autocode)
 
 #### 数组字段类型的子类型arrayType@arraytype
 
 一个字段如果bsonType是array，那么它可以进一步通过arrayType指定这个数组里每个数组项目的bsonType，值域仍然是所有的字段类型。
 
-比如一个字段存储了多张图片，那么可以设置bsonType为array，然后进一步设置arrayTpye为file。
+比如一个字段存储了多张图片，那么可以设置bsonType为array，然后进一步设置arrayType为file。
 
+比如某表的schema定义了2个字段：_id和images，images存储用户批量上传的多张图，如下：
+
+```json
+{
+  "schema": {
+    "bsonType": "object",
+    "required": [],
+    "properties": {
+      "_id": {
+        "description": "ID，系统自动生成"
+      },
+      "images": {
+        "bsonType": "array",
+        "title": "图片",
+        "description": "多张图片",
+        "arrayType": "file",
+        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
+        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
+        "maxLength": 3 // 限制最大数量
+      }
+    }
+  }
+}
+```
+
+arrayType为file时，与单独的bsonType为file相同，`<uni-file-picker>`组件和schema2code均可使用。
 
 #### url格式@url
 
@@ -363,6 +441,10 @@ enum支持3种数据格式：
 
 ```
 
+
+**注意**
+
+- enum内对普通的二维数据表枚举时，此表数据不可超过500条
 
 #### 默认值defaultValue/forceDefaultValue@defaultvalue
 
@@ -1013,7 +1095,7 @@ permission的字段级控制，包括读写两种权限，分别称为：read、
 **注意**
 
 - `auth.xxx`均由uni-id提供，依赖于[uni-id公共模块](uniCloud/uni-id.md)
-- `doc.xxx`表示将要查询/修改/删除的每条数据，如果将要访问的数据不满足permission规则将会拒绝执行
+- `doc.xxx`表示将要查询/修改/删除的每条数据（注意并不包括新增数据，新增数据应通过值域校验进行验证），如果将要访问的数据不满足permission规则将会拒绝执行
 - `uni-id`的角色和权限，也即auth.role和auth.permission是不一样的概念。注意阅读[uni-id 角色权限](/uniCloud/uni-id?id=rbac)
 - 如果想支持使用多个`action`的用法，可以通过`"'actionRequired' in action"`的形式配置权限，限制客户端使用的action内必须包含名为`actionRequired`的action
 - doc是由客户端条件里面提取的变量，可以理解为将要访问的数据，因此create权限内不可使用doc变量，建议使用forceDefaultValue或自定义校验函数实现插入数据的校验。
@@ -1272,6 +1354,10 @@ DCloud提供了`uni-forms`前端组件，该组件的表单校验规范完全符
 - 区域G. 文件预览 (仅支持预览 自动生成的页面和校验规则)
 
 > 注意：需HBuilderX 3.0.5+ 支持
+
+> HBuilderX 3.1.15 schema2code 生成文件结构调整, 生成的 `pages.json` 改为 `page_init.json`，确认导入工程时自动合并到项目的 `pages.json`，`page_init.json`不会导入到工程中，仅在预览界面显示
+
+> HBuilderX 3.1.15 之前的版本 `pages.json` 导入时会覆盖用户工程中已有的 `pages.json`，导入确认时选择不导入该文件手动拷贝内容到 `pages.json`
 
 **全程演示视频**：
 </br>
@@ -1595,75 +1681,3 @@ const dbSearchFields = ['username', 'role_name', 'mobile', 'email'] // 模糊搜
 在web控制台的 用户地址表，选择表结构schema，点schema2code生成页面，在生成的代码中会使用多级联选择组件 `<uni-data-picker>`，效果是懒加载的，选择省后，会根据省的选择去拉取市的数据。
 
 `<uni-data-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=3796](https://ext.dcloud.net.cn/plugin?id=3796)
-
-
-
-#### 生成文件上传示例@filepicker
-
-> HBuilderX 3.1.0+ 支持
-
-单个文件上传示例
-
-```json
-{
-  "schema": {
-    "bsonType": "object",
-    "required": [],
-    "properties": {
-      "_id": {
-        "description": "ID，系统自动生成"
-      },
-      "image": {
-        "bsonType": "file",
-        "title": "图片",
-        "description": "图片",
-        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
-        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
-      }
-    }
-  }
-}
-```
-
-多个文件上传示例
-
-```json
-{
-  "schema": {
-    "bsonType": "object",
-    "required": [],
-    "properties": {
-      "_id": {
-        "description": "ID，系统自动生成"
-      },
-      "image": {
-        "bsonType": "array",
-        "title": "图片",
-        "description": "图片",
-        "arrayType": "file",
-        "fileMediaType": "image", // 可选值 all|image|video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件
-        "fileExtName": "jpg,png", // 扩展名过滤，多个用 , 分割
-        "maxLength": 3 // 限制最大数量
-      }
-    }
-  }
-}
-```
-
-上传后的file对象
-```json
-{
-	"name": "filename.jpg",
-	"extname": "jpg",
-	"fileType": "image",
-	"url": "https://xxxx",
-	"size": 0, //单位是字节
-	"image": {
-		"width":10,//单位是像素
-		"height":10
-	}
-}
-```
-
-
-`<uni-file-picker>` 组件的文档另见：[https://ext.dcloud.net.cn/plugin?id=4079](https://ext.dcloud.net.cn/plugin?id=4079)

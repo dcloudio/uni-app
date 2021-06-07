@@ -471,7 +471,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
-|id|Object||新增数据|
+|value|Object||新增数据|
 
 
 可选参数 options
@@ -533,7 +533,7 @@ udb为unicloud-db组件的ref属性值
 
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
-|id|Object||需要修改的新数据|
+|value|Object||需要修改的新数据|
 
 
 可选参数 options

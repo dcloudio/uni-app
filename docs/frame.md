@@ -224,6 +224,9 @@ switch(uni.getSystemInfoSync().platform){
 如有必要，也可以在条件编译里自己定义一个变量，赋不同值。在后续运行代码中动态判断环境。
 
 
+### 其他环境变量
+
+其他环境变量的定义方式参考 [环境变量](/collocation/env)。
 ## 页面样式与布局
 
 uni-app的css与web的css基本一致。本文没有讲解css的用法。在你了解web的css的基础之上，本文讲述一些样式相关的注意事项。

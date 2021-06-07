@@ -1244,7 +1244,7 @@ const res = await db.collection('query').doc('1').update({
 const res = await db.collection('query').where({
 	'students.id': '001'
 }).update({
-  // 将students内id为001的name改为li
+  // 将students内id为001的name改为li，$代表where内匹配到的数组项的序号
 	'students.$.name': 'li'
 })
 ```
@@ -1762,8 +1762,6 @@ let res = await db.collection('user').where({
 ## 事务
 
 事务通常用来在某个数据库操作失败之后进行回滚。
-
-> 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
 
 > 事务因为要锁行，是有时间限制的。从事务开始到事务提交/回滚，时间不可超过10s。
 
@@ -2499,7 +2497,6 @@ let res = await db.collection('items').aggregate()
 |----								|----			|----		|----	|----																																														|
 |near								|GeoPoint	|				|是		|GeoJSON Point，用于判断距离的点																																|
 |spherical					|true			|				|是		|必填，值为 true																																								|
-|limit							|number		|				|否		|限制返回记录数																																									|
 |maxDistance				|number		|				|否		|距离最大值																																											|
 |minDistance				|number		|				|否		|距离最小值																																											|
 |query							|Object		|				|否		|要求记录必须同时满足该条件（语法同 where）																											|

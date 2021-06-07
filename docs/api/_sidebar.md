@@ -6,6 +6,7 @@
   * [生命周期](api/lifecycle.md)
   * [应用级事件](api/application.md)
   * [拦截器](api/interceptor.md)
+  * [全局API](api/global.md)
 * 网络
   * [发起请求](api/request/request.md)
   * [上传、下载](api/request/network-file.md)
@@ -117,6 +118,7 @@
   * [全屏视频广告](api/a-d/full-screen-video.md)
   * [内容联盟广告](api/a-d/content-page.md)
   * [插屏广告](api/a-d/interstitial.md)
+  * [互动游戏](api/a-d/interactive.md)
 * 第三方服务
   * [获取服务供应商](api/plugins/provider.md)
   * [登录](api/plugins/login.md)
@@ -181,7 +183,7 @@
 	  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/759713d0-4f2d-11eb-a16f-5b3e54966275.png" width="20" height="20"/>
 	  <div class="contact-smg">
 	     <div>官方QQ交流群</div>
-	  <div>群27：811363410 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=noDvG6kfZgzXh-Wbp5MRhNutYCojx08G&jump_from=webapi">点此加入</a></div>
+	  <div>群23：599958679 &nbsp;<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=YDAuvwgiE1Bss5uBA67GSIwfKbDRLuuE&jump_from=webapi">点此加入</a></div>
 		<div>群35：713420817（2000人已满）</div>
 		<div>群34：530305531（2000人已满）</div>
 		<div>群33：498071674（2000人已满）</div>
@@ -190,11 +192,11 @@
 		<div>群30：371046920（2000人已满）</div>
 		<div>群29：202965481（2000人已满）</div>
 		<div>群28：166188776（2000人已满）</div>
-		<!-- <div>群27：811363410（2000人已满）</div> -->
+		<div>群27：811363410（2000人已满）</div>
 		<div>群26：147867597（2000人已满）</div>
 		<div>群25：165297000（2000人已满）</div>
 		<div>群24：672494800（2000人已满）</div>
-		<div>群23：599958679（2000人已满）</div>
+		<!-- <div>群23：599958679（2000人已满）</div> -->
 		<div>群22：687186952（2000人已满）</div>
 		<div>群21：717019120（2000人已满）</div>
 		<div>群20：165796402（2000人已满）</div>
