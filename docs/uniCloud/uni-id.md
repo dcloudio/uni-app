@@ -428,7 +428,7 @@ exports.main = async function(event,context) {
 
 - 注册成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token',res.result.token)`
 
-**user参数说明**
+**参数说明**
 
 | 字段					| 类型		| 必填| 说明																																					|
 | ---						| ---			| ---	| ---																																						|
@@ -536,7 +536,7 @@ uniCloud.callFunction({
 - 登录成功之后会返回token，在获取token之后应进行持久化存储，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token',res.result.token)`
 - 登录时请注意自行验证数据有效性
 
-**user参数说明**
+**参数说明**
 
 | 字段		| 类型	| 必填	| 说明	|
 | ---		| ---	| ---	| ---	|
@@ -730,7 +730,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.createToken(Object CreateTokenParams)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段					| 类型		| 必填| 说明																		|
 | ---						| ---			| ---	| ---																			|
@@ -748,7 +748,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.updatePwd(Object UpdatePwdParams)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段								| 类型	| 必填| 说明													|
 | ---									| ---		| ---	| ---														|
@@ -796,7 +796,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.resetPwd(Object ResetPwdParams)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段								| 类型	| 必填| 说明													|
 | ---									| ---		| ---	| ---														|
@@ -835,7 +835,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.encryptPwd(String password)`
 
-**passwordInfo参数说明**
+**参数说明**
 
 | 字段								| 类型	| 必填| 说明													|
 | ---									| ---		| ---	| ---														|
@@ -875,7 +875,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.setAvatar(Object SetAvatarParams)`
 
-**avatarInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明													|
 | ---		| ---		| ---	| ---														|
@@ -918,7 +918,7 @@ exports.main = async function(event,context) {
 
 此接口用于在其他接口不满足需求时使用
 
-**userInfo参数说明**
+**参数说明**
 
 | 字段| 类型	| 必填| 说明													|
 | ---	| ---		| ---	| ---														|
@@ -1032,9 +1032,9 @@ exports.main = async function(event,context) {
 
 此接口仅适用于不希望使用config.json初始化而是希望通过js的方式传入配置的情况，多数情况下不推荐使用。**如果你要使用clientDB，且必须要用这种方式初始化uni-id，必须在uni-id的config.json内也写上同样的配置。**
 
-**InitParams参数说明**
+**参数说明**
 
-InitParams格式与config.json完全相同
+InitParams格式与[config.json](https://uniapp.dcloud.io/uniCloud/uni-id?id=configjson%e7%9a%84%e8%af%b4%e6%98%8e)完全相同
 
 **响应参数**
 
@@ -1077,7 +1077,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.sendSmsCode(Object SendSmsCodeParams)`
 
-**codeInfo**参数说明
+**参数说明**
 
 | 字段			| 类型	| 必填| 说明																																																					|
 | ---				| ---		| ---	| ---																																																						|
@@ -1125,7 +1125,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.setVerifyCode(Object SetVerifyCodeParams)`
 
-**codeInfo**参数说明
+**参数说明**
 
 | 字段			| 类型	| 必填| 说明																																													|
 | ---				| ---		| ---	| ---																																														|
@@ -1172,7 +1172,7 @@ uni-id内置方法`loginBySms`、`bindMobile`、`unbindMobile`均已内置校验
 
 用法：`uniID.verifyCode(Object VerifyCodeParams)`
 
-**codeInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																																													|
 | ---		| ---		| ---	| ---																																														|
@@ -1212,7 +1212,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.loginBySms(Object LoginBySmsParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
 | 字段					| 类型		| 必填| 说明																																																	|
 | ---						| ---			| ---	| ---																																																		|
@@ -1310,7 +1310,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindMobile(Object BindMobileParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
 | 字段				| 类型	| 必填| 说明																																			|
 | ---					| ---		| ---	| ---																																				|
@@ -1358,7 +1358,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.unbindMobile(Object UnbindMobileParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																																			|
 | ---		| ---		| ---	| ---																																				|
@@ -1403,7 +1403,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.loginByEmail(Object LoginByEmailParams)`
 
-**mobileInfo**参数说明
+**参数说明**
 
 | 字段					| 类型	| 必填| 说明																																					|
 | ---						| ---		| ---	| ---																																						|
@@ -1458,7 +1458,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindEmail(Object BindEmailParams)`
 
-**emailInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																									|
 | ---		| ---		| ---	| ---																										|
@@ -1502,7 +1502,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.unbindEmail(Object UnbindEmailParams)`
 
-**emailInfo**参数说明
+**参数说明**
 
 | 字段	| 类型	| 必填| 说明																									|
 | ---		| ---		| ---	| ---																										|
@@ -1559,7 +1559,7 @@ exports.main = async function(event,context) {
 2. **打包**并**使用**自定义基座（注意一定要在manifest.json填写微信appid后再制作自定义基座），[自定义基座使用说明](https://ask.dcloud.net.cn/article/35115)
 3. 在uni-id的config.json内app-plus对应的微信登录信息内配置appid和appsecret
 
-**参数说明**
+**LoginByWexinParams参数说明**
 
 | 字段				| 类型	| 必填| 说明																																																														|
 | ---					| ---		| ---	| ---																																																															|
@@ -1710,8 +1710,6 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindWeixin(Object BindWeixinParams);`
 
-**weixinInfo 参数说明**
-
 **参数说明**
 
 | 字段		| 类型	| 必填| 说明																																																														|
@@ -1774,7 +1772,7 @@ exports.main = async function(event,context) {
 
 ### 微信数据解密
 
-用法：`uniID.wxBizDataCrypt(Object params);`
+用法：`uniID.wxBizDataCrypt(Object WxBizDataCryptParams);`
 
 **参数说明**
 
@@ -1816,7 +1814,7 @@ exports.main = async function(event,context) {
 - 需要在config.json内支付宝平台下配置appid和privateKey（应用私钥）
 - 登录成功之后应持久化存储token，键值为：`uni_id_token、uni_id_token_expired`，例：`uni.setStorageSync('uni_id_token', res.result.token)`
 
-**参数说明**
+**LoginByAlipayParams参数说明**
 
 | 字段				| 类型	| 必填| 说明																																																														|
 | ---					| ---		| ---	| ---																																																															|
@@ -1893,8 +1891,6 @@ exports.main = async function(event,context) {
 
 用法：`uniID.bindAlipay(Object BindAlipayParams);`
 
-**alipayInfo 参数说明**
-
 **参数说明**
 
 | 字段| 类型	| 必填| 说明													|
@@ -1966,7 +1962,7 @@ exports.main = async function(event,context) {
 - 需要在config.json内的 app-plus > oauth > apple 下配置 bundleId
 - 登录成功之后应持久化存储token，键值为：uni_id_token，`uni.setStorageSync('uni_id_token', res.result.token)`
 
-**参数说明**
+**LoginByAppleParams参数说明**
 
 | 字段				| 类型	| 必填| 说明																																						   						|
 | ---					| ---		| ---	| ---																																     	     			|
