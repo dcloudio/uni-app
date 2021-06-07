@@ -26,11 +26,11 @@ module.exports = function getResolveScopedSlots (parent, state) {
   if (!params) {
     return
   }
-  const vueId = parent.parentPath.parentPath.get('properties').find(path => path.get('key').isIdentifier({ name: 'attrs' })).get('value').get('properties').find(path => path.get('key').isStringLiteral({ value: 'vue-id' })).get('value').node.value
+  const vueId = parent.parentPath.parentPath.get('properties').find(path => path.get('key').isIdentifier({ name: 'attrs' })).get('value').get('properties').find(path => path.get('key').isStringLiteral({ value: 'vue-id' })).get('value').node
   const slot = properties.find(path => path.get('key').isIdentifier({ name: 'key' })).get('value').node.value
   const ids = {}
   function updateIds (vueId, slot, value, key) {
-    const array = [t.stringLiteral(vueId), t.stringLiteral(slot)]
+    const array = [vueId, t.stringLiteral(slot)]
     if (key) {
       array.push(t.stringLiteral(key))
     }
@@ -48,7 +48,7 @@ module.exports = function getResolveScopedSlots (parent, state) {
     const orgin = fnBody.get('body.0.argument')
     const elements = orgin.get('elements')
     const node = (elements.length === 1 ? elements[0] : orgin).node
-    const test = t.callExpression(t.identifier('$hasScopedSlotsParams'), [t.stringLiteral(vueId)])
+    const test = t.callExpression(t.identifier('$hasScopedSlotsParams'), [vueId])
     orgin.replaceWith(t.arrayExpression([t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))]))
   }
 }
