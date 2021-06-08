@@ -215,6 +215,346 @@ function isNativeTag(tag) {
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
+class DOMException extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'DOMException';
+    }
+}
+
+function normalizeEventType(type) {
+    return `on${shared.capitalize(shared.camelize(type))}`;
+}
+class UniEvent {
+    constructor(type, opts) {
+        this.defaultPrevented = false;
+        this.timeStamp = Date.now();
+        this._stop = false;
+        this._end = false;
+        this.type = type.toLowerCase();
+        this.bubbles = !!opts.bubbles;
+        this.cancelable = !!opts.cancelable;
+    }
+    preventDefault() {
+        this.defaultPrevented = true;
+    }
+    stopImmediatePropagation() {
+        this._end = this._stop = true;
+    }
+    stopPropagation() {
+        this._stop = true;
+    }
+}
+class UniEventTarget {
+    constructor() {
+        this._listeners = {};
+    }
+    dispatchEvent(evt) {
+        const listeners = this._listeners[evt.type];
+        if (!listeners) {
+            return false;
+        }
+        const len = listeners.length;
+        for (let i = 0; i < len; i++) {
+            listeners[i].call(this, evt);
+            if (evt._end) {
+                break;
+            }
+        }
+        return evt.cancelable && evt.defaultPrevented;
+    }
+    addEventListener(type, listener, options) {
+        const isOnce = options && options.once;
+        if (isOnce) {
+            const wrapper = function (evt) {
+                listener.apply(this, [evt]);
+                this.removeEventListener(type, wrapper, options);
+            };
+            return this.addEventListener(type, wrapper, shared.extend(options, { once: false }));
+        }
+        (this._listeners[type] || (this._listeners[type] = [])).push(listener);
+    }
+    removeEventListener(type, callback, options) {
+        const listeners = this._listeners[type.toLowerCase()];
+        if (!listeners) {
+            return;
+        }
+        const index = listeners.indexOf(callback);
+        if (index > -1) {
+            listeners.splice(index, 1);
+        }
+    }
+}
+
+class UniCSSStyleDeclaration {
+    constructor() {
+        this._cssText = null;
+        this._value = null;
+    }
+    setProperty(property, value) {
+        if (value === null || value === '') {
+            this.removeProperty(property);
+        }
+        else {
+            if (!this._value) {
+                this._value = {};
+            }
+            this._value[property] = value;
+        }
+    }
+    getPropertyValue(property) {
+        if (!this._value) {
+            return '';
+        }
+        return this._value[property] || '';
+    }
+    removeProperty(property) {
+        if (!this._value) {
+            return '';
+        }
+        const value = this._value[property];
+        delete this._value[property];
+        return value;
+    }
+    get cssText() {
+        return this._cssText || '';
+    }
+    set cssText(cssText) {
+        this._cssText = cssText;
+    }
+    toJSON() {
+        const { _cssText, _value } = this;
+        const hasCssText = _cssText !== null;
+        const hasValue = _value !== null;
+        if (hasCssText && hasValue) {
+            return [_cssText, _value];
+        }
+        return hasCssText ? _cssText : _value;
+    }
+}
+const STYLE_PROPS = [
+    '_value',
+    '_cssText',
+    'cssText',
+    'getPropertyValue',
+    'setProperty',
+    'removeProperty',
+    'toJSON',
+];
+function proxyStyle(uniCssStyle) {
+    return new Proxy(uniCssStyle, {
+        get(target, key, receiver) {
+            if (STYLE_PROPS.indexOf(key) === -1) {
+                return target.getPropertyValue(key);
+            }
+            return Reflect.get(target, key, receiver);
+        },
+        set(target, key, value, receiver) {
+            if (STYLE_PROPS.indexOf(key) === -1) {
+                target.setProperty(key, value);
+                return true;
+            }
+            return Reflect.set(target, key, value, receiver);
+        },
+    });
+}
+
+const NODE_TYPE_PAGE = 0;
+const NODE_TYPE_ELEMENT = 1;
+const NODE_TYPE_TEXT = 3;
+const NODE_TYPE_COMMENT = 8;
+function sibling(node, type) {
+    const { parentNode } = node;
+    if (!parentNode) {
+        return null;
+    }
+    const { childNodes } = parentNode;
+    return childNodes[childNodes.indexOf(node) + (type === 'n' ? 1 : -1)] || null;
+}
+function removeNode(node) {
+    const { parentNode } = node;
+    if (parentNode) {
+        parentNode.removeChild(node);
+    }
+}
+function checkNodeId(node) {
+    if (!node.nodeId) {
+        node.nodeId = node.pageNode.genId();
+    }
+}
+class UniNode extends UniEventTarget {
+    constructor(nodeType, nodeName) {
+        super();
+        this.pageNode = null;
+        this.parentNode = null;
+        this._text = null;
+        this.nodeType = nodeType;
+        this.nodeName = nodeName;
+        this.childNodes = [];
+    }
+    get firstChild() {
+        return this.childNodes[0] || null;
+    }
+    get lastChild() {
+        const { childNodes } = this;
+        const length = childNodes.length;
+        return length ? childNodes[length - 1] : null;
+    }
+    get nextSibling() {
+        return sibling(this, 'n');
+    }
+    get textContent() {
+        return this._text || '';
+    }
+    set textContent(text) {
+        this._text = text;
+    }
+    get parentElement() {
+        const { parentNode } = this;
+        if (parentNode && parentNode.nodeType === NODE_TYPE_ELEMENT) {
+            return parentNode;
+        }
+        return null;
+    }
+    get previousSibling() {
+        return sibling(this, 'p');
+    }
+    appendChild(newChild) {
+        return this.insertBefore(newChild, null);
+    }
+    cloneNode(deep) {
+        const cloned = shared.extend(Object.create(Object.getPrototypeOf(this)), this);
+        const { attributes } = cloned;
+        if (attributes) {
+            cloned.attributes = shared.extend({}, attributes);
+        }
+        if (deep) {
+            cloned.childNodes = cloned.childNodes.map((childNode) => childNode.cloneNode(true));
+        }
+        return cloned;
+    }
+    insertBefore(newChild, refChild) {
+        removeNode(newChild);
+        newChild.pageNode = this.pageNode;
+        newChild.parentNode = this;
+        checkNodeId(newChild);
+        const { childNodes } = this;
+        if (refChild) {
+            const index = childNodes.indexOf(refChild);
+            if (index === -1) {
+                throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
+            }
+            childNodes.splice(childNodes.indexOf(refChild), 0, newChild);
+        }
+        else {
+            childNodes.push(newChild);
+        }
+        return newChild;
+    }
+    removeChild(oldChild) {
+        const { childNodes } = this;
+        const index = childNodes.indexOf(oldChild);
+        if (index === -1) {
+            throw new DOMException(`Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.`);
+        }
+        oldChild.parentNode = null;
+        childNodes.splice(index, 1);
+        return oldChild;
+    }
+}
+class UniBaseNode extends UniNode {
+    constructor(nodeType, nodeName) {
+        super(nodeType, nodeName);
+        this.attributes = Object.create(null);
+        this._html = null;
+        this.style = proxyStyle(new UniCSSStyleDeclaration());
+    }
+    get className() {
+        return (this.attributes['class'] || '');
+    }
+    set className(val) {
+        this.setAttribute('class', val);
+    }
+    get innerHTML() {
+        return '';
+    }
+    set innerHTML(html) {
+        this._html = html;
+    }
+    addEventListener(type, listener, options) {
+        super.addEventListener(type, listener, options);
+        const normalized = normalizeEventType(type);
+        if (!this.attributes[normalized]) {
+            this.setAttribute(normalized, 1);
+        }
+    }
+    removeEventListener(type, callback, options) {
+        super.removeEventListener(type, callback, options);
+        const normalized = normalizeEventType(type);
+        if (this.attributes[normalized]) {
+            this.removeAttribute(normalized);
+        }
+    }
+    getAttribute(qualifiedName) {
+        return this.attributes[qualifiedName];
+    }
+    removeAttribute(qualifiedName) {
+        delete this.attributes[qualifiedName];
+    }
+    setAttribute(qualifiedName, value) {
+        this.attributes[qualifiedName] = value;
+    }
+    toJSON() {
+        const res = {
+            i: this.nodeId,
+            n: this.nodeName,
+            a: this.attributes,
+            s: this.style.toJSON(),
+        };
+        if (this._text !== null) {
+            res.t = this._text;
+        }
+        return res;
+    }
+}
+
+class UniCommentNode extends UniNode {
+    constructor(text) {
+        super(NODE_TYPE_COMMENT, '#comment');
+        this._text = text;
+    }
+}
+
+class UniElement extends UniBaseNode {
+    constructor(nodeName) {
+        super(NODE_TYPE_ELEMENT, nodeName.toUpperCase());
+        this.tagName = this.nodeName;
+    }
+}
+class UniInputElement extends UniElement {
+    get value() {
+        return this.getAttribute('value');
+    }
+    set value(val) {
+        this.setAttribute('value', val);
+    }
+}
+class UniTextAreaElement extends UniInputElement {
+}
+
+class UniTextNode extends UniBaseNode {
+    constructor(text) {
+        super(NODE_TYPE_TEXT, '#text');
+        this._text = text;
+    }
+    get nodeValue() {
+        return this._text || '';
+    }
+    set nodeValue(text) {
+        this._text = text;
+    }
+}
+
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
@@ -398,6 +738,10 @@ exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
+exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
+exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
+exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
+exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
 exports.ON_REACH_BOTTOM_DISTANCE = ON_REACH_BOTTOM_DISTANCE;
 exports.PLUS_RE = PLUS_RE;
 exports.PRIMARY_COLOR = PRIMARY_COLOR;
@@ -409,6 +753,14 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
+exports.UniBaseNode = UniBaseNode;
+exports.UniCommentNode = UniCommentNode;
+exports.UniElement = UniElement;
+exports.UniEvent = UniEvent;
+exports.UniInputElement = UniInputElement;
+exports.UniNode = UniNode;
+exports.UniTextAreaElement = UniTextAreaElement;
+exports.UniTextNode = UniTextNode;
 exports.addFont = addFont;
 exports.callOptions = callOptions;
 exports.createRpx2Unit = createRpx2Unit;

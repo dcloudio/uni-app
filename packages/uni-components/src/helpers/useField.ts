@@ -360,7 +360,7 @@ function useEvent(
       if (!state.composing) {
         triggerInput(
           event,
-          Object.assign(
+          extend(
             {
               value: field.value,
               cursor: field.selectionEnd,

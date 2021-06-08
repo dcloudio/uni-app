@@ -3085,15 +3085,16 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
+      let beforeInputDetail = {};
+      if (typeof beforeInput === "function" && (beforeInputDetail = beforeInput(event, state)) === false) {
         return;
       }
       state.value = field.value;
       if (!state.composing) {
-        triggerInput(event, {
+        triggerInput(event, shared.extend({
           value: field.value,
           cursor: field.selectionEnd
-        }, force);
+        }, (() => beforeInputDetail instanceof Object ? beforeInputDetail : void 0)()), force);
       }
     };
     const onBlur = function(event) {
@@ -3149,6 +3150,10 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
+  },
+  verifyNumber: {
+    type: Boolean,
+    default: false
   }
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3180,6 +3185,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       return props2.password ? "password" : type2;
     });
     const valid = vue.ref(true);
+    let cachedValue = "";
     const rootRef = vue.ref(null);
     const {
       fieldRef,
@@ -3191,6 +3197,17 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       const input = event.target;
       if (NUMBER_TYPES.includes(props2.type)) {
         valid.value = input.validity && input.validity.valid;
+        if (!props2.verifyNumber) {
+          cachedValue = state2.value;
+        } else {
+          if (input.validity && !valid.value) {
+            input.value = cachedValue;
+            state2.value = input.value;
+            return false;
+          } else {
+            cachedValue = state2.value;
+          }
+        }
       }
       if (type.value === "number") {
         const maxlength = state2.maxlength;
@@ -3199,6 +3216,11 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           state2.value = input.value;
           return false;
         }
+      }
+      if (!props2.verifyNumber) {
+        return {
+          valid: valid.value
+        };
       }
     });
     const NUMBER_TYPES = ["number", "digit"];

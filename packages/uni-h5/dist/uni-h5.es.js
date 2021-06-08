@@ -7989,15 +7989,16 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
+      let beforeInputDetail = {};
+      if (typeof beforeInput === "function" && (beforeInputDetail = beforeInput(event, state2)) === false) {
         return;
       }
       state2.value = field.value;
       if (!state2.composing) {
-        triggerInput(event, {
+        triggerInput(event, extend({
           value: field.value,
           cursor: field.selectionEnd
-        }, force);
+        }, (() => beforeInputDetail instanceof Object ? beforeInputDetail : void 0)()), force);
       }
     };
     const onBlur = function(event) {
@@ -8053,6 +8054,10 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
+  },
+  verifyNumber: {
+    type: Boolean,
+    default: false
   }
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -8084,6 +8089,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       return props2.password ? "password" : type2;
     });
     const valid = ref(true);
+    let cachedValue = "";
     const rootRef = ref(null);
     const {
       fieldRef,
@@ -8095,6 +8101,17 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       const input = event.target;
       if (NUMBER_TYPES.includes(props2.type)) {
         valid.value = input.validity && input.validity.valid;
+        if (!props2.verifyNumber) {
+          cachedValue = state3.value;
+        } else {
+          if (input.validity && !valid.value) {
+            input.value = cachedValue;
+            state3.value = input.value;
+            return false;
+          } else {
+            cachedValue = state3.value;
+          }
+        }
       }
       if (type.value === "number") {
         const maxlength = state3.maxlength;
@@ -8103,6 +8120,11 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           state3.value = input.value;
           return false;
         }
+      }
+      if (!props2.verifyNumber) {
+        return {
+          valid: valid.value
+        };
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
