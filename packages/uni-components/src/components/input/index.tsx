@@ -12,6 +12,10 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     type: String,
     default: 'input-placeholder',
   },
+  verifyNumber: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -49,20 +53,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         const input = event.target as HTMLInputElement
 
         if (NUMBER_TYPES.includes(props.type)) {
-          // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false，因此做此处理
+          // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false
           valid.value = input.validity && input.validity.valid
-          cachedValue = state.value
-
-          // 处理部分输入法可以输入其它字符的情况
-          // 上一处理导致无法输入 - ，因此去除
-          // if (input.validity && !input.validity.valid) {
-          //   input.value = cachedValue
-          //   state.value = input.value
-          //   // 输入非法字符不触发 input 事件
-          //   return false
-          // } else {
-          //   cachedValue = state.value
-          // }
+          if (!props.verifyNumber) {
+            cachedValue = state.value
+          } else {
+            // 处理部分输入法可以输入其它字符的情况，此处理无法先输入 -(负号)，只能输入数字再移动光标输入负号
+            if (input.validity && !valid.value) {
+              input.value = cachedValue
+              state.value = input.value
+              // 输入非法字符不触发 input 事件
+              return false
+            } else {
+              cachedValue = state.value
+            }
+          }
         }
 
         // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
@@ -73,6 +78,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             state.value = input.value
             // 字符长度超出范围不触发 input 事件
             return false
+          }
+        }
+
+        if (!props.verifyNumber) {
+          return {
+            valid: valid.value,
           }
         }
       })

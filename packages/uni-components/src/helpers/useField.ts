@@ -349,9 +349,10 @@ function useEvent(
     }
     const onInput = function (event: Event, force?: boolean) {
       event.stopPropagation()
+      let beforeInputDetail: Object | Boolean | undefined = {}
       if (
         typeof beforeInput === 'function' &&
-        beforeInput(event, state) === false
+        (beforeInputDetail = beforeInput(event, state)) === false
       ) {
         return
       }
@@ -359,10 +360,16 @@ function useEvent(
       if (!state.composing) {
         triggerInput(
           event,
-          {
-            value: field.value,
-            cursor: field.selectionEnd,
-          },
+          Object.assign(
+            {
+              value: field.value,
+              cursor: field.selectionEnd,
+            },
+            (() =>
+              beforeInputDetail instanceof Object
+                ? beforeInputDetail
+                : undefined)()
+          ),
           force
         )
       }
