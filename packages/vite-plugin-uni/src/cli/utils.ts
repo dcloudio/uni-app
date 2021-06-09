@@ -15,6 +15,8 @@ export const PLATFORMS = [
 ]
 
 export function initEnv(options: CliOptions) {
+  process.env.UNI_CLI_CONTEXT = process.cwd() // TODO HBuilderX
+
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
 
   process.env.UNI_INPUT_DIR =

@@ -47,6 +47,7 @@ export interface IUniPageNode {
   genId: () => number
   push: (...args: any[]) => void
 }
+
 export class UniNode extends UniEventTarget {
   nodeId?: number
   nodeType: UniNodeType
@@ -78,6 +79,12 @@ export class UniNode extends UniEventTarget {
   get nextSibling(): UniNode | null {
     return sibling(this, 'n')
   }
+
+  get nodeValue() {
+    return null
+  }
+
+  set nodeValue(_val: string | null) {}
 
   get textContent() {
     return this._text || ''

@@ -354,6 +354,9 @@
   resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.7.tgz#80d815b673e5e839c087fe252127cf79f9761eb8"
   integrity sha512-ipipcszcqXxG/PEIZKi5uFw4ttITpKWD0c2mwB3Bprm7p+/CEgtXYGpo6rLi8aZCc8JDgUsXMgOz79kSABAW4Q==
 
+"@dcloudio/uni-h5-vite@./packages/uni-h5-vite":
+  version "3.0.0-alpha-3000020210528002"
+
 "@eslint/eslintrc@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.1.tgz#442763b88cecbe3ee0ec7ca6d6dd6168550cbf14"

@@ -2,81 +2,39 @@ import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
 
-import { resolveBuiltIn, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
+import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
-import { BuiltInModulesKey, BUILT_IN_MODULES } from '../../utils'
 
 const debugResolve = debug('vite:uni:resolve')
 
-function getModuleType(mode?: 2 | 3) {
-  return mode === 2 ? 'es-compat' : 'es'
+const BUILT_IN_MODULES = {
+  'vue-router': 'dist/vue-router.esm-bundler.js',
+  vuex: 'dist/vuex.esm-bundler.js',
+  '@dcloudio/uni-app': 'dist/uni-app.es.js',
+  '@dcloudio/uni-cloud': 'dist/uni-cloud.es.js',
+  '@dcloudio/uni-i18n': 'dist/uni-i18n.es.js',
+  '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
 }
-// ssr 时，服务端 vue 的映射目前由 package.json-"vue":"npm:@dcloudio/uni-h5-vue" 处理（TODO HBuilderX）
+
+export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
 
 export function uniResolveIdPlugin(
-  options: VitePluginUniResolvedOptions
+  _options: VitePluginUniResolvedOptions
 ): Plugin {
   const resolveCache: Record<string, string> = {}
-  const resolvedIds = [
-    {
-      test(id: string) {
-        return id === '@dcloudio/uni-h5-vue'
-      },
-      resolveId(id: string) {
-        const files = BUILT_IN_MODULES[id as BuiltInModulesKey]
-        const { MODE } = parseCompatConfigOnce(options.inputDir)
-        return resolveBuiltIn(
-          path.join(id, files[getModuleType(MODE) as keyof typeof files])
-        )
-      },
-    },
-    {
-      test(id: string) {
-        return BUILT_IN_MODULES[id as BuiltInModulesKey]
-      },
-      resolveId(id: string) {
-        return resolveBuiltIn(
-          path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey]['es'])
-        )
-      },
-    },
-    {
-      test(id: string) {
-        return (
-          id.startsWith('@dcloudio/uni-h5/style') ||
-          id.startsWith('@dcloudio/uni-components/style')
-        )
-      },
-      resolveId(id: string) {
-        return resolveBuiltIn(id)
-      },
-    },
-  ]
   return {
     name: 'vite:uni-resolve-id',
     resolveId(id) {
-      if (id === 'vue') {
-        if (options.platform === 'h5') {
-          id = '@dcloudio/uni-h5-vue'
-        }
-      }
       const cache = resolveCache[id]
       if (cache) {
+        debugResolve('cache', id, cache)
         return cache
       }
-
-      for (const { test, resolveId } of resolvedIds) {
-        if (!test(id)) {
-          continue
-        }
-        const file = resolveId(id)
-        if (!file) {
-          continue
-        }
-        resolveCache[id] = file
-        debugResolve(id, file)
-        return file
+      if (BUILT_IN_MODULES[id as BuiltInModulesKey]) {
+        return (resolveCache[id] = resolveBuiltIn(
+          path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
+        ))
       }
     },
   }

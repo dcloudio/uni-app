@@ -1,6 +1,8 @@
 import path from 'path'
+import uniH5VitePlugins from '@dcloudio/uni-h5-vite'
 import uni from '@dcloudio/vite-plugin-uni'
 
+process.env.UNI_CLI_CONTEXT = __dirname
 /**
  * @type {import('vite').UserConfig}
  */
@@ -20,5 +22,5 @@ export default {
     },
   },
 
-  plugins: [uni({ viteLegacyOptions: false })],
+  plugins: [...uniH5VitePlugins, uni({ viteLegacyOptions: false })],
 }

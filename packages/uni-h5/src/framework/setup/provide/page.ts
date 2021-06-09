@@ -106,6 +106,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
     const { navigationBar } = pageMeta
     const { titleSize, titleColor, backgroundColor } = navigationBar
+    navigationBar.titleText = navigationBar.titleText || ''
     navigationBar.type = navigationBar.type || 'default'
     navigationBar.backButton = pageMeta.isQuit ? false : true
     navigationBar.titleSize = titleSize || '16px'

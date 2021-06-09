@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
-    "directory": "packages/uni-mp-vue"
+    "directory": "packages/uni-h5-vue"
   },
   "license": "Apache-2.0",
   "bugs": {

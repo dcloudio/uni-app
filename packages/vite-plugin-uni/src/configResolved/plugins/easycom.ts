@@ -10,11 +10,12 @@ import {
   BASE_COMPONENTS_STYLE_PATH,
   COMPONENT_DEPS_CSS,
   parseVueRequest,
+  buildInCssSet,
+  isCombineBuiltInCss,
 } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
 import { debugEasycom, matchEasycom } from '../../utils'
-import { buildInCssSet, isCombineBuiltInCss } from './css'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 

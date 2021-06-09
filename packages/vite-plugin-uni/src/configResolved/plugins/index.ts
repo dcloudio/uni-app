@@ -4,7 +4,11 @@ import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 import vue from '@vitejs/plugin-vue'
 
-import { API_DEPS_CSS } from '@dcloudio/uni-cli-shared'
+import {
+  API_DEPS_CSS,
+  buildInCssSet,
+  isCombineBuiltInCss,
+} from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
@@ -13,18 +17,13 @@ import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
 import { InjectOptions, uniInjectPlugin } from './inject'
 
-import { uniMainJsPlugin } from './mainJs'
-import { uniPagesJsonPlugin } from './pagesJson'
-import { uniManifestJsonPlugin } from './manifestJson'
 import { uniPageVuePlugin } from './pageVue'
 import { uniCopyPlugin } from './copy'
 import { uniStaticPlugin } from './static'
-import { uniCssScopedPlugin } from './cssScoped'
 import { uniRenderjsPlugin } from './renderjs'
 import { uniPreVuePlugin } from './preVue'
 import { uniSSRPlugin } from './ssr'
 import { uniResolveIdPlugin } from './resolveId'
-import { uniCssPlugin, buildInCssSet, isCombineBuiltInCss } from './css'
 
 const debugPlugin = debug('vite:uni:plugin')
 
@@ -48,10 +47,6 @@ const COMMON_EXCLUDE = [
 ]
 
 const APP_VUE_RE = /App.vue$/
-
-const uniCssScopedPluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [APP_VUE_RE],
-}
 
 const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
@@ -106,24 +101,12 @@ export function initPlugins(
 
   addPlugin(plugins, uniResolveIdPlugin(options), 'vite:resolve', 'pre')
 
-  if (options.platform === 'h5') {
-    // h5平台需要为非App.vue组件自动增加scoped
-    addPlugin(
-      plugins,
-      uniCssScopedPlugin(extend(uniCssScopedPluginOptions, options)),
-      0,
-      'pre'
-    )
-  }
   addPlugin(
     plugins,
     uniPrePlugin(extend(uniPrePluginOptions, options)),
     0,
     'pre'
   )
-  addPlugin(plugins, uniMainJsPlugin(config, options), 1, 'pre')
-  addPlugin(plugins, uniPagesJsonPlugin(config, options), 1, 'pre')
-  addPlugin(plugins, uniManifestJsonPlugin(config, options), 1, 'pre')
 
   addPlugin(
     plugins,
@@ -160,10 +143,6 @@ export function initPlugins(
   addPlugin(plugins, uniPageVuePlugin(options), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
-
-  if (isCombineBuiltInCss(config)) {
-    addPlugin(plugins, uniCssPlugin(config), 'vite:asset')
-  }
 
   if (command === 'build' && !config.build.ssr) {
     addPlugin(plugins, uniCopyPlugin(options), plugins.length)

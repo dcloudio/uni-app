@@ -1,21 +1,26 @@
 import path from 'path'
 import slash from 'slash'
-import { Plugin, ResolvedConfig } from 'vite'
-import { VitePluginUniResolvedOptions } from '../..'
-import { isSsr, isSsrManifest } from '../../utils'
+import { Plugin } from 'vite'
+import { isSsr, isSsrManifest } from '../utils'
 
-export function uniMainJsPlugin(
-  config: ResolvedConfig,
-  options: VitePluginUniResolvedOptions
-): Plugin {
-  const mainPath = slash(path.resolve(options.inputDir, 'main'))
-  const mainJsPath = mainPath + '.js'
-  const mainTsPath = mainPath + '.ts'
-  const pagesJsonJsPath = slash(path.resolve(options.inputDir, 'pages.json.js'))
-  const isSSR =
-    isSsr(config.command, config) || isSsrManifest(config.command, config)
+export function uniMainJsPlugin(): Plugin {
+  let mainJsPath = ''
+  let mainTsPath = ''
+  let pagesJsonJsPath = ''
+  let isSSR = false
   return {
-    name: 'vite:uni-main-js',
+    name: 'vite:uni-h5-main-js',
+    enforce: 'pre',
+    configResolved(config) {
+      const mainPath = slash(path.resolve(process.env.UNI_INPUT_DIR, 'main'))
+      mainJsPath = mainPath + '.js'
+      mainTsPath = mainPath + '.ts'
+      pagesJsonJsPath = slash(
+        path.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js')
+      )
+      isSSR =
+        isSsr(config.command, config) || isSsrManifest(config.command, config)
+    },
     transform(code, id, ssr) {
       if (id === mainJsPath || id === mainTsPath) {
         if (!isSSR) {

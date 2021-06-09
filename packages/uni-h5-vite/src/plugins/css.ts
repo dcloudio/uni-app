@@ -2,20 +2,24 @@ import fs from 'fs'
 import { OutputAsset, OutputChunk } from 'rollup'
 import { Plugin, ResolvedConfig } from 'vite'
 
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { buildInCssSet, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 
-export const buildInCssSet = new Set<string>()
-
-export function isCombineBuiltInCss(config: ResolvedConfig) {
+function isCombineBuiltInCss(config: ResolvedConfig) {
   return config.command === 'build' && config.build.cssCodeSplit
 }
 
-export function uniCssPlugin(config: ResolvedConfig): Plugin {
+export function uniCssPlugin(): Plugin {
+  let resolvedConfig: ResolvedConfig
   return {
-    name: 'vite:uni-css',
+    name: 'vite:uni-h5-css',
     apply: 'build',
+    enforce: 'post',
+    configResolved(config) {
+      resolvedConfig = config
+    },
     generateBundle(_opts, bundle) {
-      if (!isCombineBuiltInCss(config) || !buildInCssSet.size) {
+      // 将内置组件样式，合并进入首页
+      if (!isCombineBuiltInCss(resolvedConfig) || !buildInCssSet.size) {
         return
       }
       const chunks = Object.values(bundle)

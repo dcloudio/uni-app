@@ -7020,6 +7020,7 @@ function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
   let quill;
+  let textChanging = false;
   watch(() => props2.readOnly, (value) => {
     if (quillReady) {
       quill.enable(!value);
@@ -7140,7 +7141,9 @@ function useQuill(props2, rootRef, trigger) {
       });
     });
     quill.on("text-change", () => {
-      trigger("input", {}, getContents());
+      if (!textChanging) {
+        trigger("input", {}, getContents());
+      }
     });
     quill.on("selection-change", updateStatus);
     quill.on("scroll-optimize", () => {
@@ -7243,11 +7246,13 @@ function useQuill(props2, rootRef, trigger) {
             const path = getRealPath(src);
             quill.insertEmbed(range.index, "image", path, "user");
             const local = /^(file|blob):/.test(path) ? path : false;
+            textChanging = true;
             quill.formatText(range.index, 1, "data-local", local);
             quill.formatText(range.index, 1, "alt", alt);
             quill.formatText(range.index, 1, "width", width);
             quill.formatText(range.index, 1, "height", height);
             quill.formatText(range.index, 1, "class", extClass);
+            textChanging = false;
             quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
             quill.setSelection(range.index + 1, 0, "silent");
           }
@@ -12987,6 +12992,7 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
     const { navigationBar } = pageMeta;
     const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.titleText = navigationBar.titleText || "";
     navigationBar.type = navigationBar.type || "default";
     navigationBar.backButton = pageMeta.isQuit ? false : true;
     navigationBar.titleSize = titleSize || "16px";

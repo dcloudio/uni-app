@@ -234,6 +234,8 @@ export declare class UniNode extends UniEventTarget {
     get firstChild(): UniNode | null;
     get lastChild(): UniNode | null;
     get nextSibling(): UniNode | null;
+    get nodeValue(): string | null;
+    set nodeValue(_val: string | null);
     get textContent(): string;
     set textContent(text: string);
     get parentElement(): UniElement | null;

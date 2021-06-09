@@ -23,7 +23,8 @@ function initPlugin(plugin: PluginConfig): Plugin | void {
     plugin.config.main || '/lib/uni.plugin.js'
   )
   try {
-    return require(configFile)
+    const plugin = require(configFile)
+    return plugin.default || plugin
   } catch (e) {
     console.warn(`${configFile} not found`)
   }

@@ -1,0 +1,28 @@
+{
+  "name": "@dcloudio/uni-h5-vite",
+  "version": "3.0.0-alpha-3000020210528002",
+  "description": "uni-h5-vite",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
+  "buildOptions": {
+    "bundler": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-h5-vite"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "uni-app": {
+    "name": "uni-h5",
+    "apply": "h5",
+    "main": "dist/index.js"
+  },
+  "license": "Apache-2.0"
+}

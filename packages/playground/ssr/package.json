@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
+    "@dcloudio/uni-h5-vite": "../../uni-h5-vite",
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.1.0-beta.7",

@@ -399,6 +399,10 @@ class UniNode extends UniEventTarget {
     get nextSibling() {
         return sibling(this, 'n');
     }
+    get nodeValue() {
+        return null;
+    }
+    set nodeValue(_val) { }
     get textContent() {
         return this._text || '';
     }

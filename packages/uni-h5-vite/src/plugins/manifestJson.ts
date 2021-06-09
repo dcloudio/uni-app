@@ -2,10 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
 import { parse } from 'jsonc-parser'
-import { Plugin, ResolvedConfig } from 'vite'
-import { VitePluginUniResolvedOptions } from '../..'
-
-import { FEATURE_DEFINES } from '../../utils'
+import { Plugin } from 'vite'
 
 const MANIFEST_JSON_JS = 'manifest.json.js'
 
@@ -31,13 +28,16 @@ const defaultNetworkTimeout = {
 
 const defaultQQMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2'
 
-export function uniManifestJsonPlugin(
-  config: ResolvedConfig,
-  options: VitePluginUniResolvedOptions
-): Plugin {
-  const manifestJsonPath = slash(path.join(options.inputDir, 'manifest.json'))
+export function uniManifestJsonPlugin(): Plugin {
+  let manifestJsonPath = ''
   return {
-    name: 'vite:uni-manifest-json',
+    name: 'vite:uni-h5-manifest-json',
+    enforce: 'pre',
+    configResolved() {
+      manifestJsonPath = slash(
+        path.join(process.env.UNI_INPUT_DIR, 'manifest.json')
+      )
+    },
     resolveId(id) {
       if (id.endsWith(MANIFEST_JSON_JS)) {
         return manifestJsonPath + '.js'
@@ -45,7 +45,6 @@ export function uniManifestJsonPlugin(
     },
     transform(code, id) {
       if (id.endsWith(MANIFEST_JSON_JS)) {
-        const define = config.define! as FEATURE_DEFINES
         const manifest = JSON.parse(code)
         const { debug, h5 } = manifest
         const appid = (manifest.appid || '').replace('__UNI__', '')
@@ -53,9 +52,7 @@ export function uniManifestJsonPlugin(
         if (!router.base) {
           router.base = '/'
         }
-        const async = define.__UNI_FEATURE_PAGES__
-          ? { ...defaultAsync, ...((h5 && h5.async) || {}) }
-          : {}
+        const async = { ...defaultAsync, ...((h5 && h5.async) || {}) }
 
         const networkTimeout = {
           ...defaultNetworkTimeout,

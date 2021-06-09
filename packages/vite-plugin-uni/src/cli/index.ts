@@ -38,7 +38,7 @@ cli
 
 cli
   .command('')
-  .alias('dev')
+  .alias('serve')
   .option('--host [host]', `[string] specify hostname`)
   .option('--port <port>', `[number] specify port`)
   .option('--https', `[boolean] use TLS + HTTP/2`)
@@ -88,7 +88,9 @@ cli
   .action(async (options: CliOptions & BuildOptions) => {
     initEnv(options)
     try {
-      await (options.ssr ? buildSSR(options) : build(options))
+      await (options.ssr && options.platform === 'h5'
+        ? buildSSR(options)
+        : build(options))
     } catch (e) {
       createLogger(options.logLevel).error(
         chalk.red(`error during build:\n${e.stack}`)

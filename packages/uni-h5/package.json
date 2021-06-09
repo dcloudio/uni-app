@@ -28,9 +28,5 @@
     "safe-area-insets": "^1.4.1",
     "xmlhttprequest": "^1.8.0"
   },
-  "uni-app": {
-    "name": "uni-h5",
-    "apply": "h5"
-  },
   "gitHead": "0eff378978e778420c7d2bfc9b039a387d15aac9"
 }
