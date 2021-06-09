@@ -68,6 +68,7 @@ export function useQuill(
   let quillReady: boolean
   let skipMatcher: boolean
   let quill: QuillExt
+  let textChanging: Boolean = false
   watch(
     () => props.readOnly,
     (value) => {
@@ -202,7 +203,9 @@ export function useQuill(
       })
     })
     quill.on('text-change', () => {
-      trigger('input', {} as Event, getContents())
+      if (!textChanging) {
+        trigger('input', {} as Event, getContents())
+      }
     })
     quill.on('selection-change', updateStatus)
     quill.on('scroll-optimize', () => {
@@ -319,11 +322,13 @@ export function useQuill(
               const path = getRealPath(src)
               quill.insertEmbed(range.index, 'image', path, 'user')
               const local = /^(file|blob):/.test(path) ? path : false
+              textChanging = true
               quill.formatText(range.index, 1, 'data-local', local)
               quill.formatText(range.index, 1, 'alt', alt)
               quill.formatText(range.index, 1, 'width', width)
               quill.formatText(range.index, 1, 'height', height)
               quill.formatText(range.index, 1, 'class', extClass)
+              textChanging = false
               quill.formatText(
                 range.index,
                 1,
