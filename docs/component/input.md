@@ -24,7 +24,7 @@
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App-Android（vue 页面 softinputMode 为 adjustResize 时无效）、微信小程序、百度小程序、QQ小程序|
 |hold-keyboard|boolean|false|focus时，点击页面的时候不收起键盘|微信小程序2.8.2|
 |auto-blur|boolean|false|键盘收起时，是否自动失去焦点|App 3.0.0+|
-|verifyNumber|boolean|false|当设置`type="number"`时，是否对输入的字符执行`当前输入是否有效`判断|HBuilder 3.1.18+|
+|verifyNumber|boolean|false|当设置`type="number"`时，是否对输入的字符执行`当前输入是否有效`判断|HBuilder 3.1.19+|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（2.2.3+） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
