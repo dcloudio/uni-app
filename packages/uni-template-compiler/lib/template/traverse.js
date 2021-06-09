@@ -304,7 +304,7 @@ function traverseRenderSlot (callExprNode, state) {
   const slotName = callExprNode.arguments[0].value
 
   let deleteSlotName = false // 标记是否组件 slot 手动指定了 name="default"
-  if (!state.options.betterScopedSlots && callExprNode.arguments.length > 2) { // 作用域插槽
+  if (state.options.scopedSlotsCompiler !== 'augmented' && callExprNode.arguments.length > 2) { // 作用域插槽
     const props = {}
     callExprNode.arguments[2].properties.forEach(property => {
       props[property.key.value] = genCode(property.value)
@@ -369,11 +369,11 @@ function traverseResolveScopedSlots (callExprNode, state) {
     })
     const slotName = keyProperty.value.value
     const returnExprNodes = fnProperty.value.body.body[0].argument
-    if (!state.options.betterScopedSlots && !proxyProperty) {
+    const parentNode = callExprNode.$node
+    if (slotNode.scopedSlotsCompiler !== 'augmented' && !proxyProperty) {
       const resourcePath = state.options.resourcePath
       const ownerName = path.basename(resourcePath, path.extname(resourcePath))
 
-      const parentNode = callExprNode.$node
       const parentName = parentNode.type
 
       const paramExprNode = fnProperty.value.params[0]
@@ -396,6 +396,9 @@ function traverseResolveScopedSlots (callExprNode, state) {
         },
         state
       )
+    }
+    if (state.options.scopedSlotsCompiler === 'auto' && slotNode.scopedSlotsCompiler === 'augmented') {
+      parentNode.attr['scoped-slots-compiler'] = 'augmented'
     }
     const children = normalizeChildren(traverseExpr(returnExprNodes, state))
     // 除百度、字节外其他小程序仅默认插槽可以支持多个节点

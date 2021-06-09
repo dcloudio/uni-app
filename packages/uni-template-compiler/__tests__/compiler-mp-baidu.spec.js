@@ -65,6 +65,49 @@ describe('mp:compiler-mp-baidu', () => {
     )
   })
 
+  it('generate scoped slot with scopedSlotsCompiler: auto', () => {
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{item}}</view></my-component>',
+      'with(this){}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><block s-if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><block s-if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><slot :item="item"><slot></view>',
+      '<view><block s-if="{{$slots.default}}"><slot var-item="item"></slot></block><block s-else><slot></slot></block></view>',
+      'with(this){if($mp.component.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><slot v-bind="object"><slot></view>',
+      '<view><block s-if="{{$slots.default}}"><slot></slot></block><block s-else><slot></slot></block></view>',
+      'with(this){if($mp.component.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+  })
+
   it('generate vue id', () => {
     assertCodegen(
       '<Test/>',

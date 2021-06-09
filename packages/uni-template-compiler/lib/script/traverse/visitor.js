@@ -221,7 +221,7 @@ module.exports = {
                 this
               )
             )
-          } else if (this.options.betterScopedSlots) {
+          } else if (this.options.scopedSlotsCompiler === 'auto' || this.options.scopedSlotsCompiler === 'augmented') {
             if (methodName === METHOD_RESOLVE_SCOPED_SLOTS) {
               getResolveScopedSlots(path, this)
             } else if (methodName === METHOD_RENDER_SLOT) {
