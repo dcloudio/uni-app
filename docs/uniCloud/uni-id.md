@@ -1260,7 +1260,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.loginByUniverify(Object loginByUniverifyParams)`
 
-> 需再[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
+> 需在[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
 
 **参数说明**
 
