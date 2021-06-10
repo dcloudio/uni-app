@@ -237,8 +237,8 @@ export function initProperties (props, isBehavior = false, file = '') {
       type: Object,
       value: null
     }
-    // scopedSlotsMode auto
-    properties.scopedSlotsMode = {
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
       type: String,
       value: ''
     }
