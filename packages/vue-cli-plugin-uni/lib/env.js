@@ -263,7 +263,7 @@ if (platformOptions.usingComponents === true) {
 
 // 兼容历史配置 betterScopedSlots
 const modes = ['legacy', 'auto', 'augmented']
-const scopedSlotsCompiler = platformOptions.scopedSlotsCompiler ? platformOptions.scopedSlotsCompiler : modes[2]
+const scopedSlotsCompiler = !platformOptions.scopedSlotsCompiler && platformOptions.betterScopedSlots ? modes[2] : platformOptions.scopedSlotsCompiler
 process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scopedSlotsCompiler : modes[1]
 
 if (
