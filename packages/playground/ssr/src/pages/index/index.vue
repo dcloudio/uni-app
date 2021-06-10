@@ -12,6 +12,21 @@
   <ssr-swiper />
   <ssr-text />
   <ssr-view />
+  <ssr-button />
+  <ssr-canvas />
+  <ssr-editor />
+  <ssr-form />
+  <ssr-label />
+  <ssr-navigator />
+  <ssr-rich-text />
+  <ssr-textarea />
+  <ssr-slider />
+  <ssr-map />
+  <ssr-picker-view />
+  <ssr-picker />
+  <ssr-webview />
+
+  <!-- <ssr-video /> dataOptions is not a function -->
   <view id="ssr-log"></view>
 </template>
 
