@@ -4,50 +4,36 @@ import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import { extend, camelize, capitalize } from '@vue/shared'
 import {
+  API_DEPS_CSS,
   FEATURE_DEFINES,
   H5_FRAMEWORK_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
   normalizePagesJson,
-  API_DEPS_CSS,
+  defineUniPagesJsonPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
 
-const PAGES_JSON_JS = 'pages.json.js'
-
 export function uniPagesJsonPlugin(): Plugin {
-  let pagesJsonPath = ''
-  let resolvedConfig: ResolvedConfig
-  return {
-    name: 'vite:uni-h5-pages-json',
-    enforce: 'pre',
-    configResolved(config) {
-      resolvedConfig = config
-      pagesJsonPath = slash(path.join(process.env.UNI_INPUT_DIR, 'pages.json'))
-    },
-    resolveId(id) {
-      if (id.endsWith(PAGES_JSON_JS)) {
-        return pagesJsonPath + '.js'
-      }
-    },
-    transform(code, id, ssr) {
-      if (id.endsWith(PAGES_JSON_JS)) {
-        return {
-          code:
-            (resolvedConfig.command === 'serve' ||
-            (resolvedConfig.command === 'build' && ssr)
-              ? registerGlobalCode(resolvedConfig, ssr)
-              : '') + generatePagesJsonCode(ssr, code, resolvedConfig),
-          map: { mappings: '' },
+  return defineUniPagesJsonPlugin((opts) => {
+    return {
+      name: 'vite:uni-h5-pages-json',
+      enforce: 'pre',
+      transform(code, id, ssr) {
+        if (opts.filter(id)) {
+          const { resolvedConfig } = opts
+          return {
+            code:
+              (resolvedConfig.command === 'serve' ||
+              (resolvedConfig.command === 'build' && ssr)
+                ? registerGlobalCode(resolvedConfig, ssr)
+                : '') + generatePagesJsonCode(ssr, code, resolvedConfig),
+            map: { mappings: '' },
+          }
         }
-      }
-    },
-    load(id) {
-      if (id.endsWith(PAGES_JSON_JS)) {
-        return fs.readFileSync(pagesJsonPath, 'utf8')
-      }
-    },
-  }
+      },
+    }
+  })
 }
 
 interface PageRouteOptions {

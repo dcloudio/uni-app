@@ -1,14 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniManifestJsonPlugin = void 0;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-const slash_1 = __importDefault(require("slash"));
-const jsonc_parser_1 = require("jsonc-parser");
-const MANIFEST_JSON_JS = 'manifest.json.js';
+const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const defaultRouter = {
     mode: 'hash',
     base: '/',
@@ -28,20 +21,14 @@ const defaultNetworkTimeout = {
 };
 const defaultQQMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2';
 function uniManifestJsonPlugin() {
-    let manifestJsonPath = '';
-    return {
-        name: 'vite:uni-h5-manifest-json',
-        enforce: 'pre',
-        configResolved() {
-            manifestJsonPath = slash_1.default(path_1.default.join(process.env.UNI_INPUT_DIR, 'manifest.json'));
-        },
-        resolveId(id) {
-            if (id.endsWith(MANIFEST_JSON_JS)) {
-                return manifestJsonPath + '.js';
-            }
-        },
-        transform(code, id) {
-            if (id.endsWith(MANIFEST_JSON_JS)) {
+    return uni_cli_shared_1.defineUniManifestJsonPlugin((opts) => {
+        return {
+            name: 'vite:uni-h5-manifest-json',
+            enforce: 'pre',
+            transform(code, id) {
+                if (!opts.filter(id)) {
+                    return;
+                }
                 const manifest = JSON.parse(code);
                 const { debug, h5 } = manifest;
                 const appid = (manifest.appid || '').replace('__UNI__', '');
@@ -62,26 +49,21 @@ function uniManifestJsonPlugin() {
                     'column';
                 return {
                     code: `export const appid = '${appid || ''}'    
-export const debug = ${!!debug}
-export const nvue = ${JSON.stringify({
+  export const debug = ${!!debug}
+  export const nvue = ${JSON.stringify({
                         'flex-direction': flexDirection,
                     })}
-export const networkTimeout = ${JSON.stringify(networkTimeout)}
-// h5
-export const router = ${JSON.stringify(router)}
-export const async = ${JSON.stringify(async)}
-export const qqMapKey = '${qqMapKey}'
-export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
-`,
+  export const networkTimeout = ${JSON.stringify(networkTimeout)}
+  // h5
+  export const router = ${JSON.stringify(router)}
+  export const async = ${JSON.stringify(async)}
+  export const qqMapKey = '${qqMapKey}'
+  export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
+  `,
                     map: { mappings: '' },
                 };
-            }
-        },
-        load(id) {
-            if (id.endsWith(MANIFEST_JSON_JS)) {
-                return JSON.stringify(jsonc_parser_1.parse(fs_1.default.readFileSync(manifestJsonPath, 'utf8')));
-            }
-        },
-    };
+            },
+        };
+    });
 }
 exports.uniManifestJsonPlugin = uniManifestJsonPlugin;

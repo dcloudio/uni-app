@@ -6,41 +6,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniMainJsPlugin = void 0;
 const path_1 = __importDefault(require("path"));
 const slash_1 = __importDefault(require("slash"));
+const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const utils_1 = require("../utils");
 function uniMainJsPlugin() {
-    let mainJsPath = '';
-    let mainTsPath = '';
-    let pagesJsonJsPath = '';
-    let isSSR = false;
-    return {
-        name: 'vite:uni-h5-main-js',
-        enforce: 'pre',
-        configResolved(config) {
-            const mainPath = slash_1.default(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'main'));
-            mainJsPath = mainPath + '.js';
-            mainTsPath = mainPath + '.ts';
-            pagesJsonJsPath = slash_1.default(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js'));
-            isSSR =
-                utils_1.isSsr(config.command, config) || utils_1.isSsrManifest(config.command, config);
-        },
-        transform(code, id, ssr) {
-            if (id === mainJsPath || id === mainTsPath) {
-                if (!isSSR) {
-                    code = code.includes('createSSRApp')
-                        ? createApp(code)
-                        : createLegacyApp(code);
+    return uni_cli_shared_1.defineUniMainJsPlugin((opts) => {
+        let pagesJsonJsPath = '';
+        let isSSR = false;
+        return {
+            name: 'vite:uni-h5-main-js',
+            enforce: 'pre',
+            configResolved(config) {
+                pagesJsonJsPath = slash_1.default(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js'));
+                isSSR =
+                    utils_1.isSsr(config.command, config) || utils_1.isSsrManifest(config.command, config);
+            },
+            transform(code, id, ssr) {
+                if (opts.filter(id)) {
+                    if (!isSSR) {
+                        code = code.includes('createSSRApp')
+                            ? createApp(code)
+                            : createLegacyApp(code);
+                    }
+                    else {
+                        code = ssr ? createSSRServerApp(code) : createSSRClientApp(code);
+                    }
+                    code = `import '${pagesJsonJsPath}';${code}`;
+                    return {
+                        code,
+                        map: this.getCombinedSourcemap(),
+                    };
                 }
-                else {
-                    code = ssr ? createSSRServerApp(code) : createSSRClientApp(code);
-                }
-                code = `import '${pagesJsonJsPath}';${code}`;
-                return {
-                    code,
-                    map: this.getCombinedSourcemap(),
-                };
-            }
-        },
-    };
+            },
+        };
+    });
 }
 exports.uniMainJsPlugin = uniMainJsPlugin;
 function createApp(code) {

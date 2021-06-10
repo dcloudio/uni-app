@@ -1,10 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-import slash from 'slash'
-import { parse } from 'jsonc-parser'
 import { Plugin } from 'vite'
 
-const MANIFEST_JSON_JS = 'manifest.json.js'
+import { defineUniManifestJsonPlugin } from '@dcloudio/uni-cli-shared'
 
 const defaultRouter = {
   mode: 'hash',
@@ -29,22 +25,14 @@ const defaultNetworkTimeout = {
 const defaultQQMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2'
 
 export function uniManifestJsonPlugin(): Plugin {
-  let manifestJsonPath = ''
-  return {
-    name: 'vite:uni-h5-manifest-json',
-    enforce: 'pre',
-    configResolved() {
-      manifestJsonPath = slash(
-        path.join(process.env.UNI_INPUT_DIR, 'manifest.json')
-      )
-    },
-    resolveId(id) {
-      if (id.endsWith(MANIFEST_JSON_JS)) {
-        return manifestJsonPath + '.js'
-      }
-    },
-    transform(code, id) {
-      if (id.endsWith(MANIFEST_JSON_JS)) {
+  return defineUniManifestJsonPlugin((opts) => {
+    return {
+      name: 'vite:uni-h5-manifest-json',
+      enforce: 'pre',
+      transform(code, id) {
+        if (!opts.filter(id)) {
+          return
+        }
         const manifest = JSON.parse(code)
         const { debug, h5 } = manifest
         const appid = (manifest.appid || '').replace('__UNI__', '')
@@ -75,25 +63,20 @@ export function uniManifestJsonPlugin(): Plugin {
 
         return {
           code: `export const appid = '${appid || ''}'    
-export const debug = ${!!debug}
-export const nvue = ${JSON.stringify({
-            'flex-direction': flexDirection,
-          })}
-export const networkTimeout = ${JSON.stringify(networkTimeout)}
-// h5
-export const router = ${JSON.stringify(router)}
-export const async = ${JSON.stringify(async)}
-export const qqMapKey = '${qqMapKey}'
-export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
-`,
+  export const debug = ${!!debug}
+  export const nvue = ${JSON.stringify({
+    'flex-direction': flexDirection,
+  })}
+  export const networkTimeout = ${JSON.stringify(networkTimeout)}
+  // h5
+  export const router = ${JSON.stringify(router)}
+  export const async = ${JSON.stringify(async)}
+  export const qqMapKey = '${qqMapKey}'
+  export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
+  `,
           map: { mappings: '' },
         }
-      }
-    },
-    load(id) {
-      if (id.endsWith(MANIFEST_JSON_JS)) {
-        return JSON.stringify(parse(fs.readFileSync(manifestJsonPath, 'utf8')))
-      }
-    },
-  }
+      },
+    }
+  })
 }

@@ -10,39 +10,25 @@ const slash_1 = __importDefault(require("slash"));
 const shared_1 = require("@vue/shared");
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const pkg = require('@dcloudio/vite-plugin-uni/package.json');
-const PAGES_JSON_JS = 'pages.json.js';
 function uniPagesJsonPlugin() {
-    let pagesJsonPath = '';
-    let resolvedConfig;
-    return {
-        name: 'vite:uni-h5-pages-json',
-        enforce: 'pre',
-        configResolved(config) {
-            resolvedConfig = config;
-            pagesJsonPath = slash_1.default(path_1.default.join(process.env.UNI_INPUT_DIR, 'pages.json'));
-        },
-        resolveId(id) {
-            if (id.endsWith(PAGES_JSON_JS)) {
-                return pagesJsonPath + '.js';
-            }
-        },
-        transform(code, id, ssr) {
-            if (id.endsWith(PAGES_JSON_JS)) {
-                return {
-                    code: (resolvedConfig.command === 'serve' ||
-                        (resolvedConfig.command === 'build' && ssr)
-                        ? registerGlobalCode(resolvedConfig, ssr)
-                        : '') + generatePagesJsonCode(ssr, code, resolvedConfig),
-                    map: { mappings: '' },
-                };
-            }
-        },
-        load(id) {
-            if (id.endsWith(PAGES_JSON_JS)) {
-                return fs_1.default.readFileSync(pagesJsonPath, 'utf8');
-            }
-        },
-    };
+    return uni_cli_shared_1.defineUniPagesJsonPlugin((opts) => {
+        return {
+            name: 'vite:uni-h5-pages-json',
+            enforce: 'pre',
+            transform(code, id, ssr) {
+                if (opts.filter(id)) {
+                    const { resolvedConfig } = opts;
+                    return {
+                        code: (resolvedConfig.command === 'serve' ||
+                            (resolvedConfig.command === 'build' && ssr)
+                            ? registerGlobalCode(resolvedConfig, ssr)
+                            : '') + generatePagesJsonCode(ssr, code, resolvedConfig),
+                        map: { mappings: '' },
+                    };
+                }
+            },
+        };
+    });
 }
 exports.uniPagesJsonPlugin = uniPagesJsonPlugin;
 function generatePagesJsonCode(ssr, jsonStr, config) {

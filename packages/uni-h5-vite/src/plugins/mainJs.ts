@@ -1,43 +1,40 @@
 import path from 'path'
 import slash from 'slash'
-import { Plugin } from 'vite'
+import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
 import { isSsr, isSsrManifest } from '../utils'
 
-export function uniMainJsPlugin(): Plugin {
-  let mainJsPath = ''
-  let mainTsPath = ''
-  let pagesJsonJsPath = ''
-  let isSSR = false
-  return {
-    name: 'vite:uni-h5-main-js',
-    enforce: 'pre',
-    configResolved(config) {
-      const mainPath = slash(path.resolve(process.env.UNI_INPUT_DIR, 'main'))
-      mainJsPath = mainPath + '.js'
-      mainTsPath = mainPath + '.ts'
-      pagesJsonJsPath = slash(
-        path.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js')
-      )
-      isSSR =
-        isSsr(config.command, config) || isSsrManifest(config.command, config)
-    },
-    transform(code, id, ssr) {
-      if (id === mainJsPath || id === mainTsPath) {
-        if (!isSSR) {
-          code = code.includes('createSSRApp')
-            ? createApp(code)
-            : createLegacyApp(code)
-        } else {
-          code = ssr ? createSSRServerApp(code) : createSSRClientApp(code)
+export function uniMainJsPlugin() {
+  return defineUniMainJsPlugin((opts) => {
+    let pagesJsonJsPath = ''
+    let isSSR = false
+    return {
+      name: 'vite:uni-h5-main-js',
+      enforce: 'pre',
+      configResolved(config) {
+        pagesJsonJsPath = slash(
+          path.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js')
+        )
+        isSSR =
+          isSsr(config.command, config) || isSsrManifest(config.command, config)
+      },
+      transform(code, id, ssr) {
+        if (opts.filter(id)) {
+          if (!isSSR) {
+            code = code.includes('createSSRApp')
+              ? createApp(code)
+              : createLegacyApp(code)
+          } else {
+            code = ssr ? createSSRServerApp(code) : createSSRClientApp(code)
+          }
+          code = `import '${pagesJsonJsPath}';${code}`
+          return {
+            code,
+            map: this.getCombinedSourcemap(),
+          }
         }
-        code = `import '${pagesJsonJsPath}';${code}`
-        return {
-          code,
-          map: this.getCombinedSourcemap(),
-        }
-      }
-    },
-  }
+      },
+    }
+  })
 }
 
 function createApp(code: string) {
