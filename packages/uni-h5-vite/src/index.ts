@@ -1,6 +1,7 @@
 import { UniVitePlugin } from '@dcloudio/uni-cli-shared'
 import { uniCssPlugin } from './plugins/css'
 import { uniCssScopedPlugin } from './plugins/cssScoped'
+import { uniInjectPlugin } from './plugins/inject'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
@@ -21,6 +22,7 @@ export default [
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
+  uniInjectPlugin(),
   uniCssPlugin(),
   UniH5Plugin,
 ]

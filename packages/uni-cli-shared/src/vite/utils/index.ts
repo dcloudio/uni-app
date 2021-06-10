@@ -1,5 +1,8 @@
 import { ResolvedConfig } from 'vite'
 
+export * from './ast'
+export * from './url'
+
 // 内置组件css列表，h5平台需要合并进去首页css中
 export const buildInCssSet = new Set<string>()
 

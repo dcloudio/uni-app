@@ -4,18 +4,13 @@ import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
 import vue from '@vitejs/plugin-vue'
 
-import {
-  API_DEPS_CSS,
-  buildInCssSet,
-  isCombineBuiltInCss,
-} from '@dcloudio/uni-cli-shared'
+import { COMMON_EXCLUDE } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
-import { InjectOptions, uniInjectPlugin } from './inject'
 
 import { uniPageVuePlugin } from './pageVue'
 import { uniCopyPlugin } from './copy'
@@ -34,18 +29,6 @@ export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
 
 const UNI_H5_RE = /@dcloudio\/uni-h5/
 
-const COMMON_EXCLUDE = [
-  /pages\.json\.js$/,
-  /manifest\.json\.js$/,
-  /vite\//,
-  /\/@vue\//,
-  /\/vue-router\//,
-  /\/vuex\//,
-  /@dcloudio\/uni-h5-vue/,
-  /@dcloudio\/uni-shared/,
-  /@dcloudio\/uni-components\/style/,
-]
-
 const APP_VUE_RE = /App.vue$/
 
 const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
@@ -57,38 +40,6 @@ const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
 
 const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [APP_VUE_RE, UNI_H5_RE],
-}
-
-const uniInjectPluginOptions: Partial<InjectOptions> = {
-  exclude: [...COMMON_EXCLUDE],
-  'uni.': '@dcloudio/uni-h5',
-  getApp: ['@dcloudio/uni-h5', 'getApp'],
-  getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
-  UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],
-  UniViewJSBridge: ['@dcloudio/uni-h5', 'UniViewJSBridge'],
-}
-
-function createUniInjectCallback(
-  config: ResolvedConfig
-): InjectOptions['callback'] {
-  const needCombineBuiltInCss = isCombineBuiltInCss(config)
-  return (imports, mod) => {
-    const styles =
-      mod[0] === '@dcloudio/uni-h5' &&
-      API_DEPS_CSS[mod[1] as keyof typeof API_DEPS_CSS]
-    if (!styles) {
-      return
-    }
-    styles.forEach((style) => {
-      if (needCombineBuiltInCss) {
-        buildInCssSet.add(style)
-      } else {
-        if (!imports.has(style)) {
-          imports.set(style, `import '${style}';`)
-        }
-      }
-    })
-  }
 }
 
 export function initPlugins(
@@ -115,19 +66,6 @@ export function initPlugins(
   )
   addPlugin(plugins, uniPreVuePlugin(), 'vite:vue', 'pre')
   addPlugin(plugins, uniRenderjsPlugin(), 'vite:vue')
-
-  // 可以考虑使用apply:'build'
-  if (command === 'build') {
-    addPlugin(
-      plugins,
-      uniInjectPlugin(
-        extend(uniInjectPluginOptions, {
-          callback: createUniInjectCallback(config),
-        })
-      ),
-      'vite:vue'
-    )
-  }
 
   addPlugin(
     plugins,

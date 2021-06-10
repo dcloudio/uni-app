@@ -85,5 +85,3 @@ export default function uniPlugin(
   plugins.push(...uniPlugins)
   return plugins
 }
-
-export { uniInjectPlugin } from './configResolved/plugins/inject'

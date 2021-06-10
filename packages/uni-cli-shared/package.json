@@ -22,7 +22,9 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
+    "@rollup/pluginutils": "^4.1.0",
     "debug": "^4.3.1",
+    "estree-walker": "^2.0.2",
     "jsonc-parser": "^3.0.0",
     "slash": "^3.0.0",
     "tapable": "^2.2.0",

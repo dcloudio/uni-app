@@ -16,15 +16,14 @@ import { walk } from 'estree-walker'
 import { extend } from '@vue/shared'
 import { MagicString } from '@vue/compiler-sfc'
 
+import { EXTNAME_JS, EXTNAME_VUE } from '../../constants'
+
 import {
-  EXTNAME_JS,
-  EXTNAME_VUE,
+  isProperty,
+  isReference,
+  isMemberExpression,
   parseVueRequest,
-} from '@dcloudio/uni-cli-shared'
-
-import { UniPluginFilterOptions } from '.'
-
-import { isProperty, isReference, isMemberExpression } from '../../utils'
+} from '../utils'
 
 interface Scope {
   parent: Scope
@@ -38,17 +37,13 @@ export interface InjectOptions {
   callback?: (imports: Map<any, any>, mod: [string, string]) => void
   include?: FilterPattern
   exclude?: FilterPattern
-  [str: string]:
-    | Injectment
-    | UniPluginFilterOptions['include']
-    | Boolean
-    | Function
+  [str: string]: Injectment | FilterPattern | Boolean | Function | undefined
 }
 
 const debugInject = debug('vite:uni:inject')
 const debugInjectTry = debug('vite:uni:inject-try')
 
-export function uniInjectPlugin(options: InjectOptions): Plugin {
+export function uniViteInjectPlugin(options: InjectOptions): Plugin {
   if (!options) throw new Error('Missing options')
 
   const filter = createFilter(options.include, options.exclude)

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const css_1 = require("./plugins/css");
 const cssScoped_1 = require("./plugins/cssScoped");
+const inject_1 = require("./plugins/inject");
 const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
@@ -20,6 +21,7 @@ exports.default = [
     mainJs_1.uniMainJsPlugin(),
     manifestJson_1.uniManifestJsonPlugin(),
     pagesJson_1.uniPagesJsonPlugin(),
+    inject_1.uniInjectPlugin(),
     css_1.uniCssPlugin(),
     UniH5Plugin,
 ];
