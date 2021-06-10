@@ -9,7 +9,6 @@ export function uniCopyPlugin({
   inputDir,
   outputDir,
 }: VitePluginUniResolvedOptions): Plugin {
-  // TODO 多平台，如 h5,app 的 hybrid/html 目录
   return copy({
     targets: [
       {
