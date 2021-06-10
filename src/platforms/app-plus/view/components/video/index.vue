@@ -62,7 +62,8 @@ const attrs = [
   'codec',
   'httpCache',
   'playStrategy',
-  'header'
+  'header',
+  'advanced'
 ]
 
 export default {
@@ -175,6 +176,12 @@ export default {
       type: Object,
       defult () {
         return {}
+      }
+    },
+    advanced: {
+      type: Array,
+      defult () {
+        return []
       }
     }
   },
