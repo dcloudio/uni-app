@@ -115,7 +115,7 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block a:if="{{$slots.$default}}"><slot item="{{item}}"></slot></block><block a:else><slot></slot></block></view>',
-      'with(this){if($mp.component.props.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
+      'with(this){if($scope.props.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -123,7 +123,7 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block a:if="{{$slots.$default}}"><slot></slot></block><block a:else><slot></slot></block></view>',
-      'with(this){if($mp.component.props.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
+      'with(this){if($scope.props.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
       {
         scopedSlotsCompiler: 'auto'
       }

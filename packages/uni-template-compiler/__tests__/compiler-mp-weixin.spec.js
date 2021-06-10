@@ -110,7 +110,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view>',
-      'with(this){if($mp.component.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -118,7 +118,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot :item="getValue(item)"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{$root.m0}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view>',
-      'with(this){var m0=getValue(item);$mp.data=Object.assign({},{$root:{m0:m0}});if($mp.component.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":$root.m0})}}',
+      'with(this){var m0=getValue(item);$mp.data=Object.assign({},{$root:{m0:m0}});if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":$root.m0})}}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -126,7 +126,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
-      'with(this){if($mp.component.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
       {
         scopedSlotsCompiler: 'auto'
       }

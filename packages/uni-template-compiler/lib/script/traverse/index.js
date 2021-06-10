@@ -117,7 +117,7 @@ module.exports = function traverse (ast, state) {
     if (state.options.scopedSlotsCompiler === 'auto') {
       const node = t.ifStatement(
         t.binaryExpression('===',
-          t.memberExpression(t.memberExpression(t.memberExpression(t.identifier('$mp'), t.identifier('component')), t.identifier(state.options.platform.name === 'mp-alipay' ? 'props' : 'data')), t.identifier('scopedSlotsCompiler')), t.stringLiteral('augmented')
+          t.memberExpression(t.memberExpression(t.identifier('$scope'), t.identifier(state.options.platform.name === 'mp-alipay' ? 'props' : 'data')), t.identifier('scopedSlotsCompiler')), t.stringLiteral('augmented')
         ),
         t.blockStatement([
           t.variableDeclaration('const', [t.variableDeclarator(t.identifier('$root'),
