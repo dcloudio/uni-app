@@ -11,6 +11,7 @@ import {
   Transition,
   Ref,
   ExtractPropTypes,
+  onMounted,
 } from 'vue'
 import {
   useBooleanAttr,
@@ -440,6 +441,43 @@ function usePickerState(props: Props) {
   }
 }
 
+const getiPadFlag = () =>
+  String(navigator.vendor).indexOf('Apple') === 0 &&
+  navigator.maxTouchPoints > 0
+function useIsiPad() {
+  const isiPad = ref(false)
+
+  if (__NODE_JS__) {
+    onMounted(() => (isiPad.value = getiPadFlag()))
+  } else {
+    isiPad.value = getiPadFlag()
+  }
+
+  return isiPad
+}
+
+const getSystem = () => {
+  if (/win|mac/i.test(navigator.platform)) {
+    if (navigator.vendor === 'Google Inc.') {
+      return 'chrome'
+    } else if (/Firefox/.test(navigator.userAgent)) {
+      return 'firefox'
+    }
+  }
+  return ''
+}
+function useSystem() {
+  const _system = ref('')
+
+  if (__NODE_JS__) {
+    onMounted(() => (_system.value = getSystem()))
+  } else {
+    _system.value = getSystem()
+  }
+
+  return _system
+}
+
 let __contentVisibleDelay: number
 function usePickerMethods(
   props: Props,
@@ -450,29 +488,24 @@ function usePickerMethods(
   selectRef: HTMLRef,
   inputRef: HTMLRef
 ) {
+  const isiPad = useIsiPad()
+  const _system = useSystem()
+
   const selectorTypeComputed = computed(() => {
     const type = props.selectorType
     if (Object.values(selectorType).includes(type)) {
       return type
     }
-    return String(navigator.vendor).indexOf('Apple') === 0 &&
-      navigator.maxTouchPoints > 0
-      ? selectorType.PICKER
-      : selectorType.SELECT
+
+    return isiPad.value ? selectorType.PICKER : selectorType.SELECT
   })
   const system = computed(() => {
-    if (__NODE_JS__) return ''
     if (
       props.mode === mode.DATE &&
       !Object.values(fields).includes(props.fields) &&
-      state.isDesktop &&
-      /win|mac/i.test(navigator.platform)
+      state.isDesktop
     ) {
-      if (navigator.vendor === 'Google Inc.') {
-        return 'chrome'
-      } else if (/Firefox/.test(navigator.userAgent)) {
-        return 'firefox'
-      }
+      return _system.value
     }
     return ''
   })

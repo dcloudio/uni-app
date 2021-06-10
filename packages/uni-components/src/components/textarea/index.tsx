@@ -1,4 +1,4 @@
-import { Ref, ref, computed, watch } from 'vue'
+import { Ref, ref, computed, watch, onMounted } from 'vue'
 import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
@@ -22,6 +22,18 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     default: '',
   },
 })
+
+let fixMargin: Boolean = false
+
+function setFixMargin() {
+  // iOS 13 以下版本需要修正边距
+  const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
+  fixMargin = __NODE_JS__
+    ? false
+    : String(navigator.platform).indexOf('iP') === 0 &&
+      String(navigator.vendor).indexOf('Apple') === 0 &&
+      window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
+}
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
@@ -88,12 +100,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     }
 
-    // iOS 13 以下版本需要修正边距
-    const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
-    const fixMargin =
-      String(navigator.platform).indexOf('iP') === 0 &&
-      String(navigator.vendor).indexOf('Apple') === 0 &&
-      window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
+    if (__NODE_JS__) {
+      onMounted(setFixMargin)
+    } else {
+      setFixMargin()
+    }
 
     return () => {
       let textareaNode =
@@ -120,6 +131,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             value={state.value}
             disabled={!!props.disabled}
             maxlength={state.maxlength}
+            // @ts-ignore
             enterkeyhint={props.confirmType}
             class={{
               'uni-textarea-textarea': true,
@@ -148,6 +160,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {valueCompute.value.map((item) => (
                 <div>{item.trim() ? item : '.'}</div>
               ))}
+              {/* @ts-ignore */}
               <ResizeSensor initial onResize={onResize} />
             </div>
             {props.confirmType === 'search' ? (
