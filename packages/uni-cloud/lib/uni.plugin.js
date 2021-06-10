@@ -1,5 +1,8 @@
 const { once } = require('@dcloudio/uni-shared')
-const { uniViteInjectPlugin } = require('@dcloudio/uni-cli-shared')
+const {
+  COMMON_EXCLUDE,
+  uniViteInjectPlugin,
+} = require('@dcloudio/uni-cli-shared')
 /**
  * @type {import('vite').Plugin}
  */
@@ -109,6 +112,7 @@ function initUniCloudEnv(config) {
 module.exports = [
   UniCloudPlugin,
   uniViteInjectPlugin({
+    exclude: [...COMMON_EXCLUDE],
     uniCloud: ['@dcloudio/uni-cloud', 'default'],
   }),
 ]

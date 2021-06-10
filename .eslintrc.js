@@ -44,7 +44,7 @@ module.exports = {
     // Packages targeting Node
     {
       files: [
-        'packages/{uni-cli-shared,uni-h5-vite,vite-plugin-uni}/**',
+        'packages/{uni-cli-shared,uni-app-vite,uni-h5-vite,vite-plugin-uni}/**',
         'packages/*/vite.config.ts',
       ],
       rules: {
