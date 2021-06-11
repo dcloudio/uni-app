@@ -6707,7 +6707,8 @@ var serviceContext = (function () {
   function chooseImage$1 ({
     count,
     sizeType,
-    sourceType
+    sourceType,
+    crop
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel');
 
@@ -6723,7 +6724,7 @@ var serviceContext = (function () {
           // 压缩阈值 0.5 兆
           const THRESHOLD = 1024 * 1024 * 0.5;
           // 判断是否需要压缩
-          if (sizeType.includes('compressed') && size > THRESHOLD) {
+          if (!crop && sizeType.includes('compressed') && size > THRESHOLD) {
             return compressImage$1(path).then(dstPath => {
               path = dstPath;
               return getFileInfo$2(path)
@@ -6751,7 +6752,8 @@ var serviceContext = (function () {
       camera.captureImage(path => successCallback([path]),
         errorCallback, {
           filename: TEMP_PATH + '/camera/',
-          resolution: 'high'
+          resolution: 'high',
+          crop
         });
     }
 
@@ -6761,7 +6763,8 @@ var serviceContext = (function () {
         multiple: true,
         system: false,
         filename: TEMP_PATH + '/gallery/',
-        permissionAlert: true
+        permissionAlert: true,
+        crop
       });
     }
 
@@ -7801,7 +7804,8 @@ var serviceContext = (function () {
             errorCallback({
               code: '30008',
               message: '用户点击了自定义按钮',
-              index
+              index,
+              provider: button.provider
             });
           });
         };
