@@ -52,6 +52,7 @@ export default function parseComponent (vueOptions) {
     while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
       components.shift()
       component.__lifetimes_attached()
+      delete component.__lifetimes_attached
       component = components[0]
     }
   }
