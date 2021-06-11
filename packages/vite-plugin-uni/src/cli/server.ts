@@ -86,10 +86,10 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
     : 'http'
   let port = options.port || serverOptions.port || 3000
   let hostname: string | undefined
-  if (options.host === undefined || options.host === 'localhost') {
+  if (options.host === 'localhost') {
     // Use a secure default
     hostname = '127.0.0.1'
-  } else if (options.host === true) {
+  } else if (options.host === undefined || options.host === true) {
     // probably passed --host in the CLI, without arguments
     hostname = undefined // undefined typically means 0.0.0.0 or :: (listen on all IPs)
   } else {
@@ -125,7 +125,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
           reject(new Error(`Port ${port} is already in use`))
         } else {
           logger.info(`Port ${port} is in use, trying another one...`)
-          app.listen(++port, hostname!, onSuccess)
+          app.listen(++port, hostname!, onSuccess).on('error', onError)
         }
       } else {
         server.off('error', onError)
