@@ -1,4 +1,4 @@
-注意：本指南仅支持 vue3 版本的 uni-app 项目（h5平台）
+注意：本指南仅支持 vue3 版本的 uni-app 项目（h5平台），目前仅可通过创建uni-app cli项目的方式来使用，参考文档：[uni-app 项目小程序端、H5 端支持 vue3 介绍](https://ask.dcloud.net.cn/article/37834)
 #### 什么是服务器端渲染 (SSR)？
 uni-app 默认情况下，是在客户端中输出 Vue 组件，进行生成 DOM 和操作 DOM。然而，也可以将同一个组件渲染为服务器端的 HTML 字符串，将它们直接发送到浏览器，最后将这些静态标记"激活"为客户端上完全可交互的应用程序。
 
@@ -18,7 +18,7 @@ uni-app 默认情况下，是在客户端中输出 Vue 组件，进行生成 DOM
 
 - 更多的服务器端负载。在 Node.js 中渲染完整的应用程序，显然会比仅仅提供静态文件的 server 更加大量占用 CPU 资源 (CPU-intensive - CPU 密集)，因此如果你预料在高流量环境 (high traffic) 下使用，请准备相应的服务器负载，并明智地采用缓存策略。
 
-幸运的是，以上问题，[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README) 均为您提供了解决方案
+幸运的是，以上问题，[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README) 均为您提供了解决方案，**注意：目前仅腾讯云支持，阿里云后续也会支持**
 - [unicloud-db](https://uniapp.dcloud.net.cn/uniCloud/unicloud-db) 组件是 uniCloud 提供的一个数据库查询组件，内置支持SSR，开发者无需任何额外开发。
 - uniCloud 云函数与静态托管，提供了弹性扩容、大并发承载、防DDoS攻击的世界最顶级的IT基础设施，通过 HBuilderX 可将 uni-app 项目一键部署为支持 SSR 的 h5 网站
 
@@ -156,7 +156,8 @@ export default {
 </script>
 ```
 
-#### 发行与部署
+#### 发行与部署@distribute
+
 - 部署到`uniCloud`
   * 开通[uniCloud](https://unicloud.dcloud.net.cn)以及[前端网页托管](https://uniapp.dcloud.net.cn/uniCloud/hosting)
   * 配置`vite.config.js`中的`base`为`前端网页托管`地址
