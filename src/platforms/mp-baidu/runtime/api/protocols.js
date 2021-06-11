@@ -2,6 +2,7 @@ import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
 import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
 import getSystemInfo from '../../../mp-weixin/helpers/system-info'
+import getUserProfile from '../../../mp-weixin/helpers/get-user-profile'
 
 // 不支持的 API 列表
 const todos = [
@@ -89,6 +90,7 @@ const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
+  getUserProfile,
   getRecorderManager: {
     returnValue (fromRet) {
       fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded')
@@ -122,6 +124,9 @@ const protocols = {
   getAccountInfoSync: {
     name: 'getEnvInfoSync',
     returnValue: _handleEnvInfo
+  },
+  login: {
+    name: 'getLoginCode'
   }
 }
 

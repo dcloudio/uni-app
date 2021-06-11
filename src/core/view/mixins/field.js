@@ -194,20 +194,31 @@ export default {
         this._onInput($event, true)
       }
       this.focusSync = false
+      const field = $event.target
+      let cursor
+      if (field.type === 'number') {
+        field.type = 'text'
+        cursor = field.selectionEnd
+        field.type = 'number'
+      } else {
+        cursor = field.selectionEnd
+      }
       this.$trigger('blur', $event, {
         value: this.valueSync,
-        cursor: $event.target.selectionEnd
+        cursor
       })
     },
     _checkSelection () {
-      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1) {
-        this._field.selectionStart = this.selectionStartNumber
-        this._field.selectionEnd = this.selectionEndNumber
+      const field = this._field
+      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1 && field.type !== 'number') {
+        field.selectionStart = this.selectionStartNumber
+        field.selectionEnd = this.selectionEndNumber
       }
     },
     _checkCursor () {
-      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1) {
-        this._field.selectionEnd = this._field.selectionStart = this.cursorNumber
+      const field = this._field
+      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1 && field.type !== 'number') {
+        field.selectionEnd = field.selectionStart = this.cursorNumber
       }
     }
   }

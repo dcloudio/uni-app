@@ -60,7 +60,7 @@ export function getRealPath (filePath) {
 
   // 无协议的情况补全 https
   if (filePath.indexOf('//') === 0) {
-    filePath = 'https:' + filePath
+    return 'https:' + filePath
   }
 
   // 网络资源或base64
@@ -75,6 +75,10 @@ export function getRealPath (filePath) {
   const wwwPath = 'file://' + _handleLocalPath('_www')
   // 绝对路径转换为本地文件系统路径
   if (filePath.indexOf('/') === 0) {
+    // 平台绝对路径 安卓、iOS
+    if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+      return 'file://' + filePath
+    }
     return wwwPath + filePath
   }
   // 相对资源

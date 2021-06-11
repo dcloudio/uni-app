@@ -37,7 +37,6 @@ class AdBase {
     ad.onLoad((e) => {
       this._isLoaded = true
       this._isLoading = false
-      this._dispatchEvent(eventTypes.load, {})
 
       if (this._loadPromiseResolve != null) {
         this._loadPromiseResolve()
@@ -48,6 +47,8 @@ class AdBase {
         this._showPromiseResolve = null
         this._showAd()
       }
+
+      this._dispatchEvent(eventTypes.load, {})
     })
     ad.onClose((e) => {
       this._isLoaded = false
@@ -70,17 +71,17 @@ class AdBase {
 
       this._dispatchEvent(eventTypes.error, data)
 
-      const promiseError = new Error(JSON.stringify(this._adError))
-      promiseError.code = e.code
-      promiseError.errMsg = e.message
+      const error = new Error(JSON.stringify(this._adError))
+      error.code = e.code
+      error.errMsg = e.message
 
       if (this._loadPromiseReject != null) {
-        this._loadPromiseReject(promiseError)
+        this._loadPromiseReject(error)
         this._loadPromiseReject = null
       }
 
       if (this._showPromiseReject != null) {
-        this._showPromiseReject(promiseError)
+        this._showPromiseReject(error)
         this._showPromiseReject = null
       }
     })
@@ -152,5 +153,7 @@ class AdBase {
 }
 
 export {
+  eventTypes,
+  eventNames,
   AdBase
 }

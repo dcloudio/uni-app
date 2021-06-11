@@ -34,7 +34,7 @@ export function chooseVideo ({
       }, () => {
         resolve(tempFilePath)
       })
-    }) : Promise.resolve()
+    }) : Promise.resolve(tempFilePath)
     if (compressed) {
       plus.nativeUI.showWaiting()
     }
@@ -55,7 +55,7 @@ export function chooseVideo ({
           result.height = videoInfo.height
           invoke(callbackId, result)
         },
-        errorCallback
+        fail: errorCallback
       })
     })
   }

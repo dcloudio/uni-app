@@ -196,9 +196,9 @@ export default {
         img.src = realImagePath
       } else {
         this._clearImage()
+        this._resetData()
         // 与微信小程序保持一致，保留之前样式
-        // this._resetData()
-        this._resetSize()
+        // this._resetSize()
       }
     },
     _clearImage () {

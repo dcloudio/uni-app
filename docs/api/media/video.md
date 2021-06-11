@@ -256,14 +256,14 @@ export default {
 
 |参数名			|类型		|说明								|平台差异说明|
 |:-					|:-			|:-									||
-|orientation|string	|画面方向						|微信小程序|
-|type				|string	|视频格式						|微信小程序|
-|duration		|number	|视频长度						|微信小程序、App、H5|
-|size				|number	|视频大小，单位 kB	|微信小程序、App、H5|
-|height			|number	|视频的长，单位 px	|微信小程序、App、H5|
-|width			|number	|视频的宽，单位 px	|微信小程序、App、H5|
-|fps				|number	|视频帧率						|微信小程序、App|
-|bitrate		|number	|视频码率，单位 kbps|微信小程序|
+|orientation|string	|画面方向						|微信小程序、App（3.1.14+）|
+|type				|string	|视频格式						|微信小程序、App（3.1.14+）|
+|duration		|number	|视频长度						|微信小程序、App（3.1.10+）、H5|
+|size				|number	|视频大小，单位 kB	|微信小程序、App（3.1.10+）、H5|
+|height			|number	|视频的长，单位 px	|微信小程序、App（3.1.10+）、H5|
+|width			|number	|视频的宽，单位 px	|微信小程序、App（3.1.10+）、H5|
+|fps				|number	|视频帧率						|微信小程序、App（3.1.14+）|
+|bitrate		|number	|视频码率，单位 kbps|微信小程序、App（3.1.14+）|
 
 **res.orientation参数说明**
 

@@ -314,7 +314,7 @@ export default {
         db = db.action(action)
       }
 
-      db.collection(this.collection).add(value).then((res) => {
+      db.collection(this._getCollection()).add(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -388,7 +388,7 @@ export default {
         db = db.action(action)
       }
 
-      return db.collection(this.collection).doc(id).update(value).then((res) => {
+      return db.collection(this._getCollection()).doc(id).update(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -546,7 +546,7 @@ export default {
         exec = exec.action(action)
       }
 
-      exec.collection(this.collection).where({
+      exec.collection(this._getCollection()).where({
         _id: dbCmd.in(ids)
       }).remove().then((res) => {
         success && success(res.result)
@@ -569,6 +569,11 @@ export default {
         }
         complete && complete()
       })
+    },
+    _getCollection() {
+      const index = this.collection.indexOf(',')
+      const collection = index > 0 ? this.collection.substring(0, index) : this.collection
+      return collection
     },
     removeData (ids) {
       const il = ids.slice(0)

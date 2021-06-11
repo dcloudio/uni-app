@@ -65,6 +65,13 @@ export default {
     activeMode: {
       type: String,
       default: VALUES.activeMode
+    },
+    duration: {
+      type: [Number, String],
+      default: 30,
+      validator (value) {
+        return !isNaN(parseFloat(value, 10))
+      }
     }
   },
   data () {
@@ -117,7 +124,7 @@ export default {
           } else {
             this.currentPercent += 1
           }
-        }, 30)
+        }, parseFloat(this.duration))
       } else {
         this.currentPercent = this.realPercent
       }

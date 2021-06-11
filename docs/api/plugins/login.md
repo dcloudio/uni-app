@@ -12,6 +12,9 @@ H5平台登录注意事项：
 - 普通浏览器上实现微信登录，并非开放API，需要向微信申请，仅个别开发者有此权限
 - H5平台的其他登录，比如QQ登录、微博登录，uni-app未封装，请在条件编译里按普通H5写法编写。
 
+百度小程序登录注意事项：
+- 百度小程序平台需要在button组件的@login事件后再调用 uni.login ，[详见](https://smartprogram.baidu.com/docs/develop/function/login/),否则会返回“请登录”的错误信息，建议在@login事件中调用。
+
 **OBJECT 参数说明**
 
 |参数名|类型|必填|说明|平台差异说明|

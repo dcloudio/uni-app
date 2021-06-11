@@ -7,10 +7,13 @@ export const getVideoInfo = warpPlusMethod('io', 'getVideoInfo', options => {
   return options
 }, data => {
   return {
+    orientation: data.orientation,
+    type: data.type,
     duration: data.duration,
-    fps: data.fps || 30,
+    size: data.size,
     height: data.height,
     width: data.width,
-    size: data.size
+    fps: data.fps || 30,
+    bitrate: data.bitrate
   }
 })
