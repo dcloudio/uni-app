@@ -38,7 +38,7 @@ cli
 
 cli
   .command('')
-  .alias('serve')
+  .alias('dev')
   .option('--host [host]', `[string] specify hostname`)
   .option('--port <port>', `[number] specify port`)
   .option('--https', `[boolean] use TLS + HTTP/2`)
@@ -50,7 +50,7 @@ cli
     `[boolean] force the optimizer to ignore the cache and re-bundle`
   )
   .action(async (options: CliOptions & ServerOptions) => {
-    initEnv(options)
+    initEnv('dev', options)
     try {
       await (options.ssr ? createSSRServer(options) : createServer(options))
     } catch (e) {
@@ -81,16 +81,20 @@ cli
   .option('--ssrManifest', `[boolean] emit ssr manifest json`)
   .option(
     '--emptyOutDir',
-    `[boolean] force empty outDir when it's outside of root`
+    `[boolean] force empty outDir when it's outside of root`,
+    {
+      default: true,
+    }
   )
   .option('-m, --mode <mode>', `[string] set env mode`)
   .option('-w, --watch', `[boolean] rebuilds when modules have changed on disk`)
   .action(async (options: CliOptions & BuildOptions) => {
-    initEnv(options)
+    initEnv('build', options)
     try {
       await (options.ssr && options.platform === 'h5'
         ? buildSSR(options)
         : build(options))
+      console.log(` DONE  Build complete.`)
     } catch (e) {
       createLogger(options.logLevel).error(
         chalk.red(`error during build:\n${e.stack}`)

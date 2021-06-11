@@ -14,20 +14,38 @@ export const PLATFORMS = [
   'quickapp-webview-union',
 ]
 
-export function initEnv(options: CliOptions) {
+export function initEnv(type: 'dev' | 'build', options: CliOptions) {
+  if (type === 'dev') {
+    process.env.NODE_ENV = 'development'
+  } else if (type === 'build') {
+    if ((options as BuildOptions).watch) {
+      process.env.NODE_ENV = 'development'
+    } else {
+      process.env.NODE_ENV = 'production'
+    }
+  }
+
   process.env.UNI_CLI_CONTEXT = process.cwd() // TODO HBuilderX
+
+  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   process.env.VITE_ROOT_DIR = process.env.UNI_INPUT_DIR || process.cwd()
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
 
-  process.env.UNI_OUTPUT_DIR =
-    (options as BuildOptions).outDir ||
-    process.env.UNI_OUTPUT_DIR ||
-    path.resolve(process.cwd(), 'dist')
-
-  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
+  if (process.env.UNI_OUTPUT_DIR) {
+    ;(options as BuildOptions).outDir = process.env.UNI_OUTPUT_DIR
+  } else {
+    if (!(options as BuildOptions).outDir) {
+      ;(options as BuildOptions).outDir = path.join(
+        'dist',
+        process.env.NODE_ENV === 'production' ? 'build' : 'dev',
+        process.env.UNI_PLATFORM
+      )
+    }
+    process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
+  }
 }
 
 export function cleanOptions(options: CliOptions) {
