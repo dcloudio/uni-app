@@ -12,7 +12,7 @@
   * [数据库索引](uniCloud/db-index.md)
   * [前端操作数据库的API及JQL语法](uniCloud/clientdb.md)
   * [unicloud-db前端组件](uniCloud/unicloud-db.md)
-  * [JQL查询调试器](uniCloud/jql-runner.md)
+  * [JQL数据库管理](uniCloud/jql-runner.md)
   * [openDB](https://gitee.com/dcloud/opendb)
   * [性能优化](uniCloud/db-performance.md)
 * 云函数

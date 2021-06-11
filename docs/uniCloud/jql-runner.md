@@ -1,8 +1,8 @@
-## JQL查询调试器简介
+## JQL数据库管理简介
 
 为方便开发者调试查询语句，`HBuilderX 3.1.5`起内置了JQL查询调试器。用法如下
 
-1. 在`uniCloud/database`目录右键选择`新建JQL查询文件`（HBuilderX创建项目时勾选uniCloud会自带一个jql文件，直接使用自带的jql文件也可以）
+1. 在`uniCloud/database`目录右键选择`新建JQL数据库管理`（HBuilderX创建项目时勾选uniCloud会自带一个jql文件，直接使用自带的jql文件也可以）
 2. 在jql文件内写上自己的语句
 3. 使用工具栏上的运行按钮运行（快捷键：Ctrl+R 或 F5）即可
 

@@ -1,8 +1,28 @@
 const t = require('@babel/types')
 
 const {
+  METHOD_BUILT_IN,
   METHOD_CREATE_EMPTY_VNODE
 } = require('../../constants')
+
+function needSlotMode (path, ids) {
+  let need
+  path.traverse({
+    noScope: false,
+    Identifier (path) {
+      const name = path.node.name
+      if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+        // 使用方法或作用域外数据
+        if (name in ids) {
+          need = path.key === 'callee' ? true : need
+        } else if (!path.scope.hasBinding(name) && !METHOD_BUILT_IN.includes(name)) {
+          need = true
+        }
+      }
+    }
+  })
+  return need
+}
 
 function replaceId (path, ids) {
   let replaced
@@ -26,11 +46,11 @@ module.exports = function getResolveScopedSlots (parent, state) {
   if (!params) {
     return
   }
-  const vueId = parent.parentPath.parentPath.get('properties').find(path => path.get('key').isIdentifier({ name: 'attrs' })).get('value').get('properties').find(path => path.get('key').isStringLiteral({ value: 'vue-id' })).get('value').node.value
+  const vueId = parent.parentPath.parentPath.get('properties').find(path => path.get('key').isIdentifier({ name: 'attrs' })).get('value').get('properties').find(path => path.get('key').isStringLiteral({ value: 'vue-id' })).get('value').node
   const slot = properties.find(path => path.get('key').isIdentifier({ name: 'key' })).get('value').node.value
   const ids = {}
   function updateIds (vueId, slot, value, key) {
-    const array = [t.stringLiteral(vueId), t.stringLiteral(slot)]
+    const array = [vueId, t.stringLiteral(slot)]
     if (key) {
       array.push(t.stringLiteral(key))
     }
@@ -44,11 +64,15 @@ module.exports = function getResolveScopedSlots (parent, state) {
     updateIds(vueId, slot, params.node.name)
   }
   const fnBody = fn.get('value.body')
-  if (replaceId(fnBody, ids)) {
-    const orgin = fnBody.get('body.0.argument')
-    const elements = orgin.get('elements')
-    const node = (elements.length === 1 ? elements[0] : orgin).node
-    const test = t.callExpression(t.identifier('$hasScopedSlotsParams'), [t.stringLiteral(vueId)])
-    orgin.replaceWith(t.arrayExpression([t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))]))
+  if (needSlotMode(fnBody, ids)) {
+    if (replaceId(fnBody, ids)) {
+      const orgin = fnBody.get('body.0.argument')
+      const elements = orgin.get('elements')
+      const node = (elements.length === 1 ? elements[0] : orgin).node
+      const test = t.callExpression(t.identifier('$hasScopedSlotsParams'), [vueId])
+      orgin.replaceWith(t.arrayExpression([t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))]))
+      // scopedSlotsCompiler auto
+      parent.get('arguments.0.elements.0').node.scopedSlotsCompiler = 'augmented'
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 选择用户的发票抬头，需要用户授权 scope.invoiceTitle。
 
-在微信小程序中，当前当前小程序必须关联一个公众号，且这个公众号是完成了[微信认证](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1496554031_RD4xe)的，才能调用 chooseInvoiceTitle。
+在微信小程序中，当前小程序必须关联一个公众号，且这个公众号是完成了[微信认证](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1496554031_RD4xe)的，才能调用 chooseInvoiceTitle。
 
 **平台差异说明**
 

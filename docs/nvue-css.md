@@ -5,18 +5,15 @@
 ### 注意事项
 
 - nvue的css**仅支持flex布局**，是webview的css语法的子集。这是因为操作系统原生排版不支持非flex之外的web布局。当然flex足以排布出各种页面，只是写法需要适应。
-- 在选择器方面支持的较少，只支持简单的```class="classA"```。
 - class 进行绑定时只支持数组语法。
 - 不支持媒体查询
-- 不支持 class 以外的选择器
-- 不支持组合选择器（3.1.0+ 开始支持）
-- 不支持简写样式（3.1.0+ 开始支持）
 - 不能在 style 中引入字体文件
-- 布局不能使用百分比，如```width：100%```；
-- 有些web的css属性在nvue里无法支持，比如背景图。但可以使用image组件和层级来实现类似web中的背景效果。因为原生开发本身也没有web这种背景图概念
-- nvue 的各组件在安卓端默认是透明的，如果不设置```background-color```，可能会导致出现重影的问题
-- 文字内容，必须只能在```text```组件下，```text```组件不能换行写内容，否则会出现无法去除的周边空白
-- 只有```text```标签可以设置字体大小，字体颜色
+- 不能使用百分比布局，如`width：100%`
+- 不支持在css里写背景图`background-image`，但可以使用image组件和层级来实现类似web中的背景效果。因为原生开发本身也没有web这种背景图概念
+- 使用`image`标签，支持使用base64
+- nvue 的各组件在安卓端默认是透明的，如果不设置`background-color`，可能会导致出现重影的问题
+- 文字内容，必须只能在`text`组件下，`text`组件不能换行写内容，否则会出现无法去除的周边空白
+- 只有`text`标签可以设置字体大小，字体颜色
 
 
 **HBuilderX 3.1.0+ 开始支持更多简写样式**
@@ -37,97 +34,23 @@
 - 新增 `nvueStyleCompiler` 配置，支持组合选择器（相邻兄弟选择器、普通兄弟选择器、子选择器、后代选择器）。[详见](https://ask.dcloud.net.cn/article/38751)
 
 
-
-
-
-
-下面有些正确和错误的写法示例对比：
-
-- 选择器类型仅支持 class 选择器
-
-```css
-	/* 错误 */
-	#id {}
-	
-	/* 正确 */
-	.class {}
-```
-
-- 仅支持单个选择器（3.1.0+ 开始支持组合选择器）
-
-```css
-	/* 错误 */
-	.a .b .c {}
-	.a > .b {}
-	
-	/* 正确 */
-	.class {}
-```
-
-- 不支持简写样式（3.1.0+ 开始支持更多简写样式）
-
-```css
-	/* 错误 */
-	.class {
-	    border: 1px red solid;
-	}
-	
-	/* 正确 */
-	.class {
-	    border-width: 1px;
-	    border-style: solid;
-	    border-color: red;
-	}
-	
-	/* 错误 */
-	.class {
-	    background: red;
-	}
-	
-	/* 正确 */
-	.class {
-	    background-color: red;
-	}
-```
-
 - nvue的```uni-app```编译模式下，App.vue 中的样式，会编译到每个 nvue文件。对于共享样式，如果有不合法属性控制台会给出警告，可以通过[条件编译](https://uniapp.dcloud.io/platform)```APP-PLUS-NVUE```屏蔽 App 中的警告。
 
-```css
-	/* 错误 */
-	/*	控制台警告：
-		WARNING: `border` is not a standard property name (may not be supported)  
-		WARNING: `-webkit-transform` is not a standard property name (may not be supported)
-	*/
-	.class {
-		border: 1px red solid;
-		-webkit-transform: scaleY(.5);
-	}
-
-	/* 正确 */
-	.class {
-		border-width: 1px;
-		border-style: solid;
-		border-color: red;
-		/* #ifndef APP-PLUS-NVUE */
-		-webkit-transform: scaleY(.5);
-		/* #endif*/
-	}
-```
 
 ## 盒模型
 
 nvue盒模型基于 CSS 盒模型，每个 nvue 元素都可视作一个盒子。我们一般在讨论设计或布局时，会提到「盒模型」这个概念。
 
-盒模型描述了一个元素所占用的空间。每一个盒子有四条边界：外边距边界 ```margin edge```, 边框边界 ```border edge```, 内边距边界 ```padding edge``` 与内容边界 ```content edge```。这四层边界，形成一层层的盒子包裹起来，这就是盒模型大体上的含义。
+盒模型描述了一个元素所占用的空间。每一个盒子有四条边界：外边距边界 `margin edge`, 边框边界 `border edge`, 内边距边界 `padding edge` 与内容边界 `content edge`。这四层边界，形成一层层的盒子包裹起来，这就是盒模型大体上的含义。
 
 ![图片描述文字](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/ec4f2810-2fec-11eb-899d-733ae62bed2f.png)
 
 
-> nvue盒模型的 ```box-sizing``` 默认为 ```border-box```，即盒子的宽高包含内容、内边距和边框的宽度，不包含外边距的宽度。
+> nvue盒模型的 `box-sizing` 默认为 `border-box`，即盒子的宽高包含内容、内边距和边框的宽度，不包含外边距的宽度。
 
-> 在 Android 平台，nvue只支持 ```overflow:hidden```。
+> 在 Android 平台，nvue只支持 `overflow:hidden`。
 
-> 在 iOS 上，nvue支持 ```overflow:hidden``` 和 ```overflow:visible```，默认是 ```overflow:visible```。
+> 在 iOS 上，nvue支持 `overflow:hidden` 和 `overflow:visible`，默认是 `overflow:visible`。
 
 
 

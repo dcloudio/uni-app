@@ -13,7 +13,8 @@ package.json扩展配置用法（拷贝代码记得去掉注释！）：
                 "title":"自定义扩展名称", // 在HBuilderX中会显示在 运行/发行 菜单中
                 "BROWSER":"",  //运行到的目标浏览器，仅当UNI_PLATFORM为h5时有效
                 "env": {//环境变量
-                    "UNI_PLATFORM": ""  //基准平台 
+                    "UNI_PLATFORM": "",  //基准平台
+                    "MY_TEST": "", // ... 其他自定义环境变量
                  },
                 "define": { //自定义条件编译
                     "CUSTOM-CONST": true //自定义条件编译常量，建议为大写
@@ -41,7 +42,7 @@ Tips：
 "uni-app": {
 	"scripts": {
 		"mp-dingtalk": { 
-            "title":"钉钉小程序", 
+		"title":"钉钉小程序", 
 			"env": { 
 				"UNI_PLATFORM": "mp-alipay" 
 			},

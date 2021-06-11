@@ -4,6 +4,8 @@
 
 > `HBuilderX 2.9.5`以前的用户如使用过`clientDB`，在升级后请将`clientDB`的前端库和云函数删除，新版已经在前端和云端内置了`clientDB`
 
+大白话：传统的数据库操作只能在服务端实现，因为他在前端使用有安全问题。而uniCloud的云数据库有表结构(DB Schema)他通过简单的js表达式，配置了：各种角色权限的账号是否可以读取和写入某种规范的数据等，解决了在前端操作的安全问题；因此uniCloud的云数据库可以直接在前端调用。
+
 使用`clientDB`的好处：**不用写服务器代码了！**
 
 1个应用开发的一半的工作量，就此直接省去。
@@ -263,7 +265,7 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
   ```js
   const db = uniCloud.database()
 
-  // 上面的示例中的where条件可以使用以下写法
+  // 使用`jql`查询list表内`name`字段值为`hello-uni-app`的记录
   db.collection('list')
     .where('name == "hello-uni-app"')
     .get()
@@ -293,11 +295,11 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 以下变量同[前端环境变量](uniCloud/database.md?id=variable)
 
-|参数名			|说明				|
-|:-:			|:-:				|
-|$env.uid		|用户uid，依赖uni-id|
-|$env.now		|服务器时间戳		|
-|$env.clientIP|当前客户端IP		|
+|参数名							|说明								|
+|:-:								|:-:								|
+|$cloudEnv_uid			|用户uid，依赖uni-id|
+|$cloudEnv_now			|服务器时间戳				|
+|$cloudEnv_clientIP	|当前客户端IP				|
 
 **jql条件语句的运算符**
 
@@ -318,8 +320,6 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 这里的test方法比较强大，格式为：`正则规则.test(fieldname)`。
 
 具体到这个正则 `/abc/.test(content)`，类似于sql中的`content like '%abc%'`，即查询所有字段content包含abc的数据记录。
-
-**云函数中node版本为8.9不支持正则断言**
 
 **注意编写查询条件时，除test外，均为运算符左侧为数据库字段，右侧为常量**
 
@@ -389,7 +389,7 @@ sql写法，对js工程师而言有学习成本，而且无法处理非关系型
 
 ### JQL联表查询@lookup
 
-> clientDB将于2021年4月26日优化联表查询策略，详情参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
+> clientDB于2021年4月28日优化了联表查询策略，详情参考：[联表查询策略调整](https://ask.dcloud.net.cn/article/38966)
 
 `JQL`提供了更简单的联表查询方案。不需要学习join、lookup等复杂方法。
 
@@ -533,7 +533,7 @@ db.collection('order')
     as: 'book_id'
   })
   .match({
-    book: {
+    book_id: {
       title: '三国演义'
     }
   })
@@ -556,7 +556,7 @@ db.collection('order')
     as: 'book_id'
   })
   .match({
-    book: {
+    book_id: {
       title: '三国演义'
     }
   })
@@ -599,6 +599,58 @@ db.collection('order')
 
 不止js，`<unicloud-db>`组件也支持所有`jql`功能，包括联表查询。
 
+在前端页面调试JQL联表查询且不过滤字段时会受权限影响，导致调试比较困难。可以通过HBuilderX提供的[JQL数据库管理](uniCloud/jql-runner.md)功能方便的查看联表查询时的虚拟表结构。
+
+如上述查询可以直接在`JQL文件`中执行以下代码查看完整的虚拟表字段
+
+```js
+db.collection('order,book').get()
+```
+
+#### 设置字段别名@lookup-field-alias
+
+联表查询时也可以在field内对字段进行重命名，写法和简单查询时别名写法类似，`原字段名 as 新字段名`即可。[简单查询时的字段别名](uniCloud/clientdb.md?id=alias)
+
+仍以上述order、book两个表为例，以下查询将联表查询时order表的quantity字段重命名为order_quantity，将book表的title重命名为book_title、author重命名为book_author
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id{title as book_title,author as book_author},quantity as order_quantity')
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+查询结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+		"_id": "b8df3bd65f8f0d06018fdc250a5688bb",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 555
+	}, {
+		"_id": "b8df3bd65f8f0d06018fdc2315af05ec",
+		"book_id": [{
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}],
+		"order_quantity": 333
+	}]
+}
+```
+
 #### 手动指定使用的foreignKey@lookup-foreign-key
 
 如果存在多个foreignKey且只希望部分生效，可以使用foreignKey来指定要使用的foreignKey
@@ -615,7 +667,6 @@ db.collection('comment,user')
 
 **注意**
 
-- field参数字符串内没有冒号
 - 联表查询时关联字段会被替换成被关联表的内容，因此不可在where内使用关联字段作为条件。举个例子，在上面的示例，`where({book_id:"1"})`，但是可以使用`where({'book_id._id':"1"})`
 - 上述示例中如果order表的`book_id`字段是数组形式存放多个book_id，也跟上述写法一致，clientDB会自动根据字段类型进行联表查询
 - 各个表的_id字段会默认带上，即使没有指定返回
@@ -623,14 +674,50 @@ db.collection('comment,user')
 
 #### 副表foreignKey联查@st-foreign-key
 
-`2021年4月28日`之前的clientDB版本，只支持主表的foreignKey，把副本内容嵌入主表的foreignKey字段下面。不支持处理副本的foreignKey。（如果你觉得能用，其实是bug，查出来的数是乱的，别依赖这种写法）
+`2021年4月28日`之前的clientDB版本，只支持主表的foreignKey，把副表内容嵌入主表的foreignKey字段下面。不支持处理副本的foreignKey。
 
-调整后，新版将正式支持副表foreignKey联查。将把副表的数据以数组的方式嵌入到主表中。
+`2021年4月28日`调整后，新版支持副表foreignKey联查。副表的数据以数组的方式嵌入到主表中作为一个虚拟表使用。
+
+**关联查询后的数据结构如下：**
+
+> 通过HBuilderX提供的[JQL数据库管理](uniCloud/jql-runner.md)功能方便的查看联表查询时的虚拟表结构
+
+主表某字段foreignKey指向副表时
+
+```js
+{
+  "主表字段名1": "xxx",
+  "主表字段名2": "xxx",
+  "主表内foreignKey指向副表的字段名": [{
+    "副表字段名1": "xxx",
+    "副表字段名2": "xxx",
+  }]
+}
+```
+
+副表某字段foreignKey指向主表时
+
+```js
+{
+  "主表字段名1": "xxx",
+  "主表字段名2": "xxx",
+  "副表foreignKey指向的主表字段名": { 
+    "副表1表名": [{ // 一个主表字段可能对应多个副表字段的foreignKey
+      "副表1字段名1": "xxx",
+      "副表1字段名2": "xxx",
+    }],
+    "副表2表名": [{ // 一个主表字段可能对应多个副表字段的foreignKey
+      "副表2字段名1": "xxx",
+      "副表2字段名2": "xxx",
+    }],
+    "_value": "主表字段原始值" // 使用副表foreignKey查询时会在关联的主表字段内以_value存储该字段的原始值，新增于HBuilderX 3.1.16-alpha
+  }
+}
+```
 
 例：
 
 数据库内schema及数据如下：
-
 
 ```js
 // comment - 评论表
@@ -753,7 +840,7 @@ db.collection('comment,user')
 
 ```js
 db.collection('article,comment')
-.where('article_id=="1"')
+.where('article_id._value=="1"')
 .field('content,article_id')
 .get()
 ```
@@ -764,7 +851,7 @@ db.collection('article,comment')
 [{
   "content": "content1",
   "article_id": {
-    "comment": [{ // 逆向foreignKey查询时此处会自动插入一层副表表名
+    "comment": [{ // 使用副表foreignKey查询时此处会自动插入一层副表表名
       "comment_id": "1-1",
       "content": "comment1-1",
       "article": "1",
@@ -777,7 +864,8 @@ db.collection('article,comment')
       "article": "1",
       "sender": "2",
       "receiver": "1"
-    }]
+    }],
+    "_value": "1"
   }
 }]
 ```
@@ -787,7 +875,7 @@ db.collection('article,comment')
 ```js
 // 过滤副表字段
 db.collection('article,comment')
-.where('article_id=="1"')
+.where('article_id._value=="1"')
 .field('content,article_id{comment{content}}')
 .get()
 
@@ -795,11 +883,36 @@ db.collection('article,comment')
 [{
   "content": "content1",
   "article_id": {
-    "comment": [{ 使用副本foreignKey联查时此处会自动插入一层副表表名
+    "comment": [{ // 使用副表foreignKey联查时此处会自动插入一层副表表名
       "content": "comment1-1"
     },
     {
       "content": "comment1-2"
+    }],
+    "_value": "1"
+  }
+}]
+
+```
+
+副表内的字段也可以使用`as`进行重命名，例如上述查询中如果希望将副表的content重命名为value可以使用如下写法
+
+```js
+// 重命名副表字段
+db.collection('article,comment')
+.where('article_id._value=="1"')
+.field('content,article_id{comment{content as value}}')
+.get()
+
+// 查询结果如下
+[{
+  "content": "content1",
+  "article_id": {
+    "comment": [{ // 使用副本foreignKey联查时此处会自动插入一层副表表名
+      "value": "comment1-1"
+    },
+    {
+      "value": "comment1-2"
     }]
   }
 }]
@@ -1026,6 +1139,26 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
   .get()
 ```
 
+**不使用`{}`过滤副表字段**
+
+> 此写法于2021年4月28日起支持
+
+field方法内可以不使用`{}`进行副表字段过滤，以上面示例为例可以写为
+
+```js
+const db = uniCloud.database()
+db.collection('order,book')
+  .where('book_id.title == "三国演义"')
+  .field('book_id.title,book_id.author,quantity as order_quantity') // book_id.title、book_id.author为副表字段，使用别名时效果和上一个示例不同，请见下方说明
+  .orderBy('order_quantity desc') // 按照order_quantity降序排列
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
 ### 字段别名as@alias
 
 自`2020-11-20`起clientDB jql写法支持字段别名，主要用于在前端需要的字段名和数据库字段名称不一致的情况下对字段进行重命名。
@@ -1033,6 +1166,71 @@ db.collection('order,book') // 注意collection方法内需要传入所有用到
 用法形如：`author as book_author`，意思是将数据库的author字段重命名为book_author。
 
 仍以上面的order表和book表为例
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('book')
+  .where('title == "三国演义"')
+  .field('title as book_title,author as book_author')
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+上述查询返回结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+      "_id": "3",
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}]
+}
+```
+
+> _id是比较特殊的字段，如果对_id设置别名会同时返回_id和设置的别名字段
+
+例：
+
+```js
+// 客户端联表查询
+const db = uniCloud.database()
+db.collection('book')
+  .where('title == "三国演义"')
+  .field('_id as book_id,title as book_title,author as book_author')
+  .get()
+  .then(res => {
+    console.log(res);
+  }).catch(err => {
+    console.error(err)
+  })
+```
+
+上述查询返回结果如下
+
+```js
+{
+	"code": "",
+	"message": "",
+	"data": [{
+      "_id": "3",
+      "book_id": "3",
+			"book_author": "罗贯中",
+			"book_title": "三国演义"
+		}]
+}
+```
+
+#### 联表查询时字段别名
+
+联表查询时字段别名写法和简单查询类似
 
 ```js
 // 客户端联表查询
@@ -1073,25 +1271,6 @@ db.collection('order,book')
 }
 ```
 
-**不使用`{}`过滤副表字段**
-
-> 此写法于2021年4月28日起支持
-
-field方法可以不使用`{}`进行副表字段过滤，以上面示例为例可以写为
-
-```js
-const db = uniCloud.database()
-db.collection('order,book')
-  .where('book_id.title == "三国演义"')
-  .field('book_id.title,book_id.author,quantity as order_quantity') // book_id.title、book_id.author为副表字段，使用别名时效果和上一个示例不同，请见下方说明
-  .orderBy('order_quantity desc') // 按照order_quantity降序排列
-  .get()
-  .then(res => {
-    console.log(res);
-  }).catch(err => {
-    console.error(err)
-  })
-```
 
 副表字段使用别名需要注意，如果写成`.field('book_id.title as book_id.book_title,book_id.author,quantity as order_quantity')` book_title将会是由book_id下每一项的title组成的数组，这点和mongoDB内数组表现一致
 
@@ -1132,7 +1311,7 @@ db.collection('order,book')
 **注意**
 
 - as后面的别名，不可以和表schema中已经存在的字段重名
-- 上面的查询指令中，上一阶段处理结果输出到下一阶段，上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
+- mongoDB查询指令中，上一阶段处理完毕将结果输出到下一阶段。在上面的例子中表现为where中使用的是原名，orderBy中使用的是别名
 - 目前不支持对联表查询的关联字段使用别名，即上述示例中的book_id不可设置别名
 
 ### 各种字段运算方法@operator
@@ -1423,7 +1602,7 @@ department部门表的schema中，将字段`parent_id`的"parentKey"设为"_id"�
 
 parentKey字段将数据表不同记录的父子关系描述了出来。查询就可以直接写了。
 
-注意一个表内只能有一个父子关系，即一个表的schema里只能配置一份parentKey。
+注意：一个表的一次查询中只能有一个父子关系。如果一个表的schema里多个字段均设为了parentKey，那么需要在JQL中通过parentKey()方法指定某个要使用的parentKey字段。
 
 schema里描述好后，查询就变的特别简单。
 
@@ -1633,6 +1812,22 @@ db.collection("department")
   "data": []
 }
 ```
+
+
+**通过parentKey方法指定某个parentKey**
+
+如果表的schema中有多个字段都配置了parentKey，但查询时其实只能有一个字段的parentKey关系可以生效，那么此时就需要通过parentKey()方法来指定这次查询需要的哪个parentKey关系生效。
+
+parentKey()方法的参数是字段名。
+
+```js
+db.collection('department')
+.parentKey('parent_id') // 如果表schema只有一个字段设了parentKey，其实不需要指定。有多个字段被设parentKey才需要用这个方法指定
+.get({
+    getTree: true
+	})
+```
+
 
 **示例**
 
@@ -2870,8 +3065,6 @@ action支持一次使用多个，比如使用`db.action("action-a,action-b")`，
 
 action是一种特殊的云函数，它不占用服务空间的云函数数量。
 
-**目前action还不支持本地运行。后续会支持。**
-
 **新建action**
 
 ![新建action](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/b6846d00-1460-11eb-b997-9918a5dda011.jpg)
@@ -2971,6 +3164,15 @@ module.exports = {
 ```
 
 **如需在before和after内传参，建议直接在state上挂载。但是切勿覆盖上述属性**
+
+### action内可以使用的公共模块
+
+目前clientDB依赖了`uni-id`，uni-id 3.0.7及以上版本又依赖了`uni-config-center`，这两个公共模块是可以在action内使用的。
+
+**参考：**
+
+- [uni-id 文档](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
+- [uni-config-center 文档](https://ext.dcloud.net.cn/plugin?id=4425)
 
 ## 数据库运算方法列表@aggregate-operator
 

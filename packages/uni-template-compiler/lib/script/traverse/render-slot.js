@@ -15,13 +15,15 @@ module.exports = function getRenderSlot (path, state) {
       const newProperties = []
       propertiesPath.forEach(path => {
         const properties = path.get('key').isStringLiteral({ value: 'SLOT_DEFAULT' }) ? oldProperties : newProperties
-        properties.push(path.node)
+        properties.push(state.options.scopedSlotsCompiler === 'auto' ? path.node : t.cloneDeep(path.node))
       })
       if (!newProperties.length) {
         return
       }
       valueNode = t.objectExpression(newProperties)
-      arg2.replaceWith(t.objectExpression(oldProperties))
+      if (state.options.scopedSlotsCompiler !== 'auto') {
+        arg2.replaceWith(t.objectExpression(oldProperties))
+      }
     } else {
       valueNode = arg2.node
     }

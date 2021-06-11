@@ -7,7 +7,7 @@
 |属性名|类型|默认值|说明|平台差异说明|
 |:-|:-|:-|:-|:-|
 |value|String||输入框的初始内容||
-|type|String|text|input 的类型|H5 暂未支持动态切换请使用 v-if 进行整体切换|
+|type|String|text|input 的类型|H5 暂未支持动态切换，详见下方 Tips，请使用 v-if 进行整体切换|
 |password|Boolean|false|是否是密码类型|H5和App写此属性时，type失效|
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
@@ -24,6 +24,7 @@
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App-Android（vue 页面 softinputMode 为 adjustResize 时无效）、微信小程序、百度小程序、QQ小程序|
 |hold-keyboard|boolean|false|focus时，点击页面的时候不收起键盘|微信小程序2.8.2|
 |auto-blur|boolean|false|键盘收起时，是否自动失去焦点|App 3.0.0+|
+|verifyNumber|boolean|false|当设置`type="number"`时，是否对输入的字符执行`当前输入是否有效`判断|HBuilder 3.1.19+|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（2.2.3+） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
@@ -35,6 +36,21 @@
 - `input` 事件处理函数可以直接 return 一个字符串，将替换输入框的内容。仅微信小程序支持。
 - 如果遇到 value 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/vue-api?id=_4-组件属性设置不生效解决办法)
 - `input` 组件上有默认的 `min-height` 样式，如果 `min-height` 的值大于 `height` 的值那么 `height` 样式无效。
+- H5 暂未支持动态切换，请使用 `v-if`进行整体切换。
+- `verifyNumber`：是否对输入的字符执行输入是否有效判断判断
+  - 为`false`时：不执行输入是否有效判断，输入时会响应`input`事件，此时`event.detail = {value,valid}`，属性`valid`用来表明当前输入是否有效。
+  - 为`true`时：执行输入是否有效判断， 输入非数字字符将不会被赋值，也不会响应`input`事件。例如：`-(负号)`就是非数字字符。输入负数时，需要输入数字后再移动光标到数字最前面输入`-(负号)`。
+
+```html
+        <!-- 错误写法 -->
+	<input :type="isText?'text':'number'" placeholder="请输入内容" />
+	
+        <!-- 正确写法 -->
+	<input v-if="isText" type="text" placeholder="请输入文本" />
+	<input v-else  type="number"  placeholder="请输入数字" />
+```
+
+
 
 **type 有效值**
 
@@ -51,7 +67,7 @@
 - 小程序平台，`number` 类型只支持输入整型数字。微信开发者工具上体现不出效果，请使用真机预览。
 - 如果需要在小程序平台输入浮点型数字，请使用 `digit` 类型。
 - 小程序端input在置焦时，会表现为原生控件，此时会层级变高。如需前端组件遮盖input，需让input失焦，或使用cover-view等覆盖原生控件的方案，[参考](https://uniapp.dcloud.io/component/native-component)。具体来讲，阿里小程序的input为text且置焦为原生控件；微信、头条、QQ所有input置焦均为原生控件；百度小程序置焦时仍然是非原生的。也可以参考[原生控件](https://uniapp.dcloud.io/component/native-component)文档
-- input组件若不想弹出软键盘，可设置为disable
+- input组件若不想弹出软键盘，可设置为disabled
 
 **confirm-type 有效值**
 

@@ -94,6 +94,10 @@ export default {
     confirmType: {
       type: String,
       default: 'done'
+    },
+    verifyNumber: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -179,20 +183,21 @@ export default {
       }
 
       if (~NUMBER_TYPES.indexOf(this.type)) {
-        // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false，因此做此处理
+        // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false
         this.valid = this.$refs.input.validity && this.$refs.input.validity.valid
-        this.cachedValue = this.valueSync
-
-        // 处理部分输入法可以输入其它字符的情况
-        // 上一处理导致无法输入 - ，因此去除
-        /* if (this.$refs.input.validity && !this.$refs.input.validity.valid) {
-          $event.target.value = this.cachedValue
-          this.valueSync = $event.target.value
-          // 输入非法字符不触发 input 事件
-          return
-        } else {
+        if (!this.verifyNumber) {
           this.cachedValue = this.valueSync
-        } */
+        } else {
+          // 处理部分输入法可以输入其它字符的情况，此处理无法先输入 -(负号)，只能输入数字再移动光标输入负号
+          if (this.$refs.input.validity && !this.valid) {
+            $event.target.value = this.cachedValue
+            this.valueSync = $event.target.value
+            // 输入非法字符不触发 input 事件
+            return
+          } else {
+            this.cachedValue = this.valueSync
+          }
+        }
       }
 
       // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
@@ -205,9 +210,16 @@ export default {
           return
         }
       }
-      this.$triggerInput($event, {
+
+      this.$triggerInput($event, Object.assign({
         value: this.valueSync
-      }, force)
+      }, (() => {
+        if (!this.verifyNumber) {
+          return {
+            valid: this.valid
+          }
+        }
+      })()), force)
     },
     _onComposition ($event) {
       if ($event.type === 'compositionstart') {

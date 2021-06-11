@@ -66,4 +66,13 @@ uni.onNetworkStatusChange(function (res) {
 |HBuilderX 3.0.1+|HBuilderX 3.0.1+|基础库 2.9.3+|x|x|x|x|
 
 **Tips**
-- `CALLBACK`为调用`uni.onNetworkStatusChange`时传入的`CALLBACK`
+- `CALLBACK`必须为调用`uni.onNetworkStatusChange`时传入的`CALLBACK`
+
+例如：
+```
+var CALLBACK = function(res) {
+    // ...这里写你的业务逻辑
+}
+uni.offNetworkStatusChange(CALLBACK)
+uni.onNetworkStatusChange(CALLBACK);
+```

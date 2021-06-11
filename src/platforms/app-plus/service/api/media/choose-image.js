@@ -49,7 +49,8 @@ function compressImage (tempFilePath) {
 export function chooseImage ({
   count,
   sizeType,
-  sourceType
+  sourceType,
+  crop
 } = {}, callbackId) {
   const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel')
 
@@ -65,7 +66,7 @@ export function chooseImage ({
         // 压缩阈值 0.5 兆
         const THRESHOLD = 1024 * 1024 * 0.5
         // 判断是否需要压缩
-        if (sizeType.includes('compressed') && size > THRESHOLD) {
+        if (!crop && sizeType.includes('compressed') && size > THRESHOLD) {
           return compressImage(path).then(dstPath => {
             path = dstPath
             return getFileInfo(path)
@@ -93,7 +94,8 @@ export function chooseImage ({
     camera.captureImage(path => successCallback([path]),
       errorCallback, {
         filename: TEMP_PATH + '/camera/',
-        resolution: 'high'
+        resolution: 'high',
+        crop
       })
   }
 
@@ -103,7 +105,8 @@ export function chooseImage ({
       multiple: true,
       system: false,
       filename: TEMP_PATH + '/gallery/',
-      permissionAlert: true
+      permissionAlert: true,
+      crop
     })
   }
 
