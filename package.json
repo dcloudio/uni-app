@@ -15,7 +15,8 @@
     "preinstall": "node ./scripts/checkYarn.js",
     "e2e:ssr:install": "cd packages/playground/ssr && rm -rf node_modules yarn.lock && yarn",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
-    "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open"
+    "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
+    "release": "lerna publish --force-publish=* --dist-tag=vue3"
   },
   "types": "test-dts/index.d.ts",
   "tsd": {
