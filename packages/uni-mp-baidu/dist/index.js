@@ -1313,6 +1313,11 @@ function initProperties (props, isBehavior = false, file = '') {
       type: Object,
       value: null
     };
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
+      type: String,
+      value: ''
+    };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
@@ -1883,7 +1888,8 @@ const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 function isPage () {
   // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
   // 否则会导致mounted不执行
-  return typeof this.ownerId === 'undefined'
+  // 基础库 3.290.33 及以上 ownerId 为 null
+  return typeof this.ownerId === 'undefined' || this.ownerId === null
 }
 
 function initRelation (detail) {
