@@ -3,7 +3,7 @@ import { proxyStyle, UniCSSStyleDeclaration } from '../../src/vdom/Style'
 describe('vdom', () => {
   test('style', () => {
     const uniCSSStyle = proxyStyle(new UniCSSStyleDeclaration())
-    expect(uniCSSStyle.toJSON()).toBe(null)
+    expect(uniCSSStyle.toJSON()).toBeUndefined()
     uniCSSStyle.cssText = 'color:red'
     expect(uniCSSStyle.toJSON()).toBe(uniCSSStyle.cssText)
     uniCSSStyle.backgroundColor = 'black'

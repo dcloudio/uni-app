@@ -12675,6 +12675,11 @@ const props$g = /* @__PURE__ */ extend({}, props$v, {
     default: ""
   }
 });
+let fixMargin = false;
+function setFixMargin() {
+  const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
+  fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+}
 var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$g,
@@ -12739,8 +12744,9 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
         textarea.blur();
       }
     }
-    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+    {
+      setFixMargin();
+    }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
         "ref": fieldRef,
@@ -19710,22 +19716,45 @@ function usePickerState(props2) {
     rangeArray
   };
 }
+const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+function useIsiPad() {
+  const isiPad = ref(false);
+  {
+    isiPad.value = getiPadFlag();
+  }
+  return isiPad;
+}
+const getSystem = () => {
+  if (/win|mac/i.test(navigator.platform)) {
+    if (navigator.vendor === "Google Inc.") {
+      return "chrome";
+    } else if (/Firefox/.test(navigator.userAgent)) {
+      return "firefox";
+    }
+  }
+  return "";
+};
+function useSystem() {
+  const _system = ref("");
+  {
+    _system.value = getSystem();
+  }
+  return _system;
+}
 let __contentVisibleDelay;
 function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
+  const isiPad = useIsiPad();
+  const _system = useSystem();
   const selectorTypeComputed = computed(() => {
     const type = props2.selectorType;
     if (Object.values(selectorType).includes(type)) {
       return type;
     }
-    return String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT;
+    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
   });
   const system = computed(() => {
-    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop && /win|mac/i.test(navigator.platform)) {
-      if (navigator.vendor === "Google Inc.") {
-        return "chrome";
-      } else if (/Firefox/.test(navigator.userAgent)) {
-        return "firefox";
-      }
+    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
+      return _system.value;
     }
     return "";
   });

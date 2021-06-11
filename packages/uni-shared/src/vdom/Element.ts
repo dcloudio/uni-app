@@ -1,9 +1,9 @@
-import { NODE_TYPE_ELEMENT, UniBaseNode } from './Node'
+import { IUniPageNode, NODE_TYPE_ELEMENT, UniBaseNode } from './Node'
 
 export class UniElement extends UniBaseNode {
   tagName: string
-  constructor(nodeName: string) {
-    super(NODE_TYPE_ELEMENT, nodeName.toUpperCase())
+  constructor(nodeName: string, container: UniElement | IUniPageNode) {
+    super(NODE_TYPE_ELEMENT, nodeName.toUpperCase(), container)
     this.tagName = this.nodeName
   }
 }

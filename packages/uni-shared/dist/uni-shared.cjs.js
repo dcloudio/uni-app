@@ -329,7 +329,12 @@ class UniCSSStyleDeclaration {
         if (hasCssText && hasValue) {
             return [_cssText, _value];
         }
-        return hasCssText ? _cssText : _value;
+        if (hasCssText) {
+            return _cssText;
+        }
+        if (hasValue) {
+            return _value;
+        }
     }
 }
 const STYLE_PROPS = [
@@ -359,6 +364,118 @@ function proxyStyle(uniCssStyle) {
     });
 }
 
+const ATTR_MAP = {
+    class: '.c',
+    style: '.s',
+};
+function encodeAttr(name) {
+    return ATTR_MAP[name] || name;
+}
+const ATTR_RESTORE_MAP = {
+    '.c': 'class',
+    '.s': 'style',
+};
+function decodeAttr(name) {
+    return ATTR_RESTORE_MAP[name] || name;
+}
+const COMPONENT_MAP = {
+    VIEW: 1,
+    IMAGE: 2,
+    TEXT: 3,
+    '#text': 4,
+    '#comment': 5,
+    NAVIGATOR: 6,
+    FORM: 7,
+    BUTTON: 8,
+    INPUT: 9,
+    LABEL: 10,
+    RADIO: 11,
+    CHECKBOX: 12,
+    'CHECKBOX-GROUP': 13,
+    AD: 14,
+    AUDIO: 15,
+    CAMERA: 16,
+    CANVAS: 17,
+    'COVER-IMAGE': 18,
+    'COVER-VIEW': 19,
+    EDITOR: 20,
+    'FUNCTIONAL-PAGE-NAVIGATOR': 21,
+    ICON: 22,
+    'RADIO-GROUP': 23,
+    'LIVE-PLAYER': 24,
+    'LIVE-PUSHER': 25,
+    MAP: 26,
+    'MOVABLE-AREA': 27,
+    'MOVABLE-VIEW': 28,
+    'OFFICIAL-ACCOUNT': 29,
+    'OPEN-DATA': 30,
+    PICKER: 31,
+    'PICKER-VIEW': 32,
+    'PICKER-VIEW-COLUMN': 33,
+    PROGRESS: 34,
+    'RICH-TEXT': 35,
+    'SCROLL-VIEW': 36,
+    SLIDER: 37,
+    SWIPER: 38,
+    'SWIPER-ITEM': 39,
+    SWITCH: 40,
+    TEXTAREA: 41,
+    VIDEO: 42,
+    'WEB-VIEW': 43,
+};
+function encodeTag(tag) {
+    return COMPONENT_MAP[tag] || tag;
+}
+const COMPONENT_ARR = [
+    '',
+    'view',
+    'image',
+    'text',
+    '#text',
+    '#comment',
+    'navigator',
+    'form',
+    'button',
+    'input',
+    'label',
+    'radio',
+    'checkbox',
+    'checkbox-group',
+    'ad',
+    'audio',
+    'camera',
+    'canvas',
+    'cover-image',
+    'cover-view',
+    'editor',
+    'functional-page-navigator',
+    'icon',
+    'radio-group',
+    'live-player',
+    'live-pusher',
+    'map',
+    'movable-area',
+    'movable-view',
+    'official-account',
+    'open-data',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'textarea',
+    'video',
+    'web-view',
+];
+function decodeTag(tag) {
+    return COMPONENT_ARR[tag] || tag;
+}
+
 const NODE_TYPE_PAGE = 0;
 const NODE_TYPE_ELEMENT = 1;
 const NODE_TYPE_TEXT = 3;
@@ -382,12 +499,19 @@ function checkNodeId(node) {
         node.nodeId = node.pageNode.genId();
     }
 }
+// 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
 class UniNode extends UniEventTarget {
-    constructor(nodeType, nodeName) {
+    constructor(nodeType, nodeName, container) {
         super();
         this.pageNode = null;
         this.parentNode = null;
         this._text = null;
+        if (container) {
+            const { pageNode } = container;
+            this.pageNode = pageNode;
+            this.nodeId = pageNode.genId();
+            pageNode.onCreate(this, encodeTag(nodeName));
+        }
         this.nodeType = nodeType;
         this.nodeName = nodeName;
         this.childNodes = [];
@@ -412,6 +536,9 @@ class UniNode extends UniEventTarget {
     }
     set textContent(text) {
         this._text = text;
+        if (this.pageNode) {
+            this.pageNode.onTextContent(this, text);
+        }
     }
     get parentElement() {
         const { parentNode } = this;
@@ -443,17 +570,21 @@ class UniNode extends UniEventTarget {
         newChild.parentNode = this;
         checkNodeId(newChild);
         const { childNodes } = this;
+        let index;
         if (refChild) {
-            const index = childNodes.indexOf(refChild);
+            index = childNodes.indexOf(refChild);
             if (index === -1) {
                 throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
             }
-            childNodes.splice(childNodes.indexOf(refChild), 0, newChild);
+            childNodes.splice(index, 0, newChild);
         }
         else {
+            index = childNodes.length;
             childNodes.push(newChild);
         }
-        return newChild;
+        return this.pageNode
+            ? this.pageNode.onInsertBefore(this, newChild, index)
+            : newChild;
     }
     removeChild(oldChild) {
         const { childNodes } = this;
@@ -463,12 +594,14 @@ class UniNode extends UniEventTarget {
         }
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return oldChild;
+        return this.pageNode
+            ? this.pageNode.onRemoveChild(this, oldChild)
+            : oldChild;
     }
 }
 class UniBaseNode extends UniNode {
-    constructor(nodeType, nodeName) {
-        super(nodeType, nodeName);
+    constructor(nodeType, nodeName, container) {
+        super(nodeType, nodeName, container);
         this.attributes = Object.create(null);
         this._html = null;
         this.style = proxyStyle(new UniCSSStyleDeclaration());
@@ -500,21 +633,31 @@ class UniBaseNode extends UniNode {
         }
     }
     getAttribute(qualifiedName) {
-        return this.attributes[qualifiedName];
+        return this.attributes[encodeAttr(qualifiedName)];
     }
     removeAttribute(qualifiedName) {
+        qualifiedName = encodeAttr(qualifiedName);
         delete this.attributes[qualifiedName];
+        if (this.pageNode) {
+            this.pageNode.onRemoveAttribute(this, qualifiedName);
+        }
     }
     setAttribute(qualifiedName, value) {
+        qualifiedName = encodeAttr(qualifiedName);
         this.attributes[qualifiedName] = value;
+        if (this.pageNode) {
+            this.pageNode.onSetAttribute(this, qualifiedName, value);
+        }
     }
-    toJSON() {
+    toJSON(opts = {}) {
         const res = {
-            i: this.nodeId,
-            n: this.nodeName,
             a: this.attributes,
             s: this.style.toJSON(),
         };
+        if (!opts.attr) {
+            res.i = this.nodeId;
+            res.n = encodeTag(this.nodeName);
+        }
         if (this._text !== null) {
             res.t = this._text;
         }
@@ -523,15 +666,23 @@ class UniBaseNode extends UniNode {
 }
 
 class UniCommentNode extends UniNode {
-    constructor(text) {
-        super(NODE_TYPE_COMMENT, '#comment');
+    constructor(text, container) {
+        super(NODE_TYPE_COMMENT, '#comment', container);
         this._text = text;
+    }
+    toJSON(opts = {}) {
+        return opts.attr
+            ? { t: this._text }
+            : {
+                i: this.nodeId,
+                t: this._text,
+            };
     }
 }
 
 class UniElement extends UniBaseNode {
-    constructor(nodeName) {
-        super(NODE_TYPE_ELEMENT, nodeName.toUpperCase());
+    constructor(nodeName, container) {
+        super(NODE_TYPE_ELEMENT, nodeName.toUpperCase(), container);
         this.tagName = this.nodeName;
     }
 }
@@ -547,8 +698,8 @@ class UniTextAreaElement extends UniInputElement {
 }
 
 class UniTextNode extends UniBaseNode {
-    constructor(text) {
-        super(NODE_TYPE_TEXT, '#text');
+    constructor(text, container) {
+        super(NODE_TYPE_TEXT, '#text', container);
         this._text = text;
     }
     get nodeValue() {
@@ -556,6 +707,9 @@ class UniTextNode extends UniBaseNode {
     }
     set nodeValue(text) {
         this._text = text;
+        if (this.pageNode) {
+            this.pageNode.onNodeValue(this, text);
+        }
     }
 }
 
@@ -770,8 +924,12 @@ exports.callOptions = callOptions;
 exports.createRpx2Unit = createRpx2Unit;
 exports.debounce = debounce;
 exports.decode = decode;
+exports.decodeAttr = decodeAttr;
+exports.decodeTag = decodeTag;
 exports.decodedQuery = decodedQuery;
 exports.defaultRpx2Unit = defaultRpx2Unit;
+exports.encodeAttr = encodeAttr;
+exports.encodeTag = encodeTag;
 exports.formatDateTime = formatDateTime;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;

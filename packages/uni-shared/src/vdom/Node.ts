@@ -8,6 +8,7 @@ import {
   UniCSSStyleDeclaration,
   UniCSSStyleDeclarationJSON,
 } from './Style'
+import { encodeAttr, encodeTag } from './utils'
 
 export const NODE_TYPE_PAGE = 0
 export const NODE_TYPE_ELEMENT = 1
@@ -44,10 +45,26 @@ function checkNodeId(node: UniNode) {
 
 export interface IUniPageNode {
   pageId: number
+  pageNode: IUniPageNode | null
   genId: () => number
   push: (...args: any[]) => void
+  onCreate: (thisNode: UniNode, nodeName: string | number) => UniNode
+  onInsertBefore: (
+    thisNode: UniNode,
+    newChild: UniNode,
+    index: number
+  ) => UniNode
+  onRemoveChild: (thisNode: UniNode, oldChild: UniNode) => UniNode
+  onSetAttribute: (
+    thisNode: UniNode,
+    qualifiedName: string,
+    value: unknown
+  ) => void
+  onRemoveAttribute: (thisNode: UniNode, qualifiedName: string) => void
+  onTextContent: (thisNode: UniNode, text: string) => void
+  onNodeValue: (thisNode: UniNode, val: string | null) => void
 }
-
+// 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
 export class UniNode extends UniEventTarget {
   nodeId?: number
   nodeType: UniNodeType
@@ -59,8 +76,18 @@ export class UniNode extends UniEventTarget {
 
   protected _text: string | null = null
 
-  constructor(nodeType: UniNodeType, nodeName: string) {
+  constructor(
+    nodeType: UniNodeType,
+    nodeName: string,
+    container: UniElement | IUniPageNode
+  ) {
     super()
+    if (container) {
+      const { pageNode } = container
+      this.pageNode = pageNode
+      this.nodeId = pageNode!.genId()
+      pageNode!.onCreate(this, encodeTag(nodeName))
+    }
     this.nodeType = nodeType
     this.nodeName = nodeName
     this.childNodes = []
@@ -92,6 +119,9 @@ export class UniNode extends UniEventTarget {
 
   set textContent(text: string) {
     this._text = text
+    if (this.pageNode) {
+      this.pageNode.onTextContent(this, text)
+    }
   }
 
   get parentElement(): UniElement | null {
@@ -106,7 +136,7 @@ export class UniNode extends UniEventTarget {
     return sibling(this, 'p')
   }
 
-  appendChild<T extends UniNode>(newChild: T): T {
+  appendChild(newChild: UniNode): UniNode {
     return this.insertBefore(newChild, null)
   }
 
@@ -127,27 +157,31 @@ export class UniNode extends UniEventTarget {
     return cloned
   }
 
-  insertBefore<T extends UniNode>(newChild: T, refChild: UniNode | null): T {
+  insertBefore(newChild: UniNode, refChild: UniNode | null): UniNode {
     removeNode(newChild)
     newChild.pageNode = this.pageNode
     newChild.parentNode = this
     checkNodeId(newChild)
     const { childNodes } = this
+    let index: number
     if (refChild) {
-      const index = childNodes.indexOf(refChild)
+      index = childNodes.indexOf(refChild)
       if (index === -1) {
         throw new DOMException(
           `Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`
         )
       }
-      childNodes.splice(childNodes.indexOf(refChild), 0, newChild)
+      childNodes.splice(index, 0, newChild)
     } else {
+      index = childNodes.length
       childNodes.push(newChild)
     }
-    return newChild
+    return this.pageNode
+      ? this.pageNode.onInsertBefore(this, newChild, index)
+      : newChild
   }
 
-  removeChild<T extends UniNode>(oldChild: T): T {
+  removeChild(oldChild: UniNode): UniNode {
     const { childNodes } = this
     const index = childNodes.indexOf(oldChild)
     if (index === -1) {
@@ -157,7 +191,9 @@ export class UniNode extends UniEventTarget {
     }
     oldChild.parentNode = null
     childNodes.splice(index, 1)
-    return oldChild
+    return this.pageNode
+      ? this.pageNode.onRemoveChild(this, oldChild)
+      : oldChild
   }
 }
 
@@ -169,7 +205,7 @@ export interface UniNodeJSON {
   /**
    * nodeName
    */
-  n: string
+  n: string | number
   /**
    * attributes
    */
@@ -177,7 +213,7 @@ export interface UniNodeJSON {
   /**
    * style
    */
-  s: UniCSSStyleDeclarationJSON
+  s?: UniCSSStyleDeclarationJSON
   /**
    * text
    */
@@ -190,8 +226,12 @@ export class UniBaseNode extends UniNode {
 
   protected _html: string | null = null
 
-  constructor(nodeType: UniNodeType, nodeName: string) {
-    super(nodeType, nodeName)
+  constructor(
+    nodeType: UniNodeType,
+    nodeName: string,
+    container: UniElement | IUniPageNode
+  ) {
+    super(nodeType, nodeName, container)
     this.style = proxyStyle(new UniCSSStyleDeclaration())
   }
 
@@ -236,23 +276,33 @@ export class UniBaseNode extends UniNode {
   }
 
   getAttribute(qualifiedName: string) {
-    return this.attributes[qualifiedName]
+    return this.attributes[encodeAttr(qualifiedName)]
   }
 
   removeAttribute(qualifiedName: string): void {
+    qualifiedName = encodeAttr(qualifiedName)
     delete this.attributes[qualifiedName]
+    if (this.pageNode) {
+      this.pageNode.onRemoveAttribute(this, qualifiedName)
+    }
   }
 
   setAttribute(qualifiedName: string, value: unknown): void {
+    qualifiedName = encodeAttr(qualifiedName)
     this.attributes[qualifiedName] = value
+    if (this.pageNode) {
+      this.pageNode.onSetAttribute(this, qualifiedName, value)
+    }
   }
 
-  toJSON() {
-    const res: UniNodeJSON = {
-      i: this.nodeId!,
-      n: this.nodeName,
+  toJSON(opts: { attr?: boolean; children?: boolean } = {}) {
+    const res: Partial<UniNodeJSON> = {
       a: this.attributes,
       s: this.style.toJSON(),
+    }
+    if (!opts.attr) {
+      res.i = this.nodeId
+      res.n = encodeTag(this.nodeName)
     }
     if (this._text !== null) {
       res.t = this._text

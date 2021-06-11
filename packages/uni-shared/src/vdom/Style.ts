@@ -44,14 +44,19 @@ export class UniCSSStyleDeclaration {
     this._cssText = cssText
   }
 
-  toJSON(): UniCSSStyleDeclarationJSON {
+  toJSON(): UniCSSStyleDeclarationJSON | undefined {
     const { _cssText, _value } = this
     const hasCssText = _cssText !== null
     const hasValue = _value !== null
     if (hasCssText && hasValue) {
       return [_cssText!, _value!]
     }
-    return hasCssText ? _cssText : _value
+    if (hasCssText) {
+      return _cssText
+    }
+    if (hasValue) {
+      return _value
+    }
   }
 }
 

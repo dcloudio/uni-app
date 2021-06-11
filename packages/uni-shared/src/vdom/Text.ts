@@ -1,8 +1,9 @@
-import { NODE_TYPE_TEXT, UniBaseNode } from './Node'
+import { UniElement } from './Element'
+import { IUniPageNode, NODE_TYPE_TEXT, UniBaseNode } from './Node'
 
 export class UniTextNode extends UniBaseNode {
-  constructor(text: string) {
-    super(NODE_TYPE_TEXT, '#text')
+  constructor(text: string, container: UniElement | IUniPageNode) {
+    super(NODE_TYPE_TEXT, '#text', container)
     this._text = text
   }
 
@@ -12,5 +13,8 @@ export class UniTextNode extends UniBaseNode {
 
   set nodeValue(text: string) {
     this._text = text
+    if (this.pageNode) {
+      this.pageNode.onNodeValue(this, text)
+    }
   }
 }

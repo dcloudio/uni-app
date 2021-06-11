@@ -6362,6 +6362,7 @@ const props$9 = /* @__PURE__ */ shared.extend({}, props$o, {
     default: ""
   }
 });
+let fixMargin = false;
 var index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$9,
@@ -6426,8 +6427,6 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
         textarea.blur();
       }
     }
-    const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
-    const fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
         "ref": fieldRef,
@@ -8986,16 +8985,29 @@ function usePickerState(props2) {
     rangeArray
   };
 }
+function useIsiPad() {
+  const isiPad = vue.ref(false);
+  return isiPad;
+}
+function useSystem() {
+  const _system = vue.ref("");
+  return _system;
+}
 let __contentVisibleDelay;
 function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef, inputRef) {
+  const isiPad = useIsiPad();
+  const _system = useSystem();
   const selectorTypeComputed = vue.computed(() => {
     const type = props2.selectorType;
     if (Object.values(selectorType).includes(type)) {
       return type;
     }
-    return String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0 ? selectorType.PICKER : selectorType.SELECT;
+    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
   });
   const system = vue.computed(() => {
+    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state.isDesktop) {
+      return _system.value;
+    }
     return "";
   });
   const startArray = vue.computed(() => {

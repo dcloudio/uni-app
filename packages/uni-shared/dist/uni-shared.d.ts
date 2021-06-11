@@ -33,13 +33,21 @@ export declare function debounce(fn: Function, delay: number): {
  */
 export declare function decode(text: string | number): string;
 
+export declare function decodeAttr(name: string): string;
+
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
+
+export declare function decodeTag(tag: string | number): string | number;
 
 export declare const defaultRpx2Unit: {
     unit: string;
     unitRatio: number;
     unitPrecision: number;
 };
+
+export declare function encodeAttr(name: string): string;
+
+export declare function encodeTag(tag: string): string | number;
 
 export declare function formatDateTime({ date, mode }: {
     date?: Date | undefined;
@@ -68,8 +76,16 @@ export declare function isNativeTag(tag: string): boolean;
 
 export declare interface IUniPageNode {
     pageId: number;
+    pageNode: IUniPageNode | null;
     genId: () => number;
     push: (...args: any[]) => void;
+    onCreate: (thisNode: UniNode, nodeName: string | number) => UniNode;
+    onInsertBefore: (thisNode: UniNode, newChild: UniNode, index: number) => UniNode;
+    onRemoveChild: (thisNode: UniNode, oldChild: UniNode) => UniNode;
+    onSetAttribute: (thisNode: UniNode, qualifiedName: string, value: unknown) => void;
+    onRemoveAttribute: (thisNode: UniNode, qualifiedName: string) => void;
+    onTextContent: (thisNode: UniNode, text: string) => void;
+    onNodeValue: (thisNode: UniNode, val: string | null) => void;
 }
 
 export declare const NAVBAR_HEIGHT = 44;
@@ -151,7 +167,7 @@ export declare class UniBaseNode extends UniNode {
     attributes: Record<string, unknown>;
     style: UniCSSStyleDeclaration;
     protected _html: string | null;
-    constructor(nodeType: UniNodeType, nodeName: string);
+    constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get className(): string;
     set className(val: string);
     get innerHTML(): string;
@@ -161,11 +177,23 @@ export declare class UniBaseNode extends UniNode {
     getAttribute(qualifiedName: string): unknown;
     removeAttribute(qualifiedName: string): void;
     setAttribute(qualifiedName: string, value: unknown): void;
-    toJSON(): UniNodeJSON;
+    toJSON(opts?: {
+        attr?: boolean;
+        children?: boolean;
+    }): Partial<UniNodeJSON>;
 }
 
 export declare class UniCommentNode extends UniNode {
-    constructor(text: string);
+    constructor(text: string, container: UniElement | IUniPageNode);
+    toJSON(opts?: {
+        attr?: boolean;
+    }): {
+        t: string;
+        i?: undefined;
+    } | {
+        i: number;
+        t: string;
+    };
 }
 
 declare class UniCSSStyleDeclaration {
@@ -177,14 +205,14 @@ declare class UniCSSStyleDeclaration {
     removeProperty(property: string): string;
     get cssText(): string;
     set cssText(cssText: string);
-    toJSON(): UniCSSStyleDeclarationJSON;
+    toJSON(): UniCSSStyleDeclarationJSON | undefined;
 }
 
 declare type UniCSSStyleDeclarationJSON = string | null | Record<string, string | string[]> | [string, Record<string, string | string[]>];
 
 export declare class UniElement extends UniBaseNode {
     tagName: string;
-    constructor(nodeName: string);
+    constructor(nodeName: string, container: UniElement | IUniPageNode);
 }
 
 export declare class UniEvent {
@@ -230,7 +258,7 @@ export declare class UniNode extends UniEventTarget {
     pageNode: IUniPageNode | null;
     parentNode: UniNode | null;
     protected _text: string | null;
-    constructor(nodeType: UniNodeType, nodeName: string);
+    constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get firstChild(): UniNode | null;
     get lastChild(): UniNode | null;
     get nextSibling(): UniNode | null;
@@ -240,10 +268,10 @@ export declare class UniNode extends UniEventTarget {
     set textContent(text: string);
     get parentElement(): UniElement | null;
     get previousSibling(): UniNode | null;
-    appendChild<T extends UniNode>(newChild: T): T;
+    appendChild(newChild: UniNode): UniNode;
     cloneNode(deep?: boolean): UniNode;
-    insertBefore<T extends UniNode>(newChild: T, refChild: UniNode | null): T;
-    removeChild<T extends UniNode>(oldChild: T): T;
+    insertBefore(newChild: UniNode, refChild: UniNode | null): UniNode;
+    removeChild(oldChild: UniNode): UniNode;
 }
 
 export declare interface UniNodeJSON {
@@ -254,7 +282,7 @@ export declare interface UniNodeJSON {
     /**
      * nodeName
      */
-    n: string;
+    n: string | number;
     /**
      * attributes
      */
@@ -262,7 +290,7 @@ export declare interface UniNodeJSON {
     /**
      * style
      */
-    s: UniCSSStyleDeclarationJSON;
+    s?: UniCSSStyleDeclarationJSON;
     /**
      * text
      */
@@ -275,7 +303,7 @@ export declare class UniTextAreaElement extends UniInputElement {
 }
 
 export declare class UniTextNode extends UniBaseNode {
-    constructor(text: string);
+    constructor(text: string, container: UniElement | IUniPageNode);
     get nodeValue(): string;
     set nodeValue(text: string);
 }
