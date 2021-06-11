@@ -113,7 +113,7 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
             const url = `${protocol}://${host}:${chalk.bold(port)}${
               vite.config.base
             }`
-            logger.info(`  > ${type} ${chalk.cyan(url)}`)
+            logger.info(`  - ${type} ${chalk.cyan(url)}`)
           })
       )
       resolve(server)
