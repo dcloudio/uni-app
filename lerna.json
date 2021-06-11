@@ -2,5 +2,10 @@
   "packages": [
     "packages/*"
   ],
-  "version": "3.0.0-alpha-3000020210528002"
+  "command": {
+    "publish": {
+      "message": "chore(release): publish %s"
+    }
+  },
+  "version": "3.0.0-alpha-3000020210611001"
 }
