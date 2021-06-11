@@ -1048,7 +1048,7 @@ function shallowRef(value) {
     return createRef(value, true);
 }
 class RefImpl {
-    constructor(_rawValue, _shallow = false) {
+    constructor(_rawValue, _shallow) {
         this._rawValue = _rawValue;
         this._shallow = _shallow;
         this.__v_isRef = true;
@@ -2353,11 +2353,12 @@ function emit$1(instance, event, ...rawArgs) {
     const onceHandler = props[handlerName + `Once`];
     if (onceHandler) {
         if (!instance.emitted) {
-            (instance.emitted = {})[handlerName] = true;
+            instance.emitted = {};
         }
         else if (instance.emitted[handlerName]) {
             return;
         }
+        instance.emitted[handlerName] = true;
         callWithAsyncErrorHandling(onceHandler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args);
     }
     {
@@ -3294,7 +3295,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
         }
         else if (arguments.length > 1) {
             return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
+                ? defaultValue.call(instance.proxy)
                 : defaultValue;
         }
         else {
@@ -5663,7 +5664,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.1.0-beta.7";
+    Vue.version = "3.1.1";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -6105,6 +6106,7 @@ function createAppAPI(render, hydrate) {
             _props: rootProps,
             _container: null,
             _context: context,
+            _instance: null,
             version,
             get config() {
                 return context.config;
@@ -6192,6 +6194,7 @@ function createAppAPI(render, hydrate) {
                     app._container = rootContainer;
                     rootContainer.__vue_app__ = app;
                     {
+                        app._instance = vnode.component;
                         devtoolsInitApp(app, version);
                     }
                     return vnode.component.proxy;
@@ -6207,6 +6210,7 @@ function createAppAPI(render, hydrate) {
                 if (isMounted) {
                     render(null, app._container);
                     {
+                        app._instance = null;
                         devtoolsUnmountApp(app);
                     }
                     delete app._container.__vue_app__;
@@ -7104,7 +7108,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         const fragmentStartAnchor = (n2.el = n1 ? n1.el : hostCreateText(''));
         const fragmentEndAnchor = (n2.anchor = n1 ? n1.anchor : hostCreateText(''));
         let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
-        if (patchFlag > 0) {
+        if (dynamicChildren) {
             optimized = true;
         }
         // check if this is a slot fragment with :slotted scope ids
@@ -9396,6 +9400,14 @@ function installCompatInstanceProperties(map) {
         extend(map, {
             // needed by many libs / render fns
             $vnode: i => i.vnode,
+            // inject addtional properties into $options for compat
+            // e.g. vuex needs this.$options.parent
+            $options: i => {
+                const res = extend({}, resolveMergedOptions(i));
+                res.parent = i.proxy.$parent;
+                res.propsData = i.vnode.props;
+                return res;
+            },
             // some private properties that are likely accessed...
             _self: i => i.proxy,
             _uid: i => i.uid,
@@ -10327,7 +10339,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.0-beta.7";
+const version = "3.1.1";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

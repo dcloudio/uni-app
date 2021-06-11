@@ -748,7 +748,7 @@ function shallowRef(value) {
     return createRef(value, true);
 }
 class RefImpl {
-    constructor(_rawValue, _shallow = false) {
+    constructor(_rawValue, _shallow) {
         this._rawValue = _rawValue;
         this._shallow = _shallow;
         this.__v_isRef = true;
@@ -1880,11 +1880,12 @@ function emit(instance, event, ...rawArgs) {
     const onceHandler = props[handlerName + `Once`];
     if (onceHandler) {
         if (!instance.emitted) {
-            (instance.emitted = {})[handlerName] = true;
+            instance.emitted = {};
         }
         else if (instance.emitted[handlerName]) {
             return;
         }
+        instance.emitted[handlerName] = true;
         callWithAsyncErrorHandling(onceHandler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args);
     }
 }
@@ -2795,7 +2796,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
         }
         else if (arguments.length > 1) {
             return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
+                ? defaultValue.call(instance.proxy)
                 : defaultValue;
         }
         else if ((process.env.NODE_ENV !== 'production')) {
@@ -4951,6 +4952,7 @@ function createAppAPI(render, hydrate) {
             _props: rootProps,
             _container: null,
             _context: context,
+            _instance: null,
             version,
             get config() {
                 return context.config;
@@ -5041,6 +5043,7 @@ function createAppAPI(render, hydrate) {
                     app._container = rootContainer;
                     rootContainer.__vue_app__ = app;
                     if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                        app._instance = vnode.component;
                         devtoolsInitApp(app, version);
                     }
                     return vnode.component.proxy;
@@ -5056,6 +5059,7 @@ function createAppAPI(render, hydrate) {
                 if (isMounted) {
                     render(null, app._container);
                     if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                        app._instance = null;
                         devtoolsUnmountApp(app);
                     }
                     delete app._container.__vue_app__;
@@ -5957,7 +5961,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         const fragmentStartAnchor = (n2.el = n1 ? n1.el : hostCreateText(''));
         const fragmentEndAnchor = (n2.anchor = n1 ? n1.anchor : hostCreateText(''));
         let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
-        if (patchFlag > 0) {
+        if (dynamicChildren) {
             optimized = true;
         }
         // check if this is a slot fragment with :slotted scope ids
@@ -8560,7 +8564,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.0-beta.7";
+const version = "3.1.1";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
