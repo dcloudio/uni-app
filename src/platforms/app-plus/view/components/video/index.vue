@@ -174,13 +174,13 @@ export default {
     },
     header: {
       type: Object,
-      defult () {
+      default () {
         return {}
       }
     },
     advanced: {
       type: Array,
-      defult () {
+      default () {
         return []
       }
     }
