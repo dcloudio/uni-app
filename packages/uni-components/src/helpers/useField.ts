@@ -228,6 +228,7 @@ function useValueSync(
   watch(() => props.modelValue, valueChangeFn)
   watch(() => props.value, valueChangeFn)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {
+    valueChangeFn.cancel()
     emit('update:modelValue', detail.value)
     emit('update:value', detail.value)
     trigger('input', event, detail)

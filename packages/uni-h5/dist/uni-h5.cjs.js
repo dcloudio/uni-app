@@ -3013,6 +3013,7 @@ function useValueSync(props2, state, emit2, trigger) {
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
+    valueChangeFn.cancel();
     emit2("update:modelValue", detail.value);
     emit2("update:value", detail.value);
     trigger("input", event, detail);
