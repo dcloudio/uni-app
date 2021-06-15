@@ -11,34 +11,50 @@ import {
 
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
 
+const components = []
+
 export default function parseComponent (vueOptions) {
   const [componentOptions, VueComponent] = parseBaseComponent(vueOptions)
 
+  // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
+  componentOptions.lifetimes.created = function created () {
+    components.push(this)
+  }
+
   componentOptions.lifetimes.attached = function attached () {
-    const properties = this.properties
+    this.__lifetimes_attached = function () {
+      const properties = this.properties
 
-    const options = {
-      mpType: isPage.call(this) ? 'page' : 'component',
-      mpInstance: this,
-      propsData: properties
+      const options = {
+        mpType: isPage.call(this) ? 'page' : 'component',
+        mpInstance: this,
+        propsData: properties
+      }
+
+      initVueIds(properties.vueId, this)
+
+      // 初始化 vue 实例
+      this.$vm = new VueComponent(options)
+
+      // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+      initSlots(this.$vm, properties.vueSlots)
+
+      // 处理父子关系
+      initRelation.call(this, {
+        vuePid: this._$vuePid,
+        mpInstance: this
+      })
+
+      // 触发首次 setData
+      this.$vm.$mount()
     }
-
-    initVueIds(properties.vueId, this)
-
-    // 初始化 vue 实例
-    this.$vm = new VueComponent(options)
-
-    // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-    initSlots(this.$vm, properties.vueSlots)
-
-    // 处理父子关系
-    initRelation.call(this, {
-      vuePid: this._$vuePid,
-      mpInstance: this
-    })
-
-    // 触发首次 setData
-    this.$vm.$mount()
+    let component = this
+    while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
+      components.shift()
+      component.__lifetimes_attached()
+      delete component.__lifetimes_attached
+      component = components[0]
+    }
   }
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中

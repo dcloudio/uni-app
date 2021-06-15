@@ -146,7 +146,8 @@ function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
           errorCallback({
             code: '30008',
             message: '用户点击了自定义按钮',
-            index
+            index,
+            provider: button.provider
           })
         })
       }

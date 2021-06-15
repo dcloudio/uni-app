@@ -237,6 +237,11 @@ export function initProperties (props, isBehavior = false, file = '') {
       type: Object,
       value: null
     }
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
+      type: String,
+      value: ''
+    }
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],

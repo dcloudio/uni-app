@@ -743,10 +743,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/uni-i18n@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@dcloudio/uni-i18n/-/uni-i18n-0.0.3.tgz#c7ff6ea6a4ea5cd5ef8dc3d674afa2e64502c151"
-  integrity sha512-BJGl0yUkuTMv6v0r1lUzq2EURkSoM/CoKbjlf7xlDXDTUqkhUGjK5epTq2hwsi26HTxTjvl6/vf50Q5wSTFApA==
+"@dcloudio/uni-i18n@^2.0.0-31920210514002":
+  version "2.0.0-31920210514002"
+  resolved "https://registry.yarnpkg.com/@dcloudio/uni-i18n/-/uni-i18n-2.0.0-31920210514002.tgz#f63d14c234ea0353fabe2d8c681601c7ba07e488"
+  integrity sha512-shHf27U0KEs//ieCBG1R1aRKNDn6KwcVUIb5GsPuDOqoN7WQY+nEz9QFdOSQY8j9tX4ABOAc1ra0Opz8xFVngA==
 
 "@hapi/address@2.x.x":
   version "2.1.4"

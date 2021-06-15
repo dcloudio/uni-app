@@ -570,7 +570,7 @@ export default {
         complete && complete()
       })
     },
-    _getCollection() {
+    _getCollection () {
       const index = this.collection.indexOf(',')
       const collection = index > 0 ? this.collection.substring(0, index) : this.collection
       return collection
