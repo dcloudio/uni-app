@@ -111,6 +111,13 @@ function normalizeContentType(header: Record<string, string>) {
     return
   }
   const contentType = header[name]
+  //#if _NODE_JS_
+  // xmlhttprequest 不能正确识别 content-type
+  if (name !== 'Content-Type') {
+    header['Content-Type'] = header[name]
+    delete header[name]
+  }
+  //#endif
   if (contentType.indexOf('application/json') === 0) {
     return 'json'
   } else if (contentType.indexOf('application/x-www-form-urlencoded') === 0) {
