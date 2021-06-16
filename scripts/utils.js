@@ -30,7 +30,9 @@ const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
   try {
     return (
       fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.json`)) ||
-      fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.js`))
+      fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.js`)) ||
+      !!require(path.resolve(__dirname, `../packages/${f}/package.json`))
+        .buildOptions
     )
   } catch (e) {}
   return false
