@@ -12,3 +12,8 @@ export const UNI_SSR_TITLE = 'title'
 export const UNI_SSR_STORE = 'store'
 export const UNI_SSR_DATA = 'data'
 export const UNI_SSR_GLOBAL_DATA = 'globalData'
+
+export const SCHEME_RE = /^([a-z-]+:)?\/\//i
+export const DATA_RE = /^data:.*,.*/
+
+export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'

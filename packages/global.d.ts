@@ -1,3 +1,5 @@
+declare var weex: any
+
 declare var tt: any
 declare var qa: any
 declare var swan: any

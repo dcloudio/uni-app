@@ -1,6 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
-
+import { DATA_RE, SCHEME_RE } from '@dcloudio/uni-shared'
 declare global {
   interface ImportMeta {
     env: {
@@ -12,9 +12,6 @@ declare global {
 export function findElem(vm: ComponentPublicInstance) {
   return vm.$el
 }
-
-const SCHEME_RE = /^([a-z-]+:)?\/\//i
-const DATA_RE = /^data:.*,.*/
 
 const baseUrl = __IMPORT_META_ENV_BASE_URL__
 function addBase(filePath: string) {

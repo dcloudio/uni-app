@@ -419,21 +419,8 @@ function useCurrentPageId() {
   return vue.getCurrentInstance().root.proxy.$page.id;
 }
 function getRealRoute(fromRoute, toRoute) {
-  if (!toRoute) {
-    toRoute = fromRoute;
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
-    const pages = getCurrentPages();
-    if (pages.length) {
-      fromRoute = pages[pages.length - 1].$page.route;
-    } else {
-      fromRoute = "";
-    }
-  } else {
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
+  if (toRoute.indexOf("/") === 0) {
+    return toRoute;
   }
   if (toRoute.indexOf("./") === 0) {
     return getRealRoute(fromRoute, toRoute.substr(2));
@@ -975,8 +962,6 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
 const baseUrl = __IMPORT_META_ENV_BASE_URL__;
 function addBase(filePath) {
   return baseUrl + filePath;
@@ -992,7 +977,7 @@ function getRealPath(filePath) {
       return addBase(filePath.substr(1));
     }
   }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+  if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
     return filePath;
   }
   const pages = getCurrentPages();
@@ -9472,6 +9457,10 @@ function normalizeContentType(header) {
     return;
   }
   const contentType = header[name];
+  if (name !== "Content-Type") {
+    header["Content-Type"] = header[name];
+    delete header[name];
+  }
   if (contentType.indexOf("application/json") === 0) {
     return "json";
   } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {

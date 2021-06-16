@@ -1,5 +1,5 @@
 import { isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
 import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -857,22 +857,20 @@ function createScrollListener({
     ticking = true;
   };
 }
+function normalizeRoute(toRoute) {
+  if (toRoute.indexOf("/") === 0) {
+    return toRoute;
+  }
+  let fromRoute = "";
+  const pages = getCurrentPages();
+  if (pages.length) {
+    fromRoute = pages[pages.length - 1].$page.route;
+  }
+  return getRealRoute(fromRoute, toRoute);
+}
 function getRealRoute(fromRoute, toRoute) {
-  if (!toRoute) {
-    toRoute = fromRoute;
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
-    const pages = getCurrentPages();
-    if (pages.length) {
-      fromRoute = pages[pages.length - 1].$page.route;
-    } else {
-      fromRoute = "";
-    }
-  } else {
-    if (toRoute.indexOf("/") === 0) {
-      return toRoute;
-    }
+  if (toRoute.indexOf("/") === 0) {
+    return toRoute;
   }
   if (toRoute.indexOf("./") === 0) {
     return getRealRoute(fromRoute, toRoute.substr(2));
@@ -1824,8 +1822,6 @@ var index$s = /* @__PURE__ */ defineBuiltInComponent({
 function findElem(vm) {
   return vm.$el;
 }
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
 const baseUrl = import.meta.env.BASE_URL;
 function addBase(filePath) {
   return baseUrl + filePath;
@@ -4665,7 +4661,7 @@ function createNormalizeUrl(type) {
     if (!url) {
       return `Missing required args: "url"`;
     }
-    url = getRealRoute(url);
+    url = normalizeRoute(url);
     const pagePath = url.split("?")[0];
     const routeOptions = __uniRoutes.find(({ path, alias }) => path === pagePath || alias === pagePath);
     if (!routeOptions) {
@@ -13430,7 +13426,7 @@ function setupApp(comp) {
       }
       onMounted(() => {
         window.addEventListener("message", function(evt) {
-          if (isPlainObject(evt.data) && evt.data.type === "WEB_INVOKE_APPSERVICE") {
+          if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
             UniServiceJSBridge.emit("onWebInvokeAppService", evt.data.data, evt.data.pageId);
           }
         });
@@ -17911,7 +17907,7 @@ function setProperties(item, props2, propsData) {
     }
   });
 }
-function normalizeRoute(index2, oldPagePath, newPagePath) {
+function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
   const oldTabBarRoute = __uniRoutes.find((item) => item.meta.route === oldPagePath);
   if (oldTabBarRoute) {
     const { meta } = oldTabBarRoute;
@@ -17941,7 +17937,7 @@ function setTabBar(type, args, resolve) {
       setProperties(tabBarItem, setTabBarItemProps, args);
       const { pagePath } = args;
       if (pagePath && pagePath !== oldPagePath) {
-        normalizeRoute(index2, oldPagePath, pagePath);
+        normalizeTabBarRoute(index2, oldPagePath, pagePath);
       }
       break;
     case API_SET_TAB_BAR_STYLE:

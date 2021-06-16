@@ -8,7 +8,7 @@ import {
   UniCSSStyleDeclaration,
   UniCSSStyleDeclarationJSON,
 } from './Style'
-import { encodeAttr, encodeTag } from './utils'
+import { encodeAttr, encodeTag } from './encode'
 
 export const NODE_TYPE_PAGE = 0
 export const NODE_TYPE_ELEMENT = 1
@@ -270,7 +270,7 @@ export class UniBaseNode extends UniNode {
   ) {
     super.removeEventListener(type, callback, options)
     const normalized = normalizeEventType(type)
-    if (this.attributes[normalized]) {
+    if (this.attributes[encodeAttr(normalized)]) {
       this.removeAttribute(normalized)
     }
   }

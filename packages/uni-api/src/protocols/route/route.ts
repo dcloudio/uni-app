@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { getRealRoute } from '@dcloudio/uni-core'
+import { normalizeRoute } from '@dcloudio/uni-core'
 import { encodeQueryString } from './encodeQueryString'
 
 const ANIMATION_IN = [
@@ -135,7 +135,7 @@ function createNormalizeUrl(type: string) {
       return `Missing required args: "url"`
     }
     // 格式化为绝对路径路由
-    url = getRealRoute(url)
+    url = normalizeRoute(url)
     const pagePath = url.split('?')[0]
     // 匹配路由是否存在
     const routeOptions = __uniRoutes.find(

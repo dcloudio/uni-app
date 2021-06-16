@@ -1,11 +1,10 @@
 import {
+  ATTR_MAP,
   COMPONENT_MAP,
   encodeTag,
-  decodeTag,
-  ATTR_MAP,
   encodeAttr,
-  decodeAttr,
-} from '../../src/vdom/utils'
+} from '../../src/vdom/encode'
+import { decodeTag, decodeAttr } from '../../src/vdom/decode'
 
 describe('encode', () => {
   test('tag', () => {

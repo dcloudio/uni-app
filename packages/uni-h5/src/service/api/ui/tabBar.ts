@@ -54,7 +54,7 @@ function setProperties(
   })
 }
 
-function normalizeRoute(
+function normalizeTabBarRoute(
   index: number,
   oldPagePath: string,
   newPagePath: string
@@ -97,7 +97,7 @@ function setTabBar(
       setProperties(tabBarItem, setTabBarItemProps, args)
       const { pagePath } = args
       if (pagePath && pagePath !== oldPagePath) {
-        normalizeRoute(index, oldPagePath, pagePath)
+        normalizeTabBarRoute(index, oldPagePath, pagePath)
       }
       break
     case API_SET_TAB_BAR_STYLE:

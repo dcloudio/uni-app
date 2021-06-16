@@ -4,6 +4,8 @@ export declare function addFont(family: string, source: string, desc?: FontFaceD
 
 export declare const BUILT_IN_TAGS: string[];
 
+export declare const cacheStringFunction: <T extends (str: string) => string>(fn: T) => T;
+
 export declare function callOptions(options: Options, errMsg: string): void;
 
 export declare function callOptions(options: Options, data: {
@@ -19,6 +21,8 @@ export declare const COMPONENT_SELECTOR_PREFIX = "uni-";
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
 
+export declare const DATA_RE: RegExp;
+
 export declare function debounce(fn: Function, delay: number): {
     (this: any): void;
     cancel(): void;
@@ -33,7 +37,7 @@ export declare function debounce(fn: Function, delay: number): {
  */
 export declare function decode(text: string | number): string;
 
-export declare function decodeAttr(name: string): string;
+export declare function decodeAttr(name: string): any;
 
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
 
@@ -143,6 +147,8 @@ export declare const RESPONSIVE_MIN_WIDTH = 768;
 export declare type Rpx2UnitOptions = typeof defaultRpx2Unit;
 
 export declare const sanitise: (val: unknown) => any;
+
+export declare const SCHEME_RE: RegExp;
 
 declare function scrollTo_2(scrollTop: number | string, duration: number): void;
 export { scrollTo_2 as scrollTo }
@@ -309,5 +315,7 @@ export declare class UniTextNode extends UniBaseNode {
 }
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
+
+export declare const WEB_INVOKE_APPSERVICE = "WEB_INVOKE_APPSERVICE";
 
 export { }

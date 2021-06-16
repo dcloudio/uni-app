@@ -1,19 +1,25 @@
 export const ATTR_MAP = {
   class: '.c',
   style: '.s',
+  onClick: '.e0',
+  onChange: '.e1',
+  onInput: '.e2',
+  onLoad: '.e3',
+  onError: '.e4',
+  onTouchstart: '.e5',
+  onTouchmove: '.e6',
+  onTouchcancel: '.e7',
+  onTouchend: '.e8',
+  onLongpress: '.e9',
+  onTransitionend: '.ea',
+  onAnimationstart: '.eb',
+  onAnimationiteration: '.ec',
+  onAnimationend: '.ed',
+  onTouchforcechange: '.ee',
 }
 
 export function encodeAttr(name: string) {
   return ATTR_MAP[name as keyof typeof ATTR_MAP] || name
-}
-
-export const ATTR_RESTORE_MAP = {
-  '.c': 'class',
-  '.s': 'style',
-}
-
-export function decodeAttr(name: string) {
-  return ATTR_RESTORE_MAP[name as keyof typeof ATTR_RESTORE_MAP] || name
 }
 
 export const COMPONENT_MAP = {
@@ -64,55 +70,4 @@ export const COMPONENT_MAP = {
 
 export function encodeTag(tag: string) {
   return COMPONENT_MAP[tag as keyof typeof COMPONENT_MAP] || tag
-}
-
-const COMPONENT_ARR = [
-  '',
-  'view',
-  'image',
-  'text',
-  '#text',
-  '#comment',
-  'navigator',
-  'form',
-  'button',
-  'input',
-  'label',
-  'radio',
-  'checkbox',
-  'checkbox-group',
-  'ad',
-  'audio',
-  'camera',
-  'canvas',
-  'cover-image',
-  'cover-view',
-  'editor',
-  'functional-page-navigator',
-  'icon',
-  'radio-group',
-  'live-player',
-  'live-pusher',
-  'map',
-  'movable-area',
-  'movable-view',
-  'official-account',
-  'open-data',
-  'picker',
-  'picker-view',
-  'picker-view-column',
-  'progress',
-  'rich-text',
-  'scroll-view',
-  'slider',
-  'swiper',
-  'swiper-item',
-  'switch',
-  'textarea',
-  'video',
-  'web-view',
-]
-
-export function decodeTag(tag: string | number) {
-  return COMPONENT_ARR[tag as number] || tag
 }

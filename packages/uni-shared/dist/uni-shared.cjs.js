@@ -367,16 +367,24 @@ function proxyStyle(uniCssStyle) {
 const ATTR_MAP = {
     class: '.c',
     style: '.s',
+    onClick: '.e0',
+    onChange: '.e1',
+    onInput: '.e2',
+    onLoad: '.e3',
+    onError: '.e4',
+    onTouchstart: '.e5',
+    onTouchmove: '.e6',
+    onTouchcancel: '.e7',
+    onTouchend: '.e8',
+    onLongpress: '.e9',
+    onTransitionend: '.ea',
+    onAnimationstart: '.eb',
+    onAnimationiteration: '.ec',
+    onAnimationend: '.ed',
+    onTouchforcechange: '.ee',
 };
 function encodeAttr(name) {
     return ATTR_MAP[name] || name;
-}
-const ATTR_RESTORE_MAP = {
-    '.c': 'class',
-    '.s': 'style',
-};
-function decodeAttr(name) {
-    return ATTR_RESTORE_MAP[name] || name;
 }
 const COMPONENT_MAP = {
     VIEW: 1,
@@ -425,55 +433,6 @@ const COMPONENT_MAP = {
 };
 function encodeTag(tag) {
     return COMPONENT_MAP[tag] || tag;
-}
-const COMPONENT_ARR = [
-    '',
-    'view',
-    'image',
-    'text',
-    '#text',
-    '#comment',
-    'navigator',
-    'form',
-    'button',
-    'input',
-    'label',
-    'radio',
-    'checkbox',
-    'checkbox-group',
-    'ad',
-    'audio',
-    'camera',
-    'canvas',
-    'cover-image',
-    'cover-view',
-    'editor',
-    'functional-page-navigator',
-    'icon',
-    'radio-group',
-    'live-player',
-    'live-pusher',
-    'map',
-    'movable-area',
-    'movable-view',
-    'official-account',
-    'open-data',
-    'picker',
-    'picker-view',
-    'picker-view-column',
-    'progress',
-    'rich-text',
-    'scroll-view',
-    'slider',
-    'swiper',
-    'swiper-item',
-    'switch',
-    'textarea',
-    'video',
-    'web-view',
-];
-function decodeTag(tag) {
-    return COMPONENT_ARR[tag] || tag;
 }
 
 const NODE_TYPE_PAGE = 0;
@@ -628,7 +587,7 @@ class UniBaseNode extends UniNode {
     removeEventListener(type, callback, options) {
         super.removeEventListener(type, callback, options);
         const normalized = normalizeEventType(type);
-        if (this.attributes[normalized]) {
+        if (this.attributes[encodeAttr(normalized)]) {
             this.removeAttribute(normalized);
         }
     }
@@ -713,6 +672,28 @@ class UniTextNode extends UniBaseNode {
     }
 }
 
+const DECODED_ATTR_MAP = /*#__PURE__*/ Object.keys(ATTR_MAP).reduce((map, name) => {
+    map[ATTR_MAP[name]] = name;
+    return map;
+}, Object.create(null));
+function decodeAttr(name) {
+    return DECODED_ATTR_MAP[name] || name;
+}
+const DECODED_COMPONENT_ARR = /*#__PURE__*/ Object.keys(COMPONENT_MAP).reduce((arr, name) => {
+    arr.push(name.toLowerCase());
+    return arr;
+}, ['']);
+function decodeTag(tag) {
+    return DECODED_COMPONENT_ARR[tag] || tag;
+}
+
+const cacheStringFunction = (fn) => {
+    const cache = Object.create(null);
+    return ((str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    });
+};
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
@@ -884,6 +865,9 @@ const UNI_SSR_TITLE = 'title';
 const UNI_SSR_STORE = 'store';
 const UNI_SSR_DATA = 'data';
 const UNI_SSR_GLOBAL_DATA = 'globalData';
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
+const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 
 function getEnvLocale() {
     const { env } = process;
@@ -895,6 +879,7 @@ exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
+exports.DATA_RE = DATA_RE;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
@@ -904,6 +889,7 @@ exports.ON_REACH_BOTTOM_DISTANCE = ON_REACH_BOTTOM_DISTANCE;
 exports.PLUS_RE = PLUS_RE;
 exports.PRIMARY_COLOR = PRIMARY_COLOR;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
+exports.SCHEME_RE = SCHEME_RE;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
@@ -919,7 +905,9 @@ exports.UniInputElement = UniInputElement;
 exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
+exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.addFont = addFont;
+exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
 exports.createRpx2Unit = createRpx2Unit;
 exports.debounce = debounce;

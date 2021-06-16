@@ -1,19 +1,18 @@
-export function getRealRoute(fromRoute: string, toRoute?: string): string {
-  if (!toRoute) {
-    toRoute = fromRoute
-    if (toRoute.indexOf('/') === 0) {
-      return toRoute
-    }
-    const pages = getCurrentPages()
-    if (pages.length) {
-      fromRoute = (pages[pages.length - 1] as any).$page.route
-    } else {
-      fromRoute = ''
-    }
-  } else {
-    if (toRoute.indexOf('/') === 0) {
-      return toRoute
-    }
+export function normalizeRoute(toRoute: string) {
+  if (toRoute.indexOf('/') === 0) {
+    return toRoute
+  }
+  let fromRoute = ''
+  const pages = getCurrentPages()
+  if (pages.length) {
+    fromRoute = (pages[pages.length - 1] as any).$page.route
+  }
+  return getRealRoute(fromRoute, toRoute)
+}
+
+export function getRealRoute(fromRoute: string, toRoute: string): string {
+  if (toRoute.indexOf('/') === 0) {
+    return toRoute
   }
   if (toRoute.indexOf('./') === 0) {
     return getRealRoute(fromRoute, toRoute.substr(2))

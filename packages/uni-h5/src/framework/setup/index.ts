@@ -12,7 +12,7 @@ import {
   onBeforeMount,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import { decodedQuery } from '@dcloudio/uni-shared'
+import { decodedQuery, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage, onPageShow, onPageReady } from './page'
@@ -134,7 +134,7 @@ export function setupApp(comp: any) {
           }) {
             if (
               isPlainObject(evt.data) &&
-              evt.data.type === 'WEB_INVOKE_APPSERVICE'
+              evt.data.type === WEB_INVOKE_APPSERVICE
             ) {
               UniServiceJSBridge.emit(
                 'onWebInvokeAppService',
