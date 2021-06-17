@@ -451,6 +451,7 @@ password入库时会自动进行一次sha1加密，不明文存储密码。这�
 但任何加密算法，在撞库等暴力手段面前被攻破只是时间和算力问题。使用自己特定的而不是默认的passwordSecret，并保护好passwordSecret可以数倍提升破解的算力代价。
 
 uni-id公共模块没有限制密码的强度，如长度限制、是否包含大小写或数据等限制，这类限制需要开发者自行在云函数中处理。
+**注意：RegisterParams不仅支持如上列举字段，比如可以直接传入mobile即可设置手机号码，切勿直接传入客户端传来的参数，否则这是一个极大的安全问题**
 
 **响应参数**
 
@@ -481,9 +482,9 @@ exports.main = async function(event,context) {
     }
   }
 	// 自动验证用户名是否与已经注册的用户名重复，如果重复会直接返回错误。否则会自动生成token并加密password存储username、password、token到数据表uni-id-users，并返回如上响应参数
-	const res = await uniID.register({
-		username,
-		password
+	const res = await uniID.register({ //支持传入任何值，比如可以直接传入mobile即可设置手机号码，切勿直接传入event否则这是一个极大的安全问题
+	    username,
+	    password
 	})
 	return res
 }
