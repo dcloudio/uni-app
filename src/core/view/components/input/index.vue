@@ -178,8 +178,21 @@ export default {
       })
     },
     _onInput ($event, force) {
+      let outOfMaxlength = false
+
       if (this.composing) {
         return
+      }
+
+      // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
+      if (this.inputType === 'number') {
+        const maxlength = parseInt(this.maxlength, 10)
+        if (maxlength > 0 && $event.target.value.length > maxlength) {
+          $event.target.value = $event.target.value.slice(0, maxlength)
+          this.valueSync = $event.target.value
+          // 字符长度超出范围不触发 input 事件
+          outOfMaxlength = true
+        }
       }
 
       if (~NUMBER_TYPES.indexOf(this.type)) {
@@ -200,16 +213,7 @@ export default {
         }
       }
 
-      // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-      if (this.inputType === 'number') {
-        const maxlength = parseInt(this.maxlength, 10)
-        if (maxlength > 0 && $event.target.value.length > maxlength) {
-          $event.target.value = $event.target.value.slice(0, maxlength)
-          this.valueSync = $event.target.value
-          // 字符长度超出范围不触发 input 事件
-          return
-        }
-      }
+      if (outOfMaxlength) return
 
       this.$triggerInput($event, Object.assign({
         value: this.valueSync
