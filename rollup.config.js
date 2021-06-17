@@ -20,25 +20,32 @@ let hasTSChecked = false
 
 const configs = []
 const buildOptions = require(resolve(`build.json`))
+
+function normalizeOutput(file, output = {}) {
+  return Object.assign(
+    {
+      file,
+      format: file.includes('.cjs.') ? 'cjs' : 'es',
+      exports: 'auto',
+    },
+    output
+  )
+}
+
 Object.keys(buildOptions.input).forEach((name) => {
   const files = buildOptions.input[name]
   if (Array.isArray(files)) {
     files.forEach((file) => {
       configs.push(
-        createConfig(name, {
-          file: resolve(file),
-          format: file.includes('.cjs.') ? 'cjs' : 'es',
-          exports: 'auto',
-        })
+        createConfig(name, normalizeOutput(resolve(file), buildOptions.output))
       )
     })
   } else {
     configs.push(
-      createConfig(name, {
-        file: resolve(buildOptions.input[name]),
-        format: (buildOptions.output && buildOptions.output.format) || `es`,
-        exports: 'auto',
-      })
+      createConfig(
+        name,
+        normalizeOutput(resolve(buildOptions.input[name]), buildOptions.output)
+      )
     )
   }
 })
@@ -46,7 +53,6 @@ export default configs
 
 function createConfig(entryFile, output, plugins = []) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
-
   const tsPlugin = ts({
     check:
       !process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked,
@@ -67,13 +73,16 @@ function createConfig(entryFile, output, plugins = []) {
   // during a single build.
   hasTSChecked = true
 
-  const external = [
-    'vue',
-    '@vue/shared',
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-    ...(buildOptions.external || []),
-  ]
+  const external =
+    buildOptions.external === false
+      ? []
+      : [
+          'vue',
+          '@vue/shared',
+          ...Object.keys(pkg.dependencies || {}),
+          ...Object.keys(pkg.peerDependencies || {}),
+          ...(buildOptions.external || []),
+        ]
 
   return {
     input: resolve(entryFile),

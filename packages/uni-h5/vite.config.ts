@@ -8,6 +8,8 @@ import replace from '@rollup/plugin-replace'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
+import { OutputChunk } from 'rollup'
+
 import { stripOptions } from '@dcloudio/uni-cli-shared'
 import { isCustomElement } from '@dcloudio/uni-shared'
 
@@ -25,10 +27,7 @@ const rollupPlugins = [
       defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
       defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
       defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
-      __IMPORT_META_ENV_BASE_URL__:
-        FORMAT === 'cjs'
-          ? '__IMPORT_META_ENV_BASE_URL__'
-          : 'import.meta.env.BASE_URL', //直接使用import.meta.env.BASE_URL会被vite替换成'/'
+      __IMPORT_META_ENV_BASE_URL__: '__IMPORT_META_ENV_BASE_URL__', //直接使用import.meta.env.BASE_URL会被vite替换成'/'
     },
     preventAssignment: true,
   }),
@@ -45,6 +44,22 @@ const rollupPlugins = [
 if (FORMAT === 'cjs') {
   rollupPlugins.push(strip(stripOptions))
 }
+if (FORMAT === 'es') {
+  // 解决import.meta被转换为import_meta的问题
+  rollupPlugins.push({
+    name: 'import-meta',
+    generateBundle(_options, bundle) {
+      const esBundle = bundle['uni-h5.es.js'] as unknown as OutputChunk
+      if (esBundle) {
+        esBundle.code = esBundle.code.replace(
+          '__IMPORT_META_ENV_BASE_URL__',
+          'import.meta.env.BASE_URL'
+        )
+      }
+    },
+  })
+}
+
 export default defineConfig({
   root: __dirname,
   define: {
@@ -89,7 +104,7 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement }),
   ],
   build: {
-    target: FORMAT === 'cjs' ? 'modules' : 'es2020', // keep import.meta...
+    target: 'modules', // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,
     lib: {

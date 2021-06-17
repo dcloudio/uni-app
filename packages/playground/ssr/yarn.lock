@@ -1819,9 +1819,9 @@ postcss-value-parser@^4.1.0:
   integrity sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ==
 
 postcss@^8.1.10, postcss@^8.3.0:
-  version "8.3.4"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.4.tgz#41ece1c43f2f7c74dc7d90144047ce052757b822"
-  integrity sha512-/tZY0PXExXXnNhKv3TOvZAOUYRyuqcCbBm2c17YMDK0PlVII3K7/LKdt3ScHL+hhouddjUWi+1sKDf9xXW+8YA==
+  version "8.3.5"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.5.tgz#982216b113412bc20a86289e91eb994952a5b709"
+  integrity sha512-NxTuJocUhYGsMiMFHDUkmjSKT3EdH4/WbGF6GCi1NDGk+vbcUTun4fpbOqaPtD8IIsztA2ilZm2DhYCuyN58gA==
   dependencies:
     colorette "^1.2.2"
     nanoid "^3.1.23"
@@ -1958,9 +1958,9 @@ rollup-plugin-copy@^3.4.0:
     is-plain-object "^3.0.0"
 
 rollup@^2.38.5:
-  version "2.52.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.52.0.tgz#9df3de6028fae79569a985942b81110205a5a411"
-  integrity sha512-lSkBDGsVoXjqaBf7dsHwxBJz+p+hJEP72P+LOitA0yVs+Nzxj76FidkZE2thrmhjwGqLYiJo39opi7mAfaQ/Vg==
+  version "2.52.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.52.1.tgz#dd1cc178d70cf35c48d943fc06fdc32d546e6876"
+  integrity sha512-/SPqz8UGnp4P1hq6wc9gdTqA2bXQXGx13TtoL03GBm6qGRI6Hm3p4Io7GeiHNLl0BsQAne1JNYY+q/apcY933w==
   optionalDependencies:
     fsevents "~2.3.2"
 
@@ -2312,7 +2312,7 @@ vite@^2.3.7:
   optionalDependencies:
     fsevents "~2.3.1"
 
-vue-router@^4.0.8:
+vue-router@^4.0.9:
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.9.tgz#248496941b79c4c1010f6ebfcf235cd4267d85da"
   integrity sha512-i3IaZJ57YeMbRHQlqKyXdUMr5NzTCcJkn3f8u38TsZjYWtGcd3IX2zRd3389SCOwuRf11mgfHAyngR6FVDE9og==

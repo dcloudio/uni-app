@@ -10719,7 +10719,10 @@ function useProvideRadioGroup(props2, trigger) {
   onMounted(() => {
     _resetRadioGroupValue(fields2.length - 1);
   });
-  const getFieldsValue = () => fields2.find((field) => field.value.radioChecked)?.value.value;
+  const getFieldsValue = () => {
+    var _a;
+    return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
+  };
   provide(uniRadioGroupKey, {
     addField(field) {
       fields2.push(field);
@@ -18372,7 +18375,8 @@ function useState() {
   });
   const props2 = ["topWindow", "leftWindow", "rightWindow"];
   props2.forEach((prop) => {
-    const matchMedia = __uniConfig[prop]?.matchMedia;
+    var _a;
+    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
     let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
     if (matchMedia && hasOwn(matchMedia, "minWidth")) {
       const minWidth = matchMedia.minWidth;
