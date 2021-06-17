@@ -15,8 +15,8 @@ const priority = {
   'uni-quickapp-webview': 70,
   'uni-cli-shared': 60,
   'uni-h5': 50,
-  'uni-h5-vue': 40,
   'uni-h5-vite': 40,
+  'uni-app-vue': 35,
   'uni-app-plus': 30,
   'uni-app-vite': 30,
   'vite-plugin-uni': 20,
@@ -30,9 +30,10 @@ const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
   try {
     return (
       fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.json`)) ||
-      fs.existsSync(path.resolve(__dirname, `../packages/${f}/build.js`)) ||
-      !!require(path.resolve(__dirname, `../packages/${f}/package.json`))
-        .buildOptions
+      fs.existsSync(
+        path.resolve(__dirname, `../packages/${f}/vite.config.ts`)
+      ) ||
+      fs.existsSync(path.resolve(__dirname, `../packages/${f}/tsconfig.json`))
     )
   } catch (e) {}
   return false

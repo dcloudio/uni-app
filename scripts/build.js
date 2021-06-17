@@ -9,7 +9,7 @@ const { targets: allTargets, fuzzyMatchTarget } = require('./utils')
 
 const args = require('minimist')(process.argv.slice(2))
 const targets = args._
-const formats = args.formats || args.f
+// const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
 const isRelease = args.release
 const buildTypes = args.t || args.types || isRelease
@@ -40,22 +40,29 @@ async function build(target) {
   if (isRelease && pkg.private) {
     return
   }
-
-  const bundler = pkg.buildOptions && pkg.buildOptions.bundler
-  const types =
-    target === 'uni-shared' ||
-    target === 'uni-i18n' ||
-    target === 'uni-app' ||
-    target === 'uni-cli-shared' ||
-    (buildTypes && pkg.types)
-  // if building a specific format, do not remove dist.
-  if (!formats && bundler !== 'vite') {
-    await fs.remove(`${pkgDir}/dist`)
+  const tsconfigJsonPath = path.resolve(pkgDir, 'tsconfig.json')
+  let hasTscBundler = false
+  const hasViteBundler = fs.existsSync(path.resolve(pkgDir, 'vite.config.ts'))
+  if (fs.existsSync(tsconfigJsonPath)) {
+    const tsconfigJson = require(tsconfigJsonPath)
+    if (
+      tsconfigJson.extends &&
+      tsconfigJson.extends.includes('tsconfig.node.json')
+    ) {
+      hasTscBundler = true
+    }
   }
+  const hasRollupBundler = fs.existsSync(path.resolve(pkgDir, 'build.json'))
+
+  const types = target.endsWith('-shared') || (buildTypes && pkg.types)
+  // if building a specific format, do not remove dist.
+  // if (!formats && bundler !== 'vite') {
+  await fs.remove(`${pkgDir}/dist`)
+  // }
 
   const env = devOnly ? 'development' : 'production'
 
-  if (bundler === 'vite') {
+  if (hasViteBundler) {
     await execa(
       'vite',
       ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
@@ -64,18 +71,18 @@ async function build(target) {
         env: Object.assign({ FORMAT: 'es' }, process.env),
       }
     )
-    if (target === 'size-check') {
-      return
+    if (target === 'uni-h5') {
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'cjs' }, process.env),
+        }
+      )
     }
-    return await execa(
-      'vite',
-      ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
-      {
-        stdio: 'inherit',
-        env: Object.assign({ FORMAT: 'cjs' }, process.env),
-      }
-    )
-  } else if (bundler === 'tsc') {
+  }
+  if (hasTscBundler) {
     const args = [
       '--listEmittedFiles',
       '-p',
@@ -84,23 +91,24 @@ async function build(target) {
     if (types) {
       args.push('--declaration')
     }
-    return await execa('tsc', args, {
+    await execa('tsc', args, {
       stdio: 'inherit',
     })
   }
-
-  await execa(
-    'rollup',
-    [
-      '-c',
-      '--environment',
-      [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`]
-        .filter(Boolean)
-        .join(','),
-    ],
-    { stdio: 'inherit' }
-  )
-  if (types) {
-    await extract(target)
+  if (hasRollupBundler) {
+    await execa(
+      'rollup',
+      [
+        '-c',
+        '--environment',
+        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`]
+          .filter(Boolean)
+          .join(','),
+      ],
+      { stdio: 'inherit' }
+    )
+    if (types) {
+      await extract(target)
+    }
   }
 }

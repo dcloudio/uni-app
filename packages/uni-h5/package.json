@@ -10,9 +10,6 @@
     "style"
   ],
   "sideEffects": false,
-  "buildOptions": {
-    "bundler": "vite"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

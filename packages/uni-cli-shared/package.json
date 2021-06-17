@@ -9,9 +9,6 @@
     "dist/**/*.d.ts",
     "lib"
   ],
-  "buildOptions": {
-    "bundler": "tsc"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
