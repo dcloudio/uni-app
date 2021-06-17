@@ -332,8 +332,8 @@ export default {
     }
   },
   mounted () {
+    this._p = {}
     this._pl = []
-    this._pd = {}
     this._pi = 0
     this._checkTimer = null
     this._checkTimerCount = 0
@@ -342,7 +342,7 @@ export default {
     AdReport.instance.get({
       h: __uniConfig.compilerVersion,
       a: this.adpid,
-      at: 30,
+      at: -3,
       ic: AdConfig.IC,
       is: AdConfig.IS
     })
@@ -356,8 +356,8 @@ export default {
       this._report(41)
     },
     _reset () {
+      this._p = {}
       this._pl = []
-      this._pd = {}
       this._pi = 0
       this._clearCheckTimer()
       this.$refs.container.innerHTML = ''
