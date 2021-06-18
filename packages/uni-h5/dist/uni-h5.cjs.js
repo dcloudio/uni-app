@@ -2331,6 +2331,7 @@ function useKeyboard$1(props2, elRef, trigger) {
       }
     };
     el.addEventListener("blur", () => {
+      el.blur();
       onKeyboardHide();
     });
   }
