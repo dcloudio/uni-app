@@ -40,7 +40,7 @@ HBuilder 基座的测试广告位 `adpid` 为 `1111111112`
 ```html
 <template>
   <view class="content">
-    <ad-content-page ref="adContentPage" adpid="1111111112" @load="onadload" @error="onaderror"></ad-content-page>
+    <ad-content-page class="ad-content-page" ref="adContentPage" adpid="1111111112" @load="onadload" @error="onaderror"></ad-content-page>
   </view>
 </template>
 
@@ -71,6 +71,16 @@ export default {
   }
 }
 </script>
+
+<style>
+.content {
+  flex: 1
+}
+
+.ad-content-page {
+  flex: 1
+}
+</style>
 ```
 
 **注意**
