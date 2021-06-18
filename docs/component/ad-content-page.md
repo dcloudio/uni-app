@@ -52,8 +52,10 @@ export default {
     }
   },
   onShow() {
-    // 需要在页面显示时调用广告组件的 show 方法
-    this.$refs.adContentPage.show();
+    this.$nextTick(() => {
+      // 需要在页面显示时调用广告组件的 show 方法
+      this.$refs.adContentPage.show();
+    })
   },
   onHide() {
     // 需要在页面隐藏时调用广告组件的 hide 方法停止广告内容的声音
