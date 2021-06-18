@@ -1,0 +1,5 @@
+{
+  "input": {
+    "src/index.ts": ["dist/vue.runtime.esm.js"]
+  }
+}

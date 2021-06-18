@@ -1,0 +1,25 @@
+{
+  "name": "@dcloudio/uni-app-vite",
+  "version": "3.0.0-alpha-3000020210528002",
+  "description": "uni-app-vite",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-app-vite"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "uni-app": {
+    "name": "uni-app-plus",
+    "apply": "app",
+    "main": "dist/index.js"
+  },
+  "license": "Apache-2.0"
+}
