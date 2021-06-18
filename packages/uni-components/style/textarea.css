@@ -28,6 +28,7 @@ uni-textarea[hidden] {
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: inherit;
 }
 .uni-textarea-placeholder,
 .uni-textarea-line,
