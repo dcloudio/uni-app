@@ -226,6 +226,9 @@ export function useKeyboard(
     }
 
     el.addEventListener('blur', () => {
+      // 在iOS设备上，手动调用uni.hideKeyboard()，键盘收起并且触发blur，但实际并没有blur。
+      // 此时如果再点击页面其他地方会重新聚焦，此处做处理
+      el.blur()
       focus = false
       onKeyboardHide()
     })
