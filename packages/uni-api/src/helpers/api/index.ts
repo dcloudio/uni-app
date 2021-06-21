@@ -52,7 +52,7 @@ function invokeSuccess(id: number, name: string, res: unknown) {
   return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
 }
 
-function invokeFail(id: number, name: string, errMsg: string, errRes?: any) {
+function invokeFail(id: number, name: string, errMsg?: string, errRes?: any) {
   return invokeCallback(
     id,
     Object.assign(
@@ -230,7 +230,7 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
     args: Omit<P, CALLBACK_TYPES>,
     res: {
       resolve: (res?: AsyncApiRes<P>) => void
-      reject: (errMsg: string, errRes?: any) => void
+      reject: (errMsg?: string, errRes?: any) => void
     }
   ) => void,
   protocol?: ApiProtocols<T>,
