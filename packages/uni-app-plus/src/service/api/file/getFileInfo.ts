@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import {
   defineAsyncApi,
   API_GET_FILE_INFO,
@@ -14,7 +15,7 @@ export const getFileInfo = <API_TYPE_GET_FILE_INFO>defineAsyncApi(
   API_GET_FILE_INFO,
   (options, { resolve, reject }) => {
     plus.io.getFileInfo(
-      Object.assign(options, {
+      extend(options, {
         success: warpPlusSuccessCallback(resolve),
         fail: warpPlusErrorCallback(reject),
       })
