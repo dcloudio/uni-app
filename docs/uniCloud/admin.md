@@ -1,9 +1,8 @@
-# uniCloud admin 框架
-
-## `重要公告:`
+# `重要公告:`
 
 ### admin 1.5.0 以上版本在 HBuilderX  alpha 3.1.19 以下版本中，使用「腾讯云服务空间」存在问题，此问题将在 HBuilderX 下一个 aphla 版本（ 3.1.20 ）修复 ，在此期间，你可以选择使用「阿里云服务空间」；也可选择使用[admin 1.4.5 版本](https://github.com/dcloudio/uniCloud-admin/releases/tag/v1.4.5)。
 
+# uniCloud admin 框架
 
 ### 什么是 uniCloud admin
 
