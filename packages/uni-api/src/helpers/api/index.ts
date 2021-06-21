@@ -52,8 +52,14 @@ function invokeSuccess(id: number, name: string, res: unknown) {
   return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
 }
 
-function invokeFail(id: number, name: string, err: string) {
-  return invokeCallback(id, { errMsg: name + ':fail' + (err ? ' ' + err : '') })
+function invokeFail(id: number, name: string, errMsg: string, errRes?: any) {
+  return invokeCallback(
+    id,
+    Object.assign(
+      { errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') },
+      errRes
+    )
+  )
 }
 
 function beforeInvokeApi<T extends ApiLike>(
@@ -141,7 +147,8 @@ function wrapperTaskApi<T extends ApiLike>(
     }
     return fn(args, {
       resolve: (res: unknown) => invokeSuccess(id, name, res),
-      reject: (err: string) => invokeFail(id, name, err),
+      reject: (errMsg: string, errRes?: any) =>
+        invokeFail(id, name, errMsg, errRes),
     })
   }
 }
@@ -223,7 +230,7 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
     args: Omit<P, CALLBACK_TYPES>,
     res: {
       resolve: (res?: AsyncApiRes<P>) => void
-      reject: (err?: string) => void
+      reject: (errMsg: string, errRes?: any) => void
     }
   ) => void,
   protocol?: ApiProtocols<T>,
