@@ -1,5 +1,10 @@
 {
   "input": {
     "src/index.ts": ["dist/vue.runtime.esm.js"]
-  }
+  },
+  "output": {
+    "banner": "export default function vueFactory (exports) {\n",
+    "footer": "}"
+  },
+  "external": false
 }

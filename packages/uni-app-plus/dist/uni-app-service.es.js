@@ -281,7 +281,7 @@ var serviceContext = (function () {
             });
     }
     const maskClickCallback = [];
-    var tabBar$1 = {
+    var tabBarInstance = {
         id: '0',
         init(options, clickCallback) {
             if (options && options.list.length) {
@@ -374,13 +374,15 @@ var serviceContext = (function () {
     };
 
     function initTabBar() {
-        const len = __uniConfig.tabBar?.list?.length;
+        const { tabBar } = __uniConfig;
+        const len = tabBar && tabBar.list && tabBar.list.length;
         if (!len) {
             return;
         }
-        __uniConfig.tabBar.selectedIndex = 0;
-        const selected = __uniConfig.tabBar.list.findIndex((page) => page.pagePath === __uniConfig.entryPagePath);
-        tabBar$1.init(__uniConfig.tabBar, (item, index) => {
+        const { entryPagePath } = __uniConfig;
+        tabBar.selectedIndex = 0;
+        const selected = tabBar.list.findIndex((page) => page.pagePath === entryPagePath);
+        tabBarInstance.init(tabBar, (item, index) => {
             uni.switchTab({
                 url: '/' + item.pagePath,
                 openType: 'switchTab',
@@ -396,8 +398,8 @@ var serviceContext = (function () {
         });
         if (selected !== -1) {
             // 取当前 tab 索引值
-            __uniConfig.tabBar.selectedIndex = selected;
-            selected !== 0 && tabBar$1.switchTab(__uniConfig.entryPagePath);
+            tabBar.selectedIndex = selected;
+            selected !== 0 && tabBarInstance.switchTab(entryPagePath);
         }
     }
 
