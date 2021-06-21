@@ -188,10 +188,15 @@ export default {
       if (this.inputType === 'number') {
         const maxlength = parseInt(this.maxlength, 10)
         if (maxlength > 0 && $event.target.value.length > maxlength) {
-          $event.target.value = $event.target.value.slice(0, maxlength)
-          this.valueSync = $event.target.value
-          // 字符长度超出范围不触发 input 事件
-          outOfMaxlength = true
+          // 输入前字符长度超出范围，则不触发input，且将值还原
+          // 否则截取一定长度且触发input
+          if (this.cachedValue.length === maxlength) {
+            this.valueSync = this.cachedValue
+            outOfMaxlength = true
+          } else {
+            $event.target.value = $event.target.value.slice(0, maxlength)
+            this.valueSync = $event.target.value
+          }
         }
       }
 
