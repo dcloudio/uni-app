@@ -43,13 +43,13 @@ uni-app助力数百家单位快速上线**抗疫系统**，开源众多项目，
 
 #### 典型案例
 
-<a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style"><b>华为荣耀亲选商城：</b></a> 华为公司旗下荣耀品牌精品电商平台。
+<a href="https://m.qinxuan.hihonor.com/" target="_blank" class="clear-style"><b>华为荣耀亲选商城：</b></a> 华为公司旗下荣耀品牌精品电商平台。
 <div style="display:flex;justify-content: space-around;">
 	<a href="javascript:;" target="_self" class="clear-style barcode-view">
 		<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-dc-site/60aa65e0-d95c-11ea-b244-a9f5e5565f30.png" width="200"/>
 		<span style="margin-top:15px;">微信小程序</span>
 	</a>
-  <a href="https://m.qinxuan.honor.cn/" target="_blank" class="clear-style barcode-view">
+  <a href="https://m.qinxuan.hihonor.com/" target="_blank" class="clear-style barcode-view">
 		<img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-alicdn/1fa35320-c559-11ea-81ea-f115fe74321c.png" width="200"/>
 		<span style="margin-top:15px;">H5</span>
 	</a>
