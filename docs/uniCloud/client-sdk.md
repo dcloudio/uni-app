@@ -128,6 +128,30 @@ uniCloud.addInterceptor('callFunction', {
 **注意：**
 
 - 要移除的拦截器内方法需和添加的方法一致才可以移除 -->
+- 要移除的拦截器内方法需和添加的方法一致才可以移除，详情见下方示例
+// 错误用法，无法移除invoke拦截器
+uniCloud.addInterceptor('callFunction', {
+  invoke(param) {
+    console.log('callFunction invoked, with param:',param)
+  }
+})
+uniCloud.removeInterceptor('callFunction', {
+  invoke(param) {
+    console.log('callFunction invoked, with param:',param)
+  }
+})
+
+// 正确用法
+function invokeInterceptor(param) {
+  console.log('callFunction invoked, with param:',param)
+}
+uniCloud.addInterceptor('callFunction', {
+  invoke: invokeInterceptor
+})
+uniCloud.removeInterceptor('callFunction', {
+  invoke: invokeInterceptor
+})
+```
 
 ## 属性
 
