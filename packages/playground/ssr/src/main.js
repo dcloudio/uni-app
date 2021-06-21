@@ -9,7 +9,7 @@ export function createApp() {
 
   app.config.warnHandler = function (msg) {
     const ssrLogElem = document.getElementById('ssr-log')
-    ssrLogElem && (ssrLogElem.innerHTML = ssrLogElem.innerHTML + '\n' + msg)
+    ssrLogElem && (ssrLogElem.innerHTML = ssrLogElem.innerHTML + '<br>' + msg)
   }
   return {
     app,
