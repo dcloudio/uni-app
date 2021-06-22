@@ -54,11 +54,9 @@ uniCloud分为客户端和云端两部分，有些接口名称相同，参数也
 console.log(uniCloud.getCurrentUserInfo().role.indexOf('admin')>-1); // 如果是admin用户的话，打印结果为true
 ```
 
-<!-- ### 新增拦截器@add-interceptor
+### 新增拦截器@add-interceptor
 
-```
-+ clientDB客户端sdk 新增 添加拦截器、移除拦截器API [详情](https://uniapp.dcloud.net.cn/uniCloud/client-sdk?id=add-interceptor)
-```
+> 新增于HBuilderX 3.1.20
 
 接口形式：`uniCloud.addInterceptor(String apiName, Object interceptorMap)`
 
@@ -107,6 +105,8 @@ uniCloud.addInterceptor('callFunction', {
 
 ### 移除拦截器@remove-interceptor
 
+> 新增于HBuilderX 3.1.20
+
 接口形式：`uniCloud.removeInterceptor(String apiName, Object interceptorMap)`
 
 **入参说明**
@@ -127,8 +127,9 @@ uniCloud.addInterceptor('callFunction', {
 
 **注意：**
 
-- 要移除的拦截器内方法需和添加的方法一致才可以移除 -->
 - 要移除的拦截器内方法需和添加的方法一致才可以移除，详情见下方示例
+
+```js
 // 错误用法，无法移除invoke拦截器
 uniCloud.addInterceptor('callFunction', {
   invoke(param) {
