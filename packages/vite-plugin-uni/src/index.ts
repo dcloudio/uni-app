@@ -9,7 +9,6 @@ import ViteLegacyPlugin from '@vitejs/plugin-legacy'
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
-import { createHandleHotUpdate } from './handleHotUpdate'
 import { initExtraPlugins } from './utils'
 import { createTransformIndexHtml } from './transformIndexHtml'
 
@@ -79,7 +78,6 @@ export default function uniPlugin(
     config: createConfig(options, uniPlugins),
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
-    handleHotUpdate: createHandleHotUpdate(options),
     transformIndexHtml: createTransformIndexHtml(options),
   })
   plugins.push(...uniPlugins)

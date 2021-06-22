@@ -1246,7 +1246,7 @@ function invokeSuccess(id, name, res) {
   return invokeCallback(id, shared.extend(res || {}, { errMsg: name + ":ok" }));
 }
 function invokeFail(id, name, errMsg, errRes) {
-  return invokeCallback(id, Object.assign({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes));
+  return invokeCallback(id, shared.extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {

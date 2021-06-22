@@ -78,6 +78,10 @@ export declare function isCustomElement(tag: string): boolean;
 
 export declare function isNativeTag(tag: string): boolean;
 
+export declare function isServiceCustomElement(_tag: string): boolean;
+
+export declare function isServiceNativeTag(tag: string): boolean;
+
 export declare interface IUniPageNode {
     pageId: number;
     pageNode: IUniPageNode | null;

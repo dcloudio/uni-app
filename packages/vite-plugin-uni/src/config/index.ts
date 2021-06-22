@@ -45,12 +45,10 @@ export function createConfig(
     options.vueJsxOptions = initPluginVueJsxOptions(options)
     options.viteLegacyOptions = initPluginViteLegacyOptions(options)
 
-    const define = createDefine(options, config, env)
-
     return {
       base,
       publicDir: config.publicDir || false,
-      define,
+      define: createDefine(options),
       resolve: createResolve(options, config),
       optimizeDeps: createOptimizeDeps(options),
       server: createServer(options),

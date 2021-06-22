@@ -1,8 +1,10 @@
+import debug from 'debug'
 import { ViteDevServer } from 'vite'
 import { debounce } from '@dcloudio/uni-shared'
+import { initEasycomsOnce } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
-import { debugEasycom, initEasycomsOnce } from '../utils'
 
+const debugEasycom = debug('vite:uni:easycom')
 export const serveEasycom = (
   server: ViteDevServer,
   options: VitePluginUniResolvedOptions

@@ -12,10 +12,10 @@ import {
   parseVueRequest,
   buildInCssSet,
   isCombineBuiltInCss,
+  matchEasycom,
 } from '@dcloudio/uni-cli-shared'
 
 import { UniPluginFilterOptions } from '.'
-import { debugEasycom, matchEasycom } from '../../utils'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
@@ -72,7 +72,6 @@ export function uniEasycomPlugin(
       ) {
         return
       }
-      debugEasycom(id)
       let i = 0
       const importDeclarations: string[] = []
       code = code.replace(

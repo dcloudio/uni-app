@@ -4,6 +4,7 @@ import uni from '@dcloudio/vite-plugin-uni'
 
 process.env.UNI_CLI_CONTEXT = __dirname
 process.env.UNI_INPUT_DIR = path.resolve(__dirname, 'src')
+process.env.UNI_PLATFORM = 'h5'
 /**
  * @type {import('vite').UserConfig}
  */

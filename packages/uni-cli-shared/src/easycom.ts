@@ -6,7 +6,7 @@ import { extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { once } from '@dcloudio/uni-shared'
-import { parsePagesJson, parsePagesJsonOnce } from '@dcloudio/uni-cli-shared'
+import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 
 interface EasycomOption {
   dirs?: string[]
@@ -23,7 +23,7 @@ interface EasycomCustom {
   [key: string]: string
 }
 
-export const debugEasycom = debug('vite:uni:easycom')
+const debugEasycom = debug('uni:easycom')
 
 const easycoms: EasycomMatcher[] = []
 

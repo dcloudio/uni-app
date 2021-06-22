@@ -2,12 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
-import { extend, camelize, capitalize } from '@vue/shared'
+import { extend } from '@vue/shared'
 import {
   API_DEPS_CSS,
   FEATURE_DEFINES,
   H5_FRAMEWORK_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
+  normalizeIdentifier,
   normalizePagesJson,
   defineUniPagesJsonPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -107,10 +108,6 @@ ${name}.UniServiceJSBridge = UniServiceJSBridge
 `
 }
 
-function normalizePageIdentifier(path: string) {
-  return capitalize(camelize(path.replace(/\//g, '-')))
-}
-
 function generateCssCode(config: ResolvedConfig) {
   const define = config.define! as FEATURE_DEFINES
   const cssFiles = [H5_FRAMEWORK_STYLE_PATH + 'base.css']
@@ -175,7 +172,7 @@ function generateLayoutComponentsCode(
 }
 
 function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
-  const pageIdent = normalizePageIdentifier(pageOptions.path)
+  const pageIdent = normalizeIdentifier(pageOptions.path)
   return `const ${pageIdent}Loader = ()=>import('./${pageOptions.path}?mpType=page')
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
@@ -202,7 +199,7 @@ function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
   const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || []
   return pagesJson.pages.map((pageOptions) => {
     const pagePath = pageOptions.path
-    const name = normalizePageIdentifier(pagePath)
+    const name = normalizeIdentifier(pagePath)
     const isEntry = firstPagePath === pagePath ? true : undefined
     const tabBarIndex = tabBarList.findIndex(
       (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === pagePath
@@ -241,7 +238,7 @@ function generatePageRoute(
   return `{
   path:'/${isEntry ? '' : path}',${alias}
   component:{setup(){return ()=>renderPage(${name})}},
-  loader: ${normalizePageIdentifier(path)}Loader,
+  loader: ${normalizeIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`
 }

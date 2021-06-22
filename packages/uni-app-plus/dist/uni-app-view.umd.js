@@ -300,7 +300,16 @@
       offsetLeft
     };
   }
+  const cacheStringFunction = (fn) => {
+    const cache = Object.create(null);
+    return (str) => {
+      const hit = cache[str];
+      return hit || (cache[str] = fn(str));
+    };
+  };
   const PRIMARY_COLOR = "#007aff";
+  const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+  const DATA_RE = /^data:.*,.*/;
   const isObject = (val) => val !== null && typeof val === "object";
   class BaseFormatter {
     constructor() {
@@ -649,6 +658,24 @@
   }
   function useCurrentPageId() {
     return vue.getCurrentInstance().root.proxy.$page.id;
+  }
+  function getRealRoute(fromRoute, toRoute) {
+    if (toRoute.indexOf("/") === 0) {
+      return toRoute;
+    }
+    if (toRoute.indexOf("./") === 0) {
+      return getRealRoute(fromRoute, toRoute.substr(2));
+    }
+    const toRouteArray = toRoute.split("/");
+    const toRouteLength = toRouteArray.length;
+    let i = 0;
+    for (; i < toRouteLength && toRouteArray[i] === ".."; i++) {
+    }
+    toRouteArray.splice(0, i);
+    toRoute = toRouteArray.join("/");
+    const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
+    fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
+    return "/" + fromRouteArray.concat(toRouteArray).join("/");
   }
   const callbacks = {};
   function createCallbacks(namespace) {
@@ -1059,7 +1086,43 @@
       };
     }
   });
-  function getRealPath() {
+  function getRealPath(filepath) {
+    if (filepath.indexOf("//") === 0) {
+      return "https:" + filepath;
+    }
+    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
+      return filepath;
+    }
+    if (isSystemURL(filepath)) {
+      return "file://" + normalizeLocalPath(filepath);
+    }
+    const wwwPath = "file://" + normalizeLocalPath("_www");
+    if (filepath.indexOf("/") === 0) {
+      if (filepath.startsWith("/storage/") || filepath.includes("/Containers/Data/Application/")) {
+        return "file://" + filepath;
+      }
+      return wwwPath + filepath;
+    }
+    if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
+      if (typeof __id__ === "string") {
+        return wwwPath + getRealRoute("/" + __id__, filepath);
+      } else {
+        const pages = getCurrentPages();
+        if (pages.length) {
+          return wwwPath + getRealRoute("/" + pages[pages.length - 1].route, filepath);
+        }
+      }
+    }
+    return filepath;
+  }
+  const normalizeLocalPath = cacheStringFunction((filepath) => {
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
+  });
+  function isSystemURL(filepath) {
+    if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
+      return true;
+    }
+    return false;
   }
   var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     name: "ResizeSensor",

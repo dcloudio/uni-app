@@ -11,8 +11,6 @@ export function createOptimizeDeps(
       'vue-router',
       '@dcloudio/uni-app',
       '@dcloudio/uni-components',
-      '@dcloudio/uni-h5',
-      '@dcloudio/uni-h5-vue',
       '@dcloudio/uni-i18n',
       '@dcloudio/uni-shared',
     ],

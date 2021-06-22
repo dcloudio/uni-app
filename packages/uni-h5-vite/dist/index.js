@@ -7,6 +7,10 @@ const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
 const resolveId_1 = require("./plugins/resolveId");
+const setup_1 = require("./plugins/setup");
+const ssr_1 = require("./plugins/ssr");
+const utils_1 = require("./utils");
+const handleHotUpdate_1 = require("./handleHotUpdate");
 function initLogger({ logger, command }) {
     if (command !== 'serve') {
         return;
@@ -27,9 +31,18 @@ const UniH5Plugin = {
             tap: 'click',
         },
     },
+    config(config, env) {
+        return {
+            optimizeDeps: {
+                exclude: ['@dcloudio/uni-h5', '@dcloudio/uni-h5-vue'],
+            },
+            define: utils_1.createDefine(env.command, config),
+        };
+    },
     configResolved(config) {
         initLogger(config);
     },
+    handleHotUpdate: handleHotUpdate_1.createHandleHotUpdate(),
 };
 exports.default = [
     cssScoped_1.uniCssScopedPlugin(),
@@ -39,5 +52,7 @@ exports.default = [
     pagesJson_1.uniPagesJsonPlugin(),
     inject_1.uniInjectPlugin(),
     css_1.uniCssPlugin(),
+    ssr_1.uniSSRPlugin(),
+    setup_1.uniSetupPlugin(),
     UniH5Plugin,
 ];

@@ -9,8 +9,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*.js",
-    "dist/**/*.d.ts",
-    "lib"
+    "dist/**/*.d.ts"
   ],
   "repository": {
     "type": "git",

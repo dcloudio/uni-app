@@ -1,9 +1,13 @@
-import { Plugin } from 'vite'
 import { extend, hasOwn, isArray } from '@vue/shared'
+import { ParserOptions } from '@vue/compiler-core'
 import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
-import { EXTNAME_VUE_RE, parseCompatConfigOnce } from '@dcloudio/uni-cli-shared'
+import {
+  EXTNAME_VUE_RE,
+  parseCompatConfigOnce,
+  UniVitePlugin,
+} from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { transformMatchMedia } from './transforms/transformMatchMedia'
@@ -33,15 +37,9 @@ function createUniVueTransformAssetUrls(
   }
 }
 
-interface UniPlugin extends Plugin {
-  uni?: {
-    transformEvent?: Record<string, string>
-  }
-}
-
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
-  uniPlugins: UniPlugin[]
+  UniVitePlugins: UniVitePlugin[]
 ) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
   if (!vueOptions.include) {
@@ -58,9 +56,21 @@ export function initPluginVueOptions(
     options.base
   )
 
+  let isCompilerNativeTag: ParserOptions['isNativeTag'] = isNativeTag
+  let isCompilerCustomElement: ParserOptions['isCustomElement'] =
+    isCustomElement
+
+  UniVitePlugins.forEach((plugin) => {
+    if (plugin.uni?.compilerOptions?.isNativeTag) {
+      isCompilerNativeTag = plugin.uni.compilerOptions.isNativeTag
+    }
+    if (plugin.uni?.compilerOptions?.isCustomElement) {
+      isCompilerCustomElement = plugin.uni.compilerOptions.isCustomElement
+    }
+  })
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
-  compilerOptions.isNativeTag = isNativeTag
+  compilerOptions.isNativeTag = isCompilerNativeTag
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
@@ -72,11 +82,11 @@ export function initPluginVueOptions(
     compatConfig
   )
 
-  compilerOptions.isCustomElement = isCustomElement
+  compilerOptions.isCustomElement = isCompilerCustomElement
 
-  const eventOpts = uniPlugins.reduce<Record<string, string>>(
-    (eventOpts, uniPlugin) => {
-      return extend(eventOpts, uniPlugin.uni?.transformEvent)
+  const eventOpts = UniVitePlugins.reduce<Record<string, string>>(
+    (eventOpts, UniVitePlugin) => {
+      return extend(eventOpts, UniVitePlugin.uni?.transformEvent)
     },
     {}
   )

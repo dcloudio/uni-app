@@ -12,7 +12,6 @@ import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 import { uniEasycomPlugin } from './easycom'
 
-import { uniPageVuePlugin } from './pageVue'
 import { uniCopyPlugin } from './copy'
 import { uniStaticPlugin } from './static'
 import { uniRenderjsPlugin } from './renderjs'
@@ -78,7 +77,6 @@ export function initPlugins(
     uniEasycomPlugin(extend(uniEasycomPluginOptions, options), config),
     'vite:vue'
   )
-  addPlugin(plugins, uniPageVuePlugin(options), 'vite:vue')
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 

@@ -11,7 +11,7 @@ export function uniMainJsPlugin() {
             ? createApp(code)
             : createLegacyApp(code)
           return {
-            code,
+            code: `import './pages.json.js';` + code,
             map: this.getCombinedSourcemap(),
           }
         }

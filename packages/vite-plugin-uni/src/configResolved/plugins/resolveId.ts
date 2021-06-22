@@ -1,8 +1,9 @@
+import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
 
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { parseVueRequest, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 
@@ -20,7 +21,7 @@ const BUILT_IN_MODULES = {
 export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
 
 export function uniResolveIdPlugin(
-  _options: VitePluginUniResolvedOptions
+  options: VitePluginUniResolvedOptions
 ): Plugin {
   const resolveCache: Record<string, string> = {}
   return {
@@ -35,6 +36,14 @@ export function uniResolveIdPlugin(
         return (resolveCache[id] = resolveBuiltIn(
           path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
+      }
+    },
+    load(id) {
+      if (options.command === 'build') {
+        const { filename, query } = parseVueRequest(id)
+        if (query.mpType === 'page') {
+          return fs.readFileSync(filename, 'utf8')
+        }
       }
     },
   }

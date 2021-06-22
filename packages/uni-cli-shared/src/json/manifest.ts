@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-
 import { extend } from '@vue/shared'
 import { once, defaultRpx2Unit } from '@dcloudio/uni-shared'
 

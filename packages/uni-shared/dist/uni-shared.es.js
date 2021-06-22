@@ -208,6 +208,12 @@ function isCustomElement(tag) {
 function isNativeTag(tag) {
     return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag);
 }
+function isServiceNativeTag(tag) {
+    return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag);
+}
+function isServiceCustomElement(_tag) {
+    return false;
+}
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
@@ -871,4 +877,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

@@ -79,9 +79,6 @@ ${name}.UniViewJSBridge = UniViewJSBridge
 ${name}.UniServiceJSBridge = UniServiceJSBridge
 `;
 }
-function normalizePageIdentifier(path) {
-    return shared_1.capitalize(shared_1.camelize(path.replace(/\//g, '-')));
-}
 function generateCssCode(config) {
     const define = config.define;
     const cssFiles = [uni_cli_shared_1.H5_FRAMEWORK_STYLE_PATH + 'base.css'];
@@ -140,7 +137,7 @@ function generateLayoutComponentsCode(globalName, pagesJson) {
     };
 }
 function generatePageDefineCode(pageOptions) {
-    const pageIdent = normalizePageIdentifier(pageOptions.path);
+    const pageIdent = uni_cli_shared_1.normalizeIdentifier(pageOptions.path);
     return `const ${pageIdent}Loader = ()=>import('./${pageOptions.path}?mpType=page')
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`;
 }
@@ -160,7 +157,7 @@ function normalizePagesRoute(pagesJson) {
     const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || [];
     return pagesJson.pages.map((pageOptions) => {
         const pagePath = pageOptions.path;
-        const name = normalizePageIdentifier(pagePath);
+        const name = uni_cli_shared_1.normalizeIdentifier(pagePath);
         const isEntry = firstPagePath === pagePath ? true : undefined;
         const tabBarIndex = tabBarList.findIndex((tabBarPage) => tabBarPage.pagePath === pagePath);
         const isTabBar = tabBarIndex !== -1 ? true : undefined;
@@ -188,7 +185,7 @@ function generatePageRoute({ name, path, meta }, config) {
     return `{
   path:'/${isEntry ? '' : path}',${alias}
   component:{setup(){return ()=>renderPage(${name})}},
-  loader: ${normalizePageIdentifier(path)}Loader,
+  loader: ${uni_cli_shared_1.normalizeIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`;
 }

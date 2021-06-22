@@ -77,6 +77,14 @@ export function isNativeTag(tag: string) {
   return (isHTMLTag(tag) || isSVGTag(tag)) && !isBuiltInComponent(tag)
 }
 
+export function isServiceNativeTag(tag: string) {
+  return isHTMLTag(tag) || isSVGTag(tag) || isBuiltInComponent(tag)
+}
+
+export function isServiceCustomElement(_tag: string) {
+  return false
+}
+
 export const COMPONENT_SELECTOR_PREFIX = 'uni-'
 
 export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX

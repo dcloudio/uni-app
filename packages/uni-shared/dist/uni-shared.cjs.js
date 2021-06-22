@@ -212,6 +212,12 @@ function isCustomElement(tag) {
 function isNativeTag(tag) {
     return (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) && !isBuiltInComponent(tag);
 }
+function isServiceNativeTag(tag) {
+    return shared.isHTMLTag(tag) || shared.isSVGTag(tag) || isBuiltInComponent(tag);
+}
+function isServiceCustomElement(_tag) {
+    return false;
+}
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
 
@@ -927,6 +933,8 @@ exports.invokeArrayFns = invokeArrayFns;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isCustomElement = isCustomElement;
 exports.isNativeTag = isNativeTag;
+exports.isServiceCustomElement = isServiceCustomElement;
+exports.isServiceNativeTag = isServiceNativeTag;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeTarget = normalizeTarget;
 exports.once = once;

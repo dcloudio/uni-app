@@ -1,50 +1,27 @@
-import path from 'path'
 import debug from 'debug'
 import crypto from 'crypto'
 import { Plugin, ResolvedConfig } from 'vite'
 
 import { walk } from 'estree-walker'
 import { CallExpression } from 'estree'
-import { OutputChunk } from 'rollup'
+
 import { createFilter } from '@rollup/pluginutils'
 import { MagicString } from '@vue/compiler-sfc'
 
-import { parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
-
 import { UniPluginFilterOptions } from '.'
-import {
-  isIdentifier,
-  isCallExpression,
-  isMemberExpression,
-  generateSsrDefineCode,
-  generateSsrEntryServerCode,
-} from '../../utils'
+import { isIdentifier, isCallExpression, isMemberExpression } from '../../utils'
 
 const debugSSR = debug('vite:uni:ssr')
 
 const KEYED_FUNC_RE = /(ssrRef|shallowSsrRef)/
 
-const ENTRY_SERVER_JS = 'entry-server.js'
-
 export function uniSSRPlugin(
-  config: ResolvedConfig,
+  _config: ResolvedConfig,
   options: UniPluginFilterOptions
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
-  const entryServerJs = path.join(options.inputDir, ENTRY_SERVER_JS)
-  const entryServerJsCode = generateSsrEntryServerCode()
   return {
     name: 'vite:uni-ssr',
-    resolveId(id) {
-      if (id.endsWith(ENTRY_SERVER_JS)) {
-        return entryServerJs
-      }
-    },
-    load(id) {
-      if (id.endsWith(ENTRY_SERVER_JS)) {
-        return entryServerJsCode
-      }
-    },
     transform(code, id) {
       if (!filter(id)) return null
       if (!KEYED_FUNC_RE.test(code)) {
@@ -79,15 +56,6 @@ export function uniSSRPlugin(
       return {
         code: s.toString(),
         map: s.generateMap().toString(),
-      }
-    },
-    generateBundle(_options, bundle) {
-      const chunk = bundle['entry-server.js'] as OutputChunk
-      if (chunk) {
-        chunk.code =
-          generateSsrDefineCode(config, parseRpx2UnitOnce(options.inputDir)) +
-          '\n' +
-          chunk.code
       }
     },
   }

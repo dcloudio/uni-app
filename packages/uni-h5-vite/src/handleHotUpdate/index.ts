@@ -3,10 +3,13 @@ import debug from 'debug'
 import slash from 'slash'
 import { ModuleGraph, Plugin } from 'vite'
 import { extend } from '@vue/shared'
-import { parseManifestJson, parsePagesJson } from '@dcloudio/uni-cli-shared'
+import {
+  initEasycomsOnce,
+  parseManifestJson,
+  parsePagesJson,
+} from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '..'
-import { initEasycomsOnce, initFeatures } from '../utils'
+import { initFeatures } from '../utils'
 
 const debugHmr = debug('vite:uni:hmr')
 
@@ -20,14 +23,14 @@ async function invalidate(file: string, moduleGraph: ModuleGraph) {
   }
 }
 let invalidateFiles: string[]
-export function createHandleHotUpdate(
-  options: VitePluginUniResolvedOptions
-): Plugin['handleHotUpdate'] {
+export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
   return async function ({ file, server }) {
+    const inputDir = process.env.UNI_INPUT_DIR
+    const platform = process.env.UNI_PLATFORM
     if (!invalidateFiles) {
       invalidateFiles = [
-        path.resolve(options.inputDir, 'pages.json.js'),
-        path.resolve(options.inputDir, 'manifest.json.js'),
+        path.resolve(inputDir, 'pages.json.js'),
+        path.resolve(inputDir, 'manifest.json.js'),
         require.resolve('@dcloudio/uni-h5/dist/uni-h5.es.js'),
         require.resolve('vite/dist/client/env.js'),
       ]
@@ -44,7 +47,6 @@ export function createHandleHotUpdate(
       event: 'invalidate',
       data: {},
     })
-    const { inputDir, command, platform } = options
     const pagesJson = parsePagesJson(inputDir, platform)
     // 更新define
     const {
@@ -55,7 +57,7 @@ export function createHandleHotUpdate(
       define,
       initFeatures({
         inputDir,
-        command,
+        command: 'serve',
         platform,
         pagesJson,
         manifestJson: parseManifestJson(inputDir),

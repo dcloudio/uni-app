@@ -16,10 +16,6 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "uni-app": {
-    "name": "uni-app",
-    "apply": "app"
-  },
   "dependencies": {
     "vue3-webcomponent-wrapper": "^0.1.4"
   },

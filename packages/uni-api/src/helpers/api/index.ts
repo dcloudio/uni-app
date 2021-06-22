@@ -55,10 +55,7 @@ function invokeSuccess(id: number, name: string, res: unknown) {
 function invokeFail(id: number, name: string, errMsg?: string, errRes?: any) {
   return invokeCallback(
     id,
-    Object.assign(
-      { errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') },
-      errRes
-    )
+    extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes)
   )
 }
 

@@ -7,6 +7,11 @@ import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniResolveIdPlugin } from './plugins/resolveId'
+import { uniSetupPlugin } from './plugins/setup'
+import { uniSSRPlugin } from './plugins/ssr'
+
+import { createDefine } from './utils'
+import { createHandleHotUpdate } from './handleHotUpdate'
 
 function initLogger({ logger, command }: ResolvedConfig) {
   if (command !== 'serve') {
@@ -29,9 +34,18 @@ const UniH5Plugin: UniVitePlugin = {
       tap: 'click',
     },
   },
+  config(config, env) {
+    return {
+      optimizeDeps: {
+        exclude: ['@dcloudio/uni-h5', '@dcloudio/uni-h5-vue'],
+      },
+      define: createDefine(env.command, config),
+    }
+  },
   configResolved(config) {
     initLogger(config)
   },
+  handleHotUpdate: createHandleHotUpdate(),
 }
 
 export default [
@@ -42,5 +56,7 @@ export default [
   uniPagesJsonPlugin(),
   uniInjectPlugin(),
   uniCssPlugin(),
+  uniSSRPlugin(),
+  uniSetupPlugin(),
   UniH5Plugin,
 ]

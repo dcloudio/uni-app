@@ -1,8 +1,8 @@
 import path from 'path'
 import slash from 'slash'
 import { UserConfig } from 'vite'
+import { initEasycomsOnce } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
-import { initEasycomsOnce } from '../utils'
 
 export function createBuild(
   options: VitePluginUniResolvedOptions
