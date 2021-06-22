@@ -51,7 +51,7 @@ export const showToast = {
   icon: {
     default: 'success',
     validator (icon, params) {
-      if (['success', 'loading', 'none'].indexOf(icon) === -1) {
+      if (['success', 'loading', 'error', 'none'].indexOf(icon) === -1) {
         params.icon = 'success'
       }
     }

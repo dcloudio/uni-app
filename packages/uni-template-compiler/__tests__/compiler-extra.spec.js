@@ -64,14 +64,14 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<view class="static" :class="[{ active: isActive }, errorClass]"></view>',
-      '<view class="{{[\'static data-v-4\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
+      '<view class="{{[\'static\',\'data-v-4\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
         scopeId: 'data-v-4'
       }
     )
     assertCodegen(
       '<view ref="ref" :class="[{ active: isActive }, errorClass]"></view>',
-      '<view data-ref="ref" class="{{[\'data-v-5 vue-ref\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
+      '<view data-ref="ref" class="{{[\'data-v-5\',\'vue-ref\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
         scopeId: 'data-v-5'
       }
@@ -92,7 +92,7 @@ describe('mp:compiler-extra', () => {
     //     )
     assertCodegen(
       '<view :class="view" class="view"></view>',
-      '<view class="{{[\'view data-v-7\',view]}}"></view>',
+      '<view class="{{[\'view\',\'data-v-7\',view]}}"></view>',
       undefined, {
         scopeId: 'data-v-7'
       }
@@ -378,23 +378,23 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<p class="static" :class="{ active: isActive, \'text-danger\': hasError }">2</p>',
-      '<view class="{{[\'static _p\',(isActive)?\'active\':\'\',(hasError)?\'text-danger\':\'\']}}">2</view>'
+      '<view class="{{[\'static\',\'_p\',(isActive)?\'active\':\'\',(hasError)?\'text-danger\':\'\']}}">2</view>'
     )
     assertCodegen(
       '<p class="static" :class="[activeClass, errorClass]">3</p>',
-      '<view class="{{[\'static _p\',activeClass,errorClass]}}">3</view>'
+      '<view class="{{[\'static\',\'_p\',activeClass,errorClass]}}">3</view>'
     )
     assertCodegen(
       '<p class="static" :class="[isActive ? activeClass : \'\', errorClass]">4</p>',
-      '<view class="{{[\'static _p\',isActive?activeClass:\'\',errorClass]}}">4</view>'
+      '<view class="{{[\'static\',\'_p\',isActive?activeClass:\'\',errorClass]}}">4</view>'
     )
     assertCodegen(
       '<p class="static" :class="[{ active: isActive }, errorClass]">5</p>',
-      '<view class="{{[\'static _p\',[(isActive)?\'active\':\'\'],errorClass]}}">5</view>'
+      '<view class="{{[\'static\',\'_p\',[(isActive)?\'active\':\'\'],errorClass]}}">5</view>'
     )
     assertCodegen(
       '<div class="container" :class="computedClassObject">6</div>',
-      '<view class="{{[\'container _div\',computedClassObject]}}">6</view>'
+      '<view class="{{[\'container\',\'_div\',computedClassObject]}}">6</view>'
     )
     //         assertCodegen(
     //             `<div class="container" :class="computedClassObject">6</div>`,
@@ -411,7 +411,7 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<p :class="classStr1 || classStr2" class="bg">9</p>',
-      '<view class="{{[\'bg _p\',classStr1||classStr2]}}">9</view>'
+      '<view class="{{[\'bg\',\'_p\',classStr1||classStr2]}}">9</view>'
     )
   })
 

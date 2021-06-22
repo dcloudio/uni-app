@@ -8,7 +8,8 @@
 		"es6": false,
 		"postcss": false,
 		"minified": false,
-		"newFeature": true
+		"newFeature": true,
+    "nodeModules": false
 	},
 	"compileType": "miniprogram",
 	"libVersion": "1.6.3",

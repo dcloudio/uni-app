@@ -64,7 +64,7 @@ module.exports = function getResolveScopedSlots (parent, state) {
     updateIds(vueId, slot, params.node.name)
   }
   const fnBody = fn.get('value.body')
-  if (needSlotMode(fnBody, ids)) {
+  if (state.options.scopedSlotsCompiler === 'augmented' || needSlotMode(fnBody, ids)) {
     if (replaceId(fnBody, ids)) {
       const orgin = fnBody.get('body.0.argument')
       const elements = orgin.get('elements')
