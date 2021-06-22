@@ -19,7 +19,9 @@ import { useNativeEvent, NativeEventTrigger } from '../../helpers/useEvent'
 import { pixelRatio, wrapper, initHidpi } from '../../helpers/hidpi'
 import { once } from '@dcloudio/uni-shared'
 
-const initHidpiOnce = /*#__PURE__*/ once(initHidpi)
+const initHidpiOnce = /*#__PURE__*/ once(() => {
+  return __NODE_JS__ ? onMounted(initHidpi) : initHidpi()
+})
 
 function $getRealPath(src: string) {
   return src ? getRealPath(src) : src

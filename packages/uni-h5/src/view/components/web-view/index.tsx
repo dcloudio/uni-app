@@ -1,4 +1,12 @@
-import { ref, onMounted, Ref, onActivated, onDeactivated, Teleport } from 'vue'
+import {
+  ref,
+  onMounted,
+  Ref,
+  onActivated,
+  onDeactivated,
+  watchEffect,
+  onBeforeUnmount,
+} from 'vue'
 import {
   defineBuiltInComponent,
   ResizeSensor,
@@ -25,15 +33,34 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'WebView',
   props,
-  setup(props, { attrs }) {
+  setup(props) {
     Invoke()
     const rootRef: RootRef = ref(null)
     const iframeRef: RootRef = ref(null)
-    const _resize = useWebViewSize(rootRef, iframeRef)
     const { $attrs, $excludeAttrs, $listeners } = useAttrs({
       excludeListeners: true,
     })
+    let _resize: Function
 
+    const renderIframe = () => {
+      const iframe = document.createElement('iframe')
+      watchEffect(() => {
+        for (const key in $attrs.value) {
+          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+            const attr = ($attrs.value as any)[key]
+            ;(iframe as any)[key] = attr
+          }
+        }
+      })
+      watchEffect(() => {
+        iframe.src = getRealPath(props.src)
+      })
+      document.body.appendChild(iframe)
+      iframeRef.value = iframe
+      _resize = useWebViewSize(rootRef, iframeRef)
+    }
+
+    __NODE_JS__ ? onMounted(renderIframe) : renderIframe()
     onMounted(() => {
       _resize()
     })
@@ -44,6 +71,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     onDeactivated(() => {
       iframeRef.value && (iframeRef.value.style.display = 'none')
+    })
+
+    onBeforeUnmount(() => {
+      document.body.removeChild(iframeRef.value!)
     })
 
     return () => {
@@ -58,13 +89,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <ResizeSensor onResize={_resize} />
           </uni-web-view>
 
-          <Teleport to="body">
+          {/* TODO 等待teleport组件支持ssr */}
+          {/* <Teleport to="body">
             <iframe
               ref={iframeRef}
               src={getRealPath(props.src)}
               {...$attrs.value}
             ></iframe>
-          </Teleport>
+          </Teleport> */}
         </>
       )
     }
