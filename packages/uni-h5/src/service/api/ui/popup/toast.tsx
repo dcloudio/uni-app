@@ -12,6 +12,7 @@ import {
   onEventPrevent,
   createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
+  ICON_PATH_WARN,
 } from '@dcloudio/uni-core'
 import {
   initI18nShowToastMsgsOnce,
@@ -94,16 +95,27 @@ export default /*#__PURE__*/ defineComponent({
 })
 
 function useToastIcon(props: ToastProps) {
-  const Icon = computed(() =>
-    props.icon === 'success' ? (
-      createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 38), {
-        class: ToastIconClassName,
-      })
-    ) : props.icon === 'loading' ? (
-      // @ts-ignore
-      <i class={ToastIconClassName} class="uni-loading"></i>
-    ) : null
-  )
+  const Icon = computed(() => {
+    switch (props.icon) {
+      case 'success':
+        return createVNode(
+          createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 38),
+          {
+            class: ToastIconClassName,
+          }
+        )
+      case 'error':
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, '#fff', 38), {
+          class: ToastIconClassName,
+        })
+      case 'loading':
+        // @ts-ignore
+        return <i class={ToastIconClassName} class="uni-loading"></i>
+
+      default:
+        return null
+    }
+  })
 
   return {
     Icon,

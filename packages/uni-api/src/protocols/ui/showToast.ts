@@ -3,11 +3,12 @@ import { elemInArray } from '../../helpers/protocol'
 
 export const API_SHOW_TOAST = 'showToast'
 export type API_TYPE_SHOW_TOAST = typeof uni.showToast
-export type API_TYPE_SHOW_TOAST_ICON = 'success' | 'loading' | 'none'
+export type API_TYPE_SHOW_TOAST_ICON = 'success' | 'loading' | 'none' | 'error'
 export const SHOW_TOAST_ICON: API_TYPE_SHOW_TOAST_ICON[] = [
   'success',
   'loading',
   'none',
+  'error',
 ]
 
 export const ShowToastProtocol: ApiProtocol<API_TYPE_SHOW_TOAST> = {
