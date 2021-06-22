@@ -1,7 +1,7 @@
 export function getBaseSystemInfo() {
   return {}
 }
-export function getRealPath() {}
+export { getRealPath } from './getRealPath'
 export function operateVideoPlayer() {}
 export function operateMap() {}
 export function requestComponentInfo() {}

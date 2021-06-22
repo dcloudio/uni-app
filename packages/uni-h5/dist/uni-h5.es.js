@@ -3707,6 +3707,30 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
     callbackId: cId
   });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
+const innerAudioContextEventNames = [
+  "onCanplay",
+  "onPlay",
+  "onPause",
+  "onStop",
+  "onEnded",
+  "onTimeUpdate",
+  "onError",
+  "onWaiting",
+  "onSeeking",
+  "onSeeked"
+];
+const innerAudioContextOffEventNames = [
+  "offCanplay",
+  "offPlay",
+  "offPause",
+  "offStop",
+  "offEnded",
+  "offTimeUpdate",
+  "offError",
+  "offWaiting",
+  "offSeeking",
+  "offSeeked"
+];
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -4834,8 +4858,7 @@ const API_SHOW_TOAST = "showToast";
 const SHOW_TOAST_ICON = [
   "success",
   "loading",
-  "none",
-  "error"
+  "none"
 ];
 const ShowToastProtocol = {
   title: String,
@@ -15048,30 +15071,6 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const innerAudioContextEventNames = [
-  "onCanplay",
-  "onPlay",
-  "onPause",
-  "onStop",
-  "onEnded",
-  "onTimeUpdate",
-  "onError",
-  "onWaiting",
-  "onSeeking",
-  "onSeeked"
-];
-const innerAudioContextOffEventNames = [
-  "offCanplay",
-  "offPlay",
-  "offPause",
-  "offStop",
-  "offEnded",
-  "offTimeUpdate",
-  "offError",
-  "offWaiting",
-  "offSeeking",
-  "offSeeked"
-];
 const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function(callback) {
@@ -15093,7 +15092,6 @@ const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
 class InnerAudioContext {
   constructor() {
     this._src = "";
-    initInnerAudioContextEventOnce();
     var audio = this._audio = new Audio();
     this._stoping = false;
     const propertys = [
@@ -15165,6 +15163,7 @@ class InnerAudioContext {
         });
       }, false);
     });
+    initInnerAudioContextEventOnce();
   }
   play() {
     this._stoping = false;
@@ -17446,24 +17445,11 @@ var Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
-  const Icon = computed(() => {
-    switch (props2.icon) {
-      case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
-          class: ToastIconClassName
-        });
-      case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, "#fff", 38), {
-          class: ToastIconClassName
-        });
-      case "loading":
-        return createVNode("i", {
-          "class": [ToastIconClassName, "uni-loading"]
-        }, null, 2);
-      default:
-        return null;
-    }
-  });
+  const Icon = computed(() => props2.icon === "success" ? createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
+    class: ToastIconClassName
+  }) : props2.icon === "loading" ? createVNode("i", {
+    "class": [ToastIconClassName, "uni-loading"]
+  }, null, 2) : null);
   return {
     Icon
   };

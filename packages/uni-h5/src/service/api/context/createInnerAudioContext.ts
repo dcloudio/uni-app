@@ -5,32 +5,13 @@ import {
 } from '@dcloudio/uni-api'
 import type { API_TYPE_CREATEE_INNER_AUDIO_CONTEXT } from '@dcloudio/uni-api'
 import { once } from '@dcloudio/uni-shared'
+import {
+  InnerAudioContextEvent,
+  innerAudioContextEventNames,
+  innerAudioContextOffEventNames,
+} from '@dcloudio/uni-api'
 
 //#region types
-type InnerAudioContextEvent =
-  | 'onCanplay'
-  | 'onPlay'
-  | 'onPause'
-  | 'onStop'
-  | 'onEnded'
-  | 'onTimeUpdate'
-  | 'onError'
-  | 'onWaiting'
-  | 'onSeeking'
-  | 'onSeeked'
-
-type InnerAudioContextOff =
-  | 'offCanplay'
-  | 'offPlay'
-  | 'offPause'
-  | 'offStop'
-  | 'offEnded'
-  | 'offTimeUpdate'
-  | 'offError'
-  | 'offWaiting'
-  | 'offSeeking'
-  | 'offSeeked'
-
 type Property =
   | 'src'
   | 'autoplay'
@@ -41,37 +22,7 @@ type Property =
   | 'volume'
 
 type InnerAudioProperty = keyof Pick<HTMLMediaElement, Property>
-
 //#endregion
-
-/**
- * 可以批量设置的监听事件
- */
-const innerAudioContextEventNames: InnerAudioContextEvent[] = [
-  'onCanplay',
-  'onPlay',
-  'onPause',
-  'onStop',
-  'onEnded',
-  'onTimeUpdate',
-  'onError',
-  'onWaiting',
-  'onSeeking',
-  'onSeeked',
-]
-
-const innerAudioContextOffEventNames: InnerAudioContextOff[] = [
-  'offCanplay',
-  'offPlay',
-  'offPause',
-  'offStop',
-  'offEnded',
-  'offTimeUpdate',
-  'offError',
-  'offWaiting',
-  'offSeeking',
-  'offSeeked',
-]
 
 const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
   // 批量设置音频上下文事件监听方法
@@ -159,7 +110,6 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
    * 音频上下文初始化
    */
   constructor() {
-    initInnerAudioContextEventOnce()
     var audio = (this._audio = new Audio())
     this._stoping = false
     // 和audio对象同名同效果的属性
@@ -248,6 +198,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
         false
       )
     })
+    initInnerAudioContextEventOnce()
   }
 
   /**
