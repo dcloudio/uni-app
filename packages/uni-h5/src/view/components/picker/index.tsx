@@ -218,6 +218,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const pickerRef: HTMLRef = ref(null)
     const selectRef: HTMLRef = ref(null)
     const inputRef: HTMLRef = ref(null)
+    const pickerRender = ref(false) // 防止ssr渲染的时候语言报错
     const { state, rangeArray } = usePickerState(props)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const {
@@ -265,6 +266,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       pickerRef.value && pickerRef.value.remove()
     })
 
+    onMounted(() => {
+      pickerRender.value = true
+    })
+
     return () => {
       const { visible, contentVisible, valueArray, popupStyle, valueSync } =
         state
@@ -277,93 +282,95 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           {...booleanAttrs}
           onClick={withWebEvent(_show)}
         >
-          <div
-            ref={pickerRef}
-            class="uni-picker-container"
-            // @ts-ignore
-            class={`uni-${mode}-${selectorTypeComputed.value}`}
-            onWheel={onEventPrevent}
-            onTouchmove={onEventPrevent}
-          >
-            <Transition name="uni-fade">
-              <div
-                v-show={visible}
-                class="uni-mask uni-picker-mask"
-                onClick={withWebEvent(_cancel)}
-                onMousemove={_fixInputPosition}
-              />
-            </Transition>
-            {!system.value ? (
-              <div
-                class={{ 'uni-picker-toggle': visible }}
-                // @ts-ignore
-                class="uni-picker-custom"
-                style={popupStyle.content}
-              >
-                <div class="uni-picker-header" onClick={onEventStop}>
-                  <div
-                    class="uni-picker-action uni-picker-action-cancel"
-                    onClick={withWebEvent(_cancel)}
-                  >
-                    {t('uni.picker.cancel')}
-                  </div>
-                  <div
-                    class="uni-picker-action uni-picker-action-confirm"
-                    onClick={_change}
-                  >
-                    {t('uni.picker.done')}
-                  </div>
-                </div>
-                {contentVisible ? (
-                  <PickerView
-                    value={_l10nColumn(valueArray)}
-                    class="uni-picker-content"
-                    // @ts-ignore
-                    onChange={_pickerViewChange}
-                  >
-                    {renderList(
-                      _l10nColumn(rangeArray.value as []),
-                      (rangeItem, index0) => (
-                        <PickerViewColumn key={index0}>
-                          {renderList(rangeItem, (item, index) => (
-                            <div key={index} class="uni-picker-item">
-                              {typeof item === 'object'
-                                ? item[rangeKey] || ''
-                                : _l10nItem(item, index0)}
-                            </div>
-                          ))}
-                        </PickerViewColumn>
-                      )
-                    )}
-                  </PickerView>
-                ) : null}
+          {pickerRender.value ? (
+            <div
+              ref={pickerRef}
+              class="uni-picker-container"
+              // @ts-ignore
+              class={`uni-${mode}-${selectorTypeComputed.value}`}
+              onWheel={onEventPrevent}
+              onTouchmove={onEventPrevent}
+            >
+              <Transition name="uni-fade">
                 <div
-                  ref={selectRef}
-                  class="uni-picker-select"
-                  onWheel={onEventStop}
-                  onTouchmove={onEventStop}
+                  v-show={visible}
+                  class="uni-mask uni-picker-mask"
+                  onClick={withWebEvent(_cancel)}
+                  onMousemove={_fixInputPosition}
+                />
+              </Transition>
+              {!system.value ? (
+                <div
+                  class={{ 'uni-picker-toggle': visible }}
+                  // @ts-ignore
+                  class="uni-picker-custom"
+                  style={popupStyle.content}
                 >
-                  {renderList(rangeArray.value[0], (item, index) => (
+                  <div class="uni-picker-header" onClick={onEventStop}>
                     <div
-                      key={index}
-                      class="uni-picker-item"
-                      // @ts-ignore
-                      class={{ selected: valueArray[0] === index }}
-                      onClick={() => {
-                        valueArray[0] = index
-                        _change()
-                      }}
+                      class="uni-picker-action uni-picker-action-cancel"
+                      onClick={withWebEvent(_cancel)}
                     >
-                      {typeof item === 'object'
-                        ? (item as any)[rangeKey] || ''
-                        : item}
+                      {t('uni.picker.cancel')}
                     </div>
-                  ))}
+                    <div
+                      class="uni-picker-action uni-picker-action-confirm"
+                      onClick={_change}
+                    >
+                      {t('uni.picker.done')}
+                    </div>
+                  </div>
+                  {contentVisible ? (
+                    <PickerView
+                      value={_l10nColumn(valueArray)}
+                      class="uni-picker-content"
+                      // @ts-ignore
+                      onChange={_pickerViewChange}
+                    >
+                      {renderList(
+                        _l10nColumn(rangeArray.value as []),
+                        (rangeItem, index0) => (
+                          <PickerViewColumn key={index0}>
+                            {renderList(rangeItem, (item, index) => (
+                              <div key={index} class="uni-picker-item">
+                                {typeof item === 'object'
+                                  ? item[rangeKey] || ''
+                                  : _l10nItem(item, index0)}
+                              </div>
+                            ))}
+                          </PickerViewColumn>
+                        )
+                      )}
+                    </PickerView>
+                  ) : null}
+                  <div
+                    ref={selectRef}
+                    class="uni-picker-select"
+                    onWheel={onEventStop}
+                    onTouchmove={onEventStop}
+                  >
+                    {renderList(rangeArray.value[0], (item, index) => (
+                      <div
+                        key={index}
+                        class="uni-picker-item"
+                        // @ts-ignore
+                        class={{ selected: valueArray[0] === index }}
+                        onClick={() => {
+                          valueArray[0] = index
+                          _change()
+                        }}
+                      >
+                        {typeof item === 'object'
+                          ? (item as any)[rangeKey] || ''
+                          : item}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={popupStyle.triangle} />
                 </div>
-                <div style={popupStyle.triangle} />
-              </div>
-            ) : null}
-          </div>
+              ) : null}
+            </div>
+          ) : null}
           <div>{slots.default && slots.default()}</div>
           {system.value ? (
             <div

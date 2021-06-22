@@ -1245,8 +1245,8 @@ function formatApiArgs(args, options) {
 function invokeSuccess(id, name, res) {
   return invokeCallback(id, shared.extend(res || {}, { errMsg: name + ":ok" }));
 }
-function invokeFail(id, name, err) {
-  return invokeCallback(id, { errMsg: name + ":fail" + (err ? " " + err : "") });
+function invokeFail(id, name, errMsg, errRes) {
+  return invokeCallback(id, Object.assign({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -1272,7 +1272,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id, name, res),
-      reject: (err) => invokeFail(id, name, err)
+      reject: (errMsg2, errRes) => invokeFail(id, name, errMsg2, errRes)
     });
   };
 }
@@ -1594,31 +1594,9 @@ function wrapper(canvas) {
   canvas.height = canvas.offsetHeight * pixelRatio;
   canvas.getContext("2d").__hidpi__ = true;
 }
-let isHidpi = false;
-function initHidpi() {
-  if (isHidpi) {
-    return;
-  }
-  isHidpi = true;
-  const proto = CanvasRenderingContext2D.prototype;
-  proto.drawImageByCanvas = function(_super) {
-    return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
-      if (!this.__hidpi__) {
-        return _super.apply(this, arguments);
-      }
-      srcx *= pixelRatio;
-      srcy *= pixelRatio;
-      srcw *= pixelRatio;
-      srch *= pixelRatio;
-      desx *= pixelRatio;
-      desy *= pixelRatio;
-      desw = isScale ? desw * pixelRatio : desw;
-      desh = isScale ? desh * pixelRatio : desh;
-      _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
-    };
-  }(proto.drawImage);
-}
-const initHidpiOnce = /* @__PURE__ */ uniShared.once(initHidpi);
+const initHidpiOnce = /* @__PURE__ */ uniShared.once(() => {
+  return void 0;
+});
 function $getRealPath(src) {
   return src ? getRealPath(src) : src;
 }
@@ -7654,13 +7632,10 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$7,
-  setup(props2, {
-    attrs
-  }) {
+  setup(props2) {
     Invoke();
     const rootRef = vue.ref(null);
-    const iframeRef = vue.ref(null);
-    const _resize = useWebViewSize(rootRef, iframeRef);
+    vue.ref(null);
     const {
       $attrs,
       $excludeAttrs,
@@ -7668,6 +7643,7 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
+    let _resize;
     return () => {
       return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-web-view", vue.mergeProps($listeners.value, $excludeAttrs.value, {
         "ref": rootRef
@@ -7675,37 +7651,10 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
         default: () => [vue.createVNode(ResizeSensor, {
           "onResize": _resize
         }, null, 8, ["onResize"])]
-      }, 16), vue.createVNode(vue.Teleport, {
-        "to": "body"
-      }, {
-        default: () => [vue.createVNode("iframe", vue.mergeProps({
-          "ref": iframeRef,
-          "src": getRealPath(props2.src)
-        }, $attrs.value), null, 16, ["src"])]
-      })]);
+      }, 16)]);
     };
   }
 });
-function useWebViewSize(rootRef, iframeRef) {
-  const _resize = () => {
-    const {
-      top,
-      left,
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    iframeRef.value && uniShared.updateElementStyle(iframeRef.value, {
-      position: "absolute",
-      display: "block",
-      border: "0",
-      top: top + "px",
-      left: left + "px",
-      width: width + "px",
-      height: height + "px"
-    });
-  };
-  return _resize;
-}
 const props$6 = {
   id: {
     type: [Number, String],
@@ -8792,6 +8741,7 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
     const pickerRef = vue.ref(null);
     const selectRef = vue.ref(null);
     const inputRef = vue.ref(null);
+    const pickerRender = vue.ref(false);
     const {
       state,
       rangeArray
@@ -8845,7 +8795,7 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
       }, booleanAttrs, {
         "onClick": withWebEvent(_show)
       }), {
-        default: () => [vue.createVNode("div", {
+        default: () => [pickerRender.value ? vue.createVNode("div", {
           "ref": pickerRef,
           "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
           "onWheel": onEventPrevent,
@@ -8906,7 +8856,7 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
           }
         }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), vue.createVNode("div", {
           "style": popupStyle.triangle
-        }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]), vue.createVNode("div", null, [slots.default && slots.default()]), system.value ? vue.createVNode("div", {
+        }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, vue.createVNode("div", null, [slots.default && slots.default()]), system.value ? vue.createVNode("div", {
           "class": "uni-picker-system",
           "onMousemove": withWebEvent(_fixInputPosition)
         }, [vue.createVNode("input", {

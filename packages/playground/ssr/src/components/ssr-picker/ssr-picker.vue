@@ -38,7 +38,7 @@
     </view>
     <!-- #endif -->
 
-    <!-- <view class="uni-title uni-common-pl">时间选择器</view>
+    <view class="uni-title uni-common-pl">时间选择器</view>
     <view class="uni-list">
       <view class="uni-list-cell">
         <view class="uni-list-cell-left"> 当前选择 </view>
@@ -75,7 +75,7 @@
           </picker>
         </view>
       </view>
-    </view> -->
+    </view>
     <view class="uni-picker-tips">
       注：选择当前时间 ±10 年之间的时间, 不在区间内不能选中
     </view>
@@ -122,7 +122,7 @@ export default {
   methods: {
     bindPickerChange: function (e) {
       console.log("picker发送选择改变，携带值为：" + e.detail.value);
-      // this.index = e.detail.value;
+      this.index = e.detail.value;
     },
     bindMultiPickerColumnChange: function (e) {
       console.log("修改的列为：" + e.detail.column + "，值为：" + e.detail.value);

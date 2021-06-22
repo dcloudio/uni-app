@@ -1,6 +1,6 @@
 import { isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
-import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, Teleport, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
+import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
 var subscriber = {
@@ -694,7 +694,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -706,10 +706,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -2350,8 +2350,8 @@ function formatApiArgs(args, options) {
 function invokeSuccess(id2, name, res) {
   return invokeCallback(id2, extend(res || {}, { errMsg: name + ":ok" }));
 }
-function invokeFail(id2, name, err) {
-  return invokeCallback(id2, { errMsg: name + ":fail" + (err ? " " + err : "") });
+function invokeFail(id2, name, errMsg, errRes) {
+  return invokeCallback(id2, Object.assign({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -2413,7 +2413,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (err) => invokeFail(id2, name, err)
+      reject: (errMsg2, errRes) => invokeFail(id2, name, errMsg2, errRes)
     });
   };
 }
@@ -4834,7 +4834,8 @@ const API_SHOW_TOAST = "showToast";
 const SHOW_TOAST_ICON = [
   "success",
   "loading",
-  "none"
+  "none",
+  "error"
 ];
 const ShowToastProtocol = {
   title: String,
@@ -5879,7 +5880,9 @@ function initHidpi() {
     }(proto.drawImage);
   }
 }
-const initHidpiOnce = /* @__PURE__ */ once(initHidpi);
+const initHidpiOnce = /* @__PURE__ */ once(() => {
+  return initHidpi();
+});
 function $getRealPath(src) {
   return src ? getRealPath(src) : src;
 }
@@ -12988,7 +12991,7 @@ function normalizePageMeta(pageMeta) {
       let offset = rpx2px(refreshOptions.offset);
       const { type } = navigationBar;
       if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+        offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       refreshOptions.offset = offset;
       refreshOptions.height = rpx2px(refreshOptions.height);
@@ -14320,13 +14323,10 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$e,
-  setup(props2, {
-    attrs: attrs2
-  }) {
+  setup(props2) {
     Invoke();
     const rootRef = ref(null);
     const iframeRef = ref(null);
-    const _resize = useWebViewSize(rootRef, iframeRef);
     const {
       $attrs,
       $excludeAttrs,
@@ -14334,6 +14334,25 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
+    let _resize;
+    const renderIframe = () => {
+      const iframe = document.createElement("iframe");
+      watchEffect(() => {
+        for (const key in $attrs.value) {
+          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+            const attr2 = $attrs.value[key];
+            iframe[key] = attr2;
+          }
+        }
+      });
+      watchEffect(() => {
+        iframe.src = getRealPath(props2.src);
+      });
+      document.body.appendChild(iframe);
+      iframeRef.value = iframe;
+      _resize = useWebViewSize(rootRef, iframeRef);
+    };
+    renderIframe();
     onMounted(() => {
       _resize();
     });
@@ -14343,6 +14362,9 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
     onDeactivated(() => {
       iframeRef.value && (iframeRef.value.style.display = "none");
     });
+    onBeforeUnmount(() => {
+      document.body.removeChild(iframeRef.value);
+    });
     return () => {
       return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
         "ref": rootRef
@@ -14350,14 +14372,7 @@ var index$7 = /* @__PURE__ */ defineBuiltInComponent({
         default: () => [createVNode(ResizeSensor, {
           "onResize": _resize
         }, null, 8, ["onResize"])]
-      }, 16), createVNode(Teleport, {
-        "to": "body"
-      }, {
-        default: () => [createVNode("iframe", mergeProps({
-          "ref": iframeRef,
-          "src": getRealPath(props2.src)
-        }, $attrs.value), null, 16, ["src"])]
-      })]);
+      }, 16)]);
     };
   }
 });
@@ -15193,7 +15208,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15306,12 +15321,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
@@ -15331,10 +15346,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -17431,11 +17446,24 @@ var Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
-  const Icon = computed(() => props2.icon === "success" ? createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
-    class: ToastIconClassName
-  }) : props2.icon === "loading" ? createVNode("i", {
-    "class": [ToastIconClassName, "uni-loading"]
-  }, null, 2) : null);
+  const Icon = computed(() => {
+    switch (props2.icon) {
+      case "success":
+        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
+          class: ToastIconClassName
+        });
+      case "error":
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, "#fff", 38), {
+          class: ToastIconClassName
+        });
+      case "loading":
+        return createVNode("i", {
+          "class": [ToastIconClassName, "uni-loading"]
+        }, null, 2);
+      default:
+        return null;
+    }
+  });
   return {
     Icon
   };
@@ -19535,6 +19563,7 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
     const pickerRef = ref(null);
     const selectRef = ref(null);
     const inputRef = ref(null);
+    const pickerRender = ref(false);
     const {
       state: state2,
       rangeArray
@@ -19570,6 +19599,9 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
     onBeforeUnmount(() => {
       pickerRef.value && pickerRef.value.remove();
     });
+    onMounted(() => {
+      pickerRender.value = true;
+    });
     return () => {
       let _slot2;
       const {
@@ -19591,7 +19623,7 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
       }, booleanAttrs, {
         "onClick": withWebEvent(_show)
       }), {
-        default: () => [createVNode("div", {
+        default: () => [pickerRender.value ? createVNode("div", {
           "ref": pickerRef,
           "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
           "onWheel": onEventPrevent,
@@ -19652,7 +19684,7 @@ var index$3 = /* @__PURE__ */ defineBuiltInComponent({
           }
         }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
           "style": popupStyle.triangle
-        }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]), createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+        }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
           "class": "uni-picker-system",
           "onMousemove": withWebEvent(_fixInputPosition)
         }, [createVNode("input", {
