@@ -1,13 +1,13 @@
 <template>
-  <!-- <text v-if="item">{{ item.title }}</text>
+  <text v-if="item">{{ item.title }}</text>
   <text v-else>...</text>
   <ssr-cover-image />
   <ssr-cover-view />
   <ssr-icon />
-  <ssr-image /> -->
+  <ssr-image />
   <!-- <ssr-match-media /> -->
   <!-- <ssr-movable-area /> -->
-  <!-- <ssr-progress />
+  <ssr-progress />
   <ssr-scroll-view />
   <ssr-swiper />
   <ssr-text />
@@ -23,7 +23,7 @@
   <ssr-slider />
   <ssr-map />
   <ssr-picker-view />
-  <ssr-picker /> -->
+  <ssr-picker />
   <ssr-webview />
 
   <!-- <ssr-video /> dataOptions is not a function -->
