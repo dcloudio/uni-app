@@ -28,9 +28,8 @@ export const offAccelerometerChange = <API_TYPE_OFF_ACCELEROMETER_CHANGE>(
 
 export const startAccelerometer = <API_TYPE_START_ACCELEROMETER>(
   defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
-    listener =
-      listener ||
-      plus.accelerometer.watchAcceleration(
+    if (!listener) {
+      listener = plus.accelerometer.watchAcceleration(
         (res) => {
           UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
             x: (res && res.xAxis) || 0,
@@ -46,6 +45,7 @@ export const startAccelerometer = <API_TYPE_START_ACCELEROMETER>(
           frequency: DEVICE_FREQUENCY,
         }
       )
+    }
 
     setTimeout(resolve, DEVICE_FREQUENCY)
   })
