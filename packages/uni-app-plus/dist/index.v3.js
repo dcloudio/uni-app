@@ -2790,7 +2790,7 @@ var serviceContext = (function () {
     icon: {
       default: 'success',
       validator (icon, params) {
-        if (['success', 'loading', 'none'].indexOf(icon) === -1) {
+        if (['success', 'loading', 'error', 'none'].indexOf(icon) === -1) {
           params.icon = 'success';
         }
       }
@@ -6471,6 +6471,7 @@ var serviceContext = (function () {
     geocode = false,
     altitude = false
   } = {}, callbackId) {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
     plus.geolocation.getCurrentPosition(
       position => {
         getLocationSuccess(type, position, callbackId);
@@ -6481,10 +6482,7 @@ var serviceContext = (function () {
           getLocationSuccess(type, e, callbackId);
           return
         }
-
-        invoke$1(callbackId, {
-          errMsg: 'getLocation:fail ' + e.message
-        });
+        errorCallback(e);
       }, {
         geocode: geocode,
         enableHighAccuracy: altitude
@@ -10258,7 +10256,7 @@ var serviceContext = (function () {
       });
       toast = true;
     } else {
-      if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
+      if (icon && !~['success', 'loading', 'error', 'none'].indexOf(icon)) {
         icon = 'success';
       }
       const waitingOptions = {
@@ -10285,11 +10283,11 @@ var serviceContext = (function () {
           interval: duration
         };
       } else {
-        if (icon === 'success') {
+        if (icon !== 'loading') {
           waitingOptions.loading = {
             display: 'block',
             height: '55px',
-            icon: '__uniappsuccess.png',
+            icon: icon === 'success' ? '__uniappsuccess.png' : '__uniapperror.png',
             interval: duration
           };
         }
