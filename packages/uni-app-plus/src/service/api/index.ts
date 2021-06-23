@@ -1,3 +1,4 @@
+export * from './storage/storage'
 export * from './file/getFileInfo'
 
 export * from './device/compass'
