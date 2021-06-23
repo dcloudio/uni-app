@@ -106,7 +106,7 @@ weex的组件和JS API，与uni-app不同。uni-app与微信小程序相同。
 ```
 
 
-在 `manifest.json` 配置文件中，HBuilderX2.4之前版本，默认值为 `weex` 模式，2.4起版本默认值改为 `uni-app` 模式。
+在 `manifest.json` 配置文件中，HBuilderX2.4之前版本，默认值为 `weex` 模式，HBuilderX2.4+版本默认值改为 `uni-app` 模式。
 
 
 weex 编译模式不支持 ```onNavigationBarButtonTap``` 生命周期函数的写法。在 nvue 中监听原生标题栏按钮点击事件，详见：[uni.onNavigationBarButtonTap](https://uniapp.dcloud.net.cn/frame?id=%e9%a1%b5%e9%9d%a2%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f)。
@@ -121,8 +121,8 @@ nvue 的页面跳转，与 weex 不同，仍然遵循 uni-app 的路由模型。
 
 注意：
 
-- uni-app框架不会给组件自动套`scroller`容器；
-- 若nuve页面有`recycle-list`组件时，`uni-app`框架也不会自动给页面嵌套`scroller`容器
+- `uni-app`框架仅对nvue页面嵌套`scroller`容器，不会给组件自动套`scroller`容器；
+- 若nvue页面有`recycle-list`组件时，`uni-app`框架也不会自动给页面嵌套`scroller`容器
 - 若你不希望自动嵌套`scroller`容器，可在`pages.json`中通过如下配置进行关闭：
 
 ```javascript
