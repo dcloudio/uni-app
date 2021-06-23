@@ -27,7 +27,8 @@ function updateCssVar (vm) {
     const pageVm = vm.$parent.$parent
     const navigationBarType = pageVm.navigationBar.type
     const windowTopValue = navigationBarType === 'default' || navigationBarType === 'float' ? NAVBAR_HEIGHT : 0
-    const windowBottomValue = getApp().$children[0].showTabBar ? isNaN(uniConfigTabbarHeight) ? TABBAR_HEIGHT : uniConfigTabbarHeight : 0
+    let windowBottomValue = getApp().$children[0].showTabBar ? isNaN(uniConfigTabbarHeight) ? TABBAR_HEIGHT : uniConfigTabbarHeight : 0
+    windowBottomValue = uni.upx2px(windowBottomValue)
     const envMethod = uni.canIUse('css.env') ? 'env' : (uni.canIUse('css.constant') ? 'constant' : '')
     const windowTop = windowTopValue && envMethod ? `calc(${windowTopValue}px + ${envMethod}(safe-area-inset-top))`
       : `${windowTopValue}px`
