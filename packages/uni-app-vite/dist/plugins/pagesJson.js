@@ -19,7 +19,7 @@ function uniPagesJsonPlugin() {
                 this.emitFile({
                     fileName: `app-config-service.js`,
                     type: 'asset',
-                    source: uni_cli_shared_1.normalizeAppConfigService(pagesJson),
+                    source: uni_cli_shared_1.normalizeAppConfigService(pagesJson, uni_cli_shared_1.parseManifestJsonOnce(process.env.UNI_INPUT_DIR)),
                 });
             },
         };

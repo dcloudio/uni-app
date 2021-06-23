@@ -12,7 +12,7 @@ function uniManifestJsonPlugin() {
                 if (!opts.filter(id)) {
                     return;
                 }
-                manifestJson = uni_cli_shared_1.normalizeAppManifestJson(JSON.parse(code));
+                manifestJson = uni_cli_shared_1.normalizeAppManifestJson(JSON.parse(code), uni_cli_shared_1.parsePagesJsonOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM));
                 return '';
             },
             generateBundle() {

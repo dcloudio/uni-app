@@ -185,7 +185,7 @@ function generatePagesDefineCode(
 
 function generatePageRoute(
   { path, meta }: UniApp.UniRoute,
-  config: ResolvedConfig
+  _config: ResolvedConfig
 ) {
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
@@ -217,7 +217,9 @@ function renderPage(component){
 }
 ${globalName}.__uniRoutes=[${[
     ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
-  ].join(',')}]`
+  ].join(
+    ','
+  )}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).substr(1),uniRoute))`
 }
 
 function generateConfig(

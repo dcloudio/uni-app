@@ -1,23 +1,5 @@
-import { recursive } from 'merge'
-export function normalizeAppManifestJson(
-  userManifestJson: Record<string, any>
-) {
-  const manifestJson = getDefaultManifestJson()
-  recursive(
-    true,
-    manifestJson,
-    {
-      id: userManifestJson.appid || '',
-      name: userManifestJson.name || '',
-      description: userManifestJson.description || '',
-      version: {
-        name: userManifestJson.versionName,
-        code: userManifestJson.versionCode,
-      },
-    },
-    { plus: userManifestJson['app-plus'] }
-  )
-  return manifestJson
+export function initDefaultManifestJson() {
+  return JSON.parse(defaultManifestJson)
 }
 
 const defaultManifestJson = `{
@@ -55,7 +37,3 @@ const defaultManifestJson = `{
         "launchwebview": {}
     }
   }`
-
-function getDefaultManifestJson() {
-  return JSON.parse(defaultManifestJson)
-}

@@ -4801,6 +4801,7 @@ const ShowActionSheetProtocol = {
     type: Array,
     required: true
   },
+  title: String,
   itemColor: String,
   popover: Object
 };

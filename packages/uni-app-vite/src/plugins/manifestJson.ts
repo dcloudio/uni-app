@@ -3,6 +3,7 @@ import { Plugin } from 'vite'
 import {
   defineUniManifestJsonPlugin,
   normalizeAppManifestJson,
+  parsePagesJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniManifestJsonPlugin(): Plugin {
@@ -15,7 +16,13 @@ export function uniManifestJsonPlugin(): Plugin {
         if (!opts.filter(id)) {
           return
         }
-        manifestJson = normalizeAppManifestJson(JSON.parse(code))
+        manifestJson = normalizeAppManifestJson(
+          JSON.parse(code),
+          parsePagesJsonOnce(
+            process.env.UNI_INPUT_DIR,
+            process.env.UNI_PLATFORM
+          )
+        )
         return ''
       },
       generateBundle() {

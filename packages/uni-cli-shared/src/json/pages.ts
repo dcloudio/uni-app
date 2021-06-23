@@ -300,16 +300,15 @@ export function normalizePagesRoute(
     let windowTop = 0
     const meta = extend(
       {
-        route: pageOptions.path,
-        isNVue: isNVue ? true : undefined,
+        isNVue: isNVue || undefined,
         isQuit: isEntry || isTabBar ? true : undefined,
-        isEntry,
-        isTabBar,
-        tabBarIndex,
-        windowTop,
+        isEntry: isEntry || undefined,
+        isTabBar: isTabBar || undefined,
+        tabBarIndex: isTabBar ? tabBarIndex : undefined,
+        windowTop: windowTop || undefined,
       },
       pageOptions.style
-    )
+    ) as UniApp.PageRouteMeta
     return {
       path: pageOptions.path,
       meta,

@@ -14,6 +14,10 @@ import { createTransformIndexHtml } from './transformIndexHtml'
 
 const debugUni = debug('vite:uni:plugin')
 
+const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+
+process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+
 export interface VitePluginUniOptions {
   inputDir?: string
   outputDir?: string

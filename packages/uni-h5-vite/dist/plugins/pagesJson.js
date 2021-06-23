@@ -150,7 +150,7 @@ function generatePagesDefineCode(pagesJson, _config) {
 }
 ` + pages.map((pageOptions) => generatePageDefineCode(pageOptions)).join('\n'));
 }
-function generatePageRoute({ path, meta }, config) {
+function generatePageRoute({ path, meta }, _config) {
     const { isEntry } = meta;
     const alias = isEntry ? `\n  alias:'/${path}',` : '';
     return `{
@@ -170,7 +170,7 @@ function renderPage(component){
 }
 ${globalName}.__uniRoutes=[${[
         ...generatePagesRoute(uni_cli_shared_1.normalizePagesRoute(pagesJson), config),
-    ].join(',')}]`;
+    ].join(',')}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).substr(1),uniRoute))`;
 }
 function generateConfig(globalName, pagesJson, config) {
     delete pagesJson.pages;

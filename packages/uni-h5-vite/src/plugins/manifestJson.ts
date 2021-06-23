@@ -1,6 +1,9 @@
 import { Plugin } from 'vite'
 
-import { defineUniManifestJsonPlugin } from '@dcloudio/uni-cli-shared'
+import {
+  defineUniManifestJsonPlugin,
+  normalizeNetworkTimeout,
+} from '@dcloudio/uni-cli-shared'
 
 const defaultRouter = {
   mode: 'hash',
@@ -13,13 +16,6 @@ const defaultAsync = {
   delay: 200,
   timeout: 60000,
   suspensible: true,
-}
-
-const defaultNetworkTimeout = {
-  request: 60000,
-  connectSocket: 60000,
-  uploadFile: 60000,
-  downloadFile: 60000,
 }
 
 const defaultQQMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2'
@@ -42,10 +38,7 @@ export function uniManifestJsonPlugin(): Plugin {
         }
         const async = { ...defaultAsync, ...((h5 && h5.async) || {}) }
 
-        const networkTimeout = {
-          ...defaultNetworkTimeout,
-          ...(manifest.networkTimeout || {}),
-        }
+        const networkTimeout = normalizeNetworkTimeout(manifest.networkTimeout)
 
         const sdkConfigs = (h5 && h5.sdkConfigs) || {}
 

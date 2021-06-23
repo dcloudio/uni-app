@@ -26,3 +26,19 @@ function parseCompatConfig(inputDir: string): CompilerCompatConfig {
 }
 
 export const parseCompatConfigOnce = once(parseCompatConfig)
+
+const defaultNetworkTimeout = {
+  request: 60000,
+  connectSocket: 60000,
+  uploadFile: 60000,
+  downloadFile: 60000,
+}
+
+export function normalizeNetworkTimeout(
+  networkTimeout?: Partial<typeof defaultNetworkTimeout>
+) {
+  return {
+    ...defaultNetworkTimeout,
+    ...networkTimeout,
+  }
+}

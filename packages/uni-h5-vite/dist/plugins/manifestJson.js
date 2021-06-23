@@ -13,12 +13,6 @@ const defaultAsync = {
     timeout: 60000,
     suspensible: true,
 };
-const defaultNetworkTimeout = {
-    request: 60000,
-    connectSocket: 60000,
-    uploadFile: 60000,
-    downloadFile: 60000,
-};
 const defaultQQMapKey = 'XVXBZ-NDMC4-JOGUS-XGIEE-QVHDZ-AMFV2';
 function uniManifestJsonPlugin() {
     return uni_cli_shared_1.defineUniManifestJsonPlugin((opts) => {
@@ -37,7 +31,7 @@ function uniManifestJsonPlugin() {
                     router.base = '/';
                 }
                 const async = Object.assign(Object.assign({}, defaultAsync), ((h5 && h5.async) || {}));
-                const networkTimeout = Object.assign(Object.assign({}, defaultNetworkTimeout), (manifest.networkTimeout || {}));
+                const networkTimeout = uni_cli_shared_1.normalizeNetworkTimeout(manifest.networkTimeout);
                 const sdkConfigs = (h5 && h5.sdkConfigs) || {};
                 const qqMapKey = (sdkConfigs.maps &&
                     sdkConfigs.maps.qqmap &&

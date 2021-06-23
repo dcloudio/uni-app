@@ -5,6 +5,7 @@ import {
   normalizeAppPagesJson,
   normalizeAppConfigService,
   normalizePagesJson,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPagesJsonPlugin(): Plugin {
@@ -26,7 +27,10 @@ export function uniPagesJsonPlugin(): Plugin {
         this.emitFile({
           fileName: `app-config-service.js`,
           type: 'asset',
-          source: normalizeAppConfigService(pagesJson),
+          source: normalizeAppConfigService(
+            pagesJson,
+            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+          ),
         })
       },
     }
