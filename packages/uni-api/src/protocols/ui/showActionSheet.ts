@@ -6,6 +6,7 @@ export const ShowActionSheetProtocol: ApiProtocol<API_TYPE_SHOW_ACTION_SHEET> =
       type: Array,
       required: true,
     },
+    title: String,
     itemColor: String,
     popover: Object,
   }

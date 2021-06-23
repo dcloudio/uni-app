@@ -19,3 +19,4 @@ export * from './context/createInnerAudioContext'
 export * from './location/getLocation'
 
 export * from './popup/showModal'
+export * from './popup/showActionSheet'
