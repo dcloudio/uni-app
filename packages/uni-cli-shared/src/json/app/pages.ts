@@ -1,4 +1,5 @@
 import { normalizeIdentifier } from '../../utils'
+import { normalizePagesRoute } from '../pages'
 
 export function normalizeAppPagesJson(pagesJson: Record<string, any>) {
   return polyfillCode + restoreGlobalCode + definePageCode(pagesJson)
@@ -40,7 +41,7 @@ if(uni.restoreGlobal){
 export function normalizeAppConfigService(pagesJson: UniApp.PagesJson) {
   return `
 ;(function(){
-const u=void 0;isReady=false,onReadyCallbacks=[],isServiceReady=false,onServiceReadyCallbacks=[];
+const u=void 0,isReady=false,onReadyCallbacks=[],isServiceReady=false,onServiceReadyCallbacks=[];
 const __uniConfig = ${normalizeAppUniConfig(pagesJson)};
 const __uniRoutes = ${normalizeAppUniRoutes(pagesJson)};
 __uniConfig.onReady=function(callback){if(__uniConfig.ready){callback()}else{onReadyCallbacks.push(callback)}};Object.defineProperty(__uniConfig,"ready",{get:function(){return isReady},set:function(val){isReady=val;if(!isReady){return}const callbacks=onReadyCallbacks.slice(0);onReadyCallbacks.length=0;callbacks.forEach(function(callback){callback()})}});
@@ -56,24 +57,7 @@ function normalizeAppUniConfig(pagesJson: UniApp.PagesJson) {
   return JSON.stringify(pagesJson.globalStyle)
 }
 function normalizeAppUniRoutes(pagesJson: UniApp.PagesJson) {
-  const uniRoutes: {
-    path: string
-    meta: Partial<UniApp.PageRouteMeta>
-    style: UniApp.PagesJsonPageStyle
-  }[] = []
-  pagesJson.pages.forEach((page) => {
-    uniRoutes.push(normalizeAppUniRoute(page))
-  })
-  return JSON.stringify(pagesJson)
-}
-
-function normalizeAppUniRoute(page: UniApp.PagesJsonPageOptions) {
-  const pageMeta: Partial<UniApp.PageRouteMeta> = {}
-  return {
-    path: page.path,
-    meta: pageMeta,
-    style: page.style,
-  }
+  return JSON.stringify(normalizePagesRoute(pagesJson))
 }
 
 function normalizeGlobalStatement(globals: string[]) {

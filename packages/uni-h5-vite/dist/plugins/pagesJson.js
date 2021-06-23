@@ -4,10 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniPagesJsonPlugin = void 0;
-const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const slash_1 = __importDefault(require("slash"));
-const shared_1 = require("@vue/shared");
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const pkg = require('@dcloudio/vite-plugin-uni/package.json');
 function uniPagesJsonPlugin() {
@@ -152,39 +150,12 @@ function generatePagesDefineCode(pagesJson, _config) {
 }
 ` + pages.map((pageOptions) => generatePageDefineCode(pageOptions)).join('\n'));
 }
-function normalizePagesRoute(pagesJson) {
-    const firstPagePath = pagesJson.pages[0].path;
-    const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || [];
-    return pagesJson.pages.map((pageOptions) => {
-        const pagePath = pageOptions.path;
-        const name = uni_cli_shared_1.normalizeIdentifier(pagePath);
-        const isEntry = firstPagePath === pagePath ? true : undefined;
-        const tabBarIndex = tabBarList.findIndex((tabBarPage) => tabBarPage.pagePath === pagePath);
-        const isTabBar = tabBarIndex !== -1 ? true : undefined;
-        const isNVue = fs_1.default.existsSync(path_1.default.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'));
-        let windowTop = 0;
-        const meta = shared_1.extend({
-            route: pageOptions.path,
-            isNVue: isNVue ? true : undefined,
-            isQuit: isEntry || isTabBar ? true : undefined,
-            isEntry,
-            isTabBar,
-            tabBarIndex,
-            windowTop,
-        }, pageOptions.style);
-        return {
-            name,
-            path: pageOptions.path,
-            meta,
-        };
-    });
-}
-function generatePageRoute({ name, path, meta }, config) {
+function generatePageRoute({ path, meta }, config) {
     const { isEntry } = meta;
     const alias = isEntry ? `\n  alias:'/${path}',` : '';
     return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{setup(){return ()=>renderPage(${name})}},
+  component:{setup(){return ()=>renderPage(${uni_cli_shared_1.normalizeIdentifier(path)})}},
   loader: ${uni_cli_shared_1.normalizeIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`;
@@ -198,7 +169,7 @@ function renderPage(component){
   return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, { ref: "page" }, null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
 }
 ${globalName}.__uniRoutes=[${[
-        ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
+        ...generatePagesRoute(uni_cli_shared_1.normalizePagesRoute(pagesJson), config),
     ].join(',')}]`;
 }
 function generateConfig(globalName, pagesJson, config) {

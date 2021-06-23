@@ -1,8 +1,6 @@
-import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
-import { extend } from '@vue/shared'
 import {
   API_DEPS_CSS,
   FEATURE_DEFINES,
@@ -11,6 +9,7 @@ import {
   normalizeIdentifier,
   normalizePagesJson,
   defineUniPagesJsonPlugin,
+  normalizePagesRoute,
 } from '@dcloudio/uni-cli-shared'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
@@ -35,12 +34,6 @@ export function uniPagesJsonPlugin(): Plugin {
       },
     }
   })
-}
-
-interface PageRouteOptions {
-  name: string
-  path: string
-  meta: Partial<UniApp.PageRouteMeta>
 }
 
 function generatePagesJsonCode(
@@ -190,57 +183,22 @@ function generatePagesDefineCode(
   )
 }
 
-function normalizePagesRoute(pagesJson: UniApp.PagesJson): PageRouteOptions[] {
-  const firstPagePath = pagesJson.pages[0].path
-  const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || []
-  return pagesJson.pages.map((pageOptions) => {
-    const pagePath = pageOptions.path
-    const name = normalizeIdentifier(pagePath)
-    const isEntry = firstPagePath === pagePath ? true : undefined
-    const tabBarIndex = tabBarList.findIndex(
-      (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === pagePath
-    )
-    const isTabBar = tabBarIndex !== -1 ? true : undefined
-    const isNVue = fs.existsSync(
-      path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue')
-    )
-    let windowTop = 0
-    const meta = extend(
-      {
-        route: pageOptions.path,
-        isNVue: isNVue ? true : undefined,
-        isQuit: isEntry || isTabBar ? true : undefined,
-        isEntry,
-        isTabBar,
-        tabBarIndex,
-        windowTop,
-      },
-      pageOptions.style
-    )
-    return {
-      name,
-      path: pageOptions.path,
-      meta,
-    }
-  })
-}
-
 function generatePageRoute(
-  { name, path, meta }: PageRouteOptions,
+  { path, meta }: UniApp.UniRoute,
   config: ResolvedConfig
 ) {
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{setup(){return ()=>renderPage(${name})}},
+  component:{setup(){return ()=>renderPage(${normalizeIdentifier(path)})}},
   loader: ${normalizeIdentifier(path)}Loader,
   meta: ${JSON.stringify(meta)}
 }`
 }
 
 function generatePagesRoute(
-  pagesRouteOptions: PageRouteOptions[],
+  pagesRouteOptions: UniApp.UniRoute[],
   config: ResolvedConfig
 ) {
   return pagesRouteOptions.map((pageOptions) =>

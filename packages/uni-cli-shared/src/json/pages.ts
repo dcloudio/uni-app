@@ -281,3 +281,38 @@ function removePlatformStyle(pageStyle: UniApp.PagesJsonPageStyle) {
   })
   return pageStyle
 }
+
+export function normalizePagesRoute(
+  pagesJson: UniApp.PagesJson
+): UniApp.UniRoute[] {
+  const firstPagePath = pagesJson.pages[0].path
+  const tabBarList = (pagesJson.tabBar && pagesJson.tabBar.list) || []
+  return pagesJson.pages.map((pageOptions) => {
+    const pagePath = pageOptions.path
+    const isEntry = firstPagePath === pagePath ? true : undefined
+    const tabBarIndex = tabBarList.findIndex(
+      (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === pagePath
+    )
+    const isTabBar = tabBarIndex !== -1 ? true : undefined
+    const isNVue = fs.existsSync(
+      path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue')
+    )
+    let windowTop = 0
+    const meta = extend(
+      {
+        route: pageOptions.path,
+        isNVue: isNVue ? true : undefined,
+        isQuit: isEntry || isTabBar ? true : undefined,
+        isEntry,
+        isTabBar,
+        tabBarIndex,
+        windowTop,
+      },
+      pageOptions.style
+    )
+    return {
+      path: pageOptions.path,
+      meta,
+    }
+  })
+}

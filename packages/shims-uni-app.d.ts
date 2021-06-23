@@ -62,7 +62,7 @@ declare namespace UniApp {
     alias?: string
     meta: PageRouteMeta
     component?: any
-    loader: () => Promise<any>
+    loader?: () => Promise<any>
   }
 
   type UniRoutes = UniRoute[]
@@ -150,7 +150,7 @@ declare namespace UniApp {
     onReachBottomDistance?: number
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
-    id: number
+    id?: number
     route: string
     isNVue?: boolean
     isQuit?: boolean

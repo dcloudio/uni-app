@@ -1,8 +1,8 @@
 import path from 'path'
 
-import { initEasycoms, matchEasycom } from '../src/utils'
+import { initEasycoms, matchEasycom } from '../src/easycom'
 
-const rootDir = path.resolve(__dirname, 'example')
+const rootDir = path.resolve(__dirname, 'examples/easycom')
 
 describe('easycom', () => {
   test('initEasycom with dirs', () => {
