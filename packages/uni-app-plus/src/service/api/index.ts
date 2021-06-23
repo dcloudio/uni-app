@@ -11,6 +11,7 @@ export * from './media/getVideoInfo'
 export * from './keyboard/keyboard'
 
 export * from './network/downloadFile'
+export * from './network/request'
 
 export * from './context/createInnerAudioContext'
 
