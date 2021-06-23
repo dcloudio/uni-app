@@ -7,6 +7,7 @@ export * from './device/accelerometer'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
+export * from './media/previewImage'
 
 export * from './keyboard/keyboard'
 
