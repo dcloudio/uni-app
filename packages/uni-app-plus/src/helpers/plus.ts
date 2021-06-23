@@ -24,7 +24,7 @@ export function warpPlusErrorCallback(
   reject: (errMsg: string, errRes?: any) => void,
   errMsg?: string
 ) {
-  return function errorCallback(error: PlusError) {
+  return function errorCallback(error?: PlusError) {
     error = error || {}
     // 一键登录errorCallback新增 appid、metadata、uid 参数返回
     errMsg = error.message || errMsg || ''
