@@ -17,3 +17,5 @@ export * from './network/request'
 export * from './context/createInnerAudioContext'
 
 export * from './location/getLocation'
+
+export * from './popup/showModal'
