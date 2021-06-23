@@ -95,14 +95,14 @@ weex的组件和JS API，与uni-app不同。uni-app与微信小程序相同。
 - uni-app
 
 ```javascript
-	// manifest.json    
-	{    
-	    // ...    
-	    /* App平台特有配置 */    
-	    "app-plus": {    
-	        "nvueCompiler":"uni-app" //是否启用 uni-app 模式  
-	    }    
-	}
+// manifest.json    
+{    
+	// ...    
+	/* App平台特有配置 */    
+	"app-plus": {    
+	    "nvueCompiler":"uni-app" //是否启用 uni-app 模式  
+	}    
+}
 ```
 
 
@@ -113,19 +113,25 @@ weex 编译模式不支持 ```onNavigationBarButtonTap``` 生命周期函数的�
 
 weex编译模式不支持onShow生命周期，但熟悉5+的话，可利用监听webview的```addEventListener``` show事件实现onShow效果。
 
-weex 编译模式不支持```vuex```。
+weex 编译模式不支持`vuex`。
 
 nvue 的页面跳转，与 weex 不同，仍然遵循 uni-app 的路由模型。vue 页面和 nvue 页面之间不管怎么跳转，都遵循这个模型。包括 nvue 页面跳向 nvue 页面。每个页面都需要在 pages.json 中注册，调用 uni-app 的 [路由 API](https://uniapp.dcloud.net.cn/api/router) 进行跳转。
 
-原生开发没有页面滚动的概念，页面内容高过屏幕高度并不会自动滚动，只有部分组件可滚动（```list```、```waterfall```、```scroll-view/scroller```），要滚得内容需要套在可滚动组件下。这不符合前端开发的习惯，所以在 nvue 编译为 uni-app模式时，给页面外层自动套了一个 ```scroller```，页面内容过高会自动滚动。（组件不会套，页面有```recycle-list```时也不会套）。 可以设置不自动套。
+原生开发没有页面滚动的概念，页面内容高过屏幕高度时，内容并不会自动滚动；只有将页面内容放在`list`、`waterfall`、`scroll-view/scroller`这几个组件下内容才可滚动。这不符合前端开发的习惯，所以在 nvue 编译为 `uni-app`模式时，`uni-app`框架会给nvue页面外层自动嵌套一个 `scroller`，从而实现页面内容的自动滚动。
+
+注意：
+
+- uni-app框架不会给组件自动套`scroller`容器；
+- 若nuve页面有`recycle-list`组件时，`uni-app`框架也不会自动给页面嵌套`scroller`容器
+- 若你不希望自动嵌套`scroller`容器，可在`pages.json`中通过如下配置进行关闭：
 
 ```javascript
-	{
-		"path": "",
-		"style": {
-			"disableScroll": true // 不嵌套 scroller
-		}
-	}
+{
+    "path": "",
+    "style": {
+        "disableScroll": true // 不嵌套 scroller
+    }
+}
 ```
 
 weex 编译模式下支持使用 weex ui ，例子[详见](https://ext.dcloud.net.cn/plugin?id=442)。但相比uni-app插件市场及官方[uni ui](https://ext.dcloud.net.cn/plugin?id=55)而言，weex语法的组件生态还是比较欠缺的。
