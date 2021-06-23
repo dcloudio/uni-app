@@ -21,27 +21,12 @@ interface RequestTasks {
   abort: Function
 }
 type RequestTaskState = {
-  requestTaskId: number
-  state: 'success' | 'fail'
   statusCode: number
-  data?: string | ArrayBuffer
-  header?: any
+  cookies: string[]
+  header: any
+  url?: string
+  data: string | ArrayBuffer | any
   errMsg?: string
-  cookies?: string[]
-}
-type requestTaskOptions = {
-  args: UniApp.RequestOptions
-  resolve: Function
-  reject: Function
-}
-
-let requestTaskId = 0
-const requestTasks: Record<number, RequestTasks> = {}
-const requestTaskOptions: Record<number, requestTaskOptions> = {}
-
-const publishStateChange = (res: RequestTaskState) => {
-  onRequestTaskStateChange(res)
-  delete requestTasks[requestTaskId]
 }
 
 const cookiesParse = (header: Record<string, string>) => {
@@ -69,188 +54,7 @@ const cookiesParse = (header: Record<string, string>) => {
   return cookiesArr
 }
 
-function createRequestTaskById(
-  requestTaskId: number,
-  {
-    url,
-    data,
-    header,
-    method = 'GET',
-    responseType,
-    sslVerify = true,
-    firstIpv4 = false,
-    // @ts-ignore
-    tls,
-    timeout = (__uniConfig.networkTimeout &&
-      __uniConfig.networkTimeout.request) ||
-      60 * 1000,
-  }: UniApp.RequestOptions
-) {
-  const stream = requireNativePlugin('stream')
-  const headers: Headers = {}
-
-  let abortTimeout: number
-  let aborted: boolean
-  let hasContentType = false
-  for (const name in header) {
-    if (!hasContentType && name.toLowerCase() === 'content-type') {
-      hasContentType = true
-      headers['Content-Type'] = header[name]
-      // TODO 需要重构
-      if (
-        method !== 'GET' &&
-        header[name].indexOf('application/x-www-form-urlencoded') === 0 &&
-        typeof data !== 'string' &&
-        !(data instanceof ArrayBuffer)
-      ) {
-        const bodyArray = []
-        for (const key in data) {
-          if (hasOwn(data, key)) {
-            bodyArray.push(
-              encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
-            )
-          }
-        }
-        data = bodyArray.join('&')
-      }
-    } else {
-      headers[name] = header[name]
-    }
-  }
-
-  if (!hasContentType && method === 'POST') {
-    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-  }
-
-  if (timeout) {
-    abortTimeout = setTimeout(() => {
-      aborted = true
-      publishStateChange({
-        requestTaskId,
-        state: 'fail',
-        statusCode: 0,
-        errMsg: 'timeout',
-      })
-    }, timeout + 200) // TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
-  }
-  const options: Options = {
-    method,
-    url: url.trim(),
-    // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
-    headers,
-    type: responseType === 'arraybuffer' ? 'base64' : 'text',
-    // weex 官方文档未说明实际支持 timeout，单位：ms
-    timeout: timeout || 6e5,
-    // 配置和weex模块内相反
-    sslVerify: !sslVerify,
-    firstIpv4: firstIpv4,
-    tls,
-  }
-  if (method !== 'GET') {
-    options.body = typeof data === 'string' ? data : JSON.stringify(data)
-  }
-  try {
-    stream.fetch(
-      options,
-      ({
-        ok,
-        status,
-        data,
-        headers,
-        errorMsg,
-      }: {
-        ok: boolean
-        status: number
-        data: string
-        headers: Headers
-        errorMsg: string
-      }) => {
-        if (aborted) {
-          return
-        }
-        if (abortTimeout) {
-          clearTimeout(abortTimeout)
-        }
-        const statusCode = status
-        if (statusCode > 0) {
-          publishStateChange({
-            requestTaskId,
-            state: 'success',
-            data:
-              ok && responseType === 'arraybuffer'
-                ? base64ToArrayBuffer(data)
-                : data,
-            statusCode,
-            header: headers,
-            cookies: cookiesParse(headers),
-          })
-        } else {
-          let errMsg = 'abort statusCode:' + statusCode
-          if (errorMsg) {
-            errMsg = errMsg + ' ' + errorMsg
-          }
-          publishStateChange({
-            requestTaskId,
-            state: 'fail',
-            statusCode,
-            errMsg,
-          })
-        }
-      }
-    )
-    requestTasks[requestTaskId] = {
-      abort() {
-        aborted = true
-        if (abortTimeout) {
-          clearTimeout(abortTimeout)
-        }
-        publishStateChange({
-          requestTaskId,
-          state: 'fail',
-          statusCode: 0,
-          errMsg: 'abort',
-        })
-      },
-    }
-  } catch (e) {
-    return {
-      requestTaskId,
-      errMsg: 'createRequestTask:fail',
-    }
-  }
-  return {
-    requestTaskId,
-    errMsg: 'createRequestTask:ok',
-  }
-}
-
-function createRequestTask(args: UniApp.RequestOptions) {
-  return createRequestTaskById(++requestTaskId, args)
-}
-
-function operateRequestTask({
-  requestTaskId,
-  operationType,
-}: {
-  requestTaskId: number
-  operationType: string
-}) {
-  const requestTask = requestTasks[requestTaskId]
-  if (requestTask && operationType === 'abort') {
-    requestTask.abort()
-    return {
-      errMsg: 'operateRequestTask:ok',
-    }
-  }
-  return {
-    errMsg: 'operateRequestTask:fail',
-  }
-}
-
-function formatResponse(
-  res: Omit<RequestTaskState, 'requestTaskId' | 'state'>,
-  args: UniApp.RequestOptions
-) {
+function formatResponse(res: RequestTaskState, args: UniApp.RequestOptions) {
   if (typeof res.data === 'string' && res.data.charCodeAt(0) === 65279) {
     res.data = res.data.substr(1)
   }
@@ -278,59 +82,18 @@ function formatResponse(
   return res
 }
 
-function onRequestTaskStateChange({
-  requestTaskId,
-  state,
-  data,
-  statusCode,
-  header,
-  errMsg,
-  cookies,
-}: RequestTaskState) {
-  const { args, resolve, reject } = requestTaskOptions[requestTaskId] || {}
-
-  if (!args) {
-    return
-  }
-
-  delete requestTaskOptions[requestTaskId]
-
-  switch (state) {
-    case 'success':
-      resolve(
-        formatResponse(
-          {
-            data,
-            statusCode,
-            header,
-            errMsg: 'request:ok',
-            cookies,
-          },
-          args
-        )
-      )
-      break
-    case 'fail':
-      reject(errMsg)
-      break
-  }
-}
-
 /**
  * 请求任务类
  */
 class RequestTask implements UniApp.RequestTask {
-  id: number
+  private _requestTask: RequestTasks
 
-  constructor(id: number) {
-    this.id = id
+  constructor(requestTask: RequestTasks) {
+    this._requestTask = requestTask
   }
 
   abort() {
-    operateRequestTask({
-      requestTaskId: this.id,
-      operationType: 'abort',
-    })
+    this._requestTask.abort()
   }
 
   offHeadersReceived() {}
@@ -341,29 +104,154 @@ class RequestTask implements UniApp.RequestTask {
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,
   (args, { resolve, reject }) => {
+    let {
+      header,
+      method,
+      data,
+      timeout,
+      url,
+      responseType,
+      sslVerify,
+      firstIpv4,
+      // NOTE 属性有但是types没有
+      // @ts-ignore
+      tls,
+    } = args
+
     let contentType
-    for (const name in args.header) {
+    for (const name in header) {
       if (name.toLowerCase() === 'content-type') {
-        contentType = args.header[name]
+        contentType = header[name]
         break
       }
     }
+
     if (
-      args.method !== 'GET' &&
+      method !== 'GET' &&
       contentType.indexOf('application/json') === 0 &&
-      isPlainObject(args.data)
+      isPlainObject(data)
     ) {
-      args.data = JSON.stringify(args.data)
-    }
-    const { requestTaskId } = createRequestTask(args)
-
-    requestTaskOptions[requestTaskId] = {
-      args,
-      resolve,
-      reject,
+      data = JSON.stringify(data)
     }
 
-    return new RequestTask(requestTaskId)
+    const stream = requireNativePlugin('stream')
+    const headers: Headers = {}
+    let abortTimeout: number
+    let aborted: boolean
+    let hasContentType = false
+
+    for (const name in header) {
+      if (!hasContentType && name.toLowerCase() === 'content-type') {
+        hasContentType = true
+        headers['Content-Type'] = header[name]
+        // TODO 需要重构
+        if (
+          method !== 'GET' &&
+          header[name].indexOf('application/x-www-form-urlencoded') === 0 &&
+          typeof data !== 'string' &&
+          !(data instanceof ArrayBuffer)
+        ) {
+          const bodyArray = []
+          for (const key in data) {
+            if (hasOwn(data, key)) {
+              bodyArray.push(
+                encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+              )
+            }
+          }
+          data = bodyArray.join('&')
+        }
+      } else {
+        headers[name] = header[name]
+      }
+    }
+
+    if (!hasContentType && method === 'POST') {
+      headers['Content-Type'] =
+        'application/x-www-form-urlencoded; charset=UTF-8'
+    }
+
+    if (timeout) {
+      abortTimeout = setTimeout(() => {
+        aborted = true
+        reject('timeout')
+      }, timeout + 200) // TODO +200 发消息到原生层有时间开销，以后考虑由原生层回调超时
+    }
+
+    const options: Options = {
+      method,
+      url: url.trim(),
+      // weex 官方文档有误，headers 类型实际 object，用 string 类型会无响应
+      headers,
+      type: responseType === 'arraybuffer' ? 'base64' : 'text',
+      // weex 官方文档未说明实际支持 timeout，单位：ms
+      timeout: timeout || 6e5,
+      // 配置和weex模块内相反
+      sslVerify: !sslVerify,
+      firstIpv4: firstIpv4,
+      tls,
+    }
+
+    if (method !== 'GET') {
+      options.body = typeof data === 'string' ? data : JSON.stringify(data)
+    }
+
+    stream.fetch(
+      options,
+      ({
+        ok,
+        status,
+        data,
+        headers,
+        errorMsg,
+      }: {
+        ok: boolean
+        status: number
+        data: string
+        headers: Headers
+        errorMsg: string
+      }) => {
+        if (aborted) {
+          return
+        }
+        if (abortTimeout) {
+          clearTimeout(abortTimeout)
+        }
+        const statusCode = status
+        if (statusCode > 0) {
+          resolve(
+            formatResponse(
+              {
+                data:
+                  ok && responseType === 'arraybuffer'
+                    ? base64ToArrayBuffer(data)
+                    : data,
+                statusCode,
+                header: headers,
+                cookies: cookiesParse(headers),
+              },
+              args
+            )
+          )
+        } else {
+          let errMsg = 'abort statusCode:' + statusCode
+          if (errorMsg) {
+            errMsg = errMsg + ' ' + errorMsg
+          }
+          reject(errMsg)
+        }
+      }
+    )
+
+    return new RequestTask({
+      abort() {
+        aborted = true
+        if (abortTimeout) {
+          clearTimeout(abortTimeout)
+        }
+        reject('abort')
+      },
+    })
   },
   RequestProtocol,
   RequestOptions
