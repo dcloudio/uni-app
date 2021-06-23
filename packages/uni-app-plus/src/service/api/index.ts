@@ -4,6 +4,7 @@ export * from './file/getFileInfo'
 export * from './device/compass'
 export * from './device/vibrate'
 export * from './device/accelerometer'
+export * from './device/bluetooth'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
