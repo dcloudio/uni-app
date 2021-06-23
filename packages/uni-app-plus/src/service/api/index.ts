@@ -13,3 +13,5 @@ export * from './keyboard/keyboard'
 export * from './network/downloadFile'
 
 export * from './context/createInnerAudioContext'
+
+export * from './location/getLocation'
