@@ -312,9 +312,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/types@^2.2.10":
-  version "2.2.10"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.10.tgz#a5d34a2cf3f0829947a9063f9dbcfbb36c9b9369"
+"@dcloudio/types@^2.2.11":
+  version "2.2.11"
+  resolved "https://registry.nlark.com/@dcloudio/types/download/@dcloudio/types-2.2.11.tgz#241fed0bbe0da07b790edf766675db5b699c130e"
+  integrity sha1-JB/tC74NoHt5Dt92ZnXbW2mcEw4=
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
