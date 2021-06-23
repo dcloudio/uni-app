@@ -49,11 +49,7 @@ function generatePagesJsonCode(
   config: ResolvedConfig
 ) {
   const globalName = getGlobal(ssr)
-  const pagesJson = normalizePagesJson(
-    jsonStr,
-    process.env.UNI_INPUT_DIR,
-    process.env.UNI_PLATFORM
-  )
+  const pagesJson = normalizePagesJson(jsonStr, process.env.UNI_PLATFORM)
   const { importLayoutComponentsCode, defineLayoutComponentsCode } =
     generateLayoutComponentsCode(globalName, pagesJson)
   const definePagesCode = generatePagesDefineCode(pagesJson, config)

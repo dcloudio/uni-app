@@ -33,7 +33,7 @@ function uniPagesJsonPlugin() {
 exports.uniPagesJsonPlugin = uniPagesJsonPlugin;
 function generatePagesJsonCode(ssr, jsonStr, config) {
     const globalName = getGlobal(ssr);
-    const pagesJson = uni_cli_shared_1.normalizePagesJson(jsonStr, process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM);
+    const pagesJson = uni_cli_shared_1.normalizePagesJson(jsonStr, process.env.UNI_PLATFORM);
     const { importLayoutComponentsCode, defineLayoutComponentsCode } = generateLayoutComponentsCode(globalName, pagesJson);
     const definePagesCode = generatePagesDefineCode(pagesJson, config);
     const uniRoutesCode = generateRoutes(globalName, pagesJson, config);

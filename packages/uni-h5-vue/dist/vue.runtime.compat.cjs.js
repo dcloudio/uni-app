@@ -2855,6 +2855,12 @@ const SuspenseImpl = {
 // Force-casted public typing for h and TSX props inference
 const Suspense = (SuspenseImpl
     );
+function triggerEvent(vnode, name) {
+    const eventListener = vnode.props && vnode.props[name];
+    if (isFunction(eventListener)) {
+        eventListener();
+    }
+}
 function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, rendererInternals) {
     const { p: patch, o: { createElement } } = rendererInternals;
     const hiddenContainer = createElement('div');
@@ -2864,6 +2870,9 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
     // now check if we have encountered any async deps
     if (suspense.deps > 0) {
         // has async
+        // invoke @fallback event
+        triggerEvent(vnode, 'onPending');
+        triggerEvent(vnode, 'onFallback');
         // mount the fallback tree
         patch(null, vnode.ssFallback, container, anchor, parentComponent, null, // fallback tree will not have suspense context
         isSVG, slotScopeIds);
@@ -2951,10 +2960,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, isSVG, slotSc
         else {
             // root node toggled
             // invoke @pending event
-            const onPending = n2.props && n2.props.onPending;
-            if (isFunction(onPending)) {
-                onPending();
-            }
+            triggerEvent(n2, 'onPending');
             // mount pending branch in off-dom container
             suspense.pendingBranch = newBranch;
             suspense.pendingId++;
@@ -3067,10 +3073,7 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
             }
             suspense.effects = [];
             // invoke @resolve event
-            const onResolve = vnode.props && vnode.props.onResolve;
-            if (isFunction(onResolve)) {
-                onResolve();
-            }
+            triggerEvent(vnode, 'onResolve');
         },
         fallback(fallbackVNode) {
             if (!suspense.pendingBranch) {
@@ -3078,10 +3081,7 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
             }
             const { vnode, activeBranch, parentComponent, container, isSVG } = suspense;
             // invoke @fallback event
-            const onFallback = vnode.props && vnode.props.onFallback;
-            if (isFunction(onFallback)) {
-                onFallback();
-            }
+            triggerEvent(vnode, 'onFallback');
             const anchor = next(activeBranch);
             const mountFallback = () => {
                 if (!suspense.isInFallback) {
@@ -3096,11 +3096,11 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
             if (delayEnter) {
                 activeBranch.transition.afterLeave = mountFallback;
             }
+            suspense.isInFallback = true;
             // unmount current active branch
             unmount(activeBranch, parentComponent, null, // no suspense so unmount hooks fire now
             true // shouldRemove
             );
-            suspense.isInFallback = true;
             if (!delayEnter) {
                 mountFallback();
             }
@@ -4808,25 +4808,23 @@ const internalOptionMergeStrats = {
     methods: mergeObjectOptions,
     computed: mergeObjectOptions,
     // lifecycle
-    beforeCreate: mergeHook,
-    created: mergeHook,
-    beforeMount: mergeHook,
-    mounted: mergeHook,
-    beforeUpdate: mergeHook,
-    updated: mergeHook,
-    beforeDestroy: mergeHook,
-    destroyed: mergeHook,
-    activated: mergeHook,
-    deactivated: mergeHook,
-    errorCaptured: mergeHook,
-    serverPrefetch: mergeHook,
+    beforeCreate: mergeAsArray,
+    created: mergeAsArray,
+    beforeMount: mergeAsArray,
+    mounted: mergeAsArray,
+    beforeUpdate: mergeAsArray,
+    updated: mergeAsArray,
+    beforeDestroy: mergeAsArray,
+    destroyed: mergeAsArray,
+    activated: mergeAsArray,
+    deactivated: mergeAsArray,
+    errorCaptured: mergeAsArray,
+    serverPrefetch: mergeAsArray,
     // assets
     components: mergeObjectOptions,
     directives: mergeObjectOptions,
-    // watch has special merge behavior in v2, but isn't actually needed in v3.
-    // since we are only exposing these for compat and nobody should be relying
-    // on the watch-specific behavior, just expose the object merge strat.
-    watch: mergeObjectOptions,
+    // watch
+    watch: mergeWatchOptions,
     // provide / inject
     provide: mergeDataFn,
     inject: mergeInject
@@ -4860,11 +4858,22 @@ function normalizeInject(raw) {
     }
     return raw;
 }
-function mergeHook(to, from) {
+function mergeAsArray(to, from) {
     return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
     return to ? extend(extend(Object.create(null), to), from) : from;
+}
+function mergeWatchOptions(to, from) {
+    if (!to)
+        return from;
+    if (!from)
+        return to;
+    const merged = extend(Object.create(null), to);
+    for (const key in from) {
+        merged[key] = mergeAsArray(to[key], from[key]);
+    }
+    return merged;
 }
 
 function createPropsDefaultThis(instance, rawProps, propKey) {
@@ -5664,7 +5673,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.1.1";
+    Vue.version = "3.1.2";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -6825,7 +6834,11 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
     };
     const mountStaticNode = (n2, container, anchor, isSVG) => {
-        [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG);
+        [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG, 
+        // pass cached nodes if the static node is being mounted multiple times
+        // so that runtime-dom can simply cloneNode() instead of inserting new
+        // HTML
+        n2.el && [n2.el, n2.anchor]);
     };
     /**
      * Dev / HMR only
@@ -9472,10 +9485,6 @@ const publicPropertiesMap = extend(Object.create(null), {
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
         const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
-        // let @vue/reactivity know it should never observe Vue public instances.
-        if (key === "__v_skip" /* SKIP */) {
-            return true;
-        }
         // for internal formatters to know that this is a Vue instance
         if (key === '__isVue') {
             return true;
@@ -9836,7 +9845,7 @@ function setupStatefulComponent(instance, isSSR) {
     instance.accessCache = Object.create(null);
     // 1. create public instance / render proxy
     // also mark it raw so it's never observed
-    instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
+    instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers));
     {
         exposePropsOnRenderContext(instance);
     }
@@ -9995,11 +10004,9 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
         }
     }
 }
-const attrHandlers = {
+const attrDevProxyHandlers = {
     get: (target, key) => {
-        {
-            markAttrsAccessed();
-        }
+        markAttrsAccessed();
         return target[key];
     },
     set: () => {
@@ -10023,7 +10030,7 @@ function createSetupContext(instance) {
         // properties (overwrites should not be done in prod)
         return Object.freeze({
             get attrs() {
-                return new Proxy(instance.attrs, attrHandlers);
+                return new Proxy(instance.attrs, attrDevProxyHandlers);
             },
             get slots() {
                 return shallowReadonly(instance.slots);
@@ -10093,15 +10100,26 @@ function defineProps() {
     return null;
 }
 // implementation
-function defineEmit() {
+function defineEmits() {
     {
-        warn(`defineEmit() is a compiler-hint helper that is only usable inside ` +
+        warn(`defineEmits() is a compiler-hint helper that is only usable inside ` +
             `<script setup> of a single file component. Its arguments should be ` +
             `compiled away and passing it at runtime has no effect.`);
     }
     return null;
 }
+/**
+ * @deprecated use `defineEmits` instead.
+ */
+const defineEmit = defineEmits;
+/**
+ * @deprecated use `useSlots` and `useAttrs` instead.
+ */
 function useContext() {
+    {
+        warn(`\`useContext()\` has been deprecated and will be removed in the ` +
+            `next minor release. Use \`useSlots()\` and \`useAttrs()\` instead.`);
+    }
     const i = getCurrentInstance();
     if (!i) {
         warn(`useContext() called without active instance.`);
@@ -10339,7 +10357,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.1";
+const version = "3.1.2";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10372,8 +10390,6 @@ const compatUtils = (_compatUtils
 
 const svgNS = 'http://www.w3.org/2000/svg';
 const doc = (typeof document !== 'undefined' ? document : null);
-let tempContainer;
-let tempSVGContainer;
 const nodeOps = {
     insert: (child, parent, anchor) => {
         parent.insertBefore(child, anchor || null);
@@ -10424,24 +10440,57 @@ const nodeOps = {
         return cloned;
     },
     // __UNSAFE__
-    // Reason: innerHTML.
+    // Reason: insertAdjacentHTML.
     // Static content here can only come from compiled templates.
     // As long as the user only uses trusted templates, this is safe.
-    insertStaticContent(content, parent, anchor, isSVG) {
-        const temp = isSVG
-            ? tempSVGContainer ||
-                (tempSVGContainer = doc.createElementNS(svgNS, 'svg'))
-            : tempContainer || (tempContainer = doc.createElement('div'));
-        temp.innerHTML = content;
-        const first = temp.firstChild;
-        let node = first;
-        let last = node;
-        while (node) {
-            last = node;
-            nodeOps.insert(node, parent, anchor);
-            node = temp.firstChild;
+    insertStaticContent(content, parent, anchor, isSVG, cached) {
+        if (cached) {
+            let [cachedFirst, cachedLast] = cached;
+            let first, last;
+            while (true) {
+                let node = cachedFirst.cloneNode(true);
+                if (!first)
+                    first = node;
+                parent.insertBefore(node, anchor);
+                if (cachedFirst === cachedLast) {
+                    last = node;
+                    break;
+                }
+                cachedFirst = cachedFirst.nextSibling;
+            }
+            return [first, last];
         }
-        return [first, last];
+        // <parent> before | first ... last | anchor </parent>
+        const before = anchor ? anchor.previousSibling : parent.lastChild;
+        if (anchor) {
+            let insertionPoint;
+            let usingTempInsertionPoint = false;
+            if (anchor instanceof Element) {
+                insertionPoint = anchor;
+            }
+            else {
+                // insertAdjacentHTML only works for elements but the anchor is not an
+                // element...
+                usingTempInsertionPoint = true;
+                insertionPoint = isSVG
+                    ? doc.createElementNS(svgNS, 'g')
+                    : doc.createElement('div');
+                parent.insertBefore(insertionPoint, anchor);
+            }
+            insertionPoint.insertAdjacentHTML('beforebegin', content);
+            if (usingTempInsertionPoint) {
+                parent.removeChild(insertionPoint);
+            }
+        }
+        else {
+            parent.insertAdjacentHTML('beforeend', content);
+        }
+        return [
+            // first
+            before ? before.nextSibling : parent.firstChild,
+            // last
+            anchor ? anchor.previousSibling : parent.lastChild
+        ];
     }
 };
 
@@ -11970,6 +12019,7 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   defineComponent: defineComponent,
   defineAsyncComponent: defineAsyncComponent,
   defineProps: defineProps,
+  defineEmits: defineEmits,
   defineEmit: defineEmit,
   useContext: useContext,
   getCurrentInstance: getCurrentInstance,

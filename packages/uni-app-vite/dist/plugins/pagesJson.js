@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniPagesJsonPlugin = void 0;
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function uniPagesJsonPlugin() {
+    let pagesJson;
     return uni_cli_shared_1.defineUniPagesJsonPlugin((opts) => {
         return {
             name: 'vite:uni-app-pages-json',
@@ -11,8 +12,15 @@ function uniPagesJsonPlugin() {
                 if (!opts.filter(id)) {
                     return;
                 }
-                return (`import './manifest.json.js'\n` +
-                    uni_cli_shared_1.normalizeAppPagesJson(JSON.parse(code)));
+                pagesJson = uni_cli_shared_1.normalizePagesJson(code, process.env.UNI_PLATFORM);
+                return (`import './manifest.json.js'\n` + uni_cli_shared_1.normalizeAppPagesJson(pagesJson));
+            },
+            generateBundle() {
+                this.emitFile({
+                    fileName: `app-config-service.js`,
+                    type: 'asset',
+                    source: uni_cli_shared_1.normalizeAppConfigService(pagesJson),
+                });
             },
         };
     });

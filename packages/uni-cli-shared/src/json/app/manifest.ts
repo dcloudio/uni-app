@@ -1,5 +1,4 @@
 import { recursive } from 'merge'
-import { normalizeIdentifier } from '../utils'
 export function normalizeAppManifestJson(
   userManifestJson: Record<string, any>
 ) {
@@ -60,40 +59,3 @@ const defaultManifestJson = `{
 function getDefaultManifestJson() {
   return JSON.parse(defaultManifestJson)
 }
-
-export function normalizeAppPagesJson(pagesJson: Record<string, any>) {
-  return polyfillCode + restoreGlobalCode + definePageCode(pagesJson)
-}
-
-function definePageCode(pagesJson: Record<string, any>) {
-  const importPagesCode: string[] = []
-  const definePagesCode: string[] = []
-  pagesJson.pages.forEach((page: UniApp.UniRoute) => {
-    const pagePath = page.path
-    const pageIdentifier = normalizeIdentifier(pagePath)
-    importPagesCode.push(
-      `import ${pageIdentifier} from './${pagePath}.vue?mpType=page'`
-    )
-    definePagesCode.push(`__definePage('${pagePath}',${pageIdentifier})`)
-  })
-  return importPagesCode.join('\n') + '\n' + definePagesCode.join('\n')
-}
-
-const polyfillCode = `
-if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
-  Promise.prototype.finally = function(callback) {
-    const promise = this.constructor
-    return this.then(
-      value => promise.resolve(callback()).then(() => value),
-      reason => promise.resolve(callback()).then(() => {
-        throw reason
-      })
-    )
-  }
-}
-`
-const restoreGlobalCode = `
-if(uni.restoreGlobal){
-  uni.restoreGlobal(weex,plus,setTimeout,clearTimeout,setInterval,clearInterval)
-}
-`

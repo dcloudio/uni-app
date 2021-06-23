@@ -19,6 +19,12 @@ export function uniManifestJsonPlugin(): Plugin {
         return ''
       },
       generateBundle() {
+        // 生成一个空的app-config.js，兼容基座已有规范
+        this.emitFile({
+          fileName: `app-config.js`,
+          type: 'asset',
+          source: '(function(){})();',
+        })
         this.emitFile({
           fileName: `manifest.json`,
           type: 'asset',

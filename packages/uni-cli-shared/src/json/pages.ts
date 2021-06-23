@@ -13,18 +13,14 @@ export const parsePagesJson = (
 ) => {
   const jsonStr = fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8')
   if (normalize) {
-    return normalizePagesJson(jsonStr, inputDir, platform)
+    return normalizePagesJson(jsonStr, platform)
   }
   return parseJson(jsonStr, true) as UniApp.PagesJson
 }
 
 export const parsePagesJsonOnce = once(parsePagesJson)
 
-export function normalizePagesJson(
-  jsonStr: string,
-  inputDir: string,
-  platform: UniApp.PLATFORM
-) {
+export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   let pagesJson: UniApp.PagesJson = {
     pages: [],
     globalStyle: {
@@ -44,7 +40,7 @@ export function normalizePagesJson(
     ...normalizeSubpackages(pagesJson.subPackages || pagesJson.subpackages)
   )
   // pageStyle
-  normalizePages(pagesJson.pages, inputDir, platform)
+  normalizePages(pagesJson.pages, platform)
   // globalStyle
   pagesJson.globalStyle = normalizePageStyle(pagesJson.globalStyle!, platform)
   // tabBar
@@ -73,7 +69,6 @@ function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
 
 function normalizePages(
   pages: UniApp.PagesJsonPageOptions[],
-  _inputDir: string,
   platform: UniApp.PLATFORM
 ) {
   return pages.filter((page) => {
