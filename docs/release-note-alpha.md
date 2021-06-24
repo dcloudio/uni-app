@@ -1,3 +1,7 @@
+#### 3.1.21.20210624-alpha
+* 【uni-app】
+  + App平台 修复 3.1.20 引出的 uni.showToast 接口 icon 固定为 error 类型的Bug [详情](https://ask.dcloud.net.cn/question/125773)
+
 #### 3.1.20.20210623-alpha
 * 【uni-app】
   + App平台、H5平台 修复 input 组件同时设置 type=number 和 maxlength 时，部分情况 value 同步错误的Bug
