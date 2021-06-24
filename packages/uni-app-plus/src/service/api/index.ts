@@ -14,6 +14,7 @@ export * from './media/getVideoInfo'
 export * from './media/previewImage'
 export * from './media/getRecorderManager'
 export * from './media/saveVideoToPhotosAlbum'
+export * from './media/saveImageToPhotosAlbum'
 
 export * from './keyboard/keyboard'
 

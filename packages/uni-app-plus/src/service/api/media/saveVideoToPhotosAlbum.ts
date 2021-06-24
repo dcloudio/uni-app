@@ -16,8 +16,8 @@ export const saveVideoToPhotosAlbum =
     (options, { resolve, reject }) => {
       plus.gallery.save(
         options.filePath,
-        (e) => warpPlusSuccessCallback(resolve),
-        (e) => warpPlusErrorCallback(reject)
+        warpPlusSuccessCallback(resolve),
+        warpPlusErrorCallback(reject)
       )
     },
     SaveVideoToPhotosAlbumProtocol,
