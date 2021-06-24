@@ -1,4 +1,3 @@
-import { ServiceJSBridge } from '@dcloudio/uni-core'
 import { callOptions } from '@dcloudio/uni-shared'
 
 let eventReady = false
@@ -19,7 +18,7 @@ function operateEditor(
     data.callbackId = callbackId
     optionsCache[callbackId] = options
     if (!eventReady) {
-      ServiceJSBridge.subscribe!(
+      UniServiceJSBridge.subscribe(
         'onEditorMethodCallback',
         ({ callbackId, data }: { callbackId: string; data: any }) => {
           callOptions(optionsCache[callbackId], data)
@@ -30,7 +29,7 @@ function operateEditor(
     }
   }
   data.options = options
-  ServiceJSBridge.publishHandler!(
+  UniServiceJSBridge.publishHandler(
     'editor.' + componentId,
     {
       componentId,
