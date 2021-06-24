@@ -1,6 +1,6 @@
 export function initNVue(
   manifestJson: Record<string, any>,
-  pagesJson: Record<string, any>
+  pagesJson: UniApp.PagesJson
 ) {}
 
 export function getNVueCompiler(manifestJson: Record<string, any>) {

@@ -1310,21 +1310,9 @@ const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth
     return number;
   }
 }, Upx2pxProtocol);
-const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
-  const callback = canvasEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
-});
+createCallbacks("canvasEvent");
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
-  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
-});
+createCallbacks("getSelectedTextRangeEvent");
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {

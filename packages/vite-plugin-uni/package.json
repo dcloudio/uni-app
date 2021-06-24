@@ -32,7 +32,6 @@
     "mime": "^2.5.2",
     "module-alias": "^2.2.2",
     "postcss-selector-parser": "^6.0.4",
-    "rollup-plugin-copy": "^3.4.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {

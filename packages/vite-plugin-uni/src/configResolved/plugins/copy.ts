@@ -1,15 +1,15 @@
 import path from 'path'
 import slash from 'slash'
 import { Plugin } from 'vite'
-import copy from 'rollup-plugin-copy'
-import { PUBLIC_DIR } from '@dcloudio/uni-cli-shared'
+
+import { PUBLIC_DIR, uniViteCopyPlugin } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
 export function uniCopyPlugin({
   inputDir,
   outputDir,
 }: VitePluginUniResolvedOptions): Plugin {
-  return copy({
+  return uniViteCopyPlugin({
     targets: [
       {
         src: slash(path.resolve(inputDir, PUBLIC_DIR)),

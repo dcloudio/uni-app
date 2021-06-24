@@ -2889,14 +2889,16 @@ const CanvasToTempFilePathProtocol = {
   quality: Number
 };
 const canvasEventCallbacks = createCallbacks("canvasEvent");
-ServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
-  const callback = canvasEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
+const onCanvasMethodCallback = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
+    const callback = canvasEventCallbacks.pop(callbackId);
+    if (callback) {
+      callback(data);
+    }
+  });
 });
 function operateCanvas(canvasId, pageId, type, data) {
-  ServiceJSBridge.publishHandler("canvas." + canvasId, {
+  UniServiceJSBridge.publishHandler("canvas." + canvasId, {
     canvasId,
     type,
     data
@@ -3631,6 +3633,7 @@ const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONT
   }
 }, CreateCanvasContextProtocol);
 const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
+  onCanvasMethodCallback();
   const pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -3652,6 +3655,7 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
   });
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
 const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+  onCanvasMethodCallback();
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -3685,6 +3689,7 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
   fileType,
   quality
 }, { resolve, reject }) => {
+  onCanvasMethodCallback();
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -3828,7 +3833,7 @@ function operateEditor(componentId, pageId, type, options) {
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
     if (!eventReady) {
-      ServiceJSBridge.subscribe("onEditorMethodCallback", ({ callbackId: callbackId2, data: data2 }) => {
+      UniServiceJSBridge.subscribe("onEditorMethodCallback", ({ callbackId: callbackId2, data: data2 }) => {
         callOptions(optionsCache[callbackId2], data2);
         delete optionsCache[callbackId2];
       });
@@ -3836,7 +3841,7 @@ function operateEditor(componentId, pageId, type, options) {
     }
   }
   data.options = options;
-  ServiceJSBridge.publishHandler("editor." + componentId, {
+  UniServiceJSBridge.publishHandler("editor." + componentId, {
     componentId,
     type,
     data
@@ -4115,15 +4120,18 @@ const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTT
 });
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
-  const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-  if (callback) {
-    callback(data);
-  }
+const onGetSelectedTextRange = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
+    const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
+    if (callback) {
+      callback(data);
+    }
+  });
 });
 const getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
+  onGetSelectedTextRange();
   const pageId = getCurrentPageId();
-  ServiceJSBridge.publishHandler && ServiceJSBridge.publishHandler("getSelectedTextRange", {
+  UniServiceJSBridge.publishHandler("getSelectedTextRange", {
     pageId,
     callbackId: getSelectedTextRangeEventCallbacks.push(function(res) {
       if (typeof res.end === "undefined" && typeof res.start === "undefined") {

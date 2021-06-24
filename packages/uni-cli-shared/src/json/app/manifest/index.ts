@@ -6,20 +6,29 @@ import { initNVue } from './nvue'
 import { initArguments } from './arguments'
 import { initSafearea } from './safearea'
 import { initSplashscreen } from './splashscreen'
+import { initConfusion } from './confusion'
+import { initUniApp } from './uniApp'
+import { initLaunchwebview } from './launchwebview'
+import { initTabBar } from './tabBar'
 
 export function normalizeAppManifestJson(
   userManifestJson: Record<string, any>,
-  pagesJson: Record<string, any>
+  pagesJson: UniApp.PagesJson
 ) {
-  const manifestJson = initDefaultManifestJson()
+  const manifestJson = initRecursiveMerge(
+    initAppStatusbar(initDefaultManifestJson(), pagesJson),
+    userManifestJson
+  )
 
-  initAppStatusbar(manifestJson, pagesJson)
-  initRecursiveMerge(manifestJson, userManifestJson)
   initArguments(manifestJson, pagesJson)
-  initPlus(manifestJson, userManifestJson)
+  initPlus(manifestJson, pagesJson)
   initNVue(manifestJson, pagesJson)
   initSafearea(manifestJson, pagesJson)
   initSplashscreen(manifestJson, userManifestJson)
+  initConfusion(manifestJson)
+  initUniApp(manifestJson)
+  initLaunchwebview(manifestJson, pagesJson) // 依赖 initArguments 先执行
+  initTabBar(manifestJson, pagesJson) // 依赖 initLaunchwebview 先执行
   return manifestJson
 }
 

@@ -157,6 +157,8 @@ export declare const SCHEME_RE: RegExp;
 declare function scrollTo_2(scrollTop: number | string, duration: number): void;
 export { scrollTo_2 as scrollTo }
 
+export declare const SELECTED_COLOR = "#0062cc";
+
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
 export declare const TABBAR_HEIGHT = 50;

@@ -148,6 +148,7 @@ declare namespace UniApp {
     navigationBar: PageNavigationBar
     refreshOptions?: PageRefreshOptions
     onReachBottomDistance?: number
+    pageOrientation?: 'auto' | 'portrait' | 'landscape'
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number
@@ -193,6 +194,10 @@ declare namespace UniApp {
       custom?: {
         [name: string]: string
       }
+    }
+    condition?: {
+      current?: number
+      list?: { name?: string; path: string; query?: string }[]
     }
   }
 

@@ -15,7 +15,6 @@ const defaultManifestJson = `{
         "code": ""
     },
     "description": "",
-    "launch_path": "__uniappservice.html",
     "developer": {
         "name": "",
         "email": "",

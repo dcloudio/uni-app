@@ -31,7 +31,7 @@ export function getCurrentPageMeta() {
 export function getCurrentPageId() {
   const meta = getCurrentPageMeta()
   if (meta) {
-    return meta.id
+    return meta.id!
   }
   return -1
 }

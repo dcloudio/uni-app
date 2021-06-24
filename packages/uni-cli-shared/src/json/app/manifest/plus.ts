@@ -11,7 +11,7 @@ const wxPageOrientationMapping = {
 
 export function initPlus(
   manifestJson: Record<string, any>,
-  pagesJson: Record<string, any>
+  pagesJson: UniApp.PagesJson
 ) {
   // 转换为老版本配置
   if (manifestJson.plus.modules) {
@@ -39,7 +39,7 @@ export function initPlus(
     // app平台优先使用 manifest 配置
     manifestJson.screenOrientation = manifestJson.plus.screenOrientation
     delete manifestJson.plus.screenOrientation
-  } else if (pagesJson.globalStyle && pagesJson.globalStyle.pageOrientation) {
+  } else if (pagesJson.globalStyle?.pageOrientation) {
     // 兼容微信小程序
     const pageOrientationValue =
       wxPageOrientationMapping[
@@ -69,4 +69,26 @@ export function initPlus(
 
   // 允许内联播放视频
   manifestJson.plus.allowsInlineMediaPlayback = true
+
+  if (!manifestJson.plus.distribute) {
+    manifestJson.plus.distribute = {
+      plugins: {},
+    }
+  }
+
+  if (!manifestJson.plus.distribute.plugins) {
+    manifestJson.plus.distribute.plugins = {}
+  }
+
+  // 录音支持 mp3
+  manifestJson.plus.distribute.plugins.audio = {
+    mp3: {
+      description: 'Android平台录音支持MP3格式文件',
+    },
+  }
+
+  // 有效值为 close,none
+  if (!['close', 'none'].includes(manifestJson.plus.popGesture)) {
+    manifestJson.plus.popGesture = 'close'
+  }
 }

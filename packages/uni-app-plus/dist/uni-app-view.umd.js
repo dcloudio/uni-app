@@ -705,7 +705,7 @@
       }
     };
   }
-  const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
+  /* @__PURE__ */ extend(initBridge("service"), {
     invokeOnCallback(name, res) {
       return UniServiceJSBridge.emit("api." + name, res);
     }
@@ -1489,20 +1489,8 @@
       resetSize
     };
   }
-  const canvasEventCallbacks = createCallbacks("canvasEvent");
-  ServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
-    const callback = canvasEventCallbacks.pop(callbackId);
-    if (callback) {
-      callback(data);
-    }
-  });
-  const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-  ServiceJSBridge.subscribe && ServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
-    const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-    if (callback) {
-      callback(data);
-    }
-  });
+  createCallbacks("canvasEvent");
+  createCallbacks("getSelectedTextRangeEvent");
   function _isSlot(s) {
     return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !vue.isVNode(s);
   }

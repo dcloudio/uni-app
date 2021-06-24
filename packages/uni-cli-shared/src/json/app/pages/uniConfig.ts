@@ -55,5 +55,6 @@ export function normalizeAppUniConfig(
     entryPagePath: '', //TODO
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
   }
+  // TODO 待支持分包
   return JSON.stringify(config)
 }

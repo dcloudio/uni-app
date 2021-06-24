@@ -6,6 +6,7 @@ export const RESPONSIVE_MIN_WIDTH = 768
 export const COMPONENT_NAME_PREFIX = 'VUni'
 
 export const PRIMARY_COLOR = '#007aff'
+export const SELECTED_COLOR = '#0062cc'
 
 export const UNI_SSR = '__uniSSR'
 export const UNI_SSR_TITLE = 'title'

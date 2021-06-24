@@ -3,8 +3,8 @@ import { recursive } from 'merge'
 export function initRecursiveMerge(
   manifestJson: Record<string, any>,
   userManifestJson: Record<string, any>
-) {
-  recursive(
+): Record<string, any> {
+  return recursive(
     true,
     manifestJson,
     {

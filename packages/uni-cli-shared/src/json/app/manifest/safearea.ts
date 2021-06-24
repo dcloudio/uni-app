@@ -1,12 +1,8 @@
 export function initSafearea(
   manifestJson: Record<string, any>,
-  pagesJson: Record<string, any>
+  pagesJson: UniApp.PagesJson
 ) {
-  if (
-    pagesJson.tabBar &&
-    pagesJson.tabBar.list &&
-    pagesJson.tabBar.list.length
-  ) {
+  if (pagesJson.tabBar?.list?.length) {
     // 安全区配置 仅包含 tabBar 的时候才配置
     if (!manifestJson.plus.safearea) {
       manifestJson.plus.safearea = {
