@@ -13,6 +13,7 @@ export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
 export * from './media/previewImage'
 export * from './media/getRecorderManager'
+export * from './media/saveVideoToPhotosAlbum'
 
 export * from './keyboard/keyboard'
 
