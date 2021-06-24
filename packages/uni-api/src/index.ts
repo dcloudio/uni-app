@@ -28,6 +28,7 @@ export * from './protocols/device/accelerometer'
 export * from './protocols/device/compass'
 export * from './protocols/device/vibrate'
 export * from './protocols/device/bluetooth'
+export * from './protocols/device/ibeacon'
 
 export * from './protocols/storage/storage'
 
