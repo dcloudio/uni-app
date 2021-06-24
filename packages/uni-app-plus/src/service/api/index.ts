@@ -12,6 +12,7 @@ export * from './device/makePhoneCall'
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
 export * from './media/previewImage'
+export * from './media/getRecorderManager'
 
 export * from './keyboard/keyboard'
 

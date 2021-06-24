@@ -51,6 +51,7 @@ export * from './protocols/media/previewImage'
 export * from './protocols/media/getVideoInfo'
 export * from './protocols/media/saveImageToPhotosAlbum'
 export * from './protocols/media/saveVideoToPhotosAlbum'
+export * from './protocols/media/getRecorderManager'
 
 export * from './protocols/network/request'
 export * from './protocols/network/downloadFile'
