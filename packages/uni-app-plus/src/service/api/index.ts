@@ -20,7 +20,7 @@ export * from './network/request'
 export * from './network/socket'
 
 export * from './context/createInnerAudioContext'
-export * from './context/backgroundAudio'
+export * from './context/getBackgroundAudioManager'
 
 export * from './location/getLocation'
 

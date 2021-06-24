@@ -1,8 +1,8 @@
 import { extend } from '@vue/shared'
 import {
   defineSyncApi,
-  API_BACKGROUND_AUDIO,
-  API_TYPE_BACKGROUND_AUDIO,
+  API_GET_BACKGROUND_AUDIO_MANAGER,
+  API_TYPE_GET_BACKGROUND_AUDIO_MANAGER,
 } from '@dcloudio/uni-api'
 import { once } from '@dcloudio/uni-shared'
 import { getRealPath } from '@dcloudio/uni-platform'
@@ -441,8 +441,8 @@ class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
 let backgroundAudioManager: BackgroundAudioManager
 
 export const getBackgroundAudioManager =
-  defineSyncApi<API_TYPE_BACKGROUND_AUDIO>(
-    API_BACKGROUND_AUDIO,
+  defineSyncApi<API_TYPE_GET_BACKGROUND_AUDIO_MANAGER>(
+    API_GET_BACKGROUND_AUDIO_MANAGER,
     () =>
       backgroundAudioManager ||
       (backgroundAudioManager = new BackgroundAudioManager())

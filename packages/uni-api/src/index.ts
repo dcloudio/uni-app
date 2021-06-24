@@ -21,7 +21,7 @@ export * from './protocols/base/canIUse'
 
 export * from './protocols/context/context'
 export * from './protocols/context/canvas'
-export * from './protocols/context/backgroundAudio'
+export * from './protocols/context/getBackgroundAudioManager'
 
 export * from './protocols/device/makePhoneCall'
 export * from './protocols/device/setClipboardData'
