@@ -70,7 +70,7 @@ export function showToast ({
         interval: duration
       }
     } else {
-      if (icon !== 'loading') {
+      if (['success', 'error'].indexOf(icon) !== -1) {
         waitingOptions.loading = {
           display: 'block',
           height: '55px',
