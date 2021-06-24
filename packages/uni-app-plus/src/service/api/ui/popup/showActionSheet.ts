@@ -6,7 +6,7 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { extend } from '@vue/shared'
-import { useI18n } from '@dcloudio/uni-core'
+import { initI18nShowActionSheetMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
 export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   API_SHOW_ACTION_SHEET,
@@ -20,6 +20,7 @@ export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
     },
     { resolve, reject }
   ) => {
+    initI18nShowActionSheetMsgsOnce()
     const { t } = useI18n()
     const options = {
       title,
