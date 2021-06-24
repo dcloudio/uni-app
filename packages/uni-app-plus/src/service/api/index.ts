@@ -24,5 +24,5 @@ export * from './context/getBackgroundAudioManager'
 
 export * from './location/getLocation'
 
-export * from './popup/showModal'
-export * from './popup/showActionSheet'
+export * from './ui/popup/showModal'
+export * from './ui/popup/showActionSheet'

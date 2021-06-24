@@ -9,6 +9,7 @@ import {
   watchEffect,
   nextTick,
   Transition,
+  computed,
 } from 'vue'
 import { usePopupStyle } from '../../../../helpers/usePopupStyle'
 import { useKeyboard } from '../../../../helpers/useKeyboard'
@@ -26,6 +27,10 @@ import { onEventPrevent } from '@dcloudio/uni-core'
 
 const props = {
   title: {
+    type: String,
+    default: '',
+  },
+  alertText: {
     type: String,
     default: '',
   },
@@ -135,12 +140,14 @@ export default /*#__PURE__*/ defineComponent({
       $event.preventDefault()
     }
 
+    const fixTitle = computed(() => props.title || props.alertText)
+
     watch(
       () => props.visible,
       () => {
         nextTick(() => {
           // title 占位
-          if (props.title) {
+          if (fixTitle.value) {
             titleHeight.value = (
               document.querySelector('.uni-actionsheet__title') as HTMLElement
             ).offsetHeight
@@ -182,13 +189,13 @@ export default /*#__PURE__*/ defineComponent({
               onWheel={_handleWheel}
             >
               {/* title占位 */}
-              {props.title ? (
+              {fixTitle.value ? (
                 <>
                   <div
                     class="uni-actionsheet__cell"
                     style={{ height: `${titleHeight.value}px` }}
                   />
-                  <div class="uni-actionsheet__title">{props.title}</div>
+                  <div class="uni-actionsheet__title">{fixTitle.value}</div>
                 </>
               ) : (
                 ''
