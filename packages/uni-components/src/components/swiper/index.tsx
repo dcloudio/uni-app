@@ -12,11 +12,11 @@ import {
   markRaw,
   SetupContext,
 } from 'vue'
-import { upx2px } from '@dcloudio/uni-api'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { flatVNode } from '../../helpers/flatVNode'
+import { rpx2px } from '@dcloudio/uni-core'
 
 const props = {
   indicatorDots: {
@@ -91,15 +91,6 @@ export interface SwiperContext {
 }
 export type AddSwiperContext = (context: SwiperContext) => void
 export type RemoveSwiperContext = (context: SwiperContext) => void
-
-function upx2pxStr(val: string): string {
-  if (/\d+[ur]px$/i.test(val)) {
-    val.replace(/\d+[ur]px$/i, (text) => {
-      return `${upx2px(parseFloat(text))}px`
-    })
-  }
-  return val || ''
-}
 
 interface State {
   interval: number
@@ -633,14 +624,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ? {
               left: 0,
               right: 0,
-              top: upx2pxStr(props.previousMargin),
-              bottom: upx2pxStr(props.nextMargin),
+              top: rpx2px(props.previousMargin, true),
+              bottom: rpx2px(props.nextMargin, true),
             }
           : {
               top: 0,
               bottom: 0,
-              left: upx2pxStr(props.previousMargin),
-              right: upx2pxStr(props.nextMargin),
+              left: rpx2px(props.previousMargin, true),
+              right: rpx2px(props.nextMargin, true),
             }
       }
       return style

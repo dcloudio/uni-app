@@ -104,17 +104,20 @@ declare namespace UniApp {
   }
 
   interface PageNavigationBar {
-    type?: 'default' | 'transparent' | 'float' | 'none'
+    type?: 'default' | 'transparent' | 'float'
     titleSize?: string
     titleText?: string
     titleImage?: string
-    titleColor?: '#000' | '#fff'
+    titleColor?: '#000000' | '#ffffff'
     timingFunc?: string
     duration?: string
     backgroundColor?: string
     titlePenetrate?: 'YES' | 'NO'
     shadowColorType?: 'grey' | 'blue' | 'green' | 'orange' | 'red' | 'yellow'
-    backButton?: boolean
+    backButton?: Omit<
+      PageNavigationBarButton,
+      'type' | 'float' | 'fontSrc' | 'fontFamily' | 'select' | 'text' | 'width'
+    >
     buttons?: PageNavigationBarButton[]
     searchInput?: PageNavigationBarSearchInput
     style?: 'default' | 'custom'
@@ -149,6 +152,7 @@ declare namespace UniApp {
     refreshOptions?: PageRefreshOptions
     onReachBottomDistance?: number
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
+    backgroundColor?: string
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number

@@ -866,7 +866,8 @@ const ON_REACH_BOTTOM_DISTANCE = 50;
 const RESPONSIVE_MIN_WIDTH = 768;
 const COMPONENT_NAME_PREFIX = 'VUni';
 const PRIMARY_COLOR = '#007aff';
-const SELECTED_COLOR = '#0062cc';
+const SELECTED_COLOR = '#0062cc'; // 选中的颜色，如选项卡默认的选中颜色
+const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
 const UNI_SSR = '__uniSSR';
 const UNI_SSR_TITLE = 'title';
 const UNI_SSR_STORE = 'store';
@@ -882,6 +883,7 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
+exports.BACKGROUND_COLOR = BACKGROUND_COLOR;
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;

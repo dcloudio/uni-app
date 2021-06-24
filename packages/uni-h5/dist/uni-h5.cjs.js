@@ -387,9 +387,17 @@ function updatePageCssVar(cssVars) {
 function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
-function rpx2px(str) {
+function rpx2px(str, replace = false) {
+  if (replace) {
+    return rpx2pxWithReplace(str);
+  }
   {
     return parseInt(str + "");
+  }
+}
+function rpx2pxWithReplace(str) {
+  {
+    return str;
   }
 }
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
@@ -417,6 +425,18 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 }
 function useCurrentPageId() {
   return vue.getCurrentInstance().root.proxy.$page.id;
+}
+const PAGE_META_KEYS = ["navigationBar", "refreshOptions"];
+function initGlobalStyle() {
+  return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
+}
+function mergePageMeta(id, pageMeta) {
+  const globalStyle = initGlobalStyle();
+  const res = shared.extend({ id }, globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
+  });
+  return res;
 }
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
@@ -1297,19 +1317,6 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
-const API_UPX2PX = "upx2px";
-const Upx2pxProtocol = [
-  {
-    name: "upx",
-    type: [Number, String],
-    required: true
-  }
-];
-const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  {
-    return number;
-  }
-}, Upx2pxProtocol);
 createCallbacks("canvasEvent");
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 createCallbacks("getSelectedTextRangeEvent");
@@ -5678,14 +5685,6 @@ const props$c = {
     default: false
   }
 };
-function upx2pxStr(val) {
-  if (/\d+[ur]px$/i.test(val)) {
-    val.replace(/\d+[ur]px$/i, (text) => {
-      return `${upx2px(parseFloat(text))}px`;
-    });
-  }
-  return val || "";
-}
 function useState$1(props2) {
   const interval = vue.computed(() => {
     const interval2 = Number(props2.interval);
@@ -6016,13 +6015,13 @@ var index$g = /* @__PURE__ */ defineBuiltInComponent({
         style = props2.vertical ? {
           left: 0,
           right: 0,
-          top: upx2pxStr(props2.previousMargin),
-          bottom: upx2pxStr(props2.nextMargin)
+          top: rpx2px(props2.previousMargin, true),
+          bottom: rpx2px(props2.nextMargin, true)
         } : {
           top: 0,
           bottom: 0,
-          left: upx2pxStr(props2.previousMargin),
-          right: upx2pxStr(props2.nextMargin)
+          left: rpx2px(props2.previousMargin, true),
+          right: rpx2px(props2.nextMargin, true)
         };
       }
       return style;
@@ -6543,17 +6542,6 @@ function initPageMeta(id) {
     return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, vueRouter.useRoute().meta)))));
   }
   return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
-];
-function mergePageMeta(id, pageMeta) {
-  const res = shared.extend({ id }, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = shared.extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
-  });
-  return res;
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {

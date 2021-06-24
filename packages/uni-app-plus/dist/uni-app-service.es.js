@@ -21,7 +21,11 @@ var serviceContext = (function () {
         : {};
     (process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
     const extend = Object.assign;
+    const isArray = Array.isArray;
     const isString = (val) => typeof val === 'string';
+    const objectToString = Object.prototype.toString;
+    const toTypeString = (value) => objectToString.call(value);
+    const isPlainObject = (val) => toTypeString(val) === '[object Object]';
 
     let isInitEntryPage = false;
     function initEntry() {
@@ -82,10 +86,44 @@ var serviceContext = (function () {
         }
         return ret;
     };
+
+    const encode$1 = encodeURIComponent;
+    function stringifyQuery(obj, encodeStr = encode$1) {
+        const res = obj
+            ? Object.keys(obj)
+                .map((key) => {
+                let val = obj[key];
+                if (typeof val === undefined || val === null) {
+                    val = '';
+                }
+                else if (isPlainObject(val)) {
+                    val = JSON.stringify(val);
+                }
+                return encodeStr(key) + '=' + encodeStr(val);
+            })
+                .filter((x) => x.length > 0)
+                .join('&')
+            : null;
+        return res ? `?${res}` : '';
+    }
     const TABBAR_HEIGHT = 50;
+    const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
     const SCHEME_RE = /^([a-z-]+:)?\/\//i;
     const DATA_RE = /^data:.*,.*/;
     const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+
+    const PAGE_META_KEYS = ['navigationBar', 'refreshOptions'];
+    function initGlobalStyle() {
+        return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
+    }
+    function mergePageMeta(id, pageMeta) {
+        const globalStyle = initGlobalStyle();
+        const res = extend({ id }, globalStyle, pageMeta);
+        PAGE_META_KEYS.forEach((name) => {
+            res[name] = extend({}, globalStyle[name], pageMeta[name]);
+        });
+        return res;
+    }
 
     function getRealRoute(fromRoute, toRoute) {
         if (toRoute.indexOf('/') === 0) {
@@ -483,8 +521,252 @@ var serviceContext = (function () {
         initGlobalEvent();
     }
 
+    function initRouteOptions(path, openType) {
+        // 需要序列化一遍
+        const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find((route) => route.path === path)));
+        if (openType === 'reLaunch' ||
+            (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
+        ) {
+            routeOptions.meta.isQuit = true;
+        }
+        else if (!routeOptions.meta.isTabBar) {
+            routeOptions.meta.isQuit = false;
+        }
+        // TODO
+        //   if (routeOptions.meta.isTabBar) {
+        //     routeOptions.meta.visible = true
+        //   }
+        return routeOptions;
+    }
+
+    function initNVue(webviewStyle, routeMeta, path) {
+        if (path && routeMeta.isNVue) {
+            webviewStyle.uniNView = {
+                path,
+                defaultFontSize: __uniConfig.defaultFontSize,
+                viewport: __uniConfig.viewport,
+            };
+        }
+    }
+
+    const colorRE = /^#[a-z0-9]{6}$/i;
+    function isColor(color) {
+        return color && (colorRE.test(color) || color === 'transparent');
+    }
+
+    function initBackgroundColor(webviewStyle, routeMeta) {
+        const { backgroundColor } = routeMeta;
+        if (!backgroundColor) {
+            return;
+        }
+        if (!isColor(backgroundColor)) {
+            return;
+        }
+        if (!webviewStyle.background) {
+            webviewStyle.background = backgroundColor;
+        }
+        if (!webviewStyle.backgroundColorTop) {
+            webviewStyle.backgroundColorTop = backgroundColor;
+        }
+    }
+
+    function initPopGesture(webviewStyle, routeMeta) {
+        // 不支持 hide
+        if (webviewStyle.popGesture === 'hide') {
+            delete webviewStyle.popGesture;
+        }
+        // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
+        if (routeMeta.isQuit) {
+            webviewStyle.popGesture = (plus.os.name === 'iOS' ? 'appback' : 'none');
+        }
+    }
+
+    function initPullToRefresh(webviewStyle, routeMeta) {
+        if (!routeMeta.enablePullDownRefresh) {
+            return;
+        }
+        webviewStyle.pullToRefresh = extend({}, plus.os.name === 'Android'
+            ? defaultAndroidPullToRefresh
+            : defaultPullToRefresh, routeMeta.refreshOptions);
+    }
+    const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
+    const defaultPullToRefresh = {
+        support: true,
+        style: 'default',
+        height: '50px',
+        range: '200px',
+        contentdown: {
+            caption: '',
+        },
+        contentover: {
+            caption: '',
+        },
+        contentrefresh: {
+            caption: '',
+        },
+    };
+
+    function initTitleNView(webviewStyle, routeMeta) {
+        const { navigationBar } = routeMeta;
+        if (navigationBar.style === 'custom') {
+            return false;
+        }
+        let autoBackButton = true;
+        if (routeMeta.isQuit) {
+            autoBackButton = false;
+        }
+        const titleNView = {
+            autoBackButton,
+        };
+        Object.keys(navigationBar).forEach((name) => {
+            const value = navigationBar[name];
+            if (name === 'backgroundColor') {
+                titleNView.backgroundColor = isColor(value)
+                    ? value
+                    : BACKGROUND_COLOR;
+            }
+            else if (name === 'titleImage' && value) {
+                titleNView.tags = createTitleImageTags(value);
+            }
+            else if (name === 'buttons' && isArray(value)) {
+                titleNView.buttons = value.map((button, index) => {
+                    button.onclick = createTitleNViewBtnClick(index);
+                    return button;
+                });
+            }
+        });
+        webviewStyle.titleNView = titleNView;
+    }
+    function createTitleImageTags(titleImage) {
+        return [
+            {
+                tag: 'img',
+                src: titleImage,
+                position: {
+                    left: 'auto',
+                    top: 'auto',
+                    width: 'auto',
+                    height: '26px',
+                },
+            },
+        ];
+    }
+    function createTitleNViewBtnClick(index) {
+        return function onClick(btn) {
+            btn.index = index;
+            invokeHook('onNavigationBarButtonTap', btn);
+        };
+    }
+
+    function parseWebviewStyle(id, path, routeOptions) {
+        const webviewStyle = {
+            bounce: 'vertical',
+        };
+        const routeMeta = mergePageMeta(id, routeOptions.meta);
+        Object.keys(routeMeta).forEach((name) => {
+            if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+                webviewStyle[name] =
+                    routeMeta[name];
+            }
+        });
+        initNVue(webviewStyle, routeMeta, path);
+        initPopGesture(webviewStyle, routeMeta);
+        initBackgroundColor(webviewStyle, routeMeta);
+        initTitleNView(webviewStyle, routeMeta);
+        initPullToRefresh(webviewStyle, routeMeta);
+        return webviewStyle;
+    }
+    const WEBVIEW_STYLE_BLACKLIST = [
+        'id',
+        'route',
+        'isNVue',
+        'isQuit',
+        'isEntry',
+        'isTabBar',
+        'tabBarIndex',
+        'windowTop',
+        'topWindow',
+        'leftWindow',
+        'rightWindow',
+        'maxWidth',
+        'usingComponents',
+        'disableScroll',
+        'enablePullDownRefresh',
+        'navigationBar',
+        'refreshOptions',
+        'onReachBottomDistance',
+        'pageOrientation',
+        'backgroundColor',
+    ];
+
+    let id = 2;
+    let preloadWebview;
+    function getWebviewId() {
+        return id;
+    }
+    function genWebviewId() {
+        return id++;
+    }
+    function getPreloadWebview() {
+        return preloadWebview;
+    }
+    function encode(val) {
+        return val;
+    }
+    function initUniPageUrl(path, query) {
+        const queryString = query ? stringifyQuery(query, encode) : '';
+        return {
+            path: path.substr(1),
+            query: queryString ? queryString.substr(1) : queryString,
+        };
+    }
+
+    function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
+        const curWebviewId = genWebviewId();
+        const curWebviewStyle = parseWebviewStyle(curWebviewId, path, routeOptions);
+        curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle);
+        }
+        curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
+        return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
+            nvue: true,
+        }, webviewStyle));
+    }
+
+    function createWebview(options) {
+        if (options.routeOptions.meta.isNVue) {
+            return createNVueWebview(options);
+        }
+        if (getWebviewId() === 2) {
+            // 如果首页非 nvue，则直接返回 Launch Webview
+            return plus.webview.getLaunchWebview();
+        }
+        return getPreloadWebview();
+    }
+
+    function registerPage({ path, query, openType, webview, }) {
+        // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
+        if (webview) {
+            initEntry();
+        }
+        // TODO preloadWebview
+        const routeOptions = initRouteOptions(path, openType);
+        if (!webview) {
+            webview = createWebview({ path, routeOptions, query });
+        }
+        else {
+            webview = plus.webview.getWebviewById(webview.id);
+            webview.nvue = routeOptions.meta.isNVue;
+        }
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.log(`[uni-app] registerPage(${path},${webview.id})`);
+        }
+    }
+
     var index = {
         __registerApp: registerApp,
+        __registerPage: registerPage,
     };
 
     return index;

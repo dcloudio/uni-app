@@ -58,11 +58,10 @@ export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
 function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
   if (!Array.isArray(pagesJson.pages)) {
     pagesJson.pages = []
-    console.error(`[uni-app] Error: pages.json->pages parse failed.\n`, jsonStr)
+    throw new Error(`[uni-app] Error: pages.json->pages parse failed.`)
   } else if (!pagesJson.pages.length) {
-    console.error(
-      `[uni-app] Error: pages.json->pages must contain at least 1 page.\n`,
-      jsonStr
+    throw new Error(
+      `[uni-app] Error: pages.json->pages must contain at least 1 page.`
     )
   }
 }
@@ -105,6 +104,10 @@ function normalizePageStyle(
     extend(pageStyle, pageStyle[platform] || {})
     if (['h5', 'app'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
+      if (isEnablePullDownRefresh(pageStyle)) {
+        pageStyle.enablePullDownRefresh = true
+        pageStyle.refreshOptions = normalizePullToRefresh(pageStyle)
+      }
     }
     return removePlatformStyle(pageStyle)
   }
@@ -127,8 +130,8 @@ function normalizeNavigationBar(
 
   Object.keys(navigationBarMaps).forEach((name) => {
     if (hasOwn(pageStyle, name)) {
-      // @ts-ignore
-      navigationBar[navigationBarMaps[name]] = pageStyle[name]
+      navigationBar[navigationBarMaps[name] as keyof UniApp.PageNavigationBar] =
+        pageStyle[name]
       delete pageStyle[name]
     }
   })
@@ -137,10 +140,33 @@ function normalizeNavigationBar(
   if (isPlainObject(titleNView)) {
     extend(navigationBar, titleNView)
     delete pageStyle.titleNView
+  } else if (titleNView === false) {
+    navigationBar.style = 'custom'
   }
+
+  if (hasOwn(navigationBar, 'transparentTitle')) {
+    const transparentTitle = (navigationBar as any).transparentTitle as
+      | 'none'
+      | 'auto'
+      | 'always'
+    if (transparentTitle === 'always') {
+      navigationBar.style = 'custom'
+      navigationBar.type = 'float'
+    } else if (transparentTitle === 'auto') {
+      navigationBar.type = 'transparent'
+    } else {
+      navigationBar.type = 'default'
+    }
+    delete (navigationBar as any).transparentTitle
+  }
+
+  if (navigationBar.titleImage && navigationBar.titleText) {
+    delete navigationBar.titleText
+  }
+
   if (!navigationBar.titleColor && hasOwn(navigationBar, 'textStyle')) {
     navigationBar.titleColor =
-      (navigationBar as any).textStyle === 'black' ? '#000' : '#fff'
+      (navigationBar as any).textStyle === 'black' ? '#000000' : '#ffffff'
     delete (navigationBar as any).textStyle
   }
 
@@ -175,9 +201,9 @@ function normalizeNavigationBar(
 function normalizeNavigationBarButton(
   btn: UniApp.PageNavigationBarButton,
   type: UniApp.PageNavigationBar['type'],
-  titleColor: '#000' | '#fff'
+  titleColor: UniApp.PageNavigationBar['titleColor']
 ) {
-  btn.color = type === 'transparent' ? '#fff' : btn.color || titleColor
+  btn.color = type === 'transparent' ? '#ffffff' : btn.color || titleColor!
   if (!btn.fontSize) {
     btn.fontSize =
       type === 'transparent' || (btn.text && /\\u/.test(btn.text))
@@ -314,4 +340,14 @@ export function normalizePagesRoute(
       meta,
     }
   })
+}
+
+function isEnablePullDownRefresh(pageStyle: Record<string, any>) {
+  return pageStyle.enablePullDownRefresh || pageStyle.pullToRefresh?.support
+}
+
+function normalizePullToRefresh(
+  pageStyle: Record<string, any>
+): UniApp.PageRefreshOptions | undefined {
+  return pageStyle.pullToRefresh
 }

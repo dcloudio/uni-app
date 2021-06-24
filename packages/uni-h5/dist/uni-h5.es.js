@@ -753,15 +753,29 @@ function removeStyle(id2) {
 function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
-function rpx2px(str) {
+function hasRpx(str) {
+  return str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1;
+}
+function rpx2px(str, replace = false) {
+  if (replace) {
+    return rpx2pxWithReplace(str);
+  }
   if (typeof str === "string") {
     const res = parseInt(str) || 0;
-    if (str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1) {
+    if (hasRpx(str)) {
       return uni.upx2px(res);
     }
     return res;
   }
   return str;
+}
+function rpx2pxWithReplace(str) {
+  if (!hasRpx(str)) {
+    return str;
+  }
+  return str.replace(/(\d+(\.\d+)?)[ru]px/g, (_a, b) => {
+    return uni.upx2px(parseFloat(b)) + "px";
+  });
 }
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
@@ -798,6 +812,18 @@ function getPageIdByVm(vm) {
   if (rootProxy && rootProxy.$page) {
     return rootProxy.$page.id;
   }
+}
+const PAGE_META_KEYS = ["navigationBar", "refreshOptions"];
+function initGlobalStyle() {
+  return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
+}
+function mergePageMeta(id2, pageMeta) {
+  const globalStyle = initGlobalStyle();
+  const res = extend({ id: id2 }, globalStyle, pageMeta);
+  PAGE_META_KEYS.forEach((name) => {
+    res[name] = extend({}, globalStyle[name], pageMeta[name]);
+  });
+  return res;
 }
 function disableScrollListener(evt) {
   evt.preventDefault();
@@ -4810,6 +4836,7 @@ const ShowActionSheetProtocol = {
     required: true
   },
   title: String,
+  alertText: String,
   itemColor: String,
   popover: Object
 };
@@ -11928,14 +11955,6 @@ const props$j = {
     default: false
   }
 };
-function upx2pxStr(val) {
-  if (/\d+[ur]px$/i.test(val)) {
-    val.replace(/\d+[ur]px$/i, (text2) => {
-      return `${upx2px(parseFloat(text2))}px`;
-    });
-  }
-  return val || "";
-}
 function useState$2(props2) {
   const interval = computed(() => {
     const interval2 = Number(props2.interval);
@@ -12372,13 +12391,13 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
         style = props2.vertical ? {
           left: 0,
           right: 0,
-          top: upx2pxStr(props2.previousMargin),
-          bottom: upx2pxStr(props2.nextMargin)
+          top: rpx2px(props2.previousMargin, true),
+          bottom: rpx2px(props2.nextMargin, true)
         } : {
           top: 0,
           bottom: 0,
-          left: upx2pxStr(props2.previousMargin),
-          right: upx2pxStr(props2.nextMargin)
+          left: rpx2px(props2.previousMargin, true),
+          right: rpx2px(props2.nextMargin, true)
         };
       }
       return style;
@@ -12997,17 +13016,6 @@ function initPageMeta(id2) {
     return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
   }
   return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
-}
-const PAGE_META_KEYS = [
-  "navigationBar",
-  "refreshOptions"
-];
-function mergePageMeta(id2, pageMeta) {
-  const res = extend({ id: id2 }, __uniConfig.globalStyle, pageMeta);
-  PAGE_META_KEYS.forEach((name) => {
-    res[name] = extend({}, __uniConfig.globalStyle[name], pageMeta[name]);
-  });
-  return res;
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
@@ -17634,6 +17642,10 @@ const props$3 = {
     type: String,
     default: ""
   },
+  alertText: {
+    type: String,
+    default: ""
+  },
   itemList: {
     type: Array,
     default() {
@@ -17720,9 +17732,10 @@ var actionSheet = /* @__PURE__ */ defineComponent({
       }
       $event.preventDefault();
     }
+    const fixTitle = computed(() => props2.title || props2.alertText);
     watch(() => props2.visible, () => {
       nextTick(() => {
-        if (props2.title) {
+        if (fixTitle.value) {
           titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
         }
         scroller.update();
@@ -17753,14 +17766,14 @@ var actionSheet = /* @__PURE__ */ defineComponent({
           "ref": main,
           "class": "uni-actionsheet__menu",
           "onWheel": _handleWheel
-        }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
+        }, [fixTitle.value ? createVNode(Fragment, null, [createVNode("div", {
           "class": "uni-actionsheet__cell",
           "style": {
             height: `${titleHeight.value}px`
           }
         }, null), createVNode("div", {
           "class": "uni-actionsheet__title"
-        }, [props2.title])]) : "", createVNode("div", {
+        }, [fixTitle.value])]) : "", createVNode("div", {
           "style": {
             maxHeight: `${HEIGHT.value}px`,
             overflow: "hidden"

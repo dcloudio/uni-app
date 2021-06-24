@@ -3,7 +3,7 @@ import { reactive, provide, inject } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
-import { PolySymbol, rpx2px } from '@dcloudio/uni-core'
+import { mergePageMeta, PolySymbol, rpx2px } from '@dcloudio/uni-core'
 
 import safeAreaInsets from 'safe-area-insets'
 
@@ -58,23 +58,6 @@ function initPageMeta(id: number) {
       JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))
     )
   )
-}
-
-const PAGE_META_KEYS: ['navigationBar', 'refreshOptions'] = [
-  'navigationBar',
-  'refreshOptions',
-]
-
-function mergePageMeta(id: number, pageMeta: UniApp.PageRouteMeta) {
-  const res = extend({ id }, __uniConfig.globalStyle, pageMeta)
-  PAGE_META_KEYS.forEach((name) => {
-    ;(res as any)[name] = extend(
-      {},
-      __uniConfig.globalStyle[name],
-      pageMeta[name]
-    )
-  })
-  return res
 }
 
 function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {

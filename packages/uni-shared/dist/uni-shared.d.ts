@@ -2,6 +2,8 @@ import { FontFaceDescriptors } from 'css-font-loading-module';
 
 export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
 
+export declare const BACKGROUND_COLOR = "#f7f7f7";
+
 export declare const BUILT_IN_TAGS: string[];
 
 export declare const cacheStringFunction: <T extends (str: string) => string>(fn: T) => T;
