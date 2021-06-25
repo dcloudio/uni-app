@@ -29,3 +29,4 @@ export * from './location/getLocation'
 
 export * from './ui/popup/showModal'
 export * from './ui/popup/showActionSheet'
+export * from './ui/popup/showToast'

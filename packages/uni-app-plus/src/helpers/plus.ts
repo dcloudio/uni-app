@@ -63,3 +63,18 @@ export function warpPlusMethod(
     )
   }
 }
+
+export async function callApiSync<T extends (...args: any) => any>(
+  api: T,
+  args: Parameters<T>[0],
+  resolve: Function,
+  reject: (errMsg?: string | undefined, errRes?: any) => void
+) {
+  api(args)
+    .then(() => {
+      resolve()
+    })
+    .catch((errMsg: string) => {
+      reject(errMsg)
+    })
+}
