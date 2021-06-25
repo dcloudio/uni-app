@@ -75,6 +75,8 @@ export * from './protocols/ui/startPullDownRefresh'
 export * from './protocols/ui/stopPullDownRefresh'
 export * from './protocols/ui/tabBar'
 export * from './protocols/ui/window'
+
+export * from './protocols/plugin/getProvider'
 // helpers
 export {
   defineOnApi,
