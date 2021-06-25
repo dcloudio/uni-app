@@ -357,10 +357,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dcloudio/types@^2.2.14":
-  version "2.2.14"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.2.14.tgz#551b3207d7531bc48b0cce9b237b2436fa11c384"
-  integrity sha512-DondVwxDmO+lopqu8IlC5uAOw11d2+1dbby0oyMZrhAQzRFzBWT2OEGBw9/btK4G85h10hPTondbQa3yi218hA==
+"@dcloudio/types@^2.2.15":
+  version "2.2.15"
+  resolved "https://registry.nlark.com/@dcloudio/types/download/@dcloudio/types-2.2.15.tgz?cache=0&sync_timestamp=1624605648994&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40dcloudio%2Ftypes%2Fdownload%2F%40dcloudio%2Ftypes-2.2.15.tgz#8e0cec74ba7880816a57d9c3315f18a4e6fc79ed"
+  integrity sha1-jgzsdLp4gIFqV9nDMV8YpOb8ee0=
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
