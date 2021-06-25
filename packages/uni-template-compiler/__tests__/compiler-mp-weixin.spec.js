@@ -116,7 +116,39 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view>',
-      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":item})}}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item" :test="test"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" test="{{test}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig,"test":test})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item" :test="test()"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" test="{{$root.m0}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var m0=test();var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig,"test":m0})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<view><view v-for="(item,index) in list" :key="index"><slot :item="item" :test="test()+item"><slot></view></view>',
+      '<view><block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{item.$orig}}" test="{{$root.m0+item.$orig}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view></block></view>',
+      'with(this){var m0=test();var l0=__map(list,function(item,index){var $orig=__get_orig(item);if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":$orig,"test":m0+$orig})}return{$orig:$orig}});$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -124,7 +156,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot :item="getValue(item)"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default item="{{$root.m0}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else><slot></slot></block></view>',
-      'with(this){var m0=getValue(item);$mp.data=Object.assign({},{$root:{m0:m0}});if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":$root.m0})}}',
+      'with(this){var m0=getValue(item);$mp.data=Object.assign({},{$root:{m0:m0}});if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":m0})}}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -132,7 +164,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
-      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",object)}}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -167,7 +199,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
-      'with(this){$setScopedSlotsParams("default",{"item":item})}',
+      'with(this){{$setScopedSlotsParams("default",{"item":item})}}',
       {
         scopedSlotsCompiler: 'augmented'
       }
@@ -175,7 +207,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot :item="getValue(item)"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
-      'with(this){$setScopedSlotsParams("default",{"item":getValue(item)})}',
+      'with(this){{$setScopedSlotsParams("default",{"item":getValue(item)})}}',
       {
         scopedSlotsCompiler: 'augmented'
       }
@@ -183,7 +215,7 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><slot></slot></block></view>',
-      'with(this){$setScopedSlotsParams("default",object)}',
+      'with(this){{$setScopedSlotsParams("default",object)}}',
       {
         scopedSlotsCompiler: 'augmented'
       }
