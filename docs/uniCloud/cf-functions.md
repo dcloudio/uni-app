@@ -102,6 +102,19 @@ exports.main = async (event, context) => {
 }
 ```
 
+### 获取云函数调用来源@context-source
+
+```js
+'use strict';
+exports.main = async (event, context) => {
+  let source = context.SOURCE // 当前云函数被何种方式调用
+  // client   客户端callFunction方式调用
+  // http     云函数url化方式调用
+  // timing   定时触发器调用
+  // server   由管理端调用，HBuilderX里上传并运行，仅阿里云支持，腾讯云这种方式调用也是client
+  // function 由其他云函数callFunction调用，仅阿里云支持，腾讯云这种方式调用也是client
+}
+```
 ### 其他客户端信息@client-info
 
 **以下四个属性只有使用uni-app以callFunction方式调用才能获取**
