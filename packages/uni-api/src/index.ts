@@ -77,6 +77,7 @@ export * from './protocols/ui/tabBar'
 export * from './protocols/ui/window'
 
 export * from './protocols/plugin/getProvider'
+export * from './protocols/plugin/oauth'
 // helpers
 export {
   defineOnApi,

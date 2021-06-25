@@ -32,3 +32,4 @@ export * from './ui/popup/showActionSheet'
 export * from './ui/popup/showToast'
 
 export * from './plugin/getProvider'
+export * from './plugin/oauth'
