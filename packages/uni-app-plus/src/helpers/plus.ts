@@ -64,7 +64,7 @@ export function warpPlusMethod(
   }
 }
 
-export async function callApiSync<T extends (...args: any) => any>(
+export function callApiSync<T extends (...args: any) => any>(
   api: T,
   args: Parameters<T>[0],
   resolve: Function,

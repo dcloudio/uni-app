@@ -1683,7 +1683,11 @@
       }
       const appErrorHandler = instance.appContext.config.errorHandler;
       if (appErrorHandler) {
-        callWithErrorHandling(appErrorHandler, null, 10, [err, exposedInstance, errorInfo]);
+        callWithErrorHandling(appErrorHandler, null, 10, [
+          err,
+          exposedInstance,
+          errorInfo
+        ]);
         return;
       }
     }
@@ -1972,7 +1976,23 @@
     accessedAttrs = true;
   }
   function renderComponentRoot(instance) {
-    const { type: Component, vnode, proxy, withProxy, props: props2, propsOptions: [propsOptions], slots, attrs, emit: emit2, render, renderCache, data, setupState, ctx, inheritAttrs } = instance;
+    const {
+      type: Component,
+      vnode,
+      proxy,
+      withProxy,
+      props: props2,
+      propsOptions: [propsOptions],
+      slots,
+      attrs,
+      emit: emit2,
+      render,
+      renderCache,
+      data,
+      setupState,
+      ctx,
+      inheritAttrs
+    } = instance;
     let result;
     const prev = setCurrentRenderingInstance(instance);
     try {
@@ -2608,7 +2628,11 @@
   function resolveMergedOptions(instance) {
     const base = instance.type;
     const { mixins, extends: extendsOptions } = base;
-    const { mixins: globalMixins, optionsCache: cache, config: { optionMergeStrategies } } = instance.appContext;
+    const {
+      mixins: globalMixins,
+      optionsCache: cache,
+      config: { optionMergeStrategies }
+    } = instance.appContext;
     const cached = cache.get(base);
     let resolved;
     if (cached) {
@@ -2733,7 +2757,11 @@
     instance.attrs = attrs;
   }
   function updateProps(instance, rawProps, rawPrevProps, optimized) {
-    const { props: props2, attrs, vnode: { patchFlag } } = instance;
+    const {
+      props: props2,
+      attrs,
+      vnode: { patchFlag }
+    } = instance;
     const rawCurrentProps = toRaw(props2);
     const [options] = instance.propsOptions;
     let hasAttrsChanged = false;
@@ -3203,7 +3231,22 @@
     return baseCreateRenderer(options);
   }
   function baseCreateRenderer(options, createHydrationFns) {
-    const { insert: hostInsert, remove: hostRemove, patchProp: hostPatchProp, forcePatchProp: hostForcePatchProp, createElement: hostCreateElement, createText: hostCreateText, createComment: hostCreateComment, setText: hostSetText, setElementText: hostSetElementText, parentNode: hostParentNode, nextSibling: hostNextSibling, setScopeId: hostSetScopeId = NOOP, cloneNode: hostCloneNode, insertStaticContent: hostInsertStaticContent } = options;
+    const {
+      insert: hostInsert,
+      remove: hostRemove,
+      patchProp: hostPatchProp,
+      forcePatchProp: hostForcePatchProp,
+      createElement: hostCreateElement,
+      createText: hostCreateText,
+      createComment: hostCreateComment,
+      setText: hostSetText,
+      setElementText: hostSetElementText,
+      parentNode: hostParentNode,
+      nextSibling: hostNextSibling,
+      setScopeId: hostSetScopeId = NOOP,
+      cloneNode: hostCloneNode,
+      insertStaticContent: hostInsertStaticContent
+    } = options;
     const patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, slotScopeIds = null, optimized = false) => {
       if (n1 && !isSameVNodeType(n1, n2)) {
         anchor = getNextHostNode(n1);
@@ -3813,7 +3856,16 @@
       }
     };
     const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
-      const { type, props: props2, ref: ref2, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
+      const {
+        type,
+        props: props2,
+        ref: ref2,
+        children,
+        dynamicChildren,
+        shapeFlag,
+        patchFlag,
+        dirs
+      } = vnode;
       if (ref2 != null) {
         setRef(ref2, null, parentSuspense, vnode, true);
       }
@@ -4444,7 +4496,10 @@
       const setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
       currentInstance = instance;
       pauseTracking();
-      const setupResult = callWithErrorHandling(setup, instance, 0, [instance.props, setupContext]);
+      const setupResult = callWithErrorHandling(setup, instance, 0, [
+        instance.props,
+        setupContext
+      ]);
       resetTracking();
       currentInstance = null;
       if (isPromise(setupResult)) {

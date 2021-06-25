@@ -1813,7 +1813,7 @@ var serviceContext = (function () {
           }));
       };
   }
-  async function callApiSync(api, args, resolve, reject) {
+  function callApiSync(api, args, resolve, reject) {
       api(args)
           .then(() => {
           resolve();
