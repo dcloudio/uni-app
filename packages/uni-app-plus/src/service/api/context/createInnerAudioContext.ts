@@ -1,5 +1,4 @@
 import { extend } from '@vue/shared'
-import { getRealPath } from '@dcloudio/uni-platform'
 import {
   API_CREATE_INNER_AUDIO_CONTEXT,
   defineSyncApi,
@@ -11,6 +10,8 @@ import {
   innerAudioContextEventNames,
   innerAudioContextOffEventNames,
 } from '@dcloudio/uni-api'
+
+import { getRealPath } from '../../../platform/getRealPath'
 
 type ExtendAudio = {
   src?: string

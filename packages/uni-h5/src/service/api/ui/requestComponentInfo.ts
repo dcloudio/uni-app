@@ -2,27 +2,12 @@ import { ComponentPublicInstance } from 'vue'
 import { getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
+import { SelectorQueryNodeInfo, SelectorQueryRequest } from '@dcloudio/uni-api'
 
 type NodeField = UniApp.NodeField
 
-interface NodeInfo
-  extends UniApp.NodeInfo,
-    Omit<
-      Partial<Record<keyof CSSStyleDeclaration, any>>,
-      'top' | 'bottom' | 'left' | 'right' | 'height' | 'width'
-    > {
-  contextInfo?: ReturnType<typeof getContextInfo>
-}
-
-export interface Request {
-  component: ComponentPublicInstance | undefined | null
-  selector: string
-  single: boolean
-  fields: NodeField
-}
-
 function getRootInfo(fields: NodeField) {
-  const info: NodeInfo = {}
+  const info: SelectorQueryNodeInfo = {}
   if (fields.id) {
     info.id = ''
   }
@@ -50,8 +35,11 @@ function getRootInfo(fields: NodeField) {
   return info
 }
 
-function getNodeInfo(el: HTMLElement, fields: NodeField): NodeInfo {
-  const info: NodeInfo = {}
+function getNodeInfo(
+  el: HTMLElement,
+  fields: NodeField
+): SelectorQueryNodeInfo {
+  const info: SelectorQueryNodeInfo = {}
   const { top } = getWindowOffset()
   if (fields.id) {
     info.id = el.id
@@ -121,7 +109,7 @@ function getNodesInfo(
   selector: string,
   single: boolean,
   fields: NodeField
-): NodeInfo | NodeInfo[] | null {
+): SelectorQueryNodeInfo | SelectorQueryNodeInfo[] | null {
   const parentElement = findElm(component, pageVm).parentElement
   if (!parentElement) {
     return single ? null : []
@@ -133,7 +121,7 @@ function getNodesInfo(
     }
     return null
   } else {
-    let infos: NodeInfo[] = []
+    let infos: SelectorQueryNodeInfo[] = []
     const nodeList = parentElement.querySelectorAll(selector)
     if (nodeList && nodeList.length) {
       ;[].forEach.call(nodeList, (node) => {
@@ -146,10 +134,10 @@ function getNodesInfo(
 
 export function requestComponentInfo(
   page: ComponentPublicInstance,
-  reqs: Array<Request>,
-  callback: (result: Array<NodeInfo | null>) => void
+  reqs: Array<SelectorQueryRequest>,
+  callback: (result: Array<SelectorQueryNodeInfo | null>) => void
 ) {
-  const result: Array<NodeInfo | null> = []
+  const result: Array<SelectorQueryNodeInfo | null> = []
   reqs.forEach(({ component, selector, single, fields }) => {
     if (component === null) {
       result.push(getRootInfo(fields))

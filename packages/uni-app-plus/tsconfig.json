@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@dcloudio/*": ["packages/*/src"],
+      "@dcloudio/uni-platform": ["packages/uni-app-plus/src/platform/index.ts"]
+    }
+  }
+}

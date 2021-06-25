@@ -5,7 +5,7 @@
   "output": {
     "name": "serviceContext",
     "format": "iife",
-    "banner": "export function createServiceContext(Vue, weex, plus, UniServiceJSBridge,instanceContext){\nconst setTimeout = instanceContext.setTimeout;\nconst clearTimeout = instanceContext.clearTimeout;\nconst setInterval = instanceContext.setInterval;\nconst clearInterval = instanceContext.clearInterval;\nconst __uniConfig = instanceContext.__uniConfig;\nconst __uniRoutes = instanceContext.__uniRoutes;\n",
+    "banner": "export function createServiceContext(Vue, weex, plus,instanceContext){\nconst setTimeout = instanceContext.setTimeout;\nconst clearTimeout = instanceContext.clearTimeout;\nconst setInterval = instanceContext.setInterval;\nconst clearInterval = instanceContext.clearInterval;\nconst __uniConfig = instanceContext.__uniConfig;\nconst __uniRoutes = instanceContext.__uniRoutes;\n",
     "footer": "const uni = serviceContext.uni;\nconst getApp = serviceContext.getApp;\nconst getCurrentPages = serviceContext.getCurrentPages;\nconst __definePage = serviceContext.__definePage;\nconst __registerPage = serviceContext.__registerPage;\nreturn serviceContext;\n}"
   },
   "external": false

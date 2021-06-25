@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@dcloudio/*": ["packages/*/src"],
+      "@dcloudio/uni-platform": ["packages/uni-mp-qq/src/platform/index.ts"],
+      "@dcloudio/uni-mp-polyfill": ["packages/uni-mp-core/src/runtime/polyfill"]
+    }
+  }
+}

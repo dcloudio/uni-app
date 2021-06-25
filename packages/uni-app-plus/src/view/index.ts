@@ -1,1 +1,2 @@
-import { initView } from '@dcloudio/uni-core'
+import '@webcomponents/custom-elements'
+import './components'

@@ -6,11 +6,11 @@ import {
   PreviewImageOptions,
 } from '@dcloudio/uni-api'
 
-import { getRealPath } from '@dcloudio/uni-platform'
-
 import { isPlainObject } from '@vue/shared'
 
 import { initI18nChooseImageMsgsOnce, useI18n } from '@dcloudio/uni-core'
+
+import { getRealPath } from '../../../platform/getRealPath'
 
 export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
   API_PREVIEW_IMAGE,

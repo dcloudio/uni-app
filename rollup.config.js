@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import ts from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
@@ -19,7 +20,8 @@ const pkg = require(resolve(`package.json`))
 let hasTSChecked = false
 
 const configs = []
-const buildOptions = require(resolve(`build.json`))
+
+let buildOptions = require(resolve(`build.json`))
 
 function normalizeOutput(file, output = {}) {
   return Object.assign(
@@ -32,40 +34,64 @@ function normalizeOutput(file, output = {}) {
   )
 }
 
-Object.keys(buildOptions.input).forEach((name) => {
-  const files = buildOptions.input[name]
-  if (Array.isArray(files)) {
-    files.forEach((file) => {
+if (!Array.isArray(buildOptions)) {
+  buildOptions = [buildOptions]
+}
+buildOptions.forEach((buildOption) => {
+  Object.keys(buildOption.input).forEach((name) => {
+    const files = buildOption.input[name]
+    if (Array.isArray(files)) {
+      files.forEach((file) => {
+        configs.push(
+          createConfig(
+            name,
+            normalizeOutput(resolve(file), buildOption.output),
+            buildOption
+          )
+        )
+      })
+    } else {
       configs.push(
-        createConfig(name, normalizeOutput(resolve(file), buildOptions.output))
+        createConfig(
+          name,
+          normalizeOutput(resolve(buildOption.input[name]), buildOption.output),
+          buildOption
+        )
       )
-    })
-  } else {
-    configs.push(
-      createConfig(
-        name,
-        normalizeOutput(resolve(buildOptions.input[name]), buildOptions.output)
-      )
-    )
-  }
+    }
+  })
 })
+
 export default configs
 
-function createConfig(entryFile, output, plugins = []) {
+function resolveTsconfigJson() {
+  const tsconfigJsonPath = resolve('tsconfig.json')
+  if (
+    fs.existsSync(tsconfigJsonPath)
+    //  &&
+    // require(tsconfigJsonPath).extends === '../../tsconfig.json'
+  ) {
+    return tsconfigJsonPath
+  }
+  return path.resolve(__dirname, 'tsconfig.json')
+}
+
+function createConfig(entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsPlugin = ts({
     check:
       !process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked,
-    tsconfig: path.resolve(__dirname, 'tsconfig.json'),
+    tsconfig: resolveTsconfigJson(),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
       compilerOptions: {
         sourceMap: output.sourcemap,
         declaration: shouldEmitDeclarations,
-        declarationMap: shouldEmitDeclarations,
+        declarationMap: false,
       },
       exclude: ['**/__tests__', 'test-dts'],
     },
+    useTsconfigDeclarationDir: true,
   })
 
   // we only need to check TS and generate declarations once for each build.
@@ -74,29 +100,28 @@ function createConfig(entryFile, output, plugins = []) {
   hasTSChecked = true
 
   const external =
-    buildOptions.external === false
+    buildOption.external === false
       ? []
       : [
           'vue',
           '@vue/shared',
           ...Object.keys(pkg.dependencies || {}),
           ...Object.keys(pkg.peerDependencies || {}),
-          ...(buildOptions.external || []),
+          ...(buildOption.external || []),
         ]
 
   return {
     input: resolve(entryFile),
     external,
     plugins: [
-      createAliasPlugin(buildOptions),
+      createAliasPlugin(buildOption),
       nodeResolve(),
       commonjs(),
       json({
         namedExports: false,
       }),
       tsPlugin,
-      createReplacePlugin(buildOptions, output.format),
-      ...plugins,
+      createReplacePlugin(buildOption, output.format),
     ],
     output,
     onwarn: (msg, warn) => {
@@ -105,7 +130,7 @@ function createConfig(entryFile, output, plugins = []) {
       // }
     },
     treeshake:
-      buildOptions.treeshake === false
+      buildOption.treeshake === false
         ? false
         : {
             moduleSideEffects(id) {
@@ -119,11 +144,11 @@ function createConfig(entryFile, output, plugins = []) {
   }
 }
 
-function createAliasPlugin(buildOptions) {
-  return alias(buildOptions.alias || {})
+function createAliasPlugin(buildOption) {
+  return alias(buildOption.alias || {})
 }
 
-function createReplacePlugin(buildOptions, format) {
+function createReplacePlugin(buildOption, format) {
   const replacements = {
     global: format === 'cjs' ? 'global' : 'window',
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
@@ -131,8 +156,8 @@ function createReplacePlugin(buildOptions, format) {
     __PLATFORM__: JSON.stringify('h5'),
     __NODE_JS__: format === 'cjs',
   }
-  if (buildOptions.replacements) {
-    Object.assign(replacements, buildOptions.replacements)
+  if (buildOption.replacements) {
+    Object.assign(replacements, buildOption.replacements)
   }
 
   Object.keys(replacements).forEach((key) => {

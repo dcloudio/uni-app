@@ -6,50 +6,255 @@ import {
   UniTextNode,
   UniCommentNode,
 } from '@dcloudio/uni-shared'
-import {
-  EMPTY_OBJ,
-  isArray,
-  isMap,
-  isIntegerKey,
-  isSymbol,
-  extend,
-  hasOwn,
-  isObject,
-  hasChanged,
-  makeMap,
-  capitalize,
-  toRawType,
-  def,
-  isFunction,
-  NOOP,
-  isString,
-  isPromise,
-  toHandlerKey,
-  toNumber,
-  hyphenate,
-  camelize,
-  isOn,
-  isModelListener,
-  remove,
-  isSet,
-  isPlainObject,
-  invokeArrayFns,
-  isReservedProp,
-  EMPTY_ARR,
-  NO,
-  getGlobalThis,
-  normalizeClass,
-  normalizeStyle,
-  isGloballyWhitelisted,
-  isHTMLTag,
-  isSVGTag,
-} from '@vue/shared'
-export {
-  camelize,
-  capitalize,
-  toDisplayString,
-  toHandlerKey,
-} from '@vue/shared'
+
+/**
+ * Make a map and return a function for checking if a key
+ * is in that map.
+ * IMPORTANT: all calls of this function must be prefixed with
+ * \/\*#\_\_PURE\_\_\*\/
+ * So that rollup can tree-shake them if necessary.
+ */
+function makeMap(str, expectsLowerCase) {
+  const map = Object.create(null)
+  const list = str.split(',')
+  for (let i = 0; i < list.length; i++) {
+    map[list[i]] = true
+  }
+  return expectsLowerCase
+    ? (val) => !!map[val.toLowerCase()]
+    : (val) => !!map[val]
+}
+
+const GLOBALS_WHITE_LISTED =
+  'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' +
+  'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' +
+  'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt'
+const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
+
+function normalizeStyle(value) {
+  if (isArray(value)) {
+    const res = {}
+    for (let i = 0; i < value.length; i++) {
+      const item = value[i]
+      const normalized = normalizeStyle(
+        isString(item) ? parseStringStyle(item) : item
+      )
+      if (normalized) {
+        for (const key in normalized) {
+          res[key] = normalized[key]
+        }
+      }
+    }
+    return res
+  } else if (isObject(value)) {
+    return value
+  }
+}
+const listDelimiterRE = /;(?![^(]*\))/g
+const propertyDelimiterRE = /:(.+)/
+function parseStringStyle(cssText) {
+  const ret = {}
+  cssText.split(listDelimiterRE).forEach((item) => {
+    if (item) {
+      const tmp = item.split(propertyDelimiterRE)
+      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim())
+    }
+  })
+  return ret
+}
+function normalizeClass(value) {
+  let res = ''
+  if (isString(value)) {
+    res = value
+  } else if (isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const normalized = normalizeClass(value[i])
+      if (normalized) {
+        res += normalized + ' '
+      }
+    }
+  } else if (isObject(value)) {
+    for (const name in value) {
+      if (value[name]) {
+        res += name + ' '
+      }
+    }
+  }
+  return res.trim()
+}
+
+// These tag configs are shared between compiler-dom and runtime-dom, so they
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+const HTML_TAGS =
+  'html,body,base,head,link,meta,style,title,address,article,aside,footer,' +
+  'header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,div,dd,dl,dt,figcaption,' +
+  'figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,' +
+  'data,dfn,em,i,kbd,mark,q,rp,rt,rtc,ruby,s,samp,small,span,strong,sub,sup,' +
+  'time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,' +
+  'canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,' +
+  'th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,' +
+  'option,output,progress,select,textarea,details,dialog,menu,' +
+  'summary,template,blockquote,iframe,tfoot'
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Element
+const SVG_TAGS =
+  'svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,' +
+  'defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,' +
+  'feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,' +
+  'feDistanceLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,' +
+  'feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,' +
+  'fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,' +
+  'foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,' +
+  'mesh,meshgradient,meshpatch,meshrow,metadata,mpath,path,pattern,' +
+  'polygon,polyline,radialGradient,rect,set,solidcolor,stop,switch,symbol,' +
+  'text,textPath,title,tspan,unknown,use,view'
+const isHTMLTag = /*#__PURE__*/ makeMap(HTML_TAGS)
+const isSVGTag = /*#__PURE__*/ makeMap(SVG_TAGS)
+
+/**
+ * For converting {{ interpolation }} values to displayed strings.
+ * @private
+ */
+const toDisplayString = (val) => {
+  return val == null
+    ? ''
+    : isObject(val)
+    ? JSON.stringify(val, replacer, 2)
+    : String(val)
+}
+const replacer = (_key, val) => {
+  if (isMap(val)) {
+    return {
+      [`Map(${val.size})`]: [...val.entries()].reduce((entries, [key, val]) => {
+        entries[`${key} =>`] = val
+        return entries
+      }, {}),
+    }
+  } else if (isSet(val)) {
+    return {
+      [`Set(${val.size})`]: [...val.values()],
+    }
+  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+    return String(val)
+  }
+  return val
+}
+
+const EMPTY_OBJ = process.env.NODE_ENV !== 'production' ? Object.freeze({}) : {}
+const EMPTY_ARR = process.env.NODE_ENV !== 'production' ? Object.freeze([]) : []
+const NOOP = () => {}
+/**
+ * Always return false.
+ */
+const NO = () => false
+const onRE = /^on[^a-z]/
+const isOn = (key) => onRE.test(key)
+const isModelListener = (key) => key.startsWith('onUpdate:')
+const extend = Object.assign
+const remove = (arr, el) => {
+  const i = arr.indexOf(el)
+  if (i > -1) {
+    arr.splice(i, 1)
+  }
+}
+const hasOwnProperty = Object.prototype.hasOwnProperty
+const hasOwn = (val, key) => hasOwnProperty.call(val, key)
+const isArray = Array.isArray
+const isMap = (val) => toTypeString(val) === '[object Map]'
+const isSet = (val) => toTypeString(val) === '[object Set]'
+const isFunction = (val) => typeof val === 'function'
+const isString = (val) => typeof val === 'string'
+const isSymbol = (val) => typeof val === 'symbol'
+const isObject = (val) => val !== null && typeof val === 'object'
+const isPromise = (val) => {
+  return isObject(val) && isFunction(val.then) && isFunction(val.catch)
+}
+const objectToString = Object.prototype.toString
+const toTypeString = (value) => objectToString.call(value)
+const toRawType = (value) => {
+  // extract "RawType" from strings like "[object RawType]"
+  return toTypeString(value).slice(8, -1)
+}
+const isPlainObject = (val) => toTypeString(val) === '[object Object]'
+const isIntegerKey = (key) =>
+  isString(key) &&
+  key !== 'NaN' &&
+  key[0] !== '-' &&
+  '' + parseInt(key, 10) === key
+const isReservedProp = /*#__PURE__*/ makeMap(
+  // the leading comma is intentional so empty string "" is also included
+  ',key,ref,' +
+    'onVnodeBeforeMount,onVnodeMounted,' +
+    'onVnodeBeforeUpdate,onVnodeUpdated,' +
+    'onVnodeBeforeUnmount,onVnodeUnmounted'
+)
+const cacheStringFunction = (fn) => {
+  const cache = Object.create(null)
+  return (str) => {
+    const hit = cache[str]
+    return hit || (cache[str] = fn(str))
+  }
+}
+const camelizeRE = /-(\w)/g
+/**
+ * @private
+ */
+const camelize = cacheStringFunction((str) => {
+  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+})
+const hyphenateRE = /\B([A-Z])/g
+/**
+ * @private
+ */
+const hyphenate = cacheStringFunction((str) =>
+  str.replace(hyphenateRE, '-$1').toLowerCase()
+)
+/**
+ * @private
+ */
+const capitalize = cacheStringFunction(
+  (str) => str.charAt(0).toUpperCase() + str.slice(1)
+)
+/**
+ * @private
+ */
+const toHandlerKey = cacheStringFunction((str) =>
+  str ? `on${capitalize(str)}` : ``
+)
+// compare whether a value has changed, accounting for NaN.
+const hasChanged = (value, oldValue) =>
+  value !== oldValue && (value === value || oldValue === oldValue)
+const invokeArrayFns = (fns, arg) => {
+  for (let i = 0; i < fns.length; i++) {
+    fns[i](arg)
+  }
+}
+const def = (obj, key, value) => {
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: false,
+    value,
+  })
+}
+const toNumber = (val) => {
+  const n = parseFloat(val)
+  return isNaN(n) ? val : n
+}
+let _globalThis
+const getGlobalThis = () => {
+  return (
+    _globalThis ||
+    (_globalThis =
+      typeof globalThis !== 'undefined'
+        ? globalThis
+        : typeof self !== 'undefined'
+        ? self
+        : typeof window !== 'undefined'
+        ? window
+        : typeof global !== 'undefined'
+        ? global
+        : {})
+  )
+}
 
 const targetMap = new WeakMap()
 const effectStack = []
@@ -2696,6 +2901,12 @@ const SuspenseImpl = {
 }
 // Force-casted public typing for h and TSX props inference
 const Suspense = SuspenseImpl
+function triggerEvent(vnode, name) {
+  const eventListener = vnode.props && vnode.props[name]
+  if (isFunction(eventListener)) {
+    eventListener()
+  }
+}
 function mountSuspense(
   vnode,
   container,
@@ -2738,6 +2949,9 @@ function mountSuspense(
   // now check if we have encountered any async deps
   if (suspense.deps > 0) {
     // has async
+    // invoke @fallback event
+    triggerEvent(vnode, 'onPending')
+    triggerEvent(vnode, 'onFallback')
     // mount the fallback tree
     patch(
       null,
@@ -2902,10 +3116,7 @@ function patchSuspense(
     } else {
       // root node toggled
       // invoke @pending event
-      const onPending = n2.props && n2.props.onPending
-      if (isFunction(onPending)) {
-        onPending()
-      }
+      triggerEvent(n2, 'onPending')
       // mount pending branch in off-dom container
       suspense.pendingBranch = newBranch
       suspense.pendingId++
@@ -3058,10 +3269,7 @@ function createSuspenseBoundary(
       }
       suspense.effects = []
       // invoke @resolve event
-      const onResolve = vnode.props && vnode.props.onResolve
-      if (isFunction(onResolve)) {
-        onResolve()
-      }
+      triggerEvent(vnode, 'onResolve')
     },
     fallback(fallbackVNode) {
       if (!suspense.pendingBranch) {
@@ -3070,10 +3278,7 @@ function createSuspenseBoundary(
       const { vnode, activeBranch, parentComponent, container, isSVG } =
         suspense
       // invoke @fallback event
-      const onFallback = vnode.props && vnode.props.onFallback
-      if (isFunction(onFallback)) {
-        onFallback()
-      }
+      triggerEvent(vnode, 'onFallback')
       const anchor = next(activeBranch)
       const mountFallback = () => {
         if (!suspense.isInFallback) {
@@ -3098,6 +3303,7 @@ function createSuspenseBoundary(
       if (delayEnter) {
         activeBranch.transition.afterLeave = mountFallback
       }
+      suspense.isInFallback = true
       // unmount current active branch
       unmount(
         activeBranch,
@@ -3105,7 +3311,6 @@ function createSuspenseBoundary(
         null, // no suspense so unmount hooks fire now
         true // shouldRemove
       )
-      suspense.isInFallback = true
       if (!delayEnter) {
         mountFallback()
       }
@@ -4670,12 +4875,15 @@ function applyOptions(instance) {
   registerLifecycleHook(onServerPrefetch, serverPrefetch)
   if (isArray(expose)) {
     if (expose.length) {
-      const exposed = instance.exposed || (instance.exposed = proxyRefs({}))
+      const exposed = instance.exposed || (instance.exposed = {})
       expose.forEach((key) => {
-        exposed[key] = toRef(publicThis, key)
+        Object.defineProperty(exposed, key, {
+          get: () => publicThis[key],
+          set: (val) => (publicThis[key] = val),
+        })
       })
     } else if (!instance.exposed) {
-      instance.exposed = EMPTY_OBJ
+      instance.exposed = {}
     }
   }
   // options that are handled when creating the instance but also need to be
@@ -4820,25 +5028,23 @@ const internalOptionMergeStrats = {
   methods: mergeObjectOptions,
   computed: mergeObjectOptions,
   // lifecycle
-  beforeCreate: mergeHook,
-  created: mergeHook,
-  beforeMount: mergeHook,
-  mounted: mergeHook,
-  beforeUpdate: mergeHook,
-  updated: mergeHook,
-  beforeDestroy: mergeHook,
-  destroyed: mergeHook,
-  activated: mergeHook,
-  deactivated: mergeHook,
-  errorCaptured: mergeHook,
-  serverPrefetch: mergeHook,
+  beforeCreate: mergeAsArray,
+  created: mergeAsArray,
+  beforeMount: mergeAsArray,
+  mounted: mergeAsArray,
+  beforeUpdate: mergeAsArray,
+  updated: mergeAsArray,
+  beforeDestroy: mergeAsArray,
+  destroyed: mergeAsArray,
+  activated: mergeAsArray,
+  deactivated: mergeAsArray,
+  errorCaptured: mergeAsArray,
+  serverPrefetch: mergeAsArray,
   // assets
   components: mergeObjectOptions,
   directives: mergeObjectOptions,
-  // watch has special merge behavior in v2, but isn't actually needed in v3.
-  // since we are only exposing these for compat and nobody should be relying
-  // on the watch-specific behavior, just expose the object merge strat.
-  watch: mergeObjectOptions,
+  // watch
+  watch: mergeWatchOptions,
   // provide / inject
   provide: mergeDataFn,
   inject: mergeInject,
@@ -4870,11 +5076,20 @@ function normalizeInject(raw) {
   }
   return raw
 }
-function mergeHook(to, from) {
+function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from
 }
 function mergeObjectOptions(to, from) {
   return to ? extend(extend(Object.create(null), to), from) : from
+}
+function mergeWatchOptions(to, from) {
+  if (!to) return from
+  if (!from) return to
+  const merged = extend(Object.create(null), to)
+  for (const key in from) {
+    merged[key] = mergeAsArray(to[key], from[key])
+  }
+  return merged
 }
 
 function initProps(
@@ -6258,7 +6473,7 @@ const setRef = (
   }
   const refValue =
     vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */
-      ? vnode.component.exposed || vnode.component.proxy
+      ? getExposeProxy(vnode.component) || vnode.component.proxy
       : vnode.el
   const value = isUnmount ? null : refValue
   const { i: owner, r: ref } = rawRef
@@ -6510,7 +6725,11 @@ function baseCreateRenderer(options, createHydrationFns) {
       n2.children,
       container,
       anchor,
-      isSVG
+      isSVG,
+      // pass cached nodes if the static node is being mounted multiple times
+      // so that runtime-dom can simply cloneNode() instead of inserting new
+      // HTML
+      n2.el && [n2.el, n2.anchor]
     )
   }
   /**
@@ -9176,13 +9395,21 @@ const PublicInstanceProxyHandlers = {
   get({ _: instance }, key) {
     const { ctx, setupState, data, props, accessCache, type, appContext } =
       instance
-    // let @vue/reactivity know it should never observe Vue public instances.
-    if (key === '__v_skip' /* SKIP */) {
-      return true
-    }
     // for internal formatters to know that this is a Vue instance
     if (process.env.NODE_ENV !== 'production' && key === '__isVue') {
       return true
+    }
+    // prioritize <script setup> bindings during dev.
+    // this allows even properties that start with _ or $ to be used - so that
+    // it aligns with the production behavior where the render fn is inlined and
+    // indeed has access to all declared variables.
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      setupState !== EMPTY_OBJ &&
+      setupState.__isScriptSetup &&
+      hasOwn(setupState, key)
+    ) {
+      return setupState[key]
     }
     // data / props / ctx
     // This getter gets called for every property access on the render context
@@ -9416,7 +9643,7 @@ function exposePropsOnRenderContext(instance) {
 function exposeSetupStateOnRenderContext(instance) {
   const { ctx, setupState } = instance
   Object.keys(toRaw(setupState)).forEach((key) => {
-    if (key[0] === '$' || key[0] === '_') {
+    if (!setupState.__isScriptSetup && (key[0] === '$' || key[0] === '_')) {
       warn(
         `setup() return property ${JSON.stringify(
           key
@@ -9454,6 +9681,7 @@ function createComponentInstance(vnode, parent, suspense) {
     render: null,
     proxy: null,
     exposed: null,
+    exposeProxy: null,
     withProxy: null,
     effects: null,
     provides: parent ? parent.provides : Object.create(appContext.provides),
@@ -9575,7 +9803,7 @@ function setupStatefulComponent(instance, isSSR) {
   instance.accessCache = Object.create(null)
   // 1. create public instance / render proxy
   // also mark it raw so it's never observed
-  instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers)
+  instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers))
   if (process.env.NODE_ENV !== 'production') {
     exposePropsOnRenderContext(instance)
   }
@@ -9734,11 +9962,9 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     }
   }
 }
-const attrHandlers = {
+const attrDevProxyHandlers = {
   get: (target, key) => {
-    if (process.env.NODE_ENV !== 'production') {
-      markAttrsAccessed()
-    }
+    markAttrsAccessed()
     return target[key]
   },
   set: () => {
@@ -9755,14 +9981,17 @@ function createSetupContext(instance) {
     if (process.env.NODE_ENV !== 'production' && instance.exposed) {
       warn(`expose() should be called only once per setup().`)
     }
-    instance.exposed = proxyRefs(exposed)
+    instance.exposed = exposed || {}
   }
   if (process.env.NODE_ENV !== 'production') {
+    let attrs
     // We use getters in dev in case libs like test-utils overwrite instance
     // properties (overwrites should not be done in prod)
     return Object.freeze({
       get attrs() {
-        return new Proxy(instance.attrs, attrHandlers)
+        return (
+          attrs || (attrs = new Proxy(instance.attrs, attrDevProxyHandlers))
+        )
       },
       get slots() {
         return shallowReadonly(instance.slots)
@@ -9779,6 +10008,22 @@ function createSetupContext(instance) {
       emit: instance.emit,
       expose,
     }
+  }
+}
+function getExposeProxy(instance) {
+  if (instance.exposed) {
+    return (
+      instance.exposeProxy ||
+      (instance.exposeProxy = new Proxy(proxyRefs(markRaw(instance.exposed)), {
+        get(target, key) {
+          if (key in target) {
+            return target[key]
+          } else if (key in publicPropertiesMap) {
+            return publicPropertiesMap[key](instance)
+          }
+        },
+      }))
+    )
   }
 }
 // record effects created during a component's setup() so that they can be
@@ -9843,17 +10088,33 @@ function defineProps() {
   return null
 }
 // implementation
-function defineEmit() {
+function defineEmits() {
   if (process.env.NODE_ENV !== 'production') {
     warn(
-      `defineEmit() is a compiler-hint helper that is only usable inside ` +
+      `defineEmits() is a compiler-hint helper that is only usable inside ` +
         `<script setup> of a single file component. Its arguments should be ` +
         `compiled away and passing it at runtime has no effect.`
     )
   }
   return null
 }
+/**
+ * @deprecated use `defineEmits` instead.
+ */
+const defineEmit = defineEmits
+/**
+ * @deprecated use `useSlots` and `useAttrs` instead.
+ */
 function useContext() {
+  if (process.env.NODE_ENV !== 'production') {
+    warn(
+      `\`useContext()\` has been deprecated and will be removed in the ` +
+        `next minor release. Use \`useSlots()\` and \`useAttrs()\` instead.`
+    )
+  }
+  return getContext()
+}
+function getContext() {
   const i = getCurrentInstance()
   if (process.env.NODE_ENV !== 'production' && !i) {
     warn(`useContext() called without active instance.`)
@@ -10085,7 +10346,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = '3.1.1'
+const version = '3.1.2'
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
@@ -11085,6 +11346,8 @@ export {
   TransitionGroup,
   callWithAsyncErrorHandling,
   callWithErrorHandling,
+  camelize,
+  capitalize,
   cloneVNode,
   compatUtils,
   computed$1 as computed,
@@ -11108,6 +11371,7 @@ export {
   defineAsyncComponent,
   defineComponent,
   defineEmit,
+  defineEmits,
   defineProps,
   devtools,
   getCurrentInstance,
@@ -11167,6 +11431,8 @@ export {
   shallowRef,
   ssrContextKey,
   ssrUtils,
+  toDisplayString,
+  toHandlerKey,
   toHandlers,
   toRaw,
   toRef,

@@ -1,10 +1,18 @@
-{
-  "input": {
-    "src/index.ts": ["dist/vue.runtime.esm.js"]
+[
+  {
+    "input": {
+      "src/service/index.ts": ["dist/service.runtime.esm.js"]
+    },
+    "output": {
+      "banner": "export default function vueFactory (exports) {\n",
+      "footer": "}"
+    },
+    "external": false
   },
-  "output": {
-    "banner": "export default function vueFactory (exports) {\n",
-    "footer": "}"
-  },
-  "external": false
-}
+  {
+    "input": {
+      "src/view/index.ts": ["dist/view.runtime.esm.js"]
+    },
+    "external": false
+  }
+]

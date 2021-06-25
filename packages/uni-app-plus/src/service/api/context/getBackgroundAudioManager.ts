@@ -5,7 +5,7 @@ import {
   API_TYPE_GET_BACKGROUND_AUDIO_MANAGER,
 } from '@dcloudio/uni-api'
 import { once } from '@dcloudio/uni-shared'
-import { getRealPath } from '@dcloudio/uni-platform'
+import { getRealPath } from '../../../platform/getRealPath'
 
 type eventNames =
   | 'canplay'

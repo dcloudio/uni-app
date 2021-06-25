@@ -16,7 +16,7 @@ function checkDeviceWidth() {
   const { platform, pixelRatio, windowWidth } = getBaseSystemInfo()
   deviceWidth = windowWidth as number
   deviceDPR = pixelRatio as number
-  isIOS = platform === 'ios'
+  isIOS = (platform as string) === 'ios'
 }
 
 function checkValue(value: unknown, defaultValue: number) {

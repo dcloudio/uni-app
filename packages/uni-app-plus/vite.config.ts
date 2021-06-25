@@ -48,6 +48,10 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: 'vue',
+        replacement: resolve('../uni-app-vue/dist/view.runtime.esm.js'),
+      },
+      {
         find: '@dcloudio/uni-api',
         replacement: resolve('../uni-api/src/index.ts'),
       },
@@ -88,21 +92,21 @@ export default defineConfig({
     lib: {
       name: 'uni-app-view',
       fileName: 'uni-app-view',
-      entry: path.resolve(__dirname, 'src/view/components/index.ts'),
+      entry: path.resolve(__dirname, 'src/view/index.ts'),
       formats: ['umd'],
     },
     assetsDir: '.',
     rollupOptions: {
-      output: {
-        globals: {
-          vue: 'Vue',
-        },
-      },
-      external(source) {
-        if (['vue'].includes(source)) {
-          return true
-        }
-      },
+      // output: {
+      //   globals: {
+      //     vue: 'Vue',
+      //   },
+      // },
+      // external(source) {
+      //   if (['vue'].includes(source)) {
+      //     return true
+      //   }
+      // },
       preserveEntrySignatures: 'strict',
       plugins: rollupPlugins,
       onwarn: (msg, warn) => {

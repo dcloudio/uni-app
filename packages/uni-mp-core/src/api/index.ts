@@ -1,6 +1,10 @@
 import { hasOwn } from '@vue/shared'
 
-import { upx2px, addInterceptor, removeInterceptor } from '@dcloudio/uni-api'
+import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
+import {
+  addInterceptor,
+  removeInterceptor,
+} from '@dcloudio/uni-api/src/service/base/interceptor'
 
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'

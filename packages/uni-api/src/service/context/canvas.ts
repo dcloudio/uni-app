@@ -458,7 +458,7 @@ export class CanvasContext implements UniApp.CanvasContext {
         .find((webview) => webview.getURL().endsWith('www/__uniappview.html'))
       if (webview) {
         width = Number(
-          webview.evalJSSync(
+          (webview as any).evalJSSync(
             `(${measureText.toString()})(${JSON.stringify(
               text
             )},${JSON.stringify(font)})`

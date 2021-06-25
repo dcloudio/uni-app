@@ -1,5 +1,9 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend } from '@vue/shared';
 
+function getBaseSystemInfo() {
+  return qa.getSystemInfoSync()
+}
+
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
 }
@@ -198,10 +202,6 @@ function wrapperSyncApi(name, fn, protocol, options) {
 }
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
-}
-
-function getBaseSystemInfo() {
-  return qa.getSystemInfoSync()
 }
 
 const API_UPX2PX = 'upx2px';

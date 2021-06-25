@@ -20,7 +20,7 @@ function addBase(filePath: string) {
 
 export function getRealPath(filePath: string) {
   // 相对路径模式对静态资源路径特殊处理
-  if (__uniConfig.router.base === './') {
+  if (__uniConfig.router!.base === './') {
     filePath = filePath.replace(/^\.\/static\//, '/static/')
   }
   if (filePath.indexOf('/') === 0) {

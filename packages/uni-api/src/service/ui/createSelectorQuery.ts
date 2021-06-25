@@ -6,15 +6,23 @@ import { EditorContext } from '../context/editor'
 import { MapContext } from '../context/createMapContext'
 import { VideoContext } from '../context/createVideoContext'
 import { requestComponentInfo } from '@dcloudio/uni-platform'
+import { getContextInfo } from '@dcloudio/uni-components'
 
 type NodeField = UniApp.NodeField
-type ContextType = 'canvas' | 'map' | 'video' | 'editor'
-interface NodeInfo extends UniApp.NodeInfo {
-  contextInfo?: {
-    id: string
-    type: ContextType
-    page: number
-  }
+export interface SelectorQueryNodeInfo
+  extends UniApp.NodeInfo,
+    Omit<
+      Partial<Record<keyof CSSStyleDeclaration, any>>,
+      'top' | 'bottom' | 'left' | 'right' | 'height' | 'width'
+    > {
+  contextInfo?: ReturnType<typeof getContextInfo>
+}
+
+export interface SelectorQueryRequest {
+  component: ComponentPublicInstance | undefined | null
+  selector: string
+  single: boolean
+  fields: NodeField
 }
 
 const ContextClasss = {
@@ -24,9 +32,9 @@ const ContextClasss = {
   editor: EditorContext,
 }
 
-function convertContext(result: NodeInfo | null) {
+function convertContext(result: SelectorQueryNodeInfo | null) {
   if (result && result.contextInfo) {
-    const { id, type, page } = (result as NodeInfo).contextInfo!
+    const { id, type, page } = (result as SelectorQueryNodeInfo).contextInfo!
     const ContextClass = ContextClasss[type]
     result.context = new ContextClass(id, page)
     delete result.contextInfo
@@ -50,7 +58,7 @@ class NodesRef implements UniApp.NodesRef {
     this._single = single
   }
 
-  boundingClientRect(callback: (result: NodeInfo) => void) {
+  boundingClientRect(callback: (result: SelectorQueryNodeInfo) => void) {
     this._selectorQuery._push(
       this._selector,
       this._component,
@@ -66,7 +74,7 @@ class NodesRef implements UniApp.NodesRef {
     return this._selectorQuery
   }
 
-  fields(fields: NodeField, callback: (result: NodeInfo) => void) {
+  fields(fields: NodeField, callback: (result: SelectorQueryNodeInfo) => void) {
     this._selectorQuery._push(
       this._selector,
       this._component,
@@ -77,7 +85,7 @@ class NodesRef implements UniApp.NodesRef {
     return this._selectorQuery
   }
 
-  scrollOffset(callback: (result: NodeInfo) => void) {
+  scrollOffset(callback: (result: SelectorQueryNodeInfo) => void) {
     this._selectorQuery._push(
       this._selector,
       this._component,
@@ -92,7 +100,7 @@ class NodesRef implements UniApp.NodesRef {
     return this._selectorQuery
   }
 
-  context(callback: (result: NodeInfo) => void) {
+  context(callback: (result: SelectorQueryNodeInfo) => void) {
     this._selectorQuery._push(
       this._selector,
       this._component,
@@ -108,12 +116,7 @@ class NodesRef implements UniApp.NodesRef {
 
 class SelectorQuery implements UniApp.SelectorQuery {
   private _page: ComponentPublicInstance
-  private _queue: Array<{
-    component: ComponentPublicInstance | undefined | null
-    selector: string
-    single: boolean
-    fields: NodeField
-  }>
+  private _queue: Array<SelectorQueryRequest>
   private _component?: ComponentPublicInstance = undefined
   private _queueCb: any[]
   private _nodesRef?: NodesRef
@@ -127,7 +130,7 @@ class SelectorQuery implements UniApp.SelectorQuery {
     requestComponentInfo(
       this._page,
       this._queue,
-      (res: Array<NodeInfo | null>) => {
+      (res: Array<SelectorQueryNodeInfo | null>) => {
         const queueCbs = this._queueCb
         res.forEach((result, index) => {
           if (Array.isArray(result)) {
@@ -182,7 +185,7 @@ class SelectorQuery implements UniApp.SelectorQuery {
     component: ComponentPublicInstance | undefined | null,
     single: boolean,
     fields: NodeField,
-    callback: (result: NodeInfo) => void
+    callback: (result: SelectorQueryNodeInfo) => void
   ) {
     this._queue.push({
       component,
