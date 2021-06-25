@@ -11,8 +11,13 @@ import {
 import modal, { ModalProps } from './modal'
 
 import { ensureRoot, createRootApp } from './utils'
+import { once } from '@dcloudio/uni-shared'
 
 let showModalState: ModalProps
+
+const onHidePopupOnce = /*#__PURE__*/ once(() => {
+  UniServiceJSBridge.on('onHidePopup', () => (showModalState.visible = false))
+})
 
 let currentShowModalResolve: UniApp.ShowModalOptions['success']
 
@@ -27,6 +32,7 @@ function onModalClose(type: 'cancel' | 'confirm') {
 export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
   API_SHOW_MODAL,
   (args, { resolve }) => {
+    onHidePopupOnce()
     currentShowModalResolve = resolve
     if (!showModalState) {
       showModalState = reactive(args as ModalProps)

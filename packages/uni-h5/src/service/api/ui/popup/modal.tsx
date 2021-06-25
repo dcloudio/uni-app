@@ -62,6 +62,7 @@ export default /*#__PURE__*/ defineComponent({
               )}
               <div
                 class="uni-modal__bd"
+                // @ts-ignore
                 onTouchmovePassive={onEventStop}
                 v-text={content}
               ></div>
