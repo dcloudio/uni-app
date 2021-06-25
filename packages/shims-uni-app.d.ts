@@ -24,16 +24,16 @@ declare namespace UniApp {
 
   interface UniConfig {
     ready?: boolean
-    router: {
+    router?: {
       strict: boolean
       base: string
     }
-    nvue: {
+    nvue?: {
       'flex-direction': 'column' | 'row'
     }
     globalStyle: {
       navigationBar: PageNavigationBar
-      refreshOptions?: PageRefreshOptions
+      pullToRefresh?: PageRefreshOptions
       maxWidth?: number
       rpxCalcMaxDeviceWidth?: number
       rpxCalcBaseDeviceWidth?: number
@@ -125,12 +125,12 @@ declare namespace UniApp {
     coverage?: string
   }
   interface PageRefreshOptions {
-    support: boolean
-    color: string
-    style: 'circle' | string
-    height: number
-    range: number
-    offset: number
+    support?: boolean
+    color?: string
+    style?: 'circle' | string
+    height?: number
+    range?: number
+    offset?: number
   }
 
   interface PagesJsonPagePlatformStyle {
@@ -149,7 +149,7 @@ declare namespace UniApp {
     disableScroll?: boolean
     enablePullDownRefresh?: boolean
     navigationBar: PageNavigationBar
-    refreshOptions?: PageRefreshOptions
+    pullToRefresh?: PageRefreshOptions
     onReachBottomDistance?: number
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string

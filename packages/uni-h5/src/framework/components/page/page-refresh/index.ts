@@ -32,8 +32,8 @@ const REFRESHING = 'refreshing'
 const RESTORING = 'restoring'
 
 export function usePageRefresh(refreshRef: Ref) {
-  const { id, refreshOptions } = usePageMeta()
-  const { range, height } = refreshOptions!
+  const { id, pullToRefresh } = usePageMeta()
+  const { range, height } = pullToRefresh!
   let refreshContainerElem: HTMLDivElement
   let refreshControllerElem: HTMLDivElement
   let refreshControllerElemStyle: CSSStyleDeclaration
@@ -231,7 +231,7 @@ export function usePageRefresh(refreshRef: Ref) {
     refreshControllerElemStyle.transition = '-webkit-transform 0.2s'
     refreshControllerElemStyle.transform =
       'translate3d(-50%, ' + height + 'px, 0)'
-    invokeHook(id, 'onPullDownRefresh')
+    invokeHook(id!, 'onPullDownRefresh')
   }
 
   function restoring(callback: Function) {

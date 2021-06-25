@@ -40,10 +40,10 @@ import { usePageMeta } from '../../../setup/provide'
 export default {
   name: 'PageRefresh',
   setup() {
-    const { refreshOptions } = usePageMeta()
+    const { pullToRefresh } = usePageMeta()
     return {
-      offset: refreshOptions!.offset,
-      color: refreshOptions!.color,
+      offset: pullToRefresh!.offset,
+      color: pullToRefresh!.color,
     }
   },
 }

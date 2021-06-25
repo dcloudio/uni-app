@@ -1,5 +1,6 @@
 import { cac } from 'cac'
 import chalk from 'chalk'
+import { extend } from '@vue/shared'
 import { LogLevel, createLogger, ServerOptions, BuildOptions } from 'vite'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
@@ -52,7 +53,11 @@ cli
   .action(async (options: CliOptions & ServerOptions) => {
     initEnv('dev', options)
     try {
-      await (options.ssr ? createSSRServer(options) : createServer(options))
+      if (options.platform === 'h5') {
+        await (options.ssr ? createSSRServer(options) : createServer(options))
+      } else {
+        await build(extend(options, { watch: true }))
+      }
     } catch (e) {
       createLogger(options.logLevel).error(
         chalk.red(`error when starting dev server:\n${e.stack}`)

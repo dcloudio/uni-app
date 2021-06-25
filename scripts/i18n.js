@@ -51,7 +51,7 @@ import {
     LOCALE_ZH_HANT,
   } from '@dcloudio/uni-i18n'
   import { useI18n } from './useI18n'
-  const i18n = /*#__PURE__*/ useI18n()
+
   function normalizeMessages(
     namespace: string,
     messages: Record<string, string>
@@ -83,7 +83,7 @@ ${Object.keys(localeMessages)
 function generateI18nModuleLocaleCode(locale, messages) {
   locale = locale.toUpperCase().replace('-', '_')
   return `  if (__UNI_FEATURE_I18N_${locale}__) {
-    i18n.add(LOCALE_${locale}, normalizeMessages(name, ${JSON.stringify(
+    useI18n().add(LOCALE_${locale}, normalizeMessages(name, ${JSON.stringify(
     messages
   )}))
   }

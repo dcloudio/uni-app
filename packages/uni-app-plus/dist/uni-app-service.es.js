@@ -112,7 +112,32 @@ var serviceContext = (function () {
     const DATA_RE = /^data:.*,.*/;
     const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 
-    const PAGE_META_KEYS = ['navigationBar', 'refreshOptions'];
+    function hasRpx(str) {
+        return str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1;
+    }
+    function rpx2px(str, replace = false) {
+        if (replace) {
+            return rpx2pxWithReplace(str);
+        }
+        if (typeof str === 'string') {
+            const res = parseInt(str) || 0;
+            if (hasRpx(str)) {
+                return uni.upx2px(res);
+            }
+            return res;
+        }
+        return str;
+    }
+    function rpx2pxWithReplace(str) {
+        if (!hasRpx(str)) {
+            return str;
+        }
+        return str.replace(/(\d+(\.\d+)?)[ru]px/g, (_a, b) => {
+            return uni.upx2px(parseFloat(b)) + 'px';
+        });
+    }
+
+    const PAGE_META_KEYS = ['navigationBar', 'pullToRefresh'];
     function initGlobalStyle() {
         return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
     }
@@ -123,6 +148,18 @@ var serviceContext = (function () {
             res[name] = extend({}, globalStyle[name], pageMeta[name]);
         });
         return res;
+    }
+    function normalizePullToRefreshRpx(pullToRefresh) {
+        if (pullToRefresh.offset) {
+            pullToRefresh.offset = rpx2px(pullToRefresh.offset);
+        }
+        if (pullToRefresh.height) {
+            pullToRefresh.height = rpx2px(pullToRefresh.height);
+        }
+        if (pullToRefresh.range) {
+            pullToRefresh.range = rpx2px(pullToRefresh.range);
+        }
+        return pullToRefresh;
     }
 
     function getRealRoute(fromRoute, toRoute) {
@@ -585,9 +622,9 @@ var serviceContext = (function () {
         if (!routeMeta.enablePullDownRefresh) {
             return;
         }
-        webviewStyle.pullToRefresh = extend({}, plus.os.name === 'Android'
+        webviewStyle.pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
             ? defaultAndroidPullToRefresh
-            : defaultPullToRefresh, routeMeta.refreshOptions);
+            : defaultPullToRefresh, routeMeta.pullToRefresh));
     }
     const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
     const defaultPullToRefresh = {
@@ -693,7 +730,7 @@ var serviceContext = (function () {
         'disableScroll',
         'enablePullDownRefresh',
         'navigationBar',
-        'refreshOptions',
+        'pullToRefresh',
         'onReachBottomDistance',
         'pageOrientation',
         'backgroundColor',

@@ -48,7 +48,7 @@ const WEBVIEW_STYLE_BLACKLIST = [
   'disableScroll',
   'enablePullDownRefresh',
   'navigationBar',
-  'refreshOptions',
+  'pullToRefresh',
   'onReachBottomDistance',
   'pageOrientation',
   'backgroundColor',

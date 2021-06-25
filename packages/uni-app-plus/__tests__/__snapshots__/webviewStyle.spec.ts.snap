@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`webviewStyle basic 1`] = `
+Object {
+  "bounce": "vertical",
+  "titleNView": Object {
+    "autoBackButton": true,
+  },
+}
+`;

@@ -9,7 +9,7 @@ import {
   LOCALE_ZH_HANT,
 } from '@dcloudio/uni-i18n'
 import { useI18n } from './useI18n'
-const i18n = /*#__PURE__*/ useI18n()
+
 function normalizeMessages(
   namespace: string,
   messages: Record<string, string>
@@ -22,19 +22,19 @@ function normalizeMessages(
 export const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.app.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, { quit: 'Press back button again to exit' })
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, { quit: 'Pulse otra vez para salir' })
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         quit: "Appuyez à nouveau pour quitter l'application",
@@ -42,13 +42,13 @@ export const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, { quit: '再按一次退出应用' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, { quit: '再按一次退出應用' })
     )
@@ -57,7 +57,7 @@ export const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.async.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         error: 'The connection timed out, click the screen to try again.',
@@ -65,7 +65,7 @@ export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         error:
@@ -74,7 +74,7 @@ export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         error: "La connexion a expiré, cliquez sur l'écran pour réessayer.",
@@ -82,13 +82,13 @@ export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, { error: '连接服务器超时，点击屏幕重试' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, { error: '連接服務器超時，點擊屏幕重試' })
     )
@@ -97,25 +97,25 @@ export const initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nShowActionSheetMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showActionSheet.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel' }))
+    useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: 'Cancel' }))
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, { cancel: 'Cancelar' }))
+    useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: 'Cancelar' }))
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, { cancel: 'Annuler' }))
+    useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: 'Annuler' }))
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: '取消' }))
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: '取消' }))
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消' }))
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: '取消' }))
   }
 })
 export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showToast.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         unpaired: 'Please note showToast must be paired with hideToast',
@@ -123,7 +123,7 @@ export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         unpaired:
@@ -132,7 +132,7 @@ export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         unpaired: 'Veuillez noter que showToast doit être associé à hideToast',
@@ -140,7 +140,7 @@ export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         unpaired: '请注意 showToast 与 hideToast 必须配对使用',
@@ -148,7 +148,7 @@ export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         unpaired: '請注意 showToast 與 hideToast 必須配對使用',
@@ -159,7 +159,7 @@ export const initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showLoading.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         unpaired: 'Please note showLoading must be paired with hideLoading',
@@ -167,7 +167,7 @@ export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         unpaired:
@@ -176,7 +176,7 @@ export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         unpaired:
@@ -185,7 +185,7 @@ export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         unpaired: '请注意 showLoading 与 hideLoading 必须配对使用',
@@ -193,7 +193,7 @@ export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         unpaired: '請注意 showLoading 與 hideLoading 必須配對使用',
@@ -204,31 +204,31 @@ export const initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nShowModalMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.showModal.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, { cancel: 'Cancel', confirm: 'OK' })
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, { cancel: 'Cancelar', confirm: 'OK' })
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, { cancel: 'Annuler', confirm: 'OK' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, { cancel: '取消', confirm: '确定' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, { cancel: '取消', confirm: '確定' })
     )
@@ -237,7 +237,7 @@ export const initI18nShowModalMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.chooseImage.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         cancel: 'Cancel',
@@ -247,7 +247,7 @@ export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         cancel: 'Cancelar',
@@ -257,7 +257,7 @@ export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         cancel: 'Annuler',
@@ -267,7 +267,7 @@ export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         cancel: '取消',
@@ -277,7 +277,7 @@ export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         cancel: '取消',
@@ -290,7 +290,7 @@ export const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.chooseVideo.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         cancel: 'Cancel',
@@ -300,7 +300,7 @@ export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         cancel: 'Cancelar',
@@ -310,7 +310,7 @@ export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         cancel: 'Annuler',
@@ -320,7 +320,7 @@ export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         cancel: '取消',
@@ -330,7 +330,7 @@ export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         cancel: '取消',
@@ -343,7 +343,7 @@ export const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.previewImage.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         cancel: 'Cancel',
@@ -354,7 +354,7 @@ export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         cancel: 'Cancelar',
@@ -365,7 +365,7 @@ export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         cancel: 'Annuler',
@@ -376,7 +376,7 @@ export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         cancel: '取消',
@@ -387,7 +387,7 @@ export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         cancel: '取消',
@@ -401,28 +401,40 @@ export const initI18nPreviewImageMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.setClipboardData.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, { success: 'Content copied' }))
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, { success: 'Content copied' })
+    )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, { success: 'Contenido copiado' })
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, { success: 'Contenu copié' }))
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, { success: 'Contenu copié' })
+    )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { success: '内容已复制' }))
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, { success: '内容已复制' })
+    )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { success: '內容已復制' }))
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, { success: '內容已復制' })
+    )
   }
 })
 export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.scanCode.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         title: 'Scan code',
@@ -434,7 +446,7 @@ export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         title: 'Código de escaneo',
@@ -446,7 +458,7 @@ export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         title: 'Code d’analyse',
@@ -458,7 +470,7 @@ export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         title: '扫码',
@@ -470,7 +482,7 @@ export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         title: '掃碼',
@@ -486,13 +498,13 @@ export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
   () => {
     const name = 'uni.startSoterAuthentication.'
     if (__UNI_FEATURE_I18N_EN__) {
-      i18n.add(
+      useI18n().add(
         LOCALE_EN,
         normalizeMessages(name, { authContent: 'Fingerprint recognition' })
       )
     }
     if (__UNI_FEATURE_I18N_ES__) {
-      i18n.add(
+      useI18n().add(
         LOCALE_ES,
         normalizeMessages(name, {
           authContent: 'Reconocimiento de huellas dactilares',
@@ -500,7 +512,7 @@ export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
       )
     }
     if (__UNI_FEATURE_I18N_FR__) {
-      i18n.add(
+      useI18n().add(
         LOCALE_FR,
         normalizeMessages(name, {
           authContent: "Reconnaissance de l'empreinte digitale",
@@ -508,13 +520,13 @@ export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
       )
     }
     if (__UNI_FEATURE_I18N_ZH_HANS__) {
-      i18n.add(
+      useI18n().add(
         LOCALE_ZH_HANS,
         normalizeMessages(name, { authContent: '指纹识别中...' })
       )
     }
     if (__UNI_FEATURE_I18N_ZH_HANT__) {
-      i18n.add(
+      useI18n().add(
         LOCALE_ZH_HANT,
         normalizeMessages(name, { authContent: '指紋識別中...' })
       )
@@ -524,31 +536,31 @@ export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
 export const initI18nPickerMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.picker.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, { done: 'Done', cancel: 'Cancel' })
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, { done: 'OK', cancel: 'Cancelar' })
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, { done: 'OK', cancel: 'Annuler' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, { done: '完成', cancel: '取消' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, { done: '完成', cancel: '取消' })
     )
@@ -557,31 +569,31 @@ export const initI18nPickerMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nVideoMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.video.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, { danmu: 'Danmu', volume: 'Volume' })
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, { danmu: 'Danmu', volume: 'Volumen' })
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, { danmu: 'Danmu', volume: 'Le Volume' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, { danmu: '弹幕', volume: '音量' })
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, { danmu: '彈幕', volume: '音量' })
     )
@@ -590,7 +602,7 @@ export const initI18nVideoMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
   const name = 'uni.button.'
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_EN,
       normalizeMessages(name, {
         'feedback.title': 'feedback',
@@ -599,7 +611,7 @@ export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, {
         'feedback.title': 'realimentación',
@@ -608,7 +620,7 @@ export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, {
         'feedback.title': "retour d'information",
@@ -617,7 +629,7 @@ export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, {
         'feedback.title': '问题反馈',
@@ -626,7 +638,7 @@ export const initI18nButtonMsgsOnce = /*#__PURE__*/ once(() => {
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(
+    useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, {
         'feedback.title': '問題反饋',

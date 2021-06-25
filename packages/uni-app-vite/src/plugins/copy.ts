@@ -7,7 +7,7 @@ export function uniCopyPlugin() {
   return uniViteCopyPlugin({
     targets: [
       {
-        src: slash(path.resolve(__dirname, '../../lib/template/')),
+        src: slash(path.resolve(__dirname, '../../lib/template/*')),
         dest: process.env.UNI_OUTPUT_DIR,
       },
       {

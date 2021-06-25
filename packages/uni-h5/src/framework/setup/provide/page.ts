@@ -3,7 +3,11 @@ import { reactive, provide, inject } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
-import { mergePageMeta, PolySymbol, rpx2px } from '@dcloudio/uni-core'
+import {
+  mergePageMeta,
+  normalizePullToRefreshRpx,
+  PolySymbol,
+} from '@dcloudio/uni-core'
 
 import safeAreaInsets from 'safe-area-insets'
 
@@ -64,26 +68,25 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta
     if (enablePullDownRefresh) {
-      const refreshOptions = extend(
-        {
-          support: true,
-          color: '#2BD009',
-          style: 'circle',
-          height: 70,
-          range: 150,
-          offset: 0,
-        },
-        pageMeta.refreshOptions
+      const pullToRefresh = normalizePullToRefreshRpx(
+        extend(
+          {
+            support: true,
+            color: '#2BD009',
+            style: 'circle',
+            height: 70,
+            range: 150,
+            offset: 0,
+          },
+          pageMeta.pullToRefresh
+        )
       )
-      let offset = rpx2px(refreshOptions.offset)
-      const { type } = navigationBar
-      if (type !== 'transparent' && type !== 'none') {
-        offset += NAVBAR_HEIGHT + (__NODE_JS__ ? 0 : safeAreaInsets.top)
+      const { type, style } = navigationBar
+      if (style !== 'custom' && type !== 'transparent') {
+        pullToRefresh.offset +=
+          NAVBAR_HEIGHT + (__NODE_JS__ ? 0 : safeAreaInsets.top)
       }
-      refreshOptions.offset = offset
-      refreshOptions.height = rpx2px(refreshOptions.height)
-      refreshOptions.range = rpx2px(refreshOptions.range)
-      pageMeta.refreshOptions = refreshOptions
+      pageMeta.pullToRefresh = pullToRefresh
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
@@ -91,9 +94,8 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
     const { titleSize, titleColor, backgroundColor } = navigationBar
     navigationBar.titleText = navigationBar.titleText || ''
     navigationBar.type = navigationBar.type || 'default'
-    navigationBar.backButton = pageMeta.isQuit ? false : true
     navigationBar.titleSize = titleSize || '16px'
-    navigationBar.titleColor = titleColor || '#fff'
+    navigationBar.titleColor = titleColor || '#ffffff'
     navigationBar.backgroundColor = backgroundColor || '#F7F7F7'
   }
   if (!__NODE_JS__ && __UNI_FEATURE_PAGES__ && history.state) {

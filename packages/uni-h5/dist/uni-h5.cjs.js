@@ -228,20 +228,19 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["id", "controls"]);
 }
 _sfc_main$1.render = _sfc_render$1;
-let i18n$1;
+let i18n;
 function useI18n() {
-  if (!i18n$1) {
+  if (!i18n) {
     let language;
     {
       {
         language = uniShared.getEnvLocale();
       }
     }
-    i18n$1 = uniI18n.initVueI18n(language);
+    i18n = uniI18n.initVueI18n(language);
   }
-  return i18n$1;
+  return i18n;
 }
-const i18n = /* @__PURE__ */ useI18n();
 function normalizeMessages(namespace, messages) {
   return Object.keys(messages).reduce((res, name) => {
     res[namespace + name] = messages[name];
@@ -251,61 +250,61 @@ function normalizeMessages(namespace, messages) {
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.async.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(uniI18n.LOCALE_EN, normalizeMessages(name, {
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, {
       error: "The connection timed out, click the screen to try again."
     }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(uniI18n.LOCALE_ES, normalizeMessages(name, {
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, {
       error: "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
     }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(uniI18n.LOCALE_FR, normalizeMessages(name, {
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, {
       error: "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.picker.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(uniI18n.LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(uniI18n.LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(uniI18n.LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.video.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(uniI18n.LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
+    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(uniI18n.LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
+    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(uniI18n.LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
+    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
 const E = function() {
@@ -426,7 +425,7 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   return vue.getCurrentInstance().root.proxy.$page.id;
 }
-const PAGE_META_KEYS = ["navigationBar", "refreshOptions"];
+const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
@@ -437,6 +436,18 @@ function mergePageMeta(id, pageMeta) {
     res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
   });
   return res;
+}
+function normalizePullToRefreshRpx(pullToRefresh) {
+  if (pullToRefresh.offset) {
+    pullToRefresh.offset = rpx2px(pullToRefresh.offset);
+  }
+  if (pullToRefresh.height) {
+    pullToRefresh.height = rpx2px(pullToRefresh.height);
+  }
+  if (pullToRefresh.range) {
+    pullToRefresh.range = rpx2px(pullToRefresh.range);
+  }
+  return pullToRefresh;
 }
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
@@ -6547,23 +6558,19 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta;
     if (enablePullDownRefresh) {
-      const refreshOptions = shared.extend({
+      const pullToRefresh = normalizePullToRefreshRpx(shared.extend({
         support: true,
         color: "#2BD009",
         style: "circle",
         height: 70,
         range: 150,
         offset: 0
-      }, pageMeta.refreshOptions);
-      let offset = rpx2px(refreshOptions.offset);
-      const { type } = navigationBar;
-      if (type !== "transparent" && type !== "none") {
-        offset += uniShared.NAVBAR_HEIGHT + 0;
+      }, pageMeta.pullToRefresh));
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
       }
-      refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
-      pageMeta.refreshOptions = refreshOptions;
+      pageMeta.pullToRefresh = pullToRefresh;
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
@@ -6571,9 +6578,8 @@ function normalizePageMeta(pageMeta) {
     const { titleSize, titleColor, backgroundColor } = navigationBar;
     navigationBar.titleText = navigationBar.titleText || "";
     navigationBar.type = navigationBar.type || "default";
-    navigationBar.backButton = pageMeta.isQuit ? false : true;
     navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.titleColor = titleColor || "#ffffff";
     navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
   }
   return pageMeta;
@@ -10278,7 +10284,7 @@ function createBackButtonTsx(pageMeta) {
     navigationBar,
     isQuit
   } = pageMeta;
-  if (navigationBar.backButton && !isQuit) {
+  if (!isQuit) {
     return vue.createVNode("div", {
       "class": "uni-page-head-btn",
       "onClick": onPageHeadBackButton
@@ -10570,10 +10576,10 @@ function usePageHeadSearchInput({
 var _sfc_main = {
   name: "PageRefresh",
   setup() {
-    const { refreshOptions } = usePageMeta();
+    const { pullToRefresh } = usePageMeta();
     return {
-      offset: refreshOptions.offset,
-      color: refreshOptions.color
+      offset: pullToRefresh.offset,
+      color: pullToRefresh.color
     };
   }
 };

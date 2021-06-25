@@ -225,20 +225,19 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   ], 16, ["id", "controls"]);
 }
 _sfc_main$1.render = _sfc_render$1;
-let i18n$1;
+let i18n;
 function useI18n() {
-  if (!i18n$1) {
+  if (!i18n) {
     let language;
     {
       {
         language = navigator.language;
       }
     }
-    i18n$1 = initVueI18n(language);
+    i18n = initVueI18n(language);
   }
-  return i18n$1;
+  return i18n;
 }
-const i18n = /* @__PURE__ */ useI18n();
 function normalizeMessages(namespace, messages) {
   return Object.keys(messages).reduce((res, name) => {
     res[namespace + name] = messages[name];
@@ -248,69 +247,69 @@ function normalizeMessages(namespace, messages) {
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.async.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {
+    useI18n().add(LOCALE_EN, normalizeMessages(name, {
       error: "The connection timed out, click the screen to try again."
     }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {
+    useI18n().add(LOCALE_ES, normalizeMessages(name, {
       error: "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
     }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {
+    useI18n().add(LOCALE_FR, normalizeMessages(name, {
       error: "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { error: "\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { error: "\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66" }));
   }
 });
 const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showActionSheet.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel" }));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar" }));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler" }));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88" }));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88" }));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88" }));
   }
 });
 const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showToast.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {
+    useI18n().add(LOCALE_EN, normalizeMessages(name, {
       unpaired: "Please note showToast must be paired with hideToast"
     }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {
+    useI18n().add(LOCALE_ES, normalizeMessages(name, {
       unpaired: "Tenga en cuenta que showToast debe estar emparejado con hideToast"
     }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {
+    useI18n().add(LOCALE_FR, normalizeMessages(name, {
       unpaired: "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
       unpaired: "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
       unpaired: "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
     }));
   }
@@ -318,27 +317,27 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
 const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showLoading.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, {
+    useI18n().add(LOCALE_EN, normalizeMessages(name, {
       unpaired: "Please note showLoading must be paired with hideLoading"
     }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, {
+    useI18n().add(LOCALE_ES, normalizeMessages(name, {
       unpaired: "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
     }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, {
+    useI18n().add(LOCALE_FR, normalizeMessages(name, {
       unpaired: "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, {
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
       unpaired: "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
     }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, {
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
       unpaired: "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
     }));
   }
@@ -346,55 +345,55 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showModal.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel", confirm: "OK" }));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel", confirm: "OK" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar", confirm: "OK" }));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar", confirm: "OK" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler", confirm: "OK" }));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler", confirm: "OK" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u786E\u5B9A" }));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u786E\u5B9A" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A" }));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A" }));
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.picker.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.video.";
   if (__UNI_FEATURE_I18N_EN__) {
-    i18n.add(LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
+    useI18n().add(LOCALE_EN, normalizeMessages(name, { danmu: "Danmu", volume: "Volume" }));
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    i18n.add(LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
+    useI18n().add(LOCALE_ES, normalizeMessages(name, { danmu: "Danmu", volume: "Volumen" }));
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    i18n.add(LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
+    useI18n().add(LOCALE_FR, normalizeMessages(name, { danmu: "Danmu", volume: "Le Volume" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    i18n.add(LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { danmu: "\u5F39\u5E55", volume: "\u97F3\u91CF" }));
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    i18n.add(LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
+    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
 const E = function() {
@@ -813,7 +812,7 @@ function getPageIdByVm(vm) {
     return rootProxy.$page.id;
   }
 }
-const PAGE_META_KEYS = ["navigationBar", "refreshOptions"];
+const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
@@ -824,6 +823,18 @@ function mergePageMeta(id2, pageMeta) {
     res[name] = extend({}, globalStyle[name], pageMeta[name]);
   });
   return res;
+}
+function normalizePullToRefreshRpx(pullToRefresh) {
+  if (pullToRefresh.offset) {
+    pullToRefresh.offset = rpx2px(pullToRefresh.offset);
+  }
+  if (pullToRefresh.height) {
+    pullToRefresh.height = rpx2px(pullToRefresh.height);
+  }
+  if (pullToRefresh.range) {
+    pullToRefresh.range = rpx2px(pullToRefresh.range);
+  }
+  return pullToRefresh;
 }
 function disableScrollListener(evt) {
   evt.preventDefault();
@@ -13021,23 +13032,19 @@ function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta;
     if (enablePullDownRefresh) {
-      const refreshOptions = extend({
+      const pullToRefresh = normalizePullToRefreshRpx(extend({
         support: true,
         color: "#2BD009",
         style: "circle",
         height: 70,
         range: 150,
         offset: 0
-      }, pageMeta.refreshOptions);
-      let offset = rpx2px(refreshOptions.offset);
-      const { type } = navigationBar;
-      if (type !== "transparent" && type !== "none") {
-        offset += NAVBAR_HEIGHT + out.top;
+      }, pageMeta.pullToRefresh));
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
       }
-      refreshOptions.offset = offset;
-      refreshOptions.height = rpx2px(refreshOptions.height);
-      refreshOptions.range = rpx2px(refreshOptions.range);
-      pageMeta.refreshOptions = refreshOptions;
+      pageMeta.pullToRefresh = pullToRefresh;
     }
   }
   if (__UNI_FEATURE_NAVIGATIONBAR__) {
@@ -13045,9 +13052,8 @@ function normalizePageMeta(pageMeta) {
     const { titleSize, titleColor, backgroundColor } = navigationBar;
     navigationBar.titleText = navigationBar.titleText || "";
     navigationBar.type = navigationBar.type || "default";
-    navigationBar.backButton = pageMeta.isQuit ? false : true;
     navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#fff";
+    navigationBar.titleColor = titleColor || "#ffffff";
     navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
   }
   if (__UNI_FEATURE_PAGES__ && history.state) {
@@ -17372,6 +17378,9 @@ var modal = /* @__PURE__ */ defineComponent({
   }
 });
 let showModalState;
+const onHidePopupOnce$2 = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
 let currentShowModalResolve;
 function onModalClose(type) {
   currentShowModalResolve && currentShowModalResolve({
@@ -17380,6 +17389,7 @@ function onModalClose(type) {
   });
 }
 const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
+  onHidePopupOnce$2();
   currentShowModalResolve = resolve;
   if (!showModalState) {
     showModalState = reactive(args);
@@ -17488,7 +17498,7 @@ function useToastIcon(props2) {
 let showToastState;
 let showType = "";
 let timeoutId;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
 });
 function createToast(args) {
@@ -17514,7 +17524,7 @@ function createToast(args) {
       timeoutId && clearTimeout(timeoutId);
     }
   });
-  onHidePopupOnce();
+  onHidePopupOnce$1();
 }
 const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
   createToast(args);
@@ -17854,6 +17864,9 @@ function initClick(dom) {
 let resolveAction;
 let rejectAction;
 let showActionSheetState;
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showActionSheetState.visible = false);
+});
 function onActionSheetClose(tapIndex) {
   if (tapIndex === -1) {
     rejectAction && rejectAction("cancel");
@@ -17862,6 +17875,7 @@ function onActionSheetClose(tapIndex) {
   }
 }
 const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, { resolve, reject }) => {
+  onHidePopupOnce();
   resolveAction = resolve;
   rejectAction = reject;
   if (!showActionSheetState) {
@@ -20349,7 +20363,7 @@ function createBackButtonTsx(pageMeta) {
     navigationBar,
     isQuit
   } = pageMeta;
-  if (navigationBar.backButton && !isQuit) {
+  if (!isQuit) {
     return createVNode("div", {
       "class": "uni-page-head-btn",
       "onClick": onPageHeadBackButton
@@ -20642,10 +20656,10 @@ function usePageHeadSearchInput({
 var _sfc_main = {
   name: "PageRefresh",
   setup() {
-    const { refreshOptions } = usePageMeta();
+    const { pullToRefresh } = usePageMeta();
     return {
-      offset: refreshOptions.offset,
-      color: refreshOptions.color
+      offset: pullToRefresh.offset,
+      color: pullToRefresh.color
     };
   }
 };
@@ -20709,8 +20723,8 @@ const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
 function usePageRefresh(refreshRef) {
-  const { id: id2, refreshOptions } = usePageMeta();
-  const { range, height } = refreshOptions;
+  const { id: id2, pullToRefresh } = usePageMeta();
+  const { range, height } = pullToRefresh;
   let refreshContainerElem;
   let refreshControllerElem;
   let refreshControllerElemStyle;

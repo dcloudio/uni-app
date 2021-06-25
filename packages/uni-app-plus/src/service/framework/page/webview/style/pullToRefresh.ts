@@ -1,3 +1,4 @@
+import { normalizePullToRefreshRpx } from '@dcloudio/uni-core'
 import { extend } from '@vue/shared'
 
 export function initPullToRefresh(
@@ -7,12 +8,14 @@ export function initPullToRefresh(
   if (!routeMeta.enablePullDownRefresh) {
     return
   }
-  webviewStyle.pullToRefresh = extend(
-    {},
-    plus.os.name === 'Android'
-      ? defaultAndroidPullToRefresh
-      : defaultPullToRefresh,
-    routeMeta.refreshOptions
+  webviewStyle.pullToRefresh = normalizePullToRefreshRpx(
+    extend(
+      {},
+      plus.os.name === 'Android'
+        ? defaultAndroidPullToRefresh
+        : defaultPullToRefresh,
+      routeMeta.pullToRefresh
+    )
   ) as unknown as PlusWebviewWebviewPullToRefreshStyles
 }
 

@@ -89,7 +89,7 @@ export default /*#__PURE__*/ defineSystemComponent({
 
 function createBackButtonTsx(pageMeta: UniApp.PageRouteMeta) {
   const { navigationBar, isQuit } = pageMeta
-  if (navigationBar.backButton && !isQuit) {
+  if (!isQuit) {
     return (
       <div class="uni-page-head-btn" onClick={onPageHeadBackButton}>
         {createSvgIconVNode(

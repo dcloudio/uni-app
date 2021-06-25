@@ -106,7 +106,7 @@ function normalizePageStyle(
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
       if (isEnablePullDownRefresh(pageStyle)) {
         pageStyle.enablePullDownRefresh = true
-        pageStyle.refreshOptions = normalizePullToRefresh(pageStyle)
+        pageStyle.pullToRefresh = normalizePullToRefresh(pageStyle)
       }
     }
     return removePlatformStyle(pageStyle)

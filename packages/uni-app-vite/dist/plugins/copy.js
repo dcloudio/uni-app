@@ -11,7 +11,7 @@ function uniCopyPlugin() {
     return uni_cli_shared_1.uniViteCopyPlugin({
         targets: [
             {
-                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/')),
+                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/*')),
                 dest: process.env.UNI_OUTPUT_DIR,
             },
             {

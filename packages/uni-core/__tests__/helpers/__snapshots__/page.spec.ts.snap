@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`page mergePageMeta 1`] = `
+Object {
+  "id": 1,
+  "navigationBar": Object {
+    "titleText": "uni-app",
+  },
+  "pullToRefresh": Object {},
+  "route": "",
+}
+`;
+
+exports[`page mergePageMeta 2`] = `
+Object {
+  "enablePullDownRefresh": true,
+  "id": 1,
+  "navigationBar": Object {
+    "titleColor": "#000000",
+    "titleText": "hello",
+  },
+  "pullToRefresh": Object {},
+  "route": "",
+}
+`;
+
+exports[`page mergePageMeta 3`] = `
+Object {
+  "enablePullDownRefresh": true,
+  "id": 1,
+  "navigationBar": Object {
+    "titleColor": "#000000",
+    "titleText": "uni-app",
+  },
+  "pullToRefresh": Object {
+    "offset": 100,
+  },
+  "route": "",
+}
+`;
