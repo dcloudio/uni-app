@@ -9,6 +9,7 @@ export * from './device/bluetooth'
 export * from './device/ibeacon'
 export * from './device/makePhoneCall'
 export * from './device/clipboard'
+export * from './device/network'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
