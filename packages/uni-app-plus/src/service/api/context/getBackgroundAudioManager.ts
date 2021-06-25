@@ -375,7 +375,7 @@ class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
   'singer': UniApp.BackgroundAudioManager['singer']
   'coverImgUrl': UniApp.BackgroundAudioManager['coverImgUrl']
   'webUrl': UniApp.BackgroundAudioManager['webUrl']
-  'protocol': UniApp.BackgroundAudioManager['webUrl']
+  'protocol': UniApp.BackgroundAudioManager['protocol']
 
   _options: Data
   constructor() {
@@ -435,7 +435,7 @@ class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
   'onWaiting': UniApp.BackgroundAudioManager['onWaiting']
   'onPrev': UniApp.BackgroundAudioManager['onPrev']
   'onNext': UniApp.BackgroundAudioManager['onNext']
-  'onError': UniApp.BackgroundAudioManager['onError']
+  'onError': (...args: any) => void
 }
 
 let backgroundAudioManager: BackgroundAudioManager
