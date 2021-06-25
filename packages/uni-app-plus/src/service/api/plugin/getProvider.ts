@@ -5,7 +5,7 @@ import {
   GetProviderProtocol,
 } from '@dcloudio/uni-api'
 
-type Provider = PlusOauthAuthService['id'][]
+type Provider = (PlusShareShareService['id'] | PlusOauthAuthService['id'])[]
 type CallBack = (err: null | Error, provider?: Provider) => void
 
 const providers = {
@@ -28,6 +28,7 @@ const providers = {
   share(callback: CallBack) {
     plus.share.getServices(
       (services) => {
+        services = services as PlusShareShareService[]
         const provider: Provider = []
         services.forEach(({ id }) => {
           provider.push(id)
