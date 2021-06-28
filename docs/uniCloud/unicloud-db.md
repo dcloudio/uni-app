@@ -46,7 +46,7 @@ HBuilderX中敲下`udb`代码块，得到如下代码，然后通过collection�
 |collection|string|表名。支持输入多个表名，用 `,` 分割|
 |field|string|指定要查询的字段，多个字段用 `,` 分割。不写本属性，即表示查询所有字段。支持用 oldname as newname方式对返回字段重命名|
 |where|string|查询条件，对记录进行过滤。[见下](/uniCloud/unicloud-db?id=where)|
-|orderby|string|排序字段及正序倒叙设置|
+|orderby|string|排序字段及正序倒序设置|
 |foreign-key|String|手动指定使用的关联关系，HBuilderX 3.1.10+ [详情](/uniCloud/clientdb?id=lookup-foreign-key)|
 |page-data|String|分页策略选择。值为 `add` 代表下一页的数据追加到之前的数据中，常用于滚动到底加载下一页；值为 `replace` 时则替换当前data数据，常用于PC式交互，列表底部有页码分页按钮，默认值为`add`|
 |page-current|Number|当前页|
