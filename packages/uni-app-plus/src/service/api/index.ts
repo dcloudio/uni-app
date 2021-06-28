@@ -18,6 +18,7 @@ export * from './media/getRecorderManager'
 export * from './media/saveVideoToPhotosAlbum'
 export * from './media/saveImageToPhotosAlbum'
 export * from './media/compressImage'
+export * from './media/compressVideo'
 
 export * from './keyboard/keyboard'
 
