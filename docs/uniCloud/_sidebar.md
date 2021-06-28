@@ -87,7 +87,7 @@
 	  <img src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/759713d0-4f2d-11eb-a16f-5b3e54966275.png" width="20" height="20"/>
 	  <div class="contact-smg">
 	  <div>uniCloud QQ交流群</div>
-	  <div>群1：1012245137 &nbsp;<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=36ff837111d79a4e90e5fcd6185ec684be4fc276eb57259e08339512709d39fe">点此加入</a></div>
+	  <div>群1：1012245137 (2000人已满)</div>
     <div>群2：749911289 &nbsp;<a target="_blank" href="//qm.qq.com/cgi-bin/qm/qr?k=iN4JdFAGhvlrOgw-gghF6cUOX1otsLpx&jump_from=webapi">点此加入</a></div>
 	  </div>
 	</div>
