@@ -80,6 +80,7 @@ export * from './protocols/ui/window'
 export * from './protocols/plugin/getProvider'
 export * from './protocols/plugin/oauth'
 export * from './protocols/plugin/share'
+export * from './protocols/plugin/requestPayment'
 // helpers
 export {
   defineOnApi,
