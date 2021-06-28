@@ -16,7 +16,7 @@ import {
   API_TYPE_CLOSE_AUTH_VIEW,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { isPlainObject } from '@vue/shared'
+import { isPlainObject, toTypeString } from '@vue/shared'
 import {
   warpPlusSuccessCallback,
   warpPlusErrorCallback,
@@ -202,11 +202,9 @@ function univerifyButtonsClickHandling(
   errorCallback: Function
 ) {
   if (
-    univerifyStyle &&
     isPlainObject(univerifyStyle) &&
     univerifyStyle.buttons &&
-    Object.prototype.toString.call(univerifyStyle.buttons.list) ===
-      '[object Array]' &&
+    toTypeString(univerifyStyle.buttons.list) === '[object Array]' &&
     univerifyStyle.buttons.list!.length > 0
   ) {
     univerifyStyle.buttons.list!.forEach((button, index) => {

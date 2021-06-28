@@ -35,3 +35,4 @@ export * from './ui/popup/showToast'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'
+export * from './plugin/share'
