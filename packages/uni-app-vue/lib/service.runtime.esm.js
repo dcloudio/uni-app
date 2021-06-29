@@ -4670,6 +4670,12 @@ function applyOptions(instance) {
   const options = resolveMergedOptions(instance)
   const publicThis = instance.proxy
   const ctx = instance.ctx
+  // fixed by xxxxxx
+  const customApplyOptions =
+    instance.appContext.config.globalProperties.$applyOptions
+  if (customApplyOptions) {
+    customApplyOptions(options, instance, publicThis)
+  }
   // do not cache property access on public proxy during state initialization
   shouldCacheAccess = false
   // call beforeCreate first before accessing other options since
@@ -11158,8 +11164,11 @@ const createApp = (...args) => {
     injectNativeTagCheck(app)
   }
   const { mount } = app
-  app.mount = (pageNode) => {
-    return pageNode && mount(pageNode, false, false)
+  app.mount = (container) => {
+    if (isString(container)) {
+      container = createComment(container)
+    }
+    return container && mount(container, false, false)
   }
   return app
 }

@@ -770,7 +770,7 @@
       const res = {};
       for (let i = 0; i < value.length; i++) {
         const item = value[i];
-        const normalized = normalizeStyle(isString$1(item) ? parseStringStyle(item) : item);
+        const normalized = normalizeStyle(isString(item) ? parseStringStyle(item) : item);
         if (normalized) {
           for (const key in normalized) {
             res[key] = normalized[key];
@@ -796,7 +796,7 @@
   }
   function normalizeClass(value) {
     let res = "";
-    if (isString$1(value)) {
+    if (isString(value)) {
       res = value;
     } else if (isArray(value)) {
       for (let i = 0; i < value.length; i++) {
@@ -822,7 +822,7 @@
   const onRE = /^on[^a-z]/;
   const isOn = (key) => onRE.test(key);
   const isModelListener = (key) => key.startsWith("onUpdate:");
-  const extend$1 = Object.assign;
+  const extend = Object.assign;
   const remove = (arr, el) => {
     const i = arr.indexOf(el);
     if (i > -1) {
@@ -832,22 +832,22 @@
   const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
   const isArray = Array.isArray;
-  const isMap = (val) => toTypeString$1(val) === "[object Map]";
-  const isSet = (val) => toTypeString$1(val) === "[object Set]";
+  const isMap = (val) => toTypeString(val) === "[object Map]";
+  const isSet = (val) => toTypeString(val) === "[object Set]";
   const isFunction = (val) => typeof val === "function";
-  const isString$1 = (val) => typeof val === "string";
+  const isString = (val) => typeof val === "string";
   const isSymbol = (val) => typeof val === "symbol";
   const isObject$1 = (val) => val !== null && typeof val === "object";
   const isPromise = (val) => {
     return isObject$1(val) && isFunction(val.then) && isFunction(val.catch);
   };
-  const objectToString$1 = Object.prototype.toString;
-  const toTypeString$1 = (value) => objectToString$1.call(value);
+  const objectToString = Object.prototype.toString;
+  const toTypeString = (value) => objectToString.call(value);
   const toRawType = (value) => {
-    return toTypeString$1(value).slice(8, -1);
+    return toTypeString(value).slice(8, -1);
   };
-  const isPlainObject$1 = (val) => toTypeString$1(val) === "[object Object]";
-  const isIntegerKey = (key) => isString$1(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+  const isPlainObject = (val) => toTypeString(val) === "[object Object]";
+  const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
   const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
   const cacheStringFunction$1 = (fn) => {
     const cache2 = Object.create(null);
@@ -1164,11 +1164,11 @@
       return true;
     }
   };
-  const shallowReactiveHandlers = extend$1({}, mutableHandlers, {
+  const shallowReactiveHandlers = extend({}, mutableHandlers, {
     get: shallowGet,
     set: shallowSet
   });
-  extend$1({}, readonlyHandlers, {
+  extend({}, readonlyHandlers, {
     get: shallowReadonlyGet
   });
   const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
@@ -1624,7 +1624,7 @@
     return res;
   }
   function formatProp(key, value, raw) {
-    if (isString$1(value)) {
+    if (isString(value)) {
       value = JSON.stringify(value);
       return raw ? value : [`${key}=${value}`];
     } else if (typeof value === "number" || typeof value === "boolean" || value == null) {
@@ -1908,7 +1908,7 @@
         const normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
         if (normalizedFromExtend) {
           hasExtends = true;
-          extend$1(normalized, normalizedFromExtend);
+          extend(normalized, normalizedFromExtend);
         }
       };
       if (!asMixin && appContext.mixins.length) {
@@ -1928,7 +1928,7 @@
     if (isArray(raw)) {
       raw.forEach((key) => normalized[key] = null);
     } else {
-      extend$1(normalized, raw);
+      extend(normalized, raw);
     }
     cache2.set(comp, normalized);
     return normalized;
@@ -2333,7 +2333,7 @@
   }
   function instanceWatch(source, value, options) {
     const publicThis = this.proxy;
-    const getter = isString$1(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
+    const getter = isString(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
     let cb;
     if (isFunction(value)) {
       cb = value;
@@ -2368,7 +2368,7 @@
       value.forEach((v) => {
         traverse(v, seen);
       });
-    } else if (isPlainObject$1(value)) {
+    } else if (isPlainObject(value)) {
       for (const key in value) {
         traverse(value[key], seen);
       }
@@ -2606,7 +2606,7 @@
   }
   function createWatcher(raw, ctx, publicThis, key) {
     const getter = key.includes(".") ? createPathGetter(publicThis, key) : () => publicThis[key];
-    if (isString$1(raw)) {
+    if (isString(raw)) {
       const handler = ctx[raw];
       if (isFunction(handler)) {
         watch(getter, handler);
@@ -2701,7 +2701,7 @@
       return from;
     }
     return function mergedDataFn() {
-      return extend$1(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
+      return extend(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
     };
   }
   function mergeInject(to, from) {
@@ -2721,14 +2721,14 @@
     return to ? [...new Set([].concat(to, from))] : from;
   }
   function mergeObjectOptions(to, from) {
-    return to ? extend$1(extend$1(Object.create(null), to), from) : from;
+    return to ? extend(extend(Object.create(null), to), from) : from;
   }
   function mergeWatchOptions(to, from) {
     if (!to)
       return from;
     if (!from)
       return to;
-    const merged = extend$1(Object.create(null), to);
+    const merged = extend(Object.create(null), to);
     for (const key in from) {
       merged[key] = mergeAsArray(to[key], from[key]);
     }
@@ -2896,7 +2896,7 @@
       const extendProps = (raw2) => {
         hasExtends = true;
         const [props2, keys] = normalizePropsOptions(raw2, appContext, true);
-        extend$1(normalized, props2);
+        extend(normalized, props2);
         if (keys)
           needCastKeys.push(...keys);
       };
@@ -3018,7 +3018,7 @@
         if (optimized && type === 1) {
           needDeletionCheck = false;
         } else {
-          extend$1(slots, children);
+          extend(slots, children);
           if (!optimized && type === 1) {
             delete slots._;
           }
@@ -3188,7 +3188,7 @@
     const refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
     const setupState = owner.setupState;
     if (oldRef != null && oldRef !== ref2) {
-      if (isString$1(oldRef)) {
+      if (isString(oldRef)) {
         refs[oldRef] = null;
         if (hasOwn$1(setupState, oldRef)) {
           setupState[oldRef] = null;
@@ -3197,7 +3197,7 @@
         oldRef.value = null;
       }
     }
-    if (isString$1(ref2)) {
+    if (isString(ref2)) {
       const doSet = () => {
         {
           refs[ref2] = value;
@@ -4102,7 +4102,7 @@
   const InternalObjectKey = `__vInternal`;
   const normalizeKey = ({ key }) => key != null ? key : null;
   const normalizeRef = ({ ref: ref2 }) => {
-    return ref2 != null ? isString$1(ref2) || isRef(ref2) || isFunction(ref2) ? { i: currentRenderingInstance, r: ref2 } : ref2 : null;
+    return ref2 != null ? isString(ref2) || isRef(ref2) || isFunction(ref2) ? { i: currentRenderingInstance, r: ref2 } : ref2 : null;
   };
   const createVNode = _createVNode;
   function _createVNode(type, props2 = null, children = null, patchFlag = 0, dynamicProps = null, isBlockNode = false) {
@@ -4121,20 +4121,20 @@
     }
     if (props2) {
       if (isProxy(props2) || InternalObjectKey in props2) {
-        props2 = extend$1({}, props2);
+        props2 = extend({}, props2);
       }
       let { class: klass, style } = props2;
-      if (klass && !isString$1(klass)) {
+      if (klass && !isString(klass)) {
         props2.class = normalizeClass(klass);
       }
       if (isObject$1(style)) {
         if (isProxy(style) && !isArray(style)) {
-          style = extend$1({}, style);
+          style = extend({}, style);
         }
         props2.style = normalizeStyle(style);
       }
     }
-    const shapeFlag = isString$1(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject$1(type) ? 4 : isFunction(type) ? 2 : 0;
+    const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject$1(type) ? 4 : isFunction(type) ? 2 : 0;
     const vnode = {
       __v_isVNode: true,
       __v_skip: true,
@@ -4266,7 +4266,7 @@
     vnode.shapeFlag |= type;
   }
   function mergeProps(...args) {
-    const ret = extend$1({}, args[0]);
+    const ret = extend({}, args[0]);
     for (let i = 1; i < args.length; i++) {
       const toMerge = args[i];
       for (const key in toMerge) {
@@ -4296,7 +4296,7 @@
       return i.exposed ? i.exposed : i.proxy;
     return getPublicInstance(i.parent);
   };
-  const publicPropertiesMap = extend$1(Object.create(null), {
+  const publicPropertiesMap = extend(Object.create(null), {
     $: (i) => i,
     $el: (i) => i.vnode.el,
     $data: (i) => i.data,
@@ -4387,7 +4387,7 @@
       return accessCache[key] !== void 0 || data !== EMPTY_OBJ && hasOwn$1(data, key) || setupState !== EMPTY_OBJ && hasOwn$1(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn$1(normalizedProps, key) || hasOwn$1(ctx, key) || hasOwn$1(publicPropertiesMap, key) || hasOwn$1(appContext.config.globalProperties, key);
     }
   };
-  const RuntimeCompiledPublicInstanceProxyHandlers = extend$1({}, PublicInstanceProxyHandlers, {
+  const RuntimeCompiledPublicInstanceProxyHandlers = extend({}, PublicInstanceProxyHandlers, {
     get(target, key) {
       if (key === Symbol.unscopables) {
         return;
@@ -4730,7 +4730,7 @@
     const style = el.style;
     if (!next) {
       el.removeAttribute("style");
-    } else if (isString$1(next)) {
+    } else if (isString(next)) {
       if (prev !== next) {
         const current = style.display;
         style.cssText = next;
@@ -4742,7 +4742,7 @@
       for (const key in next) {
         setStyle(style, key, next[key]);
       }
-      if (prev && !isString$1(prev)) {
+      if (prev && !isString(prev)) {
         for (const key in prev) {
           if (next[key] == null) {
             setStyle(style, key, "");
@@ -4967,12 +4967,12 @@
     if (key === "type" && el.tagName === "TEXTAREA") {
       return false;
     }
-    if (nativeOnRE.test(key) && isString$1(value)) {
+    if (nativeOnRE.test(key) && isString(value)) {
       return false;
     }
     return key in el;
   }
-  const rendererOptions = extend$1({ patchProp, forcePatchProp }, nodeOps);
+  const rendererOptions = extend({ patchProp, forcePatchProp }, nodeOps);
   let renderer;
   function ensureRenderer() {
     return renderer || (renderer = createRenderer(rendererOptions));
@@ -4999,7 +4999,7 @@
     return app;
   };
   function normalizeContainer(container) {
-    if (isString$1(container)) {
+    if (isString(container)) {
       const res = document.querySelector(container);
       return res;
     }
@@ -5286,11 +5286,6 @@
   })(dist);
   var wrapper = /* @__PURE__ */ getDefaultExportFromCjs(dist.exports);
   var button = "uni-button {\n  position: relative;\n  display: block;\n  margin-left: auto;\n  margin-right: auto;\n  padding-left: 14px;\n  padding-right: 14px;\n  box-sizing: border-box;\n  font-size: 18px;\n  text-align: center;\n  text-decoration: none;\n  line-height: 2.55555556;\n  border-radius: 5px;\n  -webkit-tap-highlight-color: transparent;\n  overflow: hidden;\n  color: #000000;\n  background-color: #f8f8f8;\n  cursor: pointer;\n}\n\nuni-button[hidden] {\n  display: none !important;\n}\n\nuni-button:after {\n  content: ' ';\n  width: 200%;\n  height: 200%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  transform: scale(0.5);\n  transform-origin: 0 0;\n  box-sizing: border-box;\n  border-radius: 10px;\n}\n\nuni-button[native] {\n  padding-left: 0;\n  padding-right: 0;\n}\n\nuni-button[native] .uni-button-cover-view-wrapper {\n  border: inherit;\n  border-color: inherit;\n  border-radius: inherit;\n  background-color: inherit;\n}\n\nuni-button[native] .uni-button-cover-view-inner {\n  padding-left: 14px;\n  padding-right: 14px;\n}\n\nuni-button uni-cover-view {\n  line-height: inherit;\n  white-space: inherit;\n}\n\nuni-button[type='default'] {\n  color: #000000;\n  background-color: #f8f8f8;\n}\n\nuni-button[type='primary'] {\n  color: #ffffff;\n  background-color: #007aff;\n}\n\nuni-button[type='warn'] {\n  color: #ffffff;\n  background-color: #e64340;\n}\n\nuni-button[disabled] {\n  color: rgba(255, 255, 255, 0.6);\n  cursor: not-allowed;\n}\n\nuni-button[disabled][type='default'],\nuni-button[disabled]:not([type]) {\n  color: rgba(0, 0, 0, 0.3);\n  background-color: #f7f7f7;\n}\n\nuni-button[disabled][type='primary'] {\n  background-color: rgba(0, 122, 255, 0.6);\n}\n\nuni-button[disabled][type='warn'] {\n  background-color: #ec8b89;\n}\n\nuni-button[type='primary'][plain] {\n  color: #007aff;\n  border: 1px solid #007aff;\n  background-color: transparent;\n}\n\nuni-button[type='primary'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='primary'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[type='default'][plain] {\n  color: #353535;\n  border: 1px solid #353535;\n  background-color: transparent;\n}\n\nuni-button[type='default'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='default'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[plain] {\n  color: #353535;\n  border: 1px solid #353535;\n  background-color: transparent;\n}\n\nuni-button[plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[plain]:after {\n  border-width: 0;\n}\n\nuni-button[plain][native] .uni-button-cover-view-inner {\n  padding: 0;\n}\n\nuni-button[type='warn'][plain] {\n  color: #e64340;\n  border: 1px solid #e64340;\n  background-color: transparent;\n}\n\nuni-button[type='warn'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='warn'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[size='mini'] {\n  display: inline-block;\n  line-height: 2.3;\n  font-size: 13px;\n  padding: 0 1.34em;\n}\n\nuni-button[size='mini'][native] {\n  padding: 0;\n}\n\nuni-button[size='mini'][native] .uni-button-cover-view-inner {\n  padding: 0 1.34em;\n}\n\nuni-button[loading]:not([disabled]) {\n  cursor: progress;\n}\n\nuni-button[loading]:before {\n  content: ' ';\n  display: inline-block;\n  width: 18px;\n  height: 18px;\n  vertical-align: middle;\n  animation: uni-loading 1s steps(12, end) infinite;\n  background-size: 100%;\n}\n\nuni-button[loading][type='primary'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #0062cc;\n}\n\nuni-button[loading][type='primary'][plain] {\n  color: #007aff;\n  background-color: transparent;\n}\n\nuni-button[loading][type='default'] {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\nuni-button[loading][type='default'][plain] {\n  color: #353535;\n  background-color: transparent;\n}\n\nuni-button[loading][type='warn'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #ce3c39;\n}\n\nuni-button[loading][type='warn'][plain] {\n  color: #e64340;\n  background-color: transparent;\n}\n\nuni-button[loading][native]:before {\n  content: none;\n}\n\n.button-hover {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\n.button-hover[plain] {\n  color: rgba(53, 53, 53, 0.6);\n  border-color: rgba(53, 53, 53, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='primary'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #0062cc;\n}\n\n.button-hover[type='primary'][plain] {\n  color: rgba(26, 173, 25, 0.6);\n  border-color: rgba(26, 173, 25, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='default'] {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\n.button-hover[type='default'][plain] {\n  color: rgba(53, 53, 53, 0.6);\n  border-color: rgba(53, 53, 53, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='warn'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #ce3c39;\n}\n\n.button-hover[type='warn'][plain] {\n  color: rgba(230, 67, 64, 0.6);\n  border-color: rgba(230, 67, 64, 0.6);\n  background-color: transparent;\n}\n";
-  const extend = Object.assign;
-  const isString = (val) => typeof val === "string";
-  const objectToString = Object.prototype.toString;
-  const toTypeString = (value) => objectToString.call(value);
-  const isPlainObject = (val) => toTypeString(val) === "[object Object]";
   function getCustomDataset(el) {
     return extend({}, el.dataset, el.__uniDataset);
   }

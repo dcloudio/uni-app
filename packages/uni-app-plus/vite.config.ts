@@ -49,7 +49,7 @@ export default defineConfig({
     alias: [
       {
         find: 'vue',
-        replacement: resolve('../uni-app-vue/dist/view.runtime.esm.js'),
+        replacement: resolve('../uni-app-vue/src/view/index.ts'),
       },
       {
         find: '@dcloudio/uni-api',

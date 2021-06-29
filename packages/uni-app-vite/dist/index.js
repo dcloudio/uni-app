@@ -5,7 +5,9 @@ const copy_1 = require("./plugins/copy");
 const mainJs_1 = require("./plugins/mainJs");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
+const resolveId_1 = require("./plugins/resolveId");
 exports.default = [
+    resolveId_1.uniResolveIdPlugin(),
     copy_1.uniCopyPlugin(),
     mainJs_1.uniMainJsPlugin(),
     manifestJson_1.uniManifestJsonPlugin(),

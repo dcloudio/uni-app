@@ -58,6 +58,7 @@ export function registerPage({
       initPageOptions(routeOptions)
     )
   }
+  return webview
 }
 
 function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {

@@ -13,7 +13,7 @@ export function normalizeAppConfigService(
 ) {
   return `
   ;(function(){
-  const u=void 0,isReady=false,onReadyCallbacks=[],isServiceReady=false,onServiceReadyCallbacks=[];
+  let u=void 0,isReady=false,onReadyCallbacks=[],isServiceReady=false,onServiceReadyCallbacks=[];
   const __uniConfig = ${normalizeAppUniConfig(pagesJson, manifestJson)};
   const __uniRoutes = ${normalizeAppUniRoutes(
     pagesJson

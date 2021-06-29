@@ -38,7 +38,7 @@ function removeNode(node: UniNode) {
 }
 
 function checkNodeId(node: UniNode) {
-  if (!node.nodeId) {
+  if (!node.nodeId && node.pageNode) {
     node.nodeId = node.pageNode!.genId()
   }
 }
@@ -84,9 +84,11 @@ export class UniNode extends UniEventTarget {
     super()
     if (container) {
       const { pageNode } = container
-      this.pageNode = pageNode
-      this.nodeId = pageNode!.genId()
-      pageNode!.onCreate(this, encodeTag(nodeName))
+      if (pageNode) {
+        this.pageNode = pageNode
+        this.nodeId = pageNode!.genId()
+        pageNode!.onCreate(this, encodeTag(nodeName))
+      }
     }
     this.nodeType = nodeType
     this.nodeName = nodeName

@@ -1,5 +1,3 @@
-export default function vueFactory (exports) {
-
 /**
  * Make a map and return a function for checking if a key
  * is in that map.
@@ -248,7 +246,7 @@ function removeNode(node) {
     }
 }
 function checkNodeId(node) {
-    if (!node.nodeId) {
+    if (!node.nodeId && node.pageNode) {
         node.nodeId = node.pageNode.genId();
     }
 }
@@ -261,9 +259,11 @@ class UniNode extends UniEventTarget {
         this._text = null;
         if (container) {
             const { pageNode } = container;
-            this.pageNode = pageNode;
-            this.nodeId = pageNode.genId();
-            pageNode.onCreate(this, encodeTag(nodeName));
+            if (pageNode) {
+                this.pageNode = pageNode;
+                this.nodeId = pageNode.genId();
+                pageNode.onCreate(this, encodeTag(nodeName));
+            }
         }
         this.nodeType = nodeType;
         this.nodeName = nodeName;
@@ -2240,7 +2240,7 @@ function emit(instance, event, ...rawArgs) {
             args = rawArgs.map(toNumber);
         }
     }
-    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+    if ((process.env.NODE_ENV !== 'production') || false) {
         devtoolsComponentEmit(instance, event, args);
     }
     if ((process.env.NODE_ENV !== 'production')) {
@@ -2287,7 +2287,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     let normalized = {};
     // apply mixin/extends props
     let hasExtends = false;
-    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+    if (!isFunction(comp)) {
         const extendEmits = (raw) => {
             const normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
             if (normalizedFromExtend) {
@@ -2400,7 +2400,7 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot // false on
         if (renderFnWithContext._d) {
             setBlockTracking(1);
         }
-        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        if ((process.env.NODE_ENV !== 'production') || false) {
             devtoolsComponentUpdated(ctx);
         }
         return res;
@@ -3909,7 +3909,7 @@ const KeepAliveImpl = {
         const cache = new Map();
         const keys = new Set();
         let current = null;
-        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        if ((process.env.NODE_ENV !== 'production') || false) {
             instance.__v_cache = cache;
         }
         const parentSuspense = instance.suspense;
@@ -3930,7 +3930,7 @@ const KeepAliveImpl = {
                     invokeVNodeHook(vnodeHook, instance.parent, vnode);
                 }
             }, parentSuspense);
-            if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+            if ((process.env.NODE_ENV !== 'production') || false) {
                 // Update components tree
                 devtoolsComponentAdded(instance);
             }
@@ -3948,7 +3948,7 @@ const KeepAliveImpl = {
                 }
                 instance.isDeactivated = true;
             }, parentSuspense);
-            if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+            if ((process.env.NODE_ENV !== 'production') || false) {
                 // Update components tree
                 devtoolsComponentAdded(instance);
             }
@@ -4237,6 +4237,12 @@ function applyOptions(instance) {
     const options = resolveMergedOptions(instance);
     const publicThis = instance.proxy;
     const ctx = instance.ctx;
+    // fixed by xxxxxx
+    const customApplyOptions = instance.appContext.config.globalProperties
+        .$applyOptions;
+    if (customApplyOptions) {
+        customApplyOptions(options, instance, publicThis);
+    }
     // do not cache property access on public proxy during state initialization
     shouldCacheAccess = false;
     // call beforeCreate first before accessing other options since
@@ -4826,7 +4832,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     const needCastKeys = [];
     // apply mixin/extends props
     let hasExtends = false;
-    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+    if (!isFunction(comp)) {
         const extendProps = (raw) => {
             hasExtends = true;
             const [props, keys] = normalizePropsOptions(raw, appContext, true);
@@ -5300,7 +5306,7 @@ function createAppAPI(render, hydrate) {
                 return app;
             },
             mixin(mixin) {
-                if (__VUE_OPTIONS_API__) {
+                {
                     if (!context.mixins.includes(mixin)) {
                         context.mixins.push(mixin);
                     }
@@ -5308,9 +5314,6 @@ function createAppAPI(render, hydrate) {
                         warn('Mixin has already been applied to target app' +
                             (mixin.name ? `: ${mixin.name}` : ''));
                     }
-                }
-                else if ((process.env.NODE_ENV !== 'production')) {
-                    warn('Mixins are only available in builds supporting Options API');
                 }
                 return app;
             },
@@ -5361,7 +5364,7 @@ function createAppAPI(render, hydrate) {
                     isMounted = true;
                     app._container = rootContainer;
                     rootContainer.__vue_app__ = app;
-                    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                    if ((process.env.NODE_ENV !== 'production') || false) {
                         app._instance = vnode.component;
                         devtoolsInitApp(app, version);
                     }
@@ -5377,7 +5380,7 @@ function createAppAPI(render, hydrate) {
             unmount() {
                 if (isMounted) {
                     render(null, app._container);
-                    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                    if ((process.env.NODE_ENV !== 'production') || false) {
                         app._instance = null;
                         devtoolsUnmountApp(app);
                     }
@@ -5728,7 +5731,7 @@ function startMeasure(instance, type) {
     if (instance.appContext.config.performance && isSupported()) {
         perf.mark(`vue-${type}-${instance.uid}`);
     }
-    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+    if ((process.env.NODE_ENV !== 'production') || false) {
         devtoolsPerfStart(instance, type, supported ? perf.now() : Date.now());
     }
 }
@@ -5741,7 +5744,7 @@ function endMeasure(instance, type) {
         perf.clearMarks(startTag);
         perf.clearMarks(endTag);
     }
-    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+    if ((process.env.NODE_ENV !== 'production') || false) {
         devtoolsPerfEnd(instance, type, supported ? perf.now() : Date.now());
     }
 }
@@ -5770,14 +5773,6 @@ function isSupported() {
  */
 function initFeatureFlags() {
     let needWarn = false;
-    if (typeof __VUE_OPTIONS_API__ !== 'boolean') {
-        needWarn = true;
-        getGlobalThis().__VUE_OPTIONS_API__ = true;
-    }
-    if (typeof __VUE_PROD_DEVTOOLS__ !== 'boolean') {
-        needWarn = true;
-        getGlobalThis().__VUE_PROD_DEVTOOLS__ = false;
-    }
     if ((process.env.NODE_ENV !== 'production') && needWarn) {
         console.warn(`You are running the esm-bundler build of Vue. It is recommended to ` +
             `configure your bundler to explicitly replace feature flag globals ` +
@@ -5905,7 +5900,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     {
         initFeatureFlags();
     }
-    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+    if ((process.env.NODE_ENV !== 'production') || false) {
         const target = getGlobalThis();
         target.__VUE__ = true;
         setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__);
@@ -6080,7 +6075,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             // scopeId
             setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
         }
-        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        if ((process.env.NODE_ENV !== 'production') || false) {
             Object.defineProperty(el, '__vnode', {
                 value: vnode,
                 enumerable: false
@@ -6513,7 +6508,7 @@ function baseCreateRenderer(options, createHydrationFns) {
                     instance.a && queuePostRenderEffect(instance.a, parentSuspense);
                 }
                 instance.isMounted = true;
-                if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                if ((process.env.NODE_ENV !== 'production') || false) {
                     devtoolsComponentAdded(instance);
                 }
                 // #2458: deference mount-only object parameters to prevent memleaks
@@ -6580,7 +6575,7 @@ function baseCreateRenderer(options, createHydrationFns) {
                 if ((vnodeHook = next.props && next.props.onVnodeUpdated)) {
                     queuePostRenderEffect(() => invokeVNodeHook(vnodeHook, parent, next, vnode), parentSuspense);
                 }
-                if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                if ((process.env.NODE_ENV !== 'production') || false) {
                     devtoolsComponentUpdated(instance);
                 }
                 if ((process.env.NODE_ENV !== 'production')) {
@@ -7049,7 +7044,7 @@ function baseCreateRenderer(options, createHydrationFns) {
                 parentSuspense.resolve();
             }
         }
-        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        if ((process.env.NODE_ENV !== 'production') || false) {
             devtoolsComponentRemoved(instance);
         }
     };
@@ -8038,10 +8033,10 @@ const publicPropertiesMap = extend(Object.create(null), {
     $parent: i => getPublicInstance(i.parent),
     $root: i => getPublicInstance(i.root),
     $emit: i => i.emit,
-    $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
+    $options: i => (resolveMergedOptions(i) ),
     $forceUpdate: i => () => queueJob(i.update),
     $nextTick: i => nextTick.bind(i.proxy),
-    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
+    $watch: i => (instanceWatch.bind(i) )
 });
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
@@ -8102,7 +8097,7 @@ const PublicInstanceProxyHandlers = {
                 accessCache[key] = 3 /* CONTEXT */;
                 return ctx[key];
             }
-            else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
+            else if (shouldCacheAccess) {
                 accessCache[key] = 4 /* OTHER */;
             }
         }
@@ -8467,7 +8462,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
         }
         // setup returned bindings.
         // assuming a render function compiled from template is present.
-        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        if ((process.env.NODE_ENV !== 'production') || false) {
             instance.devtoolsRawSetupState = setupResult;
         }
         instance.setupState = proxyRefs(setupResult);
@@ -8522,7 +8517,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
         }
     }
     // support for 2.x options
-    if (__VUE_OPTIONS_API__ && !(false )) {
+    {
         currentInstance = instance;
         pauseTracking();
         applyOptions(instance);
@@ -9706,8 +9701,7 @@ const rendererOptions = extend({ patchProp, forcePatchProp }, nodeOps);
 // in case the user only imports reactivity utilities from Vue.
 let renderer;
 function ensureRenderer() {
-    return (renderer ||
-        (renderer = createRenderer(rendererOptions)));
+    return (renderer || (renderer = createRenderer(rendererOptions)));
 }
 // use explicit type casts here to avoid import() calls in rolled-up d.ts
 const render = ((...args) => {
@@ -9719,8 +9713,11 @@ const createApp = ((...args) => {
         injectNativeTagCheck(app);
     }
     const { mount } = app;
-    app.mount = (pageNode) => {
-        return pageNode && mount(pageNode, false, false);
+    app.mount = (container) => {
+        if (isString(container)) {
+            container = createComment(container);
+        }
+        return container && mount(container, false, false);
     };
     return app;
 });
@@ -9738,129 +9735,4 @@ function injectNativeTagCheck(app) {
 function onBeforeActivate() { }
 function onBeforeDeactivate() { }
 
-var Vue = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    BaseTransition: BaseTransition,
-    Comment: Comment$1,
-    Fragment: Fragment,
-    KeepAlive: KeepAlive,
-    Static: Static,
-    Suspense: Suspense,
-    Teleport: Teleport,
-    Text: Text,
-    Transition: Transition,
-    TransitionGroup: TransitionGroup,
-    callWithAsyncErrorHandling: callWithAsyncErrorHandling,
-    callWithErrorHandling: callWithErrorHandling,
-    camelize: camelize,
-    capitalize: capitalize,
-    cloneVNode: cloneVNode,
-    compatUtils: compatUtils,
-    computed: computed$1,
-    createApp: createApp,
-    createBlock: createBlock,
-    createComment: createComment,
-    createCommentVNode: createCommentVNode,
-    createElement: createElement,
-    createHydrationRenderer: createHydrationRenderer,
-    createRenderer: createRenderer,
-    createSSRApp: createSSRApp,
-    createSlots: createSlots,
-    createStaticVNode: createStaticVNode,
-    createTextNode: createTextNode,
-    createTextVNode: createTextVNode,
-    createVNode: createVNode,
-    createVueApp: createApp,
-    customRef: customRef,
-    defineAsyncComponent: defineAsyncComponent,
-    defineComponent: defineComponent,
-    defineEmit: defineEmit,
-    defineEmits: defineEmits,
-    defineProps: defineProps,
-    get devtools () { return devtools; },
-    getCurrentInstance: getCurrentInstance,
-    getTransitionRawChildren: getTransitionRawChildren,
-    h: h,
-    handleError: handleError,
-    initCustomFormatter: initCustomFormatter,
-    inject: inject,
-    injectHook: injectHook,
-    get isInSSRComponentSetup () { return isInSSRComponentSetup; },
-    isProxy: isProxy,
-    isReactive: isReactive,
-    isReadonly: isReadonly,
-    isRef: isRef,
-    isRuntimeOnly: isRuntimeOnly,
-    isVNode: isVNode,
-    markRaw: markRaw,
-    mergeProps: mergeProps,
-    nextTick: nextTick,
-    onActivated: onActivated,
-    onBeforeActivate: onBeforeActivate,
-    onBeforeDeactivate: onBeforeDeactivate,
-    onBeforeMount: onBeforeMount,
-    onBeforeUnmount: onBeforeUnmount,
-    onBeforeUpdate: onBeforeUpdate,
-    onDeactivated: onDeactivated,
-    onErrorCaptured: onErrorCaptured,
-    onMounted: onMounted,
-    onRenderTracked: onRenderTracked,
-    onRenderTriggered: onRenderTriggered,
-    onServerPrefetch: onServerPrefetch,
-    onUnmounted: onUnmounted,
-    onUpdated: onUpdated,
-    openBlock: openBlock,
-    popScopeId: popScopeId,
-    provide: provide,
-    proxyRefs: proxyRefs,
-    pushScopeId: pushScopeId,
-    queuePostFlushCb: queuePostFlushCb,
-    reactive: reactive,
-    readonly: readonly,
-    ref: ref,
-    registerRuntimeCompiler: registerRuntimeCompiler,
-    render: render,
-    renderList: renderList,
-    renderSlot: renderSlot,
-    resolveComponent: resolveComponent,
-    resolveDirective: resolveDirective,
-    resolveDynamicComponent: resolveDynamicComponent,
-    resolveFilter: resolveFilter,
-    resolveTransitionHooks: resolveTransitionHooks,
-    setBlockTracking: setBlockTracking,
-    setDevtoolsHook: setDevtoolsHook,
-    setTransitionHooks: setTransitionHooks,
-    shallowReactive: shallowReactive,
-    shallowReadonly: shallowReadonly,
-    shallowRef: shallowRef,
-    ssrContextKey: ssrContextKey,
-    ssrUtils: ssrUtils,
-    toDisplayString: toDisplayString,
-    toHandlerKey: toHandlerKey,
-    toHandlers: toHandlers,
-    toRaw: toRaw,
-    toRef: toRef,
-    toRefs: toRefs,
-    transformVNodeArgs: transformVNodeArgs,
-    triggerRef: triggerRef,
-    unref: unref,
-    useContext: useContext,
-    useCssModule: useCssModule,
-    useCssVars: useCssVars,
-    useSSRContext: useSSRContext,
-    useTransitionState: useTransitionState,
-    vModelText: vModelText,
-    vShow: vShow,
-    version: version,
-    warn: warn,
-    watch: watch,
-    watchEffect: watchEffect,
-    withCtx: withCtx,
-    withDirectives: withDirectives,
-    withKeys: withKeys,
-    withModifiers: withModifiers,
-    withScopeId: withScopeId
-});
-
-exports.Vue = Vue;
-}
+export { BaseTransition, Comment$1 as Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed$1 as computed, createApp, createBlock, createComment, createCommentVNode, createElement, createHydrationRenderer, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextNode, createTextVNode, createVNode, createApp as createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmit, defineEmits, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isVNode, markRaw, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, transformVNodeArgs, triggerRef, unref, useContext, useCssModule, useCssVars, useSSRContext, useTransitionState, vModelText, vShow, version, warn, watch, watchEffect, withCtx, withDirectives, withKeys, withModifiers, withScopeId };

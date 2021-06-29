@@ -8,6 +8,7 @@ import {
   UniVitePlugin,
   getNVueCompiler,
   getNVueStyleCompiler,
+  resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 
 export const UniAppPlugin: UniVitePlugin = {
@@ -30,12 +31,12 @@ export const UniAppPlugin: UniVitePlugin = {
           formats: ['iife'],
         },
         rollupOptions: {
-          external: ['vue'],
+          // external: ['vue'],
           output: {
             entryFileNames: 'app-service.js',
-            globals: {
-              vue: 'Vue',
-            },
+            // globals: {
+            //   vue: 'Vue',
+            // },
           },
         },
       },
@@ -48,6 +49,11 @@ export const UniAppPlugin: UniVitePlugin = {
     }
     if (getNVueStyleCompiler(manifestJson) === 'uni-app') {
       process.env.UNI_USING_NVUE_STYLE_COMPILER = 'uni-app'
+    }
+  },
+  resolveId(id) {
+    if (id === 'vue') {
+      return resolveBuiltIn('@dcloudio/uni-app-vue')
     }
   },
 }

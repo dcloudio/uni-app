@@ -1974,7 +1974,7 @@ function emit(instance, event, ...rawArgs) {
       args = rawArgs.map(toNumber);
     }
   }
-  if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+  if (process.env.NODE_ENV !== 'production' || false) {
     devtoolsComponentEmit(instance, event, args);
   }
   if (process.env.NODE_ENV !== 'production') {
@@ -2036,7 +2036,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
   let normalized = {};
   // apply mixin/extends props
   let hasExtends = false;
-  if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+  if (!isFunction(comp)) {
     const extendEmits = (raw) => {
       const normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
       if (normalizedFromExtend) {
@@ -2152,7 +2152,7 @@ function withCtx(
     if (renderFnWithContext._d) {
       setBlockTracking(1);
     }
-    if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+    if (process.env.NODE_ENV !== 'production' || false) {
       devtoolsComponentUpdated(ctx);
     }
     return res
@@ -3999,7 +3999,7 @@ const KeepAliveImpl = {
     const cache = new Map();
     const keys = new Set();
     let current = null;
-    if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+    if (process.env.NODE_ENV !== 'production' || false) {
       instance.__v_cache = cache;
     }
     const parentSuspense = instance.suspense;
@@ -4037,7 +4037,7 @@ const KeepAliveImpl = {
           invokeVNodeHook(vnodeHook, instance.parent, vnode);
         }
       }, parentSuspense);
-      if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+      if (process.env.NODE_ENV !== 'production' || false) {
         // Update components tree
         devtoolsComponentAdded(instance);
       }
@@ -4055,7 +4055,7 @@ const KeepAliveImpl = {
         }
         instance.isDeactivated = true;
       }, parentSuspense);
-      if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+      if (process.env.NODE_ENV !== 'production' || false) {
         // Update components tree
         devtoolsComponentAdded(instance);
       }
@@ -5002,7 +5002,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
   const needCastKeys = [];
   // apply mixin/extends props
   let hasExtends = false;
-  if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+  if (!isFunction(comp)) {
     const extendProps = (raw) => {
       hasExtends = true;
       const [props, keys] = normalizePropsOptions(raw, appContext, true);
@@ -5480,7 +5480,7 @@ function createAppAPI(render, hydrate) {
         return app
       },
       mixin(mixin) {
-        if (__VUE_OPTIONS_API__) {
+        {
           if (!context.mixins.includes(mixin)) {
             context.mixins.push(mixin);
           } else if (process.env.NODE_ENV !== 'production') {
@@ -5489,8 +5489,6 @@ function createAppAPI(render, hydrate) {
                 (mixin.name ? `: ${mixin.name}` : '')
             );
           }
-        } else if (process.env.NODE_ENV !== 'production') {
-          warn('Mixins are only available in builds supporting Options API');
         }
         return app
       },
@@ -5540,7 +5538,7 @@ function createAppAPI(render, hydrate) {
           isMounted = true;
           app._container = rootContainer;
           rootContainer.__vue_app__ = app;
-          if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+          if (process.env.NODE_ENV !== 'production' || false) {
             app._instance = vnode.component;
             devtoolsInitApp(app, version);
           }
@@ -5557,7 +5555,7 @@ function createAppAPI(render, hydrate) {
       unmount() {
         if (isMounted) {
           render(null, app._container);
-          if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+          if (process.env.NODE_ENV !== 'production' || false) {
             app._instance = null;
             devtoolsUnmountApp(app);
           }
@@ -6041,7 +6039,7 @@ function startMeasure(instance, type) {
   if (instance.appContext.config.performance && isSupported()) {
     perf.mark(`vue-${type}-${instance.uid}`);
   }
-  if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+  if (process.env.NODE_ENV !== 'production' || false) {
     devtoolsPerfStart(instance, type, supported ? perf.now() : Date.now());
   }
 }
@@ -6058,7 +6056,7 @@ function endMeasure(instance, type) {
     perf.clearMarks(startTag);
     perf.clearMarks(endTag);
   }
-  if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+  if (process.env.NODE_ENV !== 'production' || false) {
     devtoolsPerfEnd(instance, type, supported ? perf.now() : Date.now());
   }
 }
@@ -6086,14 +6084,6 @@ function isSupported() {
  */
 function initFeatureFlags() {
   let needWarn = false;
-  if (typeof __VUE_OPTIONS_API__ !== 'boolean') {
-    needWarn = true;
-    getGlobalThis().__VUE_OPTIONS_API__ = true;
-  }
-  if (typeof __VUE_PROD_DEVTOOLS__ !== 'boolean') {
-    needWarn = true;
-    getGlobalThis().__VUE_PROD_DEVTOOLS__ = false;
-  }
   if (process.env.NODE_ENV !== 'production' && needWarn) {
     console.warn(
       `You are running the esm-bundler build of Vue. It is recommended to ` +
@@ -6233,7 +6223,7 @@ function baseCreateRenderer(options, createHydrationFns) {
   {
     initFeatureFlags();
   }
-  if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+  if (process.env.NODE_ENV !== 'production' || false) {
     const target = getGlobalThis();
     target.__VUE__ = true;
     setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__);
@@ -6546,7 +6536,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       // scopeId
       setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
     }
-    if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+    if (process.env.NODE_ENV !== 'production' || false) {
       Object.defineProperty(el, '__vnode', {
         value: vnode,
         enumerable: false,
@@ -7200,7 +7190,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             instance.a && queuePostRenderEffect(instance.a, parentSuspense);
           }
           instance.isMounted = true;
-          if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+          if (process.env.NODE_ENV !== 'production' || false) {
             devtoolsComponentAdded(instance);
           }
           // #2458: deference mount-only object parameters to prevent memleaks
@@ -7274,7 +7264,7 @@ function baseCreateRenderer(options, createHydrationFns) {
               parentSuspense
             );
           }
-          if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+          if (process.env.NODE_ENV !== 'production' || false) {
             devtoolsComponentUpdated(instance);
           }
           if (process.env.NODE_ENV !== 'production') {
@@ -7914,7 +7904,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         parentSuspense.resolve();
       }
     }
-    if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+    if (process.env.NODE_ENV !== 'production' || false) {
       devtoolsComponentRemoved(instance);
     }
   };
@@ -9050,10 +9040,10 @@ const publicPropertiesMap = extend(Object.create(null), {
   $parent: (i) => getPublicInstance(i.parent),
   $root: (i) => getPublicInstance(i.root),
   $emit: (i) => i.emit,
-  $options: (i) => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
+  $options: (i) => (resolveMergedOptions(i) ),
   $forceUpdate: (i) => () => queueJob(i.update),
   $nextTick: (i) => nextTick.bind(i.proxy),
-  $watch: (i) => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP),
+  $watch: (i) => (instanceWatch.bind(i) ),
 });
 const PublicInstanceProxyHandlers = {
   get({ _: instance }, key) {
@@ -9113,7 +9103,7 @@ const PublicInstanceProxyHandlers = {
       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
         accessCache[key] = 3; /* CONTEXT */
         return ctx[key]
-      } else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
+      } else if (shouldCacheAccess) {
         accessCache[key] = 4; /* OTHER */
       }
     }
@@ -9528,7 +9518,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
     }
     // setup returned bindings.
     // assuming a render function compiled from template is present.
-    if (process.env.NODE_ENV !== 'production' || __VUE_PROD_DEVTOOLS__) {
+    if (process.env.NODE_ENV !== 'production' || false) {
       instance.devtoolsRawSetupState = setupResult;
     }
     instance.setupState = proxyRefs(setupResult);
@@ -9599,7 +9589,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     }
   }
   // support for 2.x options
-  if (__VUE_OPTIONS_API__ && !false) {
+  {
     currentInstance = instance;
     pauseTracking();
     applyOptions(instance);

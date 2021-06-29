@@ -1,2 +1,1 @@
-import * as Vue from '../../lib/service.runtime.esm'
-exports.Vue = Vue
+export * from '../../lib/service.runtime.esm'

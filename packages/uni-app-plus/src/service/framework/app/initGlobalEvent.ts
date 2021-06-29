@@ -2,8 +2,8 @@ import { consumePlusMessage } from './plusMessage'
 import { backbuttonListener } from './utils'
 
 export function initGlobalEvent() {
-  const plusGlobalEvent = (plus as any).weexGlobalEvent
-  const weexGlobalEvent = weex.requireModule('weexGlobalEvent')
+  const plusGlobalEvent = (plus as any).globalEvent
+  const weexGlobalEvent = weex.requireModule('globalEvent')
   const emit = UniServiceJSBridge.emit
 
   if (weex.config.preload) {

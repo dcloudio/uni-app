@@ -23,12 +23,9 @@ exports.UniAppPlugin = {
                     formats: ['iife'],
                 },
                 rollupOptions: {
-                    external: ['vue'],
+                    // external: ['vue'],
                     output: {
                         entryFileNames: 'app-service.js',
-                        globals: {
-                            vue: 'Vue',
-                        },
                     },
                 },
             },
@@ -41,6 +38,11 @@ exports.UniAppPlugin = {
         }
         if (uni_cli_shared_1.getNVueStyleCompiler(manifestJson) === 'uni-app') {
             process.env.UNI_USING_NVUE_STYLE_COMPILER = 'uni-app';
+        }
+    },
+    resolveId(id) {
+        if (id === 'vue') {
+            return uni_cli_shared_1.resolveBuiltIn('@dcloudio/uni-app-vue');
         }
     },
 };

@@ -3,15 +3,19 @@
     "input": {
       "src/service/index.ts": ["dist/service.runtime.esm.js"]
     },
-    "output": {
-      "banner": "export default function vueFactory (exports) {\n",
-      "footer": "}"
+    "replacements": {
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false"
     },
     "external": false
   },
   {
     "input": {
       "src/view/index.ts": ["dist/view.runtime.esm.js"]
+    },
+    "replacements": {
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false"
     },
     "external": false
   }

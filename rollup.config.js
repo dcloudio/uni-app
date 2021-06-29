@@ -102,6 +102,8 @@ function createConfig(entryFile, output, buildOption) {
   const external =
     buildOption.external === false
       ? []
+      : Array.isArray(buildOption.external)
+      ? buildOption.external
       : [
           'vue',
           '@vue/shared',
