@@ -1573,12 +1573,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   });
   vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
   return () => {
-    const {
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    size.width = width;
-    size.height = height;
+    const rootEl = rootRef.value;
+    size.width = rootEl.offsetWidth;
+    size.height = rootEl.offsetHeight;
     reset();
   };
 }
@@ -2605,8 +2602,8 @@ const props$p = {
   }
 };
 const FIX_MODES = {
-  widthFix: ["width", "height"],
-  heightFix: ["height", "width"]
+  widthFix: ["offsetWidth", "height"],
+  heightFix: ["offsetHeight", "width"]
 };
 const IMAGE_MODES = {
   aspectFit: ["center center", "contain"],
@@ -2764,8 +2761,7 @@ function useImageSize(rootRef, props2, state) {
       return;
     }
     const rootEl = rootRef.value;
-    const rect = rootEl.getBoundingClientRect();
-    const value = rect[names[0]];
+    const value = rootEl[names[0]];
     if (value) {
       rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
     }

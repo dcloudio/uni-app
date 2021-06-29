@@ -37,8 +37,8 @@ type ImageState = ReturnType<typeof useImageState>
 type FixSize = ReturnType<typeof useImageSize>['fixSize']
 
 const FIX_MODES = {
-  widthFix: ['width', 'height'],
-  heightFix: ['height', 'width'],
+  widthFix: ['offsetWidth', 'height'],
+  heightFix: ['offsetHeight', 'width'],
 }
 const IMAGE_MODES = {
   aspectFit: ['center center', 'contain'],
@@ -76,6 +76,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <div style={modeStyle} />
           {imgSrc ? <img src={imgSrc} draggable={props.draggable} /> : <img />}
           {FIX_MODES[mode as keyof typeof FIX_MODES] ? (
+            // @ts-ignore
             <ResizeSensor onResize={fixSize} />
           ) : (
             <span></span>
@@ -209,8 +210,7 @@ function useImageSize(
       return
     }
     const rootEl = rootRef.value!
-    const rect = rootEl.getBoundingClientRect()
-    const value = rect[names[0] as keyof DOMRect] as number
+    const value = rootEl[names[0] as 'offsetWidth' | 'offsetHeight']
     if (value) {
       rootEl.style[names[1] as 'height' | 'width'] =
         fixNumber(value / ratio) + 'px'

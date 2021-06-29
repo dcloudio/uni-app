@@ -6152,12 +6152,9 @@
     });
     watch(() => extend({}, size2), (value) => emit2("resize", value));
     return () => {
-      const {
-        width,
-        height
-      } = rootRef.value.getBoundingClientRect();
-      size2.width = width;
-      size2.height = height;
+      const rootEl = rootRef.value;
+      size2.width = rootEl.offsetWidth;
+      size2.height = rootEl.offsetHeight;
       reset2();
     };
   }
@@ -6278,8 +6275,8 @@
     }
   };
   const FIX_MODES = {
-    widthFix: ["width", "height"],
-    heightFix: ["height", "width"]
+    widthFix: ["offsetWidth", "height"],
+    heightFix: ["offsetHeight", "width"]
   };
   const IMAGE_MODES = {
     aspectFit: ["center center", "contain"],
@@ -6449,8 +6446,7 @@
         return;
       }
       const rootEl = rootRef.value;
-      const rect = rootEl.getBoundingClientRect();
-      const value = rect[names[0]];
+      const value = rootEl[names[0]];
       if (value) {
         rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
       }
