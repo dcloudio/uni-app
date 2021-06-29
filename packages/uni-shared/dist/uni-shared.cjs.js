@@ -693,13 +693,16 @@ function decodeTag(tag) {
     return DECODED_COMPONENT_ARR[tag] || tag;
 }
 
-const cacheStringFunction = (fn) => {
+function cache(fn) {
     const cache = Object.create(null);
-    return ((str) => {
+    return (str) => {
         const hit = cache[str];
         return hit || (cache[str] = fn(str));
-    });
-};
+    };
+}
+function cacheStringFunction(fn) {
+    return cache(fn);
+}
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
@@ -917,6 +920,7 @@ exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.addFont = addFont;
+exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
 exports.createRpx2Unit = createRpx2Unit;

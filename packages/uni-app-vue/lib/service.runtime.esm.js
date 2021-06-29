@@ -1,11 +1,4 @@
-import {
-  decodeTag,
-  UniNode,
-  NODE_TYPE_PAGE,
-  UniElement,
-  UniTextNode,
-  UniCommentNode,
-} from '@dcloudio/uni-shared'
+import { UniElement, UniTextNode, UniCommentNode } from '@dcloudio/uni-shared'
 
 /**
  * Make a map and return a function for checking if a key
@@ -10361,155 +10354,6 @@ const resolveFilter = null
  */
 const compatUtils = null
 
-const BRIDGE_NODE_SYNC = 'nodeSync'
-const ACTION_TYPE_PAGE_CREATE = 1
-const ACTION_TYPE_PAGE_CREATED = 2
-const ACTION_TYPE_CREATE = 3
-const ACTION_TYPE_INSERT = 4
-const ACTION_TYPE_REMOVE = 5
-const ACTION_TYPE_SET_ATTRIBUTE = 6
-const ACTION_TYPE_REMOVE_ATTRIBUTE = 7
-const ACTION_TYPE_SET_TEXT = 8
-function decodeCreateAction([, nodeId, nodeName]) {
-  return ['create', nodeId, decodeTag(nodeName)]
-}
-function decodeInsertAction([, ...action]) {
-  return ['insert', ...action]
-}
-function decodeRemoveAction([, ...action]) {
-  return ['remove', ...action]
-}
-function decodeSetAttributeAction([, ...action]) {
-  return ['setAttr', ...action]
-}
-function decodeRemoveAttributeAction([, ...action]) {
-  return ['removeAttr', ...action]
-}
-function decodeSetTextAction([, ...action]) {
-  return ['setText', action]
-}
-function decodeActions(actions) {
-  return actions.map((action) => {
-    switch (action[0]) {
-      case ACTION_TYPE_CREATE:
-        return decodeCreateAction(action)
-      case ACTION_TYPE_INSERT:
-        return decodeInsertAction(action)
-      case ACTION_TYPE_REMOVE:
-        return decodeRemoveAction(action)
-      case ACTION_TYPE_SET_ATTRIBUTE:
-        return decodeSetAttributeAction(action)
-      case ACTION_TYPE_REMOVE_ATTRIBUTE:
-        return decodeRemoveAttributeAction(action)
-      case ACTION_TYPE_SET_TEXT:
-        return decodeSetTextAction(action)
-    }
-    return action
-  })
-}
-class UniPageNode extends UniNode {
-  constructor(pageId, options, setup = false) {
-    super(NODE_TYPE_PAGE, '#page', null)
-    this._id = 1
-    this.updateActions = []
-    this.nodeId = 0
-    this.pageId = pageId
-    this.pageNode = this
-    this.createAction = [ACTION_TYPE_PAGE_CREATE, options]
-    this.createdAction = [ACTION_TYPE_PAGE_CREATED]
-    setup && this.setup()
-  }
-  onCreate(thisNode, nodeName) {
-    pushCreateAction(this, thisNode.nodeId, nodeName)
-    return thisNode
-  }
-  onInsertBefore(thisNode, newChild, index) {
-    pushInsertAction(this, newChild, thisNode.nodeId, index)
-    return newChild
-  }
-  onRemoveChild(thisNode, oldChild) {
-    pushRemoveAction(this, oldChild.nodeId, thisNode.nodeId)
-    return oldChild
-  }
-  onSetAttribute(thisNode, qualifiedName, value) {
-    if (thisNode.parentNode) {
-      pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value)
-    }
-  }
-  onRemoveAttribute(thisNode, qualifiedName) {
-    if (thisNode.parentNode) {
-      pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName)
-    }
-  }
-  onTextContent(thisNode, text) {
-    if (thisNode.parentNode) {
-      pushSetTextAction(this, thisNode.nodeId, text)
-    }
-  }
-  onNodeValue(thisNode, val) {
-    if (thisNode.parentNode) {
-      pushSetTextAction(this, thisNode.nodeId, val)
-    }
-  }
-  genId() {
-    return this._id++
-  }
-  push(action) {
-    this.updateActions.push(action)
-  }
-  restore() {
-    this.push(this.createAction)
-    // TODO restore children
-    this.push(this.createdAction)
-  }
-  setup() {
-    this.send([this.createAction])
-  }
-  mounted() {
-    const { updateActions, createdAction } = this
-    updateActions.unshift(createdAction)
-    this.update()
-  }
-  update() {
-    const { updateActions } = this
-    if (updateActions.length) {
-      this.send(updateActions)
-      updateActions.length = 0
-    }
-  }
-  send(action) {
-    // @ts-expect-error
-    UniServiceJSBridge.publishHandler(BRIDGE_NODE_SYNC, action, this.pageId)
-  }
-}
-function pushCreateAction(pageNode, nodeId, nodeName) {
-  pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName])
-}
-function pushInsertAction(pageNode, newChild, parentNodeId, index) {
-  pageNode.push([
-    ACTION_TYPE_INSERT,
-    newChild.nodeId,
-    parentNodeId,
-    index,
-    newChild.toJSON({ attr: true }),
-  ])
-}
-function pushRemoveAction(pageNode, nodeId, parentNodeId) {
-  pageNode.push([ACTION_TYPE_REMOVE, nodeId, parentNodeId])
-}
-function pushSetAttributeAction(pageNode, nodeId, name, value) {
-  pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value])
-}
-function pushRemoveAttributeAction(pageNode, nodeId, name) {
-  pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, name])
-}
-function pushSetTextAction(pageNode, nodeId, text) {
-  pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, text])
-}
-
-function createPageNode(pageId, pageOptions, setup) {
-  return new UniPageNode(pageId, pageOptions, setup)
-}
 function createElement(tagName, container) {
   return new UniElement(tagName, container)
 }
@@ -11357,7 +11201,6 @@ export {
   createCommentVNode,
   createElement,
   createHydrationRenderer,
-  createPageNode,
   createRenderer,
   createSSRApp,
   createSlots,
@@ -11367,7 +11210,6 @@ export {
   createVNode,
   createApp as createVueApp,
   customRef,
-  decodeActions,
   defineAsyncComponent,
   defineComponent,
   defineEmit,

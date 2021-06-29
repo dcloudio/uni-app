@@ -850,10 +850,10 @@
   const isIntegerKey = (key) => isString$1(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
   const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
   const cacheStringFunction$1 = (fn) => {
-    const cache = Object.create(null);
+    const cache2 = Object.create(null);
     return (str) => {
-      const hit = cache[str];
-      return hit || (cache[str] = fn(str));
+      const hit = cache2[str];
+      return hit || (cache2[str] = fn(str));
     };
   };
   const camelizeRE = /-(\w)/g;
@@ -1895,8 +1895,8 @@
     }
   }
   function normalizeEmitsOptions(comp, appContext, asMixin = false) {
-    const cache = appContext.emitsCache;
-    const cached = cache.get(comp);
+    const cache2 = appContext.emitsCache;
+    const cached = cache2.get(comp);
     if (cached !== void 0) {
       return cached;
     }
@@ -1922,7 +1922,7 @@
       }
     }
     if (!raw && !hasExtends) {
-      cache.set(comp, null);
+      cache2.set(comp, null);
       return null;
     }
     if (isArray(raw)) {
@@ -1930,7 +1930,7 @@
     } else {
       extend$1(normalized, raw);
     }
-    cache.set(comp, normalized);
+    cache2.set(comp, normalized);
     return normalized;
   }
   function isEmitListener(options, key) {
@@ -2630,10 +2630,10 @@
     const { mixins, extends: extendsOptions } = base;
     const {
       mixins: globalMixins,
-      optionsCache: cache,
+      optionsCache: cache2,
       config: { optionMergeStrategies }
     } = instance.appContext;
-    const cached = cache.get(base);
+    const cached = cache2.get(base);
     let resolved;
     if (cached) {
       resolved = cached;
@@ -2648,7 +2648,7 @@
       }
       mergeOptions(resolved, base, optionMergeStrategies);
     }
-    cache.set(base, resolved);
+    cache2.set(base, resolved);
     return resolved;
   }
   function mergeOptions(to, from, strats, asMixin = false) {
@@ -2883,8 +2883,8 @@
     return value;
   }
   function normalizePropsOptions(comp, appContext, asMixin = false) {
-    const cache = appContext.propsCache;
-    const cached = cache.get(comp);
+    const cache2 = appContext.propsCache;
+    const cached = cache2.get(comp);
     if (cached) {
       return cached;
     }
@@ -2911,7 +2911,7 @@
       }
     }
     if (!raw && !hasExtends) {
-      cache.set(comp, EMPTY_ARR);
+      cache2.set(comp, EMPTY_ARR);
       return EMPTY_ARR;
     }
     if (isArray(raw)) {
@@ -2940,7 +2940,7 @@
       }
     }
     const res = [normalized, needCastKeys];
-    cache.set(comp, res);
+    cache2.set(comp, res);
     return res;
   }
   function validatePropName(key) {
@@ -5303,13 +5303,16 @@
       offsetLeft
     };
   }
-  const cacheStringFunction = (fn) => {
-    const cache = Object.create(null);
+  function cache(fn) {
+    const cache2 = Object.create(null);
     return (str) => {
-      const hit = cache[str];
-      return hit || (cache[str] = fn(str));
+      const hit = cache2[str];
+      return hit || (cache2[str] = fn(str));
     };
-  };
+  }
+  function cacheStringFunction(fn) {
+    return cache(fn);
+  }
   const PRIMARY_COLOR = "#007aff";
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;

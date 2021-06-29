@@ -66,7 +66,7 @@
     "@vue/compiler-sfc": "^3.1.1",
     "eslint": "^7.17.0",
     "fs-extra": "^9.0.1",
-    "jest": "^27.0.5",
+    "jest": "^27.0.6",
     "lerna": "^4.0.0",
     "lint-staged": "^10.5.3",
     "mini-types": "^0.1.4",

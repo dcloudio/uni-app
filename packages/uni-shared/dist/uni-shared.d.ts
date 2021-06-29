@@ -6,7 +6,9 @@ export declare const BACKGROUND_COLOR = "#f7f7f7";
 
 export declare const BUILT_IN_TAGS: string[];
 
-export declare const cacheStringFunction: <T extends (str: string) => string>(fn: T) => T;
+export declare function cache<T>(fn: (str: string) => T): (str: string) => T;
+
+export declare function cacheStringFunction(fn: (string: string) => string): (str: string) => string;
 
 export declare function callOptions(options: Options, errMsg: string): void;
 

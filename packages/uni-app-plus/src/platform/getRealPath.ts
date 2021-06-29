@@ -47,7 +47,7 @@ export function getRealPath(filepath: string) {
 
 const normalizeLocalPath = cacheStringFunction((filepath: string) => {
   return plus.io
-    .convertLocalFileSystemURL(filepath as any)
+    .convertLocalFileSystemURL(filepath)
     .replace(/^\/?apps\//, '/android_asset/apps/')
     .replace(/\/$/, '')
 })

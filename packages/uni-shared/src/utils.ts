@@ -1,11 +1,13 @@
-export const cacheStringFunction = <T extends (str: string) => string>(
-  fn: T
-): T => {
-  const cache: Record<string, string> = Object.create(null)
-  return ((str: string) => {
+export function cache<T>(fn: (str: string) => T) {
+  const cache: Record<string, T> = Object.create(null)
+  return (str: string) => {
     const hit = cache[str]
     return hit || (cache[str] = fn(str))
-  }) as any
+  }
+}
+
+export function cacheStringFunction(fn: (string: string) => string) {
+  return cache<string>(fn)
 }
 
 export function getLen(str = '') {

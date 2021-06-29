@@ -73,3 +73,19 @@ export function invokeHook(
   const hooks = vm.$[name as string]
   return hooks && invokeArrayFns(hooks, args)
 }
+
+export function hasHook(vm: ComponentPublicInstance | number, name: string) {
+  if (typeof vm === 'number') {
+    const page = getCurrentPages().find((page) => page.$page.id === vm)
+    if (page) {
+      vm = (page as any).$vm as ComponentPublicInstance
+    } else {
+      vm = getCurrentPageVm() as ComponentPublicInstance
+    }
+  }
+  if (!vm) {
+    return false
+  }
+  const hooks = vm.$[name]
+  return !!(hooks && hooks.length)
+}
