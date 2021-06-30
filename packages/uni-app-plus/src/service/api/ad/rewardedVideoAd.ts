@@ -1,0 +1,28 @@
+import {
+  defineSyncApi,
+  API_CREATE_REWARDED_VIDEO_AD,
+  API_TYPE_CREATE_REWARDED_VIDEO_AD,
+  CreateRewardedVideoAdOptions,
+  CreateRewardedVideoAdProtocol,
+} from '@dcloudio/uni-api'
+
+import { AdBase } from './adBase'
+
+class RewardedVideoAd extends AdBase implements UniApp.RewardedVideoAdContext {
+  constructor(options: any) {
+    super(plus.ad.createRewardedVideoAd(options), options)
+
+    this._loadAd()
+  }
+}
+
+export const createRewardedVideoAd = <API_TYPE_CREATE_REWARDED_VIDEO_AD>(
+  defineSyncApi(
+    API_CREATE_REWARDED_VIDEO_AD,
+    (options) => {
+      return new RewardedVideoAd(options)
+    },
+    CreateRewardedVideoAdProtocol,
+    CreateRewardedVideoAdOptions
+  )
+)

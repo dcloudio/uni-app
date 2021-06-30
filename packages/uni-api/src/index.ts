@@ -83,6 +83,13 @@ export * from './protocols/plugin/getProvider'
 export * from './protocols/plugin/oauth'
 export * from './protocols/plugin/share'
 export * from './protocols/plugin/requestPayment'
+
+// ad
+export * from './protocols/ad/rewardedVideoAd'
+export * from './protocols/ad/fullScreenVideoAd'
+export * from './protocols/ad/interstitialAd'
+export * from './protocols/ad/interactiveAd'
+
 // helpers
 export {
   defineOnApi,

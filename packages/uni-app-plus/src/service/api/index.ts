@@ -39,3 +39,8 @@ export * from './plugin/getProvider'
 export * from './plugin/oauth'
 export * from './plugin/share'
 export * from './plugin/requestPayment'
+
+export * from './ad/rewardedVideoAd'
+export * from './ad/fullScreenVideoAd'
+export * from './ad/interstitialAd'
+export * from './ad/interactiveAd'
