@@ -60,7 +60,7 @@ banner或信息流广告展现场景非常灵活，常见的展现场景为：�
 
 **type属性 头条**
 
-广告的类型，默认 bannner，具体类型有：banner、video（视频）、large（大图）、lImg（左图右文）、rImg（右图左文），默认值为 banner
+广告的类型，默认 banner，具体类型有：banner、video（视频）、large（大图）、lImg（左图右文）、rImg（右图左文），默认值为 banner
 
 **type属性 QQ**
 
