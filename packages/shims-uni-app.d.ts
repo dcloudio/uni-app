@@ -55,6 +55,7 @@ declare namespace UniApp {
     entryPagePath?: string
     entryPageQuery?: string
     realEntryPagePath?: string
+    renderer?: 'auto' | 'native'
   }
 
   interface UniRoute {

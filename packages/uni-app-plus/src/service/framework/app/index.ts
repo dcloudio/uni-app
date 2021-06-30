@@ -6,7 +6,7 @@ import { initTabBar } from './initTabBar'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
 import { clearTempFile } from './clearTempFile'
-import { initSubscribeHandlers } from './initSubscribeHandlers'
+import { initSubscribeHandlers } from './subscriber'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {

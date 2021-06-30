@@ -2,7 +2,7 @@ import { WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared'
 
 interface PlusMessageCallback {
   (args: Record<string, any>): void
-  keepAlive: boolean
+  keepAlive?: boolean
 }
 
 const callbacks: Record<string, PlusMessageCallback> = {}

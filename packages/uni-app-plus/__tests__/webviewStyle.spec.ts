@@ -1,4 +1,4 @@
-import { parseWebviewStyle } from '../src/service/framework/page/webview/style'
+import { parseWebviewStyle } from '../src/service/framework/webview/style'
 function initDefaultUniConfig() {
   return JSON.parse(
     JSON.stringify({

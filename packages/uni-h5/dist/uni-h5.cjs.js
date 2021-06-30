@@ -351,24 +351,24 @@ E.prototype = {
     return this;
   }
 };
-function initBridge(namespace) {
+function initBridge(subscribeNamespace) {
   const emitter = new E();
   return shared.extend(emitter, {
     subscribe(event, callback) {
-      emitter.on(`${namespace}.${event}`, callback);
+      emitter.on(`${subscribeNamespace}.${event}`, callback);
     },
     unsubscribe(event, callback) {
-      emitter.off(`${namespace}.${event}`, callback);
+      emitter.off(`${subscribeNamespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
       }
-      emitter.emit(`${namespace}.${event}`, args, pageId);
+      emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
   });
 }
-const ViewJSBridge = /* @__PURE__ */ initBridge("view");
+const ViewJSBridge = /* @__PURE__ */ initBridge("service");
 uniShared.passive(true);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
@@ -529,7 +529,7 @@ function createNativeEvent(evt) {
   }
   return event;
 }
-const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("service"), {
+const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
   invokeOnCallback(name, res) {
     return UniServiceJSBridge.emit("api." + name, res);
   }
@@ -1573,12 +1573,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   });
   vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
   return () => {
-    const {
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    size.width = width;
-    size.height = height;
+    const rootEl = rootRef.value;
+    size.width = rootEl.offsetWidth;
+    size.height = rootEl.offsetHeight;
     reset();
   };
 }
@@ -2605,8 +2602,8 @@ const props$p = {
   }
 };
 const FIX_MODES = {
-  widthFix: ["width", "height"],
-  heightFix: ["height", "width"]
+  widthFix: ["offsetWidth", "height"],
+  heightFix: ["offsetHeight", "width"]
 };
 const IMAGE_MODES = {
   aspectFit: ["center center", "contain"],
@@ -2764,8 +2761,7 @@ function useImageSize(rootRef, props2, state) {
       return;
     }
     const rootEl = rootRef.value;
-    const rect = rootEl.getBoundingClientRect();
-    const value = rect[names[0]];
+    const value = rootEl[names[0]];
     if (value) {
       rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
     }

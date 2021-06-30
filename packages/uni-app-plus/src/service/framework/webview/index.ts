@@ -1,6 +1,8 @@
 import { createNVueWebview } from './nvue'
 import { getPreloadWebview, getWebviewId } from './utils'
 
+export * from './preload'
+
 export interface CreateWebviewOptions {
   path: string
   query: Record<string, string>

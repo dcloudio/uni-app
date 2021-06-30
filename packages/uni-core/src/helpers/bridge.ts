@@ -3,26 +3,26 @@ import { extend } from '@vue/shared'
 import E from './TinyEmitter'
 
 export function initBridge(
-  namespace: 'service' | 'view'
+  subscribeNamespace: 'service' | 'view'
 ): Partial<UniApp.UniServiceJSBridge> {
   // TODO vue3 compatibility builds
   const emitter = new E()
   return extend(emitter, {
     subscribe(event: string, callback: Function): void {
-      emitter.on(`${namespace}.${event}`, callback)
+      emitter.on(`${subscribeNamespace}.${event}`, callback)
     },
     unsubscribe(event: string, callback: Function): void {
-      emitter.off(`${namespace}.${event}`, callback)
+      emitter.off(`${subscribeNamespace}.${event}`, callback)
     },
     subscribeHandler(event: string, args: unknown, pageId: number): void {
       if (__DEV__) {
         console.log(
-          `[${namespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(
+          `[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(
             args
           )}, ${pageId}`
         )
       }
-      emitter.emit(`${namespace}.${event}`, args, pageId)
+      emitter.emit(`${subscribeNamespace}.${event}`, args, pageId)
     },
   })
 }

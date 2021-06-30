@@ -5606,20 +5606,20 @@
       return this;
     }
   };
-  function initBridge(namespace) {
+  function initBridge(subscribeNamespace) {
     const emitter = new E();
     return extend(emitter, {
       subscribe(event, callback) {
-        emitter.on(`${namespace}.${event}`, callback);
+        emitter.on(`${subscribeNamespace}.${event}`, callback);
       },
       unsubscribe(event, callback) {
-        emitter.off(`${namespace}.${event}`, callback);
+        emitter.off(`${subscribeNamespace}.${event}`, callback);
       },
       subscribeHandler(event, args, pageId) {
         {
-          console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+          console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
         }
-        emitter.emit(`${namespace}.${event}`, args, pageId);
+        emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
       }
     });
   }
@@ -5692,7 +5692,7 @@
     fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
     return "/" + fromRouteArray.concat(toRouteArray).join("/");
   }
-  /* @__PURE__ */ extend(initBridge("service"), {
+  /* @__PURE__ */ extend(initBridge("view"), {
     invokeOnCallback(name, res) {
       return UniServiceJSBridge.emit("api." + name, res);
     }
@@ -6147,12 +6147,9 @@
     });
     watch(() => extend({}, size2), (value) => emit2("resize", value));
     return () => {
-      const {
-        width,
-        height
-      } = rootRef.value.getBoundingClientRect();
-      size2.width = width;
-      size2.height = height;
+      const rootEl = rootRef.value;
+      size2.width = rootEl.offsetWidth;
+      size2.height = rootEl.offsetHeight;
       reset2();
     };
   }
@@ -6273,8 +6270,8 @@
     }
   };
   const FIX_MODES = {
-    widthFix: ["width", "height"],
-    heightFix: ["height", "width"]
+    widthFix: ["offsetWidth", "height"],
+    heightFix: ["offsetHeight", "width"]
   };
   const IMAGE_MODES = {
     aspectFit: ["center center", "contain"],
@@ -6444,8 +6441,7 @@
         return;
       }
       const rootEl = rootRef.value;
-      const rect = rootEl.getBoundingClientRect();
-      const value = rect[names[0]];
+      const value = rootEl[names[0]];
       if (value) {
         rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
       }

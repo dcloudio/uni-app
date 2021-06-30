@@ -440,24 +440,24 @@ E.prototype = {
     return this;
   }
 };
-function initBridge(namespace) {
+function initBridge(subscribeNamespace) {
   const emitter2 = new E();
   return extend(emitter2, {
     subscribe(event, callback) {
-      emitter2.on(`${namespace}.${event}`, callback);
+      emitter2.on(`${subscribeNamespace}.${event}`, callback);
     },
     unsubscribe(event, callback) {
-      emitter2.off(`${namespace}.${event}`, callback);
+      emitter2.off(`${subscribeNamespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[${namespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
       }
-      emitter2.emit(`${namespace}.${event}`, args, pageId);
+      emitter2.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
   });
 }
-const ViewJSBridge = /* @__PURE__ */ initBridge("view");
+const ViewJSBridge = /* @__PURE__ */ initBridge("service");
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = passive(true);
@@ -1244,7 +1244,7 @@ function initView(app) {
   }
   initAppConfig$1(app._context.config);
 }
-const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
+const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
   invokeOnCallback(name, res) {
     return UniServiceJSBridge.emit("api." + name, res);
   }
@@ -5780,12 +5780,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   });
   watch(() => extend({}, size), (value) => emit2("resize", value));
   return () => {
-    const {
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    size.width = width;
-    size.height = height;
+    const rootEl = rootRef.value;
+    size.width = rootEl.offsetWidth;
+    size.height = rootEl.offsetHeight;
     reset();
   };
 }
@@ -7539,8 +7536,8 @@ const props$w = {
   }
 };
 const FIX_MODES = {
-  widthFix: ["width", "height"],
-  heightFix: ["height", "width"]
+  widthFix: ["offsetWidth", "height"],
+  heightFix: ["offsetHeight", "width"]
 };
 const IMAGE_MODES = {
   aspectFit: ["center center", "contain"],
@@ -7710,8 +7707,7 @@ function useImageSize(rootRef, props2, state2) {
       return;
     }
     const rootEl = rootRef.value;
-    const rect = rootEl.getBoundingClientRect();
-    const value = rect[names[0]];
+    const value = rootEl[names[0]];
     if (value) {
       rootEl.style[names[1]] = fixNumber(value / ratio) + "px";
     }
