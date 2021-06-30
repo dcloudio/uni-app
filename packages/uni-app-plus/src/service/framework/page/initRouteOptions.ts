@@ -1,9 +1,10 @@
+import { getRouteOptions } from '@dcloudio/uni-core'
 import { OpenType } from '.'
 
 export function initRouteOptions(path: string, openType: OpenType) {
   // 需要序列化一遍
   const routeOptions = JSON.parse(
-    JSON.stringify(__uniRoutes.find((route) => route.path === path))
+    JSON.stringify(getRouteOptions(path)!)
   ) as UniApp.UniRoute
   if (
     openType === 'reLaunch' ||

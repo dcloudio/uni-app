@@ -394,10 +394,10 @@ var serviceContext = (function (vue) {
       return callbackId;
   }
 
-  const callbacks$3 = [API_SUCCESS, API_FAIL, API_COMPLETE];
+  const callbacks$2 = [API_SUCCESS, API_FAIL, API_COMPLETE];
   function hasCallback(args) {
       if (isPlainObject(args) &&
-          callbacks$3.find((cb) => isFunction(args[cb]))) {
+          callbacks$2.find((cb) => isFunction(args[cb]))) {
           return true;
       }
       return false;
@@ -861,7 +861,6 @@ var serviceContext = (function (vue) {
   const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;
-  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 
   const isObject = (val) => val !== null && typeof val === 'object';
   class BaseFormatter {
@@ -1299,15 +1298,15 @@ var serviceContext = (function (vue) {
       // TODO vue3 compatibility builds
       const emitter = new E();
       return extend(emitter, {
-          subscribe(event, callback) {
-              emitter.on(`${subscribeNamespace}.${event}`, callback);
+          subscribe(event, callback, once = false) {
+              emitter[once ? 'once' : 'on'](`${subscribeNamespace}.${event}`, callback);
           },
           unsubscribe(event, callback) {
               emitter.off(`${subscribeNamespace}.${event}`, callback);
           },
           subscribeHandler(event, args, pageId) {
               if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+                  console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
               }
               emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
           },
@@ -1382,6 +1381,12 @@ var serviceContext = (function (vue) {
       const fromRouteArray = fromRoute.length > 0 ? fromRoute.split('/') : [];
       fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
       return '/' + fromRouteArray.concat(toRouteArray).join('/');
+  }
+  function getRouteOptions(path, alias = false) {
+      if (alias) {
+          return __uniRoutes.find((route) => route.path === path || route.alias === path);
+      }
+      return __uniRoutes.find((route) => route.path === path);
   }
 
   const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
@@ -2908,7 +2913,7 @@ var serviceContext = (function (vue) {
           }
       },
   };
-  const callbacks$2 = {
+  const callbacks$1 = {
       pause: null,
       resume: null,
       start: null,
@@ -2919,29 +2924,29 @@ var serviceContext = (function (vue) {
       const state = res.state;
       delete res.state;
       delete res.errMsg;
-      if (state && typeof callbacks$2[state] === 'function') {
-          callbacks$2[state](res);
+      if (state && typeof callbacks$1[state] === 'function') {
+          callbacks$1[state](res);
       }
   }
   class RecorderManager {
       constructor() { }
       onError(callback) {
-          callbacks$2.error = callback;
+          callbacks$1.error = callback;
       }
       onFrameRecorded(callback) { }
       onInterruptionBegin(callback) { }
       onInterruptionEnd(callback) { }
       onPause(callback) {
-          callbacks$2.pause = callback;
+          callbacks$1.pause = callback;
       }
       onResume(callback) {
-          callbacks$2.resume = callback;
+          callbacks$1.resume = callback;
       }
       onStart(callback) {
-          callbacks$2.start = callback;
+          callbacks$1.start = callback;
       }
       onStop(callback) {
-          callbacks$2.stop = callback;
+          callbacks$1.stop = callback;
       }
       pause() {
           Recorder.pause();
@@ -3730,7 +3735,7 @@ var serviceContext = (function (vue) {
       'error',
       'waiting',
   ];
-  const callbacks$1 = {
+  const callbacks = {
       canplay: [],
       play: [],
       pause: [],
@@ -3909,7 +3914,7 @@ var serviceContext = (function (vue) {
       });
   }
   function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-      callbacks$1[state].forEach((callback) => {
+      callbacks[state].forEach((callback) => {
           if (typeof callback === 'function') {
               callback(state === 'error'
                   ? {
@@ -3924,7 +3929,7 @@ var serviceContext = (function (vue) {
       eventNames.forEach((item) => {
           const name = item[0].toUpperCase() + item.substr(1);
           BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-              callbacks$1[item].push(callback);
+              callbacks[item].push(callback);
           };
       });
   });
@@ -4779,7 +4784,7 @@ var serviceContext = (function (vue) {
           return;
       }
       const entryRoute = '/' + entryPagePath;
-      const routeOptions = __uniRoutes.find((route) => route.path === entryRoute);
+      const routeOptions = getRouteOptions(entryRoute);
       if (!routeOptions) {
           return;
       }
@@ -4998,38 +5003,6 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const callbacks = {};
-  // 简单处理 view 层与 service 层的通知系统
-  /**
-   * 消费 view 层通知
-   */
-  function consumePlusMessage(type, args) {
-      // 处理 web-view 组件发送的通知
-      if (type === WEB_INVOKE_APPSERVICE) {
-          UniServiceJSBridge.emit('onWebInvokeAppService', args.data, args.webviewIds);
-          return true;
-      }
-      const callback = callbacks[type];
-      if (callback) {
-          callback(args);
-          if (!callback.keepAlive) {
-              delete callbacks[type];
-          }
-          return true;
-      }
-      return false;
-  }
-  /**
-   * 注册 view 层通知 service 层事件处理
-   */
-  function registerPlusMessage(type, callback, keepAlive = true) {
-      if (callbacks[type]) {
-          return console.warn(`'${type}' registered: ` + callbacks[type].toString());
-      }
-      callback.keepAlive = !!keepAlive;
-      callbacks[type] = callback;
-  }
-
   function backbuttonListener() {
       uni.navigateBack({
           from: 'backbutton',
@@ -5060,15 +5033,17 @@ var serviceContext = (function (vue) {
           };
           emit('onThemeChange', args);
       });
-      plusGlobalEvent.addEventListener('plusMessage', onPlusMessage);
+      plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
       // nvue webview post message
-      plusGlobalEvent.addEventListener('WebviewPostMessage', onPlusMessage);
+      plusGlobalEvent.addEventListener('WebviewPostMessage', subscribePlusMessage);
   }
-  function onPlusMessage(e) {
-      if (e.data && e.data.type) {
-          const type = e.data.type;
-          consumePlusMessage(type, e.data.args || {});
+  function subscribePlusMessage({ data, }) {
+      if (data && data.type) {
+          UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
       }
+  }
+  function onPlusMessage(type, callback, once = false) {
+      UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
   }
 
   function initAppLaunch(appVm) {
@@ -5314,12 +5289,6 @@ var serviceContext = (function (vue) {
   function setPreloadWebview(webview) {
       preloadWebview = webview;
   }
-  const webviewReadyCallbacks = {};
-  function consumeWebviewReady(pageId) {
-      const callbacks = webviewReadyCallbacks[pageId];
-      isArray(callbacks) && callbacks.forEach((callback) => callback());
-      delete webviewReadyCallbacks[pageId];
-  }
 
   function createWebview(options) {
       if (options.routeOptions.meta.isNVue) {
@@ -5333,7 +5302,7 @@ var serviceContext = (function (vue) {
   }
 
   let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
-  function onWebviewReady(_data, pageId) {
+  function subscribeWebviewReady(_data, pageId) {
       const isLaunchWebview = pageId === '1';
       if (isLaunchWebview && isLaunchWebviewReady) {
           if ((process.env.NODE_ENV !== 'production')) {
@@ -5354,30 +5323,37 @@ var serviceContext = (function (vue) {
           return console.error(`webviewReady[${preloadWebview.id}][${pageId}] not match`);
       }
       preloadWebview.loaded = true; // 标记已 ready
-      consumeWebviewReady(pageId);
-      if (!isLaunchWebview) {
-          return;
+      UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
+      isLaunchWebview && onLaunchWebviewReady();
+  }
+  function onLaunchWebviewReady() {
+      const { autoclose, alwaysShowBeforeRender } = __uniConfig.splashscreen;
+      if (autoclose && !alwaysShowBeforeRender) {
+          plus.navigator.closeSplashscreen();
       }
       const entryPagePath = '/' + __uniConfig.entryPagePath;
-      const routeOptions = __uniRoutes.find((route) => route.path === entryPagePath);
+      const routeOptions = getRouteOptions(entryPagePath);
       if (!routeOptions.meta.isNVue) {
           // 非 nvue 首页，需要主动跳转
-          const navigateType = routeOptions.meta.isTabBar ? 'switchTab' : 'navigateTo';
-          return uni[navigateType]({
+          const args = {
               url: entryPagePath + (__uniConfig.entryPageQuery || ''),
               openType: 'appLaunch',
-          });
+          };
+          if (routeOptions.meta.isTabBar) {
+              return uni.switchTab(args);
+          }
+          return uni.navigateTo(args);
       }
   }
 
   function initSubscribeHandlers() {
       const { subscribe, subscribeHandler } = UniServiceJSBridge;
-      registerPlusMessage('subscribeHandler', (data) => {
-          subscribeHandler(data.type, data.data, data.pageId);
+      onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
+          subscribeHandler(type, data, pageId);
       });
       if (__uniConfig.renderer !== 'native') {
           // 非纯原生
-          subscribe(ON_WEBVIEW_READY, onWebviewReady);
+          subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
       }
   }
 
@@ -5612,7 +5588,7 @@ var serviceContext = (function (vue) {
 
   function initRouteOptions(path, openType) {
       // 需要序列化一遍
-      const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find((route) => route.path === path)));
+      const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
       if (openType === 'reLaunch' ||
           (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
       ) {

@@ -1,3 +1,4 @@
+import { ON_WEBVIEW_READY } from '../../../constants'
 import { createNVueWebview } from './nvue'
 import { getPreloadWebview, getWebviewId } from './utils'
 
@@ -19,4 +20,8 @@ export function createWebview(options: CreateWebviewOptions) {
     return plus.webview.getLaunchWebview()
   }
   return getPreloadWebview()
+}
+
+export function onWebviewReady(pageId: string, callback: Function) {
+  UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback)
 }

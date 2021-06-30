@@ -443,15 +443,15 @@ E.prototype = {
 function initBridge(subscribeNamespace) {
   const emitter2 = new E();
   return extend(emitter2, {
-    subscribe(event, callback) {
-      emitter2.on(`${subscribeNamespace}.${event}`, callback);
+    subscribe(event, callback, once2 = false) {
+      emitter2[once2 ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
     },
     unsubscribe(event, callback) {
       emitter2.off(`${subscribeNamespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
       }
       emitter2.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
@@ -922,6 +922,12 @@ function getRealRoute(fromRoute, toRoute) {
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
+}
+function getRouteOptions(path, alias = false) {
+  if (alias) {
+    return __uniRoutes.find((route) => route.path === path || route.alias === path);
+  }
+  return __uniRoutes.find((route) => route.path === path);
 }
 const callbacks$2 = {};
 function createCallbacks(namespace) {
@@ -4732,7 +4738,7 @@ function createNormalizeUrl(type) {
     }
     url = normalizeRoute(url);
     const pagePath = url.split("?")[0];
-    const routeOptions = __uniRoutes.find(({ path, alias }) => path === pagePath || alias === pagePath);
+    const routeOptions = getRouteOptions(pagePath, true);
     if (!routeOptions) {
       return "page `" + url + "` is not found";
     }
@@ -17268,7 +17274,7 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({ url }, { res
 }, SwitchTabProtocol, SwitchTabOptions);
 const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
   const path = url.split("?")[0];
-  const route = __uniRoutes.find((item) => item.path === path);
+  const route = getRouteOptions(path);
   if (!route) {
     reject(`${url}}`);
     return;
@@ -17972,13 +17978,13 @@ function setProperties(item, props2, propsData) {
   });
 }
 function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
-  const oldTabBarRoute = __uniRoutes.find((item) => item.meta.route === oldPagePath);
+  const oldTabBarRoute = getRouteOptions("/" + oldPagePath);
   if (oldTabBarRoute) {
     const { meta } = oldTabBarRoute;
     delete meta.tabBarIndex;
     meta.isQuit = meta.isTabBar = false;
   }
-  const newTabBarRoute = __uniRoutes.find((item) => item.meta.route === newPagePath);
+  const newTabBarRoute = getRouteOptions("/" + newPagePath);
   if (newTabBarRoute) {
     const { meta } = newTabBarRoute;
     meta.tabBarIndex = index2;

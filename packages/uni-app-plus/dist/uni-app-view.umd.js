@@ -5609,20 +5609,21 @@
   function initBridge(subscribeNamespace) {
     const emitter = new E();
     return extend(emitter, {
-      subscribe(event, callback) {
-        emitter.on(`${subscribeNamespace}.${event}`, callback);
+      subscribe(event, callback, once = false) {
+        emitter[once ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
       },
       unsubscribe(event, callback) {
         emitter.off(`${subscribeNamespace}.${event}`, callback);
       },
       subscribeHandler(event, args, pageId) {
         {
-          console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+          console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
         }
         emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
       }
     });
   }
+  const ViewJSBridge = /* @__PURE__ */ initBridge("service");
   function PolySymbol(name) {
     return Symbol("[uni-app]: " + name);
   }
@@ -6580,4 +6581,29 @@
   customElements.define("v-uni-image", wrapper(Image$1, createApp, h));
   customElements.define("v-uni-text", wrapper(Text, createApp, h));
   customElements.define("v-uni-view", wrapper(View, createApp, h));
+  const ON_WEBVIEW_READY = "onWebviewReady";
+  const APP_SERVICE_ID = "__uniapp__service";
+  const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
+    publishHandler
+  });
+  function publishHandler(event, args = {}) {
+    const pageId = plus.webview.currentWebview().id;
+    plus.webview.postMessageToUniNView({
+      type: "subscribeHandler",
+      args: {
+        type: event,
+        data: args,
+        pageId
+      }
+    }, APP_SERVICE_ID);
+  }
+  window.UniViewJSBridge = UniViewJSBridge$1;
+  function onWebviewReady() {
+    UniViewJSBridge$1.publishHandler(ON_WEBVIEW_READY);
+  }
+  if (typeof plus !== "undefined") {
+    onWebviewReady();
+  } else {
+    document.addEventListener("plusready", onWebviewReady);
+  }
 });

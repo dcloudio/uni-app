@@ -52,7 +52,7 @@ export function normalizeAppUniConfig(
       autoclose: process.env.UNI_SPLASHSCREEN_AUTOCLOSE ? true : false,
     },
     compilerVersion: process.env.UNI_COMPILER_VERSION,
-    entryPagePath: '', //TODO
+    entryPagePath: pagesJson.pages[0].path,
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
   }
   // TODO 待支持分包

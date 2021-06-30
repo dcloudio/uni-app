@@ -29,3 +29,19 @@ export function getRealRoute(fromRoute: string, toRoute: string): string {
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1)
   return '/' + fromRouteArray.concat(toRouteArray).join('/')
 }
+
+export function getRouteOptions(path: string, alias: boolean = false) {
+  if (alias) {
+    return __uniRoutes.find(
+      (route) => route.path === path || route.alias === path
+    )
+  }
+  return __uniRoutes.find((route) => route.path === path)
+}
+
+export function getRouteMeta(path: string) {
+  const routeOptions = getRouteOptions(path)
+  if (routeOptions) {
+    return routeOptions.meta
+  }
+}

@@ -33,6 +33,7 @@ import {
   ShowTabBarRedDotProtocol,
 } from '@dcloudio/uni-api'
 import { useTabBar } from '../../../framework/setup/state'
+import { getRouteOptions } from '@dcloudio/uni-core'
 const setTabBarItemProps = ['text', 'iconPath', 'selectedIconPath']
 const setTabBarStyleProps = [
   'color',
@@ -59,17 +60,13 @@ function normalizeTabBarRoute(
   oldPagePath: string,
   newPagePath: string
 ) {
-  const oldTabBarRoute = __uniRoutes.find(
-    (item) => item.meta.route === oldPagePath
-  )
+  const oldTabBarRoute = getRouteOptions('/' + oldPagePath)
   if (oldTabBarRoute) {
     const { meta } = oldTabBarRoute
     delete meta.tabBarIndex
     meta.isQuit = meta.isTabBar = false
   }
-  const newTabBarRoute = __uniRoutes.find(
-    (item) => item.meta.route === newPagePath
-  )
+  const newTabBarRoute = getRouteOptions('/' + newPagePath)
   if (newTabBarRoute) {
     const { meta } = newTabBarRoute
     meta.tabBarIndex = index

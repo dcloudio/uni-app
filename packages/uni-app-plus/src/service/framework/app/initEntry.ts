@@ -1,3 +1,5 @@
+import { getRouteOptions } from '@dcloudio/uni-core'
+
 let isInitEntryPage = false
 
 export function initEntry() {
@@ -35,7 +37,7 @@ export function initEntry() {
   }
 
   const entryRoute = '/' + entryPagePath
-  const routeOptions = __uniRoutes.find((route) => route.path === entryRoute)
+  const routeOptions = getRouteOptions(entryRoute)
   if (!routeOptions) {
     return
   }

@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { normalizeRoute } from '@dcloudio/uni-core'
+import { getRouteOptions, normalizeRoute } from '@dcloudio/uni-core'
 import { encodeQueryString } from './encodeQueryString'
 
 const ANIMATION_IN = [
@@ -138,9 +138,7 @@ function createNormalizeUrl(type: string) {
     url = normalizeRoute(url)
     const pagePath = url.split('?')[0]
     // 匹配路由是否存在
-    const routeOptions = __uniRoutes.find(
-      ({ path, alias }) => path === pagePath || alias === pagePath
-    )
+    const routeOptions = getRouteOptions(pagePath, true)
 
     if (!routeOptions) {
       return 'page `' + url + '` is not found'

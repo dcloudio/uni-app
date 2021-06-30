@@ -56,6 +56,10 @@ declare namespace UniApp {
     entryPageQuery?: string
     realEntryPagePath?: string
     renderer?: 'auto' | 'native'
+    splashscreen: {
+      alwaysShowBeforeRender: boolean
+      autoclose: boolean
+    }
   }
 
   interface UniRoute {
@@ -287,8 +291,9 @@ declare namespace UniApp {
      * 订阅 View 的自定义事件，回调函数会接收所有传入事件触发函数的额外参数。
      * @param event
      * @param callback
+     * @param once 默认 false
      */
-    subscribe(event: string, callback: Function): void
+    subscribe(event: string, callback: Function, once?: boolean): void
     /**
      * 取消订阅 View 的自定义事件
      * 如果没有提供参数，则移除所有的事件监听器；
@@ -317,7 +322,7 @@ declare namespace UniApp {
      * @param args
      * @param pageId
      */
-    subscribeHandler(event: string, args: unknown, pageId: number): void
+    subscribeHandler(event: string, args?: unknown, pageId?: number): void
   }
   interface UniViewJSBridge {
     /**
@@ -375,6 +380,6 @@ declare namespace UniApp {
      * @param args
      * @param pageId
      */
-    publishHandler(event: string, args: unknown, pageId?: number): void
+    publishHandler(event: string, args?: unknown, pageId?: number): void
   }
 }

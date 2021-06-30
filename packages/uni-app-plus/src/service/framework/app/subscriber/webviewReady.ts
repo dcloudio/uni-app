@@ -1,11 +1,9 @@
-import {
-  consumeWebviewReady,
-  preloadWebview,
-  setPreloadWebview,
-} from '../../webview'
+import { getRouteOptions } from '@dcloudio/uni-core'
+import { ON_WEBVIEW_READY } from '../../../../constants'
+import { preloadWebview, setPreloadWebview } from '../../webview'
 
 let isLaunchWebviewReady = false // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
-export function onWebviewReady(_data: unknown, pageId: string) {
+export function subscribeWebviewReady(_data: unknown, pageId: string) {
   const isLaunchWebview = pageId === '1'
   if (isLaunchWebview && isLaunchWebviewReady) {
     if (__DEV__) {
@@ -27,20 +25,26 @@ export function onWebviewReady(_data: unknown, pageId: string) {
     )
   }
   ;(preloadWebview as any).loaded = true // 标记已 ready
-  consumeWebviewReady(pageId)
-  if (!isLaunchWebview) {
-    return
+  UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId)
+  isLaunchWebview && onLaunchWebviewReady()
+}
+
+function onLaunchWebviewReady() {
+  const { autoclose, alwaysShowBeforeRender } = __uniConfig.splashscreen
+  if (autoclose && !alwaysShowBeforeRender) {
+    plus.navigator.closeSplashscreen()
   }
   const entryPagePath = '/' + __uniConfig.entryPagePath
-  const routeOptions = __uniRoutes.find(
-    (route) => route.path === entryPagePath
-  )!
+  const routeOptions = getRouteOptions(entryPagePath)!
   if (!routeOptions.meta.isNVue) {
     // 非 nvue 首页，需要主动跳转
-    const navigateType = routeOptions.meta.isTabBar ? 'switchTab' : 'navigateTo'
-    return uni[navigateType]({
+    const args = {
       url: entryPagePath + (__uniConfig.entryPageQuery || ''),
       openType: 'appLaunch',
-    } as any)
+    }
+    if (routeOptions.meta.isTabBar) {
+      return uni.switchTab(args)
+    }
+    return uni.navigateTo(args)
   }
 }

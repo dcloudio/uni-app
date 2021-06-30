@@ -1,4 +1,5 @@
 import { extend } from '@vue/shared'
+import { getRouteOptions } from '@dcloudio/uni-core'
 interface PlusResult extends Record<string, any> {
   code?: number
   message?: string
@@ -98,7 +99,7 @@ export function isTabBarPage(path = '') {
     if (!/^\//.test(path)) {
       path = '/' + path
     }
-    const route = __uniRoutes.find((route) => route.path === path)
+    const route = getRouteOptions(path)
     return route && route.meta.isTabBar
   } catch (e) {
     if (process.env.NODE_ENV !== 'production') {

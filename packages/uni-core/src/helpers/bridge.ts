@@ -8,16 +8,16 @@ export function initBridge(
   // TODO vue3 compatibility builds
   const emitter = new E()
   return extend(emitter, {
-    subscribe(event: string, callback: Function): void {
-      emitter.on(`${subscribeNamespace}.${event}`, callback)
+    subscribe(event: string, callback: Function, once: boolean = false): void {
+      emitter[once ? 'once' : 'on'](`${subscribeNamespace}.${event}`, callback)
     },
     unsubscribe(event: string, callback: Function): void {
       emitter.off(`${subscribeNamespace}.${event}`, callback)
     },
-    subscribeHandler(event: string, args: unknown, pageId: number): void {
+    subscribeHandler(event: string, args: unknown, pageId?: number): void {
       if (__DEV__) {
         console.log(
-          `[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(
+          `[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(
             args
           )}, ${pageId}`
         )

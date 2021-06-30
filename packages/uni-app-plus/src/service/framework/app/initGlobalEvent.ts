@@ -1,4 +1,3 @@
-import { consumePlusMessage } from './plusMessage'
 import { backbuttonListener } from './utils'
 
 export function initGlobalEvent() {
@@ -32,16 +31,25 @@ export function initGlobalEvent() {
     }
   )
 
-  plusGlobalEvent.addEventListener('plusMessage', onPlusMessage)
+  plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage)
   // nvue webview post message
-  plusGlobalEvent.addEventListener('WebviewPostMessage', onPlusMessage)
+  plusGlobalEvent.addEventListener('WebviewPostMessage', subscribePlusMessage)
 }
 
-function onPlusMessage(e: {
+function subscribePlusMessage({
+  data,
+}: {
   data: { type: string; args: Record<string, any> }
 }) {
-  if (e.data && e.data.type) {
-    const type = e.data.type
-    consumePlusMessage(type, e.data.args || {})
+  if (data && data.type) {
+    UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args)
   }
+}
+
+export function onPlusMessage<T>(
+  type: string,
+  callback: (args: T) => void,
+  once: boolean = false
+) {
+  UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once)
 }

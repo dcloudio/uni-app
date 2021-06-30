@@ -1,8 +1,10 @@
-import { isArray } from '@vue/shared'
 import { VIEW_WEBVIEW_PATH } from '../constants'
 import { genWebviewId } from './utils'
 
-export let preloadWebview: PlusWebviewWebviewObject
+export let preloadWebview: PlusWebviewWebviewObject & {
+  loaded?: boolean
+  __uniapp_route?: string
+}
 
 export function setPreloadWebview(webview: PlusWebviewWebviewObject) {
   preloadWebview = webview
@@ -20,18 +22,4 @@ export function createPreloadWebview() {
     }
   }
   return preloadWebview
-}
-
-const webviewReadyCallbacks: Record<string, Function[]> = {}
-
-export function registerWebviewReady(pageId: string, callback: Function) {
-  ;(webviewReadyCallbacks[pageId] || (webviewReadyCallbacks[pageId] = [])).push(
-    callback
-  )
-}
-
-export function consumeWebviewReady(pageId: string) {
-  const callbacks = webviewReadyCallbacks[pageId]
-  isArray(callbacks) && callbacks.forEach((callback) => callback())
-  delete webviewReadyCallbacks[pageId]
 }

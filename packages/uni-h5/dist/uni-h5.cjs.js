@@ -354,15 +354,15 @@ E.prototype = {
 function initBridge(subscribeNamespace) {
   const emitter = new E();
   return shared.extend(emitter, {
-    subscribe(event, callback) {
-      emitter.on(`${subscribeNamespace}.${event}`, callback);
+    subscribe(event, callback, once = false) {
+      emitter[once ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
     },
     unsubscribe(event, callback) {
       emitter.off(`${subscribeNamespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[${subscribeNamespace}][subscribeHandler][${Date.now()}]:${event}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
       }
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
