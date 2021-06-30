@@ -31,10 +31,7 @@ declare namespace UniApp {
     nvue?: {
       'flex-direction': 'column' | 'row'
     }
-    globalStyle: {
-      navigationBar: PageNavigationBar
-      pullToRefresh?: PageRefreshOptions
-      maxWidth?: number
+    globalStyle: PagesJsonPageStyle & {
       rpxCalcMaxDeviceWidth?: number
       rpxCalcBaseDeviceWidth?: number
       // rpxCalcIncludeWidth?: number
@@ -158,6 +155,10 @@ declare namespace UniApp {
     onReachBottomDistance?: number
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string
+    maxWidth?: string | number
+    // app-plus
+    animationType?: string
+    animationDuration?: number
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number
@@ -171,7 +172,6 @@ declare namespace UniApp {
     topWindow?: boolean
     leftWindow?: boolean
     rightWindow?: boolean
-    maxWidth?: string | number
   }
 
   interface PagesJsonPageOptions {

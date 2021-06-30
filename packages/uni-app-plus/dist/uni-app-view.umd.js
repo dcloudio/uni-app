@@ -6588,6 +6588,9 @@
   });
   function publishHandler(event, args = {}) {
     const pageId = plus.webview.currentWebview().id;
+    {
+      console.log(`[VIEW][${Date.now()}]:`, event, args, pageId);
+    }
     plus.webview.postMessageToUniNView({
       type: "subscribeHandler",
       args: {

@@ -32,7 +32,8 @@ function setNavigationBar(
       const { frontColor, backgroundColor, animation } = args
       const { duration, timingFunc } = animation
       if (frontColor) {
-        navigationBar.titleColor = frontColor === '#000000' ? '#000' : '#fff'
+        navigationBar.titleColor =
+          frontColor === '#000000' ? '#000000' : '#ffffff'
       }
       if (backgroundColor) {
         navigationBar.backgroundColor = backgroundColor

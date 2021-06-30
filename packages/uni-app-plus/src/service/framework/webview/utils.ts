@@ -19,10 +19,28 @@ function encode(val: Parameters<typeof encodeURIComponent>[0]) {
   return val as string
 }
 
-export function initUniPageUrl(path: string, query: Record<string, string>) {
+export type InitUniPageUrl = ReturnType<typeof initUniPageUrl>
+export type DebugRefresh = ReturnType<typeof initDebugRefresh>
+
+export function initUniPageUrl(path: string, query: Record<string, any>) {
   const queryString = query ? stringifyQuery(query, encode) : ''
   return {
     path: path.substr(1),
     query: queryString ? queryString.substr(1) : queryString,
+  }
+}
+
+export function initDebugRefresh(
+  isTab: boolean,
+  path: string,
+  query: Record<string, any>
+) {
+  const queryString = query ? stringifyQuery(query, encode) : ''
+  return {
+    isTab,
+    arguments: JSON.stringify({
+      path: path.substr(1),
+      query: queryString ? queryString.substr(1) : queryString,
+    }),
   }
 }

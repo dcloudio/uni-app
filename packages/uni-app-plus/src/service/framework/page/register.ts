@@ -1,8 +1,8 @@
 import { hasOwn } from '@vue/shared'
 import { NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
 import { initEntry } from '../app/initEntry'
-import { initRouteOptions } from './initRouteOptions'
-import { createWebview } from '../webview'
+import { initRouteOptions } from './routeOptions'
+import { createWebview, initWebview } from '../webview'
 import { createPage } from './define'
 import { PageNodeOptions } from '../dom/Page'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
@@ -22,7 +22,7 @@ interface RegisterPageOptions {
   query: Record<string, string>
   openType: OpenType
   webview?: PlusWebviewWebviewObject
-  eventChannel: unknown
+  // eventChannel: unknown
 }
 
 export function registerPage({
@@ -45,10 +45,19 @@ export function registerPage({
     webview = plus.webview.getWebviewById(webview.id)
     ;(webview as any).nvue = routeOptions.meta.isNVue
   }
+
+  routeOptions.meta.id = parseInt(webview.id!)
+
   if (__DEV__) {
     console.log(`[uni-app] registerPage(${path},${webview.id})`)
   }
+
+  initWebview(webview, path, query, routeOptions.meta)
+
   const route = path.substr(1)
+
+  ;(webview as any).__uniapp_route = route
+
   if (!(webview as any).nvue) {
     createPage(
       parseInt(webview.id!),

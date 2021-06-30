@@ -15,7 +15,7 @@ function getLocationSuccess(
 ) {
   const coords = position.coords
   if (type !== position.coordsType) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (__DEV__) {
       console.log(
         `UNIAPP[location]:before[${position.coordsType}][lng:${coords.longitude},lat:${coords.latitude}]`
       )
@@ -29,7 +29,7 @@ function getLocationSuccess(
     if (coordArray) {
       coords.longitude = coordArray[0]
       coords.latitude = coordArray[1]
-      if (process.env.NODE_ENV !== 'production') {
+      if (__DEV__) {
         console.log(
           `UNIAPP[location]:after[${type}][lng:${coords.longitude},lat:${coords.latitude}]`
         )

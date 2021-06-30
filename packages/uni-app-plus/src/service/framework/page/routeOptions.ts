@@ -1,4 +1,4 @@
-import { getRouteOptions } from '@dcloudio/uni-core'
+import { getRouteOptions, initRouteMeta } from '@dcloudio/uni-core'
 import { OpenType } from '.'
 
 export function initRouteOptions(path: string, openType: OpenType) {
@@ -6,6 +6,9 @@ export function initRouteOptions(path: string, openType: OpenType) {
   const routeOptions = JSON.parse(
     JSON.stringify(getRouteOptions(path)!)
   ) as UniApp.UniRoute
+
+  routeOptions.meta = initRouteMeta(routeOptions.meta)
+
   if (
     openType === 'reLaunch' ||
     (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo

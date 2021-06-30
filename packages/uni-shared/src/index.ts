@@ -1,4 +1,5 @@
 export * from './dom'
+export * from './url'
 export * from './plus'
 export * from './tags'
 export * from './vdom'

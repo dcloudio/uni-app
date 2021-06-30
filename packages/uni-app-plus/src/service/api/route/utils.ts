@@ -67,7 +67,7 @@ function pendingNavigate() {
     return
   }
   const { callback } = pendingNavigator
-  if (process.env.NODE_ENV !== 'production') {
+  if (__DEV__) {
     console.log(`pendingNavigate:${pendingNavigator.path}`)
   }
   pendingNavigator = false
@@ -86,7 +86,7 @@ export function navigateFinish() {
   }
   // 创建预加载
   const preloadWebview = createPreloadWebview()
-  if (process.env.NODE_ENV !== 'production') {
+  if (__DEV__) {
     console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`)
   }
   if (!pendingNavigator) {

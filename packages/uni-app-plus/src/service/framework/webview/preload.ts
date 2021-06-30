@@ -1,4 +1,4 @@
-import { VIEW_WEBVIEW_PATH } from '../constants'
+import { VIEW_WEBVIEW_PATH } from '../../constants'
 import { genWebviewId } from './utils'
 
 export let preloadWebview: PlusWebviewWebviewObject & {

@@ -10,7 +10,7 @@ export const UniViewJSBridge = /*#__PURE__*/ extend(ViewJSBridge, {
 
 function publishHandler(event: string, args: unknown = {}) {
   const pageId = plus.webview.currentWebview().id
-  if (process.env.NODE_ENV !== 'production') {
+  if (__DEV__) {
     console.log(`[VIEW][${Date.now()}]:`, event, args, pageId)
   }
   ;(plus.webview as any).postMessageToUniNView(

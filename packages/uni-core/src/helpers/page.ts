@@ -22,9 +22,9 @@ function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}))
 }
 
-export function mergePageMeta(
-  id: number,
-  pageMeta: UniApp.PageRouteMeta
+export function initRouteMeta(
+  pageMeta: UniApp.PageRouteMeta,
+  id?: number
 ): UniApp.PageRouteMeta {
   const globalStyle = initGlobalStyle()
   const res = extend({ id }, globalStyle, pageMeta)

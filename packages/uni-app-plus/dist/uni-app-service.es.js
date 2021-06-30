@@ -566,6 +566,26 @@ var serviceContext = (function (vue) {
       return encode$3(arrayBuffer);
   }, ArrayBufferToBase64Protocol);
 
+  const encode$2 = encodeURIComponent;
+  function stringifyQuery$1(obj, encodeStr = encode$2) {
+      const res = obj
+          ? Object.keys(obj)
+              .map((key) => {
+              let val = obj[key];
+              if (typeof val === undefined || val === null) {
+                  val = '';
+              }
+              else if (isPlainObject(val)) {
+                  val = JSON.stringify(val);
+              }
+              return encodeStr(key) + '=' + encodeStr(val);
+          })
+              .filter((x) => x.length > 0)
+              .join('&')
+          : null;
+      return res ? `?${res}` : '';
+  }
+
   class DOMException extends Error {
       constructor(message) {
           super(message);
@@ -832,26 +852,6 @@ var serviceContext = (function (vue) {
       if (typeof options.complete === 'function') {
           options.complete(data);
       }
-  }
-
-  const encode$2 = encodeURIComponent;
-  function stringifyQuery$1(obj, encodeStr = encode$2) {
-      const res = obj
-          ? Object.keys(obj)
-              .map((key) => {
-              let val = obj[key];
-              if (typeof val === undefined || val === null) {
-                  val = '';
-              }
-              else if (isPlainObject(val)) {
-                  val = JSON.stringify(val);
-              }
-              return encodeStr(key) + '=' + encodeStr(val);
-          })
-              .filter((x) => x.length > 0)
-              .join('&')
-          : null;
-      return res ? `?${res}` : '';
   }
 
   const NAVBAR_HEIGHT = 44;
@@ -1342,7 +1342,7 @@ var serviceContext = (function (vue) {
   function initGlobalStyle() {
       return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
   }
-  function mergePageMeta(id, pageMeta) {
+  function initRouteMeta(pageMeta, id) {
       const globalStyle = initGlobalStyle();
       const res = extend({ id }, globalStyle, pageMeta);
       PAGE_META_KEYS.forEach((name) => {
@@ -2365,6 +2365,70 @@ var serviceContext = (function (vue) {
       package: String,
       signType: String,
       paySign: String,
+  };
+
+  const API_CREATE_REWARDED_VIDEO_AD = 'createRewardedVideoAd';
+  const CreateRewardedVideoAdOptions = {
+      formatArgs: {
+          adpid: '',
+          adUnitId: '',
+      },
+  };
+  const CreateRewardedVideoAdProtocol = {
+      adpid: String,
+      adUnitId: String,
+  };
+
+  const API_CREATE_FULL_SCREEN_VIDEO_AD = 'createFullScreenVideoAd';
+  const CreateFullScreenVideoAdOptions = {
+      formatArgs: {
+          adpid: '',
+      },
+  };
+  const CreateFullScreenVideoAdProtocol = {
+      adpid: String,
+  };
+
+  const API_CREATE_INTERSTITIAL_AD = 'createInterstitialAd';
+  const CreateInterstitialAdOptions = {
+      formatArgs: {
+          adpid: '',
+          adUnitId: '',
+      },
+  };
+  const CreateInterstitialAdProtocol = {
+      adpid: String,
+      adUnitId: String,
+  };
+
+  const API_CREATE_INTERACTIVE_AD = 'createInteractiveAd';
+  const CreateInteractiveAdOptions = {
+      formatArgs: {
+          adpid(value, params) {
+              if (!value) {
+                  return 'adpid should not be empty.';
+              }
+              if (value)
+                  params.adpid = value;
+          },
+          provider(value, params) {
+              if (!value) {
+                  return 'provider should not be empty.';
+              }
+              if (value)
+                  params.provider = value;
+          },
+      },
+  };
+  const CreateInteractiveAdProtocol = {
+      adpid: {
+          type: String,
+          required: true,
+      },
+      provider: {
+          type: String,
+          required: true,
+      },
   };
 
   function warpPlusSuccessCallback(resolve, after) {
@@ -4116,7 +4180,7 @@ var serviceContext = (function (vue) {
   function getLocationSuccess(type, position, resolve) {
       const coords = position.coords;
       if (type !== position.coordsType) {
-          if (process.env.NODE_ENV !== 'production') {
+          if ((process.env.NODE_ENV !== 'production')) {
               console.log(`UNIAPP[location]:before[${position.coordsType}][lng:${coords.longitude},lat:${coords.latitude}]`);
           }
           let coordArray;
@@ -4129,7 +4193,7 @@ var serviceContext = (function (vue) {
           if (coordArray) {
               coords.longitude = coordArray[0];
               coords.latitude = coordArray[1];
-              if (process.env.NODE_ENV !== 'production') {
+              if ((process.env.NODE_ENV !== 'production')) {
                   console.log(`UNIAPP[location]:after[${type}][lng:${coords.longitude},lat:${coords.latitude}]`);
               }
           }
@@ -4636,6 +4700,395 @@ var serviceContext = (function (vue) {
       }, errorCallback);
   }, RequestPaymentProtocol);
 
+  const EventType = {
+      load: 'load',
+      close: 'close',
+      error: 'error',
+      adClicked: 'adClicked',
+  };
+  class AdEventHandler {
+      constructor() {
+          this._callbacks = {};
+      }
+      onLoad(callback) {
+          this._addEventListener(EventType.load, callback);
+      }
+      onClose(callback) {
+          this._addEventListener(EventType.close, callback);
+      }
+      onError(callback) {
+          this._addEventListener(EventType.error, callback);
+      }
+      offLoad(callback) {
+          this._removeEventListener(EventType.load, callback);
+      }
+      offClose(callback) {
+          this._removeEventListener(EventType.close, callback);
+      }
+      offError(callback) {
+          this._removeEventListener(EventType.error, callback);
+      }
+      _addEventListener(type, callback) {
+          if (typeof callback !== 'function') {
+              return;
+          }
+          this._callbacks[type].push(callback);
+      }
+      _removeEventListener(type, callback) {
+          const arrayFunction = this._callbacks[type];
+          const index = arrayFunction.indexOf(callback);
+          if (index > -1) {
+              arrayFunction.splice(index, 1);
+          }
+      }
+      _dispatchEvent(name, data) {
+          this._callbacks[name].forEach((callback) => {
+              callback(data || {});
+          });
+      }
+  }
+  class AdBase extends AdEventHandler {
+      constructor(adInstance, options) {
+          super();
+          this._isLoaded = false;
+          this._isLoading = false;
+          this._preload = true;
+          this._loadPromiseResolve = null;
+          this._loadPromiseReject = null;
+          this._showPromiseResolve = null;
+          this._showPromiseReject = null;
+          this._preload = options.preload !== undefined ? options.preload : false;
+          const ad = (this._adInstance = adInstance);
+          ad.onLoad(() => {
+              this._isLoaded = true;
+              this._isLoading = false;
+              if (this._loadPromiseResolve != null) {
+                  this._loadPromiseResolve();
+                  this._loadPromiseResolve = null;
+              }
+              if (this._showPromiseResolve != null) {
+                  this._showPromiseResolve();
+                  this._showPromiseResolve = null;
+                  this._showAd();
+              }
+              this._dispatchEvent(EventType.load, {});
+          });
+          ad.onClose((e) => {
+              this._isLoaded = false;
+              this._isLoading = false;
+              this._dispatchEvent(EventType.close, e);
+              if (this._preload === true) {
+                  this._loadAd();
+              }
+          });
+          ad.onError((e) => {
+              this._isLoading = false;
+              const data = {
+                  code: e.code,
+                  errMsg: e.message,
+              };
+              this._dispatchEvent(EventType.error, data);
+              const error = new Error(JSON.stringify(data));
+              if (this._loadPromiseReject != null) {
+                  this._loadPromiseReject(error);
+                  this._loadPromiseReject = null;
+              }
+              if (this._showPromiseReject != null) {
+                  this._showPromiseReject(error);
+                  this._showPromiseReject = null;
+              }
+          });
+          ad.onAdClicked &&
+              ad.onAdClicked(() => {
+                  this._dispatchEvent(EventType.adClicked, {});
+              });
+      }
+      getProvider() {
+          return this._adInstance.getProvider();
+      }
+      load() {
+          return new Promise((resolve, reject) => {
+              this._loadPromiseResolve = resolve;
+              this._loadPromiseReject = reject;
+              if (this._isLoading) {
+                  return;
+              }
+              if (this._isLoaded) {
+                  resolve('');
+              }
+              else {
+                  this._loadAd();
+              }
+          });
+      }
+      show() {
+          return new Promise((resolve, reject) => {
+              this._showPromiseResolve = resolve;
+              this._showPromiseReject = reject;
+              if (this._isLoading) {
+                  return;
+              }
+              if (this._isLoaded) {
+                  this._showAd();
+                  resolve('');
+              }
+              else {
+                  this._loadAd();
+              }
+          });
+      }
+      destroy() {
+          this._adInstance.destroy();
+      }
+      _loadAd() {
+          this._isLoaded = false;
+          this._isLoading = true;
+          this._adInstance.load();
+      }
+      _showAd() {
+          this._adInstance.show();
+      }
+  }
+
+  class RewardedVideoAd extends AdBase {
+      constructor(options) {
+          super(plus.ad.createRewardedVideoAd(options), options);
+          this._loadAd();
+      }
+  }
+  const createRewardedVideoAd = (defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
+      return new RewardedVideoAd(options);
+  }, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions));
+
+  class FullScreenVideoAd extends AdBase {
+      constructor(options) {
+          super(plus.ad.createFullScreenVideoAd(options), options);
+      }
+  }
+  const createFullScreenVideoAd = (defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
+      return new FullScreenVideoAd(options);
+  }, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions));
+
+  class InterstitialAd extends AdBase {
+      constructor(options) {
+          super(plus.ad.createInterstitialAd(options), options);
+          this._loadAd();
+      }
+  }
+  const createInterstitialAd = (defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
+      return new InterstitialAd(options);
+  }, CreateInterstitialAdProtocol, CreateInterstitialAdOptions));
+
+  const sdkCache = {};
+  const sdkQueue = {};
+  function initSDK(options) {
+      const provider = options.provider;
+      if (!sdkCache[provider]) {
+          sdkCache[provider] = {};
+      }
+      if (typeof sdkCache[provider].plugin === 'object') {
+          options.success(sdkCache[provider].plugin);
+          return;
+      }
+      if (!sdkQueue[provider]) {
+          sdkQueue[provider] = [];
+      }
+      sdkQueue[provider].push(options);
+      if (sdkCache[provider].status === true) {
+          options.__plugin = sdkCache[provider].plugin;
+          return;
+      }
+      sdkCache[provider].status = true;
+      const plugin = requireNativePlugin(provider);
+      if (!plugin || !plugin.initSDK) {
+          sdkQueue[provider].forEach((item) => {
+              item.fail({
+                  code: -1,
+                  message: 'provider [' + provider + '] invalid',
+              });
+          });
+          sdkQueue[provider].length = 0;
+          sdkCache[provider].status = false;
+          return;
+      }
+      // TODO
+      sdkCache[provider].plugin = plugin;
+      options.__plugin = plugin;
+      plugin.initSDK((res) => {
+          const isSuccess = res.code === 1 || res.code === '1';
+          if (isSuccess) {
+              sdkCache[provider].plugin = plugin;
+          }
+          else {
+              sdkCache[provider].status = false;
+          }
+          sdkQueue[provider].forEach((item) => {
+              if (isSuccess) {
+                  item.success(item.__plugin);
+              }
+              else {
+                  item.fail(res);
+              }
+          });
+          sdkQueue[provider].length = 0;
+      });
+  }
+  class InteractiveAd extends AdEventHandler {
+      constructor(options) {
+          super();
+          this._adpid = '';
+          this._provider = '';
+          this._userData = null;
+          this._isLoaded = false;
+          this._isLoading = false;
+          this._loadPromiseResolve = null;
+          this._loadPromiseReject = null;
+          this._showPromiseResolve = null;
+          this._showPromiseReject = null;
+          this._adInstance = null;
+          this._adError = '';
+          this._adpid = options.adpid;
+          this._provider = options.provider;
+          this._userData = options.userData;
+          setTimeout(() => {
+              this._init();
+          });
+      }
+      _init() {
+          this._adError = '';
+          initSDK({
+              provider: this._provider,
+              success: (res) => {
+                  this._adInstance = res;
+                  if (this._userData) {
+                      this.bindUserData(this._userData);
+                  }
+                  this._loadAd();
+              },
+              fail: (err) => {
+                  this._adError = err;
+                  if (this._loadPromiseReject != null) {
+                      this._loadPromiseReject(this._createError(err));
+                      this._loadPromiseReject = null;
+                  }
+                  this._dispatchEvent(EventType.error, err);
+              },
+          });
+      }
+      getProvider() {
+          return this._provider;
+      }
+      load() {
+          return new Promise((resolve, reject) => {
+              this._loadPromiseResolve = resolve;
+              this._loadPromiseReject = reject;
+              if (this._isLoading) {
+                  return;
+              }
+              if (this._adError) {
+                  this._init();
+                  return;
+              }
+              if (this._isLoaded) {
+                  resolve('');
+              }
+              else {
+                  this._loadAd();
+              }
+          });
+      }
+      show() {
+          return new Promise((resolve, reject) => {
+              this._showPromiseResolve = resolve;
+              this._showPromiseReject = reject;
+              if (this._isLoading) {
+                  return;
+              }
+              if (this._adError) {
+                  this._init();
+                  return;
+              }
+              if (this._isLoaded) {
+                  this._showAd();
+                  resolve('');
+              }
+              else {
+                  this._loadAd();
+              }
+          });
+      }
+      reportExposure() {
+          if (this._adInstance !== null) {
+              this._adInstance.reportExposure();
+          }
+      }
+      bindUserData(data) {
+          if (this._adInstance !== null) {
+              this._adInstance.bindUserData(data);
+          }
+      }
+      destroy() {
+          if (this._adInstance !== null && this._adInstance.destroy) {
+              this._adInstance.destroy({
+                  adpid: this._adpid,
+              });
+          }
+      }
+      _loadAd() {
+          if (this._adInstance !== null) {
+              if (this._isLoading === true) {
+                  return;
+              }
+              this._isLoading = true;
+              this._adInstance.loadData({
+                  adpid: this._adpid,
+              }, (res) => {
+                  this._isLoaded = true;
+                  this._isLoading = false;
+                  if (this._loadPromiseResolve != null) {
+                      this._loadPromiseResolve();
+                      this._loadPromiseResolve = null;
+                  }
+                  if (this._showPromiseResolve != null) {
+                      this._showPromiseResolve();
+                      this._showPromiseResolve = null;
+                      this._showAd();
+                  }
+                  this._dispatchEvent(EventType.load, res);
+              }, (err) => {
+                  this._isLoading = false;
+                  if (this._showPromiseReject != null) {
+                      this._showPromiseReject(this._createError(err));
+                      this._showPromiseReject = null;
+                  }
+                  this._dispatchEvent(EventType.error, err);
+              });
+          }
+      }
+      _showAd() {
+          if (this._adInstance !== null && this._isLoaded === true) {
+              this._adInstance.show({
+                  adpid: this._adpid,
+              }, () => {
+                  this._isLoaded = false;
+              }, (err) => {
+                  this._isLoaded = false;
+                  if (this._showPromiseReject != null) {
+                      this._showPromiseReject(this._createError(err));
+                      this._showPromiseReject = null;
+                  }
+                  this._dispatchEvent(EventType.error, err);
+              });
+          }
+      }
+      _createError(err) {
+          return new Error(JSON.stringify(err));
+      }
+  }
+  const createInteractiveAd = (defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
+      return new InteractiveAd(options);
+  }, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
+
   var uni$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setStorageSync: setStorageSync,
@@ -4729,7 +5182,11 @@ var serviceContext = (function (vue) {
     closeAuthView: closeAuthView,
     share: share,
     shareWithSystem: shareWithSystem,
-    requestPayment: requestPayment
+    requestPayment: requestPayment,
+    createRewardedVideoAd: createRewardedVideoAd,
+    createFullScreenVideoAd: createFullScreenVideoAd,
+    createInterstitialAd: createInterstitialAd,
+    createInteractiveAd: createInteractiveAd
   });
 
   const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
@@ -5209,11 +5666,10 @@ var serviceContext = (function (vue) {
       };
   }
 
-  function parseWebviewStyle(id, path, routeOptions) {
+  function parseWebviewStyle(path, routeMeta) {
       const webviewStyle = {
           bounce: 'vertical',
       };
-      const routeMeta = mergePageMeta(id, routeOptions.meta);
       Object.keys(routeMeta).forEach((name) => {
           if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
               webviewStyle[name] =
@@ -5271,10 +5727,20 @@ var serviceContext = (function (vue) {
           query: queryString ? queryString.substr(1) : queryString,
       };
   }
+  function initDebugRefresh(isTab, path, query) {
+      const queryString = query ? stringifyQuery$1(query, encode) : '';
+      return {
+          isTab,
+          arguments: JSON.stringify({
+              path: path.substr(1),
+              query: queryString ? queryString.substr(1) : queryString,
+          }),
+      };
+  }
 
   function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
       const curWebviewId = genWebviewId();
-      const curWebviewStyle = parseWebviewStyle(curWebviewId, path, routeOptions);
+      const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta);
       curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
       if ((process.env.NODE_ENV !== 'production')) {
           console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle);
@@ -5283,6 +5749,30 @@ var serviceContext = (function (vue) {
       return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
           nvue: true,
       }, webviewStyle));
+  }
+
+  function initWebviewStyle(webview, path, query, routeMeta) {
+      const webviewStyle = parseWebviewStyle(path, routeMeta);
+      webviewStyle.uniPageUrl = initUniPageUrl(path, query);
+      const isTabBar = !!routeMeta.isTabBar;
+      if (!routeMeta.isNVue) {
+          webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
+      }
+      else {
+          // android 需要使用
+          webviewStyle.isTab = isTabBar;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log('[uni-app] updateWebview', webviewStyle);
+      }
+      webview.setStyle(webviewStyle);
+  }
+
+  function initWebview(webview, path, query, routeMeta) {
+      // 首页或非 nvue 页面
+      if (webview.id === '1' || !routeMeta.isNVue) {
+          initWebviewStyle(webview, path, query, routeMeta);
+      }
   }
 
   let preloadWebview;
@@ -5589,6 +6079,7 @@ var serviceContext = (function (vue) {
   function initRouteOptions(path, openType) {
       // 需要序列化一遍
       const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+      routeOptions.meta = initRouteMeta(routeOptions.meta);
       if (openType === 'reLaunch' ||
           (!__uniConfig.realEntryPagePath && getCurrentPages().length === 0) // redirectTo
       ) {
@@ -5627,10 +6118,13 @@ var serviceContext = (function (vue) {
           webview = plus.webview.getWebviewById(webview.id);
           webview.nvue = routeOptions.meta.isNVue;
       }
+      routeOptions.meta.id = parseInt(webview.id);
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(`[uni-app] registerPage(${path},${webview.id})`);
       }
+      initWebview(webview, path, query, routeOptions.meta);
       const route = path.substr(1);
+      webview.__uniapp_route = route;
       if (!webview.nvue) {
           createPage(parseInt(webview.id), route, query, null, initPageOptions(routeOptions));
       }

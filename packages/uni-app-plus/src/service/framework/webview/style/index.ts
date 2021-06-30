@@ -1,19 +1,21 @@
-import { mergePageMeta } from '@dcloudio/uni-core'
 import { initNVue } from './nvue'
 import { initBackgroundColor } from './backgroundColor'
 import { initPopGesture } from './popGesture'
 import { initPullToRefresh } from './pullToRefresh'
 import { initTitleNView } from './titleNView'
+import { DebugRefresh, InitUniPageUrl } from '../utils'
 
 export function parseWebviewStyle(
-  id: number,
   path: string,
-  routeOptions: UniApp.UniRoute
-): PlusWebviewWebviewStyles {
+  routeMeta: UniApp.PageRouteMeta
+): PlusWebviewWebviewStyles & {
+  uniPageUrl?: InitUniPageUrl
+  debugRefresh?: DebugRefresh
+  isTab?: boolean
+} {
   const webviewStyle: PlusWebviewWebviewStyles = {
     bounce: 'vertical',
   }
-  const routeMeta = mergePageMeta(id, routeOptions.meta)
 
   Object.keys(routeMeta).forEach((name) => {
     if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {

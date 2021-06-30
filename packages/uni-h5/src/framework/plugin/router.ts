@@ -28,7 +28,7 @@ const scrollBehavior: RouterOptions['scrollBehavior'] = (
 function createRouterOptions(): RouterOptions {
   return {
     history: initHistory(),
-    strict: !!__uniConfig.router.strict,
+    strict: !!__uniConfig.router!.strict,
     routes: __uniRoutes as unknown as RouteRecordRaw[],
     scrollBehavior,
   }
@@ -45,7 +45,7 @@ function removeCurrentPages(delta: number = 1) {
 }
 
 function initHistory() {
-  let { base } = __uniConfig.router
+  let { base } = __uniConfig.router!
   if (base === '/') {
     base = ''
   }

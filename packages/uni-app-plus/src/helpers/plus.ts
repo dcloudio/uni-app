@@ -102,7 +102,7 @@ export function isTabBarPage(path = '') {
     const route = getRouteOptions(path)
     return route && route.meta.isTabBar
   } catch (e) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (__DEV__) {
       console.log('getCurrentPages is not ready')
     }
   }

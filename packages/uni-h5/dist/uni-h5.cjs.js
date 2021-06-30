@@ -429,7 +429,7 @@ const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function mergePageMeta(id, pageMeta) {
+function initRouteMeta(pageMeta, id) {
   const globalStyle = initGlobalStyle();
   const res = shared.extend({ id }, globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
@@ -6546,9 +6546,9 @@ function usePageRoute() {
 }
 function initPageMeta(id) {
   if (__UNI_FEATURE_PAGES__) {
-    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, vueRouter.useRoute().meta)))));
+    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(vueRouter.useRoute().meta, id)))));
   }
-  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))));
+  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))));
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
@@ -9565,7 +9565,7 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
       const { frontColor, backgroundColor, animation: animation2 } = args;
       const { duration, timingFunc } = animation2;
       if (frontColor) {
-        navigationBar.titleColor = frontColor === "#000000" ? "#000" : "#fff";
+        navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
       }
       if (backgroundColor) {
         navigationBar.backgroundColor = backgroundColor;

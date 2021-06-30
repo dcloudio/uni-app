@@ -1,4 +1,5 @@
 export const jsContext = {
+  VUE3: true,
   APP_PLUS: false,
   H5: true,
   MP_360: false,
@@ -18,6 +19,7 @@ export const jsContext = {
   APP_NVUE: false,
 }
 export const htmlContext = {
+  VUE3: true,
   APP_PLUS: false,
   H5: true,
   MP_360: false,

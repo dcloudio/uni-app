@@ -816,7 +816,7 @@ const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function mergePageMeta(id2, pageMeta) {
+function initRouteMeta(pageMeta, id2) {
   const globalStyle = initGlobalStyle();
   const res = extend({ id: id2 }, globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
@@ -13026,9 +13026,9 @@ function usePageRoute() {
 }
 function initPageMeta(id2) {
   if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, useRoute().meta)))));
+    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(useRoute().meta, id2)))));
   }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(mergePageMeta(id2, __uniRoutes[0].meta)))));
+  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))));
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
@@ -17917,7 +17917,7 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
       const { frontColor, backgroundColor, animation: animation2 } = args;
       const { duration, timingFunc } = animation2;
       if (frontColor) {
-        navigationBar.titleColor = frontColor === "#000000" ? "#000" : "#fff";
+        navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
       }
       if (backgroundColor) {
         navigationBar.backgroundColor = backgroundColor;

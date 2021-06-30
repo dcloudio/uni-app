@@ -130,6 +130,97 @@ function scrollTo(scrollTop, duration) {
     scrollTo(duration);
 }
 
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (shared.isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+/**
+ * Decode text using `decodeURIComponent`. Returns the original text if it
+ * fails.
+ *
+ * @param text - string to decode
+ * @returns decoded string
+ */
+function decode(text) {
+    try {
+        return decodeURIComponent('' + text);
+    }
+    catch (err) { }
+    return '' + text;
+}
+function decodedQuery(query = {}) {
+    const decodedQuery = {};
+    Object.keys(query).forEach((name) => {
+        try {
+            decodedQuery[name] = decode(query[name]);
+        }
+        catch (e) {
+            decodedQuery[name] = query[name];
+        }
+    });
+    return decodedQuery;
+}
+const PLUS_RE = /\+/g; // %2B
+/**
+ * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
+ * @internal
+ *
+ * @param search - search string to parse
+ * @returns a query object
+ */
+function parseQuery(search) {
+    const query = {};
+    // avoid creating an object with an empty key and empty value
+    // because of split('&')
+    if (search === '' || search === '?')
+        return query;
+    const hasLeadingIM = search[0] === '?';
+    const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
+    for (let i = 0; i < searchParams.length; ++i) {
+        // pre decode the + into space
+        const searchParam = searchParams[i].replace(PLUS_RE, ' ');
+        // allow the = character
+        let eqPos = searchParam.indexOf('=');
+        let key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
+        let value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
+        if (key in query) {
+            // an extra variable for ts types
+            let currentValue = query[key];
+            if (!shared.isArray(currentValue)) {
+                currentValue = query[key] = [currentValue];
+            }
+            currentValue.push(value);
+        }
+        else {
+            query[key] = value;
+        }
+    }
+    return query;
+}
+
+function parseUrl(url) {
+    const [path, querystring] = url.split('?', 2);
+    return {
+        path,
+        query: parseQuery(querystring),
+    };
+}
+
 function plusReady(callback) {
     if (typeof callback !== 'function') {
         return;
@@ -769,89 +860,6 @@ function callOptions(options, data) {
     }
 }
 
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (shared.isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
-}
-/**
- * Decode text using `decodeURIComponent`. Returns the original text if it
- * fails.
- *
- * @param text - string to decode
- * @returns decoded string
- */
-function decode(text) {
-    try {
-        return decodeURIComponent('' + text);
-    }
-    catch (err) { }
-    return '' + text;
-}
-function decodedQuery(query = {}) {
-    const decodedQuery = {};
-    Object.keys(query).forEach((name) => {
-        try {
-            decodedQuery[name] = decode(query[name]);
-        }
-        catch (e) {
-            decodedQuery[name] = query[name];
-        }
-    });
-    return decodedQuery;
-}
-const PLUS_RE = /\+/g; // %2B
-/**
- * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
- * @internal
- *
- * @param search - search string to parse
- * @returns a query object
- */
-function parseQuery(search) {
-    const query = {};
-    // avoid creating an object with an empty key and empty value
-    // because of split('&')
-    if (search === '' || search === '?')
-        return query;
-    const hasLeadingIM = search[0] === '?';
-    const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
-    for (let i = 0; i < searchParams.length; ++i) {
-        // pre decode the + into space
-        const searchParam = searchParams[i].replace(PLUS_RE, ' ');
-        // allow the = character
-        let eqPos = searchParam.indexOf('=');
-        let key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
-        let value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
-        if (key in query) {
-            // an extra variable for ts types
-            let currentValue = query[key];
-            if (!shared.isArray(currentValue)) {
-                currentValue = query[key] = [currentValue];
-            }
-            currentValue.push(value);
-        }
-        else {
-            query[key] = value;
-        }
-    }
-    return query;
-}
-
 function debounce(fn, delay) {
     let timeout;
     const newFn = function () {
@@ -949,6 +957,7 @@ exports.normalizeDataset = normalizeDataset;
 exports.normalizeTarget = normalizeTarget;
 exports.once = once;
 exports.parseQuery = parseQuery;
+exports.parseUrl = parseUrl;
 exports.passive = passive;
 exports.plusReady = plusReady;
 exports.removeLeadingSlash = removeLeadingSlash;

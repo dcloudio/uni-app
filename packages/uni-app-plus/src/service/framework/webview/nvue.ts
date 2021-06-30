@@ -11,7 +11,7 @@ export function createNVueWebview({
   webviewStyle,
 }: CreateWebviewOptions) {
   const curWebviewId = genWebviewId()
-  const curWebviewStyle = parseWebviewStyle(curWebviewId, path, routeOptions)
+  const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta)
   ;(curWebviewStyle as any).uniPageUrl = initUniPageUrl(path, query)
   if (__DEV__) {
     console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle)

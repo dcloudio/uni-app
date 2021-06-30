@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 
 import { NAVBAR_HEIGHT, parseQuery } from '@dcloudio/uni-shared'
 import {
-  mergePageMeta,
+  initRouteMeta,
   normalizePullToRefreshRpx,
   PolySymbol,
 } from '@dcloudio/uni-core'
@@ -48,9 +48,9 @@ function initPageMeta(id: number) {
       normalizePageMeta(
         JSON.parse(
           JSON.stringify(
-            mergePageMeta(
-              id,
-              useRoute().meta as unknown as UniApp.PageRouteMeta
+            initRouteMeta(
+              useRoute().meta as unknown as UniApp.PageRouteMeta,
+              id
             )
           )
         )
@@ -59,7 +59,7 @@ function initPageMeta(id: number) {
   }
   return reactive<UniApp.PageRouteMeta>(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(mergePageMeta(id, __uniRoutes[0].meta)))
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))
     )
   )
 }
@@ -83,7 +83,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
       )
       const { type, style } = navigationBar
       if (style !== 'custom' && type !== 'transparent') {
-        pullToRefresh.offset +=
+        pullToRefresh.offset! +=
           NAVBAR_HEIGHT + (__NODE_JS__ ? 0 : safeAreaInsets.top)
       }
       pageMeta.pullToRefresh = pullToRefresh

@@ -138,6 +138,11 @@ declare interface Options {
  */
 export declare function parseQuery(search: string): Record<string, any>;
 
+export declare function parseUrl(url: string): {
+    path: string;
+    query: Record<string, any>;
+};
+
 export declare function passive(passive: boolean): {
     passive: boolean;
 };
