@@ -74,11 +74,14 @@ function initScopedSlotsParams () {
   }
 
   Vue.prototype.$setScopedSlotsParams = function (name, value) {
-    const vueId = this.$options.propsData.vueId
-    const object = center[vueId] = center[vueId] || {}
-    object[name] = value
-    if (parents[vueId]) {
-      parents[vueId].$forceUpdate()
+    const vueIds = this.$options.propsData.vueId
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0]
+      const object = center[vueId] = center[vueId] || {}
+      object[name] = value
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate()
+      }
     }
   }
 
