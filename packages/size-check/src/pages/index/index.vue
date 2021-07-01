@@ -14,7 +14,11 @@ export default {
       title: 'Hello',
     }
   },
-  onLoad() {},
+  onLoad() {
+    // 测试API摇树
+    console.log(uni.report)
+    console.log(uni.upx2px)
+  },
   methods: {},
 }
 </script>

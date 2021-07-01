@@ -123,7 +123,16 @@ export function uniViteInjectPlugin(options: InjectOptions): Plugin {
           if (mods.length === 2) {
             mod = namespaceModulesMap.get(mods[0] + '.')
             if (mod) {
-              mod = [mod as string, mods[1]]
+              if (Array.isArray(mod)) {
+                const testFn = mod[1] as unknown as (method: string) => boolean
+                if (testFn(mods[1])) {
+                  mod = [mod[0], mods[1]]
+                } else {
+                  mod = undefined
+                }
+              } else {
+                mod = [mod, mods[1]]
+              }
             }
           }
         }

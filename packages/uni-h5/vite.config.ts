@@ -12,6 +12,7 @@ import { OutputChunk } from 'rollup'
 
 import { stripOptions } from '@dcloudio/uni-cli-shared'
 import { isCustomElement } from '@dcloudio/uni-shared'
+import { genApiJson } from './api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -55,6 +56,7 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
+        genApiJson(esBundle.code)
       }
     },
   })

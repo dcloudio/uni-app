@@ -24,10 +24,8 @@ export function uniPagesJsonPlugin(): Plugin {
           const { resolvedConfig } = opts
           return {
             code:
-              (resolvedConfig.command === 'serve' ||
-              (resolvedConfig.command === 'build' && ssr)
-                ? registerGlobalCode(resolvedConfig, ssr)
-                : '') + generatePagesJsonCode(ssr, code, resolvedConfig),
+              registerGlobalCode(resolvedConfig, ssr) +
+              generatePagesJsonCode(ssr, code, resolvedConfig),
             map: { mappings: '' },
           }
         }
@@ -81,6 +79,11 @@ function getGlobal(ssr?: boolean) {
 
 function registerGlobalCode(config: ResolvedConfig, ssr?: boolean) {
   const name = getGlobal(ssr)
+  if (config.command === 'build' && !ssr) {
+    // 非SSR的发行模式，补充全局 uni 对象
+    return `${name}.uni = {}`
+  }
+
   const rpx2pxCode =
     !ssr && config.define!.__UNI_FEATURE_RPX__
       ? `import {upx2px} from '@dcloudio/uni-h5'

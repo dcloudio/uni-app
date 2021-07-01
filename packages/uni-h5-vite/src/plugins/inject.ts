@@ -1,3 +1,4 @@
+import path from 'path'
 import { Plugin, ResolvedConfig } from 'vite'
 
 import { extend } from '@vue/shared'
@@ -11,9 +12,13 @@ import {
   isCombineBuiltInCss,
 } from '@dcloudio/uni-cli-shared'
 
+const apiJson = require(path.resolve(__dirname, '../../lib/api.json'))
 const uniInjectPluginOptions: Partial<InjectOptions> = {
   exclude: [...COMMON_EXCLUDE],
-  'uni.': '@dcloudio/uni-h5',
+  'uni.': [
+    '@dcloudio/uni-h5',
+    ((method: string) => apiJson.includes(method)) as any, // API白名单
+  ],
   getApp: ['@dcloudio/uni-h5', 'getApp'],
   getCurrentPages: ['@dcloudio/uni-h5', 'getCurrentPages'],
   UniServiceJSBridge: ['@dcloudio/uni-h5', 'UniServiceJSBridge'],

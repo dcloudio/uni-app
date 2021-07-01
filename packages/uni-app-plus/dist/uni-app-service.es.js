@@ -51,7 +51,7 @@ var serviceContext = (function (vue) {
     return base64
   }
 
-  function decode(base64) {
+  function decode$1(base64) {
     var bufferLength = base64.length * 0.75,
       len = base64.length,
       i,
@@ -560,7 +560,7 @@ var serviceContext = (function (vue) {
 
   // @ts-ignore
   const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
-      return decode(base64);
+      return decode$1(base64);
   }, Base64ToArrayBufferProtocol);
   const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
       return encode$3(arrayBuffer);
@@ -584,6 +584,65 @@ var serviceContext = (function (vue) {
               .join('&')
           : null;
       return res ? `?${res}` : '';
+  }
+  /**
+   * Decode text using `decodeURIComponent`. Returns the original text if it
+   * fails.
+   *
+   * @param text - string to decode
+   * @returns decoded string
+   */
+  function decode(text) {
+      try {
+          return decodeURIComponent('' + text);
+      }
+      catch (err) { }
+      return '' + text;
+  }
+  const PLUS_RE = /\+/g; // %2B
+  /**
+   * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
+   * @internal
+   *
+   * @param search - search string to parse
+   * @returns a query object
+   */
+  function parseQuery(search) {
+      const query = {};
+      // avoid creating an object with an empty key and empty value
+      // because of split('&')
+      if (search === '' || search === '?')
+          return query;
+      const hasLeadingIM = search[0] === '?';
+      const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
+      for (let i = 0; i < searchParams.length; ++i) {
+          // pre decode the + into space
+          const searchParam = searchParams[i].replace(PLUS_RE, ' ');
+          // allow the = character
+          let eqPos = searchParam.indexOf('=');
+          let key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
+          let value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
+          if (key in query) {
+              // an extra variable for ts types
+              let currentValue = query[key];
+              if (!isArray(currentValue)) {
+                  currentValue = query[key] = [currentValue];
+              }
+              currentValue.push(value);
+          }
+          else {
+              query[key] = value;
+          }
+      }
+      return query;
+  }
+
+  function parseUrl(url) {
+      const [path, querystring] = url.split('?', 2);
+      return {
+          path,
+          query: parseQuery(querystring),
+      };
   }
 
   class DOMException extends Error {
@@ -1243,6 +1302,28 @@ var serviceContext = (function (vue) {
           }));
       }
   });
+  const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(() => {
+      const name = 'uni.startSoterAuthentication.';
+      {
+          useI18n().add(LOCALE_EN, normalizeMessages(name, { authContent: 'Fingerprint recognition' }));
+      }
+      {
+          useI18n().add(LOCALE_ES, normalizeMessages(name, {
+              authContent: 'Reconocimiento de huellas dactilares',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_FR, normalizeMessages(name, {
+              authContent: "Reconnaissance de l'empreinte digitale",
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { authContent: '指纹识别中...' }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { authContent: '指紋識別中...' }));
+      }
+  });
 
   const E = function () {
       // Keep this empty so it's easier to inherit from
@@ -1363,6 +1444,17 @@ var serviceContext = (function (vue) {
       return pullToRefresh;
   }
 
+  function normalizeRoute(toRoute) {
+      if (toRoute.indexOf('/') === 0) {
+          return toRoute;
+      }
+      let fromRoute = '';
+      const pages = getCurrentPages();
+      if (pages.length) {
+          fromRoute = pages[pages.length - 1].$page.route;
+      }
+      return getRealRoute(fromRoute, toRoute);
+  }
   function getRealRoute(fromRoute, toRoute) {
       if (toRoute.indexOf('/') === 0) {
           return toRoute;
@@ -1387,6 +1479,12 @@ var serviceContext = (function (vue) {
           return __uniRoutes.find((route) => route.path === path || route.alias === path);
       }
       return __uniRoutes.find((route) => route.path === path);
+  }
+  function getRouteMeta(path) {
+      const routeOptions = getRouteOptions(path);
+      if (routeOptions) {
+          return routeOptions.meta;
+      }
   }
 
   const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
@@ -1764,6 +1862,42 @@ var serviceContext = (function (vue) {
   };
   const API_STOP_BEACON_DISCOVERY = 'stopBeaconDiscovery';
 
+  const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'soterAuthentication';
+  const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice';
+  const CheckAuthModes = [
+      'fingerPrint',
+      'facial',
+      'speech',
+  ];
+  const CheckIsSoterEnrolledInDeviceOptions = {
+      formatArgs: {
+          checkAuthMode(value, params) {
+              if (!value || !CheckAuthModes.includes(value))
+                  return 'checkAuthMode 填写错误';
+          },
+      },
+  };
+  const CheckIsSoterEnrolledInDeviceProtocols = {
+      checkAuthMode: String,
+  };
+  const API_START_SOTER_AUTHENTICATION = 'checkIsSoterEnrolledInDevice';
+  const StartSoterAuthenticationOptions = {
+      formatArgs: {
+          requestAuthModes(value, params) {
+              if (!value.includes('fingerPrint') && !value.includes('facial'))
+                  return 'requestAuthModes 填写错误';
+          },
+      },
+  };
+  const StartSoterAuthenticationProtocols = {
+      requestAuthModes: {
+          type: Array,
+          required: true,
+      },
+      challenge: String,
+      authContent: String,
+  };
+
   const API_GET_STORAGE = 'getStorage';
   const GetStorageProtocol = {
       key: {
@@ -2122,6 +2256,150 @@ var serviceContext = (function (vue) {
       code: Number,
       reason: String,
   };
+
+  function encodeQueryString(url) {
+      if (typeof url !== 'string') {
+          return url;
+      }
+      const index = url.indexOf('?');
+      if (index === -1) {
+          return url;
+      }
+      const query = url
+          .substr(index + 1)
+          .trim()
+          .replace(/^(\?|#|&)/, '');
+      if (!query) {
+          return url;
+      }
+      url = url.substr(0, index);
+      const params = [];
+      query.split('&').forEach((param) => {
+          const parts = param.replace(/\+/g, ' ').split('=');
+          const key = parts.shift();
+          const val = parts.length > 0 ? parts.join('=') : '';
+          params.push(key + '=' + encodeURIComponent(val));
+      });
+      return params.length ? url + '?' + params.join('&') : url;
+  }
+
+  const ANIMATION_IN = [
+      'slide-in-right',
+      'slide-in-left',
+      'slide-in-top',
+      'slide-in-bottom',
+      'fade-in',
+      'zoom-out',
+      'zoom-fade-out',
+      'pop-in',
+      'none',
+  ];
+  const BaseRouteProtocol = {
+      url: {
+          type: String,
+          required: true,
+      },
+  };
+  const API_NAVIGATE_TO = 'navigateTo';
+  const API_REDIRECT_TO = 'redirectTo';
+  const API_SWITCH_TAB = 'switchTab';
+  const API_PRELOAD_PAGE = 'preloadPage';
+  const API_UN_PRELOAD_PAGE = 'unPreloadPage';
+  const NavigateToProtocol = 
+  /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+  const NavigateToOptions = 
+  /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+  function createAnimationProtocol(animationTypes) {
+      return {
+          animationType: {
+              type: String,
+              validator(type) {
+                  if (type && animationTypes.indexOf(type) === -1) {
+                      return ('`' +
+                          type +
+                          '` is not supported for `animationType` (supported values are: `' +
+                          animationTypes.join('`|`') +
+                          '`)');
+                  }
+              },
+          },
+          animationDuration: {
+              type: Number,
+          },
+      };
+  }
+  let navigatorLock;
+  function beforeRoute() {
+      navigatorLock = '';
+  }
+  function createRouteOptions(type) {
+      return {
+          formatArgs: {
+              url: createNormalizeUrl(type),
+          },
+          beforeAll: beforeRoute,
+      };
+  }
+  function createNormalizeUrl(type) {
+      return function normalizeUrl(url, params) {
+          if (!url) {
+              return `Missing required args: "url"`;
+          }
+          // 格式化为绝对路径路由
+          url = normalizeRoute(url);
+          const pagePath = url.split('?')[0];
+          // 匹配路由是否存在
+          const routeOptions = getRouteOptions(pagePath, true);
+          if (!routeOptions) {
+              return 'page `' + url + '` is not found';
+          }
+          // 检测不同类型跳转
+          if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+              if (routeOptions.meta.isTabBar) {
+                  return `can not ${type} a tabbar page`;
+              }
+          }
+          else if (type === API_SWITCH_TAB) {
+              if (!routeOptions.meta.isTabBar) {
+                  return 'can not switch to no-tabBar page';
+              }
+          }
+          // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
+          if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) &&
+              routeOptions.meta.isTabBar &&
+              params.openType !== 'appLaunch') {
+              url = pagePath;
+          }
+          // 首页自动格式化为`/`
+          if (routeOptions.meta.isEntry) {
+              url = url.replace(routeOptions.alias, '/');
+          }
+          // 参数格式化
+          params.url = encodeQueryString(url);
+          if (type === API_UN_PRELOAD_PAGE) {
+              return;
+          }
+          else if (type === API_PRELOAD_PAGE) {
+              if (routeOptions.meta.isTabBar) {
+                  const pages = getCurrentPages();
+                  const tabBarPagePath = routeOptions.path.substr(1);
+                  if (pages.find((page) => page.route === tabBarPagePath)) {
+                      return 'tabBar page `' + tabBarPagePath + '` already exists';
+                  }
+              }
+              return;
+          }
+          // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
+          if (navigatorLock === url && params.openType !== 'appLaunch') {
+              return `${navigatorLock} locked`;
+          }
+          // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
+          // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
+          if (__uniConfig.ready) {
+              navigatorLock = url;
+          }
+      };
+  }
 
   const API_HIDE_LOADING = 'hideLoading';
 
@@ -2829,6 +3107,231 @@ var serviceContext = (function (vue) {
       let networkType = NETWORK_TYPES[plus.networkinfo.getCurrentType()] || 'unknown';
       return resolve({ networkType });
   });
+
+  function checkIsSupportFaceID() {
+      const platform = plus.os.name.toLowerCase();
+      if (platform !== 'ios') {
+          return false;
+      }
+      const faceID = requireNativePlugin('faceID');
+      return !!(faceID && faceID.isSupport());
+  }
+  function checkIsSupportFingerPrint() {
+      return !!(plus.fingerprint && plus.fingerprint.isSupport());
+  }
+  const baseCheckIsSupportSoterAuthentication = (resolve) => {
+      const supportMode = [];
+      if (checkIsSupportFingerPrint()) {
+          supportMode.push('fingerPrint');
+      }
+      if (checkIsSupportFaceID()) {
+          supportMode.push('facial');
+      }
+      resolve &&
+          resolve({
+              supportMode,
+          });
+      return {
+          supportMode,
+          errMsg: 'checkIsSupportSoterAuthentication:ok',
+      };
+  };
+  const checkIsSupportSoterAuthentication = defineAsyncApi(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (_, { resolve, reject }) => {
+      baseCheckIsSupportSoterAuthentication(resolve);
+  });
+  const basecheckIsSoterEnrolledInDevice = ({ checkAuthMode, resolve, reject, }) => {
+      const wrapReject = (errMsg, errRes) => reject && reject(errMsg, ...errRes);
+      const wrapResolve = (res) => resolve && resolve(res);
+      if (checkAuthMode === 'fingerPrint') {
+          if (checkIsSupportFingerPrint()) {
+              const isEnrolled = plus.fingerprint.isKeyguardSecure() &&
+                  plus.fingerprint.isEnrolledFingerprints();
+              wrapResolve({ isEnrolled });
+              return {
+                  isEnrolled,
+                  errMsg: 'checkIsSoterEnrolledInDevice:ok',
+              };
+          }
+          wrapReject('not support', { isEnrolled: false });
+          return {
+              isEnrolled: false,
+              errMsg: 'checkIsSoterEnrolledInDevice:fail not support',
+          };
+      }
+      else if (checkAuthMode === 'facial') {
+          if (checkIsSupportFaceID()) {
+              const faceID = requireNativePlugin('faceID');
+              const isEnrolled = faceID && faceID.isKeyguardSecure() && faceID.isEnrolledFaceID();
+              wrapResolve({ isEnrolled });
+              return {
+                  isEnrolled,
+                  errMsg: 'checkIsSoterEnrolledInDevice:ok',
+              };
+          }
+          wrapReject('not support', { isEnrolled: false });
+          return {
+              isEnrolled: false,
+              errMsg: 'checkIsSoterEnrolledInDevice:fail not support',
+          };
+      }
+      wrapReject('not support', { isEnrolled: false });
+      return {
+          isEnrolled: false,
+          errMsg: 'checkIsSoterEnrolledInDevice:fail not support',
+      };
+  };
+  const checkIsSoterEnrolledInDevice = defineAsyncApi(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, ({ checkAuthMode }, { resolve, reject }) => {
+      basecheckIsSoterEnrolledInDevice({ checkAuthMode, resolve, reject });
+  }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceOptions);
+  const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, ({ requestAuthModes, challenge = false, authContent }, { resolve, reject }) => {
+      /*
+        以手机不支持facial未录入fingerPrint为例
+        requestAuthModes:['facial','fingerPrint']时，微信小程序返回值里的authMode为"fingerPrint"
+        requestAuthModes:['fingerPrint','facial']时，微信小程序返回值里的authMode为"fingerPrint"
+        即先过滤不支持的方式之后再判断是否录入
+        微信小程序errCode（从企业号开发者中心查到如下文档）：
+        0：识别成功  'startSoterAuthentication:ok'
+        90001：本设备不支持SOTER  'startSoterAuthentication:fail not support soter'
+        90002：用户未授权微信使用该生物认证接口  注：APP端暂不支持
+        90003：请求使用的生物认证方式不支持  'startSoterAuthentication:fail no corresponding mode'
+        90004：未传入challenge或challenge长度过长（最长512字符）注：APP端暂不支持
+        90005：auth_content长度超过限制（最长42个字符）注：微信小程序auth_content指纹识别时无效果，faceID暂未测试
+        90007：内部错误  'startSoterAuthentication:fail auth key update error'
+        90008：用户取消授权  'startSoterAuthentication:fail cancel'
+        90009：识别失败  'startSoterAuthentication:fail'
+        90010：重试次数过多被冻结  'startSoterAuthentication:fail authenticate freeze. please try again later'
+        90011：用户未录入所选识别方式  'startSoterAuthentication:fail no fingerprint enrolled'
+      */
+      initI18nStartSoterAuthenticationMsgsOnce();
+      const { t } = useI18n();
+      const supportMode = baseCheckIsSupportSoterAuthentication().supportMode;
+      if (supportMode.length === 0) {
+          return {
+              authMode: 'fingerPrint',
+              errCode: 90001,
+              errMsg: 'startSoterAuthentication:fail',
+          };
+      }
+      const supportRequestAuthMode = [];
+      requestAuthModes.map((item, index) => {
+          if (supportMode.indexOf(item) > -1) {
+              supportRequestAuthMode.push(item);
+          }
+      });
+      if (supportRequestAuthMode.length === 0) {
+          return {
+              authMode: 'fingerPrint',
+              errCode: 90003,
+              errMsg: 'startSoterAuthentication:fail no corresponding mode',
+          };
+      }
+      const enrolledRequestAuthMode = [];
+      supportRequestAuthMode.map((item, index) => {
+          const checked = basecheckIsSoterEnrolledInDevice({
+              checkAuthMode: item,
+          }).isEnrolled;
+          if (checked) {
+              enrolledRequestAuthMode.push(item);
+          }
+      });
+      if (enrolledRequestAuthMode.length === 0) {
+          return {
+              authMode: supportRequestAuthMode[0],
+              errCode: 90011,
+              errMsg: `startSoterAuthentication:fail no ${supportRequestAuthMode[0]} enrolled`,
+          };
+      }
+      const realAuthMode = enrolledRequestAuthMode[0];
+      if (realAuthMode === 'fingerPrint') {
+          if (plus.os.name.toLowerCase() === 'android') {
+              plus.nativeUI.showWaiting(authContent || t('uni.startSoterAuthentication.authContent')).onclose = function () {
+                  plus.fingerprint.cancel();
+              };
+          }
+          plus.fingerprint.authenticate(() => {
+              plus.nativeUI.closeWaiting();
+              resolve({
+                  authMode: realAuthMode,
+                  errCode: 0,
+              });
+          }, (e) => {
+              const res = {
+                  authMode: realAuthMode,
+              };
+              switch (e.code) {
+                  case e.AUTHENTICATE_MISMATCH:
+                      // 微信小程序没有这个回调，如果要实现此处回调需要多次触发需要用事件publish实现
+                      // invoke(callbackId, {
+                      //   authMode: realAuthMode,
+                      //   errCode: 90009,
+                      //   errMsg: 'startSoterAuthentication:fail'
+                      // })
+                      break;
+                  case e.AUTHENTICATE_OVERLIMIT:
+                      // 微信小程序在第一次重试次数超限时安卓IOS返回不一致，安卓端会返回次数超过限制（errCode: 90010），IOS端会返回认证失败（errCode: 90009）。APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
+                      plus.nativeUI.closeWaiting();
+                      reject('authenticate freeze. please try again later', extend(res, {
+                          errCode: 90010,
+                      }));
+                      break;
+                  case e.CANCEL:
+                      plus.nativeUI.closeWaiting();
+                      reject('cancel', extend(res, {
+                          errCode: 90008,
+                      }));
+                      break;
+                  default:
+                      plus.nativeUI.closeWaiting();
+                      reject('', extend(res, {
+                          errCode: 90007,
+                      }));
+                      break;
+              }
+          }, {
+              message: authContent,
+          });
+      }
+      else if (realAuthMode === 'facial') {
+          const faceID = requireNativePlugin('faceID');
+          faceID.authenticate({
+              message: authContent,
+          }, (e) => {
+              const res = {
+                  authMode: realAuthMode,
+              };
+              if (e.type === 'success' && e.code === 0) {
+                  resolve({
+                      authMode: realAuthMode,
+                      errCode: 0,
+                  });
+              }
+              else {
+                  switch (e.code) {
+                      case 4:
+                          reject('', extend(res, {
+                              errCode: 90009,
+                          }));
+                          break;
+                      case 5:
+                          reject('authenticate freeze. please try again later', extend(res, {
+                              errCode: 90010,
+                          }));
+                          break;
+                      case 6:
+                          reject('', extend(res, {
+                              errCode: 90008,
+                          }));
+                          break;
+                      default:
+                          reject('', extend(res, {
+                              errCode: 90007,
+                          }));
+                          break;
+                  }
+              }
+          });
+      }
+  }, StartSoterAuthenticationProtocols, StartSoterAuthenticationOptions);
 
   const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
       const path = TEMP_PATH + '/download/';
@@ -5089,123 +5592,548 @@ var serviceContext = (function (vue) {
       return new InteractiveAd(options);
   }, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
 
-  var uni$1 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    setStorageSync: setStorageSync,
-    setStorage: setStorage,
-    getStorageSync: getStorageSync,
-    getStorage: getStorage,
-    removeStorageSync: removeStorageSync,
-    removeStorage: removeStorage,
-    clearStorageSync: clearStorageSync,
-    clearStorage: clearStorage,
-    getStorageInfoSync: getStorageInfoSync,
-    getStorageInfo: getStorageInfo,
-    getFileInfo: getFileInfo,
-    openDocument: openDocument,
-    onCompassChange: onCompassChange,
-    offCompassChange: offCompassChange,
-    startCompass: startCompass,
-    stopCompass: stopCompass,
-    vibrateShort: vibrateShort,
-    vibrateLong: vibrateLong,
-    onAccelerometerChange: onAccelerometerChange,
-    offAccelerometerChange: offAccelerometerChange,
-    startAccelerometer: startAccelerometer,
-    stopAccelerometer: stopAccelerometer,
-    onBluetoothDeviceFound: onBluetoothDeviceFound,
-    onBluetoothAdapterStateChange: onBluetoothAdapterStateChange,
-    onBLEConnectionStateChange: onBLEConnectionStateChange,
-    onBLECharacteristicValueChange: onBLECharacteristicValueChange,
-    openBluetoothAdapter: openBluetoothAdapter,
-    closeBluetoothAdapter: closeBluetoothAdapter,
-    getBluetoothAdapterState: getBluetoothAdapterState,
-    startBluetoothDevicesDiscovery: startBluetoothDevicesDiscovery,
-    stopBluetoothDevicesDiscovery: stopBluetoothDevicesDiscovery,
-    getBluetoothDevices: getBluetoothDevices,
-    getConnectedBluetoothDevices: getConnectedBluetoothDevices,
-    createBLEConnection: createBLEConnection,
-    closeBLEConnection: closeBLEConnection,
-    getBLEDeviceServices: getBLEDeviceServices,
-    getBLEDeviceCharacteristics: getBLEDeviceCharacteristics,
-    notifyBLECharacteristicValueChange: notifyBLECharacteristicValueChange,
-    readBLECharacteristicValue: readBLECharacteristicValue,
-    writeBLECharacteristicValue: writeBLECharacteristicValue,
-    setBLEMTU: setBLEMTU,
-    getBLEDeviceRSSI: getBLEDeviceRSSI,
-    onBeaconUpdate: onBeaconUpdate,
-    onBeaconServiceChange: onBeaconServiceChange,
-    getBeacons: getBeacons,
-    startBeaconDiscovery: startBeaconDiscovery,
-    stopBeaconDiscovery: stopBeaconDiscovery,
-    makePhoneCall: makePhoneCall,
-    getClipboardData: getClipboardData,
-    setClipboardData: setClipboardData,
-    onNetworkStatusChange: onNetworkStatusChange,
-    offNetworkStatusChange: offNetworkStatusChange,
-    getNetworkType: getNetworkType,
-    getImageInfo: getImageInfo,
-    getVideoInfo: getVideoInfo,
-    previewImage: previewImage,
-    getRecorderManager: getRecorderManager,
-    saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
-    saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-    compressImage: compressImage,
-    compressVideo: compressVideo,
-    showKeyboard: showKeyboard,
-    hideKeyboard: hideKeyboard,
-    downloadFile: downloadFile,
-    request: request,
-    createSocketTask: createSocketTask,
-    connectSocket: connectSocket,
-    sendSocketMessage: sendSocketMessage,
-    closeSocket: closeSocket,
-    onSocketOpen: onSocketOpen,
-    onSocketError: onSocketError,
-    onSocketMessage: onSocketMessage,
-    onSocketClose: onSocketClose,
-    createInnerAudioContext: createInnerAudioContext,
-    getBackgroundAudioManager: getBackgroundAudioManager,
-    getLocation: getLocation,
-    showModal: showModal,
-    showActionSheet: showActionSheet,
-    showLoading: showLoading,
-    hideLoading: hideLoading,
-    showToast: showToast,
-    hideToast: hideToast,
-    hide: hide,
-    getProvider: getProvider,
-    login: login,
-    getUserInfo: getUserInfo,
-    getUserProfile: getUserProfile,
-    preLogin: preLogin,
-    closeAuthView: closeAuthView,
-    share: share,
-    shareWithSystem: shareWithSystem,
-    requestPayment: requestPayment,
-    createRewardedVideoAd: createRewardedVideoAd,
-    createFullScreenVideoAd: createFullScreenVideoAd,
-    createInterstitialAd: createInterstitialAd,
-    createInteractiveAd: createInteractiveAd
-  });
+  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
+  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
+  const ANI_DURATION = 300;
+  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
 
-  const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
-      publishHandler,
-  });
-  function publishHandler(event, args, pageIds) {
-      args = JSON.stringify(args);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, event, args, pageIds);
+  const ON_WEBVIEW_READY = 'onWebviewReady';
+
+  function initNVue(webviewStyle, routeMeta, path) {
+      if (path && routeMeta.isNVue) {
+          webviewStyle.uniNView = {
+              path,
+              defaultFontSize: __uniConfig.defaultFontSize,
+              viewport: __uniConfig.viewport,
+          };
       }
-      if (!isArray(pageIds)) {
-          pageIds = [pageIds];
+  }
+
+  const colorRE = /^#[a-z0-9]{6}$/i;
+  function isColor(color) {
+      return color && (colorRE.test(color) || color === 'transparent');
+  }
+
+  function initBackgroundColor(webviewStyle, routeMeta) {
+      const { backgroundColor } = routeMeta;
+      if (!backgroundColor) {
+          return;
       }
-      const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
-      pageIds.forEach((id) => {
-          const idStr = String(id);
-          const webview = plus.webview.getWebviewById(idStr);
-          webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', idStr));
+      if (!isColor(backgroundColor)) {
+          return;
+      }
+      if (!webviewStyle.background) {
+          webviewStyle.background = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorTop) {
+          webviewStyle.backgroundColorTop = backgroundColor;
+      }
+  }
+
+  function initPopGesture(webviewStyle, routeMeta) {
+      // 不支持 hide
+      if (webviewStyle.popGesture === 'hide') {
+          delete webviewStyle.popGesture;
+      }
+      // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
+      if (routeMeta.isQuit) {
+          webviewStyle.popGesture = (plus.os.name === 'iOS' ? 'appback' : 'none');
+      }
+  }
+
+  function initPullToRefresh(webviewStyle, routeMeta) {
+      if (!routeMeta.enablePullDownRefresh) {
+          return;
+      }
+      webviewStyle.pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
+          ? defaultAndroidPullToRefresh
+          : defaultPullToRefresh, routeMeta.pullToRefresh));
+  }
+  const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
+  const defaultPullToRefresh = {
+      support: true,
+      style: 'default',
+      height: '50px',
+      range: '200px',
+      contentdown: {
+          caption: '',
+      },
+      contentover: {
+          caption: '',
+      },
+      contentrefresh: {
+          caption: '',
+      },
+  };
+
+  function initTitleNView(webviewStyle, routeMeta) {
+      const { navigationBar } = routeMeta;
+      if (navigationBar.style === 'custom') {
+          return false;
+      }
+      let autoBackButton = true;
+      if (routeMeta.isQuit) {
+          autoBackButton = false;
+      }
+      const titleNView = {
+          autoBackButton,
+      };
+      Object.keys(navigationBar).forEach((name) => {
+          const value = navigationBar[name];
+          if (name === 'backgroundColor') {
+              titleNView.backgroundColor = isColor(value)
+                  ? value
+                  : BACKGROUND_COLOR;
+          }
+          else if (name === 'titleImage' && value) {
+              titleNView.tags = createTitleImageTags(value);
+          }
+          else if (name === 'buttons' && isArray(value)) {
+              titleNView.buttons = value.map((button, index) => {
+                  button.onclick = createTitleNViewBtnClick(index);
+                  return button;
+              });
+          }
       });
+      webviewStyle.titleNView = titleNView;
+  }
+  function createTitleImageTags(titleImage) {
+      return [
+          {
+              tag: 'img',
+              src: titleImage,
+              position: {
+                  left: 'auto',
+                  top: 'auto',
+                  width: 'auto',
+                  height: '26px',
+              },
+          },
+      ];
+  }
+  function createTitleNViewBtnClick(index) {
+      return function onClick(btn) {
+          btn.index = index;
+          invokeHook('onNavigationBarButtonTap', btn);
+      };
+  }
+
+  function parseWebviewStyle(path, routeMeta) {
+      const webviewStyle = {
+          bounce: 'vertical',
+      };
+      Object.keys(routeMeta).forEach((name) => {
+          if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+              webviewStyle[name] =
+                  routeMeta[name];
+          }
+      });
+      initNVue(webviewStyle, routeMeta, path);
+      initPopGesture(webviewStyle, routeMeta);
+      initBackgroundColor(webviewStyle, routeMeta);
+      initTitleNView(webviewStyle, routeMeta);
+      initPullToRefresh(webviewStyle, routeMeta);
+      return webviewStyle;
+  }
+  const WEBVIEW_STYLE_BLACKLIST = [
+      'id',
+      'route',
+      'isNVue',
+      'isQuit',
+      'isEntry',
+      'isTabBar',
+      'tabBarIndex',
+      'windowTop',
+      'topWindow',
+      'leftWindow',
+      'rightWindow',
+      'maxWidth',
+      'usingComponents',
+      'disableScroll',
+      'enablePullDownRefresh',
+      'navigationBar',
+      'pullToRefresh',
+      'onReachBottomDistance',
+      'pageOrientation',
+      'backgroundColor',
+  ];
+
+  let id = 2;
+  let preloadWebview$1;
+  function getWebviewId() {
+      return id;
+  }
+  function genWebviewId() {
+      return id++;
+  }
+  function getPreloadWebview() {
+      return preloadWebview$1;
+  }
+  function encode(val) {
+      return val;
+  }
+  function initUniPageUrl(path, query) {
+      const queryString = query ? stringifyQuery$1(query, encode) : '';
+      return {
+          path: path.substr(1),
+          query: queryString ? queryString.substr(1) : queryString,
+      };
+  }
+  function initDebugRefresh(isTab, path, query) {
+      const queryString = query ? stringifyQuery$1(query, encode) : '';
+      return {
+          isTab,
+          arguments: JSON.stringify({
+              path: path.substr(1),
+              query: queryString ? queryString.substr(1) : queryString,
+          }),
+      };
+  }
+
+  function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
+      const curWebviewId = genWebviewId();
+      const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta);
+      curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle);
+      }
+      curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
+      return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
+          nvue: true,
+      }, webviewStyle));
+  }
+
+  function initWebviewStyle(webview, path, query, routeMeta) {
+      const webviewStyle = parseWebviewStyle(path, routeMeta);
+      webviewStyle.uniPageUrl = initUniPageUrl(path, query);
+      const isTabBar = !!routeMeta.isTabBar;
+      if (!routeMeta.isNVue) {
+          webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
+      }
+      else {
+          // android 需要使用
+          webviewStyle.isTab = isTabBar;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log('[uni-app] updateWebview', webviewStyle);
+      }
+      webview.setStyle(webviewStyle);
+  }
+
+  function initWebview(webview, path, query, routeMeta) {
+      // 首页或非 nvue 页面
+      if (webview.id === '1' || !routeMeta.isNVue) {
+          initWebviewStyle(webview, path, query, routeMeta);
+      }
+  }
+
+  let preloadWebview;
+  function setPreloadWebview(webview) {
+      preloadWebview = webview;
+  }
+  function createPreloadWebview() {
+      if (!preloadWebview || preloadWebview.__uniapp_route) {
+          // 不存在，或已被使用
+          preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
+          }
+      }
+      return preloadWebview;
+  }
+
+  function createWebview(options) {
+      if (options.routeOptions.meta.isNVue) {
+          return createNVueWebview(options);
+      }
+      if (getWebviewId() === 2) {
+          // 如果首页非 nvue，则直接返回 Launch Webview
+          return plus.webview.getLaunchWebview();
+      }
+      return getPreloadWebview();
+  }
+  function onWebviewReady(pageId, callback) {
+      UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
+  }
+
+  let pendingNavigator = false;
+  function setPendingNavigator(path, callback, msg) {
+      pendingNavigator = {
+          path,
+          nvue: getRouteMeta(path).isNVue,
+          callback,
+      };
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(`nextNavigator:${path} ${msg}`);
+      }
+  }
+  function navigate(path, callback, isAppLaunch) {
+      if (!isAppLaunch && pendingNavigator) {
+          return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
+      }
+      if (__uniConfig.renderer === 'native') {
+          // 纯原生无需wait逻辑
+          // 如果是首页还未初始化，需要等一等，其他无需等待
+          if (getCurrentPages().length === 0) {
+              return setPendingNavigator(path, callback, 'waitForReady');
+          }
+          return callback();
+      }
+      // 未创建 preloadWebview 或 preloadWebview 已被使用
+      const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
+      // 已创建未 loaded
+      const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
+      if (waitPreloadWebview || waitPreloadWebviewReady) {
+          setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
+      }
+      else {
+          callback();
+      }
+      if (waitPreloadWebviewReady) {
+          onWebviewReady(preloadWebview.id, pendingNavigate);
+      }
+  }
+  function pendingNavigate() {
+      if (!pendingNavigator) {
+          return;
+      }
+      const { callback } = pendingNavigator;
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(`pendingNavigate:${pendingNavigator.path}`);
+      }
+      pendingNavigator = false;
+      return callback();
+  }
+  function navigateFinish() {
+      if (__uniConfig.renderer === 'native') {
+          if (!pendingNavigator) {
+              return;
+          }
+          if (pendingNavigator.nvue) {
+              return pendingNavigate();
+          }
+          return;
+      }
+      // 创建预加载
+      const preloadWebview = createPreloadWebview();
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`);
+      }
+      if (!pendingNavigator) {
+          return;
+      }
+      if (pendingNavigator.nvue) {
+          return pendingNavigate();
+      }
+      preloadWebview.loaded
+          ? pendingNavigator.callback()
+          : onWebviewReady(preloadWebview.id, pendingNavigate);
+  }
+
+  function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+      if (typeof delay === 'undefined') {
+          delay = webview.nvue ? 0 : 100;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(`[show][${Date.now()}]`, delay);
+      }
+      const execShowCallback = function () {
+          if (execShowCallback._called) {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log('execShowCallback.prevent');
+              }
+              return;
+          }
+          execShowCallback._called = true;
+          showCallback && showCallback();
+          navigateFinish();
+      };
+      execShowCallback._called = false;
+      setTimeout(() => {
+          const timer = setTimeout(() => {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(`[show.callback.timer][${Date.now()}]`);
+              }
+              execShowCallback();
+          }, animationDuration + 150);
+          webview.show(animationType, animationDuration, () => {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(`[show.callback][${Date.now()}]`);
+              }
+              if (!execShowCallback._called) {
+                  clearTimeout(timer);
+              }
+              execShowCallback();
+          });
+      }, delay);
+  }
+
+  const BRIDGE_NODE_SYNC = 'nodeSync';
+  const ACTION_TYPE_PAGE_CREATE = 1;
+  const ACTION_TYPE_PAGE_CREATED = 2;
+  const ACTION_TYPE_CREATE = 3;
+  const ACTION_TYPE_INSERT = 4;
+  const ACTION_TYPE_REMOVE = 5;
+  const ACTION_TYPE_SET_ATTRIBUTE = 6;
+  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+  const ACTION_TYPE_SET_TEXT = 8;
+  class UniPageNode extends UniNode {
+      constructor(pageId, options, setup = false) {
+          super(NODE_TYPE_PAGE, '#page', null);
+          this._id = 1;
+          this.updateActions = [];
+          this.nodeId = 0;
+          this.pageId = pageId;
+          this.pageNode = this;
+          this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
+          this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+          setup && this.setup();
+      }
+      onCreate(thisNode, nodeName) {
+          pushCreateAction(this, thisNode.nodeId, nodeName);
+          return thisNode;
+      }
+      onInsertBefore(thisNode, newChild, index) {
+          pushInsertAction(this, newChild, thisNode.nodeId, index);
+          return newChild;
+      }
+      onRemoveChild(thisNode, oldChild) {
+          pushRemoveAction(this, oldChild.nodeId, thisNode.nodeId);
+          return oldChild;
+      }
+      onSetAttribute(thisNode, qualifiedName, value) {
+          if (thisNode.parentNode) {
+              pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
+          }
+      }
+      onRemoveAttribute(thisNode, qualifiedName) {
+          if (thisNode.parentNode) {
+              pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
+          }
+      }
+      onTextContent(thisNode, text) {
+          if (thisNode.parentNode) {
+              pushSetTextAction(this, thisNode.nodeId, text);
+          }
+      }
+      onNodeValue(thisNode, val) {
+          if (thisNode.parentNode) {
+              pushSetTextAction(this, thisNode.nodeId, val);
+          }
+      }
+      genId() {
+          return this._id++;
+      }
+      push(action) {
+          this.updateActions.push(action);
+      }
+      restore() {
+          this.push(this.createAction);
+          // TODO restore children
+          this.push(this.createdAction);
+      }
+      setup() {
+          this.send([this.createAction]);
+      }
+      mounted() {
+          const { updateActions, createdAction } = this;
+          updateActions.unshift(createdAction);
+          this.update();
+      }
+      update() {
+          const { updateActions } = this;
+          if (updateActions.length) {
+              this.send(updateActions);
+              updateActions.length = 0;
+          }
+      }
+      send(action) {
+          UniServiceJSBridge.publishHandler(BRIDGE_NODE_SYNC, action, this.pageId);
+      }
+  }
+  function pushCreateAction(pageNode, nodeId, nodeName) {
+      pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName]);
+  }
+  function pushInsertAction(pageNode, newChild, parentNodeId, index) {
+      pageNode.push([
+          ACTION_TYPE_INSERT,
+          newChild.nodeId,
+          parentNodeId,
+          index,
+          newChild.toJSON({ attr: true }),
+      ]);
+  }
+  function pushRemoveAction(pageNode, nodeId, parentNodeId) {
+      pageNode.push([ACTION_TYPE_REMOVE, nodeId, parentNodeId]);
+  }
+  function pushSetAttributeAction(pageNode, nodeId, name, value) {
+      pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value]);
+  }
+  function pushRemoveAttributeAction(pageNode, nodeId, name) {
+      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, name]);
+  }
+  function pushSetTextAction(pageNode, nodeId, text) {
+      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, text]);
+  }
+  function createPageNode(pageId, pageOptions, setup) {
+      return new UniPageNode(pageId, pageOptions, setup);
+  }
+
+  function setupPage(component) {
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(`setupPage`);
+      }
+      const oldSetup = component.setup;
+      component.setup = (props, ctx) => {
+          const { pagePath, pageQuery } = props;
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(`${pagePath} setup`);
+          }
+          if (oldSetup) {
+              return oldSetup(pageQuery, ctx);
+          }
+      };
+      return component;
+  }
+
+  function applyOptions(options, instance, publicThis) {
+      Object.keys(options).forEach((name) => {
+          if (name.indexOf('on') === 0) {
+              const hook = options[name];
+              if (isFunction(hook)) {
+                  vue.injectHook(name, hook.bind(publicThis), instance);
+              }
+          }
+      });
+  }
+
+  function set(target, key, val) {
+      return (target[key] = val);
+  }
+
+  function errorHandler(err, instance, info) {
+      if (!instance) {
+          throw err;
+      }
+      const app = getApp();
+      if (!app || !app.$vm) {
+          throw err;
+      }
+      {
+          invokeHook(app.$vm, 'onError', err);
+      }
+  }
+
+  function initApp(app) {
+      const appConfig = app._context.config;
+      if (isFunction(app._component.onError)) {
+          appConfig.errorHandler = errorHandler;
+      }
+      const globalProperties = appConfig.globalProperties;
+      {
+          globalProperties.$set = set;
+          globalProperties.$applyOptions = applyOptions;
+      }
   }
 
   let isInitEntryPage = false;
@@ -5545,252 +6473,6 @@ var serviceContext = (function (vue) {
       });
   }
 
-  const ON_WEBVIEW_READY = 'onWebviewReady';
-
-  function initNVue(webviewStyle, routeMeta, path) {
-      if (path && routeMeta.isNVue) {
-          webviewStyle.uniNView = {
-              path,
-              defaultFontSize: __uniConfig.defaultFontSize,
-              viewport: __uniConfig.viewport,
-          };
-      }
-  }
-
-  const colorRE = /^#[a-z0-9]{6}$/i;
-  function isColor(color) {
-      return color && (colorRE.test(color) || color === 'transparent');
-  }
-
-  function initBackgroundColor(webviewStyle, routeMeta) {
-      const { backgroundColor } = routeMeta;
-      if (!backgroundColor) {
-          return;
-      }
-      if (!isColor(backgroundColor)) {
-          return;
-      }
-      if (!webviewStyle.background) {
-          webviewStyle.background = backgroundColor;
-      }
-      if (!webviewStyle.backgroundColorTop) {
-          webviewStyle.backgroundColorTop = backgroundColor;
-      }
-  }
-
-  function initPopGesture(webviewStyle, routeMeta) {
-      // 不支持 hide
-      if (webviewStyle.popGesture === 'hide') {
-          delete webviewStyle.popGesture;
-      }
-      // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
-      if (routeMeta.isQuit) {
-          webviewStyle.popGesture = (plus.os.name === 'iOS' ? 'appback' : 'none');
-      }
-  }
-
-  function initPullToRefresh(webviewStyle, routeMeta) {
-      if (!routeMeta.enablePullDownRefresh) {
-          return;
-      }
-      webviewStyle.pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android'
-          ? defaultAndroidPullToRefresh
-          : defaultPullToRefresh, routeMeta.pullToRefresh));
-  }
-  const defaultAndroidPullToRefresh = { support: true, style: 'circle' };
-  const defaultPullToRefresh = {
-      support: true,
-      style: 'default',
-      height: '50px',
-      range: '200px',
-      contentdown: {
-          caption: '',
-      },
-      contentover: {
-          caption: '',
-      },
-      contentrefresh: {
-          caption: '',
-      },
-  };
-
-  function initTitleNView(webviewStyle, routeMeta) {
-      const { navigationBar } = routeMeta;
-      if (navigationBar.style === 'custom') {
-          return false;
-      }
-      let autoBackButton = true;
-      if (routeMeta.isQuit) {
-          autoBackButton = false;
-      }
-      const titleNView = {
-          autoBackButton,
-      };
-      Object.keys(navigationBar).forEach((name) => {
-          const value = navigationBar[name];
-          if (name === 'backgroundColor') {
-              titleNView.backgroundColor = isColor(value)
-                  ? value
-                  : BACKGROUND_COLOR;
-          }
-          else if (name === 'titleImage' && value) {
-              titleNView.tags = createTitleImageTags(value);
-          }
-          else if (name === 'buttons' && isArray(value)) {
-              titleNView.buttons = value.map((button, index) => {
-                  button.onclick = createTitleNViewBtnClick(index);
-                  return button;
-              });
-          }
-      });
-      webviewStyle.titleNView = titleNView;
-  }
-  function createTitleImageTags(titleImage) {
-      return [
-          {
-              tag: 'img',
-              src: titleImage,
-              position: {
-                  left: 'auto',
-                  top: 'auto',
-                  width: 'auto',
-                  height: '26px',
-              },
-          },
-      ];
-  }
-  function createTitleNViewBtnClick(index) {
-      return function onClick(btn) {
-          btn.index = index;
-          invokeHook('onNavigationBarButtonTap', btn);
-      };
-  }
-
-  function parseWebviewStyle(path, routeMeta) {
-      const webviewStyle = {
-          bounce: 'vertical',
-      };
-      Object.keys(routeMeta).forEach((name) => {
-          if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-              webviewStyle[name] =
-                  routeMeta[name];
-          }
-      });
-      initNVue(webviewStyle, routeMeta, path);
-      initPopGesture(webviewStyle, routeMeta);
-      initBackgroundColor(webviewStyle, routeMeta);
-      initTitleNView(webviewStyle, routeMeta);
-      initPullToRefresh(webviewStyle, routeMeta);
-      return webviewStyle;
-  }
-  const WEBVIEW_STYLE_BLACKLIST = [
-      'id',
-      'route',
-      'isNVue',
-      'isQuit',
-      'isEntry',
-      'isTabBar',
-      'tabBarIndex',
-      'windowTop',
-      'topWindow',
-      'leftWindow',
-      'rightWindow',
-      'maxWidth',
-      'usingComponents',
-      'disableScroll',
-      'enablePullDownRefresh',
-      'navigationBar',
-      'pullToRefresh',
-      'onReachBottomDistance',
-      'pageOrientation',
-      'backgroundColor',
-  ];
-
-  let id = 2;
-  let preloadWebview$1;
-  function getWebviewId() {
-      return id;
-  }
-  function genWebviewId() {
-      return id++;
-  }
-  function getPreloadWebview() {
-      return preloadWebview$1;
-  }
-  function encode(val) {
-      return val;
-  }
-  function initUniPageUrl(path, query) {
-      const queryString = query ? stringifyQuery$1(query, encode) : '';
-      return {
-          path: path.substr(1),
-          query: queryString ? queryString.substr(1) : queryString,
-      };
-  }
-  function initDebugRefresh(isTab, path, query) {
-      const queryString = query ? stringifyQuery$1(query, encode) : '';
-      return {
-          isTab,
-          arguments: JSON.stringify({
-              path: path.substr(1),
-              query: queryString ? queryString.substr(1) : queryString,
-          }),
-      };
-  }
-
-  function createNVueWebview({ path, query, routeOptions, webviewStyle, }) {
-      const curWebviewId = genWebviewId();
-      const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta);
-      curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle);
-      }
-      curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
-          nvue: true,
-      }, webviewStyle));
-  }
-
-  function initWebviewStyle(webview, path, query, routeMeta) {
-      const webviewStyle = parseWebviewStyle(path, routeMeta);
-      webviewStyle.uniPageUrl = initUniPageUrl(path, query);
-      const isTabBar = !!routeMeta.isTabBar;
-      if (!routeMeta.isNVue) {
-          webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
-      }
-      else {
-          // android 需要使用
-          webviewStyle.isTab = isTabBar;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log('[uni-app] updateWebview', webviewStyle);
-      }
-      webview.setStyle(webviewStyle);
-  }
-
-  function initWebview(webview, path, query, routeMeta) {
-      // 首页或非 nvue 页面
-      if (webview.id === '1' || !routeMeta.isNVue) {
-          initWebviewStyle(webview, path, query, routeMeta);
-      }
-  }
-
-  let preloadWebview;
-  function setPreloadWebview(webview) {
-      preloadWebview = webview;
-  }
-
-  function createWebview(options) {
-      if (options.routeOptions.meta.isNVue) {
-          return createNVueWebview(options);
-      }
-      if (getWebviewId() === 2) {
-          // 如果首页非 nvue，则直接返回 Launch Webview
-          return plus.webview.getLaunchWebview();
-      }
-      return getPreloadWebview();
-  }
-
   let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
   function subscribeWebviewReady(_data, pageId) {
       const isLaunchWebview = pageId === '1';
@@ -5867,174 +6549,6 @@ var serviceContext = (function (vue) {
       // 10s后清理临时文件
       setTimeout(clearTempFile, 10000);
       __uniConfig.ready = true;
-  }
-
-  const BRIDGE_NODE_SYNC = 'nodeSync';
-  const ACTION_TYPE_PAGE_CREATE = 1;
-  const ACTION_TYPE_PAGE_CREATED = 2;
-  const ACTION_TYPE_CREATE = 3;
-  const ACTION_TYPE_INSERT = 4;
-  const ACTION_TYPE_REMOVE = 5;
-  const ACTION_TYPE_SET_ATTRIBUTE = 6;
-  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  const ACTION_TYPE_SET_TEXT = 8;
-  class UniPageNode extends UniNode {
-      constructor(pageId, options, setup = false) {
-          super(NODE_TYPE_PAGE, '#page', null);
-          this._id = 1;
-          this.updateActions = [];
-          this.nodeId = 0;
-          this.pageId = pageId;
-          this.pageNode = this;
-          this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
-          this.createdAction = [ACTION_TYPE_PAGE_CREATED];
-          setup && this.setup();
-      }
-      onCreate(thisNode, nodeName) {
-          pushCreateAction(this, thisNode.nodeId, nodeName);
-          return thisNode;
-      }
-      onInsertBefore(thisNode, newChild, index) {
-          pushInsertAction(this, newChild, thisNode.nodeId, index);
-          return newChild;
-      }
-      onRemoveChild(thisNode, oldChild) {
-          pushRemoveAction(this, oldChild.nodeId, thisNode.nodeId);
-          return oldChild;
-      }
-      onSetAttribute(thisNode, qualifiedName, value) {
-          if (thisNode.parentNode) {
-              pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
-          }
-      }
-      onRemoveAttribute(thisNode, qualifiedName) {
-          if (thisNode.parentNode) {
-              pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
-          }
-      }
-      onTextContent(thisNode, text) {
-          if (thisNode.parentNode) {
-              pushSetTextAction(this, thisNode.nodeId, text);
-          }
-      }
-      onNodeValue(thisNode, val) {
-          if (thisNode.parentNode) {
-              pushSetTextAction(this, thisNode.nodeId, val);
-          }
-      }
-      genId() {
-          return this._id++;
-      }
-      push(action) {
-          this.updateActions.push(action);
-      }
-      restore() {
-          this.push(this.createAction);
-          // TODO restore children
-          this.push(this.createdAction);
-      }
-      setup() {
-          this.send([this.createAction]);
-      }
-      mounted() {
-          const { updateActions, createdAction } = this;
-          updateActions.unshift(createdAction);
-          this.update();
-      }
-      update() {
-          const { updateActions } = this;
-          if (updateActions.length) {
-              this.send(updateActions);
-              updateActions.length = 0;
-          }
-      }
-      send(action) {
-          UniServiceJSBridge.publishHandler(BRIDGE_NODE_SYNC, action, this.pageId);
-      }
-  }
-  function pushCreateAction(pageNode, nodeId, nodeName) {
-      pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName]);
-  }
-  function pushInsertAction(pageNode, newChild, parentNodeId, index) {
-      pageNode.push([
-          ACTION_TYPE_INSERT,
-          newChild.nodeId,
-          parentNodeId,
-          index,
-          newChild.toJSON({ attr: true }),
-      ]);
-  }
-  function pushRemoveAction(pageNode, nodeId, parentNodeId) {
-      pageNode.push([ACTION_TYPE_REMOVE, nodeId, parentNodeId]);
-  }
-  function pushSetAttributeAction(pageNode, nodeId, name, value) {
-      pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value]);
-  }
-  function pushRemoveAttributeAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, name]);
-  }
-  function pushSetTextAction(pageNode, nodeId, text) {
-      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, text]);
-  }
-  function createPageNode(pageId, pageOptions, setup) {
-      return new UniPageNode(pageId, pageOptions, setup);
-  }
-
-  function setupPage(component) {
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`setupPage`);
-      }
-      const oldSetup = component.setup;
-      component.setup = (props, ctx) => {
-          const { pagePath, pageQuery } = props;
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(`${pagePath} setup`);
-          }
-          if (oldSetup) {
-              return oldSetup(pageQuery, ctx);
-          }
-      };
-      return component;
-  }
-
-  function applyOptions(options, instance, publicThis) {
-      Object.keys(options).forEach((name) => {
-          if (name.indexOf('on') === 0) {
-              const hook = options[name];
-              if (isFunction(hook)) {
-                  vue.injectHook(name, hook.bind(publicThis), instance);
-              }
-          }
-      });
-  }
-
-  function set(target, key, val) {
-      return (target[key] = val);
-  }
-
-  function errorHandler(err, instance, info) {
-      if (!instance) {
-          throw err;
-      }
-      const app = getApp();
-      if (!app || !app.$vm) {
-          throw err;
-      }
-      {
-          invokeHook(app.$vm, 'onError', err);
-      }
-  }
-
-  function initApp(app) {
-      const appConfig = app._context.config;
-      if (isFunction(app._component.onError)) {
-          appConfig.errorHandler = errorHandler;
-      }
-      const globalProperties = appConfig.globalProperties;
-      {
-          globalProperties.$set = set;
-          globalProperties.$applyOptions = applyOptions;
-      }
   }
 
   var __vuePlugin = {
@@ -6145,6 +6659,168 @@ var serviceContext = (function (vue) {
           windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
           windowBottom: tabBar$1.indexOf(meta.route) >= 0 && tabBar$1.cover ? tabBar$1.height : 0,
       };
+  }
+
+  const navigateTo = defineAsyncApi(API_NAVIGATE_TO, (args, { resolve, reject }) => {
+      const { url, animationType, animationDuration } = args;
+      const { path, query } = parseUrl(url);
+      const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+      navigate(path, () => {
+          _navigateTo({
+              url,
+              path,
+              query,
+              aniType,
+              aniDuration,
+          })
+              .then(resolve)
+              .catch(reject);
+      }, args.openType === 'appLaunch');
+  }, NavigateToProtocol, NavigateToOptions);
+  function _navigateTo({ url, path, query, aniType, aniDuration, }) {
+      // TODO eventChannel
+      return new Promise((resolve) => {
+          showWebview(registerPage({ url, path, query, openType: 'navigateTo' }), aniType, aniDuration, () => {
+              resolve(undefined);
+          });
+      });
+  }
+  function initAnimation(path, animationType, animationDuration) {
+      const { globalStyle } = __uniConfig;
+      const meta = getRouteMeta(path);
+      return [
+          animationType ||
+              meta.animationType ||
+              globalStyle.animationType ||
+              ANI_SHOW,
+          animationDuration ||
+              meta.animationDuration ||
+              globalStyle.animationDuration ||
+              ANI_DURATION,
+      ];
+  }
+
+  var uni$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    setStorageSync: setStorageSync,
+    setStorage: setStorage,
+    getStorageSync: getStorageSync,
+    getStorage: getStorage,
+    removeStorageSync: removeStorageSync,
+    removeStorage: removeStorage,
+    clearStorageSync: clearStorageSync,
+    clearStorage: clearStorage,
+    getStorageInfoSync: getStorageInfoSync,
+    getStorageInfo: getStorageInfo,
+    getFileInfo: getFileInfo,
+    openDocument: openDocument,
+    onCompassChange: onCompassChange,
+    offCompassChange: offCompassChange,
+    startCompass: startCompass,
+    stopCompass: stopCompass,
+    vibrateShort: vibrateShort,
+    vibrateLong: vibrateLong,
+    onAccelerometerChange: onAccelerometerChange,
+    offAccelerometerChange: offAccelerometerChange,
+    startAccelerometer: startAccelerometer,
+    stopAccelerometer: stopAccelerometer,
+    onBluetoothDeviceFound: onBluetoothDeviceFound,
+    onBluetoothAdapterStateChange: onBluetoothAdapterStateChange,
+    onBLEConnectionStateChange: onBLEConnectionStateChange,
+    onBLECharacteristicValueChange: onBLECharacteristicValueChange,
+    openBluetoothAdapter: openBluetoothAdapter,
+    closeBluetoothAdapter: closeBluetoothAdapter,
+    getBluetoothAdapterState: getBluetoothAdapterState,
+    startBluetoothDevicesDiscovery: startBluetoothDevicesDiscovery,
+    stopBluetoothDevicesDiscovery: stopBluetoothDevicesDiscovery,
+    getBluetoothDevices: getBluetoothDevices,
+    getConnectedBluetoothDevices: getConnectedBluetoothDevices,
+    createBLEConnection: createBLEConnection,
+    closeBLEConnection: closeBLEConnection,
+    getBLEDeviceServices: getBLEDeviceServices,
+    getBLEDeviceCharacteristics: getBLEDeviceCharacteristics,
+    notifyBLECharacteristicValueChange: notifyBLECharacteristicValueChange,
+    readBLECharacteristicValue: readBLECharacteristicValue,
+    writeBLECharacteristicValue: writeBLECharacteristicValue,
+    setBLEMTU: setBLEMTU,
+    getBLEDeviceRSSI: getBLEDeviceRSSI,
+    onBeaconUpdate: onBeaconUpdate,
+    onBeaconServiceChange: onBeaconServiceChange,
+    getBeacons: getBeacons,
+    startBeaconDiscovery: startBeaconDiscovery,
+    stopBeaconDiscovery: stopBeaconDiscovery,
+    makePhoneCall: makePhoneCall,
+    getClipboardData: getClipboardData,
+    setClipboardData: setClipboardData,
+    onNetworkStatusChange: onNetworkStatusChange,
+    offNetworkStatusChange: offNetworkStatusChange,
+    getNetworkType: getNetworkType,
+    checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
+    checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
+    startSoterAuthentication: startSoterAuthentication,
+    getImageInfo: getImageInfo,
+    getVideoInfo: getVideoInfo,
+    previewImage: previewImage,
+    getRecorderManager: getRecorderManager,
+    saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
+    saveImageToPhotosAlbum: saveImageToPhotosAlbum,
+    compressImage: compressImage,
+    compressVideo: compressVideo,
+    showKeyboard: showKeyboard,
+    hideKeyboard: hideKeyboard,
+    downloadFile: downloadFile,
+    request: request,
+    createSocketTask: createSocketTask,
+    connectSocket: connectSocket,
+    sendSocketMessage: sendSocketMessage,
+    closeSocket: closeSocket,
+    onSocketOpen: onSocketOpen,
+    onSocketError: onSocketError,
+    onSocketMessage: onSocketMessage,
+    onSocketClose: onSocketClose,
+    createInnerAudioContext: createInnerAudioContext,
+    getBackgroundAudioManager: getBackgroundAudioManager,
+    getLocation: getLocation,
+    showModal: showModal,
+    showActionSheet: showActionSheet,
+    showLoading: showLoading,
+    hideLoading: hideLoading,
+    showToast: showToast,
+    hideToast: hideToast,
+    hide: hide,
+    getProvider: getProvider,
+    login: login,
+    getUserInfo: getUserInfo,
+    getUserProfile: getUserProfile,
+    preLogin: preLogin,
+    closeAuthView: closeAuthView,
+    share: share,
+    shareWithSystem: shareWithSystem,
+    requestPayment: requestPayment,
+    createRewardedVideoAd: createRewardedVideoAd,
+    createFullScreenVideoAd: createFullScreenVideoAd,
+    createInterstitialAd: createInterstitialAd,
+    createInteractiveAd: createInteractiveAd,
+    navigateTo: navigateTo
+  });
+
+  const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
+      publishHandler,
+  });
+  function publishHandler(event, args, pageIds) {
+      args = JSON.stringify(args);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, event, args, pageIds);
+      }
+      if (!isArray(pageIds)) {
+          pageIds = [pageIds];
+      }
+      const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
+      pageIds.forEach((id) => {
+          const idStr = String(id);
+          const webview = plus.webview.getWebviewById(idStr);
+          webview && webview.evalJS(evalJSCode.replace('__PAGE_ID__', idStr));
+      });
   }
 
   // ;(uni as any).__$wx__ = uni

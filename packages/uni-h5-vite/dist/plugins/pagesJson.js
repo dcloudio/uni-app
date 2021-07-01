@@ -17,10 +17,8 @@ function uniPagesJsonPlugin() {
                 if (opts.filter(id)) {
                     const { resolvedConfig } = opts;
                     return {
-                        code: (resolvedConfig.command === 'serve' ||
-                            (resolvedConfig.command === 'build' && ssr)
-                            ? registerGlobalCode(resolvedConfig, ssr)
-                            : '') + generatePagesJsonCode(ssr, code, resolvedConfig),
+                        code: registerGlobalCode(resolvedConfig, ssr) +
+                            generatePagesJsonCode(ssr, code, resolvedConfig),
                         map: { mappings: '' },
                     };
                 }
@@ -63,6 +61,10 @@ function getGlobal(ssr) {
 }
 function registerGlobalCode(config, ssr) {
     const name = getGlobal(ssr);
+    if (config.command === 'build' && !ssr) {
+        // 非SSR的发行模式，补充全局 uni 对象
+        return `${name}.uni = {}`;
+    }
     const rpx2pxCode = !ssr && config.define.__UNI_FEATURE_RPX__
         ? `import {upx2px} from '@dcloudio/uni-h5'
   ${name}.rpx2px = upx2px
