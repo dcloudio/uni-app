@@ -13,6 +13,8 @@ import {
   createComponentDescriptor
 } from './wxs/component-descriptor'
 
+import './gesture'
+
 function pageMounted () {
   // 通知 Service，View 层已 ready
   UniViewJSBridge.publishHandler('onPageReady', {}, this.$page.id)
