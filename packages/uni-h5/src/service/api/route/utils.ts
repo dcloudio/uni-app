@@ -1,3 +1,4 @@
+import { parseUrl } from '@dcloudio/uni-shared'
 import { isNavigationFailure, Router } from 'vue-router'
 import { createPageState } from '../../../framework/setup/page'
 
@@ -13,9 +14,11 @@ export function navigate(
   __id__?: number
 ): Promise<undefined> {
   const router = getApp().$router as Router
+  const { path, query } = parseUrl(url)
   return new Promise((resolve, reject) => {
     router[type === 'navigateTo' ? 'push' : 'replace']({
-      path: url,
+      path,
+      query,
       force: true,
       state: createPageState(type, __id__),
     }).then((failure) => {
