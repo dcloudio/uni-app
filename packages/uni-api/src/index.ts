@@ -31,6 +31,7 @@ export * from './protocols/device/vibrate'
 export * from './protocols/device/bluetooth'
 export * from './protocols/device/ibeacon'
 export * from './protocols/device/brightness'
+export * from './protocols/device/soterAuthentication'
 
 export * from './protocols/storage/storage'
 

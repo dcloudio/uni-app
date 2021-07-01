@@ -87,6 +87,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <div class="uni-radio-wrapper">
             <div
               class="uni-radio-input"
+              // @ts-ignore
               class={{ 'uni-radio-input-disabled': props.disabled }}
               style={radioChecked.value ? checkedStyle.value : ''}
             >

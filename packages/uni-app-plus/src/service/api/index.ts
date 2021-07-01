@@ -10,6 +10,7 @@ export * from './device/ibeacon'
 export * from './device/makePhoneCall'
 export * from './device/clipboard'
 export * from './device/network'
+export * from './device/soterAuthentication'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
