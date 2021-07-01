@@ -43,7 +43,7 @@ export function showToast ({
     })
     toast = true
   } else {
-    if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
+    if (icon && !~['success', 'loading', 'error', 'none'].indexOf(icon)) {
       icon = 'success'
     }
     const waitingOptions = {
@@ -70,11 +70,11 @@ export function showToast ({
         interval: duration
       }
     } else {
-      if (icon === 'success') {
+      if (['success', 'error'].indexOf(icon) !== -1) {
         waitingOptions.loading = {
           display: 'block',
           height: '55px',
-          icon: '__uniappsuccess.png',
+          icon: icon === 'success' ? '__uniappsuccess.png' : '__uniapperror.png',
           interval: duration
         }
       }

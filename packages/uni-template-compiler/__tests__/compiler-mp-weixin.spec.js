@@ -20,6 +20,12 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
 }
 
 describe('mp:compiler-mp-weixin', () => {
+  it('generate class', () => {
+    assertCodegen(
+      '<view class="a external-class c" :class="class1">hello world</view>',
+      '<view class="{{[\'a\',\'external-class\',\'c\',class1]}}">hello world</view>'
+    )
+  })
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="{bar}">{{ bar.foo }}</template></foo>',
@@ -138,6 +144,14 @@ describe('mp:compiler-mp-weixin', () => {
       '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
       '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block><block wx:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?$getScopedSlotsParams("551070e6-1","default","item"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'augmented'
       }

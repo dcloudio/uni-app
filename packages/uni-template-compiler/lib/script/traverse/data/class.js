@@ -31,9 +31,10 @@ function processClassArrayExpressionElements (classArrayExpression) {
 
 function processStaticClass (classArrayExpression, staticClassPath, state) {
   if (staticClassPath) {
-    classArrayExpression.elements.unshift(
-      t.stringLiteral(staticClassPath.node.value.value)
-    )
+    const staticClassPathArr = staticClassPath.node.value.value.split(' ')
+    for (let len = staticClassPathArr.length, index = len - 1; index >= 0; index--) {
+      classArrayExpression.elements.unshift(t.stringLiteral(staticClassPathArr[index]))
+    }
     staticClassPath.remove()
   }
   if (

@@ -117,6 +117,7 @@ export default {
     }, 100)
     this.$watch('value', valueChange)
     this.__triggerInput = throttle(($event, detail) => {
+      this.__valueChange.cancel()
       this.$emit('update:value', detail.value)
       this.$trigger('input', $event, detail)
     }, 100)

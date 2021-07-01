@@ -15,6 +15,12 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
 }
 
 describe('mp:compiler-mp-qq', () => {
+  it('generate class', () => {
+    assertCodegen(
+      '<view class="a external-class c" :class="class1">hello world</view>',
+      '<view class="{{[\'a\',\'external-class\',\'c\',class1]}}">hello world</view>'
+    )
+  })
   it('generate text trim', () => {
     assertCodegen(
       '<text>\nN: {{title}}\n′</text>',

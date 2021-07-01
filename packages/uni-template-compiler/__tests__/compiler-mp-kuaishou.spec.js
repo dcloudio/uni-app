@@ -20,6 +20,12 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', opt
 }
 
 describe('mp:compiler-mp-kuaishou', () => {
+  it('generate class', () => {
+    assertCodegen(
+      '<view class="a external-class c" :class="class1">hello world</view>',
+      '<view class="{{[\'a\',\'external-class\',\'c\',class1]}}">hello world</view>'
+    )
+  })
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="{bar}">{{ bar.foo }}</template></foo>',
