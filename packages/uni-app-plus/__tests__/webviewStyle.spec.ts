@@ -16,12 +16,9 @@ const defaultRoute = 'pages/index/index'
 describe('webviewStyle', () => {
   test('basic', () => {
     expect(
-      parseWebviewStyle(1, defaultPath, {
-        path: defaultPath,
-        meta: {
-          route: defaultRoute,
-          navigationBar: {},
-        },
+      parseWebviewStyle(defaultPath, {
+        route: defaultRoute,
+        navigationBar: {},
       })
     ).toMatchSnapshot()
   })

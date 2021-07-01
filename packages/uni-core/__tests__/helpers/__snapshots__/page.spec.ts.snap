@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`page mergePageMeta 1`] = `
+exports[`page initRouteMeta 1`] = `
 Object {
   "id": 1,
   "navigationBar": Object {
@@ -11,7 +11,7 @@ Object {
 }
 `;
 
-exports[`page mergePageMeta 2`] = `
+exports[`page initRouteMeta 2`] = `
 Object {
   "enablePullDownRefresh": true,
   "id": 1,
@@ -24,7 +24,7 @@ Object {
 }
 `;
 
-exports[`page mergePageMeta 3`] = `
+exports[`page initRouteMeta 3`] = `
 Object {
   "enablePullDownRefresh": true,
   "id": 1,
