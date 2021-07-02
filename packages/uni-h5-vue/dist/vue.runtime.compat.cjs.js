@@ -499,34 +499,38 @@ const get = /*#__PURE__*/ createGetter();
 const shallowGet = /*#__PURE__*/ createGetter(false, true);
 const readonlyGet = /*#__PURE__*/ createGetter(true);
 const shallowReadonlyGet = /*#__PURE__*/ createGetter(true, true);
-const arrayInstrumentations = {};
-['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
-    const method = Array.prototype[key];
-    arrayInstrumentations[key] = function (...args) {
-        const arr = toRaw(this);
-        for (let i = 0, l = this.length; i < l; i++) {
-            track(arr, "get" /* GET */, i + '');
-        }
-        // we run the method using the original args first (which may be reactive)
-        const res = method.apply(arr, args);
-        if (res === -1 || res === false) {
-            // if that didn't work, run it again using raw values.
-            return method.apply(arr, args.map(toRaw));
-        }
-        else {
+const arrayInstrumentations = /*#__PURE__*/ createArrayInstrumentations();
+function createArrayInstrumentations() {
+    const instrumentations = {};
+    ['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
+        const method = Array.prototype[key];
+        instrumentations[key] = function (...args) {
+            const arr = toRaw(this);
+            for (let i = 0, l = this.length; i < l; i++) {
+                track(arr, "get" /* GET */, i + '');
+            }
+            // we run the method using the original args first (which may be reactive)
+            const res = method.apply(arr, args);
+            if (res === -1 || res === false) {
+                // if that didn't work, run it again using raw values.
+                return method.apply(arr, args.map(toRaw));
+            }
+            else {
+                return res;
+            }
+        };
+    });
+    ['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
+        const method = Array.prototype[key];
+        instrumentations[key] = function (...args) {
+            pauseTracking();
+            const res = method.apply(this, args);
+            resetTracking();
             return res;
-        }
-    };
-});
-['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
-    const method = Array.prototype[key];
-    arrayInstrumentations[key] = function (...args) {
-        pauseTracking();
-        const res = method.apply(this, args);
-        resetTracking();
-        return res;
-    };
-});
+        };
+    });
+    return instrumentations;
+}
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target, key, receiver) {
         if (key === "__v_isReactive" /* IS_REACTIVE */) {
@@ -645,14 +649,14 @@ const readonlyHandlers = {
         return true;
     }
 };
-const shallowReactiveHandlers = extend({}, mutableHandlers, {
+const shallowReactiveHandlers = /*#__PURE__*/ extend({}, mutableHandlers, {
     get: shallowGet,
     set: shallowSet
 });
 // Props handlers are special in the sense that it should not unwrap top-level
 // refs (in order to allow refs to be explicitly passed down), but should
 // retain the reactivity of the normal readonly object.
-const shallowReadonlyHandlers = extend({}, readonlyHandlers, {
+const shallowReadonlyHandlers = /*#__PURE__*/ extend({}, readonlyHandlers, {
     get: shallowReadonlyGet
 });
 
@@ -822,73 +826,82 @@ function createReadonlyMethod(type) {
         return type === "delete" /* DELETE */ ? false : this;
     };
 }
-const mutableInstrumentations = {
-    get(key) {
-        return get$1(this, key);
-    },
-    get size() {
-        return size(this);
-    },
-    has: has$1,
-    add,
-    set: set$1,
-    delete: deleteEntry,
-    clear,
-    forEach: createForEach(false, false)
-};
-const shallowInstrumentations = {
-    get(key) {
-        return get$1(this, key, false, true);
-    },
-    get size() {
-        return size(this);
-    },
-    has: has$1,
-    add,
-    set: set$1,
-    delete: deleteEntry,
-    clear,
-    forEach: createForEach(false, true)
-};
-const readonlyInstrumentations = {
-    get(key) {
-        return get$1(this, key, true);
-    },
-    get size() {
-        return size(this, true);
-    },
-    has(key) {
-        return has$1.call(this, key, true);
-    },
-    add: createReadonlyMethod("add" /* ADD */),
-    set: createReadonlyMethod("set" /* SET */),
-    delete: createReadonlyMethod("delete" /* DELETE */),
-    clear: createReadonlyMethod("clear" /* CLEAR */),
-    forEach: createForEach(true, false)
-};
-const shallowReadonlyInstrumentations = {
-    get(key) {
-        return get$1(this, key, true, true);
-    },
-    get size() {
-        return size(this, true);
-    },
-    has(key) {
-        return has$1.call(this, key, true);
-    },
-    add: createReadonlyMethod("add" /* ADD */),
-    set: createReadonlyMethod("set" /* SET */),
-    delete: createReadonlyMethod("delete" /* DELETE */),
-    clear: createReadonlyMethod("clear" /* CLEAR */),
-    forEach: createForEach(true, true)
-};
-const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator];
-iteratorMethods.forEach(method => {
-    mutableInstrumentations[method] = createIterableMethod(method, false, false);
-    readonlyInstrumentations[method] = createIterableMethod(method, true, false);
-    shallowInstrumentations[method] = createIterableMethod(method, false, true);
-    shallowReadonlyInstrumentations[method] = createIterableMethod(method, true, true);
-});
+function createInstrumentations() {
+    const mutableInstrumentations = {
+        get(key) {
+            return get$1(this, key);
+        },
+        get size() {
+            return size(this);
+        },
+        has: has$1,
+        add,
+        set: set$1,
+        delete: deleteEntry,
+        clear,
+        forEach: createForEach(false, false)
+    };
+    const shallowInstrumentations = {
+        get(key) {
+            return get$1(this, key, false, true);
+        },
+        get size() {
+            return size(this);
+        },
+        has: has$1,
+        add,
+        set: set$1,
+        delete: deleteEntry,
+        clear,
+        forEach: createForEach(false, true)
+    };
+    const readonlyInstrumentations = {
+        get(key) {
+            return get$1(this, key, true);
+        },
+        get size() {
+            return size(this, true);
+        },
+        has(key) {
+            return has$1.call(this, key, true);
+        },
+        add: createReadonlyMethod("add" /* ADD */),
+        set: createReadonlyMethod("set" /* SET */),
+        delete: createReadonlyMethod("delete" /* DELETE */),
+        clear: createReadonlyMethod("clear" /* CLEAR */),
+        forEach: createForEach(true, false)
+    };
+    const shallowReadonlyInstrumentations = {
+        get(key) {
+            return get$1(this, key, true, true);
+        },
+        get size() {
+            return size(this, true);
+        },
+        has(key) {
+            return has$1.call(this, key, true);
+        },
+        add: createReadonlyMethod("add" /* ADD */),
+        set: createReadonlyMethod("set" /* SET */),
+        delete: createReadonlyMethod("delete" /* DELETE */),
+        clear: createReadonlyMethod("clear" /* CLEAR */),
+        forEach: createForEach(true, true)
+    };
+    const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator];
+    iteratorMethods.forEach(method => {
+        mutableInstrumentations[method] = createIterableMethod(method, false, false);
+        readonlyInstrumentations[method] = createIterableMethod(method, true, false);
+        shallowInstrumentations[method] = createIterableMethod(method, false, true);
+        shallowReadonlyInstrumentations[method] = createIterableMethod(method, true, true);
+    });
+    return [
+        mutableInstrumentations,
+        readonlyInstrumentations,
+        shallowInstrumentations,
+        shallowReadonlyInstrumentations
+    ];
+}
+const [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations] = /* #__PURE__*/ createInstrumentations();
 function createInstrumentationGetter(isReadonly, shallow) {
     const instrumentations = shallow
         ? isReadonly
@@ -913,16 +926,16 @@ function createInstrumentationGetter(isReadonly, shallow) {
     };
 }
 const mutableCollectionHandlers = {
-    get: createInstrumentationGetter(false, false)
+    get: /*#__PURE__*/ createInstrumentationGetter(false, false)
 };
 const shallowCollectionHandlers = {
-    get: createInstrumentationGetter(false, true)
+    get: /*#__PURE__*/ createInstrumentationGetter(false, true)
 };
 const readonlyCollectionHandlers = {
-    get: createInstrumentationGetter(true, false)
+    get: /*#__PURE__*/ createInstrumentationGetter(true, false)
 };
 const shallowReadonlyCollectionHandlers = {
-    get: createInstrumentationGetter(true, true)
+    get: /*#__PURE__*/ createInstrumentationGetter(true, true)
 };
 function checkIdentityKeys(target, has, key) {
     const rawKey = toRaw(key);
@@ -1304,6 +1317,7 @@ function formatProp(key, value, raw) {
 }
 
 const ErrorTypeStrings = {
+    ["sp" /* SERVER_PREFETCH */]: 'serverPrefetch hook',
     ["bc" /* BEFORE_CREATE */]: 'beforeCreate hook',
     ["c" /* CREATED */]: 'created hook',
     ["bm" /* BEFORE_MOUNT */]: 'beforeMount hook',
@@ -4653,13 +4667,16 @@ function applyOptions(instance) {
     }
     if (isArray(expose)) {
         if (expose.length) {
-            const exposed = instance.exposed || (instance.exposed = proxyRefs({}));
+            const exposed = instance.exposed || (instance.exposed = {});
             expose.forEach(key => {
-                exposed[key] = toRef(publicThis, key);
+                Object.defineProperty(exposed, key, {
+                    get: () => publicThis[key],
+                    set: val => (publicThis[key] = val)
+                });
             });
         }
         else if (!instance.exposed) {
-            instance.exposed = EMPTY_OBJ;
+            instance.exposed = {};
         }
     }
     // options that are handled when creating the instance but also need to be
@@ -5673,7 +5690,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.1.2";
+    Vue.version = "3.1.3";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -6259,8 +6276,9 @@ function createHydrationFunctions(rendererInternals) {
     const hydrate = (vnode, container) => {
         if (!container.hasChildNodes()) {
             warn(`Attempting to hydrate existing markup but container is empty. ` +
-                `Performing full mount instead.`);
+                    `Performing full mount instead.`);
             patch(null, vnode, container);
+            flushPostFlushCbs();
             return;
         }
         hasMismatch = false;
@@ -6397,19 +6415,24 @@ function createHydrationFunctions(rendererInternals) {
     };
     const hydrateElement = (el, vnode, parentComponent, parentSuspense, slotScopeIds, optimized) => {
         optimized = optimized || !!vnode.dynamicChildren;
-        const { props, patchFlag, shapeFlag, dirs } = vnode;
+        const { type, props, patchFlag, shapeFlag, dirs } = vnode;
+        // #4006 for form elements with non-string v-model value bindings
+        // e.g. <option :value="obj">, <input type="checkbox" :true-value="1">
+        const forcePatchValue = (type === 'input' && dirs) || type === 'option';
         // skip props & children if this is hoisted static nodes
-        if (patchFlag !== -1 /* HOISTED */) {
+        if (forcePatchValue || patchFlag !== -1 /* HOISTED */) {
             if (dirs) {
                 invokeDirectiveHook(vnode, null, parentComponent, 'created');
             }
             // props
             if (props) {
-                if (!optimized ||
+                if (forcePatchValue ||
+                    !optimized ||
                     (patchFlag & 16 /* FULL_PROPS */ ||
                         patchFlag & 32 /* HYDRATE_EVENTS */)) {
                     for (const key in props) {
-                        if (!isReservedProp(key) && isOn(key)) {
+                        if ((forcePatchValue && key.endsWith('value')) ||
+                            (isOn(key) && !isReservedProp(key))) {
                             patchProp(el, key, null, props[key]);
                         }
                     }
@@ -6661,7 +6684,7 @@ const setRef = (rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) => 
         return;
     }
     const refValue = vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */
-        ? vnode.component.exposed || vnode.component.proxy
+        ? getExposeProxy(vnode.component) || vnode.component.proxy
         : vnode.el;
     const value = isUnmount ? null : refValue;
     const { i: owner, r: ref } = rawRef;
@@ -6834,11 +6857,19 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
     };
     const mountStaticNode = (n2, container, anchor, isSVG) => {
-        [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG, 
+        // static nodes are only present when used with compiler-dom/runtime-dom
+        // which guarantees presence of hostInsertStaticContent.
+        const nodes = hostInsertStaticContent(n2.children, container, anchor, isSVG, 
         // pass cached nodes if the static node is being mounted multiple times
         // so that runtime-dom can simply cloneNode() instead of inserting new
         // HTML
-        n2.el && [n2.el, n2.anchor]);
+        n2.staticCache);
+        // first mount - this is the orignal hoisted vnode. cache nodes.
+        if (!n2.el) {
+            n2.staticCache = nodes;
+        }
+        n2.el = nodes[0];
+        n2.anchor = nodes[nodes.length - 1];
     };
     /**
      * Dev / HMR only
@@ -8837,7 +8868,6 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
         anchor: null,
         target: null,
         targetAnchor: null,
-        staticCount: 0,
         shapeFlag,
         patchFlag,
         dynamicProps,
@@ -8904,6 +8934,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
         target: vnode.target,
         targetAnchor: vnode.targetAnchor,
         staticCount: vnode.staticCount,
+        staticCache: vnode.staticCache,
         shapeFlag: vnode.shapeFlag,
         // if the vnode is cloned with extra props, we can no longer assume its
         // existing patch flag to be reliable and need to add the FULL_PROPS flag.
@@ -9460,7 +9491,7 @@ const getPublicInstance = (i) => {
     if (!i)
         return null;
     if (isStatefulComponent(i))
-        return i.exposed ? i.exposed : i.proxy;
+        return getExposeProxy(i) || i.proxy;
     return getPublicInstance(i.parent);
 };
 const publicPropertiesMap = extend(Object.create(null), {
@@ -9488,6 +9519,15 @@ const PublicInstanceProxyHandlers = {
         // for internal formatters to know that this is a Vue instance
         if (key === '__isVue') {
             return true;
+        }
+        // prioritize <script setup> bindings during dev.
+        // this allows even properties that start with _ or $ to be used - so that
+        // it aligns with the production behavior where the render fn is inlined and
+        // indeed has access to all declared variables.
+        if (setupState !== EMPTY_OBJ &&
+            setupState.__isScriptSetup &&
+            hasOwn(setupState, key)) {
+            return setupState[key];
         }
         // data / props / ctx
         // This getter gets called for every property access on the render context
@@ -9695,7 +9735,7 @@ function exposePropsOnRenderContext(instance) {
 function exposeSetupStateOnRenderContext(instance) {
     const { ctx, setupState } = instance;
     Object.keys(toRaw(setupState)).forEach(key => {
-        if (key[0] === '$' || key[0] === '_') {
+        if (!setupState.__isScriptSetup && (key[0] === '$' || key[0] === '_')) {
             warn(`setup() return property ${JSON.stringify(key)} should not start with "$" or "_" ` +
                 `which are reserved prefixes for Vue internals.`);
             return;
@@ -9728,6 +9768,7 @@ function createComponentInstance(vnode, parent, suspense) {
         render: null,
         proxy: null,
         exposed: null,
+        exposeProxy: null,
         withProxy: null,
         effects: null,
         provides: parent ? parent.provides : Object.create(appContext.provides),
@@ -9860,6 +9901,10 @@ function setupStatefulComponent(instance, isSSR) {
         resetTracking();
         currentInstance = null;
         if (isPromise(setupResult)) {
+            const unsetInstance = () => {
+                currentInstance = null;
+            };
+            setupResult.then(unsetInstance, unsetInstance);
             if (isSSR) {
                 // return the promise so server-renderer can wait on it
                 return setupResult
@@ -10023,14 +10068,15 @@ function createSetupContext(instance) {
         if (instance.exposed) {
             warn(`expose() should be called only once per setup().`);
         }
-        instance.exposed = proxyRefs(exposed);
+        instance.exposed = exposed || {};
     };
     {
+        let attrs;
         // We use getters in dev in case libs like test-utils overwrite instance
         // properties (overwrites should not be done in prod)
         return Object.freeze({
             get attrs() {
-                return new Proxy(instance.attrs, attrDevProxyHandlers);
+                return (attrs || (attrs = new Proxy(instance.attrs, attrDevProxyHandlers)));
             },
             get slots() {
                 return shallowReadonly(instance.slots);
@@ -10040,6 +10086,21 @@ function createSetupContext(instance) {
             },
             expose
         });
+    }
+}
+function getExposeProxy(instance) {
+    if (instance.exposed) {
+        return (instance.exposeProxy ||
+            (instance.exposeProxy = new Proxy(proxyRefs(markRaw(instance.exposed)), {
+                get(target, key) {
+                    if (key in target) {
+                        return target[key];
+                    }
+                    else if (key in publicPropertiesMap) {
+                        return publicPropertiesMap[key](instance);
+                    }
+                }
+            })));
     }
 }
 // record effects created during a component's setup() so that they can be
@@ -10090,21 +10151,46 @@ function computed$1(getterOrOptions) {
     return c;
 }
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+// dev only
+const warnRuntimeUsage = (method) => warn(`${method}() is a compiler-hint helper that is only usable inside ` +
+    `<script setup> of a single file component. Its arguments should be ` +
+    `compiled away and passing it at runtime has no effect.`);
 // implementation
 function defineProps() {
     {
-        warn(`defineProps() is a compiler-hint helper that is only usable inside ` +
-            `<script setup> of a single file component. Its arguments should be ` +
-            `compiled away and passing it at runtime has no effect.`);
+        warnRuntimeUsage(`defineProps`);
     }
     return null;
 }
 // implementation
 function defineEmits() {
     {
-        warn(`defineEmits() is a compiler-hint helper that is only usable inside ` +
-            `<script setup> of a single file component. Its arguments should be ` +
-            `compiled away and passing it at runtime has no effect.`);
+        warnRuntimeUsage(`defineEmits`);
     }
     return null;
 }
@@ -10113,6 +10199,47 @@ function defineEmits() {
  */
 const defineEmit = defineEmits;
 /**
+ * Vue `<script setup>` compiler macro for declaring a component's exposed
+ * instance properties when it is accessed by a parent component via template
+ * refs.
+ *
+ * `<script setup>` components are closed by default - i.e. varaibles inside
+ * the `<script setup>` scope is not exposed to parent unless explicitly exposed
+ * via `defineExpose`.
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ */
+function defineExpose(exposed) {
+    {
+        warnRuntimeUsage(`defineExpose`);
+    }
+}
+/**
+ * Vue `<script setup>` compiler macro for providing props default values when
+ * using type-based `defineProps` decalration.
+ *
+ * Example usage:
+ * ```ts
+ * withDefaults(defineProps<{
+ *   size?: number
+ *   labels?: string[]
+ * }>(), {
+ *   size: 3,
+ *   labels: () => ['default label']
+ * })
+ * ```
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the output
+ * and should **not** be actually called at runtime.
+ */
+function withDefaults(props, defaults) {
+    {
+        warnRuntimeUsage(`withDefaults`);
+    }
+    return null;
+}
+/**
  * @deprecated use `useSlots` and `useAttrs` instead.
  */
 function useContext() {
@@ -10120,11 +10247,63 @@ function useContext() {
         warn(`\`useContext()\` has been deprecated and will be removed in the ` +
             `next minor release. Use \`useSlots()\` and \`useAttrs()\` instead.`);
     }
+    return getContext();
+}
+function useSlots() {
+    return getContext().slots;
+}
+function useAttrs() {
+    return getContext().attrs;
+}
+function getContext() {
     const i = getCurrentInstance();
     if (!i) {
         warn(`useContext() called without active instance.`);
     }
     return i.setupContext || (i.setupContext = createSetupContext(i));
+}
+/**
+ * Runtime helper for merging default declarations. Imported by compiled code
+ * only.
+ * @internal
+ */
+function mergeDefaults(
+// the base props is compiler-generated and guaranteed to be in this shape.
+props, defaults) {
+    for (const key in defaults) {
+        const val = props[key];
+        if (val) {
+            val.default = defaults[key];
+        }
+        else if (val === null) {
+            props[key] = { default: defaults[key] };
+        }
+        else {
+            warn(`props default key "${key}" has no corresponding declaration.`);
+        }
+    }
+    return props;
+}
+/**
+ * Runtime helper for storing and resuming current instance context in
+ * async setup().
+ */
+function withAsyncContext(awaitable) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const ctx = getCurrentInstance();
+        setCurrentInstance(null); // unset after storing instance
+        if (!ctx) {
+            warn(`withAsyncContext() called when there is no active context instance.`);
+        }
+        let res;
+        try {
+            res = yield awaitable;
+        }
+        finally {
+            setCurrentInstance(ctx);
+        }
+        return res;
+    });
 }
 
 // Actual implementation
@@ -10357,7 +10536,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.2";
+const version = "3.1.3";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -10445,18 +10624,17 @@ const nodeOps = {
     // As long as the user only uses trusted templates, this is safe.
     insertStaticContent(content, parent, anchor, isSVG, cached) {
         if (cached) {
-            let [cachedFirst, cachedLast] = cached;
-            let first, last;
-            while (true) {
-                let node = cachedFirst.cloneNode(true);
-                if (!first)
+            let first;
+            let last;
+            let i = 0;
+            let l = cached.length;
+            for (; i < l; i++) {
+                const node = cached[i].cloneNode(true);
+                if (i === 0)
                     first = node;
-                parent.insertBefore(node, anchor);
-                if (cachedFirst === cachedLast) {
+                if (i === l - 1)
                     last = node;
-                    break;
-                }
-                cachedFirst = cachedFirst.nextSibling;
+                parent.insertBefore(node, anchor);
             }
             return [first, last];
         }
@@ -10485,12 +10663,16 @@ const nodeOps = {
         else {
             parent.insertAdjacentHTML('beforeend', content);
         }
-        return [
-            // first
-            before ? before.nextSibling : parent.firstChild,
-            // last
-            anchor ? anchor.previousSibling : parent.lastChild
-        ];
+        let first = before ? before.nextSibling : parent.firstChild;
+        const last = anchor ? anchor.previousSibling : parent.lastChild;
+        const ret = [];
+        while (first) {
+            ret.push(first);
+            if (first === last)
+                break;
+            first = first.nextSibling;
+        }
+        return ret;
     }
 };
 
@@ -12020,8 +12202,14 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   defineAsyncComponent: defineAsyncComponent,
   defineProps: defineProps,
   defineEmits: defineEmits,
+  defineExpose: defineExpose,
+  withDefaults: withDefaults,
+  mergeDefaults: mergeDefaults,
+  withAsyncContext: withAsyncContext,
   defineEmit: defineEmit,
   useContext: useContext,
+  useAttrs: useAttrs,
+  useSlots: useSlots,
   getCurrentInstance: getCurrentInstance,
   h: h,
   createVNode: createVNode,
