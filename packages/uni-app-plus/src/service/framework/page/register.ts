@@ -7,6 +7,9 @@ import { createPage } from './define'
 import { PageNodeOptions } from '../dom/Page'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
+import { addCurrentPage } from './getCurrentPages'
+import { initPageInternalInstance } from '@dcloudio/uni-core'
+import { ComponentPublicInstance } from 'vue'
 
 export type OpenType =
   | 'navigateTo'
@@ -22,14 +25,17 @@ interface RegisterPageOptions {
   query: Record<string, string>
   openType: OpenType
   webview?: PlusWebviewWebviewObject
+  vm?: ComponentPublicInstance // nvue vm instance
   // eventChannel: unknown
 }
 
 export function registerPage({
+  url,
   path,
   query,
   openType,
   webview,
+  vm,
 }: RegisterPageOptions) {
   // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
   if (webview) {
@@ -48,6 +54,11 @@ export function registerPage({
 
   routeOptions.meta.id = parseInt(webview.id!)
 
+  const isTabBar = !!routeOptions.meta.isTabBar
+  if (isTabBar) {
+    tabBar.append(webview)
+  }
+
   if (__DEV__) {
     console.log(`[uni-app] registerPage(${path},${webview.id})`)
   }
@@ -58,14 +69,18 @@ export function registerPage({
 
   ;(webview as any).__uniapp_route = route
 
+  const pageInstance = initPageInternalInstance(url, query, routeOptions.meta)
+
   if (!(webview as any).nvue) {
     createPage(
       parseInt(webview.id!),
       route,
       query,
-      null,
+      pageInstance,
       initPageOptions(routeOptions)
     )
+  } else {
+    vm && addCurrentPage(vm)
   }
   return webview
 }

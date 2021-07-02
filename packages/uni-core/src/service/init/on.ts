@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from '@vue/runtime-core'
-import { getCurrentPage, invokeHook } from './page'
+import { invokeHook } from '../../helpers/hook'
+import { getCurrentPage } from '../../helpers/page'
 
 export function initOn() {
   UniServiceJSBridge.on('onAppEnterForeground', onAppEnterForeground)

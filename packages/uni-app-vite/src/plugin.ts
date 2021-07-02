@@ -31,12 +31,12 @@ export const UniAppPlugin: UniVitePlugin = {
           formats: ['iife'],
         },
         rollupOptions: {
-          // external: ['vue'],
+          external: ['vue'],
           output: {
             entryFileNames: 'app-service.js',
-            // globals: {
-            //   vue: 'Vue',
-            // },
+            globals: {
+              vue: 'Vue',
+            },
           },
         },
       },

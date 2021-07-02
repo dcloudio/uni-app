@@ -1,2 +1,4 @@
-export * from './bridge'
-export * from './plugin'
+export { ViewJSBridge } from './bridge'
+export { initView } from './init'
+export { initViewPlugin } from './plugin'
+export { createNativeEvent } from './plugin/componentInstance'

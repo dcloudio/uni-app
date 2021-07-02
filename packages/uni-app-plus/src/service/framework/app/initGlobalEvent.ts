@@ -41,6 +41,9 @@ function subscribePlusMessage({
 }: {
   data: { type: string; args: Record<string, any> }
 }) {
+  if (__DEV__) {
+    console.log('plusMessage:' + JSON.stringify(data))
+  }
   if (data && data.type) {
     UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args)
   }

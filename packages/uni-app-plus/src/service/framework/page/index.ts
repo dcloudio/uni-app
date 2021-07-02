@@ -1,3 +1,3 @@
-export * from './define'
-export * from './register'
-plus.webview.create
+export { definePage } from './define'
+export { registerPage } from './register'
+export { getCurrentPages } from './getCurrentPages'

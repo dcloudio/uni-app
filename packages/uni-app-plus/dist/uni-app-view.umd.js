@@ -5608,7 +5608,19 @@
   };
   function initBridge(subscribeNamespace) {
     const emitter = new E();
-    return extend(emitter, {
+    return {
+      on(event, callback) {
+        return emitter.on(event, callback);
+      },
+      once(event, callback) {
+        return emitter.once(event, callback);
+      },
+      off(event, callback) {
+        return emitter.off(event, callback);
+      },
+      emit(event, ...args) {
+        return emitter.emit(event, ...args);
+      },
       subscribe(event, callback, once = false) {
         emitter[once ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
       },
@@ -5621,7 +5633,7 @@
         }
         emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
       }
-    });
+    };
   }
   const ViewJSBridge = /* @__PURE__ */ initBridge("service");
   function PolySymbol(name) {
@@ -5693,11 +5705,6 @@
     fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
     return "/" + fromRouteArray.concat(toRouteArray).join("/");
   }
-  /* @__PURE__ */ extend(initBridge("view"), {
-    invokeOnCallback(name, res) {
-      return UniServiceJSBridge.emit("api." + name, res);
-    }
-  });
   function converPx(value) {
     if (/^-?\d+[ur]px$/i.test(value)) {
       return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {

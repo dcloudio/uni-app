@@ -1,5 +1,5 @@
 import { getRouteOptions, initRouteMeta } from '@dcloudio/uni-core'
-import { OpenType } from '.'
+import { OpenType } from './register'
 
 export function initRouteOptions(path: string, openType: OpenType) {
   // 需要序列化一遍

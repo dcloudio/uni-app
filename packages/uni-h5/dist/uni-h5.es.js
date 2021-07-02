@@ -1,5 +1,5 @@
-import { isFunction, extend, hyphenate, isPlainObject, isString, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, passive, normalizeTarget, isBuiltInComponent, initCustomDataset, invokeArrayFns, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { isFunction, extend, isString, hyphenate, isPlainObject, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { once, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
 import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -442,7 +442,19 @@ E.prototype = {
 };
 function initBridge(subscribeNamespace) {
   const emitter2 = new E();
-  return extend(emitter2, {
+  return {
+    on(event, callback) {
+      return emitter2.on(event, callback);
+    },
+    once(event, callback) {
+      return emitter2.once(event, callback);
+    },
+    off(event, callback) {
+      return emitter2.off(event, callback);
+    },
+    emit(event, ...args) {
+      return emitter2.emit(event, ...args);
+    },
     subscribe(event, callback, once2 = false) {
       emitter2[once2 ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
     },
@@ -455,7 +467,7 @@ function initBridge(subscribeNamespace) {
       }
       emitter2.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
-  });
+  };
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("service");
 const LONGPRESS_TIMEOUT = 350;
@@ -507,6 +519,38 @@ function initLongPress() {
   window.addEventListener("touchmove", touchmove, passiveOptions$2);
   window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
   window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
+}
+function checkValue$1(value, defaultValue) {
+  const newValue = Number(value);
+  return isNaN(newValue) ? defaultValue : newValue;
+}
+function getWindowWidth$1() {
+  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+  const landscape = screenFix && Math.abs(window.orientation) === 90;
+  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+  return windowWidth;
+}
+function useRem() {
+  function updateRem() {
+    const config = __uniConfig.globalStyle || {};
+    const maxWidth = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+    const baseWidth = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
+    let width = getWindowWidth$1();
+    width = width <= maxWidth ? width : baseWidth;
+    document.documentElement.style.fontSize = width / 23.4375 + "px";
+  }
+  updateRem();
+  document.addEventListener("DOMContentLoaded", updateRem);
+  window.addEventListener("load", updateRem);
+  window.addEventListener("resize", updateRem);
+}
+function initView() {
+  useRem();
+  initCustomDataset();
+  if (__UNI_FEATURE_LONGPRESS__) {
+    initLongPress();
+  }
 }
 var attrs = ["top", "left", "right", "bottom"];
 var inited$1;
@@ -812,6 +856,41 @@ function getPageIdByVm(vm) {
     return rootProxy.$page.id;
   }
 }
+function getPageById(id2) {
+  return getCurrentPages().find((page) => page.$page.id === id2);
+}
+function getPageVmById(id2) {
+  const page = getPageById(id2);
+  if (page) {
+    return page.$vm;
+  }
+}
+function getCurrentPage() {
+  const pages = getCurrentPages();
+  const len = pages.length;
+  if (len) {
+    return pages[len - 1];
+  }
+}
+function getCurrentPageMeta() {
+  const page = getCurrentPage();
+  if (page) {
+    return page.$page.meta;
+  }
+}
+function getCurrentPageId() {
+  const meta = getCurrentPageMeta();
+  if (meta) {
+    return meta.id;
+  }
+  return -1;
+}
+function getCurrentPageVm() {
+  const page = getCurrentPage();
+  if (page) {
+    return page.$vm;
+  }
+}
 const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
@@ -835,6 +914,36 @@ function normalizePullToRefreshRpx(pullToRefresh) {
     pullToRefresh.range = rpx2px(pullToRefresh.range);
   }
   return pullToRefresh;
+}
+function initPageInternalInstance(url, pageQuery, meta) {
+  const { id: id2, route } = meta;
+  return {
+    id: id2,
+    path: "/" + route,
+    route,
+    fullPath: url,
+    options: pageQuery,
+    meta
+  };
+}
+function invokeHook(vm, name, args) {
+  if (isString(vm)) {
+    args = name;
+    name = vm;
+    vm = getCurrentPageVm();
+  } else if (typeof vm === "number") {
+    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    if (page) {
+      vm = page.$vm;
+    } else {
+      vm = getCurrentPageVm();
+    }
+  }
+  if (!vm) {
+    return;
+  }
+  const hooks = vm.$[name];
+  return hooks && invokeArrayFns(hooks, args);
 }
 function disableScrollListener(evt) {
   evt.preventDefault();
@@ -1217,37 +1326,7 @@ function initAppConfig$1(appConfig) {
     globalProperties.$gcd = getComponentDescriptor;
   }
 }
-function checkValue$1(value, defaultValue) {
-  const newValue = Number(value);
-  return isNaN(newValue) ? defaultValue : newValue;
-}
-function getWindowWidth$1() {
-  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-  const landscape = screenFix && Math.abs(window.orientation) === 90;
-  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
-  return windowWidth;
-}
-function useRem() {
-  function updateRem() {
-    const config = __uniConfig.globalStyle || {};
-    const maxWidth = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
-    const baseWidth = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
-    let width = getWindowWidth$1();
-    width = width <= maxWidth ? width : baseWidth;
-    document.documentElement.style.fontSize = width / 23.4375 + "px";
-  }
-  updateRem();
-  document.addEventListener("DOMContentLoaded", updateRem);
-  window.addEventListener("load", updateRem);
-  window.addEventListener("resize", updateRem);
-}
-function initView(app) {
-  useRem();
-  initCustomDataset();
-  if (__UNI_FEATURE_LONGPRESS__) {
-    initLongPress();
-  }
+function initViewPlugin(app) {
   initAppConfig$1(app._context.config);
 }
 const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
@@ -1255,6 +1334,43 @@ const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
     return UniServiceJSBridge.emit("api." + name, res);
   }
 });
+function initOn() {
+  UniServiceJSBridge.on("onAppEnterForeground", onAppEnterForeground);
+  UniServiceJSBridge.on("onAppEnterBackground", onAppEnterBackground);
+}
+function onAppEnterForeground() {
+  const page = getCurrentPage();
+  const showOptions = {
+    path: "",
+    query: {}
+  };
+  if (page) {
+    showOptions.path = page.$page.route;
+    showOptions.query = page.$page.options;
+  }
+  invokeHook(getApp(), "onShow", showOptions);
+  invokeHook(page, "onShow");
+}
+function onAppEnterBackground() {
+  invokeHook(getApp(), "onHide");
+  invokeHook(getCurrentPage(), "onHide");
+}
+const SUBSCRIBE_LIFECYCLE_HOOKS = ["onPageScroll", "onReachBottom"];
+function initSubscribe() {
+  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
+}
+function createPageEvent(name) {
+  return (args, pageId) => {
+    const vm = getPageVmById(pageId);
+    if (vm) {
+      invokeHook(vm, name, args);
+    }
+  };
+}
+function initService() {
+  initOn();
+  initSubscribe();
+}
 function querySelector(vm, selector) {
   const el = vm.$el.querySelector(selector);
   return el && el.__vue__;
@@ -1296,96 +1412,7 @@ function initAppConfig(appConfig) {
     extend(globalProperties, wxInstance);
   }
 }
-function getPageById(id2) {
-  return getCurrentPages().find((page) => page.$page.id === id2);
-}
-function getPageVmById(id2) {
-  const page = getPageById(id2);
-  if (page) {
-    return page.$vm;
-  }
-}
-function getCurrentPage() {
-  const pages = getCurrentPages();
-  const len = pages.length;
-  if (len) {
-    return pages[len - 1];
-  }
-}
-function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
-  }
-}
-function getCurrentPageId() {
-  const meta = getCurrentPageMeta();
-  if (meta) {
-    return meta.id;
-  }
-  return -1;
-}
-function getCurrentPageVm() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$vm;
-  }
-}
-function invokeHook(vm, name, args) {
-  if (isString(vm)) {
-    args = name;
-    name = vm;
-    vm = getCurrentPageVm();
-  } else if (typeof vm === "number") {
-    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
-    if (page) {
-      vm = page.$vm;
-    } else {
-      vm = getCurrentPageVm();
-    }
-  }
-  if (!vm) {
-    return;
-  }
-  const hooks = vm.$[name];
-  return hooks && invokeArrayFns(hooks, args);
-}
-function initOn() {
-  UniServiceJSBridge.on("onAppEnterForeground", onAppEnterForeground);
-  UniServiceJSBridge.on("onAppEnterBackground", onAppEnterBackground);
-}
-function onAppEnterForeground() {
-  const page = getCurrentPage();
-  const showOptions = {
-    path: "",
-    query: {}
-  };
-  if (page) {
-    showOptions.path = page.$page.route;
-    showOptions.query = page.$page.options;
-  }
-  invokeHook(getApp(), "onShow", showOptions);
-  invokeHook(page, "onShow");
-}
-function onAppEnterBackground() {
-  invokeHook(getApp(), "onHide");
-  invokeHook(getCurrentPage(), "onHide");
-}
-const SUBSCRIBE_LIFECYCLE_HOOKS = ["onPageScroll", "onReachBottom"];
-function initSubscribe() {
-  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
-}
-function createPageEvent(name) {
-  return (args, pageId) => {
-    const vm = getPageVmById(pageId);
-    if (vm) {
-      invokeHook(vm, name, args);
-    }
-  };
-}
-function initService(app) {
-  initOn();
-  initSubscribe();
+function initServicePlugin(app) {
   initAppConfig(app._context.config);
 }
 function converPx(value) {
@@ -13180,25 +13207,9 @@ function createPageState(type, __id__) {
 function initPublicPage(route) {
   const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
-    const { path: path2, alias } = __uniRoutes[0];
-    return {
-      id: meta.id,
-      path: path2,
-      route: alias.substr(1),
-      fullPath: path2,
-      options: {},
-      meta
-    };
+    return initPageInternalInstance(__uniRoutes[0].path, {}, meta);
   }
-  const { path } = route;
-  return {
-    id: meta.id,
-    path,
-    route: route.meta.route,
-    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
-    options: {},
-    meta
-  };
+  return initPageInternalInstance(route.fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;
@@ -13381,8 +13392,8 @@ function initHistory() {
 var index$9 = {
   install(app) {
     initApp$1(app);
-    initView(app);
-    initService(app);
+    initViewPlugin(app);
+    initServicePlugin(app);
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
@@ -13396,6 +13407,8 @@ function initApp(vm) {
   appVm = vm;
   appVm.$vm = vm;
   appVm.globalData = appVm.$options.globalData || {};
+  initService();
+  initView();
 }
 function wrapperComponentSetup(comp, { init: init2, setup, before }) {
   before && before(comp);

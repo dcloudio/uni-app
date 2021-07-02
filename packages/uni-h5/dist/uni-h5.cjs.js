@@ -353,7 +353,19 @@ E.prototype = {
 };
 function initBridge(subscribeNamespace) {
   const emitter = new E();
-  return shared.extend(emitter, {
+  return {
+    on(event, callback) {
+      return emitter.on(event, callback);
+    },
+    once(event, callback) {
+      return emitter.once(event, callback);
+    },
+    off(event, callback) {
+      return emitter.off(event, callback);
+    },
+    emit(event, ...args) {
+      return emitter.emit(event, ...args);
+    },
     subscribe(event, callback, once = false) {
       emitter[once ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
     },
@@ -366,7 +378,7 @@ function initBridge(subscribeNamespace) {
       }
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
-  });
+  };
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("service");
 uniShared.passive(true);
@@ -425,6 +437,32 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   return vue.getCurrentInstance().root.proxy.$page.id;
 }
+function getCurrentPage() {
+  const pages = getCurrentPages();
+  const len = pages.length;
+  if (len) {
+    return pages[len - 1];
+  }
+}
+function getCurrentPageMeta() {
+  const page = getCurrentPage();
+  if (page) {
+    return page.$page.meta;
+  }
+}
+function getCurrentPageId() {
+  const meta = getCurrentPageMeta();
+  if (meta) {
+    return meta.id;
+  }
+  return -1;
+}
+function getCurrentPageVm() {
+  const page = getCurrentPage();
+  if (page) {
+    return page.$vm;
+  }
+}
 const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
@@ -448,6 +486,36 @@ function normalizePullToRefreshRpx(pullToRefresh) {
     pullToRefresh.range = rpx2px(pullToRefresh.range);
   }
   return pullToRefresh;
+}
+function initPageInternalInstance(url, pageQuery, meta) {
+  const { id, route } = meta;
+  return {
+    id,
+    path: "/" + route,
+    route,
+    fullPath: url,
+    options: pageQuery,
+    meta
+  };
+}
+function invokeHook(vm, name, args) {
+  if (shared.isString(vm)) {
+    args = name;
+    name = vm;
+    vm = getCurrentPageVm();
+  } else if (typeof vm === "number") {
+    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    if (page) {
+      vm = page.$vm;
+    } else {
+      vm = getCurrentPageVm();
+    }
+  }
+  if (!vm) {
+    return;
+  }
+  const hooks = vm.$[name];
+  return hooks && uniShared.invokeArrayFns(hooks, args);
 }
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
@@ -534,51 +602,6 @@ const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
     return UniServiceJSBridge.emit("api." + name, res);
   }
 });
-function getCurrentPage() {
-  const pages = getCurrentPages();
-  const len = pages.length;
-  if (len) {
-    return pages[len - 1];
-  }
-}
-function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
-  }
-}
-function getCurrentPageId() {
-  const meta = getCurrentPageMeta();
-  if (meta) {
-    return meta.id;
-  }
-  return -1;
-}
-function getCurrentPageVm() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$vm;
-  }
-}
-function invokeHook(vm, name, args) {
-  if (shared.isString(vm)) {
-    args = name;
-    name = vm;
-    vm = getCurrentPageVm();
-  } else if (typeof vm === "number") {
-    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
-    if (page) {
-      vm = page.$vm;
-    } else {
-      vm = getCurrentPageVm();
-    }
-  }
-  if (!vm) {
-    return;
-  }
-  const hooks = vm.$[name];
-  return hooks && uniShared.invokeArrayFns(hooks, args);
-}
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -6623,25 +6646,9 @@ function getCurrentPages$1() {
 function initPublicPage(route) {
   const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
-    const { path: path2, alias } = __uniRoutes[0];
-    return {
-      id: meta.id,
-      path: path2,
-      route: alias.substr(1),
-      fullPath: path2,
-      options: {},
-      meta
-    };
+    return initPageInternalInstance(__uniRoutes[0].path, {}, meta);
   }
-  const { path } = route;
-  return {
-    id: meta.id,
-    path,
-    route: route.meta.route,
-    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
-    options: {},
-    meta
-  };
+  return initPageInternalInstance(route.fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;

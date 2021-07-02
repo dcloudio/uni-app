@@ -304,12 +304,6 @@ declare namespace UniApp {
      */
     unsubscribe(event: string, callback?: Function): void
     /**
-     * 执行  Service 层 API 回调
-     * @param callbackId
-     * @param args
-     */
-    invokeCallbackHandler(callbackId: number, args: unknown): void
-    /**
      * 向 View 层发送事件
      * @param event
      * @param args

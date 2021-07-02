@@ -1,4 +1,5 @@
-import { getPageVmById, invokeHook } from './page'
+import { getPageVmById } from '../../helpers/page'
+import { invokeHook } from '../../helpers/hook'
 
 const SUBSCRIBE_LIFECYCLE_HOOKS = ['onPageScroll', 'onReachBottom']
 

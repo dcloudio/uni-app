@@ -7,7 +7,7 @@ import {
 
 interface AppUniConfig {
   pages: string[]
-  window: UniApp.PagesJsonPageStyle
+  globalStyle: UniApp.PagesJsonPageStyle
   nvue: {
     compiler: 'uni-app' | 'weex'
     styleCompiler: 'weex' | 'uni-app'
@@ -35,7 +35,7 @@ export function normalizeAppUniConfig(
 ) {
   const config: AppUniConfig = {
     pages: [],
-    window: pagesJson.globalStyle,
+    globalStyle: pagesJson.globalStyle,
     nvue: {
       compiler: getNVueCompiler(manifestJson),
       styleCompiler: getNVueStyleCompiler(manifestJson),

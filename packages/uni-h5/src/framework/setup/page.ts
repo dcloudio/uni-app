@@ -12,6 +12,7 @@ import {
   disableScrollListener,
   createScrollListener,
   CreateScrollListenerOptions,
+  initPageInternalInstance,
 } from '@dcloudio/uni-core'
 import { ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
@@ -21,7 +22,7 @@ import { getStateId } from '../../helpers/dom'
 
 const SEP = '$$'
 
-const currentPagesMap = new Map<string, Page.PageInstance>()
+const currentPagesMap = new Map<string, ComponentPublicInstance>()
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -36,11 +37,11 @@ export function getCurrentPagesMap() {
 }
 
 export function getCurrentPages() {
-  const curPages: Page.PageInstance[] = []
+  const curPages: ComponentPublicInstance[] = []
   const pages = currentPagesMap.values()
   for (const page of pages) {
-    if ((page as ComponentPublicInstance).__isTabBar) {
-      if ((page as ComponentPublicInstance).$.__isActive) {
+    if (page.__isTabBar) {
+      if (page.$.__isActive) {
         curPages.push(page)
       }
     } else {
@@ -78,25 +79,9 @@ export function createPageState(type: NavigateType, __id__?: number) {
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
   const meta = usePageMeta()
   if (!__UNI_FEATURE_PAGES__) {
-    const { path, alias } = __uniRoutes[0]
-    return {
-      id: meta.id,
-      path,
-      route: alias!.substr(1),
-      fullPath: path,
-      options: {},
-      meta,
-    }
+    return initPageInternalInstance(__uniRoutes[0].path, {}, meta)
   }
-  const { path } = route
-  return {
-    id: meta.id,
-    path: path,
-    route: route.meta.route,
-    fullPath: route.meta.isEntry ? route.meta.pagePath : route.fullPath,
-    options: {}, // $route.query
-    meta,
-  }
+  return initPageInternalInstance(route.fullPath, {}, meta)
 }
 
 export function initPage(vm: ComponentPublicInstance) {
@@ -105,10 +90,7 @@ export function initPage(vm: ComponentPublicInstance) {
   ;(vm as any).$vm = vm
   ;(vm as any).$page = page
   vm.__isTabBar = page.meta.isTabBar!
-  currentPagesMap.set(
-    normalizeRouteKey(page.path, page.id),
-    vm as unknown as Page.PageInstance
-  )
+  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
 }
 
 export function normalizeRouteKey(path: string, id: number) {
@@ -185,7 +167,7 @@ function pruneRouteCache(key: string) {
 }
 
 function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
-  const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue['flex-direction']
+  const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue!['flex-direction']
   if (pageMeta.isNVue) {
     document.body.setAttribute('nvue', '')
     document.body.setAttribute(nvueDirKey, '')

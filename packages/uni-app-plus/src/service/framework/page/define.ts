@@ -13,29 +13,33 @@ export function definePage(pagePath: string, component: VueComponent) {
 }
 
 export interface PageProps {
+  pageId: number
   pagePath: string
   pageQuery: Record<string, any>
-  pageInstance: unknown
+  pageInstance: Page.PageInstance['$page']
 }
 
 export function createPage(
   pageId: number,
   pagePath: string,
   pageQuery: Record<string, any>,
-  pageInstance: unknown,
+  pageInstance: Page.PageInstance['$page'],
   pageOptions: PageNodeOptions
 ) {
-  return createApp(pagesMap.get(pagePath)!(), {
-    pagePath,
-    pageQuery,
-    pageInstance,
-  })
+  return createApp(
+    pagesMap.get(pagePath)!({
+      pageId,
+      pagePath,
+      pageQuery,
+      pageInstance,
+    })
+  )
     .use(__vuePlugin)
-    .mount(createPageNode(pageId, pageOptions) as unknown as Element)
+    .mount(createPageNode(pageId, pageOptions, true) as unknown as Element)
 }
 
 function createFactory(component: VueComponent) {
-  return () => {
-    return setupPage(component)
+  return (props: PageProps) => {
+    return setupPage(component, props)
   }
 }

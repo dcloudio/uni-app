@@ -1,27 +1,13 @@
-import { App, ComponentInternalInstance } from 'vue'
-import { extend } from '@vue/shared'
+import { App } from 'vue'
 import { initApp } from '@dcloudio/uni-vue'
-import { initService } from '@dcloudio/uni-core'
+import { initServicePlugin } from '@dcloudio/uni-core'
 import { registerApp } from '../app'
 
-interface JsRuntime {
-  injectHook: (
-    type: string,
-    hook: Function,
-    target: ComponentInternalInstance | null,
-    prepend: boolean
-  ) => Function | undefined
-  createApp: typeof createApp
-}
-
 export default {
-  install(app: App, runtime: JsRuntime) {
-    // @ts-expect-error 赋值全局对象 jsRuntime
-    extend(jsRuntime, runtime)
-
+  install(app: App) {
     initMount(app)
     initApp(app)
-    initService(app)
+    initServicePlugin(app)
   },
 }
 

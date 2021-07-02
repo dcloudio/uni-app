@@ -1,47 +1,7 @@
-import { isString } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
+import { isString } from '@vue/shared'
 import { invokeArrayFns } from '@dcloudio/uni-shared'
-
-export function getPageById(id: number) {
-  return getCurrentPages().find((page) => page.$page.id === id)
-}
-
-export function getPageVmById(id: number) {
-  const page = getPageById(id)
-  if (page) {
-    return (page as any).$vm as ComponentPublicInstance
-  }
-}
-
-export function getCurrentPage() {
-  const pages = getCurrentPages()
-  const len = pages.length
-  if (len) {
-    return pages[len - 1]
-  }
-}
-
-export function getCurrentPageMeta() {
-  const page = getCurrentPage()
-  if (page) {
-    return page.$page.meta
-  }
-}
-
-export function getCurrentPageId() {
-  const meta = getCurrentPageMeta()
-  if (meta) {
-    return meta.id!
-  }
-  return -1
-}
-
-export function getCurrentPageVm() {
-  const page = getCurrentPage()
-  if (page) {
-    return (page as any).$vm as ComponentPublicInstance
-  }
-}
+import { getCurrentPageVm } from './page'
 
 export function invokeHook(name: string, args?: unknown): unknown
 export function invokeHook(id: number, name: string, args?: unknown): unknown

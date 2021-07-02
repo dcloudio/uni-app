@@ -16,6 +16,47 @@ export function getPageIdByVm(vm: ComponentPublicInstance) {
   }
 }
 
+export function getPageById(id: number) {
+  return getCurrentPages().find((page) => page.$page.id === id)
+}
+
+export function getPageVmById(id: number) {
+  const page = getPageById(id)
+  if (page) {
+    return (page as any).$vm as ComponentPublicInstance
+  }
+}
+
+export function getCurrentPage() {
+  const pages = getCurrentPages()
+  const len = pages.length
+  if (len) {
+    return pages[len - 1]
+  }
+}
+
+export function getCurrentPageMeta() {
+  const page = getCurrentPage()
+  if (page) {
+    return page.$page.meta
+  }
+}
+
+export function getCurrentPageId() {
+  const meta = getCurrentPageMeta()
+  if (meta) {
+    return meta.id!
+  }
+  return -1
+}
+
+export function getCurrentPageVm() {
+  const page = getCurrentPage()
+  if (page) {
+    return (page as any).$vm as ComponentPublicInstance
+  }
+}
+
 const PAGE_META_KEYS = ['navigationBar', 'pullToRefresh'] as const
 
 function initGlobalStyle() {
@@ -47,4 +88,20 @@ export function normalizePullToRefreshRpx(
     pullToRefresh.range = rpx2px(pullToRefresh.range)
   }
   return pullToRefresh
+}
+
+export function initPageInternalInstance(
+  url: string,
+  pageQuery: Record<string, any>,
+  meta: UniApp.PageRouteMeta
+): Page.PageInstance['$page'] {
+  const { id, route } = meta
+  return {
+    id: id!,
+    path: '/' + route,
+    route: route,
+    fullPath: url,
+    options: pageQuery,
+    meta,
+  }
 }

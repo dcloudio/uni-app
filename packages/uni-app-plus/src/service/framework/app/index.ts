@@ -1,6 +1,8 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 
+import { initService } from '@dcloudio/uni-core'
+
 import { initEntry } from './initEntry'
 import { initTabBar } from './initTabBar'
 import { initGlobalEvent } from './initGlobalEvent'
@@ -13,7 +15,24 @@ const defaultApp = {
   globalData: {},
 }
 
+export function getApp({ allowDefault = false } = {}) {
+  if (appCtx) {
+    // 真实的 App 已初始化
+    return appCtx
+  }
+  if (allowDefault) {
+    // 返回默认实现
+    return defaultApp
+  }
+  console.error(
+    '[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.'
+  )
+}
+
 export function registerApp(appVm: ComponentPublicInstance) {
+  if (__DEV__) {
+    console.log('registerApp')
+  }
   appCtx = appVm
   appCtx.$vm = appVm
 
@@ -23,6 +42,8 @@ export function registerApp(appVm: ComponentPublicInstance) {
   if ($options) {
     appCtx.globalData = extend($options.globalData || {}, appCtx.globalData)
   }
+
+  initService()
 
   initEntry()
   initTabBar()
