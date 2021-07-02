@@ -5614,6 +5614,7 @@ var serviceContext = (function (vue) {
       });
   }
 
+  const VD_SYNC = 'vdSync';
   const ON_WEBVIEW_READY = 'onWebviewReady';
 
   function initNVue(webviewStyle, routeMeta, path) {
@@ -6490,7 +6491,6 @@ var serviceContext = (function (vue) {
       }, delay);
   }
 
-  const BRIDGE_NODE_SYNC = 'nodeSync';
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
   const ACTION_TYPE_CREATE = 3;
@@ -6499,6 +6499,7 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_SET_ATTRIBUTE = 6;
   const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
   const ACTION_TYPE_SET_TEXT = 8;
+
   class UniPageNode extends UniNode {
       constructor(pageId, options, setup = false) {
           super(NODE_TYPE_PAGE, '#page', null);
@@ -6509,6 +6510,7 @@ var serviceContext = (function (vue) {
           this.pageNode = this;
           this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
           this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+          this._update = this.update.bind(this);
           setup && this.setup();
       }
       onCreate(thisNode, nodeName) {
@@ -6548,6 +6550,10 @@ var serviceContext = (function (vue) {
       }
       push(action) {
           this.updateActions.push(action);
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('PageNode', 'push', action));
+          }
+          vue.queuePostFlushCb(this._update);
       }
       restore() {
           this.push(this.createAction);
@@ -6557,20 +6563,23 @@ var serviceContext = (function (vue) {
       setup() {
           this.send([this.createAction]);
       }
-      mounted() {
-          const { updateActions, createdAction } = this;
-          updateActions.unshift(createdAction);
-          this.update();
-      }
+      // mounted() {
+      //   const { updateActions, createdAction } = this
+      //   updateActions.unshift(createdAction)
+      //   this.update()
+      // }
       update() {
           const { updateActions } = this;
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('PageNode', 'update', updateActions.length));
+          }
           if (updateActions.length) {
               this.send(updateActions);
               updateActions.length = 0;
           }
       }
       send(action) {
-          UniServiceJSBridge.publishHandler(BRIDGE_NODE_SYNC, action, this.pageId);
+          UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
       }
   }
   function pushCreateAction(pageNode, nodeId, nodeName) {
@@ -6730,6 +6739,7 @@ var serviceContext = (function (vue) {
   function initPageOptions({ meta }) {
       const statusbarHeight = getStatusbarHeight();
       return {
+          route: meta.route,
           version: 1,
           locale: '',
           disableScroll: meta.disableScroll === true,

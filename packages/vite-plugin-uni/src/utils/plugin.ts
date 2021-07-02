@@ -17,17 +17,9 @@ export function initExtraPlugins(cliRoot: string, platform: UniApp.PLATFORM) {
   return initPlugins(resolvePlugins(cliRoot, platform))
 }
 
-function initPlugin(plugin: PluginConfig): Plugin | void {
-  const configFile = path.join(
-    plugin.id,
-    plugin.config.main || '/lib/uni.plugin.js'
-  )
-  try {
-    const plugin = require(configFile)
-    return plugin.default || plugin
-  } catch (e) {
-    console.warn(`${configFile} not found`)
-  }
+function initPlugin({ id, config: { main } }: PluginConfig): Plugin | void {
+  const plugin = require(path.join(id, main || '/lib/uni.plugin.js'))
+  return plugin.default || plugin
 }
 
 function initPlugins(plugins: PluginConfig[]): Plugin[] {

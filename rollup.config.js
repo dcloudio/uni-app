@@ -6,6 +6,7 @@ import json from '@rollup/plugin-json'
 import alias from '@rollup/plugin-alias'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
@@ -111,20 +112,27 @@ function createConfig(entryFile, output, buildOption) {
           ...Object.keys(pkg.peerDependencies || {}),
           ...(buildOption.external || []),
         ]
-
+  const plugins = [
+    createAliasPlugin(buildOption),
+    nodeResolve(),
+    commonjs(),
+    json({
+      namedExports: false,
+    }),
+    tsPlugin,
+    createReplacePlugin(buildOption, output.format),
+  ]
+  if (buildOption.babel) {
+    plugins.push(
+      getBabelOutputPlugin({
+        presets: [['@babel/preset-env', { targets: ['iOS 9'] }]],
+      })
+    )
+  }
   return {
     input: resolve(entryFile),
     external,
-    plugins: [
-      createAliasPlugin(buildOption),
-      nodeResolve(),
-      commonjs(),
-      json({
-        namedExports: false,
-      }),
-      tsPlugin,
-      createReplacePlugin(buildOption, output.format),
-    ],
+    plugins,
     output,
     onwarn: (msg, warn) => {
       // if (!/Circular/.test(msg)) {

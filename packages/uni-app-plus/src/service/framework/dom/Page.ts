@@ -1,85 +1,26 @@
+import { queuePostFlushCb } from 'vue'
 import {
   UniNode,
   NODE_TYPE_PAGE,
   UniBaseNode,
   IUniPageNode,
+  formatLog,
 } from '@dcloudio/uni-shared'
-
-const BRIDGE_NODE_SYNC = 'nodeSync'
-
-const ACTION_TYPE_PAGE_CREATE = 1
-const ACTION_TYPE_PAGE_CREATED = 2
-export const ACTION_TYPE_CREATE = 3
-export const ACTION_TYPE_INSERT = 4
-export const ACTION_TYPE_REMOVE = 5
-export const ACTION_TYPE_SET_ATTRIBUTE = 6
-export const ACTION_TYPE_REMOVE_ATTRIBUTE = 7
-export const ACTION_TYPE_SET_TEXT = 8
-
-export interface PageNodeOptions {
-  version: number
-  locale: string
-  disableScroll: boolean
-  onPageScroll: boolean
-  onPageReachBottom: boolean
-  onReachBottomDistance: number
-  statusbarHeight: number
-  windowTop: number
-  windowBottom: number
-}
-
-interface PageCreateData extends PageNodeOptions {}
-
-type PageCreateAction = [typeof ACTION_TYPE_PAGE_CREATE, PageCreateData]
-type PageCreatedAction = [typeof ACTION_TYPE_PAGE_CREATED]
-
-export type CreateAction = [
-  typeof ACTION_TYPE_CREATE,
-  number, // nodeId
-  string | number //nodeName
-]
-
-export type InsertAction = [
-  typeof ACTION_TYPE_INSERT,
-  number, // nodeId
-  number, // parentNodeId
-  number, // index
-  Record<string, any> // Element JSON
-]
-
-export type RemoveAction = [
-  typeof ACTION_TYPE_REMOVE,
-  number, // nodeId
-  number // parentNodeId
-]
-
-export type SetAttributeAction = [
-  typeof ACTION_TYPE_SET_ATTRIBUTE,
-  number, // nodeId
-  string, // attribute name
-  unknown // attribute value
-]
-export type RemoveAttributeAction = [
-  typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
-  number, // nodeId
-  string // attribute name
-]
-
-export type SetTextAction = [
-  typeof ACTION_TYPE_SET_TEXT,
-  number, // nodeId
-  string // text content
-]
-
-type PageUpdateAction =
-  | CreateAction
-  | InsertAction
-  | RemoveAction
-  | SetAttributeAction
-  | RemoveAttributeAction
-  | SetTextAction
-
-export type PageAction = PageCreateAction | PageCreatedAction | PageUpdateAction
+import {
+  PageCreateAction,
+  PageCreatedAction,
+  PageAction,
+  PageNodeOptions,
+  ACTION_TYPE_CREATE,
+  ACTION_TYPE_INSERT,
+  ACTION_TYPE_REMOVE,
+  ACTION_TYPE_SET_ATTRIBUTE,
+  ACTION_TYPE_REMOVE_ATTRIBUTE,
+  ACTION_TYPE_SET_TEXT,
+  ACTION_TYPE_PAGE_CREATE,
+  ACTION_TYPE_PAGE_CREATED,
+} from '../../../PageAction'
+import { VD_SYNC } from '../../../constants'
 
 export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
@@ -87,6 +28,9 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   private createAction: PageCreateAction
   private createdAction: PageCreatedAction
   public updateActions: PageAction[] = []
+
+  private _update: () => void
+
   constructor(
     pageId: number,
     options: PageNodeOptions,
@@ -99,6 +43,8 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
 
     this.createAction = [ACTION_TYPE_PAGE_CREATE, options]
     this.createdAction = [ACTION_TYPE_PAGE_CREATED]
+
+    this._update = this.update.bind(this)
 
     setup && this.setup()
   }
@@ -139,6 +85,10 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   }
   push(action: PageAction) {
     this.updateActions.push(action)
+    if (__DEV__) {
+      console.log(formatLog('PageNode', 'push', action))
+    }
+    queuePostFlushCb(this._update)
   }
   restore() {
     this.push(this.createAction)
@@ -148,20 +98,23 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   setup() {
     this.send([this.createAction])
   }
-  mounted() {
-    const { updateActions, createdAction } = this
-    updateActions.unshift(createdAction)
-    this.update()
-  }
+  // mounted() {
+  //   const { updateActions, createdAction } = this
+  //   updateActions.unshift(createdAction)
+  //   this.update()
+  // }
   update() {
     const { updateActions } = this
+    if (__DEV__) {
+      console.log(formatLog('PageNode', 'update', updateActions.length))
+    }
     if (updateActions.length) {
       this.send(updateActions)
       updateActions.length = 0
     }
   }
   send(action: PageAction[]) {
-    UniServiceJSBridge.publishHandler(BRIDGE_NODE_SYNC, action, this.pageId)
+    UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId)
   }
 }
 

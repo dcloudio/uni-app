@@ -1,8 +1,9 @@
 import { once } from '@dcloudio/uni-shared'
 import { createApp, defineComponent } from 'vue'
-import { createPageNode, PageNodeOptions } from '../dom/Page'
+import { createPageNode } from '../dom/Page'
 import { setupPage } from './setup'
 import __vuePlugin from '../plugin'
+import { PageNodeOptions } from '../../../PageAction'
 
 export type VueComponent = ReturnType<typeof defineComponent>
 
