@@ -1,3 +1,4 @@
+import { formatLog } from '@dcloudio/uni-shared'
 import { backbuttonListener } from './utils'
 
 export function initGlobalEvent() {
@@ -42,7 +43,7 @@ function subscribePlusMessage({
   data: { type: string; args: Record<string, any> }
 }) {
   if (__DEV__) {
-    console.log('plusMessage:' + JSON.stringify(data))
+    console.log(formatLog('plusMessage', data))
   }
   if (data && data.type) {
     UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args)

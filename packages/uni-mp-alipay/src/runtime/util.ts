@@ -109,7 +109,7 @@ export function initChildVues(
       initSpecialMethods(childMPInstance)
 
       if (relationOptions.parent) {
-        handleRef.call(relationOptions.parent.$scope, childMPInstance)
+        handleRef.call(relationOptions.parent.$scope as any, childMPInstance)
       }
 
       initChildVues(childMPInstance)

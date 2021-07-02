@@ -1,3 +1,4 @@
+import { formatLog } from '@dcloudio/uni-shared'
 import { VIEW_WEBVIEW_PATH } from '../../constants'
 import { genWebviewId } from './utils'
 
@@ -18,7 +19,7 @@ export function createPreloadWebview() {
       String(genWebviewId())
     )
     if (__DEV__) {
-      console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`)
+      console.log(formatLog('createPreloadWebview', preloadWebview.id))
     }
   }
   return preloadWebview

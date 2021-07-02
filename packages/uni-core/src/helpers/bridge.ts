@@ -1,4 +1,5 @@
 // TODO 等待 vue3 的兼容模式自带emitter
+import { formatLog } from '@dcloudio/uni-shared'
 import E from './TinyEmitter'
 
 export function initBridge(
@@ -28,9 +29,7 @@ export function initBridge(
     subscribeHandler(event: string, args: unknown, pageId?: number): void {
       if (__DEV__) {
         console.log(
-          `[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(
-            args
-          )}, ${pageId}`
+          formatLog(subscribeNamespace, 'subscribeHandler', pageId, event, args)
         )
       }
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId)

@@ -1,6 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
-
+import { formatLog } from '@dcloudio/uni-shared'
 import { initService } from '@dcloudio/uni-core'
 
 import { initEntry } from './initEntry'
@@ -31,7 +31,7 @@ export function getApp({ allowDefault = false } = {}) {
 
 export function registerApp(appVm: ComponentPublicInstance) {
   if (__DEV__) {
-    console.log('registerApp')
+    console.log(formatLog('registerApp'))
   }
   appCtx = appVm
   appCtx.$vm = appVm

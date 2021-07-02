@@ -4,6 +4,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var shared = require('@vue/shared');
 
+function formatLog(module, ...args) {
+    return `[${Date.now()}][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
+}
+
 function formatKey(key) {
     return shared.camelize(key.substring(5));
 }
@@ -943,6 +949,7 @@ exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.encodeAttr = encodeAttr;
 exports.encodeTag = encodeTag;
 exports.formatDateTime = formatDateTime;
+exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
 exports.getLen = getLen;

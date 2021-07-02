@@ -1,6 +1,5 @@
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $scope: WechatMiniprogram.App.Instance<any>
     $vm: ComponentPublicInstance
     globalData: Record<string, any>
     $callHook: (hook: string, args?: unknown) => unknown

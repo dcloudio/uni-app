@@ -1,3 +1,4 @@
+import { formatLog } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance, getCurrentInstance } from 'vue'
 import { PageProps, VueComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
@@ -9,7 +10,7 @@ export function setupPage(
   const oldSetup = component.setup
   component.setup = (_props, ctx) => {
     if (__DEV__) {
-      console.log(`${pagePath} setup`)
+      console.log(formatLog(pagePath, 'setup'))
     }
     const instance = getCurrentInstance()!
     const pageVm = instance.proxy!

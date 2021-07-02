@@ -1,3 +1,4 @@
+import { formatLog } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 
 import { CreateWebviewOptions } from '.'
@@ -14,7 +15,9 @@ export function createNVueWebview({
   const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta)
   ;(curWebviewStyle as any).uniPageUrl = initUniPageUrl(path, query)
   if (__DEV__) {
-    console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle)
+    console.log(
+      formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle)
+    )
   }
   // android 需要使用
   ;(curWebviewStyle as any).isTab = !!routeOptions.meta.isTabBar

@@ -1,3 +1,4 @@
+import { formatLog } from '@dcloudio/uni-shared'
 import { parseWebviewStyle } from '../style'
 import { initUniPageUrl, initDebugRefresh } from '../utils'
 
@@ -17,7 +18,7 @@ export function initWebviewStyle(
     webviewStyle.isTab = isTabBar
   }
   if (__DEV__) {
-    console.log('[uni-app] updateWebview', webviewStyle)
+    console.log(formatLog('updateWebview', webviewStyle))
   }
   webview.setStyle(webviewStyle)
 }

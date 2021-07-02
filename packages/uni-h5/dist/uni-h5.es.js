@@ -1,5 +1,5 @@
 import { isFunction, extend, isString, hyphenate, isPlainObject, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { once, formatLog, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
 import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -463,7 +463,7 @@ function initBridge(subscribeNamespace) {
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(formatLog(subscribeNamespace, "subscribeHandler", pageId, event, args));
       }
       emitter2.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }

@@ -5286,6 +5286,9 @@
   })(dist);
   var wrapper = /* @__PURE__ */ getDefaultExportFromCjs(dist.exports);
   var button = "uni-button {\n  position: relative;\n  display: block;\n  margin-left: auto;\n  margin-right: auto;\n  padding-left: 14px;\n  padding-right: 14px;\n  box-sizing: border-box;\n  font-size: 18px;\n  text-align: center;\n  text-decoration: none;\n  line-height: 2.55555556;\n  border-radius: 5px;\n  -webkit-tap-highlight-color: transparent;\n  overflow: hidden;\n  color: #000000;\n  background-color: #f8f8f8;\n  cursor: pointer;\n}\n\nuni-button[hidden] {\n  display: none !important;\n}\n\nuni-button:after {\n  content: ' ';\n  width: 200%;\n  height: 200%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  transform: scale(0.5);\n  transform-origin: 0 0;\n  box-sizing: border-box;\n  border-radius: 10px;\n}\n\nuni-button[native] {\n  padding-left: 0;\n  padding-right: 0;\n}\n\nuni-button[native] .uni-button-cover-view-wrapper {\n  border: inherit;\n  border-color: inherit;\n  border-radius: inherit;\n  background-color: inherit;\n}\n\nuni-button[native] .uni-button-cover-view-inner {\n  padding-left: 14px;\n  padding-right: 14px;\n}\n\nuni-button uni-cover-view {\n  line-height: inherit;\n  white-space: inherit;\n}\n\nuni-button[type='default'] {\n  color: #000000;\n  background-color: #f8f8f8;\n}\n\nuni-button[type='primary'] {\n  color: #ffffff;\n  background-color: #007aff;\n}\n\nuni-button[type='warn'] {\n  color: #ffffff;\n  background-color: #e64340;\n}\n\nuni-button[disabled] {\n  color: rgba(255, 255, 255, 0.6);\n  cursor: not-allowed;\n}\n\nuni-button[disabled][type='default'],\nuni-button[disabled]:not([type]) {\n  color: rgba(0, 0, 0, 0.3);\n  background-color: #f7f7f7;\n}\n\nuni-button[disabled][type='primary'] {\n  background-color: rgba(0, 122, 255, 0.6);\n}\n\nuni-button[disabled][type='warn'] {\n  background-color: #ec8b89;\n}\n\nuni-button[type='primary'][plain] {\n  color: #007aff;\n  border: 1px solid #007aff;\n  background-color: transparent;\n}\n\nuni-button[type='primary'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='primary'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[type='default'][plain] {\n  color: #353535;\n  border: 1px solid #353535;\n  background-color: transparent;\n}\n\nuni-button[type='default'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='default'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[plain] {\n  color: #353535;\n  border: 1px solid #353535;\n  background-color: transparent;\n}\n\nuni-button[plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[plain]:after {\n  border-width: 0;\n}\n\nuni-button[plain][native] .uni-button-cover-view-inner {\n  padding: 0;\n}\n\nuni-button[type='warn'][plain] {\n  color: #e64340;\n  border: 1px solid #e64340;\n  background-color: transparent;\n}\n\nuni-button[type='warn'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='warn'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[size='mini'] {\n  display: inline-block;\n  line-height: 2.3;\n  font-size: 13px;\n  padding: 0 1.34em;\n}\n\nuni-button[size='mini'][native] {\n  padding: 0;\n}\n\nuni-button[size='mini'][native] .uni-button-cover-view-inner {\n  padding: 0 1.34em;\n}\n\nuni-button[loading]:not([disabled]) {\n  cursor: progress;\n}\n\nuni-button[loading]:before {\n  content: ' ';\n  display: inline-block;\n  width: 18px;\n  height: 18px;\n  vertical-align: middle;\n  animation: uni-loading 1s steps(12, end) infinite;\n  background-size: 100%;\n}\n\nuni-button[loading][type='primary'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #0062cc;\n}\n\nuni-button[loading][type='primary'][plain] {\n  color: #007aff;\n  background-color: transparent;\n}\n\nuni-button[loading][type='default'] {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\nuni-button[loading][type='default'][plain] {\n  color: #353535;\n  background-color: transparent;\n}\n\nuni-button[loading][type='warn'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #ce3c39;\n}\n\nuni-button[loading][type='warn'][plain] {\n  color: #e64340;\n  background-color: transparent;\n}\n\nuni-button[loading][native]:before {\n  content: none;\n}\n\n.button-hover {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\n.button-hover[plain] {\n  color: rgba(53, 53, 53, 0.6);\n  border-color: rgba(53, 53, 53, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='primary'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #0062cc;\n}\n\n.button-hover[type='primary'][plain] {\n  color: rgba(26, 173, 25, 0.6);\n  border-color: rgba(26, 173, 25, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='default'] {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\n.button-hover[type='default'][plain] {\n  color: rgba(53, 53, 53, 0.6);\n  border-color: rgba(53, 53, 53, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='warn'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #ce3c39;\n}\n\n.button-hover[type='warn'][plain] {\n  color: rgba(230, 67, 64, 0.6);\n  border-color: rgba(230, 67, 64, 0.6);\n  background-color: transparent;\n}\n";
+  function formatLog(module, ...args) {
+    return `[${Date.now()}][${module}]\uFF1A${args.map((arg) => JSON.stringify(arg)).join(" ")}`;
+  }
   function getCustomDataset(el) {
     return extend({}, el.dataset, el.__uniDataset);
   }
@@ -5627,11 +5630,11 @@
       unsubscribe(event, callback) {
         emitter.off(`${subscribeNamespace}.${event}`, callback);
       },
-      subscribeHandler(event, args, pageId) {
+      subscribeHandler(event, args, pageId2) {
         {
-          console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
+          console.log(formatLog(subscribeNamespace, "subscribeHandler", pageId2, event, args));
         }
-        emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
+        emitter.emit(`${subscribeNamespace}.${event}`, args, pageId2);
       }
     };
   }
@@ -5943,7 +5946,7 @@
     });
   }
   function _addListeners(id, listeners, watch2) {
-    const pageId = useCurrentPageId();
+    const pageId2 = useCurrentPageId();
     if (watch2 && !id) {
       return;
     }
@@ -5953,19 +5956,19 @@
     Object.keys(listeners).forEach((name) => {
       if (watch2) {
         if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-          UniViewJSBridge.on(`uni-${name}-${pageId}-${id}`, listeners[name]);
+          UniViewJSBridge.on(`uni-${name}-${pageId2}-${id}`, listeners[name]);
         }
       } else {
         if (name.indexOf("uni-") === 0) {
           UniViewJSBridge.on(name, listeners[name]);
         } else if (id) {
-          UniViewJSBridge.on(`uni-${name}-${pageId}-${id}`, listeners[name]);
+          UniViewJSBridge.on(`uni-${name}-${pageId2}-${id}`, listeners[name]);
         }
       }
     });
   }
   function _removeListeners(id, listeners, watch2) {
-    const pageId = useCurrentPageId();
+    const pageId2 = useCurrentPageId();
     if (watch2 && !id) {
       return;
     }
@@ -5975,13 +5978,13 @@
     Object.keys(listeners).forEach((name) => {
       if (watch2) {
         if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-          UniViewJSBridge.off(`uni-${name}-${pageId}-${id}`, listeners[name]);
+          UniViewJSBridge.off(`uni-${name}-${pageId2}-${id}`, listeners[name]);
         }
       } else {
         if (name.indexOf("uni-") === 0) {
           UniViewJSBridge.off(name, listeners[name]);
         } else if (id) {
-          UniViewJSBridge.off(`uni-${name}-${pageId}-${id}`, listeners[name]);
+          UniViewJSBridge.off(`uni-${name}-${pageId2}-${id}`, listeners[name]);
         }
       }
     });
@@ -6593,10 +6596,13 @@
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
   });
+  let pageId;
   function publishHandler(event, args = {}) {
-    const pageId = plus.webview.currentWebview().id;
+    if (!pageId) {
+      pageId = plus.webview.currentWebview().id;
+    }
     {
-      console.log(`[VIEW][${Date.now()}]:`, event, args, pageId);
+      console.log(`[${Date.now()}][View]: ` + pageId + " " + event + " " + JSON.stringify(args));
     }
     plus.webview.postMessageToUniNView({
       type: "subscribeHandler",

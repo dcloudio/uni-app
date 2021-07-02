@@ -62,6 +62,8 @@ export declare function formatDateTime({ date, mode }: {
     mode?: string | undefined;
 }): string;
 
+export declare function formatLog(module: string, ...args: any[]): string;
+
 export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDataset): DOMStringMap & Record<string, any>;
 
 export declare function getEnvLocale(): string;

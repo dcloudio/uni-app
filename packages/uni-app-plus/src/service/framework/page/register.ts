@@ -1,5 +1,9 @@
 import { hasOwn } from '@vue/shared'
-import { NAVBAR_HEIGHT, ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
+import {
+  formatLog,
+  NAVBAR_HEIGHT,
+  ON_REACH_BOTTOM_DISTANCE,
+} from '@dcloudio/uni-shared'
 import { initEntry } from '../app/initEntry'
 import { initRouteOptions } from './routeOptions'
 import { createWebview, initWebview } from '../webview'
@@ -60,7 +64,7 @@ export function registerPage({
   }
 
   if (__DEV__) {
-    console.log(`[uni-app] registerPage(${path},${webview.id})`)
+    console.log(formatLog('registerPage', path, webview.id))
   }
 
   initWebview(webview, path, query, routeOptions.meta)

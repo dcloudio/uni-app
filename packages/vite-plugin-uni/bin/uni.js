@@ -23,4 +23,4 @@ if (debugIndex > 0) {
     }
   }
 }
-require('../dist/cli')
+require('../dist/cli/index.js')

@@ -565,6 +565,12 @@ var serviceContext = (function (vue) {
       return encode$3(arrayBuffer);
   }, ArrayBufferToBase64Protocol);
 
+  function formatLog(module, ...args) {
+      return `[${Date.now()}][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
+  }
+
   const encode$2 = encodeURIComponent;
   function stringifyQuery$1(obj, encodeStr = encode$2) {
       const res = obj
@@ -1399,7 +1405,7 @@ var serviceContext = (function (vue) {
           },
           subscribeHandler(event, args, pageId) {
               if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
+                  console.log(formatLog(subscribeNamespace, 'subscribeHandler', pageId, event, args));
               }
               emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
           },
@@ -4709,9 +4715,6 @@ var serviceContext = (function (vue) {
   function getLocationSuccess(type, position, resolve) {
       const coords = position.coords;
       if (type !== position.coordsType) {
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(`UNIAPP[location]:before[${position.coordsType}][lng:${coords.longitude},lat:${coords.latitude}]`);
-          }
           let coordArray;
           if (type === 'wgs84') {
               coordArray = gcj02towgs84(coords.longitude, coords.latitude);
@@ -4722,9 +4725,6 @@ var serviceContext = (function (vue) {
           if (coordArray) {
               coords.longitude = coordArray[0];
               coords.latitude = coordArray[1];
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(`UNIAPP[location]:after[${type}][lng:${coords.longitude},lat:${coords.latitude}]`);
-              }
           }
       }
       resolve({
@@ -5562,7 +5562,7 @@ var serviceContext = (function (vue) {
   }
   function subscribePlusMessage({ data, }) {
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log('plusMessage:' + JSON.stringify(data));
+          console.log(formatLog('plusMessage', data));
       }
       if (data && data.type) {
           UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
@@ -5812,7 +5812,7 @@ var serviceContext = (function (vue) {
       const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta);
       curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log('[uni-app] createWebview', curWebviewId, path, curWebviewStyle);
+          console.log(formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle));
       }
       curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
       return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
@@ -5832,7 +5832,7 @@ var serviceContext = (function (vue) {
           webviewStyle.isTab = isTabBar;
       }
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log('[uni-app] updateWebview', webviewStyle);
+          console.log(formatLog('updateWebview', webviewStyle));
       }
       webview.setStyle(webviewStyle);
   }
@@ -5858,7 +5858,7 @@ var serviceContext = (function (vue) {
           // 不存在，或已被使用
           preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
           if ((process.env.NODE_ENV !== 'production')) {
-              console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
+              console.log(formatLog('createPreloadWebview', preloadWebview.id));
           }
       }
       return preloadWebview;
@@ -5951,7 +5951,7 @@ var serviceContext = (function (vue) {
   }
   function registerApp(appVm) {
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log('registerApp');
+          console.log(formatLog('registerApp'));
       }
       appCtx = appVm;
       appCtx.$vm = appVm;
@@ -6386,7 +6386,7 @@ var serviceContext = (function (vue) {
           callback,
       };
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`nextNavigator:${path} ${msg}`);
+          console.log(formatLog('setPendingNavigator', path, msg));
       }
   }
   function navigate(path, callback, isAppLaunch) {
@@ -6421,7 +6421,7 @@ var serviceContext = (function (vue) {
       }
       const { callback } = pendingNavigator;
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`pendingNavigate:${pendingNavigator.path}`);
+          console.log(formatLog('pendingNavigate', pendingNavigator.path));
       }
       pendingNavigator = false;
       return callback();
@@ -6439,7 +6439,7 @@ var serviceContext = (function (vue) {
       // 创建预加载
       const preloadWebview = createPreloadWebview();
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`);
+          console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
       }
       if (!pendingNavigator) {
           return;
@@ -6457,12 +6457,12 @@ var serviceContext = (function (vue) {
           delay = webview.nvue ? 0 : 100;
       }
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`[show][${Date.now()}]`, delay);
+          console.log(formatLog('showWebview', 'delay', delay));
       }
       const execShowCallback = function () {
           if (execShowCallback._called) {
               if ((process.env.NODE_ENV !== 'production')) {
-                  console.log('execShowCallback.prevent');
+                  console.log(formatLog('execShowCallback', 'prevent'));
               }
               return;
           }
@@ -6474,13 +6474,13 @@ var serviceContext = (function (vue) {
       setTimeout(() => {
           const timer = setTimeout(() => {
               if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(`[show.callback.timer][${Date.now()}]`);
+                  console.log(formatLog('showWebview', 'callback', 'timer'));
               }
               execShowCallback();
           }, animationDuration + 150);
           webview.show(animationType, animationDuration, () => {
               if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(`[show.callback][${Date.now()}]`);
+                  console.log(formatLog('showWebview', 'callback'));
               }
               if (!execShowCallback._called) {
                   clearTimeout(timer);
@@ -6624,7 +6624,7 @@ var serviceContext = (function (vue) {
       const oldSetup = component.setup;
       component.setup = (_props, ctx) => {
           if ((process.env.NODE_ENV !== 'production')) {
-              console.log(`${pagePath} setup`);
+              console.log(formatLog(pagePath, 'setup'));
           }
           const instance = vue.getCurrentInstance();
           const pageVm = instance.proxy;
@@ -6713,7 +6713,7 @@ var serviceContext = (function (vue) {
           tabBar$1.append(webview);
       }
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`[uni-app] registerPage(${path},${webview.id})`);
+          console.log(formatLog('registerPage', path, webview.id));
       }
       initWebview(webview, path, query, routeOptions.meta);
       const route = path.substr(1);
@@ -6895,7 +6895,7 @@ var serviceContext = (function (vue) {
   function publishHandler(event, args, pageIds) {
       args = JSON.stringify(args);
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, event, args, pageIds);
+          console.log(formatLog('publishHandler', event, args, pageIds));
       }
       if (!isArray(pageIds)) {
           pageIds = [pageIds];

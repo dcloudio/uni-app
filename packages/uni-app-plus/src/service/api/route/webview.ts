@@ -1,3 +1,4 @@
+import { formatLog } from '@dcloudio/uni-shared'
 import { navigateFinish } from './utils'
 
 export function closeWebview(
@@ -23,12 +24,12 @@ export function showWebview(
   }
 
   if (__DEV__) {
-    console.log(`[show][${Date.now()}]`, delay)
+    console.log(formatLog('showWebview', 'delay', delay))
   }
   const execShowCallback = function () {
     if (execShowCallback._called) {
       if (__DEV__) {
-        console.log('execShowCallback.prevent')
+        console.log(formatLog('execShowCallback', 'prevent'))
       }
       return
     }
@@ -40,14 +41,14 @@ export function showWebview(
   setTimeout(() => {
     const timer = setTimeout(() => {
       if (__DEV__) {
-        console.log(`[show.callback.timer][${Date.now()}]`)
+        console.log(formatLog('showWebview', 'callback', 'timer'))
       }
       execShowCallback()
     }, animationDuration + 150)
 
     webview.show(animationType as any, animationDuration, () => {
       if (__DEV__) {
-        console.log(`[show.callback][${Date.now()}]`)
+        console.log(formatLog('showWebview', 'callback'))
       }
       if (!execShowCallback._called) {
         clearTimeout(timer)

@@ -3,7 +3,7 @@ import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $scope: {
-      $getAppWebview: () => PlusWebviewWebviewObject
+      $getAppWebview?: () => PlusWebviewWebviewObject
     }
     $page: Page.PageInstance['$page']
     __isTabBar: boolean

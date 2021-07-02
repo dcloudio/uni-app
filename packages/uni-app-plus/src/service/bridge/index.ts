@@ -1,6 +1,7 @@
 import { extend, isArray } from '@vue/shared'
 
 import { ServiceJSBridge } from '@dcloudio/uni-core'
+import { formatLog } from '@dcloudio/uni-shared'
 
 export const UniServiceJSBridge = /*#__PURE__*/ extend(ServiceJSBridge, {
   publishHandler,
@@ -13,7 +14,7 @@ function publishHandler(
 ) {
   args = JSON.stringify(args)
   if (__DEV__) {
-    console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, event, args, pageIds)
+    console.log(formatLog('publishHandler', event, args, pageIds))
   }
   if (!isArray(pageIds)) {
     pageIds = [pageIds]

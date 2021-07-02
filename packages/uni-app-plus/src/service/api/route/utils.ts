@@ -1,4 +1,5 @@
 import { getRouteMeta } from '@dcloudio/uni-core'
+import { formatLog } from '@dcloudio/uni-shared'
 import {
   createPreloadWebview,
   onWebviewReady,
@@ -20,7 +21,7 @@ function setPendingNavigator(path: string, callback: Function, msg: string) {
     callback,
   }
   if (__DEV__) {
-    console.log(`nextNavigator:${path} ${msg}`)
+    console.log(formatLog('setPendingNavigator', path, msg))
   }
 }
 
@@ -68,7 +69,7 @@ function pendingNavigate() {
   }
   const { callback } = pendingNavigator
   if (__DEV__) {
-    console.log(`pendingNavigate:${pendingNavigator.path}`)
+    console.log(formatLog('pendingNavigate', pendingNavigator.path))
   }
   pendingNavigator = false
   return callback()
@@ -87,7 +88,9 @@ export function navigateFinish() {
   // 创建预加载
   const preloadWebview = createPreloadWebview()
   if (__DEV__) {
-    console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`)
+    console.log(
+      formatLog('navigateFinish', 'preloadWebview', preloadWebview.id)
+    )
   }
   if (!pendingNavigator) {
     return

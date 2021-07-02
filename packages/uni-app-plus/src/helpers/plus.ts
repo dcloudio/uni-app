@@ -1,4 +1,5 @@
 import { extend } from '@vue/shared'
+import { formatLog } from '@dcloudio/uni-shared'
 import { getRouteOptions } from '@dcloudio/uni-core'
 interface PlusResult extends Record<string, any> {
   code?: number
@@ -103,7 +104,7 @@ export function isTabBarPage(path = '') {
     return route && route.meta.isTabBar
   } catch (e) {
     if (__DEV__) {
-      console.log('getCurrentPages is not ready')
+      console.error(formatLog('isTabBarPage', e))
     }
   }
   return false

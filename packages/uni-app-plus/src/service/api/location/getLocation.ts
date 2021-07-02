@@ -15,11 +15,6 @@ function getLocationSuccess(
 ) {
   const coords = position.coords
   if (type !== position.coordsType) {
-    if (__DEV__) {
-      console.log(
-        `UNIAPP[location]:before[${position.coordsType}][lng:${coords.longitude},lat:${coords.latitude}]`
-      )
-    }
     let coordArray
     if (type === 'wgs84') {
       coordArray = gcj02towgs84(coords.longitude, coords.latitude)
@@ -29,11 +24,6 @@ function getLocationSuccess(
     if (coordArray) {
       coords.longitude = coordArray[0]
       coords.latitude = coordArray[1]
-      if (__DEV__) {
-        console.log(
-          `UNIAPP[location]:after[${type}][lng:${coords.longitude},lat:${coords.latitude}]`
-        )
-      }
     }
   }
 

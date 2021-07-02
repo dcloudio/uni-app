@@ -374,7 +374,7 @@ function initBridge(subscribeNamespace) {
     },
     subscribeHandler(event, args, pageId) {
       if (process.env.NODE_ENV !== "production") {
-        console.log(`[subscribeHandler][${Date.now()}]:${subscribeNamespace}.${event}, ${JSON.stringify(args)}, ${pageId}`);
+        console.log(uniShared.formatLog(subscribeNamespace, "subscribeHandler", pageId, event, args));
       }
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
