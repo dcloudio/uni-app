@@ -21,5 +21,5 @@ const DECODED_COMPONENT_ARR = /*#__PURE__*/ Object.keys(COMPONENT_MAP).reduce(
 )
 
 export function decodeTag(tag: string | number) {
-  return DECODED_COMPONENT_ARR[tag as number] || tag
+  return (DECODED_COMPONENT_ARR[tag as number] || tag) as string
 }

@@ -1,3 +1,10 @@
+import { onNodeCreate } from './view/framework/subscriber/vdom/onNodeCreate'
+import { onNodeInsert } from './view/framework/subscriber/vdom/onNodeInsert'
+import { onNodeRemove } from './view/framework/subscriber/vdom/onNodeRemove'
+import { onNodeRemoveAttr } from './view/framework/subscriber/vdom/onNodeRemoveAttr'
+import { onNodeSetAttr } from './view/framework/subscriber/vdom/onNodeSetAttr'
+import { onNodeSetText } from './view/framework/subscriber/vdom/onNodeSetText'
+
 export const ACTION_TYPE_PAGE_CREATE = 1
 export const ACTION_TYPE_PAGE_CREATED = 2
 export const ACTION_TYPE_CREATE = 3
@@ -27,40 +34,32 @@ export type PageCreatedAction = [typeof ACTION_TYPE_PAGE_CREATED]
 
 export type CreateAction = [
   typeof ACTION_TYPE_CREATE,
-  number, // nodeId
-  string | number //nodeName
+  ...Parameters<typeof onNodeCreate>
 ]
 
 export type InsertAction = [
   typeof ACTION_TYPE_INSERT,
-  number, // nodeId
-  number, // parentNodeId
-  number, // index
-  Record<string, any> // Element JSON
+  ...Parameters<typeof onNodeInsert>
 ]
 
 export type RemoveAction = [
   typeof ACTION_TYPE_REMOVE,
-  number, // nodeId
-  number // parentNodeId
+  ...Parameters<typeof onNodeRemove>
 ]
 
 export type SetAttributeAction = [
   typeof ACTION_TYPE_SET_ATTRIBUTE,
-  number, // nodeId
-  string, // attribute name
-  unknown // attribute value
+  ...Parameters<typeof onNodeSetAttr>
 ]
+
 export type RemoveAttributeAction = [
   typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
-  number, // nodeId
-  string // attribute name
+  ...Parameters<typeof onNodeRemoveAttr>
 ]
 
 export type SetTextAction = [
   typeof ACTION_TYPE_SET_TEXT,
-  number, // nodeId
-  string // text content
+  ...Parameters<typeof onNodeSetText>
 ]
 
 export type PageUpdateAction =

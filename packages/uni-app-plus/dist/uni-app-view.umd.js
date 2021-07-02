@@ -818,6 +818,84 @@
   function formatLog(module, ...args) {
     return `[${Date.now()}][${module}]\uFF1A${args.map((arg) => JSON.stringify(arg)).join(" ")}`;
   }
+  const ATTR_MAP = {
+    class: ".c",
+    style: ".s",
+    onClick: ".e0",
+    onChange: ".e1",
+    onInput: ".e2",
+    onLoad: ".e3",
+    onError: ".e4",
+    onTouchstart: ".e5",
+    onTouchmove: ".e6",
+    onTouchcancel: ".e7",
+    onTouchend: ".e8",
+    onLongpress: ".e9",
+    onTransitionend: ".ea",
+    onAnimationstart: ".eb",
+    onAnimationiteration: ".ec",
+    onAnimationend: ".ed",
+    onTouchforcechange: ".ee"
+  };
+  const COMPONENT_MAP = {
+    VIEW: 1,
+    IMAGE: 2,
+    TEXT: 3,
+    "#text": 4,
+    "#comment": 5,
+    NAVIGATOR: 6,
+    FORM: 7,
+    BUTTON: 8,
+    INPUT: 9,
+    LABEL: 10,
+    RADIO: 11,
+    CHECKBOX: 12,
+    "CHECKBOX-GROUP": 13,
+    AD: 14,
+    AUDIO: 15,
+    CAMERA: 16,
+    CANVAS: 17,
+    "COVER-IMAGE": 18,
+    "COVER-VIEW": 19,
+    EDITOR: 20,
+    "FUNCTIONAL-PAGE-NAVIGATOR": 21,
+    ICON: 22,
+    "RADIO-GROUP": 23,
+    "LIVE-PLAYER": 24,
+    "LIVE-PUSHER": 25,
+    MAP: 26,
+    "MOVABLE-AREA": 27,
+    "MOVABLE-VIEW": 28,
+    "OFFICIAL-ACCOUNT": 29,
+    "OPEN-DATA": 30,
+    PICKER: 31,
+    "PICKER-VIEW": 32,
+    "PICKER-VIEW-COLUMN": 33,
+    PROGRESS: 34,
+    "RICH-TEXT": 35,
+    "SCROLL-VIEW": 36,
+    SLIDER: 37,
+    SWIPER: 38,
+    "SWIPER-ITEM": 39,
+    SWITCH: 40,
+    TEXTAREA: 41,
+    VIDEO: 42,
+    "WEB-VIEW": 43
+  };
+  const DECODED_ATTR_MAP = /* @__PURE__ */ Object.keys(ATTR_MAP).reduce((map, name) => {
+    map[ATTR_MAP[name]] = name;
+    return map;
+  }, Object.create(null));
+  function decodeAttr(name) {
+    return DECODED_ATTR_MAP[name] || name;
+  }
+  const DECODED_COMPONENT_ARR = /* @__PURE__ */ Object.keys(COMPONENT_MAP).reduce((arr, name) => {
+    arr.push(name.toLowerCase());
+    return arr;
+  }, [""]);
+  function decodeTag(tag) {
+    return DECODED_COMPONENT_ARR[tag] || tag;
+  }
   const E = function() {
   };
   E.prototype = {
@@ -2593,6 +2671,49 @@
   }
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
+  const ACTION_TYPE_CREATE = 3;
+  const ACTION_TYPE_INSERT = 4;
+  const ACTION_TYPE_REMOVE = 5;
+  const ACTION_TYPE_SET_ATTRIBUTE = 6;
+  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+  const ACTION_TYPE_SET_TEXT = 8;
+  const elements = new Map();
+  function $(id) {
+    return elements.get(id);
+  }
+  function createElement(id, tag) {
+    const element = document.createElement(decodeTag(tag));
+    elements.set(id, element);
+    return element;
+  }
+  function setElementAttr(element, name, value) {
+    element.setAttribute(decodeAttr(name), value);
+  }
+  function onNodeCreate(id, tag) {
+    return createElement(id, decodeTag(tag));
+  }
+  function onNodeInsert(nodeId, parentNodeId, refNodeId, nodeJson) {
+    const element = $(nodeId);
+    $(parentNodeId).insertBefore(initElement(element, nodeJson), $(refNodeId));
+  }
+  function initElement(element, { a, s }) {
+    initAttribute(element, a);
+    return element;
+  }
+  function initAttribute(element, attr) {
+    if (!attr) {
+      return;
+    }
+    Object.keys(attr).forEach((name) => setElementAttr(element, name, attr[name]));
+  }
+  function onNodeRemove(nodeId, parentNodeId) {
+  }
+  function onNodeRemoveAttr(nodeId, name) {
+  }
+  function onNodeSetAttr(nodeId, name, value) {
+  }
+  function onNodeSetText(nodeId, text) {
+  }
   function onPageCreate({
     route,
     disableScroll,
@@ -2648,6 +2769,18 @@
           return onPageCreate(action[1]);
         case ACTION_TYPE_PAGE_CREATED:
           return onPageCreated();
+        case ACTION_TYPE_CREATE:
+          return onNodeCreate(action[1], action[2]);
+        case ACTION_TYPE_INSERT:
+          return onNodeInsert(action[1], action[2], action[3], action[4]);
+        case ACTION_TYPE_REMOVE:
+          return onNodeRemove(action[1], action[2]);
+        case ACTION_TYPE_SET_ATTRIBUTE:
+          return onNodeSetAttr(action[1], action[2], action[3]);
+        case ACTION_TYPE_REMOVE_ATTRIBUTE:
+          return onNodeRemoveAttr(action[1], action[2]);
+        case ACTION_TYPE_SET_TEXT:
+          return onNodeSetText(action[1], action[2]);
       }
     });
   }

@@ -1,21 +1,22 @@
 import { UniNodeJSON } from '@dcloudio/uni-shared'
-import {
-  ACTION_TYPE_INSERT,
-  ACTION_TYPE_REMOVE,
-  ACTION_TYPE_REMOVE_ATTRIBUTE,
-  ACTION_TYPE_SET_ATTRIBUTE,
-  ACTION_TYPE_SET_TEXT,
-  createPageNode,
-  InsertAction,
-  SetAttributeAction,
-} from '../../../src/service/framework/dom/Page'
+import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
   createTextNode,
 } from '../../../../uni-app-vue/lib/service.runtime.esm'
+import {
+  InsertAction,
+  ACTION_TYPE_INSERT,
+  SetAttributeAction,
+  ACTION_TYPE_SET_ATTRIBUTE,
+  ACTION_TYPE_REMOVE_ATTRIBUTE,
+  ACTION_TYPE_SET_TEXT,
+  ACTION_TYPE_REMOVE,
+} from '../../../src/PageAction'
 describe('dom', () => {
   const pageId = 1
   const root = createPageNode(pageId, {
+    route: 'pages/index/index',
     version: 1,
     locale: 'zh_CN',
     disableScroll: false,

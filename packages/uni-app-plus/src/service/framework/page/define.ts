@@ -1,11 +1,11 @@
 import { once } from '@dcloudio/uni-shared'
-import { createApp, defineComponent } from 'vue'
+import { createApp, DefineComponent } from 'vue'
 import { createPageNode } from '../dom/Page'
 import { setupPage } from './setup'
 import __vuePlugin from '../plugin'
 import { PageNodeOptions } from '../../../PageAction'
 
-export type VueComponent = ReturnType<typeof defineComponent>
+export type VueComponent = DefineComponent
 
 const pagesMap = new Map<string, ReturnType<typeof createFactory>>()
 

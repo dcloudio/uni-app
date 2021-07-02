@@ -45,7 +45,7 @@ export declare function decodeAttr(name: string): any;
 
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
 
-export declare function decodeTag(tag: string | number): string | number;
+export declare function decodeTag(tag: string | number): string;
 
 export declare const defaultRpx2Unit: {
     unit: string;

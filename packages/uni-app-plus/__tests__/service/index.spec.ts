@@ -11,6 +11,7 @@ import {
 import { createPageNode } from '../../src/service/framework/dom/Page'
 
 const defaultPageNodeOptions = {
+  route: 'pages/index/index',
   version: 1,
   locale: 'zh_CN',
   disableScroll: false,
@@ -55,7 +56,6 @@ describe('vue', () => {
     }
     const pageNode = createPageNode(1, defaultPageNodeOptions, true)
     createApp(Page).mount(pageNode as unknown as Element)
-    pageNode.mounted()
     show.value = false
     handleClick = null
     nextTick(() => {

@@ -789,7 +789,7 @@ const DECODED_COMPONENT_ARR = /*#__PURE__*/ Object.keys(COMPONENT_MAP).reduce((a
     return arr;
 }, ['']);
 function decodeTag(tag) {
-    return DECODED_COMPONENT_ARR[tag] || tag;
+    return (DECODED_COMPONENT_ARR[tag] || tag);
 }
 
 function cache(fn) {
