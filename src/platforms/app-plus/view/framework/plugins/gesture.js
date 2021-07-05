@@ -1,4 +1,4 @@
-if (__PLATFORM__ === 'app-plus' && String(navigator.vendor).indexOf('Apple') === 0) {
+if (String(navigator.vendor).indexOf('Apple') === 0) {
   let firstEvent
   let timeout
   // 用于全局禁用 iOS 双击包含手势
