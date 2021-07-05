@@ -1,4 +1,4 @@
-import { EMPTY_OBJ, isArray, isMap, isIntegerKey, isSymbol, extend, hasOwn, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, getGlobalThis, normalizeClass, normalizeStyle, isGloballyWhitelisted, isSpecialBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
+import { EMPTY_OBJ, isArray, isMap, isIntegerKey, isSymbol, extend, hasOwn, isObject as isObject$1, hasChanged, makeMap, capitalize, toRawType, def, isFunction as isFunction$1, NOOP, isString, isPromise as isPromise$1, toHandlerKey, toNumber, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isReservedProp, EMPTY_ARR, NO, getGlobalThis, normalizeClass, normalizeStyle, isGloballyWhitelisted, isSpecialBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, toDisplayString, toHandlerKey } from '@vue/shared';
 
 const targetMap = new WeakMap();
@@ -268,7 +268,7 @@ function createGetter(isReadonly = false, shallow = false) {
             const shouldUnwrap = !targetIsArray || !isIntegerKey(key);
             return shouldUnwrap ? res.value : res;
         }
-        if (isObject(res)) {
+        if (isObject$1(res)) {
             // Convert returned value into a proxy as well. we do the isObject check
             // here to avoid invalid value warning. Also need to lazy access readonly
             // and reactive here to avoid circular dependency.
@@ -359,8 +359,8 @@ const shallowReadonlyHandlers = /*#__PURE__*/ extend({}, readonlyHandlers, {
     get: shallowReadonlyGet
 });
 
-const toReactive = (value) => isObject(value) ? reactive(value) : value;
-const toReadonly = (value) => isObject(value) ? readonly(value) : value;
+const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
 const toShallow = (value) => value;
 const getProto = (v) => Reflect.getPrototypeOf(v);
 function get$1(target, key, isReadonly = false, isShallow = false) {
@@ -704,7 +704,7 @@ function shallowReadonly(target) {
     return createReactiveObject(target, true, shallowReadonlyHandlers, shallowReadonlyCollectionHandlers, shallowReadonlyMap);
 }
 function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
-    if (!isObject(target)) {
+    if (!isObject$1(target)) {
         if ((process.env.NODE_ENV !== 'production')) {
             console.warn(`value cannot be made reactive: ${String(target)}`);
         }
@@ -750,7 +750,7 @@ function markRaw(value) {
     return value;
 }
 
-const convert = (val) => isObject(val) ? reactive(val) : val;
+const convert = (val) => isObject$1(val) ? reactive(val) : val;
 function isRef(r) {
     return Boolean(r && r.__v_isRef === true);
 }
@@ -888,7 +888,7 @@ class ComputedRefImpl {
 function computed(getterOrOptions) {
     let getter;
     let setter;
-    if (isFunction(getterOrOptions)) {
+    if (isFunction$1(getterOrOptions)) {
         getter = getterOrOptions;
         setter = (process.env.NODE_ENV !== 'production')
             ? () => {
@@ -900,7 +900,7 @@ function computed(getterOrOptions) {
         getter = getterOrOptions.get;
         setter = getterOrOptions.set;
     }
-    return new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
+    return new ComputedRefImpl(getter, setter, isFunction$1(getterOrOptions) || !getterOrOptions.set);
 }
 
 const stack = [];
@@ -1008,7 +1008,7 @@ function formatProp(key, value, raw) {
         value = formatProp(key, toRaw(value.value), true);
         return raw ? value : [`${key}=Ref<`, value, `>`];
     }
-    else if (isFunction(value)) {
+    else if (isFunction$1(value)) {
         return [`${key}=fn${value.name ? `<${value.name}>` : ``}`];
     }
     else {
@@ -1060,9 +1060,9 @@ function callWithErrorHandling(fn, instance, type, args) {
     return res;
 }
 function callWithAsyncErrorHandling(fn, instance, type, args) {
-    if (isFunction(fn)) {
+    if (isFunction$1(fn)) {
         const res = callWithErrorHandling(fn, instance, type, args);
-        if (res && isPromise(res)) {
+        if (res && isPromise$1(res)) {
             res.catch(err => {
                 handleError(err, instance, type);
             });
@@ -1733,9 +1733,10 @@ const deprecationData = {
         message: (comp) => {
             const configMsg = `opt-in to ` +
                 `Vue 3 behavior on a per-component basis with \`compatConfig: { ${"COMPONENT_V_MODEL" /* COMPONENT_V_MODEL */}: false }\`.`;
-            if (comp.props && isArray(comp.props)
-                ? comp.props.includes('modelValue')
-                : hasOwn(comp.props, 'modelValue')) {
+            if (comp.props &&
+                (isArray(comp.props)
+                    ? comp.props.includes('modelValue')
+                    : hasOwn(comp.props, 'modelValue'))) {
                 return (`Component delcares "modelValue" prop, which is Vue 3 usage, but ` +
                     `is running under Vue 2 compat v-model behavior. You can ${configMsg}`);
             }
@@ -1818,7 +1819,7 @@ function isCompatEnabled(key, instance, enableForBuiltIn = false) {
     }
     const rawMode = getCompatConfigForKey('MODE', instance) || 2;
     const val = getCompatConfigForKey(key, instance);
-    const mode = isFunction(rawMode)
+    const mode = isFunction$1(rawMode)
         ? rawMode(instance && instance.type)
         : rawMode;
     if (mode === 2) {
@@ -1843,7 +1844,7 @@ function emit(instance, event, ...rawArgs) {
             }
             else {
                 const validator = emitsOptions[event];
-                if (isFunction(validator)) {
+                if (isFunction$1(validator)) {
                     const isValid = validator(...rawArgs);
                     if (!isValid) {
                         warn(`Invalid event arguments: event validation failed for event "${event}".`);
@@ -1913,7 +1914,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     let normalized = {};
     // apply mixin/extends props
     let hasExtends = false;
-    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+    if (__VUE_OPTIONS_API__ && !isFunction$1(comp)) {
         const extendEmits = (raw) => {
             const normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
             if (normalizedFromExtend) {
@@ -2372,7 +2373,7 @@ const Suspense = (SuspenseImpl
     );
 function triggerEvent(vnode, name) {
     const eventListener = vnode.props && vnode.props[name];
-    if (isFunction(eventListener)) {
+    if (isFunction$1(eventListener)) {
         eventListener();
     }
 }
@@ -2718,7 +2719,7 @@ function normalizeSuspenseChildren(vnode) {
 }
 function normalizeSuspenseSlot(s) {
     let block;
-    if (isFunction(s)) {
+    if (isFunction$1(s)) {
         const isCompiledSlot = s._c;
         if (isCompiledSlot) {
             // disableTracking: false
@@ -2809,7 +2810,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
             return provides[key];
         }
         else if (arguments.length > 1) {
-            return treatDefaultAsFactory && isFunction(defaultValue)
+            return treatDefaultAsFactory && isFunction$1(defaultValue)
                 ? defaultValue.call(instance.proxy)
                 : defaultValue;
         }
@@ -2830,7 +2831,7 @@ function watchEffect(effect, options) {
 const INITIAL_WATCHER_VALUE = {};
 // implementation
 function watch(source, cb, options) {
-    if ((process.env.NODE_ENV !== 'production') && !isFunction(cb)) {
+    if ((process.env.NODE_ENV !== 'production') && !isFunction$1(cb)) {
         warn(`\`watch(fn, options?)\` signature has been moved to a separate API. ` +
             `Use \`watchEffect(fn, options?)\` instead. \`watch\` now only ` +
             `supports \`watch(source, cb, options?) signature.`);
@@ -2873,7 +2874,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
             else if (isReactive(s)) {
                 return traverse(s);
             }
-            else if (isFunction(s)) {
+            else if (isFunction$1(s)) {
                 return callWithErrorHandling(s, instance, 2 /* WATCH_GETTER */);
             }
             else {
@@ -2881,7 +2882,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
             }
         });
     }
-    else if (isFunction(source)) {
+    else if (isFunction$1(source)) {
         if (cb) {
             // getter with cb
             getter = () => callWithErrorHandling(source, instance, 2 /* WATCH_GETTER */);
@@ -3006,7 +3007,7 @@ function instanceWatch(source, value, options) {
             : () => publicThis[source]
         : source.bind(publicThis, publicThis);
     let cb;
-    if (isFunction(value)) {
+    if (isFunction$1(value)) {
         cb = value;
     }
     else {
@@ -3026,7 +3027,7 @@ function createPathGetter(ctx, path) {
     };
 }
 function traverse(value, seen = new Set()) {
-    if (!isObject(value) ||
+    if (!isObject$1(value) ||
         seen.has(value) ||
         value["__v_skip" /* SKIP */]) {
         return value;
@@ -3367,12 +3368,12 @@ function getTransitionRawChildren(children, keepComment = false) {
 
 // implementation, close to no-op
 function defineComponent(options) {
-    return isFunction(options) ? { setup: options, name: options.name } : options;
+    return isFunction$1(options) ? { setup: options, name: options.name } : options;
 }
 
 const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
 function defineAsyncComponent(source) {
-    if (isFunction(source)) {
+    if (isFunction$1(source)) {
         source = { loader: source };
     }
     const { loader, loadingComponent, errorComponent, delay = 200, timeout, // undefined = never times out
@@ -3415,7 +3416,7 @@ function defineAsyncComponent(source) {
                     (comp.__esModule || comp[Symbol.toStringTag] === 'Module')) {
                     comp = comp.default;
                 }
-                if ((process.env.NODE_ENV !== 'production') && comp && !isObject(comp) && !isFunction(comp)) {
+                if ((process.env.NODE_ENV !== 'production') && comp && !isObject$1(comp) && !isFunction$1(comp)) {
                     throw new Error(`Invalid async component load result: ${comp}`);
                 }
                 resolvedComp = comp;
@@ -3982,7 +3983,7 @@ function applyOptions(instance) {
     if (methods) {
         for (const key in methods) {
             const methodHandler = methods[key];
-            if (isFunction(methodHandler)) {
+            if (isFunction$1(methodHandler)) {
                 // In dev mode, we use the `createRenderContext` function to define methods to the proxy target,
                 // and those are read-only but reconfigurable, so it needs to be redefined here
                 if ((process.env.NODE_ENV !== 'production')) {
@@ -4007,17 +4008,17 @@ function applyOptions(instance) {
         }
     }
     if (dataOptions) {
-        if ((process.env.NODE_ENV !== 'production') && !isFunction(dataOptions)) {
+        if ((process.env.NODE_ENV !== 'production') && !isFunction$1(dataOptions)) {
             warn(`The data option must be a function. ` +
                 `Plain object usage is no longer supported.`);
         }
         const data = dataOptions.call(publicThis, publicThis);
-        if ((process.env.NODE_ENV !== 'production') && isPromise(data)) {
+        if ((process.env.NODE_ENV !== 'production') && isPromise$1(data)) {
             warn(`data() returned a Promise - note data() cannot be async; If you ` +
                 `intend to perform data fetching before component renders, use ` +
                 `async setup() + <Suspense>.`);
         }
-        if (!isObject(data)) {
+        if (!isObject$1(data)) {
             (process.env.NODE_ENV !== 'production') && warn(`data() should return an object.`);
         }
         else {
@@ -4043,15 +4044,15 @@ function applyOptions(instance) {
     if (computedOptions) {
         for (const key in computedOptions) {
             const opt = computedOptions[key];
-            const get = isFunction(opt)
+            const get = isFunction$1(opt)
                 ? opt.bind(publicThis, publicThis)
-                : isFunction(opt.get)
+                : isFunction$1(opt.get)
                     ? opt.get.bind(publicThis, publicThis)
                     : NOOP;
             if ((process.env.NODE_ENV !== 'production') && get === NOOP) {
                 warn(`Computed property "${key}" has no getter.`);
             }
-            const set = !isFunction(opt) && isFunction(opt.set)
+            const set = !isFunction$1(opt) && isFunction$1(opt.set)
                 ? opt.set.bind(publicThis)
                 : (process.env.NODE_ENV !== 'production')
                     ? () => {
@@ -4079,7 +4080,7 @@ function applyOptions(instance) {
         }
     }
     if (provideOptions) {
-        const provides = isFunction(provideOptions)
+        const provides = isFunction$1(provideOptions)
             ? provideOptions.call(publicThis)
             : provideOptions;
         Reflect.ownKeys(provides).forEach(key => {
@@ -4143,7 +4144,7 @@ function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) 
     }
     for (const key in injectOptions) {
         const opt = injectOptions[key];
-        if (isObject(opt)) {
+        if (isObject$1(opt)) {
             if ('default' in opt) {
                 ctx[key] = inject(opt.from || key, opt.default, true /* treat default function as factory */);
             }
@@ -4170,25 +4171,25 @@ function createWatcher(raw, ctx, publicThis, key) {
         : () => publicThis[key];
     if (isString(raw)) {
         const handler = ctx[raw];
-        if (isFunction(handler)) {
+        if (isFunction$1(handler)) {
             watch(getter, handler);
         }
         else if ((process.env.NODE_ENV !== 'production')) {
             warn(`Invalid watch handler specified by key "${raw}"`, handler);
         }
     }
-    else if (isFunction(raw)) {
+    else if (isFunction$1(raw)) {
         watch(getter, raw.bind(publicThis));
     }
-    else if (isObject(raw)) {
+    else if (isObject$1(raw)) {
         if (isArray(raw)) {
             raw.forEach(r => createWatcher(r, ctx, publicThis, key));
         }
         else {
-            const handler = isFunction(raw.handler)
+            const handler = isFunction$1(raw.handler)
                 ? raw.handler.bind(publicThis)
                 : ctx[raw.handler];
-            if (isFunction(handler)) {
+            if (isFunction$1(handler)) {
                 watch(getter, handler, raw);
             }
             else if ((process.env.NODE_ENV !== 'production')) {
@@ -4287,7 +4288,7 @@ function mergeDataFn(to, from) {
         return from;
     }
     return function mergedDataFn() {
-        return (extend)(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
+        return (extend)(isFunction$1(to) ? to.call(this, this) : to, isFunction$1(from) ? from.call(this, this) : from);
     };
 }
 function mergeInject(to, from) {
@@ -4494,7 +4495,7 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
         // default values
         if (hasDefault && value === undefined) {
             const defaultValue = opt.default;
-            if (opt.type !== Function && isFunction(defaultValue)) {
+            if (opt.type !== Function && isFunction$1(defaultValue)) {
                 const { propsDefaults } = instance;
                 if (key in propsDefaults) {
                     value = propsDefaults[key];
@@ -4533,7 +4534,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     const needCastKeys = [];
     // apply mixin/extends props
     let hasExtends = false;
-    if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+    if (__VUE_OPTIONS_API__ && !isFunction$1(comp)) {
         const extendProps = (raw) => {
             hasExtends = true;
             const [props, keys] = normalizePropsOptions(raw, appContext, true);
@@ -4567,7 +4568,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
         }
     }
     else if (raw) {
-        if ((process.env.NODE_ENV !== 'production') && !isObject(raw)) {
+        if ((process.env.NODE_ENV !== 'production') && !isObject$1(raw)) {
             warn(`invalid props options`, raw);
         }
         for (const key in raw) {
@@ -4575,7 +4576,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
             if (validatePropName(normalizedKey)) {
                 const opt = raw[key];
                 const prop = (normalized[normalizedKey] =
-                    isArray(opt) || isFunction(opt) ? { type: opt } : opt);
+                    isArray(opt) || isFunction$1(opt) ? { type: opt } : opt);
                 if (prop) {
                     const booleanIndex = getTypeIndex(Boolean, prop.type);
                     const stringIndex = getTypeIndex(String, prop.type);
@@ -4616,7 +4617,7 @@ function getTypeIndex(type, expectedTypes) {
     if (isArray(expectedTypes)) {
         return expectedTypes.findIndex(t => isSameType(t, type));
     }
-    else if (isFunction(expectedTypes)) {
+    else if (isFunction$1(expectedTypes)) {
         return isSameType(expectedTypes, type) ? 0 : -1;
     }
     return -1;
@@ -4685,7 +4686,7 @@ function assertType(value, type) {
         }
     }
     else if (expectedType === 'Object') {
-        valid = isObject(value);
+        valid = isObject$1(value);
     }
     else if (expectedType === 'Array') {
         valid = isArray(value);
@@ -4771,7 +4772,7 @@ const normalizeObjectSlots = (rawSlots, slots, instance) => {
         if (isInternalKey(key))
             continue;
         const value = rawSlots[key];
-        if (isFunction(value)) {
+        if (isFunction$1(value)) {
             slots[key] = normalizeSlot(key, value, ctx);
         }
         else if (value != null) {
@@ -4900,7 +4901,7 @@ function withDirectives(vnode, directives) {
     const bindings = vnode.dirs || (vnode.dirs = []);
     for (let i = 0; i < directives.length; i++) {
         let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
-        if (isFunction(dir)) {
+        if (isFunction$1(dir)) {
             dir = {
                 mounted: dir,
                 updated: dir
@@ -4965,7 +4966,7 @@ function createAppContext() {
 let uid$1 = 0;
 function createAppAPI(render, hydrate) {
     return function createApp(rootComponent, rootProps = null) {
-        if (rootProps != null && !isObject(rootProps)) {
+        if (rootProps != null && !isObject$1(rootProps)) {
             (process.env.NODE_ENV !== 'production') && warn(`root props passed to app.mount() must be an object.`);
             rootProps = null;
         }
@@ -4992,11 +4993,11 @@ function createAppAPI(render, hydrate) {
                 if (installedPlugins.has(plugin)) {
                     (process.env.NODE_ENV !== 'production') && warn(`Plugin has already been applied to target app.`);
                 }
-                else if (plugin && isFunction(plugin.install)) {
+                else if (plugin && isFunction$1(plugin.install)) {
                     installedPlugins.add(plugin);
                     plugin.install(app, ...options);
                 }
-                else if (isFunction(plugin)) {
+                else if (isFunction$1(plugin)) {
                     installedPlugins.add(plugin);
                     plugin(app, ...options);
                 }
@@ -5582,7 +5583,7 @@ const setRef = (rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) => 
             doSet();
         }
     }
-    else if (isFunction(ref)) {
+    else if (isFunction$1(ref)) {
         callWithErrorHandling(ref, owner, 12 /* FUNCTION_REF */, [value, refs]);
     }
     else if ((process.env.NODE_ENV !== 'production')) {
@@ -7278,7 +7279,7 @@ const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
 const normalizeRef = ({ ref }) => {
     return (ref != null
-        ? isString(ref) || isRef(ref) || isFunction(ref)
+        ? isString(ref) || isRef(ref) || isFunction$1(ref)
             ? { i: currentRenderingInstance, r: ref }
             : ref
         : null);
@@ -7317,7 +7318,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
         if (klass && !isString(klass)) {
             props.class = normalizeClass(klass);
         }
-        if (isObject(style)) {
+        if (isObject$1(style)) {
             // reactive state objects need to be cloned since they are likely to be
             // mutated
             if (isProxy(style) && !isArray(style)) {
@@ -7333,9 +7334,9 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
             ? 128 /* SUSPENSE */
             : isTeleport(type)
                 ? 64 /* TELEPORT */
-                : isObject(type)
+                : isObject$1(type)
                     ? 4 /* STATEFUL_COMPONENT */
-                    : isFunction(type)
+                    : isFunction$1(type)
                         ? 2 /* FUNCTIONAL_COMPONENT */
                         : 0;
     if ((process.env.NODE_ENV !== 'production') && shapeFlag & 4 /* STATEFUL_COMPONENT */ && isProxy(type)) {
@@ -7558,7 +7559,7 @@ function normalizeChildren(vnode, children) {
             }
         }
     }
-    else if (isFunction(children)) {
+    else if (isFunction$1(children)) {
         children = { default: children, _ctx: currentRenderingInstance };
         type = 32 /* SLOTS_CHILDREN */;
     }
@@ -7627,7 +7628,7 @@ function renderList(source, renderItem) {
             ret[i] = renderItem(i + 1, i);
         }
     }
-    else if (isObject(source)) {
+    else if (isObject$1(source)) {
         if (source[Symbol.iterator]) {
             ret = Array.from(source, renderItem);
         }
@@ -7723,7 +7724,7 @@ function ensureValidVNode(vnodes) {
  */
 function toHandlers(obj) {
     const ret = {};
-    if ((process.env.NODE_ENV !== 'production') && !isObject(obj)) {
+    if ((process.env.NODE_ENV !== 'production') && !isObject$1(obj)) {
         warn(`v-on with no argument expects an object value.`);
         return ret;
     }
@@ -8148,7 +8149,7 @@ function setupStatefulComponent(instance, isSSR) {
         const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [(process.env.NODE_ENV !== 'production') ? shallowReadonly(instance.props) : instance.props, setupContext]);
         resetTracking();
         currentInstance = null;
-        if (isPromise(setupResult)) {
+        if (isPromise$1(setupResult)) {
             const unsetInstance = () => {
                 currentInstance = null;
             };
@@ -8178,13 +8179,13 @@ function setupStatefulComponent(instance, isSSR) {
     }
 }
 function handleSetupResult(instance, setupResult, isSSR) {
-    if (isFunction(setupResult)) {
+    if (isFunction$1(setupResult)) {
         // setup returned an inline render function
         {
             instance.render = setupResult;
         }
     }
-    else if (isObject(setupResult)) {
+    else if (isObject$1(setupResult)) {
         if ((process.env.NODE_ENV !== 'production') && isVNode(setupResult)) {
             warn(`setup() should not return VNodes directly - ` +
                 `return a render function instead.`);
@@ -8340,7 +8341,7 @@ function recordInstanceBoundEffect(effect, instance = currentInstance) {
 const classifyRE = /(?:^|[-_])(\w)/g;
 const classify = (str) => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
 function getComponentName(Component) {
-    return isFunction(Component)
+    return isFunction$1(Component)
         ? Component.displayName || Component.name
         : Component.name;
 }
@@ -8369,7 +8370,7 @@ function formatComponentName(instance, Component, isRoot = false) {
     return name ? classify(name) : isRoot ? `App` : `Anonymous`;
 }
 function isClassComponent(value) {
-    return isFunction(value) && '__vccOpts' in value;
+    return isFunction$1(value) && '__vccOpts' in value;
 }
 
 function computed$1(getterOrOptions) {
@@ -8378,30 +8379,15 @@ function computed$1(getterOrOptions) {
     return c;
 }
 
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
+(process.env.NODE_ENV !== 'production')
+    ? Object.freeze({})
+    : {};
+(process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
+const isFunction = (val) => typeof val === 'function';
+const isObject = (val) => val !== null && typeof val === 'object';
+const isPromise = (val) => {
+    return isObject(val) && isFunction(val.then) && isFunction(val.catch);
+};
 
 // dev only
 const warnRuntimeUsage = (method) => warn(`${method}() is a compiler-hint helper that is only usable inside ` +
@@ -8516,28 +8502,27 @@ props, defaults) {
  * async setup().
  */
 function withAsyncContext(awaitable) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const ctx = getCurrentInstance();
-        setCurrentInstance(null); // unset after storing instance
-        if ((process.env.NODE_ENV !== 'production') && !ctx) {
-            warn(`withAsyncContext() called when there is no active context instance.`);
-        }
-        let res;
-        try {
-            res = yield awaitable;
-        }
-        finally {
+    const ctx = getCurrentInstance();
+    setCurrentInstance(null); // unset after storing instance
+    if ((process.env.NODE_ENV !== 'production') && !ctx) {
+        warn(`withAsyncContext() called when there is no active context instance.`);
+    }
+    return isPromise(awaitable)
+        ? awaitable.then(res => {
             setCurrentInstance(ctx);
-        }
-        return res;
-    });
+            return res;
+        }, err => {
+            setCurrentInstance(ctx);
+            throw err;
+        })
+        : awaitable;
 }
 
 // Actual implementation
 function h(type, propsOrChildren, children) {
     const l = arguments.length;
     if (l === 2) {
-        if (isObject(propsOrChildren) && !isArray(propsOrChildren)) {
+        if (isObject$1(propsOrChildren) && !isArray(propsOrChildren)) {
             // single vnode without props
             if (isVNode(propsOrChildren)) {
                 return createVNode(type, null, [propsOrChildren]);
@@ -8587,7 +8572,7 @@ function initCustomFormatter() {
     const formatter = {
         header(obj) {
             // TODO also format ComponentPublicInstance & ctx.slots/attrs in setup
-            if (!isObject(obj)) {
+            if (!isObject$1(obj)) {
                 return null;
             }
             if (obj.__isVue) {
@@ -8712,7 +8697,7 @@ function initCustomFormatter() {
         else if (typeof v === 'boolean') {
             return ['span', keywordStyle, v];
         }
-        else if (isObject(v)) {
+        else if (isObject$1(v)) {
             return ['object', { object: asRaw ? toRaw(v) : v }];
         }
         else {
@@ -8721,7 +8706,7 @@ function initCustomFormatter() {
     }
     function extractKeys(instance, type) {
         const Comp = instance.type;
-        if (isFunction(Comp)) {
+        if (isFunction$1(Comp)) {
             return;
         }
         const extracted = {};
@@ -8735,7 +8720,7 @@ function initCustomFormatter() {
     function isKeyOfType(Comp, key, type) {
         const opts = Comp[type];
         if ((isArray(opts) && opts.includes(key)) ||
-            (isObject(opts) && key in opts)) {
+            (isObject$1(opts) && key in opts)) {
             return true;
         }
         if (Comp.extends && isKeyOfType(Comp.extends, key, type)) {
@@ -8763,7 +8748,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.3";
+const version = "3.1.4";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
@@ -9270,7 +9255,7 @@ function shouldSetAsProp(el, key, value, isSVG) {
             return true;
         }
         // or native onclick with function values
-        if (key in el && nativeOnRE.test(key) && isFunction(value)) {
+        if (key in el && nativeOnRE.test(key) && isFunction$1(value)) {
             return true;
         }
         return false;
@@ -9501,7 +9486,7 @@ function normalizeDuration(duration) {
     if (duration == null) {
         return null;
     }
-    else if (isObject(duration)) {
+    else if (isObject$1(duration)) {
         return [NumberOf(duration.enter), NumberOf(duration.leave)];
     }
     else {
@@ -10147,7 +10132,7 @@ const createApp = ((...args) => {
         if (!container)
             return;
         const component = app._component;
-        if (!isFunction(component) && !component.render && !component.template) {
+        if (!isFunction$1(component) && !component.render && !component.template) {
             // __UNSAFE__
             // Reason: potential execution of JS expressions in in-DOM template.
             // The user must make sure the in-DOM template is trusted. If it's

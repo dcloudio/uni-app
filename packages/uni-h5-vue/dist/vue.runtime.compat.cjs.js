@@ -2026,9 +2026,10 @@ const deprecationData = {
         message: (comp) => {
             const configMsg = `opt-in to ` +
                 `Vue 3 behavior on a per-component basis with \`compatConfig: { ${"COMPONENT_V_MODEL" /* COMPONENT_V_MODEL */}: false }\`.`;
-            if (comp.props && isArray(comp.props)
-                ? comp.props.includes('modelValue')
-                : hasOwn(comp.props, 'modelValue')) {
+            if (comp.props &&
+                (isArray(comp.props)
+                    ? comp.props.includes('modelValue')
+                    : hasOwn(comp.props, 'modelValue'))) {
                 return (`Component delcares "modelValue" prop, which is Vue 3 usage, but ` +
                     `is running under Vue 2 compat v-model behavior. You can ${configMsg}`);
             }
@@ -5690,7 +5691,7 @@ function createCompatVue(createApp, createSingletonApp) {
             return vm;
         }
     }
-    Vue.version = "3.1.3";
+    Vue.version = "3.1.4";
     Vue.config = singletonApp.config;
     Vue.use = (p, ...options) => {
         if (p && isFunction(p.install)) {
@@ -10151,31 +10152,6 @@ function computed$1(getterOrOptions) {
     return c;
 }
 
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
 // dev only
 const warnRuntimeUsage = (method) => warn(`${method}() is a compiler-hint helper that is only usable inside ` +
     `<script setup> of a single file component. Its arguments should be ` +
@@ -10289,21 +10265,20 @@ props, defaults) {
  * async setup().
  */
 function withAsyncContext(awaitable) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const ctx = getCurrentInstance();
-        setCurrentInstance(null); // unset after storing instance
-        if (!ctx) {
-            warn(`withAsyncContext() called when there is no active context instance.`);
-        }
-        let res;
-        try {
-            res = yield awaitable;
-        }
-        finally {
+    const ctx = getCurrentInstance();
+    setCurrentInstance(null); // unset after storing instance
+    if (!ctx) {
+        warn(`withAsyncContext() called when there is no active context instance.`);
+    }
+    return isPromise(awaitable)
+        ? awaitable.then(res => {
             setCurrentInstance(ctx);
-        }
-        return res;
-    });
+            return res;
+        }, err => {
+            setCurrentInstance(ctx);
+            throw err;
+        })
+        : awaitable;
 }
 
 // Actual implementation
@@ -10536,7 +10511,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.1.3";
+const version = "3.1.4";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

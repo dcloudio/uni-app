@@ -6,16 +6,16 @@ import {
   isSymbol,
   extend,
   hasOwn,
-  isObject,
+  isObject as isObject$1,
   hasChanged,
   makeMap,
   capitalize,
   toRawType,
   def,
-  isFunction,
+  isFunction as isFunction$1,
   NOOP,
   isString,
-  isPromise,
+  isPromise as isPromise$1,
   toHandlerKey,
   toNumber,
   hyphenate,
@@ -244,33 +244,37 @@ const get = /*#__PURE__*/ createGetter()
 const shallowGet = /*#__PURE__*/ createGetter(false, true)
 const readonlyGet = /*#__PURE__*/ createGetter(true)
 const shallowReadonlyGet = /*#__PURE__*/ createGetter(true, true)
-const arrayInstrumentations = {}
-;['includes', 'indexOf', 'lastIndexOf'].forEach((key) => {
-  const method = Array.prototype[key]
-  arrayInstrumentations[key] = function (...args) {
-    const arr = toRaw(this)
-    for (let i = 0, l = this.length; i < l; i++) {
-      track(arr, 'get' /* GET */, i + '')
+const arrayInstrumentations = /*#__PURE__*/ createArrayInstrumentations()
+function createArrayInstrumentations() {
+  const instrumentations = {}
+  ;['includes', 'indexOf', 'lastIndexOf'].forEach((key) => {
+    const method = Array.prototype[key]
+    instrumentations[key] = function (...args) {
+      const arr = toRaw(this)
+      for (let i = 0, l = this.length; i < l; i++) {
+        track(arr, 'get' /* GET */, i + '')
+      }
+      // we run the method using the original args first (which may be reactive)
+      const res = method.apply(arr, args)
+      if (res === -1 || res === false) {
+        // if that didn't work, run it again using raw values.
+        return method.apply(arr, args.map(toRaw))
+      } else {
+        return res
+      }
     }
-    // we run the method using the original args first (which may be reactive)
-    const res = method.apply(arr, args)
-    if (res === -1 || res === false) {
-      // if that didn't work, run it again using raw values.
-      return method.apply(arr, args.map(toRaw))
-    } else {
+  })
+  ;['push', 'pop', 'shift', 'unshift', 'splice'].forEach((key) => {
+    const method = Array.prototype[key]
+    instrumentations[key] = function (...args) {
+      pauseTracking()
+      const res = method.apply(this, args)
+      resetTracking()
       return res
     }
-  }
-})
-;['push', 'pop', 'shift', 'unshift', 'splice'].forEach((key) => {
-  const method = Array.prototype[key]
-  arrayInstrumentations[key] = function (...args) {
-    pauseTracking()
-    const res = method.apply(this, args)
-    resetTracking()
-    return res
-  }
-})
+  })
+  return instrumentations
+}
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target, key, receiver) {
     if (key === '__v_isReactive' /* IS_REACTIVE */) {
@@ -310,7 +314,7 @@ function createGetter(isReadonly = false, shallow = false) {
       const shouldUnwrap = !targetIsArray || !isIntegerKey(key)
       return shouldUnwrap ? res.value : res
     }
-    if (isObject(res)) {
+    if (isObject$1(res)) {
       // Convert returned value into a proxy as well. we do the isObject check
       // here to avoid invalid value warning. Also need to lazy access readonly
       // and reactive here to avoid circular dependency.
@@ -400,19 +404,19 @@ const readonlyHandlers = {
     return true
   },
 }
-const shallowReactiveHandlers = extend({}, mutableHandlers, {
+const shallowReactiveHandlers = /*#__PURE__*/ extend({}, mutableHandlers, {
   get: shallowGet,
   set: shallowSet,
 })
 // Props handlers are special in the sense that it should not unwrap top-level
 // refs (in order to allow refs to be explicitly passed down), but should
 // retain the reactivity of the normal readonly object.
-const shallowReadonlyHandlers = extend({}, readonlyHandlers, {
+const shallowReadonlyHandlers = /*#__PURE__*/ extend({}, readonlyHandlers, {
   get: shallowReadonlyGet,
 })
 
-const toReactive = (value) => (isObject(value) ? reactive(value) : value)
-const toReadonly = (value) => (isObject(value) ? readonly(value) : value)
+const toReactive = (value) => (isObject$1(value) ? reactive(value) : value)
+const toReadonly = (value) => (isObject$1(value) ? readonly(value) : value)
 const toShallow = (value) => value
 const getProto = (v) => Reflect.getPrototypeOf(v)
 function get$1(target, key, isReadonly = false, isShallow = false) {
@@ -582,77 +586,91 @@ function createReadonlyMethod(type) {
     return type === 'delete' /* DELETE */ ? false : this
   }
 }
-const mutableInstrumentations = {
-  get(key) {
-    return get$1(this, key)
-  },
-  get size() {
-    return size(this)
-  },
-  has: has$1,
-  add,
-  set: set$1,
-  delete: deleteEntry,
-  clear,
-  forEach: createForEach(false, false),
+function createInstrumentations() {
+  const mutableInstrumentations = {
+    get(key) {
+      return get$1(this, key)
+    },
+    get size() {
+      return size(this)
+    },
+    has: has$1,
+    add,
+    set: set$1,
+    delete: deleteEntry,
+    clear,
+    forEach: createForEach(false, false),
+  }
+  const shallowInstrumentations = {
+    get(key) {
+      return get$1(this, key, false, true)
+    },
+    get size() {
+      return size(this)
+    },
+    has: has$1,
+    add,
+    set: set$1,
+    delete: deleteEntry,
+    clear,
+    forEach: createForEach(false, true),
+  }
+  const readonlyInstrumentations = {
+    get(key) {
+      return get$1(this, key, true)
+    },
+    get size() {
+      return size(this, true)
+    },
+    has(key) {
+      return has$1.call(this, key, true)
+    },
+    add: createReadonlyMethod('add' /* ADD */),
+    set: createReadonlyMethod('set' /* SET */),
+    delete: createReadonlyMethod('delete' /* DELETE */),
+    clear: createReadonlyMethod('clear' /* CLEAR */),
+    forEach: createForEach(true, false),
+  }
+  const shallowReadonlyInstrumentations = {
+    get(key) {
+      return get$1(this, key, true, true)
+    },
+    get size() {
+      return size(this, true)
+    },
+    has(key) {
+      return has$1.call(this, key, true)
+    },
+    add: createReadonlyMethod('add' /* ADD */),
+    set: createReadonlyMethod('set' /* SET */),
+    delete: createReadonlyMethod('delete' /* DELETE */),
+    clear: createReadonlyMethod('clear' /* CLEAR */),
+    forEach: createForEach(true, true),
+  }
+  const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator]
+  iteratorMethods.forEach((method) => {
+    mutableInstrumentations[method] = createIterableMethod(method, false, false)
+    readonlyInstrumentations[method] = createIterableMethod(method, true, false)
+    shallowInstrumentations[method] = createIterableMethod(method, false, true)
+    shallowReadonlyInstrumentations[method] = createIterableMethod(
+      method,
+      true,
+      true
+    )
+  })
+  return [
+    mutableInstrumentations,
+    readonlyInstrumentations,
+    shallowInstrumentations,
+    shallowReadonlyInstrumentations,
+  ]
 }
-const shallowInstrumentations = {
-  get(key) {
-    return get$1(this, key, false, true)
-  },
-  get size() {
-    return size(this)
-  },
-  has: has$1,
-  add,
-  set: set$1,
-  delete: deleteEntry,
-  clear,
-  forEach: createForEach(false, true),
-}
-const readonlyInstrumentations = {
-  get(key) {
-    return get$1(this, key, true)
-  },
-  get size() {
-    return size(this, true)
-  },
-  has(key) {
-    return has$1.call(this, key, true)
-  },
-  add: createReadonlyMethod('add' /* ADD */),
-  set: createReadonlyMethod('set' /* SET */),
-  delete: createReadonlyMethod('delete' /* DELETE */),
-  clear: createReadonlyMethod('clear' /* CLEAR */),
-  forEach: createForEach(true, false),
-}
-const shallowReadonlyInstrumentations = {
-  get(key) {
-    return get$1(this, key, true, true)
-  },
-  get size() {
-    return size(this, true)
-  },
-  has(key) {
-    return has$1.call(this, key, true)
-  },
-  add: createReadonlyMethod('add' /* ADD */),
-  set: createReadonlyMethod('set' /* SET */),
-  delete: createReadonlyMethod('delete' /* DELETE */),
-  clear: createReadonlyMethod('clear' /* CLEAR */),
-  forEach: createForEach(true, true),
-}
-const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator]
-iteratorMethods.forEach((method) => {
-  mutableInstrumentations[method] = createIterableMethod(method, false, false)
-  readonlyInstrumentations[method] = createIterableMethod(method, true, false)
-  shallowInstrumentations[method] = createIterableMethod(method, false, true)
-  shallowReadonlyInstrumentations[method] = createIterableMethod(
-    method,
-    true,
-    true
-  )
-})
+const [
+  mutableInstrumentations,
+  readonlyInstrumentations,
+  shallowInstrumentations,
+  shallowReadonlyInstrumentations,
+] = /* #__PURE__*/ createInstrumentations()
 function createInstrumentationGetter(isReadonly, shallow) {
   const instrumentations = shallow
     ? isReadonly
@@ -679,16 +697,16 @@ function createInstrumentationGetter(isReadonly, shallow) {
   }
 }
 const mutableCollectionHandlers = {
-  get: createInstrumentationGetter(false, false),
+  get: /*#__PURE__*/ createInstrumentationGetter(false, false),
 }
 const shallowCollectionHandlers = {
-  get: createInstrumentationGetter(false, true),
+  get: /*#__PURE__*/ createInstrumentationGetter(false, true),
 }
 const readonlyCollectionHandlers = {
-  get: createInstrumentationGetter(true, false),
+  get: /*#__PURE__*/ createInstrumentationGetter(true, false),
 }
 const shallowReadonlyCollectionHandlers = {
-  get: createInstrumentationGetter(true, true),
+  get: /*#__PURE__*/ createInstrumentationGetter(true, true),
 }
 function checkIdentityKeys(target, has, key) {
   const rawKey = toRaw(key)
@@ -789,7 +807,7 @@ function createReactiveObject(
   collectionHandlers,
   proxyMap
 ) {
-  if (!isObject(target)) {
+  if (!isObject$1(target)) {
     if (process.env.NODE_ENV !== 'production') {
       console.warn(`value cannot be made reactive: ${String(target)}`)
     }
@@ -840,7 +858,7 @@ function markRaw(value) {
   return value
 }
 
-const convert = (val) => (isObject(val) ? reactive(val) : val)
+const convert = (val) => (isObject$1(val) ? reactive(val) : val)
 function isRef(r) {
   return Boolean(r && r.__v_isRef === true)
 }
@@ -983,7 +1001,7 @@ class ComputedRefImpl {
 function computed(getterOrOptions) {
   let getter
   let setter
-  if (isFunction(getterOrOptions)) {
+  if (isFunction$1(getterOrOptions)) {
     getter = getterOrOptions
     setter =
       process.env.NODE_ENV !== 'production'
@@ -998,7 +1016,7 @@ function computed(getterOrOptions) {
   return new ComputedRefImpl(
     getter,
     setter,
-    isFunction(getterOrOptions) || !getterOrOptions.set
+    isFunction$1(getterOrOptions) || !getterOrOptions.set
   )
 }
 
@@ -1112,7 +1130,7 @@ function formatProp(key, value, raw) {
   } else if (isRef(value)) {
     value = formatProp(key, toRaw(value.value), true)
     return raw ? value : [`${key}=Ref<`, value, `>`]
-  } else if (isFunction(value)) {
+  } else if (isFunction$1(value)) {
     return [`${key}=fn${value.name ? `<${value.name}>` : ``}`]
   } else {
     value = toRaw(value)
@@ -1121,6 +1139,7 @@ function formatProp(key, value, raw) {
 }
 
 const ErrorTypeStrings = {
+  ['sp' /* SERVER_PREFETCH */]: 'serverPrefetch hook',
   ['bc' /* BEFORE_CREATE */]: 'beforeCreate hook',
   ['c' /* CREATED */]: 'created hook',
   ['bm' /* BEFORE_MOUNT */]: 'beforeMount hook',
@@ -1162,9 +1181,9 @@ function callWithErrorHandling(fn, instance, type, args) {
   return res
 }
 function callWithAsyncErrorHandling(fn, instance, type, args) {
-  if (isFunction(fn)) {
+  if (isFunction$1(fn)) {
     const res = callWithErrorHandling(fn, instance, type, args)
-    if (res && isPromise(res)) {
+    if (res && isPromise$1(res)) {
       res.catch((err) => {
         handleError(err, instance, type)
       })
@@ -1939,9 +1958,10 @@ const deprecationData = {
           'COMPONENT_V_MODEL' /* COMPONENT_V_MODEL */
         }: false }\`.`
       if (
-        comp.props && isArray(comp.props)
+        comp.props &&
+        (isArray(comp.props)
           ? comp.props.includes('modelValue')
-          : hasOwn(comp.props, 'modelValue')
+          : hasOwn(comp.props, 'modelValue'))
       ) {
         return (
           `Component delcares "modelValue" prop, which is Vue 3 usage, but ` +
@@ -2040,7 +2060,7 @@ function isCompatEnabled(key, instance, enableForBuiltIn = false) {
   }
   const rawMode = getCompatConfigForKey('MODE', instance) || 2
   const val = getCompatConfigForKey(key, instance)
-  const mode = isFunction(rawMode)
+  const mode = isFunction$1(rawMode)
     ? rawMode(instance && instance.type)
     : rawMode
   if (mode === 2) {
@@ -2067,7 +2087,7 @@ function emit(instance, event, ...rawArgs) {
         }
       } else {
         const validator = emitsOptions[event]
-        if (isFunction(validator)) {
+        if (isFunction$1(validator)) {
           const isValid = validator(...rawArgs)
           if (!isValid) {
             warn(
@@ -2155,7 +2175,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
   let normalized = {}
   // apply mixin/extends props
   let hasExtends = false
-  if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+  if (__VUE_OPTIONS_API__ && !isFunction$1(comp)) {
     const extendEmits = (raw) => {
       const normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true)
       if (normalizedFromExtend) {
@@ -2693,7 +2713,7 @@ const SuspenseImpl = {
 const Suspense = SuspenseImpl
 function triggerEvent(vnode, name) {
   const eventListener = vnode.props && vnode.props[name]
-  if (isFunction(eventListener)) {
+  if (isFunction$1(eventListener)) {
     eventListener()
   }
 }
@@ -3252,7 +3272,7 @@ function normalizeSuspenseChildren(vnode) {
 }
 function normalizeSuspenseSlot(s) {
   let block
-  if (isFunction(s)) {
+  if (isFunction$1(s)) {
     const isCompiledSlot = s._c
     if (isCompiledSlot) {
       // disableTracking: false
@@ -3341,7 +3361,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
       // TS doesn't allow symbol as index type
       return provides[key]
     } else if (arguments.length > 1) {
-      return treatDefaultAsFactory && isFunction(defaultValue)
+      return treatDefaultAsFactory && isFunction$1(defaultValue)
         ? defaultValue.call(instance.proxy)
         : defaultValue
     } else if (process.env.NODE_ENV !== 'production') {
@@ -3360,7 +3380,7 @@ function watchEffect(effect, options) {
 const INITIAL_WATCHER_VALUE = {}
 // implementation
 function watch(source, cb, options) {
-  if (process.env.NODE_ENV !== 'production' && !isFunction(cb)) {
+  if (process.env.NODE_ENV !== 'production' && !isFunction$1(cb)) {
     warn(
       `\`watch(fn, options?)\` signature has been moved to a separate API. ` +
         `Use \`watchEffect(fn, options?)\` instead. \`watch\` now only ` +
@@ -3415,13 +3435,13 @@ function doWatch(
           return s.value
         } else if (isReactive(s)) {
           return traverse(s)
-        } else if (isFunction(s)) {
+        } else if (isFunction$1(s)) {
           return callWithErrorHandling(s, instance, 2 /* WATCH_GETTER */)
         } else {
           process.env.NODE_ENV !== 'production' && warnInvalidSource(s)
         }
       })
-  } else if (isFunction(source)) {
+  } else if (isFunction$1(source)) {
     if (cb) {
       // getter with cb
       getter = () =>
@@ -3545,7 +3565,7 @@ function instanceWatch(source, value, options) {
       : () => publicThis[source]
     : source.bind(publicThis, publicThis)
   let cb
-  if (isFunction(value)) {
+  if (isFunction$1(value)) {
     cb = value
   } else {
     cb = value.handler
@@ -3564,7 +3584,7 @@ function createPathGetter(ctx, path) {
   }
 }
 function traverse(value, seen = new Set()) {
-  if (!isObject(value) || seen.has(value) || value['__v_skip' /* SKIP */]) {
+  if (!isObject$1(value) || seen.has(value) || value['__v_skip' /* SKIP */]) {
     return value
   }
   seen.add(value)
@@ -3927,12 +3947,14 @@ function getTransitionRawChildren(children, keepComment = false) {
 
 // implementation, close to no-op
 function defineComponent(options) {
-  return isFunction(options) ? { setup: options, name: options.name } : options
+  return isFunction$1(options)
+    ? { setup: options, name: options.name }
+    : options
 }
 
 const isAsyncWrapper = (i) => !!i.type.__asyncLoader
 function defineAsyncComponent(source) {
-  if (isFunction(source)) {
+  if (isFunction$1(source)) {
     source = { loader: source }
   }
   const {
@@ -3990,8 +4012,8 @@ function defineAsyncComponent(source) {
             if (
               process.env.NODE_ENV !== 'production' &&
               comp &&
-              !isObject(comp) &&
-              !isFunction(comp)
+              !isObject$1(comp) &&
+              !isFunction$1(comp)
             ) {
               throw new Error(`Invalid async component load result: ${comp}`)
             }
@@ -4530,7 +4552,7 @@ function applyOptions(instance) {
   if (methods) {
     for (const key in methods) {
       const methodHandler = methods[key]
-      if (isFunction(methodHandler)) {
+      if (isFunction$1(methodHandler)) {
         // In dev mode, we use the `createRenderContext` function to define methods to the proxy target,
         // and those are read-only but reconfigurable, so it needs to be redefined here
         if (process.env.NODE_ENV !== 'production') {
@@ -4555,21 +4577,21 @@ function applyOptions(instance) {
     }
   }
   if (dataOptions) {
-    if (process.env.NODE_ENV !== 'production' && !isFunction(dataOptions)) {
+    if (process.env.NODE_ENV !== 'production' && !isFunction$1(dataOptions)) {
       warn(
         `The data option must be a function. ` +
           `Plain object usage is no longer supported.`
       )
     }
     const data = dataOptions.call(publicThis, publicThis)
-    if (process.env.NODE_ENV !== 'production' && isPromise(data)) {
+    if (process.env.NODE_ENV !== 'production' && isPromise$1(data)) {
       warn(
         `data() returned a Promise - note data() cannot be async; If you ` +
           `intend to perform data fetching before component renders, use ` +
           `async setup() + <Suspense>.`
       )
     }
-    if (!isObject(data)) {
+    if (!isObject$1(data)) {
       process.env.NODE_ENV !== 'production' &&
         warn(`data() should return an object.`)
     } else {
@@ -4595,16 +4617,16 @@ function applyOptions(instance) {
   if (computedOptions) {
     for (const key in computedOptions) {
       const opt = computedOptions[key]
-      const get = isFunction(opt)
+      const get = isFunction$1(opt)
         ? opt.bind(publicThis, publicThis)
-        : isFunction(opt.get)
+        : isFunction$1(opt.get)
         ? opt.get.bind(publicThis, publicThis)
         : NOOP
       if (process.env.NODE_ENV !== 'production' && get === NOOP) {
         warn(`Computed property "${key}" has no getter.`)
       }
       const set =
-        !isFunction(opt) && isFunction(opt.set)
+        !isFunction$1(opt) && isFunction$1(opt.set)
           ? opt.set.bind(publicThis)
           : process.env.NODE_ENV !== 'production'
           ? () => {
@@ -4634,7 +4656,7 @@ function applyOptions(instance) {
     }
   }
   if (provideOptions) {
-    const provides = isFunction(provideOptions)
+    const provides = isFunction$1(provideOptions)
       ? provideOptions.call(publicThis)
       : provideOptions
     Reflect.ownKeys(provides).forEach((key) => {
@@ -4698,7 +4720,7 @@ function resolveInjections(
   }
   for (const key in injectOptions) {
     const opt = injectOptions[key]
-    if (isObject(opt)) {
+    if (isObject$1(opt)) {
       if ('default' in opt) {
         ctx[key] = inject(
           opt.from || key,
@@ -4731,21 +4753,21 @@ function createWatcher(raw, ctx, publicThis, key) {
     : () => publicThis[key]
   if (isString(raw)) {
     const handler = ctx[raw]
-    if (isFunction(handler)) {
+    if (isFunction$1(handler)) {
       watch(getter, handler)
     } else if (process.env.NODE_ENV !== 'production') {
       warn(`Invalid watch handler specified by key "${raw}"`, handler)
     }
-  } else if (isFunction(raw)) {
+  } else if (isFunction$1(raw)) {
     watch(getter, raw.bind(publicThis))
-  } else if (isObject(raw)) {
+  } else if (isObject$1(raw)) {
     if (isArray(raw)) {
       raw.forEach((r) => createWatcher(r, ctx, publicThis, key))
     } else {
-      const handler = isFunction(raw.handler)
+      const handler = isFunction$1(raw.handler)
         ? raw.handler.bind(publicThis)
         : ctx[raw.handler]
-      if (isFunction(handler)) {
+      if (isFunction$1(handler)) {
         watch(getter, handler, raw)
       } else if (process.env.NODE_ENV !== 'production') {
         warn(`Invalid watch handler specified by key "${raw.handler}"`, handler)
@@ -4848,8 +4870,8 @@ function mergeDataFn(to, from) {
   }
   return function mergedDataFn() {
     return extend(
-      isFunction(to) ? to.call(this, this) : to,
-      isFunction(from) ? from.call(this, this) : from
+      isFunction$1(to) ? to.call(this, this) : to,
+      isFunction$1(from) ? from.call(this, this) : from
     )
   }
 }
@@ -5083,7 +5105,7 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
     // default values
     if (hasDefault && value === undefined) {
       const defaultValue = opt.default
-      if (opt.type !== Function && isFunction(defaultValue)) {
+      if (opt.type !== Function && isFunction$1(defaultValue)) {
         const { propsDefaults } = instance
         if (key in propsDefaults) {
           value = propsDefaults[key]
@@ -5121,7 +5143,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
   const needCastKeys = []
   // apply mixin/extends props
   let hasExtends = false
-  if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
+  if (__VUE_OPTIONS_API__ && !isFunction$1(comp)) {
     const extendProps = (raw) => {
       hasExtends = true
       const [props, keys] = normalizePropsOptions(raw, appContext, true)
@@ -5153,7 +5175,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       }
     }
   } else if (raw) {
-    if (process.env.NODE_ENV !== 'production' && !isObject(raw)) {
+    if (process.env.NODE_ENV !== 'production' && !isObject$1(raw)) {
       warn(`invalid props options`, raw)
     }
     for (const key in raw) {
@@ -5161,7 +5183,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       if (validatePropName(normalizedKey)) {
         const opt = raw[key]
         const prop = (normalized[normalizedKey] =
-          isArray(opt) || isFunction(opt) ? { type: opt } : opt)
+          isArray(opt) || isFunction$1(opt) ? { type: opt } : opt)
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type)
           const stringIndex = getTypeIndex(String, prop.type)
@@ -5200,7 +5222,7 @@ function isSameType(a, b) {
 function getTypeIndex(type, expectedTypes) {
   if (isArray(expectedTypes)) {
     return expectedTypes.findIndex((t) => isSameType(t, type))
-  } else if (isFunction(expectedTypes)) {
+  } else if (isFunction$1(expectedTypes)) {
     return isSameType(expectedTypes, type) ? 0 : -1
   }
   return -1
@@ -5274,7 +5296,7 @@ function assertType(value, type) {
       valid = value instanceof type
     }
   } else if (expectedType === 'Object') {
-    valid = isObject(value)
+    valid = isObject$1(value)
   } else if (expectedType === 'Array') {
     valid = isArray(value)
   } else {
@@ -5359,7 +5381,7 @@ const normalizeObjectSlots = (rawSlots, slots, instance) => {
   for (const key in rawSlots) {
     if (isInternalKey(key)) continue
     const value = rawSlots[key]
-    if (isFunction(value)) {
+    if (isFunction$1(value)) {
       slots[key] = normalizeSlot(key, value, ctx)
     } else if (value != null) {
       if (process.env.NODE_ENV !== 'production' && !false) {
@@ -5489,7 +5511,7 @@ function withDirectives(vnode, directives) {
   const bindings = vnode.dirs || (vnode.dirs = [])
   for (let i = 0; i < directives.length; i++) {
     let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i]
-    if (isFunction(dir)) {
+    if (isFunction$1(dir)) {
       dir = {
         mounted: dir,
         updated: dir,
@@ -5554,7 +5576,7 @@ function createAppContext() {
 let uid$1 = 0
 function createAppAPI(render, hydrate) {
   return function createApp(rootComponent, rootProps = null) {
-    if (rootProps != null && !isObject(rootProps)) {
+    if (rootProps != null && !isObject$1(rootProps)) {
       process.env.NODE_ENV !== 'production' &&
         warn(`root props passed to app.mount() must be an object.`)
       rootProps = null
@@ -5584,10 +5606,10 @@ function createAppAPI(render, hydrate) {
         if (installedPlugins.has(plugin)) {
           process.env.NODE_ENV !== 'production' &&
             warn(`Plugin has already been applied to target app.`)
-        } else if (plugin && isFunction(plugin.install)) {
+        } else if (plugin && isFunction$1(plugin.install)) {
           installedPlugins.add(plugin)
           plugin.install(app, ...options)
-        } else if (isFunction(plugin)) {
+        } else if (isFunction$1(plugin)) {
           installedPlugins.add(plugin)
           plugin(app, ...options)
         } else if (process.env.NODE_ENV !== 'production') {
@@ -5718,12 +5740,14 @@ function createHydrationFunctions(rendererInternals) {
     o: { patchProp, nextSibling, parentNode, remove, insert, createComment },
   } = rendererInternals
   const hydrate = (vnode, container) => {
-    if (process.env.NODE_ENV !== 'production' && !container.hasChildNodes()) {
-      warn(
-        `Attempting to hydrate existing markup but container is empty. ` +
-          `Performing full mount instead.`
-      )
+    if (!container.hasChildNodes()) {
+      process.env.NODE_ENV !== 'production' &&
+        warn(
+          `Attempting to hydrate existing markup but container is empty. ` +
+            `Performing full mount instead.`
+        )
       patch(null, vnode, container)
+      flushPostFlushCbs()
       return
     }
     hasMismatch = false
@@ -5915,21 +5939,28 @@ function createHydrationFunctions(rendererInternals) {
     optimized
   ) => {
     optimized = optimized || !!vnode.dynamicChildren
-    const { props, patchFlag, shapeFlag, dirs } = vnode
+    const { type, props, patchFlag, shapeFlag, dirs } = vnode
+    // #4006 for form elements with non-string v-model value bindings
+    // e.g. <option :value="obj">, <input type="checkbox" :true-value="1">
+    const forcePatchValue = (type === 'input' && dirs) || type === 'option'
     // skip props & children if this is hoisted static nodes
-    if (patchFlag !== -1 /* HOISTED */) {
+    if (forcePatchValue || patchFlag !== -1 /* HOISTED */) {
       if (dirs) {
         invokeDirectiveHook(vnode, null, parentComponent, 'created')
       }
       // props
       if (props) {
         if (
+          forcePatchValue ||
           !optimized ||
           patchFlag & 16 /* FULL_PROPS */ ||
           patchFlag & 32 /* HYDRATE_EVENTS */
         ) {
           for (const key in props) {
-            if (!isReservedProp(key) && isOn(key)) {
+            if (
+              (forcePatchValue && key.endsWith('value')) ||
+              (isOn(key) && !isReservedProp(key))
+            ) {
               patchProp(el, key, null, props[key])
             }
           }
@@ -6316,7 +6347,7 @@ const setRef = (
     } else {
       doSet()
     }
-  } else if (isFunction(ref)) {
+  } else if (isFunction$1(ref)) {
     callWithErrorHandling(ref, owner, 12 /* FUNCTION_REF */, [value, refs])
   } else if (process.env.NODE_ENV !== 'production') {
     warn('Invalid template ref type:', value, `(${typeof value})`)
@@ -6507,7 +6538,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   }
   const mountStaticNode = (n2, container, anchor, isSVG) => {
-    ;[n2.el, n2.anchor] = hostInsertStaticContent(
+    // static nodes are only present when used with compiler-dom/runtime-dom
+    // which guarantees presence of hostInsertStaticContent.
+    const nodes = hostInsertStaticContent(
       n2.children,
       container,
       anchor,
@@ -6515,8 +6548,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       // pass cached nodes if the static node is being mounted multiple times
       // so that runtime-dom can simply cloneNode() instead of inserting new
       // HTML
-      n2.el && [n2.el, n2.anchor]
+      n2.staticCache
     )
+    // first mount - this is the orignal hoisted vnode. cache nodes.
+    if (!n2.el) {
+      n2.staticCache = nodes
+    }
+    n2.el = nodes[0]
+    n2.anchor = nodes[nodes.length - 1]
   }
   /**
    * Dev / HMR only
@@ -8673,7 +8712,7 @@ const InternalObjectKey = `__vInternal`
 const normalizeKey = ({ key }) => (key != null ? key : null)
 const normalizeRef = ({ ref }) => {
   return ref != null
-    ? isString(ref) || isRef(ref) || isFunction(ref)
+    ? isString(ref) || isRef(ref) || isFunction$1(ref)
       ? { i: currentRenderingInstance, r: ref }
       : ref
     : null
@@ -8720,7 +8759,7 @@ function _createVNode(
     if (klass && !isString(klass)) {
       props.class = normalizeClass(klass)
     }
-    if (isObject(style)) {
+    if (isObject$1(style)) {
       // reactive state objects need to be cloned since they are likely to be
       // mutated
       if (isProxy(style) && !isArray(style)) {
@@ -8736,9 +8775,9 @@ function _createVNode(
     ? 128 /* SUSPENSE */
     : isTeleport(type)
     ? 64 /* TELEPORT */
-    : isObject(type)
+    : isObject$1(type)
     ? 4 /* STATEFUL_COMPONENT */
-    : isFunction(type)
+    : isFunction$1(type)
     ? 2 /* FUNCTIONAL_COMPONENT */
     : 0
   if (
@@ -8776,7 +8815,6 @@ function _createVNode(
     anchor: null,
     target: null,
     targetAnchor: null,
-    staticCount: 0,
     shapeFlag,
     patchFlag,
     dynamicProps,
@@ -8844,6 +8882,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
     target: vnode.target,
     targetAnchor: vnode.targetAnchor,
     staticCount: vnode.staticCount,
+    staticCache: vnode.staticCache,
     shapeFlag: vnode.shapeFlag,
     // if the vnode is cloned with extra props, we can no longer assume its
     // existing patch flag to be reliable and need to add the FULL_PROPS flag.
@@ -8972,7 +9011,7 @@ function normalizeChildren(vnode, children) {
         }
       }
     }
-  } else if (isFunction(children)) {
+  } else if (isFunction$1(children)) {
     children = { default: children, _ctx: currentRenderingInstance }
     type = 32 /* SLOTS_CHILDREN */
   } else {
@@ -9032,7 +9071,7 @@ function renderList(source, renderItem) {
     for (let i = 0; i < source; i++) {
       ret[i] = renderItem(i + 1, i)
     }
-  } else if (isObject(source)) {
+  } else if (isObject$1(source)) {
     if (source[Symbol.iterator]) {
       ret = Array.from(source, renderItem)
     } else {
@@ -9134,7 +9173,7 @@ function ensureValidVNode(vnodes) {
  */
 function toHandlers(obj) {
   const ret = {}
-  if (process.env.NODE_ENV !== 'production' && !isObject(obj)) {
+  if (process.env.NODE_ENV !== 'production' && !isObject$1(obj)) {
     warn(`v-on with no argument expects an object value.`)
     return ret
   }
@@ -9151,7 +9190,7 @@ function toHandlers(obj) {
  */
 const getPublicInstance = (i) => {
   if (!i) return null
-  if (isStatefulComponent(i)) return i.exposed ? i.exposed : i.proxy
+  if (isStatefulComponent(i)) return getExposeProxy(i) || i.proxy
   return getPublicInstance(i.parent)
 }
 const publicPropertiesMap = extend(Object.create(null), {
@@ -9610,7 +9649,11 @@ function setupStatefulComponent(instance, isSSR) {
     )
     resetTracking()
     currentInstance = null
-    if (isPromise(setupResult)) {
+    if (isPromise$1(setupResult)) {
+      const unsetInstance = () => {
+        currentInstance = null
+      }
+      setupResult.then(unsetInstance, unsetInstance)
       if (isSSR) {
         // return the promise so server-renderer can wait on it
         return setupResult
@@ -9633,12 +9676,12 @@ function setupStatefulComponent(instance, isSSR) {
   }
 }
 function handleSetupResult(instance, setupResult, isSSR) {
-  if (isFunction(setupResult)) {
+  if (isFunction$1(setupResult)) {
     // setup returned an inline render function
     {
       instance.render = setupResult
     }
-  } else if (isObject(setupResult)) {
+  } else if (isObject$1(setupResult)) {
     if (process.env.NODE_ENV !== 'production' && isVNode(setupResult)) {
       warn(
         `setup() should not return VNodes directly - ` +
@@ -9820,7 +9863,7 @@ const classifyRE = /(?:^|[-_])(\w)/g
 const classify = (str) =>
   str.replace(classifyRE, (c) => c.toUpperCase()).replace(/[-_]/g, '')
 function getComponentName(Component) {
-  return isFunction(Component)
+  return isFunction$1(Component)
     ? Component.displayName || Component.name
     : Component.name
 }
@@ -9850,7 +9893,7 @@ function formatComponentName(instance, Component, isRoot = false) {
   return name ? classify(name) : isRoot ? `App` : `Anonymous`
 }
 function isClassComponent(value) {
-  return isFunction(value) && '__vccOpts' in value
+  return isFunction$1(value) && '__vccOpts' in value
 }
 
 function computed$1(getterOrOptions) {
@@ -9859,25 +9902,32 @@ function computed$1(getterOrOptions) {
   return c
 }
 
+process.env.NODE_ENV !== 'production' ? Object.freeze({}) : {}
+process.env.NODE_ENV !== 'production' ? Object.freeze([]) : []
+const isFunction = (val) => typeof val === 'function'
+const isObject = (val) => val !== null && typeof val === 'object'
+const isPromise = (val) => {
+  return isObject(val) && isFunction(val.then) && isFunction(val.catch)
+}
+
+// dev only
+const warnRuntimeUsage = (method) =>
+  warn(
+    `${method}() is a compiler-hint helper that is only usable inside ` +
+      `<script setup> of a single file component. Its arguments should be ` +
+      `compiled away and passing it at runtime has no effect.`
+  )
 // implementation
 function defineProps() {
   if (process.env.NODE_ENV !== 'production') {
-    warn(
-      `defineProps() is a compiler-hint helper that is only usable inside ` +
-        `<script setup> of a single file component. Its arguments should be ` +
-        `compiled away and passing it at runtime has no effect.`
-    )
+    warnRuntimeUsage(`defineProps`)
   }
   return null
 }
 // implementation
 function defineEmits() {
   if (process.env.NODE_ENV !== 'production') {
-    warn(
-      `defineEmits() is a compiler-hint helper that is only usable inside ` +
-        `<script setup> of a single file component. Its arguments should be ` +
-        `compiled away and passing it at runtime has no effect.`
-    )
+    warnRuntimeUsage(`defineEmits`)
   }
   return null
 }
@@ -9885,6 +9935,47 @@ function defineEmits() {
  * @deprecated use `defineEmits` instead.
  */
 const defineEmit = defineEmits
+/**
+ * Vue `<script setup>` compiler macro for declaring a component's exposed
+ * instance properties when it is accessed by a parent component via template
+ * refs.
+ *
+ * `<script setup>` components are closed by default - i.e. varaibles inside
+ * the `<script setup>` scope is not exposed to parent unless explicitly exposed
+ * via `defineExpose`.
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ */
+function defineExpose(exposed) {
+  if (process.env.NODE_ENV !== 'production') {
+    warnRuntimeUsage(`defineExpose`)
+  }
+}
+/**
+ * Vue `<script setup>` compiler macro for providing props default values when
+ * using type-based `defineProps` decalration.
+ *
+ * Example usage:
+ * ```ts
+ * withDefaults(defineProps<{
+ *   size?: number
+ *   labels?: string[]
+ * }>(), {
+ *   size: 3,
+ *   labels: () => ['default label']
+ * })
+ * ```
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the output
+ * and should **not** be actually called at runtime.
+ */
+function withDefaults(props, defaults) {
+  if (process.env.NODE_ENV !== 'production') {
+    warnRuntimeUsage(`withDefaults`)
+  }
+  return null
+}
 /**
  * @deprecated use `useSlots` and `useAttrs` instead.
  */
@@ -9897,6 +9988,12 @@ function useContext() {
   }
   return getContext()
 }
+function useSlots() {
+  return getContext().slots
+}
+function useAttrs() {
+  return getContext().attrs
+}
 function getContext() {
   const i = getCurrentInstance()
   if (process.env.NODE_ENV !== 'production' && !i) {
@@ -9904,12 +10001,57 @@ function getContext() {
   }
   return i.setupContext || (i.setupContext = createSetupContext(i))
 }
+/**
+ * Runtime helper for merging default declarations. Imported by compiled code
+ * only.
+ * @internal
+ */
+function mergeDefaults(
+  // the base props is compiler-generated and guaranteed to be in this shape.
+  props,
+  defaults
+) {
+  for (const key in defaults) {
+    const val = props[key]
+    if (val) {
+      val.default = defaults[key]
+    } else if (val === null) {
+      props[key] = { default: defaults[key] }
+    } else if (process.env.NODE_ENV !== 'production') {
+      warn(`props default key "${key}" has no corresponding declaration.`)
+    }
+  }
+  return props
+}
+/**
+ * Runtime helper for storing and resuming current instance context in
+ * async setup().
+ */
+function withAsyncContext(awaitable) {
+  const ctx = getCurrentInstance()
+  setCurrentInstance(null) // unset after storing instance
+  if (process.env.NODE_ENV !== 'production' && !ctx) {
+    warn(`withAsyncContext() called when there is no active context instance.`)
+  }
+  return isPromise(awaitable)
+    ? awaitable.then(
+        (res) => {
+          setCurrentInstance(ctx)
+          return res
+        },
+        (err) => {
+          setCurrentInstance(ctx)
+          throw err
+        }
+      )
+    : awaitable
+}
 
 // Actual implementation
 function h(type, propsOrChildren, children) {
   const l = arguments.length
   if (l === 2) {
-    if (isObject(propsOrChildren) && !isArray(propsOrChildren)) {
+    if (isObject$1(propsOrChildren) && !isArray(propsOrChildren)) {
       // single vnode without props
       if (isVNode(propsOrChildren)) {
         return createVNode(type, null, [propsOrChildren])
@@ -9963,7 +10105,7 @@ function initCustomFormatter() {
   const formatter = {
     header(obj) {
       // TODO also format ComponentPublicInstance & ctx.slots/attrs in setup
-      if (!isObject(obj)) {
+      if (!isObject$1(obj)) {
         return null
       }
       if (obj.__isVue) {
@@ -10078,7 +10220,7 @@ function initCustomFormatter() {
       return ['span', stringStyle, JSON.stringify(v)]
     } else if (typeof v === 'boolean') {
       return ['span', keywordStyle, v]
-    } else if (isObject(v)) {
+    } else if (isObject$1(v)) {
       return ['object', { object: asRaw ? toRaw(v) : v }]
     } else {
       return ['span', stringStyle, String(v)]
@@ -10086,7 +10228,7 @@ function initCustomFormatter() {
   }
   function extractKeys(instance, type) {
     const Comp = instance.type
-    if (isFunction(Comp)) {
+    if (isFunction$1(Comp)) {
       return
     }
     const extracted = {}
@@ -10101,7 +10243,7 @@ function initCustomFormatter() {
     const opts = Comp[type]
     if (
       (isArray(opts) && opts.includes(key)) ||
-      (isObject(opts) && key in opts)
+      (isObject$1(opts) && key in opts)
     ) {
       return true
     }
@@ -10129,7 +10271,7 @@ function initCustomFormatter() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = '3.1.2'
+const version = '3.1.4'
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
@@ -10201,17 +10343,15 @@ const nodeOps = {
   // As long as the user only uses trusted templates, this is safe.
   insertStaticContent(content, parent, anchor, isSVG, cached) {
     if (cached) {
-      let [cachedFirst, cachedLast] = cached
-      let first, last
-      while (true) {
-        let node = cachedFirst.cloneNode(true)
-        if (!first) first = node
+      let first
+      let last
+      let i = 0
+      let l = cached.length
+      for (; i < l; i++) {
+        const node = cached[i].cloneNode(true)
+        if (i === 0) first = node
+        if (i === l - 1) last = node
         parent.insertBefore(node, anchor)
-        if (cachedFirst === cachedLast) {
-          last = node
-          break
-        }
-        cachedFirst = cachedFirst.nextSibling
       }
       return [first, last]
     }
@@ -10238,12 +10378,15 @@ const nodeOps = {
     } else {
       parent.insertAdjacentHTML('beforeend', content)
     }
-    return [
-      // first
-      before ? before.nextSibling : parent.firstChild,
-      // last
-      anchor ? anchor.previousSibling : parent.lastChild,
-    ]
+    let first = before ? before.nextSibling : parent.firstChild
+    const last = anchor ? anchor.previousSibling : parent.lastChild
+    const ret = []
+    while (first) {
+      ret.push(first)
+      if (first === last) break
+      first = first.nextSibling
+    }
+    return ret
   },
 }
 
@@ -10588,7 +10731,7 @@ function shouldSetAsProp(el, key, value, isSVG) {
       return true
     }
     // or native onclick with function values
-    if (key in el && nativeOnRE.test(key) && isFunction(value)) {
+    if (key in el && nativeOnRE.test(key) && isFunction$1(value)) {
       return true
     }
     return false
@@ -10845,7 +10988,7 @@ function resolveTransitionProps(rawProps) {
 function normalizeDuration(duration) {
   if (duration == null) {
     return null
-  } else if (isObject(duration)) {
+  } else if (isObject$1(duration)) {
     return [NumberOf(duration.enter), NumberOf(duration.leave)]
   } else {
     const n = NumberOf(duration)
@@ -11480,7 +11623,7 @@ const createApp = (...args) => {
     const container = normalizeContainer(containerOrSelector)
     if (!container) return
     const component = app._component
-    if (!isFunction(component) && !component.render && !component.template) {
+    if (!isFunction$1(component) && !component.render && !component.template) {
       // __UNSAFE__
       // Reason: potential execution of JS expressions in in-DOM template.
       // The user must make sure the in-DOM template is trusted. If it's
@@ -11609,6 +11752,7 @@ export {
   defineComponent,
   defineEmit,
   defineEmits,
+  defineExpose,
   defineProps,
   devtools,
   getCurrentInstance,
@@ -11625,6 +11769,7 @@ export {
   isRuntimeOnly,
   isVNode,
   markRaw,
+  mergeDefaults,
   mergeProps,
   nextTick,
   onActivated,
@@ -11672,10 +11817,12 @@ export {
   transformVNodeArgs,
   triggerRef,
   unref,
+  useAttrs,
   useContext,
   useCssModule,
   useCssVars,
   useSSRContext,
+  useSlots,
   useTransitionState,
   vModelCheckbox,
   vModelDynamic,
@@ -11687,7 +11834,9 @@ export {
   warn,
   watch,
   watchEffect,
+  withAsyncContext,
   withCtx,
+  withDefaults,
   withDirectives,
   withKeys,
   withModifiers,
