@@ -23,6 +23,7 @@
         :maxlength="maxlength"
         :step="step"
         :enterkeyhint="confirmType"
+        :pattern="type === 'number' ? '[0-9]*' : null"
         class="uni-input-input"
         autocomplete="off"
         @change.stop
