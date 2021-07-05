@@ -8095,16 +8095,15 @@ function useEvent(fieldRef, state2, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      let beforeInputDetail = {};
-      if (typeof beforeInput === "function" && (beforeInputDetail = beforeInput(event, state2)) === false) {
+      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
         return;
       }
       state2.value = field.value;
       if (!state2.composing) {
-        triggerInput(event, extend({
+        triggerInput(event, {
           value: field.value,
           cursor: field.selectionEnd
-        }, (() => beforeInputDetail instanceof Object ? beforeInputDetail : void 0)()), force);
+        }, force);
       }
     };
     const onBlur = function(event) {
@@ -8160,10 +8159,6 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
-  },
-  verifyNumber: {
-    type: Boolean,
-    default: false
   }
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -8194,8 +8189,8 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }
       return props2.password ? "password" : type2;
     });
-    const valid = ref(true);
-    let cachedValue = "";
+    let cache = ref("");
+    let resetCache;
     const rootRef = ref(null);
     const {
       fieldRef,
@@ -8205,32 +8200,32 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       trigger
     } = useField(props2, rootRef, emit2, (event, state3) => {
       const input = event.target;
-      if (NUMBER_TYPES.includes(props2.type)) {
-        valid.value = input.validity && input.validity.valid;
-        if (!props2.verifyNumber) {
-          cachedValue = state3.value;
-        } else {
-          if (input.validity && !valid.value) {
-            input.value = cachedValue;
-            state3.value = input.value;
-            return false;
-          } else {
-            cachedValue = state3.value;
-          }
-        }
-      }
       if (type.value === "number") {
+        if (resetCache) {
+          input.removeEventListener("blur", resetCache);
+          resetCache = null;
+        }
+        if (input.validity && !input.validity.valid) {
+          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+            cache.value = "-";
+            state3.value = "";
+            resetCache = () => {
+              cache.value = input.value = "";
+            };
+            input.addEventListener("blur", resetCache);
+            return false;
+          }
+          cache.value = state3.value = input.value = cache.value === "-" ? "" : cache.value;
+          return false;
+        } else {
+          cache.value = input.value;
+        }
         const maxlength = state3.maxlength;
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
           state3.value = input.value;
           return false;
         }
-      }
-      if (!props2.verifyNumber) {
-        return {
-          valid: valid.value
-        };
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
@@ -8275,7 +8270,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
           "style": props2.placeholderStyle,
           "class": ["uni-input-placeholder", props2.placeholderClass]
-        }), [props2.placeholder], 16), [[vShow, !(state2.value.length || !valid.value)]]), props2.confirmType === "search" ? createVNode("form", {
+        }), [props2.placeholder], 16), [[vShow, !(state2.value.length || cache.value === "-")]]), props2.confirmType === "search" ? createVNode("form", {
           "action": "",
           "onSubmit": (event) => event.preventDefault(),
           "class": "uni-input-form"
@@ -11365,6 +11360,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         }, [createVNode("div", {
           "class": "uni-scroll-view-refresh-inner"
         }, [refreshState == "pulling" ? createVNode("svg", {
+          "key": "refresh__icon",
           "style": {
             transform: "rotate(" + refreshRotate + "deg)"
           },
@@ -11379,6 +11375,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
           "d": "M0 0h24v24H0z",
           "fill": "none"
         }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+          "key": "refresh__spinner",
           "class": "uni-scroll-view-refresh__spinner",
           "width": "24",
           "height": "24",
@@ -11422,11 +11419,11 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   let __transitionEnd = () => {
   };
   const upperThresholdNumber = computed(() => {
-    var val = Number(props2.upperThreshold);
+    let val = Number(props2.upperThreshold);
     return isNaN(val) ? 50 : val;
   });
   const lowerThresholdNumber = computed(() => {
-    var val = Number(props2.lowerThreshold);
+    let val = Number(props2.lowerThreshold);
     return isNaN(val) ? 50 : val;
   });
   function scrollTo2(scrollToValue, direction2) {
@@ -11530,14 +11527,14 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         console.error(`id error: scroll-into-view=${val}`);
         return;
       }
-      var element = rootRef.value.querySelector("#" + val);
+      let element = rootRef.value.querySelector("#" + val);
       if (element) {
-        var mainRect = main.value.getBoundingClientRect();
-        var elRect = element.getBoundingClientRect();
+        let mainRect = main.value.getBoundingClientRect();
+        let elRect = element.getBoundingClientRect();
         if (props2.scrollX) {
-          var left = elRect.left - mainRect.left;
-          var scrollLeft = main.value.scrollLeft;
-          var x = scrollLeft + left;
+          let left = elRect.left - mainRect.left;
+          let scrollLeft = main.value.scrollLeft;
+          let x = scrollLeft + left;
           if (props2.scrollWithAnimation) {
             scrollTo2(x, "x");
           } else {
@@ -11545,9 +11542,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           }
         }
         if (props2.scrollY) {
-          var top = elRect.top - mainRect.top;
-          var scrollTop = main.value.scrollTop;
-          var y = scrollTop + top;
+          let top = elRect.top - mainRect.top;
+          let scrollTop = main.value.scrollTop;
+          let y = scrollTop + top;
           if (props2.scrollWithAnimation) {
             scrollTo2(y, "y");
           } else {
@@ -11598,68 +11595,75 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       x: 0,
       y: 0
     };
-    let needStop = null;
+    let needStop = false;
+    let toUpperNumber = 0;
+    let triggerAbort = false;
+    let beforeRefreshing = false;
     let __handleTouchMove = function(event) {
-      var x = event.touches[0].pageX;
-      var y = event.touches[0].pageY;
-      var _main = main.value;
-      if (needStop === null) {
-        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          if (self.scrollX) {
-            if (_main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false;
-              return;
-            } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
-              needStop = false;
-              return;
-            }
-            needStop = true;
-          } else {
+      let x = event.touches[0].pageX;
+      let y = event.touches[0].pageY;
+      let _main = main.value;
+      if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
+        if (self.scrollX) {
+          if (_main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false;
+            return;
+          } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
+            needStop = false;
+            return;
           }
+          needStop = true;
         } else {
-          if (self.scrollY) {
-            if (_main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false;
-              return;
-            } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
-              needStop = false;
-              return;
-            }
+          needStop = false;
+        }
+      } else {
+        if (self.scrollY) {
+          if (props2.refresherEnabled && _main.scrollTop === 0 && y > touchStart.y) {
             needStop = true;
-          } else {
+            if (event.cancelable !== false)
+              event.preventDefault();
+          } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
             needStop = false;
+            return;
           }
+          needStop = true;
+        } else {
+          needStop = false;
         }
       }
       if (needStop) {
         event.stopPropagation();
       }
+      if (_main.scrollTop === 0 && event.touches.length === 1) {
+        state2.refreshState = "pulling";
+      }
       if (props2.refresherEnabled && state2.refreshState === "pulling") {
         const dy = y - touchStart.y;
-        state2.refresherHeight = dy;
-        let rotate = dy / props2.refresherThreshold;
-        if (rotate > 1) {
-          rotate = 1;
-        } else {
-          rotate = rotate * 360;
+        if (toUpperNumber === 0) {
+          toUpperNumber = y;
         }
-        state2.refreshRotate = rotate;
-        trigger("refresherpulling", event, {
-          deltaY: dy
-        });
+        if (!beforeRefreshing) {
+          state2.refresherHeight = y - toUpperNumber;
+          if (state2.refresherHeight > 0) {
+            triggerAbort = true;
+            trigger("refresherpulling", event, {
+              deltaY: dy
+            });
+          }
+        } else {
+          state2.refresherHeight = dy + props2.refresherThreshold;
+          triggerAbort = false;
+        }
+        const route = state2.refresherHeight / props2.refresherThreshold;
+        state2.refreshRotate = (route > 1 ? 1 : route) * 360;
       }
     };
     let __handleTouchStart = function(event) {
       if (event.touches.length === 1) {
-        needStop = null;
         touchStart = {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY
         };
-        if (props2.refresherEnabled && state2.refreshState !== "refreshing" && main.value.scrollTop === 0) {
-          state2.refreshState = "pulling";
-        }
       }
     };
     let __handleTouchEnd = function(event) {
@@ -11668,14 +11672,24 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         y: 0
       };
       if (state2.refresherHeight >= props2.refresherThreshold) {
+        state2.refresherHeight = props2.refresherThreshold;
+        state2.refreshState = "refreshing";
+        if (beforeRefreshing)
+          return;
+        beforeRefreshing = true;
         _setRefreshState("refreshing");
       } else {
-        state2.refresherHeight = 0;
-        trigger("refresherabort", event, {});
+        beforeRefreshing = false;
+        state2.refreshState = "refresherabort";
+        state2.refresherHeight = toUpperNumber = 0;
+        if (triggerAbort) {
+          triggerAbort = false;
+          trigger("refresherabort", event, {});
+        }
       }
     };
     main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
-    main.value.addEventListener("touchmove", __handleTouchMove, passiveOptions);
+    main.value.addEventListener("touchmove", __handleTouchMove);
     main.value.addEventListener("scroll", __handleScroll, passiveOptions);
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
     onBeforeUnmount(() => {

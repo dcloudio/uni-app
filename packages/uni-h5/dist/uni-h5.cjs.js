@@ -3075,16 +3075,15 @@ function useEvent(fieldRef, state, trigger, triggerInput, beforeInput) {
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      let beforeInputDetail = {};
-      if (typeof beforeInput === "function" && (beforeInputDetail = beforeInput(event, state)) === false) {
+      if (typeof beforeInput === "function" && beforeInput(event, state) === false) {
         return;
       }
       state.value = field.value;
       if (!state.composing) {
-        triggerInput(event, shared.extend({
+        triggerInput(event, {
           value: field.value,
           cursor: field.selectionEnd
-        }, (() => beforeInputDetail instanceof Object ? beforeInputDetail : void 0)()), force);
+        }, force);
       }
     };
     const onBlur = function(event) {
@@ -3140,10 +3139,6 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
-  },
-  verifyNumber: {
-    type: Boolean,
-    default: false
   }
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3174,8 +3169,8 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }
       return props2.password ? "password" : type2;
     });
-    const valid = vue.ref(true);
-    let cachedValue = "";
+    let cache = vue.ref("");
+    let resetCache;
     const rootRef = vue.ref(null);
     const {
       fieldRef,
@@ -3185,32 +3180,32 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       trigger
     } = useField(props2, rootRef, emit2, (event, state2) => {
       const input = event.target;
-      if (NUMBER_TYPES.includes(props2.type)) {
-        valid.value = input.validity && input.validity.valid;
-        if (!props2.verifyNumber) {
-          cachedValue = state2.value;
-        } else {
-          if (input.validity && !valid.value) {
-            input.value = cachedValue;
-            state2.value = input.value;
-            return false;
-          } else {
-            cachedValue = state2.value;
-          }
-        }
-      }
       if (type.value === "number") {
+        if (resetCache) {
+          input.removeEventListener("blur", resetCache);
+          resetCache = null;
+        }
+        if (input.validity && !input.validity.valid) {
+          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+            cache.value = "-";
+            state2.value = "";
+            resetCache = () => {
+              cache.value = input.value = "";
+            };
+            input.addEventListener("blur", resetCache);
+            return false;
+          }
+          cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
+          return false;
+        } else {
+          cache.value = input.value;
+        }
         const maxlength = state2.maxlength;
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
           state2.value = input.value;
           return false;
         }
-      }
-      if (!props2.verifyNumber) {
-        return {
-          valid: valid.value
-        };
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
@@ -3255,7 +3250,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
           "style": props2.placeholderStyle,
           "class": ["uni-input-placeholder", props2.placeholderClass]
-        }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || !valid.value)]]), props2.confirmType === "search" ? vue.createVNode("form", {
+        }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-")]]), props2.confirmType === "search" ? vue.createVNode("form", {
           "action": "",
           "onSubmit": (event) => event.preventDefault(),
           "class": "uni-input-form"
@@ -5239,6 +5234,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
         }, [vue.createVNode("div", {
           "class": "uni-scroll-view-refresh-inner"
         }, [refreshState == "pulling" ? vue.createVNode("svg", {
+          "key": "refresh__icon",
           "style": {
             transform: "rotate(" + refreshRotate + "deg)"
           },
@@ -5253,6 +5249,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
           "d": "M0 0h24v24H0z",
           "fill": "none"
         }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
+          "key": "refresh__spinner",
           "class": "uni-scroll-view-refresh__spinner",
           "width": "24",
           "height": "24",
@@ -5295,11 +5292,11 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   let __transitionEnd = () => {
   };
   vue.computed(() => {
-    var val = Number(props2.upperThreshold);
+    let val = Number(props2.upperThreshold);
     return isNaN(val) ? 50 : val;
   });
   vue.computed(() => {
-    var val = Number(props2.lowerThreshold);
+    let val = Number(props2.lowerThreshold);
     return isNaN(val) ? 50 : val;
   });
   function scrollTo(scrollToValue, direction) {
@@ -5359,14 +5356,14 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         console.error(`id error: scroll-into-view=${val}`);
         return;
       }
-      var element = rootRef.value.querySelector("#" + val);
+      let element = rootRef.value.querySelector("#" + val);
       if (element) {
-        var mainRect = main.value.getBoundingClientRect();
-        var elRect = element.getBoundingClientRect();
+        let mainRect = main.value.getBoundingClientRect();
+        let elRect = element.getBoundingClientRect();
         if (props2.scrollX) {
-          var left = elRect.left - mainRect.left;
-          var scrollLeft = main.value.scrollLeft;
-          var x = scrollLeft + left;
+          let left = elRect.left - mainRect.left;
+          let scrollLeft = main.value.scrollLeft;
+          let x = scrollLeft + left;
           if (props2.scrollWithAnimation) {
             scrollTo(x, "x");
           } else {
@@ -5374,9 +5371,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
           }
         }
         if (props2.scrollY) {
-          var top = elRect.top - mainRect.top;
-          var scrollTop = main.value.scrollTop;
-          var y = scrollTop + top;
+          let top = elRect.top - mainRect.top;
+          let scrollTop = main.value.scrollTop;
+          let y = scrollTop + top;
           if (props2.scrollWithAnimation) {
             scrollTo(y, "y");
           } else {

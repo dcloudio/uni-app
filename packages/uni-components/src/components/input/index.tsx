@@ -12,10 +12,6 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     type: String,
     default: 'input-placeholder',
   },
-  verifyNumber: {
-    type: Boolean,
-    default: false,
-  },
 })
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -45,45 +41,51 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       return props.password ? 'password' : type
     })
-    const valid = ref(true)
-    let cachedValue = ''
+
+    let cache = ref('')
+    let resetCache: (() => void) | null
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit, (event, state) => {
         const input = event.target as HTMLInputElement
 
-        if (NUMBER_TYPES.includes(props.type)) {
-          // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false
-          valid.value = input.validity && input.validity.valid
-          if (!props.verifyNumber) {
-            cachedValue = state.value
-          } else {
-            // 处理部分输入法可以输入其它字符的情况，此处理无法先输入 -(负号)，只能输入数字再移动光标输入负号
-            if (input.validity && !valid.value) {
-              input.value = cachedValue
-              state.value = input.value
-              // 输入非法字符不触发 input 事件
-              return false
-            } else {
-              cachedValue = state.value
-            }
-          }
-        }
-
-        // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
         if (type.value === 'number') {
+          // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
+          if (resetCache) {
+            input.removeEventListener('blur', resetCache)
+            resetCache = null
+          }
+          if (input.validity && !input.validity.valid) {
+            if (
+              (!cache.value && (event as InputEvent).data === '-') ||
+              (cache.value[0] === '-' &&
+                (event as InputEvent).inputType === 'deleteContentBackward')
+            ) {
+              cache.value = '-'
+              state.value = ''
+              resetCache = () => {
+                cache.value = input.value = ''
+              }
+              input.addEventListener('blur', resetCache)
+              return false
+            }
+            cache.value =
+              state.value =
+              input.value =
+                cache.value === '-' ? '' : cache.value
+            // 输入非法字符不触发 input 事件
+            return false
+          } else {
+            cache.value = input.value
+          }
+
+          // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
           const maxlength = state.maxlength
           if (maxlength > 0 && input.value.length > maxlength) {
             input.value = input.value.slice(0, maxlength)
             state.value = input.value
             // 字符长度超出范围不触发 input 事件
             return false
-          }
-        }
-
-        if (!props.verifyNumber) {
-          return {
-            valid: valid.value,
           }
         }
       })
@@ -137,7 +139,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-input ref={rootRef}>
           <div class="uni-input-wrapper">
             <div
-              v-show={!(state.value.length || !valid.value)}
+              v-show={!(state.value.length || cache.value === '-')}
               {...scopedAttrsState.attrs}
               style={props.placeholderStyle}
               class={['uni-input-placeholder', props.placeholderClass]}
