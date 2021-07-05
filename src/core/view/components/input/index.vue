@@ -5,7 +5,7 @@
       class="uni-input-wrapper"
     >
       <div
-        v-show="!(composing || valueSync.length || !valid)"
+        v-show="!(composing || valueSync.length || cachedValue === '-')"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
@@ -94,15 +94,10 @@ export default {
     confirmType: {
       type: String,
       default: 'done'
-    },
-    verifyNumber: {
-      type: Boolean,
-      default: false
     }
   },
   data () {
     return {
-      valid: true,
       wrapperHeight: 0,
       cachedValue: ''
     }
@@ -184,8 +179,8 @@ export default {
         return
       }
 
-      // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
       if (this.inputType === 'number') {
+        // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
         const maxlength = parseInt(this.maxlength, 10)
         if (maxlength > 0 && $event.target.value.length > maxlength) {
           // 输入前字符长度超出范围，则不触发input，且将值还原
@@ -198,37 +193,31 @@ export default {
             this.valueSync = $event.target.value
           }
         }
-      }
 
-      if (~NUMBER_TYPES.indexOf(this.type)) {
-        // 在输入 - 负号 的情况下，event.target.value没有值，但是会触发校验 false
-        this.valid = this.$refs.input.validity && this.$refs.input.validity.valid
-        if (!this.verifyNumber) {
-          this.cachedValue = this.valueSync
-        } else {
-          // 处理部分输入法可以输入其它字符的情况，此处理无法先输入 -(负号)，只能输入数字再移动光标输入负号
-          if (this.$refs.input.validity && !this.valid) {
-            $event.target.value = this.cachedValue
-            this.valueSync = $event.target.value
-            // 输入非法字符不触发 input 事件
+        // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
+        this.__clearCachedValue && $event.target.removeEventListener('blur', this.__clearCachedValue)
+        if ($event.target.validity && !$event.target.validity.valid) {
+          if ((!this.cachedValue && $event.data === '-') || (this.cachedValue[0] === '-' && $event.inputType === 'deleteContentBackward')) {
+            this.cachedValue = '-'
+            const clearCachedValue = this.__clearCachedValue = () => {
+              this.cachedValue = ''
+            }
+            $event.target.addEventListener('blur', clearCachedValue)
             return
-          } else {
-            this.cachedValue = this.valueSync
           }
+          this.cachedValue = this.valueSync = $event.target.value = this.cachedValue === '-' ? '' : this.cachedValue
+          // 输入非法字符不触发 input 事件
+          return
+        } else {
+          this.cachedValue = this.valueSync
         }
       }
 
       if (outOfMaxlength) return
 
-      this.$triggerInput($event, Object.assign({
+      this.$triggerInput($event, {
         value: this.valueSync
-      }, (() => {
-        if (!this.verifyNumber) {
-          return {
-            valid: this.valid
-          }
-        }
-      })()), force)
+      }, force)
     },
     _onComposition ($event) {
       if ($event.type === 'compositionstart') {
