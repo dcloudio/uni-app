@@ -15,10 +15,6 @@ function uniCopyPlugin() {
                 dest: process.env.UNI_OUTPUT_DIR,
             },
             {
-                src: slash_1.default(require.resolve('@dcloudio/uni-app-plus/dist/style.css')),
-                dest: process.env.UNI_OUTPUT_DIR,
-            },
-            {
                 src: slash_1.default(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')),
                 dest: process.env.UNI_OUTPUT_DIR,
             },

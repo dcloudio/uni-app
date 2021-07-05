@@ -1,5 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = __importDefault(require("fs"));
+const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const plugin_1 = require("./plugin");
 const copy_1 = require("./plugins/copy");
 const mainJs_1 = require("./plugins/mainJs");
@@ -13,4 +18,7 @@ exports.default = [
     manifestJson_1.uniManifestJsonPlugin(),
     pagesJson_1.uniPagesJsonPlugin(),
     plugin_1.UniAppPlugin,
+    uni_cli_shared_1.uniCssPlugin({
+        app: fs_1.default.readFileSync(require.resolve('@dcloudio/uni-app-plus/dist/style.css'), 'utf8'),
+    }),
 ];

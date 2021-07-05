@@ -1,3 +1,5 @@
+import fs from 'fs'
+import { uniCssPlugin } from '@dcloudio/uni-cli-shared'
 import { UniAppPlugin } from './plugin'
 import { uniCopyPlugin } from './plugins/copy'
 import { uniMainJsPlugin } from './plugins/mainJs'
@@ -12,4 +14,10 @@ export default [
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
   UniAppPlugin,
+  uniCssPlugin({
+    app: fs.readFileSync(
+      require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
+      'utf8'
+    ),
+  }),
 ]

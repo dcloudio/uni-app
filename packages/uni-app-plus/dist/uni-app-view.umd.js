@@ -1235,7 +1235,11 @@
       }
       const appErrorHandler = instance.appContext.config.errorHandler;
       if (appErrorHandler) {
-        callWithErrorHandling(appErrorHandler, null, 10, [err, exposedInstance, errorInfo]);
+        callWithErrorHandling(appErrorHandler, null, 10, [
+          err,
+          exposedInstance,
+          errorInfo
+        ]);
         return;
       }
     }
@@ -1551,7 +1555,11 @@
   function resolveMergedOptions(instance) {
     const base = instance.type;
     const { mixins, extends: extendsOptions } = base;
-    const { mixins: globalMixins, optionsCache: cache, config: { optionMergeStrategies } } = instance.appContext;
+    const {
+      mixins: globalMixins,
+      optionsCache: cache,
+      config: { optionMergeStrategies }
+    } = instance.appContext;
     const cached = cache.get(base);
     let resolved;
     if (cached) {
