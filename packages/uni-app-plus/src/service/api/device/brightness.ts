@@ -12,7 +12,7 @@ export const getScreenBrightness =
   defineAsyncApi<API_TYPE_GET_SCREEN_BRIGHTNESS>(
     API_GET_SCREEN_BRIGHTNESS,
     (_, { resolve }) => {
-      const value = plus.screen.getBrightness()
+      const value = (plus as any).screen.getBrightness(false)
       resolve({ value })
     }
   )
@@ -21,7 +21,7 @@ export const setScreenBrightness =
   defineAsyncApi<API_TYPE_SET_SCREEN_BRIGHTNESS>(
     API_SET_SCREEN_BRIGHTNESS,
     (options, { resolve }) => {
-      plus.screen.setBrightness(options.value)
+      ;(plus as any).screen.setBrightness(options.value, false)
       resolve()
     }
   )
