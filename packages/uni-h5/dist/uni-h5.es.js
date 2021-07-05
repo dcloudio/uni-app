@@ -8258,10 +8258,11 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state2.maxlength,
         "step": step.value,
         "enterkeyhint": props2.confirmType,
+        "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
         "autocomplete": "off",
         "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "onKeyup"]);
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "onKeyup"]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, {

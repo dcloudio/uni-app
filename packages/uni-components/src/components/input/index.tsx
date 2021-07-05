@@ -130,6 +130,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             step={step.value}
             // @ts-ignore
             enterkeyhint={props.confirmType}
+            pattern={props.type === 'number' ? '[0-9]*' : undefined}
             class="uni-input-input"
             autocomplete="off"
             onKeyup={onKeyUpEnter}
