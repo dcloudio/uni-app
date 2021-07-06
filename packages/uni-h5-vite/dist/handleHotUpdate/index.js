@@ -43,8 +43,11 @@ function createHandleHotUpdate() {
                     path_1.default.resolve(inputDir, 'pages.json.js'),
                     path_1.default.resolve(inputDir, 'manifest.json.js'),
                     require.resolve('@dcloudio/uni-h5/dist/uni-h5.es.js'),
-                    require.resolve('vite/dist/client/env.js'),
                 ];
+                try {
+                    invalidateFiles.push(require.resolve('vite/dist/client/env.mjs'));
+                }
+                catch (e) { }
             }
             // TODO 目前简单处理，当pages.json,manifest.json发生变化，就直接刷新，理想情况下，应该区分变化的内容，仅必要时做整页面刷新
             const isPagesJson = file.endsWith('pages.json');

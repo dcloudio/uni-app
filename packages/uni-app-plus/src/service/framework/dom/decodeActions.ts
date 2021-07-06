@@ -13,7 +13,19 @@ import {
   ACTION_TYPE_REMOVE_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
   PageAction,
-} from './Page'
+  PageCreateAction,
+  PageCreatedAction,
+  ACTION_TYPE_PAGE_CREATE,
+  ACTION_TYPE_PAGE_CREATED,
+} from '../../../PageAction'
+
+function decodePageCreateAction([, pageCreateData]: PageCreateAction) {
+  return ['pageCreate', pageCreateData]
+}
+
+function decodePageCreatedAction([]: PageCreatedAction) {
+  return ['pageCreated']
+}
 
 function decodeCreateAction([, nodeId, nodeName]: CreateAction) {
   return ['create', nodeId, decodeTag(nodeName)]
@@ -42,6 +54,10 @@ function decodeSetTextAction([, ...action]: SetTextAction) {
 export function decodeActions(actions: PageAction[]) {
   return actions.map((action) => {
     switch (action[0]) {
+      case ACTION_TYPE_PAGE_CREATE:
+        return decodePageCreateAction(action)
+      case ACTION_TYPE_PAGE_CREATED:
+        return decodePageCreatedAction(action)
       case ACTION_TYPE_CREATE:
         return decodeCreateAction(action)
       case ACTION_TYPE_INSERT:

@@ -52,9 +52,9 @@ export interface IUniPageNode {
   onInsertBefore: (
     thisNode: UniNode,
     newChild: UniNode,
-    index: number
+    refChild: UniNode | null
   ) => UniNode
-  onRemoveChild: (thisNode: UniNode, oldChild: UniNode) => UniNode
+  onRemoveChild: (oldChild: UniNode) => UniNode
   onSetAttribute: (
     thisNode: UniNode,
     qualifiedName: string,
@@ -165,9 +165,8 @@ export class UniNode extends UniEventTarget {
     newChild.parentNode = this
     checkNodeId(newChild)
     const { childNodes } = this
-    let index: number
     if (refChild) {
-      index = childNodes.indexOf(refChild)
+      const index = childNodes.indexOf(refChild)
       if (index === -1) {
         throw new DOMException(
           `Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`
@@ -175,11 +174,10 @@ export class UniNode extends UniEventTarget {
       }
       childNodes.splice(index, 0, newChild)
     } else {
-      index = childNodes.length
       childNodes.push(newChild)
     }
     return this.pageNode
-      ? this.pageNode.onInsertBefore(this, newChild, index)
+      ? this.pageNode.onInsertBefore(this, newChild, refChild)
       : newChild
   }
 
@@ -193,9 +191,7 @@ export class UniNode extends UniEventTarget {
     }
     oldChild.parentNode = null
     childNodes.splice(index, 1)
-    return this.pageNode
-      ? this.pageNode.onRemoveChild(this, oldChild)
-      : oldChild
+    return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild
   }
 }
 

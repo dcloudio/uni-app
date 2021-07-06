@@ -94,8 +94,8 @@ export declare interface IUniPageNode {
     genId: () => number;
     push: (...args: any[]) => void;
     onCreate: (thisNode: UniNode, nodeName: string | number) => UniNode;
-    onInsertBefore: (thisNode: UniNode, newChild: UniNode, index: number) => UniNode;
-    onRemoveChild: (thisNode: UniNode, oldChild: UniNode) => UniNode;
+    onInsertBefore: (thisNode: UniNode, newChild: UniNode, refChild: UniNode | null) => UniNode;
+    onRemoveChild: (oldChild: UniNode) => UniNode;
     onSetAttribute: (thisNode: UniNode, qualifiedName: string, value: unknown) => void;
     onRemoveAttribute: (thisNode: UniNode, qualifiedName: string) => void;
     onTextContent: (thisNode: UniNode, text: string) => void;
@@ -130,6 +130,8 @@ declare interface Options {
     fail?: (res: any) => void;
     complete?: (res: any) => void;
 }
+
+export declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
 
 /**
  * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts

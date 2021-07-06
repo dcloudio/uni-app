@@ -86,6 +86,16 @@ export default function vueFactory(exports) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   });
 
+  function formatLog(module) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+      args[_key2 - 1] = arguments[_key2];
+    }
+
+    return "[".concat(Date.now(), "][").concat(module, "]\uFF1A").concat(args.map(function (arg) {
+      return JSON.stringify(arg);
+    }).join(' '));
+  }
+
   var DOMException = /*#__PURE__*/function (_Error) {
     _inherits(DOMException, _Error);
 
@@ -121,6 +131,10 @@ export default function vueFactory(exports) {
         var listeners = this._listeners[evt.type];
 
         if (!listeners) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
+          }
+
           return false;
         }
 
@@ -489,10 +503,9 @@ export default function vueFactory(exports) {
         newChild.parentNode = this;
         checkNodeId(newChild);
         var childNodes = this.childNodes;
-        var index;
 
         if (refChild) {
-          index = childNodes.indexOf(refChild);
+          var index = childNodes.indexOf(refChild);
 
           if (index === -1) {
             throw new DOMException("Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.");
@@ -500,11 +513,10 @@ export default function vueFactory(exports) {
 
           childNodes.splice(index, 0, newChild);
         } else {
-          index = childNodes.length;
           childNodes.push(newChild);
         }
 
-        return this.pageNode ? this.pageNode.onInsertBefore(this, newChild, index) : newChild;
+        return this.pageNode ? this.pageNode.onInsertBefore(this, newChild, refChild) : newChild;
       }
     }, {
       key: "removeChild",
@@ -518,7 +530,7 @@ export default function vueFactory(exports) {
 
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return this.pageNode ? this.pageNode.onRemoveChild(this, oldChild) : oldChild;
+        return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
       }
     }]);
 
@@ -1258,8 +1270,8 @@ export default function vueFactory(exports) {
         } // we run the method using the original args first (which may be reactive)
 
 
-        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-          args[_key2] = arguments[_key2];
+        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+          args[_key3] = arguments[_key3];
         }
 
         var res = method.apply(arr, args);
@@ -1278,8 +1290,8 @@ export default function vueFactory(exports) {
       instrumentations[key] = function () {
         pauseTracking();
 
-        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-          args[_key3] = arguments[_key3];
+        for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
+          args[_key4] = arguments[_key4];
         }
 
         var res = method.apply(this, args);
@@ -2265,8 +2277,8 @@ export default function vueFactory(exports) {
     var appWarnHandler = instance && instance.appContext.config.warnHandler;
     var trace = getComponentTrace();
 
-    for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key4 = 1; _key4 < _len3; _key4++) {
-      args[_key4 - 1] = arguments[_key4];
+    for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key5 = 1; _key5 < _len4; _key5++) {
+      args[_key5 - 1] = arguments[_key5];
     }
 
     if (appWarnHandler) {
@@ -3030,8 +3042,8 @@ export default function vueFactory(exports) {
   function emit(instance, event) {
     var props = instance.vnode.props || EMPTY_OBJ;
 
-    for (var _len4 = arguments.length, rawArgs = new Array(_len4 > 2 ? _len4 - 2 : 0), _key5 = 2; _key5 < _len4; _key5++) {
-      rawArgs[_key5 - 2] = arguments[_key5];
+    for (var _len5 = arguments.length, rawArgs = new Array(_len5 > 2 ? _len5 - 2 : 0), _key6 = 2; _key6 < _len5; _key6++) {
+      rawArgs[_key6 - 2] = arguments[_key6];
     }
 
     if (process.env.NODE_ENV !== 'production') {
@@ -5481,8 +5493,8 @@ export default function vueFactory(exports) {
 
         setCurrentInstance(target);
 
-        for (var _len5 = arguments.length, args = new Array(_len5), _key6 = 0; _key6 < _len5; _key6++) {
-          args[_key6] = arguments[_key6];
+        for (var _len6 = arguments.length, args = new Array(_len6), _key7 = 0; _key7 < _len6; _key7++) {
+          args[_key7] = arguments[_key7];
         }
 
         var res = callWithAsyncErrorHandling(hook, target, type, args);
@@ -5638,30 +5650,30 @@ export default function vueFactory(exports) {
     }
 
     if (methods) {
-      for (var _key7 in methods) {
-        var methodHandler = methods[_key7];
+      for (var _key8 in methods) {
+        var methodHandler = methods[_key8];
 
         if (isFunction(methodHandler)) {
           // In dev mode, we use the `createRenderContext` function to define methods to the proxy target,
           // and those are read-only but reconfigurable, so it needs to be redefined here
           if (process.env.NODE_ENV !== 'production') {
-            Object.defineProperty(ctx, _key7, {
+            Object.defineProperty(ctx, _key8, {
               value: methodHandler.bind(publicThis),
               configurable: true,
               enumerable: true,
               writable: true
             });
           } else {
-            ctx[_key7] = methodHandler.bind(publicThis);
+            ctx[_key8] = methodHandler.bind(publicThis);
           }
 
           if (process.env.NODE_ENV !== 'production') {
             checkDuplicateProperties('Methods'
             /* METHODS */
-            , _key7);
+            , _key8);
           }
         } else if (process.env.NODE_ENV !== 'production') {
-          warn("Method \"".concat(_key7, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. ") + "Did you reference the function correctly?");
+          warn("Method \"".concat(_key8, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. ") + "Did you reference the function correctly?");
         }
       }
     }
@@ -5684,25 +5696,25 @@ export default function vueFactory(exports) {
           instance.data = reactive(data);
 
           if (process.env.NODE_ENV !== 'production') {
-            var _loop = function _loop(_key8) {
+            var _loop = function _loop(_key9) {
               checkDuplicateProperties('Data'
               /* DATA */
-              , _key8); // expose data on ctx during dev
+              , _key9); // expose data on ctx during dev
 
-              if (_key8[0] !== '$' && _key8[0] !== '_') {
-                Object.defineProperty(ctx, _key8, {
+              if (_key9[0] !== '$' && _key9[0] !== '_') {
+                Object.defineProperty(ctx, _key9, {
                   configurable: true,
                   enumerable: true,
                   get: function get() {
-                    return data[_key8];
+                    return data[_key9];
                   },
                   set: NOOP
                 });
               }
             };
 
-            for (var _key8 in data) {
-              _loop(_key8);
+            for (var _key9 in data) {
+              _loop(_key9);
             }
           }
         }
@@ -5713,22 +5725,22 @@ export default function vueFactory(exports) {
     shouldCacheAccess = true;
 
     if (computedOptions) {
-      var _loop2 = function _loop2(_key9) {
-        var opt = computedOptions[_key9];
+      var _loop2 = function _loop2(_key10) {
+        var opt = computedOptions[_key10];
         var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
 
         if (process.env.NODE_ENV !== 'production' && get === NOOP) {
-          warn("Computed property \"".concat(_key9, "\" has no getter."));
+          warn("Computed property \"".concat(_key10, "\" has no getter."));
         }
 
         var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : process.env.NODE_ENV !== 'production' ? function () {
-          warn("Write operation failed: computed property \"".concat(_key9, "\" is readonly."));
+          warn("Write operation failed: computed property \"".concat(_key10, "\" is readonly."));
         } : NOOP;
         var c = computed$1({
           get,
           set
         });
-        Object.defineProperty(ctx, _key9, {
+        Object.defineProperty(ctx, _key10, {
           enumerable: true,
           configurable: true,
           get: function get() {
@@ -5742,18 +5754,18 @@ export default function vueFactory(exports) {
         if (process.env.NODE_ENV !== 'production') {
           checkDuplicateProperties('Computed'
           /* COMPUTED */
-          , _key9);
+          , _key10);
         }
       };
 
-      for (var _key9 in computedOptions) {
-        _loop2(_key9);
+      for (var _key10 in computedOptions) {
+        _loop2(_key10);
       }
     }
 
     if (watchOptions) {
-      for (var _key10 in watchOptions) {
-        createWatcher(watchOptions[_key10], ctx, publicThis, _key10);
+      for (var _key11 in watchOptions) {
+        createWatcher(watchOptions[_key11], ctx, publicThis, _key11);
       }
     }
 
@@ -6138,21 +6150,21 @@ export default function vueFactory(exports) {
 
       var kebabKey;
 
-      for (var _key11 in rawCurrentProps) {
+      for (var _key12 in rawCurrentProps) {
         if (!rawProps || // for camelCase
-        !hasOwn(rawProps, _key11) && ( // it's possible the original props was passed in as kebab-case
+        !hasOwn(rawProps, _key12) && ( // it's possible the original props was passed in as kebab-case
         // and converted to camelCase (#955)
-        (kebabKey = hyphenate(_key11)) === _key11 || !hasOwn(rawProps, kebabKey))) {
+        (kebabKey = hyphenate(_key12)) === _key12 || !hasOwn(rawProps, kebabKey))) {
           if (options) {
             if (rawPrevProps && ( // for camelCase
-            rawPrevProps[_key11] !== undefined || // for kebab-case
+            rawPrevProps[_key12] !== undefined || // for kebab-case
             rawPrevProps[kebabKey] !== undefined)) {
-              props[_key11] = resolvePropValue(options, rawCurrentProps, _key11, undefined, instance, true
+              props[_key12] = resolvePropValue(options, rawCurrentProps, _key12, undefined, instance, true
               /* isAbsent */
               );
             }
           } else {
-            delete props[_key11];
+            delete props[_key12];
           }
         }
       } // in the case of functional component w/o props declaration, props and
@@ -6160,9 +6172,9 @@ export default function vueFactory(exports) {
 
 
       if (attrs !== rawCurrentProps) {
-        for (var _key12 in attrs) {
-          if (!rawProps || !hasOwn(rawProps, _key12)) {
-            delete attrs[_key12];
+        for (var _key13 in attrs) {
+          if (!rawProps || !hasOwn(rawProps, _key13)) {
+            delete attrs[_key13];
             hasAttrsChanged = true;
           }
         }
@@ -6221,8 +6233,8 @@ export default function vueFactory(exports) {
       var castValues = rawCastValues || EMPTY_OBJ;
 
       for (var i = 0; i < needCastKeys.length; i++) {
-        var _key13 = needCastKeys[i];
-        props[_key13] = resolvePropValue(options, rawCurrentProps, _key13, castValues[_key13], instance, !hasOwn(castValues, _key13));
+        var _key14 = needCastKeys[i];
+        props[_key14] = resolvePropValue(options, rawCurrentProps, _key14, castValues[_key14], instance, !hasOwn(castValues, _key14));
       }
     }
 
@@ -6543,8 +6555,8 @@ export default function vueFactory(exports) {
 
 
   function isBoolean() {
-    for (var _len6 = arguments.length, args = new Array(_len6), _key14 = 0; _key14 < _len6; _key14++) {
-      args[_key14] = arguments[_key14];
+    for (var _len7 = arguments.length, args = new Array(_len7), _key15 = 0; _key15 < _len7; _key15++) {
+      args[_key15] = arguments[_key15];
     }
 
     return args.some(function (elem) {
@@ -6841,8 +6853,8 @@ export default function vueFactory(exports) {
         },
 
         use(plugin) {
-          for (var _len7 = arguments.length, options = new Array(_len7 > 1 ? _len7 - 1 : 0), _key15 = 1; _key15 < _len7; _key15++) {
-            options[_key15 - 1] = arguments[_key15];
+          for (var _len8 = arguments.length, options = new Array(_len8 > 1 ? _len8 - 1 : 0), _key16 = 1; _key16 < _len8; _key16++) {
+            options[_key16 - 1] = arguments[_key16];
           }
 
           if (installedPlugins.has(plugin)) {
@@ -8041,9 +8053,9 @@ export default function vueFactory(exports) {
         }
 
         if (oldProps !== EMPTY_OBJ) {
-          for (var _key16 in oldProps) {
-            if (!isReservedProp(_key16) && !(_key16 in newProps)) {
-              hostPatchProp(el, _key16, oldProps[_key16], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+          for (var _key17 in oldProps) {
+            if (!isReservedProp(_key17) && !(_key17 in newProps)) {
+              hostPatchProp(el, _key17, oldProps[_key17], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
             }
           }
         }
@@ -9626,8 +9638,8 @@ export default function vueFactory(exports) {
   }
 
   var createVNodeWithArgsTransform = function createVNodeWithArgsTransform() {
-    for (var _len8 = arguments.length, args = new Array(_len8), _key17 = 0; _key17 < _len8; _key17++) {
-      args[_key17] = arguments[_key17];
+    for (var _len9 = arguments.length, args = new Array(_len9), _key18 = 0; _key18 < _len9; _key18++) {
+      args[_key18] = arguments[_key18];
     }
 
     return _createVNode.apply(void 0, _toConsumableArray(vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args));
@@ -10850,8 +10862,8 @@ export default function vueFactory(exports) {
 
         get emit() {
           return function (event) {
-            for (var _len9 = arguments.length, args = new Array(_len9 > 1 ? _len9 - 1 : 0), _key18 = 1; _key18 < _len9; _key18++) {
-              args[_key18 - 1] = arguments[_key18];
+            for (var _len10 = arguments.length, args = new Array(_len10 > 1 ? _len10 - 1 : 0), _key19 = 1; _key19 < _len10; _key19++) {
+              args[_key19 - 1] = arguments[_key19];
             }
 
             return instance.emit.apply(instance, [event].concat(args));
@@ -11456,8 +11468,8 @@ export default function vueFactory(exports) {
         }
       }
 
-      for (var _key19 in next) {
-        batchedStyles[_key19] = next[_key19];
+      for (var _key20 in next) {
+        batchedStyles[_key20] = next[_key20];
       }
 
       el.setAttribute('style', batchedStyles);
@@ -12265,8 +12277,8 @@ export default function vueFactory(exports) {
         if (guard && guard(event, modifiers)) return;
       }
 
-      for (var _len10 = arguments.length, args = new Array(_len10 > 1 ? _len10 - 1 : 0), _key20 = 1; _key20 < _len10; _key20++) {
-        args[_key20 - 1] = arguments[_key20];
+      for (var _len11 = arguments.length, args = new Array(_len11 > 1 ? _len11 - 1 : 0), _key21 = 1; _key21 < _len11; _key21++) {
+        args[_key21 - 1] = arguments[_key21];
       }
 
       return fn.apply(void 0, [event].concat(args));

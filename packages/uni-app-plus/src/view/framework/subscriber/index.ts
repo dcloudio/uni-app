@@ -1,5 +1,5 @@
 import { VD_SYNC } from '../../../constants'
-import { onVdSync } from './vdom'
+import { onVdSync } from '../dom'
 
 export function initSubscribeHandlers() {
   const { subscribe } = UniViewJSBridge

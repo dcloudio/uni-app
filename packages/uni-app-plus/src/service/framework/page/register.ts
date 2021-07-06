@@ -93,6 +93,7 @@ export function registerPage({
 function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
   const statusbarHeight = getStatusbarHeight()
   return {
+    css: true,
     route: meta.route,
     version: 1,
     locale: '',

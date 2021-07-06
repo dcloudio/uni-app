@@ -663,6 +663,9 @@ var serviceContext = (function (vue) {
       dispatchEvent(evt) {
           const listeners = this._listeners[evt.type];
           if (!listeners) {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
+              }
               return false;
           }
           const len = listeners.length;
@@ -839,20 +842,18 @@ var serviceContext = (function (vue) {
           newChild.parentNode = this;
           checkNodeId(newChild);
           const { childNodes } = this;
-          let index;
           if (refChild) {
-              index = childNodes.indexOf(refChild);
+              const index = childNodes.indexOf(refChild);
               if (index === -1) {
                   throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
               }
               childNodes.splice(index, 0, newChild);
           }
           else {
-              index = childNodes.length;
               childNodes.push(newChild);
           }
           return this.pageNode
-              ? this.pageNode.onInsertBefore(this, newChild, index)
+              ? this.pageNode.onInsertBefore(this, newChild, refChild)
               : newChild;
       }
       removeChild(oldChild) {
@@ -863,9 +864,7 @@ var serviceContext = (function (vue) {
           }
           oldChild.parentNode = null;
           childNodes.splice(index, 1);
-          return this.pageNode
-              ? this.pageNode.onRemoveChild(this, oldChild)
-              : oldChild;
+          return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
       }
   }
 
@@ -1233,6 +1232,26 @@ var serviceContext = (function (vue) {
           return res;
       }, {});
   }
+  const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
+      const name = 'uni.app.';
+      {
+          useI18n().add(LOCALE_EN, normalizeMessages(name, { quit: 'Press back button again to exit' }));
+      }
+      {
+          useI18n().add(LOCALE_ES, normalizeMessages(name, { quit: 'Pulse otra vez para salir' }));
+      }
+      {
+          useI18n().add(LOCALE_FR, normalizeMessages(name, {
+              quit: "Appuyez à nouveau pour quitter l'application",
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { quit: '再按一次退出应用' }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { quit: '再按一次退出應用' }));
+      }
+  });
   const initI18nShowActionSheetMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.showActionSheet.';
       {
@@ -2337,6 +2356,7 @@ var serviceContext = (function (vue) {
   const API_NAVIGATE_TO = 'navigateTo';
   const API_REDIRECT_TO = 'redirectTo';
   const API_SWITCH_TAB = 'switchTab';
+  const API_NAVIGATE_BACK = 'navigateBack';
   const API_PRELOAD_PAGE = 'preloadPage';
   const API_UN_PRELOAD_PAGE = 'unPreloadPage';
   const NavigateToProtocol = 
@@ -5780,6 +5800,39 @@ var serviceContext = (function (vue) {
   const VD_SYNC = 'vdSync';
   const ON_WEBVIEW_READY = 'onWebviewReady';
 
+  const ACTION_TYPE_PAGE_CREATE = 1;
+  const ACTION_TYPE_PAGE_CREATED = 2;
+  const ACTION_TYPE_CREATE = 3;
+  const ACTION_TYPE_INSERT = 4;
+  const ACTION_TYPE_REMOVE = 5;
+  const ACTION_TYPE_SET_ATTRIBUTE = 6;
+  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+  const ACTION_TYPE_SET_TEXT = 8;
+  const ACTION_TYPE_EVENT = 20;
+
+  function onNodeEvent(nodeId, evt, pageNode) {
+      pageNode.fireEvent(nodeId, evt);
+  }
+
+  function onVdSync(actions, pageId) {
+      const page = getPageById(parseInt(pageId));
+      if (!page) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
+          }
+          return;
+      }
+      const pageNode = page.$.appContext.app
+          ._container;
+      actions.forEach((action) => {
+          switch (action[0]) {
+              case ACTION_TYPE_EVENT:
+                  onNodeEvent(action[1], action[2], pageNode);
+                  break;
+          }
+      });
+  }
+
   function initNVue(webviewStyle, routeMeta, path) {
       if (path && routeMeta.isNVue) {
           webviewStyle.uniNView = {
@@ -6095,6 +6148,7 @@ var serviceContext = (function (vue) {
       if (__uniConfig.renderer !== 'native') {
           // 非纯原生
           subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
+          subscribe(VD_SYNC, onVdSync);
       }
   }
 
@@ -6654,19 +6708,11 @@ var serviceContext = (function (vue) {
       }, delay);
   }
 
-  const ACTION_TYPE_PAGE_CREATE = 1;
-  const ACTION_TYPE_PAGE_CREATED = 2;
-  const ACTION_TYPE_CREATE = 3;
-  const ACTION_TYPE_INSERT = 4;
-  const ACTION_TYPE_REMOVE = 5;
-  const ACTION_TYPE_SET_ATTRIBUTE = 6;
-  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  const ACTION_TYPE_SET_TEXT = 8;
-
   class UniPageNode extends UniNode {
       constructor(pageId, options, setup = false) {
           super(NODE_TYPE_PAGE, '#page', null);
           this._id = 1;
+          this._created = false;
           this.updateActions = [];
           this.nodeId = 0;
           this.pageId = pageId;
@@ -6680,12 +6726,12 @@ var serviceContext = (function (vue) {
           pushCreateAction(this, thisNode.nodeId, nodeName);
           return thisNode;
       }
-      onInsertBefore(thisNode, newChild, index) {
-          pushInsertAction(this, newChild, thisNode.nodeId, index);
+      onInsertBefore(thisNode, newChild, refChild) {
+          pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
           return newChild;
       }
-      onRemoveChild(thisNode, oldChild) {
-          pushRemoveAction(this, oldChild.nodeId, thisNode.nodeId);
+      onRemoveChild(oldChild) {
+          pushRemoveAction(this, oldChild.nodeId);
           return oldChild;
       }
       onSetAttribute(thisNode, qualifiedName, value) {
@@ -6736,6 +6782,11 @@ var serviceContext = (function (vue) {
           if ((process.env.NODE_ENV !== 'production')) {
               console.log(formatLog('PageNode', 'update', updateActions.length));
           }
+          // 首次
+          if (!this._created) {
+              this._created = true;
+              updateActions.push(this.createdAction);
+          }
           if (updateActions.length) {
               this.send(updateActions);
               updateActions.length = 0;
@@ -6744,21 +6795,43 @@ var serviceContext = (function (vue) {
       send(action) {
           UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
       }
+      fireEvent(id, evt) {
+          const node = findNodeById(id, this);
+          if (node) {
+              node.dispatchEvent(evt);
+          }
+          else if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
+          }
+      }
+  }
+  function findNodeById(id, uniNode) {
+      if (uniNode.nodeId === id) {
+          return uniNode;
+      }
+      const { childNodes } = uniNode;
+      for (let i = 0; i < childNodes.length; i++) {
+          const uniNode = findNodeById(id, childNodes[i]);
+          if (uniNode) {
+              return uniNode;
+          }
+      }
+      return null;
   }
   function pushCreateAction(pageNode, nodeId, nodeName) {
       pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName]);
   }
-  function pushInsertAction(pageNode, newChild, parentNodeId, index) {
+  function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
       pageNode.push([
           ACTION_TYPE_INSERT,
           newChild.nodeId,
           parentNodeId,
-          index,
+          refChildId,
           newChild.toJSON({ attr: true }),
       ]);
   }
-  function pushRemoveAction(pageNode, nodeId, parentNodeId) {
-      pageNode.push([ACTION_TYPE_REMOVE, nodeId, parentNodeId]);
+  function pushRemoveAction(pageNode, nodeId) {
+      pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
   }
   function pushSetAttributeAction(pageNode, nodeId, name, value) {
       pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value]);
@@ -6902,6 +6975,7 @@ var serviceContext = (function (vue) {
   function initPageOptions({ meta }) {
       const statusbarHeight = getStatusbarHeight();
       return {
+          css: true,
           route: meta.route,
           version: 1,
           locale: '',
@@ -6954,6 +7028,31 @@ var serviceContext = (function (vue) {
               globalStyle.animationDuration ||
               ANI_DURATION,
       ];
+  }
+
+  const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+      const page = getCurrentPage();
+      if (!page) {
+          return;
+      }
+      if (page.$page.meta.isQuit) {
+          quit();
+      }
+      return resolve();
+  });
+  let firstBackTime = 0;
+  function quit() {
+      initI18nAppMsgsOnce();
+      if (!firstBackTime) {
+          firstBackTime = Date.now();
+          plus.nativeUI.toast(useI18n().t('uni.app.quit'));
+          setTimeout(() => {
+              firstBackTime = 0;
+          }, 2000);
+      }
+      else if (Date.now() - firstBackTime < 2000) {
+          plus.runtime.quit();
+      }
   }
 
   var uni$1 = /*#__PURE__*/Object.freeze({
@@ -7060,7 +7159,8 @@ var serviceContext = (function (vue) {
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,
     createInteractiveAd: createInteractiveAd,
-    navigateTo: navigateTo
+    navigateTo: navigateTo,
+    navigateBack: navigateBack
   });
 
   const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {

@@ -1,6 +1,6 @@
 export { UniCommentNode } from './Comment'
 export { UniElement, UniInputElement, UniTextAreaElement } from './Element'
-export { UniEvent, UniEventListener } from './Event'
+export { UniEvent, UniEventListener, parseEventName } from './Event'
 export {
   NODE_TYPE_PAGE,
   NODE_TYPE_ELEMENT,

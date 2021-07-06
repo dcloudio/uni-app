@@ -5,6 +5,7 @@ import {
   UniBaseNode,
   IUniPageNode,
   formatLog,
+  UniEvent,
 } from '@dcloudio/uni-shared'
 import {
   PageCreateAction,
@@ -25,6 +26,7 @@ import { VD_SYNC } from '../../../constants'
 export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
   private _id: number = 1
+  private _created: boolean = false
   private createAction: PageCreateAction
   private createdAction: PageCreatedAction
   public updateActions: PageAction[] = []
@@ -52,12 +54,21 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     pushCreateAction(this, thisNode.nodeId!, nodeName)
     return thisNode
   }
-  onInsertBefore(thisNode: UniNode, newChild: UniNode, index: number) {
-    pushInsertAction(this, newChild as UniBaseNode, thisNode.nodeId!, index)
+  onInsertBefore(
+    thisNode: UniNode,
+    newChild: UniNode,
+    refChild: UniNode | null
+  ) {
+    pushInsertAction(
+      this,
+      newChild as UniBaseNode,
+      thisNode.nodeId!,
+      (refChild && refChild.nodeId!) || -1
+    )
     return newChild
   }
-  onRemoveChild(thisNode: UniNode, oldChild: UniNode) {
-    pushRemoveAction(this, oldChild.nodeId!, thisNode.nodeId!)
+  onRemoveChild(oldChild: UniNode) {
+    pushRemoveAction(this, oldChild.nodeId!)
     return oldChild
   }
   onSetAttribute(thisNode: UniNode, qualifiedName: string, value: unknown) {
@@ -108,6 +119,11 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     if (__DEV__) {
       console.log(formatLog('PageNode', 'update', updateActions.length))
     }
+    // 首次
+    if (!this._created) {
+      this._created = true
+      updateActions.push(this.createdAction)
+    }
     if (updateActions.length) {
       this.send(updateActions)
       updateActions.length = 0
@@ -116,6 +132,28 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   send(action: PageAction[]) {
     UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId)
   }
+  fireEvent(id: number, evt: UniEvent) {
+    const node = findNodeById(id, this)
+    if (node) {
+      node.dispatchEvent(evt)
+    } else if (__DEV__) {
+      console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt))
+    }
+  }
+}
+
+function findNodeById(id: number, uniNode: UniNode): UniNode | null {
+  if (uniNode.nodeId === id) {
+    return uniNode
+  }
+  const { childNodes } = uniNode
+  for (let i = 0; i < childNodes.length; i++) {
+    const uniNode = findNodeById(id, childNodes[i])
+    if (uniNode) {
+      return uniNode
+    }
+  }
+  return null
 }
 
 function pushCreateAction(
@@ -130,23 +168,19 @@ function pushInsertAction(
   pageNode: UniPageNode,
   newChild: UniBaseNode,
   parentNodeId: number,
-  index: number
+  refChildId: number
 ) {
   pageNode.push([
     ACTION_TYPE_INSERT,
     newChild.nodeId!,
     parentNodeId,
-    index,
+    refChildId,
     newChild.toJSON({ attr: true }),
   ])
 }
 
-function pushRemoveAction(
-  pageNode: UniPageNode,
-  nodeId: number,
-  parentNodeId: number
-) {
-  pageNode.push([ACTION_TYPE_REMOVE, nodeId, parentNodeId])
+function pushRemoveAction(pageNode: UniPageNode, nodeId: number) {
+  pageNode.push([ACTION_TYPE_REMOVE, nodeId])
 }
 
 function pushSetAttributeAction(

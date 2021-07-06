@@ -800,9 +800,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.723:
-  version "1.3.766"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.766.tgz#2fd14a4e54f77665872f4e23fcf4968e83638220"
-  integrity sha512-u2quJ862q9reRKh/je3GXis3w38+RoXH1J9N3XjtsS6NzmUAosNsyZgUVFZPN/ZlJ3v6T0rTyZR3q/J5c6Sy5w==
+  version "1.3.768"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.768.tgz#bbe47394f0073c947168589b7d19388518a7a9a9"
+  integrity sha512-I4UMZHhVSK2pwt8jOIxTi3GIuc41NkddtKT/hpuxp9GO5UWJgDKTBa4TACppbVAuKtKbMK6BhQZvT5tFF1bcNA==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -2243,10 +2243,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite@^2.4.0-beta.3:
-  version "2.4.0-beta.3"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-2.4.0-beta.3.tgz#81da5e6cbfb4cb710610e5757567cbe58b667c44"
-  integrity sha512-sSUbH0mPMbqqOVZ1/LD/Wiu347yvn4BXjS/94mn5Q7E/zd50hxEnKU1NC4x59TBKq5OeboPhyXwibyCEpyAQKQ==
+vite@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-2.4.0.tgz#a591e4f2c996ae9a044093f629b418069629ca16"
+  integrity sha512-FR+1hCyGt8i+ijMe9z4tIfUQ7BQThxGevp3IlmdXDBSJEPjbeDznbuJa/QVzXw2Mpxh7KCmveVI082h8nzcCNw==
   dependencies:
     esbuild "^0.12.8"
     postcss "^8.3.5"

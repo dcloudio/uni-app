@@ -1,4 +1,4 @@
-import { camelize, extend, isString, isPlainObject, isArray, isHTMLTag, isSVGTag, capitalize } from '@vue/shared';
+import { camelize, extend, isString, isPlainObject, isArray, isHTMLTag, isSVGTag, hyphenate, capitalize } from '@vue/shared';
 
 function formatLog(module, ...args) {
     return `[${Date.now()}][${module}]：${args
@@ -351,6 +351,9 @@ class UniEventTarget {
     dispatchEvent(evt) {
         const listeners = this._listeners[evt.type];
         if (!listeners) {
+            if ((process.env.NODE_ENV !== 'production')) {
+                console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
+            }
             return false;
         }
         const len = listeners.length;
@@ -383,6 +386,19 @@ class UniEventTarget {
             listeners.splice(index, 1);
         }
     }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseEventName(name) {
+    let options;
+    if (optionsModifierRE.test(name)) {
+        options = {};
+        let m;
+        while ((m = name.match(optionsModifierRE))) {
+            name = name.slice(0, name.length - m[0].length);
+            options[m[0].toLowerCase()] = true;
+        }
+    }
+    return [hyphenate(name.slice(2)), options];
 }
 
 class UniCSSStyleDeclaration {
@@ -630,20 +646,18 @@ class UniNode extends UniEventTarget {
         newChild.parentNode = this;
         checkNodeId(newChild);
         const { childNodes } = this;
-        let index;
         if (refChild) {
-            index = childNodes.indexOf(refChild);
+            const index = childNodes.indexOf(refChild);
             if (index === -1) {
                 throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
             }
             childNodes.splice(index, 0, newChild);
         }
         else {
-            index = childNodes.length;
             childNodes.push(newChild);
         }
         return this.pageNode
-            ? this.pageNode.onInsertBefore(this, newChild, index)
+            ? this.pageNode.onInsertBefore(this, newChild, refChild)
             : newChild;
     }
     removeChild(oldChild) {
@@ -654,9 +668,7 @@ class UniNode extends UniEventTarget {
         }
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return this.pageNode
-            ? this.pageNode.onRemoveChild(this, oldChild)
-            : oldChild;
+        return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
     }
 }
 class UniBaseNode extends UniNode {
@@ -898,4 +910,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeTarget, once, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

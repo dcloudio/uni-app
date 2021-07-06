@@ -11,6 +11,7 @@ import {
 import { createPageNode } from '../../src/service/framework/dom/Page'
 
 const defaultPageNodeOptions = {
+  css: true,
   route: 'pages/index/index',
   version: 1,
   locale: 'zh_CN',

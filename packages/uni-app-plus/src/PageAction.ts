@@ -1,9 +1,6 @@
-import { onNodeCreate } from './view/framework/subscriber/vdom/onNodeCreate'
-import { onNodeInsert } from './view/framework/subscriber/vdom/onNodeInsert'
-import { onNodeRemove } from './view/framework/subscriber/vdom/onNodeRemove'
-import { onNodeRemoveAttr } from './view/framework/subscriber/vdom/onNodeRemoveAttr'
-import { onNodeSetAttr } from './view/framework/subscriber/vdom/onNodeSetAttr'
-import { onNodeSetText } from './view/framework/subscriber/vdom/onNodeSetText'
+import { onNodeEvent } from './service/framework/dom/onNodeEvent'
+import { createElement } from './view/framework/dom/elements'
+import { UniElement } from './view/framework/dom/elements/UniElement'
 
 export const ACTION_TYPE_PAGE_CREATE = 1
 export const ACTION_TYPE_PAGE_CREATED = 2
@@ -14,7 +11,10 @@ export const ACTION_TYPE_SET_ATTRIBUTE = 6
 export const ACTION_TYPE_REMOVE_ATTRIBUTE = 7
 export const ACTION_TYPE_SET_TEXT = 8
 
+export const ACTION_TYPE_EVENT = 20
+
 export interface PageNodeOptions {
+  css: boolean
   route: string
   version: number
   locale: string
@@ -32,34 +32,42 @@ export interface PageCreateData extends PageNodeOptions {}
 export type PageCreateAction = [typeof ACTION_TYPE_PAGE_CREATE, PageCreateData]
 export type PageCreatedAction = [typeof ACTION_TYPE_PAGE_CREATED]
 
+export type EventAction = [
+  typeof ACTION_TYPE_EVENT,
+  Parameters<typeof onNodeEvent>[0],
+  Parameters<typeof onNodeEvent>[1]
+]
+
 export type CreateAction = [
   typeof ACTION_TYPE_CREATE,
-  ...Parameters<typeof onNodeCreate>
+  ...Parameters<typeof createElement>
 ]
+
+type NodeAction<T extends Parameters<any>> = [/* nodeId */ number, ...T]
 
 export type InsertAction = [
   typeof ACTION_TYPE_INSERT,
-  ...Parameters<typeof onNodeInsert>
+  ...NodeAction<Parameters<UniElement['insert']>>
 ]
 
 export type RemoveAction = [
   typeof ACTION_TYPE_REMOVE,
-  ...Parameters<typeof onNodeRemove>
+  ...NodeAction<Parameters<UniElement['remove']>>
 ]
 
 export type SetAttributeAction = [
   typeof ACTION_TYPE_SET_ATTRIBUTE,
-  ...Parameters<typeof onNodeSetAttr>
+  ...NodeAction<Parameters<UniElement['setAttr']>>
 ]
 
 export type RemoveAttributeAction = [
   typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
-  ...Parameters<typeof onNodeRemoveAttr>
+  ...NodeAction<Parameters<UniElement['removeAttr']>>
 ]
 
 export type SetTextAction = [
   typeof ACTION_TYPE_SET_TEXT,
-  ...Parameters<typeof onNodeSetText>
+  ...NodeAction<Parameters<UniElement['setText']>>
 ]
 
 export type PageUpdateAction =

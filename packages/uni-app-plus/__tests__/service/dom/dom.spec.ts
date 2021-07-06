@@ -16,6 +16,7 @@ import {
 describe('dom', () => {
   const pageId = 1
   const root = createPageNode(pageId, {
+    css: true,
     route: 'pages/index/index',
     version: 1,
     locale: 'zh_CN',
@@ -37,7 +38,7 @@ describe('dom', () => {
     expect(addElementAction[0]).toBe(ACTION_TYPE_INSERT)
     expect(addElementAction[1]).toBe(1) // nodeId
     expect(addElementAction[2]).toBe(0) // parentNodeId
-    expect(addElementAction[3]).toBe(0) // index
+    expect(addElementAction[3]).toBe(-1) // index
     const elementJson = addElementAction[4] as UniNodeJSON
     expect(elementJson.a.id).toBe('view')
 
@@ -72,7 +73,6 @@ describe('dom', () => {
     } = root
     expect(removeChildAction[0]).toBe(ACTION_TYPE_REMOVE)
     expect(removeChildAction[1]).toBe(1)
-    expect(removeChildAction[2]).toBe(0)
 
     root.updateActions.length = 0
     const textNode = createTextNode('hello')
@@ -83,7 +83,7 @@ describe('dom', () => {
     expect(addTextNodeAction[0]).toBe(ACTION_TYPE_INSERT)
     expect(addTextNodeAction[1]).toBe(2)
     expect(addTextNodeAction[2]).toBe(0)
-    expect(addTextNodeAction[3]).toBe(0)
+    expect(addTextNodeAction[3]).toBe(-1)
     const textNodeJson = addTextNodeAction[4] as UniNodeJSON
     expect(textNodeJson.t).toBe('hello')
 

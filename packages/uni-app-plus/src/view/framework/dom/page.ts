@@ -5,9 +5,13 @@ import {
   updateCssVar,
 } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
-import { PageCreateData } from '../../../../PageAction'
+import { PageCreateData } from '../../../PageAction'
+import { createElement } from './elements'
+
+export function onPageCreated() {}
 
 export function onPageCreate({
+  css,
   route,
   disableScroll,
   onPageScroll,
@@ -17,6 +21,13 @@ export function onPageCreate({
   windowTop,
   windowBottom,
 }: PageCreateData) {
+  // 初始化页面容器元素
+  initPageElement()
+
+  if (css) {
+    initPageCss(route)
+  }
+
   const pageId = plus.webview.currentWebview().id!
   ;(window as any).__id__ = pageId
   document.title = `${route}[${pageId}]`
@@ -28,6 +39,18 @@ export function onPageCreate({
   } else if (onPageScroll || onPageReachBottom) {
     initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance)
   }
+}
+
+function initPageElement() {
+  createElement(0, 'div').$ = document.getElementById('app')!
+}
+
+function initPageCss(route: string) {
+  const element = document.createElement('link')
+  element.type = 'text/css'
+  element.rel = 'stylesheet'
+  element.href = route + '.css'
+  document.head.appendChild(element)
 }
 
 function initCssVar(

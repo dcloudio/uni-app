@@ -355,6 +355,9 @@ class UniEventTarget {
     dispatchEvent(evt) {
         const listeners = this._listeners[evt.type];
         if (!listeners) {
+            if ((process.env.NODE_ENV !== 'production')) {
+                console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
+            }
             return false;
         }
         const len = listeners.length;
@@ -387,6 +390,19 @@ class UniEventTarget {
             listeners.splice(index, 1);
         }
     }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseEventName(name) {
+    let options;
+    if (optionsModifierRE.test(name)) {
+        options = {};
+        let m;
+        while ((m = name.match(optionsModifierRE))) {
+            name = name.slice(0, name.length - m[0].length);
+            options[m[0].toLowerCase()] = true;
+        }
+    }
+    return [shared.hyphenate(name.slice(2)), options];
 }
 
 class UniCSSStyleDeclaration {
@@ -634,20 +650,18 @@ class UniNode extends UniEventTarget {
         newChild.parentNode = this;
         checkNodeId(newChild);
         const { childNodes } = this;
-        let index;
         if (refChild) {
-            index = childNodes.indexOf(refChild);
+            const index = childNodes.indexOf(refChild);
             if (index === -1) {
                 throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
             }
             childNodes.splice(index, 0, newChild);
         }
         else {
-            index = childNodes.length;
             childNodes.push(newChild);
         }
         return this.pageNode
-            ? this.pageNode.onInsertBefore(this, newChild, index)
+            ? this.pageNode.onInsertBefore(this, newChild, refChild)
             : newChild;
     }
     removeChild(oldChild) {
@@ -658,9 +672,7 @@ class UniNode extends UniEventTarget {
         }
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return this.pageNode
-            ? this.pageNode.onRemoveChild(this, oldChild)
-            : oldChild;
+        return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
     }
 }
 class UniBaseNode extends UniNode {
@@ -963,6 +975,7 @@ exports.isServiceNativeTag = isServiceNativeTag;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeTarget = normalizeTarget;
 exports.once = once;
+exports.parseEventName = parseEventName;
 exports.parseQuery = parseQuery;
 exports.parseUrl = parseUrl;
 exports.passive = passive;

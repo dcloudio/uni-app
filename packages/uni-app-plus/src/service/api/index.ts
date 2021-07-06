@@ -50,3 +50,4 @@ export * from './ad/interstitialAd'
 export * from './ad/interactiveAd'
 
 export * from './route/navigateTo'
+export * from './route/navigateBack'

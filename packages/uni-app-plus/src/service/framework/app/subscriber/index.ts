@@ -1,4 +1,5 @@
-import { ON_WEBVIEW_READY } from '../../../../constants'
+import { ON_WEBVIEW_READY, VD_SYNC } from '../../../../constants'
+import { onVdSync } from '../../dom'
 import { onPlusMessage } from '../initGlobalEvent'
 import { subscribeWebviewReady } from './webviewReady'
 
@@ -15,5 +16,6 @@ export function initSubscribeHandlers() {
   if (__uniConfig.renderer !== 'native') {
     // 非纯原生
     subscribe(ON_WEBVIEW_READY, subscribeWebviewReady)
+    subscribe(VD_SYNC, onVdSync)
   }
 }

@@ -16,5 +16,5 @@
     "removeComments": false,
     "lib": ["ESNext", "DOM"]
   },
-  "include": ["src"]
+  "include": ["src", "../global.d.ts", "../shims-uni-app.d.ts"]
 }

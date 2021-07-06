@@ -1,4 +1,3 @@
-import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '../../helpers'
@@ -7,7 +6,7 @@ const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0
 // normalizeNativeEvent
-export function $nne(this: ComponentPublicInstance, evt: Event) {
+export function $nne(evt: Event) {
   // 目前内置组件底层实现，当需要访问原始event时，请使用withWebEvent包裹
   // 用法参考：uni-h5/src/framework/components/page/page-refresh/index.ts
   const { currentTarget } = evt

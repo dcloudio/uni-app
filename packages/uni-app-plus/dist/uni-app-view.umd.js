@@ -821,6 +821,31 @@
   function formatLog(module, ...args) {
     return `[${Date.now()}][${module}]\uFF1A${args.map((arg) => JSON.stringify(arg)).join(" ")}`;
   }
+  function getCustomDataset(el) {
+    return extend({}, el.dataset, el.__uniDataset);
+  }
+  function normalizeTarget(el) {
+    const { id, offsetTop, offsetLeft } = el;
+    return {
+      id,
+      dataset: getCustomDataset(el),
+      offsetTop,
+      offsetLeft
+    };
+  }
+  const optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
+  function parseEventName(name) {
+    let options;
+    if (optionsModifierRE$1.test(name)) {
+      options = {};
+      let m;
+      while (m = name.match(optionsModifierRE$1)) {
+        name = name.slice(0, name.length - m[0].length);
+        options[m[0].toLowerCase()] = true;
+      }
+    }
+    return [hyphenate(name.slice(2)), options];
+  }
   const ATTR_MAP = {
     class: ".c",
     style: ".s",
@@ -840,64 +865,12 @@
     onAnimationend: ".ed",
     onTouchforcechange: ".ee"
   };
-  const COMPONENT_MAP = {
-    VIEW: 1,
-    IMAGE: 2,
-    TEXT: 3,
-    "#text": 4,
-    "#comment": 5,
-    NAVIGATOR: 6,
-    FORM: 7,
-    BUTTON: 8,
-    INPUT: 9,
-    LABEL: 10,
-    RADIO: 11,
-    CHECKBOX: 12,
-    "CHECKBOX-GROUP": 13,
-    AD: 14,
-    AUDIO: 15,
-    CAMERA: 16,
-    CANVAS: 17,
-    "COVER-IMAGE": 18,
-    "COVER-VIEW": 19,
-    EDITOR: 20,
-    "FUNCTIONAL-PAGE-NAVIGATOR": 21,
-    ICON: 22,
-    "RADIO-GROUP": 23,
-    "LIVE-PLAYER": 24,
-    "LIVE-PUSHER": 25,
-    MAP: 26,
-    "MOVABLE-AREA": 27,
-    "MOVABLE-VIEW": 28,
-    "OFFICIAL-ACCOUNT": 29,
-    "OPEN-DATA": 30,
-    PICKER: 31,
-    "PICKER-VIEW": 32,
-    "PICKER-VIEW-COLUMN": 33,
-    PROGRESS: 34,
-    "RICH-TEXT": 35,
-    "SCROLL-VIEW": 36,
-    SLIDER: 37,
-    SWIPER: 38,
-    "SWIPER-ITEM": 39,
-    SWITCH: 40,
-    TEXTAREA: 41,
-    VIDEO: 42,
-    "WEB-VIEW": 43
-  };
   const DECODED_ATTR_MAP = /* @__PURE__ */ Object.keys(ATTR_MAP).reduce((map, name) => {
     map[ATTR_MAP[name]] = name;
     return map;
   }, Object.create(null));
   function decodeAttr(name) {
     return DECODED_ATTR_MAP[name] || name;
-  }
-  const DECODED_COMPONENT_ARR = /* @__PURE__ */ Object.keys(COMPONENT_MAP).reduce((arr, name) => {
-    arr.push(name.toLowerCase());
-    return arr;
-  }, [""]);
-  function decodeTag(tag) {
-    return DECODED_COMPONENT_ARR[tag] || tag;
   }
   const E = function() {
   };
@@ -2166,6 +2139,205 @@
     return key in el;
   }
   extend({ patchProp, forcePatchProp }, nodeOps);
+  var attrs = ["top", "left", "right", "bottom"];
+  var inited;
+  var elementComputedStyle = {};
+  var support;
+  function getSupport() {
+    if (!("CSS" in window) || typeof CSS.supports != "function") {
+      support = "";
+    } else if (CSS.supports("top: env(safe-area-inset-top)")) {
+      support = "env";
+    } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
+      support = "constant";
+    } else {
+      support = "";
+    }
+    return support;
+  }
+  function init() {
+    support = typeof support === "string" ? support : getSupport();
+    if (!support) {
+      attrs.forEach(function(attr) {
+        elementComputedStyle[attr] = 0;
+      });
+      return;
+    }
+    function setStyle2(el, style) {
+      var elStyle = el.style;
+      Object.keys(style).forEach(function(key) {
+        var val = style[key];
+        elStyle[key] = val;
+      });
+    }
+    var cbs = [];
+    function parentReady(callback) {
+      if (callback) {
+        cbs.push(callback);
+      } else {
+        cbs.forEach(function(cb) {
+          cb();
+        });
+      }
+    }
+    var passiveEvents = false;
+    try {
+      var opts = Object.defineProperty({}, "passive", {
+        get: function() {
+          passiveEvents = { passive: true };
+        }
+      });
+      window.addEventListener("test", null, opts);
+    } catch (e) {
+    }
+    function addChild(parent, attr) {
+      var a1 = document.createElement("div");
+      var a2 = document.createElement("div");
+      var a1Children = document.createElement("div");
+      var a2Children = document.createElement("div");
+      var W = 100;
+      var MAX = 1e4;
+      var aStyle = {
+        position: "absolute",
+        width: W + "px",
+        height: "200px",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        paddingBottom: support + "(safe-area-inset-" + attr + ")"
+      };
+      setStyle2(a1, aStyle);
+      setStyle2(a2, aStyle);
+      setStyle2(a1Children, {
+        transition: "0s",
+        animation: "none",
+        width: "400px",
+        height: "400px"
+      });
+      setStyle2(a2Children, {
+        transition: "0s",
+        animation: "none",
+        width: "250%",
+        height: "250%"
+      });
+      a1.appendChild(a1Children);
+      a2.appendChild(a2Children);
+      parent.appendChild(a1);
+      parent.appendChild(a2);
+      parentReady(function() {
+        a1.scrollTop = a2.scrollTop = MAX;
+        var a1LastScrollTop = a1.scrollTop;
+        var a2LastScrollTop = a2.scrollTop;
+        function onScroll() {
+          if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
+            return;
+          }
+          a1.scrollTop = a2.scrollTop = MAX;
+          a1LastScrollTop = a1.scrollTop;
+          a2LastScrollTop = a2.scrollTop;
+          attrChange(attr);
+        }
+        a1.addEventListener("scroll", onScroll, passiveEvents);
+        a2.addEventListener("scroll", onScroll, passiveEvents);
+      });
+      var computedStyle = getComputedStyle(a1);
+      Object.defineProperty(elementComputedStyle, attr, {
+        configurable: true,
+        get: function() {
+          return parseFloat(computedStyle.paddingBottom);
+        }
+      });
+    }
+    var parentDiv = document.createElement("div");
+    setStyle2(parentDiv, {
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "0",
+      height: "0",
+      zIndex: "-1",
+      overflow: "hidden",
+      visibility: "hidden"
+    });
+    attrs.forEach(function(key) {
+      addChild(parentDiv, key);
+    });
+    document.body.appendChild(parentDiv);
+    parentReady();
+    inited = true;
+  }
+  function getAttr(attr) {
+    if (!inited) {
+      init();
+    }
+    return elementComputedStyle[attr];
+  }
+  var changeAttrs = [];
+  function attrChange(attr) {
+    if (!changeAttrs.length) {
+      setTimeout(function() {
+        var style = {};
+        changeAttrs.forEach(function(attr2) {
+          style[attr2] = elementComputedStyle[attr2];
+        });
+        changeAttrs.length = 0;
+        callbacks.forEach(function(callback) {
+          callback(style);
+        });
+      }, 0);
+    }
+    changeAttrs.push(attr);
+  }
+  var callbacks = [];
+  function onChange(callback) {
+    if (!getSupport()) {
+      return;
+    }
+    if (!inited) {
+      init();
+    }
+    if (typeof callback === "function") {
+      callbacks.push(callback);
+    }
+  }
+  function offChange(callback) {
+    var index = callbacks.indexOf(callback);
+    if (index >= 0) {
+      callbacks.splice(index, 1);
+    }
+  }
+  var safeAreaInsets = {
+    get support() {
+      return (typeof support === "string" ? support : getSupport()).length != 0;
+    },
+    get top() {
+      return getAttr("top");
+    },
+    get left() {
+      return getAttr("left");
+    },
+    get right() {
+      return getAttr("right");
+    },
+    get bottom() {
+      return getAttr("bottom");
+    },
+    onChange,
+    offChange
+  };
+  var out = safeAreaInsets;
+  function getWindowOffset() {
+    const style = document.documentElement.style;
+    const top = parseInt(style.getPropertyValue("--window-top"));
+    const bottom = parseInt(style.getPropertyValue("--window-bottom"));
+    const left = parseInt(style.getPropertyValue("--window-left"));
+    const right = parseInt(style.getPropertyValue("--window-right"));
+    return {
+      top: top ? top + out.top : 0,
+      bottom: bottom ? bottom + out.bottom : 0,
+      left: left ? left + out.left : 0,
+      right: right ? right + out.right : 0
+    };
+  }
   function updateCssVar(cssVars) {
     const style = document.documentElement.style;
     Object.keys(cssVars).forEach((name) => {
@@ -2230,6 +2402,100 @@
       ticking = true;
     };
   }
+  const isClickEvent = (val) => val.type === "click";
+  const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
+  function $nne(evt) {
+    const { currentTarget } = evt;
+    if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
+      return evt;
+    }
+    if (currentTarget.tagName.indexOf("UNI-") !== 0) {
+      return evt;
+    }
+    const res = createNativeEvent(evt);
+    if (isClickEvent(evt)) {
+      normalizeClickEvent(res, evt);
+    } else if (isMouseEvent(evt)) {
+      normalizeMouseEvent(res, evt);
+    } else if (evt instanceof TouchEvent) {
+      const { top } = getWindowOffset();
+      res.touches = normalizeTouchEvent(evt.touches, top);
+      res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
+    }
+    return res;
+  }
+  function findUniTarget(target) {
+    while (target && target.tagName.indexOf("UNI-") !== 0) {
+      target = target.parentElement;
+    }
+    return target;
+  }
+  function createNativeEvent(evt) {
+    const { type, timeStamp, target, currentTarget } = evt;
+    const event = {
+      type,
+      timeStamp,
+      target: normalizeTarget(findUniTarget(target)),
+      detail: {},
+      currentTarget: normalizeTarget(currentTarget)
+    };
+    if (evt._stopped) {
+      event._stopped = true;
+    }
+    if (evt.type.startsWith("touch")) {
+      event.touches = evt.touches;
+      event.changedTouches = evt.changedTouches;
+    }
+    {
+      extend(event, {
+        preventDefault() {
+          return evt.preventDefault();
+        },
+        stopPropagation() {
+          return evt.stopPropagation();
+        }
+      });
+    }
+    return event;
+  }
+  function normalizeClickEvent(evt, mouseEvt) {
+    const { x, y } = mouseEvt;
+    const { top } = getWindowOffset();
+    evt.detail = { x, y: y - top };
+    evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt)];
+  }
+  function normalizeMouseEvent(evt, mouseEvt) {
+    const { top } = getWindowOffset();
+    evt.pageX = mouseEvt.pageX;
+    evt.pageY = mouseEvt.pageY - top;
+    evt.clientX = mouseEvt.clientX;
+    evt.clientY = mouseEvt.clientY - top;
+  }
+  function createTouchEvent(evt) {
+    return {
+      force: 1,
+      identifier: 0,
+      clientX: evt.clientX,
+      clientY: evt.clientY,
+      pageX: evt.pageX,
+      pageY: evt.pageY
+    };
+  }
+  function normalizeTouchEvent(touches, top) {
+    const res = [];
+    for (let i = 0; i < touches.length; i++) {
+      const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
+      res.push({
+        identifier,
+        pageX,
+        pageY: pageY - top,
+        clientX,
+        clientY: clientY - top,
+        force: force || 0
+      });
+    }
+    return res;
+  }
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -2259,44 +2525,128 @@
   const ACTION_TYPE_SET_ATTRIBUTE = 6;
   const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
   const ACTION_TYPE_SET_TEXT = 8;
+  const ACTION_TYPE_EVENT = 20;
+  class UniNode {
+    constructor(id, tag) {
+      this.id = id;
+      this.tag = tag;
+    }
+    init(nodeJson) {
+      if (hasOwn(nodeJson, "t")) {
+        this.$.textContent = nodeJson.t || "";
+      }
+    }
+    setText(text) {
+      this.$.textContent = text;
+    }
+    insert(parentNodeId, refNodeId, nodeJson) {
+      this.init(nodeJson);
+      const node = this.$;
+      const parentNode = $(parentNodeId).$;
+      if (refNodeId === -1) {
+        parentNode.appendChild(node);
+      } else {
+        parentNode.insertBefore(node, $(refNodeId).$);
+      }
+    }
+    remove() {
+      const { $: $2 } = this;
+      $2.parentNode.removeChild($2);
+    }
+  }
+  class UniElement extends UniNode {
+    constructor(id, tag) {
+      super(id, tag);
+      this._listeners = {};
+      this.$ = document.createElement(tag);
+    }
+    init(nodeJson) {
+      super.init(nodeJson);
+      if (hasOwn(nodeJson, "a")) {
+        this.setAttrs(nodeJson.a);
+      }
+    }
+    setAttrs(attrs2) {
+      Object.keys(attrs2).forEach((name) => {
+        this.setAttr(name, attrs2[name]);
+      });
+    }
+    setAttr(name, value) {
+      if (name === ".c") {
+        this.$.className = value;
+      } else if (name.indexOf(".e") === 0) {
+        this.addEvent(name);
+      } else {
+        this.$.setAttribute(decodeAttr(name), value);
+      }
+    }
+    removeAttr(name) {
+      if (name === ".c") {
+        this.$.className = "";
+      } else if (name.indexOf(".e") === 0) {
+        this.removeEvent(name);
+      } else {
+        this.$.removeAttribute(decodeAttr(name));
+      }
+    }
+    addEvent(name) {
+      const [type] = parseEventName(decodeAttr(name));
+      if (this._listeners[type]) {
+        {
+          console.error(formatLog(`tag`, this.tag, this.id, "event[" + type + "] already registered"));
+        }
+        return;
+      }
+      this._listeners[type] = (evt) => {
+        UniViewJSBridge.publishHandler(VD_SYNC, [
+          [ACTION_TYPE_EVENT, this.id, $nne(evt)]
+        ]);
+      };
+      this.$.addEventListener(type, this._listeners[type]);
+    }
+    removeEvent(name) {
+      const [type] = parseEventName(decodeAttr(name));
+      const listener = this._listeners[type];
+      if (listener) {
+        this.$.removeEventListener(type, listener);
+      } else {
+        console.error(formatLog(`tag`, this.tag, this.id, "event[" + type + "] not found"));
+      }
+    }
+  }
+  class UniText extends UniNode {
+    constructor(id) {
+      super(id, "#text");
+      this.$ = document.createTextNode("");
+    }
+  }
+  class UniViewElement extends UniElement {
+    constructor(id) {
+      super(id, "uni-view");
+    }
+  }
   const elements = new Map();
+  const UniBuiltInComponents = [, UniViewElement, , , UniText];
+  function createUniComponent(type, id) {
+    return new UniBuiltInComponents[type](id);
+  }
   function $(id) {
     return elements.get(id);
   }
   function createElement(id, tag) {
-    const element = document.createElement(decodeTag(tag));
+    let element;
+    if (isString(tag)) {
+      element = new UniElement(id, tag);
+    } else {
+      element = createUniComponent(tag, id);
+    }
     elements.set(id, element);
     return element;
   }
-  function setElementAttr(element, name, value) {
-    element.setAttribute(decodeAttr(name), value);
-  }
-  function onNodeCreate(id, tag) {
-    return createElement(id, decodeTag(tag));
-  }
-  function onNodeInsert(nodeId, parentNodeId, refNodeId, nodeJson) {
-    const element = $(nodeId);
-    $(parentNodeId).insertBefore(initElement(element, nodeJson), $(refNodeId));
-  }
-  function initElement(element, { a, s }) {
-    initAttribute(element, a);
-    return element;
-  }
-  function initAttribute(element, attr) {
-    if (!attr) {
-      return;
-    }
-    Object.keys(attr).forEach((name) => setElementAttr(element, name, attr[name]));
-  }
-  function onNodeRemove(nodeId, parentNodeId) {
-  }
-  function onNodeRemoveAttr(nodeId, name) {
-  }
-  function onNodeSetAttr(nodeId, name, value) {
-  }
-  function onNodeSetText(nodeId, text) {
+  function onPageCreated() {
   }
   function onPageCreate({
+    css,
     route,
     disableScroll,
     onPageScroll,
@@ -2306,6 +2656,10 @@
     windowTop,
     windowBottom
   }) {
+    initPageElement();
+    if (css) {
+      initPageCss(route);
+    }
     const pageId2 = plus.webview.currentWebview().id;
     window.__id__ = pageId2;
     document.title = `${route}[${pageId2}]`;
@@ -2315,6 +2669,16 @@
     } else if (onPageScroll || onPageReachBottom) {
       initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance);
     }
+  }
+  function initPageElement() {
+    createElement(0, "div").$ = document.getElementById("app");
+  }
+  function initPageCss(route) {
+    const element = document.createElement("link");
+    element.type = "text/css";
+    element.rel = "stylesheet";
+    element.href = route + ".css";
+    document.head.appendChild(element);
   }
   function initCssVar(statusbarHeight, windowTop, windowBottom) {
     const cssVars = {
@@ -2342,8 +2706,6 @@
     }
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }
-  function onPageCreated() {
-  }
   function onVdSync(actions) {
     actions.forEach((action) => {
       switch (action[0]) {
@@ -2352,17 +2714,17 @@
         case ACTION_TYPE_PAGE_CREATED:
           return onPageCreated();
         case ACTION_TYPE_CREATE:
-          return onNodeCreate(action[1], action[2]);
+          return createElement(action[1], action[2]);
         case ACTION_TYPE_INSERT:
-          return onNodeInsert(action[1], action[2], action[3], action[4]);
+          return $(action[1]).insert(action[2], action[3], action[4]);
         case ACTION_TYPE_REMOVE:
-          return onNodeRemove(action[1], action[2]);
+          return $(action[1]).remove();
         case ACTION_TYPE_SET_ATTRIBUTE:
-          return onNodeSetAttr(action[1], action[2], action[3]);
+          return $(action[1]).setAttr(action[2], action[3]);
         case ACTION_TYPE_REMOVE_ATTRIBUTE:
-          return onNodeRemoveAttr(action[1], action[2]);
+          return $(action[1]).removeAttr(action[2]);
         case ACTION_TYPE_SET_TEXT:
-          return onNodeSetText(action[1], action[2]);
+          return $(action[1]).setText(action[2]);
       }
     });
   }
