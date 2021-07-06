@@ -2068,6 +2068,12 @@ function parseComponent (vueOptions) {
   const oldAttached = componentOptions.lifetimes.attached;
   // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
   componentOptions.lifetimes.onInit = function onInit (query) {
+    // 百度小程序后续可能移除 pageinstance 属性，为向后兼容进行补充
+    if (!this.pageinstance || !this.pageinstance.setData) {
+      const pages = getCurrentPages();
+      this.pageinstance = pages[pages.length - 1];
+    }
+
     // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
     const setData = this.setData;
     const setDataArgs = [];
