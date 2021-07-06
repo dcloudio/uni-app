@@ -102,7 +102,7 @@ function normalizeUsingComponents (file, usingComponents) {
   }
   file = path.dirname('/' + file)
   names.forEach(name => {
-    usingComponents[name] = path.relative(file, usingComponents[name])
+    usingComponents[name] = normalizePath(path.relative(file, usingComponents[name]))
   })
   return usingComponents
 }
