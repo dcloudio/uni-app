@@ -1777,7 +1777,7 @@ function createComponent (vueOptions) {
   }
 }
 
-function createSubpackageApp(vm) {
+function createSubpackageApp (vm) {
   const appOptions = parseApp(vm);
   const app = getApp({
     allowDefault: true
