@@ -7,7 +7,7 @@ import {
 
 import parseApp from 'uni-platform/runtime/wrapper/app-parser'
 
-export default function createSubpackageApp(vm) {
+export default function createSubpackageApp (vm) {
   const appOptions = parseApp(vm)
   const app = getApp({
     allowDefault: true
