@@ -25,6 +25,7 @@
   <ssr-picker-view />
   <ssr-picker />
   <ssr-webview />
+  <ssr-unicloud-db />
 
   <!-- <ssr-video /> dataOptions is not a function -->
   <view id="ssr-log"></view>
