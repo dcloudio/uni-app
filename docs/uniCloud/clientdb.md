@@ -2387,6 +2387,91 @@ const res = await db.collection('score')
 
 - distinct指对返回结果中完全相同的记录进行去重，重复的记录只保留一条。因为`_id`字段是必然不同的，所以使用distinct时必须同时指定field，且field中不可存在`_id`字段
 
+### 同时发送多条数据库请求@multi-send
+
+在实际业务中通常会遇到一个页面需要查询多次的情况，比如应用首页需要查询轮播图列表、公告列表、首页商品列表等。如果分开请求需要发送很多次网络请求，这样会影响性能。使用multiSend可以将多个数据库请求合并成一个发送。
+
+**用法**
+
+```js
+const bannerQuery = db.collection('banner').field('url,image').getTemp() // 这里使用getTemp不直接发送get请求，等到multiSend时再发送
+const noticeQuery = db.collection('notice').field('text,url,level').getTemp()
+const res = await db.multiSend(bannerQuery,noticeQuery)
+```
+
+**返回值**
+
+```js
+// 上述请求返回以下结构
+res = {
+  code: 0, // 请求整体执行错误码，注意如果多条查询执行失败，这里的code依然是0，只有出现网络错误等问题时这里才会出现错误
+  message: '', // 错误信息
+  dataList: [{
+    code: 0, // bannerQuery 对应的错误码
+    message: '', // bannerQuery 对应的错误信息
+    data: [] // bannerQuery 查询到的数据
+  }, {
+    code: 0, // noticeQuery 对应的错误码
+    message: '', // noticeQuery 对应的错误信息
+    data: [] // noticeQuery 查询到的数据
+  }]
+}
+```
+
+unicloud-db组件也支持使用getTemp方法，结合multiSend可以与其他数据库请求一起发送
+
+用法示例：
+
+```html
+<template>
+  <view>
+    <!-- 设置unicloud-db 组件为手动加载 loadtime="manual" -->
+    <unicloud-db collection="banner" loadtime="manual" ref="udb" v-slot:default="{data, error}">
+      <view v-if="error">{{error.message}}</view>
+      <view v-else>
+        <view v-for="(item,index) in data" :key="index">
+          <image :src="item.url"></image>
+        </view>
+      </view>
+    </unicloud-db>
+    <button type="default" @click="test">test</button>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'Hello'
+      }
+    },
+    onLoad() {
+
+    },
+    methods: {
+      test() {
+        const db = uniCloud.database()
+        const bannerQuery = this.$refs.udb.getTemp() // 调用模板内unicloud-db组件实例的getTemp方法
+        const noticeQuery = db.collection('notice').getTemp()
+        db.multiSend(bannerQuery, noticeQuery)
+          .then(res => {
+            console.log('banner', res.result.dataList[0]); // 使用unicloud-db组件的getTemp请求无需额外处理，查询结果会直接被设置到unicloud-db组件内
+            console.log('notice', res.result.dataList[1]); // 不使用unicloud-db组件的getTemp请求需要自行处理返回值
+          })
+          .catch(err => {
+            console.error(err)
+          })
+        // uniCloud.database().collection('test').get()
+      }
+    }
+  }
+</script>
+
+<style>
+</style>
+
+```
+
 ### 新增数据记录add
 
 > 代码块`dbadd`
