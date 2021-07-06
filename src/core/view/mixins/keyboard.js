@@ -3,6 +3,28 @@ import {
 } from 'uni-shared'
 import emitter from './emitter'
 
+let resetTimer
+let isAndroid
+let osVersion
+let keyboardHeight
+let keyboardChangeCallback
+let webviewStyle
+if (__PLATFORM__ === 'app-plus') {
+  plusReady(() => {
+    isAndroid = plus.os.name.toLowerCase() === 'android'
+    osVersion = plus.os.version
+    // iOS 14.6 调用同步方法导致键盘弹卡顿
+    if (!isAndroid && parseFloat(osVersion) >= 14.6) {
+      const currentWebview = plus.webview.currentWebview()
+      webviewStyle = currentWebview.getStyle() || {}
+    }
+  })
+  document.addEventListener('keyboardchange', function (event) {
+    keyboardHeight = event.height
+    keyboardChangeCallback && keyboardChangeCallback()
+  }, false)
+}
+
 /**
  * 保证iOS点击输入框外隐藏键盘
  */
@@ -14,7 +36,8 @@ function setSoftinputTemporary (vm, reset) {
     const MODE_ADJUSTPAN = 'adjustPan'
     const MODE_NOTHING = 'nothing'
     const currentWebview = plus.webview.currentWebview()
-    const style = currentWebview.getStyle() || {}
+    // iOS 14.6 调用同步方法导致键盘弹卡顿
+    const style = webviewStyle || currentWebview.getStyle() || {}
     const options = {
       mode: (reset || style.softinputMode === MODE_ADJUSTRESIZE) ? MODE_ADJUSTRESIZE : (vm.adjustPosition ? MODE_ADJUSTPAN : MODE_NOTHING),
       position: {
@@ -61,22 +84,6 @@ function resetSoftinputNavBar (vm) {
       })
     })
   }
-}
-
-let resetTimer
-let isAndroid
-let osVersion
-let keyboardHeight
-let keyboardChangeCallback
-if (__PLATFORM__ === 'app-plus') {
-  plusReady(() => {
-    isAndroid = plus.os.name.toLowerCase() === 'android'
-    osVersion = plus.os.version
-  })
-  document.addEventListener('keyboardchange', function (event) {
-    keyboardHeight = event.height
-    keyboardChangeCallback && keyboardChangeCallback()
-  }, false)
 }
 
 export default {
@@ -146,11 +153,13 @@ export default {
 
       if (__PLATFORM__ === 'app-plus') {
         // 安卓单独隐藏键盘后点击输入框不会触发 focus 事件
-        el.addEventListener('click', () => {
-          if (!this.disabled && focus && keyboardHeight === 0) {
-            setSoftinputTemporary(this)
-          }
-        })
+        if (isAndroid) {
+          el.addEventListener('click', () => {
+            if (!this.disabled && focus && keyboardHeight === 0) {
+              setSoftinputTemporary(this)
+            }
+          })
+        }
         if (!isAndroid && parseInt(osVersion) < 12) {
           // iOS12 以下系统 focus 事件设置较迟，改在 touchstart 设置
           el.addEventListener('touchstart', () => {

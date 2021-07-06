@@ -174,7 +174,6 @@
     left: 70px;
     right: 70px;
     min-width: 0;
-    user-select: auto;
   }
 
   .uni-page-head-btn {

@@ -1,4 +1,6 @@
 const DEFAULT_KEYS = [
+  'VUE2',
+  'VUE3',
   'MP',
   'APP',
   'APP-PLUS-NVUE',
@@ -24,6 +26,8 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
     .forEach(name => {
       defaultContext[normalize(name)] = false
     })
+
+  defaultContext.VUE2 = true
 
   vueContext[normalize(name)] = true
 

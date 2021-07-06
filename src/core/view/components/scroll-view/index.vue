@@ -26,6 +26,7 @@
               <div class="uni-scroll-view-refresh-inner">
                 <svg
                   v-if="refreshState=='pulling'"
+                  key="refresh__icon"
                   :style="{'transform': 'rotate('+ refreshRotate +'deg)'}"
                   fill="#2BD009"
                   class="uni-scroll-view-refresh__icon"
@@ -41,6 +42,7 @@
                 </svg>
                 <svg
                   v-if="refreshState=='refreshing'"
+                  key="refresh__spinner"
                   class="uni-scroll-view-refresh__spinner"
                   width="24"
                   height="24"
@@ -205,60 +207,77 @@ export default {
     }
     var touchStart = null
     var needStop = null
+    let toUpperNumber = 0 // 容器触顶时，此时鼠标Y轴位置
+    let triggerAbort = false
+    let beforeRefreshing = false
+
     this.__handleTouchMove = function (event) {
       var x = event.touches[0].pageX
       var y = event.touches[0].pageY
       var main = self.$refs.main
-      if (needStop === null) {
-        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          // 横向滑动
-          if (self.scrollX) {
-            if (main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false
-              return
-            } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
-              needStop = false
-              return
-            }
-            needStop = true
-          } else {
+
+      if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
+        // 横向滑动
+        if (self.scrollX) {
+          if (main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false
+            return
+          } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
+            needStop = false
+            return
           }
+          needStop = true
         } else {
-          // 纵向滑动
-          if (self.scrollY) {
-            if (main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false
-              return
-            } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
-              needStop = false
-              return
-            }
+          needStop = false
+        }
+      } else {
+        // 纵向滑动
+        if (self.scrollY) {
+          if (self.refresherEnabled && main.scrollTop === 0 && y > touchStart.y) {
             needStop = true
-          } else {
+            // 刷新时，阻止页面滚动
+            if (event.cancelable !== false) event.preventDefault()
+          } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
             needStop = false
+            return
           }
+          needStop = true
+        } else {
+          needStop = false
         }
       }
+
       if (needStop) {
         event.stopPropagation()
       }
 
+      if (main.scrollTop === 0 && event.touches.length === 1) {
+        // 如果容器滑动到达顶端，则进入下拉状态
+        self.refreshState = 'pulling'
+      }
+
       if (self.refresherEnabled && self.refreshState === 'pulling') {
         const dy = y - touchStart.y
-        self.refresherHeight = dy
-
-        let rotate = dy / self.refresherThreshold
-        if (rotate > 1) {
-          rotate = 1
-        } else {
-          rotate = rotate * 360
+        if (toUpperNumber === 0) {
+          toUpperNumber = y
         }
-        self.refreshRotate = rotate
+        if (!beforeRefreshing) {
+          self.refresherHeight = y - toUpperNumber
+          // 之前为刷新状态则不再触发pulling
+          if (self.refresherHeight > 0) {
+            triggerAbort = true
+            self.$trigger('refresherpulling', event, {
+              deltaY: dy
+            })
+          }
+        } else {
+          self.refresherHeight = dy + self.refresherThreshold
+          // 如果之前在刷新状态，则不触发刷新中断
+          triggerAbort = false
+        }
 
-        self.$trigger('refresherpulling', event, {
-          deltaY: dy
-        })
+        const route = self.refresherHeight / self.refresherThreshold
+        self.refreshRotate = (route > 1 ? 1 : route) * 360
       }
     }
 
@@ -267,13 +286,9 @@ export default {
         disableScrollBounce({
           disable: true
         })
-        needStop = null
         touchStart = {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY
-        }
-        if (self.refresherEnabled && self.refreshState !== 'refreshing' && self.$refs.main.scrollTop === 0) {
-          self.refreshState = 'pulling'
         }
       }
     }
@@ -283,14 +298,24 @@ export default {
         disable: false
       })
       if (self.refresherHeight >= self.refresherThreshold) {
+        self.refresherHeight = self.refresherThreshold
+        self.refreshState = 'refreshing'
+        // 之前是刷新状态则不再触发刷新
+        if (beforeRefreshing) return
+        beforeRefreshing = true
         self._setRefreshState('refreshing')
       } else {
-        self.refresherHeight = 0
-        self.$trigger('refresherabort', event, {})
+        beforeRefreshing = false
+        self.refreshState = 'refresherabort'
+        self.refresherHeight = toUpperNumber = 0
+        if (triggerAbort) {
+          triggerAbort = false
+          self.$trigger('refresherabort', event, {})
+        }
       }
     }
     this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
-    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passiveOptions)
+    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove)
     this.$refs.main.addEventListener('scroll', this.__handleScroll, supportsPassive ? {
       passive: false
     } : false)
@@ -567,7 +592,8 @@ uni-scroll-view[hidden] {
   height: 40px;
   border-radius: 50%;
   background-color: #fff;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, .117647), 0 1px 4px rgba(0, 0, 0, .117647);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),
+    0 1px 4px rgba(0, 0, 0, 0.117647);
 }
 
 .uni-scroll-view-refresh__spinner {

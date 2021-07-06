@@ -12,6 +12,8 @@ import {
   initEvent
 } from './event'
 
+import './gesture'
+
 export default {
   install (Vue, options) {
     if (process.env.NODE_ENV !== 'production') {

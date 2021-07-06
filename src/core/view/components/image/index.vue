@@ -142,14 +142,13 @@ export default {
     _fixSize () {
       if (this.ratio) {
         const $el = this.$el
-        const rect = $el.getBoundingClientRect()
         if (this.mode === 'widthFix') {
-          const width = rect.width
+          const width = $el.offsetWidth
           if (width) {
             $el.style.height = fixNumber(width / this.ratio) + 'px'
           }
         } else if (this.mode === 'heightFix') {
-          const height = rect.height
+          const height = $el.offsetHeight
           if (height) {
             $el.style.width = fixNumber(height * this.ratio) + 'px'
           }

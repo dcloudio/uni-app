@@ -99,7 +99,7 @@ describe('mp:compiler-mp-baidu', () => {
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block s-if="{{$slots.default}}"><slot var-item="item"></slot></block><block s-else><slot></slot></block></view>',
-      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",{"item":item})}}',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":item})}}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -107,7 +107,7 @@ describe('mp:compiler-mp-baidu', () => {
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block s-if="{{$slots.default}}"><slot></slot></block><block s-else><slot></slot></block></view>',
-      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){const $root=$mp.data.$root;$setScopedSlotsParams("default",object)}}',
+      'with(this){if($scope.data.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",object)}}',
       {
         scopedSlotsCompiler: 'auto'
       }
