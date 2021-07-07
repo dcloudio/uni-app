@@ -286,6 +286,7 @@ export default {
         self._setRefreshState('refreshing')
       } else {
         self.refresherHeight = 0
+        self.refreshState = 'restore'
         self.$trigger('refresherabort', event, {})
       }
     }
