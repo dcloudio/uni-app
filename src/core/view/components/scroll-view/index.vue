@@ -516,7 +516,7 @@ export default {
           if (!this.beforeRefreshing) {
             this.beforeRefreshing = true
             this.$trigger('refresherrefresh', {}, {})
-            this.$emit('update:refresherTriggered', true)
+            // this.$emit('update:refresherTriggered', true)
           }
           break
         case 'restore':
