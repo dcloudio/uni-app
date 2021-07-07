@@ -282,7 +282,7 @@ exports.main = async function(event){
 
 开发期间经常需要多人共用同一个服务空间，此时可以在[DCloud开发者中心](https://dev.dcloud.net.cn/)将特定应用及其关联的服务空间共享给协作者，详细步骤如下
 
-1. 在开发者中心`我创建的应用`列表页面选择特定的应用
+1. 在开发者中心`我创建的应用`列表页面选择特定的应用，如果应用过多可以使用AppId进行查找
 
   ![我创建的应用](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/865a0df3-3169-48df-8b4c-8acacf1a621f.jpg)
   
@@ -296,6 +296,8 @@ exports.main = async function(event){
   ![设置授权服务空间](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b3c234a7-e514-4b14-b33d-e7322130bd7d.jpg)
 
 5. 点击第4步弹出界面的`保存按钮`以及第3步的`保存权限设置`按钮
+
+6. 协作者如需在uni-app项目关联此服务空间，需要在项目的`manifest.json`内配置上共享的应用的AppId（需要在源码视图编辑manifest.json）
 
 ### 如何使用promise/async/await@promise
 
