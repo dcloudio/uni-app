@@ -1,3 +1,12 @@
+#### 2021-07-07
+  + web控制台 新增 违规文件列表
+  + web控制台 修复 云存储删除文件总数不变的Bug
+  + web控制台 调整 云函数日志默认查询开始时间为2小时前
+  + web控制台 腾讯云 新增 数据库导入、导出
+  + web控制台 腾讯云 新增 前端网页托管可开启HTTP强制跳转HTTPS
+  + web控制台 腾讯云 新增 云函数url化允许 / 作为触发路径
+  + web控制台 阿里云 新增 前端网页托管域名归属验证
+
 #### 2021-06-23
   + 新增 uniCloud响应体规范，方便前端拦截器统一处理、方便国际化 [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-response-format)
   + 客户端 新增 添加拦截器、移除拦截器API [详情](https://uniapp.dcloud.net.cn/uniCloud/client-sdk?id=add-interceptor)
