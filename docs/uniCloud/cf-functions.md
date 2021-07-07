@@ -419,6 +419,10 @@ exports.main = async function(event, context) {
 
 例：[ip-filter](https://ext.dcloud.net.cn/plugin?id=4619)中就利用云函数全局缓存一些ip访问信息来限制单ip访问频率，可以下载示例项目体验一下
 
+### 云函数运行环境@runtime
+
+目前腾讯云和阿里云均支持选择nodejs版本，有nodejs8、nodejs12两个选项，需要在云函数创建时设定，不可修改。需要在云函数的package.json文件的`cloudfunction-config->runtime`字段进行配置，详情参考：[云函数package.json](uniCloud/cf-functions.md?id=packagejson)
+
 ## 云函数package.json@packagejson
 
 HBuilderX 3.0版本之前，package.json只是一个标准的package.json，一般来说安装依赖或公共模块才需要。HBuilderX 3.0及以上版本，package.json也可以用来配置云函数。
@@ -448,7 +452,8 @@ package.json是一个标准json文件，不可带注释。下面是一个package
           "type": "timer",
           "config": "0 0 2 1 * * *"
       }],
-      "path": ""
+      "path": "",
+      "runtime": "Nodejs8" 
     }
 }
 ```
@@ -470,7 +475,8 @@ package.json是一个标准json文件，不可带注释。下面是一个package
       "config": "0 0 2 1 * * *"
   }],
   // 云函数Url化path部分，阿里云需要以/http/开头
-  "path": ""
+  "path": "",
+  "runtime": "" // nodejs版本，可选Nodejs8、Nodejs12，默认：Nodejs8
 }
 ```
 
@@ -481,6 +487,7 @@ package.json是一个标准json文件，不可带注释。下面是一个package
 - 上传云函数时，如果项目下的package.json内包含云函数配置会同时进行云函数的配置更新
 - package.json只有云端部署才生效，本地运行不生效。
 - cloudfunction-config不可删除云端配置。例：云端已配置triggers（定时触发器），删除cloudfunction-config内的trigger不会删掉云端的定时触发器
+- runtime参数（nodejs版本）仅可在创建云函数时生效，不可修改
 
 ## 使用cloudfunctions_init初始化云函数@init
 
