@@ -566,10 +566,32 @@ rewardedVideoAd = uni.createRewardedVideoAd({
 ### 服务器回调事件
 - HBuilderX 2.6.8+
 
+穿山甲
 ```js
 rewardedVideoAd.onVerify(e => {
-  // 广告商调用开发者服务器返回结果
-  console.log(e.isValid);
+  console.log('服务器发送验证请求且回调校验完成');
+  var provider= e.provider;
+  var valid = e.isValid;   //获取校验结果
+  //valid为true表示通过了服务器的校验，false表示可能没有通过服务器的校验，或是服务器延迟或失败(此时需增加逻辑：轮询向服务器请求并验证结果)
+})
+```
+
+优量汇
+```js
+rewardedVideoAd.onVerify(e => {
+  console.log('服务器已发送验证请求');
+  var provider= e.provider;
+  var transId = e.transId;
+  // 需增加逻辑：轮询向服务器请求并验证结果
+})
+```
+
+快手
+```js
+rewardedVideoAd.onVerify(e => {
+  console.log('服务器已发送验证请求');
+  var provider= e.provider;
+  // 需增加逻辑：轮询向服务器请求并验证结果
 })
 ```
 
@@ -583,7 +605,17 @@ rewardedVideoAd.onVerify(e => {
 4. `uniAdCallback` 接收广告商服务器回调验证签名并抹平穿山甲/优量汇/快手参数差异，然后以 [callFunction](https://uniapp.dcloud.net.cn/uniCloud/cf-functions?id=callbyfunction) 方式调用用户云函数
 5. 用户在自己的云函数中处理业务
 
-注意：服务器通信和前端事件是并行的，前端需要轮询向服务器请求并验证结果
+注意：
+1. 服务器通信和前端事件是并行的，前端需要轮询向服务器请求并验证结果
+2. 不建议在 `uniAD` web控制修改回调的服务空间和云函数名称，因为修改后生效需要一段时间
+
+### Q&A
+
+Q: 回调为什么使用[uniCloud](https://uniapp.dcloud.net.cn/uniCloud/README)，而不是直接配置开发者的服务器
+A：
+1. 由于多家广告商的回调和签名验证逻辑不同，开发者需要写很多逻辑，`uniCloud` 中的云函数 `uniAdCallback` 已抹平了差异，开发者按照统一的参数处理即可
+2. 开发者的服务器有可能响应慢或失去响应造成回调数据丢失, 使用 `uniCloud` 可以帮助开发者保存一份来自广告商服务器的回调数据到开发者的云数据中，以便开发者主动查询
+3. `uniCloud` 可以承载大并发、防DDoS攻击，无需运营人员维护，如果选择了 `阿里云` 且是免费的
 
 ### 云函数uniAdCallback传递的参数
 
@@ -666,7 +698,7 @@ class UserServer {
   }
 
   async sendHttpRequest(url, data) {
-    let needRetry = parameters.provider !== ProviderType.GDT;
+    let needRetry = data.provider !== ProviderType.GDT;
     let retryCount = needRetry ? DEFAUTL_RETRY_COUNT : 1;
     let timeout = needRetry ? RETRY_TIMEOUT : DEFAUTL_TIMEOUT;
     let result = null;

@@ -8,6 +8,7 @@
 |:-|:-|:-|:-|:-|
 |value|String||输入框的初始内容||
 |type|String|text|input 的类型|H5 暂未支持动态切换，详见下方 Tips，请使用 v-if 进行整体切换|
+|text-content-type|String| |文本区域的语义，根据类型自动填充|仅 App-nvue-iOS 支持|
 |password|Boolean|false|是否是密码类型|H5和App写此属性时，type失效|
 |placeholder|String||输入框为空时占位符||
 |placeholder-style|String||指定 placeholder 的样式||
@@ -56,6 +57,7 @@
 |number|数字输入键盘|均支持，App平台、H5平台 3.1.22 以下版本 vue 页面在 iOS 平台显示的键盘包含负数和小数。|
 |idcard|身份证输入键盘|微信、支付宝、百度、QQ小程序|
 |digit|带小数点的数字键盘|均支持，App平台、H5平台 vue 页面在 iOS 平台显示的键盘包含负数。|
+|tel|电话输入键盘|仅App的nvue页面支持|
 
 **注意事项**
 
@@ -64,6 +66,12 @@
 - 如果需要在小程序平台输入浮点型数字，请使用 `digit` 类型。
 - 小程序端input在置焦时，会表现为原生控件，此时会层级变高。如需前端组件遮盖input，需让input失焦，或使用cover-view等覆盖原生控件的方案，[参考](https://uniapp.dcloud.io/component/native-component)。具体来讲，阿里小程序的input为text且置焦为原生控件；微信、头条、QQ所有input置焦均为原生控件；百度小程序置焦时仍然是非原生的。也可以参考[原生控件](https://uniapp.dcloud.io/component/native-component)文档
 - input组件若不想弹出软键盘，可设置为disabled
+
+**text-content-type 有效值**
+
+|值|说明|
+|:-|:-|
+|oneTimeCode|一次性验证码|
 
 **confirm-type 有效值**
 

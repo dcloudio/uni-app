@@ -282,18 +282,23 @@
 
 > 每次父级组件发生变更时，子组件中所有的 prop 都将会刷新为最新的值。这意味着你不应该在一个子组件内部改变 prop。如果你这样做了，Vue 会在浏览器的控制台中发出警告。
 
-- 这个 `prop` 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 `prop` 数据来使用。
+- 这个 `prop` 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 `prop` 数据来使用。在这种情况下，最好定义一个本地的 `data property` 并将这个 `prop` 用作其**初始值**：
 
 ```html
 	<template>
 		<view>
 			<!-- 我是子组件componentA -->
-			<view>{{title}}</view>
+			<view>{{myTitle}}</view>
 		</view>
 	</template>
 	<script>
 		export default {
-			props: ['title']
+			props: ['title'],
+			data() {
+				return {
+					myTitle:this.title
+				}
+			}
 		}
 	</script>
 ```

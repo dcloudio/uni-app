@@ -1,5 +1,55 @@
 import Vue from 'vue';
 
+function b64DecodeUnicode (str) {
+  return decodeURIComponent(atob(str).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+}
+
+function getCurrentUserInfo () {
+  const token = ( swan).getStorageSync('uni_id_token') || '';
+  const tokenArr = token.split('.');
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    }
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+  }
+  userInfo.tokenExpired = userInfo.exp * 1000;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo
+}
+
+function uniIdMixin (Vue) {
+  Vue.prototype.uniIDHasRole = function (roleId) {
+    const {
+      role
+    } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1
+  };
+  Vue.prototype.uniIDHasPermission = function (permissionId) {
+    const {
+      permission
+    } = getCurrentUserInfo();
+    return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+  };
+  Vue.prototype.uniIDTokenValid = function () {
+    const {
+      tokenExpired
+    } = getCurrentUserInfo();
+    return tokenExpired > Date.now()
+  };
+}
+
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -560,6 +610,13 @@ var getSystemInfo = {
   }
 };
 
+const oName = 'getUserInfo';
+const nName = 'getUserProfile';
+
+var getUserProfile = {
+  name: swan.canIUse(nName) ? nName : oName
+};
+
 // 不支持的 API 列表
 const todos = [
   'preloadPage',
@@ -646,6 +703,7 @@ const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
+  getUserProfile,
   getRecorderManager: {
     returnValue (fromRet) {
       fromRet.onFrameRecorded = createTodoMethod('RecorderManager', 'onFrameRecorded');
@@ -679,6 +737,9 @@ const protocols = {
   getAccountInfoSync: {
     name: 'getEnvInfoSync',
     returnValue: _handleEnvInfo
+  },
+  login: {
+    name: 'getLoginCode'
   }
 };
 
@@ -1252,6 +1313,11 @@ function initProperties (props, isBehavior = false, file = '') {
       type: Object,
       value: null
     };
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
+      type: String,
+      value: ''
+    };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
@@ -1644,11 +1710,14 @@ function initScopedSlotsParams () {
   };
 
   Vue.prototype.$setScopedSlotsParams = function (name, value) {
-    const vueId = this.$options.propsData.vueId;
-    const object = center[vueId] = center[vueId] || {};
-    object[name] = value;
-    if (parents[vueId]) {
-      parents[vueId].$forceUpdate();
+    const vueIds = this.$options.propsData.vueId;
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0];
+      const object = center[vueId] = center[vueId] || {};
+      object[name] = value;
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate();
+      }
     }
   };
 
@@ -1675,6 +1744,7 @@ function parseBaseApp (vm, {
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store;
   }
+  uniIdMixin(Vue);
 
   Vue.prototype.mpHost = "mp-baidu";
 
@@ -1821,7 +1891,8 @@ const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 function isPage () {
   // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
   // 否则会导致mounted不执行
-  return typeof this.ownerId === 'undefined'
+  // 基础库 3.290.33 及以上 ownerId 为 null
+  return typeof this.ownerId === 'undefined' || this.ownerId === null
 }
 
 function initRelation (detail) {
@@ -1997,6 +2068,12 @@ function parseComponent (vueOptions) {
   const oldAttached = componentOptions.lifetimes.attached;
   // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
   componentOptions.lifetimes.onInit = function onInit (query) {
+    // 百度小程序后续可能移除 pageinstance 属性，为向后兼容进行补充
+    if (!this.pageinstance || !this.pageinstance.setData) {
+      const pages = getCurrentPages();
+      this.pageinstance = pages[pages.length - 1];
+    }
+
     // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
     const setData = this.setData;
     const setDataArgs = [];
@@ -2160,6 +2237,7 @@ function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   });
+  vm.$scope = app;
   const globalData = app.globalData;
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -2175,17 +2253,17 @@ function createSubpackageApp (vm) {
   });
   if (isFn(appOptions.onShow) && swan.onAppShow) {
     swan.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && swan.onAppHide) {
     swan.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
-    appOptions.onLaunch.call(app, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

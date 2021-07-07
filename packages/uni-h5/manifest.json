@@ -466,6 +466,19 @@
             ]
         ]
     ],
+    "setClipboardData": [
+        "/platforms/h5/service/api/device/clipboard.js",
+        [
+            [
+                "/core/helpers/protocol/device/set-clipboard-data.js",
+                "setClipboardData"
+            ]
+        ]
+    ],
+    "getClipboardData": [
+        "/platforms/h5/service/api/device/clipboard.js",
+        []
+    ],
     "vibrateLong": [
         "/platforms/h5/service/api/device/vibrate.js",
         []

@@ -479,6 +479,7 @@ udb为unicloud-db组件的ref属性值
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
 |action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
+|showToast|boolean|true|是否显示更新成功后的提示框|
 |toastTitle|string|新增成功|新增成功后的toast提示|
 |needLoading|boolean|true|是否显示Loading，HBuilderX 3.1.5+|
 |loadingTitle|string|''|显示loading的标题，HBuilderX 3.1.5+|
@@ -541,6 +542,7 @@ udb为unicloud-db组件的ref属性值
 |属性|类型|默认值|描述|
 |:-|:-|:-|:-|
 |action|string||云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理，详情。HBuilder 3.1.0+|
+|showToast|boolean|true|是否显示更新成功后的提示框|
 |toastTitle|string|修改成功|修改成功后的toast提示|
 |needConfirm|boolean|true|控制是否有弹出框，HBuilderX 3.1.5+|
 |needLoading|boolean|true|是否显示Loading，HBuilderX 3.1.5+|

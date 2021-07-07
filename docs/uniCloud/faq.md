@@ -8,6 +8,7 @@
 - 跨平台。不管你在uniCloud里选择了阿里还是腾讯的serverless，均可以跨uni-app的全端使用。从pc到h5，从Android到iOS，以及各家小程序快应用，十几个平台全端支持
 - uniCloud提供了`clientDB`神器，减少90%的服务器开发工作量，且保障数据安全。[详见](/uniCloud/database)
 - uniCloud提供了[uni-id](/uniCloud/uni-id)、[uniPay](/uniCloud/unipay)等重要框架，大幅减少开发者的相应功能开发量。
+- uniCloud提供了[uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)，客户端开发工作量大幅减少。
 - uniCloud提供了[uniCloud admin](/uniCloud/admin)，管理端开发工作量大幅减少。
 - uniCloud提供了[schema2code](/uniCloud/schema?id=autocode)，只需编制数据库schema文件，用户端和管理端的数据列表、分页、搜索、详情查看、修改、删除，全套代码均能自动生成。
 - 更易学。uniCloud提供了`JQL`查询语言，比SQL和MongoDB的查询语法更简单易掌握，尤其是联表查询非常简单。[详见](https://uniapp.dcloud.io/uniCloud/database?id=jsquery)
@@ -281,7 +282,7 @@ exports.main = async function(event){
 
 开发期间经常需要多人共用同一个服务空间，此时可以在[DCloud开发者中心](https://dev.dcloud.net.cn/)将特定应用及其关联的服务空间共享给协作者，详细步骤如下
 
-1. 在开发者中心`我创建的应用`列表页面选择特定的应用
+1. 在开发者中心`我创建的应用`列表页面选择特定的应用，如果应用过多可以使用AppId进行查找
 
   ![我创建的应用](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/865a0df3-3169-48df-8b4c-8acacf1a621f.jpg)
   
@@ -295,6 +296,8 @@ exports.main = async function(event){
   ![设置授权服务空间](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/b3c234a7-e514-4b14-b33d-e7322130bd7d.jpg)
 
 5. 点击第4步弹出界面的`保存按钮`以及第3步的`保存权限设置`按钮
+
+6. 协作者如需在uni-app项目关联此服务空间，需要在项目的`manifest.json`内配置上共享的应用的AppId（需要在源码视图编辑manifest.json）
 
 ### 如何使用promise/async/await@promise
 

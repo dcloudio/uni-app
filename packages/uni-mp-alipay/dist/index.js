@@ -1,5 +1,55 @@
 import Vue from 'vue';
 
+function b64DecodeUnicode (str) {
+  return decodeURIComponent(atob(str).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+}
+
+function getCurrentUserInfo () {
+  const token = ( my).getStorageSync('uni_id_token') || '';
+  const tokenArr = token.split('.');
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    }
+  }
+  let userInfo;
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+  }
+  userInfo.tokenExpired = userInfo.exp * 1000;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo
+}
+
+function uniIdMixin (Vue) {
+  Vue.prototype.uniIDHasRole = function (roleId) {
+    const {
+      role
+    } = getCurrentUserInfo();
+    return role.indexOf(roleId) > -1
+  };
+  Vue.prototype.uniIDHasPermission = function (permissionId) {
+    const {
+      permission
+    } = getCurrentUserInfo();
+    return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+  };
+  Vue.prototype.uniIDTokenValid = function () {
+    const {
+      tokenExpired
+    } = getCurrentUserInfo();
+    return tokenExpired > Date.now()
+  };
+}
+
 const _toString = Object.prototype.toString;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -930,6 +980,23 @@ const protocols = { // 需要做转换的 API 列表
       };
     }
   },
+  getUserProfile: {
+    name: my.canIUse('getOpenUserInfo') ? 'getOpenUserInfo' : 'getAuthUserInfo',
+    returnValue (result) {
+      if (my.canIUse('getOpenUserInfo')) {
+        let response = {};
+        try {
+          response = JSON.parse(result.response).response;
+        } catch (e) {}
+        result.nickName = response.nickName;
+        result.avatar = response.avatar;
+      }
+      result.userInfo = {
+        nickName: result.nickName,
+        avatarUrl: result.avatar
+      };
+    }
+  },
   requestPayment: {
     name: 'tradePay',
     args: {
@@ -1569,6 +1636,11 @@ function initProperties (props, isBehavior = false, file = '') {
       type: Object,
       value: null
     };
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
+      type: String,
+      value: ''
+    };
     properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
       type: null,
       value: [],
@@ -1951,11 +2023,14 @@ function initScopedSlotsParams () {
   };
 
   Vue.prototype.$setScopedSlotsParams = function (name, value) {
-    const vueId = this.$options.propsData.vueId;
-    const object = center[vueId] = center[vueId] || {};
-    object[name] = value;
-    if (parents[vueId]) {
-      parents[vueId].$forceUpdate();
+    const vueIds = this.$options.propsData.vueId;
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0];
+      const object = center[vueId] = center[vueId] || {};
+      object[name] = value;
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate();
+      }
     }
   };
 
@@ -1982,6 +2057,7 @@ function parseBaseApp (vm, {
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store;
   }
+  uniIdMixin(Vue);
 
   Vue.prototype.mpHost = "mp-alipay";
 
@@ -2650,6 +2726,7 @@ function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   });
+  vm.$scope = app;
   const globalData = app.globalData;
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -2665,17 +2742,17 @@ function createSubpackageApp (vm) {
   });
   if (isFn(appOptions.onShow) && my.onAppShow) {
     my.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && my.onAppHide) {
     my.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-    appOptions.onLaunch.call(app, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

@@ -94,7 +94,7 @@ properties里的字段列表，每个字段都有很多可以设置的属性，�
 |title|string|标题，开发者维护时自用。如果不填label属性，将在生成前端表单代码时，默认用于表单项前面的label|
 |description|string|描述，开发者维护时自用。在生成前端表单代码时，如果字段未设置componentForEdit，且字段被渲染为input，那么input的placehold将默认为本描述|
 |required|array|是否必填。支持填写必填的下级字段名称。required可以在表级的描述出现，约定该表有哪些字段必填。也可以在某个字段中出现，如果该字段是一个json，可以对这个json中的哪些字段必填进行描述。详见下方示例|
-|enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。|
+|enum|Array|字段值枚举范围，数组中至少要有一个元素，且数组内的每一个元素都是唯一的。**enum最多只可以枚举500条**|
 |enumType|String|字段值枚举类型，可选值tree。设为tree时，代表enum里的数据为树形结构。此时schema2code可生成多级级联选择组件|
 |arrayType|String|数组项类型，bsonType="array" 时有效，HBuilderX 3.1.0+ 支持，具体见下表arrayType可用类型|
 |fileMediaType|String|文件类型，可选值 all&#124;image&#124;video 默认值为all,表示所有文件，image表示图片类型文件，video表示视频类型文件  HBuilderX 3.1.0+|
@@ -313,7 +313,7 @@ arrayType为file时，与单独的bsonType为file相同，`<uni-file-picker>`组
 
 #### enum属性@enum
 
-enum，即枚举。一个字段设定了enum后，该字段的合法内容，只能在enum设定的数据项中取值。
+enum，即枚举。一个字段设定了enum后，该字段的合法内容，只能在enum设定的数据项中取值，**enum最多只可以枚举500条**。
 
 enum支持3种数据格式：
 1. 简单数组

@@ -225,6 +225,7 @@ var serviceContext = (function () {
     'login',
     'checkSession',
     'getUserInfo',
+    'getUserProfile',
     'preLogin',
     'closeAuthView',
     'share',
@@ -252,7 +253,8 @@ var serviceContext = (function () {
   const ad = [
     'createRewardedVideoAd',
     'createFullScreenVideoAd',
-    'createInterstitialAd'
+    'createInterstitialAd',
+    'createInteractiveAd'
   ];
 
   const apis = [
@@ -285,6 +287,56 @@ var serviceContext = (function () {
     })); // https://github.com/facebook/flow/issues/285
     window.addEventListener('test-passive', null, opts);
   } catch (e) {}
+
+  function b64DecodeUnicode (str) {
+    return decodeURIComponent(atob(str).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+  }
+
+  function getCurrentUserInfo () {
+    const token = ( uni ).getStorageSync('uni_id_token') || '';
+    const tokenArr = token.split('.');
+    if (!token || tokenArr.length !== 3) {
+      return {
+        uid: null,
+        role: [],
+        permission: [],
+        tokenExpired: 0
+      }
+    }
+    let userInfo;
+    try {
+      userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+    } catch (error) {
+      throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message)
+    }
+    userInfo.tokenExpired = userInfo.exp * 1000;
+    delete userInfo.exp;
+    delete userInfo.iat;
+    return userInfo
+  }
+
+  function uniIdMixin (Vue) {
+    Vue.prototype.uniIDHasRole = function (roleId) {
+      const {
+        role
+      } = getCurrentUserInfo();
+      return role.indexOf(roleId) > -1
+    };
+    Vue.prototype.uniIDHasPermission = function (permissionId) {
+      const {
+        permission
+      } = getCurrentUserInfo();
+      return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1
+    };
+    Vue.prototype.uniIDTokenValid = function () {
+      const {
+        tokenExpired
+      } = getCurrentUserInfo();
+      return tokenExpired > Date.now()
+    };
+  }
 
   const _toString = Object.prototype.toString;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -1630,10 +1682,13 @@ var serviceContext = (function () {
   function getRealPath (filePath) {
     if (filePath.indexOf('/') === 0) {
       if (filePath.indexOf('//') === 0) {
-        filePath = 'https:' + filePath;
-      } else {
-        return addBase(filePath.substr(1))
+        return 'https:' + filePath
       }
+      // 平台绝对路径 安卓、iOS
+      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+        return 'file://' + filePath
+      }
+      return addBase(filePath.substr(1))
     }
     // 网络资源或base64
     if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
@@ -2735,7 +2790,7 @@ var serviceContext = (function () {
     icon: {
       default: 'success',
       validator (icon, params) {
-        if (['success', 'loading', 'none'].indexOf(icon) === -1) {
+        if (['success', 'loading', 'error', 'none'].indexOf(icon) === -1) {
           params.icon = 'success';
         }
       }
@@ -3851,7 +3906,7 @@ var serviceContext = (function () {
 
     // 无协议的情况补全 https
     if (filePath.indexOf('//') === 0) {
-      filePath = 'https:' + filePath;
+      return 'https:' + filePath
     }
 
     // 网络资源或base64
@@ -3866,6 +3921,10 @@ var serviceContext = (function () {
     const wwwPath = 'file://' + _handleLocalPath('_www');
     // 绝对路径转换为本地文件系统路径
     if (filePath.indexOf('/') === 0) {
+      // 平台绝对路径 安卓、iOS
+      if (filePath.startsWith('/storage/') || filePath.includes('/Containers/Data/Application/')) {
+        return 'file://' + filePath
+      }
       return wwwPath + filePath
     }
     // 相对资源
@@ -6412,6 +6471,7 @@ var serviceContext = (function () {
     geocode = false,
     altitude = false
   } = {}, callbackId) {
+    const errorCallback = warpPlusErrorCallback(callbackId, 'getLocation');
     plus.geolocation.getCurrentPosition(
       position => {
         getLocationSuccess(type, position, callbackId);
@@ -6422,10 +6482,7 @@ var serviceContext = (function () {
           getLocationSuccess(type, e, callbackId);
           return
         }
-
-        invoke$1(callbackId, {
-          errMsg: 'getLocation:fail ' + e.message
-        });
+        errorCallback(e);
       }, {
         geocode: geocode,
         enableHighAccuracy: altitude
@@ -6648,7 +6705,8 @@ var serviceContext = (function () {
   function chooseImage$1 ({
     count,
     sizeType,
-    sourceType
+    sourceType,
+    crop
   } = {}, callbackId) {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseImage', 'cancel');
 
@@ -6664,7 +6722,7 @@ var serviceContext = (function () {
           // 压缩阈值 0.5 兆
           const THRESHOLD = 1024 * 1024 * 0.5;
           // 判断是否需要压缩
-          if (sizeType.includes('compressed') && size > THRESHOLD) {
+          if (!crop && sizeType.includes('compressed') && size > THRESHOLD) {
             return compressImage$1(path).then(dstPath => {
               path = dstPath;
               return getFileInfo$2(path)
@@ -6692,7 +6750,8 @@ var serviceContext = (function () {
       camera.captureImage(path => successCallback([path]),
         errorCallback, {
           filename: TEMP_PATH + '/camera/',
-          resolution: 'high'
+          resolution: 'high',
+          crop
         });
     }
 
@@ -6702,7 +6761,8 @@ var serviceContext = (function () {
         multiple: true,
         system: false,
         filename: TEMP_PATH + '/gallery/',
-        permissionAlert: true
+        permissionAlert: true,
+        crop
       });
     }
 
@@ -6756,7 +6816,7 @@ var serviceContext = (function () {
         }, () => {
           resolve(tempFilePath);
         });
-      }) : Promise.resolve();
+      }) : Promise.resolve(tempFilePath);
       if (compressed) {
         plus.nativeUI.showWaiting();
       }
@@ -6777,7 +6837,7 @@ var serviceContext = (function () {
             result.height = videoInfo.height;
             invoke$1(callbackId, result);
           },
-          errorCallback
+          fail: errorCallback
         });
       });
     }
@@ -6866,11 +6926,14 @@ var serviceContext = (function () {
     return options
   }, data => {
     return {
+      orientation: data.orientation,
+      type: data.type,
       duration: data.duration,
-      fps: data.fps || 30,
+      size: data.size,
       height: data.height,
       width: data.width,
-      size: data.size
+      fps: data.fps || 30,
+      bitrate: data.bitrate
     }
   });
 
@@ -7165,6 +7228,7 @@ var serviceContext = (function () {
     responseType,
     sslVerify = true,
     firstIpv4 = false,
+    tls,
     timeout = (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000
   } = {}) {
     const stream = requireNativePlugin('stream');
@@ -7218,7 +7282,8 @@ var serviceContext = (function () {
       timeout: timeout || 6e5,
       // 配置和weex模块内相反
       sslVerify: !sslVerify,
-      firstIpv4: firstIpv4
+      firstIpv4: firstIpv4,
+      tls
     };
     if (method !== 'GET') {
       options.body = typeof data === 'string' ? data : JSON.stringify(data);
@@ -7623,7 +7688,7 @@ var serviceContext = (function () {
             authResult: authResult,
             errMsg: 'login:ok'
           });
-        }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: params.univerifyStyle } || {});
+        }, errorCallback, provider === 'apple' ? { scope: 'email' } : { univerifyStyle: univerifyButtonsClickHandling(params.univerifyStyle, errorCallback) } || {});
       }
       // 先注销再登录
       // apple登录logout之后无法重新触发获取email,fullname；一键登录无logout
@@ -7691,6 +7756,12 @@ var serviceContext = (function () {
       });
     });
   }
+  /**
+   * 获取用户信息-兼容
+   */
+  function getUserProfile (params, callbackId) {
+    return getUserInfo(params, callbackId)
+  }
 
   /**
    * 获取用户信息
@@ -7714,7 +7785,31 @@ var serviceContext = (function () {
   }
 
   function closeAuthView () {
-    getService('univerify').then(service => service.closeAuthView());
+    return getService('univerify').then(service => service.closeAuthView())
+  }
+
+  /**
+   * 一键登录自定义登陆按钮点击处理
+   */
+  function univerifyButtonsClickHandling (univerifyStyle, errorCallback) {
+    if (univerifyStyle && isPlainObject(univerifyStyle) && univerifyStyle.buttons &&
+      Object.prototype.toString.call(univerifyStyle.buttons.list) === '[object Array]' &&
+      univerifyStyle.buttons.list.length > 0
+    ) {
+      univerifyStyle.buttons.list.forEach((button, index) => {
+        univerifyStyle.buttons.list[index].onclick = function () {
+          closeAuthView().then(() => {
+            errorCallback({
+              code: '30008',
+              message: '用户点击了自定义按钮',
+              index,
+              provider: button.provider
+            });
+          });
+        };
+      });
+    }
+    return univerifyStyle
   }
 
   function requestPayment (params, callbackId) {
@@ -9255,6 +9350,7 @@ var serviceContext = (function () {
     const entryRoute = '/' + entryPagePath;
     const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
     if (!routeOptions) {
+      console.error(`[uni-app] ${entryPagePath} not found...`);
       return
     }
 
@@ -10161,7 +10257,7 @@ var serviceContext = (function () {
       });
       toast = true;
     } else {
-      if (icon && !~['success', 'loading', 'none'].indexOf(icon)) {
+      if (icon && !~['success', 'loading', 'error', 'none'].indexOf(icon)) {
         icon = 'success';
       }
       const waitingOptions = {
@@ -10188,11 +10284,11 @@ var serviceContext = (function () {
           interval: duration
         };
       } else {
-        if (icon === 'success') {
+        if (['success', 'error'].indexOf(icon) !== -1) {
           waitingOptions.loading = {
             display: 'block',
             height: '55px',
-            icon: '__uniappsuccess.png',
+            icon: icon === 'success' ? '__uniappsuccess.png' : '__uniapperror.png',
             interval: duration
           };
         }
@@ -10778,7 +10874,6 @@ var serviceContext = (function () {
       ad.onLoad((e) => {
         this._isLoaded = true;
         this._isLoading = false;
-        this._dispatchEvent(eventTypes.load, {});
 
         if (this._loadPromiseResolve != null) {
           this._loadPromiseResolve();
@@ -10789,6 +10884,8 @@ var serviceContext = (function () {
           this._showPromiseResolve = null;
           this._showAd();
         }
+
+        this._dispatchEvent(eventTypes.load, {});
       });
       ad.onClose((e) => {
         this._isLoaded = false;
@@ -10811,17 +10908,17 @@ var serviceContext = (function () {
 
         this._dispatchEvent(eventTypes.error, data);
 
-        const promiseError = new Error(JSON.stringify(this._adError));
-        promiseError.code = e.code;
-        promiseError.errMsg = e.message;
+        const error = new Error(JSON.stringify(this._adError));
+        error.code = e.code;
+        error.errMsg = e.message;
 
         if (this._loadPromiseReject != null) {
-          this._loadPromiseReject(promiseError);
+          this._loadPromiseReject(error);
           this._loadPromiseReject = null;
         }
 
         if (this._showPromiseReject != null) {
-          this._showPromiseReject(promiseError);
+          this._showPromiseReject(error);
           this._showPromiseReject = null;
         }
       });
@@ -10906,12 +11003,261 @@ var serviceContext = (function () {
     constructor (options = {}) {
       super(plus.ad.createInterstitialAd(options), options);
 
-      this.load();
+      this._loadAd();
     }
   }
 
   function createInterstitialAd (options) {
     return new InterstitialAd(options)
+  }
+
+  const sdkCache = {};
+  const sdkQueue = {};
+
+  function initSDK (options) {
+    const provider = options.provider;
+    if (!sdkCache[provider]) {
+      sdkCache[provider] = {};
+    }
+    if (typeof sdkCache[provider].plugin === 'object') {
+      options.success(sdkCache[provider].plugin);
+      return
+    }
+
+    if (!sdkQueue[provider]) {
+      sdkQueue[provider] = [];
+    }
+    sdkQueue[provider].push(options);
+
+    if (sdkCache[provider].status === true) {
+      options.__plugin = sdkCache[provider].plugin;
+      return
+    }
+    sdkCache[provider].status = true;
+
+    const plugin = requireNativePlugin(provider);
+    if (!plugin || !plugin.initSDK) {
+      sdkQueue[provider].forEach((item) => {
+        item.fail({
+          code: -1,
+          message: 'provider [' + provider + '] invalid'
+        });
+      });
+      sdkQueue[provider].length = 0;
+      sdkCache[provider].status = false;
+      return
+    }
+
+    // TODO
+    sdkCache[provider].plugin = plugin;
+    options.__plugin = plugin;
+    plugin.initSDK((res) => {
+      const isSuccess = (res.code === 1 || res.code === '1');
+      if (isSuccess) {
+        sdkCache[provider].plugin = plugin;
+      } else {
+        sdkCache[provider].status = false;
+      }
+
+      sdkQueue[provider].forEach((item) => {
+        if (isSuccess) {
+          item.success(item.__plugin);
+        } else {
+          item.fail(res);
+        }
+      });
+      sdkQueue[provider].length = 0;
+    });
+  }
+
+  class InteractiveAd {
+    constructor (options) {
+      const _callbacks = this._callbacks = {};
+      eventNames$1.forEach(item => {
+        _callbacks[item] = [];
+        const name = item[0].toUpperCase() + item.substr(1);
+        this[`on${name}`] = function (callback) {
+          _callbacks[item].push(callback);
+        };
+      });
+
+      this._ad = null;
+      this._adError = '';
+      this._adpid = options.adpid;
+      this._provider = options.provider;
+      this._userData = options.userData;
+      this._isLoaded = false;
+      this._isLoading = false;
+      this._loadPromiseResolve = null;
+      this._loadPromiseReject = null;
+      this._showPromiseResolve = null;
+      this._showPromiseReject = null;
+
+      setTimeout(() => {
+        this._init();
+      });
+    }
+
+    _init () {
+      this._adError = '';
+      initSDK({
+        provider: this._provider,
+        success: (res) => {
+          this._ad = res;
+          if (this._userData) {
+            this.bindUserData(this._userData);
+          }
+          this._loadAd();
+        },
+        fail: (err) => {
+          this._adError = err;
+          this._dispatchEvent(eventTypes.error, err);
+        }
+      });
+    }
+
+    getProvider () {
+      return this._provider
+    }
+
+    load () {
+      return new Promise((resolve, reject) => {
+        this._loadPromiseResolve = resolve;
+        this._loadPromiseReject = reject;
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._adError) {
+          this._init();
+          return
+        }
+
+        if (this._isLoaded) {
+          resolve();
+        } else {
+          this._loadAd();
+        }
+      })
+    }
+
+    show () {
+      return new Promise((resolve, reject) => {
+        this._showPromiseResolve = resolve;
+        this._showPromiseReject = reject;
+
+        if (this._isLoading) {
+          return
+        }
+
+        if (this._adError) {
+          this._init();
+          return
+        }
+
+        if (this._isLoaded) {
+          this._showAd();
+          resolve();
+        } else {
+          this._loadAd();
+        }
+      })
+    }
+
+    destroy () {
+      if (this._ad !== null && this._ad.destroy) {
+        this._ad.destroy({
+          adpid: this._adpid
+        });
+      }
+    }
+
+    bindUserData (data) {
+      if (this._ad !== null) {
+        this._ad.bindUserData(data);
+      }
+    }
+
+    _loadAd () {
+      if (this._ad !== null) {
+        if (this._isLoading === true) {
+          return
+        }
+        this._isLoading = true;
+
+        this._ad.loadData({
+          adpid: this._adpid
+        }, (res) => {
+          this._isLoaded = true;
+          this._isLoading = false;
+
+          if (this._loadPromiseResolve != null) {
+            this._loadPromiseResolve();
+            this._loadPromiseResolve = null;
+          }
+          if (this._showPromiseResolve != null) {
+            this._showPromiseResolve();
+            this._showPromiseResolve = null;
+            this._showAd();
+          }
+
+          this._dispatchEvent(eventTypes.load, res);
+        }, (err) => {
+          this._isLoading = false;
+
+          if (this._showPromiseReject != null) {
+            this._showPromiseReject(this._createError(err));
+            this._showPromiseReject = null;
+          }
+
+          this._dispatchEvent(eventTypes.error, err);
+        });
+      }
+    }
+
+    _showAd () {
+      if (this._ad !== null && this._isLoaded === true) {
+        this._ad.show({
+          adpid: this._adpid
+        }, (res) => {
+          this._isLoaded = false;
+        }, (err) => {
+          this._isLoaded = false;
+
+          if (this._showPromiseReject != null) {
+            this._showPromiseReject(this._createError(err));
+            this._showPromiseReject = null;
+          }
+
+          this._dispatchEvent(eventTypes.error, err);
+        });
+      }
+    }
+
+    _createError (err) {
+      const error = new Error(JSON.stringify(err));
+      error.code = err.code;
+      error.errMsg = err.message;
+      return error
+    }
+
+    _dispatchEvent (name, data) {
+      this._callbacks[name].forEach(callback => {
+        if (typeof callback === 'function') {
+          callback(data || {});
+        }
+      });
+    }
+  }
+
+  function createInteractiveAd (options) {
+    if (!options.provider) {
+      return new Error('provider invalid')
+    }
+    if (!options.adpid) {
+      return new Error('adpid invalid')
+    }
+    return new InteractiveAd(options)
   }
 
   var api = /*#__PURE__*/Object.freeze({
@@ -11020,6 +11366,7 @@ var serviceContext = (function () {
     getProvider: getProvider$1,
     login: login,
     getUserInfo: getUserInfo,
+    getUserProfile: getUserProfile,
     operateWXData: operateWXData,
     preLogin: preLogin$1,
     closeAuthView: closeAuthView,
@@ -11076,7 +11423,8 @@ var serviceContext = (function () {
     requestComponentInfo: requestComponentInfo$2,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
-    createInterstitialAd: createInterstitialAd
+    createInterstitialAd: createInterstitialAd,
+    createInteractiveAd: createInteractiveAd
   });
 
   var platformApi = Object.assign(Object.create(null), api, eventApis);
@@ -22095,6 +22443,8 @@ var serviceContext = (function () {
       initLifecycle(Vue);
 
       initPolyfill(Vue);
+
+      uniIdMixin(Vue);
 
       Vue.prototype.getOpenerEventChannel = function () {
         if (!this.$root.$scope.eventChannel) {
