@@ -8,6 +8,7 @@ import {
   onBeforeUnmount,
   onActivated,
   watch,
+  SetupContext,
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
@@ -107,6 +108,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'refresherrestore',
     'refresherpulling',
     'refresherabort',
+    'update:refresherTriggered',
   ],
   setup(props, { emit, slots }) {
     const rootRef: HTMLRef = ref(null)
@@ -127,7 +129,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       trigger,
       rootRef,
       main,
-      content
+      content,
+      emit as SetupContext['emit']
     )
 
     const mainStyle = computed(() => {
@@ -248,12 +251,18 @@ function useScrollViewLoader(
   trigger: CustomEventTrigger,
   rootRef: HTMLRef,
   main: HTMLRef,
-  content: HTMLRef
+  content: HTMLRef,
+  emit: SetupContext['emit']
 ) {
-  let _lastScrollTime = 0
-  let _innerSetScrollTop = false
-  let _innerSetScrollLeft = false
+  let _lastScrollTime: number = 0
+  let _innerSetScrollTop: boolean = false
+  let _innerSetScrollLeft: boolean = false
+  let beforeRefreshing: boolean = false
+  let toUpperNumber: number = 0 // 容器触顶时，此时鼠标Y轴位置
+  let triggerAbort: boolean = false
+
   let __transitionEnd = () => {}
+
   const upperThresholdNumber = computed(() => {
     let val = Number(props.upperThreshold)
     return isNaN(val) ? 50 : val
@@ -451,24 +460,29 @@ function useScrollViewLoader(
     switch (_state) {
       case 'refreshing':
         state.refresherHeight = props.refresherThreshold
-        trigger('refresherrefresh', {} as Event, {})
+        // 之前是刷新状态则不再触发刷新
+        if (!beforeRefreshing) {
+          beforeRefreshing = true
+          trigger('refresherrefresh', {} as Event, {})
+          emit('update:refresherTriggered', true)
+        }
         break
       case 'restore':
-        state.refresherHeight = 0
-        trigger('refresherrestore', {} as Event, {})
+      case 'refresherabort':
+        beforeRefreshing = false
+        state.refresherHeight = toUpperNumber = 0
+        if (_state === 'restore') {
+          triggerAbort = false
+          trigger('refresherrestore', {} as Event, {})
+        }
+        if (_state === 'refresherabort' && triggerAbort) {
+          triggerAbort = false
+          trigger('refresherabort', {} as Event, {})
+        }
         break
     }
     state.refreshState = _state
   }
-  /* function getScrollPosition() {
-    const _main = main.value!
-    return {
-      scrollLeft: _main.scrollLeft,
-      scrollTop: _main.scrollTop,
-      scrollHeight: _main.scrollHeight,
-      scrollWidth: _main.scrollWidth,
-    }
-  } */
 
   onMounted(() => {
     _scrollTopChanged(scrollTopNumber.value)
@@ -488,9 +502,6 @@ function useScrollViewLoader(
       y: 0,
     }
     let needStop: boolean = false
-    let toUpperNumber: number = 0 // 容器触顶时，此时鼠标Y轴位置
-    let triggerAbort: boolean = false
-    let beforeRefreshing: boolean = false
 
     let __handleTouchMove = function (event: TouchEvent) {
       let x = event.touches[0].pageX
@@ -593,20 +604,9 @@ function useScrollViewLoader(
         disable: false,
       })
       if (state.refresherHeight >= props.refresherThreshold) {
-        state.refresherHeight = props.refresherThreshold
-        state.refreshState = 'refreshing'
-        // 之前是刷新状态则不再触发刷新
-        if (beforeRefreshing) return
-        beforeRefreshing = true
         _setRefreshState('refreshing')
       } else {
-        beforeRefreshing = false
-        state.refreshState = 'refresherabort'
-        state.refresherHeight = toUpperNumber = 0
-        if (triggerAbort) {
-          triggerAbort = false
-          trigger('refresherabort', event, {})
-        }
+        _setRefreshState('refresherabort')
       }
     }
     main.value!.addEventListener(

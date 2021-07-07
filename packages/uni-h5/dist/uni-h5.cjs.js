@@ -5290,6 +5290,8 @@ function useScrollViewState(props2) {
   };
 }
 function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
+  let beforeRefreshing = false;
+  let triggerAbort = false;
   let __transitionEnd = () => {
   };
   vue.computed(() => {
@@ -5404,11 +5406,23 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     switch (_state) {
       case "refreshing":
         state.refresherHeight = props2.refresherThreshold;
-        trigger("refresherrefresh", {}, {});
+        if (!beforeRefreshing) {
+          beforeRefreshing = true;
+          trigger("refresherrefresh", {}, {});
+        }
         break;
       case "restore":
+      case "refresherabort":
+        beforeRefreshing = false;
         state.refresherHeight = 0;
-        trigger("refresherrestore", {}, {});
+        if (_state === "restore") {
+          triggerAbort = false;
+          trigger("refresherrestore", {}, {});
+        }
+        if (_state === "refresherabort" && triggerAbort) {
+          triggerAbort = false;
+          trigger("refresherabort", {}, {});
+        }
         break;
     }
     state.refreshState = _state;
