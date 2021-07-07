@@ -12,6 +12,7 @@ export default function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   })
+  vm.$scope = app
   const globalData = app.globalData
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -27,17 +28,17 @@ export default function createSubpackageApp (vm) {
   })
   if (isFn(appOptions.onShow) && __GLOBAL__.onAppShow) {
     __GLOBAL__.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args)
+      vm.__call_hook('onShow', args)
     })
   }
   if (isFn(appOptions.onHide) && __GLOBAL__.onAppHide) {
     __GLOBAL__.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args)
+      vm.__call_hook('onHide', args)
     })
   }
   if (isFn(appOptions.onLaunch)) {
     const args = __GLOBAL__.getLaunchOptionsSync && __GLOBAL__.getLaunchOptionsSync()
-    appOptions.onLaunch.call(app, args)
+    vm.__call_hook('onLaunch', args)
   }
   return vm
 }

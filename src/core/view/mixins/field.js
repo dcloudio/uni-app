@@ -148,7 +148,9 @@ export default {
       this._field = el
       startTime = startTime || Date.now()
       if (this.needFocus) {
-        this._focus()
+        setTimeout(() => {
+          this._focus()
+        })
       }
     },
     _focus () {

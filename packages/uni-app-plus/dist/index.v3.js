@@ -9350,6 +9350,7 @@ var serviceContext = (function () {
     const entryRoute = '/' + entryPagePath;
     const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
     if (!routeOptions) {
+      console.error(`[uni-app] ${entryPagePath} not found...`);
       return
     }
 

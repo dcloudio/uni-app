@@ -286,12 +286,25 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     }
 
+    try {
+      if (process.env.UNI_HBUILDERX_PLUGINS) {
+        require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))
+        const {
+          W
+        } = require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+        plugins.push(new W({
+          dir: process.env.UNI_INPUT_DIR
+        }))
+      }
+    } catch (e) {}
+
     return merge({
       devtool: false,
       resolve: {
         alias: {
           '@': path.resolve(process.env.UNI_INPUT_DIR),
-          './@': path.resolve(process.env.UNI_INPUT_DIR), // css中的'@/static/logo.png'会被转换成'./@/static/logo.png'加载
+          './@': path.resolve(process.env
+            .UNI_INPUT_DIR), // css中的'@/static/logo.png'会被转换成'./@/static/logo.png'加载
           vue$: getPlatformVue(vueOptions),
           'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
           '@dcloudio/uni-stat': require.resolve('@dcloudio/uni-stat'),

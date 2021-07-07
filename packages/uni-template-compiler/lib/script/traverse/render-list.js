@@ -135,7 +135,8 @@ module.exports = function traverseRenderList (path, state) {
     forIndex,
     forExtra: getForExtra(forItem, forIndex, path, state),
     propertyArray: [],
-    declarationArray: []
+    declarationArray: [],
+    renderSlotStatementArray: []
   }
 
   const forState = {
@@ -149,13 +150,14 @@ module.exports = function traverseRenderList (path, state) {
     propertyArray: [],
     declarationArray: [],
     computedProperty: {},
-    initExpressionStatementArray: state.initExpressionStatementArray
+    initExpressionStatementArray: state.initExpressionStatementArray,
+    renderSlotStatementArray: state.renderSlotStatementArray
   }
 
   functionExpression.traverse(require('./visitor'), forState)
 
   const forPath = path.get('arguments.0')
-  if (forStateScoped.propertyArray.length) {
+  if (forStateScoped.propertyArray.length || forStateScoped.renderSlotStatementArray.length) {
     // for => map
     forPath.replaceWith(
       getMemberExpr(
@@ -165,9 +167,11 @@ module.exports = function traverseRenderList (path, state) {
           forPath.node,
           forStateScoped.propertyArray,
           forStateScoped.declarationArray,
+          forStateScoped.renderSlotStatementArray,
           [], // eventPropertyArray
           forItem,
-          forIndex
+          forIndex,
+          state
         ),
         forState
       )

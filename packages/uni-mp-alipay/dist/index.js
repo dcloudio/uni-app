@@ -2023,11 +2023,14 @@ function initScopedSlotsParams () {
   };
 
   Vue.prototype.$setScopedSlotsParams = function (name, value) {
-    const vueId = this.$options.propsData.vueId;
-    const object = center[vueId] = center[vueId] || {};
-    object[name] = value;
-    if (parents[vueId]) {
-      parents[vueId].$forceUpdate();
+    const vueIds = this.$options.propsData.vueId;
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0];
+      const object = center[vueId] = center[vueId] || {};
+      object[name] = value;
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate();
+      }
     }
   };
 
@@ -2723,6 +2726,7 @@ function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   });
+  vm.$scope = app;
   const globalData = app.globalData;
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -2738,17 +2742,17 @@ function createSubpackageApp (vm) {
   });
   if (isFn(appOptions.onShow) && my.onAppShow) {
     my.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && my.onAppHide) {
     my.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = my.getLaunchOptionsSync && my.getLaunchOptionsSync();
-    appOptions.onLaunch.call(app, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

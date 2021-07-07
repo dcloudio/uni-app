@@ -24,7 +24,8 @@ const {
 
 const {
   getInItIfStatement,
-  getDataExpressionStatement
+  getDataExpressionStatement,
+  getRenderSlotStatement
 } = require('./statements')
 
 const visitor = require('./visitor')
@@ -114,22 +115,7 @@ module.exports = function traverse (ast, state) {
   }
 
   if (renderSlotStatementArray.length) {
-    if (state.options.scopedSlotsCompiler === 'auto') {
-      const node = t.ifStatement(
-        t.binaryExpression('===',
-          t.memberExpression(t.memberExpression(t.identifier('$scope'), t.identifier(state.options.platform.name === 'mp-alipay' ? 'props' : 'data')), t.identifier('scopedSlotsCompiler')), t.stringLiteral('augmented')
-        ),
-        t.blockStatement([
-          t.variableDeclaration('const', [t.variableDeclarator(t.identifier('$root'),
-            t.memberExpression(t.memberExpression(t.identifier('$mp'), t.identifier('data')), t.identifier('$root'))
-          )]),
-          ...renderSlotStatementArray
-        ])
-      )
-      blockStatementBody.push(node)
-    } else {
-      blockStatementBody.push(...renderSlotStatementArray)
-    }
+    blockStatementBody.push(getRenderSlotStatement(state, renderSlotStatementArray))
   }
 
   reIdentifier(identifierArray)

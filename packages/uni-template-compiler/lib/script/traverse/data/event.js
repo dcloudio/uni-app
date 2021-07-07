@@ -520,8 +520,7 @@ module.exports = function processEvent (paths, path, state, isComponent, tagName
     ret.push(
       t.objectProperty(
         t.stringLiteral(ATTR_DATA_EVENT_PARAMS),
-        // 直接使用对象格式微信小程序编译会报错
-        t.stringLiteral(`{{({${params.join(',')}})}}`)
+        t.objectExpression(params.map(param => t.objectProperty(t.identifier(param), t.identifier(param), false, true)))
       )
     )
   }

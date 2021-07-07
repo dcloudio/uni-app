@@ -25,7 +25,6 @@
 |adjust-position|Boolean|true|键盘弹起时，是否自动上推页面|App-Android（vue 页面 softinputMode 为 adjustResize 时无效）、微信小程序、百度小程序、QQ小程序|
 |hold-keyboard|boolean|false|focus时，点击页面的时候不收起键盘|微信小程序2.8.2|
 |auto-blur|boolean|false|键盘收起时，是否自动失去焦点|App 3.0.0+|
-|verify-number|boolean|false|当设置`type="number"`时，是否对输入的字符执行`当前输入是否有效`判断|HBuilder 3.1.19+|
 |@input|EventHandle||当键盘输入时，触发input事件，event.detail = {value}|差异见下方 Tips|
 |@focus|EventHandle||输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度|仅微信小程序、App（2.2.3+） 、QQ小程序支持 height|
 |@blur|EventHandle||输入框失去焦点时触发，event.detail = {value: value}||
@@ -38,9 +37,6 @@
 - 如果遇到 value 属性设置不生效的问题参考：[组件属性设置不生效解决办法](/vue-api?id=_4-组件属性设置不生效解决办法)
 - `input` 组件上有默认的 `min-height` 样式，如果 `min-height` 的值大于 `height` 的值那么 `height` 样式无效。
 - H5 暂未支持动态切换，请使用 `v-if`进行整体切换。
-- `verify-number`：是否对输入的字符执行输入是否有效判断判断
-  - 为`false`时：不执行输入是否有效判断，输入时会响应`input`事件，此时`event.detail = {value,valid}`，属性`valid`用来表明当前输入是否有效。
-  - 为`true`时：执行输入是否有效判断， 输入非数字字符将不会被赋值，也不会响应`input`事件。例如：`-(负号)`就是非数字字符。输入负数时，需要输入数字后再移动光标到数字最前面输入`-(负号)`。
 
 ```html
         <!-- 错误写法 -->
@@ -58,9 +54,9 @@
 |值|说明|平台差异说明|
 |:-|:-|:-|
 |text|文本输入键盘||
-|number|数字输入键盘|均支持，app-vue下可以输入浮点数，app-nvue和小程序平台下只能输入整数。注意iOS上app-vue弹出的数字键盘并非9宫格方式|
+|number|数字输入键盘|均支持，App平台、H5平台 3.1.22 以下版本 vue 页面在 iOS 平台显示的键盘包含负数和小数。|
 |idcard|身份证输入键盘|微信、支付宝、百度、QQ小程序|
-|digit|带小数点的数字键盘|App的nvue页面、微信、支付宝、百度、头条、QQ小程序|
+|digit|带小数点的数字键盘|均支持，App平台、H5平台 vue 页面在 iOS 平台显示的键盘包含负数。|
 |tel|电话输入键盘|仅App的nvue页面支持|
 
 **注意事项**

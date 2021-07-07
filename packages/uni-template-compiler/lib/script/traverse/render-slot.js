@@ -15,7 +15,7 @@ module.exports = function getRenderSlot (path, state) {
       const newProperties = []
       propertiesPath.forEach(path => {
         const properties = path.get('key').isStringLiteral({ value: 'SLOT_DEFAULT' }) ? oldProperties : newProperties
-        properties.push(state.options.scopedSlotsCompiler === 'auto' ? path.node : t.cloneDeep(path.node))
+        properties.push(state.options.scopedSlotsCompiler === 'auto' ? path.node : t.cloneNode(path.node, true))
       })
       if (!newProperties.length) {
         return
@@ -29,7 +29,10 @@ module.exports = function getRenderSlot (path, state) {
     }
   }
   if (valueNode) {
-    state.renderSlotStatementArray.push(t.expressionStatement(t.callExpression(t.identifier('$setScopedSlotsParams'), [t.stringLiteral(name.node.value), valueNode])))
+    const scoped = state.scoped
+    // TODO 判断是否包含作用域内变量
+    const renderSlotStatementArray = scoped && scoped.length ? scoped[scoped.length - 1].renderSlotStatementArray : state.renderSlotStatementArray
+    renderSlotStatementArray.push(t.expressionStatement(t.callExpression(t.identifier('$setScopedSlotsParams'), [t.stringLiteral(name.node.value), valueNode])))
   }
   // TODO 组件嵌套
 }

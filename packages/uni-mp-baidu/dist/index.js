@@ -1710,11 +1710,14 @@ function initScopedSlotsParams () {
   };
 
   Vue.prototype.$setScopedSlotsParams = function (name, value) {
-    const vueId = this.$options.propsData.vueId;
-    const object = center[vueId] = center[vueId] || {};
-    object[name] = value;
-    if (parents[vueId]) {
-      parents[vueId].$forceUpdate();
+    const vueIds = this.$options.propsData.vueId;
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0];
+      const object = center[vueId] = center[vueId] || {};
+      object[name] = value;
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate();
+      }
     }
   };
 
@@ -2065,6 +2068,12 @@ function parseComponent (vueOptions) {
   const oldAttached = componentOptions.lifetimes.attached;
   // 百度小程序基础库 3.260 以上支持页面 onInit 生命周期，提前创建 vm 实例
   componentOptions.lifetimes.onInit = function onInit (query) {
+    // 百度小程序后续可能移除 pageinstance 属性，为向后兼容进行补充
+    if (!this.pageinstance || !this.pageinstance.setData) {
+      const pages = getCurrentPages();
+      this.pageinstance = pages[pages.length - 1];
+    }
+
     // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
     const setData = this.setData;
     const setDataArgs = [];
@@ -2228,6 +2237,7 @@ function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   });
+  vm.$scope = app;
   const globalData = app.globalData;
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -2243,17 +2253,17 @@ function createSubpackageApp (vm) {
   });
   if (isFn(appOptions.onShow) && swan.onAppShow) {
     swan.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && swan.onAppHide) {
     swan.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = swan.getLaunchOptionsSync && swan.getLaunchOptionsSync();
-    appOptions.onLaunch.call(app, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }

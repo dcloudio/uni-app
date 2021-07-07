@@ -1894,6 +1894,7 @@ function createSubpackageApp (vm) {
   const app = getApp({
     allowDefault: true
   });
+  vm.$scope = app;
   const globalData = app.globalData;
   if (globalData) {
     Object.keys(appOptions.globalData).forEach(name => {
@@ -1909,17 +1910,17 @@ function createSubpackageApp (vm) {
   });
   if (isFn(appOptions.onShow) && qa.onAppShow) {
     qa.onAppShow((...args) => {
-      appOptions.onShow.apply(app, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && qa.onAppHide) {
     qa.onAppHide((...args) => {
-      appOptions.onHide.apply(app, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
-    appOptions.onLaunch.call(app, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm
 }
