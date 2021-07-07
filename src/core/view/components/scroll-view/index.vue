@@ -196,7 +196,14 @@ export default {
   },
   mounted () {
     var self = this
+    var touchStart = null
+    var needStop = null
+
     this._attached = true
+    this.toUpperNumber = 0 // 容器触顶时，此时鼠标Y轴位置
+    this.triggerAbort = false
+    this.beforeRefreshing = false
+
     this._scrollTopChanged(this.scrollTopNumber)
     this._scrollLeftChanged(this.scrollLeftNumber)
     this._scrollIntoViewChanged(this.scrollIntoView)
@@ -205,11 +212,6 @@ export default {
       event.stopPropagation()
       self._handleScroll.bind(self, event)()
     }
-    var touchStart = null
-    var needStop = null
-    let toUpperNumber = 0 // 容器触顶时，此时鼠标Y轴位置
-    let triggerAbort = false
-    let beforeRefreshing = false
 
     this.__handleTouchMove = function (event) {
       var x = event.touches[0].pageX
@@ -258,14 +260,14 @@ export default {
 
       if (self.refresherEnabled && self.refreshState === 'pulling') {
         const dy = y - touchStart.y
-        if (toUpperNumber === 0) {
-          toUpperNumber = y
+        if (self.toUpperNumber === 0) {
+          self.toUpperNumber = y
         }
-        if (!beforeRefreshing) {
-          self.refresherHeight = y - toUpperNumber
+        if (!self.beforeRefreshing) {
+          self.refresherHeight = y - self.toUpperNumber
           // 之前为刷新状态则不再触发pulling
           if (self.refresherHeight > 0) {
-            triggerAbort = true
+            self.triggerAbort = true
             self.$trigger('refresherpulling', event, {
               deltaY: dy
             })
@@ -273,7 +275,7 @@ export default {
         } else {
           self.refresherHeight = dy + self.refresherThreshold
           // 如果之前在刷新状态，则不触发刷新中断
-          triggerAbort = false
+          self.triggerAbort = false
         }
 
         const route = self.refresherHeight / self.refresherThreshold
@@ -298,20 +300,9 @@ export default {
         disable: false
       })
       if (self.refresherHeight >= self.refresherThreshold) {
-        self.refresherHeight = self.refresherThreshold
-        self.refreshState = 'refreshing'
-        // 之前是刷新状态则不再触发刷新
-        if (beforeRefreshing) return
-        beforeRefreshing = true
         self._setRefreshState('refreshing')
       } else {
-        beforeRefreshing = false
-        self.refreshState = 'refresherabort'
-        self.refresherHeight = toUpperNumber = 0
-        if (triggerAbort) {
-          triggerAbort = false
-          self.$trigger('refresherabort', event, {})
-        }
+        self._setRefreshState('refresherabort')
       }
     }
     this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions)
@@ -521,11 +512,25 @@ export default {
       switch (state) {
         case 'refreshing':
           this.refresherHeight = this.refresherThreshold
-          this.$trigger('refresherrefresh', event, {})
+          // 之前是刷新状态则不再触发刷新
+          if (!this.beforeRefreshing) {
+            this.beforeRefreshing = true
+            this.$trigger('refresherrefresh', {}, {})
+            this.$emit('update:refresherTriggered', true)
+          }
           break
         case 'restore':
-          this.refresherHeight = 0
-          this.$trigger('refresherrestore', {}, {})
+        case 'refresherabort':
+          this.beforeRefreshing = false
+          this.refresherHeight = this.toUpperNumber = 0
+          if (state === 'restore') {
+            this.triggerAbort = false
+            this.$trigger('refresherrestore', {}, {})
+          }
+          if (state === 'refresherabort' && this.triggerAbort) {
+            this.triggerAbort = false
+            this.$trigger('refresherabort', {}, {})
+          }
           break
       }
       this.refreshState = state
