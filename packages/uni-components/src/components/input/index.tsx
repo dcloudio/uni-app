@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, hyphenate } from '@vue/shared'
 import { Ref, ref, computed } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
@@ -12,6 +12,10 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     type: String,
     default: 'input-placeholder',
   },
+  textContentType: {
+    type: String,
+    default: '',
+  },
 })
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -19,7 +23,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   emits: ['confirm', ...fieldEmit],
   setup(props, { emit }) {
-    const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password']
+    const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
+    const AUTOCOMPLETES = ['off', 'one-time-code']
     const type = computed(() => {
       let type = ''
       switch (props.type) {
@@ -40,6 +45,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           break
       }
       return props.password ? 'password' : type
+    })
+    const autocomplete = computed(() => {
+      const camelizeIndex = AUTOCOMPLETES.indexOf(props.textContentType)
+      const kebabCaseIndex = AUTOCOMPLETES.indexOf(
+        hyphenate(props.textContentType)
+      )
+      const index =
+        camelizeIndex !== -1
+          ? camelizeIndex
+          : kebabCaseIndex !== -1
+          ? kebabCaseIndex
+          : 0
+      return AUTOCOMPLETES[index]
     })
 
     let cache = ref('')
@@ -132,7 +150,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             enterkeyhint={props.confirmType}
             pattern={props.type === 'number' ? '[0-9]*' : undefined}
             class="uni-input-input"
-            autocomplete="off"
+            autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
           />
         )
