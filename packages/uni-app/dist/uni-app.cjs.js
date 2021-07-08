@@ -31,10 +31,15 @@ const OPTIONS = [
     'OncePassive',
     'Passive',
 ];
-/*#__PURE__*/ shared.extend({
+const BASE_ATTR_MAP = {
     class: '.c',
     style: '.s',
-}, Object.keys(EVENT_MAP).reduce((res, name) => {
+    'hover-class': '.h0',
+    'hover-stop-propagation': '.h1',
+    'hover-start-time': '.h2',
+    'hover-stay-time': '.h3',
+};
+/*#__PURE__*/ shared.extend(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
     const value = EVENT_MAP[name];
     res[name] = value;
     OPTIONS.forEach((v, i) => {

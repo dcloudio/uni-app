@@ -1,5 +1,5 @@
-import { UniElement } from './UniElement'
-export class UniViewElement extends UniElement {
+import { UniHoverElement } from './UniHoverElement'
+export class UniViewElement extends UniHoverElement {
   constructor(id: number) {
     super(id, 'uni-view')
   }

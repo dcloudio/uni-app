@@ -891,10 +891,15 @@
     "OncePassive",
     "Passive"
   ];
-  const ATTR_MAP = /* @__PURE__ */ extend({
+  const BASE_ATTR_MAP = {
     class: ".c",
-    style: ".s"
-  }, Object.keys(EVENT_MAP).reduce((res, name) => {
+    style: ".s",
+    "hover-class": ".h0",
+    "hover-stop-propagation": ".h1",
+    "hover-start-time": ".h2",
+    "hover-stay-time": ".h3"
+  };
+  const ATTR_MAP = /* @__PURE__ */ extend(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
     const value = EVENT_MAP[name];
     res[name] = value;
     OPTIONS.forEach((v, i) => {
@@ -1918,7 +1923,7 @@
       return ret;
     }
   };
-  function patchClass(el, value, isSVG) {
+  function patchClass$1(el, value, isSVG) {
     if (value == null) {
       value = "";
     }
@@ -1932,7 +1937,7 @@
       el.className = value;
     }
   }
-  function patchStyle(el, prev, next) {
+  function patchStyle$1(el, prev, next) {
     const style = el.style;
     if (!next) {
       el.removeAttribute("style");
@@ -1946,50 +1951,50 @@
       }
     } else {
       for (const key in next) {
-        setStyle(style, key, next[key]);
+        setStyle$1(style, key, next[key]);
       }
       if (prev && !isString(prev)) {
         for (const key in prev) {
           if (next[key] == null) {
-            setStyle(style, key, "");
+            setStyle$1(style, key, "");
           }
         }
       }
     }
   }
-  const importantRE = /\s*!important$/;
-  function setStyle(style, name, val) {
+  const importantRE$1 = /\s*!important$/;
+  function setStyle$1(style, name, val) {
     if (isArray(val)) {
-      val.forEach((v) => setStyle(style, name, v));
+      val.forEach((v) => setStyle$1(style, name, v));
     } else {
       if (name.startsWith("--")) {
         style.setProperty(name, val);
       } else {
-        const prefixed = autoPrefix(style, name);
-        if (importantRE.test(val)) {
-          style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
+        const prefixed = autoPrefix$1(style, name);
+        if (importantRE$1.test(val)) {
+          style.setProperty(hyphenate(prefixed), val.replace(importantRE$1, ""), "important");
         } else {
           style[prefixed] = val;
         }
       }
     }
   }
-  const prefixes = ["Webkit", "Moz", "ms"];
-  const prefixCache = {};
-  function autoPrefix(style, rawName) {
-    const cached = prefixCache[rawName];
+  const prefixes$1 = ["Webkit", "Moz", "ms"];
+  const prefixCache$1 = {};
+  function autoPrefix$1(style, rawName) {
+    const cached = prefixCache$1[rawName];
     if (cached) {
       return cached;
     }
     let name = camelize(rawName);
     if (name !== "filter" && name in style) {
-      return prefixCache[rawName] = name;
+      return prefixCache$1[rawName] = name;
     }
     name = capitalize(name);
-    for (let i = 0; i < prefixes.length; i++) {
-      const prefixed = prefixes[i] + name;
+    for (let i = 0; i < prefixes$1.length; i++) {
+      const prefixed = prefixes$1[i] + name;
       if (prefixed in style) {
-        return prefixCache[rawName] = prefixed;
+        return prefixCache$1[rawName] = prefixed;
       }
     }
     return rawName;
@@ -2071,7 +2076,7 @@
   function removeEventListener(el, event, handler, options) {
     el.removeEventListener(event, handler, options);
   }
-  function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
+  function patchEvent$1(el, rawName, prevValue, nextValue, instance = null) {
     const invokers = el._vei || (el._vei = {});
     const existingInvoker = invokers[rawName];
     if (nextValue && existingInvoker) {
@@ -2128,15 +2133,15 @@
   const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, parentComponent, parentSuspense, unmountChildren) => {
     switch (key) {
       case "class":
-        patchClass(el, nextValue, isSVG);
+        patchClass$1(el, nextValue, isSVG);
         break;
       case "style":
-        patchStyle(el, prevValue, nextValue);
+        patchStyle$1(el, prevValue, nextValue);
         break;
       default:
         if (isOn(key)) {
           if (!isModelListener(key)) {
-            patchEvent(el, key, prevValue, nextValue, parentComponent);
+            patchEvent$1(el, key, prevValue, nextValue, parentComponent);
           }
         } else if (shouldSetAsProp(el, key, nextValue, isSVG)) {
           patchDOMProp(el, key, nextValue, prevChildren, parentComponent, parentSuspense, unmountChildren);
@@ -2618,60 +2623,84 @@
       $2.parentNode.removeChild($2);
     }
   }
-  class UniElement extends UniNode {
-    constructor(id, tag) {
-      super(id, tag);
-      this._listeners = {};
-      this.$ = document.createElement(tag);
+  class UniComment extends UniNode {
+    constructor(id) {
+      super(id, "#comment");
+      this.$ = document.createComment("");
     }
-    init(nodeJson) {
-      super.init(nodeJson);
-      if (hasOwn(nodeJson, "a")) {
-        this.setAttrs(nodeJson.a);
-      }
-    }
-    setAttrs(attrs2) {
-      Object.keys(attrs2).forEach((name) => {
-        this.setAttr(name, attrs2[name]);
-      });
-    }
-    setAttr(name, value) {
-      if (name === ".c") {
-        this.$.className = value;
-      } else if (name.indexOf(".e") === 0) {
-        this.addEvent(name, value);
+  }
+  function patchClass(el, clazz) {
+    el.className = clazz;
+  }
+  function patchStyle(el, value) {
+    const style = el.style;
+    if (isString(value)) {
+      if (value === "") {
+        el.removeAttribute("style");
       } else {
-        this.$.setAttribute(decodeAttr(name), value);
+        style.cssText = value;
+      }
+    } else {
+      for (const key in value) {
+        setStyle(style, key, value[key]);
       }
     }
-    removeAttr(name) {
-      if (name === ".c") {
-        this.$.className = "";
-      } else if (name.indexOf(".e") === 0) {
-        this.removeEvent(name);
+  }
+  const importantRE = /\s*!important$/;
+  function setStyle(style, name, val) {
+    if (isArray(val)) {
+      val.forEach((v) => setStyle(style, name, v));
+    } else {
+      if (name.startsWith("--")) {
+        style.setProperty(name, val);
       } else {
-        this.$.removeAttribute(decodeAttr(name));
+        const prefixed = autoPrefix(style, name);
+        if (importantRE.test(val)) {
+          style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
+        } else {
+          style[prefixed] = val;
+        }
       }
     }
-    addEvent(name, flag) {
-      const [type, options] = parseEventName(decodeAttr(name));
-      if (this._listeners[type]) {
+  }
+  const prefixes = ["Webkit"];
+  const prefixCache = {};
+  function autoPrefix(style, rawName) {
+    const cached = prefixCache[rawName];
+    if (cached) {
+      return cached;
+    }
+    let name = camelize(rawName);
+    if (name !== "filter" && name in style) {
+      return prefixCache[rawName] = name;
+    }
+    name = capitalize(name);
+    for (let i = 0; i < prefixes.length; i++) {
+      const prefixed = prefixes[i] + name;
+      if (prefixed in style) {
+        return prefixCache[rawName] = prefixed;
+      }
+    }
+    return rawName;
+  }
+  function patchEvent(el, name, flag) {
+    const [type, options] = parseEventName(decodeAttr(name));
+    if (flag === -1) {
+      const listener = el.__listeners[type];
+      if (listener) {
+        el.removeEventListener(type, listener);
+      } else {
+        console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] not found"));
+      }
+    } else {
+      if (el.__listeners[type]) {
         {
-          console.error(formatLog(`tag`, this.tag, this.id, "event[" + type + "] already registered"));
+          console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] already registered"));
         }
         return;
       }
-      this._listeners[type] = createInvoker(this.id, flag, options);
-      this.$.addEventListener(type, this._listeners[type], options);
-    }
-    removeEvent(name) {
-      const [type] = parseEventName(decodeAttr(name));
-      const listener = this._listeners[type];
-      if (listener) {
-        this.$.removeEventListener(type, listener);
-      } else {
-        console.error(formatLog(`tag`, this.tag, this.id, "event[" + type + "] not found"));
-      }
+      el.__listeners[type] = createInvoker(el.__id, flag, options);
+      el.addEventListener(type, el.__listeners[type], options);
     }
   }
   function createInvoker(id, flag, options) {
@@ -2698,19 +2727,181 @@
     }
     return modifiers;
   }
+  class UniElement extends UniNode {
+    constructor(id, tag) {
+      super(id, tag);
+      this.$ = document.createElement(tag);
+      this.$.__id = id;
+      this.$.__listeners = Object.create(null);
+    }
+    init(nodeJson) {
+      super.init(nodeJson);
+      if (hasOwn(nodeJson, "a")) {
+        this.setAttrs(nodeJson.a);
+      }
+    }
+    setAttrs(attrs2) {
+      Object.keys(attrs2).forEach((name) => {
+        this.setAttr(name, attrs2[name]);
+      });
+    }
+    setAttr(name, value) {
+      if (name === ".c") {
+        patchClass(this.$, value);
+      } else if (name === ".s") {
+        patchStyle(this.$, value);
+      } else if (name.indexOf(".e") === 0) {
+        patchEvent(this.$, name, value);
+      } else {
+        this.$.setAttribute(decodeAttr(name), value);
+      }
+    }
+    removeAttr(name) {
+      if (name === ".c") {
+        patchClass(this.$, "");
+      } else if (name === ".s") {
+        patchStyle(this.$, "");
+      } else if (name.indexOf(".e") === 0) {
+        patchEvent(this.$, name, -1);
+      } else {
+        this.$.removeAttribute(decodeAttr(name));
+      }
+    }
+  }
   class UniText extends UniNode {
     constructor(id) {
       super(id, "#text");
       this.$ = document.createTextNode("");
     }
   }
-  class UniViewElement extends UniElement {
+  function isHoverAttr(name) {
+    return name.indexOf(".h") === 0;
+  }
+  class UniHoverElement extends UniElement {
+    setAttr(name, value) {
+      if (!isHoverAttr(name)) {
+        return super.setAttr(name, value);
+      }
+      name = camelize(decodeAttr(name));
+      if (!this._hover) {
+        this._hover = new Hover(this.$);
+      }
+      const { _hover } = this;
+      _hover[name] = value;
+      if (name !== "hoverClass") {
+        return;
+      }
+      if (_hover.hoverClass && _hover.hoverClass !== "none") {
+        _hover.addEvent();
+      } else {
+        _hover.removeEvent();
+      }
+    }
+    removeAttr(name) {
+      if (!isHoverAttr(name)) {
+        return super.removeAttr(name);
+      }
+    }
+  }
+  class Hover {
+    constructor($2) {
+      this.hoverClass = "none";
+      this.hoverStopPropagation = false;
+      this.hoverStartTime = 50;
+      this.hoverStayTime = 400;
+      this._listening = false;
+      this._hovering = false;
+      this._hoverTouch = false;
+      this._hoverStartTimer = 0;
+      this._hoverStayTimer = 0;
+      this.$ = $2;
+      this.__hoverTouchStart = this._hoverTouchStart.bind(this);
+      this.__hoverTouchEnd = this._hoverTouchEnd.bind(this);
+      this.__hoverTouchCancel = this._hoverTouchCancel.bind(this);
+    }
+    get hovering() {
+      return this._hovering;
+    }
+    set hovering(hovering) {
+      this._hovering = hovering;
+      if (hovering) {
+        this.$.classList.add(this.hoverClass);
+      } else {
+        this.$.classList.remove(this.hoverClass);
+      }
+    }
+    addEvent() {
+      if (this._listening) {
+        return;
+      }
+      {
+        console.log(formatLog(this.$.tagName, "Hover", "addEventListener", this.hoverClass));
+      }
+      this._listening = true;
+      this.$.addEventListener("touchstart", this.__hoverTouchStart);
+      this.$.addEventListener("touchend", this.__hoverTouchEnd);
+      this.$.addEventListener("touchcancel", this.__hoverTouchCancel);
+    }
+    removeEvent() {
+      if (!this._listening) {
+        return;
+      }
+      {
+        console.log(formatLog(this.$.tagName, "Hover", "removeEventListener"));
+      }
+      this._listening = false;
+      this.$.removeEventListener("touchstart", this.__hoverTouchStart);
+      this.$.removeEventListener("touchend", this.__hoverTouchEnd);
+      this.$.removeEventListener("touchcancel", this.__hoverTouchCancel);
+    }
+    _hoverTouchStart(evt) {
+      if (evt._hoverPropagationStopped) {
+        return;
+      }
+      if (!this.hoverClass || this.hoverClass === "none" || this.$.disabled) {
+        return;
+      }
+      if (evt.touches.length > 1) {
+        return;
+      }
+      if (this.hoverStopPropagation) {
+        evt._hoverPropagationStopped = true;
+      }
+      this._hoverTouch = true;
+      this._hoverStartTimer = setTimeout(() => {
+        this.hovering = true;
+        if (!this._hoverTouch) {
+          this._hoverReset();
+        }
+      }, this.hoverStartTime);
+    }
+    _hoverTouchEnd() {
+      this._hoverTouch = false;
+      if (this.hovering) {
+        this._hoverReset();
+      }
+    }
+    _hoverReset() {
+      requestAnimationFrame(() => {
+        clearTimeout(this._hoverStayTimer);
+        this._hoverStayTimer = setTimeout(() => {
+          this.hovering = false;
+        }, this.hoverStayTime);
+      });
+    }
+    _hoverTouchCancel() {
+      this._hoverTouch = false;
+      this.hovering = false;
+      clearTimeout(this._hoverStartTimer);
+    }
+  }
+  class UniViewElement extends UniHoverElement {
     constructor(id) {
       super(id, "uni-view");
     }
   }
   const elements = new Map();
-  const UniBuiltInComponents = [, UniViewElement, , , UniText];
+  const UniBuiltInComponents = [, UniViewElement, , , UniText, UniComment];
   function createUniComponent(type, id) {
     return new UniBuiltInComponents[type](id);
   }

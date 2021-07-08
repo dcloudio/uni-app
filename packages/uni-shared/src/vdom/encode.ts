@@ -70,11 +70,17 @@ const OPTIONS = [
   'Passive',
 ]
 
+const BASE_ATTR_MAP = {
+  class: '.c',
+  style: '.s',
+  'hover-class': '.h0',
+  'hover-stop-propagation': '.h1',
+  'hover-start-time': '.h2',
+  'hover-stay-time': '.h3',
+}
+
 export const ATTR_MAP = /*#__PURE__*/ extend(
-  {
-    class: '.c',
-    style: '.s',
-  },
+  BASE_ATTR_MAP,
   Object.keys(EVENT_MAP).reduce((res, name) => {
     const value = EVENT_MAP[name as keyof typeof EVENT_MAP]
     res[name] = value

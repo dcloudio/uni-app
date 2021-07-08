@@ -12,9 +12,9 @@ export function normalizePath(id: string): string {
 export const resolveMainPathOnce = once((inputDir: string) => {
   const mainTsPath = path.resolve(inputDir, 'main.ts')
   if (fs.existsSync(mainTsPath)) {
-    return mainTsPath
+    return normalizePath(mainTsPath)
   }
-  return path.resolve(inputDir, 'main.js')
+  return normalizePath(path.resolve(inputDir, 'main.js'))
 })
 
 export function resolveBuiltIn(path: string) {

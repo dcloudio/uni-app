@@ -222,11 +222,9 @@ export declare class UniCommentNode extends UniNode {
     toJSON(opts?: {
         attr?: boolean;
     }): {
-        t: string;
         i?: undefined;
     } | {
         i: number;
-        t: string;
     };
 }
 

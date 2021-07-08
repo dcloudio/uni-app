@@ -1,11 +1,16 @@
 import { isString } from '@vue/shared'
+import { UniComment } from './UniComment'
 import { UniElement } from './UniElement'
 import { UniText } from './UniText'
 import { UniViewElement } from './UniViewElement'
 
+export interface UniCustomElement extends Element {
+  __id: number
+  __listeners: Record<string, (evt: Event) => void>
+}
 const elements = new Map<number, UniElement | UniText>()
 
-const UniBuiltInComponents = [, UniViewElement, , , UniText]
+const UniBuiltInComponents = [, UniViewElement, , , UniText, UniComment]
 
 function createUniComponent(type: number, id: number) {
   return new UniBuiltInComponents[type]!(id)

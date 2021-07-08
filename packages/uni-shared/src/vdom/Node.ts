@@ -295,9 +295,14 @@ export class UniBaseNode extends UniNode {
   }
 
   toJSON(opts: { attr?: boolean; children?: boolean } = {}) {
-    const res: Partial<UniNodeJSON> = {
-      a: this.attributes,
-      s: this.style.toJSON(),
+    const { attributes, style } = this
+    const res: Partial<UniNodeJSON> = {}
+    if (Object.keys(attributes).length) {
+      res.a = attributes
+    }
+    const cssStyle = style.toJSON()
+    if (cssStyle) {
+      res.s = cssStyle
     }
     if (!opts.attr) {
       res.i = this.nodeId

@@ -6,7 +6,7 @@ import { $ } from './utils'
 export class UniNode {
   id: number
   tag: string
-  $!: Element | Text
+  $!: Element | Text | Comment
   constructor(id: number, tag: string) {
     this.id = id
     this.tag = tag

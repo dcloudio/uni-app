@@ -7,11 +7,17 @@ export class UniCommentNode extends UniNode {
     this._text = text
   }
   toJSON(opts: { attr?: boolean } = {}) {
+    // 暂时不传递 text 到 view 层，没啥意义，节省点数据量
     return opts.attr
-      ? { t: this._text as string }
+      ? {}
       : {
           i: this.nodeId!,
-          t: this._text as string,
         }
+    // return opts.attr
+    //   ? { t: this._text as string }
+    //   : {
+    //       i: this.nodeId!,
+    //       t: this._text as string,
+    //     }
   }
 }

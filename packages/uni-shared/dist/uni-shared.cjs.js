@@ -546,10 +546,15 @@ const OPTIONS = [
     'OncePassive',
     'Passive',
 ];
-const ATTR_MAP = /*#__PURE__*/ shared.extend({
+const BASE_ATTR_MAP = {
     class: '.c',
     style: '.s',
-}, Object.keys(EVENT_MAP).reduce((res, name) => {
+    'hover-class': '.h0',
+    'hover-stop-propagation': '.h1',
+    'hover-start-time': '.h2',
+    'hover-stay-time': '.h3',
+};
+const ATTR_MAP = /*#__PURE__*/ shared.extend(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
     const value = EVENT_MAP[name];
     res[name] = value;
     OPTIONS.forEach((v, i) => {
@@ -777,10 +782,15 @@ class UniBaseNode extends UniNode {
         }
     }
     toJSON(opts = {}) {
-        const res = {
-            a: this.attributes,
-            s: this.style.toJSON(),
-        };
+        const { attributes, style } = this;
+        const res = {};
+        if (Object.keys(attributes).length) {
+            res.a = attributes;
+        }
+        const cssStyle = style.toJSON();
+        if (cssStyle) {
+            res.s = cssStyle;
+        }
         if (!opts.attr) {
             res.i = this.nodeId;
             res.n = encodeTag(this.nodeName);
@@ -798,12 +808,18 @@ class UniCommentNode extends UniNode {
         this._text = text;
     }
     toJSON(opts = {}) {
+        // 暂时不传递 text 到 view 层，没啥意义，节省点数据量
         return opts.attr
-            ? { t: this._text }
+            ? {}
             : {
                 i: this.nodeId,
-                t: this._text,
             };
+        // return opts.attr
+        //   ? { t: this._text as string }
+        //   : {
+        //       i: this.nodeId!,
+        //       t: this._text as string,
+        //     }
     }
 }
 

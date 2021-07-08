@@ -409,10 +409,15 @@ export default function vueFactory(exports) {
     onTouchforcechange: '.ee'
   };
   var OPTIONS = ['Capture', 'CaptureOnce', 'CapturePassive', 'CaptureOncePassive', 'Once', 'OncePassive', 'Passive'];
-  var ATTR_MAP = /*#__PURE__*/extend$1({
+  var BASE_ATTR_MAP = {
     class: '.c',
-    style: '.s'
-  }, Object.keys(EVENT_MAP).reduce(function (res, name) {
+    style: '.s',
+    'hover-class': '.h0',
+    'hover-stop-propagation': '.h1',
+    'hover-start-time': '.h2',
+    'hover-stay-time': '.h3'
+  };
+  var ATTR_MAP = /*#__PURE__*/extend$1(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce(function (res, name) {
     var value = EVENT_MAP[name];
     res[name] = value;
     OPTIONS.forEach(function (v, i) {
@@ -728,10 +733,19 @@ export default function vueFactory(exports) {
       key: "toJSON",
       value: function toJSON() {
         var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var res = {
-          a: this.attributes,
-          s: this.style.toJSON()
-        };
+        var attributes = this.attributes,
+            style = this.style;
+        var res = {};
+
+        if (Object.keys(attributes).length) {
+          res.a = attributes;
+        }
+
+        var cssStyle = style.toJSON();
+
+        if (cssStyle) {
+          res.s = cssStyle;
+        }
 
         if (!opts.attr) {
           res.i = this.nodeId;
@@ -768,12 +782,15 @@ export default function vueFactory(exports) {
       key: "toJSON",
       value: function toJSON() {
         var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        return opts.attr ? {
-          t: this._text
-        } : {
-          i: this.nodeId,
-          t: this._text
-        };
+        // 暂时不传递 text 到 view 层，没啥意义，节省点数据量
+        return opts.attr ? {} : {
+          i: this.nodeId
+        }; // return opts.attr
+        //   ? { t: this._text as string }
+        //   : {
+        //       i: this.nodeId!,
+        //       t: this._text as string,
+        //     }
       }
     }]);
 
