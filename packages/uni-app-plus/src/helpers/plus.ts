@@ -66,21 +66,6 @@ export function warpPlusMethod(
   }
 }
 
-export function callApiSync<T extends (...args: any) => any>(
-  api: T,
-  args: Parameters<T>[0],
-  resolve: Function,
-  reject: (errMsg?: string | undefined, errRes?: any) => void
-) {
-  api(args)
-    .then(() => {
-      resolve()
-    })
-    .catch((errMsg: string) => {
-      reject(errMsg)
-    })
-}
-
 export function isTabBarPage(path = '') {
   if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
     return false
