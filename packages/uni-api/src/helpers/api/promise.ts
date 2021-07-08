@@ -2,12 +2,12 @@ import { extend, isPlainObject, isFunction } from '@vue/shared'
 
 import { API_SUCCESS, API_FAIL, API_COMPLETE } from './callback'
 
-const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE]
-
 function hasCallback(args: unknown) {
   if (
     isPlainObject(args) &&
-    callbacks.find((cb) => isFunction((args as Record<string, any>)[cb]))
+    [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) =>
+      isFunction((args as Record<string, any>)[cb])
+    )
   ) {
     return true
   }

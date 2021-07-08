@@ -693,14 +693,14 @@ function attrChange(attr2) {
         style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
-      callbacks$3.forEach(function(callback) {
+      callbacks$2.forEach(function(callback) {
         callback(style);
       });
     }, 0);
   }
   changeAttrs.push(attr2);
 }
-var callbacks$3 = [];
+var callbacks$2 = [];
 function onChange(callback) {
   if (!getSupport()) {
     return;
@@ -709,13 +709,13 @@ function onChange(callback) {
     init();
   }
   if (typeof callback === "function") {
-    callbacks$3.push(callback);
+    callbacks$2.push(callback);
   }
 }
 function offChange(callback) {
-  var index2 = callbacks$3.indexOf(callback);
+  var index2 = callbacks$2.indexOf(callback);
   if (index2 >= 0) {
-    callbacks$3.splice(index2, 1);
+    callbacks$2.splice(index2, 1);
   }
 }
 var safeAreaInsets = {
@@ -1039,15 +1039,15 @@ function getRouteOptions(path, alias = false) {
   }
   return __uniRoutes.find((route) => route.path === path);
 }
-const callbacks$2 = {};
+const callbacks$1 = {};
 function createCallbacks(namespace) {
-  let scopedCallbacks = callbacks$2[namespace];
+  let scopedCallbacks = callbacks$1[namespace];
   if (!scopedCallbacks) {
     scopedCallbacks = {
       id: 1,
       callbacks: Object.create(null)
     };
-    callbacks$2[namespace] = scopedCallbacks;
+    callbacks$1[namespace] = scopedCallbacks;
   }
   return {
     get(id2) {
@@ -2371,9 +2371,8 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   });
   return callbackId;
 }
-const callbacks$1 = [API_SUCCESS, API_FAIL, API_COMPLETE];
 function hasCallback(args) {
-  if (isPlainObject(args) && callbacks$1.find((cb) => isFunction(args[cb]))) {
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
     return true;
   }
   return false;
@@ -5619,7 +5618,9 @@ function requestComponentObserver($el, options, callback) {
         intersectionRect: normalizeRect(entrie.intersectionRect),
         boundingClientRect: normalizeRect(entrie.boundingClientRect),
         relativeRect: normalizeRect(entrie.rootBounds),
-        time: Date.now()
+        time: Date.now(),
+        dataset: getCustomDataset(entrie.target),
+        id: entrie.target.id
       });
     });
   }, {

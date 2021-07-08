@@ -1,38 +1,78 @@
-export const jsContext = {
-  VUE3: true,
-  APP_PLUS: false,
-  H5: true,
-  MP_360: false,
-  MP_ALIPAY: false,
-  MP_BAIDU: false,
-  MP_QQ: false,
-  MP_TOUTIAO: false,
-  MP_WEIXIN: false,
-  QUICKAPP_NATIVE: false,
-  QUICKAPP_WEBVIEW: false,
-  QUICKAPP_WEBVIEW_UNION: false,
-  QUICKAPP_WEBVIEW_HUAWEI: false,
-  MP: false,
-  APP: false,
-  APP_PLUS_NVUE: false,
-  APP_VUE: false,
-  APP_NVUE: false,
+import { extend } from '@vue/shared'
+const DEFAULT_KEYS = [
+  'APP',
+  'APP_NVUE',
+  'APP_PLUS',
+  'APP_PLUS_NVUE',
+  'APP_VUE',
+  'H5',
+  'MP',
+  'MP_360',
+  'MP_ALIPAY',
+  'MP_BAIDU',
+  'MP_QQ',
+  'MP_TOUTIAO',
+  'MP_WEIXIN',
+  'MP_KUAISHOU',
+  'QUICKAPP_NATIVE',
+  'QUICKAPP_WEBVIEW',
+  'QUICKAPP_WEBVIEW_HUAWEI',
+  'QUICKAPP_WEBVIEW_UNION',
+  'VUE2',
+  'VUE3',
+] as const
+
+const preVueContext = Object.create(null)
+const preNVueContext = Object.create(null)
+
+export function getPreVueContext() {
+  return preVueContext
 }
-export const htmlContext = {
-  VUE3: true,
-  APP_PLUS: false,
-  H5: true,
-  MP_360: false,
-  MP_ALIPAY: false,
-  MP_BAIDU: false,
-  MP_QQ: false,
-  MP_TOUTIAO: false,
-  MP_WEIXIN: false,
-  QUICKAPP_NATIVE: false,
-  QUICKAPP_WEBVIEW: false,
-  MP: false,
-  APP: false,
-  APP_PLUS_NVUE: false,
-  APP_VUE: false,
-  APP_NVUE: false,
+
+export function getPreNVueContext() {
+  return preNVueContext
+}
+
+export function initPreContext(
+  platform: UniApp.PLATFORM,
+  userPreContext?: Record<string, boolean>
+) {
+  const vueContext = Object.create(null)
+  const nvueContext = Object.create(null)
+
+  const defaultContext = Object.create(null)
+  DEFAULT_KEYS.forEach((key) => {
+    defaultContext[key] = false
+  })
+
+  defaultContext[normalizeKey(platform)] = true
+
+  vueContext.VUE3 = true
+  nvueContext.VUE2 = true
+
+  if (platform === 'app' || platform === 'app-plus') {
+    defaultContext.APP = true
+    defaultContext.APP_PLUS = true
+
+    vueContext.APP_VUE = true
+
+    nvueContext.APP_NVUE = true
+    nvueContext.APP_PLUS_NVUE = true
+  } else if (platform.startsWith('mp-')) {
+    defaultContext.MP = true
+  } else if (platform.startsWith('quickapp-webview')) {
+    defaultContext.QUICKAPP_WEBVIEW = true
+  }
+
+  if (userPreContext) {
+    Object.keys(userPreContext).forEach((key) => {
+      defaultContext[normalizeKey(key)] = !!userPreContext[key]
+    })
+  }
+  extend(preVueContext, defaultContext, vueContext)
+  extend(preNVueContext, defaultContext, nvueContext)
+}
+
+function normalizeKey(name: string) {
+  return name.replace(/-/g, '_').toUpperCase()
 }

@@ -1,4 +1,4 @@
-import { capitalize, hasOwn, isArray, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, EMPTY_OBJ, camelize } from '@vue/shared';
+import { hasOwn, isArray, toNumber, isPlainObject, isObject, capitalize, isFunction, extend, NOOP, EMPTY_OBJ, camelize } from '@vue/shared';
 
 function setModel(target, key, value, modifiers) {
     if (isArray(modifiers)) {

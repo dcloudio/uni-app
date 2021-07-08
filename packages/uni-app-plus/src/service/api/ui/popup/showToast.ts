@@ -135,7 +135,8 @@ function hide(
   callbacks?: { resolve: Resolve; reject: Reject }
 ) {
   if (type && type !== toastType) {
-    return callbacks?.reject()
+    // 应该不需要失败回调，在页面后退时，会主动 hideToast 和 hideLoading，如果 reject 会出异常。
+    return callbacks && callbacks.resolve()
   }
   if (timeout) {
     clearTimeout(timeout)
@@ -149,5 +150,5 @@ function hide(
   toast = null
   isShowToast = false
   toastType = ''
-  return callbacks?.resolve()
+  return callbacks && callbacks.resolve()
 }

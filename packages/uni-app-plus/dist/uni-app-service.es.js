@@ -406,10 +406,9 @@ var serviceContext = (function (vue) {
       return callbackId;
   }
 
-  const callbacks$2 = [API_SUCCESS, API_FAIL, API_COMPLETE];
   function hasCallback(args) {
       if (isPlainObject(args) &&
-          callbacks$2.find((cb) => isFunction(args[cb]))) {
+          [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
           return true;
       }
       return false;
@@ -2948,15 +2947,6 @@ var serviceContext = (function (vue) {
           }));
       };
   }
-  function callApiSync(api, args, resolve, reject) {
-      api(args)
-          .then(() => {
-          resolve();
-      })
-          .catch((errMsg) => {
-          reject(errMsg);
-      });
-  }
 
   const STORAGE_DATA_TYPE = '__TYPE';
   const STORAGE_KEYS = 'uni-storage-keys';
@@ -5132,15 +5122,10 @@ var serviceContext = (function (vue) {
   let isShowToast = false;
   let toastType = '';
   let timeout;
-  const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, { resolve, reject }) => {
-      callApiSync(showToast, extend({}, args, {
-          type: 'loading',
-      }), resolve, reject);
-  }, ShowLoadingProtocol, ShowLoadingOptions);
-  const hideLoading = defineAsyncApi(API_HIDE_LOADING, (_, { resolve, reject }) => {
-      callApiSync(hide, 'loading', resolve, reject);
-  });
-  const showToast = defineAsyncApi(API_SHOW_TOAST, ({ title = '', icon = 'success', image = '', duration = 1500, mask = false, position, 
+  const showLoading = defineAsyncApi(API_SHOW_LOADING, (args, callbacks) => _showToast(extend({}, args, {
+      type: 'loading',
+  }), callbacks), ShowLoadingProtocol, ShowLoadingOptions);
+  const _showToast = ({ title = '', icon = 'success', image = '', duration = 1500, mask = false, position, 
   // @ts-ignore ToastType
   type = 'toast', 
   // @ts-ignore PlusNativeUIWaitingStyles
@@ -5205,13 +5190,14 @@ var serviceContext = (function (vue) {
           hide('');
       }, duration);
       return resolve();
-  }, ShowToastProtocol, ShowToastOptions);
-  const hideToast = defineAsyncApi(API_HIDE_TOAST, (_, { resolve, reject }) => {
-      callApiSync(hide, 'toast', resolve, reject);
-  });
-  function hide(type = 'toast') {
+  };
+  const showToast = defineAsyncApi(API_SHOW_TOAST, _showToast, ShowToastProtocol, ShowToastOptions);
+  const hideToast = defineAsyncApi(API_HIDE_TOAST, (_, callbacks) => hide('toast', callbacks));
+  const hideLoading = defineAsyncApi(API_HIDE_LOADING, (_, callbacks) => hide('loading', callbacks));
+  function hide(type = 'toast', callbacks) {
       if (type && type !== toastType) {
-          return;
+          // 应该不需要失败回调，在页面后退时，会主动 hideToast 和 hideLoading，如果 reject 会出异常。
+          return callbacks && callbacks.resolve();
       }
       if (timeout) {
           clearTimeout(timeout);
@@ -5226,9 +5212,7 @@ var serviceContext = (function (vue) {
       toast = null;
       isShowToast = false;
       toastType = '';
-      return {
-          errMsg: 'hide:ok',
-      };
+      return callbacks && callbacks.resolve();
   }
 
   const providers = {
@@ -7422,10 +7406,9 @@ var serviceContext = (function (vue) {
     showModal: showModal,
     showActionSheet: showActionSheet,
     showLoading: showLoading,
-    hideLoading: hideLoading,
     showToast: showToast,
     hideToast: hideToast,
-    hide: hide,
+    hideLoading: hideLoading,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,

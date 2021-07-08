@@ -536,15 +536,15 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-const callbacks$1 = {};
+const callbacks = {};
 function createCallbacks(namespace) {
-  let scopedCallbacks = callbacks$1[namespace];
+  let scopedCallbacks = callbacks[namespace];
   if (!scopedCallbacks) {
     scopedCallbacks = {
       id: 1,
       callbacks: Object.create(null)
     };
-    callbacks$1[namespace] = scopedCallbacks;
+    callbacks[namespace] = scopedCallbacks;
   }
   return {
     get(id) {
@@ -1250,9 +1250,8 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   });
   return callbackId;
 }
-const callbacks = [API_SUCCESS, API_FAIL, API_COMPLETE];
 function hasCallback(args) {
-  if (shared.isPlainObject(args) && callbacks.find((cb) => shared.isFunction(args[cb]))) {
+  if (shared.isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => shared.isFunction(args[cb]))) {
     return true;
   }
   return false;

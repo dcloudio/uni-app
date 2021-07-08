@@ -1,4 +1,4 @@
-import { isFunction, extend, isSymbol, isMap, isObject, toRawType, def, isArray, isString, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
+import { isFunction, extend, isSymbol, isMap, isObject, toRawType, def, isArray, isString, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
 import { injectHook as injectHook$1 } from 'vue';
 

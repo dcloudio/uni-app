@@ -1,3 +1,4 @@
+import { getCustomDataset } from '@dcloudio/uni-shared'
 import { initIntersectionObserverPolyfill } from './intersection-observer'
 
 export interface RequestComponentObserverOptions {
@@ -38,8 +39,8 @@ export function requestComponentObserver(
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds!),
           time: Date.now(),
-          //   dataset: getCustomDataset(entrie.target),
-          //   id: entrie.target.id,
+          dataset: getCustomDataset(entrie.target as HTMLElement),
+          id: entrie.target.id,
         })
       })
     },
