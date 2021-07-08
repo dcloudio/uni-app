@@ -9,6 +9,7 @@ import { parseManifestJson } from '../src/json'
 const vid = 'test'
 const examplesDir = path.resolve(__dirname, 'examples')
 const basePostData = {
+  vv: 3,
   device: md5(getMac()),
 }
 describe('checkUpdate', () => {
