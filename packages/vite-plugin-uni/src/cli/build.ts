@@ -2,15 +2,17 @@ import fs from 'fs-extra'
 import path from 'path'
 import { build as buildByVite, BuildOptions } from 'vite'
 import { CliOptions } from '.'
-import { cleanOptions } from './utils'
+import { addConfigFile, cleanOptions } from './utils'
 
 export async function build(options: CliOptions) {
-  await buildByVite({
-    root: process.env.VITE_ROOT_DIR,
-    logLevel: options.logLevel,
-    clearScreen: options.clearScreen,
-    build: cleanOptions(options) as BuildOptions,
-  })
+  await buildByVite(
+    addConfigFile({
+      root: process.env.VITE_ROOT_DIR,
+      logLevel: options.logLevel,
+      clearScreen: options.clearScreen,
+      build: cleanOptions(options) as BuildOptions,
+    })
+  )
 }
 
 export async function buildSSR(options: CliOptions) {
@@ -21,12 +23,14 @@ export async function buildSSR(options: CliOptions) {
   ssrBuildClientOptions.ssrManifest = true
   ssrBuildClientOptions.outDir = process.env.UNI_OUTPUT_DIR
   process.env.UNI_SSR_CLIENT = 'true'
-  await buildByVite({
-    root: process.env.VITE_ROOT_DIR,
-    logLevel: options.logLevel,
-    clearScreen: options.clearScreen,
-    build: ssrBuildClientOptions,
-  })
+  await buildByVite(
+    addConfigFile({
+      root: process.env.VITE_ROOT_DIR,
+      logLevel: options.logLevel,
+      clearScreen: options.clearScreen,
+      build: ssrBuildClientOptions,
+    })
+  )
   const ssrServerDir = path.resolve(outputDir, 'server')
   process.env.UNI_OUTPUT_DIR = ssrServerDir
   const ssrBuildServerOptions: BuildOptions = cleanOptions(options)
@@ -49,12 +53,14 @@ export async function buildSSR(options: CliOptions) {
   }
   process.env.UNI_SSR_CLIENT = ''
   process.env.UNI_SSR_SERVER = 'true'
-  await buildByVite({
-    root: process.env.VITE_ROOT_DIR,
-    logLevel: options.logLevel,
-    clearScreen: options.clearScreen,
-    build: ssrBuildServerOptions,
-  })
+  await buildByVite(
+    addConfigFile({
+      root: process.env.VITE_ROOT_DIR,
+      logLevel: options.logLevel,
+      clearScreen: options.clearScreen,
+      build: ssrBuildServerOptions,
+    })
+  )
   // copy ssr-manfiest.json to server
   const assets = ['ssr-manifest.json', 'index.html']
   assets.forEach((asset) => {

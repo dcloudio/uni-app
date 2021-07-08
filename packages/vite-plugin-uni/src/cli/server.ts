@@ -11,15 +11,17 @@ import express from 'express'
 import { hasOwn } from '@vue/shared'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
-import { cleanOptions } from './utils'
+import { addConfigFile, cleanOptions } from './utils'
 
 export async function createServer(options: CliOptions & ServerOptions) {
-  const server = await createViteServer({
-    root: process.env.VITE_ROOT_DIR,
-    logLevel: options.logLevel,
-    clearScreen: options.clearScreen,
-    server: cleanOptions(options) as ServerOptions,
-  })
+  const server = await createViteServer(
+    addConfigFile({
+      root: process.env.VITE_ROOT_DIR,
+      logLevel: options.logLevel,
+      clearScreen: options.clearScreen,
+      server: cleanOptions(options) as ServerOptions,
+    })
+  )
   await server.listen()
 }
 
@@ -28,20 +30,22 @@ export async function createSSRServer(options: CliOptions & ServerOptions) {
   /**
    * @type {import('vite').ViteDevServer}
    */
-  const vite = await createViteServer({
-    root: process.env.VITE_ROOT_DIR,
-    logLevel: options.logLevel,
-    clearScreen: options.clearScreen,
-    server: {
-      middlewareMode: true,
-      watch: {
-        // During tests we edit the files too fast and sometimes chokidar
-        // misses change events, so enforce polling for consistency
-        usePolling: true,
-        interval: 100,
+  const vite = await createViteServer(
+    addConfigFile({
+      root: process.env.VITE_ROOT_DIR,
+      logLevel: options.logLevel,
+      clearScreen: options.clearScreen,
+      server: {
+        middlewareMode: true,
+        watch: {
+          // During tests we edit the files too fast and sometimes chokidar
+          // misses change events, so enforce polling for consistency
+          usePolling: true,
+          interval: 100,
+        },
       },
-    },
-  })
+    })
+  )
   // use vite's connect instance as middleware
   app.use(vite.middlewares)
 

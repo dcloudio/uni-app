@@ -25,15 +25,14 @@ export const UniAppPlugin: UniVitePlugin = {
   config() {
     return {
       build: {
-        lib: {
-          name: 'AppService',
-          entry: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
-          formats: ['iife'],
-        },
         rollupOptions: {
+          input: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
           external: ['vue'],
           output: {
+            name: 'AppService',
+            format: 'iife',
             entryFileNames: 'app-service.js',
+            manualChunks: undefined,
             globals: {
               vue: 'Vue',
             },

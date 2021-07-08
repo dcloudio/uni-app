@@ -17,15 +17,14 @@ exports.UniAppPlugin = {
     config() {
         return {
             build: {
-                lib: {
-                    name: 'AppService',
-                    entry: uni_cli_shared_1.resolveMainPathOnce(process.env.UNI_INPUT_DIR),
-                    formats: ['iife'],
-                },
                 rollupOptions: {
+                    input: uni_cli_shared_1.resolveMainPathOnce(process.env.UNI_INPUT_DIR),
                     external: ['vue'],
                     output: {
+                        name: 'AppService',
+                        format: 'iife',
                         entryFileNames: 'app-service.js',
+                        manualChunks: undefined,
                         globals: {
                             vue: 'Vue',
                         },

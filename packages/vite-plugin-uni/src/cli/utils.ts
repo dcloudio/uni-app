@@ -1,5 +1,9 @@
+import fs from 'fs'
 import path from 'path'
-import { BuildOptions } from 'vite'
+import { BuildOptions, InlineConfig } from 'vite'
+
+import { isInHBuilderX } from '@dcloudio/uni-cli-shared'
+
 import { CliOptions } from '.'
 
 export const PLATFORMS = [
@@ -14,6 +18,26 @@ export const PLATFORMS = [
   'quickapp-webview-union',
 ]
 
+function resolveConfigFile() {
+  const viteConfigJs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.js')
+  const viteConfigTs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.ts')
+
+  if (fs.existsSync(viteConfigTs)) {
+    return viteConfigTs
+  }
+  if (fs.existsSync(viteConfigJs)) {
+    return viteConfigJs
+  }
+  return path.resolve(process.env.UNI_CLI_CONTEXT, 'vite.config.js')
+}
+
+export function addConfigFile(inlineConfig: InlineConfig) {
+  if (isInHBuilderX()) {
+    inlineConfig.configFile = resolveConfigFile()
+  }
+  return inlineConfig
+}
+
 export function initEnv(type: 'dev' | 'build', options: CliOptions) {
   if (type === 'dev') {
     process.env.NODE_ENV = 'development'
@@ -25,7 +49,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     }
   }
 
-  process.env.UNI_CLI_CONTEXT = process.cwd() // TODO HBuilderX
+  process.env.UNI_CLI_CONTEXT = isInHBuilderX()
+    ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
+    : process.cwd()
 
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
