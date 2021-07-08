@@ -1,14 +1,28 @@
 import { extend, capitalize, camelize, hyphenate } from '@vue/shared'
 import { formatLog } from '../log'
-import { UniElement } from './Element'
 import { UniNode } from './Node'
 
-export function normalizeEventType(type: string) {
+export function normalizeEventType(
+  type: string,
+  options?: AddEventListenerOptions
+) {
+  if (options) {
+    if (options.capture) {
+      type += 'Capture'
+    }
+    if (options.once) {
+      type += 'Once'
+    }
+    if (options.passive) {
+      type += 'Passive'
+    }
+  }
   return `on${capitalize(camelize(type))}`
 }
 
 export interface UniEventListener {
   (evt: UniEvent): void
+  modifiers?: string[]
 }
 
 interface UniEventOptions {
@@ -28,7 +42,7 @@ export class UniEvent {
   _end: boolean = false
 
   constructor(type: string, opts: UniEventOptions) {
-    this.type = type.toLowerCase()
+    this.type = type
     this.bubbles = !!opts.bubbles
     this.cancelable = !!opts.cancelable
   }
@@ -46,6 +60,19 @@ export class UniEvent {
   }
 }
 
+function createUniEvent(evt: Record<string, any>) {
+  if (evt instanceof UniEvent) {
+    return evt
+  }
+  const [type] = parseEventName(evt.type)
+  const uniEvent = new UniEvent(type, {
+    bubbles: false,
+    cancelable: false,
+  })
+  extend(uniEvent, evt)
+  return uniEvent
+}
+
 export class UniEventTarget {
   private _listeners: Record<string, UniEventListener[]> = {}
 
@@ -61,14 +88,17 @@ export class UniEventTarget {
       }
       return false
     }
+    // 格式化事件类型
+
+    const event = createUniEvent(evt)
     const len = listeners.length
     for (let i = 0; i < len; i++) {
-      listeners[i].call(this, evt)
-      if (evt._end) {
+      listeners[i].call(this, event)
+      if (event._end) {
         break
       }
     }
-    return evt.cancelable && evt.defaultPrevented
+    return event.cancelable && event.defaultPrevented
   }
 
   addEventListener(
@@ -76,27 +106,17 @@ export class UniEventTarget {
     listener: UniEventListener,
     options?: AddEventListenerOptions
   ): void {
-    const isOnce = options && options.once
-    if (isOnce) {
-      const wrapper = function (this: UniElement, evt: UniEvent) {
-        listener.apply(this, [evt])
-        this.removeEventListener(type, wrapper, options)
-      }
-      return this.addEventListener(
-        type,
-        wrapper,
-        extend(options, { once: false })
-      )
-    }
+    type = normalizeEventType(type, options)
     ;(this._listeners[type] || (this._listeners[type] = [])).push(listener)
   }
 
   removeEventListener(
     type: string,
     callback: UniEventListener,
-    options?: EventListenerOptions
+    options?: AddEventListenerOptions
   ): void {
-    const listeners = this._listeners[type.toLowerCase()]
+    type = normalizeEventType(type, options)
+    const listeners = this._listeners[type]
     if (!listeners) {
       return
     }

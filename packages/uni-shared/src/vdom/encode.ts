@@ -1,6 +1,48 @@
-export const ATTR_MAP = {
-  class: '.c',
-  style: '.s',
+import { extend } from '@vue/shared'
+
+export const EventOptionFlags = {
+  capture: 1,
+  once: 1 << 1,
+  passive: 1 << 2,
+}
+
+export function encodeOptions(options?: AddEventListenerOptions) {
+  let flag = 0
+  if (options) {
+    if (options.capture) {
+      flag |= EventOptionFlags.capture
+    }
+    if (options.once) {
+      flag |= EventOptionFlags.once
+    }
+    if (options.passive) {
+      flag |= EventOptionFlags.passive
+    }
+  }
+  return flag
+}
+
+export const EventModifierFlags = {
+  stop: 1,
+  prevent: 1 << 1,
+  self: 1 << 2,
+}
+
+export function encodeModifier(modifiers: string[]) {
+  let flag = 0
+  if (modifiers.includes('stop')) {
+    flag |= EventModifierFlags.stop
+  }
+  if (modifiers.includes('prevent')) {
+    flag |= EventModifierFlags.prevent
+  }
+  if (modifiers.includes('self')) {
+    flag |= EventModifierFlags.self
+  }
+  return flag
+}
+
+const EVENT_MAP = {
   onClick: '.e0',
   onChange: '.e1',
   onInput: '.e2',
@@ -17,6 +59,31 @@ export const ATTR_MAP = {
   onAnimationend: '.ed',
   onTouchforcechange: '.ee',
 }
+
+const OPTIONS = [
+  'Capture',
+  'CaptureOnce',
+  'CapturePassive',
+  'CaptureOncePassive',
+  'Once',
+  'OncePassive',
+  'Passive',
+]
+
+export const ATTR_MAP = /*#__PURE__*/ extend(
+  {
+    class: '.c',
+    style: '.s',
+  },
+  Object.keys(EVENT_MAP).reduce((res, name) => {
+    const value = EVENT_MAP[name as keyof typeof EVENT_MAP]
+    res[name] = value
+    OPTIONS.forEach((v, i) => {
+      res[name + v] = value + i
+    })
+    return res
+  }, Object.create(null))
+)
 
 export function encodeAttr(name: string) {
   return ATTR_MAP[name as keyof typeof ATTR_MAP] || name

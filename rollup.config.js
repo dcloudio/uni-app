@@ -163,7 +163,6 @@ function createReplacePlugin(buildOption, format) {
     global: format === 'cjs' ? 'global' : 'window',
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
-    __PLATFORM__: JSON.stringify('h5'),
     __NODE_JS__: format === 'cjs',
   }
   if (buildOption.replacements) {

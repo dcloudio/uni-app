@@ -31,6 +31,8 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   private createdAction: PageCreatedAction
   public updateActions: PageAction[] = []
 
+  public isUnmounted: boolean
+
   private _update: () => void
 
   constructor(
@@ -42,6 +44,8 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     this.nodeId = 0
     this.pageId = pageId
     this.pageNode = this
+
+    this.isUnmounted = false
 
     this.createAction = [ACTION_TYPE_PAGE_CREATE, options]
     this.createdAction = [ACTION_TYPE_PAGE_CREATED]
@@ -95,6 +99,12 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     return this._id++
   }
   push(action: PageAction) {
+    if (this.isUnmounted) {
+      if (__DEV__) {
+        console.log(formatLog('PageNode', 'push.prevent', action))
+      }
+      return
+    }
     this.updateActions.push(action)
     if (__DEV__) {
       console.log(formatLog('PageNode', 'push', action))
@@ -109,11 +119,6 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   setup() {
     this.send([this.createAction])
   }
-  // mounted() {
-  //   const { updateActions, createdAction } = this
-  //   updateActions.unshift(createdAction)
-  //   this.update()
-  // }
   update() {
     const { updateActions } = this
     if (__DEV__) {

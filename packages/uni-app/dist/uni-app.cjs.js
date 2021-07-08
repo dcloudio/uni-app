@@ -5,6 +5,43 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var vue = require('vue');
 var shared = require('@vue/shared');
 
+const EVENT_MAP = {
+    onClick: '.e0',
+    onChange: '.e1',
+    onInput: '.e2',
+    onLoad: '.e3',
+    onError: '.e4',
+    onTouchstart: '.e5',
+    onTouchmove: '.e6',
+    onTouchcancel: '.e7',
+    onTouchend: '.e8',
+    onLongpress: '.e9',
+    onTransitionend: '.ea',
+    onAnimationstart: '.eb',
+    onAnimationiteration: '.ec',
+    onAnimationend: '.ed',
+    onTouchforcechange: '.ee',
+};
+const OPTIONS = [
+    'Capture',
+    'CaptureOnce',
+    'CapturePassive',
+    'CaptureOncePassive',
+    'Once',
+    'OncePassive',
+    'Passive',
+];
+/*#__PURE__*/ shared.extend({
+    class: '.c',
+    style: '.s',
+}, Object.keys(EVENT_MAP).reduce((res, name) => {
+    const value = EVENT_MAP[name];
+    res[name] = value;
+    OPTIONS.forEach((v, i) => {
+        res[name + v] = value + i;
+    });
+    return res;
+}, Object.create(null)));
 const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 const UNI_SSR = '__uniSSR';
 const UNI_SSR_DATA = 'data';

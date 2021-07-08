@@ -1,26 +1,26 @@
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
@@ -78,6 +78,14 @@ export default function vueFactory(exports) {
       return c ? c.toUpperCase() : '';
     });
   });
+  var hyphenateRE$1 = /\B([A-Z])/g;
+  /**
+   * @private
+   */
+
+  var hyphenate$1 = cacheStringFunction$1(function (str) {
+    return str.replace(hyphenateRE$1, '-$1').toLowerCase();
+  });
   /**
    * @private
    */
@@ -114,8 +122,72 @@ export default function vueFactory(exports) {
     return DOMException;
   }( /*#__PURE__*/_wrapNativeSuper(Error));
 
-  function normalizeEventType(type) {
+  function normalizeEventType(type, options) {
+    if (options) {
+      if (options.capture) {
+        type += 'Capture';
+      }
+
+      if (options.once) {
+        type += 'Once';
+      }
+
+      if (options.passive) {
+        type += 'Passive';
+      }
+    }
+
     return "on".concat(capitalize$1(camelize$1(type)));
+  }
+
+  var UniEvent = /*#__PURE__*/function () {
+    function UniEvent(type, opts) {
+      _classCallCheck(this, UniEvent);
+
+      this.defaultPrevented = false;
+      this.timeStamp = Date.now();
+      this._stop = false;
+      this._end = false;
+      this.type = type;
+      this.bubbles = !!opts.bubbles;
+      this.cancelable = !!opts.cancelable;
+    }
+
+    _createClass(UniEvent, [{
+      key: "preventDefault",
+      value: function preventDefault() {
+        this.defaultPrevented = true;
+      }
+    }, {
+      key: "stopImmediatePropagation",
+      value: function stopImmediatePropagation() {
+        this._end = this._stop = true;
+      }
+    }, {
+      key: "stopPropagation",
+      value: function stopPropagation() {
+        this._stop = true;
+      }
+    }]);
+
+    return UniEvent;
+  }();
+
+  function createUniEvent(evt) {
+    if (evt instanceof UniEvent) {
+      return evt;
+    }
+
+    var _parseEventName = parseEventName(evt.type),
+        _parseEventName2 = _slicedToArray(_parseEventName, 1),
+        type = _parseEventName2[0];
+
+    var uniEvent = new UniEvent(type, {
+      bubbles: false,
+      cancelable: false
+    });
+    extend$1(uniEvent, evt);
+    return uniEvent;
   }
 
   var UniEventTarget = /*#__PURE__*/function () {
@@ -136,42 +208,33 @@ export default function vueFactory(exports) {
           }
 
           return false;
-        }
+        } // 格式化事件类型
 
+
+        var event = createUniEvent(evt);
         var len = listeners.length;
 
         for (var i = 0; i < len; i++) {
-          listeners[i].call(this, evt);
+          listeners[i].call(this, event);
 
-          if (evt._end) {
+          if (event._end) {
             break;
           }
         }
 
-        return evt.cancelable && evt.defaultPrevented;
+        return event.cancelable && event.defaultPrevented;
       }
     }, {
       key: "addEventListener",
       value: function addEventListener(type, listener, options) {
-        var isOnce = options && options.once;
-
-        if (isOnce) {
-          var wrapper = function wrapper(evt) {
-            listener.apply(this, [evt]);
-            this.removeEventListener(type, wrapper, options);
-          };
-
-          return this.addEventListener(type, wrapper, extend$1(options, {
-            once: false
-          }));
-        }
-
+        type = normalizeEventType(type, options);
         (this._listeners[type] || (this._listeners[type] = [])).push(listener);
       }
     }, {
       key: "removeEventListener",
       value: function removeEventListener(type, callback, options) {
-        var listeners = this._listeners[type.toLowerCase()];
+        type = normalizeEventType(type, options);
+        var listeners = this._listeners[type];
 
         if (!listeners) {
           return;
@@ -187,6 +250,24 @@ export default function vueFactory(exports) {
 
     return UniEventTarget;
   }();
+
+  var optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
+
+  function parseEventName(name) {
+    var options;
+
+    if (optionsModifierRE$1.test(name)) {
+      options = {};
+      var m;
+
+      while (m = name.match(optionsModifierRE$1)) {
+        name = name.slice(0, name.length - m[0].length);
+        options[m[0].toLowerCase()] = true;
+      }
+    }
+
+    return [hyphenate$1(name.slice(2)), options];
+  }
 
   var UniCSSStyleDeclaration = /*#__PURE__*/function () {
     function UniCSSStyleDeclaration() {
@@ -286,9 +367,31 @@ export default function vueFactory(exports) {
     });
   }
 
-  var ATTR_MAP = {
-    class: '.c',
-    style: '.s',
+  var EventModifierFlags = {
+    stop: 1,
+    prevent: 1 << 1,
+    self: 1 << 2
+  };
+
+  function encodeModifier(modifiers) {
+    var flag = 0;
+
+    if (modifiers.includes('stop')) {
+      flag |= EventModifierFlags.stop;
+    }
+
+    if (modifiers.includes('prevent')) {
+      flag |= EventModifierFlags.prevent;
+    }
+
+    if (modifiers.includes('self')) {
+      flag |= EventModifierFlags.self;
+    }
+
+    return flag;
+  }
+
+  var EVENT_MAP = {
     onClick: '.e0',
     onChange: '.e1',
     onInput: '.e2',
@@ -305,6 +408,18 @@ export default function vueFactory(exports) {
     onAnimationend: '.ed',
     onTouchforcechange: '.ee'
   };
+  var OPTIONS = ['Capture', 'CaptureOnce', 'CapturePassive', 'CaptureOncePassive', 'Once', 'OncePassive', 'Passive'];
+  var ATTR_MAP = /*#__PURE__*/extend$1({
+    class: '.c',
+    style: '.s'
+  }, Object.keys(EVENT_MAP).reduce(function (res, name) {
+    var value = EVENT_MAP[name];
+    res[name] = value;
+    OPTIONS.forEach(function (v, i) {
+      res[name + v] = value + i;
+    });
+    return res;
+  }, Object.create(null)));
 
   function encodeAttr(name) {
     return ATTR_MAP[name] || name;
@@ -411,7 +526,7 @@ export default function vueFactory(exports) {
         if (pageNode) {
           _this2.pageNode = pageNode;
           _this2.nodeId = pageNode.genId();
-          pageNode.onCreate(_assertThisInitialized(_this2), encodeTag(nodeName));
+          !pageNode.isUnmounted && pageNode.onCreate(_assertThisInitialized(_this2), encodeTag(nodeName));
         }
       }
 
@@ -452,7 +567,7 @@ export default function vueFactory(exports) {
       set: function set(text) {
         this._text = text;
 
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
           this.pageNode.onTextContent(this, text);
         }
       }
@@ -516,7 +631,7 @@ export default function vueFactory(exports) {
           childNodes.push(newChild);
         }
 
-        return this.pageNode ? this.pageNode.onInsertBefore(this, newChild, refChild) : newChild;
+        return this.pageNode && !this.pageNode.isUnmounted ? this.pageNode.onInsertBefore(this, newChild, refChild) : newChild;
       }
     }, {
       key: "removeChild",
@@ -530,7 +645,7 @@ export default function vueFactory(exports) {
 
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
+        return this.pageNode && !this.pageNode.isUnmounted ? this.pageNode.onRemoveChild(oldChild) : oldChild;
       }
     }]);
 
@@ -575,22 +690,14 @@ export default function vueFactory(exports) {
       value: function addEventListener(type, listener, options) {
         _get(_getPrototypeOf(UniBaseNode.prototype), "addEventListener", this).call(this, type, listener, options);
 
-        var normalized = normalizeEventType(type);
-
-        if (!this.attributes[normalized]) {
-          this.setAttribute(normalized, 1);
-        }
+        this.setAttribute(normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
       }
     }, {
       key: "removeEventListener",
       value: function removeEventListener(type, callback, options) {
         _get(_getPrototypeOf(UniBaseNode.prototype), "removeEventListener", this).call(this, type, callback, options);
 
-        var normalized = normalizeEventType(type);
-
-        if (this.attributes[encodeAttr(normalized)]) {
-          this.removeAttribute(normalized);
-        }
+        this.removeAttribute(normalizeEventType(type, options));
       }
     }, {
       key: "getAttribute",
@@ -603,7 +710,7 @@ export default function vueFactory(exports) {
         qualifiedName = encodeAttr(qualifiedName);
         delete this.attributes[qualifiedName];
 
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
           this.pageNode.onRemoveAttribute(this, qualifiedName);
         }
       }
@@ -613,7 +720,7 @@ export default function vueFactory(exports) {
         qualifiedName = encodeAttr(qualifiedName);
         this.attributes[qualifiedName] = value;
 
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
           this.pageNode.onSetAttribute(this, qualifiedName, value);
         }
       }
@@ -714,7 +821,7 @@ export default function vueFactory(exports) {
       set: function set(text) {
         this._text = text;
 
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
           this.pageNode.onNodeValue(this, text);
         }
       }
@@ -1162,7 +1269,7 @@ export default function vueFactory(exports) {
       }
     };
 
-    if (type === 'clear'
+    if (type === "clear"
     /* CLEAR */
     ) {
         // collection being cleared
@@ -1182,7 +1289,7 @@ export default function vueFactory(exports) {
 
 
       switch (type) {
-        case 'add'
+        case "add"
         /* ADD */
         :
           if (!isArray(target)) {
@@ -1198,7 +1305,7 @@ export default function vueFactory(exports) {
 
           break;
 
-        case 'delete'
+        case "delete"
         /* DELETE */
         :
           if (!isArray(target)) {
@@ -1211,7 +1318,7 @@ export default function vueFactory(exports) {
 
           break;
 
-        case 'set'
+        case "set"
         /* SET */
         :
           if (isMap(target)) {
@@ -1264,7 +1371,7 @@ export default function vueFactory(exports) {
         var arr = toRaw(this);
 
         for (var i = 0, l = this.length; i < l; i++) {
-          track(arr, 'get'
+          track(arr, "get"
           /* GET */
           , i + '');
         } // we run the method using the original args first (which may be reactive)
@@ -1306,15 +1413,15 @@ export default function vueFactory(exports) {
     var isReadonly = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     var shallow = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     return function get(target, key, receiver) {
-      if (key === '__v_isReactive'
+      if (key === "__v_isReactive"
       /* IS_REACTIVE */
       ) {
           return !isReadonly;
-        } else if (key === '__v_isReadonly'
+        } else if (key === "__v_isReadonly"
       /* IS_READONLY */
       ) {
           return isReadonly;
-        } else if (key === '__v_raw'
+        } else if (key === "__v_raw"
       /* RAW */
       && receiver === (isReadonly ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target)) {
         return target;
@@ -1333,7 +1440,7 @@ export default function vueFactory(exports) {
       }
 
       if (!isReadonly) {
-        track(target, 'get'
+        track(target, "get"
         /* GET */
         , key);
       }
@@ -1382,11 +1489,11 @@ export default function vueFactory(exports) {
 
       if (target === toRaw(receiver)) {
         if (!hadKey) {
-          trigger(target, 'add'
+          trigger(target, "add"
           /* ADD */
           , key, value);
         } else if (hasChanged(value, oldValue)) {
-          trigger(target, 'set'
+          trigger(target, "set"
           /* SET */
           , key, value, oldValue);
         }
@@ -1402,7 +1509,7 @@ export default function vueFactory(exports) {
     var result = Reflect.deleteProperty(target, key);
 
     if (result && hadKey) {
-      trigger(target, 'delete'
+      trigger(target, "delete"
       /* DELETE */
       , key, undefined, oldValue);
     }
@@ -1414,7 +1521,7 @@ export default function vueFactory(exports) {
     var result = Reflect.has(target, key);
 
     if (!isSymbol(key) || !builtInSymbols.has(key)) {
-      track(target, 'has'
+      track(target, "has"
       /* HAS */
       , key);
     }
@@ -1423,7 +1530,7 @@ export default function vueFactory(exports) {
   }
 
   function ownKeys(target) {
-    track(target, 'iterate'
+    track(target, "iterate"
     /* ITERATE */
     , isArray(target) ? 'length' : ITERATE_KEY);
     return Reflect.ownKeys(target);
@@ -1488,19 +1595,19 @@ export default function vueFactory(exports) {
     var isShallow = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     // #1772: readonly(reactive(Map)) should return readonly + reactive version
     // of the value
-    target = target['__v_raw'
+    target = target["__v_raw"
     /* RAW */
     ];
     var rawTarget = toRaw(target);
     var rawKey = toRaw(key);
 
     if (key !== rawKey) {
-      !isReadonly && track(rawTarget, 'get'
+      !isReadonly && track(rawTarget, "get"
       /* GET */
       , key);
     }
 
-    !isReadonly && track(rawTarget, 'get'
+    !isReadonly && track(rawTarget, "get"
     /* GET */
     , rawKey);
 
@@ -1522,19 +1629,19 @@ export default function vueFactory(exports) {
 
   function has$1(key) {
     var isReadonly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    var target = this['__v_raw'
+    var target = this["__v_raw"
     /* RAW */
     ];
     var rawTarget = toRaw(target);
     var rawKey = toRaw(key);
 
     if (key !== rawKey) {
-      !isReadonly && track(rawTarget, 'has'
+      !isReadonly && track(rawTarget, "has"
       /* HAS */
       , key);
     }
 
-    !isReadonly && track(rawTarget, 'has'
+    !isReadonly && track(rawTarget, "has"
     /* HAS */
     , rawKey);
     return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
@@ -1542,10 +1649,10 @@ export default function vueFactory(exports) {
 
   function size(target) {
     var isReadonly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    target = target['__v_raw'
+    target = target["__v_raw"
     /* RAW */
     ];
-    !isReadonly && track(toRaw(target), 'iterate'
+    !isReadonly && track(toRaw(target), "iterate"
     /* ITERATE */
     , ITERATE_KEY);
     return Reflect.get(target, 'size', target);
@@ -1559,7 +1666,7 @@ export default function vueFactory(exports) {
 
     if (!hadKey) {
       target.add(value);
-      trigger(target, 'add'
+      trigger(target, "add"
       /* ADD */
       , value, value);
     }
@@ -1588,11 +1695,11 @@ export default function vueFactory(exports) {
     target.set(key, value);
 
     if (!hadKey) {
-      trigger(target, 'add'
+      trigger(target, "add"
       /* ADD */
       , key, value);
     } else if (hasChanged(value, oldValue)) {
-      trigger(target, 'set'
+      trigger(target, "set"
       /* SET */
       , key, value, oldValue);
     }
@@ -1621,7 +1728,7 @@ export default function vueFactory(exports) {
     var result = target.delete(key);
 
     if (hadKey) {
-      trigger(target, 'delete'
+      trigger(target, "delete"
       /* DELETE */
       , key, undefined, oldValue);
     }
@@ -1637,7 +1744,7 @@ export default function vueFactory(exports) {
     var result = target.clear();
 
     if (hadItems) {
-      trigger(target, 'clear'
+      trigger(target, "clear"
       /* CLEAR */
       , undefined, undefined, oldTarget);
     }
@@ -1648,12 +1755,12 @@ export default function vueFactory(exports) {
   function createForEach(isReadonly, isShallow) {
     return function forEach(callback, thisArg) {
       var observed = this;
-      var target = observed['__v_raw'
+      var target = observed["__v_raw"
       /* RAW */
       ];
       var rawTarget = toRaw(target);
       var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-      !isReadonly && track(rawTarget, 'iterate'
+      !isReadonly && track(rawTarget, "iterate"
       /* ITERATE */
       , ITERATE_KEY);
       return target.forEach(function (value, key) {
@@ -1667,7 +1774,7 @@ export default function vueFactory(exports) {
 
   function createIterableMethod(method, isReadonly, isShallow) {
     return function () {
-      var target = this['__v_raw'
+      var target = this["__v_raw"
       /* RAW */
       ];
       var rawTarget = toRaw(target);
@@ -1676,7 +1783,7 @@ export default function vueFactory(exports) {
       var isKeyOnly = method === 'keys' && targetIsMap;
       var innerIterator = target[method].apply(target, arguments);
       var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-      !isReadonly && track(rawTarget, 'iterate'
+      !isReadonly && track(rawTarget, "iterate"
       /* ITERATE */
       , isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY); // return a wrapped iterator which returns observed versions of the
       // values emitted from the real iterator
@@ -1713,7 +1820,7 @@ export default function vueFactory(exports) {
         console.warn("".concat(capitalize(type), " operation ").concat(key, "failed: target is readonly."), toRaw(this));
       }
 
-      return type === 'delete'
+      return type === "delete"
       /* DELETE */
       ? false : this;
     };
@@ -1765,16 +1872,16 @@ export default function vueFactory(exports) {
         return has$1.call(this, key, true);
       },
 
-      add: createReadonlyMethod('add'
+      add: createReadonlyMethod("add"
       /* ADD */
       ),
-      set: createReadonlyMethod('set'
+      set: createReadonlyMethod("set"
       /* SET */
       ),
-      delete: createReadonlyMethod('delete'
+      delete: createReadonlyMethod("delete"
       /* DELETE */
       ),
-      clear: createReadonlyMethod('clear'
+      clear: createReadonlyMethod("clear"
       /* CLEAR */
       ),
       forEach: createForEach(true, false)
@@ -1792,16 +1899,16 @@ export default function vueFactory(exports) {
         return has$1.call(this, key, true);
       },
 
-      add: createReadonlyMethod('add'
+      add: createReadonlyMethod("add"
       /* ADD */
       ),
-      set: createReadonlyMethod('set'
+      set: createReadonlyMethod("set"
       /* SET */
       ),
-      delete: createReadonlyMethod('delete'
+      delete: createReadonlyMethod("delete"
       /* DELETE */
       ),
-      clear: createReadonlyMethod('clear'
+      clear: createReadonlyMethod("clear"
       /* CLEAR */
       ),
       forEach: createForEach(true, true)
@@ -1826,15 +1933,15 @@ export default function vueFactory(exports) {
   function createInstrumentationGetter(isReadonly, shallow) {
     var instrumentations = shallow ? isReadonly ? shallowReadonlyInstrumentations : shallowInstrumentations : isReadonly ? readonlyInstrumentations : mutableInstrumentations;
     return function (target, key, receiver) {
-      if (key === '__v_isReactive'
+      if (key === "__v_isReactive"
       /* IS_REACTIVE */
       ) {
           return !isReadonly;
-        } else if (key === '__v_isReadonly'
+        } else if (key === "__v_isReadonly"
       /* IS_READONLY */
       ) {
           return isReadonly;
-        } else if (key === '__v_raw'
+        } else if (key === "__v_raw"
       /* RAW */
       ) {
           return target;
@@ -1875,27 +1982,27 @@ export default function vueFactory(exports) {
     switch (rawType) {
       case 'Object':
       case 'Array':
-        return 1;
-
-      /* COMMON */
+        return 1
+        /* COMMON */
+        ;
 
       case 'Map':
       case 'Set':
       case 'WeakMap':
       case 'WeakSet':
-        return 2;
-
-      /* COLLECTION */
+        return 2
+        /* COLLECTION */
+        ;
 
       default:
-        return 0;
-
-      /* INVALID */
+        return 0
+        /* INVALID */
+        ;
     }
   }
 
   function getTargetType(value) {
-    return value['__v_skip'
+    return value["__v_skip"
     /* SKIP */
     ] || !Object.isExtensible(value) ? 0
     /* INVALID */
@@ -1904,7 +2011,7 @@ export default function vueFactory(exports) {
 
   function reactive(target) {
     // if trying to observe a readonly proxy, return the readonly version.
-    if (target && target['__v_isReadonly'
+    if (target && target["__v_isReadonly"
     /* IS_READONLY */
     ]) {
       return target;
@@ -1954,9 +2061,9 @@ export default function vueFactory(exports) {
     // exception: calling readonly() on a reactive object
 
 
-    if (target['__v_raw'
+    if (target["__v_raw"
     /* RAW */
-    ] && !(isReadonly && target['__v_isReactive'
+    ] && !(isReadonly && target["__v_isReactive"
     /* IS_REACTIVE */
     ])) {
       return target;
@@ -1987,18 +2094,18 @@ export default function vueFactory(exports) {
 
   function isReactive(value) {
     if (isReadonly(value)) {
-      return isReactive(value['__v_raw'
+      return isReactive(value["__v_raw"
       /* RAW */
       ]);
     }
 
-    return !!(value && value['__v_isReactive'
+    return !!(value && value["__v_isReactive"
     /* IS_REACTIVE */
     ]);
   }
 
   function isReadonly(value) {
-    return !!(value && value['__v_isReadonly'
+    return !!(value && value["__v_isReadonly"
     /* IS_READONLY */
     ]);
   }
@@ -2008,13 +2115,13 @@ export default function vueFactory(exports) {
   }
 
   function toRaw(observed) {
-    return observed && toRaw(observed['__v_raw'
+    return observed && toRaw(observed["__v_raw"
     /* RAW */
     ]) || observed;
   }
 
   function markRaw(value) {
-    def(value, '__v_skip'
+    def(value, "__v_skip"
     /* SKIP */
     , true);
     return value;
@@ -2049,7 +2156,7 @@ export default function vueFactory(exports) {
     _createClass(RefImpl, [{
       key: "value",
       get: function get() {
-        track(toRaw(this), 'get'
+        track(toRaw(this), "get"
         /* GET */
         , 'value');
         return this._value;
@@ -2058,7 +2165,7 @@ export default function vueFactory(exports) {
         if (hasChanged(toRaw(newVal), this._rawValue)) {
           this._rawValue = newVal;
           this._value = this._shallow ? newVal : convert(newVal);
-          trigger(toRaw(this), 'set'
+          trigger(toRaw(this), "set"
           /* SET */
           , 'value', newVal);
         }
@@ -2079,7 +2186,7 @@ export default function vueFactory(exports) {
   }
 
   function triggerRef(ref) {
-    trigger(toRaw(ref), 'set'
+    trigger(toRaw(ref), "set"
     /* SET */
     , 'value', process.env.NODE_ENV !== 'production' ? ref.value : void 0);
   }
@@ -2117,13 +2224,13 @@ export default function vueFactory(exports) {
       this.__v_isRef = true;
 
       var _factory = factory(function () {
-        return track(_this7, 'get'
+        return track(_this7, "get"
         /* GET */
         ,
         /* GET */
         'value');
       }, function () {
-        return trigger(_this7, 'set'
+        return trigger(_this7, "set"
         /* SET */
         ,
         /* SET */
@@ -2207,13 +2314,13 @@ export default function vueFactory(exports) {
         scheduler: function scheduler() {
           if (!_this8._dirty) {
             _this8._dirty = true;
-            trigger(toRaw(_this8), 'set'
+            trigger(toRaw(_this8), "set"
             /* SET */
             , 'value');
           }
         }
       });
-      this['__v_isReadonly'
+      this["__v_isReadonly"
       /* IS_READONLY */
       ] = isReadonly;
     }
@@ -2229,7 +2336,7 @@ export default function vueFactory(exports) {
           self._dirty = false;
         }
 
-        track(self, 'get'
+        track(self, "get"
         /* GET */
         , 'value');
         return self._value;
@@ -2392,46 +2499,46 @@ export default function vueFactory(exports) {
   }
 
   var ErrorTypeStrings = {
-    ['sp'
+    ["sp"
     /* SERVER_PREFETCH */
     ]: 'serverPrefetch hook',
-    ['bc'
+    ["bc"
     /* BEFORE_CREATE */
     ]: 'beforeCreate hook',
-    ['c'
+    ["c"
     /* CREATED */
     ]: 'created hook',
-    ['bm'
+    ["bm"
     /* BEFORE_MOUNT */
     ]: 'beforeMount hook',
-    ['m'
+    ["m"
     /* MOUNTED */
     ]: 'mounted hook',
-    ['bu'
+    ["bu"
     /* BEFORE_UPDATE */
     ]: 'beforeUpdate hook',
-    ['u'
+    ["u"
     /* UPDATED */
     ]: 'updated',
-    ['bum'
+    ["bum"
     /* BEFORE_UNMOUNT */
     ]: 'beforeUnmount hook',
-    ['um'
+    ["um"
     /* UNMOUNTED */
     ]: 'unmounted hook',
-    ['a'
+    ["a"
     /* ACTIVATED */
     ]: 'activated hook',
-    ['da'
+    ["da"
     /* DEACTIVATED */
     ]: 'deactivated hook',
-    ['ec'
+    ["ec"
     /* ERROR_CAPTURED */
     ]: 'errorCaptured hook',
-    ['rtc'
+    ["rtc"
     /* RENDER_TRACKED */
     ]: 'renderTracked hook',
-    ['rtg'
+    ["rtg"
     /* RENDER_TRIGGERED */
     ]: 'renderTriggered hook',
     [0
@@ -2951,7 +3058,7 @@ export default function vueFactory(exports) {
   function devtoolsInitApp(app, version) {
     // TODO queue if devtools is undefined
     if (!devtools) return;
-    devtools.emit('app:init'
+    devtools.emit("app:init"
     /* APP_INIT */
     , app, version, {
       Fragment,
@@ -2963,18 +3070,18 @@ export default function vueFactory(exports) {
 
   function devtoolsUnmountApp(app) {
     if (!devtools) return;
-    devtools.emit('app:unmount'
+    devtools.emit("app:unmount"
     /* APP_UNMOUNT */
     , app);
   }
 
-  var devtoolsComponentAdded = /*#__PURE__*/createDevtoolsComponentHook('component:added'
+  var devtoolsComponentAdded = /*#__PURE__*/createDevtoolsComponentHook("component:added"
   /* COMPONENT_ADDED */
   );
-  var devtoolsComponentUpdated = /*#__PURE__*/createDevtoolsComponentHook('component:updated'
+  var devtoolsComponentUpdated = /*#__PURE__*/createDevtoolsComponentHook("component:updated"
   /* COMPONENT_UPDATED */
   );
-  var devtoolsComponentRemoved = /*#__PURE__*/createDevtoolsComponentHook('component:removed'
+  var devtoolsComponentRemoved = /*#__PURE__*/createDevtoolsComponentHook("component:removed"
   /* COMPONENT_REMOVED */
   );
 
@@ -2985,10 +3092,10 @@ export default function vueFactory(exports) {
     };
   }
 
-  var devtoolsPerfStart = /*#__PURE__*/createDevtoolsPerformanceHook('perf:start'
+  var devtoolsPerfStart = /*#__PURE__*/createDevtoolsPerformanceHook("perf:start"
   /* PERFORMANCE_START */
   );
-  var devtoolsPerfEnd = /*#__PURE__*/createDevtoolsPerformanceHook('perf:end'
+  var devtoolsPerfEnd = /*#__PURE__*/createDevtoolsPerformanceHook("perf:end"
   /* PERFORMANCE_END */
   );
 
@@ -3001,7 +3108,7 @@ export default function vueFactory(exports) {
 
   function devtoolsComponentEmit(component, event, params) {
     if (!devtools) return;
-    devtools.emit('component:emit'
+    devtools.emit("component:emit"
     /* COMPONENT_EMIT */
     , component.appContext.app, component, event, params);
   }
@@ -3448,15 +3555,15 @@ export default function vueFactory(exports) {
         }
       }
 
-      if (false && isCompatEnabled('INSTANCE_ATTRS_CLASS_STYLE'
+      if (false && isCompatEnabled("INSTANCE_ATTRS_CLASS_STYLE"
       /* INSTANCE_ATTRS_CLASS_STYLE */
       , instance) && vnode.shapeFlag & 4
       /* STATEFUL_COMPONENT */
       && (root.shapeFlag & 1
       /* ELEMENT */
-      || root.shapeFlag & 6)
+      || root.shapeFlag & 6
       /* COMPONENT */
-      ) ; // inherit directives
+      )) ; // inherit directives
 
       if (vnode.dirs) {
         if (process.env.NODE_ENV !== 'production' && !isElementRoot(root)) {
@@ -4139,9 +4246,9 @@ export default function vueFactory(exports) {
   function normalizeSuspenseChildren(vnode) {
     var shapeFlag = vnode.shapeFlag,
         children = vnode.children;
-    var isSlotChildren = shapeFlag & 32;
+    var isSlotChildren = shapeFlag & 32
     /* SLOTS_CHILDREN */
-
+    ;
     vnode.ssContent = normalizeSuspenseSlot(isSlotChildren ? children.default : children);
     vnode.ssFallback = isSlotChildren ? normalizeSuspenseSlot(children.fallback) : createVNode(Comment);
   }
@@ -4505,7 +4612,7 @@ export default function vueFactory(exports) {
   function traverse(value) {
     var seen = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Set();
 
-    if (!isObject(value) || seen.has(value) || value['__v_skip'
+    if (!isObject(value) || seen.has(value) || value["__v_skip"
     /* SKIP */
     ]) {
       return value;
@@ -4900,8 +5007,9 @@ export default function vueFactory(exports) {
 
     if (keyedFragmentCount > 1) {
       for (var _i2 = 0; _i2 < ret.length; _i2++) {
-        ret[_i2].patchFlag = -2;
+        ret[_i2].patchFlag = -2
         /* BAIL */
+        ;
       }
     }
 
@@ -5288,7 +5396,11 @@ export default function vueFactory(exports) {
 
           current = null;
           return children;
-        } else if (!isVNode(rawVNode) || !(rawVNode.shapeFlag & 4) && !(rawVNode.shapeFlag & 128)) {
+        } else if (!isVNode(rawVNode) || !(rawVNode.shapeFlag & 4
+        /* STATEFUL_COMPONENT */
+        ) && !(rawVNode.shapeFlag & 128
+        /* SUSPENSE */
+        )) {
           current = null;
           return rawVNode;
         }
@@ -5338,9 +5450,9 @@ export default function vueFactory(exports) {
           } // avoid vnode being mounted as fresh
 
 
-          vnode.shapeFlag |= 512;
+          vnode.shapeFlag |= 512
           /* COMPONENT_KEPT_ALIVE */
-          // make this key the freshest
+          ; // make this key the freshest
 
           keys.delete(key);
           keys.add(key);
@@ -5353,9 +5465,9 @@ export default function vueFactory(exports) {
         } // avoid vnode being unmounted
 
 
-        vnode.shapeFlag |= 256;
+        vnode.shapeFlag |= 256
         /* COMPONENT_SHOULD_KEEP_ALIVE */
-
+        ;
         current = vnode;
         return rawVNode;
       };
@@ -5383,13 +5495,13 @@ export default function vueFactory(exports) {
   }
 
   function onActivated(hook, target) {
-    registerKeepAliveHook(hook, 'a'
+    registerKeepAliveHook(hook, "a"
     /* ACTIVATED */
     , target);
   }
 
   function onDeactivated(hook, target) {
-    registerKeepAliveHook(hook, 'da'
+    registerKeepAliveHook(hook, "da"
     /* DEACTIVATED */
     , target);
   }
@@ -5451,15 +5563,17 @@ export default function vueFactory(exports) {
     if (shapeFlag & 256
     /* COMPONENT_SHOULD_KEEP_ALIVE */
     ) {
-        shapeFlag -= 256;
+        shapeFlag -= 256
         /* COMPONENT_SHOULD_KEEP_ALIVE */
+        ;
       }
 
     if (shapeFlag & 512
     /* COMPONENT_KEPT_ALIVE */
     ) {
-        shapeFlag -= 512;
+        shapeFlag -= 512
         /* COMPONENT_KEPT_ALIVE */
+        ;
       }
 
     vnode.shapeFlag = shapeFlag;
@@ -5520,44 +5634,44 @@ export default function vueFactory(exports) {
     return function (hook) {
       var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : currentInstance;
       return (// post-create lifecycle registrations are noops during SSR (except for serverPrefetch)
-        (!isInSSRComponentSetup || lifecycle === 'sp') &&
+        (!isInSSRComponentSetup || lifecycle === "sp"
         /* SERVER_PREFETCH */
-        injectHook(lifecycle, hook, target)
+        ) && injectHook(lifecycle, hook, target)
       );
     };
   };
 
-  var onBeforeMount = createHook('bm'
+  var onBeforeMount = createHook("bm"
   /* BEFORE_MOUNT */
   );
-  var onMounted = createHook('m'
+  var onMounted = createHook("m"
   /* MOUNTED */
   );
-  var onBeforeUpdate = createHook('bu'
+  var onBeforeUpdate = createHook("bu"
   /* BEFORE_UPDATE */
   );
-  var onUpdated = createHook('u'
+  var onUpdated = createHook("u"
   /* UPDATED */
   );
-  var onBeforeUnmount = createHook('bum'
+  var onBeforeUnmount = createHook("bum"
   /* BEFORE_UNMOUNT */
   );
-  var onUnmounted = createHook('um'
+  var onUnmounted = createHook("um"
   /* UNMOUNTED */
   );
-  var onServerPrefetch = createHook('sp'
+  var onServerPrefetch = createHook("sp"
   /* SERVER_PREFETCH */
   );
-  var onRenderTriggered = createHook('rtg'
+  var onRenderTriggered = createHook("rtg"
   /* RENDER_TRIGGERED */
   );
-  var onRenderTracked = createHook('rtc'
+  var onRenderTracked = createHook("rtc"
   /* RENDER_TRACKED */
   );
 
   function onErrorCaptured(hook) {
     var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : currentInstance;
-    injectHook('ec'
+    injectHook("ec"
     /* ERROR_CAPTURED */
     , hook, target);
   }
@@ -5591,7 +5705,7 @@ export default function vueFactory(exports) {
     // the hook may mutate resolved options (#2791)
 
     if (options.beforeCreate) {
-      callHook(options.beforeCreate, instance, 'bc'
+      callHook(options.beforeCreate, instance, "bc"
       /* BEFORE_CREATE */
       );
     }
@@ -5631,7 +5745,7 @@ export default function vueFactory(exports) {
 
       if (propsOptions) {
         for (var key in propsOptions) {
-          checkDuplicateProperties('Props'
+          checkDuplicateProperties("Props"
           /* PROPS */
           , key);
         }
@@ -5668,7 +5782,7 @@ export default function vueFactory(exports) {
           }
 
           if (process.env.NODE_ENV !== 'production') {
-            checkDuplicateProperties('Methods'
+            checkDuplicateProperties("Methods"
             /* METHODS */
             , _key8);
           }
@@ -5697,7 +5811,7 @@ export default function vueFactory(exports) {
 
           if (process.env.NODE_ENV !== 'production') {
             var _loop = function _loop(_key9) {
-              checkDuplicateProperties('Data'
+              checkDuplicateProperties("Data"
               /* DATA */
               , _key9); // expose data on ctx during dev
 
@@ -5752,7 +5866,7 @@ export default function vueFactory(exports) {
         });
 
         if (process.env.NODE_ENV !== 'production') {
-          checkDuplicateProperties('Computed'
+          checkDuplicateProperties("Computed"
           /* COMPUTED */
           , _key10);
         }
@@ -5777,7 +5891,7 @@ export default function vueFactory(exports) {
     }
 
     if (created) {
-      callHook(created, instance, 'c'
+      callHook(created, instance, "c"
       /* CREATED */
       );
     }
@@ -5861,7 +5975,7 @@ export default function vueFactory(exports) {
       }
 
       if (process.env.NODE_ENV !== 'production') {
-        checkDuplicateProperties('Inject'
+        checkDuplicateProperties("Inject"
         /* INJECT */
         , key);
       }
@@ -6105,7 +6219,9 @@ export default function vueFactory(exports) {
     if ( // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !(process.env.NODE_ENV !== 'production' && (instance.type.__hmrId || instance.parent && instance.parent.type.__hmrId)) && (optimized || patchFlag > 0) && !(patchFlag & 16)) {
+    !(process.env.NODE_ENV !== 'production' && (instance.type.__hmrId || instance.parent && instance.parent.type.__hmrId)) && (optimized || patchFlag > 0) && !(patchFlag & 16
+    /* FULL_PROPS */
+    )) {
       if (patchFlag & 8
       /* PROPS */
       ) {
@@ -6183,7 +6299,7 @@ export default function vueFactory(exports) {
 
 
     if (hasAttrsChanged) {
-      trigger(instance, 'set'
+      trigger(instance, "set"
       /* SET */
       , '$attrs');
     }
@@ -6990,9 +7106,9 @@ export default function vueFactory(exports) {
 
   var isComment = function isComment(node) {
     return node.nodeType === 8;
-  };
+  }
   /* COMMENT */
-  // Note: hydration is DOM-specific
+  ; // Note: hydration is DOM-specific
   // But we have to place it in core due to tight coupling with core - splitting
   // it out creates a ton of unnecessary complexity.
   // Hydration also depends on some renderer internal logic which needs to be
@@ -7201,12 +7317,12 @@ export default function vueFactory(exports) {
             || patchFlag & 32
             /* HYDRATE_EVENTS */
             ) {
-                for (var key in props) {
-                  if (forcePatchValue && key.endsWith('value') || isOn(key) && !isReservedProp(key)) {
-                    patchProp(el, key, null, props[key]);
-                  }
+              for (var key in props) {
+                if (forcePatchValue && key.endsWith('value') || isOn(key) && !isReservedProp(key)) {
+                  patchProp(el, key, null, props[key]);
                 }
-              } else if (props.onClick) {
+              }
+            } else if (props.onClick) {
               // Fast path for click listeners (which is most often) to avoid
               // iterating through props.
               patchProp(el, 'onClick', null, props.onClick);
@@ -7905,9 +8021,9 @@ export default function vueFactory(exports) {
           dirs = n2.dirs; // #1426 take the old vnode's patch flag into account since user may clone a
       // compiler-generated vnode, which de-opts to FULL_PROPS
 
-      patchFlag |= n1.patchFlag & 16;
+      patchFlag |= n1.patchFlag & 16
       /* FULL_PROPS */
-
+      ;
       var oldProps = n1.props || EMPTY_OBJ;
       var newProps = n2.props || EMPTY_OBJ;
       var vnodeHook;
@@ -8030,9 +8146,9 @@ export default function vueFactory(exports) {
         !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
         oldVNode.shapeFlag & 6
         /* COMPONENT */
-        || oldVNode.shapeFlag & 64)
+        || oldVNode.shapeFlag & 64
         /* TELEPORT */
-        ? hostParentNode(oldVNode.el) : // In other cases, the parent container is not actually used so we
+        ) ? hostParentNode(oldVNode.el) : // In other cases, the parent container is not actually used so we
         // just pass the block element here to avoid a DOM parentNode call.
         fallbackContainer;
         patch(oldVNode, newVNode, container, null, parentComponent, parentSuspense, isSVG, slotScopeIds, true);
@@ -8874,13 +8990,13 @@ export default function vueFactory(exports) {
           unmountChildren(dynamicChildren, parentComponent, parentSuspense, false, true);
         } else if (type === Fragment && (patchFlag & 128
         /* KEYED_FRAGMENT */
-        || patchFlag & 256)
+        || patchFlag & 256
         /* UNKEYED_FRAGMENT */
-        || !optimized && shapeFlag & 16
+        ) || !optimized && shapeFlag & 16
         /* ARRAY_CHILDREN */
         ) {
-            unmountChildren(children, parentComponent, parentSuspense);
-          }
+          unmountChildren(children, parentComponent, parentSuspense);
+        }
 
         if (doRemove) {
           remove(vnode);
@@ -9386,9 +9502,9 @@ export default function vueFactory(exports) {
         shapeFlag = vnode.shapeFlag,
         children = vnode.children,
         props = vnode.props;
-    var isReorder = moveType === 2;
+    var isReorder = moveType === 2
     /* REORDER */
-    // move main view anchor if this is a re-order.
+    ; // move main view anchor if this is a re-order.
 
     if (isReorder) {
       insert(el, container, parentAnchor);
@@ -9788,9 +9904,9 @@ export default function vueFactory(exports) {
     // component nodes also should always be patched, because even if the
     // component doesn't need to update, it needs to persist the instance on to
     // the next vnode so that it can be properly unmounted later.
-    patchFlag > 0 || shapeFlag & 6)
+    patchFlag > 0 || shapeFlag & 6
     /* COMPONENT */
-    && // the EVENTS flag is only for hydration and if it is the only flag, the
+    ) && // the EVENTS flag is only for hydration and if it is the only flag, the
     // vnode should not be considered dynamic due to handler caching.
     patchFlag !== 32
     /* HYDRATE_EVENTS */
@@ -9936,8 +10052,9 @@ export default function vueFactory(exports) {
     if (children == null) {
       children = null;
     } else if (isArray(children)) {
-      type = 16;
+      type = 16
       /* ARRAY_CHILDREN */
+      ;
     } else if (typeof children === 'object') {
       if (shapeFlag & 1
       /* ELEMENT */
@@ -9956,9 +10073,9 @@ export default function vueFactory(exports) {
 
           return;
         } else {
-        type = 32;
+        type = 32
         /* SLOTS_CHILDREN */
-
+        ;
         var slotFlag = children._;
 
         if (!slotFlag && !(InternalObjectKey in children)) {
@@ -9971,14 +10088,16 @@ export default function vueFactory(exports) {
           if (currentRenderingInstance.slots._ === 1
           /* STABLE */
           ) {
-              children._ = 1;
+              children._ = 1
               /* STABLE */
+              ;
             } else {
-            children._ = 2;
+            children._ = 2
             /* DYNAMIC */
-
-            vnode.patchFlag |= 1024;
+            ;
+            vnode.patchFlag |= 1024
             /* DYNAMIC_SLOTS */
+            ;
           }
         }
       }
@@ -9987,21 +10106,23 @@ export default function vueFactory(exports) {
         default: children,
         _ctx: currentRenderingInstance
       };
-      type = 32;
+      type = 32
       /* SLOTS_CHILDREN */
+      ;
     } else {
       children = String(children); // force teleport children to array so it can be moved around
 
       if (shapeFlag & 64
       /* TELEPORT */
       ) {
-          type = 16;
+          type = 16
           /* ARRAY_CHILDREN */
-
+          ;
           children = [createTextVNode(children)];
         } else {
-        type = 8;
+        type = 8
         /* TEXT_CHILDREN */
+        ;
       }
     }
 
@@ -10300,30 +10421,31 @@ export default function vueFactory(exports) {
             // default: just fallthrough
           }
         } else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-          accessCache[key] = 0;
+          accessCache[key] = 0
           /* SETUP */
-
+          ;
           return setupState[key];
         } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-          accessCache[key] = 1;
+          accessCache[key] = 1
           /* DATA */
-
+          ;
           return data[key];
         } else if ( // only cache other properties when instance has declared (thus stable)
         // props
         (normalizedProps = instance.propsOptions[0]) && hasOwn(normalizedProps, key)) {
-          accessCache[key] = 2;
+          accessCache[key] = 2
           /* PROPS */
-
+          ;
           return props[key];
         } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-          accessCache[key] = 3;
+          accessCache[key] = 3
           /* CONTEXT */
-
+          ;
           return ctx[key];
         } else if (shouldCacheAccess) {
-          accessCache[key] = 4;
+          accessCache[key] = 4
           /* OTHER */
+          ;
         }
       }
 
@@ -10332,7 +10454,7 @@ export default function vueFactory(exports) {
 
       if (publicGetter) {
         if (key === '$attrs') {
-          track(instance, 'get'
+          track(instance, "get"
           /* GET */
           , key);
           process.env.NODE_ENV !== 'production' && markAttrsAccessed();
@@ -10344,9 +10466,9 @@ export default function vueFactory(exports) {
         return cssModule;
       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
         // user may set custom properties to `this` that start with `$`
-        accessCache[key] = 3;
+        accessCache[key] = 3
         /* CONTEXT */
-
+        ;
         return ctx[key];
       } else if ( // window properties
       globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) {
@@ -10617,8 +10739,9 @@ export default function vueFactory(exports) {
   }
 
   function isStatefulComponent(instance) {
-    return instance.vnode.shapeFlag & 4;
+    return instance.vnode.shapeFlag & 4
     /* STATEFUL_COMPONENT */
+    ;
   }
 
   var isInSSRComponentSetup = false;
@@ -11331,7 +11454,7 @@ export default function vueFactory(exports) {
   } // Core API ------------------------------------------------------------------
 
 
-  var version = '3.1.4';
+  var version = "3.1.4";
   /**
    * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
    * @internal
@@ -11545,6 +11668,23 @@ export default function vueFactory(exports) {
     };
 
     invoker.value = initialValue;
+    var modifiers = new Set(); // 合并 modifiers
+
+    if (isArray(invoker.value)) {
+      invoker.value.forEach(function (v) {
+        if (v.modifiers) {
+          v.modifiers.forEach(function (m) {
+            modifiers.add(m);
+          });
+        }
+      });
+    } else if (invoker.value.modifiers) {
+      invoker.value.modifiers.forEach(function (m) {
+        modifiers.add(m);
+      });
+    }
+
+    invoker.modifiers = _toConsumableArray(modifiers);
     return invoker;
   }
 
@@ -12271,7 +12411,8 @@ export default function vueFactory(exports) {
    */
 
   var withModifiers = function withModifiers(fn, modifiers) {
-    return function (event) {
+    // fixed by xxxxxx 补充 modifiers 标记，方便同步给 view 层
+    var wrapper = function wrapper(event) {
       for (var i = 0; i < modifiers.length; i++) {
         var guard = modifierGuards[modifiers[i]];
         if (guard && guard(event, modifiers)) return;
@@ -12283,6 +12424,9 @@ export default function vueFactory(exports) {
 
       return fn.apply(void 0, [event].concat(args));
     };
+
+    wrapper.modifiers = modifiers;
+    return wrapper;
   }; // Kept for 2.x compat.
   // Note: IE11 compat for `spacebar` and `del` is removed for now.
 

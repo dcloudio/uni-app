@@ -1,33 +1,36 @@
 import { formatLog } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance, getCurrentInstance } from 'vue'
-import { PageProps, VueComponent } from './define'
+import { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 
-export function setupPage(
-  component: VueComponent,
-  { pageId, pagePath, pageQuery, pageInstance }: PageProps
-) {
+export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
-  component.setup = (_props, ctx) => {
+  component.inheritAttrs = false // 禁止继承 __pageId 等属性，避免告警
+  component.setup = (_, ctx) => {
+    const {
+      attrs: { __pageId, __pagePath, __pageQuery, __pageInstance },
+    } = ctx
     if (__DEV__) {
-      console.log(formatLog(pagePath, 'setup'))
+      console.log(formatLog(__pagePath as string, 'setup'))
     }
     const instance = getCurrentInstance()!
     const pageVm = instance.proxy!
-    pageVm.$page = pageInstance
-    addCurrentPage(initScope(pageId, pageVm))
+    pageVm.$page = __pageInstance as Page.PageInstance['$page']
+    addCurrentPage(initScope(__pageId as number, pageVm))
     if (oldSetup) {
-      return oldSetup(pageQuery as any, ctx)
+      return oldSetup(__pageQuery as any, ctx)
     }
   }
   return component
 }
 
 function initScope(pageId: number, vm: ComponentPublicInstance) {
+  const $getAppWebview = () => {
+    return plus.webview.getWebviewById(pageId + '')
+  }
+  vm.$getAppWebview = $getAppWebview
   vm.$scope = {
-    $getAppWebview() {
-      return plus.webview.getWebviewById(String(pageId))
-    },
+    $getAppWebview,
   }
   return vm
 }

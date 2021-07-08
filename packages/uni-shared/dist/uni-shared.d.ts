@@ -53,9 +53,15 @@ export declare const defaultRpx2Unit: {
     unitPrecision: number;
 };
 
-export declare function encodeAttr(name: string): string;
+export declare function encodeAttr(name: string): any;
 
 export declare function encodeTag(tag: string): string | number;
+
+export declare const EventModifierFlags: {
+    stop: number;
+    prevent: number;
+    self: number;
+};
 
 export declare function formatDateTime({ date, mode }: {
     date?: Date | undefined;
@@ -91,6 +97,7 @@ export declare function isServiceNativeTag(tag: string): boolean;
 export declare interface IUniPageNode {
     pageId: number;
     pageNode: IUniPageNode | null;
+    isUnmounted: boolean;
     genId: () => number;
     push: (...args: any[]) => void;
     onCreate: (thisNode: UniNode, nodeName: string | number) => UniNode;
@@ -113,6 +120,8 @@ export declare const NODE_TYPE_PAGE = 0;
 export declare const NODE_TYPE_TEXT = 3;
 
 export declare function normalizeDataset(el: Element): any;
+
+export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
 
 export declare function normalizeTarget(el: HTMLElement): {
     id: string;
@@ -256,6 +265,7 @@ export declare class UniEvent {
 
 export declare interface UniEventListener {
     (evt: UniEvent): void;
+    modifiers?: string[];
 }
 
 declare interface UniEventOptions {
@@ -267,7 +277,7 @@ declare class UniEventTarget {
     private _listeners;
     dispatchEvent(evt: UniEvent): boolean;
     addEventListener(type: string, listener: UniEventListener, options?: AddEventListenerOptions): void;
-    removeEventListener(type: string, callback: UniEventListener, options?: EventListenerOptions): void;
+    removeEventListener(type: string, callback: UniEventListener, options?: AddEventListenerOptions): void;
 }
 
 export declare class UniInputElement extends UniElement {

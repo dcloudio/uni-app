@@ -5,7 +5,10 @@ import {
   formatLog,
   parseEventName,
   UniNodeJSON,
+  normalizeEventType,
+  EventModifierFlags,
 } from '@dcloudio/uni-shared'
+import { withModifiers } from 'vue'
 import { VD_SYNC } from '../../../../constants'
 import { ACTION_TYPE_EVENT } from '../../../../PageAction'
 import { UniNode } from './UniNode'
@@ -32,7 +35,7 @@ export class UniElement extends UniNode {
     if (name === '.c') {
       this.$.className = value as string
     } else if (name.indexOf('.e') === 0) {
-      this.addEvent(name)
+      this.addEvent(name, value as number)
     } else {
       this.$.setAttribute(decodeAttr(name), value as string)
     }
@@ -46,8 +49,8 @@ export class UniElement extends UniNode {
       this.$.removeAttribute(decodeAttr(name))
     }
   }
-  addEvent(name: string) {
-    const [type] = parseEventName(decodeAttr(name))
+  addEvent(name: string, flag: number) {
+    const [type, options] = parseEventName(decodeAttr(name))
     if (this._listeners[type]) {
       if (__DEV__) {
         console.error(
@@ -61,12 +64,8 @@ export class UniElement extends UniNode {
       }
       return
     }
-    this._listeners[type] = (evt: Event) => {
-      UniViewJSBridge.publishHandler(VD_SYNC, [
-        [ACTION_TYPE_EVENT, this.id, normalizeNativeEvent(evt)],
-      ])
-    }
-    this.$.addEventListener(type, this._listeners[type])
+    this._listeners[type] = createInvoker(this.id, flag, options)
+    this.$.addEventListener(type, this._listeners[type], options)
   }
   removeEvent(name: string) {
     const [type] = parseEventName(decodeAttr(name))
@@ -79,4 +78,34 @@ export class UniElement extends UniNode {
       )
     }
   }
+}
+
+function createInvoker(
+  id: number,
+  flag: number,
+  options?: AddEventListenerOptions
+) {
+  const invoker = (evt: Event) => {
+    const event = normalizeNativeEvent(evt)
+    ;(event as any).type = normalizeEventType(evt.type, options)
+    UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id, event]])
+  }
+  if (!flag) {
+    return invoker
+  }
+  return withModifiers(invoker, resolveModifier(flag))
+}
+
+function resolveModifier(flag: number) {
+  const modifiers: string[] = []
+  if (flag & EventModifierFlags.prevent) {
+    modifiers.push('prevent')
+  }
+  if (flag & EventModifierFlags.self) {
+    modifiers.push('self')
+  }
+  if (flag & EventModifierFlags.stop) {
+    modifiers.push('stop')
+  }
+  return modifiers
 }

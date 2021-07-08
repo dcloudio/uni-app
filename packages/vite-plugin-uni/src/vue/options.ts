@@ -1,6 +1,6 @@
 import { extend, hasOwn, isArray } from '@vue/shared'
 import { ParserOptions } from '@vue/compiler-core'
-import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
 import {
@@ -60,12 +60,20 @@ export function initPluginVueOptions(
   let isCompilerCustomElement: ParserOptions['isCustomElement'] =
     isCustomElement
 
+  let directiveTransforms: CompilerOptions['directiveTransforms']
+
   UniVitePlugins.forEach((plugin) => {
-    if (plugin.uni?.compilerOptions?.isNativeTag) {
-      isCompilerNativeTag = plugin.uni.compilerOptions.isNativeTag
-    }
-    if (plugin.uni?.compilerOptions?.isCustomElement) {
-      isCompilerCustomElement = plugin.uni.compilerOptions.isCustomElement
+    const compilerOptions = plugin.uni?.compilerOptions
+    if (compilerOptions) {
+      if (compilerOptions.isNativeTag) {
+        isCompilerNativeTag = compilerOptions.isNativeTag
+      }
+      if (compilerOptions.isCustomElement) {
+        isCompilerCustomElement = compilerOptions.isCustomElement
+      }
+      if (compilerOptions.directiveTransforms) {
+        directiveTransforms = compilerOptions.directiveTransforms
+      }
     }
   })
   const compilerOptions =
@@ -94,6 +102,13 @@ export function initPluginVueOptions(
   compilerOptions.nodeTransforms.unshift(createTransformEvent(eventOpts))
   if (options.platform !== 'mp-weixin') {
     compilerOptions.nodeTransforms.unshift(transformMatchMedia)
+  }
+
+  if (directiveTransforms) {
+    compilerOptions.directiveTransforms = extend(
+      compilerOptions.directiveTransforms || {},
+      directiveTransforms
+    )
   }
 
   return vueOptions

@@ -1,3 +1,6 @@
+import { compileTemplate } from '@vue/compiler-sfc'
+
+import { UniAppPlugin } from '../../../uni-app-vite/src/plugin'
 import {
   ref,
   nextTick,
@@ -6,6 +9,7 @@ import {
   openBlock as _openBlock,
   createBlock as _createBlock,
   createCommentVNode as _createCommentVNode,
+  withModifiers as _withModifiers,
 } from '../../../uni-app-vue/lib/service.runtime.esm'
 
 import { createPageNode } from '../../src/service/framework/dom/Page'
@@ -23,10 +27,31 @@ const defaultPageNodeOptions = {
   windowTop: 0,
   windowBottom: 0,
 }
+
+const { uni } = UniAppPlugin
+
+function compile(source: string) {
+  return compileTemplate({
+    source,
+    filename: 'demo',
+    id: 'test',
+    compilerOptions: { mode: 'module', ...uni!.compilerOptions },
+  }).code
+}
+
+console.log(
+  compile(
+    `<view class="a" @click.stop="handleClick"><view v-if="show" style="color:red">123</view></view>`
+  )
+)
+
 describe('vue', () => {
   test('vdom', () => {
     const show = ref(true)
-    let handleClick: Function | null = () => {}
+    let handleClick: Function | null = _withModifiers(() => {}, [
+      'stop',
+      'self',
+    ])
     const Page = {
       setup() {
         return () => {
@@ -34,7 +59,10 @@ describe('vue', () => {
             _openBlock(),
             _createBlock(
               'view',
-              { class: 'a', onClick: handleClick },
+              {
+                class: 'a',
+                onClickPassiveCaptureOnce: handleClick,
+              },
               [
                 show.value
                   ? (_openBlock(),
@@ -49,7 +77,7 @@ describe('vue', () => {
                   : _createCommentVNode('v-if', true),
               ],
               8 /* PROPS */,
-              ['onClick']
+              ['onClickPassiveCaptureOnce']
             )
           )
         }

@@ -1,6 +1,7 @@
 import { ON_WEBVIEW_READY } from '../../../constants'
 import { createNVueWebview } from './nvue'
-import { getPreloadWebview, getWebviewId } from './utils'
+import { getWebviewId } from './utils'
+import { getPreloadWebview } from './preload'
 
 export * from './init'
 

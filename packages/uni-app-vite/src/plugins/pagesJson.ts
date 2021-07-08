@@ -1,3 +1,4 @@
+import path from 'path'
 import { Plugin } from 'vite'
 
 import {
@@ -18,7 +19,14 @@ export function uniPagesJsonPlugin(): Plugin {
         if (!opts.filter(id)) {
           return
         }
+        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
+        // TODO subpackages
+        pagesJson.pages.forEach((page) => {
+          this.addWatchFile(
+            path.resolve(process.env.UNI_INPUT_DIR, page.path + '.vue')
+          )
+        })
         return (
           `import './manifest.json.js'\n` + normalizeAppPagesJson(pagesJson)
         )

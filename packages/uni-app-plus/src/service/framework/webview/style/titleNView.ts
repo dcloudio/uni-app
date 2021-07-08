@@ -32,6 +32,9 @@ export function initTitleNView(
           return button
         }
       )
+    } else {
+      titleNView[name as keyof PlusWebviewWebviewTitleNViewStyles] =
+        value as any
     }
   })
 

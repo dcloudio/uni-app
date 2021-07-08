@@ -8,7 +8,7 @@ import {
   UniCSSStyleDeclaration,
   UniCSSStyleDeclarationJSON,
 } from './Style'
-import { encodeAttr, encodeTag } from './encode'
+import { encodeAttr, encodeModifier, encodeTag } from './encode'
 
 export const NODE_TYPE_PAGE = 0
 export const NODE_TYPE_ELEMENT = 1
@@ -46,6 +46,7 @@ function checkNodeId(node: UniNode) {
 export interface IUniPageNode {
   pageId: number
   pageNode: IUniPageNode | null
+  isUnmounted: boolean
   genId: () => number
   push: (...args: any[]) => void
   onCreate: (thisNode: UniNode, nodeName: string | number) => UniNode
@@ -87,7 +88,8 @@ export class UniNode extends UniEventTarget {
       if (pageNode) {
         this.pageNode = pageNode
         this.nodeId = pageNode!.genId()
-        pageNode!.onCreate(this, encodeTag(nodeName))
+
+        !pageNode!.isUnmounted && pageNode!.onCreate(this, encodeTag(nodeName))
       }
     }
     this.nodeType = nodeType
@@ -121,7 +123,7 @@ export class UniNode extends UniEventTarget {
 
   set textContent(text: string) {
     this._text = text
-    if (this.pageNode) {
+    if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onTextContent(this, text)
     }
   }
@@ -176,7 +178,7 @@ export class UniNode extends UniEventTarget {
     } else {
       childNodes.push(newChild)
     }
-    return this.pageNode
+    return this.pageNode && !this.pageNode.isUnmounted
       ? this.pageNode.onInsertBefore(this, newChild, refChild)
       : newChild
   }
@@ -191,7 +193,9 @@ export class UniNode extends UniEventTarget {
     }
     oldChild.parentNode = null
     childNodes.splice(index, 1)
-    return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild
+    return this.pageNode && !this.pageNode.isUnmounted
+      ? this.pageNode.onRemoveChild(oldChild)
+      : oldChild
   }
 }
 
@@ -255,10 +259,10 @@ export class UniBaseNode extends UniNode {
     options?: AddEventListenerOptions
   ) {
     super.addEventListener(type, listener, options)
-    const normalized = normalizeEventType(type)
-    if (!this.attributes[normalized]) {
-      this.setAttribute(normalized, 1)
-    }
+    this.setAttribute(
+      normalizeEventType(type, options),
+      encodeModifier(listener.modifiers || [])
+    )
   }
 
   removeEventListener(
@@ -267,10 +271,7 @@ export class UniBaseNode extends UniNode {
     options?: EventListenerOptions
   ) {
     super.removeEventListener(type, callback, options)
-    const normalized = normalizeEventType(type)
-    if (this.attributes[encodeAttr(normalized)]) {
-      this.removeAttribute(normalized)
-    }
+    this.removeAttribute(normalizeEventType(type, options))
   }
 
   getAttribute(qualifiedName: string) {
@@ -280,7 +281,7 @@ export class UniBaseNode extends UniNode {
   removeAttribute(qualifiedName: string): void {
     qualifiedName = encodeAttr(qualifiedName)
     delete this.attributes[qualifiedName]
-    if (this.pageNode) {
+    if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onRemoveAttribute(this, qualifiedName)
     }
   }
@@ -288,7 +289,7 @@ export class UniBaseNode extends UniNode {
   setAttribute(qualifiedName: string, value: unknown): void {
     qualifiedName = encodeAttr(qualifiedName)
     this.attributes[qualifiedName] = value
-    if (this.pageNode) {
+    if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onSetAttribute(this, qualifiedName, value)
     }
   }

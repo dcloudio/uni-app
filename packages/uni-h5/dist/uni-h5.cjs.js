@@ -487,7 +487,7 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   }
   return pullToRefresh;
 }
-function initPageInternalInstance(url, pageQuery, meta) {
+function initPageInternalInstance(openType, url, pageQuery, meta) {
   const { id, route } = meta;
   return {
     id,
@@ -495,7 +495,8 @@ function initPageInternalInstance(url, pageQuery, meta) {
     route,
     fullPath: url,
     options: pageQuery,
-    meta
+    meta,
+    openType
   };
 }
 function invokeHook(vm, name, args) {
@@ -1220,7 +1221,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg(errMsg, name) {
+function normalizeErrMsg$1(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -1237,7 +1238,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
     shared.isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       shared.isFunction(beforeSuccess) && beforeSuccess(res);
@@ -1317,6 +1318,13 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
+function normalizeErrMsg(errMsg) {
+  if (errMsg instanceof Error) {
+    console.error(errMsg);
+    return errMsg.message;
+  }
+  return errMsg;
+}
 function wrapperTaskApi(name, fn, protocol, options) {
   return (args) => {
     const id = createAsyncApiCallback(name, args, options);
@@ -1326,7 +1334,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id, name, errMsg2, errRes)
+      reject: (errMsg2, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -3139,6 +3147,10 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
   }
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3148,7 +3160,8 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     emit: emit2
   }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
+    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
+    const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = vue.computed(() => {
       let type2 = "";
       switch (props2.type) {
@@ -3168,6 +3181,12 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           break;
       }
       return props2.password ? "password" : type2;
+    });
+    const autocomplete = vue.computed(() => {
+      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+      const kebabCaseIndex = AUTOCOMPLETES.indexOf(shared.hyphenate(props2.textContentType));
+      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+      return AUTOCOMPLETES[index2];
     });
     let cache = vue.ref("");
     let resetCache;
@@ -3240,9 +3259,9 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
-        "autocomplete": "off",
+        "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "onKeyup"]);
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, {
@@ -5176,7 +5195,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$e,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort"],
+  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
     slots
@@ -5192,7 +5211,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
       scrollTopNumber,
       scrollLeftNumber
     } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
       props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
@@ -5289,7 +5308,7 @@ function useScrollViewState(props2) {
     scrollLeftNumber
   };
 }
-function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
+function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
   let beforeRefreshing = false;
   let triggerAbort = false;
   let __transitionEnd = () => {
@@ -5409,6 +5428,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         if (!beforeRefreshing) {
           beforeRefreshing = true;
           trigger("refresherrefresh", {}, {});
+          emit2("update:refresherTriggered", true);
         }
         break;
       case "restore":
@@ -6658,9 +6678,9 @@ function getCurrentPages$1() {
 function initPublicPage(route) {
   const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance(__uniRoutes[0].path, {}, meta);
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
   }
-  return initPageInternalInstance(route.fullPath, {}, meta);
+  return initPageInternalInstance("navigateTo", route.fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;

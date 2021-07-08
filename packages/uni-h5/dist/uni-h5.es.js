@@ -737,7 +737,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
+var out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -749,10 +749,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
-    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
-    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
-    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
+    top: top ? top + out.top : 0,
+    bottom: bottom ? bottom + out.bottom : 0,
+    left: left ? left + out.left : 0,
+    right: right ? right + out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -915,7 +915,7 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   }
   return pullToRefresh;
 }
-function initPageInternalInstance(url, pageQuery, meta) {
+function initPageInternalInstance(openType, url, pageQuery, meta) {
   const { id: id2, route } = meta;
   return {
     id: id2,
@@ -923,7 +923,8 @@ function initPageInternalInstance(url, pageQuery, meta) {
     route,
     fullPath: url,
     options: pageQuery,
-    meta
+    meta,
+    openType
   };
 }
 function invokeHook(vm, name, args) {
@@ -2341,7 +2342,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg(errMsg, name) {
+function normalizeErrMsg$1(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -2358,7 +2359,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg(res.errMsg, name);
+    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       isFunction(beforeSuccess) && beforeSuccess(res);
@@ -2474,6 +2475,13 @@ function wrapperOffApi(name, fn, options) {
     }
   };
 }
+function normalizeErrMsg(errMsg) {
+  if (errMsg instanceof Error) {
+    console.error(errMsg);
+    return errMsg.message;
+  }
+  return errMsg;
+}
 function wrapperTaskApi(name, fn, protocol, options) {
   return (args) => {
     const id2 = createAsyncApiCallback(name, args, options);
@@ -2483,7 +2491,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, errMsg2, errRes)
+      reject: (errMsg2, errRes) => invokeFail(id2, name, normalizeErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -8159,6 +8167,10 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
   }
 });
 var Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -8168,7 +8180,8 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     emit: emit2
   }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password"];
+    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
+    const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = computed(() => {
       let type2 = "";
       switch (props2.type) {
@@ -8188,6 +8201,12 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
           break;
       }
       return props2.password ? "password" : type2;
+    });
+    const autocomplete = computed(() => {
+      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+      const kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
+      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+      return AUTOCOMPLETES[index2];
     });
     let cache = ref("");
     let resetCache;
@@ -8260,9 +8279,9 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
-        "autocomplete": "off",
+        "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "onKeyup"]);
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup"]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, {
@@ -11302,7 +11321,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$l,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort"],
+  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
     slots
@@ -11318,7 +11337,7 @@ var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       scrollTopNumber,
       scrollLeftNumber
     } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content);
+    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
       props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
@@ -11415,7 +11434,7 @@ function useScrollViewState(props2) {
     scrollLeftNumber
   };
 }
-function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content) {
+function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
   let _lastScrollTime = 0;
   let beforeRefreshing = false;
   let toUpperNumber = 0;
@@ -11581,6 +11600,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         if (!beforeRefreshing) {
           beforeRefreshing = true;
           trigger("refresherrefresh", {}, {});
+          emit2("update:refresherTriggered", true);
         }
         break;
       case "restore":
@@ -13087,7 +13107,7 @@ function normalizePageMeta(pageMeta) {
       }, pageMeta.pullToRefresh));
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+        pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
     }
@@ -13223,9 +13243,9 @@ function createPageState(type, __id__) {
 function initPublicPage(route) {
   const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance(__uniRoutes[0].path, {}, meta);
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
   }
-  return initPageInternalInstance(route.fullPath, {}, meta);
+  return initPageInternalInstance("navigateTo", route.fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;
@@ -15262,7 +15282,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
+  const statusBarHeight = out.top;
   let osname;
   let osversion;
   let model;
@@ -15375,12 +15395,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
-    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
+    left: out.left,
+    right: windowWidth - out.right,
+    top: out.top,
+    bottom: windowHeight - out.bottom,
+    width: windowWidth - out.left - out.right,
+    height: windowHeight - out.top - out.bottom
   };
   const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
@@ -15400,10 +15420,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
-      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
-      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
-      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
+      top: out.top,
+      right: out.right,
+      bottom: out.bottom,
+      left: out.left
     }
   };
 });

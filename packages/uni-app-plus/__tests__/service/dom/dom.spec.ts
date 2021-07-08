@@ -1,8 +1,9 @@
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniEventListener, UniNodeJSON } from '@dcloudio/uni-shared'
 import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
   createTextNode,
+  withModifiers,
 } from '../../../../uni-app-vue/lib/service.runtime.esm'
 import {
   InsertAction,
@@ -13,6 +14,8 @@ import {
   ACTION_TYPE_SET_TEXT,
   ACTION_TYPE_REMOVE,
 } from '../../../src/PageAction'
+
+import { EventModifierFlags } from '@dcloudio/uni-shared'
 describe('dom', () => {
   const pageId = 1
   const root = createPageNode(pageId, {
@@ -96,7 +99,7 @@ describe('dom', () => {
     expect(addEventListenerAction[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
     expect(addEventListenerAction[1]).toBe(2)
     expect(addEventListenerAction[2]).toBe('.e0')
-    expect(addEventListenerAction[3]).toBe(1)
+    expect(addEventListenerAction[3]).toBe(0)
 
     root.updateActions.length = 0
     textNode.removeEventListener('click', clickFn)
@@ -106,5 +109,22 @@ describe('dom', () => {
     expect(removeEventListenerAction[0]).toBe(ACTION_TYPE_REMOVE_ATTRIBUTE)
     expect(removeEventListenerAction[1]).toBe(2)
     expect(removeEventListenerAction[2]).toBe('.e0')
+
+    root.updateActions.length = 0
+    const clickFn1 = withModifiers(() => {}, [
+      'stop',
+      'prevent',
+    ]) as unknown as UniEventListener
+    textNode.addEventListener('click', clickFn1, { capture: true })
+    const {
+      updateActions: [addEventListenerAction1],
+    } = root
+    expect(addEventListenerAction1[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
+    expect(addEventListenerAction1[1]).toBe(2)
+    expect(addEventListenerAction1[2]).toBe('.e00')
+    const flag = addEventListenerAction1[3] as number
+    expect(flag & EventModifierFlags.stop).toBeTruthy()
+    expect(flag & EventModifierFlags.prevent).toBeTruthy()
+    expect(flag & EventModifierFlags.self).toBeFalsy()
   })
 })

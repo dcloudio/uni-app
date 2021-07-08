@@ -1,7 +1,6 @@
 import { stringifyQuery } from '@dcloudio/uni-shared'
 
 let id = 2
-let preloadWebview: PlusWebviewWebviewObject
 
 export function getWebviewId() {
   return id
@@ -9,10 +8,6 @@ export function getWebviewId() {
 
 export function genWebviewId() {
   return id++
-}
-
-export function getPreloadWebview() {
-  return preloadWebview
 }
 
 function encode(val: Parameters<typeof encodeURIComponent>[0]) {

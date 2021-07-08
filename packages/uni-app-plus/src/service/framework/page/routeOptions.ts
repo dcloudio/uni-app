@@ -1,7 +1,6 @@
 import { getRouteOptions, initRouteMeta } from '@dcloudio/uni-core'
-import { OpenType } from './register'
 
-export function initRouteOptions(path: string, openType: OpenType) {
+export function initRouteOptions(path: string, openType: UniApp.OpenType) {
   // 需要序列化一遍
   const routeOptions = JSON.parse(
     JSON.stringify(getRouteOptions(path)!)

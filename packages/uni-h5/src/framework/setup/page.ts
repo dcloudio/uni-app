@@ -78,10 +78,11 @@ export function createPageState(type: NavigateType, __id__?: number) {
 
 function initPublicPage(route: RouteLocationNormalizedLoaded) {
   const meta = usePageMeta()
+
   if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance(__uniRoutes[0].path, {}, meta)
+    return initPageInternalInstance('navigateTo', __uniRoutes[0].path, {}, meta)
   }
-  return initPageInternalInstance(route.fullPath, {}, meta)
+  return initPageInternalInstance('navigateTo', route.fullPath, {}, meta)
 }
 
 export function initPage(vm: ComponentPublicInstance) {

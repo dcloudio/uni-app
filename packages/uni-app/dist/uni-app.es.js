@@ -1,6 +1,43 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
-import { hasOwn, isString } from '@vue/shared';
+import { extend, hasOwn, isString } from '@vue/shared';
 
+const EVENT_MAP = {
+    onClick: '.e0',
+    onChange: '.e1',
+    onInput: '.e2',
+    onLoad: '.e3',
+    onError: '.e4',
+    onTouchstart: '.e5',
+    onTouchmove: '.e6',
+    onTouchcancel: '.e7',
+    onTouchend: '.e8',
+    onLongpress: '.e9',
+    onTransitionend: '.ea',
+    onAnimationstart: '.eb',
+    onAnimationiteration: '.ec',
+    onAnimationend: '.ed',
+    onTouchforcechange: '.ee',
+};
+const OPTIONS = [
+    'Capture',
+    'CaptureOnce',
+    'CapturePassive',
+    'CaptureOncePassive',
+    'Once',
+    'OncePassive',
+    'Passive',
+];
+/*#__PURE__*/ extend({
+    class: '.c',
+    style: '.s',
+}, Object.keys(EVENT_MAP).reduce((res, name) => {
+    const value = EVENT_MAP[name];
+    res[name] = value;
+    OPTIONS.forEach((v, i) => {
+        res[name + v] = value + i;
+    });
+    return res;
+}, Object.create(null)));
 const sanitise = (val) => (val && JSON.parse(JSON.stringify(val))) || val;
 const UNI_SSR = '__uniSSR';
 const UNI_SSR_DATA = 'data';
@@ -16,6 +53,9 @@ function assertKey(key, shallow = false) {
 }
 const ssrClientRef = (value, key, shallow = false) => {
     const valRef = shallow ? shallowRef(value) : ref(value);
+    if (__PLATFORM__ !== 'h5') {
+        return valRef;
+    }
     const __uniSSR = window[UNI_SSR];
     if (!__uniSSR) {
         return valRef;

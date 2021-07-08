@@ -124,6 +124,18 @@ var serviceContext = (function (vue) {
           return hit || (cache[str] = fn(str));
       });
   };
+  const camelizeRE = /-(\w)/g;
+  /**
+   * @private
+   */
+  const camelize = cacheStringFunction$1((str) => {
+      return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
+  });
+  const hyphenateRE = /\B([A-Z])/g;
+  /**
+   * @private
+   */
+  const hyphenate = cacheStringFunction$1((str) => str.replace(hyphenateRE, '-$1').toLowerCase());
   /**
    * @private
    */
@@ -230,7 +242,8 @@ var serviceContext = (function (vue) {
       }
       else {
           {
-              valid = value instanceof type;
+              // App平台ArrayBuffer等参数跨实例传输，无法通过 instanceof 识别
+              valid = value instanceof type || toRawType(value) === getType(type);
           }
       }
       return {
@@ -362,7 +375,7 @@ var serviceContext = (function (vue) {
       }
       return apiCallbacks;
   }
-  function normalizeErrMsg(errMsg, name) {
+  function normalizeErrMsg$1(errMsg, name) {
       if (!errMsg || errMsg.indexOf(':fail') === -1) {
           return name + ':ok';
       }
@@ -379,7 +392,7 @@ var serviceContext = (function (vue) {
       const callbackId = invokeCallbackId++;
       addInvokeCallback(callbackId, name, (res) => {
           res = res || {};
-          res.errMsg = normalizeErrMsg(res.errMsg, name);
+          res.errMsg = normalizeErrMsg$1(res.errMsg, name);
           isFunction(beforeAll) && beforeAll(res);
           if (res.errMsg === name + ':ok') {
               isFunction(beforeSuccess) && beforeSuccess(res);
@@ -499,6 +512,13 @@ var serviceContext = (function (vue) {
           }
       };
   }
+  function normalizeErrMsg(errMsg) {
+      if (errMsg instanceof Error) {
+          console.error(errMsg);
+          return errMsg.message;
+      }
+      return errMsg;
+  }
   function wrapperTaskApi(name, fn, protocol, options) {
       return (args) => {
           const id = createAsyncApiCallback(name, args, options);
@@ -508,7 +528,7 @@ var serviceContext = (function (vue) {
           }
           return fn(args, {
               resolve: (res) => invokeSuccess(id, name, res),
-              reject: (errMsg, errRes) => invokeFail(id, name, errMsg, errRes),
+              reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
           });
       };
   }
@@ -656,6 +676,53 @@ var serviceContext = (function (vue) {
           this.name = 'DOMException';
       }
   }
+
+  function normalizeEventType(type, options) {
+      if (options) {
+          if (options.capture) {
+              type += 'Capture';
+          }
+          if (options.once) {
+              type += 'Once';
+          }
+          if (options.passive) {
+              type += 'Passive';
+          }
+      }
+      return `on${capitalize(camelize(type))}`;
+  }
+  class UniEvent {
+      constructor(type, opts) {
+          this.defaultPrevented = false;
+          this.timeStamp = Date.now();
+          this._stop = false;
+          this._end = false;
+          this.type = type;
+          this.bubbles = !!opts.bubbles;
+          this.cancelable = !!opts.cancelable;
+      }
+      preventDefault() {
+          this.defaultPrevented = true;
+      }
+      stopImmediatePropagation() {
+          this._end = this._stop = true;
+      }
+      stopPropagation() {
+          this._stop = true;
+      }
+  }
+  function createUniEvent(evt) {
+      if (evt instanceof UniEvent) {
+          return evt;
+      }
+      const [type] = parseEventName(evt.type);
+      const uniEvent = new UniEvent(type, {
+          bubbles: false,
+          cancelable: false,
+      });
+      extend(uniEvent, evt);
+      return uniEvent;
+  }
   class UniEventTarget {
       constructor() {
           this._listeners = {};
@@ -668,28 +735,24 @@ var serviceContext = (function (vue) {
               }
               return false;
           }
+          // 格式化事件类型
+          const event = createUniEvent(evt);
           const len = listeners.length;
           for (let i = 0; i < len; i++) {
-              listeners[i].call(this, evt);
-              if (evt._end) {
+              listeners[i].call(this, event);
+              if (event._end) {
                   break;
               }
           }
-          return evt.cancelable && evt.defaultPrevented;
+          return event.cancelable && event.defaultPrevented;
       }
       addEventListener(type, listener, options) {
-          const isOnce = options && options.once;
-          if (isOnce) {
-              const wrapper = function (evt) {
-                  listener.apply(this, [evt]);
-                  this.removeEventListener(type, wrapper, options);
-              };
-              return this.addEventListener(type, wrapper, extend(options, { once: false }));
-          }
+          type = normalizeEventType(type, options);
           (this._listeners[type] || (this._listeners[type] = [])).push(listener);
       }
       removeEventListener(type, callback, options) {
-          const listeners = this._listeners[type.toLowerCase()];
+          type = normalizeEventType(type, options);
+          const listeners = this._listeners[type];
           if (!listeners) {
               return;
           }
@@ -699,6 +762,56 @@ var serviceContext = (function (vue) {
           }
       }
   }
+  const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+  function parseEventName(name) {
+      let options;
+      if (optionsModifierRE.test(name)) {
+          options = {};
+          let m;
+          while ((m = name.match(optionsModifierRE))) {
+              name = name.slice(0, name.length - m[0].length);
+              options[m[0].toLowerCase()] = true;
+          }
+      }
+      return [hyphenate(name.slice(2)), options];
+  }
+  const EVENT_MAP = {
+      onClick: '.e0',
+      onChange: '.e1',
+      onInput: '.e2',
+      onLoad: '.e3',
+      onError: '.e4',
+      onTouchstart: '.e5',
+      onTouchmove: '.e6',
+      onTouchcancel: '.e7',
+      onTouchend: '.e8',
+      onLongpress: '.e9',
+      onTransitionend: '.ea',
+      onAnimationstart: '.eb',
+      onAnimationiteration: '.ec',
+      onAnimationend: '.ed',
+      onTouchforcechange: '.ee',
+  };
+  const OPTIONS = [
+      'Capture',
+      'CaptureOnce',
+      'CapturePassive',
+      'CaptureOncePassive',
+      'Once',
+      'OncePassive',
+      'Passive',
+  ];
+  /*#__PURE__*/ extend({
+      class: '.c',
+      style: '.s',
+  }, Object.keys(EVENT_MAP).reduce((res, name) => {
+      const value = EVENT_MAP[name];
+      res[name] = value;
+      OPTIONS.forEach((v, i) => {
+          res[name + v] = value + i;
+      });
+      return res;
+  }, Object.create(null)));
   const COMPONENT_MAP = {
       VIEW: 1,
       IMAGE: 2,
@@ -781,7 +894,7 @@ var serviceContext = (function (vue) {
               if (pageNode) {
                   this.pageNode = pageNode;
                   this.nodeId = pageNode.genId();
-                  pageNode.onCreate(this, encodeTag(nodeName));
+                  !pageNode.isUnmounted && pageNode.onCreate(this, encodeTag(nodeName));
               }
           }
           this.nodeType = nodeType;
@@ -808,7 +921,7 @@ var serviceContext = (function (vue) {
       }
       set textContent(text) {
           this._text = text;
-          if (this.pageNode) {
+          if (this.pageNode && !this.pageNode.isUnmounted) {
               this.pageNode.onTextContent(this, text);
           }
       }
@@ -852,7 +965,7 @@ var serviceContext = (function (vue) {
           else {
               childNodes.push(newChild);
           }
-          return this.pageNode
+          return this.pageNode && !this.pageNode.isUnmounted
               ? this.pageNode.onInsertBefore(this, newChild, refChild)
               : newChild;
       }
@@ -864,7 +977,9 @@ var serviceContext = (function (vue) {
           }
           oldChild.parentNode = null;
           childNodes.splice(index, 1);
-          return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
+          return this.pageNode && !this.pageNode.isUnmounted
+              ? this.pageNode.onRemoveChild(oldChild)
+              : oldChild;
       }
   }
 
@@ -1216,9 +1331,8 @@ var serviceContext = (function (vue) {
       if (!i18n) {
           let language;
           {
-              {
-                  language = navigator.language;
-              }
+              // TODO 需替换为新API
+              language = plus.os.language;
           }
           i18n = initVueI18n(language);
       }
@@ -1502,7 +1616,7 @@ var serviceContext = (function (vue) {
       }
       return pullToRefresh;
   }
-  function initPageInternalInstance(url, pageQuery, meta) {
+  function initPageInternalInstance(openType, url, pageQuery, meta) {
       const { id, route } = meta;
       return {
           id: id,
@@ -1511,6 +1625,7 @@ var serviceContext = (function (vue) {
           fullPath: url,
           options: pageQuery,
           meta,
+          openType,
       };
   }
 
@@ -2347,6 +2462,17 @@ var serviceContext = (function (vue) {
       'pop-in',
       'none',
   ];
+  const ANIMATION_OUT = [
+      'slide-out-right',
+      'slide-out-left',
+      'slide-out-top',
+      'slide-out-bottom',
+      'fade-out',
+      'zoom-in',
+      'zoom-fade-in',
+      'pop-out',
+      'none',
+  ];
   const BaseRouteProtocol = {
       url: {
           type: String,
@@ -2361,8 +2487,22 @@ var serviceContext = (function (vue) {
   const API_UN_PRELOAD_PAGE = 'unPreloadPage';
   const NavigateToProtocol = 
   /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+  const NavigateBackProtocol = 
+  /*#__PURE__*/ extend({
+      delta: {
+          type: Number,
+      },
+  }, createAnimationProtocol(ANIMATION_OUT));
   const NavigateToOptions = 
   /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+  const NavigateBackOptions = {
+      formatArgs: {
+          delta(value, params) {
+              value = parseInt(value + '') || 1;
+              params.delta = Math.min(getCurrentPages().length - 1, value);
+          },
+      },
+  };
   function createAnimationProtocol(animationTypes) {
       return {
           animationType: {
@@ -2434,6 +2574,11 @@ var serviceContext = (function (vue) {
               return;
           }
           else if (type === API_PRELOAD_PAGE) {
+              {
+                  if (!routeOptions.meta.isNVue) {
+                      return 'can not preload vue page';
+                  }
+              }
               if (routeOptions.meta.isTabBar) {
                   const pages = getCurrentPages();
                   const tabBarPagePath = routeOptions.path.substr(1);
@@ -5928,6 +6073,10 @@ var serviceContext = (function (vue) {
                   return button;
               });
           }
+          else {
+              titleNView[name] =
+                  value;
+          }
       });
       webviewStyle.titleNView = titleNView;
   }
@@ -5993,15 +6142,11 @@ var serviceContext = (function (vue) {
   ];
 
   let id = 2;
-  let preloadWebview$1;
   function getWebviewId() {
       return id;
   }
   function genWebviewId() {
       return id++;
-  }
-  function getPreloadWebview() {
-      return preloadWebview$1;
   }
   function encode(val) {
       return val;
@@ -6037,6 +6182,31 @@ var serviceContext = (function (vue) {
       }, webviewStyle));
   }
 
+  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
+  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
+  const ANI_DURATION = 300;
+  const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
+  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
+  const WEBVIEW_ID_PREFIX = 'webviewId';
+
+  let preloadWebview;
+  function setPreloadWebview(webview) {
+      preloadWebview = webview;
+  }
+  function getPreloadWebview() {
+      return preloadWebview;
+  }
+  function createPreloadWebview() {
+      if (!preloadWebview || preloadWebview.__uniapp_route) {
+          // 不存在，或已被使用
+          preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('createPreloadWebview', preloadWebview.id));
+          }
+      }
+      return preloadWebview;
+  }
+
   function initWebviewStyle(webview, path, query, routeMeta) {
       const webviewStyle = parseWebviewStyle(path, routeMeta);
       webviewStyle.uniPageUrl = initUniPageUrl(path, query);
@@ -6059,26 +6229,6 @@ var serviceContext = (function (vue) {
       if (webview.id === '1' || !routeMeta.isNVue) {
           initWebviewStyle(webview, path, query, routeMeta);
       }
-  }
-
-  const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
-  const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
-  const ANI_DURATION = 300;
-  const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
-
-  let preloadWebview;
-  function setPreloadWebview(webview) {
-      preloadWebview = webview;
-  }
-  function createPreloadWebview() {
-      if (!preloadWebview || preloadWebview.__uniapp_route) {
-          // 不存在，或已被使用
-          preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('createPreloadWebview', preloadWebview.id));
-          }
-      }
-      return preloadWebview;
   }
 
   function createWebview(options) {
@@ -6670,6 +6820,9 @@ var serviceContext = (function (vue) {
           : onWebviewReady(preloadWebview.id, pendingNavigate);
   }
 
+  function closeWebview(webview, animationType, animationDuration) {
+      webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+  }
   function showWebview(webview, animationType, animationDuration, showCallback, delay) {
       if (typeof delay === 'undefined') {
           delay = webview.nvue ? 0 : 100;
@@ -6707,6 +6860,24 @@ var serviceContext = (function (vue) {
           });
       }, delay);
   }
+  function backWebview(webview, callback) {
+      const children = webview.children();
+      if (!children || !children.length) {
+          // 有子 webview
+          return callback();
+      }
+      // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+      const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
+          children[0];
+      childWebview.canBack(({ canBack }) => {
+          if (canBack) {
+              childWebview.back(); // webview 返回
+          }
+          else {
+              callback();
+          }
+      });
+  }
 
   class UniPageNode extends UniNode {
       constructor(pageId, options, setup = false) {
@@ -6717,6 +6888,7 @@ var serviceContext = (function (vue) {
           this.nodeId = 0;
           this.pageId = pageId;
           this.pageNode = this;
+          this.isUnmounted = false;
           this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
           this.createdAction = [ACTION_TYPE_PAGE_CREATED];
           this._update = this.update.bind(this);
@@ -6758,6 +6930,12 @@ var serviceContext = (function (vue) {
           return this._id++;
       }
       push(action) {
+          if (this.isUnmounted) {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('PageNode', 'push.prevent', action));
+              }
+              return;
+          }
           this.updateActions.push(action);
           if ((process.env.NODE_ENV !== 'production')) {
               console.log(formatLog('PageNode', 'push', action));
@@ -6772,11 +6950,6 @@ var serviceContext = (function (vue) {
       setup() {
           this.send([this.createAction]);
       }
-      // mounted() {
-      //   const { updateActions, createdAction } = this
-      //   updateActions.unshift(createdAction)
-      //   this.update()
-      // }
       update() {
           const { updateActions } = this;
           if ((process.env.NODE_ENV !== 'production')) {
@@ -6864,28 +7037,45 @@ var serviceContext = (function (vue) {
       });
       return curPages;
   }
+  function removePage(curPage) {
+      const index = pages.findIndex((page) => page === curPage);
+      if (index === -1) {
+          return;
+      }
+      if (!curPage.$page.meta.isNVue) {
+          curPage.$.appContext.app.unmount();
+      }
+      pages.splice(index, 1);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('removePage', curPage.$page));
+      }
+  }
 
-  function setupPage(component, { pageId, pagePath, pageQuery, pageInstance }) {
+  function setupPage(component) {
       const oldSetup = component.setup;
-      component.setup = (_props, ctx) => {
+      component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+      component.setup = (_, ctx) => {
+          const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
           if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog(pagePath, 'setup'));
+              console.log(formatLog(__pagePath, 'setup'));
           }
           const instance = vue.getCurrentInstance();
           const pageVm = instance.proxy;
-          pageVm.$page = pageInstance;
-          addCurrentPage(initScope(pageId, pageVm));
+          pageVm.$page = __pageInstance;
+          addCurrentPage(initScope(__pageId, pageVm));
           if (oldSetup) {
-              return oldSetup(pageQuery, ctx);
+              return oldSetup(__pageQuery, ctx);
           }
       };
       return component;
   }
   function initScope(pageId, vm) {
+      const $getAppWebview = () => {
+          return plus.webview.getWebviewById(pageId + '');
+      };
+      vm.$getAppWebview = $getAppWebview;
       vm.$scope = {
-          $getAppWebview() {
-              return plus.webview.getWebviewById(String(pageId));
-          },
+          $getAppWebview,
       };
       return vm;
   }
@@ -6894,19 +7084,24 @@ var serviceContext = (function (vue) {
   function definePage(pagePath, component) {
       pagesMap.set(pagePath, once(createFactory(component)));
   }
-  function createPage(pageId, pagePath, pageQuery, pageInstance, pageOptions) {
-      return vue.createApp(pagesMap.get(pagePath)({
-          pageId,
-          pagePath,
-          pageQuery,
-          pageInstance,
-      }))
-          .use(__vuePlugin)
-          .mount(createPageNode(pageId, pageOptions, true));
+  function createPage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
+      const pageNode = createPageNode(__pageId, pageOptions, true);
+      const app = vue.createApp(pagesMap.get(__pagePath)(), {
+          __pageId,
+          __pagePath,
+          __pageQuery,
+          __pageInstance,
+      }).use(__vuePlugin);
+      const oldUnmount = app.unmount;
+      app.unmount = () => {
+          pageNode.isUnmounted = true;
+          return oldUnmount.call(app);
+      };
+      return app.mount(pageNode);
   }
   function createFactory(component) {
-      return (props) => {
-          return setupPage(component, props);
+      return () => {
+          return setupPage(component);
       };
   }
 
@@ -6963,7 +7158,7 @@ var serviceContext = (function (vue) {
       initWebview(webview, path, query, routeOptions.meta);
       const route = path.substr(1);
       webview.__uniapp_route = route;
-      const pageInstance = initPageInternalInstance(url, query, routeOptions.meta);
+      const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta);
       if (!webview.nvue) {
           createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
       }
@@ -7030,16 +7225,64 @@ var serviceContext = (function (vue) {
       ];
   }
 
+  let lastStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function newSetStatusBarStyle(style) {
+      lastStatusBarStyle = style;
+      oldSetStatusBarStyle(style);
+  }
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+  function setStatusBarStyle(statusBarStyle) {
+      if (!statusBarStyle) {
+          const pages = getCurrentPages();
+          if (!pages.length) {
+              return;
+          }
+          statusBarStyle = pages[pages.length - 1].$page
+              .statusBarStyle;
+          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+              return;
+          }
+      }
+      if (statusBarStyle === lastStatusBarStyle) {
+          return;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setStatusBarStyle', statusBarStyle));
+      }
+      lastStatusBarStyle = statusBarStyle;
+      plus.navigator.setStatusBarStyle(statusBarStyle);
+  }
+
   const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
       const page = getCurrentPage();
       if (!page) {
-          return;
+          return reject(`getCurrentPages is empty`);
       }
+      if (invokeHook(page, 'onBackPress', {
+          from: args.from,
+      })) {
+          return resolve();
+      }
+      uni.hideToast();
+      uni.hideLoading();
       if (page.$page.meta.isQuit) {
           quit();
       }
+      else if (page.$page.id === 1 && __uniConfig.realEntryPagePath) {
+          // condition
+          __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+          delete __uniConfig.realEntryPagePath;
+          uni.reLaunch({
+              url: '/' + __uniConfig.entryPagePath,
+          });
+      }
+      else {
+          const { delta, animationType, animationDuration } = args;
+          back(delta, animationType, animationDuration);
+      }
       return resolve();
-  });
+  }, NavigateBackProtocol, NavigateBackOptions);
   let firstBackTime = 0;
   function quit() {
       initI18nAppMsgsOnce();
@@ -7053,6 +7296,45 @@ var serviceContext = (function (vue) {
       else if (Date.now() - firstBackTime < 2000) {
           plus.runtime.quit();
       }
+  }
+  function back(delta, animationType, animationDuration) {
+      const pages = getCurrentPages();
+      const len = pages.length;
+      const currentPage = pages[len - 1];
+      if (delta > 1) {
+          // 中间页隐藏
+          pages
+              .slice(len - delta, len - 1)
+              .reverse()
+              .forEach((deltaPage) => {
+              closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
+          });
+      }
+      const backPage = function (webview) {
+          if (animationType) {
+              closeWebview(webview, animationType, animationDuration || ANI_DURATION);
+          }
+          else {
+              if (currentPage.$page.openType === 'redirectTo') {
+                  // 如果是 redirectTo 跳转的，需要制定 back 动画
+                  closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+              }
+              else {
+                  closeWebview(webview, 'auto');
+              }
+          }
+          pages
+              .slice(len - delta, len)
+              .forEach((page) => removePage(page));
+          setStatusBarStyle();
+      };
+      const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
+      if (!currentPage.__uniapp_webview) {
+          return backPage(webview);
+      }
+      backWebview(webview, () => {
+          backPage(webview);
+      });
   }
 
   var uni$1 = /*#__PURE__*/Object.freeze({

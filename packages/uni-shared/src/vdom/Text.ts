@@ -13,7 +13,7 @@ export class UniTextNode extends UniBaseNode {
 
   set nodeValue(text: string) {
     this._text = text
-    if (this.pageNode) {
+    if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onNodeValue(this, text)
     }
   }

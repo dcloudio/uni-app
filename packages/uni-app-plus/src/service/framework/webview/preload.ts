@@ -11,6 +11,10 @@ export function setPreloadWebview(webview: PlusWebviewWebviewObject) {
   preloadWebview = webview
 }
 
+export function getPreloadWebview() {
+  return preloadWebview
+}
+
 export function createPreloadWebview() {
   if (!preloadWebview || (preloadWebview as any).__uniapp_route) {
     // 不存在，或已被使用

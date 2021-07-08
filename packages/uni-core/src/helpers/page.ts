@@ -91,6 +91,7 @@ export function normalizePullToRefreshRpx(
 }
 
 export function initPageInternalInstance(
+  openType: UniApp.OpenType,
   url: string,
   pageQuery: Record<string, any>,
   meta: UniApp.PageRouteMeta
@@ -103,5 +104,6 @@ export function initPageInternalInstance(
     fullPath: url,
     options: pageQuery,
     meta,
+    openType,
   }
 }

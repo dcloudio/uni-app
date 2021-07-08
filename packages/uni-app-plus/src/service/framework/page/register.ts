@@ -16,19 +16,11 @@ import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
 import { addCurrentPage } from './getCurrentPages'
 
-export type OpenType =
-  | 'navigateTo'
-  | 'redirectTo'
-  | 'reLaunch'
-  | 'switchTab'
-  | 'navigateBack'
-  | 'preloadPage'
-
 interface RegisterPageOptions {
   url: string
   path: string
   query: Record<string, string>
-  openType: OpenType
+  openType: UniApp.OpenType
   webview?: PlusWebviewWebviewObject
   vm?: ComponentPublicInstance // nvue vm instance
   // eventChannel: unknown
@@ -74,7 +66,12 @@ export function registerPage({
 
   ;(webview as any).__uniapp_route = route
 
-  const pageInstance = initPageInternalInstance(url, query, routeOptions.meta)
+  const pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta
+  )
 
   if (!(webview as any).nvue) {
     createPage(

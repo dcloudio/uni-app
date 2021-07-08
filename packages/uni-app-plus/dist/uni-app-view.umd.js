@@ -833,6 +833,20 @@
       offsetLeft
     };
   }
+  function normalizeEventType(type, options) {
+    if (options) {
+      if (options.capture) {
+        type += "Capture";
+      }
+      if (options.once) {
+        type += "Once";
+      }
+      if (options.passive) {
+        type += "Passive";
+      }
+    }
+    return `on${capitalize(camelize(type))}`;
+  }
   const optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
   function parseEventName(name) {
     let options;
@@ -846,9 +860,12 @@
     }
     return [hyphenate(name.slice(2)), options];
   }
-  const ATTR_MAP = {
-    class: ".c",
-    style: ".s",
+  const EventModifierFlags = {
+    stop: 1,
+    prevent: 1 << 1,
+    self: 1 << 2
+  };
+  const EVENT_MAP = {
     onClick: ".e0",
     onChange: ".e1",
     onInput: ".e2",
@@ -865,10 +882,33 @@
     onAnimationend: ".ed",
     onTouchforcechange: ".ee"
   };
-  const DECODED_ATTR_MAP = /* @__PURE__ */ Object.keys(ATTR_MAP).reduce((map, name) => {
-    map[ATTR_MAP[name]] = name;
-    return map;
-  }, Object.create(null));
+  const OPTIONS = [
+    "Capture",
+    "CaptureOnce",
+    "CapturePassive",
+    "CaptureOncePassive",
+    "Once",
+    "OncePassive",
+    "Passive"
+  ];
+  const ATTR_MAP = /* @__PURE__ */ extend({
+    class: ".c",
+    style: ".s"
+  }, Object.keys(EVENT_MAP).reduce((res, name) => {
+    const value = EVENT_MAP[name];
+    res[name] = value;
+    OPTIONS.forEach((v, i) => {
+      res[name + v] = value + i;
+    });
+    return res;
+  }, Object.create(null)));
+  function decodeObjMap(objMap) {
+    return Object.keys(objMap).reduce((map, name) => {
+      map[objMap[name]] = name;
+      return map;
+    }, Object.create(null));
+  }
+  const DECODED_ATTR_MAP = /* @__PURE__ */ decodeObjMap(ATTR_MAP);
   function decodeAttr(name) {
     return DECODED_ATTR_MAP[name] || name;
   }
@@ -2039,7 +2079,7 @@
     } else {
       const [name, options] = parseName(rawName);
       if (nextValue) {
-        const invoker = invokers[rawName] = createInvoker(nextValue, instance);
+        const invoker = invokers[rawName] = createInvoker$1(nextValue, instance);
         addEventListener(el, name, invoker, options);
       } else if (existingInvoker) {
         removeEventListener(el, name, existingInvoker, options);
@@ -2060,7 +2100,7 @@
     }
     return [hyphenate(name.slice(2)), options];
   }
-  function createInvoker(initialValue, instance) {
+  function createInvoker$1(initialValue, instance) {
     const invoker = (e) => {
       const timeStamp = e.timeStamp || _getNow();
       if (skipTimestampCheck || timeStamp >= invoker.attached - 1) {
@@ -2138,6 +2178,30 @@
     }
     return key in el;
   }
+  const systemModifiers = ["ctrl", "shift", "alt", "meta"];
+  const modifierGuards = {
+    stop: (e) => e.stopPropagation(),
+    prevent: (e) => e.preventDefault(),
+    self: (e) => e.target !== e.currentTarget,
+    ctrl: (e) => !e.ctrlKey,
+    shift: (e) => !e.shiftKey,
+    alt: (e) => !e.altKey,
+    meta: (e) => !e.metaKey,
+    left: (e) => "button" in e && e.button !== 0,
+    middle: (e) => "button" in e && e.button !== 1,
+    right: (e) => "button" in e && e.button !== 2,
+    exact: (e, modifiers) => systemModifiers.some((m) => e[`${m}Key`] && !modifiers.includes(m))
+  };
+  const withModifiers = (fn, modifiers) => {
+    return (event, ...args) => {
+      for (let i = 0; i < modifiers.length; i++) {
+        const guard = modifierGuards[modifiers[i]];
+        if (guard && guard(event, modifiers))
+          return;
+      }
+      return fn(event, ...args);
+    };
+  };
   extend({ patchProp, forcePatchProp }, nodeOps);
   var attrs = ["top", "left", "right", "bottom"];
   var inited;
@@ -2575,7 +2639,7 @@
       if (name === ".c") {
         this.$.className = value;
       } else if (name.indexOf(".e") === 0) {
-        this.addEvent(name);
+        this.addEvent(name, value);
       } else {
         this.$.setAttribute(decodeAttr(name), value);
       }
@@ -2589,20 +2653,16 @@
         this.$.removeAttribute(decodeAttr(name));
       }
     }
-    addEvent(name) {
-      const [type] = parseEventName(decodeAttr(name));
+    addEvent(name, flag) {
+      const [type, options] = parseEventName(decodeAttr(name));
       if (this._listeners[type]) {
         {
           console.error(formatLog(`tag`, this.tag, this.id, "event[" + type + "] already registered"));
         }
         return;
       }
-      this._listeners[type] = (evt) => {
-        UniViewJSBridge.publishHandler(VD_SYNC, [
-          [ACTION_TYPE_EVENT, this.id, $nne(evt)]
-        ]);
-      };
-      this.$.addEventListener(type, this._listeners[type]);
+      this._listeners[type] = createInvoker(this.id, flag, options);
+      this.$.addEventListener(type, this._listeners[type], options);
     }
     removeEvent(name) {
       const [type] = parseEventName(decodeAttr(name));
@@ -2613,6 +2673,30 @@
         console.error(formatLog(`tag`, this.tag, this.id, "event[" + type + "] not found"));
       }
     }
+  }
+  function createInvoker(id, flag, options) {
+    const invoker = (evt) => {
+      const event = $nne(evt);
+      event.type = normalizeEventType(evt.type, options);
+      UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id, event]]);
+    };
+    if (!flag) {
+      return invoker;
+    }
+    return withModifiers(invoker, resolveModifier(flag));
+  }
+  function resolveModifier(flag) {
+    const modifiers = [];
+    if (flag & EventModifierFlags.prevent) {
+      modifiers.push("prevent");
+    }
+    if (flag & EventModifierFlags.self) {
+      modifiers.push("self");
+    }
+    if (flag & EventModifierFlags.stop) {
+      modifiers.push("stop");
+    }
+    return modifiers;
   }
   class UniText extends UniNode {
     constructor(id) {

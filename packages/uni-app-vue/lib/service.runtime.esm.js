@@ -10654,6 +10654,22 @@ function createInvoker(initialValue, instance) {
     )
   }
   invoker.value = initialValue
+  const modifiers = new Set()
+  // 合并 modifiers
+  if (isArray(invoker.value)) {
+    invoker.value.forEach((v) => {
+      if (v.modifiers) {
+        v.modifiers.forEach((m) => {
+          modifiers.add(m)
+        })
+      }
+    })
+  } else if (invoker.value.modifiers) {
+    invoker.value.modifiers.forEach((m) => {
+      modifiers.add(m)
+    })
+  }
+  invoker.modifiers = [...modifiers]
   return invoker
 }
 
@@ -11228,13 +11244,16 @@ const modifierGuards = {
  * @private
  */
 const withModifiers = (fn, modifiers) => {
-  return (event, ...args) => {
+  // fixed by xxxxxx 补充 modifiers 标记，方便同步给 view 层
+  const wrapper = (event, ...args) => {
     for (let i = 0; i < modifiers.length; i++) {
       const guard = modifierGuards[modifiers[i]]
       if (guard && guard(event, modifiers)) return
     }
     return fn(event, ...args)
   }
+  wrapper.modifiers = modifiers
+  return wrapper
 }
 // Kept for 2.x compat.
 // Note: IE11 compat for `spacebar` and `del` is removed for now.

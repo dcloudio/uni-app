@@ -33,12 +33,13 @@ interface CheckUpdateCache {
 }
 
 interface CheckVersionRequest {
+  vv: 3
   device: string
   appid?: string
   vid?: string
   vtype: CheckUpdateOptions['versionType']
   vcode: string
-  [name: string]: CheckUpdatePlatform | undefined | string
+  [name: string]: CheckUpdatePlatform | undefined | string | number
 }
 
 interface CheckVersionResponse {
@@ -210,6 +211,7 @@ export function createPostData(
   updateCache: CheckUpdateCache
 ) {
   const data: CheckVersionRequest = {
+    vv: 3,
     device: md5(getMac()),
     vtype: versionType,
     vcode: compilerVersion,

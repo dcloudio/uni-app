@@ -130,6 +130,14 @@ function wrapperOffApi<T extends ApiLike>(
   }
 }
 
+function normalizeErrMsg(errMsg: string | Error) {
+  if (errMsg instanceof Error) {
+    console.error(errMsg)
+    return errMsg.message
+  }
+  return errMsg
+}
+
 function wrapperTaskApi<T extends ApiLike>(
   name: string,
   fn: Function,
@@ -144,8 +152,8 @@ function wrapperTaskApi<T extends ApiLike>(
     }
     return fn(args, {
       resolve: (res: unknown) => invokeSuccess(id, name, res),
-      reject: (errMsg: string, errRes?: any) =>
-        invokeFail(id, name, errMsg, errRes),
+      reject: (errMsg: string | Error, errRes?: any) =>
+        invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
     })
   }
 }

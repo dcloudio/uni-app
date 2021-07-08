@@ -1,6 +1,11 @@
 export { UniCommentNode } from './Comment'
 export { UniElement, UniInputElement, UniTextAreaElement } from './Element'
-export { UniEvent, UniEventListener, parseEventName } from './Event'
+export {
+  UniEvent,
+  UniEventListener,
+  parseEventName,
+  normalizeEventType,
+} from './Event'
 export {
   NODE_TYPE_PAGE,
   NODE_TYPE_ELEMENT,
@@ -14,3 +19,4 @@ export {
 export { UniTextNode } from './Text'
 export { encodeAttr, encodeTag } from './encode'
 export { decodeAttr, decodeTag } from './decode'
+export { EventModifierFlags } from './encode'

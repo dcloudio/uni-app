@@ -1,4 +1,4 @@
-import { camelize, extend, isString, isPlainObject, isArray, isHTMLTag, isSVGTag, hyphenate, capitalize } from '@vue/shared';
+import { camelize, extend, isString, isPlainObject, isArray, isHTMLTag, isSVGTag, capitalize, hyphenate } from '@vue/shared';
 
 function formatLog(module, ...args) {
     return `[${Date.now()}][${module}]：${args
@@ -321,7 +321,18 @@ class DOMException extends Error {
     }
 }
 
-function normalizeEventType(type) {
+function normalizeEventType(type, options) {
+    if (options) {
+        if (options.capture) {
+            type += 'Capture';
+        }
+        if (options.once) {
+            type += 'Once';
+        }
+        if (options.passive) {
+            type += 'Passive';
+        }
+    }
     return `on${capitalize(camelize(type))}`;
 }
 class UniEvent {
@@ -330,7 +341,7 @@ class UniEvent {
         this.timeStamp = Date.now();
         this._stop = false;
         this._end = false;
-        this.type = type.toLowerCase();
+        this.type = type;
         this.bubbles = !!opts.bubbles;
         this.cancelable = !!opts.cancelable;
     }
@@ -344,6 +355,18 @@ class UniEvent {
         this._stop = true;
     }
 }
+function createUniEvent(evt) {
+    if (evt instanceof UniEvent) {
+        return evt;
+    }
+    const [type] = parseEventName(evt.type);
+    const uniEvent = new UniEvent(type, {
+        bubbles: false,
+        cancelable: false,
+    });
+    extend(uniEvent, evt);
+    return uniEvent;
+}
 class UniEventTarget {
     constructor() {
         this._listeners = {};
@@ -356,28 +379,24 @@ class UniEventTarget {
             }
             return false;
         }
+        // 格式化事件类型
+        const event = createUniEvent(evt);
         const len = listeners.length;
         for (let i = 0; i < len; i++) {
-            listeners[i].call(this, evt);
-            if (evt._end) {
+            listeners[i].call(this, event);
+            if (event._end) {
                 break;
             }
         }
-        return evt.cancelable && evt.defaultPrevented;
+        return event.cancelable && event.defaultPrevented;
     }
     addEventListener(type, listener, options) {
-        const isOnce = options && options.once;
-        if (isOnce) {
-            const wrapper = function (evt) {
-                listener.apply(this, [evt]);
-                this.removeEventListener(type, wrapper, options);
-            };
-            return this.addEventListener(type, wrapper, extend(options, { once: false }));
-        }
+        type = normalizeEventType(type, options);
         (this._listeners[type] || (this._listeners[type] = [])).push(listener);
     }
     removeEventListener(type, callback, options) {
-        const listeners = this._listeners[type.toLowerCase()];
+        type = normalizeEventType(type, options);
+        const listeners = this._listeners[type];
         if (!listeners) {
             return;
         }
@@ -479,9 +498,25 @@ function proxyStyle(uniCssStyle) {
     });
 }
 
-const ATTR_MAP = {
-    class: '.c',
-    style: '.s',
+const EventModifierFlags = {
+    stop: 1,
+    prevent: 1 << 1,
+    self: 1 << 2,
+};
+function encodeModifier(modifiers) {
+    let flag = 0;
+    if (modifiers.includes('stop')) {
+        flag |= EventModifierFlags.stop;
+    }
+    if (modifiers.includes('prevent')) {
+        flag |= EventModifierFlags.prevent;
+    }
+    if (modifiers.includes('self')) {
+        flag |= EventModifierFlags.self;
+    }
+    return flag;
+}
+const EVENT_MAP = {
     onClick: '.e0',
     onChange: '.e1',
     onInput: '.e2',
@@ -498,6 +533,26 @@ const ATTR_MAP = {
     onAnimationend: '.ed',
     onTouchforcechange: '.ee',
 };
+const OPTIONS = [
+    'Capture',
+    'CaptureOnce',
+    'CapturePassive',
+    'CaptureOncePassive',
+    'Once',
+    'OncePassive',
+    'Passive',
+];
+const ATTR_MAP = /*#__PURE__*/ extend({
+    class: '.c',
+    style: '.s',
+}, Object.keys(EVENT_MAP).reduce((res, name) => {
+    const value = EVENT_MAP[name];
+    res[name] = value;
+    OPTIONS.forEach((v, i) => {
+        res[name + v] = value + i;
+    });
+    return res;
+}, Object.create(null)));
 function encodeAttr(name) {
     return ATTR_MAP[name] || name;
 }
@@ -585,7 +640,7 @@ class UniNode extends UniEventTarget {
             if (pageNode) {
                 this.pageNode = pageNode;
                 this.nodeId = pageNode.genId();
-                pageNode.onCreate(this, encodeTag(nodeName));
+                !pageNode.isUnmounted && pageNode.onCreate(this, encodeTag(nodeName));
             }
         }
         this.nodeType = nodeType;
@@ -612,7 +667,7 @@ class UniNode extends UniEventTarget {
     }
     set textContent(text) {
         this._text = text;
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onTextContent(this, text);
         }
     }
@@ -656,7 +711,7 @@ class UniNode extends UniEventTarget {
         else {
             childNodes.push(newChild);
         }
-        return this.pageNode
+        return this.pageNode && !this.pageNode.isUnmounted
             ? this.pageNode.onInsertBefore(this, newChild, refChild)
             : newChild;
     }
@@ -668,7 +723,9 @@ class UniNode extends UniEventTarget {
         }
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
+        return this.pageNode && !this.pageNode.isUnmounted
+            ? this.pageNode.onRemoveChild(oldChild)
+            : oldChild;
     }
 }
 class UniBaseNode extends UniNode {
@@ -692,17 +749,11 @@ class UniBaseNode extends UniNode {
     }
     addEventListener(type, listener, options) {
         super.addEventListener(type, listener, options);
-        const normalized = normalizeEventType(type);
-        if (!this.attributes[normalized]) {
-            this.setAttribute(normalized, 1);
-        }
+        this.setAttribute(normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
     }
     removeEventListener(type, callback, options) {
         super.removeEventListener(type, callback, options);
-        const normalized = normalizeEventType(type);
-        if (this.attributes[encodeAttr(normalized)]) {
-            this.removeAttribute(normalized);
-        }
+        this.removeAttribute(normalizeEventType(type, options));
     }
     getAttribute(qualifiedName) {
         return this.attributes[encodeAttr(qualifiedName)];
@@ -710,14 +761,14 @@ class UniBaseNode extends UniNode {
     removeAttribute(qualifiedName) {
         qualifiedName = encodeAttr(qualifiedName);
         delete this.attributes[qualifiedName];
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onRemoveAttribute(this, qualifiedName);
         }
     }
     setAttribute(qualifiedName, value) {
         qualifiedName = encodeAttr(qualifiedName);
         this.attributes[qualifiedName] = value;
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onSetAttribute(this, qualifiedName, value);
         }
     }
@@ -779,23 +830,29 @@ class UniTextNode extends UniBaseNode {
     }
     set nodeValue(text) {
         this._text = text;
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onNodeValue(this, text);
         }
     }
 }
 
-const DECODED_ATTR_MAP = /*#__PURE__*/ Object.keys(ATTR_MAP).reduce((map, name) => {
-    map[ATTR_MAP[name]] = name;
-    return map;
-}, Object.create(null));
+function decodeObjMap(objMap) {
+    return Object.keys(objMap).reduce((map, name) => {
+        map[objMap[name]] = name;
+        return map;
+    }, Object.create(null));
+}
+function decodeArrMap(objMap) {
+    return Object.keys(objMap).reduce((arr, name) => {
+        arr.push(name.toLowerCase());
+        return arr;
+    }, ['']);
+}
+const DECODED_ATTR_MAP = /*#__PURE__*/ decodeObjMap(ATTR_MAP);
 function decodeAttr(name) {
     return DECODED_ATTR_MAP[name] || name;
 }
-const DECODED_COMPONENT_ARR = /*#__PURE__*/ Object.keys(COMPONENT_MAP).reduce((arr, name) => {
-    arr.push(name.toLowerCase());
-    return arr;
-}, ['']);
+const DECODED_COMPONENT_ARR = /*#__PURE__*/ decodeArrMap(COMPONENT_MAP);
 function decodeTag(tag) {
     return (DECODED_COMPONENT_ARR[tag] || tag);
 }
@@ -910,4 +967,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

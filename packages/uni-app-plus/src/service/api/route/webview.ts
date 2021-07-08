@@ -1,10 +1,11 @@
 import { formatLog } from '@dcloudio/uni-shared'
+import { WEBVIEW_ID_PREFIX } from '../../constants'
 import { navigateFinish } from './utils'
 
 export function closeWebview(
   webview: PlusWebviewWebviewObject,
   animationType: string,
-  animationDuration: number
+  animationDuration?: number
 ) {
   webview[(webview as any).__preload__ ? 'hide' : 'close'](
     animationType as any,
@@ -56,4 +57,28 @@ export function showWebview(
       execShowCallback()
     })
   }, delay)
+}
+
+export function backWebview(
+  webview: PlusWebviewWebviewObject,
+  callback: () => void
+) {
+  const children = webview.children()
+  if (!children || !children.length) {
+    // 有子 webview
+    return callback()
+  }
+
+  // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+  const childWebview =
+    children.find((webview) => webview.id!.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
+    children[0]
+
+  childWebview.canBack(({ canBack }) => {
+    if (canBack) {
+      childWebview.back() // webview 返回
+    } else {
+      callback()
+    }
+  })
 }

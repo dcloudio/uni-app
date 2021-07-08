@@ -7,6 +7,8 @@ declare namespace Page {
       fullPath: string
       options: Record<string, any>
       meta: UniApp.PageRouteMeta
+      openType: UniApp.OpenType
+      statusBarStyle?: string
     }
   }
 }
@@ -14,6 +16,14 @@ declare namespace UniApp {
   type ClassObj = Record<string, boolean>
   type StyleObj = Record<string, any>
   type PLATFORM = keyof PagesJsonPagePlatformStyle
+
+  type OpenType =
+    | 'navigateTo'
+    | 'redirectTo'
+    | 'reLaunch'
+    | 'switchTab'
+    | 'navigateBack'
+    | 'preloadPage'
   interface LayoutWindowOptions {
     matchMedia?: {
       minWidth?: number

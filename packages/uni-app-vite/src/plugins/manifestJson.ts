@@ -1,3 +1,4 @@
+import path from 'path'
 import { Plugin } from 'vite'
 
 import {
@@ -16,6 +17,9 @@ export function uniManifestJsonPlugin(): Plugin {
         if (!opts.filter(id)) {
           return
         }
+        this.addWatchFile(
+          path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
+        )
         manifestJson = normalizeAppManifestJson(
           JSON.parse(code),
           parsePagesJsonOnce(

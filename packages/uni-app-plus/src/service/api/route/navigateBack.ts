@@ -2,22 +2,54 @@ import {
   API_NAVIGATE_BACK,
   API_TYPE_NAVIGATE_BACK,
   defineAsyncApi,
+  NavigateBackOptions,
+  NavigateBackProtocol,
 } from '@dcloudio/uni-api'
-import { getCurrentPage, initI18nAppMsgsOnce } from '@dcloudio/uni-core'
+import {
+  getCurrentPage,
+  initI18nAppMsgsOnce,
+  invokeHook,
+} from '@dcloudio/uni-core'
 import { useI18n } from '@dcloudio/uni-core'
+import { ComponentPublicInstance } from 'vue'
+import { ANI_CLOSE, ANI_DURATION } from '../../constants'
+import { removePage } from '../../framework/page/getCurrentPages'
+import { setStatusBarStyle } from '../../statusBar'
+import { backWebview, closeWebview } from './webview'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
   (args, { resolve, reject }) => {
     const page = getCurrentPage()
     if (!page) {
-      return
+      return reject(`getCurrentPages is empty`)
     }
+    if (
+      invokeHook(page as ComponentPublicInstance, 'onBackPress', {
+        from: (args as any).from,
+      })
+    ) {
+      return resolve()
+    }
+    uni.hideToast()
+    uni.hideLoading()
     if (page.$page.meta.isQuit) {
       quit()
+    } else if (page.$page.id === 1 && __uniConfig.realEntryPagePath) {
+      // condition
+      __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
+      delete __uniConfig.realEntryPagePath
+      uni.reLaunch({
+        url: '/' + __uniConfig.entryPagePath,
+      })
+    } else {
+      const { delta, animationType, animationDuration } = args
+      back(delta!, animationType, animationDuration)
     }
     return resolve()
-  }
+  },
+  NavigateBackProtocol,
+  NavigateBackOptions
 )
 let firstBackTime = 0
 
@@ -32,4 +64,53 @@ function quit() {
   } else if (Date.now() - firstBackTime < 2000) {
     plus.runtime.quit()
   }
+}
+
+function back(
+  delta: number,
+  animationType?: string,
+  animationDuration?: number
+) {
+  const pages = getCurrentPages()
+  const len = pages.length
+  const currentPage = pages[len - 1]
+
+  if (delta > 1) {
+    // 中间页隐藏
+    pages
+      .slice(len - delta, len - 1)
+      .reverse()
+      .forEach((deltaPage) => {
+        closeWebview(
+          plus.webview.getWebviewById(deltaPage.$page.id + ''),
+          'none',
+          0
+        )
+      })
+  }
+
+  const backPage = function (webview: PlusWebviewWebviewObject) {
+    if (animationType) {
+      closeWebview(webview, animationType, animationDuration || ANI_DURATION)
+    } else {
+      if (currentPage.$page.openType === 'redirectTo') {
+        // 如果是 redirectTo 跳转的，需要制定 back 动画
+        closeWebview(webview, ANI_CLOSE, ANI_DURATION)
+      } else {
+        closeWebview(webview, 'auto')
+      }
+    }
+    pages
+      .slice(len - delta, len)
+      .forEach((page) => removePage(page as ComponentPublicInstance))
+    setStatusBarStyle()
+  }
+
+  const webview = plus.webview.getWebviewById(currentPage.$page.id + '')
+  if (!(currentPage as any).__uniapp_webview) {
+    return backPage(webview)
+  }
+  backWebview(webview, () => {
+    backPage(webview)
+  })
 }

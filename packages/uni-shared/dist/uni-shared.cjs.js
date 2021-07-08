@@ -325,7 +325,18 @@ class DOMException extends Error {
     }
 }
 
-function normalizeEventType(type) {
+function normalizeEventType(type, options) {
+    if (options) {
+        if (options.capture) {
+            type += 'Capture';
+        }
+        if (options.once) {
+            type += 'Once';
+        }
+        if (options.passive) {
+            type += 'Passive';
+        }
+    }
     return `on${shared.capitalize(shared.camelize(type))}`;
 }
 class UniEvent {
@@ -334,7 +345,7 @@ class UniEvent {
         this.timeStamp = Date.now();
         this._stop = false;
         this._end = false;
-        this.type = type.toLowerCase();
+        this.type = type;
         this.bubbles = !!opts.bubbles;
         this.cancelable = !!opts.cancelable;
     }
@@ -348,6 +359,18 @@ class UniEvent {
         this._stop = true;
     }
 }
+function createUniEvent(evt) {
+    if (evt instanceof UniEvent) {
+        return evt;
+    }
+    const [type] = parseEventName(evt.type);
+    const uniEvent = new UniEvent(type, {
+        bubbles: false,
+        cancelable: false,
+    });
+    shared.extend(uniEvent, evt);
+    return uniEvent;
+}
 class UniEventTarget {
     constructor() {
         this._listeners = {};
@@ -360,28 +383,24 @@ class UniEventTarget {
             }
             return false;
         }
+        // 格式化事件类型
+        const event = createUniEvent(evt);
         const len = listeners.length;
         for (let i = 0; i < len; i++) {
-            listeners[i].call(this, evt);
-            if (evt._end) {
+            listeners[i].call(this, event);
+            if (event._end) {
                 break;
             }
         }
-        return evt.cancelable && evt.defaultPrevented;
+        return event.cancelable && event.defaultPrevented;
     }
     addEventListener(type, listener, options) {
-        const isOnce = options && options.once;
-        if (isOnce) {
-            const wrapper = function (evt) {
-                listener.apply(this, [evt]);
-                this.removeEventListener(type, wrapper, options);
-            };
-            return this.addEventListener(type, wrapper, shared.extend(options, { once: false }));
-        }
+        type = normalizeEventType(type, options);
         (this._listeners[type] || (this._listeners[type] = [])).push(listener);
     }
     removeEventListener(type, callback, options) {
-        const listeners = this._listeners[type.toLowerCase()];
+        type = normalizeEventType(type, options);
+        const listeners = this._listeners[type];
         if (!listeners) {
             return;
         }
@@ -483,9 +502,25 @@ function proxyStyle(uniCssStyle) {
     });
 }
 
-const ATTR_MAP = {
-    class: '.c',
-    style: '.s',
+const EventModifierFlags = {
+    stop: 1,
+    prevent: 1 << 1,
+    self: 1 << 2,
+};
+function encodeModifier(modifiers) {
+    let flag = 0;
+    if (modifiers.includes('stop')) {
+        flag |= EventModifierFlags.stop;
+    }
+    if (modifiers.includes('prevent')) {
+        flag |= EventModifierFlags.prevent;
+    }
+    if (modifiers.includes('self')) {
+        flag |= EventModifierFlags.self;
+    }
+    return flag;
+}
+const EVENT_MAP = {
     onClick: '.e0',
     onChange: '.e1',
     onInput: '.e2',
@@ -502,6 +537,26 @@ const ATTR_MAP = {
     onAnimationend: '.ed',
     onTouchforcechange: '.ee',
 };
+const OPTIONS = [
+    'Capture',
+    'CaptureOnce',
+    'CapturePassive',
+    'CaptureOncePassive',
+    'Once',
+    'OncePassive',
+    'Passive',
+];
+const ATTR_MAP = /*#__PURE__*/ shared.extend({
+    class: '.c',
+    style: '.s',
+}, Object.keys(EVENT_MAP).reduce((res, name) => {
+    const value = EVENT_MAP[name];
+    res[name] = value;
+    OPTIONS.forEach((v, i) => {
+        res[name + v] = value + i;
+    });
+    return res;
+}, Object.create(null)));
 function encodeAttr(name) {
     return ATTR_MAP[name] || name;
 }
@@ -589,7 +644,7 @@ class UniNode extends UniEventTarget {
             if (pageNode) {
                 this.pageNode = pageNode;
                 this.nodeId = pageNode.genId();
-                pageNode.onCreate(this, encodeTag(nodeName));
+                !pageNode.isUnmounted && pageNode.onCreate(this, encodeTag(nodeName));
             }
         }
         this.nodeType = nodeType;
@@ -616,7 +671,7 @@ class UniNode extends UniEventTarget {
     }
     set textContent(text) {
         this._text = text;
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onTextContent(this, text);
         }
     }
@@ -660,7 +715,7 @@ class UniNode extends UniEventTarget {
         else {
             childNodes.push(newChild);
         }
-        return this.pageNode
+        return this.pageNode && !this.pageNode.isUnmounted
             ? this.pageNode.onInsertBefore(this, newChild, refChild)
             : newChild;
     }
@@ -672,7 +727,9 @@ class UniNode extends UniEventTarget {
         }
         oldChild.parentNode = null;
         childNodes.splice(index, 1);
-        return this.pageNode ? this.pageNode.onRemoveChild(oldChild) : oldChild;
+        return this.pageNode && !this.pageNode.isUnmounted
+            ? this.pageNode.onRemoveChild(oldChild)
+            : oldChild;
     }
 }
 class UniBaseNode extends UniNode {
@@ -696,17 +753,11 @@ class UniBaseNode extends UniNode {
     }
     addEventListener(type, listener, options) {
         super.addEventListener(type, listener, options);
-        const normalized = normalizeEventType(type);
-        if (!this.attributes[normalized]) {
-            this.setAttribute(normalized, 1);
-        }
+        this.setAttribute(normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
     }
     removeEventListener(type, callback, options) {
         super.removeEventListener(type, callback, options);
-        const normalized = normalizeEventType(type);
-        if (this.attributes[encodeAttr(normalized)]) {
-            this.removeAttribute(normalized);
-        }
+        this.removeAttribute(normalizeEventType(type, options));
     }
     getAttribute(qualifiedName) {
         return this.attributes[encodeAttr(qualifiedName)];
@@ -714,14 +765,14 @@ class UniBaseNode extends UniNode {
     removeAttribute(qualifiedName) {
         qualifiedName = encodeAttr(qualifiedName);
         delete this.attributes[qualifiedName];
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onRemoveAttribute(this, qualifiedName);
         }
     }
     setAttribute(qualifiedName, value) {
         qualifiedName = encodeAttr(qualifiedName);
         this.attributes[qualifiedName] = value;
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onSetAttribute(this, qualifiedName, value);
         }
     }
@@ -783,23 +834,29 @@ class UniTextNode extends UniBaseNode {
     }
     set nodeValue(text) {
         this._text = text;
-        if (this.pageNode) {
+        if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onNodeValue(this, text);
         }
     }
 }
 
-const DECODED_ATTR_MAP = /*#__PURE__*/ Object.keys(ATTR_MAP).reduce((map, name) => {
-    map[ATTR_MAP[name]] = name;
-    return map;
-}, Object.create(null));
+function decodeObjMap(objMap) {
+    return Object.keys(objMap).reduce((map, name) => {
+        map[objMap[name]] = name;
+        return map;
+    }, Object.create(null));
+}
+function decodeArrMap(objMap) {
+    return Object.keys(objMap).reduce((arr, name) => {
+        arr.push(name.toLowerCase());
+        return arr;
+    }, ['']);
+}
+const DECODED_ATTR_MAP = /*#__PURE__*/ decodeObjMap(ATTR_MAP);
 function decodeAttr(name) {
     return DECODED_ATTR_MAP[name] || name;
 }
-const DECODED_COMPONENT_ARR = /*#__PURE__*/ Object.keys(COMPONENT_MAP).reduce((arr, name) => {
-    arr.push(name.toLowerCase());
-    return arr;
-}, ['']);
+const DECODED_COMPONENT_ARR = /*#__PURE__*/ decodeArrMap(COMPONENT_MAP);
 function decodeTag(tag) {
     return (DECODED_COMPONENT_ARR[tag] || tag);
 }
@@ -920,6 +977,7 @@ exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.DATA_RE = DATA_RE;
+exports.EventModifierFlags = EventModifierFlags;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
@@ -973,6 +1031,7 @@ exports.isNativeTag = isNativeTag;
 exports.isServiceCustomElement = isServiceCustomElement;
 exports.isServiceNativeTag = isServiceNativeTag;
 exports.normalizeDataset = normalizeDataset;
+exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;
 exports.once = once;
 exports.parseEventName = parseEventName;
