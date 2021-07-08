@@ -35,7 +35,7 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   devServer?: ViteDevServer
 }
 
-export * from './vue'
+export { runDev, runBuild } from './cli/action'
 
 let createVueJsxPlugin: typeof VueJsxPlugin | undefined
 try {

@@ -1,11 +1,9 @@
 import { cac } from 'cac'
-import chalk from 'chalk'
-import { extend } from '@vue/shared'
-import { LogLevel, createLogger, ServerOptions, BuildOptions } from 'vite'
-import { build, buildSSR } from './build'
-import { createServer, createSSRServer } from './server'
 
-import { initEnv, PLATFORMS } from './utils'
+import { LogLevel } from 'vite'
+
+import { PLATFORMS } from './utils'
+import { runBuild, runDev } from './action'
 
 const cli = cac('uni')
 
@@ -50,21 +48,7 @@ cli
     '--force',
     `[boolean] force the optimizer to ignore the cache and re-bundle`
   )
-  .action(async (options: CliOptions & ServerOptions) => {
-    initEnv('dev', options)
-    try {
-      if (options.platform === 'h5') {
-        await (options.ssr ? createSSRServer(options) : createServer(options))
-      } else {
-        await build(extend(options, { watch: true }))
-      }
-    } catch (e) {
-      createLogger(options.logLevel).error(
-        chalk.red(`error when starting dev server:\n${e.stack}`)
-      )
-      process.exit(1)
-    }
-  })
+  .action(runDev)
 
 cli
   .command('build')
@@ -93,20 +77,7 @@ cli
   )
   .option('-m, --mode <mode>', `[string] set env mode`)
   .option('-w, --watch', `[boolean] rebuilds when modules have changed on disk`)
-  .action(async (options: CliOptions & BuildOptions) => {
-    initEnv('build', options)
-    try {
-      await (options.ssr && options.platform === 'h5'
-        ? buildSSR(options)
-        : build(options))
-      console.log(` DONE  Build complete.`)
-    } catch (e) {
-      createLogger(options.logLevel).error(
-        chalk.red(`error during build:\n${e.stack}`)
-      )
-      process.exit(1)
-    }
-  })
+  .action(runBuild)
 
 cli.help()
 cli.version(require('../../package.json').version)
