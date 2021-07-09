@@ -29,6 +29,7 @@ export * from './keyboard/keyboard'
 export * from './network/downloadFile'
 export * from './network/request'
 export * from './network/socket'
+export * from './network/uploadFile'
 
 export * from './context/createInnerAudioContext'
 export * from './context/getBackgroundAudioManager'

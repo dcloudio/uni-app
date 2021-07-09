@@ -74,7 +74,7 @@ const initStateChage = (audioId: string) => {
 
 function createAudioInstance() {
   const audioId = `${Date.now()}${Math.random()}`
-  const audio: Audio = (audios[audioId] = plus.audio.createPlayer())
+  const audio: Audio = (audios[audioId] = plus.audio.createPlayer('')) // 此处空字符串必填
   audio.src = ''
   audio.volume = 1
   audio.startTime = 0
