@@ -550,14 +550,17 @@ const BASE_ATTR_MAP = {
     'hover-start-time': '.h2',
     'hover-stay-time': '.h3',
 };
-const ATTR_MAP = /*#__PURE__*/ extend(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
-    const value = EVENT_MAP[name];
-    res[name] = value;
-    OPTIONS.forEach((v, i) => {
-        res[name + v] = value + i;
-    });
-    return res;
-}, Object.create(null)));
+// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
+const ATTR_MAP = /*#__PURE__*/ (() => {
+    return Object.assign(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
+        const value = EVENT_MAP[name];
+        res[name] = value;
+        OPTIONS.forEach((v, i) => {
+            res[name + v] = value + i;
+        });
+        return res;
+    }, Object.create(null)));
+})();
 function encodeAttr(name) {
     return ATTR_MAP[name] || name;
 }

@@ -1,5 +1,3 @@
-import { extend } from '@vue/shared'
-
 export const EventOptionFlags = {
   capture: 1,
   once: 1 << 1,
@@ -79,17 +77,20 @@ const BASE_ATTR_MAP = {
   'hover-stay-time': '.h3',
 }
 
-export const ATTR_MAP = /*#__PURE__*/ extend(
-  BASE_ATTR_MAP,
-  Object.keys(EVENT_MAP).reduce((res, name) => {
-    const value = EVENT_MAP[name as keyof typeof EVENT_MAP]
-    res[name] = value
-    OPTIONS.forEach((v, i) => {
-      res[name + v] = value + i
-    })
-    return res
-  }, Object.create(null))
-)
+// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
+export const ATTR_MAP = /*#__PURE__*/ (() => {
+  return Object.assign(
+    BASE_ATTR_MAP,
+    Object.keys(EVENT_MAP).reduce((res, name) => {
+      const value = EVENT_MAP[name as keyof typeof EVENT_MAP]
+      res[name] = value
+      OPTIONS.forEach((v, i) => {
+        res[name + v] = value + i
+      })
+      return res
+    }, Object.create(null))
+  )
+})()
 
 export function encodeAttr(name: string) {
   return ATTR_MAP[name as keyof typeof ATTR_MAP] || name

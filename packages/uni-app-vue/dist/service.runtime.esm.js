@@ -416,15 +416,18 @@ export default function vueFactory(exports) {
     'hover-stop-propagation': '.h1',
     'hover-start-time': '.h2',
     'hover-stay-time': '.h3'
-  };
-  var ATTR_MAP = /*#__PURE__*/extend$1(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce(function (res, name) {
-    var value = EVENT_MAP[name];
-    res[name] = value;
-    OPTIONS.forEach(function (v, i) {
-      res[name + v] = value + i;
-    });
-    return res;
-  }, Object.create(null)));
+  }; // 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
+
+  var ATTR_MAP = /*#__PURE__*/function () {
+    return Object.assign(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce(function (res, name) {
+      var value = EVENT_MAP[name];
+      res[name] = value;
+      OPTIONS.forEach(function (v, i) {
+        res[name + v] = value + i;
+      });
+      return res;
+    }, Object.create(null)));
+  }();
 
   function encodeAttr(name) {
     return ATTR_MAP[name] || name;

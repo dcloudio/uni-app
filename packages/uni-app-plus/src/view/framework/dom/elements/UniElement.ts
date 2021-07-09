@@ -2,16 +2,16 @@ import { hasOwn } from '@vue/shared'
 import { decodeAttr, UniNodeJSON } from '@dcloudio/uni-shared'
 
 import { UniNode } from './UniNode'
-import { UniCustomElement } from './utils'
 import { patchClass } from './modules/class'
 import { patchStyle } from './modules/style'
 import { patchEvent } from './modules/events'
+import { UniCustomElement } from './components'
 
 export class UniElement extends UniNode {
   $: UniCustomElement
-  constructor(id: number, tag: string) {
-    super(id, tag)
-    this.$ = document.createElement(tag) as unknown as UniCustomElement
+  constructor(id: number, element: Element) {
+    super(id, element.tagName)
+    this.$ = element as UniCustomElement
     this.$.__id = id
     this.$.__listeners = Object.create(null)
   }

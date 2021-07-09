@@ -9,7 +9,7 @@ import {
 } from '@dcloudio/uni-shared'
 import { VD_SYNC } from '../../../../../constants'
 import { ACTION_TYPE_EVENT } from '../../../../../PageAction'
-import { UniCustomElement } from '../utils'
+import { UniCustomElement } from '../components'
 
 export function patchEvent(el: UniCustomElement, name: string, flag: number) {
   const [type, options] = parseEventName(decodeAttr(name))
@@ -43,7 +43,7 @@ export function patchEvent(el: UniCustomElement, name: string, flag: number) {
   }
 }
 
-function createInvoker(
+export function createInvoker(
   id: number,
   flag: number,
   options?: AddEventListenerOptions

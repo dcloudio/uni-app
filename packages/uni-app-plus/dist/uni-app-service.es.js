@@ -141,6 +141,8 @@ var serviceContext = (function (vue) {
    */
   const capitalize = cacheStringFunction$1((str) => str.charAt(0).toUpperCase() + str.slice(1));
 
+  const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
+  const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
   const HTTP_METHODS = [
       'GET',
       'OPTIONS',
@@ -156,6 +158,14 @@ var serviceContext = (function (vue) {
           return arr[0];
       }
       return str;
+  }
+  function elemsInArray(strArr, optionalVal) {
+      if (!isArray(strArr) ||
+          strArr.length === 0 ||
+          strArr.find((val) => optionalVal.indexOf(val) === -1)) {
+          return optionalVal;
+      }
+      return strArr;
   }
   function validateProtocolFail(name, msg) {
       console.warn(`${name}: ${msg}`);
@@ -774,48 +784,6 @@ var serviceContext = (function (vue) {
       }
       return [hyphenate(name.slice(2)), options];
   }
-  const EVENT_MAP = {
-      onClick: '.e0',
-      onChange: '.e1',
-      onInput: '.e2',
-      onLoad: '.e3',
-      onError: '.e4',
-      onTouchstart: '.e5',
-      onTouchmove: '.e6',
-      onTouchcancel: '.e7',
-      onTouchend: '.e8',
-      onLongpress: '.e9',
-      onTransitionend: '.ea',
-      onAnimationstart: '.eb',
-      onAnimationiteration: '.ec',
-      onAnimationend: '.ed',
-      onTouchforcechange: '.ee',
-  };
-  const OPTIONS = [
-      'Capture',
-      'CaptureOnce',
-      'CapturePassive',
-      'CaptureOncePassive',
-      'Once',
-      'OncePassive',
-      'Passive',
-  ];
-  const BASE_ATTR_MAP = {
-      class: '.c',
-      style: '.s',
-      'hover-class': '.h0',
-      'hover-stop-propagation': '.h1',
-      'hover-start-time': '.h2',
-      'hover-stay-time': '.h3',
-  };
-  /*#__PURE__*/ extend(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
-      const value = EVENT_MAP[name];
-      res[name] = value;
-      OPTIONS.forEach((v, i) => {
-          res[name + v] = value + i;
-      });
-      return res;
-  }, Object.create(null)));
   const COMPONENT_MAP = {
       VIEW: 1,
       IMAGE: 2,
@@ -1408,6 +1376,44 @@ var serviceContext = (function (vue) {
   });
   const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.chooseImage.';
+      {
+          useI18n().add(LOCALE_EN, normalizeMessages(name, {
+              cancel: 'Cancel',
+              'sourceType.album': 'Album',
+              'sourceType.camera': 'Camera',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ES, normalizeMessages(name, {
+              cancel: 'Cancelar',
+              'sourceType.album': 'Álbum',
+              'sourceType.camera': 'Cámara',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_FR, normalizeMessages(name, {
+              cancel: 'Annuler',
+              'sourceType.album': 'Album',
+              'sourceType.camera': 'Caméra',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
+              cancel: '取消',
+              'sourceType.album': '从相册选择',
+              'sourceType.camera': '拍摄',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
+              cancel: '取消',
+              'sourceType.album': '從相冊選擇',
+              'sourceType.camera': '拍攝',
+          }));
+      }
+  });
+  const initI18nChooseVideoMsgsOnce = /*#__PURE__*/ once(() => {
+      const name = 'uni.chooseVideo.';
       {
           useI18n().add(LOCALE_EN, normalizeMessages(name, {
               cancel: 'Cancel',
@@ -2166,6 +2172,62 @@ var serviceContext = (function (vue) {
   const GetLocationProtocol = {
       type: String,
       altitude: Boolean,
+  };
+
+  const API_CHOOSE_IMAGE = 'chooseImage';
+  const ChooseImageOptions = {
+      formatArgs: {
+          count(value, params) {
+              if (!value || value <= 0) {
+                  params.count = 9;
+              }
+          },
+          sizeType(sizeType, params) {
+              params.sizeType = elemsInArray(sizeType, CHOOSE_SIZE_TYPES);
+          },
+          sourceType(sourceType, params) {
+              params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+          },
+          extension(extension, params) {
+              if (extension instanceof Array && extension.length === 0) {
+                  return 'param extension should not be empty.';
+              }
+              if (!extension)
+                  params.extension = [''];
+          },
+      },
+  };
+  const ChooseImageProtocol = {
+      count: Number,
+      sizeType: [Array, String],
+      sourceType: Array,
+      extension: Array,
+  };
+
+  const API_CHOOSE_VIDEO = 'chooseVideo';
+  const ChooseVideoOptions = {
+      formatArgs: {
+          sourceType(sourceType, params) {
+              params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+          },
+          compressed: true,
+          maxDuration: 60,
+          camera: 'back',
+          extension(extension, params) {
+              if (extension instanceof Array && extension.length === 0) {
+                  return 'param extension should not be empty.';
+              }
+              if (!extension)
+                  params.extension = [''];
+          },
+      },
+  };
+  const ChooseVideoProtocol = {
+      sourceType: Array,
+      compressed: Boolean,
+      maxDuration: Number,
+      camera: String,
+      extension: Array,
   };
 
   const API_GET_IMAGE_INFO = 'getImageInfo';
@@ -3119,7 +3181,7 @@ var serviceContext = (function (vue) {
       resolve(getStorageInfoSync());
   }));
 
-  const getFileInfo = defineAsyncApi(API_GET_FILE_INFO, (options, { resolve, reject }) => {
+  const getFileInfo$1 = defineAsyncApi(API_GET_FILE_INFO, (options, { resolve, reject }) => {
       plus.io.getFileInfo(extend(options, {
           success: warpPlusSuccessCallback(resolve),
           fail: warpPlusErrorCallback(reject),
@@ -3899,7 +3961,7 @@ var serviceContext = (function (vue) {
       return array[array.length - 1];
   }
 
-  const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
+  const compressImage$1 = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
       plus.zip.compressImage(extend({}, options, {
           dst,
@@ -3920,6 +3982,236 @@ var serviceContext = (function (vue) {
           });
       }, reject);
   }, CompressVideoProtocol, CompressVideoOptions);
+
+  /**
+   * 获取文件信息
+   * @param {string} filePath 文件路径
+   * @returns {Promise} 文件信息Promise
+   */
+  function getFileInfo(filePath) {
+      return new Promise((resolve, reject) => {
+          plus.io.resolveLocalFileSystemURL(filePath, function (entry) {
+              entry.getMetadata(resolve, reject, false);
+          }, reject);
+      });
+  }
+  function compressImage(tempFilePath) {
+      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      return new Promise((resolve) => {
+          plus.nativeUI.showWaiting();
+          plus.zip.compressImage({
+              src: tempFilePath,
+              dst,
+              overwrite: true,
+          }, () => {
+              plus.nativeUI.closeWaiting();
+              resolve(dst);
+          }, () => {
+              plus.nativeUI.closeWaiting();
+              resolve(tempFilePath);
+          });
+      });
+  }
+  const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, 
+  // @ts-ignore crop 属性App特有
+  ({ count, sizeType, sourceType, crop } = {}, { resolve, reject }) => {
+      initI18nChooseImageMsgsOnce();
+      const { t } = useI18n();
+      const errorCallback = warpPlusErrorCallback(reject);
+      function successCallback(paths) {
+          const tempFiles = [];
+          const tempFilePaths = [];
+          // plus.zip.compressImage 压缩文件并发调用在iOS端容易出现问题（图像错误、闪退），改为队列执行
+          paths
+              .reduce((promise, path) => {
+              return promise
+                  .then(() => {
+                  return getFileInfo(path);
+              })
+                  .then((fileInfo) => {
+                  const size = fileInfo.size;
+                  // 压缩阈值 0.5 兆
+                  const THRESHOLD = 1024 * 1024 * 0.5;
+                  // 判断是否需要压缩
+                  if (!crop &&
+                      sizeType.includes('compressed') &&
+                      size > THRESHOLD) {
+                      return compressImage(path).then((dstPath) => {
+                          path = dstPath;
+                          return getFileInfo(path);
+                      });
+                  }
+                  return fileInfo;
+              })
+                  .then(({ size }) => {
+                  tempFilePaths.push(path);
+                  tempFiles.push({
+                      path,
+                      size: size,
+                  });
+              });
+          }, Promise.resolve())
+              .then(() => {
+              resolve({
+                  tempFilePaths,
+                  tempFiles,
+              });
+          })
+              .catch(errorCallback);
+      }
+      function openCamera() {
+          const camera = plus.camera.getCamera();
+          camera.captureImage((path) => successCallback([path]), errorCallback, {
+              filename: TEMP_PATH + '/camera/',
+              resolution: 'high',
+              crop,
+          });
+      }
+      function openAlbum() {
+          // NOTE 5+此API分单选和多选，多选返回files:string[]
+          // @ts-ignore
+          plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
+              maximum: count,
+              multiple: true,
+              system: false,
+              filename: TEMP_PATH + '/gallery/',
+              permissionAlert: true,
+              crop,
+          });
+      }
+      if (sourceType.length === 1) {
+          if (sourceType.includes('album')) {
+              openAlbum();
+              return;
+          }
+          else if (sourceType.includes('camera')) {
+              openCamera();
+              return;
+          }
+      }
+      plus.nativeUI.actionSheet({
+          cancel: t('uni.chooseImage.cancel'),
+          buttons: [
+              {
+                  title: t('uni.chooseImage.sourceType.camera'),
+              },
+              {
+                  title: t('uni.chooseImage.sourceType.album'),
+              },
+          ],
+      }, (e) => {
+          switch (e.index) {
+              case 1:
+                  openCamera();
+                  break;
+              case 2:
+                  openAlbum();
+                  break;
+              default:
+                  errorCallback();
+                  break;
+          }
+      });
+  }, ChooseImageProtocol, ChooseImageOptions);
+
+  const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, compressed, maxDuration, camera }, { resolve, reject }) => {
+      initI18nChooseVideoMsgsOnce();
+      const { t } = useI18n();
+      const errorCallback = warpPlusErrorCallback(reject);
+      function successCallback(tempFilePath = '') {
+          const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+          const compressVideo = compressed
+              ? new Promise((resolve) => {
+                  plus.zip.compressVideo({
+                      src: tempFilePath,
+                      filename,
+                  }, ({ tempFilePath }) => {
+                      resolve(tempFilePath);
+                  }, () => {
+                      resolve(tempFilePath);
+                  });
+              })
+              : Promise.resolve(tempFilePath);
+          if (compressed) {
+              plus.nativeUI.showWaiting();
+          }
+          compressVideo.then((tempFilePath) => {
+              if (compressed) {
+                  plus.nativeUI.closeWaiting();
+              }
+              plus.io.getVideoInfo({
+                  filePath: tempFilePath,
+                  success(videoInfo) {
+                      const result = {
+                          errMsg: 'chooseVideo:ok',
+                          tempFilePath: tempFilePath,
+                          size: videoInfo.size,
+                          duration: videoInfo.duration,
+                          width: videoInfo.width,
+                          height: videoInfo.height,
+                      };
+                      resolve(result);
+                  },
+                  fail: errorCallback,
+              });
+          });
+      }
+      function openAlbum() {
+          plus.gallery.pick(
+          // NOTE 5+此API分单选和多选，多选返回files:string[]
+          // @ts-ignore
+          ({ files }) => successCallback(files[0]), errorCallback, {
+              filter: 'video',
+              system: false,
+              // 不启用 multiple 时 system 无效
+              multiple: true,
+              maximum: 1,
+              filename: TEMP_PATH + '/gallery/',
+              permissionAlert: true,
+          });
+      }
+      function openCamera() {
+          const plusCamera = plus.camera.getCamera();
+          plusCamera.startVideoCapture(successCallback, errorCallback, {
+              index: camera === 'front' ? '2' : '1',
+              videoMaximumDuration: maxDuration,
+              filename: TEMP_PATH + '/camera/',
+          });
+      }
+      if (sourceType.length === 1) {
+          if (sourceType.includes('album')) {
+              openAlbum();
+              return;
+          }
+          else if (sourceType.includes('camera')) {
+              openCamera();
+              return;
+          }
+      }
+      plus.nativeUI.actionSheet({
+          cancel: t('uni.chooseVideo.cancel'),
+          buttons: [
+              {
+                  title: t('uni.chooseVideo.sourceType.camera'),
+              },
+              {
+                  title: t('uni.chooseVideo.sourceType.album'),
+              },
+          ],
+      }, (e) => {
+          switch (e.index) {
+              case 1:
+                  openCamera();
+                  break;
+              case 2:
+                  openAlbum();
+                  break;
+              default:
+                  errorCallback();
+                  break;
+          }
+      });
+  }, ChooseVideoProtocol, ChooseVideoOptions);
 
   const showKeyboard = defineAsyncApi(API_SHOW_KEYBOARD, (_, { resolve }) => {
       plus.key.showSoftKeybord();
@@ -4483,7 +4775,7 @@ var serviceContext = (function (vue) {
               audio.__timing = setInterval(() => {
                   const currentTime = audio.currentTime;
                   if (currentTime !== oldCurrentTime) {
-                      emit(audio, 'timeupdate');
+                      emit(audio, 'timeUpdate');
                   }
               }, 200);
           }
@@ -4623,7 +4915,7 @@ var serviceContext = (function (vue) {
       });
   });
   function emit(audio, state, errMsg, errCode) {
-      const name = `on${state[0].toUpperCase() + state.substr(1)}`;
+      const name = `on${capitalize(state)}`;
       audio._callbacks[name].forEach((callback) => {
           if (typeof callback === 'function') {
               callback(state === 'error'
@@ -7338,7 +7630,7 @@ var serviceContext = (function (vue) {
     clearStorage: clearStorage,
     getStorageInfoSync: getStorageInfoSync,
     getStorageInfo: getStorageInfo,
-    getFileInfo: getFileInfo,
+    getFileInfo: getFileInfo$1,
     openDocument: openDocument,
     onCompassChange: onCompassChange,
     offCompassChange: offCompassChange,
@@ -7391,8 +7683,10 @@ var serviceContext = (function (vue) {
     getRecorderManager: getRecorderManager,
     saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
     saveImageToPhotosAlbum: saveImageToPhotosAlbum,
-    compressImage: compressImage,
+    compressImage: compressImage$1,
     compressVideo: compressVideo,
+    chooseImage: chooseImage,
+    chooseVideo: chooseVideo,
     showKeyboard: showKeyboard,
     hideKeyboard: hideKeyboard,
     downloadFile: downloadFile,

@@ -42,8 +42,13 @@ export default defineConfig({
     global: 'window',
     __DEV__: true,
     __TEST__: false,
-    __PLATFORM__: JSON.stringify('h5'),
+    __PLATFORM__: JSON.stringify('app'),
     __NODE_JS__: false,
+    __UNI_FEATURE_I18N_EN__: true,
+    __UNI_FEATURE_I18N_ES__: true,
+    __UNI_FEATURE_I18N_FR__: true,
+    __UNI_FEATURE_I18N_ZH_HANS__: true,
+    __UNI_FEATURE_I18N_ZH_HANT__: true,
   },
   resolve: {
     alias: [
@@ -76,6 +81,15 @@ export default defineConfig({
         replacement: resolve('./src/platform/index.ts'),
       },
     ],
+  },
+  css: {
+    postcss: {
+      plugins: [
+        require('autoprefixer')({
+          overrideBrowserslist: ['Android > 4.4', 'iOS >= 10'],
+        }),
+      ],
+    },
   },
   plugins: [
     vue({

@@ -110,6 +110,8 @@ export function initPluginVueOptions(
       directiveTransforms
     )
   }
+  // App,MP 平台不支持使用静态节点
+  compilerOptions.hoistStatic = false
 
   return vueOptions
 }

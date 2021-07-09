@@ -3,6 +3,10 @@ import { ComponentPublicInstance, getCurrentInstance } from 'vue'
 import { rpx2px } from './util'
 
 export function useCurrentPageId() {
+  if (__PLATFORM__ === 'app') {
+    // view 层
+    return parseInt((window as any).__id__)
+  }
   return getCurrentInstance()!.root.proxy!.$page.id
 }
 

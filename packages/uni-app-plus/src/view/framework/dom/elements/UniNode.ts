@@ -1,7 +1,7 @@
 import { hasOwn } from '@vue/shared'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
 
-import { $ } from './utils'
+import { $ } from '.'
 
 export class UniNode {
   id: number
