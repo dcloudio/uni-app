@@ -20,5 +20,6 @@ export {
   defineBuiltInComponent,
   defineSystemComponent,
 } from './helpers/component'
+export { flatVNode } from './helpers/flatVNode'
 export { uniFormKey } from './components/form'
 export type { UniFormCtx } from './components/form'
