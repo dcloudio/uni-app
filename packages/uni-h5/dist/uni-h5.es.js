@@ -797,6 +797,7 @@ function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
 function hasRpx(str) {
+  str = str + "";
   return str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1;
 }
 function rpx2px(str, replace = false) {
@@ -16754,7 +16755,7 @@ const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE
 const closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, { resolve, reject }) => {
   const socketTask = socketTasks[0];
   if (socketTask) {
-    callSocketTask(socketTask, "send", options, resolve, reject);
+    callSocketTask(socketTask, "close", options, resolve, reject);
   } else {
     reject("WebSocket is not connected");
   }

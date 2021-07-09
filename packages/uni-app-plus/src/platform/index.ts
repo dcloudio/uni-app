@@ -8,14 +8,7 @@ import {
   SelectorQueryRequest,
 } from '@dcloudio/uni-api'
 
-export function getBaseSystemInfo() {
-  // TODO
-  return {
-    platform: '',
-    pixelRatio: 1,
-    windowWidth: 750,
-  }
-}
+export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { getRealPath } from './getRealPath'
 export function operateVideoPlayer(
   videoId: string,

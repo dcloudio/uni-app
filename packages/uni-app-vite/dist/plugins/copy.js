@@ -11,8 +11,29 @@ function uniCopyPlugin() {
     return uni_cli_shared_1.uniViteCopyPlugin({
         targets: [
             {
-                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/*')),
+                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/*.js')),
                 dest: process.env.UNI_OUTPUT_DIR,
+            },
+            {
+                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/*.png')),
+                dest: process.env.UNI_OUTPUT_DIR,
+            },
+            {
+                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/__uniappview.html')),
+                dest: process.env.UNI_OUTPUT_DIR,
+                transform(content) {
+                    const { globalStyle } = uni_cli_shared_1.parsePagesJsonOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM);
+                    const __uniConfig = {
+                        globalStyle: {
+                            rpxCalcMaxDeviceWidth: globalStyle.rpxCalcMaxDeviceWidth,
+                            rpxCalcBaseDeviceWidth: globalStyle
+                                .rpxCalcBaseDeviceWidth,
+                        },
+                    };
+                    return content
+                        .toString()
+                        .replace('/*__uniConfig*/', `var __uniConfig = ${JSON.stringify(__uniConfig)}`);
+                },
             },
             {
                 src: slash_1.default(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')),

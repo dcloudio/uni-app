@@ -12,6 +12,7 @@ import { uniSSRPlugin } from './plugins/ssr'
 
 import { createDefine } from './utils'
 import { createHandleHotUpdate } from './handleHotUpdate'
+import { createTransformIndexHtml } from './transformIndexHtml'
 
 function initLogger({ logger, command }: ResolvedConfig) {
   if (command !== 'serve') {
@@ -46,6 +47,7 @@ const UniH5Plugin: UniVitePlugin = {
     initLogger(config)
   },
   handleHotUpdate: createHandleHotUpdate(),
+  transformIndexHtml: createTransformIndexHtml(),
 }
 
 export default [

@@ -11,6 +11,7 @@ const setup_1 = require("./plugins/setup");
 const ssr_1 = require("./plugins/ssr");
 const utils_1 = require("./utils");
 const handleHotUpdate_1 = require("./handleHotUpdate");
+const transformIndexHtml_1 = require("./transformIndexHtml");
 function initLogger({ logger, command }) {
     if (command !== 'serve') {
         return;
@@ -43,6 +44,7 @@ const UniH5Plugin = {
         initLogger(config);
     },
     handleHotUpdate: handleHotUpdate_1.createHandleHotUpdate(),
+    transformIndexHtml: transformIndexHtml_1.createTransformIndexHtml(),
 };
 exports.default = [
     cssScoped_1.uniCssScopedPlugin(),

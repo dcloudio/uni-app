@@ -1,3 +1,4 @@
+import { rpx2px } from '@dcloudio/uni-core'
 import { camelize, capitalize, hyphenate, isArray, isString } from '@vue/shared'
 
 export function patchStyle(el: Element, value: string | Record<string, any>) {
@@ -7,7 +8,7 @@ export function patchStyle(el: Element, value: string | Record<string, any>) {
       el.removeAttribute('style')
     } else {
       // TODO display
-      style.cssText = value
+      style.cssText = rpx2px(value, true)
     }
   } else {
     for (const key in value) {
@@ -26,6 +27,7 @@ function setStyle(
   if (isArray(val)) {
     val.forEach((v) => setStyle(style, name, v))
   } else {
+    val = rpx2px(val, true)
     if (name.startsWith('--')) {
       // custom property definition
       style.setProperty(name, val)

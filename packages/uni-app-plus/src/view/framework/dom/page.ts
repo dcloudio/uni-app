@@ -35,6 +35,9 @@ export function onPageCreated() {}
 export function onPageCreate({
   css,
   route,
+  platform,
+  pixelRatio,
+  windowWidth,
   disableScroll,
   onPageScroll,
   onPageReachBottom,
@@ -43,6 +46,7 @@ export function onPageCreate({
   windowTop,
   windowBottom,
 }: PageCreateData) {
+  initSystemInfo(platform, pixelRatio, windowWidth)
   // 初始化页面容器元素
   initPageElement()
 
@@ -60,6 +64,18 @@ export function onPageCreate({
     document.addEventListener('touchmove', disableScrollListener)
   } else if (onPageScroll || onPageReachBottom) {
     initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance)
+  }
+}
+
+function initSystemInfo(
+  platform: string,
+  pixelRatio: number,
+  windowWidth: number
+) {
+  ;(window as any).__SYSTEM_INFO__ = {
+    platform,
+    pixelRatio,
+    windowWidth,
   }
 }
 

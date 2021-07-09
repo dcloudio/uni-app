@@ -18,6 +18,9 @@ export interface PageNodeOptions {
   route: string
   version: number
   locale: string
+  platform: string
+  pixelRatio: number
+  windowWidth: number
   disableScroll: boolean
   onPageScroll: boolean
   onPageReachBottom: boolean

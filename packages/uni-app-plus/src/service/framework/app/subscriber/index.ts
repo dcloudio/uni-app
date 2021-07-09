@@ -1,4 +1,4 @@
-import { ON_WEBVIEW_READY, VD_SYNC } from '../../../../constants'
+import { INVOKE_API, ON_WEBVIEW_READY, VD_SYNC } from '../../../../constants'
 import { onVdSync } from '../../dom'
 import { onPlusMessage } from '../initGlobalEvent'
 import { subscribeWebviewReady } from './webviewReady'
@@ -17,5 +17,14 @@ export function initSubscribeHandlers() {
     // 非纯原生
     subscribe(ON_WEBVIEW_READY, subscribeWebviewReady)
     subscribe(VD_SYNC, onVdSync)
+    subscribe(INVOKE_API, onInvokeApi)
   }
+}
+
+function onInvokeApi({
+  data: { method, args },
+}: {
+  data: { method: UniApp.OpenType; args: any }
+}) {
+  uni[method] && uni[method](args)
 }

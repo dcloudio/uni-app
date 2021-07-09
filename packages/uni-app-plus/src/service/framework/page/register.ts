@@ -15,6 +15,7 @@ import { PageNodeOptions } from '../../../PageAction'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
 import { addCurrentPage } from './getCurrentPages'
+import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
 
 interface RegisterPageOptions {
   url: string
@@ -89,11 +90,15 @@ export function registerPage({
 
 function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
   const statusbarHeight = getStatusbarHeight()
+  const { platform, pixelRatio, windowWidth } = getBaseSystemInfo()
   return {
     css: true,
     route: meta.route,
     version: 1,
     locale: '',
+    platform,
+    pixelRatio,
+    windowWidth,
     disableScroll: meta.disableScroll === true,
     onPageScroll: false,
     onPageReachBottom: false,

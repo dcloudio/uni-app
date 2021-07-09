@@ -10,7 +10,6 @@ import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 import { initExtraPlugins } from './utils'
-import { createTransformIndexHtml } from './transformIndexHtml'
 
 const debugUni = debug('vite:uni:plugin')
 
@@ -82,7 +81,6 @@ export default function uniPlugin(
     config: createConfig(options, uniPlugins),
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
-    transformIndexHtml: createTransformIndexHtml(options),
   })
   plugins.push(...uniPlugins)
   return plugins

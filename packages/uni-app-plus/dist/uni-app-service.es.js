@@ -594,6 +594,23 @@ var serviceContext = (function (vue) {
       return encode$3(arrayBuffer);
   }, ArrayBufferToBase64Protocol);
 
+  /**
+   * 简易版systemInfo，主要为upx2px,i18n服务
+   * @returns
+   */
+  function getBaseSystemInfo() {
+      // @ts-expect-error view 层
+      if (typeof __SYSTEM_INFO__ !== 'undefined') {
+          return window.__SYSTEM_INFO__;
+      }
+      const { resolutionWidth } = plus.screen.getCurrentSize();
+      return {
+          platform: (plus.os.name || '').toLowerCase(),
+          pixelRatio: plus.screen.scale,
+          windowWidth: Math.round(resolutionWidth),
+      };
+  }
+
   function formatLog(module, ...args) {
       return `[${Date.now()}][${module}]：${args
         .map((arg) => JSON.stringify(arg))
@@ -1556,6 +1573,7 @@ var serviceContext = (function (vue) {
   }
 
   function hasRpx(str) {
+      str = str + '';
       return str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1;
   }
   function rpx2px(str, replace = false) {
@@ -2451,6 +2469,35 @@ var serviceContext = (function (vue) {
           required: true,
       },
       header: Object,
+      timeout: Number,
+  };
+
+  const API_UPLOAD_FILE = 'uploadFile';
+  const UploadFileOptions = {
+      formatArgs: {
+          filePath(filePath, params) {
+              if (filePath) {
+                  params.filePath = getRealPath(filePath);
+              }
+          },
+          header(value, params) {
+              params.header = value || {};
+          },
+          formData(value, params) {
+              params.formData = value || {};
+          },
+      },
+  };
+  const UploadFileProtocol = {
+      url: {
+          type: String,
+          required: true,
+      },
+      files: Array,
+      filePath: String,
+      name: String,
+      header: Object,
+      formData: Object,
       timeout: Number,
   };
 
@@ -4517,32 +4564,13 @@ var serviceContext = (function (vue) {
               });
           });
           this._socket.onerror(() => {
-              this.onErrorOrClose();
               this.socketStateChange('error');
+              this.onErrorOrClose();
           });
           this._socket.onclose(() => {
-              this.onErrorOrClose();
               this.socketStateChange('close');
+              this.onErrorOrClose();
           });
-          const oldSocketSend = this._socket.send;
-          const oldSocketClose = this._socket.close;
-          this._socket.send = (res) => {
-              oldSocketSend(extend({
-                  id: this.id,
-                  data: typeof res.data === 'object'
-                      ? {
-                          '@type': 'binary',
-                          base64: arrayBufferToBase64(res.data),
-                      }
-                      : res.data,
-              }));
-          };
-          this._socket.close = (res) => {
-              oldSocketClose(extend({
-                  id: this.id,
-                  res,
-              }));
-          };
       }
       onErrorOrClose() {
           this.readyState = this.CLOSED;
@@ -4568,7 +4596,13 @@ var serviceContext = (function (vue) {
           }
           try {
               this._socket.send({
-                  data: args.data,
+                  id: this.id,
+                  data: typeof args.data === 'object'
+                      ? {
+                          '@type': 'binary',
+                          base64: arrayBufferToBase64(args.data),
+                      }
+                      : args.data,
               });
               callOptions(args, 'sendSocketMessage:ok');
           }
@@ -4579,7 +4613,10 @@ var serviceContext = (function (vue) {
       close(args) {
           this.readyState = this.CLOSING;
           try {
-              this._socket.close(args);
+              this._socket.close(extend({
+                  id: this.id,
+                  args,
+              }));
               callOptions(args, 'closeSocket:ok');
           }
           catch (error) {
@@ -4626,9 +4663,7 @@ var serviceContext = (function (vue) {
           reject('sendSocketMessage:fail WebSocket is not connected');
           return;
       }
-      socketTask._socket.send({
-          data: args.data,
-      });
+      socketTask.send({ data: args.data });
       resolve();
   }, SendSocketMessageProtocol);
   const closeSocket = defineAsyncApi(API_CLOSE_SOCKET, (args, { resolve, reject }) => {
@@ -4639,7 +4674,7 @@ var serviceContext = (function (vue) {
       }
       socketTask.readyState = socketTask.CLOSING;
       const { code, reason } = args;
-      socketTask._socket.close({ code, reason });
+      socketTask.close({ code, reason });
       resolve();
   }, CloseSocketProtocol);
   function on(event) {
@@ -4652,6 +4687,84 @@ var serviceContext = (function (vue) {
   const onSocketError = /*#__PURE__*/ on('error');
   const onSocketMessage = /*#__PURE__*/ on('message');
   const onSocketClose = /*#__PURE__*/ on('close');
+
+  class UploadTask {
+      constructor(uploader) {
+          this._callbacks = [];
+          this._uploader = uploader;
+          uploader.addEventListener('statechanged', (upload, status) => {
+              if (upload.uploadedSize && upload.totalSize) {
+                  this._callbacks.forEach((callback) => {
+                      callback({
+                          progress: parseInt(String((upload.uploadedSize / upload.totalSize) * 100)),
+                          totalBytesSent: upload.uploadedSize,
+                          totalBytesExpectedToSend: upload.totalSize,
+                      });
+                  });
+              }
+          });
+      }
+      abort() {
+          this._uploader.abort();
+      }
+      onProgressUpdate(callback) {
+          if (typeof callback !== 'function') {
+              return;
+          }
+          this._callbacks.push(callback);
+      }
+      onHeadersReceived() { }
+      offProgressUpdate(callback) {
+          const index = this._callbacks.indexOf(callback);
+          if (index >= 0) {
+              this._callbacks.splice(index, 1);
+          }
+      }
+      offHeadersReceived() { }
+  }
+  const uploadFile = defineTaskApi(API_UPLOAD_FILE, ({ url, timeout, header, formData, files, filePath, name }, { resolve, reject }) => {
+      const uploader = plus.uploader.createUpload(url, {
+          timeout,
+          // 需要与其它平台上的表现保持一致，不走重试的逻辑。
+          retry: 0,
+          retryInterval: 0,
+      }, (upload, statusCode) => {
+          if (statusCode) {
+              resolve({
+                  data: upload.responseText,
+                  statusCode,
+              });
+          }
+          else {
+              reject(`statusCode: ${statusCode}`);
+          }
+      });
+      for (const name in header) {
+          if (hasOwn$1(header, name)) {
+              uploader.setRequestHeader(name, String(header[name]));
+          }
+      }
+      for (const name in formData) {
+          if (hasOwn$1(formData, name)) {
+              uploader.addData(name, String(formData[name]));
+          }
+      }
+      if (files && files.length) {
+          files.forEach((file) => {
+              uploader.addFile(getRealPath(file.uri), {
+                  key: file.name || 'file',
+              });
+          });
+      }
+      else {
+          uploader.addFile(getRealPath(filePath), {
+              key: name,
+          });
+      }
+      const uploadFileTask = new UploadTask(uploader);
+      uploader.start();
+      return uploadFileTask;
+  }, UploadFileProtocol, UploadFileOptions);
 
   const audios = {};
   const evts = [
@@ -4698,7 +4811,7 @@ var serviceContext = (function (vue) {
   };
   function createAudioInstance() {
       const audioId = `${Date.now()}${Math.random()}`;
-      const audio = (audios[audioId] = plus.audio.createPlayer());
+      const audio = (audios[audioId] = plus.audio.createPlayer('')); // 此处空字符串必填
       audio.src = '';
       audio.volume = 1;
       audio.startTime = 0;
@@ -6225,6 +6338,7 @@ var serviceContext = (function (vue) {
 
   const VD_SYNC = 'vdSync';
   const ON_WEBVIEW_READY = 'onWebviewReady';
+  const INVOKE_API = 'invokeApi';
 
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
@@ -6580,7 +6694,11 @@ var serviceContext = (function (vue) {
           // 非纯原生
           subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
           subscribe(VD_SYNC, onVdSync);
+          subscribe(INVOKE_API, onInvokeApi);
       }
+  }
+  function onInvokeApi({ data: { method, args }, }) {
+      uni[method] && uni[method](args);
   }
 
   let appCtx;
@@ -7450,11 +7568,15 @@ var serviceContext = (function (vue) {
   }
   function initPageOptions({ meta }) {
       const statusbarHeight = getStatusbarHeight();
+      const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
       return {
           css: true,
           route: meta.route,
           version: 1,
           locale: '',
+          platform,
+          pixelRatio,
+          windowWidth,
           disableScroll: meta.disableScroll === true,
           onPageScroll: false,
           onPageReachBottom: false,
@@ -7699,6 +7821,7 @@ var serviceContext = (function (vue) {
     onSocketError: onSocketError,
     onSocketMessage: onSocketMessage,
     onSocketClose: onSocketClose,
+    uploadFile: uploadFile,
     createInnerAudioContext: createInnerAudioContext,
     getBackgroundAudioManager: getBackgroundAudioManager,
     getLocation: getLocation,

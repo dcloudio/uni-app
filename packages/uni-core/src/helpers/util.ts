@@ -3,6 +3,7 @@ export function PolySymbol(name: string) {
 }
 
 function hasRpx(str: string) {
+  str = str + ''
   return str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1
 }
 
