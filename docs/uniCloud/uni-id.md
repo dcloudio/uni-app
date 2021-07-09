@@ -91,7 +91,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 1. HBuilderX 3.1.0+
 2. 插件市场导入`uni-id`公用模块uni_modules版本，HBuilderX会自动导入依赖的`uni-config-center`，[插件市场 uni-id](https://ext.dcloud.net.cn/plugin?id=2116)
 3. 在`uni-config-center`公用模块下创建`uni-id`目录，在创建的uni-id目录下再创建`config.json`文件配置uni-id所需参数（请参考下面config.json的说明），**注意：如果HBuilderX版本低于3.1.8，批量上传云函数及公共模块后需要单独再上传一次uni-id**
-4. 在`cloudfunctions/common`下上传`uni-id`模块
+4. 在`cloudfunctions/common`下上传`uni-id`、`uni-config-center`模块
 5. 在要使用`uni-id`的云函数右键选择`管理公共模块依赖`添加`uni-id`到云函数
 6. 创建`uni-id-users`、`opendb-verify-codes`集合（opendb-verify-codes是验证码表。可以使用示例项目里面的db_init.json进行初始化、也可以在web控制台新建表时选择这些表模块）
 
@@ -106,7 +106,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 
 或者直接导入[uni-id在插件市场的示例工程](https://ext.dcloud.net.cn/plugin?id=2116)
 
-## config.json的说明
+## config.json的说明@config
 
 注意：
 
@@ -2971,6 +2971,88 @@ uni-id会自动加载custom-token.js进行处理，在所有生成token的操作
 - 使用custom-token时自行调用createToken接口会变为异步操作，需使用`await uniID.createToken(...)`
 - 不要删除原始token内的字段
 
+## 隔离不同端用户@isolate-user
+
+一个完整的项目，通常需要客户端、管理端等，但是不同端的用户在同一服务空间下使用uni-id会比较难处理。比如不同端需要不同的配置文件、登录接口需要开发者自行隔离开。自`uni-id 3.2.0`起，支持对不同端用户进行隔离，此功能在此版本是直接开启的。
+
+> 不同端用户数据通过用户表的dcloud_appid字段隔离，同一个手机号、微信号也可以同时注册管理端和用户端，绑定账号同理。
+
+**注意**
+
+- uni-id会自动在用户表每条用户记录插入`dcloud_appid`字段，记录当前用户是从哪端的应用登录的。针对没有dcloud_appid的用户，在他下次触发登录操作时会自动将当前使用的应用的AppId插入到用户表的`dcloud_appid`字段。
+- 已有dcloud_appid的用户，如果使用相同的用户账号（用户名、邮箱、手机、微信等）+不同的DCloud Appid登录会被判定为不同的用户
+
+## 隔离不同端配置@isolate-config
+
+> `uni-id 3.2.0`及以上版本
+
+uni-id的config.json支持配置为数组，每项都是一个完整的配置，对不同的配置使用`dcloudAppid`字段进行区分（**此字段与项目内的manifest.json里面的DCloud AppId一致**），uni-id会自动根据客户端的appid来判断该使用哪套配置
+
+**示例**
+
+> 数组每一项都是一个完整的配置文件，全部选项请参考：[uni-id 配置](uniCloud/uni-id?id=config)
+
+```js
+[{
+  "dcloudAppid": "__UNI__xxxx1", // 务必替换为对应项目manifest.json内的DCloud Appid
+  "passwordSecret": "passwordSecret-demo",
+	"tokenSecret": "tokenSecret-demo",
+	"tokenExpiresIn": 7200,
+	"tokenExpiresThreshold": 600,
+  "app-plus": {
+  	"tokenExpiresIn": 2592000,
+  	"oauth": {
+  		"weixin": {
+  			"appid": "weixin appid",
+  			"appsecret": "weixin appsecret"
+  		}
+  	}
+  }
+}, {
+  "dcloudAppid": "__UNI__xxxx2", // 务必替换为对应项目manifest.json内的DCloud Appid
+  "passwordSecret": "passwordSecret-demo",
+	"tokenSecret": "tokenSecret-demo",
+	"tokenExpiresIn": 7200,
+	"tokenExpiresThreshold": 600,
+  "app-plus": {
+  	"tokenExpiresIn": 2592000,
+  	"oauth": {
+  		"weixin": {
+  			"appid": "weixin appid",
+  			"appsecret": "weixin appsecret"
+  		}
+  	}
+  }
+}]
+```
+
+## 云函数Url化时使用@url
+
+云函数url化时uni-id无法自行获取客户端相关信息，需要开发者自行创建uniID实例并传入相关信息，以下为一个简单示例
+
+```js
+// 客户端代码示例
+uni.request({
+  url: 'https://xxx.xxx/xxx?appid=your_appid&platform=your_platform&deviceId=your_deviceId'
+})
+
+// 云函数代码示例
+const uniID = require('uni-id')
+exports.main = async function(event, context) {
+  const {
+    appid,
+    platform
+  } = event.queryStringParameters // 不同类型的请求获取参数的方式略有差异，具体如何取参数请参考：https://uniapp.dcloud.net.cn/uniCloud/http
+  context.APPID = appid
+  context.PLATFORM = platform
+  const uniIDIns = uniID.createInstance({
+    context
+  })
+  // uniIDIns.login() 使用uniIDIns来调用uni-id相关接口
+}
+```
+
+
 # 迁移指南@migration
 
 ## 自1.x.x版本升级到2.x.x@m1to2
@@ -3045,6 +3127,3 @@ uni-id 3.1.0版本主要有以下两个调整
 
 - 关于邀请码
   + 目前仅手机号+验证码的注册方式支持填写邀请码
-
-- 区分前后端用户
-  + 不支持分表，推荐给用户添加标记来区分前后端用户
