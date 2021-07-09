@@ -13,11 +13,6 @@ if (__PLATFORM__ === 'app-plus') {
   plusReady(() => {
     isAndroid = plus.os.name.toLowerCase() === 'android'
     osVersion = plus.os.version
-    // iOS 14.6 调用同步方法导致键盘弹卡顿
-    if (!isAndroid && parseFloat(osVersion) >= 14.6) {
-      const currentWebview = plus.webview.currentWebview()
-      webviewStyle = currentWebview.getStyle() || {}
-    }
   })
   document.addEventListener('keyboardchange', function (event) {
     keyboardHeight = event.height
@@ -160,13 +155,22 @@ export default {
             }
           })
         }
-        if (!isAndroid && parseInt(osVersion) < 12) {
+        if (!isAndroid) {
           // iOS12 以下系统 focus 事件设置较迟，改在 touchstart 设置
-          el.addEventListener('touchstart', () => {
-            if (!this.disabled && !focus) {
-              setSoftinputTemporary(this)
-            }
-          })
+          if (parseInt(osVersion) < 12) {
+            el.addEventListener('touchstart', () => {
+              if (!this.disabled && !focus) {
+                setSoftinputTemporary(this)
+              }
+            })
+          }
+          // iOS 14.6 调用同步方法导致键盘弹卡顿
+          if (parseFloat(osVersion) >= 14.6 && !webviewStyle) {
+            plusReady(() => {
+              const currentWebview = plus.webview.currentWebview()
+              webviewStyle = currentWebview.getStyle() || {}
+            })
+          }
         }
       }
 
