@@ -2,10 +2,10 @@ import { hasOwn } from '@vue/shared'
 import { decodeAttr, UniNodeJSON } from '@dcloudio/uni-shared'
 
 import { UniNode } from './UniNode'
-import { patchClass } from './modules/class'
-import { patchStyle } from './modules/style'
-import { patchEvent } from './modules/events'
-import { UniCustomElement } from './components'
+import { patchClass } from '../modules/class'
+import { patchStyle } from '../modules/style'
+import { patchEvent } from '../modules/events'
+import { UniCustomElement } from '../components'
 
 export class UniElement extends UniNode {
   $: UniCustomElement

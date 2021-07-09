@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import {
   createScrollListener,
   CreateScrollListenerOptions,
@@ -6,7 +7,28 @@ import {
 } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 import { PageCreateData } from '../../../PageAction'
-import { createElement } from './elements'
+
+import { createBuiltInComponent } from './components'
+
+import { UniElement } from './elements/UniElement'
+import { UniNode } from './elements/UniNode'
+
+const elements = new Map<number, UniNode>()
+
+export function $(id: number) {
+  return elements.get(id) as UniElement
+}
+
+export function createElement(id: number, tag: string | number) {
+  let element: UniNode
+  if (isString(tag)) {
+    element = new UniElement(id, document.createElement(tag))
+  } else {
+    element = createBuiltInComponent(tag, id)
+  }
+  elements.set(id, element)
+  return element
+}
 
 export function onPageCreated() {}
 

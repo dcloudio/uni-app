@@ -1,5 +1,5 @@
 import { onNodeEvent } from './service/framework/dom/onNodeEvent'
-import { createElement } from './view/framework/dom/elements'
+import { createElement } from './view/framework/dom/page'
 import { UniElement } from './view/framework/dom/elements/UniElement'
 
 export const ACTION_TYPE_PAGE_CREATE = 1

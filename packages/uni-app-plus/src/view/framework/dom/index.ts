@@ -9,8 +9,7 @@ import {
   ACTION_TYPE_SET_TEXT,
   PageAction,
 } from '../../../PageAction'
-import { $, createElement } from './elements'
-import { onPageCreate, onPageCreated } from './page'
+import { $, createElement, onPageCreate, onPageCreated } from './page'
 
 export function onVdSync(actions: PageAction[]) {
   actions.forEach((action) => {

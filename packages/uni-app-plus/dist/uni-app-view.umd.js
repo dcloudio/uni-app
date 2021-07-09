@@ -5950,10 +5950,10 @@
       };
     }
   });
-  const UniButton = createWrapper(Button);
-  class UniButtonElement extends UniNode {
-    constructor(id) {
-      super(id, "uni-button");
+  class UniComponent extends UniNode {
+    constructor(id, tag, component) {
+      super(id, tag);
+      this.$component = component;
     }
     init(nodeJson) {
       const container = document.createElement("div");
@@ -5964,17 +5964,11 @@
           this.setAttr(n, a[n]);
         });
       }
-      const vm = createApp(UniButton, { attrs: this.$props }).mount(container);
+      createApp(createWrapper(this.$component, this.$props)).mount(container);
       this.$ = container.firstElementChild;
       if (hasOwn$1(nodeJson, "t")) {
         this.$.textContent = nodeJson.t || "";
       }
-      watch(this.$props, () => {
-        {
-          console.log(formatLog(this.tag, "props", "forceUpdate"));
-        }
-        vm.$forceUpdate();
-      });
     }
     setAttr(name, value) {
       const decoded = decodeAttr(name);
@@ -5988,6 +5982,11 @@
       this.$props[decodeAttr(name)] = null;
     }
   }
+  class UniButton extends UniComponent {
+    constructor(id) {
+      super(id, "uni-button", Button);
+    }
+  }
   const BuiltInComponents = [
     ,
     UniViewElement,
@@ -5997,23 +5996,13 @@
     UniComment,
     ,
     ,
-    UniButtonElement
+    UniButton
   ];
   function createBuiltInComponent(type, id) {
     return new BuiltInComponents[type](id);
   }
-  function createWrapper(component) {
-    return defineComponent({
-      props: ["attrs"],
-      data() {
-        return {
-          props: this.attrs
-        };
-      },
-      render() {
-        return h(component, this.props);
-      }
-    });
+  function createWrapper(component, props) {
+    return () => h(component, props);
   }
   const elements = new Map();
   function $(id) {

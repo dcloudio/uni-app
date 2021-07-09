@@ -1,23 +1,16 @@
-import '@dcloudio/uni-components/style/button.css'
 import { hasOwn } from '@vue/shared'
-import { Button } from '@dcloudio/uni-components'
-import { createApp, reactive, watch } from 'vue'
-import { createWrapper } from '.'
-import {
-  decodeAttr,
-  formatLog,
-  parseEventName,
-  UniNodeJSON,
-} from '@dcloudio/uni-shared'
-import { UniNode } from '../UniNode'
+import { Component, createApp, reactive } from 'vue'
+import { decodeAttr, parseEventName, UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniNode } from '../elements/UniNode'
 import { createInvoker } from '../modules/events'
+import { createWrapper } from '.'
 
-const UniButton = createWrapper(Button)
-
-export class UniButtonElement extends UniNode {
+export class UniComponent extends UniNode {
+  private $component: Component
   private $props!: Record<string, any>
-  constructor(id: number) {
-    super(id, 'uni-button')
+  constructor(id: number, tag: string, component: Component) {
+    super(id, tag)
+    this.$component = component
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     const container = document.createElement('div')
@@ -28,17 +21,13 @@ export class UniButtonElement extends UniNode {
         this.setAttr(n, a[n])
       })
     }
-    const vm = createApp(UniButton, { attrs: this.$props }).mount(container)
+    const vm = createApp(createWrapper(this.$component, this.$props)).mount(
+      container
+    )
     this.$ = container.firstElementChild!
     if (hasOwn(nodeJson, 't')) {
       this.$.textContent = nodeJson.t || ''
     }
-    watch(this.$props, () => {
-      if (__DEV__) {
-        console.log(formatLog(this.tag, 'props', 'forceUpdate'))
-      }
-      vm.$forceUpdate()
-    })
   }
   setAttr(name: string, value: unknown) {
     const decoded = decodeAttr(name)
