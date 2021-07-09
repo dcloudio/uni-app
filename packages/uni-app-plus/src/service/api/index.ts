@@ -21,6 +21,8 @@ export * from './media/saveVideoToPhotosAlbum'
 export * from './media/saveImageToPhotosAlbum'
 export * from './media/compressImage'
 export * from './media/compressVideo'
+export * from './media/chooseImage'
+export * from './media/chooseVideo'
 
 export * from './keyboard/keyboard'
 

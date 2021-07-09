@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, capitalize } from '@vue/shared'
 import {
   API_CREATE_INNER_AUDIO_CONTEXT,
   defineSyncApi,
@@ -194,7 +194,7 @@ const onAudioStateChange = ({
       audio.__timing = setInterval(() => {
         const currentTime = audio.currentTime
         if (currentTime !== oldCurrentTime) {
-          emit(audio, 'timeupdate' as any)
+          emit(audio, 'timeUpdate' as any)
         }
       }, 200)
     } else if (state === 'pause' || state === 'stop' || state === 'error') {
@@ -294,7 +294,9 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
   /**
    * 事件监听
    */
-  _callbacks: Partial<Record<InnerAudioContextEvent, Array<Function>>>
+  _callbacks: Partial<
+    Record<InnerAudioContextEvent, Array<Function | undefined>>
+  >
   /**
    *
    * @param id 当前Audio示例id
@@ -432,9 +434,7 @@ function emit(
   errMsg?: string,
   errCode?: unknown
 ) {
-  const name = `on${
-    state[0].toUpperCase() + state.substr(1)
-  }` as InnerAudioContextEvent
+  const name = `on${capitalize(state)}` as InnerAudioContextEvent
   audio._callbacks[name]!.forEach((callback) => {
     if (typeof callback === 'function') {
       callback(
