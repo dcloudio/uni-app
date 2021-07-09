@@ -816,9 +816,10 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
 
-"@dcloudio/types@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.3.0.tgz#e983fe73a6b5b7b8f72df7ddbfe7ab4a2853596a"
+"@dcloudio/types@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.nlark.com/@dcloudio/types/download/@dcloudio/types-2.3.1.tgz?cache=0&sync_timestamp=1625822205457&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40dcloudio%2Ftypes%2Fdownload%2F%40dcloudio%2Ftypes-2.3.1.tgz#3e09724368f8d9d26f92052f56f555df3d2dc313"
+  integrity sha1-PglyQ2j42dJvkgUvVvVV3z0twxM=
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"

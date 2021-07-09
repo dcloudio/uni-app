@@ -19,7 +19,17 @@ import { extend, capitalize } from '@vue/shared'
 import { callOptions } from '@dcloudio/uni-shared'
 
 type Socket = {
-  send: ({ data }: { data: string | ArrayBuffer }) => void
+  send: ({
+    data,
+  }: {
+    id: String
+    data:
+      | string
+      | {
+          '@type': String
+          base64: String
+        }
+  }) => void
   close: ({ code, reason }: { code?: number; reason?: string }) => void
   onopen: Function
   onmessage: Function
@@ -102,38 +112,13 @@ class SocketTask implements UniApp.SocketTask {
       })
     })
     this._socket.onerror(() => {
-      this.onErrorOrClose()
       this.socketStateChange('error')
+      this.onErrorOrClose()
     })
     this._socket.onclose(() => {
-      this.onErrorOrClose()
       this.socketStateChange('close')
+      this.onErrorOrClose()
     })
-
-    const oldSocketSend = this._socket.send
-    const oldSocketClose = this._socket.close
-    this._socket.send = (res) => {
-      oldSocketSend(
-        extend({
-          id: this.id,
-          data:
-            typeof res.data === 'object'
-              ? {
-                  '@type': 'binary',
-                  base64: arrayBufferToBase64(res.data),
-                }
-              : res.data,
-        })
-      )
-    }
-    this._socket.close = (res) => {
-      oldSocketClose(
-        extend({
-          id: this.id,
-          res,
-        })
-      )
-    }
   }
 
   onErrorOrClose() {
@@ -163,7 +148,14 @@ class SocketTask implements UniApp.SocketTask {
     }
     try {
       this._socket.send({
-        data: args.data,
+        id: this.id,
+        data:
+          typeof args.data === 'object'
+            ? {
+                '@type': 'binary',
+                base64: arrayBufferToBase64(args.data),
+              }
+            : args.data,
       })
       callOptions(args, 'sendSocketMessage:ok')
     } catch (error) {
@@ -174,7 +166,12 @@ class SocketTask implements UniApp.SocketTask {
   close(args: UniApp.CloseSocketOptions) {
     this.readyState = this.CLOSING
     try {
-      this._socket.close(args)
+      this._socket.close(
+        extend({
+          id: this.id,
+          args,
+        })
+      )
       callOptions(args, 'closeSocket:ok')
     } catch (error) {
       callOptions(args, `closeSocket:fail ${error}`)
@@ -232,9 +229,7 @@ export const sendSocketMessage = defineAsyncApi<API_TYPE_SEND_SOCKET_MESSAGE>(
       reject('sendSocketMessage:fail WebSocket is not connected')
       return
     }
-    socketTask._socket.send({
-      data: args.data,
-    })
+    socketTask.send({ data: args.data })
     resolve()
   },
   SendSocketMessageProtocol
@@ -250,7 +245,7 @@ export const closeSocket = defineAsyncApi<API_TYPE_CLOSE_SOCKET>(
     }
     socketTask.readyState = socketTask.CLOSING
     const { code, reason } = args
-    socketTask._socket.close({ code, reason })
+    socketTask.close({ code, reason })
     resolve()
   },
   CloseSocketProtocol
