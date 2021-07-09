@@ -219,7 +219,7 @@ export const closeSocket = <API_TYPE_CLOSE_SOCKET>defineAsyncApi(
   (options, { resolve, reject }) => {
     const socketTask = socketTasks[0]
     if (socketTask) {
-      callSocketTask(socketTask, 'send', options, resolve, reject)
+      callSocketTask(socketTask, 'close', options, resolve, reject)
     } else {
       reject('WebSocket is not connected')
     }
