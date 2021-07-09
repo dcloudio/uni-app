@@ -7,6 +7,7 @@ let isAndroid: boolean
 let osVersion: string
 let keyboardHeight: number
 let keyboardChangeCallback: Function | null
+let webviewStyle: PlusWebviewWebviewStyles
 interface KeyboardChangeEvent extends Event {
   height: number
 }
@@ -40,7 +41,7 @@ function setSoftinputTemporary(
     const MODE_ADJUSTPAN = 'adjustPan'
     const MODE_NOTHING = 'nothing'
     const currentWebview = plus.webview.currentWebview()
-    const style = currentWebview.getStyle() || {}
+    const style = webviewStyle || currentWebview.getStyle() || {}
     const options = {
       mode:
         reset || style.softinputMode === MODE_ADJUSTRESIZE
@@ -176,23 +177,34 @@ export function useKeyboard(
 
     if (__PLATFORM__ === 'app') {
       // 安卓单独隐藏键盘后点击输入框不会触发 focus 事件
-      el.addEventListener('click', () => {
-        if (
-          !props.disabled &&
-          !props.readOnly &&
-          focus &&
-          keyboardHeight === 0
-        ) {
-          setSoftinputTemporary(props, el)
-        }
-      })
-      if (!isAndroid && parseInt(osVersion) < 12) {
-        // iOS12 以下系统 focus 事件设置较迟，改在 touchstart 设置
-        el.addEventListener('touchstart', () => {
-          if (!props.disabled && !props.readOnly && !focus) {
+      if (isAndroid) {
+        el.addEventListener('click', () => {
+          if (
+            !props.disabled &&
+            !props.readOnly &&
+            focus &&
+            keyboardHeight === 0
+          ) {
             setSoftinputTemporary(props, el)
           }
         })
+      }
+      if (!isAndroid) {
+        if (parseInt(osVersion) < 12) {
+          // iOS12 以下系统 focus 事件设置较迟，改在 touchstart 设置
+          el.addEventListener('touchstart', () => {
+            if (!props.disabled && !props.readOnly && !focus) {
+              setSoftinputTemporary(props, el)
+            }
+          })
+        }
+        // iOS 14.6 调用同步方法导致键盘弹卡顿
+        if (parseFloat(osVersion) >= 14.6 && !webviewStyle) {
+          plusReady(() => {
+            const currentWebview = plus.webview.currentWebview()
+            webviewStyle = currentWebview.getStyle() || {}
+          })
+        }
       }
     }
 
