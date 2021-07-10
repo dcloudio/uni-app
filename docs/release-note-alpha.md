@@ -17,11 +17,11 @@
   + 新增 内容安全公共模块，包含图片鉴黄、文字内容违规检测，免费且全端可用 [详情](https://ext.dcloud.net.cn/plugin?id=5460)
   + clientDB 新增 multiSend 接口，用于多个clientDB联网请求合并为一次联网 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=multi-send)
   + unicloud-db组件和API 新增 getTemp 接口，用于在 multiSend 内使用 [详情](https://uniapp.dcloud.net.cn/uniCloud/clientdb?id=multi-send)
-  + uni-id 调整 3.1.1版本发布，使用兼容uniCloud响应体规范的新错误码格式 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=errcode)
+  + uni-id 调整 3.1.1版本发布，使用兼容 uniCloud 响应体规范的新错误码格式 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=errcode)
   + uniCloud本地调试插件 修复 部分情况下出现 MaxListenersExceededWarning 警告的Bug
   + uniCloud本地调试插件 修复 项目内存在项目外文件的软链时，修改无法实时生效的Bug
   + JQL数据库管理 修复 部分情况下执行数据库操作无响应的Bug
-  + 客户端SDK 修复 nvue 页面无法触发 App.vue 内注册的 db.on('error')、db.on('refreshToken') 等回调的Bug
+  + 客户端 修复 nvue 页面无法触发 App.vue 内注册的 db.on('error')、db.on('refreshToken') 等回调的Bug
 * 【App插件(含5+App和uni-app的App端)】
   + Android平台 优化 通知栏操作逻辑，解决提交 Google Play 审核可能提示 Implicit PendingIntent Vulnerability 的问题 [详情](https://ask.dcloud.net.cn/question/126207)
   + Android平台 优化 template 原生隐私政策提示框UI样式
@@ -43,8 +43,8 @@
   + App-Android平台 修复 uni.previewImage 长按保存图片可能失败的Bug [详情](https://ask.dcloud.net.cn/question/125357)
   + App-iOS平台 修复 调用 uni.hideKeyboard 后点击页面任意位置 input 组件自动聚焦的Bug [详情](https://ask.dcloud.net.cn/question/125233)
   + App-iOS平台 修复 nvue textarea 组件不设置 padding 时 placeholder 显示位置不正常的Bug [详情](https://ask.dcloud.net.cn/question/122376)
-  + 百度小程序 修复 部分 class 写法编译后失效的Bug
-  + QQ小程序 修复 默认启用 nodeModules 导致作用域插槽编译后运行报错的Bug
+  + 百度小程序平台 修复 部分 class 写法编译后失效的Bug
+  + QQ小程序平台 修复 默认启用 nodeModules 导致作用域插槽编译后运行报错的Bug
 * 【uniCloud】
   + 新增 uniCloud响应体规范，方便前端拦截器统一处理、方便国际化 [详情](https://uniapp.dcloud.net.cn/uniCloud/unicloud-response-format)
   + 客户端 新增 添加拦截器、移除拦截器API [详情](https://uniapp.dcloud.net.cn/uniCloud/client-sdk?id=add-interceptor)
@@ -65,7 +65,7 @@
 #### 3.1.19.20210613-alpha
 * 【uni-app】
   + App平台、H5平台 新增 input 组件添加 verifyNumber 属性 [详情](https://uniapp.dcloud.io/component/input)
-  + App平台、H5平台 修复 insertImage 多次触发 input 事件的Bug [详情](https://ask.dcloud.net.cn/question/124809)
+  + App平台、H5平台 修复 editor 组件 insertImage 多次触发 input 事件的Bug [详情](https://ask.dcloud.net.cn/question/124809)
   + App平台 新增 一键登录自定义按钮添加 provider 属性，用于动态生成 buttons 时区分按钮 [详情](https://uniapp.dcloud.io/univerify?id=用户点击一键登录自定义按钮)
   + App平台 新增 uni.chooseImage 支持 crop 配置 [详情](https://uniapp.dcloud.io/api/media/image?id=chooseimage)
   + App平台 新增 video 组件支持 header 配置 [详情](https://uniapp.dcloud.io/component/video)
@@ -108,7 +108,7 @@
   + uni-ui uni-forms 新增 validate 事件增加 keepitem 参数，可以选择那些字段不过滤
   + uni-ui uni-forms 优化 submit 事件重命名为 validate
   + uni-ui uni-data-picker 修复 无法加载云端数据的问题
-  + uni-ui uni-data-picker 修复 v-model无效问题
+  + uni-ui uni-data-picker 修复 v-model 无效问题
   + uni-ui uni-data-picker 修复 loaddata 为空数据组时加载时间过长问题
   + uni-ui uni-datetime-picker 修复 图标在小程序上不显示的 bug
   + uni-ui uni-datetime-picker 优化 重命名引用组件，避免潜在组件命名冲突
