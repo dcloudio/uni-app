@@ -7,6 +7,8 @@ export class UniNode {
   id: number
   tag: string
   $!: Element | Text | Comment
+  isMounted: boolean = false
+  isUnmounted: boolean = false
   constructor(id: number, tag: string) {
     this.id = id
     this.tag = tag
@@ -32,9 +34,11 @@ export class UniNode {
     } else {
       parentNode.insertBefore(node, $(refNodeId).$)
     }
+    this.isMounted = true
   }
   remove() {
     const { $ } = this
     $.parentNode!.removeChild($)
+    this.isUnmounted = false
   }
 }

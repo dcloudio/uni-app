@@ -1,36 +1,34 @@
-import { camelize } from '@vue/shared'
-import { decodeAttr, formatLog } from '@dcloudio/uni-shared'
+import { formatLog } from '@dcloudio/uni-shared'
 import { UniElement } from './UniElement'
 
-function isHoverAttr(name: string) {
-  return name.indexOf('.h') === 0
+interface HoverProps {
+  'hover-class': string | 'none'
+  'hover-stop-propagation': boolean
+  'hover-start-time': number
+  'hover-stay-time': number
 }
-
-export class UniHoverElement extends UniElement {
+const PROP_NAMES_HOVER = [
+  'hover-class',
+  'hover-stop-propagation',
+  'hover-start-time',
+  'hover-stay-time',
+]
+export class UniHoverElement extends UniElement<HoverProps> {
   private _hover?: Hover
-
-  setAttr(name: string, value: unknown) {
-    if (!isHoverAttr(name)) {
-      return super.setAttr(name, value)
-    }
-    name = camelize(decodeAttr(name))
-    if (!this._hover) {
-      this._hover = new Hover(this.$)
-    }
-    const { _hover } = this
-    ;(_hover as any)[name] = value
-    if (name !== 'hoverClass') {
-      return
-    }
-    if (_hover.hoverClass && _hover.hoverClass !== 'none') {
-      _hover.addEvent()
-    } else {
-      _hover.removeEvent()
-    }
+  constructor(id: number, element: Element, propNames: string[] = []) {
+    super(id, element, [...PROP_NAMES_HOVER, ...propNames])
   }
-  removeAttr(name: string) {
-    if (!isHoverAttr(name)) {
-      return super.removeAttr(name)
+  update() {
+    const hoverClass = this.$props['hover-class']
+    if (hoverClass && hoverClass !== 'none') {
+      if (!this._hover) {
+        this._hover = new Hover(this.$, this.$props)
+      }
+      this._hover.addEvent()
+    } else {
+      if (this._hover) {
+        this._hover.removeEvent()
+      }
     }
   }
 }
@@ -38,10 +36,7 @@ export class UniHoverElement extends UniElement {
 class Hover {
   private $: Element
 
-  hoverClass: string = 'none'
-  hoverStopPropagation: boolean = false
-  hoverStartTime: number = 50
-  hoverStayTime: number = 400
+  private props: HoverProps
 
   private _listening: boolean = false
 
@@ -53,8 +48,10 @@ class Hover {
   private __hoverTouchStart!: (evt: Event) => void
   private __hoverTouchEnd!: (evt?: Event) => void
   private __hoverTouchCancel!: (evt?: Event) => void
-  constructor($: Element) {
+  constructor($: Element, props: HoverProps) {
     this.$ = $
+
+    this.props = props
 
     this.__hoverTouchStart = this._hoverTouchStart.bind(this)
     this.__hoverTouchEnd = this._hoverTouchEnd.bind(this)
@@ -67,10 +64,11 @@ class Hover {
 
   set hovering(hovering: boolean) {
     this._hovering = hovering
+    const hoverClass = this.props['hover-class']
     if (hovering) {
-      this.$.classList.add(this.hoverClass)
+      this.$.classList.add(hoverClass)
     } else {
-      this.$.classList.remove(this.hoverClass)
+      this.$.classList.remove(hoverClass)
     }
   }
 
@@ -80,7 +78,12 @@ class Hover {
     }
     if (__DEV__) {
       console.log(
-        formatLog(this.$.tagName, 'Hover', 'addEventListener', this.hoverClass)
+        formatLog(
+          this.$.tagName,
+          'Hover',
+          'addEventListener',
+          this.props['hover-class']
+        )
       )
     }
     this._listening = true
@@ -104,17 +107,14 @@ class Hover {
     if ((evt as any)._hoverPropagationStopped) {
       return
     }
-    if (
-      !this.hoverClass ||
-      this.hoverClass === 'none' ||
-      (this.$ as any).disabled
-    ) {
+    const hoverClass = this.props['hover-class']
+    if (!hoverClass || hoverClass === 'none' || (this.$ as any).disabled) {
       return
     }
     if ((evt as TouchEvent).touches.length > 1) {
       return
     }
-    if (this.hoverStopPropagation) {
+    if (this.props['hover-stop-propagation']) {
       ;(evt as any)._hoverPropagationStopped = true
     }
     this._hoverTouch = true
@@ -124,7 +124,7 @@ class Hover {
         // 防止在hoverStartTime时间内触发了 touchend 或 touchcancel
         this._hoverReset()
       }
-    }, this.hoverStartTime)
+    }, this.props['hover-start-time'])
   }
   _hoverTouchEnd() {
     this._hoverTouch = false
@@ -137,7 +137,7 @@ class Hover {
       clearTimeout(this._hoverStayTimer)
       this._hoverStayTimer = setTimeout(() => {
         this.hovering = false
-      }, this.hoverStayTime)
+      }, this.props['hover-stay-time'])
     })
   }
   _hoverTouchCancel() {

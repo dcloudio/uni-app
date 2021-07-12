@@ -1,5 +1,6 @@
 import { defineComponent, h } from 'vue'
 import { UniComment } from '../elements/UniComment'
+import { UniTextElement } from '../elements/UniTextElement'
 import { UniTextNode } from '../elements/UniTextNode'
 import { UniViewElement } from '../elements/UniViewElement'
 import { UniAd } from './UniAd'
@@ -38,7 +39,6 @@ import { UniSlider } from './UniSlider'
 import { UniSwiper } from './UniSwiper'
 import { UniSwiperItem } from './UniSwiperItem'
 import { UniSwitch } from './UniSwitch'
-import { UniText } from './UniText'
 import { UniTextarea } from './UniTextarea'
 import { UniVideo } from './UniVideo'
 import { UniWebView } from './UniWebView'
@@ -52,7 +52,7 @@ const BuiltInComponents = [
   ,
   UniViewElement,
   UniImage,
-  UniText,
+  UniTextElement,
   UniTextNode,
   UniComment,
   UniNavigator,

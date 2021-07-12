@@ -4,7 +4,7 @@ import {
   useCustomEvent,
   EmitEvent,
   flatVNode,
-  Text,
+  // Text,
 } from '@dcloudio/uni-components'
 import { useCover } from '../../../helpers/useCover'
 
@@ -22,9 +22,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const defaultSlots = slots.default ? flatVNode(slots.default()) : []
       let text = ''
       defaultSlots.forEach((node) => {
-        if (!node.type === Text) {
-          text += node.children || ''
-        }
+        // if (!node.type === Text) {
+        text += node.children || ''
+        // }
       })
       content.text = text
       return (

@@ -109,6 +109,11 @@ uni-button[loading]:before {
 [nvue] uni-swiper-item {
   position: absolute;
 }
+uni-text[selectable] {
+  cursor: auto;
+  -webkit-user-select: text;
+          user-select: text;
+}
 uni-view {
   display: block;
 }
@@ -1692,11 +1697,6 @@ uni-switch .uni-checkbox-input svg {
 
 .uni-checkbox-input.uni-checkbox-input-disabled:before {
   color: #adadad;
-}
-uni-text[selectable] {
-  cursor: auto;
-  -webkit-user-select: text;
-          user-select: text;
 }
 uni-textarea {
   width: 300px;

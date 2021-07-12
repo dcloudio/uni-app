@@ -22,6 +22,7 @@ const rollupPlugins = [
       defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
       defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
       __IMPORT_META_ENV_BASE_URL__: 'import.meta.env.BASE_URL', //直接使用import.meta.env.BASE_URL会被vite替换成'/'
+      __UNI_FEATURE_LONGPRESS__: JSON.stringify(true),
     },
     preventAssignment: true,
   }),

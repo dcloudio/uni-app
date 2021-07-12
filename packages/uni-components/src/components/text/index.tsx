@@ -1,33 +1,6 @@
 import { VNode, Component, createTextVNode, createVNode } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-
-const SPACE_UNICODE = {
-  ensp: '\u2002',
-  emsp: '\u2003',
-  nbsp: '\u00a0',
-}
-
-interface DecodeOptions {
-  space: keyof typeof SPACE_UNICODE
-  decode: boolean
-}
-function normalizeText(text: string, { space, decode }: DecodeOptions) {
-  if (space && SPACE_UNICODE[space]) {
-    text = text.replace(/ /g, SPACE_UNICODE[space])
-  }
-  if (!decode) {
-    return text
-  }
-  return text
-    .replace(/&nbsp;/g, SPACE_UNICODE.nbsp)
-    .replace(/&ensp;/g, SPACE_UNICODE.ensp)
-    .replace(/&emsp;/g, SPACE_UNICODE.emsp)
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-}
+import { DecodeOptions, parseText } from '../../helpers/text'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Text',
@@ -51,22 +24,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8 /* TEXT_CHILDREN */) {
-            const lines = (vnode.children as string)
-              .replace(/\\n/g, '\n')
-              .split('\n')
+            const lines = parseText(vnode.children as string, {
+              space: props.space as DecodeOptions['space'],
+              decode: props.decode as boolean,
+            })
             const len = lines.length - 1
-            lines.forEach((text, index) => {
-              if (index === 0 && !text) {
-                //临时方案解决(<text>\n横向布局</text>) Hydration node mismatch
+            lines.forEach((line, index) => {
+              if (index === 0 && !line) {
+                // 临时方案解决(<text>\n横向布局</text>) Hydration node mismatch
               } else {
-                children.push(
-                  createTextVNode(
-                    normalizeText(text, {
-                      space: props.space as DecodeOptions['space'],
-                      decode: props.decode as boolean,
-                    })
-                  )
-                )
+                children.push(createTextVNode(line))
               }
               if (index !== len) {
                 children.push(createVNode('br'))

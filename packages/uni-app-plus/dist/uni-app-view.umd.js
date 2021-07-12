@@ -4,9 +4,6 @@
   "use strict";
   var base = "* {\n  margin: 0;\n  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n  -webkit-tap-highlight-color: transparent;\n}\n\nhtml,\nbody {\n  -webkit-user-select: none;\n  user-select: none;\n  width: 100%;\n}\n\nhtml {\n  height: 100%;\n  height: 100vh;\n  width: 100%;\n  width: 100vw;\n}\n\nbody {\n  overflow-x: hidden;\n  background-color: white;\n}\n\ninput[type='search']::-webkit-search-cancel-button {\n  display: none;\n}\n\n.uni-loading,\nuni-button[loading]:before {\n  background: transparent\n    url('data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=')\n    no-repeat;\n}\n\n.uni-loading {\n  width: 20px;\n  height: 20px;\n  display: inline-block;\n  vertical-align: middle;\n  animation: uni-loading 1s steps(12, end) infinite;\n  background-size: 100%;\n}\n\n@keyframes uni-loading {\n  0% {\n    transform: rotate3d(0, 0, 1, 0deg);\n  }\n\n  100% {\n    transform: rotate3d(0, 0, 1, 360deg);\n  }\n}\n";
   var nvue = "[nvue] uni-view,\n[nvue] uni-label,\n[nvue] uni-swiper-item,\n[nvue] uni-scroll-view {\n  display: flex;\n  flex-shrink: 0;\n  flex-grow: 0;\n  flex-basis: auto;\n  align-items: stretch;\n  align-content: flex-start;\n}\n\n[nvue] uni-button {\n  margin: 0;\n}\n\n[nvue-dir-row] uni-view,\n[nvue-dir-row] uni-label,\n[nvue-dir-row] uni-swiper-item {\n  flex-direction: row;\n}\n\n[nvue-dir-column] uni-view,\n[nvue-dir-column] uni-label,\n[nvue-dir-column] uni-swiper-item {\n  flex-direction: column;\n}\n\n[nvue-dir-row-reverse] uni-view,\n[nvue-dir-row-reverse] uni-label,\n[nvue-dir-row-reverse] uni-swiper-item {\n  flex-direction: row-reverse;\n}\n\n[nvue-dir-column-reverse] uni-view,\n[nvue-dir-column-reverse] uni-label,\n[nvue-dir-column-reverse] uni-swiper-item {\n  flex-direction: column-reverse;\n}\n\n[nvue] uni-view,\n[nvue] uni-image,\n[nvue] uni-input,\n[nvue] uni-scroll-view,\n[nvue] uni-swiper,\n[nvue] uni-swiper-item,\n[nvue] uni-text,\n[nvue] uni-textarea,\n[nvue] uni-video {\n  position: relative;\n  border: 0px solid #000000;\n  box-sizing: border-box;\n}\n\n[nvue] uni-swiper-item {\n  position: absolute;\n}\n";
-  const VD_SYNC = "vdSync";
-  const ON_WEBVIEW_READY = "onWebviewReady";
-  const INVOKE_API = "invokeApi";
   function makeMap$1(str, expectsLowerCase) {
     const map = Object.create(null);
     const list2 = str.split(",");
@@ -684,6 +681,87 @@
     };
   }
   const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+  const LONGPRESS_TIMEOUT = 350;
+  const LONGPRESS_THRESHOLD = 10;
+  const passiveOptions$2 = passive(true);
+  let longPressTimer = 0;
+  function clearLongPressTimer() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = 0;
+    }
+  }
+  let startPageX = 0;
+  let startPageY = 0;
+  function touchstart(evt) {
+    clearLongPressTimer();
+    if (evt.touches.length !== 1) {
+      return;
+    }
+    const { pageX, pageY } = evt.touches[0];
+    startPageX = pageX;
+    startPageY = pageY;
+    longPressTimer = setTimeout(function() {
+      const customEvent = new CustomEvent("longpress", {
+        bubbles: true,
+        cancelable: true,
+        target: evt.target,
+        currentTarget: evt.currentTarget
+      });
+      customEvent.touches = evt.touches;
+      customEvent.changedTouches = evt.changedTouches;
+      evt.target.dispatchEvent(customEvent);
+    }, LONGPRESS_TIMEOUT);
+  }
+  function touchmove(evt) {
+    if (!longPressTimer) {
+      return;
+    }
+    if (evt.touches.length !== 1) {
+      return clearLongPressTimer();
+    }
+    const { pageX, pageY } = evt.touches[0];
+    if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
+      return clearLongPressTimer();
+    }
+  }
+  function initLongPress() {
+    window.addEventListener("touchstart", touchstart, passiveOptions$2);
+    window.addEventListener("touchmove", touchmove, passiveOptions$2);
+    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
+    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
+  }
+  function checkValue$1(value, defaultValue) {
+    const newValue = Number(value);
+    return isNaN(newValue) ? defaultValue : newValue;
+  }
+  function getWindowWidth() {
+    const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+    const landscape = screenFix && Math.abs(window.orientation) === 90;
+    var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+    var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+    return windowWidth;
+  }
+  function useRem() {
+    function updateRem() {
+      const config = __uniConfig.globalStyle || {};
+      const maxWidth = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+      const baseWidth = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
+      let width = getWindowWidth();
+      width = width <= maxWidth ? width : baseWidth;
+      document.documentElement.style.fontSize = width / 23.4375 + "px";
+    }
+    updateRem();
+    document.addEventListener("DOMContentLoaded", updateRem);
+    window.addEventListener("load", updateRem);
+    window.addEventListener("resize", updateRem);
+  }
+  function initView() {
+    useRem();
+    {
+      initLongPress();
+    }
+  }
   const targetMap = new WeakMap();
   const effectStack = [];
   let activeEffect;
@@ -3061,7 +3139,7 @@
       }
       const { type, ref: ref2, shapeFlag } = n2;
       switch (type) {
-        case Text$1:
+        case Text:
           processText(n1, n2, container, anchor);
           break;
         case Comment$1:
@@ -3883,7 +3961,7 @@
   const isTeleport = (type) => type.__isTeleport;
   const NULL_DYNAMIC_COMPONENT = Symbol();
   const Fragment = Symbol(void 0);
-  const Text$1 = Symbol(void 0);
+  const Text = Symbol(void 0);
   const Comment$1 = Symbol(void 0);
   const Static = Symbol(void 0);
   const blockStack = [];
@@ -4019,7 +4097,7 @@
     return cloned;
   }
   function createTextVNode(text2 = " ", flag = 0) {
-    return createVNode(Text$1, null, text2, flag);
+    return createVNode(Text, null, text2, flag);
   }
   function normalizeVNode(child) {
     if (child == null || typeof child === "boolean") {
@@ -4029,7 +4107,7 @@
     } else if (typeof child === "object") {
       return cloneIfMounted(child);
     } else {
-      return createVNode(Text$1, null, String(child));
+      return createVNode(Text, null, String(child));
     }
   }
   function cloneIfMounted(child) {
@@ -5360,6 +5438,9 @@
     }
     return res;
   }
+  const VD_SYNC = "vdSync";
+  const ON_WEBVIEW_READY = "onWebviewReady";
+  const INVOKE_API = "invokeApi";
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -5381,6 +5462,360 @@
       }
     }, APP_SERVICE_ID);
   }
+  function validateProtocolFail(name, msg) {
+    console.warn(`${name}: ${msg}`);
+  }
+  function validateProtocol(name, data, protocol, onFail) {
+    if (!onFail) {
+      onFail = validateProtocolFail;
+    }
+    for (const key in protocol) {
+      const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
+      if (isString(errMsg)) {
+        onFail(name, errMsg);
+      }
+    }
+  }
+  function validateProtocols(name, args, protocol, onFail) {
+    if (!protocol) {
+      return;
+    }
+    if (!isArray(protocol)) {
+      return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
+    }
+    const len = protocol.length;
+    const argsLen = args.length;
+    for (let i = 0; i < len; i++) {
+      const opts = protocol[i];
+      const data = Object.create(null);
+      if (argsLen > i) {
+        data[opts.name] = args[i];
+      }
+      validateProtocol(name, data, { [opts.name]: opts }, onFail);
+    }
+  }
+  function validateProp(name, value, prop, isAbsent) {
+    if (!isPlainObject(prop)) {
+      prop = { type: prop };
+    }
+    const { type, required, validator } = prop;
+    if (required && isAbsent) {
+      return 'Missing required args: "' + name + '"';
+    }
+    if (value == null && !required) {
+      return;
+    }
+    if (type != null) {
+      let isValid = false;
+      const types = isArray(type) ? type : [type];
+      const expectedTypes = [];
+      for (let i = 0; i < types.length && !isValid; i++) {
+        const { valid, expectedType } = assertType(value, types[i]);
+        expectedTypes.push(expectedType || "");
+        isValid = valid;
+      }
+      if (!isValid) {
+        return getInvalidTypeMessage(name, value, expectedTypes);
+      }
+    }
+    if (validator) {
+      return validator(value);
+    }
+  }
+  const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
+  function assertType(value, type) {
+    let valid;
+    const expectedType = getType(type);
+    if (isSimpleType(expectedType)) {
+      const t2 = typeof value;
+      valid = t2 === expectedType.toLowerCase();
+      if (!valid && t2 === "object") {
+        valid = value instanceof type;
+      }
+    } else if (expectedType === "Object") {
+      valid = isObject$1(value);
+    } else if (expectedType === "Array") {
+      valid = isArray(value);
+    } else {
+      {
+        valid = value instanceof type || toRawType(value) === getType(type);
+      }
+    }
+    return {
+      valid,
+      expectedType
+    };
+  }
+  function getInvalidTypeMessage(name, value, expectedTypes) {
+    let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
+    const expectedType = expectedTypes[0];
+    const receivedType = toRawType(value);
+    const expectedValue = styleValue(value, expectedType);
+    const receivedValue = styleValue(value, receivedType);
+    if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+      message += ` with value ${expectedValue}`;
+    }
+    message += `, got ${receivedType} `;
+    if (isExplicable(receivedType)) {
+      message += `with value ${receivedValue}.`;
+    }
+    return message;
+  }
+  function getType(ctor) {
+    const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
+    return match ? match[1] : "";
+  }
+  function styleValue(value, type) {
+    if (type === "String") {
+      return `"${value}"`;
+    } else if (type === "Number") {
+      return `${Number(value)}`;
+    } else {
+      return `${value}`;
+    }
+  }
+  function isExplicable(type) {
+    const explicitTypes = ["string", "number", "boolean"];
+    return explicitTypes.some((elem) => type.toLowerCase() === elem);
+  }
+  function isBoolean(...args) {
+    return args.some((elem) => elem.toLowerCase() === "boolean");
+  }
+  function formatApiArgs(args, options) {
+    const params = args[0];
+    if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+      return;
+    }
+    const formatArgs = options.formatArgs;
+    const keys = Object.keys(formatArgs);
+    for (let i = 0; i < keys.length; i++) {
+      const name = keys[i];
+      const formatterOrDefaultValue = formatArgs[name];
+      if (isFunction(formatterOrDefaultValue)) {
+        const errMsg = formatterOrDefaultValue(args[0][name], params);
+        if (isString(errMsg)) {
+          return errMsg;
+        }
+      } else {
+        if (!hasOwn$1(params, name)) {
+          params[name] = formatterOrDefaultValue;
+        }
+      }
+    }
+  }
+  function beforeInvokeApi(name, args, protocol, options) {
+    {
+      validateProtocols(name, args, protocol);
+    }
+    if (options && options.beforeInvoke) {
+      const errMsg2 = options.beforeInvoke(args);
+      if (isString(errMsg2)) {
+        return errMsg2;
+      }
+    }
+    const errMsg = formatApiArgs(args, options);
+    if (errMsg) {
+      return errMsg;
+    }
+  }
+  function wrapperSyncApi(name, fn, protocol, options) {
+    return (...args) => {
+      const errMsg = beforeInvokeApi(name, args, protocol, options);
+      if (errMsg) {
+        throw new Error(errMsg);
+      }
+      return fn.apply(null, args);
+    };
+  }
+  function defineSyncApi(name, fn, protocol, options) {
+    return wrapperSyncApi(name, fn, protocol, options);
+  }
+  function getBaseSystemInfo() {
+    if (typeof __SYSTEM_INFO__ !== "undefined") {
+      return window.__SYSTEM_INFO__;
+    }
+    const { resolutionWidth } = plus.screen.getCurrentSize();
+    return {
+      platform: (plus.os.name || "").toLowerCase(),
+      pixelRatio: plus.screen.scale,
+      windowWidth: Math.round(resolutionWidth)
+    };
+  }
+  function getRealPath(filepath) {
+    if (filepath.indexOf("//") === 0) {
+      return "https:" + filepath;
+    }
+    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
+      return filepath;
+    }
+    if (isSystemURL(filepath)) {
+      return "file://" + normalizeLocalPath(filepath);
+    }
+    const wwwPath = "file://" + normalizeLocalPath("_www");
+    if (filepath.indexOf("/") === 0) {
+      if (filepath.startsWith("/storage/") || filepath.includes("/Containers/Data/Application/")) {
+        return "file://" + filepath;
+      }
+      return wwwPath + filepath;
+    }
+    if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
+      if (typeof __id__ === "string") {
+        return wwwPath + getRealRoute("/" + __id__, filepath);
+      } else {
+        const pages = getCurrentPages();
+        if (pages.length) {
+          return wwwPath + getRealRoute("/" + pages[pages.length - 1].route, filepath);
+        }
+      }
+    }
+    return filepath;
+  }
+  const normalizeLocalPath = cacheStringFunction((filepath) => {
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
+  });
+  function isSystemURL(filepath) {
+    if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
+      return true;
+    }
+    return false;
+  }
+  function saveImage(base64, dirname, callback) {
+  }
+  function getSameOriginUrl(url) {
+    return Promise.resolve(url);
+  }
+  const API_UPX2PX = "upx2px";
+  const Upx2pxProtocol = [
+    {
+      name: "upx",
+      type: [Number, String],
+      required: true
+    }
+  ];
+  const EPS = 1e-4;
+  const BASE_DEVICE_WIDTH = 750;
+  let isIOS = false;
+  let deviceWidth = 0;
+  let deviceDPR = 0;
+  function checkDeviceWidth() {
+    const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
+    deviceWidth = windowWidth;
+    deviceDPR = pixelRatio2;
+    isIOS = platform === "ios";
+  }
+  function checkValue(value, defaultValue) {
+    const newValue = Number(value);
+    return isNaN(newValue) ? defaultValue : newValue;
+  }
+  const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+    if (deviceWidth === 0) {
+      checkDeviceWidth();
+    }
+    number = Number(number);
+    if (number === 0) {
+      return 0;
+    }
+    let width = newDeviceWidth || deviceWidth;
+    {
+      const config = __uniConfig.globalStyle || {};
+      const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+      const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+      width = width <= maxWidth ? width : baseWidth;
+    }
+    let result = number / BASE_DEVICE_WIDTH * width;
+    if (result < 0) {
+      result = -result;
+    }
+    result = Math.floor(result + EPS);
+    if (result === 0) {
+      if (deviceDPR === 1 || !isIOS) {
+        result = 1;
+      } else {
+        result = 0.5;
+      }
+    }
+    return number < 0 ? -result : result;
+  }, Upx2pxProtocol);
+  createCallbacks("canvasEvent");
+  createCallbacks("getSelectedTextRangeEvent");
+  ({
+    beforeInvoke() {
+      initI18nShowModalMsgsOnce();
+    },
+    formatArgs: {
+      title: "",
+      content: "",
+      showCancel: true,
+      cancelText(_value, params) {
+        if (!hasOwn$1(params, "cancelText")) {
+          const { t: t2 } = useI18n();
+          params.cancelText = t2("uni.showModal.cancel");
+        }
+      },
+      cancelColor: "#000",
+      confirmText(_value, params) {
+        if (!hasOwn$1(params, "confirmText")) {
+          const { t: t2 } = useI18n();
+          params.confirmText = t2("uni.showModal.confirm");
+        }
+      },
+      confirmColor: PRIMARY_COLOR
+    }
+  });
+  function invokeApi(method, args = {}) {
+    UniViewJSBridge.publishHandler(INVOKE_API, {
+      data: {
+        method,
+        args
+      },
+      options: {
+        timestamp: Date.now()
+      }
+    });
+  }
+  function navigateTo(args) {
+    invokeApi("navigateTo", args);
+  }
+  function navigateBack(args) {
+    invokeApi("navigateBack", args);
+  }
+  function reLaunch(args) {
+    invokeApi("reLaunch", args);
+  }
+  function redirectTo(args) {
+    invokeApi("redirectTo", args);
+  }
+  function switchTab(args) {
+    invokeApi("switchTab", args);
+  }
+  var uni$1 = /* @__PURE__ */ Object.freeze({
+    __proto__: null,
+    [Symbol.toStringTag]: "Module",
+    upx2px,
+    navigateTo,
+    navigateBack,
+    reLaunch,
+    redirectTo,
+    switchTab
+  });
+  function preventDoubleTap() {
+    if (String(navigator.vendor).indexOf("Apple") === 0) {
+      let firstEvent = null;
+      let timeout;
+      document.documentElement.addEventListener("click", (event) => {
+        const TIME_MAX = 450;
+        const PAGE_MAX = 44;
+        clearTimeout(timeout);
+        if (firstEvent && Math.abs(event.pageX - firstEvent.pageX) <= PAGE_MAX && Math.abs(event.pageY - firstEvent.pageY) <= PAGE_MAX && event.timeStamp - firstEvent.timeStamp <= TIME_MAX) {
+          event.preventDefault();
+        }
+        firstEvent = event;
+        timeout = setTimeout(() => {
+          firstEvent = null;
+        }, TIME_MAX);
+      });
+    }
+  }
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
   const ACTION_TYPE_CREATE = 3;
@@ -5392,6 +5827,8 @@
   const ACTION_TYPE_EVENT = 20;
   class UniNode {
     constructor(id2, tag) {
+      this.isMounted = false;
+      this.isUnmounted = false;
       this.id = id2;
       this.tag = tag;
     }
@@ -5412,10 +5849,12 @@
       } else {
         parentNode.insertBefore(node, $(refNodeId).$);
       }
+      this.isMounted = true;
     }
     remove() {
       const { $: $2 } = this;
       $2.parentNode.removeChild($2);
+      this.isUnmounted = false;
     }
   }
   class UniComment extends UniNode {
@@ -5424,279 +5863,7 @@
       this.$ = document.createComment("");
     }
   }
-  class UniTextNode extends UniNode {
-    constructor(id2) {
-      super(id2, "#text");
-      this.$ = document.createTextNode("");
-    }
-  }
-  var view = "uni-view {\n  display: block;\n}\nuni-view[hidden] {\n  display: none;\n}\n";
-  function patchClass(el, clazz) {
-    el.className = clazz;
-  }
-  function patchStyle(el, value) {
-    const style = el.style;
-    if (isString(value)) {
-      if (value === "") {
-        el.removeAttribute("style");
-      } else {
-        style.cssText = rpx2px$1(value, true);
-      }
-    } else {
-      for (const key in value) {
-        setStyle(style, key, value[key]);
-      }
-    }
-  }
-  const importantRE = /\s*!important$/;
-  function setStyle(style, name, val) {
-    if (isArray(val)) {
-      val.forEach((v2) => setStyle(style, name, v2));
-    } else {
-      val = rpx2px$1(val, true);
-      if (name.startsWith("--")) {
-        style.setProperty(name, val);
-      } else {
-        const prefixed = autoPrefix(style, name);
-        if (importantRE.test(val)) {
-          style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
-        } else {
-          style[prefixed] = val;
-        }
-      }
-    }
-  }
-  const prefixes = ["Webkit"];
-  const prefixCache = {};
-  function autoPrefix(style, rawName) {
-    const cached = prefixCache[rawName];
-    if (cached) {
-      return cached;
-    }
-    let name = camelize(rawName);
-    if (name !== "filter" && name in style) {
-      return prefixCache[rawName] = name;
-    }
-    name = capitalize(name);
-    for (let i = 0; i < prefixes.length; i++) {
-      const prefixed = prefixes[i] + name;
-      if (prefixed in style) {
-        return prefixCache[rawName] = prefixed;
-      }
-    }
-    return rawName;
-  }
-  function patchEvent(el, name, flag) {
-    const [type, options] = parseEventName(decodeAttr(name));
-    if (flag === -1) {
-      const listener = el.__listeners[type];
-      if (listener) {
-        el.removeEventListener(type, listener);
-      } else {
-        console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] not found"));
-      }
-    } else {
-      if (el.__listeners[type]) {
-        {
-          console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] already registered"));
-        }
-        return;
-      }
-      el.__listeners[type] = createInvoker(el.__id, flag, options);
-      el.addEventListener(type, el.__listeners[type], options);
-    }
-  }
-  function createInvoker(id2, flag, options) {
-    const invoker = (evt) => {
-      const event = $nne(evt);
-      event.type = normalizeEventType(evt.type, options);
-      UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id2, event]]);
-    };
-    if (!flag) {
-      return invoker;
-    }
-    return withModifiers(invoker, resolveModifier(flag));
-  }
-  function resolveModifier(flag) {
-    const modifiers = [];
-    if (flag & EventModifierFlags.prevent) {
-      modifiers.push("prevent");
-    }
-    if (flag & EventModifierFlags.self) {
-      modifiers.push("self");
-    }
-    if (flag & EventModifierFlags.stop) {
-      modifiers.push("stop");
-    }
-    return modifiers;
-  }
-  class UniElement extends UniNode {
-    constructor(id2, element) {
-      super(id2, element.tagName);
-      this.$ = element;
-      this.$.__id = id2;
-      this.$.__listeners = Object.create(null);
-    }
-    init(nodeJson) {
-      super.init(nodeJson);
-      if (hasOwn$1(nodeJson, "a")) {
-        this.setAttrs(nodeJson.a);
-      }
-    }
-    setAttrs(attrs2) {
-      Object.keys(attrs2).forEach((name) => {
-        this.setAttr(name, attrs2[name]);
-      });
-    }
-    setAttr(name, value) {
-      if (name === ".c") {
-        patchClass(this.$, value);
-      } else if (name === ".s") {
-        patchStyle(this.$, value);
-      } else if (name.indexOf(".e") === 0) {
-        patchEvent(this.$, name, value);
-      } else {
-        this.$.setAttribute(decodeAttr(name), value);
-      }
-    }
-    removeAttr(name) {
-      if (name === ".c") {
-        patchClass(this.$, "");
-      } else if (name === ".s") {
-        patchStyle(this.$, "");
-      } else if (name.indexOf(".e") === 0) {
-        patchEvent(this.$, name, -1);
-      } else {
-        this.$.removeAttribute(decodeAttr(name));
-      }
-    }
-  }
-  function isHoverAttr(name) {
-    return name.indexOf(".h") === 0;
-  }
-  class UniHoverElement extends UniElement {
-    setAttr(name, value) {
-      if (!isHoverAttr(name)) {
-        return super.setAttr(name, value);
-      }
-      name = camelize(decodeAttr(name));
-      if (!this._hover) {
-        this._hover = new Hover(this.$);
-      }
-      const { _hover } = this;
-      _hover[name] = value;
-      if (name !== "hoverClass") {
-        return;
-      }
-      if (_hover.hoverClass && _hover.hoverClass !== "none") {
-        _hover.addEvent();
-      } else {
-        _hover.removeEvent();
-      }
-    }
-    removeAttr(name) {
-      if (!isHoverAttr(name)) {
-        return super.removeAttr(name);
-      }
-    }
-  }
-  class Hover {
-    constructor($2) {
-      this.hoverClass = "none";
-      this.hoverStopPropagation = false;
-      this.hoverStartTime = 50;
-      this.hoverStayTime = 400;
-      this._listening = false;
-      this._hovering = false;
-      this._hoverTouch = false;
-      this._hoverStartTimer = 0;
-      this._hoverStayTimer = 0;
-      this.$ = $2;
-      this.__hoverTouchStart = this._hoverTouchStart.bind(this);
-      this.__hoverTouchEnd = this._hoverTouchEnd.bind(this);
-      this.__hoverTouchCancel = this._hoverTouchCancel.bind(this);
-    }
-    get hovering() {
-      return this._hovering;
-    }
-    set hovering(hovering) {
-      this._hovering = hovering;
-      if (hovering) {
-        this.$.classList.add(this.hoverClass);
-      } else {
-        this.$.classList.remove(this.hoverClass);
-      }
-    }
-    addEvent() {
-      if (this._listening) {
-        return;
-      }
-      {
-        console.log(formatLog(this.$.tagName, "Hover", "addEventListener", this.hoverClass));
-      }
-      this._listening = true;
-      this.$.addEventListener("touchstart", this.__hoverTouchStart);
-      this.$.addEventListener("touchend", this.__hoverTouchEnd);
-      this.$.addEventListener("touchcancel", this.__hoverTouchCancel);
-    }
-    removeEvent() {
-      if (!this._listening) {
-        return;
-      }
-      {
-        console.log(formatLog(this.$.tagName, "Hover", "removeEventListener"));
-      }
-      this._listening = false;
-      this.$.removeEventListener("touchstart", this.__hoverTouchStart);
-      this.$.removeEventListener("touchend", this.__hoverTouchEnd);
-      this.$.removeEventListener("touchcancel", this.__hoverTouchCancel);
-    }
-    _hoverTouchStart(evt) {
-      if (evt._hoverPropagationStopped) {
-        return;
-      }
-      if (!this.hoverClass || this.hoverClass === "none" || this.$.disabled) {
-        return;
-      }
-      if (evt.touches.length > 1) {
-        return;
-      }
-      if (this.hoverStopPropagation) {
-        evt._hoverPropagationStopped = true;
-      }
-      this._hoverTouch = true;
-      this._hoverStartTimer = setTimeout(() => {
-        this.hovering = true;
-        if (!this._hoverTouch) {
-          this._hoverReset();
-        }
-      }, this.hoverStartTime);
-    }
-    _hoverTouchEnd() {
-      this._hoverTouch = false;
-      if (this.hovering) {
-        this._hoverReset();
-      }
-    }
-    _hoverReset() {
-      requestAnimationFrame(() => {
-        clearTimeout(this._hoverStayTimer);
-        this._hoverStayTimer = setTimeout(() => {
-          this.hovering = false;
-        }, this.hoverStayTime);
-      });
-    }
-    _hoverTouchCancel() {
-      this._hoverTouch = false;
-      this.hovering = false;
-      clearTimeout(this._hoverStartTimer);
-    }
-  }
-  class UniViewElement extends UniHoverElement {
-    constructor(id2) {
-      super(id2, document.createElement("uni-view"));
-    }
-  }
+  var text$1 = "uni-text[selectable] {\n  cursor: auto;\n  -webkit-user-select: text;\n          user-select: text;\n}\n";
   var subscriber = {
     mounted() {
       this._toggleListeners("subscribe", this.id);
@@ -6420,60 +6587,6 @@
       }
     });
     feedback.show("slide-in-right");
-  }
-  function getBaseSystemInfo() {
-    if (typeof __SYSTEM_INFO__ !== "undefined") {
-      return window.__SYSTEM_INFO__;
-    }
-    const { resolutionWidth } = plus.screen.getCurrentSize();
-    return {
-      platform: (plus.os.name || "").toLowerCase(),
-      pixelRatio: plus.screen.scale,
-      windowWidth: Math.round(resolutionWidth)
-    };
-  }
-  function getRealPath(filepath) {
-    if (filepath.indexOf("//") === 0) {
-      return "https:" + filepath;
-    }
-    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
-      return filepath;
-    }
-    if (isSystemURL(filepath)) {
-      return "file://" + normalizeLocalPath(filepath);
-    }
-    const wwwPath = "file://" + normalizeLocalPath("_www");
-    if (filepath.indexOf("/") === 0) {
-      if (filepath.startsWith("/storage/") || filepath.includes("/Containers/Data/Application/")) {
-        return "file://" + filepath;
-      }
-      return wwwPath + filepath;
-    }
-    if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
-      if (typeof __id__ === "string") {
-        return wwwPath + getRealRoute("/" + __id__, filepath);
-      } else {
-        const pages = getCurrentPages();
-        if (pages.length) {
-          return wwwPath + getRealRoute("/" + pages[pages.length - 1].route, filepath);
-        }
-      }
-    }
-    return filepath;
-  }
-  const normalizeLocalPath = cacheStringFunction((filepath) => {
-    return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
-  });
-  function isSystemURL(filepath) {
-    if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
-      return true;
-    }
-    return false;
-  }
-  function saveImage(base64, dirname, callback) {
-  }
-  function getSameOriginUrl(url) {
-    return Promise.resolve(url);
   }
   var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     name: "ResizeSensor",
@@ -7870,7 +7983,7 @@
     });
     return result;
   }
-  function text$1(Quill) {
+  function text(Quill) {
     const { Scope, Attributor } = Quill.import("parchment");
     const text2 = [
       {
@@ -7940,7 +8053,7 @@
       background,
       box,
       font,
-      text: text$1,
+      text,
       image: image$1
     };
     const options = {};
@@ -13603,18 +13716,20 @@
     }
     return uniLabel;
   }
-  function _isSlot(s) {
-    return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-  }
   const SPACE_UNICODE = {
     ensp: "\u2002",
     emsp: "\u2003",
     nbsp: "\xA0"
   };
-  function normalizeText(text2, {
-    space,
-    decode
-  }) {
+  function parseText(text2, options) {
+    return text2.replace(/\\n/g, "\n").split("\n").map((text22) => {
+      return normalizeText(text22, options);
+    });
+  }
+  function normalizeText(text2, { space, decode }) {
+    if (!text2) {
+      return text2;
+    }
     if (space && SPACE_UNICODE[space]) {
       text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
     }
@@ -13623,63 +13738,6 @@
     }
     return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  var Text = /* @__PURE__ */ defineBuiltInComponent({
-    name: "Text",
-    props: {
-      selectable: {
-        type: [Boolean, String],
-        default: false
-      },
-      space: {
-        type: String,
-        default: ""
-      },
-      decode: {
-        type: [Boolean, String],
-        default: false
-      }
-    },
-    setup(props2, {
-      slots
-    }) {
-      return () => {
-        let _slot;
-        const children = [];
-        if (slots.default) {
-          slots.default().forEach((vnode) => {
-            if (vnode.shapeFlag & 8) {
-              const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
-              const len = lines.length - 1;
-              lines.forEach((text2, index2) => {
-                if (index2 === 0 && !text2)
-                  ;
-                else {
-                  children.push(createTextVNode(normalizeText(text2, {
-                    space: props2.space,
-                    decode: props2.decode
-                  })));
-                }
-                if (index2 !== len) {
-                  children.push(createVNode("br"));
-                }
-              });
-            } else {
-              if (vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
-                console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
-              }
-              children.push(vnode);
-            }
-          });
-        }
-        return createVNode("uni-text", {
-          "selectable": props2.selectable ? true : null
-        }, _isSlot(_slot = createVNode("span", null, children)) ? _slot : {
-          default: () => [_slot],
-          _: 1
-        }, 8, ["selectable"]);
-      };
-    }
-  });
   const props$2 = /* @__PURE__ */ extend({}, props$h, {
     placeholderClass: {
       type: String,
@@ -13903,6 +13961,336 @@
       };
     });
     return `${page}.${type}.${id2}`;
+  }
+  function patchClass(el, clazz) {
+    el.className = clazz;
+  }
+  function patchStyle(el, value) {
+    const style = el.style;
+    if (isString(value)) {
+      if (value === "") {
+        el.removeAttribute("style");
+      } else {
+        style.cssText = rpx2px$1(value, true);
+      }
+    } else {
+      for (const key in value) {
+        setStyle(style, key, value[key]);
+      }
+    }
+  }
+  const importantRE = /\s*!important$/;
+  function setStyle(style, name, val) {
+    if (isArray(val)) {
+      val.forEach((v2) => setStyle(style, name, v2));
+    } else {
+      val = rpx2px$1(val, true);
+      if (name.startsWith("--")) {
+        style.setProperty(name, val);
+      } else {
+        const prefixed = autoPrefix(style, name);
+        if (importantRE.test(val)) {
+          style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
+        } else {
+          style[prefixed] = val;
+        }
+      }
+    }
+  }
+  const prefixes = ["Webkit"];
+  const prefixCache = {};
+  function autoPrefix(style, rawName) {
+    const cached = prefixCache[rawName];
+    if (cached) {
+      return cached;
+    }
+    let name = camelize(rawName);
+    if (name !== "filter" && name in style) {
+      return prefixCache[rawName] = name;
+    }
+    name = capitalize(name);
+    for (let i = 0; i < prefixes.length; i++) {
+      const prefixed = prefixes[i] + name;
+      if (prefixed in style) {
+        return prefixCache[rawName] = prefixed;
+      }
+    }
+    return rawName;
+  }
+  function patchEvent(el, name, flag) {
+    const [type, options] = parseEventName(decodeAttr(name));
+    if (flag === -1) {
+      const listener = el.__listeners[type];
+      if (listener) {
+        el.removeEventListener(type, listener);
+      } else {
+        console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] not found"));
+      }
+    } else {
+      if (el.__listeners[type]) {
+        {
+          console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] already registered"));
+        }
+        return;
+      }
+      el.__listeners[type] = createInvoker(el.__id, flag, options);
+      el.addEventListener(type, el.__listeners[type], options);
+    }
+  }
+  function createInvoker(id2, flag, options) {
+    const invoker = (evt) => {
+      const event = $nne(evt);
+      event.type = normalizeEventType(evt.type, options);
+      UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id2, event]]);
+    };
+    if (!flag) {
+      return invoker;
+    }
+    return withModifiers(invoker, resolveModifier(flag));
+  }
+  function resolveModifier(flag) {
+    const modifiers = [];
+    if (flag & EventModifierFlags.prevent) {
+      modifiers.push("prevent");
+    }
+    if (flag & EventModifierFlags.self) {
+      modifiers.push("self");
+    }
+    if (flag & EventModifierFlags.stop) {
+      modifiers.push("stop");
+    }
+    return modifiers;
+  }
+  const postActionJobs = new Set();
+  function queuePostActionJob(job) {
+    postActionJobs.add(job);
+  }
+  function flushPostActionJobs() {
+    {
+      console.log(formatLog(`flushPostActionJobs`, postActionJobs.size));
+    }
+    try {
+      postActionJobs.forEach((fn) => fn());
+    } finally {
+      postActionJobs.clear();
+    }
+  }
+  class UniElement extends UniNode {
+    constructor(id2, element, propNames = []) {
+      super(id2, element.tagName);
+      this.$props = reactive({});
+      this.$ = element;
+      this.$.__id = id2;
+      this.$.__listeners = Object.create(null);
+      this.$propNames = propNames;
+      this._update = this.update.bind(this);
+    }
+    init(nodeJson) {
+      if (hasOwn$1(nodeJson, "a")) {
+        this.setAttrs(nodeJson.a);
+      }
+      super.init(nodeJson);
+      watch(this.$props, () => {
+        queuePostActionJob(this._update);
+      }, { flush: "sync" });
+      this.update();
+    }
+    setAttrs(attrs2) {
+      Object.keys(attrs2).forEach((name) => {
+        this.setAttr(name, attrs2[name]);
+      });
+    }
+    setAttr(name, value) {
+      if (name === ".c") {
+        patchClass(this.$, value);
+      } else if (name === ".s") {
+        patchStyle(this.$, value);
+      } else if (name.indexOf(".e") === 0) {
+        patchEvent(this.$, name, value);
+      } else {
+        this.setAttribute(decodeAttr(name), value);
+      }
+    }
+    removeAttr(name) {
+      if (name === ".c") {
+        patchClass(this.$, "");
+      } else if (name === ".s") {
+        patchStyle(this.$, "");
+      } else if (name.indexOf(".e") === 0) {
+        patchEvent(this.$, name, -1);
+      } else {
+        this.removeAttribute(decodeAttr(name));
+      }
+    }
+    setAttribute(name, value) {
+      if (this.$propNames.indexOf(name) !== -1) {
+        this.$props[name] = value;
+      } else {
+        this.$.setAttribute(name, value);
+      }
+    }
+    removeAttribute(name) {
+      if (this.$propNames.indexOf(name) !== -1) {
+        delete this.$props[name];
+      } else {
+        this.$.removeAttribute(name);
+      }
+    }
+    update() {
+    }
+  }
+  const PROP_NAMES_HOVER$1 = ["space", "decode"];
+  class UniTextElement extends UniElement {
+    constructor(id2) {
+      super(id2, document.createElement("uni-text"), PROP_NAMES_HOVER$1);
+      this._text = "";
+    }
+    init(nodeJson) {
+      this._text = nodeJson.t || "";
+      super.init(nodeJson);
+    }
+    setText(text2) {
+      this._text = text2;
+    }
+    update() {
+      {
+        console.log(formatLog("Text", "update"));
+      }
+      const {
+        $props: { space, decode }
+      } = this;
+      this.$.innerHTML = parseText(this._text, {
+        space,
+        decode
+      }).join("<br>");
+    }
+  }
+  class UniTextNode extends UniNode {
+    constructor(id2) {
+      super(id2, "#text");
+      this.$ = document.createTextNode("");
+    }
+  }
+  var view = "uni-view {\n  display: block;\n}\nuni-view[hidden] {\n  display: none;\n}\n";
+  const PROP_NAMES_HOVER = [
+    "hover-class",
+    "hover-stop-propagation",
+    "hover-start-time",
+    "hover-stay-time"
+  ];
+  class UniHoverElement extends UniElement {
+    constructor(id2, element, propNames = []) {
+      super(id2, element, [...PROP_NAMES_HOVER, ...propNames]);
+    }
+    update() {
+      const hoverClass = this.$props["hover-class"];
+      if (hoverClass && hoverClass !== "none") {
+        if (!this._hover) {
+          this._hover = new Hover(this.$, this.$props);
+        }
+        this._hover.addEvent();
+      } else {
+        if (this._hover) {
+          this._hover.removeEvent();
+        }
+      }
+    }
+  }
+  class Hover {
+    constructor($2, props2) {
+      this._listening = false;
+      this._hovering = false;
+      this._hoverTouch = false;
+      this._hoverStartTimer = 0;
+      this._hoverStayTimer = 0;
+      this.$ = $2;
+      this.props = props2;
+      this.__hoverTouchStart = this._hoverTouchStart.bind(this);
+      this.__hoverTouchEnd = this._hoverTouchEnd.bind(this);
+      this.__hoverTouchCancel = this._hoverTouchCancel.bind(this);
+    }
+    get hovering() {
+      return this._hovering;
+    }
+    set hovering(hovering) {
+      this._hovering = hovering;
+      const hoverClass = this.props["hover-class"];
+      if (hovering) {
+        this.$.classList.add(hoverClass);
+      } else {
+        this.$.classList.remove(hoverClass);
+      }
+    }
+    addEvent() {
+      if (this._listening) {
+        return;
+      }
+      {
+        console.log(formatLog(this.$.tagName, "Hover", "addEventListener", this.props["hover-class"]));
+      }
+      this._listening = true;
+      this.$.addEventListener("touchstart", this.__hoverTouchStart);
+      this.$.addEventListener("touchend", this.__hoverTouchEnd);
+      this.$.addEventListener("touchcancel", this.__hoverTouchCancel);
+    }
+    removeEvent() {
+      if (!this._listening) {
+        return;
+      }
+      {
+        console.log(formatLog(this.$.tagName, "Hover", "removeEventListener"));
+      }
+      this._listening = false;
+      this.$.removeEventListener("touchstart", this.__hoverTouchStart);
+      this.$.removeEventListener("touchend", this.__hoverTouchEnd);
+      this.$.removeEventListener("touchcancel", this.__hoverTouchCancel);
+    }
+    _hoverTouchStart(evt) {
+      if (evt._hoverPropagationStopped) {
+        return;
+      }
+      const hoverClass = this.props["hover-class"];
+      if (!hoverClass || hoverClass === "none" || this.$.disabled) {
+        return;
+      }
+      if (evt.touches.length > 1) {
+        return;
+      }
+      if (this.props["hover-stop-propagation"]) {
+        evt._hoverPropagationStopped = true;
+      }
+      this._hoverTouch = true;
+      this._hoverStartTimer = setTimeout(() => {
+        this.hovering = true;
+        if (!this._hoverTouch) {
+          this._hoverReset();
+        }
+      }, this.props["hover-start-time"]);
+    }
+    _hoverTouchEnd() {
+      this._hoverTouch = false;
+      if (this.hovering) {
+        this._hoverReset();
+      }
+    }
+    _hoverReset() {
+      requestAnimationFrame(() => {
+        clearTimeout(this._hoverStayTimer);
+        this._hoverStayTimer = setTimeout(() => {
+          this.hovering = false;
+        }, this.props["hover-stay-time"]);
+      });
+    }
+    _hoverTouchCancel() {
+      this._hoverTouch = false;
+      this.hovering = false;
+      clearTimeout(this._hoverStartTimer);
+    }
+  }
+  class UniViewElement extends UniHoverElement {
+    constructor(id2) {
+      super(id2, document.createElement("uni-view"));
+    }
   }
   var Ad = /* @__PURE__ */ defineBuiltInComponent({
     name: "Ad"
@@ -14352,9 +14740,7 @@
         const defaultSlots = slots.default ? flatVNode(slots.default()) : [];
         let text2 = "";
         defaultSlots.forEach((node) => {
-          if (!node.type === Text) {
-            text2 += node.children || "";
-          }
+          text2 += node.children || "";
         });
         content.text = text2;
         return createVNode("uni-cover-view", {
@@ -14531,12 +14917,6 @@
   class UniSwitch extends UniComponent {
     constructor(id2) {
       super(id2, "uni-switch", Switch);
-    }
-  }
-  var text = "uni-text[selectable] {\n  cursor: auto;\n  -webkit-user-select: text;\n          user-select: text;\n}\n";
-  class UniText extends UniComponent {
-    constructor(id2) {
-      super(id2, "uni-text", Text);
     }
   }
   var textarea = "uni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n  box-sizing: content-box !important;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n  min-height: inherit;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n.uni-textarea-textarea:disabled {\n  /* \u7528\u4E8E\u91CD\u7F6EiOS14\u4EE5\u4E0B\u7981\u7528\u72B6\u6001\u6587\u5B57\u989C\u8272 */\n  -webkit-text-fill-color: currentcolor;\n}\n";
@@ -14764,7 +15144,7 @@
     ,
     UniViewElement,
     UniImage,
-    UniText,
+    UniTextElement,
     UniTextNode,
     UniComment,
     UniNavigator,
@@ -14921,320 +15301,19 @@
           return $(action[1]).setText(action[2]);
       }
     });
+    flushPostActionJobs();
   }
   function initSubscribeHandlers() {
     const { subscribe } = UniViewJSBridge;
     subscribe(VD_SYNC, onVdSync);
   }
-  function preventDoubleTap() {
-    if (String(navigator.vendor).indexOf("Apple") === 0) {
-      let firstEvent = null;
-      let timeout;
-      document.documentElement.addEventListener("click", (event) => {
-        const TIME_MAX = 450;
-        const PAGE_MAX = 44;
-        clearTimeout(timeout);
-        if (firstEvent && Math.abs(event.pageX - firstEvent.pageX) <= PAGE_MAX && Math.abs(event.pageY - firstEvent.pageY) <= PAGE_MAX && event.timeStamp - firstEvent.timeStamp <= TIME_MAX) {
-          event.preventDefault();
-        }
-        firstEvent = event;
-        timeout = setTimeout(() => {
-          firstEvent = null;
-        }, TIME_MAX);
-      });
-    }
-  }
-  function initView() {
-    initSubscribeHandlers();
-    preventDoubleTap();
-  }
-  function validateProtocolFail(name, msg) {
-    console.warn(`${name}: ${msg}`);
-  }
-  function validateProtocol(name, data, protocol, onFail) {
-    if (!onFail) {
-      onFail = validateProtocolFail;
-    }
-    for (const key in protocol) {
-      const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
-      if (isString(errMsg)) {
-        onFail(name, errMsg);
-      }
-    }
-  }
-  function validateProtocols(name, args, protocol, onFail) {
-    if (!protocol) {
-      return;
-    }
-    if (!isArray(protocol)) {
-      return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
-    }
-    const len = protocol.length;
-    const argsLen = args.length;
-    for (let i = 0; i < len; i++) {
-      const opts = protocol[i];
-      const data = Object.create(null);
-      if (argsLen > i) {
-        data[opts.name] = args[i];
-      }
-      validateProtocol(name, data, { [opts.name]: opts }, onFail);
-    }
-  }
-  function validateProp(name, value, prop, isAbsent) {
-    if (!isPlainObject(prop)) {
-      prop = { type: prop };
-    }
-    const { type, required, validator } = prop;
-    if (required && isAbsent) {
-      return 'Missing required args: "' + name + '"';
-    }
-    if (value == null && !required) {
-      return;
-    }
-    if (type != null) {
-      let isValid = false;
-      const types = isArray(type) ? type : [type];
-      const expectedTypes = [];
-      for (let i = 0; i < types.length && !isValid; i++) {
-        const { valid, expectedType } = assertType(value, types[i]);
-        expectedTypes.push(expectedType || "");
-        isValid = valid;
-      }
-      if (!isValid) {
-        return getInvalidTypeMessage(name, value, expectedTypes);
-      }
-    }
-    if (validator) {
-      return validator(value);
-    }
-  }
-  const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
-  function assertType(value, type) {
-    let valid;
-    const expectedType = getType(type);
-    if (isSimpleType(expectedType)) {
-      const t2 = typeof value;
-      valid = t2 === expectedType.toLowerCase();
-      if (!valid && t2 === "object") {
-        valid = value instanceof type;
-      }
-    } else if (expectedType === "Object") {
-      valid = isObject$1(value);
-    } else if (expectedType === "Array") {
-      valid = isArray(value);
-    } else {
-      {
-        valid = value instanceof type || toRawType(value) === getType(type);
-      }
-    }
-    return {
-      valid,
-      expectedType
-    };
-  }
-  function getInvalidTypeMessage(name, value, expectedTypes) {
-    let message = `Invalid args: type check failed for args "${name}". Expected ${expectedTypes.map(capitalize).join(", ")}`;
-    const expectedType = expectedTypes[0];
-    const receivedType = toRawType(value);
-    const expectedValue = styleValue(value, expectedType);
-    const receivedValue = styleValue(value, receivedType);
-    if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-      message += ` with value ${expectedValue}`;
-    }
-    message += `, got ${receivedType} `;
-    if (isExplicable(receivedType)) {
-      message += `with value ${receivedValue}.`;
-    }
-    return message;
-  }
-  function getType(ctor) {
-    const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-    return match ? match[1] : "";
-  }
-  function styleValue(value, type) {
-    if (type === "String") {
-      return `"${value}"`;
-    } else if (type === "Number") {
-      return `${Number(value)}`;
-    } else {
-      return `${value}`;
-    }
-  }
-  function isExplicable(type) {
-    const explicitTypes = ["string", "number", "boolean"];
-    return explicitTypes.some((elem) => type.toLowerCase() === elem);
-  }
-  function isBoolean(...args) {
-    return args.some((elem) => elem.toLowerCase() === "boolean");
-  }
-  function formatApiArgs(args, options) {
-    const params = args[0];
-    if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
-      return;
-    }
-    const formatArgs = options.formatArgs;
-    const keys = Object.keys(formatArgs);
-    for (let i = 0; i < keys.length; i++) {
-      const name = keys[i];
-      const formatterOrDefaultValue = formatArgs[name];
-      if (isFunction(formatterOrDefaultValue)) {
-        const errMsg = formatterOrDefaultValue(args[0][name], params);
-        if (isString(errMsg)) {
-          return errMsg;
-        }
-      } else {
-        if (!hasOwn$1(params, name)) {
-          params[name] = formatterOrDefaultValue;
-        }
-      }
-    }
-  }
-  function beforeInvokeApi(name, args, protocol, options) {
-    {
-      validateProtocols(name, args, protocol);
-    }
-    if (options && options.beforeInvoke) {
-      const errMsg2 = options.beforeInvoke(args);
-      if (isString(errMsg2)) {
-        return errMsg2;
-      }
-    }
-    const errMsg = formatApiArgs(args, options);
-    if (errMsg) {
-      return errMsg;
-    }
-  }
-  function wrapperSyncApi(name, fn, protocol, options) {
-    return (...args) => {
-      const errMsg = beforeInvokeApi(name, args, protocol, options);
-      if (errMsg) {
-        throw new Error(errMsg);
-      }
-      return fn.apply(null, args);
-    };
-  }
-  function defineSyncApi(name, fn, protocol, options) {
-    return wrapperSyncApi(name, fn, protocol, options);
-  }
-  const API_UPX2PX = "upx2px";
-  const Upx2pxProtocol = [
-    {
-      name: "upx",
-      type: [Number, String],
-      required: true
-    }
-  ];
-  const EPS = 1e-4;
-  const BASE_DEVICE_WIDTH = 750;
-  let isIOS = false;
-  let deviceWidth = 0;
-  let deviceDPR = 0;
-  function checkDeviceWidth() {
-    const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
-    deviceWidth = windowWidth;
-    deviceDPR = pixelRatio2;
-    isIOS = platform === "ios";
-  }
-  function checkValue(value, defaultValue) {
-    const newValue = Number(value);
-    return isNaN(newValue) ? defaultValue : newValue;
-  }
-  const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-    if (deviceWidth === 0) {
-      checkDeviceWidth();
-    }
-    number = Number(number);
-    if (number === 0) {
-      return 0;
-    }
-    let width = newDeviceWidth || deviceWidth;
-    {
-      const config = __uniConfig.globalStyle || {};
-      const maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
-      const baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
-      width = width <= maxWidth ? width : baseWidth;
-    }
-    let result = number / BASE_DEVICE_WIDTH * width;
-    if (result < 0) {
-      result = -result;
-    }
-    result = Math.floor(result + EPS);
-    if (result === 0) {
-      if (deviceDPR === 1 || !isIOS) {
-        result = 1;
-      } else {
-        result = 0.5;
-      }
-    }
-    return number < 0 ? -result : result;
-  }, Upx2pxProtocol);
-  createCallbacks("canvasEvent");
-  createCallbacks("getSelectedTextRangeEvent");
-  ({
-    beforeInvoke() {
-      initI18nShowModalMsgsOnce();
-    },
-    formatArgs: {
-      title: "",
-      content: "",
-      showCancel: true,
-      cancelText(_value, params) {
-        if (!hasOwn$1(params, "cancelText")) {
-          const { t: t2 } = useI18n();
-          params.cancelText = t2("uni.showModal.cancel");
-        }
-      },
-      cancelColor: "#000",
-      confirmText(_value, params) {
-        if (!hasOwn$1(params, "confirmText")) {
-          const { t: t2 } = useI18n();
-          params.confirmText = t2("uni.showModal.confirm");
-        }
-      },
-      confirmColor: PRIMARY_COLOR
-    }
-  });
-  function invokeApi(method, args = {}) {
-    UniViewJSBridge.publishHandler(INVOKE_API, {
-      data: {
-        method,
-        args
-      },
-      options: {
-        timestamp: Date.now()
-      }
-    });
-  }
-  function navigateTo(args) {
-    invokeApi("navigateTo", args);
-  }
-  function navigateBack(args) {
-    invokeApi("navigateBack", args);
-  }
-  function reLaunch(args) {
-    invokeApi("reLaunch", args);
-  }
-  function redirectTo(args) {
-    invokeApi("redirectTo", args);
-  }
-  function switchTab(args) {
-    invokeApi("switchTab", args);
-  }
-  var uni$1 = /* @__PURE__ */ Object.freeze({
-    __proto__: null,
-    [Symbol.toStringTag]: "Module",
-    upx2px,
-    navigateTo,
-    navigateBack,
-    reLaunch,
-    redirectTo,
-    switchTab
-  });
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;
   window.rpx2px = upx2px;
   function onWebviewReady() {
     initView();
+    initSubscribeHandlers();
+    preventDoubleTap();
     UniViewJSBridge$1.publishHandler(ON_WEBVIEW_READY);
   }
   if (typeof plus !== "undefined") {

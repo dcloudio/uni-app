@@ -12718,18 +12718,20 @@ function useSwitchInject(props2, switchChecked) {
   }
   return uniLabel;
 }
-function _isSlot$5(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
 const SPACE_UNICODE = {
   ensp: "\u2002",
   emsp: "\u2003",
   nbsp: "\xA0"
 };
-function normalizeText(text2, {
-  space,
-  decode: decode2
-}) {
+function parseText(text2, options) {
+  return text2.replace(/\\n/g, "\n").split("\n").map((text22) => {
+    return normalizeText(text22, options);
+  });
+}
+function normalizeText(text2, { space, decode: decode2 }) {
+  if (!text2) {
+    return text2;
+  }
   if (space && SPACE_UNICODE[space]) {
     text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
   }
@@ -12737,6 +12739,9 @@ function normalizeText(text2, {
     return text2;
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+function _isSlot$5(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
 var index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -12763,16 +12768,16 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       if (slots.default) {
         slots.default().forEach((vnode) => {
           if (vnode.shapeFlag & 8) {
-            const lines = vnode.children.replace(/\\n/g, "\n").split("\n");
+            const lines = parseText(vnode.children, {
+              space: props2.space,
+              decode: props2.decode
+            });
             const len = lines.length - 1;
-            lines.forEach((text2, index2) => {
-              if (index2 === 0 && !text2)
+            lines.forEach((line, index2) => {
+              if (index2 === 0 && !line)
                 ;
               else {
-                children.push(createTextVNode(normalizeText(text2, {
-                  space: props2.space,
-                  decode: props2.decode
-                })));
+                children.push(createTextVNode(line));
               }
               if (index2 !== len) {
                 children.push(createVNode("br"));

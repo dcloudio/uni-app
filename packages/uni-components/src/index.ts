@@ -12,6 +12,7 @@ export type {
   EmitEvent,
 } from './helpers/useEvent'
 export * from './helpers/scroller'
+export { parseText } from './helpers/text'
 export { useUserAction } from './helpers/useUserAction'
 export { useAttrs } from './helpers/useAttrs'
 export { useBooleanAttr } from './helpers/useBooleanAttr'
@@ -23,3 +24,4 @@ export {
 export { flatVNode } from './helpers/flatVNode'
 export { uniFormKey } from './components/form'
 export type { UniFormCtx } from './components/form'
+export type { DecodeOptions } from './helpers/text'

@@ -21,9 +21,7 @@ export class UniComponent extends UniNode {
         this.setAttr(n, a[n])
       })
     }
-    const vm = createApp(createWrapper(this.$component, this.$props)).mount(
-      container
-    )
+    createApp(createWrapper(this.$component, this.$props)).mount(container)
     this.$ = container.firstElementChild!
     if (hasOwn(nodeJson, 't')) {
       this.$.textContent = nodeJson.t || ''

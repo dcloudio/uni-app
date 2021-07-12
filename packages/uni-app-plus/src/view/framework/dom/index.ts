@@ -10,6 +10,7 @@ import {
   PageAction,
 } from '../../../PageAction'
 import { $, createElement, onPageCreate, onPageCreated } from './page'
+import { flushPostActionJobs } from './scheduler'
 
 export function onVdSync(actions: PageAction[]) {
   actions.forEach((action) => {
@@ -32,4 +33,5 @@ export function onVdSync(actions: PageAction[]) {
         return $(action[1]).setText(action[2])
     }
   })
+  flushPostActionJobs()
 }

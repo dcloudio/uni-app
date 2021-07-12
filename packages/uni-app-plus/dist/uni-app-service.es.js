@@ -4590,7 +4590,7 @@ var serviceContext = (function (vue) {
               }
           });
       }
-      send(args) {
+      send(args, callopt = true) {
           if (this.readyState !== this.OPEN) {
               callOptions(args, 'sendSocketMessage:fail WebSocket is not connected');
           }
@@ -4604,23 +4604,23 @@ var serviceContext = (function (vue) {
                       }
                       : args.data,
               });
-              callOptions(args, 'sendSocketMessage:ok');
+              callopt && callOptions(args, 'sendSocketMessage:ok');
           }
           catch (error) {
-              callOptions(args, `sendSocketMessage:fail ${error}`);
+              callopt && callOptions(args, `sendSocketMessage:fail ${error}`);
           }
       }
-      close(args) {
+      close(args, callopt = true) {
           this.readyState = this.CLOSING;
           try {
               this._socket.close(extend({
                   id: this.id,
                   args,
               }));
-              callOptions(args, 'closeSocket:ok');
+              callopt && callOptions(args, 'closeSocket:ok');
           }
           catch (error) {
-              callOptions(args, `closeSocket:fail ${error}`);
+              callopt && callOptions(args, `closeSocket:fail ${error}`);
           }
       }
       onOpen(callback) {
@@ -4660,21 +4660,20 @@ var serviceContext = (function (vue) {
   const sendSocketMessage = defineAsyncApi(API_SEND_SOCKET_MESSAGE, (args, { resolve, reject }) => {
       const socketTask = socketTasks[0];
       if (!socketTask || socketTask.readyState !== socketTask.OPEN) {
-          reject('sendSocketMessage:fail WebSocket is not connected');
+          reject('WebSocket is not connected');
           return;
       }
-      socketTask.send({ data: args.data });
+      socketTask.send({ data: args.data }, false);
       resolve();
   }, SendSocketMessageProtocol);
   const closeSocket = defineAsyncApi(API_CLOSE_SOCKET, (args, { resolve, reject }) => {
       const socketTask = socketTasks[0];
       if (!socketTask) {
-          reject('closeSocket:fail WebSocket is not connected');
+          reject('WebSocket is not connected');
           return;
       }
       socketTask.readyState = socketTask.CLOSING;
-      const { code, reason } = args;
-      socketTask.close({ code, reason });
+      socketTask.close(args, false);
       resolve();
   }, CloseSocketProtocol);
   function on(event) {
