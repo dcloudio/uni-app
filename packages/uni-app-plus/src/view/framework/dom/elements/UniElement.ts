@@ -9,19 +9,22 @@ import { UniCustomElement } from '../components'
 import { queuePostActionJob } from '../scheduler'
 
 export class UniElement<T extends object> extends UniNode {
-  $: UniCustomElement
+  declare $: UniCustomElement
   $props: T = reactive({} as any)
   $propNames: string[]
   protected _update?: Function
-  constructor(id: number, element: Element, propNames: string[] = []) {
-    super(id, element.tagName)
-    this.$ = element as UniCustomElement
+  constructor(
+    id: number,
+    element: Element,
+    nodeJson: Partial<UniNodeJSON>,
+    propNames: string[] = []
+  ) {
+    super(id, element.tagName, element)
     this.$.__id = id
     this.$.__listeners = Object.create(null)
-
     this.$propNames = propNames
-
     this._update = this.update.bind(this)
+    this.init(nodeJson)
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     if (hasOwn(nodeJson, 'a')) {

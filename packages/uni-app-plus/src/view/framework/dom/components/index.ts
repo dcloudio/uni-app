@@ -1,3 +1,4 @@
+import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { defineComponent, h } from 'vue'
 import { UniComment } from '../elements/UniComment'
 import { UniTextElement } from '../elements/UniTextElement'
@@ -97,8 +98,12 @@ const BuiltInComponents = [
 
 export type WrapperComponent = ReturnType<typeof createWrapper>
 
-export function createBuiltInComponent(type: number, id: number) {
-  return new BuiltInComponents[type]!(id)
+export function createBuiltInComponent(
+  type: number,
+  id: number,
+  nodeJson: Partial<UniNodeJSON>
+) {
+  return new BuiltInComponents[type]!(id, nodeJson)
 }
 
 export function createWrapper(

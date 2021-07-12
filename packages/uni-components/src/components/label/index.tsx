@@ -44,7 +44,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           true
         )
       } else {
-        if (typeof handlers[0] === 'function') handlers[0]($event, true)
+        handlers.length && handlers[0]($event, true)
       }
     })
 

@@ -9,9 +9,12 @@ export class UniNode {
   $!: Element | Text | Comment
   isMounted: boolean = false
   isUnmounted: boolean = false
-  constructor(id: number, tag: string) {
+  constructor(id: number, tag: string, element?: Element | Text | Comment) {
     this.id = id
     this.tag = tag
+    if (element) {
+      this.$ = element
+    }
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     if (hasOwn(nodeJson, 't')) {
@@ -21,12 +24,7 @@ export class UniNode {
   setText(text: string) {
     this.$.textContent = text
   }
-  insert(
-    parentNodeId: number,
-    refNodeId: number,
-    nodeJson: Partial<UniNodeJSON>
-  ) {
-    this.init(nodeJson)
+  insert(parentNodeId: number, refNodeId: number) {
     const node = this.$
     const parentNode = $(parentNodeId)
     if (refNodeId === -1) {
@@ -41,7 +39,7 @@ export class UniNode {
     $.parentNode!.removeChild($)
     this.isUnmounted = false
   }
-  appendChild(node: Element) {
+  appendChild(node: Node) {
     return this.$.appendChild(node)
   }
   insertBefore(newChild: Node, refChild: Node) {

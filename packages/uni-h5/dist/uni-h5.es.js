@@ -1717,7 +1717,7 @@ var index$t = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.for) {
         UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
       } else {
-        handlers[0]($event, true);
+        handlers.length && handlers[0]($event, true);
       }
     });
     return () => createVNode("uni-label", {

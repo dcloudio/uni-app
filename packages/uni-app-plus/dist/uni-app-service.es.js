@@ -2927,9 +2927,9 @@ var serviceContext = (function (vue) {
   const ShareWithSystemOptions = {
       formatArgs: {
           type(value, params) {
-              if (!TYPE.includes(value))
-                  return '分享参数 type 不正确';
-              return elemInArray(value, TYPE);
+              if (value && !TYPE.includes(value))
+                  return '分享参数 type 不正确。只支持text、image';
+              params.type = elemInArray(value, TYPE);
           },
       },
   };
@@ -4507,6 +4507,7 @@ var serviceContext = (function (vue) {
   }, RequestProtocol, RequestOptions);
 
   const socketTasks = [];
+  const socketsMap = {};
   const globalEvent = {
       open: '',
       close: '',
@@ -4520,6 +4521,7 @@ var serviceContext = (function (vue) {
       try {
           if (!socket) {
               socket = requireNativePlugin('uni-webSocket');
+              bindSocketCallBack(socket);
           }
           socket.WebSocket({
               id: socketId,
@@ -4534,6 +4536,32 @@ var serviceContext = (function (vue) {
           errMsg = error;
       }
       return { socket, socketId, errMsg };
+  }
+  function bindSocketCallBack(socket) {
+      socket.onopen((e) => {
+          const curSocket = socketsMap[e.id];
+          if (!curSocket)
+              return;
+          curSocket._socketOnOpen();
+      });
+      socket.onmessage((e) => {
+          const curSocket = socketsMap[e.id];
+          if (!curSocket)
+              return;
+          curSocket._socketOnMessage(e);
+      });
+      socket.onerror((e) => {
+          const curSocket = socketsMap[e.id];
+          if (!curSocket)
+              return;
+          curSocket._socketOnError();
+      });
+      socket.onclose((e) => {
+          const curSocket = socketsMap[e.id];
+          if (!curSocket)
+              return;
+          curSocket._socketOnClose();
+      });
   }
   class SocketTask {
       constructor(socket, socketId) {
@@ -4552,41 +4580,43 @@ var serviceContext = (function (vue) {
           this.readyState = this.CLOSED;
           if (!this._socket)
               return;
-          this._socket.onopen(() => {
-              this.readyState = this.OPEN;
-              this.socketStateChange('open');
+      }
+      _socketOnOpen() {
+          this.readyState = this.OPEN;
+          this.socketStateChange('open');
+      }
+      _socketOnMessage(e) {
+          this.socketStateChange('message', {
+              data: typeof e.data === 'object'
+                  ? base64ToArrayBuffer(e.data.base64)
+                  : e.data,
           });
-          this._socket.onmessage((e) => {
-              this.socketStateChange('message', {
-                  data: typeof e.data === 'object'
-                      ? base64ToArrayBuffer(e.data.base64)
-                      : e.data,
-              });
-          });
-          this._socket.onerror(() => {
-              this.socketStateChange('error');
-              this.onErrorOrClose();
-          });
-          this._socket.onclose(() => {
-              this.socketStateChange('close');
-              this.onErrorOrClose();
-          });
+      }
+      _socketOnError() {
+          this.socketStateChange('error');
+          this.onErrorOrClose();
+      }
+      _socketOnClose() {
+          this.socketStateChange('close');
+          this.onErrorOrClose();
       }
       onErrorOrClose() {
           this.readyState = this.CLOSED;
+          delete socketsMap[this.id];
           const index = socketTasks.indexOf(this);
           if (index >= 0) {
               socketTasks.splice(index, 1);
           }
       }
       socketStateChange(name, res = {}) {
+          const data = name === 'message' ? res : {};
           if (this === socketTasks[0] && globalEvent[name]) {
-              UniServiceJSBridge.invokeOnCallback(globalEvent[name], res);
+              UniServiceJSBridge.invokeOnCallback(globalEvent[name], data);
           }
           // WYQ fix: App平台修复websocket onOpen时发送数据报错的Bug
           this._callbacks[name].forEach((callback) => {
               if (typeof callback === 'function') {
-                  callback(name === 'message' ? res : {});
+                  callback(data);
               }
           });
       }
@@ -4651,6 +4681,7 @@ var serviceContext = (function (vue) {
       }
       else {
           socketTasks.push(socketTask);
+          socketsMap[socketId] = socketTask;
       }
       setTimeout(() => {
           resolve();
@@ -5253,10 +5284,10 @@ var serviceContext = (function (vue) {
   }
   const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
       eventNames.forEach((item) => {
-          const name = item[0].toUpperCase() + item.substr(1);
-          BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-              callbacks[item].push(callback);
-          };
+          BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
+              function (callback) {
+                  callbacks[item].push(callback);
+              };
       });
   });
   const props = [
@@ -7282,6 +7313,7 @@ var serviceContext = (function (vue) {
           super(NODE_TYPE_PAGE, '#page', null);
           this._id = 1;
           this._created = false;
+          this._createActionMap = new Map();
           this.updateActions = [];
           this.nodeId = 0;
           this.pageId = pageId;
@@ -7327,12 +7359,28 @@ var serviceContext = (function (vue) {
       genId() {
           return this._id++;
       }
-      push(action) {
+      push(action, extras) {
           if (this.isUnmounted) {
               if ((process.env.NODE_ENV !== 'production')) {
                   console.log(formatLog('PageNode', 'push.prevent', action));
               }
               return;
+          }
+          switch (action[0]) {
+              case ACTION_TYPE_CREATE:
+                  this._createActionMap.set(action[1], action);
+                  break;
+              case ACTION_TYPE_INSERT:
+                  const createAction = this._createActionMap.get(action[1]);
+                  if (createAction) {
+                      createAction[3] = extras;
+                  }
+                  else {
+                      if ((process.env.NODE_ENV !== 'production')) {
+                          console.error(formatLog(`Insert`, action, 'not found createAction'));
+                      }
+                  }
+                  break;
           }
           this.updateActions.push(action);
           if ((process.env.NODE_ENV !== 'production')) {
@@ -7349,10 +7397,11 @@ var serviceContext = (function (vue) {
           this.send([this.createAction]);
       }
       update() {
-          const { updateActions } = this;
+          const { updateActions, _createActionMap } = this;
           if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('PageNode', 'update', updateActions.length));
+              console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
           }
+          _createActionMap.clear();
           // 首次
           if (!this._created) {
               this._created = true;
@@ -7393,13 +7442,8 @@ var serviceContext = (function (vue) {
       pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName]);
   }
   function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
-      pageNode.push([
-          ACTION_TYPE_INSERT,
-          newChild.nodeId,
-          parentNodeId,
-          refChildId,
-          newChild.toJSON({ attr: true }),
-      ]);
+      const nodeJson = newChild.toJSON({ attr: true });
+      pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
   }
   function pushRemoveAction(pageNode, nodeId) {
       pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
@@ -7812,7 +7856,6 @@ var serviceContext = (function (vue) {
     hideKeyboard: hideKeyboard,
     downloadFile: downloadFile,
     request: request,
-    createSocketTask: createSocketTask,
     connectSocket: connectSocket,
     sendSocketMessage: sendSocketMessage,
     closeSocket: closeSocket,

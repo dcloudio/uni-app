@@ -1,9 +1,10 @@
+import { UniNodeJSON } from '@dcloudio/uni-shared'
 import CoverImage from '../../../components/cover-image'
 
 import { UniComponent } from './UniComponent'
 
 export class UniCoverImage extends UniComponent {
-  constructor(id: number) {
-    super(id, 'uni-cover-image', CoverImage)
+  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
+    super(id, 'uni-cover-image', CoverImage, nodeJson)
   }
 }

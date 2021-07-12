@@ -1,10 +1,10 @@
 import '@dcloudio/uni-components/style/checkbox.css'
 import { Checkbox } from '@dcloudio/uni-components'
-
+import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniCheckbox extends UniComponent {
-  constructor(id: number) {
-    super(id, 'uni-checkbox', Checkbox, '.uni-checkbox-wrapper')
+  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
+    super(id, 'uni-checkbox', Checkbox, nodeJson, '.uni-checkbox-wrapper')
   }
 }

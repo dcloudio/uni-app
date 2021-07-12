@@ -6,6 +6,7 @@ import {
   IUniPageNode,
   formatLog,
   UniEvent,
+  UniNodeJSON,
 } from '@dcloudio/uni-shared'
 import {
   PageCreateAction,
@@ -20,6 +21,7 @@ import {
   ACTION_TYPE_SET_TEXT,
   ACTION_TYPE_PAGE_CREATE,
   ACTION_TYPE_PAGE_CREATED,
+  CreateAction,
 } from '../../../PageAction'
 import { VD_SYNC } from '../../../constants'
 
@@ -29,6 +31,7 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   private _created: boolean = false
   private createAction: PageCreateAction
   private createdAction: PageCreatedAction
+  private _createActionMap = new Map<number, CreateAction>()
   public updateActions: PageAction[] = []
 
   public isUnmounted: boolean
@@ -98,12 +101,27 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   genId() {
     return this._id++
   }
-  push(action: PageAction) {
+  push(action: PageAction, extras?: unknown) {
     if (this.isUnmounted) {
       if (__DEV__) {
         console.log(formatLog('PageNode', 'push.prevent', action))
       }
       return
+    }
+    switch (action[0]) {
+      case ACTION_TYPE_CREATE:
+        this._createActionMap.set(action[1], action)
+        break
+      case ACTION_TYPE_INSERT:
+        const createAction = this._createActionMap.get(action[1])
+        if (createAction) {
+          createAction[3] = extras as UniNodeJSON
+        } else {
+          if (__DEV__) {
+            console.error(formatLog(`Insert`, action, 'not found createAction'))
+          }
+        }
+        break
     }
     this.updateActions.push(action)
     if (__DEV__) {
@@ -120,10 +138,18 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     this.send([this.createAction])
   }
   update() {
-    const { updateActions } = this
+    const { updateActions, _createActionMap } = this
     if (__DEV__) {
-      console.log(formatLog('PageNode', 'update', updateActions.length))
+      console.log(
+        formatLog(
+          'PageNode',
+          'update',
+          updateActions.length,
+          _createActionMap.size
+        )
+      )
     }
+    _createActionMap.clear()
     // 首次
     if (!this._created) {
       this._created = true
@@ -175,13 +201,11 @@ function pushInsertAction(
   parentNodeId: number,
   refChildId: number
 ) {
-  pageNode.push([
-    ACTION_TYPE_INSERT,
-    newChild.nodeId!,
-    parentNodeId,
-    refChildId,
-    newChild.toJSON({ attr: true }),
-  ])
+  const nodeJson = newChild.toJSON({ attr: true })
+  pageNode.push(
+    [ACTION_TYPE_INSERT, newChild.nodeId!, parentNodeId, refChildId],
+    Object.keys(nodeJson).length ? nodeJson : undefined
+  )
 }
 
 function pushRemoveAction(pageNode: UniPageNode, nodeId: number) {

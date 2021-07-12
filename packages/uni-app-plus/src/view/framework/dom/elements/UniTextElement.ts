@@ -13,9 +13,10 @@ const PROP_NAMES_HOVER = ['space', 'decode']
 export class UniTextElement extends UniElement<TextProps> {
   private _text: string = ''
 
-  constructor(id: number) {
-    super(id, document.createElement('uni-text'), PROP_NAMES_HOVER)
+  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
+    super(id, document.createElement('uni-text'), nodeJson, PROP_NAMES_HOVER)
   }
+
   init(nodeJson: Partial<UniNodeJSON>) {
     this._text = nodeJson.t || ''
     super.init(nodeJson)

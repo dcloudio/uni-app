@@ -1,4 +1,5 @@
-import { formatLog } from '@dcloudio/uni-shared'
+import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniCustomElement } from '../components'
 import { UniElement } from './UniElement'
 
 interface HoverProps {
@@ -15,8 +16,13 @@ const PROP_NAMES_HOVER = [
 ]
 export class UniHoverElement extends UniElement<HoverProps> {
   private _hover?: Hover
-  constructor(id: number, element: Element, propNames: string[] = []) {
-    super(id, element, [...PROP_NAMES_HOVER, ...propNames])
+  constructor(
+    id: number,
+    element: Element,
+    nodeJson: Partial<UniNodeJSON>,
+    propNames: string[] = []
+  ) {
+    super(id, element, nodeJson, [...PROP_NAMES_HOVER, ...propNames])
   }
   update() {
     const hoverClass = this.$props['hover-class']

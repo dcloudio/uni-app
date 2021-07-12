@@ -5,7 +5,7 @@ import {
   disableScrollListener,
   updateCssVar,
 } from '@dcloudio/uni-core'
-import { formatLog } from '@dcloudio/uni-shared'
+import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
 import { PageCreateData } from '../../../PageAction'
 
 import { createBuiltInComponent } from './components'
@@ -19,12 +19,23 @@ export function $(id: number) {
   return elements.get(id) as UniElement<any>
 }
 
-export function createElement(id: number, tag: string | number) {
+export function createElement(
+  id: number,
+  tag: string | number,
+  nodeJson: Partial<UniNodeJSON> = {}
+) {
   let element: UniNode
-  if (isString(tag)) {
-    element = new UniElement(id, document.createElement(tag))
+  if (id === 0) {
+    // initPageElement
+    element = new UniNode(
+      id,
+      tag as string,
+      document.createElement(tag as string)
+    )
+  } else if (isString(tag)) {
+    element = new UniElement(id, document.createElement(tag), nodeJson)
   } else {
-    element = createBuiltInComponent(tag, id)
+    element = createBuiltInComponent(tag, id, nodeJson)
   }
   elements.set(id, element)
   return element
@@ -80,7 +91,7 @@ function initSystemInfo(
 }
 
 function initPageElement() {
-  createElement(0, 'div').$ = document.getElementById('app')!
+  createElement(0, 'div', {}).$ = document.getElementById('app')!
 }
 
 function initPageCss(route: string) {

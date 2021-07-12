@@ -1,10 +1,10 @@
 import '@dcloudio/uni-components/style/form.css'
 import { Form } from '@dcloudio/uni-components'
-
+import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniForm extends UniComponent {
-  constructor(id: number) {
-    super(id, 'uni-form', Form, 'span')
+  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
+    super(id, 'uni-form', Form, nodeJson, 'span')
   }
 }

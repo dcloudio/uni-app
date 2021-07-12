@@ -20,9 +20,9 @@ export function onVdSync(actions: PageAction[]) {
       case ACTION_TYPE_PAGE_CREATED:
         return onPageCreated()
       case ACTION_TYPE_CREATE:
-        return createElement(action[1], action[2])
+        return createElement(action[1], action[2], action[3])
       case ACTION_TYPE_INSERT:
-        return $(action[1]).insert(action[2], action[3], action[4])
+        return $(action[1]).insert(action[2], action[3])
       case ACTION_TYPE_REMOVE:
         return $(action[1]).remove()
       case ACTION_TYPE_SET_ATTRIBUTE:
