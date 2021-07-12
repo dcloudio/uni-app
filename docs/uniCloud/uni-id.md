@@ -1679,8 +1679,6 @@ export default {
 
 ### 获取微信openid
 
-> 此接口即将废弃
-
 用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
 
 **参数说明**
@@ -1786,8 +1784,6 @@ exports.main = async function(event,context) {
 
 ### 微信数据解密
 
-> 此接口即将废弃
-
 用法：`uniID.wxBizDataCrypt(Object WxBizDataCryptParams);`
 
 **参数说明**
@@ -1871,8 +1867,6 @@ exports.main = async function(event,context) {
 
 
 ### 获取支付宝用户ID
-
-> 此接口即将废弃
 
 用法：`uniID.code2SessionAlipay(Object Code2SessionAlipayParams);`
 
@@ -2093,8 +2087,6 @@ export default {
 ```
 
 ### Apple登录校验identityToken
-
-> 此接口即将废弃
 
 用法：`uniID.verifyAppleIdentityToken(Object Code2SessionAppleParams);`
 
