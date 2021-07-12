@@ -31,14 +31,29 @@ type Socket = {
         }
   }) => void
   close: ({ code, reason }: { code?: number; reason?: string }) => void
-  onopen: Function
-  onmessage: Function
-  onerror: Function
-  onclose: Function
-  WebSocket: Function
+  onopen: (cb: (args: { id: string }) => void) => void
+  onmessage: (
+    cb: (args: { id: string; message: string | Object }) => void
+  ) => void
+  onerror: (cb: (args: { id: string; message: string }) => void) => void
+  onclose: (
+    cb: (args: {
+      id: string
+      code: number
+      reason: string
+      wasClean: boolean
+    }) => void
+  ) => void
+  WebSocket: (args: {
+    id: string
+    url: string
+    protocol?: string
+    header?: any
+  }) => void
 }
 type eventName = keyof WebSocketEventMap
 const socketTasks: SocketTask[] = []
+const socketsMap: Record<string, SocketTask> = {}
 const globalEvent: Record<eventName, string> = {
   open: '',
   close: '',
@@ -47,12 +62,13 @@ const globalEvent: Record<eventName, string> = {
 }
 
 let socket: Socket
-export function createSocketTask(args: UniApp.ConnectSocketOption) {
+function createSocketTask(args: UniApp.ConnectSocketOption) {
   const socketId = String(Date.now())
   let errMsg
   try {
     if (!socket) {
       socket = requireNativePlugin('uni-webSocket')
+      bindSocketCallBack(socket)
     }
     socket.WebSocket({
       id: socketId,
@@ -66,6 +82,29 @@ export function createSocketTask(args: UniApp.ConnectSocketOption) {
     errMsg = error
   }
   return { socket, socketId, errMsg }
+}
+
+function bindSocketCallBack(socket: Socket) {
+  socket.onopen((e) => {
+    const curSocket = socketsMap[e.id]
+    if (!curSocket) return
+    curSocket._socketOnOpen()
+  })
+  socket.onmessage((e) => {
+    const curSocket = socketsMap[e.id]
+    if (!curSocket) return
+    curSocket._socketOnMessage(e)
+  })
+  socket.onerror((e) => {
+    const curSocket = socketsMap[e.id]
+    if (!curSocket) return
+    curSocket._socketOnError()
+  })
+  socket.onclose((e) => {
+    const curSocket = socketsMap[e.id]
+    if (!curSocket) return
+    curSocket._socketOnClose()
+  })
 }
 
 class SocketTask implements UniApp.SocketTask {
@@ -98,31 +137,35 @@ class SocketTask implements UniApp.SocketTask {
     this.readyState = this.CLOSED
 
     if (!this._socket) return
+  }
 
-    this._socket.onopen(() => {
-      this.readyState = this.OPEN
-      this.socketStateChange('open')
+  _socketOnOpen() {
+    this.readyState = this.OPEN
+    this.socketStateChange('open')
+  }
+
+  _socketOnMessage(e: any) {
+    this.socketStateChange('message', {
+      data:
+        typeof e.data === 'object'
+          ? base64ToArrayBuffer(e.data.base64)
+          : e.data,
     })
-    this._socket.onmessage((e: any) => {
-      this.socketStateChange('message', {
-        data:
-          typeof e.data === 'object'
-            ? base64ToArrayBuffer(e.data.base64)
-            : e.data,
-      })
-    })
-    this._socket.onerror(() => {
-      this.socketStateChange('error')
-      this.onErrorOrClose()
-    })
-    this._socket.onclose(() => {
-      this.socketStateChange('close')
-      this.onErrorOrClose()
-    })
+  }
+
+  _socketOnError() {
+    this.socketStateChange('error')
+    this.onErrorOrClose()
+  }
+
+  _socketOnClose() {
+    this.socketStateChange('close')
+    this.onErrorOrClose()
   }
 
   onErrorOrClose() {
     this.readyState = this.CLOSED
+    delete socketsMap[this.id]
     const index = socketTasks.indexOf(this)
     if (index >= 0) {
       socketTasks.splice(index, 1)
@@ -130,14 +173,16 @@ class SocketTask implements UniApp.SocketTask {
   }
 
   socketStateChange(name: eventName, res: Data = {}) {
+    const data = name === 'message' ? res : {}
+
     if (this === socketTasks[0] && globalEvent[name]) {
-      UniServiceJSBridge.invokeOnCallback(globalEvent[name], res)
+      UniServiceJSBridge.invokeOnCallback(globalEvent[name], data)
     }
 
     // WYQ fix: App平台修复websocket onOpen时发送数据报错的Bug
     this._callbacks[name].forEach((callback) => {
       if (typeof callback === 'function') {
-        callback(name === 'message' ? res : {})
+        callback(data)
       }
     })
   }
@@ -211,6 +256,7 @@ export const connectSocket = defineTaskApi<API_TYPE_CONNECT_SOCKET>(
       }, 0)
     } else {
       socketTasks.push(socketTask)
+      socketsMap[socketId] = socketTask
     }
     setTimeout(() => {
       resolve()
@@ -237,7 +283,7 @@ export const sendSocketMessage = defineAsyncApi<API_TYPE_SEND_SOCKET_MESSAGE>(
 
 export const closeSocket = defineAsyncApi<API_TYPE_CLOSE_SOCKET>(
   API_CLOSE_SOCKET,
-  (args: AsyncApiOptions<API_TYPE_CLOSE_SOCKET>, { resolve, reject }) => {
+  (args, { resolve, reject }) => {
     const socketTask = socketTasks[0]
     if (!socketTask) {
       reject('WebSocket is not connected')
