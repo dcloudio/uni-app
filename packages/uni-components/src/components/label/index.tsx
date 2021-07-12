@@ -44,7 +44,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           true
         )
       } else {
-        handlers[0]($event, true)
+        if (typeof handlers[0] === 'function') handlers[0]($event, true)
       }
     })
 
