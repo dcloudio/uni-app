@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, capitalize } from '@vue/shared'
 import {
   defineSyncApi,
   API_GET_BACKGROUND_AUDIO_MANAGER,
@@ -301,12 +301,10 @@ function onBackgroundAudioStateChange({
 
 const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
   eventNames.forEach((item) => {
-    const name = item[0].toUpperCase() + item.substr(1)
-    BackgroundAudioManager.prototype[`on${name}` as onEventNames] = function (
-      callback: Function
-    ) {
-      callbacks[item].push(callback)
-    }
+    BackgroundAudioManager.prototype[`on${capitalize(item)}` as onEventNames] =
+      function (callback: Function) {
+        callbacks[item].push(callback)
+      }
   })
 })
 
