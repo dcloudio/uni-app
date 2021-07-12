@@ -65,8 +65,9 @@ const TYPE: Parameters<API_TYPE_SHARE_WITH_SYSTEM>[0]['type'][] = [
 export const ShareWithSystemOptions: ApiOptions<API_TYPE_SHARE_WITH_SYSTEM> = {
   formatArgs: {
     type(value, params) {
-      if (!TYPE.includes(value)) return '分享参数 type 不正确'
-      return elemInArray(value, TYPE)
+      if (value && !TYPE.includes(value))
+        return '分享参数 type 不正确。只支持text、image'
+      params.type = elemInArray(value, TYPE)
     },
   },
 }
