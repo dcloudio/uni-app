@@ -5,6 +5,6 @@ import { UniComponent } from './UniComponent'
 
 export class UniRadio extends UniComponent {
   constructor(id: number) {
-    super(id, 'uni-radio', Radio)
+    super(id, 'uni-radio', Radio, '.uni-radio-wrapper')
   }
 }

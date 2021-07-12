@@ -5,6 +5,6 @@ import { UniComponent } from './UniComponent'
 
 export class UniForm extends UniComponent {
   constructor(id: number) {
-    super(id, 'uni-form', Form)
+    super(id, 'uni-form', Form, 'span')
   }
 }

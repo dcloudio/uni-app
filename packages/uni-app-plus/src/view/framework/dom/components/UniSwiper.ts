@@ -5,6 +5,6 @@ import { UniComponent } from './UniComponent'
 
 export class UniSwiper extends UniComponent {
   constructor(id: number) {
-    super(id, 'uni-swiper', Swiper)
+    super(id, 'uni-swiper', Swiper, '.uni-swiper-slide-frame')
   }
 }

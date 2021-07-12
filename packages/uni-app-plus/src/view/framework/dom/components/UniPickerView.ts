@@ -5,6 +5,6 @@ import { UniComponent } from './UniComponent'
 
 export class UniPickerView extends UniComponent {
   constructor(id: number) {
-    super(id, 'uni-picker-view', PickerView)
+    super(id, 'uni-picker-view', PickerView, '.uni-picker-view-wrapper')
   }
 }

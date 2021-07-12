@@ -28,7 +28,7 @@ export class UniNode {
   ) {
     this.init(nodeJson)
     const node = this.$
-    const parentNode = $(parentNodeId).$
+    const parentNode = $(parentNodeId)
     if (refNodeId === -1) {
       parentNode.appendChild(node)
     } else {
@@ -40,5 +40,11 @@ export class UniNode {
     const { $ } = this
     $.parentNode!.removeChild($)
     this.isUnmounted = false
+  }
+  appendChild(node: Element) {
+    return this.$.appendChild(node)
+  }
+  insertBefore(newChild: Node, refChild: Node) {
+    return this.$.insertBefore(newChild, refChild)
   }
 }

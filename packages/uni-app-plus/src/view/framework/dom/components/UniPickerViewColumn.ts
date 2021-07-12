@@ -5,6 +5,11 @@ import { UniComponent } from './UniComponent'
 
 export class UniPickerViewColumn extends UniComponent {
   constructor(id: number) {
-    super(id, 'uni-picker-view-column', PickerViewColumn)
+    super(
+      id,
+      'uni-picker-view-column',
+      PickerViewColumn,
+      '.uni-picker-view-content'
+    )
   }
 }

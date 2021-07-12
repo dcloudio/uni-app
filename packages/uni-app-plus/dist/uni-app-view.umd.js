@@ -5843,7 +5843,7 @@
     insert(parentNodeId, refNodeId, nodeJson) {
       this.init(nodeJson);
       const node = this.$;
-      const parentNode = $(parentNodeId).$;
+      const parentNode = $(parentNodeId);
       if (refNodeId === -1) {
         parentNode.appendChild(node);
       } else {
@@ -5855,6 +5855,12 @@
       const { $: $2 } = this;
       $2.parentNode.removeChild($2);
       this.isUnmounted = false;
+    }
+    appendChild(node) {
+      return this.$.appendChild(node);
+    }
+    insertBefore(newChild, refChild) {
+      return this.$.insertBefore(newChild, refChild);
     }
   }
   class UniComment extends UniNode {
@@ -14296,9 +14302,13 @@
     name: "Ad"
   });
   class UniComponent extends UniNode {
-    constructor(id2, tag, component) {
+    constructor(id2, tag, component, selector) {
       super(id2, tag);
+      this.$fragment = null;
       this.$component = component;
+      if (selector) {
+        this.$selector = selector;
+      }
     }
     init(nodeJson) {
       const container = document.createElement("div");
@@ -14314,6 +14324,16 @@
       if (hasOwn$1(nodeJson, "t")) {
         this.$.textContent = nodeJson.t || "";
       }
+      if (this.$selector) {
+        this.$holder = this.$.querySelector(this.$selector);
+      }
+      if (this.$fragment) {
+        {
+          console.log(formatLog(this.tag, "init", "fragment", this.$fragment));
+        }
+        (this.$holder || this.$).appendChild(this.$fragment);
+        this.$fragment = null;
+      }
     }
     setAttr(name, value) {
       const decoded = decodeAttr(name);
@@ -14325,6 +14345,30 @@
     }
     removeAttr(name) {
       this.$props[decodeAttr(name)] = null;
+    }
+    get fragment() {
+      if (!this.$fragment) {
+        this.$fragment = document.createDocumentFragment();
+      }
+      return this.$fragment;
+    }
+    appendChild(node) {
+      if (!this.$) {
+        {
+          console.log(formatLog(this.tag, "fragment", "appendChild", node.tagName));
+        }
+        return this.fragment.appendChild(node);
+      }
+      return (this.$holder || this.$).appendChild(node);
+    }
+    insertBefore(newChild, refChild) {
+      if (!this.$) {
+        {
+          console.log(formatLog(this.tag, "fragment", "insertBefore", newChild.tagName, refChild.tagName));
+        }
+        return this.fragment.insertBefore(newChild, refChild);
+      }
+      return (this.$holder || this.$).insertBefore(newChild, refChild);
     }
   }
   class UniAd extends UniComponent {
@@ -14352,13 +14396,13 @@
   var canvas = "uni-canvas {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n}\n\nuni-canvas > .uni-canvas-canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n";
   class UniCanvas extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-canvas", Canvas);
+      super(id2, "uni-canvas", Canvas, "canvas > div");
     }
   }
   var checkbox = "uni-checkbox {\n  -webkit-tap-highlight-color: transparent;\n  display: inline-block;\n  cursor: pointer;\n}\n\nuni-checkbox[hidden] {\n  display: none;\n}\n\nuni-checkbox[disabled] {\n  cursor: not-allowed;\n}\n\n.uni-checkbox-wrapper {\n  display: inline-flex;\n  align-items: center;\n  vertical-align: middle;\n}\n\n.uni-checkbox-input {\n  margin-right: 5px;\n  -webkit-appearance: none;\n          appearance: none;\n  outline: 0;\n  border: 1px solid #d1d1d1;\n  background-color: #ffffff;\n  border-radius: 3px;\n  width: 22px;\n  height: 22px;\n  position: relative;\n}\n\n.uni-checkbox-input svg {\n  color: #007aff;\n  font-size: 22px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -48%) scale(0.73);\n}\n\nuni-checkbox:not([disabled]) .uni-checkbox-input:hover {\n  border-color: #007aff;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled {\n  background-color: #e1e1e1;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled:before {\n  color: #adadad;\n}\n\nuni-checkbox-group {\n  display: block;\n}\n";
   class UniCheckbox extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-checkbox", Checkbox);
+      super(id2, "uni-checkbox", Checkbox, ".uni-checkbox-wrapper");
     }
   }
   var checkboxGroup = "uni-checkbox-group {\n  display: block;\n}\n\nuni-checkbox-group[hidden] {\n  display: none;\n}\n";
@@ -14767,7 +14811,7 @@
   var form = "";
   class UniForm extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-form", Form);
+      super(id2, "uni-form", Form, "span");
     }
   }
   class UniFunctionalPageNavigator extends UniNode {
@@ -14856,13 +14900,13 @@
   var pickerView = "uni-picker-view {\n  display: block;\n}\n\n.uni-picker-view-wrapper {\n  display: flex;\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n}\n\nuni-picker-view[hidden] {\n  display: none;\n}\n";
   class UniPickerView extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-picker-view", PickerView);
+      super(id2, "uni-picker-view", PickerView, ".uni-picker-view-wrapper");
     }
   }
   var pickerViewColumn = "uni-picker-view-column {\n  flex: 1;\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n}\n\nuni-picker-view-column[hidden] {\n  display: none;\n}\n\n.uni-picker-view-group {\n  height: 100%;\n  overflow: hidden;\n}\n\n.uni-picker-view-mask {\n  transform: translateZ(0);\n}\n\n.uni-picker-view-indicator,\n.uni-picker-view-mask {\n  position: absolute;\n  left: 0;\n  width: 100%;\n  z-index: 3;\n  pointer-events: none;\n}\n\n.uni-picker-view-mask {\n  top: 0;\n  height: 100%;\n  margin: 0 auto;\n  background: linear-gradient(\n      180deg,\n      hsla(0, 0%, 100%, 0.95),\n      hsla(0, 0%, 100%, 0.6)\n    ),\n    linear-gradient(0deg, hsla(0, 0%, 100%, 0.95), hsla(0, 0%, 100%, 0.6));\n  background-position: top, bottom;\n  background-size: 100% 102px;\n  background-repeat: no-repeat;\n}\n\n.uni-picker-view-indicator {\n  height: 34px;\n  /* top: 102px; */\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.uni-picker-view-content {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  will-change: transform;\n  padding: 102px 0;\n  cursor: pointer;\n}\n\n.uni-picker-view-content > * {\n  height: 34px;\n  overflow: hidden;\n}\n\n.uni-picker-view-indicator:after,\n.uni-picker-view-indicator:before {\n  content: ' ';\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 1px;\n  color: #e5e5e5;\n}\n\n.uni-picker-view-indicator:before {\n  top: 0;\n  border-top: 1px solid #e5e5e5;\n  transform-origin: 0 0;\n  transform: scaleY(0.5);\n}\n\n.uni-picker-view-indicator:after {\n  bottom: 0;\n  border-bottom: 1px solid #e5e5e5;\n  transform-origin: 0 100%;\n  transform: scaleY(0.5);\n}\n\n.uni-picker-view-indicator:after,\n.uni-picker-view-indicator:before {\n  content: ' ';\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 1px;\n  color: #e5e5e5;\n}\n";
   class UniPickerViewColumn extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-picker-view-column", PickerViewColumn);
+      super(id2, "uni-picker-view-column", PickerViewColumn, ".uni-picker-view-content");
     }
   }
   var progress = "uni-progress {\n  display: flex;\n  align-items: center;\n}\n\nuni-progress[hidden] {\n  display: none;\n}\n\n.uni-progress-bar {\n  flex: 1;\n}\n\n.uni-progress-inner-bar {\n  width: 0;\n  height: 100%;\n}\n\n.uni-progress-info {\n  margin-top: 0;\n  margin-bottom: 0;\n  min-width: 2em;\n  margin-left: 15px;\n  font-size: 16px;\n}\n";
@@ -14874,7 +14918,7 @@
   var radio = "uni-radio {\n  -webkit-tap-highlight-color: transparent;\n  display: inline-block;\n  cursor: pointer;\n}\n\nuni-radio[hidden] {\n  display: none;\n}\n\nuni-radio[disabled] {\n  cursor: not-allowed;\n}\n\n.uni-radio-wrapper {\n  display: inline-flex;\n  align-items: center;\n  vertical-align: middle;\n}\n\n.uni-radio-input {\n  -webkit-appearance: none;\n          appearance: none;\n  margin-right: 5px;\n  outline: 0;\n  border: 1px solid #d1d1d1;\n  background-color: #ffffff;\n  border-radius: 50%;\n  width: 22px;\n  height: 22px;\n  position: relative;\n}\n\nuni-radio:not([disabled]) .uni-radio-input:hover {\n  border-color: #007aff;\n}\n\n.uni-radio-input svg {\n  color: #ffffff;\n  font-size: 18px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -48%) scale(0.73);\n}\n\n.uni-radio-input.uni-radio-input-disabled {\n  background-color: #e1e1e1;\n  border-color: #d1d1d1;\n}\n\n.uni-radio-input.uni-radio-input-disabled:before {\n  color: #adadad;\n}\n";
   class UniRadio extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-radio", Radio);
+      super(id2, "uni-radio", Radio, ".uni-radio-wrapper");
     }
   }
   var radioGroup = "uni-radio-group {\n  display: block;\n}\nuni-radio-group[hidden] {\n  display: none;\n}\n";
@@ -14892,7 +14936,7 @@
   var scrollView = "uni-scroll-view {\n  display: block;\n  width: 100%;\n}\n\nuni-scroll-view[hidden] {\n  display: none;\n}\n\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n\n@keyframes uni-scroll-view-refresh-rotate {\n  0% {\n    transform: rotate(0deg);\n  }\n\n  100% {\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes uni-scroll-view-refresh-dash {\n  0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n  }\n\n  50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n  }\n\n  100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n  }\n}\n";
   class UniScrollView extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-scroll-view", ScrollView);
+      super(id2, "uni-scroll-view", ScrollView, ".uni-scroll-view-content");
     }
   }
   var slider = "uni-slider {\n  margin: 10px 18px;\n  padding: 0;\n  display: block;\n}\n\nuni-slider[hidden] {\n  display: none;\n}\n\nuni-slider .uni-slider-wrapper {\n  display: flex;\n  align-items: center;\n  min-height: 16px;\n}\n\nuni-slider .uni-slider-tap-area {\n  flex: 1;\n  padding: 8px 0;\n}\n\nuni-slider .uni-slider-handle-wrapper {\n  position: relative;\n  height: 2px;\n  border-radius: 5px;\n  background-color: #e9e9e9;\n  cursor: pointer;\n  transition: background-color 0.3s ease;\n  -webkit-tap-highlight-color: transparent;\n}\n\nuni-slider .uni-slider-track {\n  height: 100%;\n  border-radius: 6px;\n  background-color: #007aff;\n  transition: background-color 0.3s ease;\n}\n\nuni-slider .uni-slider-handle,\nuni-slider .uni-slider-thumb {\n  position: absolute;\n  left: 50%;\n  top: 50%;\n  cursor: pointer;\n  border-radius: 50%;\n  transition: border-color 0.3s ease;\n}\n\nuni-slider .uni-slider-handle {\n  width: 28px;\n  height: 28px;\n  margin-top: -14px;\n  margin-left: -14px;\n  background-color: transparent;\n  z-index: 3;\n  cursor: grab;\n}\n\nuni-slider .uni-slider-thumb {\n  z-index: 2;\n  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);\n}\n\nuni-slider .uni-slider-step {\n  position: absolute;\n  width: 100%;\n  height: 2px;\n  background: transparent;\n  z-index: 1;\n}\n\nuni-slider .uni-slider-value {\n  width: 3ch;\n  color: #888;\n  font-size: 14px;\n  margin-left: 1em;\n}\n\nuni-slider .uni-slider-disabled .uni-slider-track {\n  background-color: #ccc;\n}\n\nuni-slider .uni-slider-disabled .uni-slider-thumb {\n  background-color: #fff;\n  border-color: #ccc;\n}\n";
@@ -14904,7 +14948,7 @@
   var swiper = "uni-swiper {\n  display: block;\n  height: 150px;\n}\n\nuni-swiper[hidden] {\n  display: none;\n}\n\n.uni-swiper-wrapper {\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform: translateZ(0);\n}\n\n.uni-swiper-slides {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n}\n\n.uni-swiper-slide-frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  will-change: transform;\n}\n\n.uni-swiper-dots {\n  position: absolute;\n  font-size: 0;\n}\n\n.uni-swiper-dots-horizontal {\n  left: 50%;\n  bottom: 10px;\n  text-align: center;\n  white-space: nowrap;\n  transform: translate(-50%, 0);\n}\n\n.uni-swiper-dots-horizontal .uni-swiper-dot {\n  margin-right: 8px;\n}\n\n.uni-swiper-dots-horizontal .uni-swiper-dot:last-child {\n  margin-right: 0;\n}\n\n.uni-swiper-dots-vertical {\n  right: 10px;\n  top: 50%;\n  text-align: right;\n  transform: translate(0, -50%);\n}\n\n.uni-swiper-dots-vertical .uni-swiper-dot {\n  display: block;\n  margin-bottom: 9px;\n}\n\n.uni-swiper-dots-vertical .uni-swiper-dot:last-child {\n  margin-bottom: 0;\n}\n\n.uni-swiper-dot {\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  cursor: pointer;\n  transition-property: background-color;\n  transition-timing-function: ease;\n  background: rgba(0, 0, 0, 0.3);\n  border-radius: 50%;\n}\n\n.uni-swiper-dot-active {\n  background-color: #000000;\n}\n";
   class UniSwiper extends UniComponent {
     constructor(id2) {
-      super(id2, "uni-swiper", Swiper);
+      super(id2, "uni-swiper", Swiper, ".uni-swiper-slide-frame");
     }
   }
   var swiperItem = "uni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\n\nuni-swiper-item[hidden] {\n  display: none;\n}\n";

@@ -5,6 +5,6 @@ import { UniComponent } from './UniComponent'
 
 export class UniScrollView extends UniComponent {
   constructor(id: number) {
-    super(id, 'uni-scroll-view', ScrollView)
+    super(id, 'uni-scroll-view', ScrollView, '.uni-scroll-view-content')
   }
 }
