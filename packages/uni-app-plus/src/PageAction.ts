@@ -50,27 +50,27 @@ type NodeAction<T extends Parameters<any>> = [/* nodeId */ number, ...T]
 
 export type InsertAction = [
   typeof ACTION_TYPE_INSERT,
-  ...NodeAction<Parameters<UniElement['insert']>>
+  ...NodeAction<Parameters<UniElement<any>['insert']>>
 ]
 
 export type RemoveAction = [
   typeof ACTION_TYPE_REMOVE,
-  ...NodeAction<Parameters<UniElement['remove']>>
+  ...NodeAction<Parameters<UniElement<any>['remove']>>
 ]
 
 export type SetAttributeAction = [
   typeof ACTION_TYPE_SET_ATTRIBUTE,
-  ...NodeAction<Parameters<UniElement['setAttr']>>
+  ...NodeAction<Parameters<UniElement<any>['setAttr']>>
 ]
 
 export type RemoveAttributeAction = [
   typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
-  ...NodeAction<Parameters<UniElement['removeAttr']>>
+  ...NodeAction<Parameters<UniElement<any>['removeAttr']>>
 ]
 
 export type SetTextAction = [
   typeof ACTION_TYPE_SET_TEXT,
-  ...NodeAction<Parameters<UniElement['setText']>>
+  ...NodeAction<Parameters<UniElement<any>['setText']>>
 ]
 
 export type PageUpdateAction =

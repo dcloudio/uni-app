@@ -16,7 +16,7 @@ import { UniNode } from './elements/UniNode'
 const elements = new Map<number, UniNode>()
 
 export function $(id: number) {
-  return elements.get(id) as UniElement
+  return elements.get(id) as UniElement<any>
 }
 
 export function createElement(id: number, tag: string | number) {
