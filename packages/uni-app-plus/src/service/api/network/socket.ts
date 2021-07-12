@@ -142,7 +142,7 @@ class SocketTask implements UniApp.SocketTask {
     })
   }
 
-  send(args: UniApp.SendSocketMessageOptions) {
+  send(args: UniApp.SendSocketMessageOptions, callopt: boolean = true) {
     if (this.readyState !== this.OPEN) {
       callOptions(args, 'sendSocketMessage:fail WebSocket is not connected')
     }
@@ -157,13 +157,13 @@ class SocketTask implements UniApp.SocketTask {
               }
             : args.data,
       })
-      callOptions(args, 'sendSocketMessage:ok')
+      callopt && callOptions(args, 'sendSocketMessage:ok')
     } catch (error) {
-      callOptions(args, `sendSocketMessage:fail ${error}`)
+      callopt && callOptions(args, `sendSocketMessage:fail ${error}`)
     }
   }
 
-  close(args: UniApp.CloseSocketOptions) {
+  close(args?: UniApp.CloseSocketOptions, callopt: boolean = true) {
     this.readyState = this.CLOSING
     try {
       this._socket.close(
@@ -172,9 +172,9 @@ class SocketTask implements UniApp.SocketTask {
           args,
         })
       )
-      callOptions(args, 'closeSocket:ok')
+      callopt && callOptions(args!, 'closeSocket:ok')
     } catch (error) {
-      callOptions(args, `closeSocket:fail ${error}`)
+      callopt && callOptions(args!, `closeSocket:fail ${error}`)
     }
   }
 
@@ -226,10 +226,10 @@ export const sendSocketMessage = defineAsyncApi<API_TYPE_SEND_SOCKET_MESSAGE>(
   (args, { resolve, reject }) => {
     const socketTask = socketTasks[0]
     if (!socketTask || socketTask.readyState !== socketTask.OPEN) {
-      reject('sendSocketMessage:fail WebSocket is not connected')
+      reject('WebSocket is not connected')
       return
     }
-    socketTask.send({ data: args.data })
+    socketTask.send({ data: args.data }, false)
     resolve()
   },
   SendSocketMessageProtocol
@@ -237,15 +237,14 @@ export const sendSocketMessage = defineAsyncApi<API_TYPE_SEND_SOCKET_MESSAGE>(
 
 export const closeSocket = defineAsyncApi<API_TYPE_CLOSE_SOCKET>(
   API_CLOSE_SOCKET,
-  (args, { resolve, reject }) => {
+  (args: AsyncApiOptions<API_TYPE_CLOSE_SOCKET>, { resolve, reject }) => {
     const socketTask = socketTasks[0]
     if (!socketTask) {
-      reject('closeSocket:fail WebSocket is not connected')
+      reject('WebSocket is not connected')
       return
     }
     socketTask.readyState = socketTask.CLOSING
-    const { code, reason } = args
-    socketTask.close({ code, reason })
+    socketTask.close(args, false)
     resolve()
   },
   CloseSocketProtocol
