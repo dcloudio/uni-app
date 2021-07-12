@@ -41,7 +41,7 @@ const unipay = require('@dcloudio/unipay')
 
 - 插件市场导入的用法请参考[云函数公用模块](https://uniapp.dcloud.net.cn/uniCloud/cf-common)
 
-## 初始化
+## 初始化@init
 
 进行初始化操作返回 unipay 实例
 
@@ -49,16 +49,17 @@ const unipay = require('@dcloudio/unipay')
 
 **入参说明**
 
-|   参数名   |  类型   |  必填  |                        默认值                        |                  说明                  |
-| :--------: | :-----: | :----: | :--------------------------------------------------: | :------------------------------------: |
-|   appId    | String  |   是   |                          -                           |     当前应用在对应支付平台的 appId     |
-|   mchId    | String  |   是   |                          -                           |                 商户号                 |
-|    key     | String  |   是   |                          -                           |            支付商户 key （API密钥）           |
-|    pfx     | String  | Buffer |                   使用退款功能必填                   |       微信支付商户 API 证书，主要用于退款 |
-|  timeout   | Number  |   否   |                         5000                         |        请求超时时间，单位：毫秒        |
-|  signType  | String  |   否   |                         MD5                          |                签名类型                |
-|  sandbox   | Boolean |   否   |                        false                         |            是否启用沙箱环境            |
-| clientType | String  |   否   | 默认自动获取客户端类型，同 `context` 内的 `PLATFORM` | 客户端类型，主要用于返回客户端支付参数 |
+|   参数名	|  类型		|  必填	|                        默认值												|                  说明											|
+| :--------:| :-----:	| :----:| :--------------------------------------------------:| :------------------------------------:		|
+|   appId		| String	|   是	|                          -													|     当前应用在对应支付平台的 appId				|
+|   mchId		| String	|   是	|                          -													|                 商户号										|
+|   subMchId| String	|   否	|                          -													|                 子商户号（仅微信支持）									|
+|    key		| String	|   是	|                          -													|            支付商户 key （API密钥）				|
+|    pfx		| String	| Buffer|                   使用退款功能必填									|       微信支付商户 API 证书，主要用于退款	|
+|  timeout	| Number	|   否	|                         5000												|        请求超时时间，单位：毫秒						|
+|  signType	| String	|   否	|                         MD5													|                签名类型										|
+|  sandbox	| Boolean	|   否	|                        false												|            是否启用沙箱环境								|
+| clientType| String	|   否	| 默认自动获取客户端类型，同 `context` 内的 `PLATFORM`| 客户端类型，主要用于返回客户端支付参数		|
 
 ```js
 const unipayIns = unipay.initWeixin({
