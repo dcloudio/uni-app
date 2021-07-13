@@ -1,10 +1,12 @@
 import {
+  ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_CREATE,
   ACTION_TYPE_INSERT,
   ACTION_TYPE_PAGE_CREATE,
   ACTION_TYPE_PAGE_CREATED,
   ACTION_TYPE_REMOVE,
   ACTION_TYPE_REMOVE_ATTRIBUTE,
+  ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
   PageAction,
@@ -29,6 +31,10 @@ export function onVdSync(actions: PageAction[]) {
         return $(action[1]).setAttr(action[2], action[3])
       case ACTION_TYPE_REMOVE_ATTRIBUTE:
         return $(action[1]).removeAttr(action[2])
+      case ACTION_TYPE_ADD_EVENT:
+        return $(action[1]).addEvent(action[2], action[3])
+      case ACTION_TYPE_REMOVE_EVENT:
+        return $(action[1]).removeEvent(action[2])
       case ACTION_TYPE_SET_TEXT:
         return $(action[1]).setText(action[2])
     }

@@ -1,6 +1,11 @@
 import { hasOwn } from '@vue/shared'
 import { Component, ComponentInternalInstance, createApp, reactive } from 'vue'
-import { decodeAttr, parseEventName, UniNodeJSON } from '@dcloudio/uni-shared'
+import {
+  decodeAttr,
+  decodeEvent,
+  parseEventName,
+  UniNodeJSON,
+} from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
@@ -33,27 +38,34 @@ export class UniComponent extends UniNode {
     }
   }
   init(nodeJson: Partial<UniNodeJSON>) {
-    const { a } = nodeJson
+    const { a, e } = nodeJson
     if (a) {
       Object.keys(a).forEach((n) => {
         this.setAttr(n, a[n])
+      })
+    }
+    if (e) {
+      Object.keys(e).forEach((n) => {
+        this.addEvent(n, e[n])
       })
     }
   }
   setText(text: string) {
     ;(this.$holder || this.$).textContent = text
   }
+  addEvent(name: string, value: number) {
+    const decoded = decodeEvent(name)
+    this.$props[decoded] = createInvoker(
+      this.id,
+      value,
+      parseEventName(decoded)[1]
+    )
+  }
+  removeEvent(name: string) {
+    this.$props[decodeEvent(name)] = null
+  }
   setAttr(name: string, value: unknown) {
-    const decoded = decodeAttr(name)
-    if (name.indexOf('.e') === 0) {
-      this.$props[decoded] = createInvoker(
-        this.id,
-        value as number,
-        parseEventName(decoded)[1]
-      )
-    } else {
-      this.$props[decoded] = value
-    }
+    this.$props[decodeAttr(name)] = value
   }
   removeAttr(name: string) {
     this.$props[decodeAttr(name)] = null

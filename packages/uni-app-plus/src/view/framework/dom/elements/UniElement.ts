@@ -31,6 +31,9 @@ export class UniElement<T extends object> extends UniNode {
     if (hasOwn(nodeJson, 'a')) {
       this.setAttrs(nodeJson.a!)
     }
+    if (hasOwn(nodeJson, 'e')) {
+      this.addEvents(nodeJson.e!)
+    }
     super.init(nodeJson)
     watch(
       this.$props,
@@ -46,13 +49,22 @@ export class UniElement<T extends object> extends UniNode {
       this.setAttr(name, attrs[name])
     })
   }
+  addEvents(events: Record<string, number>) {
+    Object.keys(events).forEach((name) => {
+      this.addEvent(name, events[name])
+    })
+  }
+  addEvent(name: string, value: number) {
+    patchEvent(this.$, name, value)
+  }
+  removeEvent(name: string) {
+    patchEvent(this.$, name, -1)
+  }
   setAttr(name: string, value: unknown) {
     if (name === '.c') {
       patchClass(this.$, value as string)
     } else if (name === '.s') {
       patchStyle(this.$, value as string | Record<string, any>)
-    } else if (name.indexOf('.e') === 0) {
-      patchEvent(this.$, name, value as number)
     } else {
       this.setAttribute(decodeAttr(name), value as string)
     }
@@ -62,8 +74,6 @@ export class UniElement<T extends object> extends UniNode {
       patchClass(this.$, '')
     } else if (name === '.s') {
       patchStyle(this.$, '')
-    } else if (name.indexOf('.e') === 0) {
-      patchEvent(this.$, name, -1)
     } else {
       this.removeAttribute(decodeAttr(name))
     }

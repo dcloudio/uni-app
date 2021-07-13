@@ -40,25 +40,26 @@ export function encodeModifier(modifiers: string[]) {
   return flag
 }
 
-const EVENT_MAP = {
-  onClick: '.e0',
-  onChange: '.e1',
-  onInput: '.e2',
-  onLoad: '.e3',
-  onError: '.e4',
-  onTouchstart: '.e5',
-  onTouchmove: '.e6',
-  onTouchcancel: '.e7',
-  onTouchend: '.e8',
-  onLongpress: '.e9',
-  onTransitionend: '.ea',
-  onAnimationstart: '.eb',
-  onAnimationiteration: '.ec',
-  onAnimationend: '.ed',
-  onTouchforcechange: '.ee',
+const BASE_EVENT_MAP = {
+  onClick: 'a',
+  onChange: 'b',
+  onInput: 'c',
+  onLoad: 'd',
+  onError: 'e',
+  onScroll: 'f',
+  onTouchstart: 'g',
+  onTouchmove: 'h',
+  onTouchcancel: 'i',
+  onTouchend: 'j',
+  onLongpress: 'k',
+  onTransitionend: 'l',
+  onAnimationstart: 'm',
+  onAnimationiteration: 'n',
+  onAnimationend: 'o',
+  onTouchforcechange: 'p',
 }
 
-const OPTIONS = [
+const EVENT_OPTIONS = [
   'Capture',
   'CaptureOnce',
   'CapturePassive',
@@ -68,7 +69,23 @@ const OPTIONS = [
   'Passive',
 ]
 
-const BASE_ATTR_MAP = {
+export const EVENT_MAP = /*#__PURE__*/ (() => {
+  return Object.keys(BASE_EVENT_MAP).reduce((res, name) => {
+    const value = BASE_EVENT_MAP[name as keyof typeof BASE_EVENT_MAP]
+    res[name] = value
+    EVENT_OPTIONS.forEach((v, i) => {
+      res[name + v] = value + i
+    })
+    return res
+  }, Object.create(null))
+})()
+
+export function encodeEvent(name: string) {
+  return EVENT_MAP[name as keyof typeof EVENT_MAP] || name
+}
+
+// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
+export const ATTR_MAP = {
   class: '.c',
   style: '.s',
   'hover-class': '.h0',
@@ -76,21 +93,6 @@ const BASE_ATTR_MAP = {
   'hover-start-time': '.h2',
   'hover-stay-time': '.h3',
 }
-
-// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
-export const ATTR_MAP = /*#__PURE__*/ (() => {
-  return Object.assign(
-    BASE_ATTR_MAP,
-    Object.keys(EVENT_MAP).reduce((res, name) => {
-      const value = EVENT_MAP[name as keyof typeof EVENT_MAP]
-      res[name] = value
-      OPTIONS.forEach((v, i) => {
-        res[name + v] = value + i
-      })
-      return res
-    }, Object.create(null))
-  )
-})()
 
 export function encodeAttr(name: string) {
   return ATTR_MAP[name as keyof typeof ATTR_MAP] || name

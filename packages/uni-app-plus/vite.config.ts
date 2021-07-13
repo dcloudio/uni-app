@@ -45,6 +45,7 @@ export default defineConfig({
     __TEST__: false,
     __PLATFORM__: JSON.stringify('app'),
     __NODE_JS__: false,
+    __APP_VIEW__: true,
     __UNI_FEATURE_I18N_EN__: true,
     __UNI_FEATURE_I18N_ES__: true,
     __UNI_FEATURE_I18N_FR__: true,

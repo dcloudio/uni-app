@@ -211,24 +211,25 @@
     prevent: 1 << 1,
     self: 1 << 2
   };
-  const EVENT_MAP = {
-    onClick: ".e0",
-    onChange: ".e1",
-    onInput: ".e2",
-    onLoad: ".e3",
-    onError: ".e4",
-    onTouchstart: ".e5",
-    onTouchmove: ".e6",
-    onTouchcancel: ".e7",
-    onTouchend: ".e8",
-    onLongpress: ".e9",
-    onTransitionend: ".ea",
-    onAnimationstart: ".eb",
-    onAnimationiteration: ".ec",
-    onAnimationend: ".ed",
-    onTouchforcechange: ".ee"
+  const BASE_EVENT_MAP = {
+    onClick: "a",
+    onChange: "b",
+    onInput: "c",
+    onLoad: "d",
+    onError: "e",
+    onScroll: "f",
+    onTouchstart: "g",
+    onTouchmove: "h",
+    onTouchcancel: "i",
+    onTouchend: "j",
+    onLongpress: "k",
+    onTransitionend: "l",
+    onAnimationstart: "m",
+    onAnimationiteration: "n",
+    onAnimationend: "o",
+    onTouchforcechange: "p"
   };
-  const OPTIONS = [
+  const EVENT_OPTIONS = [
     "Capture",
     "CaptureOnce",
     "CapturePassive",
@@ -237,7 +238,17 @@
     "OncePassive",
     "Passive"
   ];
-  const BASE_ATTR_MAP = {
+  const EVENT_MAP = /* @__PURE__ */ (() => {
+    return Object.keys(BASE_EVENT_MAP).reduce((res, name) => {
+      const value = BASE_EVENT_MAP[name];
+      res[name] = value;
+      EVENT_OPTIONS.forEach((v2, i) => {
+        res[name + v2] = value + i;
+      });
+      return res;
+    }, Object.create(null));
+  })();
+  const ATTR_MAP = {
     class: ".c",
     style: ".s",
     "hover-class": ".h0",
@@ -245,21 +256,15 @@
     "hover-start-time": ".h2",
     "hover-stay-time": ".h3"
   };
-  const ATTR_MAP = /* @__PURE__ */ (() => {
-    return Object.assign(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
-      const value = EVENT_MAP[name];
-      res[name] = value;
-      OPTIONS.forEach((v2, i) => {
-        res[name + v2] = value + i;
-      });
-      return res;
-    }, Object.create(null)));
-  })();
   function decodeObjMap(objMap) {
     return Object.keys(objMap).reduce((map, name) => {
       map[objMap[name]] = name;
       return map;
     }, Object.create(null));
+  }
+  const DECODED_EVENT_MAP = /* @__PURE__ */ decodeObjMap(EVENT_MAP);
+  function decodeEvent(name) {
+    return DECODED_EVENT_MAP[name] || name;
   }
   const DECODED_ATTR_MAP = /* @__PURE__ */ decodeObjMap(ATTR_MAP);
   function decodeAttr(name) {
@@ -1584,7 +1589,11 @@
   }
   function logError(err, type, contextVNode, throwInDev = true) {
     {
-      console.error(err);
+      if (err instanceof Error) {
+        console.error(err.message + "\n" + err.stack);
+      } else {
+        console.error(err);
+      }
     }
   }
   let isFlushing = false;
@@ -5245,24 +5254,14 @@
     }
   }
   function getCurrentPage() {
-    const pages = getCurrentPages();
-    const len = pages.length;
-    if (len) {
-      return pages[len - 1];
-    }
-  }
-  function getCurrentPageMeta() {
-    const page = getCurrentPage();
-    if (page) {
-      return page.$page.meta;
+    {
+      return window.__PAGE_INFO__;
     }
   }
   function getCurrentPageId() {
-    const meta = getCurrentPageMeta();
-    if (meta) {
-      return meta.id;
+    {
+      return parseInt(window.__id__);
     }
-    return -1;
   }
   function disableScrollListener(evt) {
     evt.preventDefault();
@@ -5666,9 +5665,9 @@
       if (typeof __id__ === "string") {
         return wwwPath + getRealRoute("/" + __id__, filepath);
       } else {
-        const pages = getCurrentPages();
-        if (pages.length) {
-          return wwwPath + getRealRoute("/" + pages[pages.length - 1].route, filepath);
+        const page = getCurrentPage();
+        if (page) {
+          return wwwPath + getRealRoute("/" + page.route, filepath);
         }
       }
     }
@@ -5827,7 +5826,9 @@
   const ACTION_TYPE_REMOVE = 5;
   const ACTION_TYPE_SET_ATTRIBUTE = 6;
   const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  const ACTION_TYPE_SET_TEXT = 8;
+  const ACTION_TYPE_ADD_EVENT = 8;
+  const ACTION_TYPE_REMOVE_EVENT = 9;
+  const ACTION_TYPE_SET_TEXT = 10;
   const ACTION_TYPE_EVENT = 20;
   class UniNode {
     constructor(id2, tag, parentNodeId, element) {
@@ -6332,17 +6333,21 @@
   const uniFormKey = PolySymbol("uniForm");
   var Form = /* @__PURE__ */ defineBuiltInComponent({
     name: "Form",
+    emits: ["submit", "reset"],
     setup(_props, {
       slots,
       emit: emit2
     }) {
-      provideForm(emit2);
-      return () => createVNode("uni-form", null, {
+      const rootRef = ref(null);
+      provideForm(useCustomEvent(rootRef, emit2));
+      return () => createVNode("uni-form", {
+        "ref": rootRef
+      }, {
         default: () => [createVNode("span", null, [slots.default && slots.default()])]
-      });
+      }, 512);
     }
   });
-  function provideForm(emit2) {
+  function provideForm(trigger2) {
     const fields = [];
     provide(uniFormKey, {
       addField(field) {
@@ -6351,22 +6356,20 @@
       removeField(field) {
         fields.splice(fields.indexOf(field), 1);
       },
-      submit() {
-        emit2("submit", {
-          detail: {
-            value: fields.reduce((res, field) => {
-              if (field.submit) {
-                const [name, value] = field.submit();
-                name && (res[name] = value);
-              }
-              return res;
-            }, Object.create(null))
-          }
+      submit(evt) {
+        trigger2("submit", evt, {
+          value: fields.reduce((res, field) => {
+            if (field.submit) {
+              const [name, value] = field.submit();
+              name && (res[name] = value);
+            }
+            return res;
+          }, Object.create(null))
         });
       },
-      reset() {
+      reset(evt) {
         fields.forEach((field) => field.reset && field.reset());
-        emit2("reset");
+        trigger2("reset", evt);
       }
     });
     return fields;
@@ -6546,9 +6549,9 @@
             return;
           }
           if (formType === "submit") {
-            uniForm.submit();
+            uniForm.submit(e2);
           } else if (formType === "reset") {
-            uniForm.reset();
+            uniForm.reset(e2);
           }
           return;
         }
@@ -14031,7 +14034,7 @@
     return rawName;
   }
   function patchEvent(el, name, flag) {
-    const [type, options] = parseEventName(decodeAttr(name));
+    const [type, options] = parseEventName(decodeEvent(name));
     if (flag === -1) {
       const listener = el.__listeners[type];
       if (listener) {
@@ -14102,6 +14105,9 @@
       if (hasOwn$1(nodeJson, "a")) {
         this.setAttrs(nodeJson.a);
       }
+      if (hasOwn$1(nodeJson, "e")) {
+        this.addEvents(nodeJson.e);
+      }
       super.init(nodeJson);
       watch(this.$props, () => {
         queuePostActionJob(this._update);
@@ -14113,13 +14119,22 @@
         this.setAttr(name, attrs2[name]);
       });
     }
+    addEvents(events) {
+      Object.keys(events).forEach((name) => {
+        this.addEvent(name, events[name]);
+      });
+    }
+    addEvent(name, value) {
+      patchEvent(this.$, name, value);
+    }
+    removeEvent(name) {
+      patchEvent(this.$, name, -1);
+    }
     setAttr(name, value) {
       if (name === ".c") {
         patchClass(this.$, value);
       } else if (name === ".s") {
         patchStyle(this.$, value);
-      } else if (name.indexOf(".e") === 0) {
-        patchEvent(this.$, name, value);
       } else {
         this.setAttribute(decodeAttr(name), value);
       }
@@ -14129,8 +14144,6 @@
         patchClass(this.$, "");
       } else if (name === ".s") {
         patchStyle(this.$, "");
-      } else if (name.indexOf(".e") === 0) {
-        patchEvent(this.$, name, -1);
       } else {
         this.removeAttribute(decodeAttr(name));
       }
@@ -14164,6 +14177,7 @@
     }
     setText(text2) {
       this._text = text2;
+      this.update();
     }
     update() {
       {
@@ -14328,23 +14342,30 @@
       }
     }
     init(nodeJson) {
-      const { a: a2 } = nodeJson;
+      const { a: a2, e: e2 } = nodeJson;
       if (a2) {
         Object.keys(a2).forEach((n) => {
           this.setAttr(n, a2[n]);
+        });
+      }
+      if (e2) {
+        Object.keys(e2).forEach((n) => {
+          this.addEvent(n, e2[n]);
         });
       }
     }
     setText(text2) {
       (this.$holder || this.$).textContent = text2;
     }
+    addEvent(name, value) {
+      const decoded = decodeEvent(name);
+      this.$props[decoded] = createInvoker(this.id, value, parseEventName(decoded)[1]);
+    }
+    removeEvent(name) {
+      this.$props[decodeEvent(name)] = null;
+    }
     setAttr(name, value) {
-      const decoded = decodeAttr(name);
-      if (name.indexOf(".e") === 0) {
-        this.$props[decoded] = createInvoker(this.id, value, parseEventName(decoded)[1]);
-      } else {
-        this.$props[decoded] = value;
-      }
+      this.$props[decodeAttr(name)] = value;
     }
     removeAttr(name) {
       this.$props[decodeAttr(name)] = null;
@@ -15271,6 +15292,7 @@
     windowTop,
     windowBottom
   }) {
+    initPageInfo(route);
     initSystemInfo(platform, pixelRatio2, windowWidth);
     initPageElement();
     if (css) {
@@ -15285,6 +15307,11 @@
     } else if (onPageScroll || onPageReachBottom) {
       initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance);
     }
+  }
+  function initPageInfo(route) {
+    window.__PAGE_INFO__ = {
+      route
+    };
   }
   function initSystemInfo(platform, pixelRatio2, windowWidth) {
     window.__SYSTEM_INFO__ = {
@@ -15346,6 +15373,10 @@
           return $(action[1]).setAttr(action[2], action[3]);
         case ACTION_TYPE_REMOVE_ATTRIBUTE:
           return $(action[1]).removeAttr(action[2]);
+        case ACTION_TYPE_ADD_EVENT:
+          return $(action[1]).addEvent(action[2], action[3]);
+        case ACTION_TYPE_REMOVE_EVENT:
+          return $(action[1]).removeEvent(action[2]);
         case ACTION_TYPE_SET_TEXT:
           return $(action[1]).setText(action[2]);
       }

@@ -836,17 +836,21 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 var index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
+  emits: ["submit", "reset"],
   setup(_props, {
     slots,
     emit: emit2
   }) {
-    provideForm(emit2);
-    return () => vue.createVNode("uni-form", null, {
+    const rootRef = vue.ref(null);
+    provideForm(useCustomEvent(rootRef, emit2));
+    return () => vue.createVNode("uni-form", {
+      "ref": rootRef
+    }, {
       default: () => [vue.createVNode("span", null, [slots.default && slots.default()])]
-    });
+    }, 512);
   }
 });
-function provideForm(emit2) {
+function provideForm(trigger) {
   const fields2 = [];
   vue.provide(uniFormKey, {
     addField(field) {
@@ -855,22 +859,20 @@ function provideForm(emit2) {
     removeField(field) {
       fields2.splice(fields2.indexOf(field), 1);
     },
-    submit() {
-      emit2("submit", {
-        detail: {
-          value: fields2.reduce((res, field) => {
-            if (field.submit) {
-              const [name, value] = field.submit();
-              name && (res[name] = value);
-            }
-            return res;
-          }, Object.create(null))
-        }
+    submit(evt) {
+      trigger("submit", evt, {
+        value: fields2.reduce((res, field) => {
+          if (field.submit) {
+            const [name, value] = field.submit();
+            name && (res[name] = value);
+          }
+          return res;
+        }, Object.create(null))
       });
     },
-    reset() {
+    reset(evt) {
       fields2.forEach((field) => field.reset && field.reset());
-      emit2("reset");
+      trigger("reset", evt);
     }
   });
   return fields2;
@@ -991,9 +993,9 @@ var index$w = /* @__PURE__ */ defineBuiltInComponent({
           return;
         }
         if (formType === "submit") {
-          uniForm.submit();
+          uniForm.submit(e2);
         } else if (formType === "reset") {
-          uniForm.reset();
+          uniForm.reset(e2);
         }
         return;
       }

@@ -3,6 +3,7 @@ import debug from 'debug'
 import slash from 'slash'
 import { Plugin } from 'vite'
 import { resolveMainPathOnce } from '../../utils'
+import { EXTNAME_VUE_RE } from '../../constants'
 
 const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
 const cssLangRE = new RegExp(cssLangs)
@@ -22,7 +23,7 @@ function normalizeCssChunkFilename(id: string) {
   return slash(
     path.relative(
       process.env.UNI_INPUT_DIR,
-      id.replace('.vue', '.css').split('?')[0]
+      id.split('?')[0].replace(EXTNAME_VUE_RE, '.css')
     )
   )
 }

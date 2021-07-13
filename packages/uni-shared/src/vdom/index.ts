@@ -17,6 +17,6 @@ export {
   IUniPageNode,
 } from './Node'
 export { UniTextNode } from './Text'
-export { encodeAttr, encodeTag } from './encode'
-export { decodeAttr, decodeTag } from './decode'
+export { encodeAttr, encodeEvent, encodeTag } from './encode'
+export { decodeAttr, decodeEvent, decodeTag } from './decode'
 export { EventModifierFlags } from './encode'

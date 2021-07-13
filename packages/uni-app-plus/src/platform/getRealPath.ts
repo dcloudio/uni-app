@@ -1,4 +1,4 @@
-import { getRealRoute } from '@dcloudio/uni-core'
+import { getCurrentPage, getRealRoute } from '@dcloudio/uni-core'
 import { DATA_RE, SCHEME_RE, cacheStringFunction } from '@dcloudio/uni-shared'
 export function getRealPath(filepath: string) {
   // 无协议的情况补全 https
@@ -34,11 +34,9 @@ export function getRealPath(filepath: string) {
       // @ts-expect-error app-view
       return wwwPath + getRealRoute('/' + __id__, filepath)
     } else {
-      const pages = getCurrentPages()
-      if (pages.length) {
-        return (
-          wwwPath + getRealRoute('/' + pages[pages.length - 1].route, filepath)
-        )
+      const page = getCurrentPage()
+      if (page) {
+        return wwwPath + getRealRoute('/' + page.route, filepath)
       }
     }
   }

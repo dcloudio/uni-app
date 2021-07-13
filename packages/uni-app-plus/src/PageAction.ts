@@ -9,7 +9,9 @@ export const ACTION_TYPE_INSERT = 4
 export const ACTION_TYPE_REMOVE = 5
 export const ACTION_TYPE_SET_ATTRIBUTE = 6
 export const ACTION_TYPE_REMOVE_ATTRIBUTE = 7
-export const ACTION_TYPE_SET_TEXT = 8
+export const ACTION_TYPE_ADD_EVENT = 8
+export const ACTION_TYPE_REMOVE_EVENT = 9
+export const ACTION_TYPE_SET_TEXT = 10
 
 export const ACTION_TYPE_EVENT = 20
 
@@ -58,6 +60,16 @@ export type RemoveAction = [
   ...NodeAction<Parameters<UniElement<any>['remove']>>
 ]
 
+export type AddEventAction = [
+  typeof ACTION_TYPE_ADD_EVENT,
+  ...NodeAction<Parameters<UniElement<any>['addEvent']>>
+]
+
+export type RemoveEventAction = [
+  typeof ACTION_TYPE_REMOVE_EVENT,
+  ...NodeAction<Parameters<UniElement<any>['removeEvent']>>
+]
+
 export type SetAttributeAction = [
   typeof ACTION_TYPE_SET_ATTRIBUTE,
   ...NodeAction<Parameters<UniElement<any>['setAttr']>>
@@ -77,6 +89,8 @@ export type PageUpdateAction =
   | CreateAction
   | InsertAction
   | RemoveAction
+  | AddEventAction
+  | RemoveEventAction
   | SetAttributeAction
   | RemoveAttributeAction
   | SetTextAction

@@ -45,6 +45,8 @@ export declare function decodeAttr(name: string): any;
 
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
 
+export declare function decodeEvent(name: string): any;
+
 export declare function decodeTag(tag: string | number): string;
 
 export declare const defaultRpx2Unit: {
@@ -53,7 +55,9 @@ export declare const defaultRpx2Unit: {
     unitPrecision: number;
 };
 
-export declare function encodeAttr(name: string): any;
+export declare function encodeAttr(name: string): string;
+
+export declare function encodeEvent(name: string): any;
 
 export declare function encodeTag(tag: string): string | number;
 
@@ -103,6 +107,8 @@ export declare interface IUniPageNode {
     onCreate: (thisNode: UniNode, nodeName: string | number) => UniNode;
     onInsertBefore: (thisNode: UniNode, newChild: UniNode, refChild: UniNode | null) => UniNode;
     onRemoveChild: (oldChild: UniNode) => UniNode;
+    onAddEvent: (thisNode: UniNode, name: string, flag: number) => void;
+    onRemoveEvent: (thisNode: UniNode, name: string) => void;
     onSetAttribute: (thisNode: UniNode, qualifiedName: string, value: unknown) => void;
     onRemoveAttribute: (thisNode: UniNode, qualifiedName: string) => void;
     onTextContent: (thisNode: UniNode, text: string) => void;
@@ -272,7 +278,7 @@ declare interface UniEventOptions {
 }
 
 declare class UniEventTarget {
-    private _listeners;
+    listeners: Record<string, UniEventListener[]>;
     dispatchEvent(evt: UniEvent): boolean;
     addEventListener(type: string, listener: UniEventListener, options?: AddEventListenerOptions): void;
     removeEventListener(type: string, callback: UniEventListener, options?: AddEventListenerOptions): void;
@@ -320,6 +326,10 @@ export declare interface UniNodeJSON {
      * attributes
      */
     a: Record<string, unknown>;
+    /**
+     * listeners
+     */
+    e: Record<string, number>;
     /**
      * style
      */

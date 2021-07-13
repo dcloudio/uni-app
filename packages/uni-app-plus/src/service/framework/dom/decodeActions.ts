@@ -17,6 +17,10 @@ import {
   PageCreatedAction,
   ACTION_TYPE_PAGE_CREATE,
   ACTION_TYPE_PAGE_CREATED,
+  AddEventAction,
+  RemoveEventAction,
+  ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_REMOVE_EVENT,
 } from '../../../PageAction'
 
 function decodePageCreateAction([, pageCreateData]: PageCreateAction) {
@@ -43,6 +47,14 @@ function decodeInsertAction([, ...action]: InsertAction) {
 
 function decodeRemoveAction([, ...action]: RemoveAction) {
   return ['remove', ...action]
+}
+
+function decodeAddEventAction([, ...action]: AddEventAction) {
+  return ['addEvent', ...action]
+}
+
+function decodeRemoveEventAction([, ...action]: RemoveEventAction) {
+  return ['removeEvent', ...action]
 }
 
 function decodeSetAttributeAction([, ...action]: SetAttributeAction) {
@@ -74,6 +86,10 @@ export function decodeActions(actions: PageAction[]) {
         return decodeSetAttributeAction(action)
       case ACTION_TYPE_REMOVE_ATTRIBUTE:
         return decodeRemoveAttributeAction(action)
+      case ACTION_TYPE_ADD_EVENT:
+        return decodeAddEventAction(action)
+      case ACTION_TYPE_REMOVE_EVENT:
+        return decodeRemoveEventAction(action)
       case ACTION_TYPE_SET_TEXT:
         return decodeSetTextAction(action)
     }

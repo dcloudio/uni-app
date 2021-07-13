@@ -194,13 +194,13 @@ export default function vueFactory(exports) {
     function UniEventTarget() {
       _classCallCheck(this, UniEventTarget);
 
-      this._listeners = {};
+      this.listeners = Object.create(null);
     }
 
     _createClass(UniEventTarget, [{
       key: "dispatchEvent",
       value: function dispatchEvent(evt) {
-        var listeners = this._listeners[evt.type];
+        var listeners = this.listeners[evt.type];
 
         if (!listeners) {
           if (process.env.NODE_ENV !== 'production') {
@@ -228,13 +228,13 @@ export default function vueFactory(exports) {
       key: "addEventListener",
       value: function addEventListener(type, listener, options) {
         type = normalizeEventType(type, options);
-        (this._listeners[type] || (this._listeners[type] = [])).push(listener);
+        (this.listeners[type] || (this.listeners[type] = [])).push(listener);
       }
     }, {
       key: "removeEventListener",
       value: function removeEventListener(type, callback, options) {
         type = normalizeEventType(type, options);
-        var listeners = this._listeners[type];
+        var listeners = this.listeners[type];
 
         if (!listeners) {
           return;
@@ -391,43 +391,50 @@ export default function vueFactory(exports) {
     return flag;
   }
 
-  var EVENT_MAP = {
-    onClick: '.e0',
-    onChange: '.e1',
-    onInput: '.e2',
-    onLoad: '.e3',
-    onError: '.e4',
-    onTouchstart: '.e5',
-    onTouchmove: '.e6',
-    onTouchcancel: '.e7',
-    onTouchend: '.e8',
-    onLongpress: '.e9',
-    onTransitionend: '.ea',
-    onAnimationstart: '.eb',
-    onAnimationiteration: '.ec',
-    onAnimationend: '.ed',
-    onTouchforcechange: '.ee'
+  var BASE_EVENT_MAP = {
+    onClick: 'a',
+    onChange: 'b',
+    onInput: 'c',
+    onLoad: 'd',
+    onError: 'e',
+    onScroll: 'f',
+    onTouchstart: 'g',
+    onTouchmove: 'h',
+    onTouchcancel: 'i',
+    onTouchend: 'j',
+    onLongpress: 'k',
+    onTransitionend: 'l',
+    onAnimationstart: 'm',
+    onAnimationiteration: 'n',
+    onAnimationend: 'o',
+    onTouchforcechange: 'p'
   };
-  var OPTIONS = ['Capture', 'CaptureOnce', 'CapturePassive', 'CaptureOncePassive', 'Once', 'OncePassive', 'Passive'];
-  var BASE_ATTR_MAP = {
+  var EVENT_OPTIONS = ['Capture', 'CaptureOnce', 'CapturePassive', 'CaptureOncePassive', 'Once', 'OncePassive', 'Passive'];
+
+  var EVENT_MAP = /*#__PURE__*/function () {
+    return Object.keys(BASE_EVENT_MAP).reduce(function (res, name) {
+      var value = BASE_EVENT_MAP[name];
+      res[name] = value;
+      EVENT_OPTIONS.forEach(function (v, i) {
+        res[name + v] = value + i;
+      });
+      return res;
+    }, Object.create(null));
+  }();
+
+  function encodeEvent(name) {
+    return EVENT_MAP[name] || name;
+  } // 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
+
+
+  var ATTR_MAP = {
     class: '.c',
     style: '.s',
     'hover-class': '.h0',
     'hover-stop-propagation': '.h1',
     'hover-start-time': '.h2',
     'hover-stay-time': '.h3'
-  }; // 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
-
-  var ATTR_MAP = /*#__PURE__*/function () {
-    return Object.assign(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce(function (res, name) {
-      var value = EVENT_MAP[name];
-      res[name] = value;
-      OPTIONS.forEach(function (v, i) {
-        res[name + v] = value + i;
-      });
-      return res;
-    }, Object.create(null)));
-  }();
+  };
 
   function encodeAttr(name) {
     return ATTR_MAP[name] || name;
@@ -698,14 +705,18 @@ export default function vueFactory(exports) {
       value: function addEventListener(type, listener, options) {
         _get(_getPrototypeOf(UniBaseNode.prototype), "addEventListener", this).call(this, type, listener, options);
 
-        this.setAttribute(normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
+        if (this.pageNode && !this.pageNode.isUnmounted) {
+          this.pageNode.onAddEvent(this, encodeEvent(normalizeEventType(type, options)), encodeModifier(listener.modifiers || []));
+        }
       }
     }, {
       key: "removeEventListener",
       value: function removeEventListener(type, callback, options) {
         _get(_getPrototypeOf(UniBaseNode.prototype), "removeEventListener", this).call(this, type, callback, options);
 
-        this.removeAttribute(normalizeEventType(type, options));
+        if (this.pageNode && !this.pageNode.isUnmounted) {
+          this.pageNode.onRemoveEvent(this, encodeEvent(normalizeEventType(type, options)));
+        }
       }
     }, {
       key: "getAttribute",
@@ -737,11 +748,27 @@ export default function vueFactory(exports) {
       value: function toJSON() {
         var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var attributes = this.attributes,
+            listeners = this.listeners,
             style = this.style;
         var res = {};
 
         if (Object.keys(attributes).length) {
           res.a = attributes;
+        }
+
+        var events = Object.keys(listeners);
+
+        if (events.length) {
+          var e = {};
+          events.forEach(function (name) {
+            var handlers = listeners[name];
+
+            if (handlers.length) {
+              // 可能存在多个 handler 且不同 modifiers 吗？
+              e[encodeEvent(name)] = encodeModifier(handlers[0].modifiers || []);
+            }
+          });
+          res.e = e;
         }
 
         var cssStyle = style.toJSON();

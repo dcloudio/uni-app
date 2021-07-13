@@ -14,6 +14,7 @@
     },
     "replacements": {
       "__PLATFORM__": "'app'",
+      "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "__UNI_FEATURE_WX__": "true",

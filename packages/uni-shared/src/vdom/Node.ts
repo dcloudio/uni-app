@@ -8,7 +8,7 @@ import {
   UniCSSStyleDeclaration,
   UniCSSStyleDeclarationJSON,
 } from './Style'
-import { encodeAttr, encodeModifier, encodeTag } from './encode'
+import { encodeAttr, encodeEvent, encodeModifier, encodeTag } from './encode'
 
 export const NODE_TYPE_PAGE = 0
 export const NODE_TYPE_ELEMENT = 1
@@ -56,6 +56,8 @@ export interface IUniPageNode {
     refChild: UniNode | null
   ) => UniNode
   onRemoveChild: (oldChild: UniNode) => UniNode
+  onAddEvent: (thisNode: UniNode, name: string, flag: number) => void
+  onRemoveEvent: (thisNode: UniNode, name: string) => void
   onSetAttribute: (
     thisNode: UniNode,
     qualifiedName: string,
@@ -213,6 +215,10 @@ export interface UniNodeJSON {
    */
   a: Record<string, unknown>
   /**
+   * listeners
+   */
+  e: Record<string, number>
+  /**
    * style
    */
   s?: UniCSSStyleDeclarationJSON
@@ -259,10 +265,13 @@ export class UniBaseNode extends UniNode {
     options?: AddEventListenerOptions
   ) {
     super.addEventListener(type, listener, options)
-    this.setAttribute(
-      normalizeEventType(type, options),
-      encodeModifier(listener.modifiers || [])
-    )
+    if (this.pageNode && !this.pageNode.isUnmounted) {
+      this.pageNode.onAddEvent(
+        this,
+        encodeEvent(normalizeEventType(type, options)),
+        encodeModifier(listener.modifiers || [])
+      )
+    }
   }
 
   removeEventListener(
@@ -271,7 +280,12 @@ export class UniBaseNode extends UniNode {
     options?: EventListenerOptions
   ) {
     super.removeEventListener(type, callback, options)
-    this.removeAttribute(normalizeEventType(type, options))
+    if (this.pageNode && !this.pageNode.isUnmounted) {
+      this.pageNode.onRemoveEvent(
+        this,
+        encodeEvent(normalizeEventType(type, options))
+      )
+    }
   }
 
   getAttribute(qualifiedName: string) {
@@ -295,10 +309,22 @@ export class UniBaseNode extends UniNode {
   }
 
   toJSON(opts: { attr?: boolean; children?: boolean } = {}) {
-    const { attributes, style } = this
+    const { attributes, listeners, style } = this
     const res: Partial<UniNodeJSON> = {}
     if (Object.keys(attributes).length) {
       res.a = attributes
+    }
+    const events = Object.keys(listeners)
+    if (events.length) {
+      const e: Record<string, number> = {}
+      events.forEach((name) => {
+        const handlers = listeners[name]
+        if (handlers.length) {
+          // 可能存在多个 handler 且不同 modifiers 吗？
+          e[encodeEvent(name)] = encodeModifier(handlers[0].modifiers || [])
+        }
+      })
+      res.e = e
     }
     const cssStyle = style.toJSON()
     if (cssStyle) {

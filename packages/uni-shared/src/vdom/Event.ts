@@ -74,10 +74,10 @@ function createUniEvent(evt: Record<string, any>) {
 }
 
 export class UniEventTarget {
-  private _listeners: Record<string, UniEventListener[]> = {}
+  listeners: Record<string, UniEventListener[]> = Object.create(null)
 
   dispatchEvent(evt: UniEvent): boolean {
-    const listeners = this._listeners[evt.type]
+    const listeners = this.listeners[evt.type]
     if (!listeners) {
       if (__DEV__) {
         console.error(
@@ -107,7 +107,7 @@ export class UniEventTarget {
     options?: AddEventListenerOptions
   ): void {
     type = normalizeEventType(type, options)
-    ;(this._listeners[type] || (this._listeners[type] = [])).push(listener)
+    ;(this.listeners[type] || (this.listeners[type] = [])).push(listener)
   }
 
   removeEventListener(
@@ -116,7 +116,7 @@ export class UniEventTarget {
     options?: AddEventListenerOptions
   ): void {
     type = normalizeEventType(type, options)
-    const listeners = this._listeners[type]
+    const listeners = this.listeners[type]
     if (!listeners) {
       return
     }

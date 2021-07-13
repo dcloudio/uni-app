@@ -72,9 +72,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           return
         }
         if (formType === 'submit') {
-          uniForm.submit()
+          uniForm.submit(e)
         } else if (formType === 'reset') {
-          uniForm.reset()
+          uniForm.reset(e)
         }
         return
       }

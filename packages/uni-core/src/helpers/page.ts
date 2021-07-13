@@ -32,6 +32,9 @@ export function getPageVmById(id: number) {
 }
 
 export function getCurrentPage() {
+  if (__APP_VIEW__) {
+    return (window as any).__PAGE_INFO__ as Page.PageInstance
+  }
   const pages = getCurrentPages()
   const len = pages.length
   if (len) {
@@ -47,6 +50,10 @@ export function getCurrentPageMeta() {
 }
 
 export function getCurrentPageId() {
+  if (__APP_VIEW__) {
+    // view 层
+    return parseInt((window as any).__id__)
+  }
   const meta = getCurrentPageMeta()
   if (meta) {
     return meta.id!

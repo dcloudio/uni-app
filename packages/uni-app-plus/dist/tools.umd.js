@@ -67,7 +67,9 @@
     const ACTION_TYPE_REMOVE = 5;
     const ACTION_TYPE_SET_ATTRIBUTE = 6;
     const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-    const ACTION_TYPE_SET_TEXT = 8;
+    const ACTION_TYPE_ADD_EVENT = 8;
+    const ACTION_TYPE_REMOVE_EVENT = 9;
+    const ACTION_TYPE_SET_TEXT = 10;
 
     function decodePageCreateAction([, pageCreateData]) {
         return ['pageCreate', pageCreateData];
@@ -83,6 +85,12 @@
     }
     function decodeRemoveAction([, ...action]) {
         return ['remove', ...action];
+    }
+    function decodeAddEventAction([, ...action]) {
+        return ['addEvent', ...action];
+    }
+    function decodeRemoveEventAction([, ...action]) {
+        return ['removeEvent', ...action];
     }
     function decodeSetAttributeAction([, ...action]) {
         return ['setAttr', ...action];
@@ -110,6 +118,10 @@
                     return decodeSetAttributeAction(action);
                 case ACTION_TYPE_REMOVE_ATTRIBUTE:
                     return decodeRemoveAttributeAction(action);
+                case ACTION_TYPE_ADD_EVENT:
+                    return decodeAddEventAction(action);
+                case ACTION_TYPE_REMOVE_EVENT:
+                    return decodeRemoveEventAction(action);
                 case ACTION_TYPE_SET_TEXT:
                     return decodeSetTextAction(action);
             }

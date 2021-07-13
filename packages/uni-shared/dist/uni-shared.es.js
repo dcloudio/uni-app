@@ -369,10 +369,10 @@ function createUniEvent(evt) {
 }
 class UniEventTarget {
     constructor() {
-        this._listeners = {};
+        this.listeners = Object.create(null);
     }
     dispatchEvent(evt) {
-        const listeners = this._listeners[evt.type];
+        const listeners = this.listeners[evt.type];
         if (!listeners) {
             if ((process.env.NODE_ENV !== 'production')) {
                 console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
@@ -392,11 +392,11 @@ class UniEventTarget {
     }
     addEventListener(type, listener, options) {
         type = normalizeEventType(type, options);
-        (this._listeners[type] || (this._listeners[type] = [])).push(listener);
+        (this.listeners[type] || (this.listeners[type] = [])).push(listener);
     }
     removeEventListener(type, callback, options) {
         type = normalizeEventType(type, options);
-        const listeners = this._listeners[type];
+        const listeners = this.listeners[type];
         if (!listeners) {
             return;
         }
@@ -516,24 +516,25 @@ function encodeModifier(modifiers) {
     }
     return flag;
 }
-const EVENT_MAP = {
-    onClick: '.e0',
-    onChange: '.e1',
-    onInput: '.e2',
-    onLoad: '.e3',
-    onError: '.e4',
-    onTouchstart: '.e5',
-    onTouchmove: '.e6',
-    onTouchcancel: '.e7',
-    onTouchend: '.e8',
-    onLongpress: '.e9',
-    onTransitionend: '.ea',
-    onAnimationstart: '.eb',
-    onAnimationiteration: '.ec',
-    onAnimationend: '.ed',
-    onTouchforcechange: '.ee',
+const BASE_EVENT_MAP = {
+    onClick: 'a',
+    onChange: 'b',
+    onInput: 'c',
+    onLoad: 'd',
+    onError: 'e',
+    onScroll: 'f',
+    onTouchstart: 'g',
+    onTouchmove: 'h',
+    onTouchcancel: 'i',
+    onTouchend: 'j',
+    onLongpress: 'k',
+    onTransitionend: 'l',
+    onAnimationstart: 'm',
+    onAnimationiteration: 'n',
+    onAnimationend: 'o',
+    onTouchforcechange: 'p',
 };
-const OPTIONS = [
+const EVENT_OPTIONS = [
     'Capture',
     'CaptureOnce',
     'CapturePassive',
@@ -542,7 +543,21 @@ const OPTIONS = [
     'OncePassive',
     'Passive',
 ];
-const BASE_ATTR_MAP = {
+const EVENT_MAP = /*#__PURE__*/ (() => {
+    return Object.keys(BASE_EVENT_MAP).reduce((res, name) => {
+        const value = BASE_EVENT_MAP[name];
+        res[name] = value;
+        EVENT_OPTIONS.forEach((v, i) => {
+            res[name + v] = value + i;
+        });
+        return res;
+    }, Object.create(null));
+})();
+function encodeEvent(name) {
+    return EVENT_MAP[name] || name;
+}
+// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
+const ATTR_MAP = {
     class: '.c',
     style: '.s',
     'hover-class': '.h0',
@@ -550,17 +565,6 @@ const BASE_ATTR_MAP = {
     'hover-start-time': '.h2',
     'hover-stay-time': '.h3',
 };
-// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
-const ATTR_MAP = /*#__PURE__*/ (() => {
-    return Object.assign(BASE_ATTR_MAP, Object.keys(EVENT_MAP).reduce((res, name) => {
-        const value = EVENT_MAP[name];
-        res[name] = value;
-        OPTIONS.forEach((v, i) => {
-            res[name + v] = value + i;
-        });
-        return res;
-    }, Object.create(null)));
-})();
 function encodeAttr(name) {
     return ATTR_MAP[name] || name;
 }
@@ -757,11 +761,15 @@ class UniBaseNode extends UniNode {
     }
     addEventListener(type, listener, options) {
         super.addEventListener(type, listener, options);
-        this.setAttribute(normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
+        if (this.pageNode && !this.pageNode.isUnmounted) {
+            this.pageNode.onAddEvent(this, encodeEvent(normalizeEventType(type, options)), encodeModifier(listener.modifiers || []));
+        }
     }
     removeEventListener(type, callback, options) {
         super.removeEventListener(type, callback, options);
-        this.removeAttribute(normalizeEventType(type, options));
+        if (this.pageNode && !this.pageNode.isUnmounted) {
+            this.pageNode.onRemoveEvent(this, encodeEvent(normalizeEventType(type, options)));
+        }
     }
     getAttribute(qualifiedName) {
         return this.attributes[encodeAttr(qualifiedName)];
@@ -781,10 +789,22 @@ class UniBaseNode extends UniNode {
         }
     }
     toJSON(opts = {}) {
-        const { attributes, style } = this;
+        const { attributes, listeners, style } = this;
         const res = {};
         if (Object.keys(attributes).length) {
             res.a = attributes;
+        }
+        const events = Object.keys(listeners);
+        if (events.length) {
+            const e = {};
+            events.forEach((name) => {
+                const handlers = listeners[name];
+                if (handlers.length) {
+                    // 可能存在多个 handler 且不同 modifiers 吗？
+                    e[encodeEvent(name)] = encodeModifier(handlers[0].modifiers || []);
+                }
+            });
+            res.e = e;
         }
         const cssStyle = style.toJSON();
         if (cssStyle) {
@@ -866,6 +886,10 @@ function decodeArrMap(objMap) {
         arr.push(name.toLowerCase());
         return arr;
     }, ['']);
+}
+const DECODED_EVENT_MAP = /*#__PURE__*/ decodeObjMap(EVENT_MAP);
+function decodeEvent(name) {
+    return DECODED_EVENT_MAP[name] || name;
 }
 const DECODED_ATTR_MAP = /*#__PURE__*/ decodeObjMap(ATTR_MAP);
 function decodeAttr(name) {
@@ -986,4 +1010,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeEvent, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeEvent, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

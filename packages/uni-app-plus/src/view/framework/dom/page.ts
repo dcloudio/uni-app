@@ -71,6 +71,7 @@ export function onPageCreate({
   windowTop,
   windowBottom,
 }: PageCreateData) {
+  initPageInfo(route)
   initSystemInfo(platform, pixelRatio, windowWidth)
   // 初始化页面容器元素
   initPageElement()
@@ -89,6 +90,12 @@ export function onPageCreate({
     document.addEventListener('touchmove', disableScrollListener)
   } else if (onPageScroll || onPageReachBottom) {
     initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance)
+  }
+}
+
+function initPageInfo(route: string) {
+  ;(window as any).__PAGE_INFO__ = {
+    route,
   }
 }
 

@@ -751,10 +751,10 @@ var serviceContext = (function (vue) {
   }
   class UniEventTarget {
       constructor() {
-          this._listeners = {};
+          this.listeners = Object.create(null);
       }
       dispatchEvent(evt) {
-          const listeners = this._listeners[evt.type];
+          const listeners = this.listeners[evt.type];
           if (!listeners) {
               if ((process.env.NODE_ENV !== 'production')) {
                   console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
@@ -774,11 +774,11 @@ var serviceContext = (function (vue) {
       }
       addEventListener(type, listener, options) {
           type = normalizeEventType(type, options);
-          (this._listeners[type] || (this._listeners[type] = [])).push(listener);
+          (this.listeners[type] || (this.listeners[type] = [])).push(listener);
       }
       removeEventListener(type, callback, options) {
           type = normalizeEventType(type, options);
-          const listeners = this._listeners[type];
+          const listeners = this.listeners[type];
           if (!listeners) {
               return;
           }
@@ -1845,9 +1845,9 @@ var serviceContext = (function (vue) {
               return wwwPath + getRealRoute('/' + __id__, filepath);
           }
           else {
-              const pages = getCurrentPages();
-              if (pages.length) {
-                  return (wwwPath + getRealRoute('/' + pages[pages.length - 1].route, filepath));
+              const page = getCurrentPage();
+              if (page) {
+                  return wwwPath + getRealRoute('/' + page.route, filepath);
               }
           }
       }
@@ -3909,7 +3909,7 @@ var serviceContext = (function (vue) {
           recorder = plus.audio.getRecorder();
           recorder.record({
               format,
-              samplerate: String(sampleRate),
+              samplerate: sampleRate ? String(sampleRate) : '',
               filename: TEMP_PATH + '/recorder/',
           }, (res) => publishRecorderStateChange('stop', {
               tempFilePath: res,
@@ -6377,7 +6377,9 @@ var serviceContext = (function (vue) {
   const ACTION_TYPE_REMOVE = 5;
   const ACTION_TYPE_SET_ATTRIBUTE = 6;
   const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  const ACTION_TYPE_SET_TEXT = 8;
+  const ACTION_TYPE_ADD_EVENT = 8;
+  const ACTION_TYPE_REMOVE_EVENT = 9;
+  const ACTION_TYPE_SET_TEXT = 10;
   const ACTION_TYPE_EVENT = 20;
 
   function onNodeEvent(nodeId, evt, pageNode) {
@@ -7336,6 +7338,16 @@ var serviceContext = (function (vue) {
           pushRemoveAction(this, oldChild.nodeId);
           return oldChild;
       }
+      onAddEvent(thisNode, name, flag) {
+          if (thisNode.parentNode) {
+              pushAddEventAction(this, thisNode.nodeId, name, flag);
+          }
+      }
+      onRemoveEvent(thisNode, name) {
+          if (thisNode.parentNode) {
+              pushRemoveEventAction(this, thisNode.nodeId, name);
+          }
+      }
       onSetAttribute(thisNode, qualifiedName, value) {
           if (thisNode.parentNode) {
               pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
@@ -7447,6 +7459,12 @@ var serviceContext = (function (vue) {
   }
   function pushRemoveAction(pageNode, nodeId) {
       pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
+  }
+  function pushAddEventAction(pageNode, nodeId, name, value) {
+      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, name, value]);
+  }
+  function pushRemoveEventAction(pageNode, nodeId, name) {
+      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, name]);
   }
   function pushSetAttributeAction(pageNode, nodeId, name, value) {
       pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value]);

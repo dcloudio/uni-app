@@ -22,6 +22,8 @@ import {
   ACTION_TYPE_PAGE_CREATE,
   ACTION_TYPE_PAGE_CREATED,
   CreateAction,
+  ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_REMOVE_EVENT,
 } from '../../../PageAction'
 import { VD_SYNC } from '../../../constants'
 
@@ -77,6 +79,16 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   onRemoveChild(oldChild: UniNode) {
     pushRemoveAction(this, oldChild.nodeId!)
     return oldChild
+  }
+  onAddEvent(thisNode: UniNode, name: string, flag: number) {
+    if (thisNode.parentNode) {
+      pushAddEventAction(this, thisNode.nodeId!, name, flag)
+    }
+  }
+  onRemoveEvent(thisNode: UniNode, name: string) {
+    if (thisNode.parentNode) {
+      pushRemoveEventAction(this, thisNode.nodeId!, name)
+    }
   }
   onSetAttribute(thisNode: UniNode, qualifiedName: string, value: unknown) {
     if (thisNode.parentNode) {
@@ -210,6 +222,23 @@ function pushInsertAction(
 
 function pushRemoveAction(pageNode: UniPageNode, nodeId: number) {
   pageNode.push([ACTION_TYPE_REMOVE, nodeId])
+}
+
+function pushAddEventAction(
+  pageNode: UniPageNode,
+  nodeId: number,
+  name: string,
+  value: number
+) {
+  pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, name, value])
+}
+
+function pushRemoveEventAction(
+  pageNode: UniPageNode,
+  nodeId: number,
+  name: string
+) {
+  pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, name])
 }
 
 function pushSetAttributeAction(

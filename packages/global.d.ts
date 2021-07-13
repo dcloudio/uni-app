@@ -17,6 +17,7 @@ declare var __IMPORT_META_ENV_BASE_URL__:
 declare var __DEV__: boolean
 declare var __TEST__: boolean
 declare var __NODE_JS__: boolean
+declare var __APP_VIEW__: boolean
 
 // Feature flags
 declare var __VUE_OPTIONS_API__: boolean

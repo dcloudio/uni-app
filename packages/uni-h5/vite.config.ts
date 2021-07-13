@@ -69,6 +69,7 @@ export default defineConfig({
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('h5'),
+    __APP_VIEW__: false,
     __NODE_JS__: FORMAT === 'cjs' ? true : false,
   },
   resolve: {

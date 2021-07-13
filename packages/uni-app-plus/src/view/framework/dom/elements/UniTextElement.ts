@@ -34,6 +34,7 @@ export class UniTextElement extends UniElement<TextProps> {
 
   setText(text: string) {
     this._text = text
+    this.update()
   }
 
   update() {

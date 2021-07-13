@@ -1123,7 +1123,13 @@ function logError(err, type, contextVNode, throwInDev = true) {
     }
     else {
         // recover in prod to reduce the impact on end-user
-        console.error(err);
+        // fixed by xxxxxx
+        if (err instanceof Error) {
+            console.error(err.message + '\n' + err.stack);
+        }
+        else {
+            console.error(err);
+        }
     }
 }
 

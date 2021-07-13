@@ -1,4 +1,4 @@
-import { ATTR_MAP, COMPONENT_MAP } from './encode'
+import { ATTR_MAP, COMPONENT_MAP, EVENT_MAP } from './encode'
 
 function decodeObjMap(objMap: Record<string, string>) {
   return Object.keys(objMap).reduce((map, name) => {
@@ -15,6 +15,11 @@ function decodeArrMap(objMap: Record<string, number>) {
     },
     ['']
   )
+}
+const DECODED_EVENT_MAP = /*#__PURE__*/ decodeObjMap(EVENT_MAP)
+
+export function decodeEvent(name: string) {
+  return DECODED_EVENT_MAP[name as keyof typeof DECODED_EVENT_MAP] || name
 }
 
 const DECODED_ATTR_MAP = /*#__PURE__*/ decodeObjMap(ATTR_MAP)
