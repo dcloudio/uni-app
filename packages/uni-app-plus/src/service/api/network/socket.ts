@@ -208,7 +208,7 @@ class SocketTask implements UniApp.SocketTask {
     }
   }
 
-  close(args?: UniApp.CloseSocketOptions, callopt: boolean = true) {
+  close(args: UniApp.CloseSocketOptions, callopt: boolean = true) {
     this.readyState = this.CLOSING
     try {
       this._socket.close(
