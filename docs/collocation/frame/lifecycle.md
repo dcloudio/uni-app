@@ -17,6 +17,7 @@
 
 - 应用生命周期仅可在``App.vue``中监听，在其它页面监听无效。
 - onlaunch里进行页面跳转，如遇白屏报错，请参考[https://ask.dcloud.net.cn/article/35942](https://ask.dcloud.net.cn/article/35942)
+- onPageNotFound 页面实际上已经打开了（比如通过分享卡片、小程序码）且发现页面不存在，才会触发，api 跳转不存在的页面不会触发（如 uni.navigateTo）
 
 **示例代码**
 ```html
