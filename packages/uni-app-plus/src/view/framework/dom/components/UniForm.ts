@@ -4,7 +4,11 @@ import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniForm extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
-    super(id, 'uni-form', Form, nodeJson, 'span')
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(id, 'uni-form', Form, parentNodeId, nodeJson, 'span')
   }
 }

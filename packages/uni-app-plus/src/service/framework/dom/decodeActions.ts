@@ -27,8 +27,14 @@ function decodePageCreatedAction([]: PageCreatedAction) {
   return ['pageCreated']
 }
 
-function decodeCreateAction([, nodeId, nodeName, nodeJson]: CreateAction) {
-  return ['create', nodeId, decodeTag(nodeName), nodeJson]
+function decodeCreateAction([
+  ,
+  nodeId,
+  nodeName,
+  parentNodeId,
+  nodeJson,
+]: CreateAction) {
+  return ['create', nodeId, decodeTag(nodeName), parentNodeId, nodeJson]
 }
 
 function decodeInsertAction([, ...action]: InsertAction) {

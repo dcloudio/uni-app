@@ -14148,7 +14148,7 @@
   }
   const PROP_NAMES_HOVER$1 = ["space", "decode"];
   class UniTextElement extends UniElement {
-    constructor(id2, nodeJson) {
+    constructor(id2, _parentNodeId, nodeJson) {
       super(id2, document.createElement("uni-text"), nodeJson, PROP_NAMES_HOVER$1);
       this._text = "";
     }
@@ -14294,7 +14294,7 @@
     }
   }
   class UniViewElement extends UniHoverElement {
-    constructor(id2, nodeJson) {
+    constructor(id2, _parentNodeId, nodeJson) {
       super(id2, document.createElement("uni-view"), nodeJson);
     }
   }
@@ -14302,7 +14302,7 @@
     name: "Ad"
   });
   class UniComponent extends UniNode {
-    constructor(id2, tag, component, nodeJson, selector) {
+    constructor(id2, tag, component, parentNodeId, nodeJson, selector) {
       super(id2, tag);
       const container = document.createElement("div");
       this.$props = reactive({});
@@ -14346,20 +14346,20 @@
     }
   }
   class UniAd extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-ad", Ad, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-ad", Ad, parentNodeId, nodeJson);
     }
   }
   var audio = "uni-audio {\n  display: none;\n}\n\nuni-audio[controls] {\n  display: inline-block;\n}\n\nuni-audio[hidden] {\n  display: none;\n}\n\n.uni-audio-default {\n  max-width: 100%;\n  min-width: 302px;\n  height: 65px;\n  background: #fcfcfc;\n  border: 1px solid #e0e0e0;\n  border-radius: 2.5px;\n  display: inline-block;\n  overflow: hidden;\n}\n\n.uni-audio-left {\n  width: 65px;\n  height: 65px;\n  float: left;\n  background-color: #e6e6e6;\n  background-size: 100% 100%;\n  background-position: 50% 50%;\n}\n\n.uni-audio-button {\n  width: 24px;\n  height: 24px;\n  margin: 20.5px;\n  background-size: cover;\n}\n\n.uni-audio-button.play {\n  background-image: url(data:image/png;base64,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);\n}\n\n.uni-audio-button.pause {\n  background-image: url(data:image/png;base64,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);\n}\n\n.uni-audio-right {\n  box-sizing: border-box;\n  height: 65px;\n  margin-left: 65px;\n  padding: 11px 16.5px 13.5px 15px;\n  overflow: hidden;\n}\n\n.uni-audio-time {\n  margin-top: 3.5px;\n  height: 16.5px;\n  font-size: 12px;\n  color: #888888;\n  float: right;\n}\n\n.uni-audio-info {\n  margin-right: 70px;\n  overflow: hidden;\n}\n\n.uni-audio-name {\n  height: 22.5px;\n  line-height: 22.5px;\n  margin-bottom: 3.5px;\n  font-size: 14px;\n  color: #353535;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.uni-audio-author {\n  height: 14.5px;\n  line-height: 14.5px;\n  font-size: 12px;\n  color: #888888;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n";
   class UniAudio extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-audio", _sfc_main, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-audio", _sfc_main, parentNodeId, nodeJson);
     }
   }
   var button = "uni-button {\n  position: relative;\n  display: block;\n  margin-left: auto;\n  margin-right: auto;\n  padding-left: 14px;\n  padding-right: 14px;\n  box-sizing: border-box;\n  font-size: 18px;\n  text-align: center;\n  text-decoration: none;\n  line-height: 2.55555556;\n  border-radius: 5px;\n  -webkit-tap-highlight-color: transparent;\n  overflow: hidden;\n  color: #000000;\n  background-color: #f8f8f8;\n  cursor: pointer;\n}\n\nuni-button[hidden] {\n  display: none !important;\n}\n\nuni-button:after {\n  content: ' ';\n  width: 200%;\n  height: 200%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  transform: scale(0.5);\n  transform-origin: 0 0;\n  box-sizing: border-box;\n  border-radius: 10px;\n}\n\nuni-button[native] {\n  padding-left: 0;\n  padding-right: 0;\n}\n\nuni-button[native] .uni-button-cover-view-wrapper {\n  border: inherit;\n  border-color: inherit;\n  border-radius: inherit;\n  background-color: inherit;\n}\n\nuni-button[native] .uni-button-cover-view-inner {\n  padding-left: 14px;\n  padding-right: 14px;\n}\n\nuni-button uni-cover-view {\n  line-height: inherit;\n  white-space: inherit;\n}\n\nuni-button[type='default'] {\n  color: #000000;\n  background-color: #f8f8f8;\n}\n\nuni-button[type='primary'] {\n  color: #ffffff;\n  background-color: #007aff;\n}\n\nuni-button[type='warn'] {\n  color: #ffffff;\n  background-color: #e64340;\n}\n\nuni-button[disabled] {\n  color: rgba(255, 255, 255, 0.6);\n  cursor: not-allowed;\n}\n\nuni-button[disabled][type='default'],\nuni-button[disabled]:not([type]) {\n  color: rgba(0, 0, 0, 0.3);\n  background-color: #f7f7f7;\n}\n\nuni-button[disabled][type='primary'] {\n  background-color: rgba(0, 122, 255, 0.6);\n}\n\nuni-button[disabled][type='warn'] {\n  background-color: #ec8b89;\n}\n\nuni-button[type='primary'][plain] {\n  color: #007aff;\n  border: 1px solid #007aff;\n  background-color: transparent;\n}\n\nuni-button[type='primary'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='primary'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[type='default'][plain] {\n  color: #353535;\n  border: 1px solid #353535;\n  background-color: transparent;\n}\n\nuni-button[type='default'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='default'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[plain] {\n  color: #353535;\n  border: 1px solid #353535;\n  background-color: transparent;\n}\n\nuni-button[plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[plain]:after {\n  border-width: 0;\n}\n\nuni-button[plain][native] .uni-button-cover-view-inner {\n  padding: 0;\n}\n\nuni-button[type='warn'][plain] {\n  color: #e64340;\n  border: 1px solid #e64340;\n  background-color: transparent;\n}\n\nuni-button[type='warn'][plain][disabled] {\n  color: rgba(0, 0, 0, 0.2);\n  border-color: rgba(0, 0, 0, 0.2);\n}\n\nuni-button[type='warn'][plain]:after {\n  border-width: 0;\n}\n\nuni-button[size='mini'] {\n  display: inline-block;\n  line-height: 2.3;\n  font-size: 13px;\n  padding: 0 1.34em;\n}\n\nuni-button[size='mini'][native] {\n  padding: 0;\n}\n\nuni-button[size='mini'][native] .uni-button-cover-view-inner {\n  padding: 0 1.34em;\n}\n\nuni-button[loading]:not([disabled]) {\n  cursor: progress;\n}\n\nuni-button[loading]:before {\n  content: ' ';\n  display: inline-block;\n  width: 18px;\n  height: 18px;\n  vertical-align: middle;\n  animation: uni-loading 1s steps(12, end) infinite;\n  background-size: 100%;\n}\n\nuni-button[loading][type='primary'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #0062cc;\n}\n\nuni-button[loading][type='primary'][plain] {\n  color: #007aff;\n  background-color: transparent;\n}\n\nuni-button[loading][type='default'] {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\nuni-button[loading][type='default'][plain] {\n  color: #353535;\n  background-color: transparent;\n}\n\nuni-button[loading][type='warn'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #ce3c39;\n}\n\nuni-button[loading][type='warn'][plain] {\n  color: #e64340;\n  background-color: transparent;\n}\n\nuni-button[loading][native]:before {\n  content: none;\n}\n\n.button-hover {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\n.button-hover[plain] {\n  color: rgba(53, 53, 53, 0.6);\n  border-color: rgba(53, 53, 53, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='primary'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #0062cc;\n}\n\n.button-hover[type='primary'][plain] {\n  color: rgba(26, 173, 25, 0.6);\n  border-color: rgba(26, 173, 25, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='default'] {\n  color: rgba(0, 0, 0, 0.6);\n  background-color: #dedede;\n}\n\n.button-hover[type='default'][plain] {\n  color: rgba(53, 53, 53, 0.6);\n  border-color: rgba(53, 53, 53, 0.6);\n  background-color: transparent;\n}\n\n.button-hover[type='warn'] {\n  color: rgba(255, 255, 255, 0.6);\n  background-color: #ce3c39;\n}\n\n.button-hover[type='warn'][plain] {\n  color: rgba(230, 67, 64, 0.6);\n  border-color: rgba(230, 67, 64, 0.6);\n  background-color: transparent;\n}\n";
   class UniButton extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-button", Button, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-button", Button, parentNodeId, nodeJson);
     }
   }
   class UniCamera extends UniNode {
@@ -14369,20 +14369,20 @@
   }
   var canvas = "uni-canvas {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n}\n\nuni-canvas > .uni-canvas-canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n";
   class UniCanvas extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-canvas", Canvas, nodeJson, "canvas > div");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-canvas", Canvas, parentNodeId, nodeJson, "canvas > div");
     }
   }
   var checkbox = "uni-checkbox {\n  -webkit-tap-highlight-color: transparent;\n  display: inline-block;\n  cursor: pointer;\n}\n\nuni-checkbox[hidden] {\n  display: none;\n}\n\nuni-checkbox[disabled] {\n  cursor: not-allowed;\n}\n\n.uni-checkbox-wrapper {\n  display: inline-flex;\n  align-items: center;\n  vertical-align: middle;\n}\n\n.uni-checkbox-input {\n  margin-right: 5px;\n  -webkit-appearance: none;\n          appearance: none;\n  outline: 0;\n  border: 1px solid #d1d1d1;\n  background-color: #ffffff;\n  border-radius: 3px;\n  width: 22px;\n  height: 22px;\n  position: relative;\n}\n\n.uni-checkbox-input svg {\n  color: #007aff;\n  font-size: 22px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -48%) scale(0.73);\n}\n\nuni-checkbox:not([disabled]) .uni-checkbox-input:hover {\n  border-color: #007aff;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled {\n  background-color: #e1e1e1;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled:before {\n  color: #adadad;\n}\n\nuni-checkbox-group {\n  display: block;\n}\n";
   class UniCheckbox extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-checkbox", Checkbox, nodeJson, ".uni-checkbox-wrapper");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-checkbox", Checkbox, parentNodeId, nodeJson, ".uni-checkbox-wrapper");
     }
   }
   var checkboxGroup = "uni-checkbox-group {\n  display: block;\n}\n\nuni-checkbox-group[hidden] {\n  display: none;\n}\n";
   class UniCheckboxGroup extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-checkbox-group", CheckboxGroup, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-checkbox-group", CheckboxGroup, parentNodeId, nodeJson);
     }
   }
   function getStatusbarHeight() {
@@ -14737,8 +14737,8 @@
     }
   });
   class UniCoverImage extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-cover-image", CoverImage, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-cover-image", CoverImage, parentNodeId, nodeJson);
     }
   }
   var CoverView = /* @__PURE__ */ defineBuiltInComponent({
@@ -14772,20 +14772,20 @@
     }
   });
   class UniCoverView extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-cover-view", CoverView, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-cover-view", CoverView, parentNodeId, nodeJson);
     }
   }
   var editor = ".ql-container {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  -webkit-user-select: text;\n          user-select: text;\n  outline: none;\n  overflow: hidden;\n  width: 100%;\n  height: 200px;\n  min-height: 200px;\n}\n.ql-container[hidden] {\n  display: none;\n}\n.ql-container .ql-editor {\n  position: relative;\n  font-size: inherit;\n  line-height: inherit;\n  font-family: inherit;\n  min-height: inherit;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-tap-highlight-color: transparent;\n  -webkit-touch-callout: none;\n  -webkit-overflow-scrolling: touch;\n}\n.ql-container .ql-editor::-webkit-scrollbar {\n  width: 0 !important;\n}\n.ql-container .ql-editor.scroll-disabled {\n  overflow: hidden;\n}\n.ql-container .ql-image-overlay {\n  display: flex;\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px dashed #ccc;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n          user-select: none;\n}\n.ql-container .ql-image-overlay .ql-image-size {\n  position: absolute;\n  padding: 4px 8px;\n  text-align: center;\n  background-color: #fff;\n  color: #888;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  opacity: 0.8;\n  right: 4px;\n  top: 4px;\n  font-size: 12px;\n  display: inline-block;\n  width: auto;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar {\n  position: relative;\n  text-align: center;\n  box-sizing: border-box;\n  background: #000;\n  border-radius: 5px;\n  color: #fff;\n  font-size: 0;\n  min-height: 24px;\n  z-index: 100;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span {\n  display: inline-block;\n  cursor: pointer;\n  padding: 5px;\n  font-size: 12px;\n  border-right: 1px solid #fff;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span:last-child {\n  border-right: 0;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span.triangle-up {\n  padding: 0;\n  position: absolute;\n  top: -12px;\n  left: 50%;\n  transform: translatex(-50%);\n  width: 0;\n  height: 0;\n  border-width: 6px;\n  border-style: solid;\n  border-color: transparent transparent black transparent;\n}\n.ql-container .ql-image-overlay .ql-image-handle {\n  position: absolute;\n  height: 12px;\n  width: 12px;\n  border-radius: 50%;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  background: #fff;\n}\n.ql-container img {\n  display: inline-block;\n  max-width: 100%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n.ql-editor {\n  box-sizing: border-box;\n  height: 100%;\n  outline: none;\n  overflow-y: auto;\n  tab-size: 4;\n  -moz-tab-size: 4;\n  text-align: left;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n}\n.ql-editor > * {\n  cursor: text;\n}\n.ql-editor p,\n.ql-editor ol,\n.ql-editor ul,\n.ql-editor pre,\n.ql-editor blockquote,\n.ql-editor h1,\n.ql-editor h2,\n.ql-editor h3,\n.ql-editor h4,\n.ql-editor h5,\n.ql-editor h6 {\n  margin: 0;\n  padding: 0;\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol > li,\n.ql-editor ul > li {\n  list-style-type: none;\n}\n.ql-editor ul > li::before {\n  content: '\\2022';\n}\n.ql-editor ul[data-checked=true],\n.ql-editor ul[data-checked=false] {\n  pointer-events: none;\n}\n.ql-editor ul[data-checked=true] > li *,\n.ql-editor ul[data-checked=false] > li * {\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before,\n.ql-editor ul[data-checked=false] > li::before {\n  color: #777;\n  cursor: pointer;\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before {\n  content: '\\2611';\n}\n.ql-editor ul[data-checked=false] > li::before {\n  content: '\\2610';\n}\n.ql-editor li::before {\n  display: inline-block;\n  white-space: nowrap;\n  width: 2em;\n}\n.ql-editor ol li {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n.ql-editor ol li:before {\n  content: counter(list-0, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-increment: list-1;\n}\n.ql-editor ol li.ql-indent-1:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-increment: list-2;\n}\n.ql-editor ol li.ql-indent-2:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-increment: list-3;\n}\n.ql-editor ol li.ql-indent-3:before {\n  content: counter(list-3, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-increment: list-4;\n}\n.ql-editor ol li.ql-indent-4:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-increment: list-5;\n}\n.ql-editor ol li.ql-indent-5:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-increment: list-6;\n}\n.ql-editor ol li.ql-indent-6:before {\n  content: counter(list-6, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-increment: list-7;\n}\n.ql-editor ol li.ql-indent-7:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-increment: list-8;\n}\n.ql-editor ol li.ql-indent-8:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-reset: list-9;\n}\n.ql-editor ol li.ql-indent-9 {\n  counter-increment: list-9;\n}\n.ql-editor ol li.ql-indent-9:before {\n  content: counter(list-9, decimal) '. ';\n}\n.ql-editor .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n.ql-editor .ql-align-center {\n  text-align: center;\n}\n.ql-editor .ql-align-justify {\n  text-align: justify;\n}\n.ql-editor .ql-align-right {\n  text-align: right;\n}\n.ql-editor.ql-blank::before {\n  color: rgba(0, 0, 0, 0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  pointer-events: none;\n  position: absolute;\n}\n.ql-container.ql-disabled .ql-editor ul[data-checked] > li::before {\n  pointer-events: none;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n";
   class UniEditor extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-editor", Editor, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-editor", Editor, parentNodeId, nodeJson);
     }
   }
   var form = "";
   class UniForm extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-form", Form, nodeJson, "span");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-form", Form, parentNodeId, nodeJson, "span");
     }
   }
   class UniFunctionalPageNavigator extends UniNode {
@@ -14795,26 +14795,26 @@
   }
   var icon = "uni-icon {\n  display: inline-block;\n  font-size: 0;\n  box-sizing: border-box;\n}\n\nuni-icon[hidden] {\n  display: none;\n}\n";
   class UniIcon extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-icon", Icon, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-icon", Icon, parentNodeId, nodeJson);
     }
   }
   var image = "uni-image {\n  width: 320px;\n  height: 240px;\n  display: inline-block;\n  overflow: hidden;\n  position: relative;\n}\n\nuni-image[hidden] {\n  display: none;\n}\n\nuni-image > div {\n  width: 100%;\n  height: 100%;\n}\n\nuni-image > img {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n          user-select: none;\n  display: block;\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n}\n\nuni-image > .uni-image-will-change {\n  will-change: transform;\n}\n";
   class UniImage extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-image", Image$1, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-image", Image$1, parentNodeId, nodeJson);
     }
   }
   var input = "uni-input {\n  display: block;\n  font-size: 16px;\n  line-height: 1.4em;\n  height: 1.4em;\n  min-height: 1.4em;\n  overflow: hidden;\n}\n\nuni-input[hidden] {\n  display: none;\n}\n\n.uni-input-wrapper,\n.uni-input-placeholder,\n.uni-input-form,\n.uni-input-input {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n\n.uni-input-wrapper,\n.uni-input-form {\n  display: flex;\n  position: relative;\n  width: 100%;\n  height: 100%;\n  flex-direction: column;\n  justify-content: center;\n}\n\n.uni-input-placeholder,\n.uni-input-input {\n  width: 100%;\n}\n\n.uni-input-placeholder {\n  position: absolute;\n  top: auto !important;\n  left: 0;\n  color: gray;\n  overflow: hidden;\n  text-overflow: clip;\n  white-space: pre;\n  word-break: keep-all;\n  pointer-events: none;\n  line-height: inherit;\n}\n\n.uni-input-input {\n  position: relative;\n  display: block;\n  height: 100%;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n\n.uni-input-input[type='search']::-webkit-search-cancel-button {\n  display: none;\n}\n\n.uni-input-input::-webkit-outer-spin-button,\n.uni-input-input::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n          appearance: none;\n  margin: 0;\n}\n\n.uni-input-input[type='number'] {\n  -moz-appearance: textfield;\n}\n\n.uni-input-input:disabled {\n  /* \u7528\u4E8E\u91CD\u7F6EiOS14\u4EE5\u4E0B\u7981\u7528\u72B6\u6001\u6587\u5B57\u989C\u8272 */\n  -webkit-text-fill-color: currentcolor;\n}\n";
   class UniInput extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-input", Input, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-input", Input, parentNodeId, nodeJson);
     }
   }
   var label = ".uni-label-pointer {\n  cursor: pointer;\n}\n";
   class UniLabel extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-label", Label, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-label", Label, parentNodeId, nodeJson);
     }
   }
   class UniLivePlayer extends UniNode {
@@ -14831,26 +14831,26 @@
     name: "Map"
   });
   class UniMap extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-map", Map$1, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-map", Map$1, parentNodeId, nodeJson);
     }
   }
   var movableArea = "uni-movable-area {\n  display: block;\n  position: relative;\n  width: 10px;\n  height: 10px;\n}\n\nuni-movable-area[hidden] {\n  display: none;\n}\n";
   class UniMovableArea extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-movable-area", MovableArea, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-movable-area", MovableArea, parentNodeId, nodeJson);
     }
   }
   var movableView = "uni-movable-view {\n  display: inline-block;\n  width: 10px;\n  height: 10px;\n  top: 0px;\n  left: 0px;\n  position: absolute;\n  cursor: grab;\n}\n\nuni-movable-view[hidden] {\n  display: none;\n}\n";
   class UniMovableView extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-movable-view", MovableView, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-movable-view", MovableView, parentNodeId, nodeJson);
     }
   }
   var navigator$1 = "uni-navigator {\n  height: auto;\n  width: auto;\n  display: block;\n  cursor: pointer;\n}\n\nuni-navigator[hidden] {\n  display: none;\n}\n\n.navigator-hover {\n  background-color: rgba(0, 0, 0, 0.1);\n  opacity: 0.7;\n}\n";
   class UniNavigator extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-navigator", Navigator, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-navigator", Navigator, parentNodeId, nodeJson);
     }
   }
   class UniOfficialAccount extends UniNode {
@@ -14867,80 +14867,80 @@
     name: "Picker"
   });
   class UniPicker extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-picker", Picker, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-picker", Picker, parentNodeId, nodeJson);
     }
   }
   var pickerView = "uni-picker-view {\n  display: block;\n}\n\n.uni-picker-view-wrapper {\n  display: flex;\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n}\n\nuni-picker-view[hidden] {\n  display: none;\n}\n";
   class UniPickerView extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-picker-view", PickerView, nodeJson, ".uni-picker-view-wrapper");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-picker-view", PickerView, parentNodeId, nodeJson, ".uni-picker-view-wrapper");
     }
   }
   var pickerViewColumn = "uni-picker-view-column {\n  flex: 1;\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n}\n\nuni-picker-view-column[hidden] {\n  display: none;\n}\n\n.uni-picker-view-group {\n  height: 100%;\n  overflow: hidden;\n}\n\n.uni-picker-view-mask {\n  transform: translateZ(0);\n}\n\n.uni-picker-view-indicator,\n.uni-picker-view-mask {\n  position: absolute;\n  left: 0;\n  width: 100%;\n  z-index: 3;\n  pointer-events: none;\n}\n\n.uni-picker-view-mask {\n  top: 0;\n  height: 100%;\n  margin: 0 auto;\n  background: linear-gradient(\n      180deg,\n      hsla(0, 0%, 100%, 0.95),\n      hsla(0, 0%, 100%, 0.6)\n    ),\n    linear-gradient(0deg, hsla(0, 0%, 100%, 0.95), hsla(0, 0%, 100%, 0.6));\n  background-position: top, bottom;\n  background-size: 100% 102px;\n  background-repeat: no-repeat;\n}\n\n.uni-picker-view-indicator {\n  height: 34px;\n  /* top: 102px; */\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.uni-picker-view-content {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  will-change: transform;\n  padding: 102px 0;\n  cursor: pointer;\n}\n\n.uni-picker-view-content > * {\n  height: 34px;\n  overflow: hidden;\n}\n\n.uni-picker-view-indicator:after,\n.uni-picker-view-indicator:before {\n  content: ' ';\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 1px;\n  color: #e5e5e5;\n}\n\n.uni-picker-view-indicator:before {\n  top: 0;\n  border-top: 1px solid #e5e5e5;\n  transform-origin: 0 0;\n  transform: scaleY(0.5);\n}\n\n.uni-picker-view-indicator:after {\n  bottom: 0;\n  border-bottom: 1px solid #e5e5e5;\n  transform-origin: 0 100%;\n  transform: scaleY(0.5);\n}\n\n.uni-picker-view-indicator:after,\n.uni-picker-view-indicator:before {\n  content: ' ';\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 1px;\n  color: #e5e5e5;\n}\n";
   class UniPickerViewColumn extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-picker-view-column", PickerViewColumn, nodeJson, ".uni-picker-view-content");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-picker-view-column", PickerViewColumn, parentNodeId, nodeJson, ".uni-picker-view-content");
     }
   }
   var progress = "uni-progress {\n  display: flex;\n  align-items: center;\n}\n\nuni-progress[hidden] {\n  display: none;\n}\n\n.uni-progress-bar {\n  flex: 1;\n}\n\n.uni-progress-inner-bar {\n  width: 0;\n  height: 100%;\n}\n\n.uni-progress-info {\n  margin-top: 0;\n  margin-bottom: 0;\n  min-width: 2em;\n  margin-left: 15px;\n  font-size: 16px;\n}\n";
   class UniProgress extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-progress", Progress, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-progress", Progress, parentNodeId, nodeJson);
     }
   }
   var radio = "uni-radio {\n  -webkit-tap-highlight-color: transparent;\n  display: inline-block;\n  cursor: pointer;\n}\n\nuni-radio[hidden] {\n  display: none;\n}\n\nuni-radio[disabled] {\n  cursor: not-allowed;\n}\n\n.uni-radio-wrapper {\n  display: inline-flex;\n  align-items: center;\n  vertical-align: middle;\n}\n\n.uni-radio-input {\n  -webkit-appearance: none;\n          appearance: none;\n  margin-right: 5px;\n  outline: 0;\n  border: 1px solid #d1d1d1;\n  background-color: #ffffff;\n  border-radius: 50%;\n  width: 22px;\n  height: 22px;\n  position: relative;\n}\n\nuni-radio:not([disabled]) .uni-radio-input:hover {\n  border-color: #007aff;\n}\n\n.uni-radio-input svg {\n  color: #ffffff;\n  font-size: 18px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -48%) scale(0.73);\n}\n\n.uni-radio-input.uni-radio-input-disabled {\n  background-color: #e1e1e1;\n  border-color: #d1d1d1;\n}\n\n.uni-radio-input.uni-radio-input-disabled:before {\n  color: #adadad;\n}\n";
   class UniRadio extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-radio", Radio, nodeJson, ".uni-radio-wrapper");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-radio", Radio, parentNodeId, nodeJson, ".uni-radio-wrapper");
     }
   }
   var radioGroup = "uni-radio-group {\n  display: block;\n}\nuni-radio-group[hidden] {\n  display: none;\n}\n";
   class UniRadioGroup extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-radio-group", RadioGroup, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-radio-group", RadioGroup, parentNodeId, nodeJson);
     }
   }
   var richText = "";
   class UniRichText extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-rich-text", RichText, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-rich-text", RichText, parentNodeId, nodeJson);
     }
   }
   var scrollView = "uni-scroll-view {\n  display: block;\n  width: 100%;\n}\n\nuni-scroll-view[hidden] {\n  display: none;\n}\n\n.uni-scroll-view {\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  width: 100%;\n  /* display: flex; \u65F6\u5728\u5B89\u5353\u4E0B\u4F1A\u5BFC\u81F4scrollWidth\u548CoffsetWidth\u4E00\u6837 */\n  height: 100%;\n  max-height: inherit;\n}\n\n.uni-scroll-view-content {\n  width: 100%;\n  height: 100%;\n}\n\n.uni-scroll-view-refresher {\n  position: relative;\n  overflow: hidden;\n}\n\n.uni-scroll-view-refresh {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n\n.uni-scroll-view-refresh-inner {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 0;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),\n    0 1px 4px rgba(0, 0, 0, 0.117647);\n}\n\n.uni-scroll-view-refresh__spinner {\n  transform-origin: center center;\n  animation: uni-scroll-view-refresh-rotate 2s linear infinite;\n}\n\n.uni-scroll-view-refresh__spinner > circle {\n  stroke: currentColor;\n  stroke-linecap: round;\n  animation: uni-scroll-view-refresh-dash 2s linear infinite;\n}\n\n@keyframes uni-scroll-view-refresh-rotate {\n  0% {\n    transform: rotate(0deg);\n  }\n\n  100% {\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes uni-scroll-view-refresh-dash {\n  0% {\n    stroke-dasharray: 1, 200;\n    stroke-dashoffset: 0;\n  }\n\n  50% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -35px;\n  }\n\n  100% {\n    stroke-dasharray: 89, 200;\n    stroke-dashoffset: -124px;\n  }\n}\n";
   class UniScrollView extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-scroll-view", ScrollView, nodeJson, ".uni-scroll-view-content");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-scroll-view", ScrollView, parentNodeId, nodeJson, ".uni-scroll-view-content");
     }
   }
   var slider = "uni-slider {\n  margin: 10px 18px;\n  padding: 0;\n  display: block;\n}\n\nuni-slider[hidden] {\n  display: none;\n}\n\nuni-slider .uni-slider-wrapper {\n  display: flex;\n  align-items: center;\n  min-height: 16px;\n}\n\nuni-slider .uni-slider-tap-area {\n  flex: 1;\n  padding: 8px 0;\n}\n\nuni-slider .uni-slider-handle-wrapper {\n  position: relative;\n  height: 2px;\n  border-radius: 5px;\n  background-color: #e9e9e9;\n  cursor: pointer;\n  transition: background-color 0.3s ease;\n  -webkit-tap-highlight-color: transparent;\n}\n\nuni-slider .uni-slider-track {\n  height: 100%;\n  border-radius: 6px;\n  background-color: #007aff;\n  transition: background-color 0.3s ease;\n}\n\nuni-slider .uni-slider-handle,\nuni-slider .uni-slider-thumb {\n  position: absolute;\n  left: 50%;\n  top: 50%;\n  cursor: pointer;\n  border-radius: 50%;\n  transition: border-color 0.3s ease;\n}\n\nuni-slider .uni-slider-handle {\n  width: 28px;\n  height: 28px;\n  margin-top: -14px;\n  margin-left: -14px;\n  background-color: transparent;\n  z-index: 3;\n  cursor: grab;\n}\n\nuni-slider .uni-slider-thumb {\n  z-index: 2;\n  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);\n}\n\nuni-slider .uni-slider-step {\n  position: absolute;\n  width: 100%;\n  height: 2px;\n  background: transparent;\n  z-index: 1;\n}\n\nuni-slider .uni-slider-value {\n  width: 3ch;\n  color: #888;\n  font-size: 14px;\n  margin-left: 1em;\n}\n\nuni-slider .uni-slider-disabled .uni-slider-track {\n  background-color: #ccc;\n}\n\nuni-slider .uni-slider-disabled .uni-slider-thumb {\n  background-color: #fff;\n  border-color: #ccc;\n}\n";
   class UniSlider extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-slider", Slider, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-slider", Slider, parentNodeId, nodeJson);
     }
   }
   var swiper = "uni-swiper {\n  display: block;\n  height: 150px;\n}\n\nuni-swiper[hidden] {\n  display: none;\n}\n\n.uni-swiper-wrapper {\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform: translateZ(0);\n}\n\n.uni-swiper-slides {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n}\n\n.uni-swiper-slide-frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  will-change: transform;\n}\n\n.uni-swiper-dots {\n  position: absolute;\n  font-size: 0;\n}\n\n.uni-swiper-dots-horizontal {\n  left: 50%;\n  bottom: 10px;\n  text-align: center;\n  white-space: nowrap;\n  transform: translate(-50%, 0);\n}\n\n.uni-swiper-dots-horizontal .uni-swiper-dot {\n  margin-right: 8px;\n}\n\n.uni-swiper-dots-horizontal .uni-swiper-dot:last-child {\n  margin-right: 0;\n}\n\n.uni-swiper-dots-vertical {\n  right: 10px;\n  top: 50%;\n  text-align: right;\n  transform: translate(0, -50%);\n}\n\n.uni-swiper-dots-vertical .uni-swiper-dot {\n  display: block;\n  margin-bottom: 9px;\n}\n\n.uni-swiper-dots-vertical .uni-swiper-dot:last-child {\n  margin-bottom: 0;\n}\n\n.uni-swiper-dot {\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  cursor: pointer;\n  transition-property: background-color;\n  transition-timing-function: ease;\n  background: rgba(0, 0, 0, 0.3);\n  border-radius: 50%;\n}\n\n.uni-swiper-dot-active {\n  background-color: #000000;\n}\n";
   class UniSwiper extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-swiper", Swiper, nodeJson, ".uni-swiper-slide-frame");
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-swiper", Swiper, parentNodeId, nodeJson, ".uni-swiper-slide-frame");
     }
   }
   var swiperItem = "uni-swiper-item {\n  display: block;\n  overflow: hidden;\n  will-change: transform;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  cursor: grab;\n}\n\nuni-swiper-item[hidden] {\n  display: none;\n}\n";
   class UniSwiperItem extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-swiper-item", SwiperItem, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-swiper-item", SwiperItem, parentNodeId, nodeJson);
     }
   }
   var _switch = "uni-switch {\n  -webkit-tap-highlight-color: transparent;\n  display: inline-block;\n  cursor: pointer;\n}\n\nuni-switch[hidden] {\n  display: none;\n}\n\nuni-switch[disabled] {\n  cursor: not-allowed;\n}\n\n.uni-switch-wrapper {\n  display: inline-flex;\n  align-items: center;\n  vertical-align: middle;\n}\n\n.uni-switch-input {\n  -webkit-appearance: none;\n          appearance: none;\n  position: relative;\n  width: 52px;\n  height: 32px;\n  margin-right: 5px;\n  border: 1px solid #dfdfdf;\n  outline: 0;\n  border-radius: 16px;\n  box-sizing: border-box;\n  background-color: #dfdfdf;\n  transition: background-color 0.1s, border 0.1s;\n}\n\nuni-switch[disabled] .uni-switch-input {\n  opacity: 0.7;\n}\n\n.uni-switch-input:before {\n  content: ' ';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 50px;\n  height: 30px;\n  border-radius: 15px;\n  background-color: #fdfdfd;\n  transition: transform 0.3s;\n}\n\n.uni-switch-input:after {\n  content: ' ';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 30px;\n  height: 30px;\n  border-radius: 15px;\n  background-color: #ffffff;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);\n  transition: transform 0.3s;\n}\n\n.uni-switch-input.uni-switch-input-checked {\n  border-color: #007aff;\n  background-color: #007aff;\n}\n\n.uni-switch-input.uni-switch-input-checked:before {\n  transform: scale(0);\n}\n\n.uni-switch-input.uni-switch-input-checked:after {\n  transform: translateX(20px);\n}\n\nuni-switch .uni-checkbox-input {\n  margin-right: 5px;\n  -webkit-appearance: none;\n          appearance: none;\n  outline: 0;\n  border: 1px solid #d1d1d1;\n  background-color: #ffffff;\n  border-radius: 3px;\n  width: 22px;\n  height: 22px;\n  position: relative;\n  color: #007aff;\n}\n\nuni-switch:not([disabled]) .uni-checkbox-input:hover {\n  border-color: #007aff;\n}\n\nuni-switch .uni-checkbox-input svg {\n  color: inherit;\n  font-size: 22px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -48%) scale(0.73);\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled {\n  background-color: #e1e1e1;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled:before {\n  color: #adadad;\n}\n";
   class UniSwitch extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-switch", Switch, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-switch", Switch, parentNodeId, nodeJson);
     }
   }
   var textarea = "uni-textarea {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n  font-size: 16px;\n  line-height: normal;\n  white-space: pre-wrap;\n  word-break: break-all;\n  box-sizing: content-box !important;\n}\nuni-textarea[hidden] {\n  display: none;\n}\n.uni-textarea-wrapper,\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  outline: none;\n  border: none;\n  padding: 0;\n  margin: 0;\n  text-decoration: inherit;\n}\n.uni-textarea-wrapper {\n  display: block;\n  position: relative;\n  width: 100%;\n  height: 100%;\n  min-height: inherit;\n}\n.uni-textarea-placeholder,\n.uni-textarea-line,\n.uni-textarea-compute,\n.uni-textarea-textarea {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  white-space: inherit;\n  word-break: inherit;\n}\n.uni-textarea-placeholder {\n  color: grey;\n  overflow: hidden;\n}\n.uni-textarea-line,\n.uni-textarea-compute {\n  visibility: hidden;\n  height: auto;\n}\n.uni-textarea-line {\n  width: 1em;\n}\n.uni-textarea-textarea {\n  resize: none;\n  background: none;\n  color: inherit;\n  opacity: 1;\n  font: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  text-align: inherit;\n  text-indent: inherit;\n  text-transform: inherit;\n  text-shadow: inherit;\n}\n/* \u7528\u4E8E\u89E3\u51B3 iOS textarea \u5185\u90E8\u9ED8\u8BA4\u8FB9\u8DDD */\n.uni-textarea-textarea-fix-margin {\n  width: auto;\n  right: 0;\n  margin: 0 -3px;\n}\n.uni-textarea-textarea:disabled {\n  /* \u7528\u4E8E\u91CD\u7F6EiOS14\u4EE5\u4E0B\u7981\u7528\u72B6\u6001\u6587\u5B57\u989C\u8272 */\n  -webkit-text-fill-color: currentcolor;\n}\n";
   class UniTextarea extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-textarea", Textarea, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-textarea", Textarea, parentNodeId, nodeJson);
     }
   }
   var video = "uni-video {\n  width: 300px;\n  height: 225px;\n  display: inline-block;\n  line-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\nuni-video[hidden] {\n  display: none;\n}\n\n.uni-video-container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  overflow: hidden;\n  background-color: black;\n}\n\n.uni-video-slot {\n  position: absolute;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  pointer-events: none;\n}\n";
@@ -15146,16 +15146,16 @@
     }
   });
   class UniVideo extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-video", Video, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-video", Video, parentNodeId, nodeJson);
     }
   }
   var WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView"
   });
   class UniWebView extends UniComponent {
-    constructor(id2, nodeJson) {
-      super(id2, "uni-web-view", WebView, nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, "uni-web-view", WebView, parentNodeId, nodeJson);
     }
   }
   const BuiltInComponents = [
@@ -15204,8 +15204,8 @@
     UniVideo,
     UniWebView
   ];
-  function createBuiltInComponent(type, id2, nodeJson) {
-    return new BuiltInComponents[type](id2, nodeJson);
+  function createBuiltInComponent(type, id2, parentNodeId, nodeJson) {
+    return new BuiltInComponents[type](id2, parentNodeId, nodeJson);
   }
   function createWrapper(component, props2) {
     return () => h(component, props2);
@@ -15214,14 +15214,14 @@
   function $(id2) {
     return elements.get(id2);
   }
-  function createElement(id2, tag, nodeJson = {}) {
+  function createElement(id2, tag, parentNodeId, nodeJson = {}) {
     let element;
     if (id2 === 0) {
       element = new UniNode(id2, tag, document.createElement(tag));
     } else if (isString(tag)) {
       element = new UniElement(id2, document.createElement(tag), nodeJson);
     } else {
-      element = createBuiltInComponent(tag, id2, nodeJson);
+      element = createBuiltInComponent(tag, id2, parentNodeId, nodeJson);
     }
     elements.set(id2, element);
     return element;
@@ -15265,7 +15265,7 @@
     };
   }
   function initPageElement() {
-    createElement(0, "div", {}).$ = document.getElementById("app");
+    createElement(0, "div").$ = document.getElementById("app");
   }
   function initPageCss(route) {
     const element = document.createElement("link");
@@ -15308,7 +15308,7 @@
         case ACTION_TYPE_PAGE_CREATED:
           return onPageCreated();
         case ACTION_TYPE_CREATE:
-          return createElement(action[1], action[2], action[3]);
+          return createElement(action[1], action[2], action[3], action[4]);
         case ACTION_TYPE_INSERT:
           return $(action[1]).insert(action[2], action[3]);
         case ACTION_TYPE_REMOVE:

@@ -4,7 +4,11 @@ import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniCanvas extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
-    super(id, 'uni-canvas', Canvas, nodeJson, 'canvas > div')
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(id, 'uni-canvas', Canvas, parentNodeId, nodeJson, 'canvas > div')
   }
 }

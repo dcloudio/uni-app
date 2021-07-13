@@ -4,7 +4,11 @@ import WebView from '../../../components/web-view'
 import { UniComponent } from './UniComponent'
 
 export class UniWebView extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
-    super(id, 'uni-web-view', WebView, nodeJson)
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(id, 'uni-web-view', WebView, parentNodeId, nodeJson)
   }
 }

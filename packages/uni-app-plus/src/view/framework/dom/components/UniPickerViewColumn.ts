@@ -4,11 +4,16 @@ import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniPickerViewColumn extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
     super(
       id,
       'uni-picker-view-column',
       PickerViewColumn,
+      parentNodeId,
       nodeJson,
       '.uni-picker-view-content'
     )

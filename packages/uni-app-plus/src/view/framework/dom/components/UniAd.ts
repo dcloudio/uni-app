@@ -4,7 +4,11 @@ import Ad from '../../../components/ad'
 import { UniComponent } from './UniComponent'
 
 export class UniAd extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
-    super(id, 'uni-ad', Ad, nodeJson)
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(id, 'uni-ad', Ad, parentNodeId, nodeJson)
   }
 }

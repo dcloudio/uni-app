@@ -22,6 +22,7 @@ export function $(id: number) {
 export function createElement(
   id: number,
   tag: string | number,
+  parentNodeId?: number,
   nodeJson: Partial<UniNodeJSON> = {}
 ) {
   let element: UniNode
@@ -35,7 +36,7 @@ export function createElement(
   } else if (isString(tag)) {
     element = new UniElement(id, document.createElement(tag), nodeJson)
   } else {
-    element = createBuiltInComponent(tag, id, nodeJson)
+    element = createBuiltInComponent(tag, id, parentNodeId!, nodeJson)
   }
   elements.set(id, element)
   return element
@@ -91,7 +92,7 @@ function initSystemInfo(
 }
 
 function initPageElement() {
-  createElement(0, 'div', {}).$ = document.getElementById('app')!
+  createElement(0, 'div').$ = document.getElementById('app')!
 }
 
 function initPageCss(route: string) {

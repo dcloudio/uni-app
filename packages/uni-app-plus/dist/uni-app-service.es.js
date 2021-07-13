@@ -7373,7 +7373,10 @@ var serviceContext = (function (vue) {
               case ACTION_TYPE_INSERT:
                   const createAction = this._createActionMap.get(action[1]);
                   if (createAction) {
-                      createAction[3] = extras;
+                      createAction[3] = action[2]; // parentNodeId
+                      if (extras) {
+                          createAction[4] = extras;
+                      }
                   }
                   else {
                       if ((process.env.NODE_ENV !== 'production')) {
@@ -7439,7 +7442,7 @@ var serviceContext = (function (vue) {
       return null;
   }
   function pushCreateAction(pageNode, nodeId, nodeName) {
-      pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName]);
+      pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName, -1]);
   }
   function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
       const nodeJson = newChild.toJSON({ attr: true });

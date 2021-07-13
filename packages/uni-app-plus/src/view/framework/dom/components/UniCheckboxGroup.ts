@@ -4,7 +4,11 @@ import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniCheckboxGroup extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
-    super(id, 'uni-checkbox-group', CheckboxGroup, nodeJson)
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(id, 'uni-checkbox-group', CheckboxGroup, parentNodeId, nodeJson)
   }
 }

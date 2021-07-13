@@ -3,7 +3,11 @@ import Picker from '../../../components/picker'
 import { UniComponent } from './UniComponent'
 
 export class UniPicker extends UniComponent {
-  constructor(id: number, nodeJson: Partial<UniNodeJSON>) {
-    super(id, 'uni-picker', Picker, nodeJson)
+  constructor(
+    id: number,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>
+  ) {
+    super(id, 'uni-picker', Picker, parentNodeId, nodeJson)
   }
 }

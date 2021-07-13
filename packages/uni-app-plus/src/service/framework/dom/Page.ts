@@ -115,7 +115,10 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
       case ACTION_TYPE_INSERT:
         const createAction = this._createActionMap.get(action[1])
         if (createAction) {
-          createAction[3] = extras as UniNodeJSON
+          createAction[3] = action[2] // parentNodeId
+          if (extras) {
+            createAction[4] = extras as UniNodeJSON
+          }
         } else {
           if (__DEV__) {
             console.error(formatLog(`Insert`, action, 'not found createAction'))
@@ -124,9 +127,6 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
         break
     }
     this.updateActions.push(action)
-    if (__DEV__) {
-      console.log(formatLog('PageNode', 'push', action))
-    }
     queuePostFlushCb(this._update)
   }
   restore() {
@@ -192,7 +192,7 @@ function pushCreateAction(
   nodeId: number,
   nodeName: string | number
 ) {
-  pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName])
+  pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName, -1])
 }
 
 function pushInsertAction(

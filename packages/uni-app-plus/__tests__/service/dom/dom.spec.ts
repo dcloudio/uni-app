@@ -1,4 +1,4 @@
-import { UniEventListener, UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniEventListener } from '@dcloudio/uni-shared'
 import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
@@ -45,8 +45,6 @@ describe('dom', () => {
     expect(addElementAction[1]).toBe(1) // nodeId
     expect(addElementAction[2]).toBe(0) // parentNodeId
     expect(addElementAction[3]).toBe(-1) // index
-    const elementJson = addElementAction[4] as UniNodeJSON
-    expect(elementJson.a.id).toBe('view')
 
     const setAttributeAction = updateActions[1] as SetAttributeAction
     expect(setAttributeAction[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
@@ -90,8 +88,6 @@ describe('dom', () => {
     expect(addTextNodeAction[1]).toBe(2)
     expect(addTextNodeAction[2]).toBe(0)
     expect(addTextNodeAction[3]).toBe(-1)
-    const textNodeJson = addTextNodeAction[4] as UniNodeJSON
-    expect(textNodeJson.t).toBe('hello')
 
     root.updateActions.length = 0
     const clickFn = () => {}

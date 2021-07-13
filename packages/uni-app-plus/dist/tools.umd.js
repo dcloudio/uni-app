@@ -75,8 +75,8 @@
     function decodePageCreatedAction([]) {
         return ['pageCreated'];
     }
-    function decodeCreateAction([, nodeId, nodeName, nodeJson]) {
-        return ['create', nodeId, decodeTag(nodeName), nodeJson];
+    function decodeCreateAction([, nodeId, nodeName, parentNodeId, nodeJson,]) {
+        return ['create', nodeId, decodeTag(nodeName), parentNodeId, nodeJson];
     }
     function decodeInsertAction([, ...action]) {
         return ['insert', ...action];
