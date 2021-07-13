@@ -15,10 +15,16 @@ export class UniTextElement extends UniElement<TextProps> {
 
   constructor(
     id: number,
-    _parentNodeId: number,
+    parentNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, document.createElement('uni-text'), nodeJson, PROP_NAMES_HOVER)
+    super(
+      id,
+      document.createElement('uni-text'),
+      parentNodeId,
+      nodeJson,
+      PROP_NAMES_HOVER
+    )
   }
 
   init(nodeJson: Partial<UniNodeJSON>) {

@@ -4,9 +4,9 @@ import { UniHoverElement } from './UniHoverElement'
 export class UniViewElement extends UniHoverElement {
   constructor(
     id: number,
-    _parentNodeId: number,
+    parentNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, document.createElement('uni-view'), nodeJson)
+    super(id, document.createElement('uni-view'), parentNodeId, nodeJson)
   }
 }

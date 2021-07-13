@@ -16,10 +16,11 @@ export class UniElement<T extends object> extends UniNode {
   constructor(
     id: number,
     element: Element,
+    parentNodeId: number,
     nodeJson: Partial<UniNodeJSON>,
     propNames: string[] = []
   ) {
-    super(id, element.tagName, element)
+    super(id, element.tagName, parentNodeId, element)
     this.$.__id = id
     this.$.__listeners = Object.create(null)
     this.$propNames = propNames

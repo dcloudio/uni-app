@@ -1,17 +1,24 @@
 import { hasOwn } from '@vue/shared'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
 
-import { $ } from '../page'
+import { $, removeElement } from '../page'
 
 export class UniNode {
   id: number
   tag: string
+  pid: number
   $!: Element | Text | Comment
   isMounted: boolean = false
   isUnmounted: boolean = false
-  constructor(id: number, tag: string, element?: Element | Text | Comment) {
+  constructor(
+    id: number,
+    tag: string,
+    parentNodeId: number,
+    element?: Element | Text | Comment
+  ) {
     this.id = id
     this.tag = tag
+    this.pid = parentNodeId
     if (element) {
       this.$ = element
     }
@@ -38,6 +45,7 @@ export class UniNode {
     const { $ } = this
     $.parentNode!.removeChild($)
     this.isUnmounted = false
+    removeElement(this.id)
   }
   appendChild(node: Node) {
     return this.$.appendChild(node)

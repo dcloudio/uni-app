@@ -1,4 +1,4 @@
-import { UniEventListener } from '@dcloudio/uni-shared'
+import { encodeTag, UniEventListener } from '@dcloudio/uni-shared'
 import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
@@ -13,6 +13,8 @@ import {
   ACTION_TYPE_REMOVE_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
   ACTION_TYPE_REMOVE,
+  CreateAction,
+  ACTION_TYPE_CREATE,
 } from '../../../src/PageAction'
 
 import { EventModifierFlags } from '@dcloudio/uni-shared'
@@ -35,18 +37,24 @@ describe('dom', () => {
     windowBottom: 0,
   })
   test('proxyNode', () => {
-    const viewElem = createElement('view')
+    const viewElem = createElement('view', { pageNode: root })
     viewElem.setAttribute('id', 'view')
     root.appendChild(viewElem)
     viewElem.setAttribute('hidden', true)
     const { updateActions } = root
-    const addElementAction = updateActions[0] as InsertAction
+    const createElementAction = updateActions[0] as CreateAction
+    expect(createElementAction[0]).toBe(ACTION_TYPE_CREATE)
+    expect(createElementAction[1]).toBe(1)
+    expect(createElementAction[2]).toBe(encodeTag('VIEW'))
+    expect(createElementAction[3]).toBe(0)
+    expect(createElementAction[4]!.a!.id).toBe('view')
+    const addElementAction = updateActions[1] as InsertAction
     expect(addElementAction[0]).toBe(ACTION_TYPE_INSERT)
     expect(addElementAction[1]).toBe(1) // nodeId
     expect(addElementAction[2]).toBe(0) // parentNodeId
     expect(addElementAction[3]).toBe(-1) // index
 
-    const setAttributeAction = updateActions[1] as SetAttributeAction
+    const setAttributeAction = updateActions[2] as SetAttributeAction
     expect(setAttributeAction[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
     expect(setAttributeAction[1]).toBe(1)
     expect(setAttributeAction[2]).toBe('hidden')
@@ -79,10 +87,10 @@ describe('dom', () => {
     expect(removeChildAction[1]).toBe(1)
 
     root.updateActions.length = 0
-    const textNode = createTextNode('hello')
+    const textNode = createTextNode('hello', { pageNode: root })
     root.appendChild(textNode)
     const {
-      updateActions: [addTextNodeAction],
+      updateActions: [, addTextNodeAction],
     } = root
     expect(addTextNodeAction[0]).toBe(ACTION_TYPE_INSERT)
     expect(addTextNodeAction[1]).toBe(2)

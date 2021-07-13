@@ -7386,9 +7386,6 @@ var serviceContext = (function (vue) {
                   break;
           }
           this.updateActions.push(action);
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('PageNode', 'push', action));
-          }
           vue.queuePostFlushCb(this._update);
       }
       restore() {

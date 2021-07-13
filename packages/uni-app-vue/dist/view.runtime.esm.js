@@ -5705,11 +5705,16 @@ function baseCreateRenderer(options, createHydrationFns) {
                 value: vnode,
                 enumerable: false
             });
-            Object.defineProperty(el, '__vueParentComponent', {
-                value: parentComponent,
-                enumerable: false
-            });
+            // Object.defineProperty(el, '__vueParentComponent', {
+            //   value: parentComponent,
+            //   enumerable: false
+            // })
         }
+        // fixed by xxxxxx 始终提供__vueParentComponent
+        Object.defineProperty(el, '__vueParentComponent', {
+            value: parentComponent,
+            enumerable: false
+        });
         if (dirs) {
             invokeDirectiveHook(vnode, null, parentComponent, 'beforeMount');
         }
@@ -6690,7 +6695,8 @@ function baseCreateRenderer(options, createHydrationFns) {
             }
         }
         else {
-            patch(container._vnode || null, vnode, container, null, null, null, isSVG);
+            // fixed by xxxxxx 补充父组件
+            patch(container._vnode || null, vnode, container, null, container.__vueParent || null, null, isSVG);
         }
         flushPostFlushCbs();
         container._vnode = vnode;

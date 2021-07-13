@@ -19,10 +19,14 @@ export class UniHoverElement extends UniElement<HoverProps> {
   constructor(
     id: number,
     element: Element,
+    parentNodeId: number,
     nodeJson: Partial<UniNodeJSON>,
     propNames: string[] = []
   ) {
-    super(id, element, nodeJson, [...PROP_NAMES_HOVER, ...propNames])
+    super(id, element, parentNodeId, nodeJson, [
+      ...PROP_NAMES_HOVER,
+      ...propNames,
+    ])
   }
   update() {
     const hoverClass = this.$props['hover-class']

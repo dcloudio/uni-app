@@ -1,9 +1,10 @@
 import { hasOwn } from '@vue/shared'
-import { Component, createApp, reactive } from 'vue'
+import { Component, ComponentInternalInstance, createApp, reactive } from 'vue'
 import { decodeAttr, parseEventName, UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
+import { $ } from '../page'
 
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
@@ -17,8 +18,9 @@ export class UniComponent extends UniNode {
     nodeJson: Partial<UniNodeJSON>,
     selector?: string
   ) {
-    super(id, tag)
+    super(id, tag, parentNodeId)
     const container = document.createElement('div')
+    ;(container as any).__vueParent = getVueParent(this)
     this.$props = reactive({})
     this.init(nodeJson)
     createApp(createWrapper(component, this.$props)).mount(container)
@@ -62,4 +64,19 @@ export class UniComponent extends UniNode {
   insertBefore(newChild: Node, refChild: Node) {
     return (this.$holder || this.$).insertBefore(newChild, refChild)
   }
+}
+
+function getVueParent(node: UniNode): ComponentInternalInstance | null {
+  while (node && node.pid > 0) {
+    node = $(node.pid)
+    if (node) {
+      const { __vueParentComponent } = node.$ as unknown as {
+        __vueParentComponent: ComponentInternalInstance
+      }
+      if (__vueParentComponent) {
+        return __vueParentComponent
+      }
+    }
+  }
+  return null
 }

@@ -19,10 +19,17 @@ export function $(id: number) {
   return elements.get(id) as UniElement<any>
 }
 
+export function removeElement(id: number) {
+  if (__DEV__) {
+    console.log(formatLog('Remove', id, elements.size - 1))
+  }
+  return elements.delete(id)
+}
+
 export function createElement(
   id: number,
   tag: string | number,
-  parentNodeId?: number,
+  parentNodeId: number,
   nodeJson: Partial<UniNodeJSON> = {}
 ) {
   let element: UniNode
@@ -31,10 +38,16 @@ export function createElement(
     element = new UniNode(
       id,
       tag as string,
+      parentNodeId,
       document.createElement(tag as string)
     )
   } else if (isString(tag)) {
-    element = new UniElement(id, document.createElement(tag), nodeJson)
+    element = new UniElement(
+      id,
+      document.createElement(tag),
+      parentNodeId,
+      nodeJson
+    )
   } else {
     element = createBuiltInComponent(tag, id, parentNodeId!, nodeJson)
   }
@@ -92,7 +105,7 @@ function initSystemInfo(
 }
 
 function initPageElement() {
-  createElement(0, 'div').$ = document.getElementById('app')!
+  createElement(0, 'div', -1).$ = document.getElementById('app')!
 }
 
 function initPageCss(route: string) {

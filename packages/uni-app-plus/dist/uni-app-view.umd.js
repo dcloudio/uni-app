@@ -3248,6 +3248,10 @@
         }
         setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
       }
+      Object.defineProperty(el, "__vueParentComponent", {
+        value: parentComponent,
+        enumerable: false
+      });
       if (dirs) {
         invokeDirectiveHook(vnode, null, parentComponent, "beforeMount");
       }
@@ -3866,7 +3870,7 @@
           unmount(container._vnode, null, null, true);
         }
       } else {
-        patch(container._vnode || null, vnode, container, null, null, null, isSVG);
+        patch(container._vnode || null, vnode, container, null, container.__vueParent || null, null, isSVG);
       }
       flushPostFlushCbs();
       container._vnode = vnode;
@@ -5826,11 +5830,12 @@
   const ACTION_TYPE_SET_TEXT = 8;
   const ACTION_TYPE_EVENT = 20;
   class UniNode {
-    constructor(id2, tag, element) {
+    constructor(id2, tag, parentNodeId, element) {
       this.isMounted = false;
       this.isUnmounted = false;
       this.id = id2;
       this.tag = tag;
+      this.pid = parentNodeId;
       if (element) {
         this.$ = element;
       }
@@ -5857,6 +5862,7 @@
       const { $: $2 } = this;
       $2.parentNode.removeChild($2);
       this.isUnmounted = false;
+      removeElement(this.id);
     }
     appendChild(node) {
       return this.$.appendChild(node);
@@ -5866,8 +5872,8 @@
     }
   }
   class UniComment extends UniNode {
-    constructor(id2) {
-      super(id2, "#comment", document.createComment(""));
+    constructor(id2, parentNodeId) {
+      super(id2, "#comment", parentNodeId, document.createComment(""));
     }
   }
   var text$1 = "uni-text[selectable] {\n  cursor: auto;\n  -webkit-user-select: text;\n          user-select: text;\n}\n";
@@ -14083,8 +14089,8 @@
     }
   }
   class UniElement extends UniNode {
-    constructor(id2, element, nodeJson, propNames = []) {
-      super(id2, element.tagName, element);
+    constructor(id2, element, parentNodeId, nodeJson, propNames = []) {
+      super(id2, element.tagName, parentNodeId, element);
       this.$props = reactive({});
       this.$.__id = id2;
       this.$.__listeners = Object.create(null);
@@ -14148,8 +14154,8 @@
   }
   const PROP_NAMES_HOVER$1 = ["space", "decode"];
   class UniTextElement extends UniElement {
-    constructor(id2, _parentNodeId, nodeJson) {
-      super(id2, document.createElement("uni-text"), nodeJson, PROP_NAMES_HOVER$1);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, document.createElement("uni-text"), parentNodeId, nodeJson, PROP_NAMES_HOVER$1);
       this._text = "";
     }
     init(nodeJson) {
@@ -14173,8 +14179,8 @@
     }
   }
   class UniTextNode extends UniNode {
-    constructor(id2) {
-      super(id2, "#text", document.createTextNode(""));
+    constructor(id2, parentNodeId) {
+      super(id2, "#text", parentNodeId, document.createTextNode(""));
     }
   }
   var view = "uni-view {\n  display: block;\n}\nuni-view[hidden] {\n  display: none;\n}\n";
@@ -14185,8 +14191,11 @@
     "hover-stay-time"
   ];
   class UniHoverElement extends UniElement {
-    constructor(id2, element, nodeJson, propNames = []) {
-      super(id2, element, nodeJson, [...PROP_NAMES_HOVER, ...propNames]);
+    constructor(id2, element, parentNodeId, nodeJson, propNames = []) {
+      super(id2, element, parentNodeId, nodeJson, [
+        ...PROP_NAMES_HOVER,
+        ...propNames
+      ]);
     }
     update() {
       const hoverClass = this.$props["hover-class"];
@@ -14294,8 +14303,8 @@
     }
   }
   class UniViewElement extends UniHoverElement {
-    constructor(id2, _parentNodeId, nodeJson) {
-      super(id2, document.createElement("uni-view"), nodeJson);
+    constructor(id2, parentNodeId, nodeJson) {
+      super(id2, document.createElement("uni-view"), parentNodeId, nodeJson);
     }
   }
   var Ad = /* @__PURE__ */ defineBuiltInComponent({
@@ -14303,8 +14312,9 @@
   });
   class UniComponent extends UniNode {
     constructor(id2, tag, component, parentNodeId, nodeJson, selector) {
-      super(id2, tag);
+      super(id2, tag, parentNodeId);
       const container = document.createElement("div");
+      container.__vueParent = getVueParent(this);
       this.$props = reactive({});
       this.init(nodeJson);
       createApp(createWrapper(component, this.$props)).mount(container);
@@ -14344,6 +14354,18 @@
     insertBefore(newChild, refChild) {
       return (this.$holder || this.$).insertBefore(newChild, refChild);
     }
+  }
+  function getVueParent(node) {
+    while (node && node.pid > 0) {
+      node = $(node.pid);
+      if (node) {
+        const { __vueParentComponent } = node.$;
+        if (__vueParentComponent) {
+          return __vueParentComponent;
+        }
+      }
+    }
+    return null;
   }
   class UniAd extends UniComponent {
     constructor(id2, parentNodeId, nodeJson) {
@@ -15214,12 +15236,18 @@
   function $(id2) {
     return elements.get(id2);
   }
+  function removeElement(id2) {
+    {
+      console.log(formatLog("Remove", id2, elements.size - 1));
+    }
+    return elements.delete(id2);
+  }
   function createElement(id2, tag, parentNodeId, nodeJson = {}) {
     let element;
     if (id2 === 0) {
-      element = new UniNode(id2, tag, document.createElement(tag));
+      element = new UniNode(id2, tag, parentNodeId, document.createElement(tag));
     } else if (isString(tag)) {
-      element = new UniElement(id2, document.createElement(tag), nodeJson);
+      element = new UniElement(id2, document.createElement(tag), parentNodeId, nodeJson);
     } else {
       element = createBuiltInComponent(tag, id2, parentNodeId, nodeJson);
     }
@@ -15265,7 +15293,7 @@
     };
   }
   function initPageElement() {
-    createElement(0, "div").$ = document.getElementById("app");
+    createElement(0, "div", -1).$ = document.getElementById("app");
   }
   function initPageCss(route) {
     const element = document.createElement("link");
