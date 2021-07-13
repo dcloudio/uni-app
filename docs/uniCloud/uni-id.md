@@ -82,7 +82,7 @@ DCloud暂无计划开发百度、头条、QQ等小程序的登录，以及微博
 `uni-id`的git仓库：[https://gitee.com/dcloud/uni-id.git](https://gitee.com/dcloud/uni-id.git)
 
 
-# 快速上手
+# 快速上手@start
 
 使用uni-id需要按照以下步骤操作
 
@@ -2553,7 +2553,7 @@ exports.main = async function(event,context) {
 }
 ```
 
-# 数据库结构
+# 数据库结构@db-schema
 
 `uni-id`的所有数据表，都在[opendb](https://gitee.com/dcloud/opendb/)规范中。
 
