@@ -1,7 +1,12 @@
 export const PUBLIC_DIR = 'static'
 export const EXTNAME_JS = ['.js', '.ts']
-export const EXTNAME_VUE = ['.vue', '.nvue', '.fvue']
-export const EXTNAME_VUE_RE = /\.(vue|nvue|fvue)$/
+export const EXTNAME_VUE = ['.vue', '.nvue']
+export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
+
+// APP 平台解析页面后缀的优先级
+export const PAGE_EXTNAME_APP = ['.nvue', '.vue']
+// 其他平台解析页面后缀的优先级
+export const PAGE_EXTNAME = ['.vue', '.nvue']
 
 export const H5_API_STYLE_PATH = '@dcloudio/uni-h5/style/api/'
 export const H5_FRAMEWORK_STYLE_PATH = '@dcloudio/uni-h5/style/framework/'

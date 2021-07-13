@@ -1,5 +1,4 @@
 import { Plugin } from 'vite'
-import { initPreContext /*,checkUpdate*/ } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 import { initEnv } from './env'
@@ -12,7 +11,6 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
     initOptions(options, config)
     initPlugins(config, options)
     initCheckUpdate()
-    initPreContext(options.platform)
   }) as Plugin['configResolved']
 }
 

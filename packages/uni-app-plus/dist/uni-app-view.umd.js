@@ -14179,8 +14179,9 @@
     }
   }
   class UniTextNode extends UniNode {
-    constructor(id2, parentNodeId) {
+    constructor(id2, parentNodeId, nodeJson) {
       super(id2, "#text", parentNodeId, document.createTextNode(""));
+      this.init(nodeJson);
     }
   }
   var view = "uni-view {\n  display: block;\n}\nuni-view[hidden] {\n  display: none;\n}\n";

@@ -10,6 +10,7 @@ import {
   normalizePagesJson,
   defineUniPagesJsonPlugin,
   normalizePagesRoute,
+  normalizePagePath,
 } from '@dcloudio/uni-cli-shared'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
@@ -164,8 +165,12 @@ function generateLayoutComponentsCode(
 }
 
 function generatePageDefineCode(pageOptions: UniApp.PagesJsonPageOptions) {
+  const pagePathWithExtname = normalizePagePath(pageOptions.path, 'h5')
+  if (!pagePathWithExtname) {
+    return ''
+  }
   const pageIdent = normalizeIdentifier(pageOptions.path)
-  return `const ${pageIdent}Loader = ()=>import('./${pageOptions.path}?mpType=page')
+  return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}?mpType=page')
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`
 }
 

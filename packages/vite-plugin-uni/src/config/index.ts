@@ -1,7 +1,11 @@
 import path from 'path'
 import { Plugin, UserConfig } from 'vite'
 
-import { normalizePath, parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
+import {
+  initPreContext,
+  normalizePath,
+  parseManifestJsonOnce,
+} from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { createCss } from './css'
@@ -32,6 +36,9 @@ export function createConfig(
     options.command = env.command
     options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
     options.inputDir = normalizeInputDir(config)
+
+    initPreContext(options.platform)
+
     let base = config.base
     if (!base) {
       const { h5 } = parseManifestJsonOnce(options.inputDir)

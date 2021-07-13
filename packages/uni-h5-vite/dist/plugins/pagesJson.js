@@ -137,8 +137,12 @@ function generateLayoutComponentsCode(globalName, pagesJson) {
     };
 }
 function generatePageDefineCode(pageOptions) {
+    const pagePathWithExtname = uni_cli_shared_1.normalizePagePath(pageOptions.path, 'h5');
+    if (!pagePathWithExtname) {
+        return '';
+    }
     const pageIdent = uni_cli_shared_1.normalizeIdentifier(pageOptions.path);
-    return `const ${pageIdent}Loader = ()=>import('./${pageOptions.path}?mpType=page')
+    return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}?mpType=page')
 const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},AsyncComponentOptions))`;
 }
 function generatePagesDefineCode(pagesJson, _config) {
