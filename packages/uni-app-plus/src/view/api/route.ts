@@ -1,7 +1,7 @@
-import { INVOKE_API } from '../../constants'
+import { INVOKE_SERVICE_API } from '../../constants'
 
-function invokeApi(method: string, args: Record<string, any> = {}) {
-  UniViewJSBridge.publishHandler(INVOKE_API, {
+function invokeServiceApi(method: string, args: Record<string, any> = {}) {
+  UniViewJSBridge.publishHandler(INVOKE_SERVICE_API, {
     data: {
       method,
       args,
@@ -12,17 +12,17 @@ function invokeApi(method: string, args: Record<string, any> = {}) {
   })
 }
 export function navigateTo(args: Record<string, any>) {
-  invokeApi('navigateTo', args)
+  invokeServiceApi('navigateTo', args)
 }
 export function navigateBack(args: Record<string, any>) {
-  invokeApi('navigateBack', args)
+  invokeServiceApi('navigateBack', args)
 }
 export function reLaunch(args: Record<string, any>) {
-  invokeApi('reLaunch', args)
+  invokeServiceApi('reLaunch', args)
 }
 export function redirectTo(args: Record<string, any>) {
-  invokeApi('redirectTo', args)
+  invokeServiceApi('redirectTo', args)
 }
 export function switchTab(args: Record<string, any>) {
-  invokeApi('switchTab', args)
+  invokeServiceApi('switchTab', args)
 }

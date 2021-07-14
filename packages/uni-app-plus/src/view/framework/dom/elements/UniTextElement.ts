@@ -38,9 +38,6 @@ export class UniTextElement extends UniElement<TextProps> {
   }
 
   update() {
-    if (__DEV__) {
-      console.log(formatLog('Text', 'update'))
-    }
     const {
       $props: { space, decode },
     } = this

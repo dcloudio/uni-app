@@ -10,7 +10,8 @@
       "footer": "const uni = serviceContext.uni;\nconst getApp = serviceContext.getApp;\nconst getCurrentPages = serviceContext.getCurrentPages;\nconst UniServiceJSBridge = serviceContext.UniServiceJSBridge;\nreturn serviceContext;\n}",
       "globals": {
         "vue": "Vue"
-      }
+      },
+      "inlineDynamicImports": true
     },
     "replacements": {
       "__PLATFORM__": "'app'",

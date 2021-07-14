@@ -1,15 +1,14 @@
-import { ComponentPublicInstance } from 'vue'
 import {
   AddIntersectionObserverArgs,
   AddMediaQueryObserverArgs,
   RemoveIntersectionObserverArgs,
   RemoveMediaQueryObserverArgs,
-  SelectorQueryNodeInfo,
-  SelectorQueryRequest,
 } from '@dcloudio/uni-api'
 
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
+export { requestComponentInfo } from '../service/api/ui/requestComponentInfo'
 export { getRealPath } from './getRealPath'
+
 export function operateVideoPlayer(
   videoId: string,
   pageId: number,
@@ -22,11 +21,7 @@ export function operateMap(
   type: string,
   data?: unknown
 ) {}
-export function requestComponentInfo(
-  page: ComponentPublicInstance,
-  reqs: Array<SelectorQueryRequest>,
-  callback: (result: Array<SelectorQueryNodeInfo | null>) => void
-) {}
+
 export function addIntersectionObserver(
   args: AddIntersectionObserverArgs,
   pageId: number

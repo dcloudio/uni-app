@@ -137,9 +137,10 @@ function generateLayoutComponentsCode(globalName, pagesJson) {
     };
 }
 function generatePageDefineCode(pageOptions) {
-    const pagePathWithExtname = uni_cli_shared_1.normalizePagePath(pageOptions.path, 'h5');
+    let pagePathWithExtname = uni_cli_shared_1.normalizePagePath(pageOptions.path, 'h5');
     if (!pagePathWithExtname) {
-        return '';
+        // 不存在时，仍引用，此时编译会报错文件不存在
+        pagePathWithExtname = pageOptions.path + '.vue';
     }
     const pageIdent = uni_cli_shared_1.normalizeIdentifier(pageOptions.path);
     return `const ${pageIdent}Loader = ()=>import('./${pagePathWithExtname}?mpType=page')

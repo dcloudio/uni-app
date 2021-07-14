@@ -408,9 +408,9 @@ E.prototype = {
     return this;
   },
   once: function(name, callback, ctx) {
-    var self2 = this;
+    var self = this;
     function listener2() {
-      self2.off(name, listener2);
+      self.off(name, listener2);
       callback.apply(ctx, arguments);
     }
     listener2._ = callback;
@@ -3433,7 +3433,7 @@ class CanvasContext {
     });
   }
   set font(value) {
-    var self2 = this;
+    var self = this;
     this.state.font = value;
     var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
     if (fontFormat) {
@@ -3447,19 +3447,19 @@ class CanvasContext {
             method: "setFontStyle",
             data: [value2]
           });
-          self2.state.fontStyle = value2;
+          self.state.fontStyle = value2;
         } else if (["bold", "normal"].indexOf(value2) > -1) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
           });
-          self2.state.fontWeight = value2;
+          self.state.fontWeight = value2;
         } else if (index2 === 0) {
           actions.push({
             method: "setFontStyle",
             data: ["normal"]
           });
-          self2.state.fontStyle = "normal";
+          self.state.fontStyle = "normal";
         } else if (index2 === 1) {
           pushAction();
         }
@@ -3484,7 +3484,7 @@ class CanvasContext {
         method: "setFontWeight",
         data: ["normal"]
       });
-      self2.state.fontWeight = "normal";
+      self.state.fontWeight = "normal";
     }
   }
   get font() {
@@ -3719,7 +3719,7 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
     reject();
     return;
   }
-  const cId = canvasEventCallbacks.push(async function(data) {
+  const cId = canvasEventCallbacks.push(function(data) {
     let imgData = data.data;
     if (imgData && imgData.length) {
       data.data = new Uint8ClampedArray(imgData);
@@ -3734,29 +3734,30 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
     callbackId: cId
   });
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
   onCanvasMethodCallback();
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
     return;
   }
-  var cId = canvasEventCallbacks.push(function(data2) {
+  const cId = canvasEventCallbacks.push(function(data2) {
     resolve(data2);
   });
   let compressed;
-  {
-    data = Array.prototype.slice.call(data);
-  }
-  operateCanvas(canvasId, pageId, "putImageData", {
-    data,
-    x,
-    y,
-    width,
-    height,
-    compressed,
-    callbackId: cId
-  });
+  const operate = () => {
+    operateCanvas(canvasId, pageId, "putImageData", {
+      data,
+      x,
+      y,
+      width,
+      height,
+      compressed,
+      callbackId: cId
+    });
+  };
+  data = Array.prototype.slice.call(data);
+  operate();
 }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
 const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({
   x = 0,
@@ -11635,13 +11636,13 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       x: 0,
       y: 0
     };
-    let needStop = false;
+    let needStop = null;
     let __handleTouchMove = function(event) {
       let x = event.touches[0].pageX;
       let y = event.touches[0].pageY;
       let _main = main.value;
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-        if (self.scrollX) {
+        if (props2.scrollX) {
           if (_main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false;
             return;
@@ -11654,16 +11655,17 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           needStop = false;
         }
       } else {
-        if (self.scrollY) {
-          if (props2.refresherEnabled && _main.scrollTop === 0 && y > touchStart.y) {
-            needStop = true;
-            if (event.cancelable !== false)
+        if (props2.scrollY) {
+          if (_main.scrollTop === 0 && y > touchStart.y) {
+            needStop = false;
+            if (props2.refresherEnabled && event.cancelable !== false)
               event.preventDefault();
           } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
             needStop = false;
             return;
+          } else {
+            needStop = true;
           }
-          needStop = true;
         } else {
           needStop = false;
         }

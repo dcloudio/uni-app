@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/scroll-view.css'
 import { ScrollView } from '@dcloudio/uni-components'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { UniComponent } from './UniComponent'
+import { setHolderText, UniComponent } from './UniComponent'
 
 export class UniScrollView extends UniComponent {
   constructor(
@@ -17,5 +17,8 @@ export class UniScrollView extends UniComponent {
       nodeJson,
       '.uni-scroll-view-content'
     )
+  }
+  setText(text: string) {
+    setHolderText(this.$holder!, 'uni-scroll-view-refresher', text)
   }
 }

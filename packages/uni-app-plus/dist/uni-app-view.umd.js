@@ -624,9 +624,9 @@
       return this;
     },
     once: function(name, callback, ctx) {
-      var self2 = this;
+      var self = this;
       function listener() {
-        self2.off(name, listener);
+        self.off(name, listener);
         callback.apply(ctx, arguments);
       }
       listener._ = callback;
@@ -1427,13 +1427,13 @@
       this["__v_isReadonly"] = isReadonly2;
     }
     get value() {
-      const self2 = toRaw(this);
-      if (self2._dirty) {
-        self2._value = this.effect();
-        self2._dirty = false;
+      const self = toRaw(this);
+      if (self._dirty) {
+        self._value = this.effect();
+        self._dirty = false;
       }
-      track(self2, "get", "value");
-      return self2._value;
+      track(self, "get", "value");
+      return self._value;
     }
     set value(newValue) {
       this._setter(newValue);
@@ -5443,7 +5443,8 @@
   }
   const VD_SYNC = "vdSync";
   const ON_WEBVIEW_READY = "onWebviewReady";
-  const INVOKE_API = "invokeApi";
+  const INVOKE_VIEW_API = "invokeViewApi";
+  const INVOKE_SERVICE_API = "invokeServiceApi";
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -5765,8 +5766,8 @@
       confirmColor: PRIMARY_COLOR
     }
   });
-  function invokeApi(method, args = {}) {
-    UniViewJSBridge.publishHandler(INVOKE_API, {
+  function invokeServiceApi(method, args = {}) {
+    UniViewJSBridge.publishHandler(INVOKE_SERVICE_API, {
       data: {
         method,
         args
@@ -5777,19 +5778,19 @@
     });
   }
   function navigateTo(args) {
-    invokeApi("navigateTo", args);
+    invokeServiceApi("navigateTo", args);
   }
   function navigateBack(args) {
-    invokeApi("navigateBack", args);
+    invokeServiceApi("navigateBack", args);
   }
   function reLaunch(args) {
-    invokeApi("reLaunch", args);
+    invokeServiceApi("reLaunch", args);
   }
   function redirectTo(args) {
-    invokeApi("redirectTo", args);
+    invokeServiceApi("redirectTo", args);
   }
   function switchTab(args) {
-    invokeApi("switchTab", args);
+    invokeServiceApi("switchTab", args);
   }
   var uni$1 = /* @__PURE__ */ Object.freeze({
     __proto__: null,
@@ -12640,13 +12641,13 @@
         x: 0,
         y: 0
       };
-      let needStop = false;
+      let needStop = null;
       let __handleTouchMove = function(event) {
         let x = event.touches[0].pageX;
         let y = event.touches[0].pageY;
         let _main = main.value;
         if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          if (self.scrollX) {
+          if (props2.scrollX) {
             if (_main.scrollLeft === 0 && x > touchStart.x) {
               needStop = false;
               return;
@@ -12659,16 +12660,17 @@
             needStop = false;
           }
         } else {
-          if (self.scrollY) {
-            if (props2.refresherEnabled && _main.scrollTop === 0 && y > touchStart.y) {
-              needStop = true;
-              if (event.cancelable !== false)
+          if (props2.scrollY) {
+            if (_main.scrollTop === 0 && y > touchStart.y) {
+              needStop = false;
+              if (props2.refresherEnabled && event.cancelable !== false)
                 event.preventDefault();
             } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
               needStop = false;
               return;
+            } else {
+              needStop = true;
             }
-            needStop = true;
           } else {
             needStop = false;
           }
@@ -13978,6 +13980,9 @@
     });
     return `${page}.${type}.${id2}`;
   }
+  function getContextInfo(el) {
+    return el.__uniContextInfo;
+  }
   function patchClass(el, clazz) {
     el.className = clazz;
   }
@@ -14180,9 +14185,6 @@
       this.update();
     }
     update() {
-      {
-        console.log(formatLog("Text", "update"));
-      }
       const {
         $props: { space, decode }
       } = this;
@@ -14336,6 +14338,11 @@
       this.$ = container.firstElementChild;
       if (selector) {
         this.$holder = this.$.querySelector(selector);
+        {
+          if (!this.$holder) {
+            console.error(formatLog(tag, "holder", selector, this.$));
+          }
+        }
       }
       if (hasOwn$1(nodeJson, "t")) {
         this.setText(nodeJson.t || "");
@@ -14389,6 +14396,18 @@
     }
     return null;
   }
+  function setHolderText(holder, clazz, text2) {
+    holder.childNodes.forEach((childNode) => {
+      if (childNode instanceof Element) {
+        if (childNode.className.indexOf(clazz) === -1) {
+          holder.removeChild(childNode);
+        }
+      } else {
+        holder.removeChild(childNode);
+      }
+    });
+    holder.appendChild(document.createTextNode(text2));
+  }
   class UniAd extends UniComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-ad", Ad, parentNodeId, nodeJson);
@@ -14421,6 +14440,9 @@
   class UniCheckbox extends UniComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-checkbox", Checkbox, parentNodeId, nodeJson, ".uni-checkbox-wrapper");
+    }
+    setText(text2) {
+      setHolderText(this.$holder, "uni-checkbox-input", text2);
     }
   }
   var checkboxGroup = "uni-checkbox-group {\n  display: block;\n}\n\nuni-checkbox-group[hidden] {\n  display: none;\n}\n";
@@ -14938,6 +14960,9 @@
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-radio", Radio, parentNodeId, nodeJson, ".uni-radio-wrapper");
     }
+    setText(text2) {
+      setHolderText(this.$holder, "uni-radio-input", text2);
+    }
   }
   var radioGroup = "uni-radio-group {\n  display: block;\n}\nuni-radio-group[hidden] {\n  display: none;\n}\n";
   class UniRadioGroup extends UniComponent {
@@ -14955,6 +14980,9 @@
   class UniScrollView extends UniComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-scroll-view", ScrollView, parentNodeId, nodeJson, ".uni-scroll-view-content");
+    }
+    setText(text2) {
+      setHolderText(this.$holder, "uni-scroll-view-refresher", text2);
     }
   }
   var slider = "uni-slider {\n  margin: 10px 18px;\n  padding: 0;\n  display: block;\n}\n\nuni-slider[hidden] {\n  display: none;\n}\n\nuni-slider .uni-slider-wrapper {\n  display: flex;\n  align-items: center;\n  min-height: 16px;\n}\n\nuni-slider .uni-slider-tap-area {\n  flex: 1;\n  padding: 8px 0;\n}\n\nuni-slider .uni-slider-handle-wrapper {\n  position: relative;\n  height: 2px;\n  border-radius: 5px;\n  background-color: #e9e9e9;\n  cursor: pointer;\n  transition: background-color 0.3s ease;\n  -webkit-tap-highlight-color: transparent;\n}\n\nuni-slider .uni-slider-track {\n  height: 100%;\n  border-radius: 6px;\n  background-color: #007aff;\n  transition: background-color 0.3s ease;\n}\n\nuni-slider .uni-slider-handle,\nuni-slider .uni-slider-thumb {\n  position: absolute;\n  left: 50%;\n  top: 50%;\n  cursor: pointer;\n  border-radius: 50%;\n  transition: border-color 0.3s ease;\n}\n\nuni-slider .uni-slider-handle {\n  width: 28px;\n  height: 28px;\n  margin-top: -14px;\n  margin-left: -14px;\n  background-color: transparent;\n  z-index: 3;\n  cursor: grab;\n}\n\nuni-slider .uni-slider-thumb {\n  z-index: 2;\n  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);\n}\n\nuni-slider .uni-slider-step {\n  position: absolute;\n  width: 100%;\n  height: 2px;\n  background: transparent;\n  z-index: 1;\n}\n\nuni-slider .uni-slider-value {\n  width: 3ch;\n  color: #888;\n  font-size: 14px;\n  margin-left: 1em;\n}\n\nuni-slider .uni-slider-disabled .uni-slider-track {\n  background-color: #ccc;\n}\n\nuni-slider .uni-slider-disabled .uni-slider-thumb {\n  background-color: #fff;\n  border-color: #ccc;\n}\n";
@@ -15383,9 +15411,142 @@
     });
     flushPostActionJobs();
   }
+  function getRootInfo(fields) {
+    const info = {};
+    if (fields.id) {
+      info.id = "";
+    }
+    if (fields.dataset) {
+      info.dataset = {};
+    }
+    if (fields.rect) {
+      info.left = 0;
+      info.right = 0;
+      info.top = 0;
+      info.bottom = 0;
+    }
+    if (fields.size) {
+      info.width = document.documentElement.clientWidth;
+      info.height = document.documentElement.clientHeight;
+    }
+    if (fields.scrollOffset) {
+      const documentElement = document.documentElement;
+      const body = document.body;
+      info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+      info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+      info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+      info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+    }
+    return info;
+  }
+  function getNodeInfo(el, fields) {
+    const info = {};
+    const { top } = getWindowOffset();
+    if (fields.id) {
+      info.id = el.id;
+    }
+    if (fields.dataset) {
+      info.dataset = getCustomDataset(el);
+    }
+    if (fields.rect || fields.size) {
+      const rect = el.getBoundingClientRect();
+      if (fields.rect) {
+        info.left = rect.left;
+        info.right = rect.right;
+        info.top = rect.top - top;
+        info.bottom = rect.bottom - top;
+      }
+      if (fields.size) {
+        info.width = rect.width;
+        info.height = rect.height;
+      }
+    }
+    if (Array.isArray(fields.properties)) {
+      fields.properties.forEach((prop) => {
+        prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+          return t2.toUpperCase();
+        });
+      });
+    }
+    if (fields.scrollOffset) {
+      if (el.tagName === "UNI-SCROLL-VIEW") {
+        const scroll = el.children[0].children[0];
+        info.scrollLeft = scroll.scrollLeft;
+        info.scrollTop = scroll.scrollTop;
+        info.scrollHeight = scroll.scrollHeight;
+        info.scrollWidth = scroll.scrollWidth;
+      } else {
+        info.scrollLeft = 0;
+        info.scrollTop = 0;
+        info.scrollHeight = 0;
+        info.scrollWidth = 0;
+      }
+    }
+    if (Array.isArray(fields.computedStyle)) {
+      const sytle = getComputedStyle(el);
+      fields.computedStyle.forEach((name) => {
+        info[name] = sytle[name];
+      });
+    }
+    if (fields.context) {
+      info.contextInfo = getContextInfo(el);
+    }
+    return info;
+  }
+  function findElm(component, pageVm2) {
+    return component ? component.$el : pageVm2.$el;
+  }
+  function getNodesInfo(pageVm2, component, selector, single, fields) {
+    const parentElement = findElm(component, pageVm2).parentElement;
+    if (!parentElement) {
+      return single ? null : [];
+    }
+    if (single) {
+      const node = parentElement.querySelector(selector);
+      if (node) {
+        return getNodeInfo(node, fields);
+      }
+      return null;
+    } else {
+      let infos = [];
+      const nodeList = parentElement.querySelectorAll(selector);
+      if (nodeList && nodeList.length) {
+        [].forEach.call(nodeList, (node) => {
+          infos.push(getNodeInfo(node, fields));
+        });
+      }
+      return infos;
+    }
+  }
+  function requestComponentInfo(page, reqs, callback) {
+    const result = [];
+    reqs.forEach(({ component, selector, single, fields }) => {
+      if (component === null) {
+        result.push(getRootInfo(fields));
+      } else {
+        result.push(getNodesInfo(page, component, selector, single, fields));
+      }
+    });
+    callback(result);
+  }
+  const pageVm = { $el: document.body };
+  function onInvokeViewApi({
+    id: id2,
+    name,
+    args
+  }) {
+    const publish = (res) => {
+      UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
+    };
+    switch (name) {
+      case "requestComponentInfo":
+        return requestComponentInfo(pageVm, args.reqs, publish);
+    }
+  }
   function initSubscribeHandlers() {
     const { subscribe } = UniViewJSBridge;
     subscribe(VD_SYNC, onVdSync);
+    subscribe(INVOKE_VIEW_API, onInvokeViewApi);
   }
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;

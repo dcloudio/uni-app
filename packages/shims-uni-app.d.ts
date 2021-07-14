@@ -262,19 +262,20 @@ declare namespace UniApp {
   }
 
   type OnApiLike = (callback: (result: unknown) => void) => void
+  type CallbackFunction = (...args: any[]) => void
   interface UniServiceJSBridge {
     /**
      * 监听 service 层的自定义事件。事件由 emit 触发，回调函数会接收所有传入事件触发函数的额外参数。
      * @param event
      * @param callback
      */
-    on(event: string | string[], callback: Function): void
+    on(event: string | string[], callback: CallbackFunction): void
     /**
      * 监听 service 层的自定义事件。仅触发一次，在第一次触发之后移除监听器。
      * @param event
      * @param callback
      */
-    once(event: string, callback: Function): void
+    once(event: string, callback: CallbackFunction): void
     /**
      * 移除 service 层的自定义事件监听器。
      * 如果没有提供参数，则移除所有的事件监听器；
@@ -283,7 +284,7 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    off(event?: string | string[], callback?: Function): void
+    off(event?: string | string[], callback?: CallbackFunction): void
     /**
      * 触发 Service 层的事件。附加参数都会传给监听器回调。
      * @param event
@@ -305,7 +306,7 @@ declare namespace UniApp {
      * @param callback
      * @param once 默认 false
      */
-    subscribe(event: string, callback: Function, once?: boolean): void
+    subscribe(event: string, callback: CallbackFunction, once?: boolean): void
     /**
      * 取消订阅 View 的自定义事件
      * 如果没有提供参数，则移除所有的事件监听器；
@@ -314,7 +315,7 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    unsubscribe(event: string, callback?: Function): void
+    unsubscribe(event: string, callback?: CallbackFunction): void
     /**
      * 向 View 层发送事件
      * @param event
@@ -329,6 +330,19 @@ declare namespace UniApp {
      * @param pageId
      */
     subscribeHandler(event: string, args?: unknown, pageId?: number): void
+    /**
+     * 执行 View 层方法，并获取返回值
+     * @param name
+     * @param args
+     * @param pageId
+     * @param callback
+     */
+    invokeViewMethod<T = any>(
+      name: string,
+      args: unknown,
+      callback: (res: T) => void,
+      pageId: number
+    ): void
   }
   interface UniViewJSBridge {
     /**
@@ -336,13 +350,13 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    on(event: string | string[], callback: Function): void
+    on(event: string | string[], callback: CallbackFunction): void
     /**
      * 监听 View 的自定义事件。仅触发一次，在第一次触发之后移除监听器。
      * @param event
      * @param callback
      */
-    once(event: string, callback: Function): void
+    once(event: string, callback: CallbackFunction): void
     /**
      * 移除 View 的自定义事件监听器。
      * 如果没有提供参数，则移除所有的事件监听器；
@@ -351,7 +365,7 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    off(event?: string | string[], callback?: Function): void
+    off(event?: string | string[], callback?: CallbackFunction): void
     /**
      * 触发 View 的事件。附加参数都会传给监听器回调。
      * @param event
@@ -363,7 +377,7 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    subscribe(event: string, callback: Function): void
+    subscribe(event: string, callback: CallbackFunction): void
     /**
      * 取消订阅 Service 的自定义事件
      * 如果没有提供参数，则移除所有的事件监听器；
@@ -372,7 +386,7 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    unsubscribe(event: string, callback?: Function): void
+    unsubscribe(event: string, callback?: CallbackFunction): void
     /**
      * 接收 Service 层事件(通常由 Service 层调用，并暴露至全局 UniViewJSBridge 对象中)
      * @param event

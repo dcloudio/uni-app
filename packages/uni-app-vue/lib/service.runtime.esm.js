@@ -1,4 +1,4 @@
-import { UniElement, UniTextNode, UniCommentNode } from '@dcloudio/uni-shared';
+import { UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode } from '@dcloudio/uni-shared';
 
 /**
  * Make a map and return a function for checking if a key
@@ -8918,6 +8918,12 @@ const resolveFilter = null;
 const compatUtils = (null);
 
 function createElement(tagName, container) {
+    if (tagName === 'input') {
+        return new UniInputElement(tagName, container);
+    }
+    else if (tagName === 'textarea') {
+        return new UniTextAreaElement(tagName, container);
+    }
     return new UniElement(tagName, container);
 }
 function createTextNode(text, container) {
@@ -9010,17 +9016,28 @@ function patchStyle(el, prev, next) {
     }
     else {
         const batchedStyles = {};
-        if (prev && !isString(prev)) {
+        const isPrevObj = prev && !isString(prev);
+        if (isPrevObj) {
             for (const key in prev) {
                 if (next[key] == null) {
                     batchedStyles[key] = '';
                 }
             }
+            for (const key in next) {
+                const value = next[key];
+                if (value !== prev[key]) {
+                    batchedStyles[key] = value;
+                }
+            }
         }
-        for (const key in next) {
-            batchedStyles[key] = next[key];
+        else {
+            for (const key in next) {
+                batchedStyles[key] = next[key];
+            }
         }
-        el.setAttribute('style', batchedStyles);
+        if (Object.keys(batchedStyles).length) {
+            el.setAttribute('style', batchedStyles);
+        }
     }
 }
 
@@ -9110,13 +9127,12 @@ const patchProp = (el, key, prevValue, nextValue, parentComponent) => {
         case 'style':
             patchStyle(el, prevValue, nextValue);
             break;
-        case 'modelValue':
-        case 'onUpdate:modelValue':
-            // handled by v-model directive
-            break;
         default:
             if (isOn(key)) {
-                patchEvent(el, key, prevValue, nextValue);
+                // ignore v-model listeners
+                if (!isModelListener(key)) {
+                    patchEvent(el, key, prevValue, nextValue);
+                }
             }
             else {
                 patchAttr(el, key, nextValue);
@@ -9596,10 +9612,15 @@ const getModelAssigner = (vnode) => {
 // We are exporting the v-model runtime directly as vnode hooks so that it can
 // be tree-shaken in case v-model is never used.
 const vModelText = {
-    created(el, { modifiers: { lazy, trim, number } }, vnode) {
+    created(el, { modifiers: { trim, number } }, vnode) {
         el._assign = getModelAssigner(vnode);
-        addEventListener(el, lazy ? 'change' : 'input', e => {
-            let domValue = el.value;
+        addEventListener(el, 'input', e => {
+            let domValue = e.detail.value;
+            // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据
+            const pageNode = el.pageNode;
+            el.pageNode = null;
+            el.value = domValue;
+            el.pageNode = pageNode;
             if (trim) {
                 domValue = domValue.trim();
             }
@@ -9608,14 +9629,6 @@ const vModelText = {
             }
             el._assign(domValue);
         });
-        if (trim) {
-            addEventListener(el, 'change', () => {
-                el.value = el.value.trim();
-            });
-        }
-        if (!lazy) {
-            addEventListener(el, 'change', evt => el.dispatchEvent(evt));
-        }
     },
     beforeUpdate(el, { value }, vnode) {
         el._assign = getModelAssigner(vnode);

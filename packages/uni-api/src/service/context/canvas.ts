@@ -1052,15 +1052,18 @@ export const canvasGetImageData =
         reject()
         return
       }
-      const cId = canvasEventCallbacks.push(async function (
+      const cId = canvasEventCallbacks.push(function (
         data: UniApp.CanvasGetImageDataRes & { compressed?: boolean }
       ) {
         let imgData = data.data
         if (imgData && imgData.length) {
           if (__PLATFORM__ === 'app' && data.compressed) {
-            const pako = await import('pako')
-            imgData = pako.inflateRaw(imgData) as any
-            delete data.compressed
+            return import('pako').then((pako) => {
+              imgData = pako.inflateRaw(imgData) as any
+              delete data.compressed
+              data.data = new Uint8ClampedArray(imgData) as any
+              resolve(data)
+            })
           }
           data.data = new Uint8ClampedArray(imgData) as any
         }
@@ -1081,41 +1084,44 @@ export const canvasGetImageData =
 export const canvasPutImageData =
   defineAsyncApi<API_TYPE_CANVAS_PUT_IMAGE_DATA>(
     API_CANVAS_PUT_IMAGE_DATA,
-    async ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+    ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
       onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
         return
       }
-      var cId = canvasEventCallbacks.push(function (
+      const cId = canvasEventCallbacks.push(function (
         data: UniApp.CanvasGetImageDataRes
       ) {
         resolve(data)
       })
-      let compressed
+      let compressed: boolean
+      const operate = () => {
+        operateCanvas(canvasId, pageId, 'putImageData', {
+          data,
+          x,
+          y,
+          width,
+          height,
+          compressed,
+          callbackId: cId,
+        })
+      }
       // iOS真机非调试模式压缩太慢暂时排除
       if (
         __PLATFORM__ === 'app' &&
         (plus.os.name !== 'iOS' || typeof __WEEX_DEVTOOL__ === 'boolean')
       ) {
-        const pako = await import('pako')
-        data = pako.deflateRaw(data as any, { to: 'string' }) as any
-        compressed = true
-      } else {
-        // fix ...
-        data = Array.prototype.slice.call(data)
+        return import('pako').then((pako) => {
+          data = pako.deflateRaw(data as any, { to: 'string' }) as any
+          compressed = true
+          operate()
+        })
       }
-
-      operateCanvas(canvasId, pageId, 'putImageData', {
-        data,
-        x,
-        y,
-        width,
-        height,
-        compressed,
-        callbackId: cId,
-      })
+      // fix ...
+      data = Array.prototype.slice.call(data)
+      operate()
     },
     CanvasPutImageDataProtocol,
     CanvasPutImageDataOptions

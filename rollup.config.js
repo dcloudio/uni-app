@@ -123,8 +123,11 @@ function createConfig(entryFile, output, buildOption) {
     createReplacePlugin(buildOption, output.format),
   ]
   if (buildOption.babel) {
+    // TODO weex 使用了 buble 编译，暂时先通过 babel 编译一遍，避免 buble 编译失败
     plugins.push(
       getBabelOutputPlugin({
+        allowAllFormats: true,
+        sourceType: 'module',
         presets: [['@babel/preset-env', { targets: ['iOS 9'] }]],
       })
     )

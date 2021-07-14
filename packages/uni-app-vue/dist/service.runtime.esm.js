@@ -845,17 +845,55 @@ export default function vueFactory(exports) {
     return UniElement;
   }(UniBaseNode);
 
+  var UniInputElement = /*#__PURE__*/function (_UniElement) {
+    _inherits(UniInputElement, _UniElement);
+
+    var _super6 = _createSuper(UniInputElement);
+
+    function UniInputElement() {
+      _classCallCheck(this, UniInputElement);
+
+      return _super6.apply(this, arguments);
+    }
+
+    _createClass(UniInputElement, [{
+      key: "value",
+      get: function get() {
+        return this.getAttribute('value');
+      },
+      set: function set(val) {
+        this.setAttribute('value', val);
+      }
+    }]);
+
+    return UniInputElement;
+  }(UniElement);
+
+  var UniTextAreaElement = /*#__PURE__*/function (_UniInputElement) {
+    _inherits(UniTextAreaElement, _UniInputElement);
+
+    var _super7 = _createSuper(UniTextAreaElement);
+
+    function UniTextAreaElement() {
+      _classCallCheck(this, UniTextAreaElement);
+
+      return _super7.apply(this, arguments);
+    }
+
+    return UniTextAreaElement;
+  }(UniInputElement);
+
   var UniTextNode = /*#__PURE__*/function (_UniBaseNode2) {
     _inherits(UniTextNode, _UniBaseNode2);
 
-    var _super6 = _createSuper(UniTextNode);
+    var _super8 = _createSuper(UniTextNode);
 
     function UniTextNode(text, container) {
       var _this6;
 
       _classCallCheck(this, UniTextNode);
 
-      _this6 = _super6.call(this, NODE_TYPE_TEXT, '#text', container);
+      _this6 = _super8.call(this, NODE_TYPE_TEXT, '#text', container);
       _this6._text = text;
       return _this6;
     }
@@ -11520,6 +11558,12 @@ export default function vueFactory(exports) {
   var compatUtils = null;
 
   function _createElement(tagName, container) {
+    if (tagName === 'input') {
+      return new UniInputElement(tagName, container);
+    } else if (tagName === 'textarea') {
+      return new UniTextAreaElement(tagName, container);
+    }
+
     return new UniElement(tagName, container);
   }
 
@@ -11629,20 +11673,31 @@ export default function vueFactory(exports) {
       }
     } else {
       var batchedStyles = {};
+      var isPrevObj = prev && !isString(prev);
 
-      if (prev && !isString(prev)) {
+      if (isPrevObj) {
         for (var key in prev) {
           if (next[key] == null) {
             batchedStyles[key] = '';
           }
         }
+
+        for (var _key20 in next) {
+          var value = next[_key20];
+
+          if (value !== prev[_key20]) {
+            batchedStyles[_key20] = value;
+          }
+        }
+      } else {
+        for (var _key21 in next) {
+          batchedStyles[_key21] = next[_key21];
+        }
       }
 
-      for (var _key20 in next) {
-        batchedStyles[_key20] = next[_key20];
+      if (Object.keys(batchedStyles).length) {
+        el.setAttribute('style', batchedStyles);
       }
-
-      el.setAttribute('style', batchedStyles);
     }
   }
 
@@ -11752,14 +11807,12 @@ export default function vueFactory(exports) {
         patchStyle(el, prevValue, nextValue);
         break;
 
-      case 'modelValue':
-      case 'onUpdate:modelValue':
-        // handled by v-model directive
-        break;
-
       default:
         if (isOn(key)) {
-          patchEvent(el, key, prevValue, nextValue);
+          // ignore v-model listeners
+          if (!isModelListener(key)) {
+            patchEvent(el, key, prevValue, nextValue);
+          }
         } else {
           patchAttr(el, key, nextValue);
         }
@@ -12377,12 +12430,16 @@ export default function vueFactory(exports) {
   var vModelText = {
     created(el, _ref26, vnode) {
       var _ref26$modifiers = _ref26.modifiers,
-          lazy = _ref26$modifiers.lazy,
           trim = _ref26$modifiers.trim,
           number = _ref26$modifiers.number;
       el._assign = getModelAssigner(vnode);
-      addEventListener(el, lazy ? 'change' : 'input', function (e) {
-        var domValue = el.value;
+      addEventListener(el, 'input', function (e) {
+        var domValue = e.detail.value; // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据
+
+        var pageNode = el.pageNode;
+        el.pageNode = null;
+        el.value = domValue;
+        el.pageNode = pageNode;
 
         if (trim) {
           domValue = domValue.trim();
@@ -12392,18 +12449,6 @@ export default function vueFactory(exports) {
 
         el._assign(domValue);
       });
-
-      if (trim) {
-        addEventListener(el, 'change', function () {
-          el.value = el.value.trim();
-        });
-      }
-
-      if (!lazy) {
-        addEventListener(el, 'change', function (evt) {
-          return el.dispatchEvent(evt);
-        });
-      }
     },
 
     beforeUpdate(el, _ref27, vnode) {
@@ -12467,8 +12512,8 @@ export default function vueFactory(exports) {
         if (guard && guard(event, modifiers)) return;
       }
 
-      for (var _len11 = arguments.length, args = new Array(_len11 > 1 ? _len11 - 1 : 0), _key21 = 1; _key21 < _len11; _key21++) {
-        args[_key21 - 1] = arguments[_key21];
+      for (var _len11 = arguments.length, args = new Array(_len11 > 1 ? _len11 - 1 : 0), _key22 = 1; _key22 < _len11; _key22++) {
+        args[_key22 - 1] = arguments[_key22];
       }
 
       return fn.apply(void 0, [event].concat(args));

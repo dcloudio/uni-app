@@ -6368,7 +6368,8 @@ var serviceContext = (function (vue) {
 
   const VD_SYNC = 'vdSync';
   const ON_WEBVIEW_READY = 'onWebviewReady';
-  const INVOKE_API = 'invokeApi';
+  const INVOKE_VIEW_API = 'invokeViewApi';
+  const INVOKE_SERVICE_API = 'invokeServiceApi';
 
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
@@ -6726,10 +6727,10 @@ var serviceContext = (function (vue) {
           // 非纯原生
           subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
           subscribe(VD_SYNC, onVdSync);
-          subscribe(INVOKE_API, onInvokeApi);
+          subscribe(INVOKE_SERVICE_API, onInvokeServiceApi);
       }
   }
-  function onInvokeApi({ data: { method, args }, }) {
+  function onInvokeServiceApi({ data: { method, args }, }) {
       uni[method] && uni[method](args);
   }
 
@@ -7801,6 +7802,32 @@ var serviceContext = (function (vue) {
       });
   }
 
+  // TODO
+  // export {
+  //   upx2px,
+  //   addInterceptor,
+  //   removeInterceptor,
+  //   promiseInterceptor,
+  //   arrayBufferToBase64,
+  //   base64ToArrayBuffer,
+  //   createIntersectionObserver,
+  //   createMediaQueryObserver,
+  //   createSelectorQuery,
+  //   createVideoContext,
+  //   createMapContext,
+  //   createAnimation,
+  //   onTabBarMidButtonTap,
+  //   createCanvasContext,
+  //   canvasGetImageData,
+  //   canvasPutImageData,
+  //   canvasToTempFilePath,
+  //   getSelectedTextRange,
+  //   $on,
+  //   $off,
+  //   $once,
+  //   $emit,
+  // } from '@dcloudio/uni-api'
+
   var uni$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setStorageSync: setStorageSync,
@@ -7910,8 +7937,15 @@ var serviceContext = (function (vue) {
     navigateBack: navigateBack
   });
 
+  let invokeViewMethodId = 0;
+  const invokeViewMethod = (name, args, callback, pageId) => {
+      const id = invokeViewMethodId++;
+      UniServiceJSBridge$1.subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
+      publishHandler(INVOKE_VIEW_API, { id, name, args }, pageId);
+  };
   const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
       publishHandler,
+      invokeViewMethod,
   });
   function publishHandler(event, args, pageIds) {
       args = JSON.stringify(args);
@@ -7922,6 +7956,9 @@ var serviceContext = (function (vue) {
           pageIds = [pageIds];
       }
       const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('publishHandler', 'size', evalJSCode.length));
+      }
       pageIds.forEach((id) => {
           const idStr = String(id);
           const webview = plus.webview.getWebviewById(idStr);

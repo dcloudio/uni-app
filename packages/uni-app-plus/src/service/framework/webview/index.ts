@@ -25,6 +25,9 @@ export function createWebview(options: CreateWebviewOptions) {
   return getPreloadWebview()
 }
 
-export function onWebviewReady(pageId: string, callback: Function) {
+export function onWebviewReady(
+  pageId: string,
+  callback: (...args: any[]) => void
+) {
   UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback)
 }

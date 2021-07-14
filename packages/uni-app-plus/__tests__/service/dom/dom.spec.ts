@@ -1,4 +1,4 @@
-import { encodeTag, UniEventListener } from '@dcloudio/uni-shared'
+import { encodeEvent, encodeTag, UniEventListener } from '@dcloudio/uni-shared'
 import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
@@ -15,6 +15,8 @@ import {
   ACTION_TYPE_REMOVE,
   CreateAction,
   ACTION_TYPE_CREATE,
+  ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_REMOVE_EVENT,
 } from '../../../src/PageAction'
 
 import { EventModifierFlags } from '@dcloudio/uni-shared'
@@ -103,9 +105,9 @@ describe('dom', () => {
     const {
       updateActions: [addEventListenerAction],
     } = root
-    expect(addEventListenerAction[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
+    expect(addEventListenerAction[0]).toBe(ACTION_TYPE_ADD_EVENT)
     expect(addEventListenerAction[1]).toBe(2)
-    expect(addEventListenerAction[2]).toBe('.e0')
+    expect(addEventListenerAction[2]).toBe(encodeEvent('onClick'))
     expect(addEventListenerAction[3]).toBe(0)
 
     root.updateActions.length = 0
@@ -113,9 +115,9 @@ describe('dom', () => {
     const {
       updateActions: [removeEventListenerAction],
     } = root
-    expect(removeEventListenerAction[0]).toBe(ACTION_TYPE_REMOVE_ATTRIBUTE)
+    expect(removeEventListenerAction[0]).toBe(ACTION_TYPE_REMOVE_EVENT)
     expect(removeEventListenerAction[1]).toBe(2)
-    expect(removeEventListenerAction[2]).toBe('.e0')
+    expect(removeEventListenerAction[2]).toBe(encodeEvent('onClick'))
 
     root.updateActions.length = 0
     const clickFn1 = withModifiers(() => {}, [
@@ -126,9 +128,9 @@ describe('dom', () => {
     const {
       updateActions: [addEventListenerAction1],
     } = root
-    expect(addEventListenerAction1[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
+    expect(addEventListenerAction1[0]).toBe(ACTION_TYPE_ADD_EVENT)
     expect(addEventListenerAction1[1]).toBe(2)
-    expect(addEventListenerAction1[2]).toBe('.e00')
+    expect(addEventListenerAction1[2]).toBe(encodeEvent('onClickCapture'))
     const flag = addEventListenerAction1[3] as number
     expect(flag & EventModifierFlags.stop).toBeTruthy()
     expect(flag & EventModifierFlags.prevent).toBeTruthy()
