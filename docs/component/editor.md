@@ -35,7 +35,7 @@ editor组件目前只有H5、App的vue页面、微信小程序、百度小程序
 | @input | eventhandle |  | 否 | 编辑器内容改变时触发，detail = {html, text, delta} |
 | @statuschange | eventhandle |  | 否 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
 
-编辑器内支持部分 HTML 标签和内连样式，不支持**class**和**id**
+编辑器内支持部分 HTML 标签和内联样式，不支持**class**和**id**
 
 #### 支持的标签
 
@@ -46,7 +46,7 @@ editor组件目前只有H5、App的vue页面、微信小程序、百度小程序
 | 行内元素 | `<span> <strong> <b> <ins> <em> <i> <u> <a> <del> <s> <sub> <sup> <img>` |
 | 块级元素 | `<p> <h1> <h2> <h3> <h4> <h5> <h6> <hr> <ol> <ul> <li>` |
 
-#### 支持的内连样式
+#### 支持的内联样式
 
 内联样式仅能设置在行内元素或块级元素上，不能同时设置。例如 font-size` 归类为行内元素属性，在 p 标签上设置是无效的。
 
