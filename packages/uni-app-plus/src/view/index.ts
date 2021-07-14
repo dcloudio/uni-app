@@ -6,9 +6,11 @@ import { UniViewJSBridge } from './bridge'
 import * as uni from './api'
 import { preventDoubleTap } from './framework/gesture'
 import { initSubscribeHandlers } from './framework/subscriber'
+import { $ } from './framework/dom/page'
 ;(window as any).uni = uni
 ;(window as any).UniViewJSBridge = UniViewJSBridge
 ;(window as any).rpx2px = uni.upx2px
+;(window as any).__$__ = $
 
 function onWebviewReady() {
   initView()

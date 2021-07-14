@@ -9,7 +9,12 @@ export function requestComponentInfo(
   UniServiceJSBridge.invokeViewMethod(
     'requestComponentInfo',
     {
-      reqs,
+      reqs: reqs.map((req) => {
+        if (req.component) {
+          req.component = req.component.$el.nodeId
+        }
+        return req
+      }),
     },
     callback,
     page.$page.id

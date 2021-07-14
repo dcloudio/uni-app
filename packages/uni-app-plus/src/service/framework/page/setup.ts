@@ -16,6 +16,7 @@ export function setupPage(component: VuePageComponent) {
     const instance = getCurrentInstance()!
     const pageVm = instance.proxy!
     pageVm.$page = __pageInstance as Page.PageInstance['$page']
+    pageVm.$vm = pageVm
     addCurrentPage(initScope(__pageId as number, pageVm))
     if (oldSetup) {
       return oldSetup(__pageQuery as any, ctx)

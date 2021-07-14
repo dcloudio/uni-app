@@ -2047,7 +2047,10 @@ function getNodeInfo(el, fields2) {
   return info;
 }
 function findElm(component, pageVm) {
-  return component ? component.$el : pageVm.$el;
+  if (!component) {
+    return pageVm.$el;
+  }
+  return component.$el;
 }
 function getNodesInfo(pageVm, component, selector, single, fields2) {
   const parentElement = findElm(component, pageVm).parentElement;

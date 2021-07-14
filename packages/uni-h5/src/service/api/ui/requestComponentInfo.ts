@@ -100,7 +100,14 @@ export function findElm(
   component: ComponentPublicInstance | undefined | null,
   pageVm: ComponentPublicInstance
 ): HTMLElement {
-  return component ? component.$el : pageVm.$el
+  if (!component) {
+    return pageVm.$el
+  }
+  if (__APP_VIEW__) {
+    // App 端，传入的是 nodeId
+    return (window as any).__$__(component).$
+  }
+  return component.$el
 }
 
 function getNodesInfo(

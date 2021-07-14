@@ -15494,7 +15494,12 @@
     return info;
   }
   function findElm(component, pageVm2) {
-    return component ? component.$el : pageVm2.$el;
+    if (!component) {
+      return pageVm2.$el;
+    }
+    {
+      return window.__$__(component).$;
+    }
   }
   function getNodesInfo(pageVm2, component, selector, single, fields) {
     const parentElement = findElm(component, pageVm2).parentElement;
@@ -15551,6 +15556,7 @@
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;
   window.rpx2px = upx2px;
+  window.__$__ = $;
   function onWebviewReady() {
     initView();
     initSubscribeHandlers();
