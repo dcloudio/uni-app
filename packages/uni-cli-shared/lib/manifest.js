@@ -69,7 +69,7 @@ function getH5Options (manifestJson) {
 
   h5.router.base = base
 
-  if (process.env.NODE_ENV === 'production') { // 生产模式，启用 publicPath
+  if (process.env.NODE_ENV !== 'development') { // 除了开发模式，其他模式都启用 publicPath
     h5.publicPath = h5.publicPath || base
 
     if (!h5.publicPath.endsWith('/')) {
