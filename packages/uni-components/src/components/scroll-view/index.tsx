@@ -501,7 +501,7 @@ function useScrollViewLoader(
       x: 0,
       y: 0,
     }
-    let needStop: boolean = false
+    let needStop: boolean | null = null
 
     let __handleTouchMove = function (event: TouchEvent) {
       let x = event.touches[0].pageX
@@ -510,7 +510,7 @@ function useScrollViewLoader(
 
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
         // 横向滑动
-        if (self.scrollX) {
+        if (props.scrollX) {
           if (_main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false
             return
@@ -527,23 +527,21 @@ function useScrollViewLoader(
         }
       } else {
         // 纵向滑动
-        if (self.scrollY) {
-          if (
-            props.refresherEnabled &&
-            _main.scrollTop === 0 &&
-            y > touchStart.y
-          ) {
-            needStop = true
+        if (props.scrollY) {
+          if (_main.scrollTop === 0 && y > touchStart.y) {
+            needStop = false
             // 刷新时，阻止页面滚动
-            if (event.cancelable !== false) event.preventDefault()
+            if (props.refresherEnabled && event.cancelable !== false)
+              event.preventDefault()
           } else if (
             _main.scrollHeight === _main.offsetHeight + _main.scrollTop &&
             y < touchStart.y
           ) {
             needStop = false
             return
+          } else {
+            needStop = true
           }
-          needStop = true
         } else {
           needStop = false
         }
