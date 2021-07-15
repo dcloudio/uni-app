@@ -32,6 +32,13 @@
 
 ### 安装
 
+**从插件市场导入**
+
+1. 访问插件市场[uni-cloud-router](https://ext.dcloud.net.cn/plugin?id=3660)，点击右侧使用HBuilderX导入插件
+2. 在要使用uni-cloud-router的云函数目录（例：uniCloud/cloudfunctions/router）右键点击`管理公共模块依赖`，选择uni-cloud-router并确定
+
+**使用npm安装**
+
 ```bash
 npm install --save uni-cloud-router
 ```
@@ -122,7 +129,7 @@ sayHello() {
 }
 ```
 
-以上代码仅作为示例，建议点击右侧【使用 HBuilderX 导入示例项目】尝试。
+以上代码仅作为示例，建议使用[插件市场](https://ext.dcloud.net.cn/plugin?id=3660)的【使用 HBuilderX 导入示例项目】尝试。
 
 ## 深入学习
 
