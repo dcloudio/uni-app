@@ -54,6 +54,15 @@ describe('mp:compiler-mp-alipay', () => {
         wxComponents: { component1: '/mycomponents/component1' }
       }
     )
+    assertCodegen(
+      '<credit-pay @change="onChange">text</credit-pay>',
+      '<credit-pay onChange="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]]]}}" data-com-type="wx" ref="__r" onVueInit="__l">text</credit-pay>',
+      undefined,
+      undefined,
+      {
+        wxComponents: { 'credit-pay': 'plugin://myPlugin/CreditPay' }
+      }
+    )
   })
   it('generate slot fallback content', () => {
     assertCodegen(
