@@ -1,6 +1,4 @@
-import { onNodeEvent } from './service/framework/dom/onNodeEvent'
-import { createElement } from './view/framework/dom/page'
-import { UniElement } from './view/framework/dom/elements/UniElement'
+import { UniNodeJSON } from './Node'
 
 export const ACTION_TYPE_PAGE_CREATE = 1
 export const ACTION_TYPE_PAGE_CREATED = 2
@@ -37,53 +35,81 @@ export interface PageCreateData extends PageNodeOptions {}
 export type PageCreateAction = [typeof ACTION_TYPE_PAGE_CREATE, PageCreateData]
 export type PageCreatedAction = [typeof ACTION_TYPE_PAGE_CREATED]
 
-export type EventAction = [
-  typeof ACTION_TYPE_EVENT,
-  Parameters<typeof onNodeEvent>[0],
-  Parameters<typeof onNodeEvent>[1]
-]
-
+/**
+ * nodeId
+ * tag
+ * parentNodeId
+ * nodeJson
+ */
 export type CreateAction = [
   typeof ACTION_TYPE_CREATE,
-  ...Parameters<typeof createElement>
+  number,
+  string | number,
+  number,
+  Partial<UniNodeJSON>?
 ]
 
-type NodeAction<T extends Parameters<any>> = [/* nodeId */ number, ...T]
+/**
+ * nodeId
+ * parentNodeId
+ * refNodeId
+ */
+export type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, number]
 
-export type InsertAction = [
-  typeof ACTION_TYPE_INSERT,
-  ...NodeAction<Parameters<UniElement<any>['insert']>>
-]
+/**
+ * nodeId
+ */
+export type RemoveAction = [typeof ACTION_TYPE_REMOVE, number]
 
-export type RemoveAction = [
-  typeof ACTION_TYPE_REMOVE,
-  ...NodeAction<Parameters<UniElement<any>['remove']>>
-]
-
+/**
+ * nodeId
+ * event
+ * flag
+ */
 export type AddEventAction = [
   typeof ACTION_TYPE_ADD_EVENT,
-  ...NodeAction<Parameters<UniElement<any>['addEvent']>>
+  number,
+  string,
+  number
 ]
 
+/**
+ * nodeId
+ * event
+ */
 export type RemoveEventAction = [
   typeof ACTION_TYPE_REMOVE_EVENT,
-  ...NodeAction<Parameters<UniElement<any>['removeEvent']>>
+  number,
+  string
 ]
 
+/**
+ * nodeId
+ * name
+ * value
+ */
 export type SetAttributeAction = [
   typeof ACTION_TYPE_SET_ATTRIBUTE,
-  ...NodeAction<Parameters<UniElement<any>['setAttr']>>
+  number,
+  string,
+  unknown
 ]
 
+/**
+ * nodeId
+ * name
+ */
 export type RemoveAttributeAction = [
   typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
-  ...NodeAction<Parameters<UniElement<any>['removeAttr']>>
+  number,
+  string
 ]
 
-export type SetTextAction = [
-  typeof ACTION_TYPE_SET_TEXT,
-  ...NodeAction<Parameters<UniElement<any>['setText']>>
-]
+/**
+ * nodeId
+ * text
+ */
+export type SetTextAction = [typeof ACTION_TYPE_SET_TEXT, number, string]
 
 export type PageUpdateAction =
   | CreateAction

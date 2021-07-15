@@ -1,27 +1,27 @@
-import { decodeTag } from '@dcloudio/uni-shared'
 import {
-  CreateAction,
-  InsertAction,
-  RemoveAction,
-  SetAttributeAction,
-  RemoveAttributeAction,
-  SetTextAction,
+  ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_CREATE,
   ACTION_TYPE_INSERT,
+  ACTION_TYPE_PAGE_CREATE,
+  ACTION_TYPE_PAGE_CREATED,
   ACTION_TYPE_REMOVE,
-  ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_REMOVE_ATTRIBUTE,
+  ACTION_TYPE_REMOVE_EVENT,
+  ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
+  AddEventAction,
+  CreateAction,
+  decodeTag,
+  InsertAction,
   PageAction,
   PageCreateAction,
   PageCreatedAction,
-  ACTION_TYPE_PAGE_CREATE,
-  ACTION_TYPE_PAGE_CREATED,
-  AddEventAction,
+  RemoveAction,
+  RemoveAttributeAction,
   RemoveEventAction,
-  ACTION_TYPE_ADD_EVENT,
-  ACTION_TYPE_REMOVE_EVENT,
-} from '../../../PageAction'
+  SetAttributeAction,
+  SetTextAction,
+} from '@dcloudio/uni-shared'
 
 function decodePageCreateAction([, pageCreateData]: PageCreateAction) {
   return ['pageCreate', pageCreateData]

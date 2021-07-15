@@ -1,5 +1,4 @@
 import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
-import { UniCustomElement } from '../components'
 import { UniElement } from './UniElement'
 
 interface HoverProps {

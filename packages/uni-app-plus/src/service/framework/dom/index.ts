@@ -1,8 +1,7 @@
 import { getPageById } from '@dcloudio/uni-core'
-import { formatLog } from '@dcloudio/uni-shared'
+import { ACTION_TYPE_EVENT, formatLog } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
-import { ACTION_TYPE_EVENT, EventAction } from '../../../PageAction'
-import { onNodeEvent } from './onNodeEvent'
+import { EventAction, onNodeEvent } from './onNodeEvent'
 import UniPageNode from './Page'
 
 export function onVdSync(actions: EventAction[], pageId: string) {

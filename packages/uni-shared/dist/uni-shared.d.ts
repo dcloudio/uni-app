@@ -1,5 +1,39 @@
 import { FontFaceDescriptors } from 'css-font-loading-module';
 
+export declare const ACTION_TYPE_ADD_EVENT = 8;
+
+export declare const ACTION_TYPE_CREATE = 3;
+
+export declare const ACTION_TYPE_EVENT = 20;
+
+export declare const ACTION_TYPE_INSERT = 4;
+
+export declare const ACTION_TYPE_PAGE_CREATE = 1;
+
+export declare const ACTION_TYPE_PAGE_CREATED = 2;
+
+export declare const ACTION_TYPE_REMOVE = 5;
+
+export declare const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+
+export declare const ACTION_TYPE_REMOVE_EVENT = 9;
+
+export declare const ACTION_TYPE_SET_ATTRIBUTE = 6;
+
+export declare const ACTION_TYPE_SET_TEXT = 10;
+
+/**
+ * nodeId
+ * event
+ * flag
+ */
+export declare type AddEventAction = [
+typeof ACTION_TYPE_ADD_EVENT,
+number,
+string,
+number
+];
+
 export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
@@ -22,6 +56,20 @@ export declare const COMPONENT_NAME_PREFIX = "VUni";
 export declare const COMPONENT_PREFIX: string;
 
 export declare const COMPONENT_SELECTOR_PREFIX = "uni-";
+
+/**
+ * nodeId
+ * tag
+ * parentNodeId
+ * nodeJson
+ */
+export declare type CreateAction = [
+typeof ACTION_TYPE_CREATE,
+number,
+string | number,
+number,
+Partial<UniNodeJSON>?
+];
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
 
@@ -86,6 +134,13 @@ declare interface HTMLElementWithDataset extends HTMLElement {
 
 export declare function initCustomDataset(): void;
 
+/**
+ * nodeId
+ * parentNodeId
+ * refNodeId
+ */
+export declare type InsertAction = [typeof ACTION_TYPE_INSERT, number, number, number];
+
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
 export declare function isBuiltInComponent(tag: string): boolean;
@@ -146,6 +201,34 @@ declare interface Options {
     complete?: (res: any) => void;
 }
 
+export declare type PageAction = PageCreateAction | PageCreatedAction | PageUpdateAction;
+
+export declare type PageCreateAction = [typeof ACTION_TYPE_PAGE_CREATE, PageCreateData];
+
+export declare type PageCreatedAction = [typeof ACTION_TYPE_PAGE_CREATED];
+
+export declare interface PageCreateData extends PageNodeOptions {
+}
+
+export declare interface PageNodeOptions {
+    css: boolean;
+    route: string;
+    version: number;
+    locale: string;
+    platform: string;
+    pixelRatio: number;
+    windowWidth: number;
+    disableScroll: boolean;
+    onPageScroll: boolean;
+    onPageReachBottom: boolean;
+    onReachBottomDistance: number;
+    statusbarHeight: number;
+    windowTop: number;
+    windowBottom: number;
+}
+
+export declare type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAction | RemoveEventAction | SetAttributeAction | RemoveAttributeAction | SetTextAction;
+
 export declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
 
 /**
@@ -172,6 +255,31 @@ export declare function plusReady(callback: () => void): void;
 
 export declare const PRIMARY_COLOR = "#007aff";
 
+/**
+ * nodeId
+ */
+export declare type RemoveAction = [typeof ACTION_TYPE_REMOVE, number];
+
+/**
+ * nodeId
+ * name
+ */
+export declare type RemoveAttributeAction = [
+typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
+number,
+string
+];
+
+/**
+ * nodeId
+ * event
+ */
+export declare type RemoveEventAction = [
+typeof ACTION_TYPE_REMOVE_EVENT,
+number,
+string
+];
+
 export declare function removeLeadingSlash(str: string): string;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
@@ -186,6 +294,24 @@ declare function scrollTo_2(scrollTop: number | string, duration: number): void;
 export { scrollTo_2 as scrollTo }
 
 export declare const SELECTED_COLOR = "#0062cc";
+
+/**
+ * nodeId
+ * name
+ * value
+ */
+export declare type SetAttributeAction = [
+typeof ACTION_TYPE_SET_ATTRIBUTE,
+number,
+string,
+unknown
+];
+
+/**
+ * nodeId
+ * text
+ */
+export declare type SetTextAction = [typeof ACTION_TYPE_SET_TEXT, number, string];
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 

@@ -4,6 +4,7 @@ import {
   formatLog,
   NAVBAR_HEIGHT,
   ON_REACH_BOTTOM_DISTANCE,
+  PageNodeOptions,
 } from '@dcloudio/uni-shared'
 import { initPageInternalInstance } from '@dcloudio/uni-core'
 
@@ -11,7 +12,6 @@ import { initEntry } from '../app/initEntry'
 import { initRouteOptions } from './routeOptions'
 import { createWebview, initWebview } from '../webview'
 import { createPage } from './define'
-import { PageNodeOptions } from '../../../PageAction'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
 import { addCurrentPage } from './getCurrentPages'

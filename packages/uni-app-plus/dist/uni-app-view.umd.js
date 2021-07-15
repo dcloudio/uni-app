@@ -270,6 +270,17 @@
   function decodeAttr(name) {
     return DECODED_ATTR_MAP[name] || name;
   }
+  const ACTION_TYPE_PAGE_CREATE = 1;
+  const ACTION_TYPE_PAGE_CREATED = 2;
+  const ACTION_TYPE_CREATE = 3;
+  const ACTION_TYPE_INSERT = 4;
+  const ACTION_TYPE_REMOVE = 5;
+  const ACTION_TYPE_SET_ATTRIBUTE = 6;
+  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+  const ACTION_TYPE_ADD_EVENT = 8;
+  const ACTION_TYPE_REMOVE_EVENT = 9;
+  const ACTION_TYPE_SET_TEXT = 10;
+  const ACTION_TYPE_EVENT = 20;
   function cache(fn) {
     const cache2 = Object.create(null);
     return (str) => {
@@ -5820,17 +5831,6 @@
       });
     }
   }
-  const ACTION_TYPE_PAGE_CREATE = 1;
-  const ACTION_TYPE_PAGE_CREATED = 2;
-  const ACTION_TYPE_CREATE = 3;
-  const ACTION_TYPE_INSERT = 4;
-  const ACTION_TYPE_REMOVE = 5;
-  const ACTION_TYPE_SET_ATTRIBUTE = 6;
-  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  const ACTION_TYPE_ADD_EVENT = 8;
-  const ACTION_TYPE_REMOVE_EVENT = 9;
-  const ACTION_TYPE_SET_TEXT = 10;
-  const ACTION_TYPE_EVENT = 20;
   class UniNode {
     constructor(id2, tag, parentNodeId, element) {
       this.isMounted = false;
@@ -14443,9 +14443,14 @@
       super(id2, "uni-button", Button, parentNodeId, nodeJson);
     }
   }
-  class UniCamera extends UniNode {
-    constructor(id2) {
-      super(id2, "uni-camera");
+  class UniTodoNode extends UniNode {
+    constructor(id2, tag, parentNodeId) {
+      super(id2, tag, parentNodeId);
+    }
+  }
+  class UniCamera extends UniTodoNode {
+    constructor(id2, parentNodeId) {
+      super(id2, "uni-camera", parentNodeId);
     }
   }
   var canvas = "uni-canvas {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n}\n\nuni-canvas > .uni-canvas-canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n";
@@ -14873,9 +14878,9 @@
       super(id2, "uni-form", Form, parentNodeId, nodeJson, "span");
     }
   }
-  class UniFunctionalPageNavigator extends UniNode {
-    constructor(id2) {
-      super(id2, "uni-functional-page-navigator");
+  class UniFunctionalPageNavigator extends UniTodoNode {
+    constructor(id2, parentNodeId) {
+      super(id2, "uni-functional-page-navigator", parentNodeId);
     }
   }
   var icon = "uni-icon {\n  display: inline-block;\n  font-size: 0;\n  box-sizing: border-box;\n}\n\nuni-icon[hidden] {\n  display: none;\n}\n";
@@ -14902,14 +14907,14 @@
       super(id2, "uni-label", Label, parentNodeId, nodeJson);
     }
   }
-  class UniLivePlayer extends UniNode {
-    constructor(id2) {
-      super(id2, "uni-live-player");
+  class UniLivePlayer extends UniTodoNode {
+    constructor(id2, parentNodeId) {
+      super(id2, "uni-live-player", parentNodeId);
     }
   }
-  class UniLivePusher extends UniNode {
-    constructor(id2) {
-      super(id2, "uni-live-pusher");
+  class UniLivePusher extends UniTodoNode {
+    constructor(id2, parentNodeId) {
+      super(id2, "uni-live-pusher", parentNodeId);
     }
   }
   var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
@@ -14938,14 +14943,14 @@
       super(id2, "uni-navigator", Navigator, parentNodeId, nodeJson);
     }
   }
-  class UniOfficialAccount extends UniNode {
-    constructor(id2) {
-      super(id2, "uni-official-account");
+  class UniOfficialAccount extends UniTodoNode {
+    constructor(id2, parentNodeId) {
+      super(id2, "uni-official-account", parentNodeId);
     }
   }
-  class UniOpenData extends UniNode {
-    constructor(id2) {
-      super(id2, "uni-open-data");
+  class UniOpenData extends UniTodoNode {
+    constructor(id2, parentNodeId) {
+      super(id2, "uni-open-data", parentNodeId);
     }
   }
   var Picker = /* @__PURE__ */ defineBuiltInComponent({

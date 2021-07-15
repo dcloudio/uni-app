@@ -1,7 +1,7 @@
-import { UniNode } from '../elements/UniNode'
+import { UniTodoNode } from '../elements/UniTodoNode'
 
-export class UniLivePusher extends UniNode {
-  constructor(id: number) {
-    super(id, 'uni-live-pusher')
+export class UniLivePusher extends UniTodoNode {
+  constructor(id: number, parentNodeId: number) {
+    super(id, 'uni-live-pusher', parentNodeId)
   }
 }

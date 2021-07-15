@@ -7,24 +7,23 @@ import {
   formatLog,
   UniEvent,
   UniNodeJSON,
-} from '@dcloudio/uni-shared'
-import {
-  PageCreateAction,
-  PageCreatedAction,
-  PageAction,
-  PageNodeOptions,
+  ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_CREATE,
   ACTION_TYPE_INSERT,
-  ACTION_TYPE_REMOVE,
-  ACTION_TYPE_SET_ATTRIBUTE,
-  ACTION_TYPE_REMOVE_ATTRIBUTE,
-  ACTION_TYPE_SET_TEXT,
   ACTION_TYPE_PAGE_CREATE,
   ACTION_TYPE_PAGE_CREATED,
-  CreateAction,
-  ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_REMOVE,
+  ACTION_TYPE_REMOVE_ATTRIBUTE,
   ACTION_TYPE_REMOVE_EVENT,
-} from '../../../PageAction'
+  ACTION_TYPE_SET_ATTRIBUTE,
+  ACTION_TYPE_SET_TEXT,
+  CreateAction,
+  PageAction,
+  PageCreateAction,
+  PageCreatedAction,
+  PageNodeOptions,
+} from '@dcloudio/uni-shared'
+
 import { VD_SYNC } from '../../../constants'
 
 export default class UniPageNode extends UniNode implements IUniPageNode {

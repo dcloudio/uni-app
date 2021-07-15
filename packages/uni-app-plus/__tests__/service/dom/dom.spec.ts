@@ -1,23 +1,25 @@
-import { encodeEvent, encodeTag, UniEventListener } from '@dcloudio/uni-shared'
+import {
+  ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_CREATE,
+  ACTION_TYPE_INSERT,
+  ACTION_TYPE_REMOVE,
+  ACTION_TYPE_REMOVE_ATTRIBUTE,
+  ACTION_TYPE_REMOVE_EVENT,
+  ACTION_TYPE_SET_ATTRIBUTE,
+  ACTION_TYPE_SET_TEXT,
+  CreateAction,
+  encodeEvent,
+  encodeTag,
+  InsertAction,
+  SetAttributeAction,
+  UniEventListener,
+} from '@dcloudio/uni-shared'
 import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
   createTextNode,
   withModifiers,
 } from '../../../../uni-app-vue/lib/service.runtime.esm'
-import {
-  InsertAction,
-  ACTION_TYPE_INSERT,
-  SetAttributeAction,
-  ACTION_TYPE_SET_ATTRIBUTE,
-  ACTION_TYPE_REMOVE_ATTRIBUTE,
-  ACTION_TYPE_SET_TEXT,
-  ACTION_TYPE_REMOVE,
-  CreateAction,
-  ACTION_TYPE_CREATE,
-  ACTION_TYPE_ADD_EVENT,
-  ACTION_TYPE_REMOVE_EVENT,
-} from '../../../src/PageAction'
 
 import { EventModifierFlags } from '@dcloudio/uni-shared'
 describe('dom', () => {

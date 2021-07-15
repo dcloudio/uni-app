@@ -986,6 +986,18 @@ var serviceContext = (function (vue) {
       }
   }
 
+  const ACTION_TYPE_PAGE_CREATE = 1;
+  const ACTION_TYPE_PAGE_CREATED = 2;
+  const ACTION_TYPE_CREATE = 3;
+  const ACTION_TYPE_INSERT = 4;
+  const ACTION_TYPE_REMOVE = 5;
+  const ACTION_TYPE_SET_ATTRIBUTE = 6;
+  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+  const ACTION_TYPE_ADD_EVENT = 8;
+  const ACTION_TYPE_REMOVE_EVENT = 9;
+  const ACTION_TYPE_SET_TEXT = 10;
+  const ACTION_TYPE_EVENT = 20;
+
   function cache(fn) {
       const cache = Object.create(null);
       return (str) => {
@@ -8207,18 +8219,6 @@ var serviceContext = (function (vue) {
   const ON_WEBVIEW_READY = 'onWebviewReady';
   const INVOKE_VIEW_API = 'invokeViewApi';
   const INVOKE_SERVICE_API = 'invokeServiceApi';
-
-  const ACTION_TYPE_PAGE_CREATE = 1;
-  const ACTION_TYPE_PAGE_CREATED = 2;
-  const ACTION_TYPE_CREATE = 3;
-  const ACTION_TYPE_INSERT = 4;
-  const ACTION_TYPE_REMOVE = 5;
-  const ACTION_TYPE_SET_ATTRIBUTE = 6;
-  const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  const ACTION_TYPE_ADD_EVENT = 8;
-  const ACTION_TYPE_REMOVE_EVENT = 9;
-  const ACTION_TYPE_SET_TEXT = 10;
-  const ACTION_TYPE_EVENT = 20;
 
   function onNodeEvent(nodeId, evt, pageNode) {
       pageNode.fireEvent(nodeId, evt);

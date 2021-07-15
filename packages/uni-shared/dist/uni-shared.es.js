@@ -900,6 +900,18 @@ function decodeTag(tag) {
     return (DECODED_COMPONENT_ARR[tag] || tag);
 }
 
+const ACTION_TYPE_PAGE_CREATE = 1;
+const ACTION_TYPE_PAGE_CREATED = 2;
+const ACTION_TYPE_CREATE = 3;
+const ACTION_TYPE_INSERT = 4;
+const ACTION_TYPE_REMOVE = 5;
+const ACTION_TYPE_SET_ATTRIBUTE = 6;
+const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+const ACTION_TYPE_ADD_EVENT = 8;
+const ACTION_TYPE_REMOVE_EVENT = 9;
+const ACTION_TYPE_SET_TEXT = 10;
+const ACTION_TYPE_EVENT = 20;
+
 function cache(fn) {
     const cache = Object.create(null);
     return (str) => {
@@ -1010,4 +1022,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeEvent, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeEvent, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeEvent, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeEvent, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
