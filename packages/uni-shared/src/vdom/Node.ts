@@ -8,7 +8,7 @@ import {
   UniCSSStyleDeclaration,
   UniCSSStyleDeclarationJSON,
 } from './Style'
-import { encodeAttr, encodeEvent, encodeModifier, encodeTag } from './encode'
+import { encodeModifier } from './encode'
 
 export const NODE_TYPE_PAGE = 0
 export const NODE_TYPE_ELEMENT = 1
@@ -91,7 +91,7 @@ export class UniNode extends UniEventTarget {
         this.pageNode = pageNode
         this.nodeId = pageNode!.genId()
 
-        !pageNode!.isUnmounted && pageNode!.onCreate(this, encodeTag(nodeName))
+        !pageNode!.isUnmounted && pageNode!.onCreate(this, nodeName)
       }
     }
     this.nodeType = nodeType
@@ -201,6 +201,34 @@ export class UniNode extends UniEventTarget {
   }
 }
 
+type DictArray = [number, number][]
+
+export interface UniNodeJSONMinify {
+  /**
+   * nodeId
+   */
+  i: number
+  /**
+   * nodeName
+   */
+  n: string | number
+  /**
+   * attributes
+   */
+  a: DictArray
+  /**
+   * listeners
+   */
+  e: DictArray
+  /**
+   * style
+   */
+  s?: DictArray
+  /**
+   * text
+   */
+  t?: number
+}
 export interface UniNodeJSON {
   /**
    * nodeId
@@ -268,7 +296,7 @@ export class UniBaseNode extends UniNode {
     if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onAddEvent(
         this,
-        encodeEvent(normalizeEventType(type, options)),
+        normalizeEventType(type, options),
         encodeModifier(listener.modifiers || [])
       )
     }
@@ -281,19 +309,15 @@ export class UniBaseNode extends UniNode {
   ) {
     super.removeEventListener(type, callback, options)
     if (this.pageNode && !this.pageNode.isUnmounted) {
-      this.pageNode.onRemoveEvent(
-        this,
-        encodeEvent(normalizeEventType(type, options))
-      )
+      this.pageNode.onRemoveEvent(this, normalizeEventType(type, options))
     }
   }
 
   getAttribute(qualifiedName: string) {
-    return this.attributes[encodeAttr(qualifiedName)]
+    return this.attributes[qualifiedName]
   }
 
   removeAttribute(qualifiedName: string): void {
-    qualifiedName = encodeAttr(qualifiedName)
     delete this.attributes[qualifiedName]
     if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onRemoveAttribute(this, qualifiedName)
@@ -301,18 +325,24 @@ export class UniBaseNode extends UniNode {
   }
 
   setAttribute(qualifiedName: string, value: unknown): void {
-    qualifiedName = encodeAttr(qualifiedName)
     this.attributes[qualifiedName] = value
     if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onSetAttribute(this, qualifiedName, value)
     }
   }
 
-  toJSON(opts: { attr?: boolean; children?: boolean } = {}) {
-    const { attributes, listeners, style } = this
+  toJSON({
+    attr,
+    normalize,
+  }: {
+    attr?: boolean
+    children?: boolean
+    normalize?: (val: any, includeValue?: boolean) => any | number
+  } = {}) {
+    const { attributes, listeners, style, _text } = this
     const res: Partial<UniNodeJSON> = {}
     if (Object.keys(attributes).length) {
-      res.a = attributes
+      res.a = normalize ? normalize(attributes) : attributes
     }
     const events = Object.keys(listeners)
     if (events.length) {
@@ -321,21 +351,21 @@ export class UniBaseNode extends UniNode {
         const handlers = listeners[name]
         if (handlers.length) {
           // 可能存在多个 handler 且不同 modifiers 吗？
-          e[encodeEvent(name)] = encodeModifier(handlers[0].modifiers || [])
+          e[name] = encodeModifier(handlers[0].modifiers || [])
         }
       })
-      res.e = e
+      res.e = normalize ? normalize(e, false) : e
     }
     const cssStyle = style.toJSON()
     if (cssStyle) {
-      res.s = cssStyle
+      res.s = normalize ? normalize(cssStyle) : cssStyle
     }
-    if (!opts.attr) {
+    if (!attr) {
       res.i = this.nodeId
-      res.n = encodeTag(this.nodeName)
+      res.n = this.nodeName
     }
-    if (this._text !== null) {
-      res.t = this._text
+    if (_text !== null) {
+      res.t = normalize ? normalize(_text) : _text
     }
     return res
   }

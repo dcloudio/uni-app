@@ -2,7 +2,6 @@ import { withModifiers } from 'vue'
 import { normalizeNativeEvent } from '@dcloudio/uni-core'
 import {
   parseEventName,
-  decodeEvent,
   formatLog,
   EventModifierFlags,
   normalizeEventType,
@@ -12,7 +11,7 @@ import { VD_SYNC } from '../../../../constants'
 import { UniCustomElement } from '../components'
 
 export function patchEvent(el: UniCustomElement, name: string, flag: number) {
-  const [type, options] = parseEventName(decodeEvent(name))
+  const [type, options] = parseEventName(name)
   if (flag === -1) {
     // remove
     const listener = el.__listeners[type]

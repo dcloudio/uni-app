@@ -815,54 +815,6 @@ var serviceContext = (function (vue) {
       }
       return [hyphenate(name.slice(2)), options];
   }
-  const COMPONENT_MAP = {
-      VIEW: 1,
-      IMAGE: 2,
-      TEXT: 3,
-      '#text': 4,
-      '#comment': 5,
-      NAVIGATOR: 6,
-      FORM: 7,
-      BUTTON: 8,
-      INPUT: 9,
-      LABEL: 10,
-      RADIO: 11,
-      CHECKBOX: 12,
-      'CHECKBOX-GROUP': 13,
-      AD: 14,
-      AUDIO: 15,
-      CAMERA: 16,
-      CANVAS: 17,
-      'COVER-IMAGE': 18,
-      'COVER-VIEW': 19,
-      EDITOR: 20,
-      'FUNCTIONAL-PAGE-NAVIGATOR': 21,
-      ICON: 22,
-      'RADIO-GROUP': 23,
-      'LIVE-PLAYER': 24,
-      'LIVE-PUSHER': 25,
-      MAP: 26,
-      'MOVABLE-AREA': 27,
-      'MOVABLE-VIEW': 28,
-      'OFFICIAL-ACCOUNT': 29,
-      'OPEN-DATA': 30,
-      PICKER: 31,
-      'PICKER-VIEW': 32,
-      'PICKER-VIEW-COLUMN': 33,
-      PROGRESS: 34,
-      'RICH-TEXT': 35,
-      'SCROLL-VIEW': 36,
-      SLIDER: 37,
-      SWIPER: 38,
-      'SWIPER-ITEM': 39,
-      SWITCH: 40,
-      TEXTAREA: 41,
-      VIDEO: 42,
-      'WEB-VIEW': 43,
-  };
-  function encodeTag(tag) {
-      return COMPONENT_MAP[tag] || tag;
-  }
 
   const NODE_TYPE_PAGE = 0;
   const NODE_TYPE_ELEMENT = 1;
@@ -897,7 +849,7 @@ var serviceContext = (function (vue) {
               if (pageNode) {
                   this.pageNode = pageNode;
                   this.nodeId = pageNode.genId();
-                  !pageNode.isUnmounted && pageNode.onCreate(this, encodeTag(nodeName));
+                  !pageNode.isUnmounted && pageNode.onCreate(this, nodeName);
               }
           }
           this.nodeType = nodeType;
@@ -8219,6 +8171,7 @@ var serviceContext = (function (vue) {
   const ON_WEBVIEW_READY = 'onWebviewReady';
   const INVOKE_VIEW_API = 'invokeViewApi';
   const INVOKE_SERVICE_API = 'invokeServiceApi';
+  const ACTION_TYPE_DICT = 0;
 
   function onNodeEvent(nodeId, evt, pageNode) {
       pageNode.fireEvent(nodeId, evt);
@@ -9155,14 +9108,42 @@ var serviceContext = (function (vue) {
           this._created = false;
           this._createActionMap = new Map();
           this.updateActions = [];
+          this.dicts = [];
           this.nodeId = 0;
           this.pageId = pageId;
           this.pageNode = this;
           this.isUnmounted = false;
           this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
           this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+          this.normalizeDict = this._normalizeDict.bind(this);
           this._update = this.update.bind(this);
           setup && this.setup();
+      }
+      _normalizeDict(value, normalizeValue = true) {
+          if (!isPlainObject(value)) {
+              return this.addDict(value);
+          }
+          const dictArray = [];
+          Object.keys(value).forEach((n) => {
+              const dict = [this.addDict(n)];
+              const v = value[n];
+              if (normalizeValue) {
+                  dict.push(this.addDict(v));
+              }
+              else {
+                  dict.push(v);
+              }
+              dictArray.push(dict);
+          });
+          return dictArray;
+      }
+      addDict(value) {
+          const { dicts } = this;
+          const index = dicts.indexOf(value);
+          if (index > -1) {
+              return index;
+          }
+          return dicts.push(value) - 1;
       }
       onCreate(thisNode, nodeName) {
           pushCreateAction(this, thisNode.nodeId, nodeName);
@@ -9247,7 +9228,7 @@ var serviceContext = (function (vue) {
           this.send([this.createAction]);
       }
       update() {
-          const { updateActions, _createActionMap } = this;
+          const { dicts, updateActions, _createActionMap } = this;
           if ((process.env.NODE_ENV !== 'production')) {
               console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
           }
@@ -9258,7 +9239,11 @@ var serviceContext = (function (vue) {
               updateActions.push(this.createdAction);
           }
           if (updateActions.length) {
+              if (dicts.length) {
+                  updateActions.unshift([ACTION_TYPE_DICT, dicts]);
+              }
               this.send(updateActions);
+              dicts.length = 0;
               updateActions.length = 0;
           }
       }
@@ -9289,29 +9274,37 @@ var serviceContext = (function (vue) {
       return null;
   }
   function pushCreateAction(pageNode, nodeId, nodeName) {
-      pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName, -1]);
+      pageNode.push([ACTION_TYPE_CREATE, nodeId, pageNode.addDict(nodeName), -1]);
   }
   function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
-      const nodeJson = newChild.toJSON({ attr: true });
+      const nodeJson = newChild.toJSON({
+          attr: true,
+          normalize: pageNode.normalizeDict,
+      });
       pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
   }
   function pushRemoveAction(pageNode, nodeId) {
       pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
   }
   function pushAddEventAction(pageNode, nodeId, name, value) {
-      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, name, value]);
+      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
   }
   function pushRemoveEventAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, name]);
+      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
   }
   function pushSetAttributeAction(pageNode, nodeId, name, value) {
-      pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value]);
+      pageNode.push([
+          ACTION_TYPE_SET_ATTRIBUTE,
+          nodeId,
+          pageNode.addDict(name),
+          pageNode.addDict(value),
+      ]);
   }
   function pushRemoveAttributeAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, name]);
+      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
   }
   function pushSetTextAction(pageNode, nodeId, text) {
-      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, text]);
+      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
   }
   function createPageNode(pageId, pageOptions, setup) {
       return new UniPageNode(pageId, pageOptions, setup);

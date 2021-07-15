@@ -30,7 +30,7 @@ export declare const ACTION_TYPE_SET_TEXT = 10;
 export declare type AddEventAction = [
 typeof ACTION_TYPE_ADD_EVENT,
 number,
-string,
+string | number,
 number
 ];
 
@@ -68,7 +68,7 @@ typeof ACTION_TYPE_CREATE,
 number,
 string | number,
 number,
-Partial<UniNodeJSON>?
+Partial<UniNodeJSON | UniNodeJSONMinify>?
 ];
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
@@ -89,13 +89,7 @@ export declare function debounce(fn: Function, delay: number): {
  */
 export declare function decode(text: string | number): string;
 
-export declare function decodeAttr(name: string): any;
-
 export declare function decodedQuery(query?: Record<string, any>): Record<string, string>;
-
-export declare function decodeEvent(name: string): any;
-
-export declare function decodeTag(tag: string | number): string;
 
 export declare const defaultRpx2Unit: {
     unit: string;
@@ -103,11 +97,7 @@ export declare const defaultRpx2Unit: {
     unitPrecision: number;
 };
 
-export declare function encodeAttr(name: string): string;
-
-export declare function encodeEvent(name: string): any;
-
-export declare function encodeTag(tag: string): string | number;
+declare type DictArray = [number, number][];
 
 export declare const EventModifierFlags: {
     stop: number;
@@ -267,7 +257,7 @@ export declare type RemoveAction = [typeof ACTION_TYPE_REMOVE, number];
 export declare type RemoveAttributeAction = [
 typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
 number,
-string
+string | number
 ];
 
 /**
@@ -277,7 +267,7 @@ string
 export declare type RemoveEventAction = [
 typeof ACTION_TYPE_REMOVE_EVENT,
 number,
-string
+string | number
 ];
 
 export declare function removeLeadingSlash(str: string): string;
@@ -303,15 +293,19 @@ export declare const SELECTED_COLOR = "#0062cc";
 export declare type SetAttributeAction = [
 typeof ACTION_TYPE_SET_ATTRIBUTE,
 number,
-string,
-unknown
+string | number,
+unknown | number
 ];
 
 /**
  * nodeId
  * text
  */
-export declare type SetTextAction = [typeof ACTION_TYPE_SET_TEXT, number, string];
+export declare type SetTextAction = [
+typeof ACTION_TYPE_SET_TEXT,
+number,
+string | number
+];
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
@@ -343,9 +337,10 @@ export declare class UniBaseNode extends UniNode {
     getAttribute(qualifiedName: string): unknown;
     removeAttribute(qualifiedName: string): void;
     setAttribute(qualifiedName: string, value: unknown): void;
-    toJSON(opts?: {
+    toJSON({ attr, normalize, }?: {
         attr?: boolean;
         children?: boolean;
+        normalize?: (val: any, includeValue?: boolean) => any | number;
     }): Partial<UniNodeJSON>;
 }
 
@@ -464,6 +459,33 @@ export declare interface UniNodeJSON {
      * text
      */
     t?: string;
+}
+
+declare interface UniNodeJSONMinify {
+    /**
+     * nodeId
+     */
+    i: number;
+    /**
+     * nodeName
+     */
+    n: string | number;
+    /**
+     * attributes
+     */
+    a: DictArray;
+    /**
+     * listeners
+     */
+    e: DictArray;
+    /**
+     * style
+     */
+    s?: DictArray;
+    /**
+     * text
+     */
+    t?: number;
 }
 
 declare type UniNodeType = typeof NODE_TYPE_PAGE | typeof NODE_TYPE_ELEMENT | typeof NODE_TYPE_TEXT | typeof NODE_TYPE_COMMENT;

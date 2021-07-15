@@ -8,20 +8,25 @@ import {
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
   CreateAction,
-  encodeEvent,
-  encodeTag,
   InsertAction,
   SetAttributeAction,
   UniEventListener,
+  EventModifierFlags,
 } from '@dcloudio/uni-shared'
-import { createPageNode } from '../../../src/service/framework/dom/Page'
+import UniPageNode, {
+  createPageNode,
+} from '../../../src/service/framework/dom/Page'
 import {
   createElement,
   createTextNode,
   withModifiers,
 } from '../../../../uni-app-vue/lib/service.runtime.esm'
-
-import { EventModifierFlags } from '@dcloudio/uni-shared'
+import {
+  ACTION_TYPE_DICT,
+  DictAction,
+  setActionMinify,
+} from '../../../src/constants'
+import { decodeActions } from '../../../src/view/framework/dom/decodeActions'
 describe('dom', () => {
   const pageId = 1
   const root = createPageNode(pageId, {
@@ -40,7 +45,8 @@ describe('dom', () => {
     windowTop: 0,
     windowBottom: 0,
   })
-  test('proxyNode', () => {
+  test('minify = false', () => {
+    setActionMinify(false)
     const viewElem = createElement('view', { pageNode: root })
     viewElem.setAttribute('id', 'view')
     root.appendChild(viewElem)
@@ -49,9 +55,9 @@ describe('dom', () => {
     const createElementAction = updateActions[0] as CreateAction
     expect(createElementAction[0]).toBe(ACTION_TYPE_CREATE)
     expect(createElementAction[1]).toBe(1)
-    expect(createElementAction[2]).toBe(encodeTag('VIEW'))
+    expect(createElementAction[2]).toBe('VIEW')
     expect(createElementAction[3]).toBe(0)
-    expect(createElementAction[4]!.a!.id).toBe('view')
+    expect((createElementAction[4]!.a as any).id).toBe('view')
     const addElementAction = updateActions[1] as InsertAction
     expect(addElementAction[0]).toBe(ACTION_TYPE_INSERT)
     expect(addElementAction[1]).toBe(1) // nodeId
@@ -109,7 +115,7 @@ describe('dom', () => {
     } = root
     expect(addEventListenerAction[0]).toBe(ACTION_TYPE_ADD_EVENT)
     expect(addEventListenerAction[1]).toBe(2)
-    expect(addEventListenerAction[2]).toBe(encodeEvent('onClick'))
+    expect(addEventListenerAction[2]).toBe('onClick')
     expect(addEventListenerAction[3]).toBe(0)
 
     root.updateActions.length = 0
@@ -119,7 +125,7 @@ describe('dom', () => {
     } = root
     expect(removeEventListenerAction[0]).toBe(ACTION_TYPE_REMOVE_EVENT)
     expect(removeEventListenerAction[1]).toBe(2)
-    expect(removeEventListenerAction[2]).toBe(encodeEvent('onClick'))
+    expect(removeEventListenerAction[2]).toBe('onClick')
 
     root.updateActions.length = 0
     const clickFn1 = withModifiers(() => {}, [
@@ -132,10 +138,73 @@ describe('dom', () => {
     } = root
     expect(addEventListenerAction1[0]).toBe(ACTION_TYPE_ADD_EVENT)
     expect(addEventListenerAction1[1]).toBe(2)
-    expect(addEventListenerAction1[2]).toBe(encodeEvent('onClickCapture'))
+    expect(addEventListenerAction1[2]).toBe('onClickCapture')
     const flag = addEventListenerAction1[3] as number
     expect(flag & EventModifierFlags.stop).toBeTruthy()
     expect(flag & EventModifierFlags.prevent).toBeTruthy()
     expect(flag & EventModifierFlags.self).toBeFalsy()
   })
+  test('minify = true', () => {
+    setActionMinify(true)
+
+    const viewElem = createElement('view', { pageNode: root })
+    viewElem.setAttribute('id', 'view')
+    root.appendChild(viewElem)
+    viewElem.setAttribute('hidden', true)
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    viewElem.removeAttribute('hidden')
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    viewElem.textContent = 'text'
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    root.removeChild(viewElem)
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    const textNode = createTextNode('hello', { pageNode: root })
+    root.appendChild(textNode)
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    const clickFn = () => {}
+    textNode.addEventListener('click', clickFn)
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    textNode.removeEventListener('click', clickFn)
+    expectActions(root)
+
+    root.dicts.length = 0
+    root.updateActions.length = 0
+    const clickFn1 = withModifiers(() => {}, [
+      'stop',
+      'prevent',
+    ]) as unknown as UniEventListener
+    textNode.addEventListener('click', clickFn1, { capture: true })
+    expectActions(root)
+    const flag = root.updateActions[0][3] as number
+    expect(flag & EventModifierFlags.stop).toBeTruthy()
+    expect(flag & EventModifierFlags.prevent).toBeTruthy()
+    expect(flag & EventModifierFlags.self).toBeFalsy()
+  })
 })
+
+function expectActions(root: UniPageNode) {
+  const actions = [
+    [ACTION_TYPE_DICT, root.dicts] as DictAction,
+    ...root.updateActions,
+  ]
+  expect(JSON.stringify(actions)).toMatchSnapshot()
+  expect(JSON.stringify(decodeActions(actions))).toMatchSnapshot()
+}

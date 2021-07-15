@@ -1,5 +1,5 @@
 import { hasOwn } from '@vue/shared'
-import { decodeAttr, UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
 import { patchClass } from '../modules/class'
@@ -66,7 +66,7 @@ export class UniElement<T extends object> extends UniNode {
     } else if (name === '.s') {
       patchStyle(this.$, value as string | Record<string, any>)
     } else {
-      this.setAttribute(decodeAttr(name), value as string)
+      this.setAttribute(name, value as string)
     }
   }
   removeAttr(name: string) {
@@ -75,7 +75,7 @@ export class UniElement<T extends object> extends UniNode {
     } else if (name === '.s') {
       patchStyle(this.$, '')
     } else {
-      this.removeAttribute(decodeAttr(name))
+      this.removeAttribute(name)
     }
   }
   setAttribute(name: string, value: unknown) {

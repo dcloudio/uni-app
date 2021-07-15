@@ -211,65 +211,6 @@
     prevent: 1 << 1,
     self: 1 << 2
   };
-  const BASE_EVENT_MAP = {
-    onClick: "a",
-    onChange: "b",
-    onInput: "c",
-    onLoad: "d",
-    onError: "e",
-    onScroll: "f",
-    onTouchstart: "g",
-    onTouchmove: "h",
-    onTouchcancel: "i",
-    onTouchend: "j",
-    onLongpress: "k",
-    onTransitionend: "l",
-    onAnimationstart: "m",
-    onAnimationiteration: "n",
-    onAnimationend: "o",
-    onTouchforcechange: "p"
-  };
-  const EVENT_OPTIONS = [
-    "Capture",
-    "CaptureOnce",
-    "CapturePassive",
-    "CaptureOncePassive",
-    "Once",
-    "OncePassive",
-    "Passive"
-  ];
-  const EVENT_MAP = /* @__PURE__ */ (() => {
-    return Object.keys(BASE_EVENT_MAP).reduce((res, name) => {
-      const value = BASE_EVENT_MAP[name];
-      res[name] = value;
-      EVENT_OPTIONS.forEach((v2, i) => {
-        res[name + v2] = value + i;
-      });
-      return res;
-    }, Object.create(null));
-  })();
-  const ATTR_MAP = {
-    class: ".c",
-    style: ".s",
-    "hover-class": ".h0",
-    "hover-stop-propagation": ".h1",
-    "hover-start-time": ".h2",
-    "hover-stay-time": ".h3"
-  };
-  function decodeObjMap(objMap) {
-    return Object.keys(objMap).reduce((map, name) => {
-      map[objMap[name]] = name;
-      return map;
-    }, Object.create(null));
-  }
-  const DECODED_EVENT_MAP = /* @__PURE__ */ decodeObjMap(EVENT_MAP);
-  function decodeEvent(name) {
-    return DECODED_EVENT_MAP[name] || name;
-  }
-  const DECODED_ATTR_MAP = /* @__PURE__ */ decodeObjMap(ATTR_MAP);
-  function decodeAttr(name) {
-    return DECODED_ATTR_MAP[name] || name;
-  }
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
   const ACTION_TYPE_CREATE = 3;
@@ -5456,6 +5397,7 @@
   const ON_WEBVIEW_READY = "onWebviewReady";
   const INVOKE_VIEW_API = "invokeViewApi";
   const INVOKE_SERVICE_API = "invokeServiceApi";
+  const ACTION_TYPE_DICT = 0;
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -5831,6 +5773,44 @@
       });
     }
   }
+  function createGetDict(dict) {
+    if (!dict.length) {
+      return (v2) => v2;
+    }
+    const getDict = (value, includeValue = true) => {
+      if (typeof value === "number") {
+        return dict[value];
+      }
+      const res = {};
+      value.forEach(([n, v2]) => {
+        if (includeValue) {
+          res[getDict(n)] = getDict(v2);
+        } else {
+          res[getDict(n)] = v2;
+        }
+      });
+      return res;
+    };
+    return getDict;
+  }
+  function decodeNodeJson(getDict, nodeJson) {
+    if (!nodeJson) {
+      return;
+    }
+    if (nodeJson.a) {
+      nodeJson.a = getDict(nodeJson.a);
+    }
+    if (nodeJson.e) {
+      nodeJson.e = getDict(nodeJson.e, false);
+    }
+    if (nodeJson.s) {
+      nodeJson.s = getDict(nodeJson.s);
+    }
+    if (nodeJson.t) {
+      nodeJson.t = getDict(nodeJson.t);
+    }
+    return nodeJson;
+  }
   class UniNode {
     constructor(id2, tag, parentNodeId, element) {
       this.isMounted = false;
@@ -5844,7 +5824,7 @@
     }
     init(nodeJson) {
       if (hasOwn$1(nodeJson, "t")) {
-        this.$.textContent = nodeJson.t || "";
+        this.$.textContent = nodeJson.t;
       }
     }
     setText(text2) {
@@ -5871,6 +5851,193 @@
     }
     insertBefore(newChild, refChild) {
       return this.$.insertBefore(newChild, refChild);
+    }
+  }
+  function patchClass(el, clazz) {
+    el.className = clazz;
+  }
+  function patchStyle(el, value) {
+    const style = el.style;
+    if (isString(value)) {
+      if (value === "") {
+        el.removeAttribute("style");
+      } else {
+        style.cssText = rpx2px$1(value, true);
+      }
+    } else {
+      for (const key in value) {
+        setStyle(style, key, value[key]);
+      }
+    }
+  }
+  const importantRE = /\s*!important$/;
+  function setStyle(style, name, val) {
+    if (isArray(val)) {
+      val.forEach((v2) => setStyle(style, name, v2));
+    } else {
+      val = rpx2px$1(val, true);
+      if (name.startsWith("--")) {
+        style.setProperty(name, val);
+      } else {
+        const prefixed = autoPrefix(style, name);
+        if (importantRE.test(val)) {
+          style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
+        } else {
+          style[prefixed] = val;
+        }
+      }
+    }
+  }
+  const prefixes = ["Webkit"];
+  const prefixCache = {};
+  function autoPrefix(style, rawName) {
+    const cached = prefixCache[rawName];
+    if (cached) {
+      return cached;
+    }
+    let name = camelize(rawName);
+    if (name !== "filter" && name in style) {
+      return prefixCache[rawName] = name;
+    }
+    name = capitalize(name);
+    for (let i = 0; i < prefixes.length; i++) {
+      const prefixed = prefixes[i] + name;
+      if (prefixed in style) {
+        return prefixCache[rawName] = prefixed;
+      }
+    }
+    return rawName;
+  }
+  function patchEvent(el, name, flag) {
+    const [type, options] = parseEventName(name);
+    if (flag === -1) {
+      const listener = el.__listeners[type];
+      if (listener) {
+        el.removeEventListener(type, listener);
+      } else {
+        console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] not found"));
+      }
+    } else {
+      if (el.__listeners[type]) {
+        {
+          console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] already registered"));
+        }
+        return;
+      }
+      el.__listeners[type] = createInvoker(el.__id, flag, options);
+      el.addEventListener(type, el.__listeners[type], options);
+    }
+  }
+  function createInvoker(id2, flag, options) {
+    const invoker = (evt) => {
+      const event = $nne(evt);
+      event.type = normalizeEventType(evt.type, options);
+      UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id2, event]]);
+    };
+    if (!flag) {
+      return invoker;
+    }
+    return withModifiers(invoker, resolveModifier(flag));
+  }
+  function resolveModifier(flag) {
+    const modifiers = [];
+    if (flag & EventModifierFlags.prevent) {
+      modifiers.push("prevent");
+    }
+    if (flag & EventModifierFlags.self) {
+      modifiers.push("self");
+    }
+    if (flag & EventModifierFlags.stop) {
+      modifiers.push("stop");
+    }
+    return modifiers;
+  }
+  const postActionJobs = new Set();
+  function queuePostActionJob(job) {
+    postActionJobs.add(job);
+  }
+  function flushPostActionJobs() {
+    {
+      console.log(formatLog(`flushPostActionJobs`, postActionJobs.size));
+    }
+    try {
+      postActionJobs.forEach((fn) => fn());
+    } finally {
+      postActionJobs.clear();
+    }
+  }
+  class UniElement extends UniNode {
+    constructor(id2, element, parentNodeId, nodeJson, propNames = []) {
+      super(id2, element.tagName, parentNodeId, element);
+      this.$props = reactive({});
+      this.$.__id = id2;
+      this.$.__listeners = Object.create(null);
+      this.$propNames = propNames;
+      this._update = this.update.bind(this);
+      this.init(nodeJson);
+    }
+    init(nodeJson) {
+      if (hasOwn$1(nodeJson, "a")) {
+        this.setAttrs(nodeJson.a);
+      }
+      if (hasOwn$1(nodeJson, "e")) {
+        this.addEvents(nodeJson.e);
+      }
+      super.init(nodeJson);
+      watch(this.$props, () => {
+        queuePostActionJob(this._update);
+      }, { flush: "sync" });
+      this.update();
+    }
+    setAttrs(attrs2) {
+      Object.keys(attrs2).forEach((name) => {
+        this.setAttr(name, attrs2[name]);
+      });
+    }
+    addEvents(events) {
+      Object.keys(events).forEach((name) => {
+        this.addEvent(name, events[name]);
+      });
+    }
+    addEvent(name, value) {
+      patchEvent(this.$, name, value);
+    }
+    removeEvent(name) {
+      patchEvent(this.$, name, -1);
+    }
+    setAttr(name, value) {
+      if (name === ".c") {
+        patchClass(this.$, value);
+      } else if (name === ".s") {
+        patchStyle(this.$, value);
+      } else {
+        this.setAttribute(name, value);
+      }
+    }
+    removeAttr(name) {
+      if (name === ".c") {
+        patchClass(this.$, "");
+      } else if (name === ".s") {
+        patchStyle(this.$, "");
+      } else {
+        this.removeAttribute(name);
+      }
+    }
+    setAttribute(name, value) {
+      if (this.$propNames.indexOf(name) !== -1) {
+        this.$props[name] = value;
+      } else {
+        this.$.setAttribute(name, value);
+      }
+    }
+    removeAttribute(name) {
+      if (this.$propNames.indexOf(name) !== -1) {
+        delete this.$props[name];
+      } else {
+        this.$.removeAttribute(name);
+      }
+    }
+    update() {
     }
   }
   class UniComment extends UniNode {
@@ -13983,193 +14150,6 @@
   function getContextInfo(el) {
     return el.__uniContextInfo;
   }
-  function patchClass(el, clazz) {
-    el.className = clazz;
-  }
-  function patchStyle(el, value) {
-    const style = el.style;
-    if (isString(value)) {
-      if (value === "") {
-        el.removeAttribute("style");
-      } else {
-        style.cssText = rpx2px$1(value, true);
-      }
-    } else {
-      for (const key in value) {
-        setStyle(style, key, value[key]);
-      }
-    }
-  }
-  const importantRE = /\s*!important$/;
-  function setStyle(style, name, val) {
-    if (isArray(val)) {
-      val.forEach((v2) => setStyle(style, name, v2));
-    } else {
-      val = rpx2px$1(val, true);
-      if (name.startsWith("--")) {
-        style.setProperty(name, val);
-      } else {
-        const prefixed = autoPrefix(style, name);
-        if (importantRE.test(val)) {
-          style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
-        } else {
-          style[prefixed] = val;
-        }
-      }
-    }
-  }
-  const prefixes = ["Webkit"];
-  const prefixCache = {};
-  function autoPrefix(style, rawName) {
-    const cached = prefixCache[rawName];
-    if (cached) {
-      return cached;
-    }
-    let name = camelize(rawName);
-    if (name !== "filter" && name in style) {
-      return prefixCache[rawName] = name;
-    }
-    name = capitalize(name);
-    for (let i = 0; i < prefixes.length; i++) {
-      const prefixed = prefixes[i] + name;
-      if (prefixed in style) {
-        return prefixCache[rawName] = prefixed;
-      }
-    }
-    return rawName;
-  }
-  function patchEvent(el, name, flag) {
-    const [type, options] = parseEventName(decodeEvent(name));
-    if (flag === -1) {
-      const listener = el.__listeners[type];
-      if (listener) {
-        el.removeEventListener(type, listener);
-      } else {
-        console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] not found"));
-      }
-    } else {
-      if (el.__listeners[type]) {
-        {
-          console.error(formatLog(`tag`, el.tagName, el.__id, "event[" + type + "] already registered"));
-        }
-        return;
-      }
-      el.__listeners[type] = createInvoker(el.__id, flag, options);
-      el.addEventListener(type, el.__listeners[type], options);
-    }
-  }
-  function createInvoker(id2, flag, options) {
-    const invoker = (evt) => {
-      const event = $nne(evt);
-      event.type = normalizeEventType(evt.type, options);
-      UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id2, event]]);
-    };
-    if (!flag) {
-      return invoker;
-    }
-    return withModifiers(invoker, resolveModifier(flag));
-  }
-  function resolveModifier(flag) {
-    const modifiers = [];
-    if (flag & EventModifierFlags.prevent) {
-      modifiers.push("prevent");
-    }
-    if (flag & EventModifierFlags.self) {
-      modifiers.push("self");
-    }
-    if (flag & EventModifierFlags.stop) {
-      modifiers.push("stop");
-    }
-    return modifiers;
-  }
-  const postActionJobs = new Set();
-  function queuePostActionJob(job) {
-    postActionJobs.add(job);
-  }
-  function flushPostActionJobs() {
-    {
-      console.log(formatLog(`flushPostActionJobs`, postActionJobs.size));
-    }
-    try {
-      postActionJobs.forEach((fn) => fn());
-    } finally {
-      postActionJobs.clear();
-    }
-  }
-  class UniElement extends UniNode {
-    constructor(id2, element, parentNodeId, nodeJson, propNames = []) {
-      super(id2, element.tagName, parentNodeId, element);
-      this.$props = reactive({});
-      this.$.__id = id2;
-      this.$.__listeners = Object.create(null);
-      this.$propNames = propNames;
-      this._update = this.update.bind(this);
-      this.init(nodeJson);
-    }
-    init(nodeJson) {
-      if (hasOwn$1(nodeJson, "a")) {
-        this.setAttrs(nodeJson.a);
-      }
-      if (hasOwn$1(nodeJson, "e")) {
-        this.addEvents(nodeJson.e);
-      }
-      super.init(nodeJson);
-      watch(this.$props, () => {
-        queuePostActionJob(this._update);
-      }, { flush: "sync" });
-      this.update();
-    }
-    setAttrs(attrs2) {
-      Object.keys(attrs2).forEach((name) => {
-        this.setAttr(name, attrs2[name]);
-      });
-    }
-    addEvents(events) {
-      Object.keys(events).forEach((name) => {
-        this.addEvent(name, events[name]);
-      });
-    }
-    addEvent(name, value) {
-      patchEvent(this.$, name, value);
-    }
-    removeEvent(name) {
-      patchEvent(this.$, name, -1);
-    }
-    setAttr(name, value) {
-      if (name === ".c") {
-        patchClass(this.$, value);
-      } else if (name === ".s") {
-        patchStyle(this.$, value);
-      } else {
-        this.setAttribute(decodeAttr(name), value);
-      }
-    }
-    removeAttr(name) {
-      if (name === ".c") {
-        patchClass(this.$, "");
-      } else if (name === ".s") {
-        patchStyle(this.$, "");
-      } else {
-        this.removeAttribute(decodeAttr(name));
-      }
-    }
-    setAttribute(name, value) {
-      if (this.$propNames.indexOf(name) !== -1) {
-        this.$props[name] = value;
-      } else {
-        this.$.setAttribute(name, value);
-      }
-    }
-    removeAttribute(name) {
-      if (this.$propNames.indexOf(name) !== -1) {
-        delete this.$props[name];
-      } else {
-        this.$.removeAttribute(name);
-      }
-    }
-    update() {
-    }
-  }
   const PROP_NAMES_HOVER$1 = ["space", "decode"];
   class UniTextElement extends UniElement {
     constructor(id2, parentNodeId, nodeJson) {
@@ -14365,17 +14345,17 @@
       (this.$holder || this.$).textContent = text2;
     }
     addEvent(name, value) {
-      const decoded = decodeEvent(name);
+      const decoded = name;
       this.$props[decoded] = createInvoker(this.id, value, parseEventName(decoded)[1]);
     }
     removeEvent(name) {
-      this.$props[decodeEvent(name)] = null;
+      this.$props[name] = null;
     }
     setAttr(name, value) {
-      this.$props[decodeAttr(name)] = value;
+      this.$props[name] = value;
     }
     removeAttr(name) {
-      this.$props[decodeAttr(name)] = null;
+      this.$props[name] = null;
     }
     appendChild(node) {
       return (this.$holder || this.$).appendChild(node);
@@ -15254,55 +15234,51 @@
       super(id2, "uni-web-view", WebView, parentNodeId, nodeJson);
     }
   }
-  const BuiltInComponents = [
-    ,
-    UniViewElement,
-    UniImage,
-    UniTextElement,
-    UniTextNode,
-    UniComment,
-    UniNavigator,
-    UniForm,
-    UniButton,
-    UniInput,
-    UniLabel,
-    UniRadio,
-    UniCheckbox,
-    UniCheckboxGroup,
-    UniAd,
-    UniAudio,
-    UniCamera,
-    UniCanvas,
-    UniCoverImage,
-    UniCoverView,
-    UniEditor,
-    UniFunctionalPageNavigator,
-    UniIcon,
-    UniRadioGroup,
-    UniLivePlayer,
-    UniLivePusher,
-    UniMap,
-    UniMovableArea,
-    UniMovableView,
-    UniOfficialAccount,
-    UniOpenData,
-    UniPicker,
-    UniPickerView,
-    UniPickerViewColumn,
-    UniProgress,
-    UniRichText,
-    UniScrollView,
-    UniSlider,
-    UniSwiper,
-    UniSwiperItem,
-    UniSwitch,
-    UniTextarea,
-    UniVideo,
-    UniWebView
-  ];
-  function createBuiltInComponent(type, id2, parentNodeId, nodeJson) {
-    return new BuiltInComponents[type](id2, parentNodeId, nodeJson);
-  }
+  const BuiltInComponents = {
+    "#text": UniTextNode,
+    "#comment": UniComment,
+    VIEW: UniViewElement,
+    IMAGE: UniImage,
+    TEXT: UniTextElement,
+    NAVIGATOR: UniNavigator,
+    FORM: UniForm,
+    BUTTON: UniButton,
+    INPUT: UniInput,
+    LABEL: UniLabel,
+    RADIO: UniRadio,
+    CHECKBOX: UniCheckbox,
+    "CHECKBOX-GROUP": UniCheckboxGroup,
+    AD: UniAd,
+    AUDIO: UniAudio,
+    CAMERA: UniCamera,
+    CANVAS: UniCanvas,
+    "COVER-IMAGE": UniCoverImage,
+    "COVER-VIEW": UniCoverView,
+    EDITOR: UniEditor,
+    "FUNCTIONAL-PAGE-NAVIGATOR": UniFunctionalPageNavigator,
+    ICON: UniIcon,
+    "RADIO-GROUP": UniRadioGroup,
+    "LIVE-PLAYER": UniLivePlayer,
+    "LIVE-PUSHER": UniLivePusher,
+    MAP: UniMap,
+    "MOVABLE-AREA": UniMovableArea,
+    "MOVABLE-VIEW": UniMovableView,
+    "OFFICIAL-ACCOUNT": UniOfficialAccount,
+    "OPEN-DATA": UniOpenData,
+    PICKER: UniPicker,
+    "PICKER-VIEW": UniPickerView,
+    "PICKER-VIEW-COLUMN": UniPickerViewColumn,
+    PROGRESS: UniProgress,
+    "RICH-TEXT": UniRichText,
+    "SCROLL-VIEW": UniScrollView,
+    SLIDER: UniSlider,
+    SWIPER: UniSwiper,
+    "SWIPER-ITEM": UniSwiperItem,
+    SWITCH: UniSwitch,
+    TEXTAREA: UniTextarea,
+    VIDEO: UniVideo,
+    "WEB-VIEW": UniWebView
+  };
   function createWrapper(component, props2) {
     return () => h(component, props2);
   }
@@ -15320,10 +15296,13 @@
     let element;
     if (id2 === 0) {
       element = new UniNode(id2, tag, parentNodeId, document.createElement(tag));
-    } else if (isString(tag)) {
-      element = new UniElement(id2, document.createElement(tag), parentNodeId, nodeJson);
     } else {
-      element = createBuiltInComponent(tag, id2, parentNodeId, nodeJson);
+      const Component = BuiltInComponents[tag];
+      if (Component) {
+        element = new Component(id2, parentNodeId, nodeJson);
+      } else {
+        element = new UniElement(id2, document.createElement(tag), parentNodeId, nodeJson);
+      }
     }
     elements.set(id2, element);
     return element;
@@ -15409,6 +15388,8 @@
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }
   function onVdSync(actions) {
+    const dictAction = actions[0];
+    const getDict = createGetDict(dictAction[0] === ACTION_TYPE_DICT ? dictAction[1] : []);
     actions.forEach((action) => {
       switch (action[0]) {
         case ACTION_TYPE_PAGE_CREATE:
@@ -15416,21 +15397,21 @@
         case ACTION_TYPE_PAGE_CREATED:
           return onPageCreated();
         case ACTION_TYPE_CREATE:
-          return createElement(action[1], action[2], action[3], action[4]);
+          return createElement(action[1], getDict(action[2]), action[3], decodeNodeJson(getDict, action[4]));
         case ACTION_TYPE_INSERT:
           return $(action[1]).insert(action[2], action[3]);
         case ACTION_TYPE_REMOVE:
           return $(action[1]).remove();
         case ACTION_TYPE_SET_ATTRIBUTE:
-          return $(action[1]).setAttr(action[2], action[3]);
+          return $(action[1]).setAttr(getDict(action[2]), getDict(action[3]));
         case ACTION_TYPE_REMOVE_ATTRIBUTE:
-          return $(action[1]).removeAttr(action[2]);
+          return $(action[1]).removeAttr(getDict(action[2]));
         case ACTION_TYPE_ADD_EVENT:
-          return $(action[1]).addEvent(action[2], action[3]);
+          return $(action[1]).addEvent(getDict(action[2]), action[3]);
         case ACTION_TYPE_REMOVE_EVENT:
-          return $(action[1]).removeEvent(action[2]);
+          return $(action[1]).removeEvent(getDict(action[2]));
         case ACTION_TYPE_SET_TEXT:
-          return $(action[1]).setText(action[2]);
+          return $(action[1]).setText(getDict(action[2]));
       }
     });
     flushPostActionJobs();

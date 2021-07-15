@@ -1,4 +1,5 @@
 import { queuePostFlushCb } from 'vue'
+import { isPlainObject } from '@vue/shared'
 import {
   UniNode,
   NODE_TYPE_PAGE,
@@ -24,7 +25,14 @@ import {
   PageNodeOptions,
 } from '@dcloudio/uni-shared'
 
-import { VD_SYNC } from '../../../constants'
+import {
+  ACTION_MINIFY,
+  ACTION_TYPE_DICT,
+  DictAction,
+  Dictionary,
+  Value,
+  VD_SYNC,
+} from '../../../constants'
 
 export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
@@ -33,7 +41,14 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   private createAction: PageCreateAction
   private createdAction: PageCreatedAction
   private _createActionMap = new Map<number, CreateAction>()
-  public updateActions: PageAction[] = []
+  public updateActions: (PageAction | DictAction)[] = []
+
+  public dicts: Dictionary = []
+
+  public normalizeDict: (
+    value: unknown,
+    normalizeValue?: boolean
+  ) => any | number
 
   public isUnmounted: boolean
 
@@ -54,9 +69,42 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     this.createAction = [ACTION_TYPE_PAGE_CREATE, options]
     this.createdAction = [ACTION_TYPE_PAGE_CREATED]
 
+    this.normalizeDict = this._normalizeDict.bind(this)
+
     this._update = this.update.bind(this)
 
     setup && this.setup()
+  }
+  _normalizeDict(value: unknown, normalizeValue: boolean = true) {
+    if (!ACTION_MINIFY) {
+      return value
+    }
+    if (!isPlainObject(value)) {
+      return this.addDict(value as Value)
+    }
+    const dictArray: [number, number][] = []
+    Object.keys(value).forEach((n) => {
+      const dict = [this.addDict(n) as number]
+      const v = value[n as keyof typeof value] as Value
+      if (normalizeValue) {
+        dict.push(this.addDict(v) as number)
+      } else {
+        dict.push(v as number)
+      }
+      dictArray.push(dict as [number, number])
+    })
+    return dictArray
+  }
+  addDict<T extends Value>(value: T): T | number {
+    if (!ACTION_MINIFY) {
+      return value
+    }
+    const { dicts } = this
+    const index = dicts.indexOf(value)
+    if (index > -1) {
+      return index
+    }
+    return dicts.push(value) - 1
   }
   onCreate(thisNode: UniNode, nodeName: string | number) {
     pushCreateAction(this, thisNode.nodeId!, nodeName)
@@ -149,7 +197,7 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     this.send([this.createAction])
   }
   update() {
-    const { updateActions, _createActionMap } = this
+    const { dicts, updateActions, _createActionMap } = this
     if (__DEV__) {
       console.log(
         formatLog(
@@ -167,11 +215,15 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
       updateActions.push(this.createdAction)
     }
     if (updateActions.length) {
+      if (dicts.length) {
+        updateActions.unshift([ACTION_TYPE_DICT, dicts])
+      }
       this.send(updateActions)
+      dicts.length = 0
       updateActions.length = 0
     }
   }
-  send(action: PageAction[]) {
+  send(action: (PageAction | DictAction)[]) {
     UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId)
   }
   fireEvent(id: number, evt: UniEvent) {
@@ -203,7 +255,7 @@ function pushCreateAction(
   nodeId: number,
   nodeName: string | number
 ) {
-  pageNode.push([ACTION_TYPE_CREATE, nodeId, nodeName, -1])
+  pageNode.push([ACTION_TYPE_CREATE, nodeId, pageNode.addDict(nodeName), -1])
 }
 
 function pushInsertAction(
@@ -212,7 +264,10 @@ function pushInsertAction(
   parentNodeId: number,
   refChildId: number
 ) {
-  const nodeJson = newChild.toJSON({ attr: true })
+  const nodeJson = newChild.toJSON({
+    attr: true,
+    normalize: pageNode.normalizeDict,
+  })
   pageNode.push(
     [ACTION_TYPE_INSERT, newChild.nodeId!, parentNodeId, refChildId],
     Object.keys(nodeJson).length ? nodeJson : undefined
@@ -229,7 +284,7 @@ function pushAddEventAction(
   name: string,
   value: number
 ) {
-  pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, name, value])
+  pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value])
 }
 
 function pushRemoveEventAction(
@@ -237,7 +292,7 @@ function pushRemoveEventAction(
   nodeId: number,
   name: string
 ) {
-  pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, name])
+  pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)])
 }
 
 function pushSetAttributeAction(
@@ -246,7 +301,12 @@ function pushSetAttributeAction(
   name: string,
   value: unknown
 ) {
-  pageNode.push([ACTION_TYPE_SET_ATTRIBUTE, nodeId, name, value])
+  pageNode.push([
+    ACTION_TYPE_SET_ATTRIBUTE,
+    nodeId,
+    pageNode.addDict(name),
+    pageNode.addDict(value as Value),
+  ])
 }
 
 function pushRemoveAttributeAction(
@@ -254,7 +314,7 @@ function pushRemoveAttributeAction(
   nodeId: number,
   name: string
 ) {
-  pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, name])
+  pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)])
 }
 
 function pushSetTextAction(
@@ -262,7 +322,7 @@ function pushSetTextAction(
   nodeId: number,
   text: string
 ) {
-  pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, text])
+  pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)])
 }
 
 export function createPageNode(

@@ -1,4 +1,4 @@
-import { UniNodeJSON } from './Node'
+import { UniNodeJSON, UniNodeJSONMinify } from './Node'
 
 export const ACTION_TYPE_PAGE_CREATE = 1
 export const ACTION_TYPE_PAGE_CREATED = 2
@@ -46,7 +46,7 @@ export type CreateAction = [
   number,
   string | number,
   number,
-  Partial<UniNodeJSON>?
+  Partial<UniNodeJSON | UniNodeJSONMinify>?
 ]
 
 /**
@@ -69,7 +69,7 @@ export type RemoveAction = [typeof ACTION_TYPE_REMOVE, number]
 export type AddEventAction = [
   typeof ACTION_TYPE_ADD_EVENT,
   number,
-  string,
+  string | number,
   number
 ]
 
@@ -80,7 +80,7 @@ export type AddEventAction = [
 export type RemoveEventAction = [
   typeof ACTION_TYPE_REMOVE_EVENT,
   number,
-  string
+  string | number
 ]
 
 /**
@@ -91,8 +91,8 @@ export type RemoveEventAction = [
 export type SetAttributeAction = [
   typeof ACTION_TYPE_SET_ATTRIBUTE,
   number,
-  string,
-  unknown
+  string | number,
+  unknown | number
 ]
 
 /**
@@ -102,14 +102,18 @@ export type SetAttributeAction = [
 export type RemoveAttributeAction = [
   typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
   number,
-  string
+  string | number
 ]
 
 /**
  * nodeId
  * text
  */
-export type SetTextAction = [typeof ACTION_TYPE_SET_TEXT, number, string]
+export type SetTextAction = [
+  typeof ACTION_TYPE_SET_TEXT,
+  number,
+  string | number
+]
 
 export type PageUpdateAction =
   | CreateAction

@@ -1,12 +1,6 @@
 import { hasOwn } from '@vue/shared'
 import { Component, ComponentInternalInstance, createApp, reactive } from 'vue'
-import {
-  decodeAttr,
-  decodeEvent,
-  formatLog,
-  parseEventName,
-  UniNodeJSON,
-} from '@dcloudio/uni-shared'
+import { formatLog, parseEventName, UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
@@ -60,7 +54,7 @@ export class UniComponent extends UniNode {
     ;(this.$holder || this.$).textContent = text
   }
   addEvent(name: string, value: number) {
-    const decoded = decodeEvent(name)
+    const decoded = name
     this.$props[decoded] = createInvoker(
       this.id,
       value,
@@ -68,13 +62,13 @@ export class UniComponent extends UniNode {
     )
   }
   removeEvent(name: string) {
-    this.$props[decodeEvent(name)] = null
+    this.$props[name] = null
   }
   setAttr(name: string, value: unknown) {
-    this.$props[decodeAttr(name)] = value
+    this.$props[name] = value
   }
   removeAttr(name: string) {
-    this.$props[decodeAttr(name)] = null
+    this.$props[name] = null
   }
   appendChild(node: Element) {
     return (this.$holder || this.$).appendChild(node)

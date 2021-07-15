@@ -1,17 +1,14 @@
-import { isString } from '@vue/shared'
 import {
   createScrollListener,
   CreateScrollListenerOptions,
   disableScrollListener,
   updateCssVar,
 } from '@dcloudio/uni-core'
-import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
-import { PageCreateData } from '../../../PageAction'
-
-import { createBuiltInComponent } from './components'
+import { formatLog, PageCreateData, UniNodeJSON } from '@dcloudio/uni-shared'
 
 import { UniElement } from './elements/UniElement'
 import { UniNode } from './elements/UniNode'
+import { BuiltInComponents } from './components'
 
 const elements = new Map<number, UniNode>()
 
@@ -28,7 +25,7 @@ export function removeElement(id: number) {
 
 export function createElement(
   id: number,
-  tag: string | number,
+  tag: string,
   parentNodeId: number,
   nodeJson: Partial<UniNodeJSON> = {}
 ) {
@@ -41,15 +38,18 @@ export function createElement(
       parentNodeId,
       document.createElement(tag as string)
     )
-  } else if (isString(tag)) {
-    element = new UniElement(
-      id,
-      document.createElement(tag),
-      parentNodeId,
-      nodeJson
-    )
   } else {
-    element = createBuiltInComponent(tag, id, parentNodeId!, nodeJson)
+    const Component = BuiltInComponents[tag as keyof typeof BuiltInComponents]
+    if (Component) {
+      element = new Component(id, parentNodeId, nodeJson)
+    } else {
+      element = new UniElement(
+        id,
+        document.createElement(tag),
+        parentNodeId,
+        nodeJson
+      )
+    }
   }
   elements.set(id, element)
   return element

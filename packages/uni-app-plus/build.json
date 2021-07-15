@@ -30,7 +30,7 @@
   },
   {
     "input": {
-      "src/service/framework/dom/decodeActions.ts": "dist/tools.umd.js"
+      "src/view/framework/dom/decodeActions.ts": "dist/tools.umd.js"
     },
     "output": {
       "name": "Tools",

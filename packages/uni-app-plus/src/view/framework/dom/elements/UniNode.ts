@@ -25,7 +25,7 @@ export class UniNode {
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     if (hasOwn(nodeJson, 't')) {
-      this.$.textContent = nodeJson.t || ''
+      this.$.textContent = nodeJson.t as string
     }
   }
   setText(text: string) {

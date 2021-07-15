@@ -4,62 +4,6 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : window || self, factory(window.Tools = {}));
 }(this, (function (exports) { 'use strict';
 
-    const COMPONENT_MAP = {
-        VIEW: 1,
-        IMAGE: 2,
-        TEXT: 3,
-        '#text': 4,
-        '#comment': 5,
-        NAVIGATOR: 6,
-        FORM: 7,
-        BUTTON: 8,
-        INPUT: 9,
-        LABEL: 10,
-        RADIO: 11,
-        CHECKBOX: 12,
-        'CHECKBOX-GROUP': 13,
-        AD: 14,
-        AUDIO: 15,
-        CAMERA: 16,
-        CANVAS: 17,
-        'COVER-IMAGE': 18,
-        'COVER-VIEW': 19,
-        EDITOR: 20,
-        'FUNCTIONAL-PAGE-NAVIGATOR': 21,
-        ICON: 22,
-        'RADIO-GROUP': 23,
-        'LIVE-PLAYER': 24,
-        'LIVE-PUSHER': 25,
-        MAP: 26,
-        'MOVABLE-AREA': 27,
-        'MOVABLE-VIEW': 28,
-        'OFFICIAL-ACCOUNT': 29,
-        'OPEN-DATA': 30,
-        PICKER: 31,
-        'PICKER-VIEW': 32,
-        'PICKER-VIEW-COLUMN': 33,
-        PROGRESS: 34,
-        'RICH-TEXT': 35,
-        'SCROLL-VIEW': 36,
-        SLIDER: 37,
-        SWIPER: 38,
-        'SWIPER-ITEM': 39,
-        SWITCH: 40,
-        TEXTAREA: 41,
-        VIDEO: 42,
-        'WEB-VIEW': 43,
-    };
-    function decodeArrMap(objMap) {
-        return Object.keys(objMap).reduce((arr, name) => {
-            arr.push(name.toLowerCase());
-            return arr;
-        }, ['']);
-    }
-    const DECODED_COMPONENT_ARR = /*#__PURE__*/ decodeArrMap(COMPONENT_MAP);
-    function decodeTag(tag) {
-        return (DECODED_COMPONENT_ARR[tag] || tag);
-    }
-
     const ACTION_TYPE_PAGE_CREATE = 1;
     const ACTION_TYPE_PAGE_CREATED = 2;
     const ACTION_TYPE_CREATE = 3;
@@ -71,14 +15,94 @@
     const ACTION_TYPE_REMOVE_EVENT = 9;
     const ACTION_TYPE_SET_TEXT = 10;
 
+    const ACTION_TYPE_DICT = 0;
+
+    function createGetDict(dict) {
+        if (!dict.length) {
+            return (v) => v;
+        }
+        const getDict = (value, includeValue = true) => {
+            if (typeof value === 'number') {
+                return dict[value];
+            }
+            const res = {};
+            value.forEach(([n, v]) => {
+                if (includeValue) {
+                    res[getDict(n)] = getDict(v);
+                }
+                else {
+                    res[getDict(n)] = v;
+                }
+            });
+            return res;
+        };
+        return getDict;
+    }
+    function decodeActions(actions) {
+        const [type, dict] = actions[0];
+        if (type !== ACTION_TYPE_DICT) {
+            return actions;
+        }
+        const getDict = createGetDict(dict);
+        return actions.map((action) => {
+            switch (action[0]) {
+                case ACTION_TYPE_DICT:
+                    return action;
+                case ACTION_TYPE_PAGE_CREATE:
+                    return decodePageCreateAction(action);
+                case ACTION_TYPE_PAGE_CREATED:
+                    return decodePageCreatedAction(action);
+                case ACTION_TYPE_CREATE:
+                    return decodeCreateAction(action, getDict);
+                case ACTION_TYPE_INSERT:
+                    return decodeInsertAction(action);
+                case ACTION_TYPE_REMOVE:
+                    return decodeRemoveAction(action);
+                case ACTION_TYPE_SET_ATTRIBUTE:
+                    return decodeSetAttributeAction(action, getDict);
+                case ACTION_TYPE_REMOVE_ATTRIBUTE:
+                    return decodeRemoveAttributeAction(action, getDict);
+                case ACTION_TYPE_ADD_EVENT:
+                    return decodeAddEventAction(action, getDict);
+                case ACTION_TYPE_REMOVE_EVENT:
+                    return decodeRemoveEventAction(action, getDict);
+                case ACTION_TYPE_SET_TEXT:
+                    return decodeSetTextAction(action, getDict);
+            }
+        });
+    }
     function decodePageCreateAction([, pageCreateData]) {
         return ['pageCreate', pageCreateData];
     }
     function decodePageCreatedAction([]) {
         return ['pageCreated'];
     }
-    function decodeCreateAction([, nodeId, nodeName, parentNodeId, nodeJson,]) {
-        return ['create', nodeId, decodeTag(nodeName), parentNodeId, nodeJson];
+    function decodeNodeJson(getDict, nodeJson) {
+        if (!nodeJson) {
+            return;
+        }
+        if (nodeJson.a) {
+            nodeJson.a = getDict(nodeJson.a);
+        }
+        if (nodeJson.e) {
+            nodeJson.e = getDict(nodeJson.e, false);
+        }
+        if (nodeJson.s) {
+            nodeJson.s = getDict(nodeJson.s);
+        }
+        if (nodeJson.t) {
+            nodeJson.t = getDict(nodeJson.t);
+        }
+        return nodeJson;
+    }
+    function decodeCreateAction([, nodeId, nodeName, parentNodeId, nodeJson], getDict) {
+        return [
+            'create',
+            nodeId,
+            getDict(nodeName),
+            parentNodeId,
+            decodeNodeJson(getDict, nodeJson),
+        ];
     }
     function decodeInsertAction([, ...action]) {
         return ['insert', ...action];
@@ -86,50 +110,30 @@
     function decodeRemoveAction([, ...action]) {
         return ['remove', ...action];
     }
-    function decodeAddEventAction([, ...action]) {
-        return ['addEvent', ...action];
+    function decodeAddEventAction([, ...action], getDict) {
+        return ['addEvent', action[0], getDict(action[1]), action[2]];
     }
-    function decodeRemoveEventAction([, ...action]) {
-        return ['removeEvent', ...action];
+    function decodeRemoveEventAction([, ...action], getDict) {
+        return ['removeEvent', action[0], getDict(action[1])];
     }
-    function decodeSetAttributeAction([, ...action]) {
-        return ['setAttr', ...action];
+    function decodeSetAttributeAction([, ...action], getDict) {
+        return [
+            'setAttr',
+            action[0],
+            getDict(action[1]),
+            getDict(action[2]),
+        ];
     }
-    function decodeRemoveAttributeAction([, ...action]) {
-        return ['removeAttr', ...action];
+    function decodeRemoveAttributeAction([, ...action], getDict) {
+        return ['removeAttr', action[0], getDict(action[1])];
     }
-    function decodeSetTextAction([, ...action]) {
-        return ['setText', action];
-    }
-    function decodeActions(actions) {
-        return actions.map((action) => {
-            switch (action[0]) {
-                case ACTION_TYPE_PAGE_CREATE:
-                    return decodePageCreateAction(action);
-                case ACTION_TYPE_PAGE_CREATED:
-                    return decodePageCreatedAction(action);
-                case ACTION_TYPE_CREATE:
-                    return decodeCreateAction(action);
-                case ACTION_TYPE_INSERT:
-                    return decodeInsertAction(action);
-                case ACTION_TYPE_REMOVE:
-                    return decodeRemoveAction(action);
-                case ACTION_TYPE_SET_ATTRIBUTE:
-                    return decodeSetAttributeAction(action);
-                case ACTION_TYPE_REMOVE_ATTRIBUTE:
-                    return decodeRemoveAttributeAction(action);
-                case ACTION_TYPE_ADD_EVENT:
-                    return decodeAddEventAction(action);
-                case ACTION_TYPE_REMOVE_EVENT:
-                    return decodeRemoveEventAction(action);
-                case ACTION_TYPE_SET_TEXT:
-                    return decodeSetTextAction(action);
-            }
-            return action;
-        });
+    function decodeSetTextAction([, ...action], getDict) {
+        return ['setText', action[0], getDict(action[1])];
     }
 
+    exports.createGetDict = createGetDict;
     exports.decodeActions = decodeActions;
+    exports.decodeNodeJson = decodeNodeJson;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

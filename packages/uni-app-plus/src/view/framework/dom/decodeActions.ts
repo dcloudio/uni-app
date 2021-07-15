@@ -1,0 +1,186 @@
+import {
+  ACTION_TYPE_ADD_EVENT,
+  ACTION_TYPE_CREATE,
+  ACTION_TYPE_INSERT,
+  ACTION_TYPE_PAGE_CREATE,
+  ACTION_TYPE_PAGE_CREATED,
+  ACTION_TYPE_REMOVE,
+  ACTION_TYPE_REMOVE_ATTRIBUTE,
+  ACTION_TYPE_REMOVE_EVENT,
+  ACTION_TYPE_SET_ATTRIBUTE,
+  ACTION_TYPE_SET_TEXT,
+  AddEventAction,
+  CreateAction,
+  InsertAction,
+  PageAction,
+  PageCreateAction,
+  PageCreatedAction,
+  RemoveAction,
+  RemoveAttributeAction,
+  RemoveEventAction,
+  SetAttributeAction,
+  SetTextAction,
+  UniNodeJSON,
+} from '@dcloudio/uni-shared'
+import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
+import { UniCSSStyleDeclarationJSON } from 'packages/uni-shared/src/vdom/Style'
+import {
+  ACTION_TYPE_DICT,
+  DictAction,
+  Dictionary,
+  Value,
+} from '../../../constants'
+
+type GetDict = ReturnType<typeof createGetDict>
+
+export function createGetDict(dict: Dictionary) {
+  if (!dict.length) {
+    return (v: any) => v
+  }
+  const getDict = (
+    value: number | [number, number][],
+    includeValue: boolean = true
+  ) => {
+    if (typeof value === 'number') {
+      return (dict as Dictionary)[value]
+    }
+    const res: Record<string, unknown> = {}
+    value.forEach(([n, v]) => {
+      if (includeValue) {
+        res[getDict(n) as string] = getDict(v) as Value
+      } else {
+        res[getDict(n) as string] = v
+      }
+    })
+    return res
+  }
+  return getDict
+}
+
+export function decodeActions(actions: (PageAction | DictAction)[]) {
+  const [type, dict] = actions[0]
+  if (type !== ACTION_TYPE_DICT) {
+    return actions
+  }
+  const getDict = createGetDict(dict as Dictionary)
+
+  return actions.map((action) => {
+    switch (action[0]) {
+      case ACTION_TYPE_DICT:
+        return action
+      case ACTION_TYPE_PAGE_CREATE:
+        return decodePageCreateAction(action)
+      case ACTION_TYPE_PAGE_CREATED:
+        return decodePageCreatedAction(action)
+      case ACTION_TYPE_CREATE:
+        return decodeCreateAction(action, getDict)
+      case ACTION_TYPE_INSERT:
+        return decodeInsertAction(action)
+      case ACTION_TYPE_REMOVE:
+        return decodeRemoveAction(action)
+      case ACTION_TYPE_SET_ATTRIBUTE:
+        return decodeSetAttributeAction(action, getDict)
+      case ACTION_TYPE_REMOVE_ATTRIBUTE:
+        return decodeRemoveAttributeAction(action, getDict)
+      case ACTION_TYPE_ADD_EVENT:
+        return decodeAddEventAction(action, getDict)
+      case ACTION_TYPE_REMOVE_EVENT:
+        return decodeRemoveEventAction(action, getDict)
+      case ACTION_TYPE_SET_TEXT:
+        return decodeSetTextAction(action, getDict)
+    }
+  })
+}
+
+function decodePageCreateAction([, pageCreateData]: PageCreateAction) {
+  return ['pageCreate', pageCreateData]
+}
+
+function decodePageCreatedAction([]: PageCreatedAction) {
+  return ['pageCreated']
+}
+
+export function decodeNodeJson(
+  getDict: GetDict,
+  nodeJson?: Partial<UniNodeJSONMinify>
+) {
+  if (!nodeJson) {
+    return
+  }
+  if (nodeJson.a) {
+    ;(nodeJson as unknown as UniNodeJSON).a = getDict(nodeJson.a) as Record<
+      string,
+      unknown
+    >
+  }
+  if (nodeJson.e) {
+    ;(nodeJson as unknown as UniNodeJSON).e = getDict(
+      nodeJson.e,
+      false
+    ) as Record<string, number>
+  }
+  if (nodeJson.s) {
+    ;(nodeJson as unknown as UniNodeJSON).s = getDict(
+      nodeJson.s as [number, number][]
+    ) as UniCSSStyleDeclarationJSON
+  }
+  if (nodeJson.t) {
+    ;(nodeJson as unknown as UniNodeJSON).t = getDict(nodeJson.t) as string
+  }
+  return nodeJson as unknown as UniNodeJSON
+}
+
+function decodeCreateAction(
+  [, nodeId, nodeName, parentNodeId, nodeJson]: CreateAction,
+  getDict: GetDict
+) {
+  return [
+    'create',
+    nodeId,
+    getDict(nodeName as number),
+    parentNodeId,
+    decodeNodeJson(getDict, nodeJson as UniNodeJSONMinify),
+  ]
+}
+
+function decodeInsertAction([, ...action]: InsertAction) {
+  return ['insert', ...action]
+}
+
+function decodeRemoveAction([, ...action]: RemoveAction) {
+  return ['remove', ...action]
+}
+
+function decodeAddEventAction([, ...action]: AddEventAction, getDict: GetDict) {
+  return ['addEvent', action[0], getDict(action[1] as number), action[2]]
+}
+
+function decodeRemoveEventAction(
+  [, ...action]: RemoveEventAction,
+  getDict: GetDict
+) {
+  return ['removeEvent', action[0], getDict(action[1] as number)]
+}
+
+function decodeSetAttributeAction(
+  [, ...action]: SetAttributeAction,
+  getDict: GetDict
+) {
+  return [
+    'setAttr',
+    action[0],
+    getDict(action[1] as number),
+    getDict(action[2] as number),
+  ]
+}
+
+function decodeRemoveAttributeAction(
+  [, ...action]: RemoveAttributeAction,
+  getDict: GetDict
+) {
+  return ['removeAttr', action[0], getDict(action[1] as number)]
+}
+
+function decodeSetTextAction([, ...action]: SetTextAction, getDict: GetDict) {
+  return ['setText', action[0], getDict(action[1] as number)]
+}

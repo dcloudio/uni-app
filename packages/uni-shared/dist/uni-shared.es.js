@@ -516,106 +516,6 @@ function encodeModifier(modifiers) {
     }
     return flag;
 }
-const BASE_EVENT_MAP = {
-    onClick: 'a',
-    onChange: 'b',
-    onInput: 'c',
-    onLoad: 'd',
-    onError: 'e',
-    onScroll: 'f',
-    onTouchstart: 'g',
-    onTouchmove: 'h',
-    onTouchcancel: 'i',
-    onTouchend: 'j',
-    onLongpress: 'k',
-    onTransitionend: 'l',
-    onAnimationstart: 'm',
-    onAnimationiteration: 'n',
-    onAnimationend: 'o',
-    onTouchforcechange: 'p',
-};
-const EVENT_OPTIONS = [
-    'Capture',
-    'CaptureOnce',
-    'CapturePassive',
-    'CaptureOncePassive',
-    'Once',
-    'OncePassive',
-    'Passive',
-];
-const EVENT_MAP = /*#__PURE__*/ (() => {
-    return Object.keys(BASE_EVENT_MAP).reduce((res, name) => {
-        const value = BASE_EVENT_MAP[name];
-        res[name] = value;
-        EVENT_OPTIONS.forEach((v, i) => {
-            res[name + v] = value + i;
-        });
-        return res;
-    }, Object.create(null));
-})();
-function encodeEvent(name) {
-    return EVENT_MAP[name] || name;
-}
-// 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
-const ATTR_MAP = {
-    class: '.c',
-    style: '.s',
-    'hover-class': '.h0',
-    'hover-stop-propagation': '.h1',
-    'hover-start-time': '.h2',
-    'hover-stay-time': '.h3',
-};
-function encodeAttr(name) {
-    return ATTR_MAP[name] || name;
-}
-const COMPONENT_MAP = {
-    VIEW: 1,
-    IMAGE: 2,
-    TEXT: 3,
-    '#text': 4,
-    '#comment': 5,
-    NAVIGATOR: 6,
-    FORM: 7,
-    BUTTON: 8,
-    INPUT: 9,
-    LABEL: 10,
-    RADIO: 11,
-    CHECKBOX: 12,
-    'CHECKBOX-GROUP': 13,
-    AD: 14,
-    AUDIO: 15,
-    CAMERA: 16,
-    CANVAS: 17,
-    'COVER-IMAGE': 18,
-    'COVER-VIEW': 19,
-    EDITOR: 20,
-    'FUNCTIONAL-PAGE-NAVIGATOR': 21,
-    ICON: 22,
-    'RADIO-GROUP': 23,
-    'LIVE-PLAYER': 24,
-    'LIVE-PUSHER': 25,
-    MAP: 26,
-    'MOVABLE-AREA': 27,
-    'MOVABLE-VIEW': 28,
-    'OFFICIAL-ACCOUNT': 29,
-    'OPEN-DATA': 30,
-    PICKER: 31,
-    'PICKER-VIEW': 32,
-    'PICKER-VIEW-COLUMN': 33,
-    PROGRESS: 34,
-    'RICH-TEXT': 35,
-    'SCROLL-VIEW': 36,
-    SLIDER: 37,
-    SWIPER: 38,
-    'SWIPER-ITEM': 39,
-    SWITCH: 40,
-    TEXTAREA: 41,
-    VIDEO: 42,
-    'WEB-VIEW': 43,
-};
-function encodeTag(tag) {
-    return COMPONENT_MAP[tag] || tag;
-}
 
 const NODE_TYPE_PAGE = 0;
 const NODE_TYPE_ELEMENT = 1;
@@ -652,7 +552,7 @@ class UniNode extends UniEventTarget {
             if (pageNode) {
                 this.pageNode = pageNode;
                 this.nodeId = pageNode.genId();
-                !pageNode.isUnmounted && pageNode.onCreate(this, encodeTag(nodeName));
+                !pageNode.isUnmounted && pageNode.onCreate(this, nodeName);
             }
         }
         this.nodeType = nodeType;
@@ -762,37 +662,35 @@ class UniBaseNode extends UniNode {
     addEventListener(type, listener, options) {
         super.addEventListener(type, listener, options);
         if (this.pageNode && !this.pageNode.isUnmounted) {
-            this.pageNode.onAddEvent(this, encodeEvent(normalizeEventType(type, options)), encodeModifier(listener.modifiers || []));
+            this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
         }
     }
     removeEventListener(type, callback, options) {
         super.removeEventListener(type, callback, options);
         if (this.pageNode && !this.pageNode.isUnmounted) {
-            this.pageNode.onRemoveEvent(this, encodeEvent(normalizeEventType(type, options)));
+            this.pageNode.onRemoveEvent(this, normalizeEventType(type, options));
         }
     }
     getAttribute(qualifiedName) {
-        return this.attributes[encodeAttr(qualifiedName)];
+        return this.attributes[qualifiedName];
     }
     removeAttribute(qualifiedName) {
-        qualifiedName = encodeAttr(qualifiedName);
         delete this.attributes[qualifiedName];
         if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onRemoveAttribute(this, qualifiedName);
         }
     }
     setAttribute(qualifiedName, value) {
-        qualifiedName = encodeAttr(qualifiedName);
         this.attributes[qualifiedName] = value;
         if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onSetAttribute(this, qualifiedName, value);
         }
     }
-    toJSON(opts = {}) {
-        const { attributes, listeners, style } = this;
+    toJSON({ attr, normalize, } = {}) {
+        const { attributes, listeners, style, _text } = this;
         const res = {};
         if (Object.keys(attributes).length) {
-            res.a = attributes;
+            res.a = normalize ? normalize(attributes) : attributes;
         }
         const events = Object.keys(listeners);
         if (events.length) {
@@ -801,21 +699,21 @@ class UniBaseNode extends UniNode {
                 const handlers = listeners[name];
                 if (handlers.length) {
                     // 可能存在多个 handler 且不同 modifiers 吗？
-                    e[encodeEvent(name)] = encodeModifier(handlers[0].modifiers || []);
+                    e[name] = encodeModifier(handlers[0].modifiers || []);
                 }
             });
-            res.e = e;
+            res.e = normalize ? normalize(e, false) : e;
         }
         const cssStyle = style.toJSON();
         if (cssStyle) {
-            res.s = cssStyle;
+            res.s = normalize ? normalize(cssStyle) : cssStyle;
         }
-        if (!opts.attr) {
+        if (!attr) {
             res.i = this.nodeId;
-            res.n = encodeTag(this.nodeName);
+            res.n = this.nodeName;
         }
-        if (this._text !== null) {
-            res.t = this._text;
+        if (_text !== null) {
+            res.t = normalize ? normalize(_text) : _text;
         }
         return res;
     }
@@ -873,31 +771,6 @@ class UniTextNode extends UniBaseNode {
             this.pageNode.onNodeValue(this, text);
         }
     }
-}
-
-function decodeObjMap(objMap) {
-    return Object.keys(objMap).reduce((map, name) => {
-        map[objMap[name]] = name;
-        return map;
-    }, Object.create(null));
-}
-function decodeArrMap(objMap) {
-    return Object.keys(objMap).reduce((arr, name) => {
-        arr.push(name.toLowerCase());
-        return arr;
-    }, ['']);
-}
-const DECODED_EVENT_MAP = /*#__PURE__*/ decodeObjMap(EVENT_MAP);
-function decodeEvent(name) {
-    return DECODED_EVENT_MAP[name] || name;
-}
-const DECODED_ATTR_MAP = /*#__PURE__*/ decodeObjMap(ATTR_MAP);
-function decodeAttr(name) {
-    return DECODED_ATTR_MAP[name] || name;
-}
-const DECODED_COMPONENT_ARR = /*#__PURE__*/ decodeArrMap(COMPONENT_MAP);
-function decodeTag(tag) {
-    return (DECODED_COMPONENT_ARR[tag] || tag);
 }
 
 const ACTION_TYPE_PAGE_CREATE = 1;
@@ -1022,4 +895,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodeAttr, decodeEvent, decodeTag, decodedQuery, defaultRpx2Unit, encodeAttr, encodeEvent, encodeTag, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

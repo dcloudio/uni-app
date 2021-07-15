@@ -11,10 +11,18 @@ import {
   ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_TEXT,
 } from '@dcloudio/uni-shared'
+import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
+import { ACTION_TYPE_DICT, DictAction, Dictionary } from '../../../constants'
+import { createGetDict, decodeNodeJson } from './decodeActions'
 import { $, createElement, onPageCreate, onPageCreated } from './page'
 import { flushPostActionJobs } from './scheduler'
 
-export function onVdSync(actions: PageAction[]) {
+export function onVdSync(actions: (PageAction | DictAction)[]) {
+  const dictAction = actions[0]
+  const getDict = createGetDict(
+    dictAction[0] === ACTION_TYPE_DICT ? (dictAction[1] as Dictionary) : []
+  )
+
   actions.forEach((action) => {
     switch (action[0]) {
       case ACTION_TYPE_PAGE_CREATE:
@@ -22,21 +30,29 @@ export function onVdSync(actions: PageAction[]) {
       case ACTION_TYPE_PAGE_CREATED:
         return onPageCreated()
       case ACTION_TYPE_CREATE:
-        return createElement(action[1], action[2], action[3], action[4])
+        return createElement(
+          action[1],
+          getDict(action[2] as number),
+          action[3],
+          decodeNodeJson(getDict, action[4] as UniNodeJSONMinify)
+        )
       case ACTION_TYPE_INSERT:
         return $(action[1]).insert(action[2], action[3])
       case ACTION_TYPE_REMOVE:
         return $(action[1]).remove()
       case ACTION_TYPE_SET_ATTRIBUTE:
-        return $(action[1]).setAttr(action[2], action[3])
+        return $(action[1]).setAttr(
+          getDict(action[2] as number),
+          getDict(action[3] as number)
+        )
       case ACTION_TYPE_REMOVE_ATTRIBUTE:
-        return $(action[1]).removeAttr(action[2])
+        return $(action[1]).removeAttr(getDict(action[2] as number))
       case ACTION_TYPE_ADD_EVENT:
-        return $(action[1]).addEvent(action[2], action[3])
+        return $(action[1]).addEvent(getDict(action[2] as number), action[3])
       case ACTION_TYPE_REMOVE_EVENT:
-        return $(action[1]).removeEvent(action[2])
+        return $(action[1]).removeEvent(getDict(action[2] as number))
       case ACTION_TYPE_SET_TEXT:
-        return $(action[1]).setText(action[2])
+        return $(action[1]).setText(getDict(action[2] as number))
     }
   })
   flushPostActionJobs()

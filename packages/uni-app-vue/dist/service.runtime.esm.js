@@ -391,105 +391,6 @@ export default function vueFactory(exports) {
     return flag;
   }
 
-  var BASE_EVENT_MAP = {
-    onClick: 'a',
-    onChange: 'b',
-    onInput: 'c',
-    onLoad: 'd',
-    onError: 'e',
-    onScroll: 'f',
-    onTouchstart: 'g',
-    onTouchmove: 'h',
-    onTouchcancel: 'i',
-    onTouchend: 'j',
-    onLongpress: 'k',
-    onTransitionend: 'l',
-    onAnimationstart: 'm',
-    onAnimationiteration: 'n',
-    onAnimationend: 'o',
-    onTouchforcechange: 'p'
-  };
-  var EVENT_OPTIONS = ['Capture', 'CaptureOnce', 'CapturePassive', 'CaptureOncePassive', 'Once', 'OncePassive', 'Passive'];
-
-  var EVENT_MAP = /*#__PURE__*/function () {
-    return Object.keys(BASE_EVENT_MAP).reduce(function (res, name) {
-      var value = BASE_EVENT_MAP[name];
-      res[name] = value;
-      EVENT_OPTIONS.forEach(function (v, i) {
-        res[name + v] = value + i;
-      });
-      return res;
-    }, Object.create(null));
-  }();
-
-  function encodeEvent(name) {
-    return EVENT_MAP[name] || name;
-  } // 该代码会单独编译成一个decode js，用于开发时测试，故尽可能独立，不使用 @vue/shared 的 extend
-
-
-  var ATTR_MAP = {
-    class: '.c',
-    style: '.s',
-    'hover-class': '.h0',
-    'hover-stop-propagation': '.h1',
-    'hover-start-time': '.h2',
-    'hover-stay-time': '.h3'
-  };
-
-  function encodeAttr(name) {
-    return ATTR_MAP[name] || name;
-  }
-
-  var COMPONENT_MAP = {
-    VIEW: 1,
-    IMAGE: 2,
-    TEXT: 3,
-    '#text': 4,
-    '#comment': 5,
-    NAVIGATOR: 6,
-    FORM: 7,
-    BUTTON: 8,
-    INPUT: 9,
-    LABEL: 10,
-    RADIO: 11,
-    CHECKBOX: 12,
-    'CHECKBOX-GROUP': 13,
-    AD: 14,
-    AUDIO: 15,
-    CAMERA: 16,
-    CANVAS: 17,
-    'COVER-IMAGE': 18,
-    'COVER-VIEW': 19,
-    EDITOR: 20,
-    'FUNCTIONAL-PAGE-NAVIGATOR': 21,
-    ICON: 22,
-    'RADIO-GROUP': 23,
-    'LIVE-PLAYER': 24,
-    'LIVE-PUSHER': 25,
-    MAP: 26,
-    'MOVABLE-AREA': 27,
-    'MOVABLE-VIEW': 28,
-    'OFFICIAL-ACCOUNT': 29,
-    'OPEN-DATA': 30,
-    PICKER: 31,
-    'PICKER-VIEW': 32,
-    'PICKER-VIEW-COLUMN': 33,
-    PROGRESS: 34,
-    'RICH-TEXT': 35,
-    'SCROLL-VIEW': 36,
-    SLIDER: 37,
-    SWIPER: 38,
-    'SWIPER-ITEM': 39,
-    SWITCH: 40,
-    TEXTAREA: 41,
-    VIDEO: 42,
-    'WEB-VIEW': 43
-  };
-
-  function encodeTag(tag) {
-    return COMPONENT_MAP[tag] || tag;
-  }
-
   var NODE_TYPE_ELEMENT = 1;
   var NODE_TYPE_TEXT = 3;
   var NODE_TYPE_COMMENT = 8;
@@ -541,7 +442,7 @@ export default function vueFactory(exports) {
         if (pageNode) {
           _this2.pageNode = pageNode;
           _this2.nodeId = pageNode.genId();
-          !pageNode.isUnmounted && pageNode.onCreate(_assertThisInitialized(_this2), encodeTag(nodeName));
+          !pageNode.isUnmounted && pageNode.onCreate(_assertThisInitialized(_this2), nodeName);
         }
       }
 
@@ -706,7 +607,7 @@ export default function vueFactory(exports) {
         _get(_getPrototypeOf(UniBaseNode.prototype), "addEventListener", this).call(this, type, listener, options);
 
         if (this.pageNode && !this.pageNode.isUnmounted) {
-          this.pageNode.onAddEvent(this, encodeEvent(normalizeEventType(type, options)), encodeModifier(listener.modifiers || []));
+          this.pageNode.onAddEvent(this, normalizeEventType(type, options), encodeModifier(listener.modifiers || []));
         }
       }
     }, {
@@ -715,18 +616,17 @@ export default function vueFactory(exports) {
         _get(_getPrototypeOf(UniBaseNode.prototype), "removeEventListener", this).call(this, type, callback, options);
 
         if (this.pageNode && !this.pageNode.isUnmounted) {
-          this.pageNode.onRemoveEvent(this, encodeEvent(normalizeEventType(type, options)));
+          this.pageNode.onRemoveEvent(this, normalizeEventType(type, options));
         }
       }
     }, {
       key: "getAttribute",
       value: function getAttribute(qualifiedName) {
-        return this.attributes[encodeAttr(qualifiedName)];
+        return this.attributes[qualifiedName];
       }
     }, {
       key: "removeAttribute",
       value: function removeAttribute(qualifiedName) {
-        qualifiedName = encodeAttr(qualifiedName);
         delete this.attributes[qualifiedName];
 
         if (this.pageNode && !this.pageNode.isUnmounted) {
@@ -736,7 +636,6 @@ export default function vueFactory(exports) {
     }, {
       key: "setAttribute",
       value: function setAttribute(qualifiedName, value) {
-        qualifiedName = encodeAttr(qualifiedName);
         this.attributes[qualifiedName] = value;
 
         if (this.pageNode && !this.pageNode.isUnmounted) {
@@ -746,14 +645,18 @@ export default function vueFactory(exports) {
     }, {
       key: "toJSON",
       value: function toJSON() {
-        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            attr = _ref.attr,
+            normalize = _ref.normalize;
+
         var attributes = this.attributes,
             listeners = this.listeners,
-            style = this.style;
+            style = this.style,
+            _text = this._text;
         var res = {};
 
         if (Object.keys(attributes).length) {
-          res.a = attributes;
+          res.a = normalize ? normalize(attributes) : attributes;
         }
 
         var events = Object.keys(listeners);
@@ -765,25 +668,25 @@ export default function vueFactory(exports) {
 
             if (handlers.length) {
               // 可能存在多个 handler 且不同 modifiers 吗？
-              e[encodeEvent(name)] = encodeModifier(handlers[0].modifiers || []);
+              e[name] = encodeModifier(handlers[0].modifiers || []);
             }
           });
-          res.e = e;
+          res.e = normalize ? normalize(e, false) : e;
         }
 
         var cssStyle = style.toJSON();
 
         if (cssStyle) {
-          res.s = cssStyle;
+          res.s = normalize ? normalize(cssStyle) : cssStyle;
         }
 
-        if (!opts.attr) {
+        if (!attr) {
           res.i = this.nodeId;
-          res.n = encodeTag(this.nodeName);
+          res.n = this.nodeName;
         }
 
-        if (this._text !== null) {
-          res.t = this._text;
+        if (_text !== null) {
+          res.t = normalize ? normalize(_text) : _text;
         }
 
         return res;
@@ -1019,10 +922,10 @@ export default function vueFactory(exports) {
   var replacer = function replacer(_key, val) {
     if (isMap(val)) {
       return {
-        ["Map(".concat(val.size, ")")]: _toConsumableArray(val.entries()).reduce(function (entries, _ref) {
-          var _ref2 = _slicedToArray(_ref, 2),
-              key = _ref2[0],
-              val = _ref2[1];
+        ["Map(".concat(val.size, ")")]: _toConsumableArray(val.entries()).reduce(function (entries, _ref2) {
+          var _ref3 = _slicedToArray(_ref2, 2),
+              key = _ref3[0],
+              val = _ref3[1];
 
           entries["".concat(key, " =>")] = val;
           return entries;
@@ -2476,8 +2379,8 @@ export default function vueFactory(exports) {
     if (appWarnHandler) {
       callWithErrorHandling(appWarnHandler, instance, 11
       /* APP_WARN_HANDLER */
-      , [msg + args.join(''), instance && instance.proxy, trace.map(function (_ref3) {
-        var vnode = _ref3.vnode;
+      , [msg + args.join(''), instance && instance.proxy, trace.map(function (_ref4) {
+        var vnode = _ref4.vnode;
         return "at <".concat(formatComponentName(instance, vnode.type), ">");
       }).join('\n'), trace]);
     } else {
@@ -2538,9 +2441,9 @@ export default function vueFactory(exports) {
     return logs;
   }
 
-  function formatTraceEntry(_ref4) {
-    var vnode = _ref4.vnode,
-        recurseCount = _ref4.recurseCount;
+  function formatTraceEntry(_ref5) {
+    var vnode = _ref5.vnode,
+        recurseCount = _ref5.recurseCount;
     var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
     var isRoot = vnode.component ? vnode.component.parent == null : false;
     var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
@@ -3270,9 +3173,9 @@ export default function vueFactory(exports) {
     if (modelArg && modelArg in props) {
       var modifiersKey = "".concat(modelArg === 'modelValue' ? 'model' : modelArg, "Modifiers");
 
-      var _ref5 = props[modifiersKey] || EMPTY_OBJ,
-          number = _ref5.number,
-          trim = _ref5.trim;
+      var _ref6 = props[modifiersKey] || EMPTY_OBJ,
+          number = _ref6.number,
+          trim = _ref6.trim;
 
       if (trim) {
         args = rawArgs.map(function (a) {
@@ -3871,10 +3774,10 @@ export default function vueFactory(exports) {
     return false;
   }
 
-  function updateHOCHostEl(_ref6, el // HostNode
+  function updateHOCHostEl(_ref7, el // HostNode
   ) {
-    var vnode = _ref6.vnode,
-        parent = _ref6.parent;
+    var vnode = _ref7.vnode,
+        parent = _ref7.parent;
 
     while (parent && parent.subTree === vnode) {
       (vnode = parent.vnode).el = el;
@@ -3945,10 +3848,10 @@ export default function vueFactory(exports) {
     }
   }
 
-  function patchSuspense(n1, n2, container, anchor, parentComponent, isSVG, slotScopeIds, optimized, _ref7) {
-    var patch = _ref7.p,
-        unmount = _ref7.um,
-        createElement = _ref7.o.createElement;
+  function patchSuspense(n1, n2, container, anchor, parentComponent, isSVG, slotScopeIds, optimized, _ref8) {
+    var patch = _ref8.p,
+        unmount = _ref8.um,
+        createElement = _ref8.o.createElement;
     var suspense = n2.suspense = n1.suspense;
     suspense.vnode = n2;
     n2.el = n1.el;
@@ -4474,12 +4377,12 @@ export default function vueFactory(exports) {
   }
 
   function doWatch(source, cb) {
-    var _ref8 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ,
-        immediate = _ref8.immediate,
-        deep = _ref8.deep,
-        flush = _ref8.flush,
-        onTrack = _ref8.onTrack,
-        onTrigger = _ref8.onTrigger;
+    var _ref9 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ,
+        immediate = _ref9.immediate,
+        deep = _ref9.deep,
+        flush = _ref9.flush,
+        onTrack = _ref9.onTrack,
+        onTrigger = _ref9.onTrigger;
 
     var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : currentInstance;
 
@@ -4764,8 +4667,8 @@ export default function vueFactory(exports) {
       onAppearCancelled: TransitionHookValidator
     },
 
-    setup(props, _ref9) {
-      var slots = _ref9.slots;
+    setup(props, _ref10) {
+      var slots = _ref10.slots;
       var instance = getCurrentInstance();
       var state = useTransitionState();
       var prevTransitionKey;
@@ -5273,11 +5176,11 @@ export default function vueFactory(exports) {
     });
   }
 
-  function createInnerComp(comp, _ref10) {
-    var _ref10$vnode = _ref10.vnode,
-        ref = _ref10$vnode.ref,
-        props = _ref10$vnode.props,
-        children = _ref10$vnode.children;
+  function createInnerComp(comp, _ref11) {
+    var _ref11$vnode = _ref11.vnode,
+        ref = _ref11$vnode.ref,
+        props = _ref11$vnode.props,
+        children = _ref11$vnode.children;
     var vnode = createVNode(comp, props, children); // ensure inner component inherits the async wrapper's ref owner
 
     vnode.ref = ref;
@@ -5300,8 +5203,8 @@ export default function vueFactory(exports) {
       max: [String, Number]
     },
 
-    setup(props, _ref11) {
-      var slots = _ref11.slots;
+    setup(props, _ref12) {
+      var slots = _ref12.slots;
       var instance = getCurrentInstance(); // KeepAlive communicates with the instantiated renderer via the
       // ctx where the renderer passes in its internals,
       // and the KeepAlive instance exposes activate/deactivate implementations.
@@ -5418,10 +5321,10 @@ export default function vueFactory(exports) {
 
       watch(function () {
         return [props.include, props.exclude];
-      }, function (_ref12) {
-        var _ref13 = _slicedToArray(_ref12, 2),
-            include = _ref13[0],
-            exclude = _ref13[1];
+      }, function (_ref13) {
+        var _ref14 = _slicedToArray(_ref13, 2),
+            include = _ref14[0],
+            exclude = _ref14[1];
 
         include && pruneCache(function (name) {
           return matches(include, name);
@@ -7937,9 +7840,9 @@ export default function vueFactory(exports) {
       }
     };
 
-    var moveStaticNode = function moveStaticNode(_ref14, container, nextSibling) {
-      var el = _ref14.el,
-          anchor = _ref14.anchor;
+    var moveStaticNode = function moveStaticNode(_ref15, container, nextSibling) {
+      var el = _ref15.el,
+          anchor = _ref15.anchor;
       var next;
 
       while (el && el !== anchor) {
@@ -7951,9 +7854,9 @@ export default function vueFactory(exports) {
       hostInsert(anchor, container, nextSibling);
     };
 
-    var removeStaticNode = function removeStaticNode(_ref15) {
-      var el = _ref15.el,
-          anchor = _ref15.anchor;
+    var removeStaticNode = function removeStaticNode(_ref16) {
+      var el = _ref16.el,
+          anchor = _ref16.anchor;
       var next;
 
       while (el && el !== anchor) {
@@ -9535,9 +9438,9 @@ export default function vueFactory(exports) {
       }
     },
 
-    remove(vnode, parentComponent, parentSuspense, optimized, _ref16, doRemove) {
-      var unmount = _ref16.um,
-          hostRemove = _ref16.o.remove;
+    remove(vnode, parentComponent, parentSuspense, optimized, _ref17, doRemove) {
+      var unmount = _ref17.um,
+          hostRemove = _ref17.o.remove;
       var shapeFlag = vnode.shapeFlag,
           children = vnode.children,
           anchor = vnode.anchor,
@@ -9568,11 +9471,11 @@ export default function vueFactory(exports) {
     hydrate: hydrateTeleport
   };
 
-  function moveTeleport(vnode, container, parentAnchor, _ref17)
+  function moveTeleport(vnode, container, parentAnchor, _ref18)
   /* REORDER */
   {
-    var insert = _ref17.o.insert,
-        move = _ref17.m;
+    var insert = _ref18.o.insert,
+        move = _ref18.m;
     var moveType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
 
     // move target anchor if this is a target change.
@@ -9617,11 +9520,11 @@ export default function vueFactory(exports) {
     }
   }
 
-  function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref18, hydrateChildren) {
-    var _ref18$o = _ref18.o,
-        nextSibling = _ref18$o.nextSibling,
-        parentNode = _ref18$o.parentNode,
-        querySelector = _ref18$o.querySelector;
+  function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref19, hydrateChildren) {
+    var _ref19$o = _ref19.o,
+        nextSibling = _ref19$o.nextSibling,
+        parentNode = _ref19$o.parentNode,
+        querySelector = _ref19$o.querySelector;
     var target = vnode.target = resolveTarget(vnode.props, querySelector);
 
     if (target) {
@@ -9848,13 +9751,13 @@ export default function vueFactory(exports) {
 
   var InternalObjectKey = "__vInternal";
 
-  var normalizeKey = function normalizeKey(_ref19) {
-    var key = _ref19.key;
+  var normalizeKey = function normalizeKey(_ref20) {
+    var key = _ref20.key;
     return key != null ? key : null;
   };
 
-  var normalizeRef = function normalizeRef(_ref20) {
-    var ref = _ref20.ref;
+  var normalizeRef = function normalizeRef(_ref21) {
+    var ref = _ref21.ref;
     return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? {
       i: currentRenderingInstance,
       r: ref
@@ -10449,8 +10352,8 @@ export default function vueFactory(exports) {
     }
   });
   var PublicInstanceProxyHandlers = {
-    get(_ref21, key) {
-      var instance = _ref21._;
+    get(_ref22, key) {
+      var instance = _ref22._;
       var ctx = instance.ctx,
           setupState = instance.setupState,
           data = instance.data,
@@ -10571,8 +10474,8 @@ export default function vueFactory(exports) {
       }
     },
 
-    set(_ref22, key, value) {
-      var instance = _ref22._;
+    set(_ref23, key, value) {
+      var instance = _ref23._;
       var data = instance.data,
           setupState = instance.setupState,
           ctx = instance.ctx;
@@ -10604,14 +10507,14 @@ export default function vueFactory(exports) {
       return true;
     },
 
-    has(_ref23, key) {
-      var _ref23$_ = _ref23._,
-          data = _ref23$_.data,
-          setupState = _ref23$_.setupState,
-          accessCache = _ref23$_.accessCache,
-          ctx = _ref23$_.ctx,
-          appContext = _ref23$_.appContext,
-          propsOptions = _ref23$_.propsOptions;
+    has(_ref24, key) {
+      var _ref24$_ = _ref24._,
+          data = _ref24$_.data,
+          setupState = _ref24$_.setupState,
+          accessCache = _ref24$_.accessCache,
+          ctx = _ref24$_.ctx,
+          appContext = _ref24$_.appContext,
+          propsOptions = _ref24$_.propsOptions;
       var normalizedProps;
       return accessCache[key] !== undefined || data !== EMPTY_OBJ && hasOwn(data, key) || setupState !== EMPTY_OBJ && hasOwn(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
     }
@@ -11915,8 +11818,8 @@ export default function vueFactory(exports) {
   var ANIMATION = 'animation'; // DOM Transition is a higher-order-component based on the platform-agnostic
   // base Transition component, with DOM-specific logic.
 
-  var Transition = function Transition(props, _ref24) {
-    var slots = _ref24.slots;
+  var Transition = function Transition(props, _ref25) {
+    var slots = _ref25.slots;
     return h(BaseTransition, resolveTransitionProps(props), slots);
   };
 
@@ -12280,8 +12183,8 @@ export default function vueFactory(exports) {
       moveClass: String
     }),
 
-    setup(props, _ref25) {
-      var slots = _ref25.slots;
+    setup(props, _ref26) {
+      var slots = _ref26.slots;
       var instance = getCurrentInstance();
       var state = useTransitionState();
       var prevChildren;
@@ -12428,10 +12331,10 @@ export default function vueFactory(exports) {
 
 
   var vModelText = {
-    created(el, _ref26, vnode) {
-      var _ref26$modifiers = _ref26.modifiers,
-          trim = _ref26$modifiers.trim,
-          number = _ref26$modifiers.number;
+    created(el, _ref27, vnode) {
+      var _ref27$modifiers = _ref27.modifiers,
+          trim = _ref27$modifiers.trim,
+          number = _ref27$modifiers.number;
       el._assign = getModelAssigner(vnode);
       addEventListener(el, 'input', function (e) {
         var domValue = e.detail.value; // 从 view 层接收到新值后，赋值给 service 层元素，注意，需要临时解除 pageNode，否则赋值 value 会触发向 view 层的再次同步数据
@@ -12451,8 +12354,8 @@ export default function vueFactory(exports) {
       });
     },
 
-    beforeUpdate(el, _ref27, vnode) {
-      var value = _ref27.value;
+    beforeUpdate(el, _ref28, vnode) {
+      var value = _ref28.value;
       el._assign = getModelAssigner(vnode);
       var newValue = value == null ? '' : value;
 
@@ -12555,21 +12458,21 @@ export default function vueFactory(exports) {
   };
 
   var vShow = {
-    beforeMount(el, _ref28) {
-      var value = _ref28.value;
+    beforeMount(el, _ref29) {
+      var value = _ref29.value;
       el._vod = el.style.display === 'none' ? '' : el.style.display;
       setDisplay(el, value);
     },
 
-    updated(el, _ref29) {
-      var value = _ref29.value,
-          oldValue = _ref29.oldValue;
+    updated(el, _ref30) {
+      var value = _ref30.value,
+          oldValue = _ref30.oldValue;
       if (!value === !oldValue) return;
       setDisplay(el, value);
     },
 
-    beforeUnmount(el, _ref30) {
-      var value = _ref30.value;
+    beforeUnmount(el, _ref31) {
+      var value = _ref31.value;
       setDisplay(el, value);
     }
 
