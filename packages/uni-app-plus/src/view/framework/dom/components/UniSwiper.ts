@@ -1,9 +1,9 @@
 import '@dcloudio/uni-components/style/swiper.css'
 import { Swiper } from '@dcloudio/uni-components'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { UniComponent } from './UniComponent'
+import { UniContainerComponent } from './UniComponent'
 
-export class UniSwiper extends UniComponent {
+export class UniSwiper extends UniContainerComponent {
   constructor(
     id: number,
     parentNodeId: number,

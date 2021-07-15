@@ -14384,6 +14384,24 @@
       return (this.$holder || this.$).insertBefore(newChild, refChild);
     }
   }
+  class UniContainerComponent extends UniComponent {
+    constructor(id2, tag, component, parentNodeId, nodeJson, selector) {
+      super(id2, tag, component, parentNodeId, nodeJson, selector);
+      this.initObserver();
+    }
+    initObserver() {
+      const elem = this.$holder || this.$;
+      const observer = new MutationObserver((mutations) => {
+        {
+          console.log(formatLog("Observer", mutations));
+        }
+      });
+      observer.observe(elem, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
   function getVueParent(node) {
     while (node && node.pid > 0) {
       node = $(node.pid);
@@ -14683,6 +14701,9 @@
         return tags2;
       });
       const cover = new plus.nativeObj.View(`cover-${Date.now()}-${id++}`, viewPosition.value, tags.value);
+      {
+        console.log(formatLog("Cover", cover.id, viewPosition.value, tags.value));
+      }
       plus.webview.currentWebview().append(cover);
       if (hidden.value) {
         cover.hide();
@@ -14721,48 +14742,44 @@
       style.value = props2.autoSize ? "width:0;height:0;" : "";
       const realPath = props2.src ? getRealPath(props2.src) : "";
       if (realPath.indexOf("http://") === 0 || realPath.indexOf("https://") === 0) {
-        plusReady(() => {
-          downloaTask = plus.downloader.createDownload(realPath, {
-            filename: TEMP_PATH + "/download/"
-          }, (task, status) => {
-            if (status === 200) {
-              getImageInfo(task.filename);
-            } else {
-              trigger2("error", {}, {
-                errMsg: "error"
-              });
-            }
-          });
-          downloaTask.start();
+        downloaTask = plus.downloader.createDownload(realPath, {
+          filename: TEMP_PATH + "/download/"
+        }, (task, status) => {
+          if (status === 200) {
+            getImageInfo(task.filename);
+          } else {
+            trigger2("error", {}, {
+              errMsg: "error"
+            });
+          }
         });
+        downloaTask.start();
       } else if (realPath) {
         getImageInfo(realPath);
       }
     }
     function getImageInfo(src) {
       content.src = src;
-      plusReady(() => {
-        plus.io.getImageInfo({
-          src,
-          success: ({
+      plus.io.getImageInfo({
+        src,
+        success: ({
+          width,
+          height
+        }) => {
+          if (props2.autoSize) {
+            style.value = `width:${width}px;height:${height}px;`;
+            window.dispatchEvent(new CustomEvent("updateview"));
+          }
+          trigger2("load", {}, {
             width,
             height
-          }) => {
-            if (props2.autoSize) {
-              style.value = `width:${width}px;height:${height}px;`;
-              window.dispatchEvent(new CustomEvent("updateview"));
-            }
-            trigger2("load", {}, {
-              width,
-              height
-            });
-          },
-          fail: () => {
-            trigger2("error", {}, {
-              errMsg: "error"
-            });
-          }
-        });
+          });
+        },
+        fail: () => {
+          trigger2("error", {}, {
+            errMsg: "error"
+          });
+        }
       });
     }
     if (props2.src) {
@@ -14824,7 +14841,9 @@
         const defaultSlots = slots.default ? flatVNode(slots.default()) : [];
         let text2 = "";
         defaultSlots.forEach((node) => {
-          text2 += node.children || "";
+          if (isString(node.children)) {
+            text2 += node.children;
+          }
         });
         content.text = text2;
         return createVNode("uni-cover-view", {
@@ -14992,7 +15011,7 @@
     }
   }
   var swiper = "uni-swiper {\n  display: block;\n  height: 150px;\n}\n\nuni-swiper[hidden] {\n  display: none;\n}\n\n.uni-swiper-wrapper {\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform: translateZ(0);\n}\n\n.uni-swiper-slides {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n}\n\n.uni-swiper-slide-frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  will-change: transform;\n}\n\n.uni-swiper-dots {\n  position: absolute;\n  font-size: 0;\n}\n\n.uni-swiper-dots-horizontal {\n  left: 50%;\n  bottom: 10px;\n  text-align: center;\n  white-space: nowrap;\n  transform: translate(-50%, 0);\n}\n\n.uni-swiper-dots-horizontal .uni-swiper-dot {\n  margin-right: 8px;\n}\n\n.uni-swiper-dots-horizontal .uni-swiper-dot:last-child {\n  margin-right: 0;\n}\n\n.uni-swiper-dots-vertical {\n  right: 10px;\n  top: 50%;\n  text-align: right;\n  transform: translate(0, -50%);\n}\n\n.uni-swiper-dots-vertical .uni-swiper-dot {\n  display: block;\n  margin-bottom: 9px;\n}\n\n.uni-swiper-dots-vertical .uni-swiper-dot:last-child {\n  margin-bottom: 0;\n}\n\n.uni-swiper-dot {\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  cursor: pointer;\n  transition-property: background-color;\n  transition-timing-function: ease;\n  background: rgba(0, 0, 0, 0.3);\n  border-radius: 50%;\n}\n\n.uni-swiper-dot-active {\n  background-color: #000000;\n}\n";
-  class UniSwiper extends UniComponent {
+  class UniSwiper extends UniContainerComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-swiper", Swiper, parentNodeId, nodeJson, ".uni-swiper-slide-frame");
     }

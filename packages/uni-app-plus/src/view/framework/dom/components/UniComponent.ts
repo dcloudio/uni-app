@@ -15,7 +15,7 @@ import { $ } from '../page'
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
   protected $props!: Record<string, any>
-  protected $holder?: Element
+  $holder?: Element
   constructor(
     id: number,
     tag: string,
@@ -81,6 +81,34 @@ export class UniComponent extends UniNode {
   }
   insertBefore(newChild: Node, refChild: Node) {
     return (this.$holder || this.$).insertBefore(newChild, refChild)
+  }
+}
+
+export class UniContainerComponent extends UniComponent {
+  constructor(
+    id: number,
+    tag: string,
+    component: Component,
+    parentNodeId: number,
+    nodeJson: Partial<UniNodeJSON>,
+    selector?: string
+  ) {
+    super(id, tag, component, parentNodeId, nodeJson, selector)
+    this.initObserver()
+  }
+  initObserver() {
+    const elem = this.$holder || this.$
+    const observer = new MutationObserver((mutations) => {
+      if (__DEV__) {
+        console.log(formatLog('Observer', mutations))
+      }
+      // TODO 刷新容器组件状态
+      // (this.$.__vueParentComponent as any).refresh()
+    })
+    observer.observe(elem, {
+      childList: true,
+      subtree: true,
+    })
   }
 }
 

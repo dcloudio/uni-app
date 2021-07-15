@@ -1,6 +1,7 @@
 import { computed, Ref, reactive, watch } from 'vue'
 import { CustomEventTrigger } from '@dcloudio/uni-components'
 import { Position, useNative } from './useNative'
+import { formatLog } from '@dcloudio/uni-shared'
 
 let id = 0
 
@@ -169,6 +170,9 @@ export function useCover(
       viewPosition.value,
       tags.value
     )
+    if (__DEV__) {
+      console.log(formatLog('Cover', cover.id, viewPosition.value, tags.value))
+    }
     plus.webview.currentWebview().append(cover)
     if (hidden.value) {
       cover.hide()

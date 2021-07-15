@@ -1,5 +1,10 @@
 import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance, defineComponent, h } from 'vue'
+import {
+  ComponentPublicInstance,
+  defineComponent,
+  h,
+  VNodeArrayChildren,
+} from 'vue'
 import { UniComment } from '../elements/UniComment'
 import { UniTextElement } from '../elements/UniTextElement'
 import { UniTextNode } from '../elements/UniTextNode'
@@ -46,7 +51,7 @@ import { UniWebView } from './UniWebView'
 
 export interface UniCustomElement extends Element {
   __id: number
-  __vm: ComponentPublicInstance
+  __vueParentComponent: ComponentPublicInstance
   __listeners: Record<string, (evt: Event) => void>
 }
 

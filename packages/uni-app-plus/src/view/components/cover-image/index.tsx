@@ -6,7 +6,6 @@ import {
   watch,
   onBeforeUnmount,
 } from 'vue'
-import { plusReady } from '@dcloudio/uni-shared'
 import {
   defineBuiltInComponent,
   useCustomEvent,
@@ -45,24 +44,22 @@ function useImageLoad(
       realPath.indexOf('http://') === 0 ||
       realPath.indexOf('https://') === 0
     ) {
-      plusReady(() => {
-        downloaTask = plus.downloader.createDownload(
-          realPath,
-          {
-            filename: TEMP_PATH + '/download/',
-          },
-          (task, status) => {
-            if (status === 200) {
-              getImageInfo(task.filename!)
-            } else {
-              trigger('error', {} as Event, {
-                errMsg: 'error',
-              })
-            }
+      downloaTask = plus.downloader.createDownload(
+        realPath,
+        {
+          filename: TEMP_PATH + '/download/',
+        },
+        (task, status) => {
+          if (status === 200) {
+            getImageInfo(task.filename!)
+          } else {
+            trigger('error', {} as Event, {
+              errMsg: 'error',
+            })
           }
-        )
-        downloaTask.start()
-      })
+        }
+      )
+      downloaTask.start()
     } else if (realPath) {
       getImageInfo(realPath)
     }
@@ -70,22 +67,20 @@ function useImageLoad(
 
   function getImageInfo(src: string) {
     content.src = src
-    plusReady(() => {
-      plus.io.getImageInfo({
-        src,
-        success: ({ width, height }) => {
-          if (props.autoSize) {
-            style.value = `width:${width}px;height:${height}px;`
-            window.dispatchEvent(new CustomEvent('updateview'))
-          }
-          trigger('load', {} as Event, { width, height })
-        },
-        fail: () => {
-          trigger('error', {} as Event, {
-            errMsg: 'error',
-          })
-        },
-      })
+    plus.io.getImageInfo({
+      src,
+      success: ({ width, height }) => {
+        if (props.autoSize) {
+          style.value = `width:${width}px;height:${height}px;`
+          window.dispatchEvent(new CustomEvent('updateview'))
+        }
+        trigger('load', {} as Event, { width, height })
+      },
+      fail: () => {
+        trigger('error', {} as Event, {
+          errMsg: 'error',
+        })
+      },
     })
   }
 
