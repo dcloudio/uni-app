@@ -1,5 +1,11 @@
+import { invokeHook } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance, getCurrentInstance } from 'vue'
+import {
+  ComponentPublicInstance,
+  getCurrentInstance,
+  onBeforeUnmount,
+  onMounted,
+} from 'vue'
 import { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 
@@ -18,6 +24,15 @@ export function setupPage(component: VuePageComponent) {
     pageVm.$page = __pageInstance as Page.PageInstance['$page']
     pageVm.$vm = pageVm
     addCurrentPage(initScope(__pageId as number, pageVm))
+    invokeHook(pageVm, 'onLoad', __pageQuery)
+    invokeHook(pageVm, 'onShow')
+    onMounted(() => {
+      invokeHook(pageVm, 'onReady')
+      // TODO preloadSubPackages
+    })
+    onBeforeUnmount(() => {
+      invokeHook(pageVm, 'onUnload')
+    })
     if (oldSetup) {
       return oldSetup(__pageQuery as any, ctx)
     }

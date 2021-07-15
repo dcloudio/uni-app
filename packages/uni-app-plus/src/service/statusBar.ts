@@ -1,7 +1,7 @@
 import { formatLog } from '@dcloudio/uni-shared'
 
 type SetStatusBarStyle = typeof plus.navigator.setStatusBarStyle
-type StatusBarStyle = Parameters<SetStatusBarStyle>[0]
+export type StatusBarStyle = Parameters<SetStatusBarStyle>[0]
 
 export let lastStatusBarStyle: StatusBarStyle
 

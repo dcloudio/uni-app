@@ -9355,6 +9355,15 @@ var serviceContext = (function (vue) {
           pageVm.$page = __pageInstance;
           pageVm.$vm = pageVm;
           addCurrentPage(initScope(__pageId, pageVm));
+          invokeHook(pageVm, 'onLoad', __pageQuery);
+          invokeHook(pageVm, 'onShow');
+          vue.onMounted(() => {
+              invokeHook(pageVm, 'onReady');
+              // TODO preloadSubPackages
+          });
+          vue.onBeforeUnmount(() => {
+              invokeHook(pageVm, 'onUnload');
+          });
           if (oldSetup) {
               return oldSetup(__pageQuery, ctx);
           }
@@ -9500,6 +9509,8 @@ var serviceContext = (function (vue) {
   }, NavigateToProtocol, NavigateToOptions);
   function _navigateTo({ url, path, query, aniType, aniDuration, }) {
       // TODO eventChannel
+      // 当前页面触发 onHide
+      invokeHook('onHide');
       return new Promise((resolve) => {
           showWebview(registerPage({ url, path, query, openType: 'navigateTo' }), aniType, aniDuration, () => {
               resolve(undefined);
@@ -9623,6 +9634,8 @@ var serviceContext = (function (vue) {
               .slice(len - delta, len)
               .forEach((page) => removePage(page));
           setStatusBarStyle();
+          // 前一个页面触发 onShow
+          invokeHook('onShow');
       };
       const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
       if (!currentPage.__uniapp_webview) {

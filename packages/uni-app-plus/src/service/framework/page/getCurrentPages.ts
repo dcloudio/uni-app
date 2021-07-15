@@ -1,3 +1,4 @@
+import { getCurrentPage } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 
@@ -19,6 +20,10 @@ export function getCurrentPages() {
     }
   })
   return curPages
+}
+
+export function removeCurrentPage() {
+  removePage(getCurrentPage() as ComponentPublicInstance)
 }
 
 export function removePage(curPage: ComponentPublicInstance) {

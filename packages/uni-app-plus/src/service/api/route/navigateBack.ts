@@ -104,6 +104,8 @@ function back(
       .slice(len - delta, len)
       .forEach((page) => removePage(page as ComponentPublicInstance))
     setStatusBarStyle()
+    // 前一个页面触发 onShow
+    invokeHook('onShow')
   }
 
   const webview = plus.webview.getWebviewById(currentPage.$page.id + '')

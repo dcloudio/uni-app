@@ -1,4 +1,5 @@
 import { onWebviewClose } from './close'
+import { onWebviewPopGesture } from './popGesture'
 import { onWebviewResize } from './resize'
 
 const WEBVIEW_LISTENERS = {
@@ -21,8 +22,8 @@ export function initWebviewEvent(webview: PlusWebviewWebviewObject) {
   onWebviewResize(webview)
 
   // TODO
-  // if (plus.os.name === 'iOS') {
-  //     !(webview as any).nvue && onWebviewRecovery(webview, routeOptions)
-  //     onWebviewPopGesture(webview)
-  // }
+  if (plus.os.name === 'iOS') {
+    // !(webview as any).nvue && onWebviewRecovery(webview, routeOptions)
+    onWebviewPopGesture(webview)
+  }
 }
