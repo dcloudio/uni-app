@@ -229,5 +229,10 @@ describe('mp:compiler-mp-alipay', () => {
       '<movable-view @changeend="changeEnd"/>',
       '<movable-view data-event-opts="{{[[\'changeEnd\',[[\'changeEnd\',[\'$event\']]]]]}}" onChangeEnd="__e"></movable-view>'
     )
+
+    assertCodegen(
+      '<life-follow @close="close"/>',
+      '<life-follow data-event-opts="{{[[\'close\',[[\'close\',[\'$event\']]]]]}}" onClose="__e"></life-follow>'
+    )
   })
 })
