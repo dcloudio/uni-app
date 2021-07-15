@@ -7536,7 +7536,7 @@ var serviceContext = (function () {
     }
     if (files && files.length) {
       files.forEach(file => {
-        uploader.addFile(getRealPath$1(file.uri), {
+        uploader.addFile(getRealPath$1(file.uri || file.filePath), {
           key: file.name || 'file'
         });
       });
