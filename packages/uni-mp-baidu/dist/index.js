@@ -1962,6 +1962,44 @@ function stringifyQuery (obj, encodeStr = encode) {
   return res ? `?${res}` : ''
 }
 
+/**
+ * 用于延迟调用 setData
+ * 在 setData 真实调用的时机需执行 fixSetDataEnd
+ * @param {*} mpInstance
+ */
+function fixSetDataStart (mpInstance) {
+  const setData = mpInstance.setData;
+  const setDataArgs = [];
+  mpInstance.setData = function () {
+    setDataArgs.push(arguments);
+  };
+  mpInstance.__fixInitData = function () {
+    this.setData = setData;
+    const fn = () => {
+      setDataArgs.forEach(args => {
+        setData.apply(this, args);
+      });
+    };
+    if (setDataArgs.length) {
+      if (this.groupSetData) {
+        this.groupSetData(fn);
+      } else {
+        fn();
+      }
+    }
+  };
+}
+/**
+ * 恢复真实的 setData 方法
+ * @param {*} mpInstance
+ */
+function fixSetDataEnd (mpInstance) {
+  if (mpInstance.__fixInitData) {
+    mpInstance.__fixInitData();
+    delete mpInstance.__fixInitData;
+  }
+}
+
 function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
@@ -2075,22 +2113,7 @@ function parseComponent (vueOptions) {
     }
 
     // 处理百度小程序 onInit 生命周期调用 setData 无效的问题
-    const setData = this.setData;
-    const setDataArgs = [];
-    this.setData = function () {
-      setDataArgs.push(arguments);
-    };
-    this.__fixInitData = function () {
-      delete this.__fixInitData;
-      this.setData = setData;
-      if (setDataArgs.length) {
-        this.groupSetData(() => {
-          setDataArgs.forEach(args => {
-            setData.apply(this, args);
-          });
-        });
-      }
-    };
+    fixSetDataStart(this);
     oldAttached.call(this);
     this.pageinstance.$vm = this.$vm;
     this.$vm.__call_hook('onInit', query);
@@ -2100,7 +2123,7 @@ function parseComponent (vueOptions) {
       oldAttached.call(this);
     } else {
       initMocks(this.$vm, mocks);
-      this.__fixInitData && this.__fixInitData();
+      fixSetDataEnd(this);
     }
     if (isPage.call(this)) { // 百度 onLoad 在 attached 之前触发（基础库小于 3.70）
       // 百度 当组件作为页面时 pageinstancce 不是原来组件的 instance

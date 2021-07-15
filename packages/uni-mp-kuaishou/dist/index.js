@@ -1803,8 +1803,60 @@ function parseComponent (vueComponentOptions) {
   })
 }
 
+/**
+ * 用于延迟调用 setData
+ * 在 setData 真实调用的时机需执行 fixSetDataEnd
+ * @param {*} mpInstance
+ */
+function fixSetDataStart (mpInstance) {
+  const setData = mpInstance.setData;
+  const setDataArgs = [];
+  mpInstance.setData = function () {
+    setDataArgs.push(arguments);
+  };
+  mpInstance.__fixInitData = function () {
+    this.setData = setData;
+    const fn = () => {
+      setDataArgs.forEach(args => {
+        setData.apply(this, args);
+      });
+    };
+    if (setDataArgs.length) {
+      if (this.groupSetData) {
+        this.groupSetData(fn);
+      } else {
+        fn();
+      }
+    }
+  };
+}
+/**
+ * 恢复真实的 setData 方法
+ * @param {*} mpInstance
+ */
+function fixSetDataEnd (mpInstance) {
+  if (mpInstance.__fixInitData) {
+    mpInstance.__fixInitData();
+    delete mpInstance.__fixInitData;
+  }
+}
+
+const SDKVersion = ks.getSystemInfoSync().SDKVersion;
+
 function parseComponent$1 (vueComponentOptions) {
-  return parseComponent(vueComponentOptions)
+  const componentOptions = parseComponent(vueComponentOptions);
+  const oldAttached = componentOptions.lifetimes.attached;
+  componentOptions.lifetimes.attached = function attached () {
+    if (isPage.call(this) && parseFloat(SDKVersion) <= 1.13) {
+      // 解决快手小程序页面 attached 生命周期 setData 导致数据同步异常的问题
+      fixSetDataStart(this);
+      setTimeout(() => {
+        fixSetDataEnd(this);
+      }, 0);
+    }
+    oldAttached.call(this);
+  };
+  return componentOptions
 }
 
 const hooks$1 = [
