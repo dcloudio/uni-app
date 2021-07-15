@@ -187,6 +187,7 @@ uni云端一体生态的内容太多，让我们抽丝剥茧、归纳分类，�
 - uni-id：不用再开发用户系统。用户注册、登录（含社交登录、短信验证码登录、App一键登录）、修改或重置密码、token管理、图形验证码、RBAC权限角色系统...所有与用户相关的，不管前端还是云端，代码都是现成的。[详见](https://uniapp.dcloud.net.cn/uniCloud/uni-id)
 - uniPay：不管微信还是支付宝，不管App、微信小程序、还是支付宝小程序，不管前端还是服务端，一切都现成的，拿来即用。[详见](https://uniapp.dcloud.net.cn/uniCloud/unipay)
 - uSearch：云端一体搜索。搜索页面、输入联想、搜索历史记录、热搜词分析提取...一应俱全。[详见](https://ext.dcloud.net.cn/plugin?id=3851)
+- uni-starter：云端一体应用快速开发基本项目模版，实现快速搭建一款应用。它集成了很多通用的功能，比如登录注册、头像、设置、拦截器、banner...[详见](https://ext.dcloud.net.cn/plugin?id=5057)
 - uniCloud Admin：全端可用的admin后台。自带用户管理、权限管理、角色管理、菜单管理。更有众多admin插件，比如cms插件、banner管理插件、App升级管理插件...[详见](https://uniapp.dcloud.net.cn/uniCloud/admin)
 - uni-file-picker：前端直传uniCloud存储组件。[详见](https://ext.dcloud.net.cn/plugin?id=4079)
 - uni-captcha：云端一体图形验证码组件。[详见](https://ext.dcloud.net.cn/plugin?id=4048)

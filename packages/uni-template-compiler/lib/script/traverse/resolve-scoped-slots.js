@@ -26,11 +26,12 @@ function needSlotMode (path, ids) {
 
 function replaceId (path, ids) {
   let replaced
+  const fnPath = path.parentPath
   path.traverse({
-    noScope: true,
+    noScope: false,
     Identifier (path) {
       const name = path.node.name
-      if (name in ids && path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
+      if (name in ids && path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && path.scope.path === fnPath) {
         path.replaceWith(ids[name])
         replaced = true
       }

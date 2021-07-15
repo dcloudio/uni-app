@@ -2,6 +2,10 @@
 
 ### 简介
 
+⼀个视频内容频道，支持上下滑动切换视频内容
+
+![](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/9146fb82-0d0e-4210-804c-93e292f4273e.png)
+
 **平台差异说明**
 
 |App|H5|微信小程序|支付宝小程序|百度小程序|字节跳动小程序|QQ小程序|快应用|360小程序|
@@ -40,7 +44,7 @@ HBuilder 基座的测试广告位 `adpid` 为 `1111111112`
 ```html
 <template>
   <view class="content">
-    <ad-content-page ref="adContentPage" adpid="1111111112" @load="onadload" @error="onaderror"></ad-content-page>
+    <ad-content-page class="ad-content-page" ref="adContentPage" adpid="1111111112" @load="onadload" @error="onaderror"></ad-content-page>
   </view>
 </template>
 
@@ -52,8 +56,10 @@ export default {
     }
   },
   onShow() {
-    // 需要在页面显示时调用广告组件的 show 方法
-    this.$refs.adContentPage.show();
+    this.$nextTick(() => {
+      // 需要在页面显示时调用广告组件的 show 方法
+      this.$refs.adContentPage.show();
+    })
   },
   onHide() {
     // 需要在页面隐藏时调用广告组件的 hide 方法停止广告内容的声音
@@ -69,6 +75,16 @@ export default {
   }
 }
 </script>
+
+<style>
+.content {
+  flex: 1
+}
+
+.ad-content-page {
+  flex: 1
+}
+</style>
 ```
 
 **注意**

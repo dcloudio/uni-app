@@ -193,7 +193,7 @@ univerifyStyle 数据结构：
         "textColor": "#656565", // 其他登录按钮文字颜色 默认值：#656565  
         "title": "其他登录方式", // 其他登录方式按钮文字 默认值：“其他登录方式”  
         "borderColor": "",  //边框颜色 默认值：透明（仅iOS支持）  
-        "borderRadius": "0px" // 其他登录按钮圆角 默认值："0px" 
+        "borderRadius": "0px" // 其他登录按钮圆角 默认值："24px" （按钮高度的一半）
     },  
     "privacyTerms": {  
         "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true   

@@ -1,5 +1,8 @@
 # uniCloud admin 框架
 
+### **重要公告**: 
+> admin 1.5.0 以上版本在 HBuilderX  alpha 3.1.19 以下版本中，使用「腾讯云服务空间」时 leftWindow 存在  `uni is not undefined` 的问题，该 bug 在 HBuilderX  alpha 3.1.20 已修复，[下载HBuilderX  alpha 3.1.20](https://dcloud.io/hbuilderx.html)
+
 ### 什么是 uniCloud admin
 
 uniCloud admin 框架，是基于 uni-app 和 uniCloud 的应用后台管理的开源框架。

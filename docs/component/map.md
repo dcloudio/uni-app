@@ -120,8 +120,8 @@
 |dottedLine|是否虚线|Boolean|否|默认false|App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序|
 |arrowLine|带箭头的线|Boolean|否|默认false，微信小程序开发者工具暂不支持该属性|App-nvue 2.1.5+、微信小程序、百度小程序|
 |arrowIconPath|更换箭头图标|String|否|在arrowLine为true时生效|App-nvue 2.1.5+、微信小程序、百度小程序|
-|borderColor|线的边框颜色|String|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
-|borderWidth|线的厚度|Number|否||App-nvue 2.1.5+、微信小程序、H5、百度小程序|
+|borderColor|线的边框颜色|String|否||微信小程序、H5、百度小程序|
+|borderWidth|线的厚度|Number|否||微信小程序、H5、百度小程序|
 |colorList|彩虹线|Array|false|存在时忽略 color 值|App-nvue 3.1.0+、微信小程序|
 |level|压盖关系，默认为 abovelabels|String|false||App不支持（**需SDK提供支持**）、微信小程序|
 

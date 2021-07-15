@@ -8,7 +8,7 @@
 
 `uni-id`为`uniCloud`开发者提供了简单、统一、可扩展的用户管理能力封装。
 
-[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可或缺的基础能力。
+[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)、[uniCloud admin](uniCloud/admin)，这些产品都基于`uni-id`的账户体系。可以说`uni-id`是uniCloud不可或缺的基础能力。
 
 # 组成部分
 
@@ -52,7 +52,7 @@ uniCloud框架底层，会自动在callfunction时传递`uni-id`的token（uni-a
 
 规范，还可以让上下游充分协同。插件市场会出现各种数据迁移插件，比如把从discuz里把用户迁移到`uni-id`中的插件，相信围绕这套规范的产业链会非常活跃。
 
-事实上，[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uniCloud admin](uniCloud/admin)等重要uniCloud产品，以及插件市场上各种优秀的轮子，都是基于`uni-id`的。
+事实上，[clientDB](uniCloud/clientDB)、[DB Schema](uniCloud/schema)、[uni-starter](https://ext.dcloud.net.cn/plugin?id=5057)、[uniCloud admin](uniCloud/admin)等重要uniCloud产品，以及插件市场上各种优秀的轮子，都是基于`uni-id`的。
 
 # 现状和未来
 
@@ -451,6 +451,7 @@ password入库时会自动进行一次sha1加密，不明文存储密码。这�
 但任何加密算法，在撞库等暴力手段面前被攻破只是时间和算力问题。使用自己特定的而不是默认的passwordSecret，并保护好passwordSecret可以数倍提升破解的算力代价。
 
 uni-id公共模块没有限制密码的强度，如长度限制、是否包含大小写或数据等限制，这类限制需要开发者自行在云函数中处理。
+**注意：RegisterParams不仅支持如上列举字段，比如可以直接传入mobile即可设置手机号码，切勿直接传入客户端传来的参数，否则这是一个极大的安全问题**
 
 **响应参数**
 
@@ -481,9 +482,9 @@ exports.main = async function(event,context) {
     }
   }
 	// 自动验证用户名是否与已经注册的用户名重复，如果重复会直接返回错误。否则会自动生成token并加密password存储username、password、token到数据表uni-id-users，并返回如上响应参数
-	const res = await uniID.register({
-		username,
-		password
+	const res = await uniID.register({ //支持传入任何值，比如可以直接传入mobile即可设置手机号码，切勿直接传入event否则这是一个极大的安全问题
+	    username,
+	    password
 	})
 	return res
 }
@@ -1260,7 +1261,7 @@ exports.main = async function(event,context) {
 
 用法：`uniID.loginByUniverify(Object loginByUniverifyParams)`
 
-> 需再[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
+> 需在[开发者控制台](https://dev.dcloud.net.cn/uniLogin)开通一键登录并在config.json内配置univerify相关信息
 
 **参数说明**
 
@@ -1570,19 +1571,23 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段						| 类型		| 必填| 说明																		|
-| ---							| ---			| ---	| ---																			|
-| code						| Number	| 是	|错误码，0表示成功												|
-| message							| String	| 是	|详细信息																	|
-| uid							| String	| 是	|用户uid																	|
-| type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
-| openid					| String	| 是	|用户openid																|
-| unionid					| String	| 否	|用户unionid，能取到此参数时会返回				|
-| token						| String	| 是	|登录成功之后返回的token信息							|
-| userInfo		    | Object  | 否	|用户全部信息，`type`为`login`时返回								|
-| tokenExpired		| String	| 是	|token过期时间														|
-| mobileConfirmed	| Boolean	| 是	|是否已验证手机号													|
-| emailConfirmed	| Boolean	| 是	|是否已验证邮箱														|
+| 字段						| 类型		| 必填| 说明																																								|
+| ---							| ---			| ---	| ---																																									|
+| code						| Number	| 是	|错误码，0表示成功																																		|
+| message					| String	| 是	|详细信息																																							|
+| uid							| String	| 是	|用户uid																																							|
+| type						| String	| 是	|操作类型，`login`为登录、`register`为注册																						|
+| openid					| String	| 是	|用户openid																																						|
+| unionid					| String	| 否	|用户unionid，能取到此参数时会返回																										|
+| token						| String	| 是	|登录成功之后返回的token信息																													|
+| userInfo				| Object	| 否	|用户全部信息，`type`为`login`时返回																									|
+| tokenExpired		| String	| 是	|token过期时间																																				|
+| mobileConfirmed	| Boolean	| 是	|是否已验证手机号																																			|
+| emailConfirmed	| Boolean	| 是	|是否已验证邮箱																																				|
+| sessionKey			| String	| -		|客户端为微信小程序时返回																															|
+| accessToken			| String	| -		|客户端为APP时返回，微信接口调用凭证，新增于`uni-id 3.1.1`														|
+| refreshToken		| String	| -		|客户端为APP时返回，用于刷新accessToken，新增于`uni-id 3.1.1`													|
+| expired					| Number	| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间对应的时间戳，新增于`uni-id 3.1.1`|
 
 **示例代码**
 
@@ -1674,6 +1679,8 @@ export default {
 
 ### 获取微信openid
 
+> 此接口即将废弃
+
 用法：`uniID.code2SessionWeixin(Object Code2SessionWeixinParams);`
 
 **参数说明**
@@ -1687,13 +1694,14 @@ export default {
 | 字段				| 类型	| 必填| 说明																													|
 | ---					| ---		| ---	| ---																														|
 | code				| Number| 是	|错误码，0表示成功																							|
-| message					| String| 是	|详细信息																												|
+| message			| String| 是	|详细信息																												|
 | openid			| String| -		|用户openid																											|
 | unionid			| String| -		|用户unionid，可以取到此值时返回																|
 | sessionKey	| String| -		|客户端为微信小程序时返回																				|
 | accessToken	| String| -		|客户端为APP时返回																							|
-| expiresIn		| String| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间，单位（秒）|
-| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken																					|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken													|
+| expired			| Number| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间对应的时间戳，新增于`uni-id 3.1.1`|
+| expiresIn		| Number| -		|客户端为APP时返回，accessToken 接口调用凭证过期时间，单位（秒）|
 
 ```js
 // 云函数代码
@@ -1719,10 +1727,16 @@ exports.main = async function(event,context) {
 
 **响应参数**
 
-| 字段| 类型	| 必填| 说明						|
-| ---	| ---		| ---	| ---							|
-| code| Number| 是	|错误码，0表示成功|
-| message	| String| 是	|详细信息					|
+| 字段				| 类型	| 必填| 说明																																								|
+| ---					| ---		| ---	| ---																																									|
+| code				| Number| 是	|错误码，0表示成功																																		|
+| message			| String| 是	|详细信息																																							|
+| openid			| String| 是	|用户openid																																						|
+| unionid			| String| 否	|用户unionid，能取到此参数时会返回																										|
+| sessionKey	| String| -		|客户端为微信小程序时返回，新增于`uni-id 3.1.1`																				|
+| accessToken	| String| -		|客户端为APP时返回，微信接口调用凭证，新增于`uni-id 3.1.1`														|
+| refreshToken| String| -		|客户端为APP时返回，用于刷新accessToken，新增于`uni-id 3.1.1`													|
+| expired			| Number| -		|客户端为APP时返回，accessToken 接口调用凭证超时时间对应的时间戳，新增于`uni-id 3.1.1`|
 
 ```js
 // 云函数代码
@@ -1772,6 +1786,8 @@ exports.main = async function(event,context) {
 
 ### 微信数据解密
 
+> 此接口即将废弃
+
 用法：`uniID.wxBizDataCrypt(Object WxBizDataCryptParams);`
 
 **参数说明**
@@ -1816,19 +1832,19 @@ exports.main = async function(event,context) {
 
 **LoginByAlipayParams参数说明**
 
-| 字段				| 类型	| 必填| 说明																																																														|
-| ---					| ---		| ---	| ---																																																															|
-| code				| String| 是	|支付宝登录返回的code																																																							|
-| myInviteCode| String| 否	|设置当前注册用户自己的邀请码，type为`register`时生效																																							|
+| 字段					| 类型		| 必填| 说明																																					|
+| ---						| ---			| ---	| ---																																						|
+| code					| String	| 是	|支付宝登录返回的code																														|
+| myInviteCode	| String	| 否	|设置当前注册用户自己的邀请码，type为`register`时生效														|
 | needPermission| Boolean	| 否	|设置为true时会在checkToken时返回用户权限（permission），建议在管理控制台中使用	|
-| role	| Array	| 否	|设定用户角色	，当前用户为新注册时生效											|
+| role					| Array		| 否	|设定用户角色，当前用户为新注册时生效																						|
 
 **响应参数**
 
 | 字段						| 类型		| 必填| 说明																		|
 | ---							| ---			| ---	| ---																			|
 | code						| Number	| 是	|错误码，0表示成功												|
-| message							| String	| 是	|详细信息																	|
+| message					| String	| 是	|详细信息																	|
 | uid							| String	| 是	|用户uid																	|
 | type						| String	| 是	|操作类型，`login`为登录、`register`为注册|
 | openid					| String	| 是	|用户openid																|
@@ -1855,6 +1871,8 @@ exports.main = async function(event,context) {
 
 
 ### 获取支付宝用户ID
+
+> 此接口即将废弃
 
 用法：`uniID.code2SessionAlipay(Object Code2SessionAlipayParams);`
 
@@ -2075,6 +2093,8 @@ export default {
 ```
 
 ### Apple登录校验identityToken
+
+> 此接口即将废弃
 
 用法：`uniID.verifyAppleIdentityToken(Object Code2SessionAppleParams);`
 
@@ -2689,9 +2709,44 @@ exports.main = async function(event,context) {
 - 任务表：uni-id-task
 - 任务日志表：uni-id-task-log
 
-# 错误码
+# 错误码@errcode
 
-自`1.1.0`版本使用此错误码规范
+**自`3.1.1`版本起使用此错误码规范**
+
+自`3.1.1`版本起uni-id使用errCode作为错误码，errMsg作为错误信息，为兼容旧版本，code、message字段仍保留。
+
+errCode和errMsg对照表如下：
+
+|错误码（errCode）												|详细信息（errMsg）				|说明																|
+|---																			|---											|---																|
+|0																				|成功											|操作成功														|
+|uni-id-account-banned										|账号已禁用								|账号已禁用													|
+|uni-id-user-not-exist										|用户不存在								|用户不存在													|
+|uni-id-multi-user-matched								|匹配到多个账号						|匹配到多个账号											|
+|uni-id-password-error										|密码错误									|密码错误														|
+|uni-id-password-error-exceed-limit				|密码错误次数过多					|密码错误次数过多										|
+|uni-id-account-already-registed					|此{type}已注册						|此账号已注册、包括手机号、微信等		|
+|uni-id-account-not-registed							|此{type}尚未注册					|此账号尚未注册、包括手机号、微信等	|
+|uni-id-invalid-invite-code								|邀请码无效								|邀请码无效													|
+|uni-id-get-third-party-account-failed		|获取{account}失败				|获取三方平台账号失败								|
+|uni-id-param-required										|{param}不可为空					|字段不可为空												|
+|uni-id-check-device-feature-failed				|设备特征校验未通过				|设备特征校验未通过									|
+|uni-id-token-not-exist										|云端已不包含此token			|云端已不包含此token								|
+|uni-id-token-expired											|token已过期							|token已过期												|
+|uni-id-check-token-failed								|token校验未通过					|token校验未通过										|
+|uni-id-invalid-old-password							|旧密码错误								|旧密码错误													|
+|uni-id-param-error												|{param}参数错误，{reason}|参数错误														|
+|uni-id-invalid-verify-code								|验证码错误或已失效				|验证码错误或已失效									|
+|uni-id-send-sms-code-failed							|验证码发送失败						|验证码发送失败											|
+|uni-id-account-already-bound							|此{type}已绑定						|此账号已绑定、包括手机号、微信等		|
+|uni-id-unbind-failed											|解绑失败									|解绑失败														|
+|uni-id-set-invite-code-failed						|邀请码设置失败						|邀请码设置失败											|
+|uni-id-modify-invite-code-is-not-allowed	|邀请码不可修改						|邀请码不可修改											|
+|uni-id-database-operation-failed					|数据库读写异常						|数据库读写异常											|
+|uni-id-role-not-exist										|角色不存在								|角色不存在													|
+|uni-id-permission-not-exist							|权限不存在								|权限不存在													|
+
+**自`1.1.0`版本使用此错误码规范**
 
 |模块											|模块码	|错误代码	|错误信息																									|
 |:-:											|:-:		|:-:			|:-:																											|

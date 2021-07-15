@@ -1,6 +1,6 @@
 ## uniCloud响应体规范
 
-uniCloud响应体规范（uniCloud response format），是DCloud官方制定的、服务器给客户端返回json数据的一种建议格式。
+uniCloud响应体规范（uniCloud response format），是DCloud官方制定的、服务器给客户端返回json数据的一种建议格式。后续uni-id、uni-pay、clientDB等均会调整为此结构
 
 **由来**
 
@@ -43,7 +43,7 @@ errCode在成功时应返回数字`0`,失败时应返回一个以插件id开头�
 
 errMsg用于存放具体错误信息，包括展示给开发者、终端用户的错误信息
 
-占位变量格式说明：
+<!-- 占位变量格式说明：
 
 ## 支持情况
 1. 从xx版本开始，clientDB遵循该格式
@@ -51,4 +51,4 @@ errMsg用于存放具体错误信息，包括展示给开发者、终端用户�
 3. uniCloud客户端sdk后续会提供callFunction及数据库操作的拦截器，开发者可以在拦截器内对特定的错误码进行处理。例如：在收到token过期的错误码时进行提示并跳转到登录页面
 4. uniCloud admin和uni-starter等插件内置的网络拦截器也均将支持该格式。
 
-历史兼容说明：
+历史兼容说明： -->

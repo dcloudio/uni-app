@@ -408,3 +408,30 @@ uni.webView.navigateTo 示例，注意uni sdk放到body下面
   </script>
 </html>
 ```
+
+nvue webview通信示例
+```
+<template>
+	<view>
+		<web-view ref="webview" class="webview" @onPostMessage="handlePostMessage"></web-view>
+		<button class="button" @click="evalJs">evalJs(改变webview背景颜色)</text>
+	</view>
+</template>
+
+<script>
+	module.exports = {
+		data: {
+		},
+		methods: {
+			// webview向外部发送消息
+			handlePostMessage: function(data) {
+				console.log("接收到消息：" + JSON.stringify(data.detail));
+			},
+			// 调用 webview 内部逻辑
+			evalJs: function() {
+				this.$refs.webview.evalJs("document.body.style.background ='#00FF00'");
+			}
+		}
+	}
+</script>
+```
