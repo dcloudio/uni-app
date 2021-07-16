@@ -170,7 +170,10 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 		}
 		onLoad() {
 			this.sWhere = "id=='" + this.tempstr + "'"
-			this.$refs.udb.loadData() // 组件上配置 loadtime = "manual", 这里手动加载数据
+			// 组件上配置了 loadtime = "manual", 这里需要手动加载数据
+			this.$nextTick(() => {
+			  this.$refs.udb.loadData()
+			})
 
 			// 多条件示例
 
