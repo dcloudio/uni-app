@@ -22,7 +22,6 @@ declare module '@vue/runtime-core' {
     __isUnload: boolean
     __isVisible: boolean
     __isActive?: boolean // tabBar
-    __isPage: boolean
   }
 
   export const callSyncHook: (

@@ -8968,7 +8968,7 @@
         if (scopeId) {
           state.attrs[scopeId] = "";
         }
-        instance = instance.__isPage ? null : instance.parent;
+        instance = instance.proxy && instance.proxy.$mpType === "page" ? null : instance.parent;
       }
     });
     return {

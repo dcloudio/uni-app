@@ -612,7 +612,10 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
-  pageVm.__isTabBar = page.meta.isTabBar;
+  if (page.meta.isTabBar) {
+    pageVm.__isTabBar = true;
+    pageVm.$.__isActive = true;
+  }
 }
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
@@ -1331,8 +1334,11 @@ function beforeInvokeApi(name, args, protocol, options) {
   }
 }
 function normalizeErrMsg(errMsg) {
-  if (errMsg instanceof Error) {
-    console.error(errMsg);
+  if (shared.isString(errMsg)) {
+    return errMsg;
+  }
+  if (errMsg.stack) {
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -6829,12 +6835,8 @@ function setupPage(comp) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance) {
-      instance.__isPage = true;
       instance.root = instance;
       const route = usePageRoute();
-      if (route.meta.isTabBar) {
-        instance.__isActive = true;
-      }
       {
         return route.query;
       }

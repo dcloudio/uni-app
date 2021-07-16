@@ -53,13 +53,8 @@ export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance) {
-      instance.__isPage = true // 标记当前组件是页面
       instance.root = instance // 组件root指向页面
       const route = usePageRoute()
-      if (route.meta.isTabBar) {
-        //初始化时，状态肯定是激活
-        instance.__isActive = true
-      }
       // node环境不触发Page生命周期
       if (__NODE_JS__) {
         return route.query

@@ -1382,7 +1382,10 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
-  pageVm.__isTabBar = page.meta.isTabBar;
+  if (page.meta.isTabBar) {
+    pageVm.__isTabBar = true;
+    pageVm.$.__isActive = true;
+  }
 }
 function querySelector(vm, selector) {
   const el = vm.$el.querySelector(selector);
@@ -2492,8 +2495,11 @@ function wrapperOffApi(name, fn, options) {
   };
 }
 function normalizeErrMsg(errMsg) {
-  if (errMsg instanceof Error) {
-    console.error(errMsg);
+  if (isString(errMsg)) {
+    return errMsg;
+  }
+  if (errMsg.stack) {
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -7860,7 +7866,7 @@ function useScopedAttrs() {
       if (scopeId) {
         state2.attrs[scopeId] = "";
       }
-      instance2 = instance2.__isPage ? null : instance2.parent;
+      instance2 = instance2.proxy && instance2.proxy.$mpType === "page" ? null : instance2.parent;
     }
   });
   return {
@@ -13496,12 +13502,8 @@ function setupPage(comp) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance2) {
-      instance2.__isPage = true;
       instance2.root = instance2;
       const route = usePageRoute();
-      if (route.meta.isTabBar) {
-        instance2.__isActive = true;
-      }
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);

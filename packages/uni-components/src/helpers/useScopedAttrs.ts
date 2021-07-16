@@ -1,9 +1,4 @@
-import {
-  onMounted,
-  getCurrentInstance,
-  ComponentInternalInstance,
-  reactive,
-} from 'vue'
+import { onMounted, getCurrentInstance, reactive } from 'vue'
 
 interface State {
   attrs: Record<string, string>
@@ -20,7 +15,10 @@ export function useScopedAttrs() {
       if (scopeId) {
         state.attrs[scopeId] = ''
       }
-      instance = instance.__isPage ? null : instance.parent
+      instance =
+        instance.proxy && instance.proxy.$mpType === 'page'
+          ? null
+          : instance.parent
     }
   })
 

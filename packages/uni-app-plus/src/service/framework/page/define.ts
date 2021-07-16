@@ -27,6 +27,7 @@ export function createPage(
   pageOptions: PageNodeOptions
 ) {
   const pageNode = createPageNode(__pageId, pageOptions, true)
+  // TODO 需要同步 main.js 中开发者设置的plugin，mixin，config等
   const app = createApp(pagesMap.get(__pagePath)!(), {
     __pageId,
     __pagePath,
