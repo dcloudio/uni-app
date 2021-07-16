@@ -157,7 +157,7 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 ```html
 <template>
 	<view>
-		<unicloud-db collection="uni-id-users" :where="sWhere"></unicloud-db>
+		<unicloud-db ref="udb" collection="uni-id-users" :where="sWhere" loadtime="manual"></unicloud-db>
 	</view>
 </template>
 <script>
@@ -170,6 +170,7 @@ where中指定要查询的条件。比如只查询某个字段的值符合一定
 		}
 		onLoad() {
 			this.sWhere = "id=='" + this.tempstr + "'"
+			this.$refs.udb.loadData() // 组件上配置 loadtime = "manual", 这里手动加载数据
 
 			// 多条件示例
 
