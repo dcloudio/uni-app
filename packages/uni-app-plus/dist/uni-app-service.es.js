@@ -4417,8 +4417,11 @@ var serviceContext = (function (vue) {
           type: Number,
       },
   }, createAnimationProtocol(ANIMATION_OUT));
+  const RedirectToProtocol = BaseRouteProtocol;
   const NavigateToOptions = 
   /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+  const RedirectToOptions = 
+  /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
   const NavigateBackOptions = {
       formatArgs: {
           delta(value, params) {
@@ -8986,6 +8989,67 @@ var serviceContext = (function (vue) {
       return new InteractiveAd(options);
   }, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
 
+  const pages = [];
+  function addCurrentPage(page) {
+      pages.push(page);
+  }
+  function getCurrentPages$1() {
+      const curPages = [];
+      pages.forEach((page) => {
+          if (page.__isTabBar) {
+              if (page.$.__isActive) {
+                  curPages.push(page);
+              }
+          }
+          else {
+              curPages.push(page);
+          }
+      });
+      return curPages;
+  }
+  function removePage(curPage) {
+      const index = pages.findIndex((page) => page === curPage);
+      if (index === -1) {
+          return;
+      }
+      if (!curPage.$page.meta.isNVue) {
+          curPage.$.appContext.app.unmount();
+      }
+      pages.splice(index, 1);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('removePage', curPage.$page));
+      }
+  }
+
+  let lastStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function newSetStatusBarStyle(style) {
+      lastStatusBarStyle = style;
+      oldSetStatusBarStyle(style);
+  }
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+  function setStatusBarStyle(statusBarStyle) {
+      if (!statusBarStyle) {
+          const pages = getCurrentPages();
+          if (!pages.length) {
+              return;
+          }
+          statusBarStyle = pages[pages.length - 1].$page
+              .statusBarStyle;
+          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+              return;
+          }
+      }
+      if (statusBarStyle === lastStatusBarStyle) {
+          return;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setStatusBarStyle', statusBarStyle));
+      }
+      lastStatusBarStyle = statusBarStyle;
+      plus.navigator.setStatusBarStyle(statusBarStyle);
+  }
+
   let pendingNavigator = false;
   function setPendingNavigator(path, callback, msg) {
       pendingNavigator = {
@@ -8997,7 +9061,7 @@ var serviceContext = (function (vue) {
           console.log(formatLog('setPendingNavigator', path, msg));
       }
   }
-  function navigate(path, callback, isAppLaunch) {
+  function navigate(path, callback, isAppLaunch = false) {
       if (!isAppLaunch && pendingNavigator) {
           return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
       }
@@ -9116,6 +9180,91 @@ var serviceContext = (function (vue) {
           else {
               callback();
           }
+      });
+  }
+
+  const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+      const page = getCurrentPage();
+      if (!page) {
+          return reject(`getCurrentPages is empty`);
+      }
+      if (invokeHook(page, 'onBackPress', {
+          from: args.from,
+      })) {
+          return resolve();
+      }
+      uni.hideToast();
+      uni.hideLoading();
+      if (page.$page.meta.isQuit) {
+          quit();
+      }
+      else if (page.$page.id === 1 && __uniConfig.realEntryPagePath) {
+          // condition
+          __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+          delete __uniConfig.realEntryPagePath;
+          uni.reLaunch({
+              url: '/' + __uniConfig.entryPagePath,
+          });
+      }
+      else {
+          const { delta, animationType, animationDuration } = args;
+          back(delta, animationType, animationDuration);
+      }
+      return resolve();
+  }, NavigateBackProtocol, NavigateBackOptions);
+  let firstBackTime = 0;
+  function quit() {
+      initI18nAppMsgsOnce();
+      if (!firstBackTime) {
+          firstBackTime = Date.now();
+          plus.nativeUI.toast(useI18n().t('uni.app.quit'));
+          setTimeout(() => {
+              firstBackTime = 0;
+          }, 2000);
+      }
+      else if (Date.now() - firstBackTime < 2000) {
+          plus.runtime.quit();
+      }
+  }
+  function back(delta, animationType, animationDuration) {
+      const pages = getCurrentPages();
+      const len = pages.length;
+      const currentPage = pages[len - 1];
+      if (delta > 1) {
+          // 中间页隐藏
+          pages
+              .slice(len - delta, len - 1)
+              .reverse()
+              .forEach((deltaPage) => {
+              closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
+          });
+      }
+      const backPage = function (webview) {
+          if (animationType) {
+              closeWebview(webview, animationType, animationDuration || ANI_DURATION);
+          }
+          else {
+              if (currentPage.$page.openType === 'redirectTo') {
+                  // 如果是 redirectTo 跳转的，需要指定 back 动画
+                  closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+              }
+              else {
+                  closeWebview(webview, 'auto');
+              }
+          }
+          pages
+              .slice(len - delta, len)
+              .forEach((page) => removePage(page));
+          setStatusBarStyle();
+          // 前一个页面触发 onShow
+          invokeHook('onShow');
+      };
+      const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
+      if (!currentPage.__uniapp_webview) {
+          return backPage(webview);
+      }
+      backWebview(webview, () => {
+          backPage(webview);
       });
   }
 
@@ -9333,38 +9482,6 @@ var serviceContext = (function (vue) {
       return new UniPageNode(pageId, pageOptions, setup);
   }
 
-  const pages = [];
-  function addCurrentPage(page) {
-      pages.push(page);
-  }
-  function getCurrentPages$1() {
-      const curPages = [];
-      pages.forEach((page) => {
-          if (page.__isTabBar) {
-              if (page.$.__isActive) {
-                  curPages.push(page);
-              }
-          }
-          else {
-              curPages.push(page);
-          }
-      });
-      return curPages;
-  }
-  function removePage(curPage) {
-      const index = pages.findIndex((page) => page === curPage);
-      if (index === -1) {
-          return;
-      }
-      if (!curPage.$page.meta.isNVue) {
-          curPage.$.appContext.app.unmount();
-      }
-      pages.splice(index, 1);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('removePage', curPage.$page));
-      }
-  }
-
   function setupPage(component) {
       const oldSetup = component.setup;
       component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
@@ -9554,117 +9671,56 @@ var serviceContext = (function (vue) {
       ];
   }
 
-  let lastStatusBarStyle;
-  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-  function newSetStatusBarStyle(style) {
-      lastStatusBarStyle = style;
-      oldSetStatusBarStyle(style);
-  }
-  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-  function setStatusBarStyle(statusBarStyle) {
-      if (!statusBarStyle) {
-          const pages = getCurrentPages();
-          if (!pages.length) {
-              return;
-          }
-          statusBarStyle = pages[pages.length - 1].$page
-              .statusBarStyle;
-          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-              return;
-          }
-      }
-      if (statusBarStyle === lastStatusBarStyle) {
-          return;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('setStatusBarStyle', statusBarStyle));
-      }
-      lastStatusBarStyle = statusBarStyle;
-      plus.navigator.setStatusBarStyle(statusBarStyle);
-  }
-
-  const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
-      const page = getCurrentPage();
-      if (!page) {
-          return reject(`getCurrentPages is empty`);
-      }
-      if (invokeHook(page, 'onBackPress', {
-          from: args.from,
-      })) {
-          return resolve();
-      }
-      uni.hideToast();
-      uni.hideLoading();
-      if (page.$page.meta.isQuit) {
-          quit();
-      }
-      else if (page.$page.id === 1 && __uniConfig.realEntryPagePath) {
-          // condition
-          __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
-          delete __uniConfig.realEntryPagePath;
-          uni.reLaunch({
-              url: '/' + __uniConfig.entryPagePath,
-          });
-      }
-      else {
-          const { delta, animationType, animationDuration } = args;
-          back(delta, animationType, animationDuration);
-      }
-      return resolve();
-  }, NavigateBackProtocol, NavigateBackOptions);
-  let firstBackTime = 0;
-  function quit() {
-      initI18nAppMsgsOnce();
-      if (!firstBackTime) {
-          firstBackTime = Date.now();
-          plus.nativeUI.toast(useI18n().t('uni.app.quit'));
-          setTimeout(() => {
-              firstBackTime = 0;
-          }, 2000);
-      }
-      else if (Date.now() - firstBackTime < 2000) {
-          plus.runtime.quit();
-      }
-  }
-  function back(delta, animationType, animationDuration) {
-      const pages = getCurrentPages();
-      const len = pages.length;
-      const currentPage = pages[len - 1];
-      if (delta > 1) {
-          // 中间页隐藏
-          pages
-              .slice(len - delta, len - 1)
-              .reverse()
-              .forEach((deltaPage) => {
-              closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
-          });
-      }
-      const backPage = function (webview) {
-          if (animationType) {
-              closeWebview(webview, animationType, animationDuration || ANI_DURATION);
-          }
-          else {
-              if (currentPage.$page.openType === 'redirectTo') {
-                  // 如果是 redirectTo 跳转的，需要制定 back 动画
-                  closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+  const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
+      const { path, query } = parseUrl(url);
+      navigate(path, () => {
+          _redirectTo({
+              url,
+              path,
+              query,
+          })
+              .then(resolve)
+              .catch(reject);
+      });
+  }, RedirectToProtocol, RedirectToOptions);
+  function _redirectTo({ url, path, query, }) {
+      // TODO exists
+      //   if (exists === 'back') {
+      //     const existsPageIndex = findExistsPageIndex(url)
+      //     if (existsPageIndex !== -1) {
+      //       const delta = len - existsPageIndex
+      //       if (delta > 0) {
+      //         navigateBack({
+      //           delta,
+      //         })
+      //         invoke(callbackId, {
+      //           errMsg: 'redirectTo:ok',
+      //         })
+      //         return
+      //       }
+      //     }
+      //   }
+      const lastPage = getCurrentPage();
+      lastPage && removePage(lastPage);
+      return new Promise((resolve) => {
+          showWebview(registerPage({
+              url,
+              path,
+              query,
+              openType: 'redirectTo',
+          }), 'none', 0, () => {
+              if (lastPage) {
+                  const webview = lastPage
+                      .$getAppWebview();
+                  // TODO preload
+                  //   if (webview.__preload__) {
+                  //     removePreloadWebview(webview)
+                  //   }
+                  webview.close('none');
               }
-              else {
-                  closeWebview(webview, 'auto');
-              }
-          }
-          pages
-              .slice(len - delta, len)
-              .forEach((page) => removePage(page));
+              resolve(undefined);
+          });
           setStatusBarStyle();
-          // 前一个页面触发 onShow
-          invokeHook('onShow');
-      };
-      const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
-      if (!currentPage.__uniapp_webview) {
-          return backPage(webview);
-      }
-      backWebview(webview, () => {
-          backPage(webview);
       });
   }
 
@@ -9795,8 +9851,9 @@ var serviceContext = (function (vue) {
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,
     createInteractiveAd: createInteractiveAd,
+    navigateBack: navigateBack,
     navigateTo: navigateTo,
-    navigateBack: navigateBack
+    redirectTo: redirectTo
   });
 
   let invokeViewMethodId = 0;

@@ -23,16 +23,22 @@ export function getCurrentPages() {
 }
 
 export function removeCurrentPage() {
-  removePage(getCurrentPage() as ComponentPublicInstance)
+  const page = getCurrentPage() as ComponentPublicInstance
+  if (!page) {
+    return
+  }
+  removePage(page)
 }
 
-export function removePage(curPage: ComponentPublicInstance) {
+export function removePage(
+  curPage: ComponentPublicInstance | Page.PageInstance
+) {
   const index = pages.findIndex((page) => page === curPage)
   if (index === -1) {
     return
   }
   if (!curPage.$page.meta.isNVue) {
-    curPage.$.appContext.app.unmount()
+    ;(curPage as ComponentPublicInstance).$.appContext.app.unmount()
   }
   pages.splice(index, 1)
   if (__DEV__) {

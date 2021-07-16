@@ -94,7 +94,7 @@ function back(
       closeWebview(webview, animationType, animationDuration || ANI_DURATION)
     } else {
       if (currentPage.$page.openType === 'redirectTo') {
-        // 如果是 redirectTo 跳转的，需要制定 back 动画
+        // 如果是 redirectTo 跳转的，需要指定 back 动画
         closeWebview(webview, ANI_CLOSE, ANI_DURATION)
       } else {
         closeWebview(webview, 'auto')

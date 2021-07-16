@@ -28,7 +28,7 @@ function setPendingNavigator(path: string, callback: Function, msg: string) {
 export function navigate(
   path: string,
   callback: Function,
-  isAppLaunch: boolean
+  isAppLaunch: boolean = false
 ) {
   if (!isAppLaunch && pendingNavigator) {
     return console.error(
