@@ -56,6 +56,7 @@ export * from './route/navigateBack'
 export * from './route/navigateTo'
 export * from './route/redirectTo'
 export * from './route/reLaunch'
+export * from './route/switchTab'
 
 export {
   upx2px,

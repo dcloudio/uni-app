@@ -6,13 +6,12 @@ import {
   ReLaunchProtocol,
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
 import tabBar from '../../framework/app/tabBar'
 import { registerPage } from '../../framework/page'
-import { getAllPages, removePage } from '../../framework/page/getCurrentPages'
+import { getAllPages } from '../../framework/page/getCurrentPages'
 import { setStatusBarStyle } from '../../statusBar'
-import { navigate, RouteOptions } from './utils'
-import { closeWebview, showWebview } from './webview'
+import { closePage, navigate, RouteOptions } from './utils'
+import { showWebview } from './webview'
 
 export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
   API_RE_LAUNCH,
@@ -53,13 +52,7 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
       'none',
       0,
       () => {
-        pages.forEach((page) => {
-          removePage(page)
-          closeWebview(
-            (page as ComponentPublicInstance).$getAppWebview!(),
-            'none'
-          )
-        })
+        pages.forEach((page) => closePage(page, 'none'))
         resolve(undefined)
       }
     )

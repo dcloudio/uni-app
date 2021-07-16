@@ -2,6 +2,7 @@ import { UniLifecycleHooks } from '@dcloudio/uni-vue/src/apiLifecycle'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
+    route: string
     $scope: {
       $getAppWebview?: () => PlusWebviewWebviewObject
     }

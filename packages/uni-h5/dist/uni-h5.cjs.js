@@ -608,6 +608,7 @@ function initAppVm(appVm2) {
   appVm2.$mpType = "app";
 }
 function initPageVm(pageVm, page) {
+  pageVm.route = page.route;
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";

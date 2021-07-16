@@ -1,10 +1,13 @@
 import { getRouteMeta } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
+import { ComponentPublicInstance } from 'vue'
+import { removePage } from '../../framework/page/getCurrentPages'
 import {
   createPreloadWebview,
   onWebviewReady,
   preloadWebview,
 } from '../../framework/webview'
+import { closeWebview } from './webview'
 
 export interface RouteOptions {
   url: string
@@ -28,6 +31,15 @@ function setPendingNavigator(path: string, callback: Function, msg: string) {
   if (__DEV__) {
     console.log(formatLog('setPendingNavigator', path, msg))
   }
+}
+
+export function closePage(
+  page: ComponentPublicInstance,
+  animationType: string,
+  animationDuration?: number
+) {
+  removePage(page)
+  closeWebview(page.$getAppWebview!(), animationType, animationDuration)
 }
 
 export function navigate(

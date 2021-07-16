@@ -525,8 +525,11 @@ var serviceContext = (function (vue) {
       };
   }
   function normalizeErrMsg(errMsg) {
-      if (errMsg instanceof Error) {
-          console.error(errMsg);
+      if (isString(errMsg)) {
+          return errMsg;
+      }
+      if (errMsg.stack) {
+          console.error(errMsg.message + '\n' + errMsg.stack);
           return errMsg.message;
       }
       return errMsg;
@@ -1801,6 +1804,7 @@ var serviceContext = (function (vue) {
       appVm.$mpType = 'app';
   }
   function initPageVm(pageVm, page) {
+      pageVm.route = page.route;
       pageVm.$vm = pageVm;
       pageVm.$page = page;
       pageVm.$mpType = 'page';
@@ -4420,12 +4424,15 @@ var serviceContext = (function (vue) {
   }, createAnimationProtocol(ANIMATION_OUT));
   const RedirectToProtocol = BaseRouteProtocol;
   const ReLaunchProtocol = BaseRouteProtocol;
+  const SwitchTabProtocol = BaseRouteProtocol;
   const NavigateToOptions = 
   /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
   const RedirectToOptions = 
   /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
   const ReLaunchOptions = 
   /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH);
+  const SwitchTabOptions = 
+  /*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
   const NavigateBackOptions = {
       formatArgs: {
           delta(value, params) {
@@ -9068,6 +9075,10 @@ var serviceContext = (function (vue) {
           console.log(formatLog('setPendingNavigator', path, msg));
       }
   }
+  function closePage(page, animationType, animationDuration) {
+      removePage(page);
+      closeWebview(page.$getAppWebview(), animationType, animationDuration);
+  }
   function navigate(path, callback, isAppLaunch = false) {
       if (!isAppLaunch && pendingNavigator) {
           return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
@@ -9757,12 +9768,107 @@ var serviceContext = (function (vue) {
               query,
               openType: 'reLaunch',
           }), 'none', 0, () => {
-              pages.forEach((page) => {
-                  removePage(page);
-                  closeWebview(page.$getAppWebview(), 'none');
-              });
+              pages.forEach((page) => closePage(page, 'none'));
               resolve(undefined);
           });
+          setStatusBarStyle();
+      });
+  }
+
+  const switchTab = defineAsyncApi(API_SWITCH_TAB, (args, { resolve, reject }) => {
+      const { url } = args;
+      const { path, query } = parseUrl(url);
+      navigate(path, () => {
+          _switchTab({
+              url,
+              path,
+              query,
+          })
+              .then(resolve)
+              .catch(reject);
+      }, args.openType === 'appLaunch');
+  }, SwitchTabProtocol, SwitchTabOptions);
+  function _switchTab({ url, path, query, }) {
+      tabBar$1.switchTab(path.slice(1));
+      const pages = getCurrentPages();
+      const len = pages.length;
+      let callOnHide = false;
+      let callOnShow = false;
+      let currentPage;
+      if (len >= 1) {
+          // 前一个页面是非 tabBar 页面
+          currentPage = pages[len - 1];
+          if (currentPage && !currentPage.__isTabBar) {
+              // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
+              // 该情况下目标页tabBarPage的visible是不对的
+              // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
+              // 简单起见，暂时直接判断该情况，执行onShow
+              callOnShow = true;
+              pages.reverse().forEach((page) => {
+                  if (!page.__isTabBar && page !== currentPage) {
+                      closePage(page, 'none');
+                  }
+              });
+              removePage(currentPage);
+              // 延迟执行避免iOS应用退出
+              setTimeout(() => {
+                  if (currentPage.$page.openType === 'redirectTo') {
+                      closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
+                  }
+                  else {
+                      closeWebview(currentPage.$getAppWebview(), 'auto');
+                  }
+              }, 100);
+          }
+          else {
+              callOnHide = true;
+          }
+      }
+      let tabBarPage;
+      // 查找当前 tabBarPage，且设置 visible
+      getAllPages().forEach((page) => {
+          if ('/' + page.route === path) {
+              if (!page.$.__isActive) {
+                  // 之前未显示
+                  callOnShow = true;
+              }
+              page.$.__isActive = true;
+              tabBarPage = page;
+          }
+          else {
+              if (page.__isTabBar) {
+                  page.$.__isActive = false;
+              }
+          }
+      });
+      // 相同tabBar页面
+      if (currentPage === tabBarPage) {
+          callOnHide = false;
+      }
+      if (currentPage && callOnHide) {
+          invokeHook(currentPage, 'onHide');
+      }
+      return new Promise((resolve) => {
+          if (tabBarPage) {
+              const webview = tabBarPage.$getAppWebview();
+              webview.show('none');
+              // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
+              if (callOnShow && !webview.__preload__) {
+                  invokeHook(tabBarPage, 'onShow');
+              }
+              resolve(undefined);
+          }
+          else {
+              showWebview(registerPage({
+                  url,
+                  path,
+                  query,
+                  openType: 'switchTab',
+              }), 'none', 0, () => {
+                  setStatusBarStyle();
+                  resolve(undefined);
+              }, 70);
+          }
           setStatusBarStyle();
       });
   }
@@ -9897,7 +10003,8 @@ var serviceContext = (function (vue) {
     navigateBack: navigateBack,
     navigateTo: navigateTo,
     redirectTo: redirectTo,
-    reLaunch: reLaunch
+    reLaunch: reLaunch,
+    switchTab: switchTab
   });
 
   let invokeViewMethodId = 0;

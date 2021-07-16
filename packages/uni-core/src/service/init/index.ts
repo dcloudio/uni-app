@@ -19,6 +19,7 @@ export function initPageVm(
   pageVm: ComponentPublicInstance,
   page: Page.PageInstance['$page']
 ) {
+  pageVm.route = page.route
   pageVm.$vm = pageVm
   pageVm.$page = page
   pageVm.$mpType = 'page'

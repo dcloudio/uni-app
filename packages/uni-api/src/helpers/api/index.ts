@@ -131,11 +131,14 @@ function wrapperOffApi<T extends ApiLike>(
 }
 
 function normalizeErrMsg(errMsg: string | Error) {
-  if (errMsg instanceof Error) {
-    console.error(errMsg)
+  if (isString(errMsg)) {
+    return errMsg
+  }
+  if (errMsg.stack) {
+    console.error(errMsg.message + '\n' + errMsg.stack)
     return errMsg.message
   }
-  return errMsg
+  return errMsg as unknown as string
 }
 
 function wrapperTaskApi<T extends ApiLike>(

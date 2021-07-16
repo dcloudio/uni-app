@@ -27,6 +27,7 @@ interface AppUniConfig {
     uploadFile: number
     downloadFile: number
   }
+  tabBar?: UniApp.UniConfig['tabBar']
 }
 
 export function normalizeAppUniConfig(
@@ -54,6 +55,7 @@ export function normalizeAppUniConfig(
     compilerVersion: process.env.UNI_COMPILER_VERSION,
     entryPagePath: pagesJson.pages[0].path,
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
+    tabBar: pagesJson.tabBar,
   }
   // TODO 待支持分包
   return JSON.stringify(config)
