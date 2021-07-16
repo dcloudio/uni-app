@@ -544,6 +544,8 @@ exports.main = async function (event) {
 
 ### 支付结果通知处理
 
+**注意：支付宝在非全量退款时也会发送通知到支付时设置的notify_url**
+
 `unipayIns.verifyPaymentNotify`，用于在使用云函数 Url 化的云函数内检验并处理支付结果。
 
 **入参说明**
@@ -589,7 +591,11 @@ exports.main = async function (event) {
 }
 ```
 
-### 退款结果通知
+### 退款结果通知@verify-refund-notify
+
+**注意：支付宝在非全量退款时才会发送通知，通知地址为支付时设置的notify_url**
+
+> uni-pay 1.0.17版本起新增对支付宝退款结果通知的支持
 
 `unipayIns.verifyRefundNotify`，用于在使用云函数 Url 化的云函数内检验并处理支付结果。
 
@@ -599,19 +605,19 @@ exports.main = async function (event) {
 
 **返回值说明**
 
-|       参数名        |  类型  |                         说明                          | 支持平台 |
-| :-----------------: | :----: | :---------------------------------------------------: | :------: |
-|      totalFee       | Number |                      订单总金额                       |    -      |
-|      refundFee      | Number |                     申请退款金额                      |    -      |
-| settlementTotalFee  | Number |                     应结订单金额                      |    -      |
-| settlementRefundFee | Number |                       退款金额                        |   -      |
-|     outTradeNo      | String |                      商户订单号                       |    -      |
-|    transactionId    | String |                      平台订单号                       |    -      |
-|      refundId       | String |                     平台退款单号                      |    -      |
-|     outRefundNo     | String |                     商户退款单号                      |    -      |
-|    refundStatus     | String | SUCCESS-退款成功,CHANGE-退款异常,REFUNDCLOSE—退款关闭 |      -    |
-|    refundAccount    | String |                     退款资金来源                      |    -      |
-|  refundRecvAccout   | String |                     退款入账账户                      |    -      |
+|       参数名				|  类型	|                         说明													| 支持平台|
+| :-----------------:	| :----:| :---------------------------------------------------:	| :------:|
+|      totalFee				| Number|                      订单总金额												|    -		|
+|      refundFee			| Number|                     申请退款金额											|    -		|
+| settlementTotalFee	| Number|                     应结订单金额，支付宝不返回				|    -		|
+| settlementRefundFee	| Number|                       退款金额，支付宝不返回					|   -			|
+|     outTradeNo			| String|                      商户订单号												|    -		|
+|    transactionId		| String|                      平台订单号												|    -		|
+|      refundId				| String|                     平台退款单号，支付宝不返回				|    -		|
+|     outRefundNo			| String|                     商户退款单号											|    -		|
+|    refundStatus			| String| SUCCESS-退款成功,CHANGE-退款异常,REFUNDCLOSE—退款关闭|      -	|
+|    refundAccount		| String|                     退款资金来源，支付宝不返回				|    -		|
+|  refundRecvAccout		| String|                     退款入账账户，支付宝不返回				|    -		|
 
 **使用示例**
 
@@ -636,6 +642,36 @@ exports.main = async function (event) {
       'content-type': 'text/plain'  
     },  
     body: "success"
+  }
+}
+```
+
+### 获取通知类型@check-notify-type
+
+> 新增于 uni-id 1.0.17
+
+`unipayIns.checkNotifyType`，用于在使用云函数 Url 化的云函数内检验当前通知的类型。由于支付宝支付在非全量退款时会调用支付时设置的notify_url，可以使用此接口在调用校验通知之前判断通知类型
+
+**入参说明**
+
+只接收对应云函数的`event`作为参数
+
+**返回值说明**
+
+此接口会返回一个字符串，可能的值如下
+
+- `refund`：当前是一个退款通知
+- `payment`：当前是一个支付结果通知
+
+**使用示例**
+
+```js
+exports.main = async function (event) {
+  let res = await unipayIns.checkNotifyType(event)
+  if(res === 'refund') {
+    // 退款通知
+  } else if(res === 'payment') {
+    // 支付结果通知
   }
 }
 ```
