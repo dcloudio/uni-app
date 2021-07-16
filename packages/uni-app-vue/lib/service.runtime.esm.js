@@ -4101,12 +4101,6 @@ function applyOptions(instance) {
     const options = resolveMergedOptions(instance);
     const publicThis = instance.proxy;
     const ctx = instance.ctx;
-    // fixed by xxxxxx
-    const customApplyOptions = instance.appContext.config.globalProperties
-        .$applyOptions;
-    if (customApplyOptions) {
-        customApplyOptions(options, instance, publicThis);
-    }
     // do not cache property access on public proxy during state initialization
     shouldCacheAccess = false;
     // call beforeCreate first before accessing other options since
@@ -4299,6 +4293,12 @@ function applyOptions(instance) {
         instance.components = components;
     if (directives)
         instance.directives = directives;
+    // fixed by xxxxxx
+    const customApplyOptions = instance.appContext.config.globalProperties
+        .$applyOptions;
+    if (customApplyOptions) {
+        customApplyOptions(options, instance, publicThis);
+    }
 }
 function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) {
     if (isArray(injectOptions)) {

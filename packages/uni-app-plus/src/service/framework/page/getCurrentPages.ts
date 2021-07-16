@@ -1,6 +1,7 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
+import { getVueApp } from '../app'
 
 const pages: ComponentPublicInstance[] = []
 
@@ -42,7 +43,7 @@ export function removePage(
     return
   }
   if (!curPage.$page.meta.isNVue) {
-    ;(curPage as ComponentPublicInstance).$.appContext.app.unmount()
+    getVueApp().unmountPage(curPage as ComponentPublicInstance)
   }
   pages.splice(index, 1)
   if (__DEV__) {

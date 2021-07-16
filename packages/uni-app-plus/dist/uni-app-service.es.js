@@ -3367,13 +3367,13 @@ var serviceContext = (function (vue) {
   });
 
   let eventReady = false;
-  let index$1 = 0;
+  let index$2 = 0;
   let optionsCache = {};
   function operateEditor(componentId, pageId, type, options) {
       const data = {};
       if (options &&
           ('success' in options || 'fail' in options || 'complete' in options)) {
-          const callbackId = String(index$1++);
+          const callbackId = String(index$2++);
           data.callbackId = callbackId;
           optionsCache[callbackId] = options;
           if (!eventReady) {
@@ -8221,8 +8221,7 @@ var serviceContext = (function (vue) {
           }
           return;
       }
-      const pageNode = page.$.appContext.app
-          ._container;
+      const pageNode = page.__page_container__;
       actions.forEach((action) => {
           switch (action[0]) {
               case ACTION_TYPE_EVENT:
@@ -8575,10 +8574,37 @@ var serviceContext = (function (vue) {
       }
       console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
   }
+  let vueApp;
+  function getVueApp() {
+      return vueApp;
+  }
+  function initVueApp(appVm) {
+      const appContext = appVm.$.appContext;
+      return extend(appContext.app, {
+          mountPage(pageComponent, pageProps, pageContainer) {
+              const vnode = vue.createVNode(pageComponent, pageProps);
+              // store app context on the root VNode.
+              // this will be set on the root instance on initial mount.
+              vnode.appContext = appContext;
+              vue.render(vnode, pageContainer);
+              const publicThis = vnode.component.proxy;
+              publicThis.__page_container__ = pageContainer;
+              return publicThis;
+          },
+          unmountPage: (pageInstance) => {
+              const { __page_container__ } = pageInstance;
+              if (__page_container__) {
+                  __page_container__.isUnmounted = true;
+                  vue.render(null, __page_container__);
+              }
+          },
+      });
+  }
   function registerApp(appVm) {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(formatLog('registerApp'));
       }
+      vueApp = initVueApp(appVm);
       appCtx = appVm;
       initAppVm(appCtx);
       extend(appCtx, defaultApp); // 拷贝默认实现
@@ -8597,7 +8623,7 @@ var serviceContext = (function (vue) {
       __uniConfig.ready = true;
   }
 
-  var __vuePlugin = {
+  var index$1 = {
       install(app) {
           initMount(app);
           initApp(app);
@@ -9031,7 +9057,7 @@ var serviceContext = (function (vue) {
           return;
       }
       if (!curPage.$page.meta.isNVue) {
-          curPage.$.appContext.app.unmount();
+          getVueApp().unmountPage(curPage);
       }
       pages.splice(index, 1);
       if ((process.env.NODE_ENV !== 'production')) {
@@ -9516,8 +9542,6 @@ var serviceContext = (function (vue) {
           const pageVm = instance.proxy;
           initPageVm(pageVm, __pageInstance);
           addCurrentPage(initScope(__pageId, pageVm));
-          invokeHook(pageVm, 'onLoad', __pageQuery);
-          invokeHook(pageVm, 'onShow');
           vue.onMounted(() => {
               invokeHook(pageVm, 'onReady');
               // TODO preloadSubPackages
@@ -9548,19 +9572,13 @@ var serviceContext = (function (vue) {
   }
   function createPage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
       const pageNode = createPageNode(__pageId, pageOptions, true);
-      // TODO 需要同步 main.js 中开发者设置的plugin，mixin，config等
-      const app = vue.createApp(pagesMap.get(__pagePath)(), {
+      const app = getVueApp();
+      return app.mountPage(pagesMap.get(__pagePath)(), {
           __pageId,
           __pagePath,
           __pageQuery,
           __pageInstance,
-      }).use(__vuePlugin);
-      const oldUnmount = app.unmount;
-      app.unmount = () => {
-          pageNode.isUnmounted = true;
-          return oldUnmount.call(app);
-      };
-      return app.mount(pageNode);
+      }, pageNode);
   }
   function createFactory(component) {
       return () => {
@@ -10000,7 +10018,7 @@ var serviceContext = (function (vue) {
     share: share,
     shareWithSystem: shareWithSystem,
     requestPayment: requestPayment,
-    __vuePlugin: __vuePlugin,
+    __vuePlugin: index$1,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,

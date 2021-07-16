@@ -5596,14 +5596,7 @@ export default function vueFactory(exports) {
   function applyOptions(instance) {
     var options = resolveMergedOptions(instance);
     var publicThis = instance.proxy;
-    var ctx = instance.ctx; // fixed by xxxxxx
-
-    var customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
-
-    if (customApplyOptions) {
-      customApplyOptions(options, instance, publicThis);
-    } // do not cache property access on public proxy during state initialization
-
+    var ctx = instance.ctx; // do not cache property access on public proxy during state initialization
 
     shouldCacheAccess = false; // call beforeCreate first before accessing other options since
     // the hook may mutate resolved options (#2791)
@@ -5853,7 +5846,13 @@ export default function vueFactory(exports) {
 
 
     if (components) instance.components = components;
-    if (directives) instance.directives = directives;
+    if (directives) instance.directives = directives; // fixed by xxxxxx
+
+    var customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
+
+    if (customApplyOptions) {
+      customApplyOptions(options, instance, publicThis);
+    }
   }
 
   function resolveInjections(injectOptions, ctx) {

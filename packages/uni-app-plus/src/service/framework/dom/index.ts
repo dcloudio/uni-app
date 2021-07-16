@@ -1,6 +1,5 @@
 import { getPageById } from '@dcloudio/uni-core'
 import { ACTION_TYPE_EVENT, formatLog } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
 import { EventAction, onNodeEvent } from './onNodeEvent'
 import UniPageNode from './Page'
 
@@ -12,8 +11,7 @@ export function onVdSync(actions: EventAction[], pageId: string) {
     }
     return
   }
-  const pageNode = (page as ComponentPublicInstance).$.appContext.app
-    ._container as UniPageNode
+  const pageNode = (page as any).__page_container__ as UniPageNode
   actions.forEach((action) => {
     switch (action[0]) {
       case ACTION_TYPE_EVENT:

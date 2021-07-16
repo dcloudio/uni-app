@@ -23,8 +23,6 @@ export function setupPage(component: VuePageComponent) {
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     addCurrentPage(initScope(__pageId as number, pageVm))
-    invokeHook(pageVm, 'onLoad', __pageQuery)
-    invokeHook(pageVm, 'onShow')
     onMounted(() => {
       invokeHook(pageVm, 'onReady')
       // TODO preloadSubPackages

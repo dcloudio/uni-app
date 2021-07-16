@@ -1,8 +1,9 @@
 import { once, PageNodeOptions } from '@dcloudio/uni-shared'
-import { createApp, DefineComponent } from 'vue'
+import { DefineComponent } from 'vue'
 import { createPageNode } from '../dom/Page'
 import { setupPage } from './setup'
 import __vuePlugin from '../plugin'
+import { getVueApp } from '../app'
 
 export type VuePageComponent = DefineComponent<PageProps>
 
@@ -27,19 +28,17 @@ export function createPage(
   pageOptions: PageNodeOptions
 ) {
   const pageNode = createPageNode(__pageId, pageOptions, true)
-  // TODO 需要同步 main.js 中开发者设置的plugin，mixin，config等
-  const app = createApp(pagesMap.get(__pagePath)!(), {
-    __pageId,
-    __pagePath,
-    __pageQuery,
-    __pageInstance,
-  }).use(__vuePlugin)
-  const oldUnmount = app.unmount
-  app.unmount = () => {
-    pageNode.isUnmounted = true
-    return oldUnmount.call(app)
-  }
-  return app.mount(pageNode as unknown as Element)
+  const app = getVueApp()
+  return app.mountPage(
+    pagesMap.get(__pagePath)!(),
+    {
+      __pageId,
+      __pagePath,
+      __pageQuery,
+      __pageInstance,
+    },
+    pageNode
+  )
 }
 
 function createFactory(component: VuePageComponent) {
