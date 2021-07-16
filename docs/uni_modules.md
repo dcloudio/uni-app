@@ -91,7 +91,7 @@ package.json在每个`uni_modules`插件中都必须存在，包含了插件的�
     "uni_modules": { // uni_modules配置
         "dependencies": [], // 依赖的 uni_modules 插件ID列表
         "encrypt": [ // 配置云函数，公共模块，clientDB Action加密
-            "uniCloud/cloudfunctions/uni-admin/controller/permission.js"
+            "uniCloud/cloudfunctions/uni-admin/controller/permission.js" // 注意这里是真实的文件路径，uni_modules下的uniCloud不带-aliyun、-tcb后缀，但是项目根目录下的uniCloud是带有后缀的
         ],
         "platforms": { // 平台兼容性：y 表示 Yes，支持；n 表示 No，不支持；u 表示 Unknown，不确定；默认为 u
             "cloud": { // 云端平台兼容性
