@@ -1,0 +1,68 @@
+import {
+  API_RE_LAUNCH,
+  API_TYPE_RE_LAUNCH,
+  defineAsyncApi,
+  ReLaunchOptions,
+  ReLaunchProtocol,
+} from '@dcloudio/uni-api'
+import { parseUrl } from '@dcloudio/uni-shared'
+import { ComponentPublicInstance } from 'vue'
+import tabBar from '../../framework/app/tabBar'
+import { registerPage } from '../../framework/page'
+import { getAllPages, removePage } from '../../framework/page/getCurrentPages'
+import { setStatusBarStyle } from '../../statusBar'
+import { navigate, RouteOptions } from './utils'
+import { closeWebview, showWebview } from './webview'
+
+export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
+  API_RE_LAUNCH,
+  ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url)
+    navigate(path, () => {
+      _reLaunch({
+        url,
+        path,
+        query,
+      })
+        .then(resolve)
+        .catch(reject)
+    })
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+)
+
+interface ReLaunchOptions extends RouteOptions {}
+
+function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
+  return new Promise((resolve) => {
+    // 获取目前所有页面
+    const pages = getAllPages().slice(0)
+    const routeOptions = __uniRoutes.find((route) => route.path === path)!
+    if (routeOptions.meta.isTabBar) {
+      tabBar.switchTab(path.slice(1))
+    }
+
+    showWebview(
+      registerPage({
+        url,
+        path,
+        query,
+        openType: 'reLaunch',
+      }),
+      'none',
+      0,
+      () => {
+        pages.forEach((page) => {
+          removePage(page)
+          closeWebview(
+            (page as ComponentPublicInstance).$getAppWebview!(),
+            'none'
+          )
+        })
+        resolve(undefined)
+      }
+    )
+    setStatusBarStyle()
+  })
+}

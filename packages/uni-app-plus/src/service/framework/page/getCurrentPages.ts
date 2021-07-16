@@ -8,6 +8,10 @@ export function addCurrentPage(page: ComponentPublicInstance) {
   pages.push(page)
 }
 
+export function getAllPages() {
+  return pages
+}
+
 export function getCurrentPages() {
   const curPages: ComponentPublicInstance[] = []
   pages.forEach((page) => {

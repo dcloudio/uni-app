@@ -6,6 +6,11 @@ import {
   preloadWebview,
 } from '../../framework/webview'
 
+export interface RouteOptions {
+  url: string
+  path: string
+  query: Record<string, any>
+}
 interface PendingNavigator {
   path: string
   nvue?: boolean

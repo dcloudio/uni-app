@@ -9,7 +9,7 @@ import { parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { removePage } from '../../framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
-import { navigate } from './utils'
+import { navigate, RouteOptions } from './utils'
 import { showWebview } from './webview'
 import { setStatusBarStyle } from '../../statusBar'
 import { ComponentPublicInstance } from 'vue'
@@ -32,11 +32,7 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   RedirectToOptions
 )
 
-interface RedirectToOptions {
-  url: string
-  path: string
-  query: Record<string, any>
-}
+interface RedirectToOptions extends RouteOptions {}
 
 function _redirectTo({
   url,

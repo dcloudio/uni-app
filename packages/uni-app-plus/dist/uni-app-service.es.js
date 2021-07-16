@@ -4405,6 +4405,7 @@ var serviceContext = (function (vue) {
   };
   const API_NAVIGATE_TO = 'navigateTo';
   const API_REDIRECT_TO = 'redirectTo';
+  const API_RE_LAUNCH = 'reLaunch';
   const API_SWITCH_TAB = 'switchTab';
   const API_NAVIGATE_BACK = 'navigateBack';
   const API_PRELOAD_PAGE = 'preloadPage';
@@ -4418,10 +4419,13 @@ var serviceContext = (function (vue) {
       },
   }, createAnimationProtocol(ANIMATION_OUT));
   const RedirectToProtocol = BaseRouteProtocol;
+  const ReLaunchProtocol = BaseRouteProtocol;
   const NavigateToOptions = 
   /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
   const RedirectToOptions = 
   /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
+  const ReLaunchOptions = 
+  /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH);
   const NavigateBackOptions = {
       formatArgs: {
           delta(value, params) {
@@ -8993,6 +8997,9 @@ var serviceContext = (function (vue) {
   function addCurrentPage(page) {
       pages.push(page);
   }
+  function getAllPages() {
+      return pages;
+  }
   function getCurrentPages$1() {
       const curPages = [];
       pages.forEach((page) => {
@@ -9724,6 +9731,42 @@ var serviceContext = (function (vue) {
       });
   }
 
+  const reLaunch = defineAsyncApi(API_RE_LAUNCH, ({ url }, { resolve, reject }) => {
+      const { path, query } = parseUrl(url);
+      navigate(path, () => {
+          _reLaunch({
+              url,
+              path,
+              query,
+          })
+              .then(resolve)
+              .catch(reject);
+      });
+  }, ReLaunchProtocol, ReLaunchOptions);
+  function _reLaunch({ url, path, query }) {
+      return new Promise((resolve) => {
+          // 获取目前所有页面
+          const pages = getAllPages().slice(0);
+          const routeOptions = __uniRoutes.find((route) => route.path === path);
+          if (routeOptions.meta.isTabBar) {
+              tabBar$1.switchTab(path.slice(1));
+          }
+          showWebview(registerPage({
+              url,
+              path,
+              query,
+              openType: 'reLaunch',
+          }), 'none', 0, () => {
+              pages.forEach((page) => {
+                  removePage(page);
+                  closeWebview(page.$getAppWebview(), 'none');
+              });
+              resolve(undefined);
+          });
+          setStatusBarStyle();
+      });
+  }
+
   var uni$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     upx2px: upx2px,
@@ -9853,7 +9896,8 @@ var serviceContext = (function (vue) {
     createInteractiveAd: createInteractiveAd,
     navigateBack: navigateBack,
     navigateTo: navigateTo,
-    redirectTo: redirectTo
+    redirectTo: redirectTo,
+    reLaunch: reLaunch
   });
 
   let invokeViewMethodId = 0;

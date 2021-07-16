@@ -9,7 +9,7 @@ import {
 } from '@dcloudio/uni-api'
 
 import { ANI_DURATION, ANI_SHOW } from '../../constants'
-import { navigate } from './utils'
+import { navigate, RouteOptions } from './utils'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 
@@ -43,10 +43,7 @@ export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   NavigateToOptions
 )
 
-interface NavigateToOptions {
-  url: string
-  path: string
-  query: Record<string, any>
+interface NavigateToOptions extends RouteOptions {
   aniType: string
   aniDuration: number
 }

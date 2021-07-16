@@ -55,6 +55,7 @@ export * from './ad/interactiveAd'
 export * from './route/navigateBack'
 export * from './route/navigateTo'
 export * from './route/redirectTo'
+export * from './route/reLaunch'
 
 export {
   upx2px,
