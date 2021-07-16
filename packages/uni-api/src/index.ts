@@ -36,7 +36,11 @@ export * from './protocols/device/soterAuthentication'
 
 export * from './protocols/storage/storage'
 
+export * from './protocols/file/saveFile'
+export * from './protocols/file/getSavedFileList'
+export * from './protocols/file/removeSavedFile'
 export * from './protocols/file/getFileInfo'
+export * from './protocols/file/getSavedFileInfo'
 export * from './protocols/file/openDocument'
 
 export * from './protocols/keyboard/keyboard'
