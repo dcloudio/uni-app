@@ -1373,6 +1373,16 @@ function initService() {
   initOn();
   initSubscribe();
 }
+function initAppVm(appVm2) {
+  appVm2.$vm = appVm2;
+  appVm2.$mpType = "app";
+}
+function initPageVm(pageVm, page) {
+  pageVm.$vm = pageVm;
+  pageVm.$page = page;
+  pageVm.$mpType = "page";
+  pageVm.__isTabBar = page.meta.isTabBar;
+}
 function querySelector(vm, selector) {
   const el = vm.$el.querySelector(selector);
   return el && el.__vue__;
@@ -13039,6 +13049,9 @@ function getContextInfo(el) {
   return el.__uniContextInfo;
 }
 function applyOptions(options, instance2, publicThis) {
+  if (!publicThis.$mpType) {
+    return;
+  }
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hook = options[name];
@@ -13264,9 +13277,7 @@ function initPublicPage(route) {
 function initPage(vm) {
   const route = vm.$route;
   const page = initPublicPage(route);
-  vm.$vm = vm;
-  vm.$page = page;
-  vm.__isTabBar = page.meta.isTabBar;
+  initPageVm(vm, page);
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
 }
 function normalizeRouteKey(path, id2) {
@@ -13455,7 +13466,7 @@ function getApp$1() {
 }
 function initApp(vm) {
   appVm = vm;
-  appVm.$vm = vm;
+  initAppVm(appVm);
   appVm.globalData = appVm.$options.globalData || {};
   initService();
   initView();

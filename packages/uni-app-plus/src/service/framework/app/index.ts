@@ -1,7 +1,7 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
-import { initService } from '@dcloudio/uni-core'
+import { initAppVm, initService } from '@dcloudio/uni-core'
 
 import { initEntry } from './initEntry'
 import { initTabBar } from './initTabBar'
@@ -34,7 +34,7 @@ export function registerApp(appVm: ComponentPublicInstance) {
     console.log(formatLog('registerApp'))
   }
   appCtx = appVm
-  appCtx.$vm = appVm
+  initAppVm(appCtx)
 
   extend(appCtx, defaultApp) // 拷贝默认实现
 

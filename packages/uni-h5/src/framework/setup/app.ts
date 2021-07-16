@@ -1,5 +1,5 @@
 import { ComponentPublicInstance } from 'vue'
-import { initService, initView } from '@dcloudio/uni-core'
+import { initAppVm, initService, initView } from '@dcloudio/uni-core'
 
 let appVm: ComponentPublicInstance
 
@@ -9,7 +9,7 @@ export function getApp() {
 
 export function initApp(vm: ComponentPublicInstance) {
   appVm = vm
-  appVm.$vm = vm
+  initAppVm(appVm)
   appVm.globalData = appVm.$options.globalData || {}
   initService()
   initView()

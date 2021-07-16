@@ -1,3 +1,4 @@
+import { invokeHook } from '@dcloudio/uni-core'
 import { isFunction } from '@vue/shared'
 
 import {
@@ -13,6 +14,10 @@ export function applyOptions(
   instance: ComponentInternalInstance,
   publicThis: ComponentPublicInstance
 ) {
+  if (!publicThis.$mpType) {
+    // 仅 App,Page 类型支持 on 生命周期
+    return
+  }
   Object.keys(options).forEach((name) => {
     if (name.indexOf('on') === 0) {
       const hook = options[name]
@@ -21,4 +26,8 @@ export function applyOptions(
       }
     }
   })
+  if (__PLATFORM__ === 'app' && publicThis.$mpType === 'page') {
+    invokeHook(publicThis, 'onLoad', instance.attrs.__pageQuery)
+    invokeHook(publicThis, 'onShow')
+  }
 }

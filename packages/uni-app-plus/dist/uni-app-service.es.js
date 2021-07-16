@@ -1796,6 +1796,16 @@ var serviceContext = (function (vue) {
       initOn();
       initSubscribe();
   }
+  function initAppVm(appVm) {
+      appVm.$vm = appVm;
+      appVm.$mpType = 'app';
+  }
+  function initPageVm(pageVm, page) {
+      pageVm.$vm = pageVm;
+      pageVm.$page = page;
+      pageVm.$mpType = 'page';
+      pageVm.__isTabBar = page.meta.isTabBar;
+  }
 
   function querySelector(vm, selector) {
       const el = vm.$el.querySelector(selector);
@@ -7788,6 +7798,10 @@ var serviceContext = (function (vue) {
   }, RequestPaymentProtocol);
 
   function applyOptions(options, instance, publicThis) {
+      if (!publicThis.$mpType) {
+          // 仅 App,Page 类型支持 on 生命周期
+          return;
+      }
       Object.keys(options).forEach((name) => {
           if (name.indexOf('on') === 0) {
               const hook = options[name];
@@ -7796,6 +7810,10 @@ var serviceContext = (function (vue) {
               }
           }
       });
+      if (publicThis.$mpType === 'page') {
+          invokeHook(publicThis, 'onLoad', instance.attrs.__pageQuery);
+          invokeHook(publicThis, 'onShow');
+      }
   }
 
   function set(target, key, val) {
@@ -8544,7 +8562,7 @@ var serviceContext = (function (vue) {
           console.log(formatLog('registerApp'));
       }
       appCtx = appVm;
-      appCtx.$vm = appVm;
+      initAppVm(appCtx);
       extend(appCtx, defaultApp); // 拷贝默认实现
       const { $options } = appVm;
       if ($options) {
@@ -9352,8 +9370,7 @@ var serviceContext = (function (vue) {
           }
           const instance = vue.getCurrentInstance();
           const pageVm = instance.proxy;
-          pageVm.$page = __pageInstance;
-          pageVm.$vm = pageVm;
+          initPageVm(pageVm, __pageInstance);
           addCurrentPage(initScope(__pageId, pageVm));
           invokeHook(pageVm, 'onLoad', __pageQuery);
           invokeHook(pageVm, 'onShow');

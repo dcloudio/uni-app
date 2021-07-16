@@ -13,6 +13,7 @@ import {
   createScrollListener,
   CreateScrollListenerOptions,
   initPageInternalInstance,
+  initPageVm,
 } from '@dcloudio/uni-core'
 import { ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
@@ -88,9 +89,7 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
 export function initPage(vm: ComponentPublicInstance) {
   const route = vm.$route
   const page = initPublicPage(route)
-  ;(vm as any).$vm = vm
-  ;(vm as any).$page = page
-  vm.__isTabBar = page.meta.isTabBar!
+  initPageVm(vm, page)
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
 }
 

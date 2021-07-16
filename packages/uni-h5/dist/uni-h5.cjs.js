@@ -603,6 +603,16 @@ const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
     return UniServiceJSBridge.emit("api." + name, res);
   }
 });
+function initAppVm(appVm2) {
+  appVm2.$vm = appVm2;
+  appVm2.$mpType = "app";
+}
+function initPageVm(pageVm, page) {
+  pageVm.$vm = pageVm;
+  pageVm.$page = page;
+  pageVm.$mpType = "page";
+  pageVm.__isTabBar = page.meta.isTabBar;
+}
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -6543,6 +6553,9 @@ function useContextInfo(_id) {
   return `${page}.${type}.${id}`;
 }
 function applyOptions(options, instance, publicThis) {
+  if (!publicThis.$mpType) {
+    return;
+  }
   Object.keys(options).forEach((name) => {
     if (name.indexOf("on") === 0) {
       const hook = options[name];
@@ -6691,9 +6704,7 @@ function initPublicPage(route) {
 function initPage(vm) {
   const route = vm.$route;
   const page = initPublicPage(route);
-  vm.$vm = vm;
-  vm.$page = page;
-  vm.__isTabBar = page.meta.isTabBar;
+  initPageVm(vm, page);
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
 }
 function normalizeRouteKey(path, id2) {
@@ -6790,7 +6801,7 @@ function getApp$1() {
 }
 function initApp(vm) {
   appVm = vm;
-  appVm.$vm = vm;
+  initAppVm(appVm);
   appVm.globalData = appVm.$options.globalData || {};
 }
 function wrapperComponentSetup(comp, { init, setup, before }) {

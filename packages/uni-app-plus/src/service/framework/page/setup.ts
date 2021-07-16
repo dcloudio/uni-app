@@ -1,4 +1,4 @@
-import { invokeHook } from '@dcloudio/uni-core'
+import { initPageVm, invokeHook } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 import {
   ComponentPublicInstance,
@@ -21,8 +21,7 @@ export function setupPage(component: VuePageComponent) {
     }
     const instance = getCurrentInstance()!
     const pageVm = instance.proxy!
-    pageVm.$page = __pageInstance as Page.PageInstance['$page']
-    pageVm.$vm = pageVm
+    initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     addCurrentPage(initScope(__pageId as number, pageVm))
     invokeHook(pageVm, 'onLoad', __pageQuery)
     invokeHook(pageVm, 'onShow')
