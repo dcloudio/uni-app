@@ -134,8 +134,8 @@ const unipayIns = unipay.initAlipay({
 |    body		| String|            微信支付必填												|   -		|                                  商品描述																																					|         微信支付				|
 | outTradeNo| String|                必填														|   -		| 商户订单号,64 个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复																				|													|
 |  totalFee	| Number|                必填														|   -		|                             订单金额，单位：分																																		| 支付宝小程序、微信小程序|
-| notifyUrl	| String|                必填														|   -		|                              支付结果通知地址																																			|													|
-| tradeType	| String|             非小程序支付、App支付时必填									|   -		| `1.0.6+`交易类型"JSAPI": "公众号支付、微信小程序支付、支付宝小程序支付"、"APP:"APP支付"、"NATIVE":"网站二维码支付"|	-												|
+| notifyUrl	| String|                必填														|   -		|                              支付结果通知地址，**需要注意支付宝支付时退款也会通知到此地址，务必处理好自己的业务逻辑**														|													|
+| tradeType	| String|             非小程序支付、App支付时必填				|   -		| `1.0.6+`交易类型"JSAPI": "公众号支付、微信小程序支付、支付宝小程序支付"、"APP:"APP支付"、"NATIVE":"网站二维码支付"|-												|
 
 **返回值说明**
 
@@ -314,7 +314,7 @@ exports.main = async function (event) {
 |   refundFee   | Number |             必填             |   -    |  退款总金额  | 微信支付 |
 | refundFeeType | String |             选填             |   -    |   货币种类   |     -     |
 |  refundDesc   | String |             选填             |   -    |   退款原因   |     -     |
-|   notifyUrl   | String |  微信支付选填，支付宝不支持  |   -    | 退款通知 url | 微信支付 |
+|   notifyUrl   | String |  微信支付选填，支付宝不支持  |   -    | 退款通知 url，支付宝会通知获取支付参数时的通知地址 | 微信支付 |
 
 **返回值说明**
 
