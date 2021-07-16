@@ -420,84 +420,6 @@ function parseEventName(name) {
     return [hyphenate(name.slice(2)), options];
 }
 
-class UniCSSStyleDeclaration {
-    constructor() {
-        this._cssText = null;
-        this._value = null;
-    }
-    setProperty(property, value) {
-        if (value === null || value === '') {
-            this.removeProperty(property);
-        }
-        else {
-            if (!this._value) {
-                this._value = {};
-            }
-            this._value[property] = value;
-        }
-    }
-    getPropertyValue(property) {
-        if (!this._value) {
-            return '';
-        }
-        return this._value[property] || '';
-    }
-    removeProperty(property) {
-        if (!this._value) {
-            return '';
-        }
-        const value = this._value[property];
-        delete this._value[property];
-        return value;
-    }
-    get cssText() {
-        return this._cssText || '';
-    }
-    set cssText(cssText) {
-        this._cssText = cssText;
-    }
-    toJSON() {
-        const { _cssText, _value } = this;
-        const hasCssText = _cssText !== null;
-        const hasValue = _value !== null;
-        if (hasCssText && hasValue) {
-            return [_cssText, _value];
-        }
-        if (hasCssText) {
-            return _cssText;
-        }
-        if (hasValue) {
-            return _value;
-        }
-    }
-}
-const STYLE_PROPS = [
-    '_value',
-    '_cssText',
-    'cssText',
-    'getPropertyValue',
-    'setProperty',
-    'removeProperty',
-    'toJSON',
-];
-function proxyStyle(uniCssStyle) {
-    return new Proxy(uniCssStyle, {
-        get(target, key, receiver) {
-            if (STYLE_PROPS.indexOf(key) === -1) {
-                return target.getPropertyValue(key);
-            }
-            return Reflect.get(target, key, receiver);
-        },
-        set(target, key, value, receiver) {
-            if (STYLE_PROPS.indexOf(key) === -1) {
-                target.setProperty(key, value);
-                return true;
-            }
-            return Reflect.set(target, key, value, receiver);
-        },
-    });
-}
-
 const EventModifierFlags = {
     stop: 1,
     prevent: 1 << 1,
@@ -640,18 +562,21 @@ class UniNode extends UniEventTarget {
             : oldChild;
     }
 }
+const ATTR_CLASS = 'class';
+const ATTR_STYLE = 'style';
 class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
         super(nodeType, nodeName, container);
         this.attributes = Object.create(null);
+        this.style = null;
         this._html = null;
-        this.style = proxyStyle(new UniCSSStyleDeclaration());
+        // this.style = proxyStyle(new UniCSSStyleDeclaration())
     }
     get className() {
-        return (this.attributes['class'] || '');
+        return (this.attributes[ATTR_CLASS] || '');
     }
     set className(val) {
-        this.setAttribute('class', val);
+        this.setAttribute(ATTR_CLASS, val);
     }
     get innerHTML() {
         return '';
@@ -672,22 +597,35 @@ class UniBaseNode extends UniNode {
         }
     }
     getAttribute(qualifiedName) {
+        if (qualifiedName === ATTR_STYLE) {
+            return this.style;
+        }
         return this.attributes[qualifiedName];
     }
     removeAttribute(qualifiedName) {
-        delete this.attributes[qualifiedName];
+        if (qualifiedName == ATTR_STYLE) {
+            this.style = null;
+        }
+        else {
+            delete this.attributes[qualifiedName];
+        }
         if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onRemoveAttribute(this, qualifiedName);
         }
     }
     setAttribute(qualifiedName, value) {
-        this.attributes[qualifiedName] = value;
+        if (qualifiedName === ATTR_STYLE) {
+            this.style = value;
+        }
+        else {
+            this.attributes[qualifiedName] = value;
+        }
         if (this.pageNode && !this.pageNode.isUnmounted) {
             this.pageNode.onSetAttribute(this, qualifiedName, value);
         }
     }
     toJSON({ attr, normalize, } = {}) {
-        const { attributes, listeners, style, _text } = this;
+        const { attributes, style, listeners, _text } = this;
         const res = {};
         if (Object.keys(attributes).length) {
             res.a = normalize ? normalize(attributes) : attributes;
@@ -704,9 +642,8 @@ class UniBaseNode extends UniNode {
             });
             res.e = normalize ? normalize(e, false) : e;
         }
-        const cssStyle = style.toJSON();
-        if (cssStyle) {
-            res.s = normalize ? normalize(cssStyle) : cssStyle;
+        if (style !== null) {
+            res.s = normalize ? normalize(style) : style;
         }
         if (!attr) {
             res.i = this.nodeId;
@@ -895,4 +832,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CLASS, ATTR_STYLE, BACKGROUND_COLOR, BUILT_IN_TAGS, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, EventModifierFlags, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, ON_REACH_BOTTOM_DISTANCE, PLUS_RE, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, addFont, cache, cacheStringFunction, callOptions, createRpx2Unit, debounce, decode, decodedQuery, defaultRpx2Unit, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, initCustomDataset, invokeArrayFns, isBuiltInComponent, isCustomElement, isNativeTag, isServiceCustomElement, isServiceNativeTag, normalizeDataset, normalizeEventType, normalizeTarget, once, parseEventName, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, sanitise, scrollTo, stringifyQuery, updateElementStyle };

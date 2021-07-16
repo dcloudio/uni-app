@@ -211,6 +211,8 @@
     prevent: 1 << 1,
     self: 1 << 2
   };
+  const ATTR_CLASS = "class";
+  const ATTR_STYLE = "style";
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
   const ACTION_TYPE_CREATE = 3;
@@ -5980,6 +5982,9 @@
       if (hasOwn$1(nodeJson, "a")) {
         this.setAttrs(nodeJson.a);
       }
+      if (hasOwn$1(nodeJson, "s")) {
+        this.setAttr("style", nodeJson.s);
+      }
       if (hasOwn$1(nodeJson, "e")) {
         this.addEvents(nodeJson.e);
       }
@@ -6006,18 +6011,18 @@
       patchEvent(this.$, name, -1);
     }
     setAttr(name, value) {
-      if (name === ".c") {
+      if (name === ATTR_CLASS) {
         patchClass(this.$, value);
-      } else if (name === ".s") {
+      } else if (name === ATTR_STYLE) {
         patchStyle(this.$, value);
       } else {
         this.setAttribute(name, value);
       }
     }
     removeAttr(name) {
-      if (name === ".c") {
+      if (name === ATTR_CLASS) {
         patchClass(this.$, "");
-      } else if (name === ".s") {
+      } else if (name === ATTR_STYLE) {
         patchStyle(this.$, "");
       } else {
         this.removeAttribute(name);

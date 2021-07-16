@@ -269,104 +269,6 @@ export default function vueFactory(exports) {
     return [hyphenate$1(name.slice(2)), options];
   }
 
-  var UniCSSStyleDeclaration = /*#__PURE__*/function () {
-    function UniCSSStyleDeclaration() {
-      _classCallCheck(this, UniCSSStyleDeclaration);
-
-      this._cssText = null;
-      this._value = null;
-    }
-
-    _createClass(UniCSSStyleDeclaration, [{
-      key: "setProperty",
-      value: function setProperty(property, value) {
-        if (value === null || value === '') {
-          this.removeProperty(property);
-        } else {
-          if (!this._value) {
-            this._value = {};
-          }
-
-          this._value[property] = value;
-        }
-      }
-    }, {
-      key: "getPropertyValue",
-      value: function getPropertyValue(property) {
-        if (!this._value) {
-          return '';
-        }
-
-        return this._value[property] || '';
-      }
-    }, {
-      key: "removeProperty",
-      value: function removeProperty(property) {
-        if (!this._value) {
-          return '';
-        }
-
-        var value = this._value[property];
-        delete this._value[property];
-        return value;
-      }
-    }, {
-      key: "cssText",
-      get: function get() {
-        return this._cssText || '';
-      },
-      set: function set(cssText) {
-        this._cssText = cssText;
-      }
-    }, {
-      key: "toJSON",
-      value: function toJSON() {
-        var _cssText = this._cssText,
-            _value = this._value;
-        var hasCssText = _cssText !== null;
-        var hasValue = _value !== null;
-
-        if (hasCssText && hasValue) {
-          return [_cssText, _value];
-        }
-
-        if (hasCssText) {
-          return _cssText;
-        }
-
-        if (hasValue) {
-          return _value;
-        }
-      }
-    }]);
-
-    return UniCSSStyleDeclaration;
-  }();
-
-  var STYLE_PROPS = ['_value', '_cssText', 'cssText', 'getPropertyValue', 'setProperty', 'removeProperty', 'toJSON'];
-
-  function proxyStyle(uniCssStyle) {
-    return new Proxy(uniCssStyle, {
-      get(target, key, receiver) {
-        if (STYLE_PROPS.indexOf(key) === -1) {
-          return target.getPropertyValue(key);
-        }
-
-        return Reflect.get(target, key, receiver);
-      },
-
-      set(target, key, value, receiver) {
-        if (STYLE_PROPS.indexOf(key) === -1) {
-          target.setProperty(key, value);
-          return true;
-        }
-
-        return Reflect.set(target, key, value, receiver);
-      }
-
-    });
-  }
-
   var EventModifierFlags = {
     stop: 1,
     prevent: 1 << 1,
@@ -568,6 +470,9 @@ export default function vueFactory(exports) {
     return UniNode;
   }(UniEventTarget);
 
+  var ATTR_CLASS = 'class';
+  var ATTR_STYLE = 'style';
+
   var UniBaseNode = /*#__PURE__*/function (_UniNode) {
     _inherits(UniBaseNode, _UniNode);
 
@@ -580,18 +485,19 @@ export default function vueFactory(exports) {
 
       _this3 = _super3.call(this, nodeType, nodeName, container);
       _this3.attributes = Object.create(null);
-      _this3._html = null;
-      _this3.style = proxyStyle(new UniCSSStyleDeclaration());
+      _this3.style = null;
+      _this3._html = null; // this.style = proxyStyle(new UniCSSStyleDeclaration())
+
       return _this3;
     }
 
     _createClass(UniBaseNode, [{
       key: "className",
       get: function get() {
-        return this.attributes['class'] || '';
+        return this.attributes[ATTR_CLASS] || '';
       },
       set: function set(val) {
-        this.setAttribute('class', val);
+        this.setAttribute(ATTR_CLASS, val);
       }
     }, {
       key: "innerHTML",
@@ -622,12 +528,20 @@ export default function vueFactory(exports) {
     }, {
       key: "getAttribute",
       value: function getAttribute(qualifiedName) {
+        if (qualifiedName === ATTR_STYLE) {
+          return this.style;
+        }
+
         return this.attributes[qualifiedName];
       }
     }, {
       key: "removeAttribute",
       value: function removeAttribute(qualifiedName) {
-        delete this.attributes[qualifiedName];
+        if (qualifiedName == ATTR_STYLE) {
+          this.style = null;
+        } else {
+          delete this.attributes[qualifiedName];
+        }
 
         if (this.pageNode && !this.pageNode.isUnmounted) {
           this.pageNode.onRemoveAttribute(this, qualifiedName);
@@ -636,7 +550,11 @@ export default function vueFactory(exports) {
     }, {
       key: "setAttribute",
       value: function setAttribute(qualifiedName, value) {
-        this.attributes[qualifiedName] = value;
+        if (qualifiedName === ATTR_STYLE) {
+          this.style = value;
+        } else {
+          this.attributes[qualifiedName] = value;
+        }
 
         if (this.pageNode && !this.pageNode.isUnmounted) {
           this.pageNode.onSetAttribute(this, qualifiedName, value);
@@ -650,8 +568,8 @@ export default function vueFactory(exports) {
             normalize = _ref.normalize;
 
         var attributes = this.attributes,
-            listeners = this.listeners,
             style = this.style,
+            listeners = this.listeners,
             _text = this._text;
         var res = {};
 
@@ -674,10 +592,8 @@ export default function vueFactory(exports) {
           res.e = normalize ? normalize(e, false) : e;
         }
 
-        var cssStyle = style.toJSON();
-
-        if (cssStyle) {
-          res.s = normalize ? normalize(cssStyle) : cssStyle;
+        if (style !== null) {
+          res.s = normalize ? normalize(style) : style;
         }
 
         if (!attr) {

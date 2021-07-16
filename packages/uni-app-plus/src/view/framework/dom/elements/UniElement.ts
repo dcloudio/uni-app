@@ -1,5 +1,5 @@
 import { hasOwn } from '@vue/shared'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import { ATTR_CLASS, ATTR_STYLE, UniNodeJSON } from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
 import { patchClass } from '../modules/class'
@@ -31,6 +31,9 @@ export class UniElement<T extends object> extends UniNode {
     if (hasOwn(nodeJson, 'a')) {
       this.setAttrs(nodeJson.a!)
     }
+    if (hasOwn(nodeJson, 's')) {
+      this.setAttr('style', nodeJson.s)
+    }
     if (hasOwn(nodeJson, 'e')) {
       this.addEvents(nodeJson.e!)
     }
@@ -61,18 +64,18 @@ export class UniElement<T extends object> extends UniNode {
     patchEvent(this.$, name, -1)
   }
   setAttr(name: string, value: unknown) {
-    if (name === '.c') {
+    if (name === ATTR_CLASS) {
       patchClass(this.$, value as string)
-    } else if (name === '.s') {
+    } else if (name === ATTR_STYLE) {
       patchStyle(this.$, value as string | Record<string, any>)
     } else {
       this.setAttribute(name, value as string)
     }
   }
   removeAttr(name: string) {
-    if (name === '.c') {
+    if (name === ATTR_CLASS) {
       patchClass(this.$, '')
-    } else if (name === '.s') {
+    } else if (name === ATTR_STYLE) {
       patchStyle(this.$, '')
     } else {
       this.removeAttribute(name)

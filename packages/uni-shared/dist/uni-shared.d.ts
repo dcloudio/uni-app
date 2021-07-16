@@ -36,6 +36,10 @@ number
 
 export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
 
+export declare const ATTR_CLASS = "class";
+
+export declare const ATTR_STYLE = "style";
+
 export declare const BACKGROUND_COLOR = "#f7f7f7";
 
 export declare const BUILT_IN_TAGS: string[];
@@ -325,7 +329,7 @@ export declare const UNI_SSR_TITLE = "title";
 
 export declare class UniBaseNode extends UniNode {
     attributes: Record<string, unknown>;
-    style: UniCSSStyleDeclaration;
+    style: null | string | Record<string, string | string[]>;
     protected _html: string | null;
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get className(): string;
@@ -353,18 +357,6 @@ export declare class UniCommentNode extends UniNode {
     } | {
         i: number;
     };
-}
-
-declare class UniCSSStyleDeclaration {
-    [name: string]: string | unknown;
-    private _cssText;
-    private _value;
-    setProperty(property: string, value: string | null): void;
-    getPropertyValue(property: string): string | string[];
-    removeProperty(property: string): string;
-    get cssText(): string;
-    set cssText(cssText: string);
-    toJSON(): UniCSSStyleDeclarationJSON | undefined;
 }
 
 declare type UniCSSStyleDeclarationJSON = string | null | Record<string, string | string[]> | [string, Record<string, string | string[]>];

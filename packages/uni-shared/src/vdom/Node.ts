@@ -3,11 +3,7 @@ import { extend } from '@vue/shared'
 import { UniElement } from './Element'
 import { DOMException } from './DOMException'
 import { normalizeEventType, UniEventListener, UniEventTarget } from './Event'
-import {
-  proxyStyle,
-  UniCSSStyleDeclaration,
-  UniCSSStyleDeclarationJSON,
-} from './Style'
+import { UniCSSStyleDeclarationJSON } from './Style'
 import { encodeModifier } from './encode'
 
 export const NODE_TYPE_PAGE = 0
@@ -256,9 +252,11 @@ export interface UniNodeJSON {
   t?: string
 }
 
+export const ATTR_CLASS = 'class'
+export const ATTR_STYLE = 'style'
 export class UniBaseNode extends UniNode {
   attributes: Record<string, unknown> = Object.create(null)
-  style: UniCSSStyleDeclaration
+  style: null | string | Record<string, string | string[]> = null
 
   protected _html: string | null = null
 
@@ -268,15 +266,15 @@ export class UniBaseNode extends UniNode {
     container: UniElement | IUniPageNode
   ) {
     super(nodeType, nodeName, container)
-    this.style = proxyStyle(new UniCSSStyleDeclaration())
+    // this.style = proxyStyle(new UniCSSStyleDeclaration())
   }
 
   get className() {
-    return (this.attributes['class'] || '') as string
+    return (this.attributes[ATTR_CLASS] || '') as string
   }
 
   set className(val: string) {
-    this.setAttribute('class', val)
+    this.setAttribute(ATTR_CLASS, val)
   }
 
   get innerHTML() {
@@ -314,18 +312,29 @@ export class UniBaseNode extends UniNode {
   }
 
   getAttribute(qualifiedName: string) {
+    if (qualifiedName === ATTR_STYLE) {
+      return this.style
+    }
     return this.attributes[qualifiedName]
   }
 
   removeAttribute(qualifiedName: string): void {
-    delete this.attributes[qualifiedName]
+    if (qualifiedName == ATTR_STYLE) {
+      this.style = null
+    } else {
+      delete this.attributes[qualifiedName]
+    }
     if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onRemoveAttribute(this, qualifiedName)
     }
   }
 
   setAttribute(qualifiedName: string, value: unknown): void {
-    this.attributes[qualifiedName] = value
+    if (qualifiedName === ATTR_STYLE) {
+      this.style = value as string | Record<string, string | string[]>
+    } else {
+      this.attributes[qualifiedName] = value
+    }
     if (this.pageNode && !this.pageNode.isUnmounted) {
       this.pageNode.onSetAttribute(this, qualifiedName, value)
     }
@@ -339,7 +348,7 @@ export class UniBaseNode extends UniNode {
     children?: boolean
     normalize?: (val: any, includeValue?: boolean) => any | number
   } = {}) {
-    const { attributes, listeners, style, _text } = this
+    const { attributes, style, listeners, _text } = this
     const res: Partial<UniNodeJSON> = {}
     if (Object.keys(attributes).length) {
       res.a = normalize ? normalize(attributes) : attributes
@@ -356,9 +365,8 @@ export class UniBaseNode extends UniNode {
       })
       res.e = normalize ? normalize(e, false) : e
     }
-    const cssStyle = style.toJSON()
-    if (cssStyle) {
-      res.s = normalize ? normalize(cssStyle) : cssStyle
+    if (style !== null) {
+      res.s = normalize ? normalize(style) : style
     }
     if (!attr) {
       res.i = this.nodeId

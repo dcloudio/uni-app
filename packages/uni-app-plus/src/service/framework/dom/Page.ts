@@ -295,6 +295,16 @@ function pushRemoveEventAction(
   pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)])
 }
 
+function normalizeAttrValue(
+  pageNode: UniPageNode,
+  name: string,
+  value: unknown
+) {
+  return name === 'style' && isPlainObject(value)
+    ? pageNode.normalizeDict(value)
+    : pageNode.addDict(value as Value)
+}
+
 function pushSetAttributeAction(
   pageNode: UniPageNode,
   nodeId: number,
@@ -305,7 +315,7 @@ function pushSetAttributeAction(
     ACTION_TYPE_SET_ATTRIBUTE,
     nodeId,
     pageNode.addDict(name),
-    pageNode.addDict(value as Value),
+    normalizeAttrValue(pageNode, name, value),
   ])
 }
 

@@ -9310,12 +9310,17 @@ var serviceContext = (function (vue) {
   function pushRemoveEventAction(pageNode, nodeId, name) {
       pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
   }
+  function normalizeAttrValue(pageNode, name, value) {
+      return name === 'style' && isPlainObject(value)
+          ? pageNode.normalizeDict(value)
+          : pageNode.addDict(value);
+  }
   function pushSetAttributeAction(pageNode, nodeId, name, value) {
       pageNode.push([
           ACTION_TYPE_SET_ATTRIBUTE,
           nodeId,
           pageNode.addDict(name),
-          pageNode.addDict(value),
+          normalizeAttrValue(pageNode, name, value),
       ]);
   }
   function pushRemoveAttributeAction(pageNode, nodeId, name) {

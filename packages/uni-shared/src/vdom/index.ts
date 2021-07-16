@@ -7,6 +7,8 @@ export {
   normalizeEventType,
 } from './Event'
 export {
+  ATTR_CLASS,
+  ATTR_STYLE,
   NODE_TYPE_PAGE,
   NODE_TYPE_ELEMENT,
   NODE_TYPE_TEXT,
