@@ -1009,6 +1009,28 @@ var serviceContext = (function (vue) {
   const BACKGROUND_COLOR = '#f7f7f7'; // 背景色，如标题栏默认背景色
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;
+  // lifecycle
+  // App and Page
+  const ON_SHOW = 'onShow';
+  const ON_HIDE = 'onHide';
+  //App
+  const ON_LAUNCH = 'onLaunch';
+  const ON_ERROR = 'onError';
+  const ON_THEME_CHANGE = 'onThemeChange';
+  //Page
+  const ON_LOAD = 'onLoad';
+  const ON_READY = 'onReady';
+  const ON_UNLOAD = 'onUnload';
+  const ON_RESIZE = 'onResize';
+  const ON_BACK_PRESS = 'onBackPress';
+  const ON_PAGE_SCROLL = 'onPageScroll';
+  const ON_TAB_ITEM_TAP = 'onTabItemTap';
+  const ON_REACH_BOTTOM = 'onReachBottom';
+  // navigationBar
+  const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+  // framework
+  const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+  const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 
   const isObject = (val) => val !== null && typeof val === 'object';
   class BaseFormatter {
@@ -1761,8 +1783,14 @@ var serviceContext = (function (vue) {
   });
 
   function initOn() {
-      UniServiceJSBridge.on('onAppEnterForeground', onAppEnterForeground);
-      UniServiceJSBridge.on('onAppEnterBackground', onAppEnterBackground);
+      const { on } = UniServiceJSBridge;
+      on(ON_RESIZE, onResize);
+      on(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
+      on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
+  }
+  function onResize(res) {
+      invokeHook(getCurrentPage(), ON_RESIZE, res);
+      UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
   }
   function onAppEnterForeground() {
       const page = getCurrentPage();
@@ -1774,15 +1802,15 @@ var serviceContext = (function (vue) {
           showOptions.path = page.$page.route;
           showOptions.query = page.$page.options;
       }
-      invokeHook(getApp(), 'onShow', showOptions);
-      invokeHook(page, 'onShow');
+      invokeHook(getApp(), ON_SHOW, showOptions);
+      invokeHook(page, ON_SHOW);
   }
   function onAppEnterBackground() {
-      invokeHook(getApp(), 'onHide');
-      invokeHook(getCurrentPage(), 'onHide');
+      invokeHook(getApp(), ON_HIDE);
+      invokeHook(getCurrentPage(), ON_HIDE);
   }
 
-  const SUBSCRIBE_LIFECYCLE_HOOKS = ['onPageScroll', 'onReachBottom'];
+  const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   function initSubscribe() {
       SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
   }
@@ -3154,7 +3182,7 @@ var serviceContext = (function (vue) {
           return new CanvasContext(canvasId, pageId);
       }
       else {
-          UniServiceJSBridge.emit('onError', 'createCanvasContext:fail');
+          UniServiceJSBridge.emit(ON_ERROR, 'createCanvasContext:fail');
       }
   }, CreateCanvasContextProtocol);
   const canvasGetImageData = defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
@@ -7829,8 +7857,8 @@ var serviceContext = (function (vue) {
           }
       });
       if (publicThis.$mpType === 'page') {
-          invokeHook(publicThis, 'onLoad', instance.attrs.__pageQuery);
-          invokeHook(publicThis, 'onShow');
+          invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
+          invokeHook(publicThis, ON_SHOW);
       }
   }
 
@@ -7847,7 +7875,7 @@ var serviceContext = (function (vue) {
           throw err;
       }
       {
-          invokeHook(app.$vm, 'onError', err);
+          invokeHook(app.$vm, ON_ERROR, err);
       }
   }
 
@@ -8100,7 +8128,7 @@ var serviceContext = (function (vue) {
               openType: 'switchTab',
               from: 'tabBar',
               success() {
-                  invokeHook('onTabItemTap', {
+                  invokeHook(ON_TAB_ITEM_TAP, {
                       index,
                       text: item.text,
                       pagePath: item.pagePath,
@@ -8115,6 +8143,7 @@ var serviceContext = (function (vue) {
       }
   }
 
+  const EVENT_BACKBUTTON = 'backbutton';
   function backbuttonListener() {
       uni.navigateBack({
           from: 'backbutton',
@@ -8126,24 +8155,24 @@ var serviceContext = (function (vue) {
       const weexGlobalEvent = weex.requireModule('globalEvent');
       const emit = UniServiceJSBridge.emit;
       if (weex.config.preload) {
-          plus.key.addEventListener('backbutton', backbuttonListener);
+          plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
       }
       else {
           plusGlobalEvent.addEventListener('splashclosed', () => {
-              plus.key.addEventListener('backbutton', backbuttonListener);
+              plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
           });
       }
       plusGlobalEvent.addEventListener('pause', () => {
-          emit('onAppEnterBackground');
+          emit(ON_APP_ENTER_BACKGROUND);
       });
       plusGlobalEvent.addEventListener('resume', () => {
-          emit('onAppEnterForeground');
+          emit(ON_APP_ENTER_FOREGROUND);
       });
       weexGlobalEvent.addEventListener('uistylechange', function (event) {
           const args = {
               theme: event.uistyle,
           };
-          emit('onThemeChange', args);
+          emit(ON_THEME_CHANGE, args);
       });
       plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
       // nvue webview post message
@@ -8167,8 +8196,8 @@ var serviceContext = (function (vue) {
           query: {},
           scene: 1001,
       };
-      invokeHook(appVm, 'onLaunch', args);
-      invokeHook(appVm, 'onShow', args);
+      invokeHook(appVm, ON_LAUNCH, args);
+      invokeHook(appVm, ON_SHOW, args);
   }
 
   // 统一处理路径
@@ -8350,7 +8379,7 @@ var serviceContext = (function (vue) {
   function createTitleNViewBtnClick(index) {
       return function onClick(btn) {
           btn.index = index;
-          invokeHook('onNavigationBarButtonTap', btn);
+          invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
       };
   }
 
@@ -9236,7 +9265,7 @@ var serviceContext = (function (vue) {
       if (!page) {
           return reject(`getCurrentPages is empty`);
       }
-      if (invokeHook(page, 'onBackPress', {
+      if (invokeHook(page, ON_BACK_PRESS, {
           from: args.from,
       })) {
           return resolve();
@@ -9305,7 +9334,7 @@ var serviceContext = (function (vue) {
               .forEach((page) => removePage(page));
           setStatusBarStyle();
           // 前一个页面触发 onShow
-          invokeHook('onShow');
+          invokeHook(ON_SHOW);
       };
       const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
       if (!currentPage.__uniapp_webview) {
@@ -9543,11 +9572,11 @@ var serviceContext = (function (vue) {
           initPageVm(pageVm, __pageInstance);
           addCurrentPage(initScope(__pageId, pageVm));
           vue.onMounted(() => {
-              invokeHook(pageVm, 'onReady');
+              invokeHook(pageVm, ON_READY);
               // TODO preloadSubPackages
           });
           vue.onBeforeUnmount(() => {
-              invokeHook(pageVm, 'onUnload');
+              invokeHook(pageVm, ON_UNLOAD);
           });
           if (oldSetup) {
               return oldSetup(__pageQuery, ctx);
@@ -9690,7 +9719,7 @@ var serviceContext = (function (vue) {
   function _navigateTo({ url, path, query, aniType, aniDuration, }) {
       // TODO eventChannel
       // 当前页面触发 onHide
-      invokeHook('onHide');
+      invokeHook(ON_HIDE);
       return new Promise((resolve) => {
           showWebview(registerPage({ url, path, query, openType: 'navigateTo' }), aniType, aniDuration, () => {
               resolve(undefined);
@@ -9869,7 +9898,7 @@ var serviceContext = (function (vue) {
           callOnHide = false;
       }
       if (currentPage && callOnHide) {
-          invokeHook(currentPage, 'onHide');
+          invokeHook(currentPage, ON_HIDE);
       }
       return new Promise((resolve) => {
           if (tabBarPage) {
@@ -9877,7 +9906,7 @@ var serviceContext = (function (vue) {
               webview.show('none');
               // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
               if (callOnShow && !webview.__preload__) {
-                  invokeHook(tabBarPage, 'onShow');
+                  invokeHook(tabBarPage, ON_SHOW);
               }
               resolve(undefined);
           }

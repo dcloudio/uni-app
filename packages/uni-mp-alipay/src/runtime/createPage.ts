@@ -10,7 +10,13 @@ import {
   initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 
-import { stringifyQuery } from '@dcloudio/uni-shared'
+import {
+  ON_BACK_PRESS,
+  ON_LOAD,
+  ON_READY,
+  ON_UNLOAD,
+  stringifyQuery,
+} from '@dcloudio/uni-shared'
 
 import {
   handleRef,
@@ -33,23 +39,23 @@ export function createPage(vueOptions: ComponentOptions) {
       // 初始化 vue 实例
       this.$vm = createVueComponent('page', this, vueOptions)
       initSpecialMethods(this)
-      this.$vm.$callHook('onLoad', query)
+      this.$vm.$callHook(ON_LOAD, query)
     },
     onReady() {
       initChildVues(this)
       this.$vm.$callHook('mounted')
-      this.$vm.$callHook('onReady')
+      this.$vm.$callHook(ON_READY)
     },
     onUnload() {
       if (this.$vm) {
-        this.$vm.$callHook('onUnload')
+        this.$vm.$callHook(ON_UNLOAD)
         $destroyComponent(this.$vm)
       }
     },
     events: {
       // 支付宝小程序有些页面事件只能放在events下
       onBack() {
-        this.$vm.$callHook('onBackPress')
+        this.$vm.$callHook(ON_BACK_PRESS)
       },
     },
     __r: handleRef,

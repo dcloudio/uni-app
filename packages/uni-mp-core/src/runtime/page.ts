@@ -1,6 +1,6 @@
 import { ComponentOptions } from 'vue'
 
-import { stringifyQuery } from '@dcloudio/uni-shared'
+import { ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
 
 import {
   ParseComponentOptions,
@@ -34,7 +34,7 @@ function parsePage(
     ;(this as any).$page = {
       fullPath: '/' + (this as any).route + stringifyQuery(query),
     }
-    return this.$vm && this.$vm.$callHook('onLoad', query)
+    return this.$vm && this.$vm.$callHook(ON_LOAD, query)
   }
 
   initHooks(methods, PAGE_HOOKS)

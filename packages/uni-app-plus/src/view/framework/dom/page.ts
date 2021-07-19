@@ -4,7 +4,13 @@ import {
   disableScrollListener,
   updateCssVar,
 } from '@dcloudio/uni-core'
-import { formatLog, PageCreateData, UniNodeJSON } from '@dcloudio/uni-shared'
+import {
+  formatLog,
+  ON_PAGE_SCROLL,
+  ON_REACH_BOTTOM,
+  PageCreateData,
+  UniNodeJSON,
+} from '@dcloudio/uni-shared'
 
 import { UniElement } from './elements/UniElement'
 import { UniNode } from './elements/UniNode'
@@ -149,12 +155,12 @@ function initPageScroll(
   const opts: CreateScrollListenerOptions = {}
   if (onPageScroll) {
     opts.onPageScroll = (scrollTop) => {
-      UniViewJSBridge.publishHandler('onPageScroll', { scrollTop })
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop })
     }
   }
   if (onPageReachBottom) {
     opts.onReachBottomDistance = onReachBottomDistance
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler('onReachBottom')
+    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM)
   }
   // 避免监听太早，直接触发了 scroll
   requestAnimationFrame(() =>

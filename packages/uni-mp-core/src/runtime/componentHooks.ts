@@ -1,3 +1,15 @@
+import {
+  ON_ADD_TO_FAVORITES,
+  ON_HIDE,
+  ON_LOAD,
+  ON_PULL_DOWN_REFRESH,
+  ON_REACH_BOTTOM,
+  ON_READY,
+  ON_RESIZE,
+  ON_SHOW,
+  ON_TAB_ITEM_TAP,
+  ON_UNLOAD,
+} from '@dcloudio/uni-shared'
 import { hasOwn, isFunction } from '@vue/shared'
 
 import { ComponentOptions } from 'vue'
@@ -7,20 +19,18 @@ import { CustomAppInstanceProperty } from './app'
 import { CustomComponentInstanceProperty } from './component'
 
 export const PAGE_HOOKS = [
-  'onLoad',
-  'onShow',
+  ON_LOAD,
+  ON_SHOW,
+  ON_HIDE,
+  ON_UNLOAD,
+  ON_RESIZE,
+  ON_TAB_ITEM_TAP,
+  ON_REACH_BOTTOM,
+  ON_PULL_DOWN_REFRESH,
+  ON_ADD_TO_FAVORITES,
   // 'onReady', // lifetimes.ready
-  'onHide',
-  'onUnload',
-
-  'onResize',
   // 'onPageScroll', // 影响性能，开发者手动注册
-  'onTabItemTap',
-  'onReachBottom',
-  'onPullDownRefresh',
-
   // 'onShareTimeline', // 右上角菜单，开发者手动注册
-  'onAddToFavorites',
   // 'onShareAppMessage' // 右上角菜单，开发者手动注册
 ]
 
@@ -65,7 +75,7 @@ function initHook(
   }
 }
 
-const EXCLUDE_HOOKS = ['onReady']
+const EXCLUDE_HOOKS = [ON_READY]
 
 export function initHooks(
   mpOptions: MiniProgramAppOptions | WechatMiniprogram.Component.MethodOption,

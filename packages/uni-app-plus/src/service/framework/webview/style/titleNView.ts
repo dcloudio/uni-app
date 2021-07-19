@@ -1,5 +1,8 @@
 import { isArray } from '@vue/shared'
-import { BACKGROUND_COLOR } from '@dcloudio/uni-shared'
+import {
+  BACKGROUND_COLOR,
+  ON_NAVIGATION_BAR_BUTTON_TAP,
+} from '@dcloudio/uni-shared'
 import { isColor } from './utils'
 import { invokeHook } from '@dcloudio/uni-core'
 export function initTitleNView(
@@ -59,6 +62,6 @@ function createTitleImageTags(titleImage: string) {
 function createTitleNViewBtnClick(index: number) {
   return function onClick(btn: UniApp.PageNavigationBarButton) {
     ;(btn as any).index = index
-    invokeHook('onNavigationBarButtonTap', btn)
+    invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn)
   }
 }

@@ -15,6 +15,7 @@ import {
   $destroyComponent,
   initComponentInstance,
 } from '@dcloudio/uni-mp-core'
+import { ON_READY } from '@dcloudio/uni-shared'
 
 export function initLifetimes({
   mocks,
@@ -59,7 +60,7 @@ export function initLifetimes({
       // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
       if (this.$vm) {
         this.$vm.$callHook('mounted')
-        this.$vm.$callHook('onReady')
+        this.$vm.$callHook(ON_READY)
       } else {
         // this.is && console.warn(this.is + ' is not attached')
       }

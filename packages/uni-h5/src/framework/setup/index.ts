@@ -12,11 +12,23 @@ import {
   onBeforeMount,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import { decodedQuery, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared'
+import {
+  debounce,
+  decodedQuery,
+  ON_APP_ENTER_BACKGROUND,
+  ON_APP_ENTER_FOREGROUND,
+  ON_RESIZE,
+  ON_WEB_INVOKE_APP_SERVICE,
+  WEB_INVOKE_APPSERVICE,
+} from '@dcloudio/uni-shared'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
+import {
+  API_ON_WINDOW_RESIZE,
+  API_TYPE_ON_WINDOW_RESIZE,
+} from '@dcloudio/uni-api'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
@@ -122,30 +134,9 @@ export function setupApp(comp: any) {
         onBeforeMount(onLaunch)
       }
       onMounted(() => {
-        window.addEventListener(
-          'message',
-          function (evt: {
-            data?: { type: string; data: any; pageId: number }
-          }) {
-            if (
-              isPlainObject(evt.data) &&
-              evt.data.type === WEB_INVOKE_APPSERVICE
-            ) {
-              UniServiceJSBridge.emit(
-                'onWebInvokeAppService',
-                evt.data.data,
-                evt.data.pageId
-              )
-            }
-          }
-        )
-        document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'visible') {
-            UniServiceJSBridge.emit('onAppEnterForeground')
-          } else {
-            UniServiceJSBridge.emit('onAppEnterBackground')
-          }
-        })
+        window.addEventListener('resize', debounce(onResize, 50))
+        window.addEventListener('message', onMessage)
+        document.addEventListener('visibilitychange', onVisibilityChange)
       })
       return route.query
     },
@@ -156,4 +147,38 @@ export function setupApp(comp: any) {
       }
     },
   })
+}
+
+function onResize() {
+  const { windowWidth, windowHeight, screenWidth, screenHeight } =
+    uni.getSystemInfoSync()
+  const landscape = Math.abs(Number(window.orientation)) === 90
+  const deviceOrientation = landscape ? 'landscape' : 'portrait'
+  UniServiceJSBridge.emit(ON_RESIZE, {
+    deviceOrientation,
+    size: {
+      windowWidth,
+      windowHeight,
+      screenWidth,
+      screenHeight,
+    },
+  })
+}
+function onMessage(evt: {
+  data?: { type: string; data: any; pageId: number }
+}) {
+  if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+    UniServiceJSBridge.emit(
+      ON_WEB_INVOKE_APP_SERVICE,
+      evt.data.data,
+      evt.data.pageId
+    )
+  }
+}
+function onVisibilityChange() {
+  UniServiceJSBridge.emit(
+    document.visibilityState === 'visible'
+      ? ON_APP_ENTER_FOREGROUND
+      : ON_APP_ENTER_BACKGROUND
+  )
 }

@@ -1,4 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
+import { ON_ERROR } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 
 export function errorHandler(
@@ -14,8 +15,8 @@ export function errorHandler(
     throw err
   }
   if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
-    app.$vm.$callHook('onError', err, info)
+    app.$vm.$callHook(ON_ERROR, err, info)
   } else {
-    invokeHook(app.$vm, 'onError', err)
+    invokeHook(app.$vm, ON_ERROR, err)
   }
 }

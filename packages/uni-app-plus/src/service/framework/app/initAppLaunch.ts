@@ -1,4 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
+import { ON_LAUNCH, ON_SHOW } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 
 export function initAppLaunch(appVm: ComponentPublicInstance) {
@@ -7,6 +8,6 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
     query: {},
     scene: 1001,
   }
-  invokeHook(appVm, 'onLaunch', args)
-  invokeHook(appVm, 'onShow', args)
+  invokeHook(appVm, ON_LAUNCH, args)
+  invokeHook(appVm, ON_SHOW, args)
 }

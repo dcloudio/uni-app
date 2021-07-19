@@ -6,7 +6,7 @@ import {
   SwitchTabProtocol,
 } from '@dcloudio/uni-api'
 import { invokeHook } from '@dcloudio/uni-core'
-import { parseUrl } from '@dcloudio/uni-shared'
+import { ON_HIDE, ON_SHOW, parseUrl } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import tabBar from '../../framework/app/tabBar'
@@ -101,7 +101,7 @@ function _switchTab({
     callOnHide = false
   }
   if (currentPage && callOnHide) {
-    invokeHook(currentPage, 'onHide')
+    invokeHook(currentPage, ON_HIDE)
   }
   return new Promise((resolve) => {
     if (tabBarPage) {
@@ -109,7 +109,7 @@ function _switchTab({
       webview.show('none')
       // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
       if (callOnShow && !(webview as any).__preload__) {
-        invokeHook(tabBarPage, 'onShow')
+        invokeHook(tabBarPage, ON_SHOW)
       }
       resolve(undefined)
     } else {

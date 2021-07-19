@@ -1,4 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
+import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 import { isFunction } from '@vue/shared'
 
 import {
@@ -27,7 +28,7 @@ export function applyOptions(
     }
   })
   if (__PLATFORM__ === 'app' && publicThis.$mpType === 'page') {
-    invokeHook(publicThis, 'onLoad', instance.attrs.__pageQuery)
-    invokeHook(publicThis, 'onShow')
+    invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
+    invokeHook(publicThis, ON_SHOW)
   }
 }

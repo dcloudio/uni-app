@@ -1,4 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
+import { ON_SHOW } from '@dcloudio/uni-shared'
 import {
   lastStatusBarStyle,
   setStatusBarStyle,
@@ -24,7 +25,7 @@ export function onWebviewPopGesture(webview: PlusWebviewWebviewObject) {
       removeCurrentPage()
       setStatusBarStyle()
       // 触发前一个页面 onShow
-      invokeHook('onShow')
+      invokeHook(ON_SHOW)
     }
   })
 }

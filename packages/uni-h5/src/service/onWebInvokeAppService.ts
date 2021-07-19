@@ -14,10 +14,7 @@ export type WebInvokeAppService = (
   pageId: number | number[]
 ) => void
 
-export const onWebInvokeAppService: WebInvokeAppService = (
-  { name, arg },
-  pageId
-) => {
+export const onWebInvokeAppService: WebInvokeAppService = ({ name, arg }) => {
   if (name === 'postMessage') {
     // TODO 小程序后退、组件销毁、分享时通知
   } else {

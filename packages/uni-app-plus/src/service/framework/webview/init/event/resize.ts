@@ -1,6 +1,7 @@
-import { debounce } from '@dcloudio/uni-shared'
+import { debounce, ON_RESIZE } from '@dcloudio/uni-shared'
 
 export function onWebviewResize(webview: PlusWebviewWebviewObject) {
+  const { emit } = UniServiceJSBridge
   const onResize = function ({
     width,
     height,
@@ -16,8 +17,7 @@ export function onWebviewResize(webview: PlusWebviewWebviewObject) {
         windowHeight: Math.ceil(height),
       },
     }
-    UniServiceJSBridge.emit('onViewDidResize', res) // API
-    UniServiceJSBridge.emit('onResize', res, parseInt(webview.id!)) // Page lifecycle
+    emit(ON_RESIZE, res, parseInt(webview.id!)) // Page lifecycle
   }
   webview.addEventListener('resize' as any, debounce(onResize, 50))
 }

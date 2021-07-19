@@ -6,6 +6,7 @@ import {
 } from '@dcloudio/uni-api'
 import { useSubscribe, withWebEvent } from '@dcloudio/uni-components'
 import { usePageMeta } from '../../../setup/provide'
+import { ON_PULL_DOWN_REFRESH } from '@dcloudio/uni-shared'
 
 function processDeltaY(
   ev: TouchEvent,
@@ -103,7 +104,7 @@ export function usePageRefresh(refreshRef: Ref) {
       return
     }
 
-    let rotate = deltaY / range
+    let rotate = deltaY / range!
 
     if (rotate > 1) {
       rotate = 1
@@ -111,7 +112,7 @@ export function usePageRefresh(refreshRef: Ref) {
       rotate = rotate * rotate * rotate
     }
 
-    const y = Math.round(deltaY / (range / height)) || 0
+    const y = Math.round(deltaY / (range! / height!)) || 0
 
     refreshInnerElemStyle.transform = 'rotate(' + 360 * rotate + 'deg)'
     refreshControllerElemStyle.clip = 'rect(' + (45 - y) + 'px,45px,45px,-5px)'
@@ -162,8 +163,8 @@ export function usePageRefresh(refreshRef: Ref) {
 
     distance = deltaY
 
-    const isReached = deltaY >= range && state !== REACHED
-    const isPulling = deltaY < range && state !== PULLING
+    const isReached = deltaY >= range! && state !== REACHED
+    const isPulling = deltaY < range! && state !== PULLING
 
     if (isReached || isPulling) {
       removeClass()
@@ -231,7 +232,7 @@ export function usePageRefresh(refreshRef: Ref) {
     refreshControllerElemStyle.transition = '-webkit-transform 0.2s'
     refreshControllerElemStyle.transform =
       'translate3d(-50%, ' + height + 'px, 0)'
-    invokeHook(id!, 'onPullDownRefresh')
+    invokeHook(id!, ON_PULL_DOWN_REFRESH)
   }
 
   function restoring(callback: Function) {

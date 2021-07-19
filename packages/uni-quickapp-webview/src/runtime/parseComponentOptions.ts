@@ -5,6 +5,7 @@ import {
   initProvide,
   initInjections,
 } from '@dcloudio/uni-mp-toutiao'
+import { ON_READY } from '@dcloudio/uni-shared'
 
 export { mocks, isPage } from '@dcloudio/uni-mp-baidu'
 
@@ -68,7 +69,7 @@ export function handleLink(
       delete vm._$childVues
     }
     vm.$callHook('mounted')
-    vm.$callHook('onReady')
+    vm.$callHook(ON_READY)
   }
   // 当 parentVm 已经 mounted 时，直接触发，否则延迟
   if (!parentVm || parentVm.$.isMounted) {

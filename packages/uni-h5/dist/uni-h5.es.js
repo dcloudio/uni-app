@@ -1,5 +1,5 @@
 import { isFunction, extend, isString, hyphenate, isPlainObject, isArray, hasOwn, isObject, capitalize, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, formatLog, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, SCHEME_RE, DATA_RE, getCustomDataset, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, updateElementStyle, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime } from "@dcloudio/uni-shared";
+import { once, formatLog, passive, initCustomDataset, invokeArrayFns, normalizeTarget, isBuiltInComponent, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { openBlock, createBlock, mergeProps, createVNode, toDisplayString, withModifiers, getCurrentInstance, defineComponent, ref, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, createTextVNode, injectHook, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, withCtx, KeepAlive, resolveDynamicComponent, renderSlot } from "vue";
 import { initVueI18n, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1337,8 +1337,14 @@ const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
   }
 });
 function initOn() {
-  UniServiceJSBridge.on("onAppEnterForeground", onAppEnterForeground);
-  UniServiceJSBridge.on("onAppEnterBackground", onAppEnterBackground);
+  const { on: on2 } = UniServiceJSBridge;
+  on2(ON_RESIZE, onResize$1);
+  on2(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
+  on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
+}
+function onResize$1(res) {
+  invokeHook(getCurrentPage(), ON_RESIZE, res);
+  UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground() {
   const page = getCurrentPage();
@@ -1350,14 +1356,14 @@ function onAppEnterForeground() {
     showOptions.path = page.$page.route;
     showOptions.query = page.$page.options;
   }
-  invokeHook(getApp(), "onShow", showOptions);
-  invokeHook(page, "onShow");
+  invokeHook(getApp(), ON_SHOW, showOptions);
+  invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
-  invokeHook(getApp(), "onHide");
-  invokeHook(getCurrentPage(), "onHide");
+  invokeHook(getApp(), ON_HIDE);
+  invokeHook(getCurrentPage(), ON_HIDE);
 }
-const SUBSCRIBE_LIFECYCLE_HOOKS = ["onPageScroll", "onReachBottom"];
+const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
 function initSubscribe() {
   SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
 }
@@ -3729,7 +3735,7 @@ const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONT
   if (pageId) {
     return new CanvasContext(canvasId, pageId);
   } else {
-    UniServiceJSBridge.emit("onError", "createCanvasContext:fail");
+    UniServiceJSBridge.emit(ON_ERROR, "createCanvasContext:fail");
   }
 }, CreateCanvasContextProtocol);
 const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
@@ -13080,7 +13086,7 @@ function errorHandler(err, instance2, info) {
     throw err;
   }
   {
-    invokeHook(app.$vm, "onError", err);
+    invokeHook(app.$vm, ON_ERROR, err);
   }
 }
 function initApp$1(app) {
@@ -13263,7 +13269,7 @@ function removeRouteCache(routeKey) {
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
   pageVm.$.__isUnload = true;
-  invokeHook(pageVm, "onUnload");
+  invokeHook(pageVm, ON_UNLOAD);
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
 }
@@ -13400,7 +13406,7 @@ function initPageScrollListener(instance2, pageMeta) {
   }
   if (onReachBottom) {
     opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler("onReachBottom", {}, pageId);
+    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
   }
   curScrollListener = createScrollListener(opts);
   requestAnimationFrame(() => document.addEventListener("scroll", curScrollListener));
@@ -13408,10 +13414,10 @@ function initPageScrollListener(instance2, pageMeta) {
 function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
   return (scrollTop) => {
     if (onPageScroll) {
-      UniViewJSBridge.publishHandler("onPageScroll", { scrollTop }, pageId);
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
     }
     if (navigationBarTransparent) {
-      UniViewJSBridge.emit(pageId + ".onPageScroll", {
+      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
         scrollTop
       });
     }
@@ -13558,18 +13564,9 @@ function setupApp(comp) {
         onBeforeMount(onLaunch);
       }
       onMounted(() => {
-        window.addEventListener("message", function(evt) {
-          if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
-            UniServiceJSBridge.emit("onWebInvokeAppService", evt.data.data, evt.data.pageId);
-          }
-        });
-        document.addEventListener("visibilitychange", function() {
-          if (document.visibilityState === "visible") {
-            UniServiceJSBridge.emit("onAppEnterForeground");
-          } else {
-            UniServiceJSBridge.emit("onAppEnterBackground");
-          }
-        });
+        window.addEventListener("resize", debounce(onResize, 50));
+        window.addEventListener("message", onMessage);
+        document.addEventListener("visibilitychange", onVisibilityChange);
       });
       return route.query;
     },
@@ -13580,6 +13577,28 @@ function setupApp(comp) {
       };
     }
   });
+}
+function onResize() {
+  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
+  const landscape = Math.abs(Number(window.orientation)) === 90;
+  const deviceOrientation = landscape ? "landscape" : "portrait";
+  UniServiceJSBridge.emit(ON_RESIZE, {
+    deviceOrientation,
+    size: {
+      windowWidth,
+      windowHeight,
+      screenWidth,
+      screenHeight
+    }
+  });
+}
+function onMessage(evt) {
+  if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+    UniServiceJSBridge.emit(ON_WEB_INVOKE_APP_SERVICE, evt.data.data, evt.data.pageId);
+  }
+}
+function onVisibilityChange() {
+  UniServiceJSBridge.emit(document.visibilityState === "visible" ? ON_APP_ENTER_FOREGROUND : ON_APP_ENTER_BACKGROUND);
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -14431,7 +14450,7 @@ var index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const onWebInvokeAppService = ({ name, arg }, pageId) => {
+const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {
@@ -17271,11 +17290,11 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args
 }, ChooseLocationProtocol);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, ({ delta }, { resolve, reject }) => {
   let canBack = true;
-  if (invokeHook("onBackPress") === true) {
+  if (invokeHook(ON_BACK_PRESS) === true) {
     canBack = false;
   }
   if (!canBack) {
-    return reject("onBackPress");
+    return reject(ON_BACK_PRESS);
   }
   getApp().$router.go(-delta);
   return resolve();
@@ -17335,7 +17354,7 @@ function removeNonTabBarPages() {
   }
   if (curTabBarPageVm.__isTabBar) {
     curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, "onHide");
+    invokeHook(curTabBarPageVm, ON_HIDE);
   }
 }
 function getTabBarPageId(url) {
@@ -18736,30 +18755,9 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, 8, ["data-show", "style"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
-var tasks = [];
-function onResize() {
-  tasks.push(setTimeout(() => {
-    tasks.forEach((task) => clearTimeout(task));
-    tasks.length = 0;
-    const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
-    var landscape = Math.abs(Number(window.orientation)) === 90;
-    var deviceOrientation = landscape ? "landscape" : "portrait";
-    UniServiceJSBridge.invokeOnCallback(API_ON_WINDOW_RESIZE, {
-      deviceOrientation,
-      size: {
-        windowWidth,
-        windowHeight,
-        screenWidth,
-        screenHeight
-      }
-    });
-  }, 20));
-}
 const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
-  window.addEventListener("resize", onResize);
 });
 const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
-  window.removeEventListener("resize", onResize);
 });
 const showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
@@ -20963,7 +20961,7 @@ function usePageRefresh(refreshRef) {
     }
     refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
     refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
-    invokeHook(id2, "onPullDownRefresh");
+    invokeHook(id2, ON_PULL_DOWN_REFRESH);
   }
   function restoring(callback) {
     if (!refreshControllerElem) {

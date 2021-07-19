@@ -1,5 +1,10 @@
-import { formatLog } from '@dcloudio/uni-shared'
-import { backbuttonListener } from './utils'
+import {
+  formatLog,
+  ON_APP_ENTER_BACKGROUND,
+  ON_APP_ENTER_FOREGROUND,
+  ON_THEME_CHANGE,
+} from '@dcloudio/uni-shared'
+import { EVENT_BACKBUTTON, backbuttonListener } from './utils'
 
 export function initGlobalEvent() {
   const plusGlobalEvent = (plus as any).globalEvent
@@ -7,19 +12,19 @@ export function initGlobalEvent() {
   const emit = UniServiceJSBridge.emit
 
   if (weex.config.preload) {
-    plus.key.addEventListener('backbutton', backbuttonListener)
+    plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener)
   } else {
     plusGlobalEvent.addEventListener('splashclosed', () => {
-      plus.key.addEventListener('backbutton', backbuttonListener)
+      plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener)
     })
   }
 
   plusGlobalEvent.addEventListener('pause', () => {
-    emit('onAppEnterBackground')
+    emit(ON_APP_ENTER_BACKGROUND)
   })
 
   plusGlobalEvent.addEventListener('resume', () => {
-    emit('onAppEnterForeground')
+    emit(ON_APP_ENTER_FOREGROUND)
   })
 
   weexGlobalEvent.addEventListener(
@@ -28,7 +33,7 @@ export function initGlobalEvent() {
       const args = {
         theme: event.uistyle,
       }
-      emit('onThemeChange', args)
+      emit(ON_THEME_CHANGE, args)
     }
   )
 

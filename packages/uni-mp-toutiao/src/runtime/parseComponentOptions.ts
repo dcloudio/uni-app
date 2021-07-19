@@ -6,6 +6,7 @@ import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
 import { initInjections, initProvide } from './apiInject'
 import { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
+import { ON_READY } from '@dcloudio/uni-shared'
 
 export { initLifetimes } from './componentLifetimes'
 
@@ -78,7 +79,7 @@ export function handleLink(
 
   vm.$callSyncHook('created')
   vm.$callHook('mounted')
-  vm.$callHook('onReady')
+  vm.$callHook(ON_READY)
 }
 
 export function parse(

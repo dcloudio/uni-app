@@ -1,3 +1,4 @@
+import { ON_LOAD } from '@dcloudio/uni-shared'
 import { camelize } from '@vue/shared'
 import { MPComponentInstance } from './component'
 
@@ -32,7 +33,7 @@ function initHook(name: 'onLoad' | 'created', options: Record<string, any>) {
 }
 
 Page = function (options) {
-  initHook('onLoad', options)
+  initHook(ON_LOAD, options)
   return MPPage(options)
 }
 

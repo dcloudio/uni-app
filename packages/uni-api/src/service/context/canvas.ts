@@ -27,7 +27,7 @@ import type {
 
 import { hasOwn } from '@vue/shared'
 
-import { once } from '@dcloudio/uni-shared'
+import { once, ON_ERROR } from '@dcloudio/uni-shared'
 
 import {
   getPageIdByVm,
@@ -1036,7 +1036,7 @@ export const createCanvasContext =
       if (pageId) {
         return new CanvasContext(canvasId, pageId)
       } else {
-        UniServiceJSBridge.emit('onError', 'createCanvasContext:fail')
+        UniServiceJSBridge.emit(ON_ERROR, 'createCanvasContext:fail')
       }
     },
     CreateCanvasContextProtocol

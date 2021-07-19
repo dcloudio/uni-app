@@ -12,7 +12,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext", "DOM"]
+    "lib": ["ESNext", "DOM"],
+    "paths": {
+      "@dcloudio/uni-shared": ["../uni-shared/src"]
+    }
   },
   "include": ["src", "../global.d.ts", "../shims-uni-app.d.ts"]
 }

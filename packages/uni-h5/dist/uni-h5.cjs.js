@@ -6584,7 +6584,7 @@ function errorHandler(err, instance, info) {
     throw err;
   }
   {
-    invokeHook(app.$vm, "onError", err);
+    invokeHook(app.$vm, uniShared.ON_ERROR, err);
   }
 }
 function initApp$1(app) {
@@ -7651,7 +7651,7 @@ var index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const onWebInvokeAppService = ({ name, arg }, pageId) => {
+const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {

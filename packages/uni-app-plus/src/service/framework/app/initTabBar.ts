@@ -1,4 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
+import { ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared'
 import tabBarInstance from './tabBar'
 
 export function initTabBar() {
@@ -23,7 +24,7 @@ export function initTabBar() {
         openType: 'switchTab',
         from: 'tabBar',
         success() {
-          invokeHook('onTabItemTap', {
+          invokeHook(ON_TAB_ITEM_TAP, {
             index,
             text: item.text,
             pagePath: item.pagePath,

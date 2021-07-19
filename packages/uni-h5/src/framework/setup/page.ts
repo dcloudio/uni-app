@@ -15,7 +15,12 @@ import {
   initPageInternalInstance,
   initPageVm,
 } from '@dcloudio/uni-core'
-import { ON_REACH_BOTTOM_DISTANCE } from '@dcloudio/uni-shared'
+import {
+  ON_PAGE_SCROLL,
+  ON_REACH_BOTTOM,
+  ON_REACH_BOTTOM_DISTANCE,
+  ON_UNLOAD,
+} from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import { NavigateType } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
@@ -63,7 +68,7 @@ function removeRouteCache(routeKey: string) {
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
   pageVm.$.__isUnload = true
-  invokeHook(pageVm, 'onUnload')
+  invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)
   removeRouteCaches && removeRouteCache(routeKey)
 }
@@ -244,7 +249,7 @@ function initPageScrollListener(
     opts.onReachBottomDistance =
       pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
     opts.onReachBottom = () =>
-      UniViewJSBridge.publishHandler('onReachBottom', {}, pageId)
+      UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId)
   }
   curScrollListener = createScrollListener(opts)
   // 避免监听太早，直接触发了 scroll
@@ -260,10 +265,10 @@ function createOnPageScroll(
 ) {
   return (scrollTop: number) => {
     if (onPageScroll) {
-      UniViewJSBridge.publishHandler('onPageScroll', { scrollTop }, pageId)
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId)
     }
     if (navigationBarTransparent) {
-      UniViewJSBridge.emit(pageId + '.onPageScroll', {
+      UniViewJSBridge.emit(pageId + '.' + ON_PAGE_SCROLL, {
         scrollTop,
       })
     }

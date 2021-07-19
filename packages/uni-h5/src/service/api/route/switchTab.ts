@@ -9,6 +9,7 @@ import {
 import { getCurrentPageVm, invokeHook } from '@dcloudio/uni-core'
 import { getCurrentPagesMap, removePage } from '../../../framework/setup/page'
 import { navigate } from './utils'
+import { ON_HIDE } from '@dcloudio/uni-shared'
 
 function removeNonTabBarPages() {
   const curTabBarPageVm = getCurrentPageVm()
@@ -27,7 +28,7 @@ function removeNonTabBarPages() {
   }
   if (curTabBarPageVm.__isTabBar) {
     curTabBarPageVm.$.__isVisible = false
-    invokeHook(curTabBarPageVm, 'onHide')
+    invokeHook(curTabBarPageVm, ON_HIDE)
   }
 }
 

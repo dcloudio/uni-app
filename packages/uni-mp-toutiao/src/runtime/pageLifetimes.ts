@@ -9,6 +9,7 @@ import { $destroyComponent } from '@dcloudio/uni-mp-core'
 
 import { initLifetimes as initComponentLifetimes } from './componentLifetimes'
 import { instances } from './parseComponentOptions'
+import { ON_READY } from '@dcloudio/uni-shared'
 
 export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
   return extend(initComponentLifetimes(lifetimesOptions), {
@@ -19,7 +20,7 @@ export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
         }
         this.$vm.$callSyncHook('created')
         this.$vm.$callHook('mounted')
-        this.$vm.$callHook('onReady')
+        this.$vm.$callHook(ON_READY)
       } else {
         this.is && console.warn(this.is + ' is not ready')
       }

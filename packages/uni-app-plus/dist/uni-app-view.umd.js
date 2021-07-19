@@ -260,6 +260,8 @@
   const PRIMARY_COLOR = "#007aff";
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;
+  const ON_PAGE_SCROLL = "onPageScroll";
+  const ON_REACH_BOTTOM = "onReachBottom";
   const isObject = (val) => val !== null && typeof val === "object";
   class BaseFormatter {
     constructor() {
@@ -5395,6 +5397,7 @@
     }
     return res;
   }
+  [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   const VD_SYNC = "vdSync";
   const ON_WEBVIEW_READY = "onWebviewReady";
   const INVOKE_VIEW_API = "invokeViewApi";
@@ -15383,12 +15386,12 @@
     const opts = {};
     if (onPageScroll) {
       opts.onPageScroll = (scrollTop) => {
-        UniViewJSBridge.publishHandler("onPageScroll", { scrollTop });
+        UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop });
       };
     }
     if (onPageReachBottom) {
       opts.onReachBottomDistance = onReachBottomDistance;
-      opts.onReachBottom = () => UniViewJSBridge.publishHandler("onReachBottom");
+      opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM);
     }
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }

@@ -1,6 +1,7 @@
 import { hasOwn } from '@vue/shared'
 
 import { MPComponentInstance, MPComponentOptions } from '@dcloudio/uni-mp-core'
+import { ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -35,8 +36,8 @@ export function parse(componentOptions: MPComponentOptions) {
       const pageInstance = (this as any).pageinstance
       pageInstance.$vm = this.$vm
       if (hasOwn(pageInstance, '_$args')) {
-        this.$vm.$callHook('onLoad', pageInstance._$args)
-        this.$vm.$callHook('onShow')
+        this.$vm.$callHook(ON_LOAD, pageInstance._$args)
+        this.$vm.$callHook(ON_SHOW)
         delete pageInstance._$args
       }
     } else {

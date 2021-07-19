@@ -16,6 +16,7 @@ import {
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
 
 import deepEqual from './deepEqual'
+import { ON_READY } from '@dcloudio/uni-shared'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
 export type MPComponentInstance = tinyapp.IComponentInstance<
@@ -115,7 +116,7 @@ export function initChildVues(
       initChildVues(childMPInstance)
 
       childMPInstance.$vm.$callHook('mounted')
-      childMPInstance.$vm.$callHook('onReady')
+      childMPInstance.$vm.$callHook(ON_READY)
     })
   }
 

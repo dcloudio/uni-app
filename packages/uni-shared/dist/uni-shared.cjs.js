@@ -829,6 +829,39 @@ const UNI_SSR_GLOBAL_DATA = 'globalData';
 const SCHEME_RE = /^([a-z-]+:)?\/\//i;
 const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
+const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+// navigationBar
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+// framework
+const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 
 function getEnvLocale() {
     const { env } = process;
@@ -861,7 +894,34 @@ exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
 exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
+exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
+exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
+exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
+exports.ON_BACK_PRESS = ON_BACK_PRESS;
+exports.ON_ERROR = ON_ERROR;
+exports.ON_HIDE = ON_HIDE;
+exports.ON_LAUNCH = ON_LAUNCH;
+exports.ON_LOAD = ON_LOAD;
+exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
+exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED;
+exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED;
+exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED;
+exports.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED;
+exports.ON_PAGE_NOT_FOUND = ON_PAGE_NOT_FOUND;
+exports.ON_PAGE_SCROLL = ON_PAGE_SCROLL;
+exports.ON_PULL_DOWN_REFRESH = ON_PULL_DOWN_REFRESH;
+exports.ON_REACH_BOTTOM = ON_REACH_BOTTOM;
 exports.ON_REACH_BOTTOM_DISTANCE = ON_REACH_BOTTOM_DISTANCE;
+exports.ON_READY = ON_READY;
+exports.ON_RESIZE = ON_RESIZE;
+exports.ON_SHARE_APP_MESSAGE = ON_SHARE_APP_MESSAGE;
+exports.ON_SHARE_TIMELINE = ON_SHARE_TIMELINE;
+exports.ON_SHOW = ON_SHOW;
+exports.ON_TAB_ITEM_TAP = ON_TAB_ITEM_TAP;
+exports.ON_THEME_CHANGE = ON_THEME_CHANGE;
+exports.ON_UNHANDLE_REJECTION = ON_UNHANDLE_REJECTION;
+exports.ON_UNLOAD = ON_UNLOAD;
+exports.ON_WEB_INVOKE_APP_SERVICE = ON_WEB_INVOKE_APP_SERVICE;
 exports.PLUS_RE = PLUS_RE;
 exports.PRIMARY_COLOR = PRIMARY_COLOR;
 exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;

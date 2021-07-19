@@ -1,3 +1,4 @@
+export const EVENT_BACKBUTTON = 'backbutton'
 export function backbuttonListener() {
   uni.navigateBack({
     from: 'backbutton',

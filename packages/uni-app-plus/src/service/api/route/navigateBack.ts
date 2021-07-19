@@ -11,6 +11,7 @@ import {
   invokeHook,
 } from '@dcloudio/uni-core'
 import { useI18n } from '@dcloudio/uni-core'
+import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import { removePage } from '../../framework/page/getCurrentPages'
@@ -25,7 +26,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       return reject(`getCurrentPages is empty`)
     }
     if (
-      invokeHook(page as ComponentPublicInstance, 'onBackPress', {
+      invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
         from: (args as any).from,
       })
     ) {
@@ -105,7 +106,7 @@ function back(
       .forEach((page) => removePage(page as ComponentPublicInstance))
     setStatusBarStyle()
     // 前一个页面触发 onShow
-    invokeHook('onShow')
+    invokeHook(ON_SHOW)
   }
 
   const webview = plus.webview.getWebviewById(currentPage.$page.id + '')

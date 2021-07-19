@@ -5,6 +5,15 @@ import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
 
 import App = WechatMiniprogram.App
+import {
+  ON_ERROR,
+  ON_HIDE,
+  ON_LAUNCH,
+  ON_PAGE_NOT_FOUND,
+  ON_SHOW,
+  ON_THEME_CHANGE,
+  ON_UNHANDLE_REJECTION,
+} from '@dcloudio/uni-shared'
 export interface CustomAppInstanceProperty extends Record<string, any> {
   globalData: Record<string, any>
   $vm?: ComponentPublicInstance
@@ -14,12 +23,12 @@ export type MiniProgramAppOptions = App.Options<CustomAppInstanceProperty>
 export type MiniProgramAppInstance = App.Instance<CustomAppInstanceProperty>
 
 const HOOKS = [
-  'onShow',
-  'onHide',
-  'onError',
-  'onThemeChange',
-  'onPageNotFound',
-  'onUnhandledRejection',
+  ON_SHOW,
+  ON_HIDE,
+  ON_ERROR,
+  ON_THEME_CHANGE,
+  ON_PAGE_NOT_FOUND,
+  ON_UNHANDLE_REJECTION,
 ]
 
 export interface ParseAppOptions {
@@ -48,7 +57,7 @@ function parseApp(
       })
 
       ctx.globalData = this.globalData
-      instance.$callHook('onLaunch', options)
+      instance.$callHook(ON_LAUNCH, options)
     },
   }
 

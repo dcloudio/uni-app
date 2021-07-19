@@ -1,4 +1,4 @@
-import { parseUrl } from '@dcloudio/uni-shared'
+import { ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import { getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_TO,
@@ -57,7 +57,7 @@ function _navigateTo({
 }: NavigateToOptions): Promise<undefined> {
   // TODO eventChannel
   // 当前页面触发 onHide
-  invokeHook('onHide')
+  invokeHook(ON_HIDE)
   return new Promise((resolve) => {
     showWebview(
       registerPage({ url, path, query, openType: 'navigateTo' }),

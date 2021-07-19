@@ -1,10 +1,24 @@
+import {
+  ON_APP_ENTER_BACKGROUND,
+  ON_APP_ENTER_FOREGROUND,
+  ON_HIDE,
+  ON_RESIZE,
+  ON_SHOW,
+} from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from '@vue/runtime-core'
 import { invokeHook } from '../../helpers/hook'
 import { getCurrentPage } from '../../helpers/page'
 
 export function initOn() {
-  UniServiceJSBridge.on('onAppEnterForeground', onAppEnterForeground)
-  UniServiceJSBridge.on('onAppEnterBackground', onAppEnterBackground)
+  const { on } = UniServiceJSBridge
+  on(ON_RESIZE, onResize)
+  on(ON_APP_ENTER_FOREGROUND, onAppEnterForeground)
+  on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground)
+}
+
+function onResize(res: UniApp.WindowResizeResult) {
+  invokeHook(getCurrentPage() as ComponentPublicInstance, ON_RESIZE, res)
+  UniServiceJSBridge.invokeOnCallback('onWindowResize', res) // API
 }
 
 function onAppEnterForeground() {
@@ -17,11 +31,11 @@ function onAppEnterForeground() {
     showOptions.path = page.$page.route
     showOptions.query = page.$page.options
   }
-  invokeHook(getApp() as ComponentPublicInstance, 'onShow', showOptions)
-  invokeHook(page as ComponentPublicInstance, 'onShow')
+  invokeHook(getApp() as ComponentPublicInstance, ON_SHOW, showOptions)
+  invokeHook(page as ComponentPublicInstance, ON_SHOW)
 }
 
 function onAppEnterBackground() {
-  invokeHook(getApp() as ComponentPublicInstance, 'onHide')
-  invokeHook(getCurrentPage() as ComponentPublicInstance, 'onHide')
+  invokeHook(getApp() as ComponentPublicInstance, ON_HIDE)
+  invokeHook(getCurrentPage() as ComponentPublicInstance, ON_HIDE)
 }
