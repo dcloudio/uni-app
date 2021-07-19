@@ -517,24 +517,6 @@
       return res;
     }, {});
   }
-  const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
-    const name = "uni.showModal.";
-    {
-      useI18n().add(LOCALE_EN, normalizeMessages(name, { cancel: "Cancel", confirm: "OK" }));
-    }
-    {
-      useI18n().add(LOCALE_ES, normalizeMessages(name, { cancel: "Cancelar", confirm: "OK" }));
-    }
-    {
-      useI18n().add(LOCALE_FR, normalizeMessages(name, { cancel: "Annuler", confirm: "OK" }));
-    }
-    {
-      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u786E\u5B9A" }));
-    }
-    {
-      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A" }));
-    }
-  });
   const initI18nButtonMsgsOnce = /* @__PURE__ */ once(() => {
     const name = "uni.button.";
     {
@@ -5397,7 +5379,6 @@
     }
     return res;
   }
-  [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   const VD_SYNC = "vdSync";
   const ON_WEBVIEW_READY = "onWebviewReady";
   const INVOKE_VIEW_API = "invokeViewApi";
@@ -5700,30 +5681,6 @@
   }, Upx2pxProtocol);
   createCallbacks("canvasEvent");
   createCallbacks("getSelectedTextRangeEvent");
-  ({
-    beforeInvoke() {
-      initI18nShowModalMsgsOnce();
-    },
-    formatArgs: {
-      title: "",
-      content: "",
-      showCancel: true,
-      cancelText(_value, params) {
-        if (!hasOwn$1(params, "cancelText")) {
-          const { t: t2 } = useI18n();
-          params.cancelText = t2("uni.showModal.cancel");
-        }
-      },
-      cancelColor: "#000",
-      confirmText(_value, params) {
-        if (!hasOwn$1(params, "confirmText")) {
-          const { t: t2 } = useI18n();
-          params.confirmText = t2("uni.showModal.confirm");
-        }
-      },
-      confirmColor: PRIMARY_COLOR
-    }
-  });
   function invokeServiceApi(method, args = {}) {
     UniViewJSBridge.publishHandler(INVOKE_SERVICE_API, {
       data: {
