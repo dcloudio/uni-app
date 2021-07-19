@@ -72,6 +72,13 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
+  // tips
+  if (isInHBuilderX() && options.platform === 'app') {
+    return (
+      console.error(`Vue3 目前暂不支持编译至 App 端，近期将升级支持。`),
+      process.exit(1)
+    )
+  }
 }
 
 export function cleanOptions(options: CliOptions) {
