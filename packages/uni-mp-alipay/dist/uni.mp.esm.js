@@ -122,19 +122,56 @@ function initMocks(instance, mpInstance, mocks) {
     });
 }
 
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
 const PAGE_HOOKS = [
-    'onLoad',
-    'onShow',
-    // 'onReady', // lifetimes.ready
-    'onHide',
-    'onUnload',
-    'onResize',
-    // 'onPageScroll', // 影响性能，开发者手动注册
-    'onTabItemTap',
-    'onReachBottom',
-    'onPullDownRefresh',
-    // 'onShareTimeline', // 右上角菜单，开发者手动注册
-    'onAddToFavorites',
+    ON_LOAD,
+    ON_SHOW,
+    ON_HIDE,
+    ON_UNLOAD,
+    ON_RESIZE,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+    ON_ADD_TO_FAVORITES,
 ];
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
@@ -162,7 +199,7 @@ function initHook(mpOptions, hook, excludes) {
         };
     }
 }
-const EXCLUDE_HOOKS = ['onReady'];
+const EXCLUDE_HOOKS = [ON_READY];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
     hooks.forEach((hook) => initHook(mpOptions, hook, excludes));
 }
@@ -171,12 +208,12 @@ function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
 }
 
 const HOOKS = [
-    'onShow',
-    'onHide',
-    'onError',
-    'onThemeChange',
-    'onPageNotFound',
-    'onUnhandledRejection',
+    ON_SHOW,
+    ON_HIDE,
+    ON_ERROR,
+    ON_THEME_CHANGE,
+    ON_PAGE_NOT_FOUND,
+    ON_UNHANDLE_REJECTION,
 ];
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
@@ -195,7 +232,7 @@ function parseApp(instance, parseAppOptions) {
                 slots: [],
             });
             ctx.globalData = this.globalData;
-            instance.$callHook('onLaunch', options);
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     const vueOptions = instance.$.type;
@@ -214,26 +251,6 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
-}
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
 }
 
 function initVueIds(vueIds, mpInstance) {
@@ -870,7 +887,7 @@ function initChildVues(mpInstance) {
             }
             initChildVues(childMPInstance);
             childMPInstance.$vm.$callHook('mounted');
-            childMPInstance.$vm.$callHook('onReady');
+            childMPInstance.$vm.$callHook(ON_READY);
         });
     }
     delete mpInstance._$childVues;
@@ -977,23 +994,23 @@ function createPage(vueOptions) {
             // 初始化 vue 实例
             this.$vm = createVueComponent('page', this, vueOptions);
             initSpecialMethods(this);
-            this.$vm.$callHook('onLoad', query);
+            this.$vm.$callHook(ON_LOAD, query);
         },
         onReady() {
             initChildVues(this);
             this.$vm.$callHook('mounted');
-            this.$vm.$callHook('onReady');
+            this.$vm.$callHook(ON_READY);
         },
         onUnload() {
             if (this.$vm) {
-                this.$vm.$callHook('onUnload');
+                this.$vm.$callHook(ON_UNLOAD);
                 $destroyComponent(this.$vm);
             }
         },
         events: {
             // 支付宝小程序有些页面事件只能放在events下
             onBack() {
-                this.$vm.$callHook('onBackPress');
+                this.$vm.$callHook(ON_BACK_PRESS);
             },
         },
         __r: handleRef,

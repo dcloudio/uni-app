@@ -113,19 +113,55 @@ function initMocks(instance, mpInstance, mocks) {
     });
 }
 
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
 const PAGE_HOOKS = [
-    'onLoad',
-    'onShow',
-    // 'onReady', // lifetimes.ready
-    'onHide',
-    'onUnload',
-    'onResize',
-    // 'onPageScroll', // 影响性能，开发者手动注册
-    'onTabItemTap',
-    'onReachBottom',
-    'onPullDownRefresh',
-    // 'onShareTimeline', // 右上角菜单，开发者手动注册
-    'onAddToFavorites',
+    ON_LOAD,
+    ON_SHOW,
+    ON_HIDE,
+    ON_UNLOAD,
+    ON_RESIZE,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+    ON_ADD_TO_FAVORITES,
 ];
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
@@ -153,7 +189,7 @@ function initHook$1(mpOptions, hook, excludes) {
         };
     }
 }
-const EXCLUDE_HOOKS = ['onReady'];
+const EXCLUDE_HOOKS = [ON_READY];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
     hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
@@ -162,12 +198,12 @@ function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
 }
 
 const HOOKS = [
-    'onShow',
-    'onHide',
-    'onError',
-    'onThemeChange',
-    'onPageNotFound',
-    'onUnhandledRejection',
+    ON_SHOW,
+    ON_HIDE,
+    ON_ERROR,
+    ON_THEME_CHANGE,
+    ON_PAGE_NOT_FOUND,
+    ON_UNHANDLE_REJECTION,
 ];
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
@@ -186,7 +222,7 @@ function parseApp(instance, parseAppOptions) {
                 slots: [],
             });
             ctx.globalData = this.globalData;
-            instance.$callHook('onLaunch', options);
+            instance.$callHook(ON_LAUNCH, options);
         },
     };
     const vueOptions = instance.$.type;
@@ -205,26 +241,6 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
-}
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
 }
 
 function initBehavior(options) {
@@ -803,7 +819,7 @@ function parsePage(vueOptions, parseOptions) {
         this.$page = {
             fullPath: '/' + this.route + stringifyQuery(query),
         };
-        return this.$vm && this.$vm.$callHook('onLoad', query);
+        return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
     initHooks(methods, PAGE_HOOKS);
     initUnknownHooks(methods, vueOptions);
@@ -843,7 +859,7 @@ function initHook(name, options) {
     }
 }
 Page = function (options) {
-    initHook('onLoad', options);
+    initHook(ON_LOAD, options);
     return MPPage(options);
 };
 Component = function (options) {
@@ -857,7 +873,7 @@ function parse$2(appOptions) {
         if (!this.$vm) {
             this.onLaunch(args);
         }
-        this.$vm.$callHook('onShow', args);
+        this.$vm.$callHook(ON_SHOW, args);
     };
 }
 
@@ -898,7 +914,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {
                 this.$vm.$callHook('mounted');
-                this.$vm.$callHook('onReady');
+                this.$vm.$callHook(ON_READY);
             }
         },
         detached() {
@@ -945,8 +961,8 @@ function parse$1(componentOptions) {
             const pageInstance = this.pageinstance;
             pageInstance.$vm = this.$vm;
             if (hasOwn(pageInstance, '_$args')) {
-                this.$vm.$callHook('onLoad', pageInstance._$args);
-                this.$vm.$callHook('onShow');
+                this.$vm.$callHook(ON_LOAD, pageInstance._$args);
+                this.$vm.$callHook(ON_SHOW);
                 delete pageInstance._$args;
             }
         }
@@ -983,15 +999,15 @@ function parse(pageOptions) {
     // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
     methods.onShow = function onShow() {
         if (this.$vm && this._$loaded) {
-            this.$vm.$callHook('onShow');
+            this.$vm.$callHook(ON_SHOW);
         }
     };
     methods.onLoad = function onLoad(args) {
         // 百度 onLoad 在 attached 之前触发，先存储 args, 在 attached 里边触发 onLoad
         if (this.$vm) {
             this._$loaded = true;
-            this.$vm.$callHook('onLoad', args);
-            this.$vm.$callHook('onShow');
+            this.$vm.$callHook(ON_LOAD, args);
+            this.$vm.$callHook(ON_SHOW);
         }
         else {
             this.pageinstance._$args = args;
