@@ -1747,15 +1747,15 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const callbacks$2 = {};
+  const callbacks$3 = {};
   function createCallbacks(namespace) {
-      let scopedCallbacks = callbacks$2[namespace];
+      let scopedCallbacks = callbacks$3[namespace];
       if (!scopedCallbacks) {
           scopedCallbacks = {
               id: 1,
               callbacks: Object.create(null),
           };
-          callbacks$2[namespace] = scopedCallbacks;
+          callbacks$3[namespace] = scopedCallbacks;
       }
       return {
           get(id) {
@@ -4016,6 +4016,13 @@ var serviceContext = (function (vue) {
   const API_HIDE_KEYBOARD = 'hideKeyboard';
   const API_SHOW_KEYBOARD = 'showKeyboard';
 
+  const API_CHOOSE_LOCATION = 'chooseLocation';
+  const ChooseLocationProtocol = {
+      keyword: String,
+      latitude: Number,
+      longitude: Number,
+  };
+
   const API_GET_LOCATION = 'getLocation';
   const coordTypes = ['WGS84', 'GCJ02'];
   const GetLocationOptions = {
@@ -4037,6 +4044,29 @@ var serviceContext = (function (vue) {
   const GetLocationProtocol = {
       type: String,
       altitude: Boolean,
+  };
+
+  const API_OPEN_LOCATION = 'openLocation';
+  const OpenLocationOptions = {
+      formatArgs: {
+          scale(value, params) {
+              value = Math.floor(value);
+              params.scale = value >= 5 && value <= 18 ? value : 18;
+          },
+      },
+  };
+  const OpenLocationProtocol = {
+      latitude: {
+          type: Number,
+          required: true,
+      },
+      longitude: {
+          type: Number,
+          required: true,
+      },
+      scale: Number,
+      name: String,
+      address: String,
   };
 
   const API_CHOOSE_IMAGE = 'chooseImage';
@@ -5801,7 +5831,7 @@ var serviceContext = (function (vue) {
           }
       },
   };
-  const callbacks$1 = {
+  const callbacks$2 = {
       pause: null,
       resume: null,
       start: null,
@@ -5812,29 +5842,29 @@ var serviceContext = (function (vue) {
       const state = res.state;
       delete res.state;
       delete res.errMsg;
-      if (state && typeof callbacks$1[state] === 'function') {
-          callbacks$1[state](res);
+      if (state && typeof callbacks$2[state] === 'function') {
+          callbacks$2[state](res);
       }
   }
   class RecorderManager {
       constructor() { }
       onError(callback) {
-          callbacks$1.error = callback;
+          callbacks$2.error = callback;
       }
       onFrameRecorded(callback) { }
       onInterruptionBegin(callback) { }
       onInterruptionEnd(callback) { }
       onPause(callback) {
-          callbacks$1.pause = callback;
+          callbacks$2.pause = callback;
       }
       onResume(callback) {
-          callbacks$1.resume = callback;
+          callbacks$2.resume = callback;
       }
       onStart(callback) {
-          callbacks$1.start = callback;
+          callbacks$2.start = callback;
       }
       onStop(callback) {
-          callbacks$1.stop = callback;
+          callbacks$2.stop = callback;
       }
       pause() {
           Recorder.pause();
@@ -6365,7 +6395,7 @@ var serviceContext = (function (vue) {
 
   const socketTasks = [];
   const socketsMap = {};
-  const globalEvent = {
+  const globalEvent$1 = {
       open: '',
       close: '',
       error: '',
@@ -6467,8 +6497,8 @@ var serviceContext = (function (vue) {
       }
       socketStateChange(name, res = {}) {
           const data = name === 'message' ? res : {};
-          if (this === socketTasks[0] && globalEvent[name]) {
-              UniServiceJSBridge.invokeOnCallback(globalEvent[name], data);
+          if (this === socketTasks[0] && globalEvent$1[name]) {
+              UniServiceJSBridge.invokeOnCallback(globalEvent$1[name], data);
           }
           // WYQ fix: App平台修复websocket onOpen时发送数据报错的Bug
           this._callbacks[name].forEach((callback) => {
@@ -6567,7 +6597,7 @@ var serviceContext = (function (vue) {
   function on(event) {
       const api = `onSocket${capitalize(event)}`;
       return defineOnApi(api, () => {
-          globalEvent[event] = api;
+          globalEvent$1[event] = api;
       });
   }
   const onSocketOpen = /*#__PURE__*/ on('open');
@@ -6949,7 +6979,7 @@ var serviceContext = (function (vue) {
       'error',
       'waiting',
   ];
-  const callbacks = {
+  const callbacks$1 = {
       canplay: [],
       play: [],
       pause: [],
@@ -7128,7 +7158,7 @@ var serviceContext = (function (vue) {
       });
   }
   function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-      callbacks[state].forEach((callback) => {
+      callbacks$1[state].forEach((callback) => {
           if (typeof callback === 'function') {
               callback(state === 'error'
                   ? {
@@ -7143,7 +7173,7 @@ var serviceContext = (function (vue) {
       eventNames.forEach((item) => {
           BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
               function (callback) {
-                  callbacks[item].push(callback);
+                  callbacks$1[item].push(callback);
               };
       });
   });
@@ -7368,6 +7398,203 @@ var serviceContext = (function (vue) {
           enableHighAccuracy: altitude,
       });
   }, GetLocationProtocol, GetLocationOptions);
+
+  let plus_;
+  let weex_;
+  let BroadcastChannel_;
+  function getRuntime() {
+      return typeof window === 'object' &&
+          typeof navigator === 'object' &&
+          typeof document === 'object'
+          ? 'webview'
+          : 'v8';
+  }
+  function getPageId() {
+      return plus_.webview.currentWebview().id;
+  }
+  let channel;
+  let globalEvent;
+  const callbacks = {};
+  function onPlusMessage$1(res) {
+      const message = res.data && res.data.__message;
+      if (!message || !message.__page) {
+          return;
+      }
+      const pageId = message.__page;
+      const callback = callbacks[pageId];
+      callback && callback(message);
+      if (!message.keep) {
+          delete callbacks[pageId];
+      }
+  }
+  function addEventListener(pageId, callback) {
+      if (getRuntime() === 'v8') {
+          if (BroadcastChannel_) {
+              channel && channel.close();
+              channel = new BroadcastChannel_(getPageId());
+              channel.onmessage = onPlusMessage$1;
+          }
+          else if (!globalEvent) {
+              globalEvent = weex_.requireModule('globalEvent');
+              globalEvent.addEventListener('plusMessage', onPlusMessage$1);
+          }
+      }
+      else {
+          // @ts-ignore
+          window.__plusMessage = onPlusMessage$1;
+      }
+      callbacks[pageId] = callback;
+  }
+  class Page {
+      constructor(webview) {
+          this.webview = webview;
+      }
+      sendMessage(data) {
+          const message = {
+              __message: {
+                  data,
+              },
+          };
+          const id = this.webview.id;
+          if (BroadcastChannel_) {
+              const channel = new BroadcastChannel_(id);
+              channel.postMessage(message);
+          }
+          else {
+              plus_.webview.postMessageToUniNView &&
+                  plus_.webview.postMessageToUniNView(message, id);
+          }
+      }
+      close() {
+          this.webview.close();
+      }
+  }
+  function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
+      // eslint-disable-next-line
+      plus_ = context.plus || plus;
+      // eslint-disable-next-line
+      weex_ = context.weex || (typeof weex === 'object' ? weex : null);
+      // eslint-disable-next-line
+      BroadcastChannel_ =
+          context.BroadcastChannel ||
+              (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
+      const titleNView = {
+          autoBackButton: true,
+          titleSize: '17px',
+      };
+      const pageId = `page${Date.now()}`;
+      style = Object.assign({}, style);
+      if (style.titleNView !== false && style.titleNView !== 'none') {
+          style.titleNView = Object.assign(titleNView, style.titleNView);
+      }
+      const defaultStyle = {
+          top: 0,
+          bottom: 0,
+          usingComponents: {},
+          popGesture: 'close',
+          scrollIndicator: 'none',
+          animationType: 'pop-in',
+          animationDuration: 200,
+          uniNView: {
+              path: `${(typeof process === 'object' &&
+                process.env &&
+                process.env.VUE_APP_TEMPLATE_PATH) ||
+                ''}/${url}.js`,
+              defaultFontSize: plus_.screen.resolutionWidth / 20,
+              viewport: plus_.screen.resolutionWidth,
+          },
+      };
+      style = Object.assign(defaultStyle, style);
+      const page = plus_.webview.create('', pageId, style, {
+          extras: {
+              from: getPageId(),
+              runtime: getRuntime(),
+              data,
+              useGlobalEvent: !BroadcastChannel_,
+          },
+      });
+      page.addEventListener('close', onClose);
+      addEventListener(pageId, (message) => {
+          if (typeof onMessage === 'function') {
+              onMessage(message.data);
+          }
+          if (!message.keep) {
+              page.close('auto');
+          }
+      });
+      page.show(style.animationType, style.animationDuration);
+      return new Page(page);
+  }
+
+  function getStatusBarStyle() {
+      let style = plus.navigator.getStatusBarStyle();
+      if (style === 'UIStatusBarStyleBlackTranslucent' ||
+          style === 'UIStatusBarStyleBlackOpaque' ||
+          style === 'null') {
+          style = 'light';
+      }
+      else if (style === 'UIStatusBarStyleDefault') {
+          style = 'dark';
+      }
+      return style;
+  }
+  const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, reject }) => {
+      const statusBarStyle = getStatusBarStyle();
+      const isDark = statusBarStyle !== 'light';
+      let result;
+      const page = showPage({
+          url: '__uniappchooselocation',
+          data: options,
+          style: {
+              // @ts-ignore
+              animationType: options.animationType || 'slide-in-bottom',
+              // @ts-ignore
+              titleNView: false,
+              popGesture: 'close',
+              scrollIndicator: 'none',
+          },
+          onMessage({ event, detail, }) {
+              if (event === 'selected') {
+                  result = detail;
+              }
+          },
+          onClose() {
+              if (isDark) {
+                  plus.navigator.setStatusBarStyle('dark');
+              }
+              result ? resolve(result) : reject('cancel');
+          },
+      });
+      if (isDark) {
+          plus.navigator.setStatusBarStyle('light');
+          page.webview.addEventListener('popGesture', ({ type, result }) => {
+              if (type === 'start') {
+                  plus.navigator.setStatusBarStyle('dark');
+              }
+              else if (type === 'end' && !result) {
+                  plus.navigator.setStatusBarStyle('light');
+              }
+          });
+      }
+  }, ChooseLocationProtocol);
+
+  const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject }) => {
+      showPage({
+          url: '__uniappopenlocation',
+          data,
+          style: {
+              titleNView: {
+                  type: 'transparent',
+              },
+              popGesture: 'close',
+              backButtonAutoControl: 'close',
+          },
+          onClose() {
+              reject('cancel');
+          },
+      });
+      return resolve();
+  }, OpenLocationProtocol, OpenLocationOptions);
 
   const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, } = {}, { resolve }) => {
       content = content || ' ';
@@ -10031,6 +10258,8 @@ var serviceContext = (function (vue) {
     createInnerAudioContext: createInnerAudioContext,
     getBackgroundAudioManager: getBackgroundAudioManager,
     getLocation: getLocation,
+    chooseLocation: chooseLocation,
+    openLocation: openLocation,
     showModal: showModal,
     showActionSheet: showActionSheet,
     showLoading: showLoading,

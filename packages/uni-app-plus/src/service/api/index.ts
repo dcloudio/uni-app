@@ -35,6 +35,8 @@ export * from './context/createInnerAudioContext'
 export * from './context/getBackgroundAudioManager'
 
 export * from './location/getLocation'
+export * from './location/chooseLocation'
+export * from './location/openLocation'
 
 export * from './ui/popup/showModal'
 export * from './ui/popup/showActionSheet'
