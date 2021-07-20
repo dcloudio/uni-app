@@ -9,6 +9,7 @@ import {
   API_STOP_ACCELEROMETER,
   API_TYPE_STOP_ACCELEROMETER,
   defineOnApi,
+  defineOffApi,
 } from '@dcloudio/uni-api'
 import { DEVICE_FREQUENCY } from '../constants'
 
@@ -21,7 +22,7 @@ export const onAccelerometerChange = <API_TYPE_ON_ACCELEROMETER_CHANGE>(
 )
 
 export const offAccelerometerChange = <API_TYPE_OFF_ACCELEROMETER_CHANGE>(
-  defineOnApi(API_OFF_ACCELEROMETER, () => {
+  defineOffApi(API_OFF_ACCELEROMETER, () => {
     stopAccelerometer()
   })
 )

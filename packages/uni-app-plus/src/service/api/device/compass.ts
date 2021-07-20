@@ -9,6 +9,7 @@ import {
   API_STOP_COMPASS,
   API_TYPE_STOP_COMPASS,
   defineOnApi,
+  defineOffApi,
 } from '@dcloudio/uni-api'
 import { DEVICE_FREQUENCY } from '../constants'
 
@@ -21,7 +22,7 @@ export const onCompassChange = <API_TYPE_ON_COMPASS_CHANGE>(
 )
 
 export const offCompassChange = <API_TYPE_OFF_COMPASS_CHANGE>(
-  defineOnApi(API_OFF_COMPASS, () => {
+  defineOffApi(API_OFF_COMPASS, () => {
     stopCompass()
   })
 )
@@ -29,7 +30,7 @@ export const offCompassChange = <API_TYPE_OFF_COMPASS_CHANGE>(
 export const startCompass = <API_TYPE_START_COMPASS>(
   defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
     if (!listener) {
-      plus.orientation.watchOrientation(
+      listener = plus.orientation.watchOrientation(
         (res) => {
           UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
             direction: res.magneticHeading,

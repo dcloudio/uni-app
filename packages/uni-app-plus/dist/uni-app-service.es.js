@@ -5119,12 +5119,12 @@ var serviceContext = (function (vue) {
   const onCompassChange = (defineOnApi(API_ON_COMPASS, () => {
       startCompass();
   }));
-  const offCompassChange = (defineOnApi(API_OFF_COMPASS, () => {
+  const offCompassChange = (defineOffApi(API_OFF_COMPASS, () => {
       stopCompass();
   }));
   const startCompass = (defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
       if (!listener$1) {
-          plus.orientation.watchOrientation((res) => {
+          listener$1 = plus.orientation.watchOrientation((res) => {
               UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
                   direction: res.magneticHeading,
               });
@@ -5158,7 +5158,7 @@ var serviceContext = (function (vue) {
   const onAccelerometerChange = (defineOnApi(API_ON_ACCELEROMETER, () => {
       startAccelerometer();
   }));
-  const offAccelerometerChange = (defineOnApi(API_OFF_ACCELEROMETER, () => {
+  const offAccelerometerChange = (defineOffApi(API_OFF_ACCELEROMETER, () => {
       stopAccelerometer();
   }));
   const startAccelerometer = (defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
