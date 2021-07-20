@@ -181,7 +181,7 @@ function initFeatures(options) {
         __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh,
         __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons,
         __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput,
-        __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent,
+        __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent, // 是否启用透明标题栏
     };
     // ssr nodejs features
     if (options.ssr) {

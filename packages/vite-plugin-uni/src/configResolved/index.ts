@@ -1,4 +1,5 @@
 import { Plugin } from 'vite'
+import { checkUpdate } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 import { initEnv } from './env'
@@ -15,11 +16,11 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
 }
 
 function initCheckUpdate() {
-  // const pkg = require('@dcloudio/vite-plugin-uni/package.json')
-  // checkUpdate({
-  //   inputDir: process.env.UNI_INPUT_DIR,
-  //   compilerVersion:
-  //     (pkg['uni-app'] && pkg['uni-app']['compilerVersion']) || '',
-  //   versionType: pkg.version.includes('alpha') ? 'a' : 'r',
-  // })
+  const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+  checkUpdate({
+    inputDir: process.env.UNI_INPUT_DIR,
+    compilerVersion:
+      (pkg['uni-app'] && pkg['uni-app']['compilerVersion']) || '',
+    versionType: pkg.version.includes('alpha') ? 'a' : 'r',
+  })
 }

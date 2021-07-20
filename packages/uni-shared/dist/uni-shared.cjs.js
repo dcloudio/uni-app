@@ -340,11 +340,14 @@ function normalizeEventType(type, options) {
     return `on${shared.capitalize(shared.camelize(type))}`;
 }
 class UniEvent {
+    type;
+    bubbles;
+    cancelable;
+    defaultPrevented = false;
+    timeStamp = Date.now();
+    _stop = false;
+    _end = false;
     constructor(type, opts) {
-        this.defaultPrevented = false;
-        this.timeStamp = Date.now();
-        this._stop = false;
-        this._end = false;
         this.type = type;
         this.bubbles = !!opts.bubbles;
         this.cancelable = !!opts.cancelable;
@@ -372,9 +375,7 @@ function createUniEvent(evt) {
     return uniEvent;
 }
 class UniEventTarget {
-    constructor() {
-        this.listeners = Object.create(null);
-    }
+    listeners = Object.create(null);
     dispatchEvent(evt) {
         const listeners = this.listeners[evt.type];
         if (!listeners) {
@@ -468,11 +469,15 @@ function checkNodeId(node) {
 }
 // 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
 class UniNode extends UniEventTarget {
+    nodeId;
+    nodeType;
+    nodeName;
+    childNodes;
+    pageNode = null;
+    parentNode = null;
+    _text = null;
     constructor(nodeType, nodeName, container) {
         super();
-        this.pageNode = null;
-        this.parentNode = null;
-        this._text = null;
         if (container) {
             const { pageNode } = container;
             if (pageNode) {
@@ -569,11 +574,11 @@ class UniNode extends UniEventTarget {
 const ATTR_CLASS = 'class';
 const ATTR_STYLE = 'style';
 class UniBaseNode extends UniNode {
+    attributes = Object.create(null);
+    style = null;
+    _html = null;
     constructor(nodeType, nodeName, container) {
         super(nodeType, nodeName, container);
-        this.attributes = Object.create(null);
-        this.style = null;
-        this._html = null;
         // this.style = proxyStyle(new UniCSSStyleDeclaration())
     }
     get className() {
@@ -682,6 +687,7 @@ class UniCommentNode extends UniNode {
 }
 
 class UniElement extends UniBaseNode {
+    tagName;
     constructor(nodeName, container) {
         super(NODE_TYPE_ELEMENT, nodeName.toUpperCase(), container);
         this.tagName = this.nodeName;

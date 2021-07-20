@@ -162,6 +162,10 @@ const PAGE_HOOKS = [
     ON_REACH_BOTTOM,
     ON_PULL_DOWN_REFRESH,
     ON_ADD_TO_FAVORITES,
+    // 'onReady', // lifetimes.ready
+    // 'onPageScroll', // 影响性能，开发者手动注册
+    // 'onShareTimeline', // 右上角菜单，开发者手动注册
+    // 'onShareAppMessage' // 右上角菜单，开发者手动注册
 ];
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {

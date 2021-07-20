@@ -735,11 +735,14 @@ var serviceContext = (function (vue) {
       return `on${capitalize(camelize(type))}`;
   }
   class UniEvent {
+      type;
+      bubbles;
+      cancelable;
+      defaultPrevented = false;
+      timeStamp = Date.now();
+      _stop = false;
+      _end = false;
       constructor(type, opts) {
-          this.defaultPrevented = false;
-          this.timeStamp = Date.now();
-          this._stop = false;
-          this._end = false;
           this.type = type;
           this.bubbles = !!opts.bubbles;
           this.cancelable = !!opts.cancelable;
@@ -767,9 +770,7 @@ var serviceContext = (function (vue) {
       return uniEvent;
   }
   class UniEventTarget {
-      constructor() {
-          this.listeners = Object.create(null);
-      }
+      listeners = Object.create(null);
       dispatchEvent(evt) {
           const listeners = this.listeners[evt.type];
           if (!listeners) {
@@ -842,11 +843,15 @@ var serviceContext = (function (vue) {
   }
   // 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
   class UniNode extends UniEventTarget {
+      nodeId;
+      nodeType;
+      nodeName;
+      childNodes;
+      pageNode = null;
+      parentNode = null;
+      _text = null;
       constructor(nodeType, nodeName, container) {
           super();
-          this.pageNode = null;
-          this.parentNode = null;
-          this._text = null;
           if (container) {
               const { pageNode } = container;
               if (pageNode) {
@@ -1034,6 +1039,7 @@ var serviceContext = (function (vue) {
 
   const isObject = (val) => val !== null && typeof val === 'object';
   class BaseFormatter {
+      _caches;
       constructor() {
           this._caches = Object.create(null);
       }
@@ -1171,12 +1177,13 @@ var serviceContext = (function (vue) {
       }
   }
   class I18n {
+      locale = LOCALE_EN;
+      fallbackLocale = LOCALE_EN;
+      message = {};
+      messages = {};
+      watchers = [];
+      formater;
       constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-          this.locale = LOCALE_EN;
-          this.fallbackLocale = LOCALE_EN;
-          this.message = {};
-          this.messages = {};
-          this.watchers = [];
           if (fallbackLocale) {
               this.fallbackLocale = fallbackLocale;
           }
@@ -2093,12 +2100,15 @@ var serviceContext = (function (vue) {
           if (!isPromise(res)) {
               return res;
           }
-          return res
-              .then((res) => {
-              return res[1];
-          })
-              .catch((res) => {
-              return res[0];
+          return new Promise((resolve, reject) => {
+              res.then((res) => {
+                  if (res[0]) {
+                      reject(res[0]);
+                  }
+                  else {
+                      resolve(res[1]);
+                  }
+              });
           });
       },
   };
@@ -2188,6 +2198,8 @@ var serviceContext = (function (vue) {
   const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
 
   class VideoContext {
+      id;
+      pageId;
       constructor(id, pageId) {
           this.id = id;
           this.pageId = pageId;
@@ -2231,6 +2243,8 @@ var serviceContext = (function (vue) {
   });
 
   class MapContext {
+      id;
+      pageId;
       constructor(id, pageId) {
           this.id = id;
           this.pageId = pageId;
@@ -2631,6 +2645,9 @@ var serviceContext = (function (vue) {
   //#endregion
   //#region Class
   class CanvasGradient {
+      type;
+      data;
+      colorStop;
       constructor(type, data) {
           this.type = type;
           this.data = data;
@@ -2641,17 +2658,27 @@ var serviceContext = (function (vue) {
       }
   }
   class Pattern {
+      image;
+      repetition;
       constructor(image, repetition) {
           this.image = image;
           this.repetition = repetition;
       }
   }
   class TextMetrics {
+      width;
       constructor(width) {
           this.width = width;
       }
   }
   class CanvasContext {
+      id;
+      pageId;
+      actions;
+      path;
+      subpath;
+      state;
+      drawingState;
       constructor(id, pageId) {
           this.id = id;
           this.pageId = pageId;
@@ -2981,6 +3008,31 @@ var serviceContext = (function (vue) {
               data: [type],
           });
       }
+      'setFillStyle';
+      'setStrokeStyle';
+      'setGlobalAlpha';
+      'setShadow';
+      'addColorStop';
+      'setLineWidth';
+      'setLineCap';
+      'setLineJoin';
+      'setLineDash';
+      'setMiterLimit';
+      'fillRect';
+      'strokeRect';
+      'clearRect';
+      'fill';
+      'stroke';
+      'scale';
+      'rotate';
+      'translate';
+      'setFontSize';
+      'fillText';
+      'setTextAlign';
+      'setTextBaseline';
+      'drawImage';
+      'strokeText';
+      'setTransform';
   }
   const initCanvasContextProperty = /*#__PURE__*/ once(() => {
       [...methods1, ...methods2].forEach(function (method) {
@@ -3314,6 +3366,10 @@ var serviceContext = (function (vue) {
       return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(' ');
   }
   class ServiceIntersectionObserver {
+      _reqId;
+      _pageId;
+      _component;
+      _options;
       constructor(component, options) {
           this._pageId = getPageIdByVm(component);
           this._component = component;
@@ -3360,6 +3416,9 @@ var serviceContext = (function (vue) {
 
   let reqComponentObserverId = 1;
   class ServiceMediaQueryObserver {
+      _reqId;
+      _pageId;
+      _component;
       constructor(component) {
           this._pageId = component.$page && component.$page.id;
           this._component = component;
@@ -3420,6 +3479,8 @@ var serviceContext = (function (vue) {
       }, pageId);
   }
   class EditorContext {
+      id;
+      pageId;
       constructor(id, pageId) {
           this.id = id;
           this.pageId = pageId;
@@ -3486,6 +3547,10 @@ var serviceContext = (function (vue) {
       }
   }
   class NodesRef {
+      _selectorQuery;
+      _component;
+      _selector;
+      _single;
       constructor(selectorQuery, component, selector, single) {
           this._selectorQuery = selectorQuery;
           this._component = component;
@@ -3521,8 +3586,12 @@ var serviceContext = (function (vue) {
       }
   }
   class SelectorQuery {
+      _page;
+      _queue;
+      _component = undefined;
+      _queueCb;
+      _nodesRef;
       constructor(page) {
-          this._component = undefined;
           this._page = page;
           this._queue = [];
           this._queueCb = [];
@@ -3616,6 +3685,10 @@ var serviceContext = (function (vue) {
       transformOrigin: '50% 50% 0',
   };
   class MPAnimation {
+      actions;
+      currentTransform;
+      currentStepAnimates;
+      option;
       constructor(option) {
           this.actions = [];
           this.currentTransform = {};
@@ -3668,6 +3741,34 @@ var serviceContext = (function (vue) {
           this.currentStepAnimates = [];
           return this;
       }
+      'matrix';
+      'matrix3d';
+      'rotate';
+      'rotate3d';
+      'rotateX';
+      'rotateY';
+      'rotateZ';
+      'scale';
+      'scale3d';
+      'scaleX';
+      'scaleY';
+      'scaleZ';
+      'skew';
+      'skewX';
+      'skewY';
+      'translate';
+      'translate3d';
+      'translateX';
+      'translateY';
+      'translateZ';
+      'opacity';
+      'backgroundColor';
+      'width';
+      'height';
+      'right';
+      'top';
+      'bottom';
+      'left';
   }
   const initAnimationProperty = /*#__PURE__*/ once(() => {
       const animateTypes1 = [
@@ -5789,7 +5890,9 @@ var serviceContext = (function (vue) {
       }, res));
   };
   const Recorder = {
-      start({ duration = 60000, sampleRate, numberOfChannels, encodeBitRate, format = 'mp3', frameSize, }) {
+      start({ duration = 60000, sampleRate, numberOfChannels, encodeBitRate, format = 'mp3', frameSize,
+      // audioSource = 'auto',
+       }) {
           if (recording) {
               return publishRecorderStateChange('start');
           }
@@ -6157,8 +6260,9 @@ var serviceContext = (function (vue) {
   });
 
   class DownloadTask {
+      _downloader;
+      _callbacks = [];
       constructor(downloader) {
-          this._callbacks = [];
           this._downloader = downloader;
           downloader.addEventListener('statechanged', (download, status) => {
               if (download.downloadedSize && download.totalSize) {
@@ -6277,6 +6381,7 @@ var serviceContext = (function (vue) {
    * 请求任务类
    */
   class RequestTask {
+      _requestTask;
       constructor(requestTask) {
           this._requestTask = requestTask;
       }
@@ -6451,6 +6556,14 @@ var serviceContext = (function (vue) {
       });
   }
   class SocketTask {
+      _callbacks;
+      _socket;
+      id;
+      CLOSED;
+      CLOSING;
+      CONNECTING;
+      OPEN;
+      readyState;
       constructor(socket, socketId) {
           this.id = socketId;
           this._socket = socket;
@@ -6606,8 +6719,9 @@ var serviceContext = (function (vue) {
   const onSocketClose = /*#__PURE__*/ on('close');
 
   class UploadTask {
+      _uploader;
+      _callbacks = [];
       constructor(uploader) {
-          this._callbacks = [];
           this._uploader = uploader;
           uploader.addEventListener('statechanged', (upload, status) => {
               if (upload.uploadedSize && upload.totalSize) {
@@ -6861,6 +6975,61 @@ var serviceContext = (function (vue) {
       },
   ];
   class InnerAudioContext {
+      /**
+       * 当前音频的长度（单位：s），只有在当前有合法的 src 时返回
+       */
+      'duration';
+      /**
+       * 音频开始播放的位置（单位：s）
+       */
+      'startTime';
+      /**
+       * 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回
+       */
+      'currentTime';
+      /**
+       * 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放
+       */
+      'paused';
+      /**
+       * 音频的数据链接，用于直接播放。
+       */
+      'src';
+      /**
+       * 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲
+       */
+      'buffered';
+      /**
+       * 是否自动开始播放，默认 false
+       */
+      'autoplay';
+      /**
+       * 是否循环播放，默认 false
+       */
+      'loop';
+      /**
+       * 是否遵循系统静音开关，当此参数为 false 时，即使用户打开了静音开关，也能继续发出声音，默认值 true
+       */
+      'obeyMuteSwitch';
+      /**
+       * 音量。范围 0~1。
+       */
+      'volume';
+      /**
+       * 事件监听
+       */
+      _callbacks;
+      /**
+       *
+       * @param id 当前Audio示例id
+       */
+      id;
+      /**
+       *
+       * @param __timing 当前Audio所使用的timer
+       */
+      __timing;
+      _options;
       constructor(id) {
           this.id = id;
           this._callbacks = {};
@@ -6923,6 +7092,26 @@ var serviceContext = (function (vue) {
               operationType: type,
           }));
       }
+      'onCanplay';
+      'onPlay';
+      'onPause';
+      'onStop';
+      'onEnded';
+      'onTimeUpdate';
+      'onError';
+      'onWaiting';
+      'onSeeking';
+      'onSeeked';
+      'offCanplay';
+      'offPlay';
+      'offPause';
+      'offStop';
+      'offEnded';
+      'offTimeUpdate';
+      'offError';
+      'offWaiting';
+      'offSeeking';
+      'offSeeked';
   }
   const initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
       // 批量设置音频上下文事件监听方法
@@ -7230,6 +7419,19 @@ var serviceContext = (function (vue) {
       },
   ];
   class BackgroundAudioManager {
+      'duration';
+      'startTime';
+      'currentTime';
+      'paused';
+      'src';
+      'buffered';
+      'title';
+      'epname';
+      'singer';
+      'coverImgUrl';
+      'webUrl';
+      'protocol';
+      _options;
       constructor() {
           this._options = {};
           props.forEach((item) => {
@@ -7268,6 +7470,16 @@ var serviceContext = (function (vue) {
               operationType: type,
           }));
       }
+      'onCanplay';
+      'onPlay';
+      'onPause';
+      'onStop';
+      'onEnded';
+      'onTimeUpdate';
+      'onWaiting';
+      'onPrev';
+      'onNext';
+      'onError';
   }
   let backgroundAudioManager;
   const getBackgroundAudioManager = defineSyncApi(API_GET_BACKGROUND_AUDIO_MANAGER, () => backgroundAudioManager ||
@@ -7446,6 +7658,7 @@ var serviceContext = (function (vue) {
       callbacks[pageId] = callback;
   }
   class Page {
+      webview;
       constructor(webview) {
           this.webview = webview;
       }
@@ -7671,7 +7884,7 @@ var serviceContext = (function (vue) {
               modal: mask,
               back: 'transmit',
               padding: '10px',
-              size: '16px',
+              size: '16px', // 固定字体大小
           };
           if (!image && (!icon || icon === 'none')) {
               // 无图
@@ -8904,6 +9117,7 @@ var serviceContext = (function (vue) {
       adClicked: 'adClicked',
   };
   class AdEventHandler {
+      _callbacks;
       constructor() {
           this._callbacks = {};
       }
@@ -8945,15 +9159,16 @@ var serviceContext = (function (vue) {
       }
   }
   class AdBase extends AdEventHandler {
+      _isLoaded = false;
+      _isLoading = false;
+      _preload = true;
+      _loadPromiseResolve = null;
+      _loadPromiseReject = null;
+      _showPromiseResolve = null;
+      _showPromiseReject = null;
+      _adInstance;
       constructor(adInstance, options) {
           super();
-          this._isLoaded = false;
-          this._isLoading = false;
-          this._preload = true;
-          this._loadPromiseResolve = null;
-          this._loadPromiseReject = null;
-          this._showPromiseResolve = null;
-          this._showPromiseReject = null;
           this._preload = options.preload !== undefined ? options.preload : false;
           const ad = (this._adInstance = adInstance);
           ad.onLoad(() => {
@@ -9131,19 +9346,19 @@ var serviceContext = (function (vue) {
       });
   }
   class InteractiveAd extends AdEventHandler {
+      _adpid = '';
+      _provider = '';
+      _userData = null;
+      _isLoaded = false;
+      _isLoading = false;
+      _loadPromiseResolve = null;
+      _loadPromiseReject = null;
+      _showPromiseResolve = null;
+      _showPromiseReject = null;
+      _adInstance = null;
+      _adError = '';
       constructor(options) {
           super();
-          this._adpid = '';
-          this._provider = '';
-          this._userData = null;
-          this._isLoaded = false;
-          this._isLoading = false;
-          this._loadPromiseResolve = null;
-          this._loadPromiseReject = null;
-          this._showPromiseResolve = null;
-          this._showPromiseReject = null;
-          this._adInstance = null;
-          this._adError = '';
           this._adpid = options.adpid;
           this._provider = options.provider;
           this._userData = options.userData;
@@ -9573,13 +9788,19 @@ var serviceContext = (function (vue) {
   }
 
   class UniPageNode extends UniNode {
+      pageId;
+      _id = 1;
+      _created = false;
+      createAction;
+      createdAction;
+      _createActionMap = new Map();
+      updateActions = [];
+      dicts = [];
+      normalizeDict;
+      isUnmounted;
+      _update;
       constructor(pageId, options, setup = false) {
           super(NODE_TYPE_PAGE, '#page', null);
-          this._id = 1;
-          this._created = false;
-          this._createActionMap = new Map();
-          this.updateActions = [];
-          this.dicts = [];
           this.nodeId = 0;
           this.pageId = pageId;
           this.pageNode = this;
@@ -9822,22 +10043,33 @@ var serviceContext = (function (vue) {
       return vm;
   }
 
+  function isVuePageAsyncComponent(component) {
+      return isFunction(component);
+  }
   const pagesMap = new Map();
-  function definePage(pagePath, component) {
-      pagesMap.set(pagePath, once(createFactory(component)));
+  function definePage(pagePath, asyncComponent) {
+      pagesMap.set(pagePath, once(createFactory(asyncComponent)));
   }
   function createPage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
       const pageNode = createPageNode(__pageId, pageOptions, true);
       const app = getVueApp();
-      return app.mountPage(pagesMap.get(__pagePath)(), {
+      const component = pagesMap.get(__pagePath)();
+      const mountPage = (component) => app.mountPage(component, {
           __pageId,
           __pagePath,
           __pageQuery,
           __pageInstance,
       }, pageNode);
+      if (isPromise(component)) {
+          return component.then((component) => mountPage(component));
+      }
+      return mountPage(component);
   }
   function createFactory(component) {
       return () => {
+          if (isVuePageAsyncComponent(component)) {
+              return component().then((component) => setupPage(component));
+          }
           return setupPage(component);
       };
   }

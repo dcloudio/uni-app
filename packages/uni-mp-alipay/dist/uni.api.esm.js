@@ -897,6 +897,7 @@ const uploadFile = {
     args: {
         name: 'fileName',
     },
+    // 从测试结果看，是有返回对象的，文档上没有说明。
 };
 const downloadFile = {
     returnValue: {
@@ -936,6 +937,7 @@ const connectSocket = {
         method: false,
         protocols: false,
     },
+    // TODO 有没有返回值还需要测试下
 };
 const chooseImage = {
     returnValue: {

@@ -8,9 +8,16 @@ export function definePageCode(pagesJson: Record<string, any>) {
     const pageIdentifier = normalizeIdentifier(pagePath)
     const pagePathWithExtname = normalizePagePath(pagePath, 'app')
     if (pagePathWithExtname) {
-      importPagesCode.push(
-        `import ${pageIdentifier} from './${pagePathWithExtname}?mpType=page'`
-      )
+      if (process.env.UNI_APP_CODE_SPLITING) {
+        // 拆分页面
+        importPagesCode.push(
+          `const ${pageIdentifier} = ()=>import('./${pagePathWithExtname}?mpType=page')`
+        )
+      } else {
+        importPagesCode.push(
+          `import ${pageIdentifier} from './${pagePathWithExtname}?mpType=page'`
+        )
+      }
       definePagesCode.push(`__definePage('${pagePath}',${pageIdentifier})`)
     }
   })

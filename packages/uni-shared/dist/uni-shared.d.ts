@@ -28,10 +28,10 @@ export declare const ACTION_TYPE_SET_TEXT = 10;
  * flag
  */
 export declare type AddEventAction = [
-    typeof ACTION_TYPE_ADD_EVENT,
-    number,
-    string | number,
-    number
+typeof ACTION_TYPE_ADD_EVENT,
+number,
+string | number,
+number
 ];
 
 export declare function addFont(family: string, source: string, desc?: FontFaceDescriptors): Promise<void>;
@@ -68,11 +68,11 @@ export declare const COMPONENT_SELECTOR_PREFIX = "uni-";
  * nodeJson
  */
 export declare type CreateAction = [
-    typeof ACTION_TYPE_CREATE,
-    number,
-    string | number,
-    number,
-    Partial<UniNodeJSON | UniNodeJSONMinify>?
+typeof ACTION_TYPE_CREATE,
+number,
+string | number,
+number,
+Partial<UniNodeJSON | UniNodeJSONMinify>?
 ];
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
@@ -313,9 +313,9 @@ export declare type RemoveAction = [typeof ACTION_TYPE_REMOVE, number];
  * name
  */
 export declare type RemoveAttributeAction = [
-    typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
-    number,
-    string | number
+typeof ACTION_TYPE_REMOVE_ATTRIBUTE,
+number,
+string | number
 ];
 
 /**
@@ -323,9 +323,9 @@ export declare type RemoveAttributeAction = [
  * event
  */
 export declare type RemoveEventAction = [
-    typeof ACTION_TYPE_REMOVE_EVENT,
-    number,
-    string | number
+typeof ACTION_TYPE_REMOVE_EVENT,
+number,
+string | number
 ];
 
 export declare function removeLeadingSlash(str: string): string;
@@ -349,10 +349,10 @@ export declare const SELECTED_COLOR = "#0062cc";
  * value
  */
 export declare type SetAttributeAction = [
-    typeof ACTION_TYPE_SET_ATTRIBUTE,
-    number,
-    string | number,
-    unknown | number
+typeof ACTION_TYPE_SET_ATTRIBUTE,
+number,
+string | number,
+unknown | number
 ];
 
 /**
@@ -360,9 +360,9 @@ export declare type SetAttributeAction = [
  * text
  */
 export declare type SetTextAction = [
-    typeof ACTION_TYPE_SET_TEXT,
-    number,
-    string | number
+typeof ACTION_TYPE_SET_TEXT,
+number,
+string | number
 ];
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
