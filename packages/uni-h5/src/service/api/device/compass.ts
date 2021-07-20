@@ -9,6 +9,7 @@ import {
   API_STOP_COMPASS,
   API_TYPE_STOP_COMPASS,
   defineOnApi,
+  defineOffApi,
 } from '@dcloudio/uni-api'
 
 let listener: ((event: DeviceOrientationEvent) => void) | null = null
@@ -20,7 +21,7 @@ export const onCompassChange = <API_TYPE_ON_COMPASS_CHANGE>(
 )
 
 export const offCompassChange = <API_TYPE_OFF_COMPASS_CHANGE>(
-  defineOnApi(API_OFF_COMPASS, () => {
+  defineOffApi(API_OFF_COMPASS, () => {
     stopCompass()
   })
 )

@@ -15574,7 +15574,7 @@ let listener = null;
 const onCompassChange = /* @__PURE__ */ defineOnApi(API_ON_COMPASS, () => {
   startCompass();
 });
-const offCompassChange = /* @__PURE__ */ defineOnApi(API_OFF_COMPASS, () => {
+const offCompassChange = /* @__PURE__ */ defineOffApi(API_OFF_COMPASS, () => {
   stopCompass();
 });
 const startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
