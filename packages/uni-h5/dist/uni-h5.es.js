@@ -2072,24 +2072,38 @@ function findElm(component, pageVm) {
   }
   return component.$el;
 }
+function matches(element, selectors) {
+  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
+    const matches3 = this.parentElement.querySelectorAll(selectors2);
+    let i = matches3.length;
+    while (--i >= 0 && matches3.item(i) !== this) {
+    }
+    return i > -1;
+  };
+  return matches2.call(element, selectors);
+}
 function getNodesInfo(pageVm, component, selector, single, fields2) {
-  const parentElement = findElm(component, pageVm).parentElement;
+  const selfElement = findElm(component, pageVm);
+  const parentElement = selfElement.parentElement;
   if (!parentElement) {
     return single ? null : [];
   }
   if (single) {
-    const node = parentElement.querySelector(selector);
+    const node = selfElement.nodeType === 3 ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
     if (node) {
       return getNodeInfo(node, fields2);
     }
     return null;
   } else {
     let infos = [];
-    const nodeList = parentElement.querySelectorAll(selector);
+    const nodeList = (selfElement.nodeType === 3 ? parentElement : selfElement).querySelectorAll(selector);
     if (nodeList && nodeList.length) {
       [].forEach.call(nodeList, (node) => {
         infos.push(getNodeInfo(node, fields2));
       });
+    }
+    if (selfElement.nodeType !== 3 && matches(selfElement, selector)) {
+      infos.unshift(getNodeInfo(selfElement, fields2));
     }
     return infos;
   }
@@ -18547,10 +18561,10 @@ function useState() {
       const minWidth = matchMedia.minWidth;
       topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
     }
-    const matches = initMediaQuery(topWindowMinWidth, (ev) => {
+    const matches2 = initMediaQuery(topWindowMinWidth, (ev) => {
       layoutState[`${prop}MediaQuery`] = ev.matches;
     });
-    layoutState[`${prop}MediaQuery`] = matches;
+    layoutState[`${prop}MediaQuery`] = matches2;
   });
   watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
     "--top-window-height": value + "px"

@@ -110,6 +110,34 @@ export function findElm(
   return component.$el
 }
 
+function matches(element: HTMLElement, selectors: string) {
+  type Matches = typeof element.matches
+  interface HTMLElementExt extends HTMLElement {
+    matchesSelector?: Matches
+    mozMatchesSelector?: Matches
+    msMatchesSelector?: Matches
+    oMatchesSelector?: Matches
+  }
+
+  const matches =
+    element.matches ||
+    (element as HTMLElementExt).matchesSelector ||
+    (element as HTMLElementExt).mozMatchesSelector ||
+    (element as HTMLElementExt).msMatchesSelector ||
+    (element as HTMLElementExt).oMatchesSelector ||
+    element.webkitMatchesSelector ||
+    function (this: HTMLElement, selectors: string) {
+      const matches = (this.parentElement as HTMLElement).querySelectorAll(
+        selectors
+      )
+      let i = matches.length
+      while (--i >= 0 && matches.item(i) !== this) {}
+      return i > -1
+    }
+
+  return matches.call(element, selectors)
+}
+
 function getNodesInfo(
   pageVm: ComponentPublicInstance,
   component: ComponentPublicInstance | undefined | null,
@@ -117,23 +145,35 @@ function getNodesInfo(
   single: boolean,
   fields: NodeField
 ): SelectorQueryNodeInfo | SelectorQueryNodeInfo[] | null {
-  const parentElement = findElm(component, pageVm).parentElement
+  const selfElement = findElm(component, pageVm)
+  const parentElement = selfElement.parentElement
   if (!parentElement) {
     return single ? null : []
   }
+  // 使用片段时从父元素查找，会超出当前组件范围
   if (single) {
-    const node = parentElement.querySelector(selector) as HTMLElement
+    const node =
+      selfElement.nodeType === 3
+        ? (parentElement.querySelector(selector) as HTMLElement)
+        : matches(selfElement, selector)
+        ? selfElement
+        : (selfElement.querySelector(selector) as HTMLElement)
     if (node) {
       return getNodeInfo(node, fields)
     }
     return null
   } else {
     let infos: SelectorQueryNodeInfo[] = []
-    const nodeList = parentElement.querySelectorAll(selector)
+    const nodeList = (
+      selfElement.nodeType === 3 ? parentElement : selfElement
+    ).querySelectorAll(selector)
     if (nodeList && nodeList.length) {
       ;[].forEach.call(nodeList, (node) => {
         infos.push(getNodeInfo(node, fields))
       })
+    }
+    if (selfElement.nodeType !== 3 && matches(selfElement, selector)) {
+      infos.unshift(getNodeInfo(selfElement, fields))
     }
     return infos
   }
