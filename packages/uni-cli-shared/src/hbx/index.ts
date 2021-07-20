@@ -4,7 +4,7 @@ import { once } from '@dcloudio/uni-shared'
 
 process.env.UNI_HBUILDERX_PLUGINS =
   process.env.UNI_HBUILDERX_PLUGINS ||
-  path.resolve(__dirname, '../../../../../')
+  path.resolve(__dirname, '../../../../../../')
 
 export const isInHBuilderX = once(() => {
   const { UNI_HBUILDERX_PLUGINS } = process.env
