@@ -2093,12 +2093,15 @@ var serviceContext = (function (vue) {
           if (!isPromise(res)) {
               return res;
           }
-          return res
-              .then((res) => {
-              return res[1];
-          })
-              .catch((res) => {
-              return res[0];
+          return new Promise((resolve, reject) => {
+              res.then((res) => {
+                  if (res[0]) {
+                      reject(res[0]);
+                  }
+                  else {
+                      resolve(res[1]);
+                  }
+              });
           });
       },
   };
