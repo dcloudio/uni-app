@@ -111,6 +111,7 @@ function _switchTab({
       if (callOnShow && !(webview as any).__preload__) {
         invokeHook(tabBarPage, ON_SHOW)
       }
+      setStatusBarStyle()
       resolve(undefined)
     } else {
       showWebview(
@@ -129,6 +130,5 @@ function _switchTab({
         70
       )
     }
-    setStatusBarStyle()
   })
 }

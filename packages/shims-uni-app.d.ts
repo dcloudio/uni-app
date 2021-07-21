@@ -8,7 +8,7 @@ declare namespace Page {
       options: Record<string, any>
       meta: UniApp.PageRouteMeta
       openType: UniApp.OpenType
-      statusBarStyle?: string
+      statusBarStyle?: 'dark' | 'light'
     }
   }
 }

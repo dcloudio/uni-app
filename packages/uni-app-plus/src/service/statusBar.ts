@@ -1,3 +1,4 @@
+import { getCurrentPage } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 
 type SetStatusBarStyle = typeof plus.navigator.setStatusBarStyle
@@ -22,12 +23,11 @@ plus.navigator.setStatusBarStyle = newSetStatusBarStyle
 
 export function setStatusBarStyle(statusBarStyle?: StatusBarStyle) {
   if (!statusBarStyle) {
-    const pages = getCurrentPages()
-    if (!pages.length) {
+    const page = getCurrentPage()
+    if (!page) {
       return
     }
-    statusBarStyle = pages[pages.length - 1].$page
-      .statusBarStyle as StatusBarStyle
+    statusBarStyle = page.$page.statusBarStyle as StatusBarStyle
     if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
       return
     }

@@ -116,5 +116,7 @@ export function initPageInternalInstance(
     options: pageQuery,
     meta,
     openType,
+    statusBarStyle:
+      meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
   }
 }

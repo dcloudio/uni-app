@@ -1704,6 +1704,7 @@ var serviceContext = (function (vue) {
           options: pageQuery,
           meta,
           openType,
+          statusBarStyle: meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
       };
   }
 
@@ -9014,12 +9015,11 @@ var serviceContext = (function (vue) {
   plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
   function setStatusBarStyle(statusBarStyle) {
       if (!statusBarStyle) {
-          const pages = getCurrentPages();
-          if (!pages.length) {
+          const page = getCurrentPage();
+          if (!page) {
               return;
           }
-          statusBarStyle = pages[pages.length - 1].$page
-              .statusBarStyle;
+          statusBarStyle = page.$page.statusBarStyle;
           if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
               return;
           }
@@ -10519,6 +10519,7 @@ var serviceContext = (function (vue) {
               if (callOnShow && !webview.__preload__) {
                   invokeHook(tabBarPage, ON_SHOW);
               }
+              setStatusBarStyle();
               resolve(undefined);
           }
           else {
@@ -10532,7 +10533,6 @@ var serviceContext = (function (vue) {
                   resolve(undefined);
               }, 70);
           }
-          setStatusBarStyle();
       });
   }
 

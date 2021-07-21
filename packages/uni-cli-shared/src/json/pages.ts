@@ -99,9 +99,13 @@ function normalizePageStyle(
 ) {
   if (pageStyle) {
     if (platform === 'h5') {
-      extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'] || {})
+      extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
     }
-    extend(pageStyle, pageStyle[platform] || {})
+    if (platform === 'app') {
+      extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
+    } else {
+      extend(pageStyle, pageStyle[platform])
+    }
     if (['h5', 'app'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
       if (isEnablePullDownRefresh(pageStyle)) {

@@ -10,7 +10,7 @@ exports.UniAppPlugin = {
     uni: uni_1.uniOptions,
     config() {
         return {
-            build: build_1.buildOptions,
+            build: build_1.buildOptions(),
         };
     },
     configResolved: configResolved_1.configResolved,
