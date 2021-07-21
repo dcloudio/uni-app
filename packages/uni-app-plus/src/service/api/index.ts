@@ -41,6 +41,8 @@ export * from './location/openLocation'
 export * from './ui/popup/showModal'
 export * from './ui/popup/showActionSheet'
 export * from './ui/popup/showToast'
+export * from './ui/startPullDownRefresh'
+export * from './ui/stopPullDownRefresh'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'

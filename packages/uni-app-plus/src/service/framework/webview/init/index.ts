@@ -1,3 +1,4 @@
+import { initWebviewEvent } from './event'
 import { initWebviewStyle } from './style'
 import { initSubNVues } from './subNVues'
 
@@ -12,4 +13,5 @@ export function initWebview(
     initWebviewStyle(webview, path, query, routeMeta)
   }
   initSubNVues(webview, path, routeMeta)
+  initWebviewEvent(webview)
 }

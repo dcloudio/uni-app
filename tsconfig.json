@@ -41,6 +41,7 @@
     "packages/*/__tests__",
     "test-dts",
     "packages/uni-h5/types",
+    "packages/uni-app-vite/types",
     "node_modules/mini-types/types/api/index.d.ts",
     "node_modules/mini-types/types/page.d.ts",
     "node_modules/mini-types/types/component.d.ts",

@@ -1007,6 +1007,19 @@ var serviceContext = (function (vue) {
       }
   }
 
+  function debounce(fn, delay) {
+      let timeout;
+      const newFn = function () {
+          clearTimeout(timeout);
+          const timerFn = () => fn.apply(this, arguments);
+          timeout = setTimeout(timerFn, delay);
+      };
+      newFn.cancel = function () {
+          clearTimeout(timeout);
+      };
+      return newFn;
+  }
+
   const NAVBAR_HEIGHT = 44;
   const TABBAR_HEIGHT = 50;
   const ON_REACH_BOTTOM_DISTANCE = 50;
@@ -1031,8 +1044,13 @@ var serviceContext = (function (vue) {
   const ON_PAGE_SCROLL = 'onPageScroll';
   const ON_TAB_ITEM_TAP = 'onTabItemTap';
   const ON_REACH_BOTTOM = 'onReachBottom';
+  const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
   // navigationBar
   const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+  const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
   // framework
   const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
   const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
@@ -4803,6 +4821,10 @@ var serviceContext = (function (vue) {
       },
   };
 
+  const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
+
+  const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
+
   const API_GET_PROVIDER = 'getProvider';
   const GetProviderProtocol = {
       service: {
@@ -7952,6 +7974,45 @@ var serviceContext = (function (vue) {
       return callbacks && callbacks.resolve();
   }
 
+  function getCurrentWebview() {
+      const page = getCurrentPage();
+      if (page) {
+          return page.$getAppWebview();
+      }
+      return null;
+  }
+  let pullDownRefreshWebview = null;
+  function getPullDownRefreshWebview() {
+      return pullDownRefreshWebview;
+  }
+  function setPullDownRefreshWebview(webview) {
+      pullDownRefreshWebview = webview;
+  }
+
+  const startPullDownRefresh = defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve, reject }) => {
+      let webview = getPullDownRefreshWebview();
+      if (webview) {
+          webview.endPullToRefresh();
+      }
+      webview = getCurrentWebview();
+      if (!webview) {
+          return reject();
+      }
+      webview.beginPullToRefresh();
+      setPullDownRefreshWebview(webview);
+      resolve();
+  });
+
+  const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, { resolve, reject }) => {
+      const webview = getPullDownRefreshWebview() || getCurrentWebview();
+      if (!webview) {
+          return reject();
+      }
+      webview.endPullToRefresh();
+      setPullDownRefreshWebview(null);
+      resolve();
+  });
+
   const providers = {
       oauth(callback) {
           plus.oauth.getServices((services) => {
@@ -8929,6 +8990,160 @@ var serviceContext = (function (vue) {
       return preloadWebview;
   }
 
+  function onWebviewClose(webview) {
+      const { popupSubNVueWebviews } = webview;
+      if (!popupSubNVueWebviews) {
+          return;
+      }
+      webview.addEventListener('close', () => {
+          Object.keys(popupSubNVueWebviews).forEach((id) => {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('onWebviewClose', webview.id, 'popupSubNVueWebview', id, 'close'));
+              }
+              popupSubNVueWebviews[id].close('none');
+          });
+      });
+  }
+
+  let lastStatusBarStyle;
+  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function newSetStatusBarStyle(style) {
+      lastStatusBarStyle = style;
+      oldSetStatusBarStyle(style);
+  }
+  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+  function setStatusBarStyle(statusBarStyle) {
+      if (!statusBarStyle) {
+          const pages = getCurrentPages();
+          if (!pages.length) {
+              return;
+          }
+          statusBarStyle = pages[pages.length - 1].$page
+              .statusBarStyle;
+          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+              return;
+          }
+      }
+      if (statusBarStyle === lastStatusBarStyle) {
+          return;
+      }
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('setStatusBarStyle', statusBarStyle));
+      }
+      lastStatusBarStyle = statusBarStyle;
+      plus.navigator.setStatusBarStyle(statusBarStyle);
+  }
+
+  const pages = [];
+  function addCurrentPage(page) {
+      pages.push(page);
+  }
+  function getAllPages() {
+      return pages;
+  }
+  function getCurrentPages$1() {
+      const curPages = [];
+      pages.forEach((page) => {
+          if (page.__isTabBar) {
+              if (page.$.__isActive) {
+                  curPages.push(page);
+              }
+          }
+          else {
+              curPages.push(page);
+          }
+      });
+      return curPages;
+  }
+  function removeCurrentPage() {
+      const page = getCurrentPage();
+      if (!page) {
+          return;
+      }
+      removePage(page);
+  }
+  function removePage(curPage) {
+      const index = pages.findIndex((page) => page === curPage);
+      if (index === -1) {
+          return;
+      }
+      if (!curPage.$page.meta.isNVue) {
+          getVueApp().unmountPage(curPage);
+      }
+      pages.splice(index, 1);
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log(formatLog('removePage', curPage.$page));
+      }
+  }
+
+  function onWebviewPopGesture(webview) {
+      let popStartStatusBarStyle;
+      webview.addEventListener('popGesture', (e) => {
+          if (e.type === 'start') {
+              // 设置下一个页面的 statusBarStyle
+              const pages = getCurrentPages();
+              const page = pages[pages.length - 2];
+              popStartStatusBarStyle = lastStatusBarStyle;
+              const statusBarStyle = page && page.$page.statusBarStyle;
+              statusBarStyle && setStatusBarStyle(statusBarStyle);
+          }
+          else if (e.type === 'end' && !e.result) {
+              // 拖拽未完成,设置为当前状态栏前景色
+              setStatusBarStyle(popStartStatusBarStyle);
+          }
+          else if (e.type === 'end' && e.result) {
+              removeCurrentPage();
+              setStatusBarStyle();
+              // 触发前一个页面 onShow
+              invokeHook(ON_SHOW);
+          }
+      });
+  }
+
+  function onWebviewResize(webview) {
+      const { emit } = UniServiceJSBridge;
+      const onResize = function ({ width, height, }) {
+          const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+          const res = {
+              deviceOrientation: landscape ? 'landscape' : 'portrait',
+              size: {
+                  windowWidth: Math.ceil(width),
+                  windowHeight: Math.ceil(height),
+              },
+          };
+          emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
+      };
+      webview.addEventListener('resize', debounce(onResize, 50));
+  }
+
+  const WEBVIEW_LISTENERS = {
+      pullToRefresh: ON_PULL_DOWN_REFRESH,
+      titleNViewSearchInputChanged: ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+      titleNViewSearchInputConfirmed: ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+      titleNViewSearchInputClicked: ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+      titleNViewSearchInputFocusChanged: ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+  };
+  function initWebviewEvent(webview) {
+      const id = parseInt(webview.id);
+      Object.keys(WEBVIEW_LISTENERS).forEach((name) => {
+          const hook = WEBVIEW_LISTENERS[name];
+          webview.addEventListener(name, (e) => {
+              if (hook === ON_PULL_DOWN_REFRESH) {
+                  // 设置当前正在下拉刷新的webview
+                  setPullDownRefreshWebview(webview);
+              }
+              invokeHook(id, hook, e);
+          });
+      });
+      onWebviewClose(webview);
+      onWebviewResize(webview);
+      // TODO
+      if (plus.os.name === 'iOS') {
+          // !(webview as any).nvue && onWebviewRecovery(webview, routeOptions)
+          onWebviewPopGesture(webview);
+      }
+  }
+
   function initWebviewStyle(webview, path, query, routeMeta) {
       const webviewStyle = parseWebviewStyle(path, routeMeta);
       webviewStyle.uniPageUrl = initUniPageUrl(path, query);
@@ -8951,6 +9166,7 @@ var serviceContext = (function (vue) {
       if (webview.id === '1' || !routeMeta.isNVue) {
           initWebviewStyle(webview, path, query, routeMeta);
       }
+      initWebviewEvent(webview);
   }
 
   function createWebview(options) {
@@ -9500,70 +9716,6 @@ var serviceContext = (function (vue) {
   const createInteractiveAd = (defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
       return new InteractiveAd(options);
   }, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
-
-  const pages = [];
-  function addCurrentPage(page) {
-      pages.push(page);
-  }
-  function getAllPages() {
-      return pages;
-  }
-  function getCurrentPages$1() {
-      const curPages = [];
-      pages.forEach((page) => {
-          if (page.__isTabBar) {
-              if (page.$.__isActive) {
-                  curPages.push(page);
-              }
-          }
-          else {
-              curPages.push(page);
-          }
-      });
-      return curPages;
-  }
-  function removePage(curPage) {
-      const index = pages.findIndex((page) => page === curPage);
-      if (index === -1) {
-          return;
-      }
-      if (!curPage.$page.meta.isNVue) {
-          getVueApp().unmountPage(curPage);
-      }
-      pages.splice(index, 1);
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('removePage', curPage.$page));
-      }
-  }
-
-  let lastStatusBarStyle;
-  let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-  function newSetStatusBarStyle(style) {
-      lastStatusBarStyle = style;
-      oldSetStatusBarStyle(style);
-  }
-  plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-  function setStatusBarStyle(statusBarStyle) {
-      if (!statusBarStyle) {
-          const pages = getCurrentPages();
-          if (!pages.length) {
-              return;
-          }
-          statusBarStyle = pages[pages.length - 1].$page
-              .statusBarStyle;
-          if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-              return;
-          }
-      }
-      if (statusBarStyle === lastStatusBarStyle) {
-          return;
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log(formatLog('setStatusBarStyle', statusBarStyle));
-      }
-      lastStatusBarStyle = statusBarStyle;
-      plus.navigator.setStatusBarStyle(statusBarStyle);
-  }
 
   let pendingNavigator = false;
   function setPendingNavigator(path, callback, msg) {
@@ -10498,6 +10650,8 @@ var serviceContext = (function (vue) {
     showToast: showToast,
     hideToast: hideToast,
     hideLoading: hideLoading,
+    startPullDownRefresh: startPullDownRefresh,
+    stopPullDownRefresh: stopPullDownRefresh,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,

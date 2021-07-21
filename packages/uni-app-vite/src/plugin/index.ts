@@ -9,7 +9,7 @@ export const UniAppPlugin: UniVitePlugin = {
   uni: uniOptions,
   config() {
     return {
-      build: buildOptions,
+      build: buildOptions(),
     }
   },
   configResolved,

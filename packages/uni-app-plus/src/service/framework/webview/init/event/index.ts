@@ -1,3 +1,4 @@
+import { invokeHook } from '@dcloudio/uni-core'
 import {
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -5,6 +6,7 @@ import {
   ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
   ON_PULL_DOWN_REFRESH,
 } from '@dcloudio/uni-shared'
+import { setPullDownRefreshWebview } from 'packages/uni-app-plus/src/service/utils'
 import { onWebviewClose } from './close'
 import { onWebviewPopGesture } from './popGesture'
 import { onWebviewResize } from './resize'
@@ -19,11 +21,15 @@ const WEBVIEW_LISTENERS = {
 } as const
 
 export function initWebviewEvent(webview: PlusWebviewWebviewObject) {
-  const { emit } = UniServiceJSBridge
   const id = parseInt(webview.id!)
   Object.keys(WEBVIEW_LISTENERS).forEach((name) => {
+    const hook = WEBVIEW_LISTENERS[name as keyof typeof WEBVIEW_LISTENERS]
     webview.addEventListener(name as any, (e) => {
-      emit(WEBVIEW_LISTENERS[name as keyof typeof WEBVIEW_LISTENERS], e, id)
+      if (hook === ON_PULL_DOWN_REFRESH) {
+        // 设置当前正在下拉刷新的webview
+        setPullDownRefreshWebview(webview)
+      }
+      invokeHook(id, hook, e)
     })
   })
   onWebviewClose(webview)
