@@ -15,7 +15,7 @@ interface Recorder {
 
 let recorder: PlusAudioAudioRecorder
 let recording: boolean = false
-let recordTimeout: number
+let recordTimeout: ReturnType<typeof setTimeout>
 
 const publishRecorderStateChange = (state: string, res = {}) => {
   onRecorderStateChange(

@@ -5,12 +5,12 @@ const LONGPRESS_THRESHOLD = 10
 
 const passiveOptions = passive(true)
 
-let longPressTimer = 0
+let longPressTimer: ReturnType<typeof setTimeout> | null
 
 function clearLongPressTimer() {
   if (longPressTimer) {
     clearTimeout(longPressTimer)
-    longPressTimer = 0
+    longPressTimer = null
   }
 }
 

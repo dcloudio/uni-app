@@ -6,8 +6,8 @@ export interface CreateScrollListenerOptions {
 export function disableScrollListener(evt: Event) {
   evt.preventDefault()
 }
-
-let testReachBottomTimer: number
+// 不直接声明为 number，可能跟 node.setTimeout 有冲突
+let testReachBottomTimer: ReturnType<typeof setTimeout>
 let lastScrollHeight = 0
 export function createScrollListener({
   onPageScroll,

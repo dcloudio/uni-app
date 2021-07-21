@@ -136,7 +136,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
 
     const stream = requireNativePlugin('stream')
     const headers: Headers = {}
-    let abortTimeout: number
+    let abortTimeout: ReturnType<typeof setTimeout>
     let aborted: boolean
     let hasContentType = false
 

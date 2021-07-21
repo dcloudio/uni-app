@@ -198,7 +198,7 @@ const onAudioStateChange = ({
         }
       }, 200)
     } else if (state === 'pause' || state === 'stop' || state === 'error') {
-      clearInterval(audio.__timing)
+      clearInterval(audio.__timing!)
     }
   }
 }
@@ -306,7 +306,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
    *
    * @param __timing 当前Audio所使用的timer
    */
-  __timing?: number
+  __timing?: ReturnType<typeof setInterval>
   _options: Data
   constructor(id: string) {
     this.id = id
@@ -366,7 +366,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
   }
 
   destroy() {
-    clearInterval(this.__timing)
+    clearInterval(this.__timing!)
     if (audios[this.id]) {
       audios[this.id].close()
       delete audios[this.id]

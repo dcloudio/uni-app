@@ -23,7 +23,7 @@ type ToastType = 'loading' | 'toast' | ''
 let toast: PlusNativeUIWaitingObj | null
 let isShowToast: boolean = false
 let toastType: ToastType = ''
-let timeout: number | null
+let timeout: ReturnType<typeof setTimeout> | null
 
 export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   API_SHOW_LOADING,

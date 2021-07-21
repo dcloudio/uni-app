@@ -78,7 +78,7 @@ const callbacks: Record<eventNames, Function[]> = {
 }
 
 let audio: Audio
-let timeUpdateTimer: number | null = null
+let timeUpdateTimer: ReturnType<typeof setInterval> | null = null
 const TIME_UPDATE = 250
 const events: Events[] = ['play', 'pause', 'ended', 'stop', 'canplay']
 
