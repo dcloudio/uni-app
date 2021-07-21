@@ -16,6 +16,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { flatVNode } from '../../helpers/flatVNode'
+import { useRebuild } from '../../helpers/useRebuild'
 import { rpx2px } from '@dcloudio/uni-core'
 
 const props = {
@@ -643,21 +644,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         height: !props.vertical ? '100%' : value,
       }
     })
-    let swiperItems: VNode[] = []
+    let swiperItems: VNode[] | HTMLCollection = []
     const originSwiperContexts: SwiperContext[] = []
     const swiperContexts: Ref<SwiperContext[]> = ref([])
     function updateSwiperContexts() {
       const contexts: SwiperContext[] = []
       for (let index = 0; index < swiperItems.length; index++) {
-        const swiperItem = swiperItems[index]
+        let swiperItem: VNode | Element = swiperItems[index]
+        if (!(swiperItem instanceof Element)) {
+          swiperItem = swiperItem.el as HTMLElement
+        }
         const swiperContext = originSwiperContexts.find(
-          (context) => swiperItem.el === context.rootRef.value
+          (context) => swiperItem === context.rootRef.value
         )
         if (swiperContext) {
           contexts.push(markRaw(swiperContext))
         }
       }
       swiperContexts.value = contexts
+    }
+    if (__PLATFORM__ === 'app') {
+      useRebuild(() => {
+        swiperItems = (slideFrameRef.value as HTMLElement).children
+        updateSwiperContexts()
+      })
     }
     const addSwiperContext: AddSwiperContext = function (swiperContext) {
       originSwiperContexts.push(swiperContext)

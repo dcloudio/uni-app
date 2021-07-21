@@ -12544,8 +12544,11 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     function updateSwiperContexts() {
       const contexts = [];
       for (let index2 = 0; index2 < swiperItems.length; index2++) {
-        const swiperItem = swiperItems[index2];
-        const swiperContext = originSwiperContexts.find((context) => swiperItem.el === context.rootRef.value);
+        let swiperItem = swiperItems[index2];
+        if (!(swiperItem instanceof Element)) {
+          swiperItem = swiperItem.el;
+        }
+        const swiperContext = originSwiperContexts.find((context) => swiperItem === context.rootRef.value);
         if (swiperContext) {
           contexts.push(markRaw(swiperContext));
         }

@@ -13170,6 +13170,10 @@ var __publicField = (obj, key, value) => {
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
+  function useRebuild(callback) {
+    const instance = getCurrentInstance();
+    instance.rebuild = callback;
+  }
   const props$5 = {
     indicatorDots: {
       type: [Boolean, String],
@@ -13692,13 +13696,22 @@ var __publicField = (obj, key, value) => {
       function updateSwiperContexts() {
         const contexts = [];
         for (let index2 = 0; index2 < swiperItems.length; index2++) {
-          const swiperItem2 = swiperItems[index2];
-          const swiperContext = originSwiperContexts.find((context) => swiperItem2.el === context.rootRef.value);
+          let swiperItem2 = swiperItems[index2];
+          if (!(swiperItem2 instanceof Element)) {
+            swiperItem2 = swiperItem2.el;
+          }
+          const swiperContext = originSwiperContexts.find((context) => swiperItem2 === context.rootRef.value);
           if (swiperContext) {
             contexts.push(markRaw(swiperContext));
           }
         }
         swiperContexts.value = contexts;
+      }
+      {
+        useRebuild(() => {
+          swiperItems = slideFrameRef.value.children;
+          updateSwiperContexts();
+        });
       }
       const addSwiperContext = function(swiperContext) {
         originSwiperContexts.push(swiperContext);
@@ -14390,6 +14403,10 @@ var __publicField = (obj, key, value) => {
       const observer = new MutationObserver((mutations) => {
         {
           console.log(formatLog("Observer", mutations));
+        }
+        const vm = this.$.__vueParentComponent;
+        if (vm.rebuild) {
+          vm.rebuild();
         }
       });
       observer.observe(elem, {
