@@ -97,7 +97,10 @@ export class UniContainerComponent extends UniComponent {
         console.log(formatLog('Observer', mutations))
       }
       // TODO 刷新容器组件状态
-      // (this.$.__vueParentComponent as any).refresh()
+      const vm = this.$.__vueParentComponent
+      if ((vm as any).rebuild) {
+        ;(vm as any).rebuild()
+      }
     })
     observer.observe(elem, {
       childList: true,
