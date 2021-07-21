@@ -9034,6 +9034,33 @@ var serviceContext = (function (vue) {
       plus.navigator.setStatusBarStyle(statusBarStyle);
   }
 
+  let vueApp;
+  function getVueApp() {
+      return vueApp;
+  }
+  function initVueApp(appVm) {
+      const appContext = appVm.$.appContext;
+      vueApp = extend(appContext.app, {
+          mountPage(pageComponent, pageProps, pageContainer) {
+              const vnode = vue.createVNode(pageComponent, pageProps);
+              // store app context on the root VNode.
+              // this will be set on the root instance on initial mount.
+              vnode.appContext = appContext;
+              vue.render(vnode, pageContainer);
+              const publicThis = vnode.component.proxy;
+              publicThis.__page_container__ = pageContainer;
+              return publicThis;
+          },
+          unmountPage: (pageInstance) => {
+              const { __page_container__ } = pageInstance;
+              if (__page_container__) {
+                  __page_container__.isUnmounted = true;
+                  vue.render(null, __page_container__);
+              }
+          },
+      });
+  }
+
   const pages = [];
   function addCurrentPage(page) {
       pages.push(page);
@@ -9259,37 +9286,11 @@ var serviceContext = (function (vue) {
       }
       console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
   }
-  let vueApp;
-  function getVueApp() {
-      return vueApp;
-  }
-  function initVueApp(appVm) {
-      const appContext = appVm.$.appContext;
-      return extend(appContext.app, {
-          mountPage(pageComponent, pageProps, pageContainer) {
-              const vnode = vue.createVNode(pageComponent, pageProps);
-              // store app context on the root VNode.
-              // this will be set on the root instance on initial mount.
-              vnode.appContext = appContext;
-              vue.render(vnode, pageContainer);
-              const publicThis = vnode.component.proxy;
-              publicThis.__page_container__ = pageContainer;
-              return publicThis;
-          },
-          unmountPage: (pageInstance) => {
-              const { __page_container__ } = pageInstance;
-              if (__page_container__) {
-                  __page_container__.isUnmounted = true;
-                  vue.render(null, __page_container__);
-              }
-          },
-      });
-  }
   function registerApp(appVm) {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log(formatLog('registerApp'));
       }
-      vueApp = initVueApp(appVm);
+      initVueApp(appVm);
       appCtx = appVm;
       initAppVm(appCtx);
       extend(appCtx, defaultApp); // 拷贝默认实现

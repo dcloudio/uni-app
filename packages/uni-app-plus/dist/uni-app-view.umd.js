@@ -15538,21 +15538,23 @@ var __publicField = (obj, key, value) => {
     if (!parentElement) {
       return single ? null : [];
     }
+    const { nodeType } = selfElement;
+    const maybeFragment = nodeType === 3 || nodeType === 8;
     if (single) {
-      const node = selfElement.nodeType === 3 ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
+      const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
       if (node) {
         return getNodeInfo(node, fields);
       }
       return null;
     } else {
       let infos = [];
-      const nodeList = (selfElement.nodeType === 3 ? parentElement : selfElement).querySelectorAll(selector);
+      const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
       if (nodeList && nodeList.length) {
         [].forEach.call(nodeList, (node) => {
           infos.push(getNodeInfo(node, fields));
         });
       }
-      if (selfElement.nodeType !== 3 && matches(selfElement, selector)) {
+      if (!maybeFragment && matches(selfElement, selector)) {
         infos.unshift(getNodeInfo(selfElement, fields));
       }
       return infos;

@@ -496,7 +496,8 @@ function initPageInternalInstance(openType, url, pageQuery, meta) {
     fullPath: url,
     options: pageQuery,
     meta,
-    openType
+    openType,
+    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
   };
 }
 function invokeHook(vm, name, args) {

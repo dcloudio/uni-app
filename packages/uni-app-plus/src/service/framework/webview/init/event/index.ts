@@ -6,7 +6,7 @@ import {
   ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
   ON_PULL_DOWN_REFRESH,
 } from '@dcloudio/uni-shared'
-import { setPullDownRefreshWebview } from 'packages/uni-app-plus/src/service/utils'
+import { setPullDownRefreshWebview } from '../../../../utils'
 import { onWebviewClose } from './close'
 import { onWebviewPopGesture } from './popGesture'
 import { onWebviewResize } from './resize'

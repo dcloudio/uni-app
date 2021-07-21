@@ -151,13 +151,15 @@ function getNodesInfo(
     return single ? null : []
   }
   // 使用片段时从父元素查找，会超出当前组件范围
+  const { nodeType } = selfElement
+  // ssr 时，可能为8
+  const maybeFragment = nodeType === 3 || nodeType === 8
   if (single) {
-    const node =
-      selfElement.nodeType === 3
-        ? (parentElement.querySelector(selector) as HTMLElement)
-        : matches(selfElement, selector)
-        ? selfElement
-        : (selfElement.querySelector(selector) as HTMLElement)
+    const node = maybeFragment
+      ? (parentElement.querySelector(selector) as HTMLElement)
+      : matches(selfElement, selector)
+      ? selfElement
+      : (selfElement.querySelector(selector) as HTMLElement)
     if (node) {
       return getNodeInfo(node, fields)
     }
@@ -165,14 +167,14 @@ function getNodesInfo(
   } else {
     let infos: SelectorQueryNodeInfo[] = []
     const nodeList = (
-      selfElement.nodeType === 3 ? parentElement : selfElement
+      maybeFragment ? parentElement : selfElement
     ).querySelectorAll(selector)
     if (nodeList && nodeList.length) {
       ;[].forEach.call(nodeList, (node) => {
         infos.push(getNodeInfo(node, fields))
       })
     }
-    if (selfElement.nodeType !== 3 && matches(selfElement, selector)) {
+    if (!maybeFragment && matches(selfElement, selector)) {
       infos.unshift(getNodeInfo(selfElement, fields))
     }
     return infos

@@ -33,7 +33,8 @@ function assertKey(key?: string, shallow = false) {
 
 const ssrClientRef: SSRRef = (value, key, shallow = false) => {
   const valRef = shallow ? shallowRef(value) : ref(value)
-  if (__PLATFORM__ !== 'h5') {
+  // 非 h5 平台
+  if (typeof window === 'undefined') {
     return valRef
   }
   const __uniSSR = (window as any)[UNI_SSR]

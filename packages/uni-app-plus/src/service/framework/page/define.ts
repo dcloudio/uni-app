@@ -4,7 +4,7 @@ import { DefineComponent } from 'vue'
 import { createPageNode } from '../dom/Page'
 import { setupPage } from './setup'
 import __vuePlugin from '../plugin'
-import { getVueApp } from '../app'
+import { getVueApp } from '../app/vueApp'
 
 export type VuePageComponent = DefineComponent<PageProps>
 

@@ -925,7 +925,8 @@ function initPageInternalInstance(openType, url, pageQuery, meta) {
     fullPath: url,
     options: pageQuery,
     meta,
-    openType
+    openType,
+    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
   };
 }
 function invokeHook(vm, name, args) {
@@ -2088,21 +2089,23 @@ function getNodesInfo(pageVm, component, selector, single, fields2) {
   if (!parentElement) {
     return single ? null : [];
   }
+  const { nodeType } = selfElement;
+  const maybeFragment = nodeType === 3 || nodeType === 8;
   if (single) {
-    const node = selfElement.nodeType === 3 ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
+    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
     if (node) {
       return getNodeInfo(node, fields2);
     }
     return null;
   } else {
     let infos = [];
-    const nodeList = (selfElement.nodeType === 3 ? parentElement : selfElement).querySelectorAll(selector);
+    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
     if (nodeList && nodeList.length) {
       [].forEach.call(nodeList, (node) => {
         infos.push(getNodeInfo(node, fields2));
       });
     }
-    if (selfElement.nodeType !== 3 && matches(selfElement, selector)) {
+    if (!maybeFragment && matches(selfElement, selector)) {
       infos.unshift(getNodeInfo(selfElement, fields2));
     }
     return infos;

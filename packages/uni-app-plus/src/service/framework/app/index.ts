@@ -1,12 +1,6 @@
-import {
-  App,
-  ComponentPublicInstance,
-  ConcreteComponent,
-  createVNode,
-  render,
-} from 'vue'
+import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
-import { formatLog, UniNode } from '@dcloudio/uni-shared'
+import { formatLog } from '@dcloudio/uni-shared'
 import { initAppVm, initService } from '@dcloudio/uni-core'
 
 import { initEntry } from './initEntry'
@@ -15,6 +9,7 @@ import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
 import { clearTempFile } from './clearTempFile'
 import { initSubscribeHandlers } from './subscriber'
+import { initVueApp } from './vueApp'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
@@ -35,54 +30,12 @@ export function getApp({ allowDefault = false } = {}) {
   )
 }
 
-interface VueApp extends App {
-  mountPage: (
-    pageComponent: ConcreteComponent,
-    pageProps: Record<string, any>,
-    pageContainer: UniNode
-  ) => ComponentPublicInstance
-  unmountPage: (pageInstance: ComponentPublicInstance) => void
-}
-
-let vueApp: VueApp
-
-export function getVueApp() {
-  return vueApp
-}
-
-function initVueApp(appVm: ComponentPublicInstance) {
-  const appContext = appVm.$.appContext
-  return extend(appContext.app, {
-    mountPage(
-      pageComponent: ConcreteComponent,
-      pageProps: Record<string, any>,
-      pageContainer: UniNode
-    ) {
-      const vnode = createVNode(pageComponent, pageProps)
-      // store app context on the root VNode.
-      // this will be set on the root instance on initial mount.
-      vnode.appContext = appContext
-      render(vnode, pageContainer as unknown as Element)
-      const publicThis = vnode.component!.proxy!
-      ;(publicThis as any).__page_container__ = pageContainer
-      return publicThis
-    },
-    unmountPage: (pageInstance: ComponentPublicInstance) => {
-      const { __page_container__ } = pageInstance as any
-      if (__page_container__) {
-        __page_container__.isUnmounted = true
-        render(null, __page_container__)
-      }
-    },
-  })
-}
-
 export function registerApp(appVm: ComponentPublicInstance) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
 
-  vueApp = initVueApp(appVm)
+  initVueApp(appVm)
 
   appCtx = appVm
   initAppVm(appCtx)

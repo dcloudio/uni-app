@@ -1,7 +1,7 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 import { ComponentPublicInstance } from 'vue'
-import { getVueApp } from '../app'
+import { getVueApp } from '../app/vueApp'
 
 const pages: ComponentPublicInstance[] = []
 
