@@ -50,6 +50,11 @@ export function registerViewMethod<Args = any, Res = any>(
   }
 }
 
+export function unregisterViewMethod(pageId: number, name: string) {
+  name = normalizeViewMethodName(pageId, name)
+  delete viewMethods[name]
+}
+
 function onInvokeViewMethod(
   {
     id,

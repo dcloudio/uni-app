@@ -8,7 +8,7 @@ import {
   withWebEvent,
   defineBuiltInComponent,
 } from '@dcloudio/uni-components'
-import { getCurrentPageId, onEventPrevent } from '@dcloudio/uni-core'
+import { onEventPrevent } from '@dcloudio/uni-core'
 import {
   saveImage,
   getSameOriginUrl,
@@ -67,6 +67,11 @@ const props = {
 }
 
 type Props = ExtractPropTypes<typeof props>
+type triggerMethodsName =
+  | 'actionsChanged'
+  | 'getImageData'
+  | 'putImageData'
+  | 'toTempFilePath'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
@@ -94,10 +99,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const { _handleSubscribe, _resize } = useMethods(canvas, actionsWaiting)
 
     useSubscribe(
-      _handleSubscribe as (type: string, data: unknown) => void,
+      _handleSubscribe as (
+        type: string,
+        data: unknown,
+        resolve: (res: any) => void
+      ) => void,
       useContextInfo(props.canvasId),
       true
     )
+
+    /* registerViewMethod<
+      { type: triggerMethodsName; data: any },
+      { callbackId: number; data: any }
+    >(getCurrentPageId(), `canvas.${props.canvasId}`, _handleSubscribe) */
 
     onMounted(() => {
       _resize()
@@ -214,15 +228,18 @@ function useMethods(
       wrapper(canvas)
     }
   }
-  function actionsChanged({
-    actions,
-    reserve,
-    callbackId,
-  }: {
-    actions: Actions
-    reserve: boolean
-    callbackId: number
-  }) {
+  function actionsChanged(
+    {
+      actions,
+      reserve,
+      callbackId,
+    }: {
+      actions: Actions
+      reserve: boolean
+      callbackId: number
+    },
+    resolve: (res: { callbackId: number; data: any }) => void
+  ) {
     if (!actions) {
       return
     }
@@ -284,6 +301,7 @@ function useMethods(
               data[1] as string,
               actions.slice(index + 1),
               callbackId,
+              resolve,
               function (image) {
                 if (image) {
                   c2d[method1] = c2d.createPattern(image, data[2] as string)!
@@ -357,6 +375,7 @@ function useMethods(
               url,
               actions.slice(index + 1),
               callbackId,
+              resolve,
               function (image) {
                 if (image) {
                   c2d.drawImage.apply(
@@ -391,16 +410,12 @@ function useMethods(
       }
     }
     if (!actionsWaiting.value && callbackId) {
-      UniViewJSBridge.publishHandler(
-        'onCanvasMethodCallback',
-        {
-          callbackId,
-          data: {
-            errMsg: 'drawCanvas:ok',
-          },
+      resolve({
+        callbackId,
+        data: {
+          errMsg: 'drawCanvas:ok',
         },
-        getCurrentPageId()
-      )
+      })
     }
   }
   function preloadImage(actions: Actions) {
@@ -453,6 +468,7 @@ function useMethods(
     src: string,
     actions: Actions,
     callbackId: number,
+    resolve: (res: { callbackId: number; data: any }) => void,
     fn: (a: CanvasImageSource) => void
   ) {
     var image = _images[src]
@@ -469,42 +485,48 @@ function useMethods(
         var actions = _actionsDefer.slice(0)
         _actionsDefer = []
         for (var action = actions.shift(); action; ) {
-          actionsChanged({
-            actions: action[0],
-            reserve: action[1],
-            callbackId,
-          })
+          actionsChanged(
+            {
+              callbackId,
+              actions: action[0],
+              reserve: action[1],
+            },
+            resolve
+          )
           action = actions.shift()
         }
       }
       return false
     }
   }
-  function getImageData({
-    x = 0,
-    y = 0,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    hidpi = true,
-    dataType,
-    quality = 1,
-    type = 'png',
-    callbackId,
-  }: {
-    x: number
-    y: number
-    width: number
-    height: number
-    destWidth: number
-    destHeight: number
-    hidpi: boolean
-    dataType: string
-    quality: number
-    type: string
-    callbackId?: number
-  }) {
+  function getImageData(
+    {
+      x = 0,
+      y = 0,
+      width,
+      height,
+      destWidth,
+      destHeight,
+      hidpi = true,
+      dataType,
+      quality = 1,
+      type = 'png',
+      callbackId,
+    }: {
+      x: number
+      y: number
+      width: number
+      height: number
+      destWidth: number
+      destHeight: number
+      hidpi: boolean
+      dataType: string
+      quality: number
+      type: string
+      callbackId?: number
+    },
+    resolve?: (res: { callbackId: number; data: any }) => void
+  ) {
     const canvas = canvasRef.value!
     let data: string | number[]
     const maxWidth = canvas.offsetWidth - x
@@ -580,33 +602,33 @@ function useMethods(
     if (!callbackId) {
       return result
     } else {
-      UniViewJSBridge.publishHandler(
-        'onCanvasMethodCallback',
-        {
+      resolve &&
+        resolve({
           callbackId,
           data: result,
-        },
-        getCurrentPageId()
-      )
+        })
     }
   }
-  function putImageData({
-    data,
-    x,
-    y,
-    width,
-    height,
-    compressed,
-    callbackId,
-  }: {
-    data: Array<number>
-    x: number
-    y: number
-    width: number
-    height: number
-    compressed: boolean
-    callbackId: number
-  }) {
+  function putImageData(
+    {
+      data,
+      x,
+      y,
+      width,
+      height,
+      compressed,
+      callbackId,
+    }: {
+      data: Array<number>
+      x: number
+      y: number
+      width: number
+      height: number
+      compressed: boolean
+      callbackId: number
+    },
+    resolve: (res: { callbackId: number; data: any }) => void
+  ) {
     try {
       if (!height) {
         height = Math.round(data.length / 4 / width)
@@ -625,52 +647,47 @@ function useMethods(
       canvasRef.value!.getContext('2d')!.drawImage(canvas, x, y, width, height)
       canvas.height = canvas.width = 0
     } catch (error) {
-      UniViewJSBridge.publishHandler(
-        'onCanvasMethodCallback',
-        {
-          callbackId,
-          data: {
-            errMsg: 'canvasPutImageData:fail',
-          },
-        },
-        getCurrentPageId()
-      )
-      return
-    }
-    UniViewJSBridge.publishHandler(
-      'onCanvasMethodCallback',
-      {
+      resolve({
         callbackId,
         data: {
-          errMsg: 'canvasPutImageData:ok',
+          errMsg: 'canvasPutImageData:fail',
         },
+      })
+      return
+    }
+    resolve({
+      callbackId,
+      data: {
+        errMsg: 'canvasPutImageData:ok',
       },
-      getCurrentPageId()
-    )
+    })
   }
-  function toTempFilePath({
-    x = 0,
-    y = 0,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    fileType,
-    quality,
-    dirname,
-    callbackId,
-  }: {
-    x: number
-    y: number
-    width: number
-    height: number
-    destWidth: number
-    destHeight: number
-    fileType: string
-    quality: number
-    dirname: string
-    callbackId: number
-  }) {
+  function toTempFilePath(
+    {
+      x = 0,
+      y = 0,
+      width,
+      height,
+      destWidth,
+      destHeight,
+      fileType,
+      quality,
+      dirname,
+      callbackId,
+    }: {
+      x: number
+      y: number
+      width: number
+      height: number
+      destWidth: number
+      destHeight: number
+      fileType: string
+      quality: number
+      dirname: string
+      callbackId: number
+    },
+    resolve: (res: { callbackId: number; data: any }) => void
+  ) {
     const res = getImageData({
       x,
       y,
@@ -684,16 +701,12 @@ function useMethods(
       quality,
     })!
     if (!res.data || !res.data.length) {
-      UniViewJSBridge.publishHandler(
-        'onCanvasMethodCallback',
-        {
-          callbackId,
-          data: {
-            errMsg: res!.errMsg.replace('canvasPutImageData', 'toTempFilePath'),
-          },
+      resolve({
+        callbackId,
+        data: {
+          errMsg: res!.errMsg.replace('canvasPutImageData', 'toTempFilePath'),
         },
-        getCurrentPageId()
-      )
+      })
       return
     }
     saveImage(res.data as string, dirname, (error, tempFilePath) => {
@@ -701,17 +714,13 @@ function useMethods(
       if (error) {
         errMsg += ` ${error.message}`
       }
-      UniViewJSBridge.publishHandler(
-        'onCanvasMethodCallback',
-        {
-          callbackId,
-          data: {
-            errMsg,
-            tempFilePath: tempFilePath,
-          },
+      resolve({
+        callbackId,
+        data: {
+          errMsg,
+          tempFilePath: tempFilePath,
         },
-        getCurrentPageId()
-      )
+      })
     })
   }
 
@@ -722,10 +731,14 @@ function useMethods(
     toTempFilePath,
   }
 
-  function _handleSubscribe(type: keyof typeof methods, data = {}) {
+  function _handleSubscribe(
+    type: triggerMethodsName,
+    data: any,
+    resolve: (res: { callbackId: number; data: any }) => void
+  ) {
     let method = methods[type]
     if (type.indexOf('_') !== 0 && typeof method === 'function') {
-      method(data as any)
+      method(data as any, resolve)
     }
   }
 

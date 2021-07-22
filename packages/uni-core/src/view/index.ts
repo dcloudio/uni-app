@@ -3,6 +3,7 @@ export {
   subscribeViewMethod,
   unsubscribeViewMethod,
   registerViewMethod,
+  unregisterViewMethod,
 } from './bridge'
 export { initView } from './init'
 export { initViewPlugin } from './plugin'

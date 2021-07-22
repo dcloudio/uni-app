@@ -43,30 +43,26 @@ import { TEMP_PATH } from '@dcloudio/uni-platform'
 //#region UniServiceJSBridge
 const canvasEventCallbacks = createCallbacks('canvasEvent')
 
-const onCanvasMethodCallback = /*#__PURE__*/ once(() => {
-  UniServiceJSBridge.subscribe(
-    'onCanvasMethodCallback',
-    ({ callbackId, data }: { callbackId: number | string; data: any }) => {
-      const callback = canvasEventCallbacks.pop(callbackId)
-      if (callback) {
-        callback(data)
-      }
-    }
-  )
-})
-
 function operateCanvas(
   canvasId: string,
   pageId: number,
   type: unknown,
   data: any
 ) {
-  UniServiceJSBridge.publishHandler(
-    'canvas.' + canvasId,
+  UniServiceJSBridge.invokeViewMethod<
+    {},
+    { callbackId: number | string; data: any }
+  >(
+    `canvas.${canvasId}`,
     {
-      canvasId,
       type,
       data,
+    },
+    ({ callbackId, data }) => {
+      const callback = canvasEventCallbacks.pop(callbackId)
+      if (callback) {
+        callback(data)
+      }
     },
     pageId
   )
@@ -1046,7 +1042,7 @@ export const canvasGetImageData =
   defineAsyncApi<API_TYPE_CANVAS_GET_IMAGE_DATA>(
     API_CANVAS_GET_IMAGE_DATA,
     ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-      onCanvasMethodCallback()
+      // onCanvasMethodCallback()
       const pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
@@ -1085,7 +1081,7 @@ export const canvasPutImageData =
   defineAsyncApi<API_TYPE_CANVAS_PUT_IMAGE_DATA>(
     API_CANVAS_PUT_IMAGE_DATA,
     ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-      onCanvasMethodCallback()
+      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()
@@ -1144,7 +1140,7 @@ export const canvasToTempFilePath =
       },
       { resolve, reject }
     ) => {
-      onCanvasMethodCallback()
+      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm()!)!
       if (!pageId) {
         reject()

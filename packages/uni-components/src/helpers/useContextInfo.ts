@@ -27,7 +27,7 @@ export function useContextInfo(_id?: string) {
       page,
     }
   })
-  return `${page}.${type}.${id}`
+  return `${type}.${id}`
 }
 export function getContextInfo(el: HTMLElement | HTMLElementWithContextInfo) {
   return (el as HTMLElementWithContextInfo).__uniContextInfo
