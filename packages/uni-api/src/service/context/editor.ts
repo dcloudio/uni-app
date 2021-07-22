@@ -1,6 +1,6 @@
 import { callOptions } from '@dcloudio/uni-shared'
 
-let eventReady = false
+// let eventReady = false
 let index = 0
 let optionsCache: Record<string, any> = {}
 function operateEditor(
@@ -9,32 +9,29 @@ function operateEditor(
   type: string,
   options: any
 ) {
-  const data: { callbackId?: string; options?: any } = {}
-  if (
+  const data: { callbackId?: string; options?: any } = { options }
+
+  const needCallOptions =
     options &&
     ('success' in options || 'fail' in options || 'complete' in options)
-  ) {
+
+  if (needCallOptions) {
     const callbackId = String(index++)
     data.callbackId = callbackId
     optionsCache[callbackId] = options
-    if (!eventReady) {
-      UniServiceJSBridge.subscribe(
-        'onEditorMethodCallback',
-        ({ callbackId, data }: { callbackId: string; data: any }) => {
-          callOptions(optionsCache[callbackId], data)
-          delete optionsCache[callbackId]
-        }
-      )
-      eventReady = true
-    }
   }
-  data.options = options
-  UniServiceJSBridge.publishHandler(
-    'editor.' + componentId,
+
+  UniServiceJSBridge.invokeViewMethod<{}, { callbackId: string; data: any }>(
+    `editor.${componentId}`,
     {
-      componentId,
       type,
       data,
+    },
+    ({ callbackId, data }) => {
+      if (needCallOptions) {
+        callOptions(optionsCache[callbackId], data)
+        delete optionsCache[callbackId]
+      }
     },
     pageId
   )
