@@ -307,6 +307,7 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
+const INVOKE_VIEW_API = "invokeViewApi";
 const E = function() {
 };
 E.prototype = {
@@ -381,6 +382,16 @@ function initBridge(subscribeNamespace) {
   };
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+function normalizeViewMethodName(pageId, name) {
+  return pageId + "." + name;
+}
+const viewMethods = Object.create(null);
+function registerViewMethod(pageId, name, fn) {
+  name = normalizeViewMethodName(pageId, name);
+  if (!viewMethods[name]) {
+    viewMethods[name] = fn;
+  }
+}
 uniShared.passive(true);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
@@ -599,10 +610,31 @@ function createNativeEvent(evt) {
   }
   return event;
 }
+let invokeViewMethodId = 0;
+function publishViewMethodName() {
+  return getCurrentPageId() + "." + INVOKE_VIEW_API;
+}
+const invokeViewMethod = (name, args, callback, pageId) => {
+  const { subscribe, publishHandler } = UniServiceJSBridge;
+  const id = invokeViewMethodId++;
+  subscribe(INVOKE_VIEW_API + "." + id, callback, true);
+  publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+};
+const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
+  const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
+  const id = invokeViewMethodId++;
+  const subscribeName = INVOKE_VIEW_API + "." + id;
+  subscribe(subscribeName, callback);
+  publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+  return () => {
+    unsubscribe(subscribeName);
+  };
+};
+const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
-  invokeOnCallback(name, res) {
-    return UniServiceJSBridge.emit("api." + name, res);
-  }
+  invokeOnCallback,
+  invokeViewMethod,
+  invokeViewMethodKeepAlive
 });
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
@@ -1380,7 +1412,6 @@ function defineAsyncApi(name, fn, protocol, options) {
 }
 createCallbacks("canvasEvent");
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-createCallbacks("getSelectedTextRangeEvent");
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -2883,28 +2914,20 @@ function useFormField(nameKey, value) {
   };
   uniForm.addField(ctx);
 }
-const pageIds = [];
+function getSelectedTextRange(_, resolve) {
+  const activeElement = document.activeElement;
+  if (!activeElement) {
+    return resolve({});
+  }
+  const data = {};
+  if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+    data.start = activeElement.selectionStart;
+    data.end = activeElement.selectionEnd;
+  }
+  resolve(data);
+}
 const UniViewJSBridgeSubscribe = function() {
-  const pageId = getCurrentPageId();
-  if (pageIds.includes(pageId))
-    return;
-  pageIds.push(pageId);
-  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({ pageId: pageId2, callbackId }) {
-    const activeElement = document.activeElement;
-    if (!activeElement)
-      return;
-    const tagName = activeElement.tagName.toLowerCase();
-    const tagNames = ["input", "textarea"];
-    const data = {};
-    if (tagNames.includes(tagName)) {
-      data.start = activeElement.selectionStart;
-      data.end = activeElement.selectionEnd;
-    }
-    UniViewJSBridge.publishHandler("onGetSelectedTextRange", {
-      callbackId,
-      data
-    }, pageId2);
-  });
+  registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
 };
 function getValueString(value) {
   return value === null ? "" : String(value);
@@ -9677,7 +9700,7 @@ var api = /* @__PURE__ */ Object.freeze({
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
-    UniViewJSBridge.subscribeHandler(pageId + "." + event, args, pageId);
+    UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
 var TabBar = /* @__PURE__ */ defineSystemComponent({

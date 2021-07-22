@@ -576,6 +576,7 @@ var __publicField = (obj, key, value) => {
       }));
     }
   });
+  const INVOKE_VIEW_API = "invokeViewApi";
   const E = function() {
   };
   E.prototype = {
@@ -641,23 +642,55 @@ var __publicField = (obj, key, value) => {
       unsubscribe(event, callback) {
         emitter.off(`${subscribeNamespace}.${event}`, callback);
       },
-      subscribeHandler(event, args, pageId2) {
+      subscribeHandler(event, args, pageId) {
         {
-          console.log(formatLog(subscribeNamespace, "subscribeHandler", pageId2, event, args));
+          console.log(formatLog(subscribeNamespace, "subscribeHandler", pageId, event, args));
         }
-        emitter.emit(`${subscribeNamespace}.${event}`, args, pageId2);
+        emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
       }
     };
   }
   const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+  function normalizeViewMethodName(pageId, name) {
+    return pageId + "." + name;
+  }
+  function subscribeViewMethod(pageId) {
+    UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), onInvokeViewMethod);
+  }
+  const viewMethods = Object.create(null);
+  function registerViewMethod(pageId, name, fn) {
+    name = normalizeViewMethodName(pageId, name);
+    if (!viewMethods[name]) {
+      viewMethods[name] = fn;
+    }
+  }
+  function onInvokeViewMethod({
+    id: id2,
+    name,
+    args
+  }, pageId) {
+    name = normalizeViewMethodName(pageId, name);
+    const publish = (res) => {
+      UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
+    };
+    const handler = viewMethods[name];
+    if (handler) {
+      handler(args, publish);
+    } else {
+      publish({});
+      {
+        console.error(formatLog("invokeViewMethod", name, "not register"));
+      }
+    }
+  }
   const LONGPRESS_TIMEOUT = 350;
   const LONGPRESS_THRESHOLD = 10;
   const passiveOptions$2 = passive(true);
-  let longPressTimer = 0;
+  let longPressTimer;
   function clearLongPressTimer() {
     if (longPressTimer) {
       clearTimeout(longPressTimer);
-      longPressTimer = 0;
+      longPressTimer = null;
     }
   }
   let startPageX = 0;
@@ -5214,7 +5247,7 @@ var __publicField = (obj, key, value) => {
   }
   function useCurrentPageId() {
     {
-      return parseInt(window.__id__);
+      return getCurrentPageId();
     }
   }
   function getCurrentPage() {
@@ -5224,6 +5257,9 @@ var __publicField = (obj, key, value) => {
   }
   function getCurrentPageId() {
     {
+      if (!window.__id__) {
+        window.__id__ = plus.webview.currentWebview().id;
+      }
       return parseInt(window.__id__);
     }
   }
@@ -5408,18 +5444,14 @@ var __publicField = (obj, key, value) => {
   [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   const VD_SYNC = "vdSync";
   const ON_WEBVIEW_READY = "onWebviewReady";
-  const INVOKE_VIEW_API = "invokeViewApi";
   const INVOKE_SERVICE_API = "invokeServiceApi";
   const ACTION_TYPE_DICT = 0;
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
   });
-  let pageId;
   function publishHandler(event, args = {}) {
-    if (!pageId) {
-      pageId = plus.webview.currentWebview().id;
-    }
+    const pageId = getCurrentPageId() + "";
     {
       console.log(`[${Date.now()}][View]: ` + pageId + " " + event + " " + JSON.stringify(args));
     }
@@ -5707,7 +5739,6 @@ var __publicField = (obj, key, value) => {
     return number < 0 ? -result : result;
   }, Upx2pxProtocol);
   createCallbacks("canvasEvent");
-  createCallbacks("getSelectedTextRangeEvent");
   ({
     beforeInvoke() {
       initI18nShowModalMsgsOnce();
@@ -6571,7 +6602,7 @@ var __publicField = (obj, key, value) => {
     setup(props2, {
       slots
     }) {
-      const pageId2 = useCurrentPageId();
+      const pageId = useCurrentPageId();
       const handlers = useProvideLabel();
       const pointer = computed$1(() => props2.for || slots.default && slots.default.length);
       const _onClick = withWebEvent(($event) => {
@@ -6584,7 +6615,7 @@ var __publicField = (obj, key, value) => {
           return;
         }
         if (props2.for) {
-          UniViewJSBridge.emit("uni-label-click-" + pageId2 + "-" + props2.for, $event, true);
+          UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
         } else {
           handlers.length && handlers[0]($event, true);
         }
@@ -6622,7 +6653,7 @@ var __publicField = (obj, key, value) => {
     });
   }
   function _addListeners(id2, listeners, watch2) {
-    const pageId2 = useCurrentPageId();
+    const pageId = useCurrentPageId();
     if (watch2 && !id2) {
       return;
     }
@@ -6632,19 +6663,19 @@ var __publicField = (obj, key, value) => {
     Object.keys(listeners).forEach((name) => {
       if (watch2) {
         if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-          UniViewJSBridge.on(`uni-${name}-${pageId2}-${id2}`, listeners[name]);
+          UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
         }
       } else {
         if (name.indexOf("uni-") === 0) {
           UniViewJSBridge.on(name, listeners[name]);
         } else if (id2) {
-          UniViewJSBridge.on(`uni-${name}-${pageId2}-${id2}`, listeners[name]);
+          UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners[name]);
         }
       }
     });
   }
   function _removeListeners(id2, listeners, watch2) {
-    const pageId2 = useCurrentPageId();
+    const pageId = useCurrentPageId();
     if (watch2 && !id2) {
       return;
     }
@@ -6654,13 +6685,13 @@ var __publicField = (obj, key, value) => {
     Object.keys(listeners).forEach((name) => {
       if (watch2) {
         if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
-          UniViewJSBridge.off(`uni-${name}-${pageId2}-${id2}`, listeners[name]);
+          UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
         }
       } else {
         if (name.indexOf("uni-") === 0) {
           UniViewJSBridge.off(name, listeners[name]);
         } else if (id2) {
-          UniViewJSBridge.off(`uni-${name}-${pageId2}-${id2}`, listeners[name]);
+          UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners[name]);
         }
       }
     });
@@ -9013,28 +9044,20 @@ var __publicField = (obj, key, value) => {
       uniForm.removeField(ctx);
     });
   }
-  const pageIds = [];
+  function getSelectedTextRange(_, resolve) {
+    const activeElement = document.activeElement;
+    if (!activeElement) {
+      return resolve({});
+    }
+    const data = {};
+    if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+      data.start = activeElement.selectionStart;
+      data.end = activeElement.selectionEnd;
+    }
+    resolve(data);
+  }
   const UniViewJSBridgeSubscribe = function() {
-    const pageId2 = getCurrentPageId();
-    if (pageIds.includes(pageId2))
-      return;
-    pageIds.push(pageId2);
-    UniViewJSBridge.subscribe(pageId2 + ".getSelectedTextRange", function({ pageId: pageId22, callbackId }) {
-      const activeElement = document.activeElement;
-      if (!activeElement)
-        return;
-      const tagName = activeElement.tagName.toLowerCase();
-      const tagNames = ["input", "textarea"];
-      const data = {};
-      if (tagNames.includes(tagName)) {
-        data.start = activeElement.selectionStart;
-        data.end = activeElement.selectionEnd;
-      }
-      UniViewJSBridge.publishHandler("onGetSelectedTextRange", {
-        callbackId,
-        data
-      }, pageId22);
-    });
+    registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
   };
   const FOCUS_DELAY = 200;
   let startTime;
@@ -14119,14 +14142,14 @@ var __publicField = (obj, key, value) => {
       };
     }
   });
-  function normalizeEvent(pageId2, vm, id2) {
+  function normalizeEvent(pageId, vm, id2) {
     if (!id2) {
       id2 = vm.id;
     }
     if (!id2) {
       return;
     }
-    return pageId2 + "." + vm.$options.name.toLowerCase() + "." + id2;
+    return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
   }
   function addSubscribe(name, callback) {
     if (!name) {
@@ -14145,18 +14168,18 @@ var __publicField = (obj, key, value) => {
   function useSubscribe(callback, name, multiple) {
     const instance = getCurrentInstance();
     const vm = instance.proxy;
-    const pageId2 = multiple || !name ? useCurrentPageId() : 0;
+    const pageId = multiple || !name ? useCurrentPageId() : 0;
     onMounted(() => {
-      addSubscribe(name || normalizeEvent(pageId2, vm), callback);
+      addSubscribe(name || normalizeEvent(pageId, vm), callback);
       if (multiple || !name) {
         watch(() => vm.id, (value, oldValue) => {
-          addSubscribe(normalizeEvent(pageId2, vm, value), callback);
-          removeSubscribe(oldValue && normalizeEvent(pageId2, vm, oldValue));
+          addSubscribe(normalizeEvent(pageId, vm, value), callback);
+          removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
         });
       }
     });
     onBeforeUnmount(() => {
-      removeSubscribe(name || normalizeEvent(pageId2, vm));
+      removeSubscribe(name || normalizeEvent(pageId, vm));
     });
   }
   let index = 0;
@@ -15362,9 +15385,9 @@ var __publicField = (obj, key, value) => {
     if (css) {
       initPageCss(route);
     }
-    const pageId2 = plus.webview.currentWebview().id;
-    window.__id__ = pageId2;
-    document.title = `${route}[${pageId2}]`;
+    const pageId = plus.webview.currentWebview().id;
+    window.__id__ = pageId;
+    document.title = `${route}[${pageId}]`;
     initCssVar(statusbarHeight, windowTop, windowBottom);
     if (disableScroll) {
       document.addEventListener("touchmove", disableScrollListener);
@@ -15448,6 +15471,10 @@ var __publicField = (obj, key, value) => {
       }
     });
     flushPostActionJobs();
+  }
+  function initSubscribeHandlers() {
+    const { subscribe } = UniViewJSBridge;
+    subscribe(VD_SYNC, onVdSync);
   }
   function getRootInfo(fields) {
     const info = {};
@@ -15589,23 +15616,12 @@ var __publicField = (obj, key, value) => {
     callback(result);
   }
   const pageVm = { $el: document.body };
-  function onInvokeViewApi({
-    id: id2,
-    name,
-    args
-  }) {
-    const publish = (res) => {
-      UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
-    };
-    switch (name) {
-      case "requestComponentInfo":
-        return requestComponentInfo(pageVm, args.reqs, publish);
-    }
-  }
-  function initSubscribeHandlers() {
-    const { subscribe } = UniViewJSBridge;
-    subscribe(VD_SYNC, onVdSync);
-    subscribe(INVOKE_VIEW_API, onInvokeViewApi);
+  function initViewMethods() {
+    const pageId = getCurrentPageId();
+    subscribeViewMethod(pageId);
+    registerViewMethod(pageId, "requestComponentInfo", (args, publish) => {
+      requestComponentInfo(pageVm, args.reqs, publish);
+    });
   }
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;
@@ -15613,6 +15629,7 @@ var __publicField = (obj, key, value) => {
   window.__$__ = $;
   function onWebviewReady() {
     initView();
+    initViewMethods();
     initSubscribeHandlers();
     preventDoubleTap();
     UniViewJSBridge$1.publishHandler(ON_WEBVIEW_READY);

@@ -244,6 +244,8 @@ declare namespace UniApp {
 
   type TabBarItemOptions = TabBarNormalItemOptions | TabBarMidButtonOptions
 
+  type StopHandle = () => void
+
   interface TabBarOptions {
     position?: 'bottom' | 'top'
     color: string
@@ -337,12 +339,25 @@ declare namespace UniApp {
      * @param pageId
      * @param callback
      */
-    invokeViewMethod<T = any>(
+    invokeViewMethod<Args = any, Res = any>(
       name: string,
-      args: unknown,
-      callback: (res: T) => void,
+      args: Args,
+      callback: (res: Res) => void,
       pageId: number
     ): void
+    /**
+     * 执行 View 层方法，并持久监听返回值
+     * @param name
+     * @param args
+     * @param pageId
+     * @param callback
+     */
+    invokeViewMethodKeepAlive<Args = any, Res = any>(
+      name: string,
+      args: Args,
+      callback: (res: Res) => void,
+      pageId: number
+    ): StopHandle
   }
   interface UniViewJSBridge {
     /**

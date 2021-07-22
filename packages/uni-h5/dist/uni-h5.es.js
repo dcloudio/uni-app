@@ -396,6 +396,7 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
+const INVOKE_VIEW_API = "invokeViewApi";
 const E = function() {
 };
 E.prototype = {
@@ -470,14 +471,60 @@ function initBridge(subscribeNamespace) {
   };
 }
 const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+function normalizeViewMethodName(pageId, name) {
+  return pageId + "." + name;
+}
+function subscribeViewMethod(pageId) {
+  UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), onInvokeViewMethod);
+}
+function unsubscribeViewMethod(pageId) {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(formatLog("unsubscribeViewMethod", pageId, INVOKE_VIEW_API));
+  }
+  UniViewJSBridge.unsubscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API));
+  Object.keys(viewMethods).forEach((name) => {
+    if (name.indexOf(pageId + ".") === 0) {
+      if (process.env.NODE_ENV !== "production") {
+        console.log(formatLog("unsubscribeViewMethod", name));
+      }
+      delete viewMethods[name];
+    }
+  });
+}
+const viewMethods = Object.create(null);
+function registerViewMethod(pageId, name, fn) {
+  name = normalizeViewMethodName(pageId, name);
+  if (!viewMethods[name]) {
+    viewMethods[name] = fn;
+  }
+}
+function onInvokeViewMethod({
+  id: id2,
+  name,
+  args
+}, pageId) {
+  name = normalizeViewMethodName(pageId, name);
+  const publish = (res) => {
+    UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
+  };
+  const handler = viewMethods[name];
+  if (handler) {
+    handler(args, publish);
+  } else {
+    publish({});
+    if (process.env.NODE_ENV !== "production") {
+      console.error(formatLog("invokeViewMethod", name, "not register"));
+    }
+  }
+}
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = passive(true);
-let longPressTimer = 0;
+let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
     clearTimeout(longPressTimer);
-    longPressTimer = 0;
+    longPressTimer = null;
   }
 }
 let startPageX = 0;
@@ -855,15 +902,6 @@ function getPageIdByVm(vm) {
   const rootProxy = vm.$.root.proxy;
   if (rootProxy && rootProxy.$page) {
     return rootProxy.$page.id;
-  }
-}
-function getPageById(id2) {
-  return getCurrentPages().find((page) => page.$page.id === id2);
-}
-function getPageVmById(id2) {
-  const page = getPageById(id2);
-  if (page) {
-    return page.$vm;
   }
 }
 function getCurrentPage() {
@@ -1332,10 +1370,31 @@ function initAppConfig$1(appConfig) {
 function initViewPlugin(app) {
   initAppConfig$1(app._context.config);
 }
+let invokeViewMethodId = 0;
+function publishViewMethodName() {
+  return getCurrentPageId() + "." + INVOKE_VIEW_API;
+}
+const invokeViewMethod = (name, args, callback, pageId) => {
+  const { subscribe, publishHandler } = UniServiceJSBridge;
+  const id2 = invokeViewMethodId++;
+  subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
+  publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
+};
+const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
+  const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
+  const id2 = invokeViewMethodId++;
+  const subscribeName = INVOKE_VIEW_API + "." + id2;
+  subscribe(subscribeName, callback);
+  publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
+  return () => {
+    unsubscribe(subscribeName);
+  };
+};
+const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
-  invokeOnCallback(name, res) {
-    return UniServiceJSBridge.emit("api." + name, res);
-  }
+  invokeOnCallback,
+  invokeViewMethod,
+  invokeViewMethodKeepAlive
 });
 function initOn() {
   const { on: on2 } = UniServiceJSBridge;
@@ -1370,10 +1429,7 @@ function initSubscribe() {
 }
 function createPageEvent(name) {
   return (args, pageId) => {
-    const vm = getPageVmById(pageId);
-    if (vm) {
-      invokeHook(vm, name, args);
-    }
+    invokeHook(pageId, name, args);
   };
 }
 function initService() {
@@ -4247,28 +4303,14 @@ const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
 });
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
-const getSelectedTextRangeEventCallbacks = createCallbacks("getSelectedTextRangeEvent");
-const onGetSelectedTextRange = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.subscribe("onGetSelectedTextRange", ({ callbackId, data }) => {
-    const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-    if (callback) {
-      callback(data);
+const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
+  UniServiceJSBridge.invokeViewMethod("getSelectedTextRange", {}, (res) => {
+    if (typeof res.end === "undefined" && typeof res.start === "undefined") {
+      reject("no focused");
+    } else {
+      resolve(res);
     }
-  });
-});
-const getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-  onGetSelectedTextRange();
-  const pageId = getCurrentPageId();
-  UniServiceJSBridge.publishHandler("getSelectedTextRange", {
-    pageId,
-    callbackId: getSelectedTextRangeEventCallbacks.push(function(res) {
-      if (typeof res.end === "undefined" && typeof res.start === "undefined") {
-        reject("no focused");
-      } else {
-        resolve(res);
-      }
-    })
-  }, pageId);
+  }, getCurrentPageId());
 });
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
@@ -7927,28 +7969,20 @@ function useFormField(nameKey, value) {
     uniForm.removeField(ctx);
   });
 }
-const pageIds = [];
+function getSelectedTextRange(_, resolve) {
+  const activeElement = document.activeElement;
+  if (!activeElement) {
+    return resolve({});
+  }
+  const data = {};
+  if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+    data.start = activeElement.selectionStart;
+    data.end = activeElement.selectionEnd;
+  }
+  resolve(data);
+}
 const UniViewJSBridgeSubscribe = function() {
-  const pageId = getCurrentPageId();
-  if (pageIds.includes(pageId))
-    return;
-  pageIds.push(pageId);
-  UniViewJSBridge.subscribe(pageId + ".getSelectedTextRange", function({ pageId: pageId2, callbackId }) {
-    const activeElement = document.activeElement;
-    if (!activeElement)
-      return;
-    const tagName = activeElement.tagName.toLowerCase();
-    const tagNames = ["input", "textarea"];
-    const data = {};
-    if (tagNames.includes(tagName)) {
-      data.start = activeElement.selectionStart;
-      data.end = activeElement.selectionEnd;
-    }
-    UniViewJSBridge.publishHandler("onGetSelectedTextRange", {
-      callbackId,
-      data
-    }, pageId2);
-  });
+  registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
 };
 function getValueString(value) {
   return value === null ? "" : String(value);
@@ -13562,6 +13596,10 @@ function setupPage(comp) {
           onHide && invokeArrayFns$1(onHide);
         }
       });
+      subscribeViewMethod(pageMeta.id);
+      onBeforeUnmount(() => {
+        unsubscribeViewMethod(pageMeta.id);
+      });
       return route.query;
     }
   });
@@ -18927,7 +18965,7 @@ var api = /* @__PURE__ */ Object.freeze({
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
-  getSelectedTextRange,
+  getSelectedTextRange: getSelectedTextRange$1,
   $on,
   $off,
   $once,
@@ -20314,7 +20352,7 @@ const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
-    UniViewJSBridge.subscribeHandler(pageId + "." + event, args, pageId);
+    UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
 function hexToRgba(hex) {
@@ -21078,4 +21116,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, _sfc_main$1 as Audio, index$s as Button, index$q as Canvas, index$o as Checkbox, index$p as CheckboxGroup, index$4 as CoverImage, index$5 as CoverView, index$n as Editor, index$u as Form, index$m as Icon, index$l as Image, Input, index$t as Label, LayoutComponent, Map$1 as Map, MovableArea, MovableView, index$k as Navigator, index$2 as PageComponent, index$3 as Picker, PickerView, PickerViewColumn, index$j as Progress, index$h as Radio, index$i as RadioGroup, ResizeSensor, index$g as RichText, ScrollView, index$f as Slider, Swiper, SwiperItem, index$e as Switch, index$d as Text, index$c as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$8 as Video, index$b as View, index$7 as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getCurrentPages$1 as getCurrentPages, getFileInfo, getImageInfo, getLeftWindowStyle, getLocation, getNetworkType, getProvider, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offCompassChange, offNetworkStatusChange, offWindowResize, onAccelerometerChange, onCompassChange, onGyroscopeChange, onMemoryWarning, onNetworkStatusChange, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$9 as plugin, preloadPage, previewImage, promiseInterceptor, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setKeepScreenOn, setLeftWindowStyle, setNavigationBarColor, setNavigationBarTitle, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useTabBar, vibrateLong, vibrateShort };

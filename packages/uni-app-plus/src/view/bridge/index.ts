@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 
-import { ViewJSBridge } from '@dcloudio/uni-core'
+import { getCurrentPageId, ViewJSBridge } from '@dcloudio/uni-core'
 
 const APP_SERVICE_ID = '__uniapp__service'
 
@@ -8,11 +8,9 @@ export const UniViewJSBridge = /*#__PURE__*/ extend(ViewJSBridge, {
   publishHandler,
 })
 
-let pageId: string
 function publishHandler(event: string, args: unknown = {}) {
-  if (!pageId) {
-    pageId = plus.webview.currentWebview().id!
-  }
+  // 转换为字符串
+  const pageId = getCurrentPageId() + ''
   if (__DEV__) {
     console.log(
       `[${Date.now()}][View]: ` +

@@ -10,6 +10,7 @@ import {
   onBeforeActivate,
   onBeforeDeactivate,
   onBeforeMount,
+  onBeforeUnmount,
 } from 'vue'
 import { useRouter } from 'vue-router'
 import {
@@ -21,14 +22,11 @@ import {
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
 } from '@dcloudio/uni-shared'
+import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
-import {
-  API_ON_WINDOW_RESIZE,
-  API_TYPE_ON_WINDOW_RESIZE,
-} from '@dcloudio/uni-api'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
@@ -100,6 +98,11 @@ export function setupPage(comp: any) {
           const { onHide } = instance
           onHide && invokeArrayFns(onHide)
         }
+      })
+
+      subscribeViewMethod(pageMeta.id!)
+      onBeforeUnmount(() => {
+        unsubscribeViewMethod(pageMeta.id!)
       })
 
       return route.query

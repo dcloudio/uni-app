@@ -11,6 +11,7 @@ import {
 } from 'vue'
 import { extend } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
+import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
 import { useCustomEvent, CustomEventTrigger } from './useEvent'
 import { useUserAction } from './useUserAction'
@@ -21,39 +22,29 @@ import {
 } from './useKeyboard'
 import { useScopedAttrs } from './useScopedAttrs'
 import { useFormField } from './useFormField'
-import { getCurrentPageId } from '@dcloudio/uni-core'
 
-const pageIds: number[] = []
+function getSelectedTextRange(
+  _: unknown,
+  resolve: (res: UniApp.GetSelectedTextRangeSuccessCallbackResult) => void
+) {
+  const activeElement = document.activeElement
+  if (!activeElement) {
+    return resolve({})
+  }
+  const data: UniApp.GetSelectedTextRangeSuccessCallbackResult = {}
+  if (['input', 'textarea'].includes(activeElement.tagName.toLowerCase())) {
+    data.start = (activeElement as HTMLInputElement).selectionStart!
+    data.end = (activeElement as HTMLInputElement).selectionEnd!
+  }
+  resolve(data)
+}
+
 const UniViewJSBridgeSubscribe = function () {
-  const pageId = getCurrentPageId()
-  if (pageIds.includes(pageId)) return
-  pageIds.push(pageId)
-
-  UniViewJSBridge.subscribe(
-    pageId + '.getSelectedTextRange',
-    function ({ pageId, callbackId }: { pageId: number; callbackId: number }) {
-      const activeElement = document.activeElement
-      if (!activeElement) return
-      const tagName = activeElement.tagName.toLowerCase()
-      const tagNames = ['input', 'textarea']
-      const data: {
-        errMsg?: string
-        start?: number | null
-        end?: number | null
-      } = {}
-      if (tagNames.includes(tagName)) {
-        data.start = (activeElement as HTMLInputElement).selectionStart
-        data.end = (activeElement as HTMLInputElement).selectionEnd
-      }
-      UniViewJSBridge.publishHandler(
-        'onGetSelectedTextRange',
-        {
-          callbackId,
-          data,
-        },
-        pageId
-      )
-    }
+  // 内部会判断是否已存在，可重复调用 registerViewMethod 时
+  registerViewMethod<{}, UniApp.GetSelectedTextRangeSuccessCallbackResult>(
+    getCurrentPageId(),
+    'getSelectedTextRange',
+    getSelectedTextRange
   )
 }
 

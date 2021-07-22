@@ -1518,6 +1518,8 @@ var serviceContext = (function (vue) {
       }
   });
 
+  const INVOKE_VIEW_API = 'invokeViewApi';
+
   const E = function () {
       // Keep this empty so it's easier to inherit from
       // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
@@ -1637,12 +1639,6 @@ var serviceContext = (function (vue) {
   }
   function getPageById(id) {
       return getCurrentPages().find((page) => page.$page.id === id);
-  }
-  function getPageVmById(id) {
-      const page = getPageById(id);
-      if (page) {
-          return page.$vm;
-      }
   }
   function getCurrentPage() {
       const pages = getCurrentPages();
@@ -1802,10 +1798,31 @@ var serviceContext = (function (vue) {
       };
   }
 
+  let invokeViewMethodId = 0;
+  function publishViewMethodName() {
+      return getCurrentPageId() + '.' + INVOKE_VIEW_API;
+  }
+  const invokeViewMethod = (name, args, callback, pageId) => {
+      const { subscribe, publishHandler } = UniServiceJSBridge;
+      const id = invokeViewMethodId++;
+      subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
+      publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+  };
+  const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
+      const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
+      const id = invokeViewMethodId++;
+      const subscribeName = INVOKE_VIEW_API + '.' + id;
+      subscribe(subscribeName, callback);
+      publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+      return () => {
+          unsubscribe(subscribeName);
+      };
+  };
+  const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
   const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
-      invokeOnCallback(name, res) {
-          return UniServiceJSBridge.emit('api.' + name, res);
-      },
+      invokeOnCallback,
+      invokeViewMethod,
+      invokeViewMethodKeepAlive,
   });
 
   function initOn() {
@@ -1842,10 +1859,7 @@ var serviceContext = (function (vue) {
   }
   function createPageEvent(name) {
       return (args, pageId) => {
-          const vm = getPageVmById(pageId);
-          if (vm) {
-              invokeHook(vm, name, args);
-          }
+          invokeHook(pageId, name, args);
       };
   }
 
@@ -3841,30 +3855,16 @@ var serviceContext = (function (vue) {
 
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
 
-  const getSelectedTextRangeEventCallbacks = createCallbacks('getSelectedTextRangeEvent');
-  const onGetSelectedTextRange = /*#__PURE__*/ once(() => {
-      UniServiceJSBridge.subscribe('onGetSelectedTextRange', ({ callbackId, data }) => {
-          const callback = getSelectedTextRangeEventCallbacks.pop(callbackId);
-          if (callback) {
-              callback(data);
-          }
-      });
-  });
   const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-      onGetSelectedTextRange();
-      const pageId = getCurrentPageId();
-      UniServiceJSBridge.publishHandler('getSelectedTextRange', {
-          pageId,
-          callbackId: getSelectedTextRangeEventCallbacks.push(function (res) {
-              if (typeof res.end === 'undefined' &&
-                  typeof res.start === 'undefined') {
-                  reject('no focused');
-              }
-              else {
-                  resolve(res);
-              }
-          }),
-      }, pageId);
+      UniServiceJSBridge.invokeViewMethod('getSelectedTextRange', {}, (res) => {
+          if (typeof res.end === 'undefined' &&
+              typeof res.start === 'undefined') {
+              reject('no focused');
+          }
+          else {
+              resolve(res);
+          }
+      }, getCurrentPageId());
   });
 
   const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
@@ -8736,7 +8736,6 @@ var serviceContext = (function (vue) {
 
   const VD_SYNC = 'vdSync';
   const ON_WEBVIEW_READY = 'onWebviewReady';
-  const INVOKE_VIEW_API = 'invokeViewApi';
   const INVOKE_SERVICE_API = 'invokeServiceApi';
   const ACTION_TYPE_DICT = 0;
 
@@ -10675,15 +10674,8 @@ var serviceContext = (function (vue) {
     switchTab: switchTab
   });
 
-  let invokeViewMethodId = 0;
-  const invokeViewMethod = (name, args, callback, pageId) => {
-      const id = invokeViewMethodId++;
-      UniServiceJSBridge$1.subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
-      publishHandler(INVOKE_VIEW_API, { id, name, args }, pageId);
-  };
   const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
       publishHandler,
-      invokeViewMethod,
   });
   function publishHandler(event, args, pageIds) {
       args = JSON.stringify(args);

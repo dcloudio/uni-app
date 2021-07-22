@@ -6,7 +6,10 @@ export function initBridge(
   subscribeNamespace: 'service' | 'view'
 ): Omit<
   UniApp.UniServiceJSBridge,
-  'invokeOnCallback' | 'invokeViewMethod' | 'publishHandler'
+  | 'invokeOnCallback'
+  | 'invokeViewMethod'
+  | 'invokeViewMethodKeepAlive'
+  | 'publishHandler'
 > {
   // TODO vue3 compatibility builds
   const emitter = new E()

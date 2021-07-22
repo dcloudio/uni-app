@@ -3,9 +3,9 @@ import { ComponentPublicInstance, getCurrentInstance } from 'vue'
 import { rpx2px } from './util'
 
 export function useCurrentPageId() {
-  if (__PLATFORM__ === 'app') {
+  if (__APP_VIEW__) {
     // view 层
-    return parseInt((window as any).__id__)
+    return getCurrentPageId()
   }
   return getCurrentInstance()!.root.proxy!.$page.id
 }
@@ -52,6 +52,9 @@ export function getCurrentPageMeta() {
 export function getCurrentPageId() {
   if (__APP_VIEW__) {
     // view 层
+    if (!(window as any).__id__) {
+      ;(window as any).__id__ = plus.webview.currentWebview().id!
+    }
     return parseInt((window as any).__id__)
   }
   const meta = getCurrentPageMeta()

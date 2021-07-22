@@ -1,4 +1,9 @@
-export { ViewJSBridge } from './bridge'
+export {
+  ViewJSBridge,
+  subscribeViewMethod,
+  unsubscribeViewMethod,
+  registerViewMethod,
+} from './bridge'
 export { initView } from './init'
 export { initViewPlugin } from './plugin'
 export {
