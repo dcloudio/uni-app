@@ -1,5 +1,6 @@
 import '../../style/framework/base.css'
 import '@dcloudio/uni-h5/style/framework/nvue.css'
+import '@dcloudio/uni-components/style/resize-sensor.css'
 import { initView } from '@dcloudio/uni-core'
 import { ON_WEBVIEW_READY } from '../constants'
 import { UniViewJSBridge } from './bridge'
