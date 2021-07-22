@@ -1,9 +1,9 @@
 import '@dcloudio/uni-components/style/movable-area.css'
 import { MovableArea } from '@dcloudio/uni-components'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { UniComponent } from './UniComponent'
+import { UniContainerComponent } from './UniComponent'
 
-export class UniMovableArea extends UniComponent {
+export class UniMovableArea extends UniContainerComponent {
   constructor(
     id: number,
     parentNodeId: number,

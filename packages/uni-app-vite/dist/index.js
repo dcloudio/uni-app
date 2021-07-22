@@ -17,7 +17,6 @@ const plugins = [
     mainJs_1.uniMainJsPlugin(),
     manifestJson_1.uniManifestJsonPlugin(),
     pagesJson_1.uniPagesJsonPlugin(),
-    uni_cli_shared_1.uniViteInjectPlugin(uni_cli_shared_1.initProvide()),
     plugin_1.UniAppPlugin,
 ];
 if (!process.env.UNI_APP_CODE_SPLITING) {

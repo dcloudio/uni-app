@@ -10,6 +10,7 @@ var __publicField = (obj, key, value) => {
   "use strict";
   var base = "* {\n  margin: 0;\n  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n  -webkit-tap-highlight-color: transparent;\n}\n\nhtml,\nbody {\n  -webkit-user-select: none;\n  user-select: none;\n  width: 100%;\n}\n\nhtml {\n  height: 100%;\n  height: 100vh;\n  width: 100%;\n  width: 100vw;\n}\n\nbody {\n  overflow-x: hidden;\n  background-color: white;\n}\n\ninput[type='search']::-webkit-search-cancel-button {\n  display: none;\n}\n\n.uni-loading,\nuni-button[loading]:before {\n  background: transparent\n    url('data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=')\n    no-repeat;\n}\n\n.uni-loading {\n  width: 20px;\n  height: 20px;\n  display: inline-block;\n  vertical-align: middle;\n  animation: uni-loading 1s steps(12, end) infinite;\n  background-size: 100%;\n}\n\n@keyframes uni-loading {\n  0% {\n    transform: rotate3d(0, 0, 1, 0deg);\n  }\n\n  100% {\n    transform: rotate3d(0, 0, 1, 360deg);\n  }\n}\n";
   var nvue = "[nvue] uni-view,\n[nvue] uni-label,\n[nvue] uni-swiper-item,\n[nvue] uni-scroll-view {\n  display: flex;\n  flex-shrink: 0;\n  flex-grow: 0;\n  flex-basis: auto;\n  align-items: stretch;\n  align-content: flex-start;\n}\n\n[nvue] uni-button {\n  margin: 0;\n}\n\n[nvue-dir-row] uni-view,\n[nvue-dir-row] uni-label,\n[nvue-dir-row] uni-swiper-item {\n  flex-direction: row;\n}\n\n[nvue-dir-column] uni-view,\n[nvue-dir-column] uni-label,\n[nvue-dir-column] uni-swiper-item {\n  flex-direction: column;\n}\n\n[nvue-dir-row-reverse] uni-view,\n[nvue-dir-row-reverse] uni-label,\n[nvue-dir-row-reverse] uni-swiper-item {\n  flex-direction: row-reverse;\n}\n\n[nvue-dir-column-reverse] uni-view,\n[nvue-dir-column-reverse] uni-label,\n[nvue-dir-column-reverse] uni-swiper-item {\n  flex-direction: column-reverse;\n}\n\n[nvue] uni-view,\n[nvue] uni-image,\n[nvue] uni-input,\n[nvue] uni-scroll-view,\n[nvue] uni-swiper,\n[nvue] uni-swiper-item,\n[nvue] uni-text,\n[nvue] uni-textarea,\n[nvue] uni-video {\n  position: relative;\n  border: 0px solid #000000;\n  box-sizing: border-box;\n}\n\n[nvue] uni-swiper-item {\n  position: absolute;\n}\n";
+  var resizeSensor = "@keyframes once-show {\n  from {\n    top: 0;\n  }\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
   function makeMap$1(str, expectsLowerCase) {
     const map = Object.create(null);
     const list2 = str.split(",");
@@ -8460,8 +8461,7 @@ var __publicField = (obj, key, value) => {
         }
       });
     });
-    const id2 = useContextInfo();
-    useSubscribe((type, data) => {
+    registerViewMethod(getCurrentPageId(), `editor.${props2.id}`, ({ type, data }, resolve) => {
       const { options, callbackId } = data;
       let res;
       let range;
@@ -8598,14 +8598,14 @@ var __publicField = (obj, key, value) => {
         errMsg = "not ready";
       }
       if (callbackId) {
-        UniViewJSBridge.publishHandler("onEditorMethodCallback", {
+        resolve({
           callbackId,
           data: extend({}, res, {
             errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
           })
         });
       }
-    }, id2, true);
+    });
   }
   const props$j = /* @__PURE__ */ extend({}, props$k, {
     id: {
@@ -9548,6 +9548,10 @@ var __publicField = (obj, key, value) => {
     }
     return array;
   }
+  function useRebuild(callback) {
+    const instance = getCurrentInstance();
+    instance.rebuild = callback;
+  }
   const props$f = {
     scaleArea: {
       type: Boolean,
@@ -9589,13 +9593,22 @@ var __publicField = (obj, key, value) => {
       function updateMovableViewContexts() {
         const contexts = [];
         for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-          const movableViewItem = movableViewItems[index2];
-          const movableViewContext = originMovableViewContexts.find((context) => movableViewItem.el === context.rootRef.value);
+          let movableViewItem = movableViewItems[index2];
+          if (!(movableViewItem instanceof Element)) {
+            movableViewItem = movableViewItem.el;
+          }
+          const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
           if (movableViewContext) {
             contexts.push(markRaw(movableViewContext));
           }
         }
         setContexts(contexts);
+      }
+      {
+        useRebuild(() => {
+          movableViewItems = rootRef.value.children;
+          updateMovableViewContexts();
+        });
       }
       const addMovableViewContext = (movableViewContext) => {
         originMovableViewContexts.push(movableViewContext);
@@ -9613,8 +9626,7 @@ var __publicField = (obj, key, value) => {
       provide("addMovableViewContext", addMovableViewContext);
       provide("removeMovableViewContext", removeMovableViewContext);
       return () => {
-        const defaultSlots = slots.default && slots.default();
-        movableViewItems = flatVNode(defaultSlots);
+        slots.default && slots.default();
         return createVNode("uni-movable-area", mergeProps({
           "ref": rootRef
         }, $attrs.value, $excludeAttrs.value, _listeners), {
@@ -10970,15 +10982,20 @@ var __publicField = (obj, key, value) => {
       emit: emit2
     }) {
       const rootRef = ref(null);
+      const wrapperRef = ref(null);
       const trigger2 = useCustomEvent(rootRef, emit2);
       const state = useState$1(props2);
       const resizeSensorRef = ref(null);
-      onMounted(() => {
-        const resizeSensor = resizeSensorRef.value;
-        state.height = resizeSensor.$el.getBoundingClientRect().height;
-      });
-      let columnVNodes = [];
+      const onMountedCallback = () => {
+        const resizeSensor2 = resizeSensorRef.value;
+        state.height = resizeSensor2.$el.offsetHeight;
+      };
+      let columnsRef = ref([]);
       function getItemIndex(vnode) {
+        const columnVNodes = columnsRef.value;
+        if (columnVNodes instanceof HTMLCollection) {
+          return Array.prototype.indexOf.call(columnVNodes, vnode.el);
+        }
         return columnVNodes.indexOf(vnode);
       }
       const getPickerViewColumn = function(columnInstance) {
@@ -10989,6 +11006,9 @@ var __publicField = (obj, key, value) => {
           },
           set(current) {
             const index2 = getItemIndex(columnInstance.vnode);
+            if (index2 < 0) {
+              return;
+            }
             const oldCurrent = state.value[index2];
             if (oldCurrent !== current) {
               state.value.splice(index2, 1, current);
@@ -11005,9 +11025,14 @@ var __publicField = (obj, key, value) => {
       provide("getPickerViewColumn", getPickerViewColumn);
       provide("pickerViewProps", props2);
       provide("pickerViewState", state);
+      {
+        useRebuild(() => {
+          onMountedCallback();
+          columnsRef.value = wrapperRef.value.children;
+        });
+      }
       return () => {
         const defaultSlots = slots.default && slots.default();
-        columnVNodes = flatVNode(defaultSlots);
         return createVNode("uni-picker-view", {
           "ref": rootRef
         }, {
@@ -11017,8 +11042,9 @@ var __publicField = (obj, key, value) => {
               height
             }) => state.height = height
           }, null, 8, ["onResize"]), createVNode("div", {
+            "ref": wrapperRef,
             "class": "uni-picker-view-wrapper"
-          }, [defaultSlots])],
+          }, [defaultSlots], 512)],
           _: 2
         }, 512);
       };
@@ -11757,10 +11783,10 @@ var __publicField = (obj, key, value) => {
       const pickerViewState = inject("pickerViewState");
       const indicatorHeight = ref(34);
       const resizeSensorRef = ref(null);
-      onMounted(() => {
-        const resizeSensor = resizeSensorRef.value;
-        indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
-      });
+      const initIndicatorHeight = () => {
+        const resizeSensor2 = resizeSensorRef.value;
+        indicatorHeight.value = resizeSensor2.$el.offsetHeight;
+      };
       const maskSize = computed$1(() => (pickerViewState.height - indicatorHeight.value) / 2);
       const {
         state: scopedAttrsState
@@ -11771,9 +11797,12 @@ var __publicField = (obj, key, value) => {
         current: currentRef.value,
         length: 0
       });
+      let updatesScrollerRequest;
       function updatesScroller() {
-        if (scroller) {
+        if (scroller && !updatesScrollerRequest) {
+          updatesScrollerRequest = true;
           nextTick(() => {
+            updatesScrollerRequest = false;
             let current = Math.min(state.current, state.length - 1);
             current = Math.max(current, 0);
             scroller.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
@@ -11818,7 +11847,7 @@ var __publicField = (obj, key, value) => {
           }
         }
       }
-      onMounted(() => {
+      const initScroller = () => {
         const el = rootRef.value;
         const content = contentRef.value;
         const {
@@ -11862,10 +11891,16 @@ var __publicField = (obj, key, value) => {
         useCustomClick(el);
         initScrollBounce();
         updatesScroller();
-      });
+      };
+      {
+        useRebuild(() => {
+          state.length = contentRef.value.children.length;
+          initIndicatorHeight();
+          initScroller();
+        });
+      }
       return () => {
         const defaultSlots = slots.default && slots.default();
-        state.length = flatVNode(defaultSlots).length;
         const padding = `${maskSize.value}px 0`;
         return createVNode("uni-picker-view-column", {
           "ref": rootRef
@@ -13193,10 +13228,6 @@ var __publicField = (obj, key, value) => {
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  function useRebuild(callback) {
-    const instance = getCurrentInstance();
-    instance.rebuild = callback;
-  }
   const props$5 = {
     indicatorDots: {
       type: [Boolean, String],
@@ -14962,7 +14993,7 @@ var __publicField = (obj, key, value) => {
     }
   }
   var movableArea = "uni-movable-area {\n  display: block;\n  position: relative;\n  width: 10px;\n  height: 10px;\n}\n\nuni-movable-area[hidden] {\n  display: none;\n}\n";
-  class UniMovableArea extends UniComponent {
+  class UniMovableArea extends UniContainerComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-movable-area", MovableArea, parentNodeId, nodeJson);
     }
@@ -14998,13 +15029,13 @@ var __publicField = (obj, key, value) => {
     }
   }
   var pickerView = "uni-picker-view {\n  display: block;\n}\n\n.uni-picker-view-wrapper {\n  display: flex;\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n}\n\nuni-picker-view[hidden] {\n  display: none;\n}\n";
-  class UniPickerView extends UniComponent {
+  class UniPickerView extends UniContainerComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-picker-view", PickerView, parentNodeId, nodeJson, ".uni-picker-view-wrapper");
     }
   }
   var pickerViewColumn = "uni-picker-view-column {\n  flex: 1;\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n}\n\nuni-picker-view-column[hidden] {\n  display: none;\n}\n\n.uni-picker-view-group {\n  height: 100%;\n  overflow: hidden;\n}\n\n.uni-picker-view-mask {\n  transform: translateZ(0);\n}\n\n.uni-picker-view-indicator,\n.uni-picker-view-mask {\n  position: absolute;\n  left: 0;\n  width: 100%;\n  z-index: 3;\n  pointer-events: none;\n}\n\n.uni-picker-view-mask {\n  top: 0;\n  height: 100%;\n  margin: 0 auto;\n  background: linear-gradient(\n      180deg,\n      hsla(0, 0%, 100%, 0.95),\n      hsla(0, 0%, 100%, 0.6)\n    ),\n    linear-gradient(0deg, hsla(0, 0%, 100%, 0.95), hsla(0, 0%, 100%, 0.6));\n  background-position: top, bottom;\n  background-size: 100% 102px;\n  background-repeat: no-repeat;\n}\n\n.uni-picker-view-indicator {\n  height: 34px;\n  /* top: 102px; */\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.uni-picker-view-content {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  will-change: transform;\n  padding: 102px 0;\n  cursor: pointer;\n}\n\n.uni-picker-view-content > * {\n  height: 34px;\n  overflow: hidden;\n}\n\n.uni-picker-view-indicator:after,\n.uni-picker-view-indicator:before {\n  content: ' ';\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 1px;\n  color: #e5e5e5;\n}\n\n.uni-picker-view-indicator:before {\n  top: 0;\n  border-top: 1px solid #e5e5e5;\n  transform-origin: 0 0;\n  transform: scaleY(0.5);\n}\n\n.uni-picker-view-indicator:after {\n  bottom: 0;\n  border-bottom: 1px solid #e5e5e5;\n  transform-origin: 0 100%;\n  transform: scaleY(0.5);\n}\n\n.uni-picker-view-indicator:after,\n.uni-picker-view-indicator:before {\n  content: ' ';\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 1px;\n  color: #e5e5e5;\n}\n";
-  class UniPickerViewColumn extends UniComponent {
+  class UniPickerViewColumn extends UniContainerComponent {
     constructor(id2, parentNodeId, nodeJson) {
       super(id2, "uni-picker-view-column", PickerViewColumn, parentNodeId, nodeJson, ".uni-picker-view-content");
     }

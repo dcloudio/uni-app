@@ -4007,28 +4007,24 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let eventReady = false;
 let index$r = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
-  const data = {};
-  if (options && ("success" in options || "fail" in options || "complete" in options)) {
+  const data = { options };
+  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
+  if (needCallOptions) {
     const callbackId = String(index$r++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
-    if (!eventReady) {
-      UniServiceJSBridge.subscribe("onEditorMethodCallback", ({ callbackId: callbackId2, data: data2 }) => {
-        callOptions(optionsCache[callbackId2], data2);
-        delete optionsCache[callbackId2];
-      });
-      eventReady = true;
-    }
   }
-  data.options = options;
-  UniServiceJSBridge.publishHandler("editor." + componentId, {
-    componentId,
+  UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
     type,
     data
+  }, ({ callbackId, data: data2 }) => {
+    if (needCallOptions) {
+      callOptions(optionsCache[callbackId], data2);
+      delete optionsCache[callbackId];
+    }
   }, pageId);
 }
 class EditorContext {
@@ -7388,8 +7384,7 @@ function useQuill(props2, rootRef, trigger) {
       }
     });
   });
-  const id2 = useContextInfo();
-  useSubscribe((type, data) => {
+  registerViewMethod(getCurrentPageId(), `editor.${props2.id}`, ({ type, data }, resolve) => {
     const { options, callbackId } = data;
     let res;
     let range;
@@ -7526,14 +7521,14 @@ function useQuill(props2, rootRef, trigger) {
       errMsg = "not ready";
     }
     if (callbackId) {
-      UniViewJSBridge.publishHandler("onEditorMethodCallback", {
+      resolve({
         callbackId,
         data: extend({}, res, {
           errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
         })
       });
     }
-  }, id2, true);
+  });
 }
 const props$x = /* @__PURE__ */ extend({}, props$y, {
   id: {
@@ -8479,8 +8474,11 @@ var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     function updateMovableViewContexts() {
       const contexts = [];
       for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        const movableViewItem = movableViewItems[index2];
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem.el === context.rootRef.value);
+        let movableViewItem = movableViewItems[index2];
+        if (!(movableViewItem instanceof Element)) {
+          movableViewItem = movableViewItem.el;
+        }
+        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
         if (movableViewContext) {
           contexts.push(markRaw(movableViewContext));
         }
@@ -8504,7 +8502,9 @@ var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     provide("removeMovableViewContext", removeMovableViewContext);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      movableViewItems = flatVNode(defaultSlots);
+      {
+        movableViewItems = flatVNode(defaultSlots);
+      }
       return createVNode("uni-movable-area", mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), {
@@ -9847,15 +9847,23 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2
   }) {
     const rootRef = ref(null);
+    const wrapperRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     const state2 = useState$3(props2);
     const resizeSensorRef = ref(null);
-    onMounted(() => {
+    const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
-      state2.height = resizeSensor.$el.getBoundingClientRect().height;
-    });
-    let columnVNodes = [];
+      state2.height = resizeSensor.$el.offsetHeight;
+    };
+    {
+      onMounted(onMountedCallback);
+    }
+    let columnsRef = ref([]);
     function getItemIndex(vnode) {
+      const columnVNodes = columnsRef.value;
+      if (columnVNodes instanceof HTMLCollection) {
+        return Array.prototype.indexOf.call(columnVNodes, vnode.el);
+      }
       return columnVNodes.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
@@ -9866,6 +9874,9 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
         },
         set(current) {
           const index2 = getItemIndex(columnInstance.vnode);
+          if (index2 < 0) {
+            return;
+          }
           const oldCurrent = state2.value[index2];
           if (oldCurrent !== current) {
             state2.value.splice(index2, 1, current);
@@ -9884,7 +9895,9 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     provide("pickerViewState", state2);
     return () => {
       const defaultSlots = slots.default && slots.default();
-      columnVNodes = flatVNode(defaultSlots);
+      {
+        columnsRef.value = flatVNode(defaultSlots);
+      }
       return createVNode("uni-picker-view", {
         "ref": rootRef
       }, {
@@ -9894,8 +9907,9 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
             height
           }) => state2.height = height
         }, null, 8, ["onResize"]), createVNode("div", {
+          "ref": wrapperRef,
           "class": "uni-picker-view-wrapper"
-        }, [defaultSlots])],
+        }, [defaultSlots], 512)],
         _: 2
       }, 512);
     };
@@ -10634,10 +10648,13 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const pickerViewState = inject("pickerViewState");
     const indicatorHeight = ref(34);
     const resizeSensorRef = ref(null);
-    onMounted(() => {
+    const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
-    });
+      indicatorHeight.value = resizeSensor.$el.offsetHeight;
+    };
+    {
+      onMounted(initIndicatorHeight);
+    }
     const maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
     const {
       state: scopedAttrsState
@@ -10648,9 +10665,12 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       current: currentRef.value,
       length: 0
     });
+    let updatesScrollerRequest;
     function updatesScroller() {
-      if (scroller) {
+      if (scroller && !updatesScrollerRequest) {
+        updatesScrollerRequest = true;
         nextTick(() => {
+          updatesScrollerRequest = false;
           let current = Math.min(state2.current, state2.length - 1);
           current = Math.max(current, 0);
           scroller.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
@@ -10695,7 +10715,7 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         }
       }
     }
-    onMounted(() => {
+    const initScroller = () => {
       const el = rootRef.value;
       const content = contentRef.value;
       const {
@@ -10732,10 +10752,15 @@ var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }, true);
       useCustomClick(el);
       updatesScroller();
-    });
+    };
+    {
+      onMounted(initScroller);
+    }
     return () => {
       const defaultSlots = slots.default && slots.default();
-      state2.length = flatVNode(defaultSlots).length;
+      {
+        state2.length = flatVNode(defaultSlots).length;
+      }
       const padding = `${maskSize.value}px 0`;
       return createVNode("uni-picker-view-column", {
         "ref": rootRef

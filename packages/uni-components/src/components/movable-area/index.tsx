@@ -14,6 +14,7 @@ import { useAttrs } from '../../helpers/useAttrs'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
 import ResizeSensor from '../resize-sensor/index'
 import { flatVNode } from '../../helpers/flatVNode'
+import { useRebuild } from '../../helpers/useRebuild'
 
 const props = {
   scaleArea: {
@@ -37,7 +38,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'MovableArea',
   props,
   setup(props, { slots }) {
-    const rootRef = ref(null)
+    const rootRef: Ref<HTMLElement | null> = ref(null)
     const _isMounted = ref(false)
     let { setContexts, events: movableAreaEvents } = useMovableAreaState(
       props,
@@ -63,20 +64,29 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _isMounted.value = true
     })
 
-    let movableViewItems: VNode[] = []
+    let movableViewItems: VNode[] | HTMLCollection = []
     const originMovableViewContexts: MovableViewContext[] = []
     function updateMovableViewContexts() {
       const contexts: MovableViewContext[] = []
       for (let index = 0; index < movableViewItems.length; index++) {
-        const movableViewItem = movableViewItems[index]
+        let movableViewItem: VNode | Element = movableViewItems[index]
+        if (!(movableViewItem instanceof Element)) {
+          movableViewItem = movableViewItem.el as HTMLElement
+        }
         const movableViewContext = originMovableViewContexts.find(
-          (context) => movableViewItem.el === context.rootRef.value
+          (context) => movableViewItem === context.rootRef.value
         )
         if (movableViewContext) {
           contexts.push(markRaw(movableViewContext))
         }
       }
       setContexts(contexts)
+    }
+    if (__PLATFORM__ === 'app') {
+      useRebuild(() => {
+        movableViewItems = (rootRef.value as HTMLElement).children
+        updateMovableViewContexts()
+      })
     }
     const addMovableViewContext: AddMovableViewContext = (
       movableViewContext
@@ -100,7 +110,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => {
       const defaultSlots = slots.default && slots.default()
-      movableViewItems = flatVNode(defaultSlots)
+      if (__PLATFORM__ !== 'app') {
+        movableViewItems = flatVNode(defaultSlots)
+      }
 
       return (
         <uni-movable-area

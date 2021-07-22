@@ -15,6 +15,7 @@ import {
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
+import { useRebuild } from '../../helpers/useRebuild'
 import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
 
@@ -91,16 +92,27 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   emits: ['change', 'pickstart', 'pickend', 'update:value'],
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
+    const wrapperRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent(rootRef, emit as SetupContext['emit'])
     const state = useState(props)
     const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
-    onMounted(() => {
+    const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
-      state.height = resizeSensor.$el.getBoundingClientRect().height
-    })
-    let columnVNodes: VNode[] = []
+      state.height = resizeSensor.$el.offsetHeight
+    }
+    if (__PLATFORM__ !== 'app') {
+      onMounted(onMountedCallback)
+    }
+    let columnsRef: Ref<VNode[] | HTMLCollection> = ref([])
     function getItemIndex(vnode: VNode): number {
-      return columnVNodes.indexOf(vnode)
+      const columnVNodes = columnsRef.value
+      if (columnVNodes instanceof HTMLCollection) {
+        return Array.prototype.indexOf.call(
+          columnVNodes as HTMLCollection,
+          vnode.el
+        )
+      }
+      return (columnVNodes as VNode[]).indexOf(vnode)
     }
     const getPickerViewColumn: GetPickerViewColumn = function (columnInstance) {
       const ref: ComputedRef<number> = computed({
@@ -110,6 +122,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         },
         set(current: number) {
           const index = getItemIndex(columnInstance.vnode)
+          if (index < 0) {
+            return
+          }
           const oldCurrent = state.value[index]
           if (oldCurrent !== current) {
             state.value.splice(index, 1, current)
@@ -128,10 +143,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     provide('pickerViewProps', props)
     provide('pickerViewState', state)
 
+    if (__PLATFORM__ === 'app') {
+      useRebuild(() => {
+        // 由于 App 端 onMounted 时机未插入真实位置，需重新执行
+        onMountedCallback()
+        columnsRef.value = (wrapperRef.value as HTMLElement).children
+      })
+    }
+
     return () => {
       const defaultSlots = slots.default && slots.default()
-      // TODO filter
-      columnVNodes = flatVNode(defaultSlots)
+      if (__PLATFORM__ !== 'app') {
+        // TODO filter
+        columnsRef.value = flatVNode(defaultSlots)
+      }
       return (
         <uni-picker-view ref={rootRef}>
           <ResizeSensor
@@ -141,7 +166,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               (state.height = height)
             }
           ></ResizeSensor>
-          <div class="uni-picker-view-wrapper">{defaultSlots}</div>
+          <div ref={wrapperRef} class="uni-picker-view-wrapper">
+            {defaultSlots}
+          </div>
         </uni-picker-view>
       )
     }

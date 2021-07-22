@@ -3486,29 +3486,26 @@ var serviceContext = (function (vue) {
       return new ServiceMediaQueryObserver(getCurrentPageVm());
   });
 
-  let eventReady = false;
+  // let eventReady = false
   let index$2 = 0;
   let optionsCache = {};
   function operateEditor(componentId, pageId, type, options) {
-      const data = {};
-      if (options &&
-          ('success' in options || 'fail' in options || 'complete' in options)) {
+      const data = { options };
+      const needCallOptions = options &&
+          ('success' in options || 'fail' in options || 'complete' in options);
+      if (needCallOptions) {
           const callbackId = String(index$2++);
           data.callbackId = callbackId;
           optionsCache[callbackId] = options;
-          if (!eventReady) {
-              UniServiceJSBridge.subscribe('onEditorMethodCallback', ({ callbackId, data }) => {
-                  callOptions(optionsCache[callbackId], data);
-                  delete optionsCache[callbackId];
-              });
-              eventReady = true;
-          }
       }
-      data.options = options;
-      UniServiceJSBridge.publishHandler('editor.' + componentId, {
-          componentId,
+      UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
           type,
           data,
+      }, ({ callbackId, data }) => {
+          if (needCallOptions) {
+              callOptions(optionsCache[callbackId], data);
+              delete optionsCache[callbackId];
+          }
       }, pageId);
   }
   class EditorContext {

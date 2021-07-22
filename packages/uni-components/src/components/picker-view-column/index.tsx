@@ -20,6 +20,7 @@ import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { useScopedAttrs } from '../../helpers/useScopedAttrs'
 import { flatVNode } from '../../helpers/flatVNode'
+import { useRebuild } from '../../helpers/useRebuild'
 import ResizeSensor from '../resize-sensor/index'
 import {
   GetPickerViewColumn,
@@ -105,10 +106,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const pickerViewState = inject('pickerViewState') as PickerViewState
     const indicatorHeight = ref(34)
     const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
-    onMounted(() => {
+    const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
-      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height
-    })
+      indicatorHeight.value = resizeSensor.$el.offsetHeight
+    }
+    if (__PLATFORM__ !== 'app') {
+      onMounted(initIndicatorHeight)
+    }
     const maskSize = computed(
       () => (pickerViewState.height - indicatorHeight.value) / 2
     )
@@ -122,9 +126,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       current: currentRef.value,
       length: 0,
     })
+    let updatesScrollerRequest: boolean
     function updatesScroller() {
-      if (scroller) {
+      if (scroller && !updatesScrollerRequest) {
+        updatesScrollerRequest = true
         nextTick(() => {
+          updatesScrollerRequest = false
           let current = Math.min(state.current, state.length - 1)
           current = Math.max(current, 0)
           scroller.update(
@@ -189,7 +196,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     }
 
-    onMounted(() => {
+    const initScroller = () => {
       const el = rootRef.value as HTMLElement
       const content = contentRef.value as HTMLElement
       const {
@@ -237,11 +244,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       useCustomClick(el)
       initScrollBounce()
       updatesScroller()
-    })
+    }
+    if (__PLATFORM__ !== 'app') {
+      onMounted(initScroller)
+    }
+
+    if (__PLATFORM__ === 'app') {
+      useRebuild(() => {
+        state.length = (contentRef.value as HTMLElement).children.length
+        // 由于 App 端 onMounted 时机未插入真实位置，需重新执行
+        initIndicatorHeight()
+        initScroller()
+      })
+    }
 
     return () => {
       const defaultSlots = slots.default && slots.default()
-      state.length = flatVNode(defaultSlots).length
+      if (__PLATFORM__ !== 'app') {
+        state.length = flatVNode(defaultSlots).length
+      }
       const padding = `${maskSize.value}px 0`
       return (
         <uni-picker-view-column ref={rootRef}>
