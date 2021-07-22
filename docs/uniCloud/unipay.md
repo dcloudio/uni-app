@@ -31,7 +31,7 @@
 
 ```js
 // 插件市场导入
-const unipay = require('unipay')
+const unipay = require('uni-pay')
 
 // npm安装
 const unipay = require('@dcloudio/unipay')
