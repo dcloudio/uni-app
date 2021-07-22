@@ -44,11 +44,6 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
       return
     }
     debugHmr(file)
-    server.ws.send({
-      type: 'custom',
-      event: 'invalidate',
-      data: {},
-    })
     const pagesJson = parsePagesJson(inputDir, platform)
     // 更新define
     const {
@@ -83,6 +78,10 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
     for (const file of invalidateFiles) {
       await invalidate(file, server.moduleGraph)
     }
+    server.ws.send({
+      type: 'full-reload',
+      path: '*',
+    })
     return []
   }
 }

@@ -14,6 +14,7 @@ const priority = {
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
   'uni-cli-shared': 60,
+  'uni-cli-nvue': 55,
   'uni-h5': 50,
   'uni-h5-vite': 40,
   'uni-app-vue': 35,

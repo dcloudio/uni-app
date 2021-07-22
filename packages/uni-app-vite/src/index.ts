@@ -1,5 +1,9 @@
 import fs from 'fs'
-import { uniCssPlugin } from '@dcloudio/uni-cli-shared'
+import {
+  initProvide,
+  uniCssPlugin,
+  uniViteInjectPlugin,
+} from '@dcloudio/uni-cli-shared'
 import { UniAppPlugin } from './plugin'
 import { uniCopyPlugin } from './plugins/copy'
 import { uniMainJsPlugin } from './plugins/mainJs'
@@ -13,6 +17,7 @@ const plugins = [
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
+  uniViteInjectPlugin(initProvide()),
   UniAppPlugin,
 ]
 if (!process.env.UNI_APP_CODE_SPLITING) {

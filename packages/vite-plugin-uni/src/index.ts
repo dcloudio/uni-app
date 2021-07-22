@@ -6,6 +6,8 @@ import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import VueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import ViteLegacyPlugin from '@vitejs/plugin-legacy'
 
+import { initModuleAlias } from '@dcloudio/uni-cli-shared'
+
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
@@ -14,6 +16,8 @@ import { initExtraPlugins } from './utils'
 const debugUni = debug('vite:uni:plugin')
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
+
+initModuleAlias()
 
 process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
 

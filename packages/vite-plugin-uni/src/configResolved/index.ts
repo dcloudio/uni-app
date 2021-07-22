@@ -1,5 +1,5 @@
-import { Plugin } from 'vite'
-import { checkUpdate } from '@dcloudio/uni-cli-shared'
+import { Plugin, ResolvedConfig } from 'vite'
+import { formatMsg, checkUpdate } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 import { initEnv } from './env'
@@ -9,6 +9,7 @@ import { initPlugins } from './plugins'
 export function createConfigResolved(options: VitePluginUniResolvedOptions) {
   return ((config) => {
     initEnv(config)
+    initLogger(config)
     initOptions(options, config)
     initPlugins(config, options)
     initCheckUpdate()
@@ -23,4 +24,11 @@ function initCheckUpdate() {
       (pkg['uni-app'] && pkg['uni-app']['compilerVersion']) || '',
     versionType: pkg.version.includes('alpha') ? 'a' : 'r',
   })
+}
+
+function initLogger({ logger }: ResolvedConfig) {
+  const { error } = logger
+  logger.error = (msg, opts) => {
+    return error(formatMsg(msg), opts)
+  }
 }

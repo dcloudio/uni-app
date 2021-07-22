@@ -64,7 +64,8 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
     ;(options as BuildOptions).outDir = process.env.UNI_OUTPUT_DIR
   } else {
     if (!(options as BuildOptions).outDir) {
-      ;(options as BuildOptions).outDir = path.join(
+      ;(options as BuildOptions).outDir = path.resolve(
+        process.cwd(),
         'dist',
         process.env.NODE_ENV === 'production' ? 'build' : 'dev',
         process.env.UNI_PLATFORM
@@ -75,7 +76,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
   // tips
   if (isInHBuilderX() && options.platform === 'app') {
     return (
-      console.error(`Vue3 目前暂不支持编译至 App 端，近期将升级支持。`),
+      console.error(
+        `当前项目 Vue 版本为3，暂不支持编译至 App 端，近期将升级支持。`
+      ),
       process.exit(1)
     )
   }

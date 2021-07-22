@@ -39,6 +39,9 @@ export function uniCssScopedPlugin(): Plugin {
       if (!EXTNAME_VUE.includes(path.extname(ctx.file))) {
         return
       }
+      if (ctx.file.endsWith('App.vue')) {
+        return
+      }
       debugScoped('hmr', ctx.file)
       const oldRead = ctx.read
       ctx.read = async () => {

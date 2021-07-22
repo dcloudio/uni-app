@@ -1,0 +1,1 @@
+export { formatMsg } from './format'

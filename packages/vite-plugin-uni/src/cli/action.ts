@@ -5,6 +5,21 @@ import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
 import { initEnv } from './utils'
 
+async function runNVue(mode: 'prod' | 'dev') {
+  let nvue
+  try {
+    nvue = require('@dcloudio/uni-cli-nvue')
+  } catch (e) {}
+  if (!nvue) {
+    return
+  }
+  if (mode === 'prod') {
+    await nvue.runWebpackBuild()
+  } else {
+    await nvue.runWebpackDev()
+  }
+}
+
 export async function runDev(options: CliOptions & ServerOptions) {
   initEnv('dev', options)
   try {
@@ -13,8 +28,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
     } else {
       await build(extend(options, { watch: true }))
     }
+    if (options.platform === 'app') {
+      await runNVue('prod')
+    }
   } catch (e) {
-    console.error(`error when starting dev server:\n${e.stack}`)
+    console.error(`error when starting dev server:\n${e.stack || e}`)
     process.exit(1)
   }
 }
@@ -25,9 +43,12 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)
       : build(options))
+    if (options.platform === 'app') {
+      await runNVue('dev')
+    }
     console.log(` DONE  Build complete.`)
   } catch (e) {
-    console.error(`error during build:\n${e.stack}`)
+    console.error(`error during build:\n${e.stack || e}`)
     process.exit(1)
   }
 }

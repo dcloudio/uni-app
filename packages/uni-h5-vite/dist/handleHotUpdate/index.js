@@ -56,11 +56,6 @@ function createHandleHotUpdate() {
                 return;
             }
             debugHmr(file);
-            server.ws.send({
-                type: 'custom',
-                event: 'invalidate',
-                data: {},
-            });
             const pagesJson = uni_cli_shared_1.parsePagesJson(inputDir, platform);
             // 更新define
             const { define, server: { middlewareMode }, } = server.config;
@@ -84,6 +79,10 @@ function createHandleHotUpdate() {
             for (const file of invalidateFiles) {
                 yield invalidate(file, server.moduleGraph);
             }
+            server.ws.send({
+                type: 'full-reload',
+                path: '*',
+            });
             return [];
         });
     };

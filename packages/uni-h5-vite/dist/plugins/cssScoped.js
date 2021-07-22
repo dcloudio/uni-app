@@ -48,6 +48,9 @@ function uniCssScopedPlugin() {
             if (!uni_cli_shared_1.EXTNAME_VUE.includes(path_1.default.extname(ctx.file))) {
                 return;
             }
+            if (ctx.file.endsWith('App.vue')) {
+                return;
+            }
             debugScoped('hmr', ctx.file);
             const oldRead = ctx.read;
             ctx.read = () => __awaiter(this, void 0, void 0, function* () {

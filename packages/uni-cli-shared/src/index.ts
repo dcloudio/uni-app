@@ -1,4 +1,5 @@
 export * from './hbx'
+export * from './logs'
 export * from './ssr'
 export * from './deps'
 export * from './json'
