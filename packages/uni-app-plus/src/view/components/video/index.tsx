@@ -171,7 +171,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',
   props,
   emits,
-  setup(props, { emit, slots }) {
+  setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const containerRef: Ref<HTMLElement | null> = ref(null)
@@ -253,7 +253,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (
         <uni-video ref={rootRef} id={props.id}>
           <div ref={containerRef} class="uni-video-container" />
-          <div class="uni-video-slot">{slots.default && slots.default()}</div>
+          <div class="uni-video-slot"></div>
         </uni-video>
       )
     }

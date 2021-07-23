@@ -11,6 +11,14 @@ export class UniVideo extends UniComponent {
     refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-video', Video, parentNodeId, refNodeId, nodeJson)
+    super(
+      id,
+      'uni-video',
+      Video,
+      parentNodeId,
+      refNodeId,
+      nodeJson,
+      '.uni-video-slot'
+    )
   }
 }
