@@ -45,6 +45,8 @@ const UniH5Plugin: UniVitePlugin = {
   },
   configResolved(config) {
     initLogger(config)
+    // TODO 禁止 optimizeDeps
+    ;(config as any).cacheDir = ''
   },
   handleHotUpdate: createHandleHotUpdate(),
   transformIndexHtml: createTransformIndexHtml(),

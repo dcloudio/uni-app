@@ -1769,35 +1769,6 @@ var serviceContext = (function (vue) {
       }
   }
 
-  const callbacks$3 = {};
-  function createCallbacks(namespace) {
-      let scopedCallbacks = callbacks$3[namespace];
-      if (!scopedCallbacks) {
-          scopedCallbacks = {
-              id: 1,
-              callbacks: Object.create(null),
-          };
-          callbacks$3[namespace] = scopedCallbacks;
-      }
-      return {
-          get(id) {
-              return scopedCallbacks.callbacks[id];
-          },
-          pop(id) {
-              const callback = scopedCallbacks.callbacks[id];
-              if (callback) {
-                  delete scopedCallbacks.callbacks[id];
-              }
-              return callback;
-          },
-          push(callback) {
-              const id = scopedCallbacks.id++;
-              scopedCallbacks.callbacks[id] = callback;
-              return id;
-          },
-      };
-  }
-
   let invokeViewMethodId = 0;
   function publishViewMethodName() {
       return getCurrentPageId() + '.' + INVOKE_VIEW_API;
@@ -2426,16 +2397,13 @@ var serviceContext = (function (vue) {
   // import pako from 'pako'
   //#endregion
   //#region UniServiceJSBridge
-  const canvasEventCallbacks = createCallbacks('canvasEvent');
-  function operateCanvas(canvasId, pageId, type, data) {
+  function operateCanvas(canvasId, pageId, type, data, callback) {
       UniServiceJSBridge.invokeViewMethod(`canvas.${canvasId}`, {
           type,
           data,
-      }, pageId, ({ callbackId, data }) => {
-          const callback = canvasEventCallbacks.pop(callbackId);
-          if (callback) {
+      }, pageId, (data) => {
+          if (callback)
               callback(data);
-          }
       });
   }
   //#endregion
@@ -2734,15 +2702,10 @@ var serviceContext = (function (vue) {
           var actions = [...this.actions];
           this.actions = [];
           this.path = [];
-          var callbackId;
-          if (typeof callback === 'function') {
-              callbackId = canvasEventCallbacks.push(callback);
-          }
           operateCanvas(this.id, this.pageId, 'actionsChanged', {
               actions,
               reserve,
-              callbackId,
-          });
+          }, callback);
       }
       createLinearGradient(x0, y0, x1, y1) {
           return new CanvasGradient('linear', [x0, y0, x1, y1]);
@@ -3273,11 +3236,15 @@ var serviceContext = (function (vue) {
           reject();
           return;
       }
-      const cId = canvasEventCallbacks.push(function (data) {
+      function callback(data) {
+          if (data.errMsg && data.errMsg.indexOf('fail') !== -1) {
+              reject('', data);
+              return;
+          }
           let imgData = data.data;
           if (imgData && imgData.length) {
               if (data.compressed) {
-                  return Promise.resolve().then(function () { return pako_esm; }).then((pako) => {
+                  Promise.resolve().then(function () { return pako_esm; }).then((pako) => {
                       imgData = pako.inflateRaw(imgData);
                       delete data.compressed;
                       data.data = new Uint8ClampedArray(imgData);
@@ -3287,14 +3254,13 @@ var serviceContext = (function (vue) {
               data.data = new Uint8ClampedArray(imgData);
           }
           resolve(data);
-      });
+      }
       operateCanvas(canvasId, pageId, 'getImageData', {
           x,
           y,
           width,
           height,
-          callbackId: cId,
-      });
+      }, callback);
   }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
   const canvasPutImageData = defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
       // onCanvasMethodCallback()
@@ -3303,9 +3269,6 @@ var serviceContext = (function (vue) {
           reject();
           return;
       }
-      const cId = canvasEventCallbacks.push(function (data) {
-          resolve(data);
-      });
       let compressed;
       const operate = () => {
           operateCanvas(canvasId, pageId, 'putImageData', {
@@ -3315,7 +3278,12 @@ var serviceContext = (function (vue) {
               width,
               height,
               compressed,
-              callbackId: cId,
+          }, (data) => {
+              if (data.errMsg && data.errMsg.indexOf('fail')) {
+                  reject();
+                  return;
+              }
+              resolve(data);
           });
       };
       // iOS真机非调试模式压缩太慢暂时排除
@@ -3337,9 +3305,6 @@ var serviceContext = (function (vue) {
           reject();
           return;
       }
-      const cId = canvasEventCallbacks.push(function (res) {
-          resolve(res);
-      });
       const dirname = `${TEMP_PATH$1}/canvas`;
       operateCanvas(canvasId, pageId, 'toTempFilePath', {
           x,
@@ -3351,7 +3316,12 @@ var serviceContext = (function (vue) {
           fileType,
           quality,
           dirname,
-          callbackId: cId,
+      }, (res) => {
+          if (res.errMsg && res.errMsg.indexOf('fail')) {
+              reject('', res);
+              return;
+          }
+          resolve(res);
       });
   }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
 
