@@ -614,10 +614,10 @@ let invokeViewMethodId = 0;
 function publishViewMethodName() {
   return getCurrentPageId() + "." + INVOKE_VIEW_API;
 }
-const invokeViewMethod = (name, args, callback, pageId) => {
+const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
   const id = invokeViewMethodId++;
-  subscribe(INVOKE_VIEW_API + "." + id, callback, true);
+  callback && subscribe(INVOKE_VIEW_API + "." + id, callback, true);
   publishHandler(publishViewMethodName(), { id, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
@@ -1754,7 +1754,7 @@ var index$v = /* @__PURE__ */ defineBuiltInComponent({
       _handleSubscribe,
       _resize
     } = useMethods(canvas, actionsWaiting);
-    useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
+    useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId));
     return () => {
       const {
         canvasId,
@@ -1840,7 +1840,7 @@ function useMethods(canvasRef, actionsWaiting) {
     actions,
     reserve,
     callbackId
-  }) {
+  }, resolve) {
     if (!actions) {
       return;
     }
@@ -1891,7 +1891,7 @@ function useMethods(canvasRef, actionsWaiting) {
             });
             color = LinearGradient;
           } else if (data[0] === "pattern") {
-            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image) {
+            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, resolve, function(image) {
               if (image) {
                 c2d[method1] = c2d.createPattern(image, data[2]);
               }
@@ -1940,7 +1940,7 @@ function useMethods(canvasRef, actionsWaiting) {
           var url = dataArray[0];
           var otherData = dataArray.slice(1);
           _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image) {
+          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, resolve, function(image) {
             if (image) {
               c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
             }
@@ -1962,12 +1962,12 @@ function useMethods(canvasRef, actionsWaiting) {
       }
     }
     if (!actionsWaiting.value && callbackId) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg: "drawCanvas:ok"
         }
-      }, getCurrentPageId());
+      });
     }
   }
   function preloadImage(actions) {
@@ -2000,7 +2000,7 @@ function useMethods(canvasRef, actionsWaiting) {
       }
     });
   }
-  function checkImageLoaded(src, actions, callbackId, fn) {
+  function checkImageLoaded(src, actions, callbackId, resolve, fn) {
     var image = _images[src];
     if (image.ready) {
       fn(image);
@@ -2016,10 +2016,10 @@ function useMethods(canvasRef, actionsWaiting) {
         _actionsDefer = [];
         for (var action = actions2.shift(); action; ) {
           actionsChanged({
+            callbackId,
             actions: action[0],
-            reserve: action[1],
-            callbackId
-          });
+            reserve: action[1]
+          }, resolve);
           action = actions2.shift();
         }
       };
@@ -2038,7 +2038,7 @@ function useMethods(canvasRef, actionsWaiting) {
     quality = 1,
     type = "png",
     callbackId
-  }) {
+  }, resolve) {
     const canvas = canvasRef.value;
     let data;
     const maxWidth = canvas.offsetWidth - x;
@@ -2097,10 +2097,10 @@ function useMethods(canvasRef, actionsWaiting) {
     if (!callbackId) {
       return result;
     } else {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve && resolve({
         callbackId,
         data: result
-      }, getCurrentPageId());
+      });
     }
   }
   function putImageData({
@@ -2111,7 +2111,7 @@ function useMethods(canvasRef, actionsWaiting) {
     height,
     compressed,
     callbackId
-  }) {
+  }, resolve) {
     try {
       if (!height) {
         height = Math.round(data.length / 4 / width);
@@ -2124,20 +2124,20 @@ function useMethods(canvasRef, actionsWaiting) {
       canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
       canvas.height = canvas.width = 0;
     } catch (error) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg: "canvasPutImageData:fail"
         }
-      }, getCurrentPageId());
+      });
       return;
     }
-    UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+    resolve({
       callbackId,
       data: {
         errMsg: "canvasPutImageData:ok"
       }
-    }, getCurrentPageId());
+    });
   }
   function toTempFilePath({
     x = 0,
@@ -2150,7 +2150,7 @@ function useMethods(canvasRef, actionsWaiting) {
     quality,
     dirname,
     callbackId
-  }) {
+  }, resolve) {
     const res = getImageData({
       x,
       y,
@@ -2164,12 +2164,12 @@ function useMethods(canvasRef, actionsWaiting) {
       quality
     });
     if (!res.data || !res.data.length) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         }
-      }, getCurrentPageId());
+      });
       return;
     }
     saveImage(res.data, dirname, (error, tempFilePath) => {
@@ -2177,13 +2177,13 @@ function useMethods(canvasRef, actionsWaiting) {
       if (error) {
         errMsg += ` ${error.message}`;
       }
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg,
           tempFilePath
         }
-      }, getCurrentPageId());
+      });
     });
   }
   const methods = {
@@ -2192,10 +2192,10 @@ function useMethods(canvasRef, actionsWaiting) {
     putImageData,
     toTempFilePath
   };
-  function _handleSubscribe(type, data = {}) {
+  function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
     if (type.indexOf("_") !== 0 && typeof method === "function") {
-      method(data);
+      method(data, resolve);
     }
   }
   return shared.extend(methods, {
@@ -2530,22 +2530,8 @@ function useQuill(props2, rootRef, trigger) {
   });
   vue.watch(() => props2.placeholder, (value) => {
   });
-  registerViewMethod(getCurrentPageId(), `editor.${props2.id}`, ({ type, data }, resolve) => {
-    const { options, callbackId } = data;
-    let res;
-    let errMsg;
-    {
-      errMsg = "not ready";
-    }
-    if (callbackId) {
-      resolve({
-        callbackId,
-        data: shared.extend({}, res, {
-          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
-        })
-      });
-    }
-  });
+  useContextInfo();
+  useSubscribe();
 }
 const props$q = /* @__PURE__ */ shared.extend({}, props$r, {
   id: {
@@ -6589,19 +6575,18 @@ var index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useSubscribe(callback, name, multiple) {
+function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
-  multiple || !name ? useCurrentPageId() : 0;
 }
 let index$a = 0;
 function useContextInfo(_id) {
-  const page = useCurrentPageId();
+  useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
   const id = _id || vm.id || `context${index$a++}`;
-  return `${page}.${type}.${id}`;
+  return `${type}.${id}`;
 }
 function applyOptions(options, instance, publicThis) {
   if (!publicThis.$mpType) {
@@ -7366,33 +7351,8 @@ function useDanmu(props2, videoState) {
   };
 }
 function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
-  const methods = {
-    play,
-    pause,
-    seek,
-    sendDanmu,
-    playbackRate,
-    requestFullScreen,
-    exitFullScreen
-  };
-  const id = useContextInfo();
-  useSubscribe((type, data) => {
-    let options;
-    switch (type) {
-      case "seek":
-        options = data.position;
-        break;
-      case "sendDanmu":
-        options = data;
-        break;
-      case "playbackRate":
-        options = data.rate;
-        break;
-    }
-    if (type in methods) {
-      methods[type](options);
-    }
-  }, id, true);
+  useContextInfo();
+  useSubscribe();
 }
 const props$8 = {
   id: {
@@ -7548,7 +7508,7 @@ var index$8 = /* @__PURE__ */ defineBuiltInComponent({
       clickProgress,
       toggleControls
     } = useControls(props2, videoState, seek);
-    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    useContext();
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,

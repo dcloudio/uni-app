@@ -27,13 +27,17 @@ function normalizeEvent(vm: ComponentPublicInstance, id?: string) {
   return vm.$options.name!.toLowerCase() + '.' + id
 }
 
-function addSubscribe(name: string, callback: SubscribeCallbackRes) {
+function addSubscribe(
+  name: string,
+  callback: SubscribeCallbackRes,
+  pageId?: number
+) {
   if (!name) {
     return
   }
 
   registerViewMethod(
-    getCurrentPageId(),
+    pageId || getCurrentPageId(),
     name,
     (
       { type, data }: { type: string; data: unknown },
@@ -54,17 +58,18 @@ function removeSubscribe(name: string) {
 export function useSubscribe<Res = any>(
   callback: SubscribeCallbackRes<Res>,
   name?: string,
-  multiple?: boolean
+  multiple?: boolean,
+  pageId?: number
 ) {
   const instance = getCurrentInstance()!
   const vm = instance.proxy!
   onMounted(() => {
-    addSubscribe(name || normalizeEvent(vm)!, callback)
+    addSubscribe(name || normalizeEvent(vm)!, callback, pageId)
     if (multiple || !name) {
       watch(
         () => (vm as any).id,
         (value, oldValue) => {
-          addSubscribe(normalizeEvent(vm, value)!, callback)
+          addSubscribe(normalizeEvent(vm, value)!, callback, pageId)
           removeSubscribe(oldValue && normalizeEvent(vm, oldValue)!)
         }
       )

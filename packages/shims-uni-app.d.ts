@@ -342,8 +342,8 @@ declare namespace UniApp {
     invokeViewMethod<Args = any, Res = any>(
       name: string,
       args: Args,
-      callback: (res: Res) => void,
-      pageId: number
+      pageId: number,
+      callback?: (res: Res) => void
     ): void
     /**
      * 执行 View 层方法，并持久监听返回值

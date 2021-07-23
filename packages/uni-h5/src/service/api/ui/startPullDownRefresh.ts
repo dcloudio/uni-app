@@ -9,7 +9,7 @@ export const startPullDownRefresh =
   defineAsyncApi<API_TYPE_START_PULL_DOWN_REFRESH>(
     API_START_PULL_DOWN_REFRESH,
     (_args, { resolve }) => {
-      UniServiceJSBridge.publishHandler(
+      UniServiceJSBridge.invokeViewMethod(
         API_START_PULL_DOWN_REFRESH,
         {},
         getCurrentPageId()

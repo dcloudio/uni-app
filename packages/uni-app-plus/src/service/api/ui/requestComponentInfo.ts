@@ -16,7 +16,7 @@ export function requestComponentInfo(
         return req
       }),
     },
-    callback,
-    page.$page.id
+    page.$page.id,
+    callback
   )
 }

@@ -58,13 +58,13 @@ function operateCanvas(
       type,
       data,
     },
+    pageId,
     ({ callbackId, data }) => {
       const callback = canvasEventCallbacks.pop(callbackId)
       if (callback) {
         callback(data)
       }
-    },
-    pageId
+    }
   )
 }
 //#endregion

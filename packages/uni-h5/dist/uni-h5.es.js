@@ -498,6 +498,10 @@ function registerViewMethod(pageId, name, fn) {
     viewMethods[name] = fn;
   }
 }
+function unregisterViewMethod(pageId, name) {
+  name = normalizeViewMethodName(pageId, name);
+  delete viewMethods[name];
+}
 function onInvokeViewMethod({
   id: id2,
   name,
@@ -784,7 +788,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -796,10 +800,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1374,10 +1378,10 @@ let invokeViewMethodId = 0;
 function publishViewMethodName() {
   return getCurrentPageId() + "." + INVOKE_VIEW_API;
 }
-const invokeViewMethod = (name, args, callback, pageId) => {
+const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
   const id2 = invokeViewMethodId++;
-  subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
+  callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
   publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
@@ -2029,14 +2033,14 @@ function getBaseSystemInfo() {
   };
 }
 function operateVideoPlayer(videoId, pageId, type, data) {
-  UniServiceJSBridge.publishHandler("video." + videoId, {
+  UniServiceJSBridge.invokeViewMethod("video." + videoId, {
     videoId,
     type,
     data
   }, pageId);
 }
 function operateMap(id2, pageId, type, data) {
-  UniServiceJSBridge.publishHandler("map." + id2, {
+  UniServiceJSBridge.invokeViewMethod("map." + id2, {
     type,
     data
   }, pageId);
@@ -3072,20 +3076,16 @@ const CanvasToTempFilePathProtocol = {
   quality: Number
 };
 const canvasEventCallbacks = createCallbacks("canvasEvent");
-const onCanvasMethodCallback = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.subscribe("onCanvasMethodCallback", ({ callbackId, data }) => {
-    const callback = canvasEventCallbacks.pop(callbackId);
-    if (callback) {
-      callback(data);
-    }
-  });
-});
 function operateCanvas(canvasId, pageId, type, data) {
-  UniServiceJSBridge.publishHandler("canvas." + canvasId, {
-    canvasId,
+  UniServiceJSBridge.invokeViewMethod(`canvas.${canvasId}`, {
     type,
     data
-  }, pageId);
+  }, pageId, ({ callbackId, data: data2 }) => {
+    const callback = canvasEventCallbacks.pop(callbackId);
+    if (callback) {
+      callback(data2);
+    }
+  });
 }
 var methods1 = ["scale", "rotate", "translate", "setTransform", "transform"];
 var methods2 = [
@@ -3816,7 +3816,6 @@ const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONT
   }
 }, CreateCanvasContextProtocol);
 const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-  onCanvasMethodCallback();
   const pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -3838,7 +3837,6 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
   });
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
 const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-  onCanvasMethodCallback();
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -3873,7 +3871,6 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
   fileType,
   quality
 }, { resolve, reject }) => {
-  onCanvasMethodCallback();
   var pageId = getPageIdByVm(getCurrentPageVm());
   if (!pageId) {
     reject();
@@ -4020,12 +4017,12 @@ function operateEditor(componentId, pageId, type, options) {
   UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
     type,
     data
-  }, ({ callbackId, data: data2 }) => {
+  }, pageId, ({ callbackId, data: data2 }) => {
     if (needCallOptions) {
       callOptions(optionsCache[callbackId], data2);
       delete optionsCache[callbackId];
     }
-  }, pageId);
+  });
 }
 class EditorContext {
   constructor(id2, pageId) {
@@ -4300,13 +4297,13 @@ const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTT
 });
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-  UniServiceJSBridge.invokeViewMethod("getSelectedTextRange", {}, (res) => {
+  UniServiceJSBridge.invokeViewMethod("getSelectedTextRange", {}, getCurrentPageId(), (res) => {
     if (typeof res.end === "undefined" && typeof res.start === "undefined") {
       reject("no focused");
     } else {
       resolve(res);
     }
-  }, getCurrentPageId());
+  });
 });
 const API_CAN_I_USE = "canIUse";
 const CanIUseProtocol = [
@@ -6244,7 +6241,7 @@ function useMethods(canvasRef, actionsWaiting) {
     actions,
     reserve,
     callbackId
-  }) {
+  }, resolve) {
     if (!actions) {
       return;
     }
@@ -6295,7 +6292,7 @@ function useMethods(canvasRef, actionsWaiting) {
             });
             color = LinearGradient;
           } else if (data[0] === "pattern") {
-            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, function(image2) {
+            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, resolve, function(image2) {
               if (image2) {
                 c2d[method1] = c2d.createPattern(image2, data[2]);
               }
@@ -6344,7 +6341,7 @@ function useMethods(canvasRef, actionsWaiting) {
           var url = dataArray[0];
           var otherData = dataArray.slice(1);
           _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, function(image2) {
+          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, resolve, function(image2) {
             if (image2) {
               c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
             }
@@ -6366,12 +6363,12 @@ function useMethods(canvasRef, actionsWaiting) {
       }
     }
     if (!actionsWaiting.value && callbackId) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg: "drawCanvas:ok"
         }
-      }, getCurrentPageId());
+      });
     }
   }
   function preloadImage(actions) {
@@ -6404,7 +6401,7 @@ function useMethods(canvasRef, actionsWaiting) {
       }
     });
   }
-  function checkImageLoaded(src, actions, callbackId, fn) {
+  function checkImageLoaded(src, actions, callbackId, resolve, fn) {
     var image2 = _images[src];
     if (image2.ready) {
       fn(image2);
@@ -6420,10 +6417,10 @@ function useMethods(canvasRef, actionsWaiting) {
         _actionsDefer = [];
         for (var action = actions2.shift(); action; ) {
           actionsChanged({
+            callbackId,
             actions: action[0],
-            reserve: action[1],
-            callbackId
-          });
+            reserve: action[1]
+          }, resolve);
           action = actions2.shift();
         }
       };
@@ -6442,7 +6439,7 @@ function useMethods(canvasRef, actionsWaiting) {
     quality = 1,
     type = "png",
     callbackId
-  }) {
+  }, resolve) {
     const canvas = canvasRef.value;
     let data;
     const maxWidth = canvas.offsetWidth - x;
@@ -6501,10 +6498,10 @@ function useMethods(canvasRef, actionsWaiting) {
     if (!callbackId) {
       return result;
     } else {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve && resolve({
         callbackId,
         data: result
-      }, getCurrentPageId());
+      });
     }
   }
   function putImageData({
@@ -6515,7 +6512,7 @@ function useMethods(canvasRef, actionsWaiting) {
     height,
     compressed,
     callbackId
-  }) {
+  }, resolve) {
     try {
       if (!height) {
         height = Math.round(data.length / 4 / width);
@@ -6528,20 +6525,20 @@ function useMethods(canvasRef, actionsWaiting) {
       canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
       canvas.height = canvas.width = 0;
     } catch (error) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg: "canvasPutImageData:fail"
         }
-      }, getCurrentPageId());
+      });
       return;
     }
-    UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+    resolve({
       callbackId,
       data: {
         errMsg: "canvasPutImageData:ok"
       }
-    }, getCurrentPageId());
+    });
   }
   function toTempFilePath({
     x = 0,
@@ -6554,7 +6551,7 @@ function useMethods(canvasRef, actionsWaiting) {
     quality,
     dirname,
     callbackId
-  }) {
+  }, resolve) {
     const res = getImageData({
       x,
       y,
@@ -6568,12 +6565,12 @@ function useMethods(canvasRef, actionsWaiting) {
       quality
     });
     if (!res.data || !res.data.length) {
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         }
-      }, getCurrentPageId());
+      });
       return;
     }
     saveImage(res.data, dirname, (error, tempFilePath) => {
@@ -6581,13 +6578,13 @@ function useMethods(canvasRef, actionsWaiting) {
       if (error) {
         errMsg += ` ${error.message}`;
       }
-      UniViewJSBridge.publishHandler("onCanvasMethodCallback", {
+      resolve({
         callbackId,
         data: {
           errMsg,
           tempFilePath
         }
-      }, getCurrentPageId());
+      });
     });
   }
   const methods = {
@@ -6596,10 +6593,10 @@ function useMethods(canvasRef, actionsWaiting) {
     putImageData,
     toTempFilePath
   };
-  function _handleSubscribe(type, data = {}) {
+  function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
     if (type.indexOf("_") !== 0 && typeof method === "function") {
-      method(data);
+      method(data, resolve);
     }
   }
   return extend(methods, {
@@ -7384,7 +7381,8 @@ function useQuill(props2, rootRef, trigger) {
       }
     });
   });
-  registerViewMethod(getCurrentPageId(), `editor.${props2.id}`, ({ type, data }, resolve) => {
+  const id2 = useContextInfo();
+  useSubscribe((type, data, resolve) => {
     const { options, callbackId } = data;
     let res;
     let range;
@@ -7528,7 +7526,7 @@ function useQuill(props2, rootRef, trigger) {
         })
       });
     }
-  });
+  }, id2, true);
 }
 const props$x = /* @__PURE__ */ extend({}, props$y, {
   id: {
@@ -13080,44 +13078,43 @@ var index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function normalizeEvent(pageId, vm, id2) {
+function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
   }
   if (!id2) {
     return;
   }
-  return pageId + "." + vm.$options.name.toLowerCase() + "." + id2;
+  return vm.$options.name.toLowerCase() + "." + id2;
 }
-function addSubscribe(name, callback) {
+function addSubscribe(name, callback, pageId) {
   if (!name) {
     return;
   }
-  UniViewJSBridge.subscribe(name, ({ type, data }) => {
-    callback(type, data);
+  registerViewMethod(pageId || getCurrentPageId(), name, ({ type, data }, resolve) => {
+    callback(type, data, resolve);
   });
 }
 function removeSubscribe(name) {
   if (!name) {
     return;
   }
-  UniViewJSBridge.unsubscribe(name);
+  unregisterViewMethod(getCurrentPageId(), name);
 }
-function useSubscribe(callback, name, multiple) {
+function useSubscribe(callback, name, multiple, pageId) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
-  const pageId = multiple || !name ? useCurrentPageId() : 0;
   onMounted(() => {
-    addSubscribe(name || normalizeEvent(pageId, vm), callback);
+    addSubscribe(name || normalizeEvent(vm), callback, pageId);
     if (multiple || !name) {
       watch(() => vm.id, (value, oldValue) => {
-        addSubscribe(normalizeEvent(pageId, vm, value), callback);
-        removeSubscribe(oldValue && normalizeEvent(pageId, vm, oldValue));
+        addSubscribe(normalizeEvent(vm, value), callback, pageId);
+        removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
       });
     }
   });
   onBeforeUnmount(() => {
-    removeSubscribe(name || normalizeEvent(pageId, vm));
+    removeSubscribe(name || normalizeEvent(vm));
   });
 }
 function useOn(name, callback) {
@@ -13139,7 +13136,7 @@ function useContextInfo(_id) {
       page
     };
   });
-  return `${page}.${type}.${id2}`;
+  return `${type}.${id2}`;
 }
 function getContextInfo(el) {
   return el.__uniContextInfo;
@@ -13230,7 +13227,7 @@ function normalizePageMeta(pageMeta) {
       }, pageMeta.pullToRefresh));
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
+        pullToRefresh.offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
     }
@@ -15416,7 +15413,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15529,12 +15526,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
@@ -15554,10 +15551,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });
@@ -18140,11 +18137,11 @@ const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrol
   resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
 const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
-  UniServiceJSBridge.publishHandler(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
+  UniServiceJSBridge.invokeViewMethod(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
 const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, { resolve }) => {
-  UniServiceJSBridge.publishHandler(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
+  UniServiceJSBridge.invokeViewMethod(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
   resolve();
 });
 const setTabBarItemProps = ["text", "iconPath", "selectedIconPath"];
@@ -20903,7 +20900,7 @@ function usePageRefresh(refreshRef) {
         refreshing();
       }, 50);
     }
-  }, id2 + "." + API_START_PULL_DOWN_REFRESH);
+  }, API_START_PULL_DOWN_REFRESH, false, id2);
   useSubscribe(() => {
     if (state2 === REFRESHING) {
       removeClass();
@@ -20914,7 +20911,7 @@ function usePageRefresh(refreshRef) {
         state2 = distance2 = offset = null;
       });
     }
-  }, id2 + "." + API_STOP_PULL_DOWN_REFRESH);
+  }, API_STOP_PULL_DOWN_REFRESH, false, id2);
   onMounted(() => {
     refreshContainerElem = refreshRef.value.$el;
     refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");

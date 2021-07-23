@@ -12,20 +12,15 @@ export const getSelectedTextRange =
       UniServiceJSBridge.invokeViewMethod<
         {},
         UniApp.GetSelectedTextRangeSuccessCallbackResult
-      >(
-        'getSelectedTextRange',
-        {},
-        (res) => {
-          if (
-            typeof res.end === 'undefined' &&
-            typeof res.start === 'undefined'
-          ) {
-            reject('no focused')
-          } else {
-            resolve(res)
-          }
-        },
-        getCurrentPageId()
-      )
+      >('getSelectedTextRange', {}, getCurrentPageId(), (res) => {
+        if (
+          typeof res.end === 'undefined' &&
+          typeof res.start === 'undefined'
+        ) {
+          reject('no focused')
+        } else {
+          resolve(res)
+        }
+      })
     }
   )

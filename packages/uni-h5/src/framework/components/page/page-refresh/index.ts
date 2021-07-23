@@ -39,27 +39,37 @@ export function usePageRefresh(refreshRef: Ref) {
   let refreshControllerElem: HTMLDivElement
   let refreshControllerElemStyle: CSSStyleDeclaration
   let refreshInnerElemStyle: CSSStyleDeclaration
-  useSubscribe(() => {
-    if (!state) {
-      state = REFRESHING
-      addClass()
-      setTimeout(() => {
-        refreshing()
-      }, 50)
-    }
-  }, id + '.' + API_START_PULL_DOWN_REFRESH)
-  useSubscribe(() => {
-    if (state === REFRESHING) {
-      removeClass()
-      state = RESTORING
-      addClass()
-
-      restoring(() => {
+  useSubscribe(
+    () => {
+      if (!state) {
+        state = REFRESHING
+        addClass()
+        setTimeout(() => {
+          refreshing()
+        }, 50)
+      }
+    },
+    API_START_PULL_DOWN_REFRESH,
+    false,
+    id
+  )
+  useSubscribe(
+    () => {
+      if (state === REFRESHING) {
         removeClass()
-        state = distance = offset = null
-      })
-    }
-  }, id + '.' + API_STOP_PULL_DOWN_REFRESH)
+        state = RESTORING
+        addClass()
+
+        restoring(() => {
+          removeClass()
+          state = distance = offset = null
+        })
+      }
+    },
+    API_STOP_PULL_DOWN_REFRESH,
+    false,
+    id
+  )
   onMounted(() => {
     refreshContainerElem = refreshRef.value.$el
     refreshControllerElem =

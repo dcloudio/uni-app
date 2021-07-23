@@ -27,13 +27,13 @@ function operateEditor(
       type,
       data,
     },
+    pageId,
     ({ callbackId, data }) => {
       if (needCallOptions) {
         callOptions(optionsCache[callbackId], data)
         delete optionsCache[callbackId]
       }
-    },
-    pageId
+    }
   )
 }
 

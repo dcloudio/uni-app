@@ -4,7 +4,7 @@ export function operateVideoPlayer(
   type: string,
   data?: unknown
 ) {
-  UniServiceJSBridge.publishHandler(
+  UniServiceJSBridge.invokeViewMethod(
     'video.' + videoId,
     {
       videoId,

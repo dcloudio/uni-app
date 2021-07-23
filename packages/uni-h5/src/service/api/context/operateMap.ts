@@ -4,7 +4,7 @@ export function operateMap(
   type: string,
   data?: unknown
 ) {
-  UniServiceJSBridge.publishHandler(
+  UniServiceJSBridge.invokeViewMethod(
     'map.' + id,
     {
       type,

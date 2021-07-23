@@ -13,12 +13,12 @@ function publishViewMethodName() {
 const invokeViewMethod: UniApp.UniServiceJSBridge['invokeViewMethod'] = (
   name: string,
   args: unknown,
-  callback: (res: any) => void,
-  pageId: number
+  pageId: number,
+  callback?: (res: any) => void
 ) => {
   const { subscribe, publishHandler } = UniServiceJSBridge
   const id = invokeViewMethodId++
-  subscribe(INVOKE_VIEW_API + '.' + id, callback, true)
+  callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true)
   publishHandler(publishViewMethodName(), { id, name, args }, pageId)
 }
 
