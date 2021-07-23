@@ -13,7 +13,8 @@ var serviceContext = (function () {
     'base64ToArrayBuffer',
     'arrayBufferToBase64',
     'addInterceptor',
-    'removeInterceptor'
+    'removeInterceptor',
+    'interceptors'
   ];
 
   const network = [
@@ -693,7 +694,7 @@ var serviceContext = (function () {
         }
         if (res === false) {
           return {
-            then () {}
+            then () { }
           }
         }
       }
@@ -773,10 +774,14 @@ var serviceContext = (function () {
       if (!isPromise(res)) {
         return res
       }
-      return res.then(res => {
-        return res[1]
-      }).catch(res => {
-        return res[0]
+      return new Promise((resolve, reject) => {
+        res.then(res => {
+          if (res[0]) {
+            reject(res[0]);
+          } else {
+            resolve(res[1]);
+          }
+        });
       })
     }
   };
@@ -1312,14 +1317,6 @@ var serviceContext = (function () {
           return () => {
               this.watchers.splice(index, 1);
           };
-      }
-      mergeLocaleMessage(locale, message) {
-          if (this.messages[locale]) {
-              Object.assign(this.messages[locale], message);
-          }
-          else {
-              this.messages[locale] = message;
-          }
       }
       t(key, locale, values) {
           let message = this.message;
@@ -6806,11 +6803,11 @@ var serviceContext = (function () {
     const errorCallback = warpPlusErrorCallback(callbackId, 'chooseVideo', 'cancel');
 
     function successCallback (tempFilePath = '') {
-      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
+      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(tempFilePath)}`;
       const compressVideo = compressed ? new Promise((resolve) => {
         plus.zip.compressVideo({
           src: tempFilePath,
-          dst
+          filename
         }, ({ tempFilePath }) => {
           resolve(tempFilePath);
         }, () => {
