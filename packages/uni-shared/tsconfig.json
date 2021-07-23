@@ -4,7 +4,7 @@
     "sourceMap": false,
     "declaration": true,
     "declarationDir": "./dist/packages/uni-shared/src",
-    "target": "esnext",
+    "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
     "allowJs": false,

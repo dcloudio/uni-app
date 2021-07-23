@@ -42,6 +42,7 @@ const UniH5Plugin = {
     },
     configResolved(config) {
         initLogger(config);
+        config.cacheDir = '';
     },
     handleHotUpdate: handleHotUpdate_1.createHandleHotUpdate(),
     transformIndexHtml: transformIndexHtml_1.createTransformIndexHtml(),

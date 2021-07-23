@@ -1,5 +1,3 @@
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 export default function vueFactory(exports) {
   /**
    * Make a map and return a function for checking if a key
@@ -72,20 +70,10 @@ export default function vueFactory(exports) {
 
   class UniEvent {
     constructor(type, opts) {
-      _defineProperty(this, "type", void 0);
-
-      _defineProperty(this, "bubbles", void 0);
-
-      _defineProperty(this, "cancelable", void 0);
-
-      _defineProperty(this, "defaultPrevented", false);
-
-      _defineProperty(this, "timeStamp", Date.now());
-
-      _defineProperty(this, "_stop", false);
-
-      _defineProperty(this, "_end", false);
-
+      this.defaultPrevented = false;
+      this.timeStamp = Date.now();
+      this._stop = false;
+      this._end = false;
       this.type = type;
       this.bubbles = !!opts.bubbles;
       this.cancelable = !!opts.cancelable;
@@ -121,7 +109,7 @@ export default function vueFactory(exports) {
 
   class UniEventTarget {
     constructor() {
-      _defineProperty(this, "listeners", Object.create(null));
+      this.listeners = Object.create(null);
     }
 
     dispatchEvent(evt) {
@@ -253,20 +241,9 @@ export default function vueFactory(exports) {
   class UniNode extends UniEventTarget {
     constructor(nodeType, nodeName, container) {
       super();
-
-      _defineProperty(this, "nodeId", void 0);
-
-      _defineProperty(this, "nodeType", void 0);
-
-      _defineProperty(this, "nodeName", void 0);
-
-      _defineProperty(this, "childNodes", void 0);
-
-      _defineProperty(this, "pageNode", null);
-
-      _defineProperty(this, "parentNode", null);
-
-      _defineProperty(this, "_text", null);
+      this.pageNode = null;
+      this.parentNode = null;
+      this._text = null;
 
       if (container) {
         var {
@@ -402,13 +379,10 @@ export default function vueFactory(exports) {
 
   class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
-      super(nodeType, nodeName, container); // this.style = proxyStyle(new UniCSSStyleDeclaration())
-
-      _defineProperty(this, "attributes", Object.create(null));
-
-      _defineProperty(this, "style", null);
-
-      _defineProperty(this, "_html", null);
+      super(nodeType, nodeName, container);
+      this.attributes = Object.create(null);
+      this.style = null;
+      this._html = null; // this.style = proxyStyle(new UniCSSStyleDeclaration())
     }
 
     get className() {
@@ -547,9 +521,6 @@ export default function vueFactory(exports) {
   class UniElement extends UniBaseNode {
     constructor(nodeName, container) {
       super(NODE_TYPE_ELEMENT, nodeName.toUpperCase(), container);
-
-      _defineProperty(this, "tagName", void 0);
-
       this.tagName = this.nodeName;
     }
 

@@ -1,9 +1,3 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 (function(factory) {
   typeof define === "function" && define.amd ? define(factory) : factory();
 })(function() {
@@ -271,7 +265,6 @@ var __publicField = (obj, key, value) => {
   const isObject = (val) => val !== null && typeof val === "object";
   class BaseFormatter {
     constructor() {
-      __publicField(this, "_caches");
       this._caches = Object.create(null);
     }
     interpolate(message, values) {
@@ -387,12 +380,11 @@ var __publicField = (obj, key, value) => {
   }
   class I18n {
     constructor({ locale, fallbackLocale, messages, watcher, formater }) {
-      __publicField(this, "locale", LOCALE_EN);
-      __publicField(this, "fallbackLocale", LOCALE_EN);
-      __publicField(this, "message", {});
-      __publicField(this, "messages", {});
-      __publicField(this, "watchers", []);
-      __publicField(this, "formater");
+      this.locale = LOCALE_EN;
+      this.fallbackLocale = LOCALE_EN;
+      this.message = {};
+      this.messages = {};
+      this.watchers = [];
       if (fallbackLocale) {
         this.fallbackLocale = fallbackLocale;
       }

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "sourceMap": false,
-    "target": "esnext",
+    "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
     "allowJs": false,

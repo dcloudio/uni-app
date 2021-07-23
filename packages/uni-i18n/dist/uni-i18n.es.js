@@ -1,6 +1,5 @@
 const isObject = (val) => val !== null && typeof val === 'object';
 class BaseFormatter {
-    _caches;
     constructor() {
         this._caches = Object.create(null);
     }
@@ -138,13 +137,12 @@ function normalizeLocale(locale, messages) {
     }
 }
 class I18n {
-    locale = LOCALE_EN;
-    fallbackLocale = LOCALE_EN;
-    message = {};
-    messages = {};
-    watchers = [];
-    formater;
     constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+        this.locale = LOCALE_EN;
+        this.fallbackLocale = LOCALE_EN;
+        this.message = {};
+        this.messages = {};
+        this.watchers = [];
         if (fallbackLocale) {
             this.fallbackLocale = fallbackLocale;
         }
