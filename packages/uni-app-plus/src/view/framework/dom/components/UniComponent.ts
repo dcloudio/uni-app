@@ -111,18 +111,23 @@ export class UniContainerComponent extends UniComponent {
     selector?: string
   ) {
     super(id, tag, component, parentNodeId, refNodeId, nodeJson, selector)
-    this._rebuild = this.rebuild.bind(this)
+  }
+  getRebuildFn() {
+    if (!this._rebuild) {
+      this._rebuild = this.rebuild.bind(this)
+    }
+    return this._rebuild
   }
   setText(text: string) {
-    queuePostActionJob(this._rebuild)
+    queuePostActionJob(this.getRebuildFn())
     return super.setText(text)
   }
   appendChild(node: Element) {
-    queuePostActionJob(this._rebuild)
+    queuePostActionJob(this.getRebuildFn())
     return super.appendChild(node)
   }
   insertBefore(newChild: Node, refChild: Node) {
-    queuePostActionJob(this._rebuild)
+    queuePostActionJob(this.getRebuildFn())
     return super.insertBefore(newChild, refChild)
   }
   rebuild() {
