@@ -1,20 +1,31 @@
 import { hasOwn } from '@vue/shared'
-import { Component, ComponentInternalInstance, createApp, reactive } from 'vue'
+import {
+  App,
+  Component,
+  ComponentInternalInstance,
+  createApp,
+  reactive,
+  // @ts-expect-error
+  flushPostFlushCbs,
+} from 'vue'
 import { formatLog, parseEventName, UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
-import { $ } from '../page'
+import { $, removeElement } from '../page'
+import { queuePostActionJob } from '../scheduler'
 
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
   protected $props!: Record<string, any>
   $holder?: Element
+  $app!: App
   constructor(
     id: number,
     tag: string,
     component: Component,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>,
     selector?: string
   ) {
@@ -23,7 +34,8 @@ export class UniComponent extends UniNode {
     ;(container as any).__vueParent = getVueParent(this)
     this.$props = reactive({})
     this.init(nodeJson)
-    createApp(createWrapper(component, this.$props)).mount(container)
+    this.$app = createApp(createWrapper(component, this.$props))
+    this.$app.mount(container)
     this.$ = container.firstElementChild! as UniCustomElement
     if (selector) {
       this.$holder = this.$.querySelector(selector)!
@@ -36,6 +48,9 @@ export class UniComponent extends UniNode {
     if (hasOwn(nodeJson, 't')) {
       this.setText(nodeJson.t || '')
     }
+    this.insert(parentNodeId, refNodeId)
+    // 延迟到insert之后，再flush，确保mounted等生命周期触发正常
+    flushPostFlushCbs()
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     const { a, e } = nodeJson
@@ -70,6 +85,12 @@ export class UniComponent extends UniNode {
   removeAttr(name: string) {
     this.$props[name] = null
   }
+
+  remove() {
+    this.isUnmounted = true
+    this.$app.unmount()
+    removeElement(this.id)
+  }
   appendChild(node: Element) {
     return (this.$holder || this.$).appendChild(node)
   }
@@ -79,33 +100,40 @@ export class UniComponent extends UniNode {
 }
 
 export class UniContainerComponent extends UniComponent {
+  private _rebuild!: Function
   constructor(
     id: number,
     tag: string,
     component: Component,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>,
     selector?: string
   ) {
-    super(id, tag, component, parentNodeId, nodeJson, selector)
-    this.initObserver()
+    super(id, tag, component, parentNodeId, refNodeId, nodeJson, selector)
+    this._rebuild = this.rebuild.bind(this)
   }
-  initObserver() {
-    const elem = this.$holder || this.$
-    const observer = new MutationObserver((mutations) => {
-      if (__DEV__) {
-        console.log(formatLog('Observer', mutations))
-      }
-      // TODO 刷新容器组件状态
-      const vm = this.$.__vueParentComponent
-      if ((vm as any).rebuild) {
-        ;(vm as any).rebuild()
-      }
-    })
-    observer.observe(elem, {
-      childList: true,
-      subtree: true,
-    })
+  setText(text: string) {
+    queuePostActionJob(this._rebuild)
+    return super.setText(text)
+  }
+  appendChild(node: Element) {
+    queuePostActionJob(this._rebuild)
+    return super.appendChild(node)
+  }
+  insertBefore(newChild: Node, refChild: Node) {
+    queuePostActionJob(this._rebuild)
+    return super.insertBefore(newChild, refChild)
+  }
+  rebuild() {
+    // 刷新容器组件状态
+    if (__DEV__) {
+      console.log(formatLog('rebuild', this.id, this.tag))
+    }
+    const vm = this.$.__vueParentComponent
+    if ((vm as any).rebuild) {
+      ;(vm as any).rebuild()
+    }
   }
 }
 

@@ -7,8 +7,9 @@ export class UniWebView extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-web-view', WebView, parentNodeId, nodeJson)
+    super(id, 'uni-web-view', WebView, parentNodeId, refNodeId, nodeJson)
   }
 }

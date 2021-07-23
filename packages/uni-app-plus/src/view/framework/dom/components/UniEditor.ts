@@ -7,8 +7,9 @@ export class UniEditor extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-editor', Editor, parentNodeId, nodeJson)
+    super(id, 'uni-editor', Editor, parentNodeId, refNodeId, nodeJson)
   }
 }

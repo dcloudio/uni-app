@@ -7,8 +7,9 @@ export class UniImage extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-image', Image, parentNodeId, nodeJson)
+    super(id, 'uni-image', Image, parentNodeId, refNodeId, nodeJson)
   }
 }

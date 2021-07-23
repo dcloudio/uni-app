@@ -7,8 +7,16 @@ export class UniMovableArea extends UniContainerComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-movable-area', MovableArea, parentNodeId, nodeJson)
+    super(
+      id,
+      'uni-movable-area',
+      MovableArea,
+      parentNodeId,
+      refNodeId,
+      nodeJson
+    )
   }
 }

@@ -6,8 +6,9 @@ export class UniPicker extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-picker', Picker, parentNodeId, nodeJson)
+    super(id, 'uni-picker', Picker, parentNodeId, refNodeId, nodeJson)
   }
 }

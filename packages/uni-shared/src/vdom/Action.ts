@@ -39,12 +39,14 @@ export type PageCreatedAction = [typeof ACTION_TYPE_PAGE_CREATED]
  * nodeId
  * tag
  * parentNodeId
+ * refNodeId
  * nodeJson
  */
 export type CreateAction = [
   typeof ACTION_TYPE_CREATE,
   number,
   string | number,
+  number,
   number,
   Partial<UniNodeJSON | UniNodeJSONMinify>?
 ]

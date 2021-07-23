@@ -1,14 +1,12 @@
 import {
   ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_CREATE,
-  ACTION_TYPE_INSERT,
   ACTION_TYPE_REMOVE,
   ACTION_TYPE_REMOVE_ATTRIBUTE,
   ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
   CreateAction,
-  InsertAction,
   SetAttributeAction,
   UniEventListener,
   EventModifierFlags,
@@ -57,14 +55,15 @@ describe('dom', () => {
     expect(createElementAction[1]).toBe(1)
     expect(createElementAction[2]).toBe('VIEW')
     expect(createElementAction[3]).toBe(0)
-    expect((createElementAction[4]!.a as any).id).toBe('view')
-    const addElementAction = updateActions[1] as InsertAction
-    expect(addElementAction[0]).toBe(ACTION_TYPE_INSERT)
-    expect(addElementAction[1]).toBe(1) // nodeId
-    expect(addElementAction[2]).toBe(0) // parentNodeId
-    expect(addElementAction[3]).toBe(-1) // index
+    expect(createElementAction[4]).toBe(-1)
+    expect((createElementAction[5]!.a as any).id).toBe('view')
+    // const addElementAction = updateActions[1] as InsertAction
+    // expect(addElementAction[0]).toBe(ACTION_TYPE_INSERT)
+    // expect(addElementAction[1]).toBe(1) // nodeId
+    // expect(addElementAction[2]).toBe(0) // parentNodeId
+    // expect(addElementAction[3]).toBe(-1) // index
 
-    const setAttributeAction = updateActions[2] as SetAttributeAction
+    const setAttributeAction = updateActions[1] as SetAttributeAction
     expect(setAttributeAction[0]).toBe(ACTION_TYPE_SET_ATTRIBUTE)
     expect(setAttributeAction[1]).toBe(1)
     expect(setAttributeAction[2]).toBe('hidden')
@@ -100,12 +99,13 @@ describe('dom', () => {
     const textNode = createTextNode('hello', { pageNode: root })
     root.appendChild(textNode)
     const {
-      updateActions: [, addTextNodeAction],
+      updateActions: [addTextNodeAction],
     } = root
-    expect(addTextNodeAction[0]).toBe(ACTION_TYPE_INSERT)
+    expect(addTextNodeAction[0]).toBe(ACTION_TYPE_CREATE)
     expect(addTextNodeAction[1]).toBe(2)
-    expect(addTextNodeAction[2]).toBe(0)
-    expect(addTextNodeAction[3]).toBe(-1)
+    expect(addTextNodeAction[2]).toBe('#text')
+    expect(addTextNodeAction[3]).toBe(0)
+    expect(addTextNodeAction[4]).toBe(-1)
 
     root.updateActions.length = 0
     const clickFn = () => {}

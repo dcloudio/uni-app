@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dom minify = true 1`] = `"[[0,[\\"VIEW\\",\\"id\\",\\"view\\",\\"hidden\\",true]],[3,3,0,0,{\\"a\\":[[1,2]]}],[4,3,0,-1],[6,3,3,4]]"`;
+exports[`dom minify = true 1`] = `"[[0,[\\"VIEW\\",\\"id\\",\\"view\\",\\"hidden\\",true]],[3,3,0,0,-1,{\\"a\\":[[1,2]]}],[6,3,3,4]]"`;
 
-exports[`dom minify = true 2`] = `"[[0,[\\"VIEW\\",\\"id\\",\\"view\\",\\"hidden\\",true]],[\\"create\\",3,\\"VIEW\\",0,{\\"a\\":{\\"id\\":\\"view\\"}}],[\\"insert\\",3,0,-1],[\\"setAttr\\",3,\\"hidden\\",true]]"`;
+exports[`dom minify = true 2`] = `"[[0,[\\"VIEW\\",\\"id\\",\\"view\\",\\"hidden\\",true]],[\\"create\\",3,\\"VIEW\\",0,-1,{\\"a\\":{\\"id\\":\\"view\\"}}],[\\"setAttr\\",3,\\"hidden\\",true]]"`;
 
 exports[`dom minify = true 3`] = `"[[0,[\\"hidden\\"]],[7,3,0]]"`;
 
@@ -16,9 +16,9 @@ exports[`dom minify = true 7`] = `"[[0,[]],[5,3]]"`;
 
 exports[`dom minify = true 8`] = `"[[0,[]],[\\"remove\\",3]]"`;
 
-exports[`dom minify = true 9`] = `"[[0,[\\"#text\\",\\"hello\\"]],[3,4,0,0,{\\"t\\":1}],[4,4,0,-1]]"`;
+exports[`dom minify = true 9`] = `"[[0,[\\"#text\\",\\"hello\\"]],[3,4,0,0,-1,{\\"t\\":1}]]"`;
 
-exports[`dom minify = true 10`] = `"[[0,[\\"#text\\",\\"hello\\"]],[\\"create\\",4,\\"#text\\",0,{\\"t\\":\\"hello\\"}],[\\"insert\\",4,0,-1]]"`;
+exports[`dom minify = true 10`] = `"[[0,[\\"#text\\",\\"hello\\"]],[\\"create\\",4,\\"#text\\",0,-1,{\\"t\\":\\"hello\\"}]]"`;
 
 exports[`dom minify = true 11`] = `"[[0,[\\"onClick\\"]],[8,4,0,0]]"`;
 

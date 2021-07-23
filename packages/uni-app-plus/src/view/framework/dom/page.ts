@@ -33,6 +33,7 @@ export function createElement(
   id: number,
   tag: string,
   parentNodeId: number,
+  refNodeId: number,
   nodeJson: Partial<UniNodeJSON> = {}
 ) {
   let element: UniNode
@@ -47,12 +48,13 @@ export function createElement(
   } else {
     const Component = BuiltInComponents[tag as keyof typeof BuiltInComponents]
     if (Component) {
-      element = new Component(id, parentNodeId, nodeJson)
+      element = new Component(id, parentNodeId, refNodeId, nodeJson)
     } else {
       element = new UniElement(
         id,
         document.createElement(tag),
         parentNodeId,
+        refNodeId,
         nodeJson
       )
     }
@@ -118,7 +120,7 @@ function initSystemInfo(
 }
 
 function initPageElement() {
-  createElement(0, 'div', -1).$ = document.getElementById('app')!
+  createElement(0, 'div', -1, -1).$ = document.getElementById('app')!
 }
 
 function initPageCss(route: string) {

@@ -7,8 +7,9 @@ export class UniMap extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-map', Map, parentNodeId, nodeJson)
+    super(id, 'uni-map', Map, parentNodeId, refNodeId, nodeJson)
   }
 }

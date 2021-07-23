@@ -95,12 +95,13 @@
         }
         return nodeJson;
     }
-    function decodeCreateAction([, nodeId, nodeName, parentNodeId, nodeJson], getDict) {
+    function decodeCreateAction([, nodeId, nodeName, parentNodeId, refNodeId, nodeJson], getDict) {
         return [
             'create',
             nodeId,
             getDict(nodeName),
             parentNodeId,
+            refNodeId,
             decodeNodeJson(getDict, nodeJson),
         ];
     }

@@ -175,8 +175,9 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
         const createAction = this._createActionMap.get(action[1])
         if (createAction) {
           createAction[3] = action[2] // parentNodeId
+          createAction[4] = action[3] // anchorId
           if (extras) {
-            createAction[4] = extras as UniNodeJSON
+            createAction[5] = extras as UniNodeJSON
           }
         } else {
           if (__DEV__) {
@@ -185,7 +186,10 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
         }
         break
     }
-    this.updateActions.push(action)
+    // insert 被合并进 create
+    if (action[0] !== ACTION_TYPE_INSERT) {
+      this.updateActions.push(action)
+    }
     queuePostFlushCb(this._update)
   }
   restore() {
@@ -255,7 +259,13 @@ function pushCreateAction(
   nodeId: number,
   nodeName: string | number
 ) {
-  pageNode.push([ACTION_TYPE_CREATE, nodeId, pageNode.addDict(nodeName), -1])
+  pageNode.push([
+    ACTION_TYPE_CREATE,
+    nodeId,
+    pageNode.addDict(nodeName),
+    -1,
+    -1,
+  ])
 }
 
 function pushInsertAction(

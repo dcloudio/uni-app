@@ -7,8 +7,9 @@ export class UniRichText extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-rich-text', RichText, parentNodeId, nodeJson)
+    super(id, 'uni-rich-text', RichText, parentNodeId, refNodeId, nodeJson)
   }
 }

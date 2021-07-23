@@ -7,8 +7,9 @@ export class UniRadioGroup extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-radio-group', RadioGroup, parentNodeId, nodeJson)
+    super(id, 'uni-radio-group', RadioGroup, parentNodeId, refNodeId, nodeJson)
   }
 }

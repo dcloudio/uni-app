@@ -3,7 +3,7 @@ import {
   ACTION_TYPE_PAGE_CREATE,
   ACTION_TYPE_PAGE_CREATED,
   ACTION_TYPE_CREATE,
-  ACTION_TYPE_INSERT,
+  // ACTION_TYPE_INSERT,
   ACTION_TYPE_REMOVE,
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_REMOVE_ATTRIBUTE,
@@ -34,10 +34,11 @@ export function onVdSync(actions: (PageAction | DictAction)[]) {
           action[1],
           getDict(action[2] as number),
           action[3],
-          decodeNodeJson(getDict, action[4] as UniNodeJSONMinify)
+          action[4],
+          decodeNodeJson(getDict, action[5] as UniNodeJSONMinify)
         )
-      case ACTION_TYPE_INSERT:
-        return $(action[1]).insert(action[2], action[3])
+      // case ACTION_TYPE_INSERT:
+      //   return $(action[1]).insert(action[2], action[3])
       case ACTION_TYPE_REMOVE:
         return $(action[1]).remove()
       case ACTION_TYPE_SET_ATTRIBUTE:

@@ -7,8 +7,16 @@ export class UniCheckboxGroup extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-checkbox-group', CheckboxGroup, parentNodeId, nodeJson)
+    super(
+      id,
+      'uni-checkbox-group',
+      CheckboxGroup,
+      parentNodeId,
+      refNodeId,
+      nodeJson
+    )
   }
 }

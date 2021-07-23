@@ -8,8 +8,9 @@ export class UniIcon extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-icon', Icon, parentNodeId, nodeJson)
+    super(id, 'uni-icon', Icon, parentNodeId, refNodeId, nodeJson)
   }
 }

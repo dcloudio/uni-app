@@ -7,9 +7,18 @@ export class UniRadio extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-radio', Radio, parentNodeId, nodeJson, '.uni-radio-wrapper')
+    super(
+      id,
+      'uni-radio',
+      Radio,
+      parentNodeId,
+      refNodeId,
+      nodeJson,
+      '.uni-radio-wrapper'
+    )
   }
   setText(text: string) {
     setHolderText(this.$holder!, 'uni-radio-input', text)

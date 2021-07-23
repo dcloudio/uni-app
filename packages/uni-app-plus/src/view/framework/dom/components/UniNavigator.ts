@@ -7,8 +7,9 @@ export class UniNavigator extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-navigator', Navigator, parentNodeId, nodeJson)
+    super(id, 'uni-navigator', Navigator, parentNodeId, refNodeId, nodeJson)
   }
 }

@@ -7,6 +7,7 @@ export class UniPickerView extends UniContainerComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
     super(
@@ -14,6 +15,7 @@ export class UniPickerView extends UniContainerComponent {
       'uni-picker-view',
       PickerView,
       parentNodeId,
+      refNodeId,
       nodeJson,
       '.uni-picker-view-wrapper'
     )

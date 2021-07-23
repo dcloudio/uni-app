@@ -7,8 +7,17 @@ export class UniCanvas extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-canvas', Canvas, parentNodeId, nodeJson, 'canvas > div')
+    super(
+      id,
+      'uni-canvas',
+      Canvas,
+      parentNodeId,
+      refNodeId,
+      nodeJson,
+      'canvas > div'
+    )
   }
 }

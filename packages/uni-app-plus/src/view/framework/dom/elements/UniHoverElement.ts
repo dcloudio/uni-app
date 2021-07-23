@@ -19,10 +19,11 @@ export class UniHoverElement extends UniElement<HoverProps> {
     id: number,
     element: Element,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>,
     propNames: string[] = []
   ) {
-    super(id, element, parentNodeId, nodeJson, [
+    super(id, element, parentNodeId, refNodeId, nodeJson, [
       ...PROP_NAMES_HOVER,
       ...propNames,
     ])
@@ -51,8 +52,8 @@ class Hover {
 
   private _hovering: boolean = false
   private _hoverTouch: boolean = false
-  private _hoverStartTimer: number = 0
-  private _hoverStayTimer: number = 0
+  private _hoverStartTimer?: ReturnType<typeof setTimeout>
+  private _hoverStayTimer?: ReturnType<typeof setTimeout>
 
   private __hoverTouchStart!: (evt: Event) => void
   private __hoverTouchEnd!: (evt?: Event) => void
@@ -143,7 +144,7 @@ class Hover {
   }
   _hoverReset() {
     requestAnimationFrame(() => {
-      clearTimeout(this._hoverStayTimer)
+      clearTimeout(this._hoverStayTimer!)
       this._hoverStayTimer = setTimeout(() => {
         this.hovering = false
       }, this.props['hover-stay-time'])
@@ -152,6 +153,6 @@ class Hover {
   _hoverTouchCancel() {
     this._hoverTouch = false
     this.hovering = false
-    clearTimeout(this._hoverStartTimer)
+    clearTimeout(this._hoverStartTimer!)
   }
 }

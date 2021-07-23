@@ -7,8 +7,9 @@ export class UniSwiperItem extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-swiper-item', SwiperItem, parentNodeId, nodeJson)
+    super(id, 'uni-swiper-item', SwiperItem, parentNodeId, refNodeId, nodeJson)
   }
 }

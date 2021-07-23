@@ -7,8 +7,9 @@ export class UniCoverView extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-cover-view', CoverView, parentNodeId, nodeJson)
+    super(id, 'uni-cover-view', CoverView, parentNodeId, refNodeId, nodeJson)
   }
 }

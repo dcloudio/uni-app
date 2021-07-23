@@ -131,7 +131,7 @@ export function decodeNodeJson(
 }
 
 function decodeCreateAction(
-  [, nodeId, nodeName, parentNodeId, nodeJson]: CreateAction,
+  [, nodeId, nodeName, parentNodeId, refNodeId, nodeJson]: CreateAction,
   getDict: GetDict
 ) {
   return [
@@ -139,6 +139,7 @@ function decodeCreateAction(
     nodeId,
     getDict(nodeName as number),
     parentNodeId,
+    refNodeId,
     decodeNodeJson(getDict, nodeJson as UniNodeJSONMinify),
   ]
 }

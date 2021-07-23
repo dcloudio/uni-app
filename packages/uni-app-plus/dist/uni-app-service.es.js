@@ -625,7 +625,7 @@ var serviceContext = (function (vue) {
               }
               return req;
           }),
-      }, callback, page.$page.id);
+      }, page.$page.id, callback);
   }
 
   function formatLog(module, ...args) {
@@ -1802,10 +1802,10 @@ var serviceContext = (function (vue) {
   function publishViewMethodName() {
       return getCurrentPageId() + '.' + INVOKE_VIEW_API;
   }
-  const invokeViewMethod = (name, args, callback, pageId) => {
+  const invokeViewMethod = (name, args, pageId, callback) => {
       const { subscribe, publishHandler } = UniServiceJSBridge;
       const id = invokeViewMethodId++;
-      subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
+      callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
       publishHandler(publishViewMethodName(), { id, name, args }, pageId);
   };
   const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
@@ -2427,20 +2427,16 @@ var serviceContext = (function (vue) {
   //#endregion
   //#region UniServiceJSBridge
   const canvasEventCallbacks = createCallbacks('canvasEvent');
-  const onCanvasMethodCallback = /*#__PURE__*/ once(() => {
-      UniServiceJSBridge.subscribe('onCanvasMethodCallback', ({ callbackId, data }) => {
+  function operateCanvas(canvasId, pageId, type, data) {
+      UniServiceJSBridge.invokeViewMethod(`canvas.${canvasId}`, {
+          type,
+          data,
+      }, pageId, ({ callbackId, data }) => {
           const callback = canvasEventCallbacks.pop(callbackId);
           if (callback) {
               callback(data);
           }
       });
-  });
-  function operateCanvas(canvasId, pageId, type, data) {
-      UniServiceJSBridge.publishHandler('canvas.' + canvasId, {
-          canvasId,
-          type,
-          data,
-      }, pageId);
   }
   //#endregion
   //#region methods
@@ -3271,7 +3267,7 @@ var serviceContext = (function (vue) {
       }
   }, CreateCanvasContextProtocol);
   const canvasGetImageData = defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-      onCanvasMethodCallback();
+      // onCanvasMethodCallback()
       const pageId = getPageIdByVm(getCurrentPageVm());
       if (!pageId) {
           reject();
@@ -3301,7 +3297,7 @@ var serviceContext = (function (vue) {
       });
   }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
   const canvasPutImageData = defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-      onCanvasMethodCallback();
+      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm());
       if (!pageId) {
           reject();
@@ -3335,7 +3331,7 @@ var serviceContext = (function (vue) {
       operate();
   }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
   const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality, }, { resolve, reject }) => {
-      onCanvasMethodCallback();
+      // onCanvasMethodCallback()
       var pageId = getPageIdByVm(getCurrentPageVm());
       if (!pageId) {
           reject();
@@ -3501,12 +3497,12 @@ var serviceContext = (function (vue) {
       UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
           type,
           data,
-      }, ({ callbackId, data }) => {
+      }, pageId, ({ callbackId, data }) => {
           if (needCallOptions) {
               callOptions(optionsCache[callbackId], data);
               delete optionsCache[callbackId];
           }
-      }, pageId);
+      });
   }
   class EditorContext {
       id;
@@ -3853,7 +3849,7 @@ var serviceContext = (function (vue) {
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
 
   const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-      UniServiceJSBridge.invokeViewMethod('getSelectedTextRange', {}, (res) => {
+      UniServiceJSBridge.invokeViewMethod('getSelectedTextRange', {}, getCurrentPageId(), (res) => {
           if (typeof res.end === 'undefined' &&
               typeof res.start === 'undefined') {
               reject('no focused');
@@ -3861,7 +3857,7 @@ var serviceContext = (function (vue) {
           else {
               resolve(res);
           }
-      }, getCurrentPageId());
+      });
   });
 
   const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
@@ -10046,8 +10042,9 @@ var serviceContext = (function (vue) {
                   const createAction = this._createActionMap.get(action[1]);
                   if (createAction) {
                       createAction[3] = action[2]; // parentNodeId
+                      createAction[4] = action[3]; // anchorId
                       if (extras) {
-                          createAction[4] = extras;
+                          createAction[5] = extras;
                       }
                   }
                   else {
@@ -10057,7 +10054,10 @@ var serviceContext = (function (vue) {
                   }
                   break;
           }
-          this.updateActions.push(action);
+          // insert 被合并进 create
+          if (action[0] !== ACTION_TYPE_INSERT) {
+              this.updateActions.push(action);
+          }
           vue.queuePostFlushCb(this._update);
       }
       restore() {
@@ -10115,7 +10115,13 @@ var serviceContext = (function (vue) {
       return null;
   }
   function pushCreateAction(pageNode, nodeId, nodeName) {
-      pageNode.push([ACTION_TYPE_CREATE, nodeId, pageNode.addDict(nodeName), -1]);
+      pageNode.push([
+          ACTION_TYPE_CREATE,
+          nodeId,
+          pageNode.addDict(nodeName),
+          -1,
+          -1,
+      ]);
   }
   function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
       const nodeJson = newChild.toJSON({

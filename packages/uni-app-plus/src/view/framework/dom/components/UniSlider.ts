@@ -7,8 +7,9 @@ export class UniSlider extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-slider', Slider, parentNodeId, nodeJson)
+    super(id, 'uni-slider', Slider, parentNodeId, refNodeId, nodeJson)
   }
 }

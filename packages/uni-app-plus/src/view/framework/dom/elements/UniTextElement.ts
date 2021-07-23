@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/text.css'
 import { DecodeOptions, parseText } from '@dcloudio/uni-components'
 import { UniElement } from './UniElement'
-import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniNodeJSON } from '@dcloudio/uni-shared'
 
 interface TextProps {
   space: DecodeOptions['space']
@@ -16,12 +16,14 @@ export class UniTextElement extends UniElement<TextProps> {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
     super(
       id,
       document.createElement('uni-text'),
       parentNodeId,
+      refNodeId,
       nodeJson,
       PROP_NAMES_HOVER
     )

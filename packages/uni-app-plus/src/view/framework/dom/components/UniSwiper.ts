@@ -7,6 +7,7 @@ export class UniSwiper extends UniContainerComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
     super(
@@ -14,6 +15,7 @@ export class UniSwiper extends UniContainerComponent {
       'uni-swiper',
       Swiper,
       parentNodeId,
+      refNodeId,
       nodeJson,
       '.uni-swiper-slide-frame'
     )

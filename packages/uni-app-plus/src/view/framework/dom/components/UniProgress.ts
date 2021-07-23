@@ -7,8 +7,9 @@ export class UniProgress extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-progress', Progress, parentNodeId, nodeJson)
+    super(id, 'uni-progress', Progress, parentNodeId, refNodeId, nodeJson)
   }
 }

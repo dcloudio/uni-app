@@ -7,6 +7,7 @@ export class UniScrollView extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
     super(
@@ -14,6 +15,7 @@ export class UniScrollView extends UniComponent {
       'uni-scroll-view',
       ScrollView,
       parentNodeId,
+      refNodeId,
       nodeJson,
       '.uni-scroll-view-content'
     )

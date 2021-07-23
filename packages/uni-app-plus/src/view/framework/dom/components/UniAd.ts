@@ -7,8 +7,9 @@ export class UniAd extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-ad', Ad, parentNodeId, nodeJson)
+    super(id, 'uni-ad', Ad, parentNodeId, refNodeId, nodeJson)
   }
 }

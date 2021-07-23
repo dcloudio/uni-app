@@ -17,6 +17,7 @@ export class UniElement<T extends object> extends UniNode {
     id: number,
     element: Element,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>,
     propNames: string[] = []
   ) {
@@ -26,6 +27,7 @@ export class UniElement<T extends object> extends UniNode {
     this.$propNames = propNames
     this._update = this.update.bind(this)
     this.init(nodeJson)
+    this.insert(parentNodeId, refNodeId)
   }
   init(nodeJson: Partial<UniNodeJSON>) {
     if (hasOwn(nodeJson, 'a')) {

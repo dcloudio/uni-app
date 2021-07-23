@@ -7,6 +7,7 @@ export class UniCheckbox extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
     super(
@@ -14,6 +15,7 @@ export class UniCheckbox extends UniComponent {
       'uni-checkbox',
       Checkbox,
       parentNodeId,
+      refNodeId,
       nodeJson,
       '.uni-checkbox-wrapper'
     )

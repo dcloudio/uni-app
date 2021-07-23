@@ -7,8 +7,9 @@ export class UniAudio extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-audio', Audio, parentNodeId, nodeJson)
+    super(id, 'uni-audio', Audio, parentNodeId, refNodeId, nodeJson)
   }
 }

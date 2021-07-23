@@ -7,8 +7,9 @@ export class UniForm extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-form', Form, parentNodeId, nodeJson, 'span')
+    super(id, 'uni-form', Form, parentNodeId, refNodeId, nodeJson, 'span')
   }
 }

@@ -7,8 +7,9 @@ export class UniSwitch extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-switch', Switch, parentNodeId, nodeJson)
+    super(id, 'uni-switch', Switch, parentNodeId, refNodeId, nodeJson)
   }
 }

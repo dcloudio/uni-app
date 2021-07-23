@@ -44,7 +44,7 @@ export class UniNode {
   remove() {
     const { $ } = this
     $.parentNode!.removeChild($)
-    this.isUnmounted = false
+    this.isUnmounted = true
     removeElement(this.id)
   }
   appendChild(node: Node) {

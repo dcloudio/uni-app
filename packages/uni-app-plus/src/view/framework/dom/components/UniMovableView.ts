@@ -7,8 +7,16 @@ export class UniMovableView extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-movable-view', MovableView, parentNodeId, nodeJson)
+    super(
+      id,
+      'uni-movable-view',
+      MovableView,
+      parentNodeId,
+      refNodeId,
+      nodeJson
+    )
   }
 }

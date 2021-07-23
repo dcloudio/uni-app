@@ -8,8 +8,9 @@ export class UniVideo extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-video', Video, parentNodeId, nodeJson)
+    super(id, 'uni-video', Video, parentNodeId, refNodeId, nodeJson)
   }
 }

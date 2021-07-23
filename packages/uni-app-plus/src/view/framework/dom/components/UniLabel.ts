@@ -7,8 +7,9 @@ export class UniLabel extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-label', Label, parentNodeId, nodeJson)
+    super(id, 'uni-label', Label, parentNodeId, refNodeId, nodeJson)
   }
 }

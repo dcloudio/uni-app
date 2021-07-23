@@ -7,8 +7,9 @@ export class UniButton extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
+    refNodeId: number,
     nodeJson: Partial<UniNodeJSON>
   ) {
-    super(id, 'uni-button', Button, parentNodeId, nodeJson)
+    super(id, 'uni-button', Button, parentNodeId, refNodeId, nodeJson)
   }
 }
