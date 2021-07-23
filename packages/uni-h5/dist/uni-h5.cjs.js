@@ -548,34 +548,6 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return "/" + fromRouteArray.concat(toRouteArray).join("/");
 }
-const callbacks = {};
-function createCallbacks(namespace) {
-  let scopedCallbacks = callbacks[namespace];
-  if (!scopedCallbacks) {
-    scopedCallbacks = {
-      id: 1,
-      callbacks: Object.create(null)
-    };
-    callbacks[namespace] = scopedCallbacks;
-  }
-  return {
-    get(id) {
-      return scopedCallbacks.callbacks[id];
-    },
-    pop(id) {
-      const callback = scopedCallbacks.callbacks[id];
-      if (callback) {
-        delete scopedCallbacks.callbacks[id];
-      }
-      return callback;
-    },
-    push(callback) {
-      const id = scopedCallbacks.id++;
-      scopedCallbacks.callbacks[id] = callback;
-      return id;
-    }
-  };
-}
 function findUniTarget(target) {
   while (target && target.tagName.indexOf("UNI-") !== 0) {
     target = target.parentElement;
@@ -1410,7 +1382,6 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
-createCallbacks("canvasEvent");
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
@@ -1838,14 +1809,13 @@ function useMethods(canvasRef, actionsWaiting) {
   }
   function actionsChanged({
     actions,
-    reserve,
-    callbackId
+    reserve
   }, resolve) {
     if (!actions) {
       return;
     }
     if (actionsWaiting.value) {
-      _actionsDefer.push([actions, reserve, callbackId]);
+      _actionsDefer.push([actions, reserve]);
       return;
     }
     var canvas = canvasRef.value;
@@ -1891,7 +1861,7 @@ function useMethods(canvasRef, actionsWaiting) {
             });
             color = LinearGradient;
           } else if (data[0] === "pattern") {
-            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, resolve, function(image) {
+            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve, function(image) {
               if (image) {
                 c2d[method1] = c2d.createPattern(image, data[2]);
               }
@@ -1940,7 +1910,7 @@ function useMethods(canvasRef, actionsWaiting) {
           var url = dataArray[0];
           var otherData = dataArray.slice(1);
           _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, resolve, function(image) {
+          if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image) {
             if (image) {
               c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
             }
@@ -1961,12 +1931,9 @@ function useMethods(canvasRef, actionsWaiting) {
         }
       }
     }
-    if (!actionsWaiting.value && callbackId) {
+    if (!actionsWaiting.value) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: "drawCanvas:ok"
-        }
+        errMsg: "drawCanvas:ok"
       });
     }
   }
@@ -2000,7 +1967,7 @@ function useMethods(canvasRef, actionsWaiting) {
       }
     });
   }
-  function checkImageLoaded(src, actions, callbackId, resolve, fn) {
+  function checkImageLoaded(src, actions, resolve, fn) {
     var image = _images[src];
     if (image.ready) {
       fn(image);
@@ -2016,7 +1983,6 @@ function useMethods(canvasRef, actionsWaiting) {
         _actionsDefer = [];
         for (var action = actions2.shift(); action; ) {
           actionsChanged({
-            callbackId,
             actions: action[0],
             reserve: action[1]
           }, resolve);
@@ -2036,8 +2002,7 @@ function useMethods(canvasRef, actionsWaiting) {
     hidpi = true,
     dataType: dataType2,
     quality = 1,
-    type = "png",
-    callbackId
+    type = "png"
   }, resolve) {
     const canvas = canvasRef.value;
     let data;
@@ -2081,7 +2046,6 @@ function useMethods(canvasRef, actionsWaiting) {
         }
       }
       result = {
-        errMsg: "canvasGetImageData:ok",
         data,
         compressed,
         width: destWidth,
@@ -2094,13 +2058,10 @@ function useMethods(canvasRef, actionsWaiting) {
     }
     newCanvas.height = newCanvas.width = 0;
     context.__hidpi__ = false;
-    if (!callbackId) {
+    if (!resolve) {
       return result;
     } else {
-      resolve && resolve({
-        callbackId,
-        data: result
-      });
+      resolve(result);
     }
   }
   function putImageData({
@@ -2109,8 +2070,7 @@ function useMethods(canvasRef, actionsWaiting) {
     y,
     width,
     height,
-    compressed,
-    callbackId
+    compressed
   }, resolve) {
     try {
       if (!height) {
@@ -2125,18 +2085,12 @@ function useMethods(canvasRef, actionsWaiting) {
       canvas.height = canvas.width = 0;
     } catch (error) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: "canvasPutImageData:fail"
-        }
+        errMsg: "canvasPutImageData:fail"
       });
       return;
     }
     resolve({
-      callbackId,
-      data: {
-        errMsg: "canvasPutImageData:ok"
-      }
+      errMsg: "canvasPutImageData:ok"
     });
   }
   function toTempFilePath({
@@ -2148,8 +2102,7 @@ function useMethods(canvasRef, actionsWaiting) {
     destHeight,
     fileType,
     quality,
-    dirname,
-    callbackId
+    dirname
   }, resolve) {
     const res = getImageData({
       x,
@@ -2165,10 +2118,7 @@ function useMethods(canvasRef, actionsWaiting) {
     });
     if (!res.data || !res.data.length) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
-        }
+        errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });
       return;
     }
@@ -2178,11 +2128,8 @@ function useMethods(canvasRef, actionsWaiting) {
         errMsg += ` ${error.message}`;
       }
       resolve({
-        callbackId,
-        data: {
-          errMsg,
-          tempFilePath
-        }
+        errMsg,
+        tempFilePath
       });
     });
   }

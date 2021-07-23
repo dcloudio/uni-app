@@ -744,14 +744,14 @@ function attrChange(attr2) {
         style[attr3] = elementComputedStyle[attr3];
       });
       changeAttrs.length = 0;
-      callbacks$2.forEach(function(callback) {
+      callbacks$1.forEach(function(callback) {
         callback(style);
       });
     }, 0);
   }
   changeAttrs.push(attr2);
 }
-var callbacks$2 = [];
+var callbacks$1 = [];
 function onChange(callback) {
   if (!getSupport()) {
     return;
@@ -760,13 +760,13 @@ function onChange(callback) {
     init();
   }
   if (typeof callback === "function") {
-    callbacks$2.push(callback);
+    callbacks$1.push(callback);
   }
 }
 function offChange(callback) {
-  var index2 = callbacks$2.indexOf(callback);
+  var index2 = callbacks$1.indexOf(callback);
   if (index2 >= 0) {
-    callbacks$2.splice(index2, 1);
+    callbacks$1.splice(index2, 1);
   }
 }
 var safeAreaInsets = {
@@ -788,7 +788,7 @@ var safeAreaInsets = {
   onChange,
   offChange
 };
-var out = safeAreaInsets;
+var D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out = safeAreaInsets;
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -800,10 +800,10 @@ function getWindowOffset() {
   const left = parseInt(style.getPropertyValue("--window-left"));
   const right = parseInt(style.getPropertyValue("--window-right"));
   return {
-    top: top ? top + out.top : 0,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    top: top ? top + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top : 0,
+    bottom: bottom ? bottom + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom : 0,
+    left: left ? left + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left : 0,
+    right: right ? right + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right : 0
   };
 }
 function updateCssVar(cssVars) {
@@ -1082,34 +1082,6 @@ function getRouteOptions(path, alias = false) {
     return __uniRoutes.find((route) => route.path === path || route.alias === path);
   }
   return __uniRoutes.find((route) => route.path === path);
-}
-const callbacks$1 = {};
-function createCallbacks(namespace) {
-  let scopedCallbacks = callbacks$1[namespace];
-  if (!scopedCallbacks) {
-    scopedCallbacks = {
-      id: 1,
-      callbacks: Object.create(null)
-    };
-    callbacks$1[namespace] = scopedCallbacks;
-  }
-  return {
-    get(id2) {
-      return scopedCallbacks.callbacks[id2];
-    },
-    pop(id2) {
-      const callback = scopedCallbacks.callbacks[id2];
-      if (callback) {
-        delete scopedCallbacks.callbacks[id2];
-      }
-      return callback;
-    },
-    push(callback) {
-      const id2 = scopedCallbacks.id++;
-      scopedCallbacks.callbacks[id2] = callback;
-      return id2;
-    }
-  };
 }
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0;
@@ -3075,16 +3047,13 @@ const CanvasToTempFilePathProtocol = {
   fileType: String,
   quality: Number
 };
-const canvasEventCallbacks = createCallbacks("canvasEvent");
-function operateCanvas(canvasId, pageId, type, data) {
+function operateCanvas(canvasId, pageId, type, data, callback) {
   UniServiceJSBridge.invokeViewMethod(`canvas.${canvasId}`, {
     type,
     data
-  }, pageId, ({ callbackId, data: data2 }) => {
-    const callback = canvasEventCallbacks.pop(callbackId);
-    if (callback) {
+  }, pageId, (data2) => {
+    if (callback)
       callback(data2);
-    }
   });
 }
 var methods1 = ["scale", "rotate", "translate", "setTransform", "transform"];
@@ -3356,15 +3325,10 @@ class CanvasContext {
     var actions = [...this.actions];
     this.actions = [];
     this.path = [];
-    var callbackId;
-    if (typeof callback === "function") {
-      callbackId = canvasEventCallbacks.push(callback);
-    }
     operateCanvas(this.id, this.pageId, "actionsChanged", {
       actions,
-      reserve,
-      callbackId
-    });
+      reserve
+    }, callback);
   }
   createLinearGradient(x0, y0, x1, y1) {
     return new CanvasGradient("linear", [x0, y0, x1, y1]);
@@ -3821,20 +3785,23 @@ const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_D
     reject();
     return;
   }
-  const cId = canvasEventCallbacks.push(function(data) {
+  function callback(data) {
+    if (data.errMsg && data.errMsg.indexOf("fail") !== -1) {
+      reject("", data);
+      return;
+    }
     let imgData = data.data;
     if (imgData && imgData.length) {
       data.data = new Uint8ClampedArray(imgData);
     }
     resolve(data);
-  });
+  }
   operateCanvas(canvasId, pageId, "getImageData", {
     x,
     y,
     width,
-    height,
-    callbackId: cId
-  });
+    height
+  }, callback);
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
 const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
   var pageId = getPageIdByVm(getCurrentPageVm());
@@ -3842,9 +3809,6 @@ const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_D
     reject();
     return;
   }
-  const cId = canvasEventCallbacks.push(function(data2) {
-    resolve(data2);
-  });
   let compressed;
   const operate = () => {
     operateCanvas(canvasId, pageId, "putImageData", {
@@ -3853,8 +3817,13 @@ const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_D
       y,
       width,
       height,
-      compressed,
-      callbackId: cId
+      compressed
+    }, (data2) => {
+      if (data2.errMsg && data2.errMsg.indexOf("fail")) {
+        reject();
+        return;
+      }
+      resolve(data2);
     });
   };
   data = Array.prototype.slice.call(data);
@@ -3876,9 +3845,6 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
     reject();
     return;
   }
-  const cId = canvasEventCallbacks.push(function(res) {
-    resolve(res);
-  });
   const dirname = `${TEMP_PATH}/canvas`;
   operateCanvas(canvasId, pageId, "toTempFilePath", {
     x,
@@ -3889,8 +3855,13 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_F
     destHeight,
     fileType,
     quality,
-    dirname,
-    callbackId: cId
+    dirname
+  }, (res) => {
+    if (res.errMsg && res.errMsg.indexOf("fail")) {
+      reject("", res);
+      return;
+    }
+    resolve(res);
   });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
 const innerAudioContextEventNames = [
@@ -6239,14 +6210,13 @@ function useMethods(canvasRef, actionsWaiting) {
   }
   function actionsChanged({
     actions,
-    reserve,
-    callbackId
+    reserve
   }, resolve) {
     if (!actions) {
       return;
     }
     if (actionsWaiting.value) {
-      _actionsDefer.push([actions, reserve, callbackId]);
+      _actionsDefer.push([actions, reserve]);
       return;
     }
     var canvas = canvasRef.value;
@@ -6292,7 +6262,7 @@ function useMethods(canvasRef, actionsWaiting) {
             });
             color = LinearGradient;
           } else if (data[0] === "pattern") {
-            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), callbackId, resolve, function(image2) {
+            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve, function(image2) {
               if (image2) {
                 c2d[method1] = c2d.createPattern(image2, data[2]);
               }
@@ -6341,7 +6311,7 @@ function useMethods(canvasRef, actionsWaiting) {
           var url = dataArray[0];
           var otherData = dataArray.slice(1);
           _images = _images || {};
-          if (checkImageLoaded(url, actions.slice(index2 + 1), callbackId, resolve, function(image2) {
+          if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
             if (image2) {
               c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
             }
@@ -6362,12 +6332,9 @@ function useMethods(canvasRef, actionsWaiting) {
         }
       }
     }
-    if (!actionsWaiting.value && callbackId) {
+    if (!actionsWaiting.value) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: "drawCanvas:ok"
-        }
+        errMsg: "drawCanvas:ok"
       });
     }
   }
@@ -6401,7 +6368,7 @@ function useMethods(canvasRef, actionsWaiting) {
       }
     });
   }
-  function checkImageLoaded(src, actions, callbackId, resolve, fn) {
+  function checkImageLoaded(src, actions, resolve, fn) {
     var image2 = _images[src];
     if (image2.ready) {
       fn(image2);
@@ -6417,7 +6384,6 @@ function useMethods(canvasRef, actionsWaiting) {
         _actionsDefer = [];
         for (var action = actions2.shift(); action; ) {
           actionsChanged({
-            callbackId,
             actions: action[0],
             reserve: action[1]
           }, resolve);
@@ -6437,8 +6403,7 @@ function useMethods(canvasRef, actionsWaiting) {
     hidpi = true,
     dataType: dataType2,
     quality = 1,
-    type = "png",
-    callbackId
+    type = "png"
   }, resolve) {
     const canvas = canvasRef.value;
     let data;
@@ -6482,7 +6447,6 @@ function useMethods(canvasRef, actionsWaiting) {
         }
       }
       result = {
-        errMsg: "canvasGetImageData:ok",
         data,
         compressed,
         width: destWidth,
@@ -6495,13 +6459,10 @@ function useMethods(canvasRef, actionsWaiting) {
     }
     newCanvas.height = newCanvas.width = 0;
     context.__hidpi__ = false;
-    if (!callbackId) {
+    if (!resolve) {
       return result;
     } else {
-      resolve && resolve({
-        callbackId,
-        data: result
-      });
+      resolve(result);
     }
   }
   function putImageData({
@@ -6510,8 +6471,7 @@ function useMethods(canvasRef, actionsWaiting) {
     y,
     width,
     height,
-    compressed,
-    callbackId
+    compressed
   }, resolve) {
     try {
       if (!height) {
@@ -6526,18 +6486,12 @@ function useMethods(canvasRef, actionsWaiting) {
       canvas.height = canvas.width = 0;
     } catch (error) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: "canvasPutImageData:fail"
-        }
+        errMsg: "canvasPutImageData:fail"
       });
       return;
     }
     resolve({
-      callbackId,
-      data: {
-        errMsg: "canvasPutImageData:ok"
-      }
+      errMsg: "canvasPutImageData:ok"
     });
   }
   function toTempFilePath({
@@ -6549,8 +6503,7 @@ function useMethods(canvasRef, actionsWaiting) {
     destHeight,
     fileType,
     quality,
-    dirname,
-    callbackId
+    dirname
   }, resolve) {
     const res = getImageData({
       x,
@@ -6566,10 +6519,7 @@ function useMethods(canvasRef, actionsWaiting) {
     });
     if (!res.data || !res.data.length) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
-        }
+        errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });
       return;
     }
@@ -6579,11 +6529,8 @@ function useMethods(canvasRef, actionsWaiting) {
         errMsg += ` ${error.message}`;
       }
       resolve({
-        callbackId,
-        data: {
-          errMsg,
-          tempFilePath
-        }
+        errMsg,
+        tempFilePath
       });
     });
   }
@@ -13227,7 +13174,7 @@ function normalizePageMeta(pageMeta) {
       }, pageMeta.pullToRefresh));
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
+        pullToRefresh.offset += NAVBAR_HEIGHT + D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
     }
@@ -15413,7 +15360,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const windowWidth = getWindowWidth(screenWidth);
   let windowHeight = window.innerHeight;
   const language = navigator.language;
-  const statusBarHeight = out.top;
+  const statusBarHeight = D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top;
   let osname;
   let osversion;
   let model;
@@ -15526,12 +15473,12 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
   const system = `${osname} ${osversion}`;
   const platform = osname.toLocaleLowerCase();
   const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
+    left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left,
+    right: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+    bottom: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+    width: windowWidth - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+    height: windowHeight - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top - D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom
   };
   const { top: windowTop, bottom: windowBottom } = getWindowOffset();
   windowHeight -= windowTop;
@@ -15551,10 +15498,10 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () 
     model,
     safeArea,
     safeAreaInsets: {
-      top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
+      top: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.top,
+      right: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.right,
+      bottom: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.bottom,
+      left: D__DCloud_local_git_uniAppNext_node_modules_safeAreaInsets_out.left
     }
   };
 });

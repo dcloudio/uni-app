@@ -42,10 +42,8 @@ function operateCanvas(
   pageId: number,
   type: unknown,
   data: any,
-  callback: Callback
+  callback?: Callback
 ) {
-  try {
-  } catch (error) {}
   UniServiceJSBridge.invokeViewMethod<{}, Record<string, any>>(
     `canvas.${canvasId}`,
     {
@@ -53,7 +51,9 @@ function operateCanvas(
       data,
     },
     pageId,
-    (data) => callback(data)
+    (data) => {
+      if (callback) callback(data)
+    }
   )
 }
 //#endregion
@@ -389,7 +389,7 @@ export class CanvasContext implements UniApp.CanvasContext {
     }
   }
 
-  draw(reserve: boolean = false, callback: Callback) {
+  draw(reserve: boolean = false, callback?: Callback) {
     var actions = [...this.actions]
     this.actions = []
     this.path = []
