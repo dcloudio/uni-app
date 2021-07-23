@@ -8,8 +8,8 @@ export function createResolve(
 ): UserConfig['resolve'] {
   return {
     alias: {
-      '@': options.inputDir,
-      '~@': options.inputDir, // src: url('~@/static/uni.ttf') format('truetype');
+      '@': '',
+      '~@': '', // src: url('~@/static/uni.ttf') format('truetype');
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'].concat(
       EXTNAME_VUE
