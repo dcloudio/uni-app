@@ -6,7 +6,9 @@
 
 
 ## Google Play上架
+
 首先App提交云端打包时请务必勾选“GooglePlay”渠道：
+
 ![](https://dcloud-img.oss-cn-hangzhou.aliyuncs.com/uni-app/doc/channel-google.png)
 
 Google Play上架审核要求比较严格，需要注意以下问题：
