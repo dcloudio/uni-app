@@ -49,12 +49,20 @@ const tags = {
     'video',
     'view',
     'web-view',
-    'editor',
+    'editor'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
     'lifestyle',
-    'life-follow'
+    'life-follow',
+    'contact-button',
+    'spread',
+    'error-view',
+    'poster',
+    'cashier',
+    'ix-grid',
+    'ix-native-grid',
+    'ix-native-list'
   ]
 }
 

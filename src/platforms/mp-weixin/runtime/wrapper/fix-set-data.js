@@ -1,7 +1,7 @@
 /**
  * 用于延迟调用 setData
  * 在 setData 真实调用的时机需执行 fixSetDataEnd
- * @param {*} mpInstance 
+ * @param {*} mpInstance
  */
 export function fixSetDataStart (mpInstance) {
   const setData = mpInstance.setData
@@ -27,7 +27,7 @@ export function fixSetDataStart (mpInstance) {
 }
 /**
  * 恢复真实的 setData 方法
- * @param {*} mpInstance 
+ * @param {*} mpInstance
  */
 export function fixSetDataEnd (mpInstance) {
   if (mpInstance.__fixInitData) {
