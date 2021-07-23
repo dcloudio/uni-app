@@ -106,7 +106,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let columnsRef: Ref<VNode[] | HTMLCollection> = ref([])
     function getItemIndex(vnode: VNode): number {
       const columnVNodes = columnsRef.value
-      if (columnVNodes instanceof HTMLCollection) {
+      if (__PLATFORM__ === 'app' && columnVNodes instanceof HTMLCollection) {
         return Array.prototype.indexOf.call(
           columnVNodes as HTMLCollection,
           vnode.el

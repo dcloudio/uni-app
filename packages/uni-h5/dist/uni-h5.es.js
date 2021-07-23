@@ -8420,7 +8420,7 @@ var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
       const contexts = [];
       for (let index2 = 0; index2 < movableViewItems.length; index2++) {
         let movableViewItem = movableViewItems[index2];
-        if (!(movableViewItem instanceof Element)) {
+        {
           movableViewItem = movableViewItem.el;
         }
         const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
@@ -9806,9 +9806,6 @@ var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     let columnsRef = ref([]);
     function getItemIndex(vnode) {
       const columnVNodes = columnsRef.value;
-      if (columnVNodes instanceof HTMLCollection) {
-        return Array.prototype.indexOf.call(columnVNodes, vnode.el);
-      }
       return columnVNodes.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {

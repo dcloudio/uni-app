@@ -70,8 +70,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const contexts: MovableViewContext[] = []
       for (let index = 0; index < movableViewItems.length; index++) {
         let movableViewItem: VNode | Element = movableViewItems[index]
-        if (!(movableViewItem instanceof Element)) {
-          movableViewItem = movableViewItem.el as HTMLElement
+        if (!(__PLATFORM__ === 'app' && movableViewItem instanceof Element)) {
+          movableViewItem = (movableViewItem as VNode).el as HTMLElement
         }
         const movableViewContext = originMovableViewContexts.find(
           (context) => movableViewItem === context.rootRef.value
