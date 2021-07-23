@@ -208,7 +208,7 @@ export default {
 
     // #ifdef MP-TOUTIAO
     let changeName
-    const events = this.$scope.dataset.eventOpts
+    const events = this.$scope.dataset.eventOpts || []
     for (var i = 0; i < events.length; i++) {
       const event = events[i]
       if (event[0].includes('^load')) {
@@ -416,7 +416,7 @@ export default {
           data,
           count
         } = res.result
-        this._isEnded = data.length < this.pageSize
+        this._isEnded = count != undefined ? (this.paginationInternal.current * this.paginationInternal.size >= count) : (data.length < this.pageSize)
         this.hasMore = !this._isEnded
 
         const data2 = this.getone ? (data.length ? data[0] : undefined) : data
