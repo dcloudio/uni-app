@@ -510,7 +510,7 @@ export default {
         data,
         count
       } = result
-      this._isEnded = count != undefined ? (this.paginationInternal.current * this.paginationInternal.size >= count) : (data.length < this.pageSize)
+      this._isEnded = count !== undefined ? (this.paginationInternal.current * this.paginationInternal.size >= count) : (data.length < this.pageSize)
       this.hasMore = !this._isEnded
 
       const data2 = this.getone ? (data.length ? data[0] : undefined) : data
