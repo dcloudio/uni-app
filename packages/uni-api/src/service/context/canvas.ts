@@ -29,11 +29,7 @@ import { hasOwn } from '@vue/shared'
 
 import { once, ON_ERROR } from '@dcloudio/uni-shared'
 
-import {
-  getPageIdByVm,
-  getCurrentPageVm,
-  createCallbacks,
-} from '@dcloudio/uni-core'
+import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
 
 import { TEMP_PATH } from '@dcloudio/uni-platform'
 
@@ -41,30 +37,23 @@ import { TEMP_PATH } from '@dcloudio/uni-platform'
 //#endregion
 
 //#region UniServiceJSBridge
-const canvasEventCallbacks = createCallbacks('canvasEvent')
-
 function operateCanvas(
   canvasId: string,
   pageId: number,
   type: unknown,
-  data: any
+  data: any,
+  callback: Callback
 ) {
-  UniServiceJSBridge.invokeViewMethod<
-    {},
-    { callbackId: number | string; data: any }
-  >(
+  try {
+  } catch (error) {}
+  UniServiceJSBridge.invokeViewMethod<{}, Record<string, any>>(
     `canvas.${canvasId}`,
     {
       type,
       data,
     },
     pageId,
-    ({ callbackId, data }) => {
-      const callback = canvasEventCallbacks.pop(callbackId)
-      if (callback) {
-        callback(data)
-      }
-    }
+    (data) => callback(data)
   )
 }
 //#endregion
@@ -404,17 +393,17 @@ export class CanvasContext implements UniApp.CanvasContext {
     var actions = [...this.actions]
     this.actions = []
     this.path = []
-    var callbackId
 
-    if (typeof callback === 'function') {
-      callbackId = canvasEventCallbacks.push(callback)
-    }
-
-    operateCanvas(this.id, this.pageId, 'actionsChanged', {
-      actions,
-      reserve,
-      callbackId,
-    })
+    operateCanvas(
+      this.id,
+      this.pageId,
+      'actionsChanged',
+      {
+        actions,
+        reserve,
+      },
+      callback
+    )
   }
 
   createLinearGradient(x0: number, y0: number, x1: number, y1: number) {
@@ -1048,13 +1037,18 @@ export const canvasGetImageData =
         reject()
         return
       }
-      const cId = canvasEventCallbacks.push(function (
+      function callback(
         data: UniApp.CanvasGetImageDataRes & { compressed?: boolean }
       ) {
+        if (data.errMsg && data.errMsg.indexOf('fail') !== -1) {
+          reject('', data)
+          return
+        }
+
         let imgData = data.data
         if (imgData && imgData.length) {
           if (__PLATFORM__ === 'app' && data.compressed) {
-            return import('pako').then((pako) => {
+            import('pako').then((pako) => {
               imgData = pako.inflateRaw(imgData) as any
               delete data.compressed
               data.data = new Uint8ClampedArray(imgData) as any
@@ -1064,14 +1058,19 @@ export const canvasGetImageData =
           data.data = new Uint8ClampedArray(imgData) as any
         }
         resolve(data)
-      })
-      operateCanvas(canvasId, pageId, 'getImageData', {
-        x,
-        y,
-        width,
-        height,
-        callbackId: cId,
-      })
+      }
+      operateCanvas(
+        canvasId,
+        pageId,
+        'getImageData',
+        {
+          x,
+          y,
+          width,
+          height,
+        },
+        callback
+      )
     },
     CanvasGetImageDataProtocol,
     CanvasGetImageDataOptions
@@ -1087,22 +1086,28 @@ export const canvasPutImageData =
         reject()
         return
       }
-      const cId = canvasEventCallbacks.push(function (
-        data: UniApp.CanvasGetImageDataRes
-      ) {
-        resolve(data)
-      })
       let compressed: boolean
       const operate = () => {
-        operateCanvas(canvasId, pageId, 'putImageData', {
-          data,
-          x,
-          y,
-          width,
-          height,
-          compressed,
-          callbackId: cId,
-        })
+        operateCanvas(
+          canvasId,
+          pageId,
+          'putImageData',
+          {
+            data,
+            x,
+            y,
+            width,
+            height,
+            compressed,
+          },
+          (data: UniApp.CanvasGetImageDataRes) => {
+            if (data.errMsg && data.errMsg.indexOf('fail')) {
+              reject()
+              return
+            }
+            resolve(data)
+          }
+        )
       }
       // iOS真机非调试模式压缩太慢暂时排除
       if (
@@ -1146,24 +1151,30 @@ export const canvasToTempFilePath =
         reject()
         return
       }
-      const cId = canvasEventCallbacks.push(function (
-        res: UniApp.CanvasToTempFilePathRes
-      ) {
-        resolve(res)
-      })
       const dirname = `${TEMP_PATH}/canvas`
-      operateCanvas(canvasId, pageId, 'toTempFilePath', {
-        x,
-        y,
-        width,
-        height,
-        destWidth,
-        destHeight,
-        fileType,
-        quality,
-        dirname,
-        callbackId: cId,
-      })
+      operateCanvas(
+        canvasId,
+        pageId,
+        'toTempFilePath',
+        {
+          x,
+          y,
+          width,
+          height,
+          destWidth,
+          destHeight,
+          fileType,
+          quality,
+          dirname,
+        },
+        (res: UniApp.CanvasToTempFilePathRes & { errMsg?: string }) => {
+          if (res.errMsg && res.errMsg.indexOf('fail')) {
+            reject('', res)
+            return
+          }
+          resolve(res)
+        }
+      )
     },
     CanvasToTempFilePathProtocol,
     CanvasToTempFilePathOptions

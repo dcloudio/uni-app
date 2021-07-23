@@ -232,19 +232,17 @@ function useMethods(
     {
       actions,
       reserve,
-      callbackId,
     }: {
       actions: Actions
       reserve: boolean
-      callbackId: number
     },
-    resolve: (res: { callbackId: number; data: any }) => void
+    resolve: (res: any) => void
   ) {
     if (!actions) {
       return
     }
     if (actionsWaiting.value) {
-      _actionsDefer.push([actions, reserve, callbackId])
+      _actionsDefer.push([actions, reserve])
       return
     }
     var canvas = canvasRef.value!
@@ -300,7 +298,6 @@ function useMethods(
             const loaded = checkImageLoaded(
               data[1] as string,
               actions.slice(index + 1),
-              callbackId,
               resolve,
               function (image) {
                 if (image) {
@@ -374,7 +371,6 @@ function useMethods(
             checkImageLoaded(
               url,
               actions.slice(index + 1),
-              callbackId,
               resolve,
               function (image) {
                 if (image) {
@@ -409,12 +405,9 @@ function useMethods(
         }
       }
     }
-    if (!actionsWaiting.value && callbackId) {
+    if (!actionsWaiting.value) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: 'drawCanvas:ok',
-        },
+        errMsg: 'drawCanvas:ok',
       })
     }
   }
@@ -467,8 +460,7 @@ function useMethods(
   function checkImageLoaded(
     src: string,
     actions: Actions,
-    callbackId: number,
-    resolve: (res: { callbackId: number; data: any }) => void,
+    resolve: (res: any) => void,
     fn: (a: CanvasImageSource) => void
   ) {
     var image = _images[src]
@@ -487,7 +479,6 @@ function useMethods(
         for (var action = actions.shift(); action; ) {
           actionsChanged(
             {
-              callbackId,
               actions: action[0],
               reserve: action[1],
             },
@@ -511,7 +502,6 @@ function useMethods(
       dataType,
       quality = 1,
       type = 'png',
-      callbackId,
     }: {
       x: number
       y: number
@@ -523,9 +513,8 @@ function useMethods(
       dataType: string
       quality: number
       type: string
-      callbackId?: number
     },
-    resolve?: (res: { callbackId: number; data: any }) => void
+    resolve?: (res: any) => void
   ) {
     const canvas = canvasRef.value!
     let data: string | number[]
@@ -553,9 +542,9 @@ function useMethods(
       context.fillStyle = '#fff'
       context.fillRect(0, 0, destWidth, destHeight)
     }
-    // @ts-ignore
+    // @ts-expect-error
     context.__hidpi__ = true
-    // @ts-ignore
+    // @ts-expect-error
     context.drawImageByCanvas(
       canvas,
       x,
@@ -585,7 +574,6 @@ function useMethods(
         }
       }
       result = {
-        errMsg: 'canvasGetImageData:ok',
         data,
         compressed,
         width: destWidth,
@@ -597,16 +585,12 @@ function useMethods(
       }
     }
     newCanvas.height = newCanvas.width = 0
-    // @ts-ignore
+    // @ts-expect-error
     context.__hidpi__ = false
-    if (!callbackId) {
+    if (!resolve) {
       return result
     } else {
-      resolve &&
-        resolve({
-          callbackId,
-          data: result,
-        })
+      resolve(result)
     }
   }
   function putImageData(
@@ -617,7 +601,6 @@ function useMethods(
       width,
       height,
       compressed,
-      callbackId,
     }: {
       data: Array<number>
       x: number
@@ -625,9 +608,8 @@ function useMethods(
       width: number
       height: number
       compressed: boolean
-      callbackId: number
     },
-    resolve: (res: { callbackId: number; data: any }) => void
+    resolve: (res: any) => void
   ) {
     try {
       if (!height) {
@@ -647,20 +629,10 @@ function useMethods(
       canvasRef.value!.getContext('2d')!.drawImage(canvas, x, y, width, height)
       canvas.height = canvas.width = 0
     } catch (error) {
-      resolve({
-        callbackId,
-        data: {
-          errMsg: 'canvasPutImageData:fail',
-        },
-      })
+      resolve({ errMsg: 'canvasPutImageData:fail' })
       return
     }
-    resolve({
-      callbackId,
-      data: {
-        errMsg: 'canvasPutImageData:ok',
-      },
-    })
+    resolve({ errMsg: 'canvasPutImageData:ok' })
   }
   function toTempFilePath(
     {
@@ -673,7 +645,6 @@ function useMethods(
       fileType,
       quality,
       dirname,
-      callbackId,
     }: {
       x: number
       y: number
@@ -684,9 +655,8 @@ function useMethods(
       fileType: string
       quality: number
       dirname: string
-      callbackId: number
     },
-    resolve: (res: { callbackId: number; data: any }) => void
+    resolve: (res: any) => void
   ) {
     const res = getImageData({
       x,
@@ -702,10 +672,7 @@ function useMethods(
     })!
     if (!res.data || !res.data.length) {
       resolve({
-        callbackId,
-        data: {
-          errMsg: res!.errMsg.replace('canvasPutImageData', 'toTempFilePath'),
-        },
+        errMsg: res!.errMsg!.replace('canvasPutImageData', 'toTempFilePath'),
       })
       return
     }
@@ -714,13 +681,7 @@ function useMethods(
       if (error) {
         errMsg += ` ${error.message}`
       }
-      resolve({
-        callbackId,
-        data: {
-          errMsg,
-          tempFilePath: tempFilePath,
-        },
-      })
+      resolve({ errMsg, tempFilePath })
     })
   }
 
