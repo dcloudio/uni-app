@@ -2,7 +2,6 @@ import debug from 'debug'
 import { extend } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
-import vue from '@vitejs/plugin-vue'
 
 import { COMMON_EXCLUDE } from '@dcloudio/uni-cli-shared'
 
@@ -47,7 +46,6 @@ export function initPlugins(
 ) {
   const command = config.command
   const plugins = config.plugins as Plugin[]
-  addPlugin(plugins, vue(options.vueOptions), 'vite:uni', 'pre')
 
   addPlugin(plugins, uniResolveIdPlugin(options), 'vite:resolve', 'pre')
 

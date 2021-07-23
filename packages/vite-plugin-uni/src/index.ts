@@ -3,15 +3,17 @@ import { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { Options as VueOptions } from '@vitejs/plugin-vue'
 import { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
 import { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
-import VueJsxPlugin from '@vitejs/plugin-vue-jsx'
-import ViteLegacyPlugin from '@vitejs/plugin-legacy'
+import vuePlugin from '@vitejs/plugin-vue'
+import type VueJsxPlugin from '@vitejs/plugin-vue-jsx'
+import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 
-import { initModuleAlias } from '@dcloudio/uni-cli-shared'
+import { initModuleAlias, initPreContext } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 import { initExtraPlugins } from './utils'
+import { initPluginVueOptions } from './vue'
 
 const debugUni = debug('vite:uni:plugin')
 
@@ -62,6 +64,12 @@ export default function uniPlugin(
     command: 'serve',
     platform: 'h5',
   }
+
+  options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
+  options.inputDir = process.env.UNI_INPUT_DIR
+
+  initPreContext(options.platform)
+
   const plugins: Plugin[] = []
 
   if (createViteLegacyPlugin && options.viteLegacyOptions !== false) {
@@ -75,6 +83,7 @@ export default function uniPlugin(
   if (createVueJsxPlugin && options.vueJsxOptions !== false) {
     plugins.push(createVueJsxPlugin(options.vueJsxOptions))
   }
+
   const uniPlugins = initExtraPlugins(
     process.env.UNI_CLI_CONTEXT || process.cwd(),
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
@@ -87,5 +96,8 @@ export default function uniPlugin(
     configureServer: createConfigureServer(options),
   })
   plugins.push(...uniPlugins)
+
+  plugins.unshift(vuePlugin(initPluginVueOptions(options, uniPlugins)))
+
   return plugins
 }

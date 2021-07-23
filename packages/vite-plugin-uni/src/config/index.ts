@@ -2,8 +2,8 @@ import path from 'path'
 import { Plugin, UserConfig } from 'vite'
 
 import {
-  initPreContext,
-  normalizePath,
+  // initPreContext,
+  // normalizePath,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
@@ -21,23 +21,20 @@ import {
   initPluginVueOptions,
 } from '../vue'
 
-function normalizeRoot(config: UserConfig) {
-  return normalizePath(config.root ? path.resolve(config.root) : process.cwd())
-}
+// function normalizeRoot(config: UserConfig) {
+//   return normalizePath(config.root ? path.resolve(config.root) : process.cwd())
+// }
 
-function normalizeInputDir(config: UserConfig) {
-  return process.env.UNI_INPUT_DIR || path.resolve(normalizeRoot(config), 'src')
-}
+// function normalizeInputDir(config: UserConfig) {
+//   return process.env.UNI_INPUT_DIR || path.resolve(normalizeRoot(config), 'src')
+// }
+
 export function createConfig(
   options: VitePluginUniResolvedOptions,
   uniPlugins: Plugin[]
 ): Plugin['config'] {
   return (config, env) => {
     options.command = env.command
-    options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
-    options.inputDir = normalizeInputDir(config)
-
-    initPreContext(options.platform)
 
     let base = config.base
     if (!base) {
@@ -48,12 +45,14 @@ export function createConfig(
       base = '/'
     }
     options.base = base!
+    // TODO 似乎没必要
     options.vueOptions = initPluginVueOptions(options, uniPlugins)
     options.vueJsxOptions = initPluginVueJsxOptions(options)
     options.viteLegacyOptions = initPluginViteLegacyOptions(options)
 
     return {
       base,
+      root: process.env.VITE_ROOT_DIR,
       publicDir: config.publicDir || false,
       define: createDefine(options),
       resolve: createResolve(options, config),
