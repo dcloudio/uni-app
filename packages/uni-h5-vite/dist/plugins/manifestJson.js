@@ -23,7 +23,7 @@ function uniManifestJsonPlugin() {
                 if (!opts.filter(id)) {
                     return;
                 }
-                const manifest = JSON.parse(code);
+                const manifest = uni_cli_shared_1.parseJson(code);
                 const { debug, h5 } = manifest;
                 const appid = (manifest.appid || '').replace('__UNI__', '');
                 const router = Object.assign(Object.assign({}, defaultRouter), ((h5 && h5.router) || {}));

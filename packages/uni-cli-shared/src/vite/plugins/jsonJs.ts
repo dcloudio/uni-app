@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import slash from 'slash'
-import { parse } from 'jsonc-parser'
 import {
   CreateUniViteFilterPlugin,
   UniViteFilterPluginOptions,
@@ -52,7 +51,7 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
       if (!opts.filter(id)) {
         return
       }
-      return JSON.stringify(parse(fs.readFileSync(jsonPath, 'utf8')))
+      return fs.readFileSync(jsonPath, 'utf8')
     }
     return plugin
   }

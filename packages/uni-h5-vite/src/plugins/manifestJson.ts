@@ -3,6 +3,7 @@ import { Plugin } from 'vite'
 import {
   defineUniManifestJsonPlugin,
   normalizeNetworkTimeout,
+  parseJson,
 } from '@dcloudio/uni-cli-shared'
 
 const defaultRouter = {
@@ -29,7 +30,7 @@ export function uniManifestJsonPlugin(): Plugin {
         if (!opts.filter(id)) {
           return
         }
-        const manifest = JSON.parse(code)
+        const manifest = parseJson(code)
         const { debug, h5 } = manifest
         const appid = (manifest.appid || '').replace('__UNI__', '')
         const router = { ...defaultRouter, ...((h5 && h5.router) || {}) }
