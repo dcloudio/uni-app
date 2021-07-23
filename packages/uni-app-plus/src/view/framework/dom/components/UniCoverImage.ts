@@ -1,4 +1,5 @@
 import { UniNodeJSON } from '@dcloudio/uni-shared'
+import '../../../../../style/cover-image.css'
 import CoverImage from '../../../components/cover-image'
 
 import { UniComponent } from './UniComponent'

@@ -3149,7 +3149,7 @@ var __publicField = (obj, key, value) => {
       }
       const { type, ref: ref2, shapeFlag } = n2;
       switch (type) {
-        case Text:
+        case Text$1:
           processText(n1, n2, container, anchor);
           break;
         case Comment$1:
@@ -3974,7 +3974,7 @@ var __publicField = (obj, key, value) => {
   const isTeleport = (type) => type.__isTeleport;
   const NULL_DYNAMIC_COMPONENT = Symbol();
   const Fragment = Symbol(void 0);
-  const Text = Symbol(void 0);
+  const Text$1 = Symbol(void 0);
   const Comment$1 = Symbol(void 0);
   const Static = Symbol(void 0);
   const blockStack = [];
@@ -4110,7 +4110,7 @@ var __publicField = (obj, key, value) => {
     return cloned;
   }
   function createTextVNode(text2 = " ", flag = 0) {
-    return createVNode(Text, null, text2, flag);
+    return createVNode(Text$1, null, text2, flag);
   }
   function normalizeVNode(child) {
     if (child == null || typeof child === "boolean") {
@@ -4120,7 +4120,7 @@ var __publicField = (obj, key, value) => {
     } else if (typeof child === "object") {
       return cloneIfMounted(child);
     } else {
-      return createVNode(Text, null, String(child));
+      return createVNode(Text$1, null, String(child));
     }
   }
   function cloneIfMounted(child) {
@@ -14411,18 +14411,23 @@ var __publicField = (obj, key, value) => {
   class UniContainerComponent extends UniComponent {
     constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
       super(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector);
-      this._rebuild = this.rebuild.bind(this);
+    }
+    getRebuildFn() {
+      if (!this._rebuild) {
+        this._rebuild = this.rebuild.bind(this);
+      }
+      return this._rebuild;
     }
     setText(text2) {
-      queuePostActionJob(this._rebuild);
+      queuePostActionJob(this.getRebuildFn());
       return super.setText(text2);
     }
     appendChild(node) {
-      queuePostActionJob(this._rebuild);
+      queuePostActionJob(this.getRebuildFn());
       return super.appendChild(node);
     }
     insertBefore(newChild, refChild) {
-      queuePostActionJob(this._rebuild);
+      queuePostActionJob(this.getRebuildFn());
       return super.insertBefore(newChild, refChild);
     }
     rebuild() {
@@ -14508,6 +14513,7 @@ var __publicField = (obj, key, value) => {
       super(id2, "uni-checkbox-group", CheckboxGroup, parentNodeId, refNodeId, nodeJson);
     }
   }
+  var coverImage = "uni-cover-image {\n  display: block;\n  line-height: 1.2;\n  overflow: hidden;\n  height: 100%;\n  width: 100%;\n  pointer-events: auto;\n}\n\nuni-cover-image[hidden] {\n  display: none;\n}\n\nuni-cover-image .uni-cover-image {\n  width: 100%;\n  height: 100%;\n}\n";
   function getStatusbarHeight() {
     return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === "iOS" ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0;
   }
@@ -14580,31 +14586,41 @@ var __publicField = (obj, key, value) => {
       });
     }
     window.addEventListener("updateview", requestPositionUpdate);
-    const onDrawCallbacks = [];
+    let onDrawCallbacks = [];
+    let attachedCallback;
     function onParentReady(callback) {
       const onDraw2 = inject(onDrawKey);
       const newCallback = (parentPosition) => {
         callback(parentPosition);
         onDrawCallbacks.forEach((callback2) => callback2(position));
-        onDrawCallbacks.length = 0;
+        onDrawCallbacks = null;
       };
       if (onDraw2) {
         onDraw2(newCallback);
       } else {
-        onMounted(() => newCallback({
+        attachedCallback = () => newCallback({
           top: "0px",
           left: "0px",
           width: Number.MAX_SAFE_INTEGER + "px",
           height: Number.MAX_SAFE_INTEGER + "px",
           position: "static"
-        }));
+        });
       }
     }
     const onDraw = function(callback) {
-      onDrawCallbacks.push(callback);
+      if (onDrawCallbacks) {
+        onDrawCallbacks.push(callback);
+      } else {
+        callback(position);
+      }
     };
     provide(onDrawKey, onDraw);
-    watch(() => rootRef.value, updatePosition);
+    onMounted(() => {
+      updatePosition();
+      if (attachedCallback) {
+        attachedCallback();
+      }
+    });
     return {
       position,
       hidden,
@@ -14614,6 +14630,7 @@ var __publicField = (obj, key, value) => {
   let id = 0;
   function useCover(rootRef, trigger2, content) {
     const { position, hidden, onParentReady } = useNative(rootRef);
+    let cover;
     onParentReady((parentPosition) => {
       const viewPosition = computed$1(() => {
         const object = {};
@@ -14739,7 +14756,7 @@ var __publicField = (obj, key, value) => {
         }
         return tags2;
       });
-      const cover = new plus.nativeObj.View(`cover-${Date.now()}-${id++}`, viewPosition.value, tags.value);
+      cover = new plus.nativeObj.View(`cover-${Date.now()}-${id++}`, viewPosition.value, tags.value);
       {
         console.log(formatLog("Cover", cover.id, viewPosition.value, tags.value));
       }
@@ -14760,6 +14777,11 @@ var __publicField = (obj, key, value) => {
         cover.reset();
         cover.draw(tags.value);
       }, { deep: true });
+    });
+    onBeforeUnmount(() => {
+      if (cover) {
+        cover.close();
+      }
     });
   }
   const TEMP_PATH = "_doc/uniapp_temp/";
@@ -14863,41 +14885,39 @@ var __publicField = (obj, key, value) => {
       super(id2, "uni-cover-image", CoverImage, parentNodeId, refNodeId, nodeJson);
     }
   }
+  var coverView = "uni-cover-view {\n  display: block;\n  line-height: 1.2;\n  overflow: hidden;\n  white-space: nowrap;\n  pointer-events: auto;\n}\n\nuni-cover-view[hidden] {\n  display: none;\n}\n\nuni-cover-view .uni-cover-view {\n  width: 100%;\n  height: 100%;\n}\n";
   var CoverView = /* @__PURE__ */ defineBuiltInComponent({
     name: "CoverView",
     emits: ["click"],
     setup(_, {
-      emit: emit2,
-      slots
+      emit: emit2
     }) {
       const rootRef = ref(null);
+      const textRef = ref(null);
       const trigger2 = useCustomEvent(rootRef, emit2);
       let content = reactive({
         text: ""
       });
       useCover(rootRef, trigger2, content);
+      useRebuild(() => {
+        const node = textRef.value.childNodes[0];
+        content.text = node && node instanceof Text ? node.textContent : "";
+      });
       return () => {
-        const defaultSlots = slots.default ? flatVNode(slots.default()) : [];
-        let text2 = "";
-        defaultSlots.forEach((node) => {
-          if (isString(node.children)) {
-            text2 += node.children;
-          }
-        });
-        content.text = text2;
         return createVNode("uni-cover-view", {
           "ref": rootRef
         }, {
           default: () => [createVNode("div", {
+            "ref": textRef,
             "class": "uni-cover-view"
-          }, [text2])]
+          }, null, 512)]
         }, 512);
       };
     }
   });
-  class UniCoverView extends UniComponent {
+  class UniCoverView extends UniContainerComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson);
+      super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson, ".uni-cover-view");
     }
   }
   var editor = ".ql-container {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  -webkit-user-select: text;\n          user-select: text;\n  outline: none;\n  overflow: hidden;\n  width: 100%;\n  height: 200px;\n  min-height: 200px;\n}\n.ql-container[hidden] {\n  display: none;\n}\n.ql-container .ql-editor {\n  position: relative;\n  font-size: inherit;\n  line-height: inherit;\n  font-family: inherit;\n  min-height: inherit;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-tap-highlight-color: transparent;\n  -webkit-touch-callout: none;\n  -webkit-overflow-scrolling: touch;\n}\n.ql-container .ql-editor::-webkit-scrollbar {\n  width: 0 !important;\n}\n.ql-container .ql-editor.scroll-disabled {\n  overflow: hidden;\n}\n.ql-container .ql-image-overlay {\n  display: flex;\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px dashed #ccc;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n          user-select: none;\n}\n.ql-container .ql-image-overlay .ql-image-size {\n  position: absolute;\n  padding: 4px 8px;\n  text-align: center;\n  background-color: #fff;\n  color: #888;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  opacity: 0.8;\n  right: 4px;\n  top: 4px;\n  font-size: 12px;\n  display: inline-block;\n  width: auto;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar {\n  position: relative;\n  text-align: center;\n  box-sizing: border-box;\n  background: #000;\n  border-radius: 5px;\n  color: #fff;\n  font-size: 0;\n  min-height: 24px;\n  z-index: 100;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span {\n  display: inline-block;\n  cursor: pointer;\n  padding: 5px;\n  font-size: 12px;\n  border-right: 1px solid #fff;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span:last-child {\n  border-right: 0;\n}\n.ql-container .ql-image-overlay .ql-image-toolbar span.triangle-up {\n  padding: 0;\n  position: absolute;\n  top: -12px;\n  left: 50%;\n  transform: translatex(-50%);\n  width: 0;\n  height: 0;\n  border-width: 6px;\n  border-style: solid;\n  border-color: transparent transparent black transparent;\n}\n.ql-container .ql-image-overlay .ql-image-handle {\n  position: absolute;\n  height: 12px;\n  width: 12px;\n  border-radius: 50%;\n  border: 1px solid #ccc;\n  box-sizing: border-box;\n  background: #fff;\n}\n.ql-container img {\n  display: inline-block;\n  max-width: 100%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n.ql-editor {\n  box-sizing: border-box;\n  height: 100%;\n  outline: none;\n  overflow-y: auto;\n  tab-size: 4;\n  -moz-tab-size: 4;\n  text-align: left;\n  white-space: pre-wrap;\n  word-wrap: break-word;\n}\n.ql-editor > * {\n  cursor: text;\n}\n.ql-editor p,\n.ql-editor ol,\n.ql-editor ul,\n.ql-editor pre,\n.ql-editor blockquote,\n.ql-editor h1,\n.ql-editor h2,\n.ql-editor h3,\n.ql-editor h4,\n.ql-editor h5,\n.ql-editor h6 {\n  margin: 0;\n  padding: 0;\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol > li,\n.ql-editor ul > li {\n  list-style-type: none;\n}\n.ql-editor ul > li::before {\n  content: '\\2022';\n}\n.ql-editor ul[data-checked=true],\n.ql-editor ul[data-checked=false] {\n  pointer-events: none;\n}\n.ql-editor ul[data-checked=true] > li *,\n.ql-editor ul[data-checked=false] > li * {\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before,\n.ql-editor ul[data-checked=false] > li::before {\n  color: #777;\n  cursor: pointer;\n  pointer-events: all;\n}\n.ql-editor ul[data-checked=true] > li::before {\n  content: '\\2611';\n}\n.ql-editor ul[data-checked=false] > li::before {\n  content: '\\2610';\n}\n.ql-editor li::before {\n  display: inline-block;\n  white-space: nowrap;\n  width: 2em;\n}\n.ql-editor ol li {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n.ql-editor ol li:before {\n  content: counter(list-0, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-increment: list-1;\n}\n.ql-editor ol li.ql-indent-1:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-increment: list-2;\n}\n.ql-editor ol li.ql-indent-2:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-increment: list-3;\n}\n.ql-editor ol li.ql-indent-3:before {\n  content: counter(list-3, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-increment: list-4;\n}\n.ql-editor ol li.ql-indent-4:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-increment: list-5;\n}\n.ql-editor ol li.ql-indent-5:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-increment: list-6;\n}\n.ql-editor ol li.ql-indent-6:before {\n  content: counter(list-6, decimal) '. ';\n}\n.ql-editor ol li.ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-increment: list-7;\n}\n.ql-editor ol li.ql-indent-7:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n.ql-editor ol li.ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-increment: list-8;\n}\n.ql-editor ol li.ql-indent-8:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n.ql-editor ol li.ql-indent-8 {\n  counter-reset: list-9;\n}\n.ql-editor ol li.ql-indent-9 {\n  counter-increment: list-9;\n}\n.ql-editor ol li.ql-indent-9:before {\n  content: counter(list-9, decimal) '. ';\n}\n.ql-editor .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 2em;\n}\n.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 2em;\n}\n.ql-editor .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 4em;\n}\n.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 4em;\n}\n.ql-editor .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n.ql-editor .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 8em;\n}\n.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 8em;\n}\n.ql-editor .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 10em;\n}\n.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 10em;\n}\n.ql-editor .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n.ql-editor .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 14em;\n}\n.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 14em;\n}\n.ql-editor .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 16em;\n}\n.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 16em;\n}\n.ql-editor .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n.ql-editor .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n.ql-editor .ql-align-center {\n  text-align: center;\n}\n.ql-editor .ql-align-justify {\n  text-align: justify;\n}\n.ql-editor .ql-align-right {\n  text-align: right;\n}\n.ql-editor.ql-blank::before {\n  color: rgba(0, 0, 0, 0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  pointer-events: none;\n  position: absolute;\n}\n.ql-container.ql-disabled .ql-editor ul[data-checked] > li::before {\n  pointer-events: none;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n";
@@ -15197,8 +15217,7 @@ var __publicField = (obj, key, value) => {
     props,
     emits,
     setup(props2, {
-      emit: emit2,
-      slots
+      emit: emit2
     }) {
       const rootRef = ref(null);
       const trigger2 = useCustomEvent(rootRef, emit2);
@@ -15269,7 +15288,7 @@ var __publicField = (obj, key, value) => {
             "class": "uni-video-container"
           }, null, 512), createVNode("div", {
             "class": "uni-video-slot"
-          }, [slots.default && slots.default()])],
+          }, null)],
           _: 1
         }, 8, ["id"]);
       };
@@ -15277,7 +15296,7 @@ var __publicField = (obj, key, value) => {
   });
   class UniVideo extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
+      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson, ".uni-video-slot");
     }
   }
   var WebView = /* @__PURE__ */ defineBuiltInComponent({

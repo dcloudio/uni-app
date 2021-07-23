@@ -1,13 +1,4 @@
-import {
-  Ref,
-  reactive,
-  ref,
-  watch,
-  computed,
-  provide,
-  inject,
-  onMounted,
-} from 'vue'
+import { Ref, reactive, ref, computed, provide, inject, onMounted } from 'vue'
 import { getNavigationBarHeight } from './navigationBar'
 import { getRealPath } from '../platform/getRealPath'
 
@@ -94,7 +85,8 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
 
   window.addEventListener('updateview', requestPositionUpdate)
 
-  const onDrawCallbacks: OnDrawCallback[] = []
+  let onDrawCallbacks: OnDrawCallback[] | null = []
+  let attachedCallback: () => void
   /**
    * 父组件绘制完毕，开始绘制当前组件原生部分
    * @param callback
@@ -103,13 +95,13 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
     const onDraw: OnDraw | undefined = inject(onDrawKey)
     const newCallback: OnDrawCallback = (parentPosition) => {
       callback(parentPosition)
-      onDrawCallbacks.forEach((callback) => callback(position))
-      onDrawCallbacks.length = 0
+      onDrawCallbacks!.forEach((callback) => callback(position))
+      onDrawCallbacks = null
     }
     if (onDraw) {
       onDraw(newCallback)
     } else {
-      onMounted(() =>
+      attachedCallback = () =>
         newCallback({
           top: '0px',
           left: '0px',
@@ -117,17 +109,25 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
           height: Number.MAX_SAFE_INTEGER + 'px',
           position: 'static',
         })
-      )
     }
   }
 
   const onDraw: OnDraw = function (callback: OnDrawCallback) {
-    onDrawCallbacks.push(callback)
+    if (onDrawCallbacks) {
+      onDrawCallbacks.push(callback)
+    } else {
+      callback(position)
+    }
   }
 
   provide(onDrawKey, onDraw)
 
-  watch(() => rootRef.value, updatePosition)
+  onMounted(() => {
+    updatePosition()
+    if (attachedCallback) {
+      attachedCallback()
+    }
+  })
 
   return {
     position,

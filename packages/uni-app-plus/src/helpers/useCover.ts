@@ -1,4 +1,4 @@
-import { computed, Ref, reactive, watch } from 'vue'
+import { computed, Ref, reactive, watch, onBeforeUnmount } from 'vue'
 import { CustomEventTrigger } from '@dcloudio/uni-components'
 import { Position, useNative } from './useNative'
 import { formatLog } from '@dcloudio/uni-shared'
@@ -11,6 +11,7 @@ export function useCover(
   content: { src?: string; text?: string }
 ) {
   const { position, hidden, onParentReady } = useNative(rootRef)
+  let cover: PlusNativeObjView
   onParentReady((parentPosition) => {
     const viewPosition = computed(() => {
       const object: Position = {} as Position
@@ -165,7 +166,7 @@ export function useCover(
       return tags
     })
 
-    const cover = new plus.nativeObj.View!(
+    cover = new plus.nativeObj.View!(
       `cover-${Date.now()}-${id++}`,
       viewPosition.value,
       tags.value
@@ -203,5 +204,10 @@ export function useCover(
       },
       { deep: true }
     )
+  })
+  onBeforeUnmount(() => {
+    if (cover) {
+      cover.close()
+    }
   })
 }
