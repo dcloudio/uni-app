@@ -55,9 +55,9 @@ export function uniPreVuePlugin(): Plugin {
       if (hasWxs) {
         code = normalizeWxsCode(ast, code)
       }
-      if (errors.length) {
-        this.error(errors.join('\n'))
-      }
+      // if (errors.length) {
+      //   this.error(errors.join('\n'))
+      // }
       sourceToSFC.set(sourceKey, code)
       return code // 暂不提供sourcemap,意义不大
     },

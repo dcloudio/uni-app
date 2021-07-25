@@ -1323,8 +1323,12 @@ class ComponentDescriptor {
   }
 }
 function createComponentDescriptor(vm, isOwnerInstance = true) {
-  if (isOwnerInstance && vm && vm.$options.name && isBuiltInComponent(hyphenate(vm.$options.name))) {
-    vm = vm.$parent;
+  if (isOwnerInstance && vm) {
+    let componentName = vm.$options && vm.$options.name;
+    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
+      vm = vm.$parent;
+      componentName = vm.$options && vm.$options.name;
+    }
   }
   if (vm && vm.$el) {
     if (!vm.$el.__wxsComponentDescriptor) {

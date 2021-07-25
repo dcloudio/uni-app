@@ -189,14 +189,13 @@ function createComponentDescriptor(
   vm: ComponentPublicInstance,
   isOwnerInstance = true
 ) {
-  if (
-    isOwnerInstance &&
-    vm &&
-    vm.$options.name &&
-    isBuiltInComponent(hyphenate(vm.$options.name))
-  ) {
-    // ownerInstance 内置组件需要使用父 vm
-    vm = vm.$parent!
+  if (isOwnerInstance && vm) {
+    let componentName = vm.$options && vm.$options.name
+    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
+      // ownerInstance 内置组件需要使用父 vm
+      vm = vm.$parent!
+      componentName = vm.$options && vm.$options.name
+    }
   }
   if (vm && vm.$el) {
     if (!vm.$el.__wxsComponentDescriptor) {

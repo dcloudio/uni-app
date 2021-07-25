@@ -9146,8 +9146,9 @@ function patchWxs(el, rawName, nextValue, instance = null) {
         const proxy = instance.proxy;
         const name = rawName.split(':')[1];
         el.__wxsWatches[rawName] = proxy.$watch(() => instance.attrs[name], (value, oldValue) => {
-            // TODO ownerInstance,instance
-            nextValue(value, oldValue, proxy.$gcd(proxy, true), proxy.$gcd(proxy, true));
+            nextTick(() => {
+                nextValue(value, oldValue, proxy.$gcd(proxy, true), proxy.$gcd(proxy, false));
+            });
         }, {
             deep: true
         });
