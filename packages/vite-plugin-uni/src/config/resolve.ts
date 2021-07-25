@@ -7,10 +7,10 @@ export function createResolve(
   _config: UserConfig
 ): UserConfig['resolve'] {
   return {
-    alias: {
-      '@': '',
-      '~@': '', // src: url('~@/static/uni.ttf') format('truetype');
-    },
+    // alias: {
+    //   '@': '',
+    //   '~@': '', // src: url('~@/static/uni.ttf') format('truetype');
+    // },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'].concat(
       EXTNAME_VUE
     ),

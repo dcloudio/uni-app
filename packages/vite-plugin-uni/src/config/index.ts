@@ -1,5 +1,4 @@
-import path from 'path'
-import { Plugin, UserConfig } from 'vite'
+import { Plugin } from 'vite'
 
 import {
   // initPreContext,

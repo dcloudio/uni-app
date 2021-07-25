@@ -3,6 +3,7 @@ const {
   COMMON_EXCLUDE,
   uniViteInjectPlugin,
 } = require('@dcloudio/uni-cli-shared')
+const { uniValidateFunctionPlugin } = require('./validateFunction')
 /**
  * @type {import('vite').Plugin}
  */
@@ -115,4 +116,5 @@ module.exports = [
     exclude: [...COMMON_EXCLUDE],
     uniCloud: ['@dcloudio/uni-cloud', 'default'],
   }),
+  uniValidateFunctionPlugin(),
 ]
