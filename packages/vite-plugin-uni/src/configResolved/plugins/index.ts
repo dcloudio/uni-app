@@ -33,7 +33,7 @@ const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
   exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
 }
 const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [UNI_H5_RE],
+  exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
 }
 
 const uniEasycomPluginOptions: Partial<UniPluginFilterOptions> = {

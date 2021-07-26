@@ -7,7 +7,7 @@ import { UniPluginFilterOptions } from '.'
 
 const debugPre = debug('vite:uni:pre-css')
 const debugPreTry = debug('vite:uni:pre-css-try')
-const cssLangs = `\\.(less|sass|scss|styl|stylus|postcss)($|\\?)`
+const cssLangs = `\\.(css|less|sass|scss|styl|stylus|postcss)($|\\?)`
 const cssLangRE = new RegExp(cssLangs)
 /**
  * preprocess css
@@ -18,11 +18,11 @@ export function uniPreCssPlugin(options: UniPluginFilterOptions): Plugin {
   return {
     name: 'vite:uni-pre-css',
     transform(code, id) {
-      if (!filter(id)) {
-        return code
-      }
       if (!cssLangRE.test(id)) {
         return
+      }
+      if (!filter(id)) {
+        return code
       }
       debugPreTry(id)
       if (!code.includes('#endif')) {
