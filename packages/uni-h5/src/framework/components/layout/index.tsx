@@ -147,7 +147,9 @@ function useMaxWidth(
   const route = usePageRoute()
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth
-    const maxWidth = parseInt(String(route.meta.maxWidth || 1190))
+    const maxWidth = parseInt(
+      String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER)
+    )
     let showMaxWidth = false
     if (windowWidth > maxWidth) {
       showMaxWidth = true
