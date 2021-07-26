@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-vite",
-  "version": "3.0.0-alpha-3000020210726001",
+  "version": "3.0.0-alpha-3000020210726002",
   "description": "uni-h5-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,5 +23,5 @@
     "main": "dist/index.js"
   },
   "license": "Apache-2.0",
-  "gitHead": "56deaeb47d42e924d10282d7af418ccee6b139bf"
+  "gitHead": "3b83cc9dc4c9a214747c626f79693559c338044f"
 }
