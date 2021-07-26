@@ -320,7 +320,7 @@ uni-app 2.9+ 新增 leftWindow, topWindow, rightWindow 配置。用于解决宽�
 |leftWindow|Boolean|true|当存在 leftWindow时，当前页面是否显示 leftWindow|H5|
 |topWindow|Boolean|true|当存在 topWindow 时，当前页面是否显示 topWindow|H5|
 |rightWindow|Boolean|true|当存在 rightWindow时，当前页面是否显示 rightWindow|H5|
-|maxWidth|Number|1190|单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选)|H5（2.9.9+）|
+|maxWidth|Number||单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选)|H5（2.9.9+）|
 
 **注意**
 
