@@ -9,8 +9,10 @@ import { navigate } from './utils'
 
 export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
-  ({ url }, { resolve, reject }) =>
-    navigate(API_NAVIGATE_TO, url).then(resolve).catch(reject),
+  ({ url, events }, { resolve, reject }) =>
+    navigate({ type: API_NAVIGATE_TO, url, events })
+      .then(resolve)
+      .catch(reject),
   NavigateToProtocol,
   NavigateToOptions
 )

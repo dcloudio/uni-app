@@ -1883,9 +1883,14 @@ var serviceContext = (function (vue) {
     selectAllComponents: selectAllComponents
   });
 
+  function getOpenerEventChannel() {
+      // TODO App
+  }
+
   function initAppConfig(appConfig) {
+      const globalProperties = appConfig.globalProperties;
+      globalProperties.getOpenerEventChannel = getOpenerEventChannel;
       {
-          const globalProperties = appConfig.globalProperties;
           extend(globalProperties, wxInstance);
       }
   }

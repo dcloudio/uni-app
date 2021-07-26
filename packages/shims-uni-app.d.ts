@@ -184,6 +184,7 @@ declare namespace UniApp {
     topWindow?: boolean
     leftWindow?: boolean
     rightWindow?: boolean
+    eventChannel?: any
   }
 
   interface PagesJsonPageOptions {

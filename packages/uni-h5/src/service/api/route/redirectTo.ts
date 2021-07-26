@@ -24,7 +24,7 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
     return (
       // TODO exists 属性未实现
       removeLastPage(),
-      navigate(API_REDIRECT_TO, url).then(resolve).catch(reject)
+      navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject)
     )
   },
   RedirectToProtocol,

@@ -8,5 +8,6 @@ export * from './utils'
 export * from './query'
 export * from './debounce'
 export * from './constants'
+export * from './EventChannel'
 
 export * from './node/locale'

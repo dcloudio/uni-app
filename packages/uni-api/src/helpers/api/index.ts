@@ -206,7 +206,7 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   fn: (
     args: Omit<P, CALLBACK_TYPES>,
     res: {
-      resolve: (res?: AsyncApiRes<P>) => void
+      resolve: (res?: AsyncApiRes<P> | void) => void
       reject: (err?: string) => void
     }
   ) => ReturnType<T>,
@@ -237,7 +237,7 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   fn: (
     args: Omit<P, CALLBACK_TYPES>,
     res: {
-      resolve: (res?: AsyncApiRes<P>) => void
+      resolve: (res: AsyncApiRes<P> | void) => void
       reject: (errMsg?: string, errRes?: any) => void
     }
   ) => void,

@@ -48,7 +48,7 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   ({ url }, { resolve, reject }) => {
     return (
       removeNonTabBarPages(),
-      navigate(API_SWITCH_TAB, url, getTabBarPageId(url))
+      navigate({ type: API_SWITCH_TAB, url }, getTabBarPageId(url))
         .then(resolve)
         .catch(reject)
     )

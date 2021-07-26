@@ -19,7 +19,8 @@ export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
   API_RE_LAUNCH,
   ({ url }, { resolve, reject }) => {
     return (
-      removeAllPages(), navigate(API_RE_LAUNCH, url).then(resolve).catch(reject)
+      removeAllPages(),
+      navigate({ type: API_RE_LAUNCH, url }).then(resolve).catch(reject)
     )
   },
   ReLaunchProtocol,

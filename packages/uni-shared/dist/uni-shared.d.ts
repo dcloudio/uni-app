@@ -105,6 +105,24 @@ export declare const defaultRpx2Unit: {
 
 declare type DictArray = [number, number][];
 
+export declare class EventChannel {
+    id: number;
+    private listener;
+    private emitCache;
+    constructor(id: number, events?: NavigateToOptionEvents);
+    emit(eventName: string, ...args: any[]): number | undefined;
+    on(eventName: string, fn: EventChannelListener['fn']): void;
+    once(eventName: string, fn: EventChannelListener['fn']): void;
+    off(eventName: string, fn: EventChannelListener['fn']): void;
+    _clearCache(eventName: string): void;
+    _addListener(eventName: string, type: EventChannelListener['type'], fn: EventChannelListener['fn']): void;
+}
+
+declare interface EventChannelListener {
+    type: 'on' | 'once';
+    fn: (...args: any[]) => void;
+}
+
 export declare const EventModifierFlags: {
     stop: number;
     prevent: number;
@@ -167,6 +185,8 @@ export declare interface IUniPageNode {
 }
 
 export declare const NAVBAR_HEIGHT = 44;
+
+declare type NavigateToOptionEvents = Record<string, (...args: any[]) => void>;
 
 export declare const NODE_TYPE_COMMENT = 8;
 
