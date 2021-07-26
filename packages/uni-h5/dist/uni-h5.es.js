@@ -18597,6 +18597,7 @@ function useMaxWidth(layoutState, rootRef) {
   });
 }
 function useState() {
+  const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = reactive({
       marginWidth: 0
@@ -18611,9 +18612,9 @@ function useState() {
   const topWindowMediaQuery = ref(false);
   const leftWindowMediaQuery = ref(false);
   const rightWindowMediaQuery = ref(false);
-  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && topWindowMediaQuery.value);
-  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && leftWindowMediaQuery.value);
-  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && rightWindowMediaQuery.value);
+  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
+  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
+  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
   const layoutState = reactive({
     topWindowMediaQuery,
     showTopWindow: showTopWindow2,

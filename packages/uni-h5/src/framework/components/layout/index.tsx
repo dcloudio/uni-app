@@ -183,6 +183,7 @@ function useMaxWidth(
 }
 
 function useState() {
+  const route = usePageRoute()
   if (!__UNI_FEATURE_RESPONSIVE__) {
     // max width
     const layoutState = reactive({
@@ -198,13 +199,22 @@ function useState() {
   const leftWindowMediaQuery = ref(false)
   const rightWindowMediaQuery = ref(false)
   const showTopWindow = computed(
-    () => __UNI_FEATURE_TOPWINDOW__ && topWindowMediaQuery.value
+    () =>
+      __UNI_FEATURE_TOPWINDOW__ &&
+      route.meta.topWindow !== false &&
+      topWindowMediaQuery.value
   )
   const showLeftWindow = computed(
-    () => __UNI_FEATURE_LEFTWINDOW__ && leftWindowMediaQuery.value
+    () =>
+      __UNI_FEATURE_LEFTWINDOW__ &&
+      route.meta.leftWindow !== false &&
+      leftWindowMediaQuery.value
   )
   const showRightWindow = computed(
-    () => __UNI_FEATURE_RIGHTWINDOW__ && rightWindowMediaQuery.value
+    () =>
+      __UNI_FEATURE_RIGHTWINDOW__ &&
+      route.meta.rightWindow !== false &&
+      rightWindowMediaQuery.value
   )
   const layoutState: LayoutState = reactive({
     topWindowMediaQuery,

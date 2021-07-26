@@ -9987,6 +9987,7 @@ function useMaxWidth(layoutState, rootRef) {
   vue.watch([() => route.path], checkMaxWidth);
 }
 function useState() {
+  const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = vue.reactive({
       marginWidth: 0
@@ -10001,9 +10002,9 @@ function useState() {
   const topWindowMediaQuery = vue.ref(false);
   const leftWindowMediaQuery = vue.ref(false);
   const rightWindowMediaQuery = vue.ref(false);
-  const showTopWindow = vue.computed(() => __UNI_FEATURE_TOPWINDOW__ && topWindowMediaQuery.value);
-  const showLeftWindow = vue.computed(() => __UNI_FEATURE_LEFTWINDOW__ && leftWindowMediaQuery.value);
-  const showRightWindow = vue.computed(() => __UNI_FEATURE_RIGHTWINDOW__ && rightWindowMediaQuery.value);
+  const showTopWindow = vue.computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
+  const showLeftWindow = vue.computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
+  const showRightWindow = vue.computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
   const layoutState = vue.reactive({
     topWindowMediaQuery,
     showTopWindow,
