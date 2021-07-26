@@ -1,10 +1,11 @@
 import { Plugin, ResolvedConfig } from 'vite'
-import { formatMsg, checkUpdate } from '@dcloudio/uni-cli-shared'
+import { formatMsg, checkUpdate, isWindows } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 import { initEnv } from './env'
 import { initOptions } from './options'
 import { initPlugins } from './plugins'
+import { customResolver } from '../config/resolve'
 
 export function createConfigResolved(options: VitePluginUniResolvedOptions) {
   return ((config) => {
@@ -13,6 +14,15 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
     initOptions(options, config)
     initPlugins(config, options)
     initCheckUpdate()
+    if (isWindows) {
+      // TODO 等 https://github.com/vitejs/vite/issues/3331 修复后，可以移除下列代码
+      const item = config.resolve.alias.find((item) =>
+        typeof item.find !== 'string' ? item.find.test('@') : false
+      )
+      if (item) {
+        item.customResolver = customResolver
+      }
+    }
   }) as Plugin['configResolved']
 }
 

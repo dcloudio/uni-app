@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniMainJsPlugin = void 0;
 const path_1 = __importDefault(require("path"));
-const slash_1 = __importDefault(require("slash"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const utils_1 = require("../utils");
 function uniMainJsPlugin() {
@@ -16,7 +15,7 @@ function uniMainJsPlugin() {
             name: 'vite:uni-h5-main-js',
             enforce: 'pre',
             configResolved(config) {
-                pagesJsonJsPath = slash_1.default(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js'));
+                pagesJsonJsPath = uni_cli_shared_1.normalizePath(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js'));
                 isSSR =
                     utils_1.isSsr(config.command, config) || utils_1.isSsrManifest(config.command, config);
             },

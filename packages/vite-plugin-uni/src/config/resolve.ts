@@ -1,7 +1,14 @@
 import path from 'path'
 import { UserConfig } from 'vite'
-import { EXTNAME_VUE } from '@dcloudio/uni-cli-shared'
+import { isWindows, EXTNAME_VUE } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
+
+export function customResolver(updatedId: string) {
+  if (isWindows) {
+    return path.resolve(process.env.UNI_INPUT_DIR, updatedId)
+  }
+  return updatedId
+}
 
 export function createResolve(
   options: VitePluginUniResolvedOptions,
@@ -17,6 +24,7 @@ export function createResolve(
         replacement(_str: string, _$1: string, $2: string) {
           return path.resolve(options.inputDir, $2)
         },
+        customResolver,
       },
     ],
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'].concat(

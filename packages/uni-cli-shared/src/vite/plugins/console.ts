@@ -1,6 +1,3 @@
-// import path from 'path'
-
-// import slash from 'slash'
 import { Plugin } from 'vite'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
 

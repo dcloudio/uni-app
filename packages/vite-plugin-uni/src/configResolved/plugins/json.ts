@@ -1,12 +1,14 @@
 import path from 'path'
-import slash from 'slash'
 import { Plugin } from 'vite'
 import { parse } from 'jsonc-parser'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '../..'
 
 export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
-  const pagesJsonPath = slash(path.resolve(options.inputDir, 'pages.json'))
-  const manifestJsonPath = slash(
+  const pagesJsonPath = normalizePath(
+    path.resolve(options.inputDir, 'pages.json')
+  )
+  const manifestJsonPath = normalizePath(
     path.resolve(options.inputDir, 'manifest.json')
   )
   return {

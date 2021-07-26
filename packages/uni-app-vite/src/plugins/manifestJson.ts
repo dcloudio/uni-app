@@ -4,6 +4,7 @@ import { Plugin } from 'vite'
 import {
   defineUniManifestJsonPlugin,
   normalizeAppManifestJson,
+  parseJson,
   parsePagesJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
@@ -21,7 +22,7 @@ export function uniManifestJsonPlugin(): Plugin {
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
         manifestJson = normalizeAppManifestJson(
-          JSON.parse(code),
+          parseJson(code),
           parsePagesJsonOnce(
             process.env.UNI_INPUT_DIR,
             process.env.UNI_PLATFORM

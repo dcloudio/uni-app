@@ -1,16 +1,16 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import slash from 'slash'
 import { extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { once } from '@dcloudio/uni-shared'
+import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 
 interface EasycomOption {
   dirs?: string[]
-  rootDir?: string
+  rootDir: string
   extensions?: string[]
   autoscan?: boolean
   custom?: EasycomCustom
@@ -118,7 +118,12 @@ function initEasycom({
     extend(easycomsObj, initAutoScanEasycoms(dirs, rootDir, extensions))
   }
   if (custom) {
-    extend(easycomsObj, custom)
+    Object.keys(custom).forEach((name) => {
+      const componentPath = custom[name]
+      easycomsObj[name] = componentPath.startsWith('@/')
+        ? normalizePath(path.join(rootDir!, componentPath.substr(2)))
+        : componentPath
+    })
   }
   Object.keys(easycomsObj).forEach((name) => {
     easycoms.push({
@@ -172,7 +177,7 @@ function initAutoScanEasycom(
     if (!isDir(folder)) {
       return
     }
-    const importDir = slash(folder)
+    const importDir = normalizePath(folder)
     const files = fs.readdirSync(folder)
     // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
     for (let i = 0; i < extensions.length; i++) {

@@ -1,11 +1,11 @@
-import slash from 'slash'
 import { Plugin } from 'vite'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 export function createResolveId(
   options: VitePluginUniResolvedOptions
 ): Plugin['resolveId'] {
-  const inputDir = slash(options.inputDir)
+  const inputDir = normalizePath(options.inputDir)
   return function (id) {
     if (id.startsWith('@/')) {
       return inputDir + id.substr(1)

@@ -1,5 +1,5 @@
 import path from 'path'
-import slash from 'slash'
+import { normalizePath } from '../../utils'
 
 import {
   CreateUniViteFilterPlugin,
@@ -23,7 +23,9 @@ export function defineUniMainJsPlugin(
   let mainTsPath = ''
   plugin.configResolved = function (config) {
     opts.resolvedConfig = config
-    const mainPath = slash(path.resolve(process.env.UNI_INPUT_DIR, 'main'))
+    const mainPath = normalizePath(
+      path.resolve(process.env.UNI_INPUT_DIR, 'main')
+    )
     mainJsPath = mainPath + '.js'
     mainTsPath = mainPath + '.ts'
     return origConfigResolved && origConfigResolved(config)

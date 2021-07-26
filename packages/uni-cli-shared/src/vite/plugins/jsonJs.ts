@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import slash from 'slash'
+import { normalizePath } from '../../utils'
 import {
   CreateUniViteFilterPlugin,
   UniViteFilterPluginOptions,
@@ -39,7 +39,7 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
     }
     plugin.configResolved = function (config) {
       opts.resolvedConfig = config
-      jsonPath = slash(path.join(process.env.UNI_INPUT_DIR, name))
+      jsonPath = normalizePath(path.join(process.env.UNI_INPUT_DIR, name))
       return origConfigResolved && origConfigResolved(config)
     }
 

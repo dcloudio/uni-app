@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniPagesJsonPlugin = void 0;
 const path_1 = __importDefault(require("path"));
-const slash_1 = __importDefault(require("slash"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const pkg = require('@dcloudio/vite-plugin-uni/package.json');
 function uniPagesJsonPlugin() {
@@ -34,7 +33,7 @@ function generatePagesJsonCode(ssr, jsonStr, config) {
     const definePagesCode = generatePagesDefineCode(pagesJson, config);
     const uniRoutesCode = generateRoutes(globalName, pagesJson, config);
     const uniConfigCode = generateConfig(globalName, pagesJson, config);
-    const manifestJsonPath = slash_1.default(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'manifest.json.js'));
+    const manifestJsonPath = uni_cli_shared_1.normalizePath(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'manifest.json.js'));
     const cssCode = generateCssCode(config);
     return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'

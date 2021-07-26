@@ -1,21 +1,24 @@
 import path from 'path'
-import slash from 'slash'
 
-import { parsePagesJsonOnce, uniViteCopyPlugin } from '@dcloudio/uni-cli-shared'
+import {
+  normalizePath,
+  parsePagesJsonOnce,
+  uniViteCopyPlugin,
+} from '@dcloudio/uni-cli-shared'
 
 export function uniCopyPlugin() {
   return uniViteCopyPlugin({
     targets: [
       {
-        src: slash(path.resolve(__dirname, '../../lib/template/*.js')),
+        src: normalizePath(path.resolve(__dirname, '../../lib/template/*.js')),
         dest: process.env.UNI_OUTPUT_DIR,
       },
       {
-        src: slash(path.resolve(__dirname, '../../lib/template/*.png')),
+        src: normalizePath(path.resolve(__dirname, '../../lib/template/*.png')),
         dest: process.env.UNI_OUTPUT_DIR,
       },
       {
-        src: slash(
+        src: normalizePath(
           path.resolve(__dirname, '../../lib/template/__uniappview.html')
         ),
         dest: process.env.UNI_OUTPUT_DIR,
@@ -40,7 +43,7 @@ export function uniCopyPlugin() {
         },
       },
       {
-        src: slash(
+        src: normalizePath(
           require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')
         ),
         dest: process.env.UNI_OUTPUT_DIR,

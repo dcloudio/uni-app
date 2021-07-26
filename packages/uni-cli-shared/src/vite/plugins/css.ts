@@ -1,8 +1,7 @@
 import path from 'path'
 import debug from 'debug'
-import slash from 'slash'
 import { Plugin } from 'vite'
-import { resolveMainPathOnce } from '../../utils'
+import { normalizePath, resolveMainPathOnce } from '../../utils'
 import { EXTNAME_VUE_RE } from '../../constants'
 
 const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
@@ -20,7 +19,7 @@ const isCss = (id: string): boolean =>
   cssLangRE.test(id) && !commonjsProxyRE.test(id)
 
 function normalizeCssChunkFilename(id: string) {
-  return slash(
+  return normalizePath(
     path.relative(
       process.env.UNI_INPUT_DIR,
       id.split('?')[0].replace(EXTNAME_VUE_RE, '.css')

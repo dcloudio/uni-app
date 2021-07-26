@@ -1,5 +1,5 @@
 import path from 'path'
-
+import { normalizePath } from '../src/utils'
 import { initEasycoms, matchEasycom } from '../src/easycom'
 
 const rootDir = path.resolve(__dirname, 'examples/easycom')
@@ -9,26 +9,42 @@ describe('easycom', () => {
     expect(initEasycoms(rootDir, 'h5').easycoms).toEqual([
       {
         pattern: new RegExp('^test$'),
-        replacement: '@/components/test/test.vue',
+        replacement: normalizePath(
+          path.resolve(rootDir, 'components/test/test.vue')
+        ),
       },
       {
         pattern: new RegExp('^test1$'),
-        replacement: '@/components/test1/test1.vue',
+        replacement: normalizePath(
+          path.resolve(rootDir, 'components/test1/test1.vue')
+        ),
       },
       {
         pattern: new RegExp('^test2$'),
-        replacement: '@/uni_modules/plugin/components/test2/test2.vue',
+        replacement: normalizePath(
+          path.resolve(rootDir, 'uni_modules/plugin/components/test2/test2.vue')
+        ),
       },
       {
         pattern: new RegExp('^uni-(.*)'),
-        replacement: '@/components/uni-$1.vue',
+        replacement: normalizePath(
+          path.resolve(rootDir, 'components/uni-$1.vue')
+        ),
       },
     ])
-    expect(matchEasycom('test')).toBe('@/components/test/test.vue')
-    expect(matchEasycom('test1')).toBe('@/components/test1/test1.vue')
-    expect(matchEasycom('test2')).toBe(
-      '@/uni_modules/plugin/components/test2/test2.vue'
+    expect(matchEasycom('test')).toBe(
+      normalizePath(path.resolve(rootDir, 'components/test/test.vue'))
     )
-    expect(matchEasycom('uni-test1')).toBe('@/components/uni-test1.vue')
+    expect(matchEasycom('test1')).toBe(
+      normalizePath(path.resolve(rootDir, 'components/test1/test1.vue'))
+    )
+    expect(matchEasycom('test2')).toBe(
+      normalizePath(
+        path.resolve(rootDir, 'uni_modules/plugin/components/test2/test2.vue')
+      )
+    )
+    expect(matchEasycom('uni-test1')).toBe(
+      normalizePath(path.resolve(rootDir, 'components/uni-test1.vue'))
+    )
   })
 })

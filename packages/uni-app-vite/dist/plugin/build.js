@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildOptions = void 0;
 const path_1 = __importDefault(require("path"));
-const slash_1 = __importDefault(require("slash"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function buildOptions() {
     return {
@@ -20,7 +19,7 @@ function buildOptions() {
                 chunkFileNames(chunk) {
                     if (chunk.isDynamicEntry && chunk.facadeModuleId) {
                         const filepath = path_1.default.relative(process.env.UNI_INPUT_DIR, chunk.facadeModuleId);
-                        return slash_1.default(filepath.replace(path_1.default.extname(filepath), '.js'));
+                        return uni_cli_shared_1.normalizePath(filepath.replace(path_1.default.extname(filepath), '.js'));
                     }
                     return '[name].js';
                 },

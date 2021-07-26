@@ -1,5 +1,4 @@
 import path from 'path'
-import slash from 'slash'
 import { Plugin, ResolvedConfig } from 'vite'
 import {
   API_DEPS_CSS,
@@ -11,6 +10,7 @@ import {
   defineUniPagesJsonPlugin,
   normalizePagesRoute,
   normalizePagePath,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 
 const pkg = require('@dcloudio/vite-plugin-uni/package.json')
@@ -47,7 +47,7 @@ function generatePagesJsonCode(
   const definePagesCode = generatePagesDefineCode(pagesJson, config)
   const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
   const uniConfigCode = generateConfig(globalName, pagesJson, config)
-  const manifestJsonPath = slash(
+  const manifestJsonPath = normalizePath(
     path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json.js')
   )
   const cssCode = generateCssCode(config)

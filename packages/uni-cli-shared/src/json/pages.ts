@@ -1,9 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import slash from 'slash'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
-
+import { normalizePath } from '../utils'
 import { parseJson } from './json'
 
 export const parsePagesJson = (
@@ -84,7 +83,7 @@ function normalizeSubpackages(
     subpackages.forEach(({ root, pages: subPages }) => {
       if (root && subPages.length) {
         subPages.forEach((subPage) => {
-          subPage.path = slash(path.join(root, subPage.path))
+          subPage.path = normalizePath(path.join(root, subPage.path))
           pages.push(subPage)
         })
       }

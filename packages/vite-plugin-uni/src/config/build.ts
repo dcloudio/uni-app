@@ -1,7 +1,6 @@
 import path from 'path'
-import slash from 'slash'
 import { UserConfig } from 'vite'
-import { initEasycomsOnce } from '@dcloudio/uni-cli-shared'
+import { initEasycomsOnce, normalizePath } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
 export function createBuild(
@@ -18,7 +17,7 @@ export function createBuild(
               path.dirname(chunkInfo.facadeModuleId)
             )
             if (dirname) {
-              return `${options.assetsDir}/${slash(dirname).replace(
+              return `${options.assetsDir}/${normalizePath(dirname).replace(
                 /\//g,
                 '-'
               )}-[name].[hash].js`

@@ -1,10 +1,10 @@
 import path from 'path'
 import debug from 'debug'
-import slash from 'slash'
 import { ModuleGraph, Plugin } from 'vite'
 import { extend } from '@vue/shared'
 import {
   initEasycomsOnce,
+  normalizePath,
   parseManifestJson,
   parsePagesJson,
 } from '@dcloudio/uni-cli-shared'
@@ -14,7 +14,7 @@ import { initFeatures } from '../utils'
 const debugHmr = debug('vite:uni:hmr')
 
 async function invalidate(file: string, moduleGraph: ModuleGraph) {
-  const mods = await moduleGraph.getModulesByFile(slash(file))
+  const mods = await moduleGraph.getModulesByFile(normalizePath(file))
   if (mods && mods.size) {
     ;[...mods].forEach((mod) => {
       debugHmr('invalidate', mod.id)

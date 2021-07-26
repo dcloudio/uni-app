@@ -17,7 +17,7 @@ function uniManifestJsonPlugin() {
                     return;
                 }
                 this.addWatchFile(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'manifest.json'));
-                manifestJson = uni_cli_shared_1.normalizeAppManifestJson(JSON.parse(code), uni_cli_shared_1.parsePagesJsonOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM));
+                manifestJson = uni_cli_shared_1.normalizeAppManifestJson(uni_cli_shared_1.parseJson(code), uni_cli_shared_1.parsePagesJsonOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM));
                 return '';
             },
             generateBundle() {

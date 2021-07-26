@@ -1,13 +1,12 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import slash from 'slash'
 import { camelize, capitalize } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import { PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
-const isWindows = os.platform() === 'win32'
+export const isWindows = os.platform() === 'win32'
 export function normalizePath(id: string): string {
-  return path.posix.normalize(isWindows ? slash(id) : id)
+  return isWindows ? id.replace(/\\/g, '/') : id
 }
 
 export const resolveMainPathOnce = once((inputDir: string) => {

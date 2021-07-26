@@ -1,6 +1,5 @@
 import path from 'path'
-import slash from 'slash'
-import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import { defineUniMainJsPlugin, normalizePath } from '@dcloudio/uni-cli-shared'
 import { isSsr, isSsrManifest } from '../utils'
 
 export function uniMainJsPlugin() {
@@ -11,7 +10,7 @@ export function uniMainJsPlugin() {
       name: 'vite:uni-h5-main-js',
       enforce: 'pre',
       configResolved(config) {
-        pagesJsonJsPath = slash(
+        pagesJsonJsPath = normalizePath(
           path.resolve(process.env.UNI_INPUT_DIR, 'pages.json.js')
         )
         isSSR =

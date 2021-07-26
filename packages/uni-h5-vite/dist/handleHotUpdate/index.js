@@ -15,14 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createHandleHotUpdate = void 0;
 const path_1 = __importDefault(require("path"));
 const debug_1 = __importDefault(require("debug"));
-const slash_1 = __importDefault(require("slash"));
 const shared_1 = require("@vue/shared");
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const utils_1 = require("../utils");
 const debugHmr = debug_1.default('vite:uni:hmr');
 function invalidate(file, moduleGraph) {
     return __awaiter(this, void 0, void 0, function* () {
-        const mods = yield moduleGraph.getModulesByFile(slash_1.default(file));
+        const mods = yield moduleGraph.getModulesByFile(uni_cli_shared_1.normalizePath(file));
         if (mods && mods.size) {
             ;
             [...mods].forEach((mod) => {

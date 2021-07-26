@@ -5,21 +5,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uniCopyPlugin = void 0;
 const path_1 = __importDefault(require("path"));
-const slash_1 = __importDefault(require("slash"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function uniCopyPlugin() {
     return uni_cli_shared_1.uniViteCopyPlugin({
         targets: [
             {
-                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/*.js')),
+                src: uni_cli_shared_1.normalizePath(path_1.default.resolve(__dirname, '../../lib/template/*.js')),
                 dest: process.env.UNI_OUTPUT_DIR,
             },
             {
-                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/*.png')),
+                src: uni_cli_shared_1.normalizePath(path_1.default.resolve(__dirname, '../../lib/template/*.png')),
                 dest: process.env.UNI_OUTPUT_DIR,
             },
             {
-                src: slash_1.default(path_1.default.resolve(__dirname, '../../lib/template/__uniappview.html')),
+                src: uni_cli_shared_1.normalizePath(path_1.default.resolve(__dirname, '../../lib/template/__uniappview.html')),
                 dest: process.env.UNI_OUTPUT_DIR,
                 transform(content) {
                     const { globalStyle } = uni_cli_shared_1.parsePagesJsonOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM);
@@ -36,7 +35,7 @@ function uniCopyPlugin() {
                 },
             },
             {
-                src: slash_1.default(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')),
+                src: uni_cli_shared_1.normalizePath(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')),
                 dest: process.env.UNI_OUTPUT_DIR,
             },
         ],
