@@ -12,16 +12,16 @@ import {
 export const compressVideo = defineAsyncApi<API_TYPE_COMPRESS_VIDEO>(
   API_COMPRESS_VIDEO,
   (options, { resolve, reject }) => {
-    const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(
+    const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(
       options.src
     )}`
     plus.zip.compressVideo(
       extend({}, options, {
-        dst,
+        filename,
       }),
       () => {
         resolve({
-          tempFilePath: dst,
+          tempFilePath: filename,
         })
       },
       reject

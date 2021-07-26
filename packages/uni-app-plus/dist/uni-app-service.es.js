@@ -5903,12 +5903,12 @@ var serviceContext = (function (vue) {
   }, CompressImageProtocol, CompressImageOptions);
 
   const compressVideo = defineAsyncApi(API_COMPRESS_VIDEO, (options, { resolve, reject }) => {
-      const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+      const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
       plus.zip.compressVideo(extend({}, options, {
-          dst,
+          filename,
       }), () => {
           resolve({
-              tempFilePath: dst,
+              tempFilePath: filename,
           });
       }, reject);
   }, CompressVideoProtocol, CompressVideoOptions);
