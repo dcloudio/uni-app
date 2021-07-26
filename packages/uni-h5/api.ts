@@ -20,6 +20,7 @@ const BLACKLIST = [
   'useTabBar',
   'setupApp',
   'setupPage',
+  'setupWindow',
   'plugin',
   'cssBackdropFilter',
   'cssConstant',

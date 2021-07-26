@@ -54,7 +54,7 @@ function generatePagesJsonCode(
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent } from '@dcloudio/uni-h5'
+import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, setupWindow } from '@dcloudio/uni-h5'
 import { appid, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, nvue } from '${manifestJsonPath}'
 ${importLayoutComponentsCode}
 const extend = Object.assign
@@ -143,18 +143,20 @@ function generateLayoutComponentsCode(
   globalName: string,
   pagesJson: UniApp.PagesJson
 ) {
-  const windowNames: Array<'topWindow' | 'leftWindow' | 'rightWindow'> = [
-    'topWindow',
-    'leftWindow',
-    'rightWindow',
-  ]
+  const windowNames = {
+    topWindow: -1,
+    leftWindow: -2,
+    rightWindow: -3,
+  }
   let importLayoutComponentsCode = ''
   let defineLayoutComponentsCode = `${globalName}.__uniLayout = ${globalName}.__uniLayout || {}\n`
-  windowNames.forEach((name) => {
-    const windowConfig = pagesJson[name]
+  Object.keys(windowNames).forEach((name) => {
+    const windowConfig = pagesJson[name as keyof typeof windowNames]
     if (windowConfig && windowConfig.path) {
       importLayoutComponentsCode += `import ${name} from './${windowConfig.path}'\n`
-      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = ${name}\n`
+      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = setupWindow(${name},${
+        windowNames[name as keyof typeof windowNames]
+      })\n`
     }
   })
 

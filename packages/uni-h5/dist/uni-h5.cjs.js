@@ -6834,7 +6834,7 @@ function wrapperComponentSetup(comp, { init, setup, before }) {
     init(instance.proxy);
     const query = setup(instance);
     if (oldSetup) {
-      return oldSetup(query, ctx);
+      return oldSetup(query || props2, ctx);
     }
   };
 }
@@ -6845,6 +6845,18 @@ function setupComponent(comp, options) {
     wrapperComponentSetup(comp, options);
   }
   return comp;
+}
+function setupWindow(comp, id) {
+  return setupComponent(comp, {
+    init: (vm) => {
+      vm.$page = {
+        id
+      };
+    },
+    setup(instance) {
+      instance.root = instance;
+    }
+  });
 }
 function setupPage(comp) {
   return setupComponent(comp, {
@@ -10809,5 +10821,6 @@ exports.setStorage = setStorage;
 exports.setStorageSync = setStorageSync;
 exports.setupApp = setupApp;
 exports.setupPage = setupPage;
+exports.setupWindow = setupWindow;
 exports.uni = uni$1;
 exports.useTabBar = useTabBar;

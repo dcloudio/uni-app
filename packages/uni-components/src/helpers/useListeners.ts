@@ -4,7 +4,7 @@ import { useCurrentPageId } from '@dcloudio/uni-core'
 
 export function useListeners(
   props: { id: string },
-  listeners: Record<string, Function>
+  listeners: Record<string, (...args: any[]) => void>
 ) {
   if (__NODE_JS__) {
     return
@@ -26,7 +26,7 @@ export function useListeners(
 
 function _addListeners(
   id: string,
-  listeners: Record<string, Function>,
+  listeners: Record<string, (...args: any[]) => void>,
   watch?: boolean
 ) {
   const pageId = useCurrentPageId()
@@ -59,7 +59,7 @@ function _addListeners(
 
 function _removeListeners(
   id: string,
-  listeners: Record<string, Function>,
+  listeners: Record<string, (...args: any[]) => void>,
   watch?: boolean
 ) {
   const pageId = useCurrentPageId()

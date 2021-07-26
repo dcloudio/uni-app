@@ -30,7 +30,7 @@ import { usePageMeta, usePageRoute } from './provide'
 
 interface SetupComponentOptions {
   init: (vm: ComponentPublicInstance) => void
-  setup: (instance: ComponentInternalInstance) => Record<string, any>
+  setup: (instance: ComponentInternalInstance) => Record<string, any> | void
   before?: (comp: DefineComponent) => void
 }
 
@@ -45,7 +45,7 @@ function wrapperComponentSetup(
     init(instance.proxy!)
     const query = setup(instance)
     if (oldSetup) {
-      return oldSetup(query, ctx)
+      return oldSetup(query || props, ctx)
     }
   }
 }
@@ -59,11 +59,24 @@ function setupComponent(comp: any, options: SetupComponentOptions) {
   return comp
 }
 
+export function setupWindow(comp: any, id: number) {
+  return setupComponent(comp, {
+    init: (vm) => {
+      vm.$page = {
+        id,
+      } as Page.PageInstance['$page']
+    },
+    setup(instance) {
+      instance.root = instance // windows 中组件 root 指向 window
+    },
+  })
+}
+
 export function setupPage(comp: any) {
   return setupComponent(comp, {
     init: initPage,
     setup(instance) {
-      instance.root = instance // 组件root指向页面
+      instance.root = instance // 组件 root 指向页面
       const route = usePageRoute()
       // node环境不触发Page生命周期
       if (__NODE_JS__) {
