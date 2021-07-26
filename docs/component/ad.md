@@ -291,7 +291,7 @@ export default {
 
 ```
 
-H5特定环境不显示广告示例@h5MicroMessengerHide
+#### H5特定环境不显示广告示例@h5MicroMessengerHide
 
 ```html
 <template>
@@ -304,9 +304,9 @@ H5特定环境不显示广告示例@h5MicroMessengerHide
 <script>
   export default {
     data() {
-			let showAd = !navigator.userAgent.includes("MicroMessenger")
+      let showAd = !navigator.userAgent.includes("MicroMessenger")
       return {
-				showAd
+        showAd
       }
     },
   }
@@ -322,4 +322,5 @@ H5特定环境不显示广告示例@h5MicroMessengerHide
 - App端广告开通指南和收益相关问题：[https://ask.dcloud.net.cn/article/36769](https://ask.dcloud.net.cn/article/36769)
 - App端除了ad组件，还支持开屏、激励视频等多种广告形式。详见[uni-AD官网](https://uniad.dcloud.net.cn/)
 - App端uni-AD聚合了腾讯广点通、头条穿山甲、360广告联盟等服务，打包时必须勾选相应的sdk，详见：[https://ask.dcloud.net.cn/article/36718](https://ask.dcloud.net.cn/article/36718)
+- H5平台仅支持uni-app
 ![](https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/f21eb570-4f32-11eb-b680-7980c8a877b8.jpg)
