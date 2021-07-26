@@ -9,10 +9,10 @@ import {
 } from '../util'
 
 export function compressVideo (options, callbackId) {
-  const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`
+  const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`
   const successCallback = warpPlusSuccessCallback(callbackId, 'compressVideo')
   const errorCallback = warpPlusErrorCallback(callbackId, 'compressVideo')
   plus.zip.compressVideo(Object.assign({}, options, {
-    dst
+    filename
   }), successCallback, errorCallback)
 }
