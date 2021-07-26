@@ -116,6 +116,9 @@ export default defineConfig({
     },
     assetsDir: '.',
     rollupOptions: {
+      output: {
+        freeze: false, // uni 对象需要可被修改
+      },
       external(source) {
         if (
           [

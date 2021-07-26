@@ -172,13 +172,13 @@ function initAutoScanEasycom(
     if (!isDir(folder)) {
       return
     }
-    const importDir = slash(path.relative(rootDir, folder))
+    const importDir = slash(folder)
     const files = fs.readdirSync(folder)
     // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i]
       if (files.includes(name + ext)) {
-        easycoms[`^${name}$`] = `@/${importDir}/${name}${ext}`
+        easycoms[`^${name}$`] = `${importDir}/${name}${ext}`
         break
       }
     }

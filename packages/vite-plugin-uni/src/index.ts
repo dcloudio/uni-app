@@ -14,7 +14,7 @@ import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
 import { initExtraPlugins } from './utils'
 import { initPluginVueOptions } from './vue'
-import { createResolveId } from './resolveId'
+// import { createResolveId } from './resolveId'
 
 const debugUni = debug('vite:uni:plugin')
 
@@ -93,7 +93,7 @@ export default function uniPlugin(
   plugins.push({
     name: 'vite:uni',
     config: createConfig(options, uniPlugins),
-    resolveId: createResolveId(options),
+    // resolveId: createResolveId(options),
     configResolved: createConfigResolved(options),
     configureServer: createConfigureServer(options),
   })

@@ -9643,7 +9643,7 @@ const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_
 }, SetNavigationBarTitleProtocol);
 require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var api = /* @__PURE__ */ Object.freeze({
+var api = {
   __proto__: null,
   [Symbol.toStringTag]: "Module",
   setNavigationBarTitle,
@@ -9659,7 +9659,7 @@ var api = /* @__PURE__ */ Object.freeze({
   getStorageInfoSync,
   getStorageInfo,
   getSystemInfoSync
-});
+};
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
