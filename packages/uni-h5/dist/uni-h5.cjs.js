@@ -10066,7 +10066,13 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
-  return vue.createVNode("uni-layout", null, {
+  return vue.createVNode("uni-layout", {
+    "class": {
+      "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
+      "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
+      "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
+    }
+  }, {
     default: () => [topWindowTsx, vue.createVNode("uni-content", null, {
       default: () => [vue.createVNode("uni-main", null, _isSlot$1(routerVNode) ? routerVNode : {
         default: () => [routerVNode],
@@ -10075,7 +10081,7 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
       _: 2
     })],
     _: 2
-  });
+  }, 8, ["class"]);
 }
 function useShowTabBar(emit2) {
   const route = vueRouter.useRoute();

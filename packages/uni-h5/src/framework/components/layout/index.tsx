@@ -311,7 +311,16 @@ function createLayoutTsx(
     ? createRightWindowTsx(rightWindow, layoutState!, windowState!)
     : null
   return (
-    <uni-layout>
+    <uni-layout
+      class={{
+        'uni-app--showtopwindow':
+          __UNI_FEATURE_TOPWINDOW__ && layoutState!.showTopWindow,
+        'uni-app--showleftwindow':
+          __UNI_FEATURE_LEFTWINDOW__ && layoutState!.showLeftWindow,
+        'uni-app--showrightwindow':
+          __UNI_FEATURE_RIGHTWINDOW__ && layoutState!.showRightWindow,
+      }}
+    >
       {topWindowTsx}
       <uni-content>
         <uni-main>{routerVNode}</uni-main>
