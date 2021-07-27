@@ -8,19 +8,8 @@ import {
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { requestComponentInfo } from '../service/api/ui/requestComponentInfo'
 export { getRealPath } from './getRealPath'
-
-export function operateVideoPlayer(
-  videoId: string,
-  pageId: number,
-  type: string,
-  data?: unknown
-) {}
-export function operateMap(
-  id: string,
-  pageId: number,
-  type: string,
-  data?: unknown
-) {}
+export { operateVideoPlayer } from '../service/api/context/operateVideoPlayer'
+export { operateMap } from '../service/api/context/operateMap'
 
 export function addIntersectionObserver(
   args: AddIntersectionObserverArgs,

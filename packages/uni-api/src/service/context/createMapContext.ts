@@ -7,6 +7,30 @@ import {
   CreateMapContextProtocol,
 } from '../../protocols/context/context'
 
+const operateMapCallback = (
+  options: { fail?: Function; success?: Function; complete?: Function },
+  res: { errMsg: string; [propName: string]: any }
+) => {
+  const errMsg = res.errMsg || ''
+  if (new RegExp('\\:\\s*fail').test(errMsg)) {
+    options.fail && options.fail(res)
+  } else {
+    options.success && options.success(res)
+  }
+  options.complete && options.complete(res)
+}
+
+const operateMapWrap = (
+  id: string,
+  pageId: number,
+  type: string,
+  options?: Data
+) => {
+  operateMap(id, pageId, type, options, (res) => {
+    options && operateMapCallback(options, res)
+  })
+}
+
 export class MapContext implements UniApp.MapContext {
   private id: string
   private pageId: number
@@ -15,22 +39,27 @@ export class MapContext implements UniApp.MapContext {
     this.pageId = pageId
   }
   getCenterLocation(options: any) {
-    operateMap(this.id, this.pageId, 'getCenterLocation', options)
+    operateMapWrap(this.id, this.pageId, 'getCenterLocation', options)
   }
   moveToLocation() {
-    operateMap(this.id, this.pageId, 'moveToLocation')
+    operateMapWrap(this.id, this.pageId, 'moveToLocation')
   }
   getScale(options: any) {
-    operateMap(this.id, this.pageId, 'getScale', options)
+    operateMapWrap(this.id, this.pageId, 'getScale', options)
   }
   getRegion(options: any) {
-    operateMap(this.id, this.pageId, 'getRegion', options)
+    operateMapWrap(this.id, this.pageId, 'getRegion', options)
   }
   includePoints(options: any) {
-    operateMap(this.id, this.pageId, 'includePoints', options)
+    operateMapWrap(this.id, this.pageId, 'includePoints', options)
   }
   translateMarker(options: any) {
-    operateMap(this.id, this.pageId, 'translateMarker', options)
+    operateMapWrap(this.id, this.pageId, 'translateMarker', options)
+  }
+  $getAppMap() {
+    if (__PLATFORM__ === 'app') {
+      return plus.maps.getMapById(this.pageId + '-map-' + this.id)
+    }
   }
   addCustomLayer() {}
   removeCustomLayer() {}
@@ -41,8 +70,7 @@ export class MapContext implements UniApp.MapContext {
   addMarkers() {}
   removeMarkers() {}
   moveAlong() {}
-  openMapAp() {}
-  $getAppMap() {}
+  openMapApp() {}
 }
 
 export const createMapContext = <API_TYPE_CREATE_MAP_CONTEXT>defineSyncApi(
