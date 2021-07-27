@@ -5774,6 +5774,12 @@ var serviceContext = (function (vue) {
       }
   }, StartSoterAuthenticationProtocols, StartSoterAuthenticationOptions);
 
+  const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
+      UniServiceJSBridge.on(ON_THEME_CHANGE, res => {
+          UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+      });
+  });
+
   const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
       const path = TEMP_PATH + '/download/';
       plus.io.getImageInfo(extend(options, {
@@ -10525,6 +10531,7 @@ var serviceContext = (function (vue) {
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
+    onThemeChange: onThemeChange,
     getImageInfo: getImageInfo,
     getVideoInfo: getVideoInfo,
     previewImage: previewImage,

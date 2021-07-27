@@ -13,6 +13,7 @@ export * from './device/clipboard'
 export * from './device/network'
 export * from './device/soterAuthentication'
 export * from './device/scanCode'
+export * from './device/theme'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
