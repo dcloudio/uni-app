@@ -50,7 +50,7 @@ const MP_METHODS = [
     'createSelectorQuery',
     'createIntersectionObserver',
     'selectAllComponents',
-    'selectComponent'
+    'selectComponent',
 ];
 function createEmitFn(oldEmit, ctx) {
     return function emit(event, ...args) {
@@ -77,7 +77,7 @@ function initBaseInstance(instance, options) {
     {
         instance.slots = {};
         if (isArray(options.slots) && options.slots.length) {
-            options.slots.forEach(name => {
+            options.slots.forEach((name) => {
                 instance.slots[name] = true;
             });
         }
@@ -88,7 +88,7 @@ function initBaseInstance(instance, options) {
 function initComponentInstance(instance, options) {
     initBaseInstance(instance, options);
     const ctx = instance.ctx;
-    MP_METHODS.forEach(method => {
+    MP_METHODS.forEach((method) => {
         ctx[method] = function (...args) {
             const mpInstance = ctx.$scope;
             if (mpInstance && mpInstance[method]) {
@@ -106,31 +106,70 @@ function initComponentInstance(instance, options) {
 }
 function initMocks(instance, mpInstance, mocks) {
     const ctx = instance.ctx;
-    mocks.forEach(mock => {
+    mocks.forEach((mock) => {
         if (hasOwn(mpInstance, mock)) {
             ctx[mock] = mpInstance[mock];
         }
     });
 }
 
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
 const PAGE_HOOKS = [
-    'onLoad',
-    'onShow',
+    ON_LOAD,
+    ON_SHOW,
+    ON_HIDE,
+    ON_UNLOAD,
+    ON_RESIZE,
+    ON_TAB_ITEM_TAP,
+    ON_REACH_BOTTOM,
+    ON_PULL_DOWN_REFRESH,
+    ON_ADD_TO_FAVORITES,
     // 'onReady', // lifetimes.ready
-    'onHide',
-    'onUnload',
-    'onResize',
     // 'onPageScroll', // 影响性能，开发者手动注册
-    'onTabItemTap',
-    'onReachBottom',
-    'onPullDownRefresh',
     // 'onShareTimeline', // 右上角菜单，开发者手动注册
-    'onAddToFavorites'
     // 'onShareAppMessage' // 右上角菜单，开发者手动注册
 ];
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
-        Object.keys(vueOptions).forEach(name => {
+        Object.keys(vueOptions).forEach((name) => {
             if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
                 hooks.add(name);
             }
@@ -138,7 +177,7 @@ function findHooks(vueOptions, hooks = new Set()) {
         if (__VUE_OPTIONS_API__) {
             const { extends: extendsOptions, mixins } = vueOptions;
             if (mixins) {
-                mixins.forEach(mixin => findHooks(mixin, hooks));
+                mixins.forEach((mixin) => findHooks(mixin, hooks));
             }
             if (extendsOptions) {
                 findHooks(extendsOptions, hooks);
@@ -147,31 +186,31 @@ function findHooks(vueOptions, hooks = new Set()) {
     }
     return hooks;
 }
-function initHook(mpOptions, hook, excludes) {
+function initHook$1(mpOptions, hook, excludes) {
     if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
         mpOptions[hook] = function (args) {
-            if ( hook === 'onError') {
+            if (hook === 'onError') {
                 return getApp().$vm.$callHook(hook, args);
             }
             return this.$vm && this.$vm.$callHook(hook, args);
         };
     }
 }
-const EXCLUDE_HOOKS = ['onReady'];
+const EXCLUDE_HOOKS = [ON_READY];
 function initHooks(mpOptions, hooks, excludes = EXCLUDE_HOOKS) {
-    hooks.forEach(hook => initHook(mpOptions, hook, excludes));
+    hooks.forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 function initUnknownHooks(mpOptions, vueOptions, excludes = EXCLUDE_HOOKS) {
-    findHooks(vueOptions).forEach(hook => initHook(mpOptions, hook, excludes));
+    findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 
 const HOOKS = [
-    'onShow',
-    'onHide',
-    'onError',
-    'onThemeChange',
-    'onPageNotFound',
-    'onUnhandledRejection'
+    ON_SHOW,
+    ON_HIDE,
+    ON_ERROR,
+    ON_THEME_CHANGE,
+    ON_PAGE_NOT_FOUND,
+    ON_UNHANDLE_REJECTION,
 ];
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
@@ -187,11 +226,11 @@ function parseApp(instance, parseAppOptions) {
             initBaseInstance(internalInstance, {
                 mpType: 'app',
                 mpInstance: this,
-                slots: []
+                slots: [],
             });
             ctx.globalData = this.globalData;
-            instance.$callHook('onLaunch', options);
-        }
+            instance.$callHook(ON_LAUNCH, options);
+        },
     };
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
@@ -209,26 +248,6 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
-}
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map(key => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter(x => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
 }
 
 function initBehavior(options) {
@@ -250,7 +269,7 @@ function initVueIds(vueIds, mpInstance) {
 }
 const EXTRAS = ['externalClasses'];
 function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach(name => {
+    EXTRAS.forEach((name) => {
         if (hasOwn(vueOptions, name)) {
             miniProgramComponentOptions[name] = vueOptions[name];
         }
@@ -271,12 +290,12 @@ function initRefs(instance, mpInstance) {
         get() {
             const $refs = {};
             const components = mpInstance.selectAllComponents('.vue-ref');
-            components.forEach(component => {
+            components.forEach((component) => {
                 const ref = component.dataset.ref;
                 $refs[ref] = component.$vm || component;
             });
             const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-            forComponents.forEach(component => {
+            forComponents.forEach((component) => {
                 const ref = component.dataset.ref;
                 if (!$refs[ref]) {
                     $refs[ref] = [];
@@ -284,7 +303,7 @@ function initRefs(instance, mpInstance) {
                 $refs[ref].push(component.$vm || component);
             });
             return $refs;
-        }
+        },
     });
 }
 function findVmByVueId(instance, vuePid) {
@@ -327,12 +346,12 @@ function initDefaultProps(isBehavior = false) {
     if (!isBehavior) {
         properties.vueId = {
             type: String,
-            value: ''
+            value: '',
         };
         {
             // 用于字节跳动小程序模拟抽象节点
             properties.generic = {
-                type: Object
+                type: Object,
             };
         }
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
@@ -345,9 +364,9 @@ function initDefaultProps(isBehavior = false) {
                     $slots[slotName] = true;
                 });
                 this.setData({
-                    $slots
+                    $slots,
                 });
-            }
+            },
         };
     }
     return properties;
@@ -359,14 +378,14 @@ function createProperty(key, prop) {
 function initProps(mpComponentOptions, rawProps, isBehavior = false) {
     const properties = initDefaultProps(isBehavior);
     if (isArray(rawProps)) {
-        rawProps.forEach(key => {
+        rawProps.forEach((key) => {
             properties[key] = createProperty(key, {
-                type: null
+                type: null,
             });
         });
     }
     else if (isPlainObject(rawProps)) {
-        Object.keys(rawProps).forEach(key => {
+        Object.keys(rawProps).forEach((key) => {
             const opts = rawProps[key];
             if (isPlainObject(opts)) {
                 // title:{type:String,default:''}
@@ -378,14 +397,14 @@ function initProps(mpComponentOptions, rawProps, isBehavior = false) {
                 opts.type = parsePropType(key, type);
                 properties[key] = createProperty(key, {
                     type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
-                    value
+                    value,
                 });
             }
             else {
                 // content:String
                 const type = parsePropType(key, opts);
                 properties[key] = createProperty(key, {
-                    type: PROP_TYPES.indexOf(type) !== -1 ? type : null
+                    type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
                 });
             }
         });
@@ -397,8 +416,7 @@ function initData(vueOptions) {
     let data = vueOptions.data || {};
     if (typeof data === 'function') {
         try {
-            const appConfig = getApp().$vm.$.appContext
-                .config;
+            const appConfig = getApp().$vm.$.appContext.config;
             data = data.call(appConfig.globalProperties);
         }
         catch (e) {
@@ -429,7 +447,7 @@ function initBehaviors(vueOptions, initBehavior) {
     }
     const behaviors = [];
     if (isArray(vueBehaviors)) {
-        vueBehaviors.forEach(behavior => {
+        vueBehaviors.forEach((behavior) => {
             behaviors.push(behavior.replace('uni://', `${__PLATFORM_PREFIX__}://`));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
@@ -439,24 +457,24 @@ function initBehaviors(vueOptions, initBehavior) {
                 else {
                     vueProps.name = {
                         type: String,
-                        default: ''
+                        default: '',
                     };
                     vueProps.value = {
                         type: [String, Number, Boolean, Array, Object, Date],
-                        default: ''
+                        default: '',
                     };
                 }
             }
         });
     }
-    if (isPlainObject(vueExtends) && vueExtends.props) {
+    if (vueExtends.props) {
         const behavior = {};
         initProps(behavior, vueExtends.props, true);
         behaviors.push(initBehavior(behavior));
     }
     if (isArray(vueMixins)) {
-        vueMixins.forEach(vueMixin => {
-            if (isPlainObject(vueMixin) && vueMixin.props) {
+        vueMixins.forEach((vueMixin) => {
+            if (vueMixin.props) {
                 const behavior = {};
                 initProps(behavior, vueMixin.props, true);
                 behaviors.push(initBehavior(behavior));
@@ -484,7 +502,7 @@ function getValue(obj, path) {
 }
 function getExtraValue(instance, dataPathsArray) {
     let context = instance;
-    dataPathsArray.forEach(dataPathArray => {
+    dataPathsArray.forEach((dataPathArray) => {
         const dataPath = dataPathArray[0];
         const value = dataPathArray[2];
         if (dataPath || typeof value !== 'undefined') {
@@ -514,12 +532,12 @@ function getExtraValue(instance, dataPathsArray) {
             }
             else {
                 if (isArray(vFor)) {
-                    context = vFor.find(vForItem => {
+                    context = vFor.find((vForItem) => {
                         return getValue(vForItem, propPath) === value;
                     });
                 }
                 else if (isPlainObject(vFor)) {
-                    context = Object.keys(vFor).find(vForKey => {
+                    context = Object.keys(vFor).find((vForKey) => {
                         return getValue(vFor[vForKey], propPath) === value;
                     });
                 }
@@ -609,7 +627,7 @@ function processEventArgs(instance, event, args = [], extra = [], isCustom, meth
     }
     const extraObj = processEventExtra(instance, extra, event);
     const ret = [];
-    args.forEach(arg => {
+    args.forEach((arg) => {
         if (arg === '$event') {
             if (methodName === '__set_model' && !isCustom) {
                 // input v-model value
@@ -651,7 +669,7 @@ function wrapper(event) {
         event.detail.markerId = event.markerId;
     }
     if (isPlainObject(event.detail)) {
-        event.target = Object.assign({}, event.target, event.detail);
+        event.target = extend({}, event.target, event.detail);
     }
     return event;
 }
@@ -721,11 +739,11 @@ function handleEvent(event) {
     }
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes }) {
+function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
-        addGlobalClass: true
+        addGlobalClass: true,
     };
     if (vueOptions.options) {
         extend(options, vueOptions.options);
@@ -742,12 +760,12 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
             },
             resize(size) {
                 this.$vm && this.$vm.$callHook('onPageResize', size);
-            }
+            },
         },
         methods: {
             __l: handleLink,
-            __e: handleEvent
-        }
+            __e: handleEvent,
+        },
     };
     if (__VUE_OPTIONS_API__) {
         applyOptions(mpComponentOptions, vueOptions, initBehavior);
@@ -787,15 +805,15 @@ function parsePage(vueOptions, parseOptions) {
         isPage,
         initRelation,
         handleLink,
-        initLifetimes
+        initLifetimes,
     });
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
         this.options = query;
         this.$page = {
-            fullPath: '/' + this.route + stringifyQuery(query)
+            fullPath: '/' + this.route + stringifyQuery(query),
         };
-        return this.$vm && this.$vm.$callHook('onLoad', query);
+        return this.$vm && this.$vm.$callHook(ON_LOAD, query);
     };
     initHooks(methods, PAGE_HOOKS);
     initUnknownHooks(methods, vueOptions);
@@ -820,7 +838,7 @@ function initTriggerEvent(mpInstance) {
         return oldTriggerEvent.apply(mpInstance, [customize(event), ...args]);
     };
 }
-function initHook$1(name, options) {
+function initHook(name, options) {
     const oldHook = options[name];
     if (!oldHook) {
         options[name] = function () {
@@ -835,11 +853,11 @@ function initHook$1(name, options) {
     }
 }
 Page = function (options) {
-    initHook$1('onLoad', options);
+    initHook(ON_LOAD, options);
     return MPPage(options);
 };
 Component = function (options) {
-    initHook$1('created', options);
+    initHook('created', options);
     return MPComponent(options);
 };
 
@@ -877,15 +895,22 @@ function initProvide(instance) {
         provide(internalInstance, key, provides[key]);
     }
 }
-function inject(instance, key, defaultValue) {
+function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
     if (instance) {
-        const provides = instance.provides;
-        if (key in provides) {
+        // #2400
+        // to support `app.use` plugins,
+        // fallback to appContext's `provides` if the intance is at root
+        const provides = instance.parent == null
+            ? instance.vnode.appContext && instance.vnode.appContext.provides
+            : instance.parent.provides;
+        if (provides && key in provides) {
             // TS doesn't allow symbol as index type
             return provides[key];
         }
         else if (arguments.length > 1) {
-            return defaultValue;
+            return treatDefaultAsFactory && isFunction(defaultValue)
+                ? defaultValue()
+                : defaultValue;
         }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn(`injection "${String(key)}" not found.`);
@@ -912,7 +937,7 @@ function initInjections(instance) {
         for (const key in injectOptions) {
             const opt = injectOptions[key];
             if (isObject(opt)) {
-                ctx[key] = inject(internalInstance, opt.from, opt.default);
+                ctx[key] = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
             }
             else {
                 ctx[key] = inject(internalInstance, opt);
@@ -921,13 +946,13 @@ function initInjections(instance) {
     }
 }
 
-function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
+function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
             const properties = this.properties;
             initVueIds(properties.vueId, this);
             const relationOptions = {
-                vuePid: this._$vuePid
+                vuePid: this._$vuePid,
             };
             // 初始化 vue 实例
             const mpInstance = this;
@@ -937,7 +962,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
             }
             this.$vm = $createComponent({
                 type: vueOptions,
-                props: properties
+                props: properties,
             }, {
                 mpType,
                 mpInstance,
@@ -947,14 +972,14 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions }) {
                     initRefs(instance, mpInstance);
                     initMocks(instance, mpInstance, mocks);
                     initComponentInstance(instance, options);
-                }
+                },
             });
             // 处理父子关系
             initRelation(this, relationOptions);
         },
         detached() {
             this.$vm && $destroyComponent(this.$vm);
-        }
+        },
     };
 }
 
@@ -962,7 +987,7 @@ const mocks = [
     '__route__',
     '__webviewId__',
     '__nodeId__',
-    '__nodeid__' /* @Deprecated */
+    '__nodeid__' /* @Deprecated */,
 ];
 function isPage(mpInstance) {
     return (mpInstance.__nodeId__ === 0 || mpInstance.__nodeid__ === 0);
@@ -978,10 +1003,10 @@ function initRelation(mpInstance, detail) {
     mpInstance.triggerEvent('__l', {
         vuePid: detail.vuePid,
         nodeId,
-        webviewId
+        webviewId,
     });
 }
-function handleLink({ detail: { vuePid, nodeId, webviewId } }) {
+function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
     const vm = instances[webviewId + '_' + nodeId];
     if (!vm) {
         return;
@@ -1005,7 +1030,7 @@ function handleLink({ detail: { vuePid, nodeId, webviewId } }) {
     }
     vm.$callSyncHook('created');
     vm.$callHook('mounted');
-    vm.$callHook('onReady');
+    vm.$callHook(ON_READY);
 }
 function parse(componentOptions, { handleLink }) {
     componentOptions.methods.__l = handleLink;
@@ -1019,16 +1044,16 @@ var parseComponentOptions = /*#__PURE__*/Object.freeze({
   initRelation: initRelation,
   handleLink: handleLink,
   parse: parse,
-  initLifetimes: initLifetimes
+  initLifetimes: initLifetimes$1
 });
 
-function initLifetimes$1(lifetimesOptions) {
-    return extend(initLifetimes(lifetimesOptions), {
+function initLifetimes(lifetimesOptions) {
+    return extend(initLifetimes$1(lifetimesOptions), {
         ready() {
             if (this.$vm && lifetimesOptions.isPage(this)) {
                 this.$vm.$callSyncHook('created');
                 this.$vm.$callHook('mounted');
-                this.$vm.$callHook('onReady');
+                this.$vm.$callHook(ON_READY);
             }
             else {
                 this.is && console.warn(this.is + ' is not ready');
@@ -1039,12 +1064,12 @@ function initLifetimes$1(lifetimesOptions) {
             // 清理
             const webviewId = this.__webviewId__;
             webviewId &&
-                Object.keys(instances).forEach(key => {
+                Object.keys(instances).forEach((key) => {
                     if (key.indexOf(webviewId + '_') === 0) {
                         delete instances[key];
                     }
                 });
-        }
+        },
     });
 }
 
@@ -1055,11 +1080,14 @@ var parsePageOptions = /*#__PURE__*/Object.freeze({
   initRelation: initRelation,
   handleLink: handleLink,
   parse: parse,
-  initLifetimes: initLifetimes$1
+  initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
+tt.createApp = createApp;
+tt.createPage = createPage;
+tt.createComponent = createComponent;
 
 export { createApp, createComponent, createPage };
