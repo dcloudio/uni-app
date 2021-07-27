@@ -21,6 +21,7 @@
   "gitHead": "3b83cc9dc4c9a214747c626f79693559c338044f",
   "dependencies": {
     "terser-webpack-plugin": "^5.1.4",
+    "vue-loader": "^16.3.3",
     "webpack": "^5.45.1"
   },
   "devDependencies": {

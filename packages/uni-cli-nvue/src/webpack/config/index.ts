@@ -1,6 +1,8 @@
 import { Configuration } from 'webpack'
 import { optimization } from './optimization'
 import { output } from './output'
+import { module } from './module'
+import { plugins } from './plugins'
 export function createConfig(
   mode: 'production' | 'development'
 ): Configuration {
@@ -17,5 +19,7 @@ export function createConfig(
     },
     optimization,
     output,
+    module,
+    plugins,
   }
 }
