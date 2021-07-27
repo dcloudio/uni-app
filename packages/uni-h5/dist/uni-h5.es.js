@@ -13102,7 +13102,8 @@ function getContextInfo(el) {
   return el.__uniContextInfo;
 }
 function applyOptions(options, instance2, publicThis) {
-  if (!publicThis.$mpType) {
+  const mpType = options.mpType || publicThis.$mpType;
+  if (!mpType) {
     return;
   }
   Object.keys(options).forEach((name) => {

@@ -8106,7 +8106,8 @@ var serviceContext = (function (vue) {
   }, RequestPaymentProtocol);
 
   function applyOptions(options, instance, publicThis) {
-      if (!publicThis.$mpType) {
+      const mpType = options.mpType || publicThis.$mpType;
+      if (!mpType) {
           // 仅 App,Page 类型支持 on 生命周期
           return;
       }
@@ -8118,7 +8119,7 @@ var serviceContext = (function (vue) {
               }
           }
       });
-      if (publicThis.$mpType === 'page') {
+      if (mpType === 'page') {
           invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
           invokeHook(publicThis, ON_SHOW);
       }

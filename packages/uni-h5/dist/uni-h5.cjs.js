@@ -6533,7 +6533,8 @@ function useContextInfo(_id) {
   return `${type}.${id}`;
 }
 function applyOptions(options, instance, publicThis) {
-  if (!publicThis.$mpType) {
+  const mpType = options.mpType || publicThis.$mpType;
+  if (!mpType) {
     return;
   }
   Object.keys(options).forEach((name) => {
