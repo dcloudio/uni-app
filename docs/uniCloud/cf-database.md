@@ -1201,7 +1201,7 @@ let res = await collection.where({name: dbCmd.eq('hey')}).update({
 
 ### 更新并返回更新后的数据@update-and-return
 
-> 新增于HBuilderX 3.1.23-alpha
+> 新增于HBuilderX 3.2.0-alpha
 
 此接口仅会操作一条数据，有多条数据匹配的情况下会只更新匹配的第一条并返回
 
