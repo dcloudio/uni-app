@@ -1143,7 +1143,37 @@ uni-input[hidden] {
 .uni-label-pointer {
   cursor: pointer;
 }
-uni-movable-area {
+uni-map {
+  width: 300px;
+  height: 225px;
+  display: inline-block;
+  line-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+uni-map[hidden] {
+  display: none;
+}
+
+.uni-map-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background-color: black;
+}
+
+.uni-map-slot {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}uni-movable-area {
   display: block;
   position: relative;
   width: 10px;

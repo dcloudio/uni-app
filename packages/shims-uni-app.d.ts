@@ -393,7 +393,7 @@ declare namespace UniApp {
      * @param event
      * @param callback
      */
-    subscribe(event: string, callback: CallbackFunction): void
+    subscribe(event: string, callback: CallbackFunction, once?: boolean): void
     /**
      * 取消订阅 Service 的自定义事件
      * 如果没有提供参数，则移除所有的事件监听器；
@@ -417,5 +417,16 @@ declare namespace UniApp {
      * @param pageId
      */
     publishHandler(event: string, args?: unknown, pageId?: number): void
+    /**
+     * 执行 View 层方法，并获取返回值
+     * @param name
+     * @param args
+     * @param callback
+     */
+    invokeServiceMethod<Args = any, Res = any>(
+      name: string,
+      args: Args,
+      callback?: (res: Res) => void
+    ): void
   }
 }

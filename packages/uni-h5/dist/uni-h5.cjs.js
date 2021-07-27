@@ -307,7 +307,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
-const INVOKE_VIEW_API = "invokeViewApi";
 const E = function() {
 };
 E.prototype = {
@@ -381,17 +380,28 @@ function initBridge(subscribeNamespace) {
     }
   };
 }
-const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+const INVOKE_VIEW_API = "invokeViewApi";
+const INVOKE_SERVICE_API = "invokeServiceApi";
+let invokeServiceMethodId = 1;
+const invokeServiceMethod = (name, args, callback) => {
+  const { subscribe, publishHandler } = UniViewJSBridge;
+  const id = callback ? invokeServiceMethodId++ : 0;
+  callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
+  publishHandler(INVOKE_SERVICE_API, { id, name, args });
+};
+const viewMethods = Object.create(null);
 function normalizeViewMethodName(pageId, name) {
   return pageId + "." + name;
 }
-const viewMethods = Object.create(null);
 function registerViewMethod(pageId, name, fn) {
   name = normalizeViewMethodName(pageId, name);
   if (!viewMethods[name]) {
     viewMethods[name] = fn;
   }
 }
+const ViewJSBridge = /* @__PURE__ */ shared.extend(initBridge("service"), {
+  invokeServiceMethod
+});
 uniShared.passive(true);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
@@ -582,13 +592,14 @@ function createNativeEvent(evt) {
   }
   return event;
 }
-let invokeViewMethodId = 0;
+const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
+let invokeViewMethodId = 1;
 function publishViewMethodName() {
   return getCurrentPageId() + "." + INVOKE_VIEW_API;
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
-  const id = invokeViewMethodId++;
+  const id = callback ? invokeViewMethodId++ : 0;
   callback && subscribe(INVOKE_VIEW_API + "." + id, callback, true);
   publishHandler(publishViewMethodName(), { id, name, args }, pageId);
 };
@@ -602,7 +613,6 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 const ServiceJSBridge = /* @__PURE__ */ shared.extend(initBridge("view"), {
   invokeOnCallback,
   invokeViewMethod,

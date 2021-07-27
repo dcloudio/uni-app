@@ -1,10 +1,9 @@
-import {
-  INVOKE_SERVICE_API,
-  ON_WEBVIEW_READY,
-  VD_SYNC,
-} from '../../../../constants'
+import { subscribeServiceMethod } from '@dcloudio/uni-core'
+import { ON_WEBVIEW_READY, VD_SYNC } from '../../../../constants'
 import { onVdSync } from '../../dom'
 import { onPlusMessage } from '../initGlobalEvent'
+import { subscribeAd } from './ad'
+import { subscribeNavigator } from './navigator'
 import { subscribeWebviewReady } from './webviewReady'
 
 export function initSubscribeHandlers() {
@@ -21,14 +20,8 @@ export function initSubscribeHandlers() {
     // 非纯原生
     subscribe(ON_WEBVIEW_READY, subscribeWebviewReady)
     subscribe(VD_SYNC, onVdSync)
-    subscribe(INVOKE_SERVICE_API, onInvokeServiceApi)
+    subscribeServiceMethod()
+    subscribeAd()
+    subscribeNavigator()
   }
-}
-
-function onInvokeServiceApi({
-  data: { method, args },
-}: {
-  data: { method: UniApp.OpenType; args: any }
-}) {
-  uni[method] && uni[method](args)
 }

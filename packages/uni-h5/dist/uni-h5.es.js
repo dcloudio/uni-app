@@ -396,7 +396,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { danmu: "\u5F48\u5E55", volume: "\u97F3\u91CF" }));
   }
 });
-const INVOKE_VIEW_API = "invokeViewApi";
 const E = function() {
 };
 E.prototype = {
@@ -470,7 +469,16 @@ function initBridge(subscribeNamespace) {
     }
   };
 }
-const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+const INVOKE_VIEW_API = "invokeViewApi";
+const INVOKE_SERVICE_API = "invokeServiceApi";
+let invokeServiceMethodId = 1;
+const invokeServiceMethod = (name, args, callback) => {
+  const { subscribe, publishHandler } = UniViewJSBridge;
+  const id2 = callback ? invokeServiceMethodId++ : 0;
+  callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
+  publishHandler(INVOKE_SERVICE_API, { id: id2, name, args });
+};
+const viewMethods = Object.create(null);
 function normalizeViewMethodName(pageId, name) {
   return pageId + "." + name;
 }
@@ -491,7 +499,6 @@ function unsubscribeViewMethod(pageId) {
     }
   });
 }
-const viewMethods = Object.create(null);
 function registerViewMethod(pageId, name, fn) {
   name = normalizeViewMethodName(pageId, name);
   if (!viewMethods[name]) {
@@ -509,7 +516,7 @@ function onInvokeViewMethod({
 }, pageId) {
   name = normalizeViewMethodName(pageId, name);
   const publish = (res) => {
-    UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
+    id2 && UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
   };
   const handler = viewMethods[name];
   if (handler) {
@@ -521,6 +528,9 @@ function onInvokeViewMethod({
     }
   }
 }
+const ViewJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
+  invokeServiceMethod
+});
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = passive(true);
@@ -1350,13 +1360,14 @@ function initAppConfig$1(appConfig) {
 function initViewPlugin(app) {
   initAppConfig$1(app._context.config);
 }
-let invokeViewMethodId = 0;
+const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
+let invokeViewMethodId = 1;
 function publishViewMethodName() {
   return getCurrentPageId() + "." + INVOKE_VIEW_API;
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
-  const id2 = invokeViewMethodId++;
+  const id2 = callback ? invokeViewMethodId++ : 0;
   callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
   publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
 };
@@ -1370,7 +1381,6 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 const ServiceJSBridge = /* @__PURE__ */ extend(initBridge("view"), {
   invokeOnCallback,
   invokeViewMethod,
@@ -2027,11 +2037,11 @@ function operateVideoPlayer(videoId, pageId, type, data) {
     data
   }, pageId);
 }
-function operateMap(id2, pageId, type, data) {
+function operateMap(id2, pageId, type, data, operateMapCallback2) {
   UniServiceJSBridge.invokeViewMethod("map." + id2, {
     type,
     data
-  }, pageId);
+  }, pageId, operateMapCallback2);
 }
 function getRootInfo(fields2) {
   const info = {};
@@ -3013,28 +3023,44 @@ const createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEX
   }
   return new VideoContext(id2, getPageIdByVm(getCurrentPageVm()));
 });
+const operateMapCallback = (options, res) => {
+  const errMsg = res.errMsg || "";
+  if (new RegExp("\\:\\s*fail").test(errMsg)) {
+    options.fail && options.fail(res);
+  } else {
+    options.success && options.success(res);
+  }
+  options.complete && options.complete(res);
+};
+const operateMapWrap = (id2, pageId, type, options) => {
+  operateMap(id2, pageId, type, options, (res) => {
+    options && operateMapCallback(options, res);
+  });
+};
 class MapContext {
   constructor(id2, pageId) {
     this.id = id2;
     this.pageId = pageId;
   }
   getCenterLocation(options) {
-    operateMap(this.id, this.pageId, "getCenterLocation", options);
+    operateMapWrap(this.id, this.pageId, "getCenterLocation", options);
   }
   moveToLocation() {
-    operateMap(this.id, this.pageId, "moveToLocation");
+    operateMapWrap(this.id, this.pageId, "moveToLocation");
   }
   getScale(options) {
-    operateMap(this.id, this.pageId, "getScale", options);
+    operateMapWrap(this.id, this.pageId, "getScale", options);
   }
   getRegion(options) {
-    operateMap(this.id, this.pageId, "getRegion", options);
+    operateMapWrap(this.id, this.pageId, "getRegion", options);
   }
   includePoints(options) {
-    operateMap(this.id, this.pageId, "includePoints", options);
+    operateMapWrap(this.id, this.pageId, "includePoints", options);
   }
   translateMarker(options) {
-    operateMap(this.id, this.pageId, "translateMarker", options);
+    operateMapWrap(this.id, this.pageId, "translateMarker", options);
+  }
+  $getAppMap() {
   }
   addCustomLayer() {
   }
@@ -3054,9 +3080,7 @@ class MapContext {
   }
   moveAlong() {
   }
-  openMapAp() {
-  }
-  $getAppMap() {
+  openMapApp() {
   }
 }
 const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {

@@ -2,8 +2,6 @@ export const VD_SYNC = 'vdSync'
 
 export const ON_WEBVIEW_READY = 'onWebviewReady'
 
-export const INVOKE_SERVICE_API = 'invokeServiceApi'
-
 export let ACTION_MINIFY = true
 // __tests__
 export function setActionMinify(minify: boolean) {

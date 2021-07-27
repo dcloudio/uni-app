@@ -1,28 +1,15 @@
-import { INVOKE_SERVICE_API } from '../../constants'
-
-function invokeServiceApi(method: string, args: Record<string, any> = {}) {
-  UniViewJSBridge.publishHandler(INVOKE_SERVICE_API, {
-    data: {
-      method,
-      args,
-    },
-    options: {
-      timestamp: Date.now(),
-    },
-  })
-}
 export function navigateTo(args: Record<string, any>) {
-  invokeServiceApi('navigateTo', args)
+  UniViewJSBridge.invokeServiceMethod('navigateTo', args)
 }
 export function navigateBack(args: Record<string, any>) {
-  invokeServiceApi('navigateBack', args)
+  UniViewJSBridge.invokeServiceMethod('navigateBack', args)
 }
 export function reLaunch(args: Record<string, any>) {
-  invokeServiceApi('reLaunch', args)
+  UniViewJSBridge.invokeServiceMethod('reLaunch', args)
 }
 export function redirectTo(args: Record<string, any>) {
-  invokeServiceApi('redirectTo', args)
+  UniViewJSBridge.invokeServiceMethod('redirectTo', args)
 }
 export function switchTab(args: Record<string, any>) {
-  invokeServiceApi('switchTab', args)
+  UniViewJSBridge.invokeServiceMethod('switchTab', args)
 }

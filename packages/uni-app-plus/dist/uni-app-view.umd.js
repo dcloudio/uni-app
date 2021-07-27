@@ -6,12 +6,12 @@
   var nvue = "[nvue] uni-view,\n[nvue] uni-label,\n[nvue] uni-swiper-item,\n[nvue] uni-scroll-view {\n  display: flex;\n  flex-shrink: 0;\n  flex-grow: 0;\n  flex-basis: auto;\n  align-items: stretch;\n  align-content: flex-start;\n}\n\n[nvue] uni-button {\n  margin: 0;\n}\n\n[nvue-dir-row] uni-view,\n[nvue-dir-row] uni-label,\n[nvue-dir-row] uni-swiper-item {\n  flex-direction: row;\n}\n\n[nvue-dir-column] uni-view,\n[nvue-dir-column] uni-label,\n[nvue-dir-column] uni-swiper-item {\n  flex-direction: column;\n}\n\n[nvue-dir-row-reverse] uni-view,\n[nvue-dir-row-reverse] uni-label,\n[nvue-dir-row-reverse] uni-swiper-item {\n  flex-direction: row-reverse;\n}\n\n[nvue-dir-column-reverse] uni-view,\n[nvue-dir-column-reverse] uni-label,\n[nvue-dir-column-reverse] uni-swiper-item {\n  flex-direction: column-reverse;\n}\n\n[nvue] uni-view,\n[nvue] uni-image,\n[nvue] uni-input,\n[nvue] uni-scroll-view,\n[nvue] uni-swiper,\n[nvue] uni-swiper-item,\n[nvue] uni-text,\n[nvue] uni-textarea,\n[nvue] uni-video {\n  position: relative;\n  border: 0px solid #000000;\n  box-sizing: border-box;\n}\n\n[nvue] uni-swiper-item {\n  position: absolute;\n}\n";
   var resizeSensor = "@keyframes once-show {\n  from {\n    top: 0;\n  }\n}\nuni-resize-sensor,\nuni-resize-sensor > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}\nuni-resize-sensor {\n  display: block;\n  z-index: -1;\n  visibility: hidden;\n  animation: once-show 1ms;\n}\nuni-resize-sensor > div > div {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\nuni-resize-sensor > div:first-child > div {\n  width: 100000px;\n  height: 100000px;\n}\nuni-resize-sensor > div:last-child > div {\n  width: 200%;\n  height: 200%;\n}\n";
   function makeMap$1(str, expectsLowerCase) {
-    const map = Object.create(null);
+    const map2 = Object.create(null);
     const list2 = str.split(",");
     for (let i = 0; i < list2.length; i++) {
-      map[list2[i]] = true;
+      map2[list2[i]] = true;
     }
-    return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
+    return expectsLowerCase ? (val) => !!map2[val.toLowerCase()] : (val) => !!map2[val];
   }
   const GLOBALS_WHITE_LISTED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt";
   const isGloballyWhitelisted = /* @__PURE__ */ makeMap$1(GLOBALS_WHITE_LISTED);
@@ -568,7 +568,6 @@
       }));
     }
   });
-  const INVOKE_VIEW_API = "invokeViewApi";
   const E = function() {
   };
   E.prototype = {
@@ -642,14 +641,22 @@
       }
     };
   }
-  const ViewJSBridge = /* @__PURE__ */ initBridge("service");
+  const INVOKE_VIEW_API = "invokeViewApi";
+  const INVOKE_SERVICE_API = "invokeServiceApi";
+  let invokeServiceMethodId = 1;
+  const invokeServiceMethod = (name, args, callback) => {
+    const { subscribe, publishHandler: publishHandler2 } = UniViewJSBridge;
+    const id2 = callback ? invokeServiceMethodId++ : 0;
+    callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
+    publishHandler2(INVOKE_SERVICE_API, { id: id2, name, args });
+  };
+  const viewMethods = Object.create(null);
   function normalizeViewMethodName(pageId, name) {
     return pageId + "." + name;
   }
   function subscribeViewMethod(pageId) {
     UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), onInvokeViewMethod);
   }
-  const viewMethods = Object.create(null);
   function registerViewMethod(pageId, name, fn) {
     name = normalizeViewMethodName(pageId, name);
     if (!viewMethods[name]) {
@@ -667,7 +674,7 @@
   }, pageId) {
     name = normalizeViewMethodName(pageId, name);
     const publish = (res) => {
-      UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
+      id2 && UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
     };
     const handler = viewMethods[name];
     if (handler) {
@@ -679,6 +686,9 @@
       }
     }
   }
+  const ViewJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
+    invokeServiceMethod
+  });
   const LONGPRESS_TIMEOUT = 350;
   const LONGPRESS_THRESHOLD = 10;
   const passiveOptions$2 = passive(true);
@@ -3964,7 +3974,31 @@
     return result;
   }
   const isTeleport = (type) => type.__isTeleport;
+  const COMPONENTS = "components";
+  function resolveComponent(name, maybeSelfReference) {
+    return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
+  }
   const NULL_DYNAMIC_COMPONENT = Symbol();
+  function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
+    const instance = currentRenderingInstance || currentInstance;
+    if (instance) {
+      const Component = instance.type;
+      if (type === COMPONENTS) {
+        const selfName = getComponentName(Component);
+        if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
+          return Component;
+        }
+      }
+      const res = resolve(instance[type] || Component[type], name) || resolve(instance.appContext[type], name);
+      if (!res && maybeSelfReference) {
+        return Component;
+      }
+      return res;
+    }
+  }
+  function resolve(registry, name) {
+    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+  }
   const Fragment = Symbol(void 0);
   const Text$1 = Symbol(void 0);
   const Comment$1 = Symbol(void 0);
@@ -5411,7 +5445,6 @@
   [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   const VD_SYNC = "vdSync";
   const ON_WEBVIEW_READY = "onWebviewReady";
-  const INVOKE_SERVICE_API = "invokeServiceApi";
   const ACTION_TYPE_DICT = 0;
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
@@ -5729,31 +5762,20 @@
       confirmColor: PRIMARY_COLOR
     }
   });
-  function invokeServiceApi(method, args = {}) {
-    UniViewJSBridge.publishHandler(INVOKE_SERVICE_API, {
-      data: {
-        method,
-        args
-      },
-      options: {
-        timestamp: Date.now()
-      }
-    });
-  }
   function navigateTo(args) {
-    invokeServiceApi("navigateTo", args);
+    UniViewJSBridge.invokeServiceMethod("navigateTo", args);
   }
   function navigateBack(args) {
-    invokeServiceApi("navigateBack", args);
+    UniViewJSBridge.invokeServiceMethod("navigateBack", args);
   }
   function reLaunch(args) {
-    invokeServiceApi("reLaunch", args);
+    UniViewJSBridge.invokeServiceMethod("reLaunch", args);
   }
   function redirectTo(args) {
-    invokeServiceApi("redirectTo", args);
+    UniViewJSBridge.invokeServiceMethod("redirectTo", args);
   }
   function switchTab(args) {
-    invokeServiceApi("switchTab", args);
+    UniViewJSBridge.invokeServiceMethod("switchTab", args);
   }
   var uni$1 = /* @__PURE__ */ Object.freeze({
     __proto__: null,
@@ -6558,7 +6580,7 @@
     return fields;
   }
   const uniLabelKey = PolySymbol("uniLabel");
-  const props$o = {
+  const props$p = {
     for: {
       type: String,
       default: ""
@@ -6566,7 +6588,7 @@
   };
   var Label = /* @__PURE__ */ defineBuiltInComponent({
     name: "Label",
-    props: props$o,
+    props: props$p,
     setup(props2, {
       slots
     }) {
@@ -7022,7 +7044,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  const props$n = {
+  const props$o = {
     canvasId: {
       type: String,
       default: ""
@@ -7038,7 +7060,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$n,
+    props: props$o,
     computed: {
       id() {
         return this.canvasId;
@@ -7155,7 +7177,7 @@
     function actionsChanged({
       actions,
       reserve
-    }, resolve) {
+    }, resolve2) {
       if (!actions) {
         return;
       }
@@ -7206,7 +7228,7 @@
               });
               color = LinearGradient;
             } else if (data[0] === "pattern") {
-              const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve, function(image2) {
+              const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve2, function(image2) {
                 if (image2) {
                   c2d[method1] = c2d.createPattern(image2, data[2]);
                 }
@@ -7255,7 +7277,7 @@
             var url = dataArray[0];
             var otherData = dataArray.slice(1);
             _images = _images || {};
-            if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
+            if (checkImageLoaded(url, actions.slice(index2 + 1), resolve2, function(image2) {
               if (image2) {
                 c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
               }
@@ -7277,7 +7299,7 @@
         }
       }
       if (!actionsWaiting.value) {
-        resolve({
+        resolve2({
           errMsg: "drawCanvas:ok"
         });
       }
@@ -7319,7 +7341,7 @@
         }
       });
     }
-    function checkImageLoaded(src, actions, resolve, fn) {
+    function checkImageLoaded(src, actions, resolve2, fn) {
       var image2 = _images[src];
       if (image2.ready) {
         fn(image2);
@@ -7337,7 +7359,7 @@
             actionsChanged({
               actions: action[0],
               reserve: action[1]
-            }, resolve);
+            }, resolve2);
             action = actions2.shift();
           }
         };
@@ -7355,7 +7377,7 @@
       dataType,
       quality = 1,
       type = "png"
-    }, resolve) {
+    }, resolve2) {
       const canvas2 = canvasRef.value;
       let data;
       const maxWidth = canvas2.offsetWidth - x;
@@ -7412,10 +7434,10 @@
       }
       newCanvas.height = newCanvas.width = 0;
       context.__hidpi__ = false;
-      if (!resolve) {
+      if (!resolve2) {
         return result;
       } else {
-        resolve(result);
+        resolve2(result);
       }
     }
     function putImageData({
@@ -7425,7 +7447,7 @@
       width,
       height,
       compressed
-    }, resolve) {
+    }, resolve2) {
       try {
         if (!height) {
           height = Math.round(data.length / 4 / width);
@@ -7440,12 +7462,12 @@
         canvasRef.value.getContext("2d").drawImage(canvas2, x, y, width, height);
         canvas2.height = canvas2.width = 0;
       } catch (error) {
-        resolve({
+        resolve2({
           errMsg: "canvasPutImageData:fail"
         });
         return;
       }
-      resolve({
+      resolve2({
         errMsg: "canvasPutImageData:ok"
       });
     }
@@ -7459,7 +7481,7 @@
       fileType,
       quality,
       dirname
-    }, resolve) {
+    }, resolve2) {
       const res = getImageData({
         x,
         y,
@@ -7473,7 +7495,7 @@
         quality
       });
       if (!res.data || !res.data.length) {
-        resolve({
+        resolve2({
           errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         });
         return;
@@ -7486,10 +7508,10 @@
       putImageData,
       toTempFilePath
     };
-    function _handleSubscribe(type, data, resolve) {
+    function _handleSubscribe(type, data, resolve2) {
       let method = methods2[type];
       if (type.indexOf("_") !== 0 && typeof method === "function") {
-        method(data, resolve);
+        method(data, resolve2);
       }
     }
     return extend(methods2, {
@@ -7498,7 +7520,7 @@
     });
   }
   const uniCheckGroupKey = PolySymbol("uniCheckGroup");
-  const props$m = {
+  const props$n = {
     name: {
       type: String,
       default: ""
@@ -7506,7 +7528,7 @@
   };
   var CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$m,
+    props: props$n,
     emits: ["change"],
     setup(props2, {
       emit: emit2,
@@ -7560,7 +7582,7 @@
     }
     return getFieldsValue;
   }
-  const props$l = {
+  const props$m = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -7584,7 +7606,7 @@
   };
   var Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$l,
+    props: props$m,
     setup(props2, {
       slots
     }) {
@@ -7732,7 +7754,7 @@
       });
     }
   }
-  const props$k = {
+  const props$l = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -8408,7 +8430,7 @@
       });
     });
     const id2 = useContextInfo();
-    useSubscribe((type, data, resolve) => {
+    useSubscribe((type, data, resolve2) => {
       const { options, callbackId } = data;
       let res;
       let range;
@@ -8545,7 +8567,7 @@
         errMsg = "not ready";
       }
       if (callbackId) {
-        resolve({
+        resolve2({
           callbackId,
           data: extend({}, res, {
             errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
@@ -8554,7 +8576,7 @@
       }
     }, id2, true);
   }
-  const props$j = /* @__PURE__ */ extend({}, props$k, {
+  const props$k = /* @__PURE__ */ extend({}, props$l, {
     id: {
       type: String,
       default: ""
@@ -8582,7 +8604,7 @@
   });
   var Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$j,
+    props: props$k,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, {
       emit: emit2
@@ -8671,7 +8693,7 @@
       };
     }
   });
-  const props$i = {
+  const props$j = {
     src: {
       type: String,
       default: ""
@@ -8710,7 +8732,7 @@
   };
   var Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$i,
+    props: props$j,
     setup(props2, {
       emit: emit2
     }) {
@@ -8991,17 +9013,17 @@
       uniForm.removeField(ctx);
     });
   }
-  function getSelectedTextRange(_, resolve) {
+  function getSelectedTextRange(_, resolve2) {
     const activeElement = document.activeElement;
     if (!activeElement) {
-      return resolve({});
+      return resolve2({});
     }
     const data = {};
     if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
       data.start = activeElement.selectionStart;
       data.end = activeElement.selectionEnd;
     }
-    resolve(data);
+    resolve2(data);
   }
   const UniViewJSBridgeSubscribe = function() {
     registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
@@ -9011,7 +9033,7 @@
   function getValueString(value) {
     return value === null ? "" : String(value);
   }
-  const props$h = /* @__PURE__ */ extend({}, {
+  const props$i = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -9076,7 +9098,7 @@
       type: String,
       default: "done"
     }
-  }, props$k);
+  }, props$l);
   const emit = [
     "input",
     "focus",
@@ -9282,7 +9304,7 @@
       trigger: trigger2
     };
   }
-  const props$g = /* @__PURE__ */ extend({}, props$h, {
+  const props$h = /* @__PURE__ */ extend({}, props$i, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -9294,7 +9316,7 @@
   });
   var Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$g,
+    props: props$h,
     emits: ["confirm", ...emit],
     setup(props2, {
       emit: emit2
@@ -9499,7 +9521,7 @@
     const instance = getCurrentInstance();
     instance.rebuild = callback;
   }
-  const props$f = {
+  const props$g = {
     scaleArea: {
       type: Boolean,
       default: false
@@ -9508,7 +9530,7 @@
   var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     inheritAttrs: false,
     name: "MovableArea",
-    props: props$f,
+    props: props$g,
     setup(props2, {
       slots
     }) {
@@ -10127,7 +10149,7 @@
     this._springY.reconfigure(e2, t2, n);
     this._springScale.reconfigure(e2, t2, n);
   };
-  const props$e = {
+  const props$f = {
     direction: {
       type: String,
       default: "none"
@@ -10183,7 +10205,7 @@
   };
   var MovableView = /* @__PURE__ */ defineBuiltInComponent({
     name: "MovableView",
-    props: props$e,
+    props: props$f,
     emits: ["change", "scale"],
     setup(props2, {
       slots,
@@ -10776,7 +10798,7 @@
     };
   }
   const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-  const props$d = {
+  const props$e = {
     hoverClass: {
       type: String,
       default: "navigator-hover"
@@ -10818,7 +10840,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$d,
+    props: props$e,
     setup(props2, {
       slots
     }) {
@@ -10875,7 +10897,7 @@
       };
     }
   });
-  const props$c = {
+  const props$d = {
     value: {
       type: Array,
       default() {
@@ -10922,7 +10944,7 @@
   }
   var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     name: "PickerView",
-    props: props$c,
+    props: props$d,
     emits: ["change", "pickstart", "pickend", "update:value"],
     setup(props2, {
       slots,
@@ -11883,7 +11905,7 @@
     backgroundColor: "#EBEBEB",
     activeMode: "backwards"
   };
-  const props$b = {
+  const props$c = {
     percent: {
       type: [Number, String],
       default: 0,
@@ -11932,7 +11954,7 @@
   };
   var Progress = /* @__PURE__ */ defineBuiltInComponent({
     name: "Progress",
-    props: props$b,
+    props: props$c,
     setup(props2) {
       const state = useProgressState(props2);
       _activeAnimation(state, props2);
@@ -12006,7 +12028,7 @@
     }
   }
   const uniRadioGroupKey = PolySymbol("uniCheckGroup");
-  const props$a = {
+  const props$b = {
     name: {
       type: String,
       default: ""
@@ -12014,7 +12036,7 @@
   };
   var RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$a,
+    props: props$b,
     setup(props2, {
       emit: emit2,
       slots
@@ -12095,7 +12117,7 @@
     }
     return fields;
   }
-  const props$9 = {
+  const props$a = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -12119,7 +12141,7 @@
   };
   var Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$9,
+    props: props$a,
     setup(props2, {
       slots
     }) {
@@ -12415,7 +12437,7 @@
     });
     return parentNode;
   }
-  const props$8 = {
+  const props$9 = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -12428,7 +12450,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$8,
+    props: props$9,
     setup(props2) {
       const rootRef = ref(null);
       function _renderNodes(nodes) {
@@ -12455,7 +12477,7 @@
     }
   });
   const passiveOptions = passive(true);
-  const props$7 = {
+  const props$8 = {
     scrollX: {
       type: [Boolean, String],
       default: false
@@ -12518,7 +12540,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$7,
+    props: props$8,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, {
       emit: emit2,
@@ -12948,7 +12970,7 @@
       }
     });
   }
-  const props$6 = {
+  const props$7 = {
     name: {
       type: String,
       default: ""
@@ -13004,7 +13026,7 @@
   };
   var Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$6,
+    props: props$7,
     emits: ["changing", "change"],
     setup(props2, {
       emit: emit2
@@ -13175,7 +13197,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  const props$5 = {
+  const props$6 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -13656,7 +13678,7 @@
   }
   var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$5,
+    props: props$6,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, {
       slots,
@@ -13762,7 +13784,7 @@
       };
     }
   });
-  const props$4 = {
+  const props$5 = {
     itemId: {
       type: String,
       default: ""
@@ -13770,7 +13792,7 @@
   };
   var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$4,
+    props: props$5,
     setup(props2, {
       slots
     }) {
@@ -13821,7 +13843,7 @@
       };
     }
   });
-  const props$3 = {
+  const props$4 = {
     name: {
       type: String,
       default: ""
@@ -13849,7 +13871,7 @@
   };
   var Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$3,
+    props: props$4,
     emits: ["change"],
     setup(props2, {
       emit: emit2
@@ -13953,7 +13975,7 @@
     }
     return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  const props$2 = /* @__PURE__ */ extend({}, props$h, {
+  const props$3 = /* @__PURE__ */ extend({}, props$i, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -13974,7 +13996,7 @@
   }
   var Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$2,
+    props: props$3,
     emit: ["confirm", "linechange", ...emit],
     setup(props2, {
       emit: emit2
@@ -14133,8 +14155,8 @@
     if (!name) {
       return;
     }
-    registerViewMethod(pageId || getCurrentPageId(), name, ({ type, data }, resolve) => {
-      callback(type, data, resolve);
+    registerViewMethod(pageId || getCurrentPageId(), name, ({ type, data }, resolve2) => {
+      callback(type, data, resolve2);
     });
   }
   function removeSubscribe(name) {
@@ -14777,7 +14799,7 @@
     });
   }
   const TEMP_PATH = "_doc/uniapp_temp/";
-  const props$1 = {
+  const props$2 = {
     src: {
       type: String,
       default: ""
@@ -14848,7 +14870,7 @@
   }
   var CoverImage = /* @__PURE__ */ defineBuiltInComponent({
     name: "CoverImage",
-    props: props$1,
+    props: props$2,
     emits: ["click", "load", "error"],
     setup(props2, {
       emit: emit2
@@ -14963,12 +14985,380 @@
       super(id2, "uni-live-pusher", parentNodeId, refNodeId);
     }
   }
+  var map = "uni-map {\n  width: 300px;\n  height: 225px;\n  display: inline-block;\n  line-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\nuni-map[hidden] {\n  display: none;\n}\n\n.uni-map-container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  overflow: hidden;\n  background-color: black;\n}\n\n.uni-map-slot {\n  position: absolute;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  pointer-events: none;\n}";
+  const convertCoordinates = (lng, lat, callback) => {
+    callback({
+      coord: {
+        latitude: lat,
+        longitude: lng
+      }
+    });
+  };
+  function parseHex(color) {
+    if (color.indexOf("#") !== 0) {
+      return {
+        color,
+        opacity: 1
+      };
+    }
+    const opacity = color.substr(7, 2);
+    return {
+      color: color.substr(0, 7),
+      opacity: opacity ? Number("0x" + opacity) / 255 : 1
+    };
+  }
+  const props$1 = {
+    id: {
+      type: String,
+      default: ""
+    },
+    latitude: {
+      type: [Number, String],
+      default: ""
+    },
+    longitude: {
+      type: [Number, String],
+      default: ""
+    },
+    scale: {
+      type: [String, Number],
+      default: 16
+    },
+    markers: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    polyline: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    circles: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    controls: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
+  };
   var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
-    name: "Map"
+    name: "Map",
+    props: props$1,
+    emits: ["click", "regionchange", "controltap", "markertap", "callouttap"],
+    setup(props2, {
+      emit: emit2
+    }) {
+      const rootRef = ref(null);
+      const trigger2 = useCustomEvent(rootRef, emit2);
+      const containerRef = ref(null);
+      const attrs2 = useNativeAttrs(props2, ["id"]);
+      const {
+        position,
+        hidden,
+        onParentReady
+      } = useNative(containerRef);
+      let map2;
+      const {
+        _addMarkers,
+        _addMapLines,
+        _addMapCircles,
+        _setMap
+      } = useMapMethods(props2, trigger2);
+      onParentReady(() => {
+        map2 = extend(plus.maps.create(getCurrentPageId() + "-map-" + (props2.id || Date.now()), Object.assign({}, attrs2.value, position)), {
+          __markers__: [],
+          __markers_map__: {},
+          __lines__: [],
+          __circles__: []
+        });
+        map2.setZoom(parseInt(String(props2.scale)));
+        plus.webview.currentWebview().append(map2);
+        if (hidden.value) {
+          map2.hide();
+        }
+        map2.onclick = (e2) => {
+          trigger2("click", {}, e2);
+        };
+        map2.onstatuschanged = (e2) => {
+          trigger2("regionchange", {}, {});
+        };
+        _setMap(map2);
+        _addMarkers(props2.markers);
+        _addMapLines(props2.polyline);
+        _addMapCircles(props2.circles);
+        watch(() => attrs2.value, (attrs3) => map2 && map2.setStyles(attrs3), {
+          deep: true
+        });
+        watch(() => position, (position2) => map2 && map2.setStyles(position2), {
+          deep: true
+        });
+        watch(() => hidden.value, (val) => {
+          map2 && map2[val ? "hide" : "show"]();
+        });
+        watch(() => props2.scale, (val) => {
+          map2 && map2.setZoom(parseInt(String(val)));
+        });
+        watch([() => props2.latitude, () => props2.longitude], ([latitude, longitude]) => {
+          map2 && map2.setStyles({
+            center: new plus.maps.Point(Number(latitude), Number(longitude))
+          });
+        });
+        watch(() => props2.markers, (val) => {
+          _addMarkers(val, true);
+        });
+        watch(() => props2.polyline, (val) => {
+          _addMapLines(val);
+        });
+        watch(() => props2.circles, (val) => {
+          _addMapCircles(val);
+        });
+      });
+      const mapControls = computed$1(() => props2.controls.map((control) => {
+        const position2 = {
+          position: "absolute"
+        };
+        ["top", "left", "width", "height"].forEach((key) => {
+          if (control.position[key]) {
+            position2[key] = control.position[key] + "px";
+          }
+        });
+        return {
+          id: control.id,
+          iconPath: getRealPath(control.iconPath),
+          position: position2
+        };
+      }));
+      onBeforeUnmount(() => {
+        if (map2) {
+          map2.close();
+        }
+      });
+      return () => {
+        return createVNode("uni-map", {
+          "ref": rootRef,
+          "id": props2.id
+        }, {
+          default: () => [createVNode("div", {
+            "ref": containerRef,
+            "class": "uni-map-container"
+          }, null, 512), mapControls.value.map((control, index2) => createVNode(resolveComponent("v-uni-cover-image"), {
+            "key": index2,
+            "src": control.iconPath,
+            "style": control.position,
+            "auto-size": true,
+            "onClick": () => trigger2("controltap", {}, {
+              controlId: control.id
+            })
+          }, null, 8, ["src", "style", "auto-size", "onClick"])), createVNode("div", {
+            "class": "uni-map-slot"
+          }, null)],
+          _: 1
+        }, 8, ["id"]);
+      };
+    }
   });
+  function useMapMethods(props2, trigger2) {
+    let map2;
+    function moveToLocation(resolve2, {
+      longitude,
+      latitude
+    } = {}) {
+      if (!map2)
+        return;
+      map2.setCenter(new plus.maps.Point(Number(longitude || props2.longitude), Number(latitude || props2.latitude)));
+      resolve2({
+        errMsg: "moveToLocation:ok"
+      });
+    }
+    function getCenterLocation(resolve2) {
+      if (!map2)
+        return;
+      map2.getCurrentCenter((state, point) => {
+        resolve2({
+          longitude: point.getLng(),
+          latitude: point.getLat(),
+          errMsg: "getCenterLocation:ok"
+        });
+      });
+    }
+    function getRegion(resolve2) {
+      if (!map2)
+        return;
+      const rect = map2.getBounds();
+      resolve2({
+        southwest: rect.getSouthWest(),
+        northeast: rect.getNorthEast(),
+        errMsg: "getRegion:ok"
+      });
+    }
+    function getScale(resolve2) {
+      if (!map2)
+        return;
+      resolve2({
+        scale: map2.getZoom(),
+        errMsg: "getScale:ok"
+      });
+    }
+    function _addMarker(marker) {
+      if (!map2)
+        return;
+      const {
+        id: id2,
+        latitude,
+        longitude,
+        iconPath,
+        callout,
+        label: label2
+      } = marker;
+      convertCoordinates(longitude, latitude, (res) => {
+        const {
+          latitude: latitude2,
+          longitude: longitude2
+        } = res.coord;
+        const nativeMarker = new plus.maps.Marker(new plus.maps.Point(longitude2, latitude2));
+        if (iconPath) {
+          nativeMarker.setIcon(getRealPath(iconPath));
+        }
+        if (label2 && label2.content) {
+          nativeMarker.setLabel(label2.content);
+        }
+        let nativeBubble = void 0;
+        if (callout && callout.content) {
+          nativeBubble = new plus.maps.Bubble(callout.content);
+        }
+        if (nativeBubble) {
+          nativeMarker.setBubble(nativeBubble);
+        }
+        if (id2 || id2 === 0) {
+          nativeMarker.onclick = (e2) => {
+            trigger2("markertap", {}, {
+              markerId: id2
+            });
+          };
+          if (nativeBubble) {
+            nativeBubble.onclick = () => {
+              trigger2("callouttap", {}, {
+                markerId: id2
+              });
+            };
+          }
+        }
+        map2.addOverlay(nativeMarker);
+        map2.__markers__.push(nativeMarker);
+        map2.__markers_map__[id2 + ""] = nativeMarker;
+      });
+    }
+    function _clearMarkers() {
+      if (!map2)
+        return;
+      const markers = map2.__markers__;
+      markers.forEach((marker) => {
+        map2.removeOverlay(marker);
+      });
+      map2.__markers__ = [];
+      map2.__markers_map__ = {};
+    }
+    function _addMarkers(markers, clear2) {
+      if (clear2) {
+        _clearMarkers();
+      }
+      markers.forEach((marker) => {
+        _addMarker(marker);
+      });
+    }
+    function _addMapLines(lines) {
+      if (!map2)
+        return;
+      if (map2.__lines__.length > 0) {
+        map2.__lines__.forEach((circle) => {
+          map2.removeOverlay(circle);
+        });
+        map2.__lines__ = [];
+      }
+      lines.forEach((line) => {
+        const {
+          color,
+          width
+        } = line;
+        const points = line.points.map((point) => new plus.maps.Point(point.longitude, point.latitude));
+        const polyline = new plus.maps.Polyline(points);
+        if (color) {
+          const strokeStyle = parseHex(color);
+          polyline.setStrokeColor(strokeStyle.color);
+          polyline.setStrokeOpacity(strokeStyle.opacity);
+        }
+        if (width) {
+          polyline.setLineWidth(width);
+        }
+        map2.addOverlay(polyline);
+        map2.__lines__.push(polyline);
+      });
+    }
+    function _addMapCircles(circles) {
+      if (!map2)
+        return;
+      if (map2.__circles__.length > 0) {
+        map2.__circles__.forEach((circle) => {
+          map2.removeOverlay(circle);
+        });
+        map2.__circles__ = [];
+      }
+      circles.forEach((circle) => {
+        const {
+          latitude,
+          longitude,
+          color,
+          fillColor,
+          radius,
+          strokeWidth
+        } = circle;
+        const nativeCircle = new plus.maps.Circle(new plus.maps.Point(longitude, latitude), radius);
+        if (color) {
+          const strokeStyle = parseHex(color);
+          nativeCircle.setStrokeColor(strokeStyle.color);
+          nativeCircle.setStrokeOpacity(strokeStyle.opacity);
+        }
+        if (fillColor) {
+          const fillStyle = parseHex(fillColor);
+          nativeCircle.setFillColor(fillStyle.color);
+          nativeCircle.setFillOpacity(fillStyle.opacity);
+        }
+        if (strokeWidth) {
+          nativeCircle.setLineWidth(strokeWidth);
+        }
+        map2.addOverlay(nativeCircle);
+        map2.__circles__.push(nativeCircle);
+      });
+    }
+    const methods2 = {
+      moveToLocation,
+      getCenterLocation,
+      getRegion,
+      getScale
+    };
+    useSubscribe((type, data, resolve2) => {
+      methods2[type] && methods2[type](resolve2, data);
+    }, useContextInfo(), true);
+    return {
+      _addMarkers,
+      _addMapLines,
+      _addMapCircles,
+      _setMap(_map) {
+        map2 = _map;
+      }
+    };
+  }
   class UniMap extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-map", Map$1, parentNodeId, refNodeId, nodeJson);
+      super(id2, "uni-map", Map$1, parentNodeId, refNodeId, nodeJson, ".uni-map-slot");
     }
   }
   var movableArea = "uni-movable-area {\n  display: block;\n  position: relative;\n  width: 10px;\n  height: 10px;\n}\n\nuni-movable-area[hidden] {\n  display: none;\n}\n";

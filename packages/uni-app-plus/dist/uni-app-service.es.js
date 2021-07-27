@@ -1587,6 +1587,54 @@ var serviceContext = (function (vue) {
           }));
       }
   });
+  const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
+      const name = 'uni.scanCode.';
+      {
+          useI18n().add(LOCALE_EN, normalizeMessages(name, {
+              title: 'Scan code',
+              album: 'Album',
+              fail: 'Recognition failure',
+              'flash.on': 'Tap to turn light on',
+              'flash.off': 'Tap to turn light off',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ES, normalizeMessages(name, {
+              title: 'Código de escaneo',
+              album: 'Álbum',
+              fail: 'Échec de la reconnaissance',
+              'flash.on': 'Toque para encender la luz',
+              'flash.off': 'Toque para apagar la luz',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_FR, normalizeMessages(name, {
+              title: 'Code d’analyse',
+              album: 'Album',
+              fail: 'Fallo de reconocimiento',
+              'flash.on': "Appuyez pour activer l'éclairage",
+              'flash.off': "Appuyez pour désactiver l'éclairage",
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, {
+              title: '扫码',
+              album: '相册',
+              fail: '识别失败',
+              'flash.on': '轻触照亮',
+              'flash.off': '轻触关闭',
+          }));
+      }
+      {
+          useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, {
+              title: '掃碼',
+              album: '相冊',
+              fail: '識別失敗',
+              'flash.on': '輕觸照亮',
+              'flash.off': '輕觸關閉',
+          }));
+      }
+  });
   const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(() => {
       const name = 'uni.startSoterAuthentication.';
       {
@@ -1609,8 +1657,6 @@ var serviceContext = (function (vue) {
           useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { authContent: '指紋識別中...' }));
       }
   });
-
-  const INVOKE_VIEW_API = 'invokeViewApi';
 
   const E = function () {
       // Keep this empty so it's easier to inherit from
@@ -1693,6 +1739,9 @@ var serviceContext = (function (vue) {
           },
       };
   }
+
+  const INVOKE_VIEW_API = 'invokeViewApi';
+  const INVOKE_SERVICE_API = 'invokeServiceApi';
 
   function hasRpx(str) {
       str = str + '';
@@ -1861,13 +1910,15 @@ var serviceContext = (function (vue) {
       }
   }
 
-  let invokeViewMethodId = 0;
+  const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
+
+  let invokeViewMethodId = 1;
   function publishViewMethodName() {
       return getCurrentPageId() + '.' + INVOKE_VIEW_API;
   }
   const invokeViewMethod = (name, args, pageId, callback) => {
       const { subscribe, publishHandler } = UniServiceJSBridge;
-      const id = invokeViewMethodId++;
+      const id = callback ? invokeViewMethodId++ : 0;
       callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
       publishHandler(publishViewMethodName(), { id, name, args }, pageId);
   };
@@ -1881,7 +1932,33 @@ var serviceContext = (function (vue) {
           unsubscribe(subscribeName);
       };
   };
-  const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
+
+  const serviceMethods = Object.create(null);
+  function subscribeServiceMethod() {
+      UniServiceJSBridge.subscribe(INVOKE_SERVICE_API, onInvokeServiceMethod);
+  }
+  function registerServiceMethod(name, fn) {
+      if (!serviceMethods[name]) {
+          serviceMethods[name] = fn;
+      }
+  }
+  function onInvokeServiceMethod({ id, name, args, }, pageId) {
+      const publish = (res) => {
+          id &&
+              UniServiceJSBridge.publishHandler(INVOKE_SERVICE_API + '.' + id, res, pageId);
+      };
+      const handler = serviceMethods[name];
+      if (handler) {
+          handler(args, publish);
+      }
+      else {
+          publish({});
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('invokeViewMethod', name, 'not register'));
+          }
+      }
+  }
+
   const ServiceJSBridge = /*#__PURE__*/ extend(initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
       invokeOnCallback,
       invokeViewMethod,
@@ -2052,8 +2129,21 @@ var serviceContext = (function (vue) {
       return false;
   }
 
-  function operateVideoPlayer(videoId, pageId, type, data) { }
-  function operateMap(id, pageId, type, data) { }
+  function operateVideoPlayer(videoId, pageId, type, data) {
+      UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
+          videoId,
+          type,
+          data,
+      }, pageId);
+  }
+
+  function operateMap(id, pageId, type, data, operateMapCallback) {
+      UniServiceJSBridge.invokeViewMethod('map.' + id, {
+          type,
+          data,
+      }, pageId, operateMapCallback);
+  }
+
   function addIntersectionObserver(args, pageId) { }
   function removeIntersectionObserver(args, pageId) { }
   function addMediaQueryObserver(args, pageId) { }
@@ -2295,40 +2385,48 @@ var serviceContext = (function (vue) {
   ];
   const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
 
+  const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
   class VideoContext {
       constructor(id, pageId) {
           this.id = id;
           this.pageId = pageId;
       }
       play() {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'play');
       }
       pause() {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'pause');
       }
       stop() {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'stop');
       }
       seek(position) {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'seek', {
+              position,
+          });
       }
       sendDanmu(args) {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'sendDanmu', args);
       }
       playbackRate(rate) {
-          operateVideoPlayer(this.id, this.pageId);
+          if (!~RATES.indexOf(rate)) {
+              rate = 1.0;
+          }
+          operateVideoPlayer(this.id, this.pageId, 'playbackRate', {
+              rate,
+          });
       }
       requestFullScreen(args = {}) {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'requestFullScreen', args);
       }
       exitFullScreen() {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'exitFullScreen');
       }
       showStatusBar() {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'showStatusBar');
       }
       hideStatusBar() {
-          operateVideoPlayer(this.id, this.pageId);
+          operateVideoPlayer(this.id, this.pageId, 'hideStatusBar');
       }
   }
   const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
@@ -2338,28 +2436,48 @@ var serviceContext = (function (vue) {
       return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
   });
 
+  const operateMapCallback = (options, res) => {
+      const errMsg = res.errMsg || '';
+      if (new RegExp('\\:\\s*fail').test(errMsg)) {
+          options.fail && options.fail(res);
+      }
+      else {
+          options.success && options.success(res);
+      }
+      options.complete && options.complete(res);
+  };
+  const operateMapWrap = (id, pageId, type, options) => {
+      operateMap(id, pageId, type, options, (res) => {
+          options && operateMapCallback(options, res);
+      });
+  };
   class MapContext {
       constructor(id, pageId) {
           this.id = id;
           this.pageId = pageId;
       }
       getCenterLocation(options) {
-          operateMap(this.id, this.pageId);
+          operateMapWrap(this.id, this.pageId, 'getCenterLocation', options);
       }
       moveToLocation() {
-          operateMap(this.id, this.pageId);
+          operateMapWrap(this.id, this.pageId, 'moveToLocation');
       }
       getScale(options) {
-          operateMap(this.id, this.pageId);
+          operateMapWrap(this.id, this.pageId, 'getScale', options);
       }
       getRegion(options) {
-          operateMap(this.id, this.pageId);
+          operateMapWrap(this.id, this.pageId, 'getRegion', options);
       }
       includePoints(options) {
-          operateMap(this.id, this.pageId);
+          operateMapWrap(this.id, this.pageId, 'includePoints', options);
       }
       translateMarker(options) {
-          operateMap(this.id, this.pageId);
+          operateMapWrap(this.id, this.pageId, 'translateMarker', options);
+      }
+      $getAppMap() {
+          {
+              return plus.maps.getMapById(this.pageId + '-map-' + this.id);
+          }
       }
       addCustomLayer() { }
       removeCustomLayer() { }
@@ -2370,8 +2488,7 @@ var serviceContext = (function (vue) {
       addMarkers() { }
       removeMarkers() { }
       moveAlong() { }
-      openMapAp() { }
-      $getAppMap() { }
+      openMapApp() { }
   }
   const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
       if (context) {
@@ -4025,6 +4142,13 @@ var serviceContext = (function (vue) {
       },
       challenge: String,
       authContent: String,
+  };
+
+  const API_SCAN_CODE = 'scanCode';
+  const ScanCodeProtocol = {
+      onlyFromCamera: Boolean,
+      scanType: Array,
+      autoDecodeCharSet: Boolean,
   };
 
   const API_GET_STORAGE = 'getStorage';
@@ -5774,8 +5898,222 @@ var serviceContext = (function (vue) {
       }
   }, StartSoterAuthenticationProtocols, StartSoterAuthenticationOptions);
 
+  let plus_;
+  let weex_;
+  let BroadcastChannel_;
+  function getRuntime() {
+      return typeof window === 'object' &&
+          typeof navigator === 'object' &&
+          typeof document === 'object'
+          ? 'webview'
+          : 'v8';
+  }
+  function getPageId() {
+      return plus_.webview.currentWebview().id;
+  }
+  let channel;
+  let globalEvent$1;
+  const callbacks$2 = {};
+  function onPlusMessage$1(res) {
+      const message = res.data && res.data.__message;
+      if (!message || !message.__page) {
+          return;
+      }
+      const pageId = message.__page;
+      const callback = callbacks$2[pageId];
+      callback && callback(message);
+      if (!message.keep) {
+          delete callbacks$2[pageId];
+      }
+  }
+  function addEventListener(pageId, callback) {
+      if (getRuntime() === 'v8') {
+          if (BroadcastChannel_) {
+              channel && channel.close();
+              channel = new BroadcastChannel_(getPageId());
+              channel.onmessage = onPlusMessage$1;
+          }
+          else if (!globalEvent$1) {
+              globalEvent$1 = weex_.requireModule('globalEvent');
+              globalEvent$1.addEventListener('plusMessage', onPlusMessage$1);
+          }
+      }
+      else {
+          // @ts-ignore
+          window.__plusMessage = onPlusMessage$1;
+      }
+      callbacks$2[pageId] = callback;
+  }
+  class Page {
+      constructor(webview) {
+          this.webview = webview;
+      }
+      sendMessage(data) {
+          const message = {
+              __message: {
+                  data,
+              },
+          };
+          const id = this.webview.id;
+          if (BroadcastChannel_) {
+              const channel = new BroadcastChannel_(id);
+              channel.postMessage(message);
+          }
+          else {
+              plus_.webview.postMessageToUniNView &&
+                  plus_.webview.postMessageToUniNView(message, id);
+          }
+      }
+      close() {
+          this.webview.close();
+      }
+  }
+  function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
+      // eslint-disable-next-line
+      plus_ = context.plus || plus;
+      // eslint-disable-next-line
+      weex_ = context.weex || (typeof weex === 'object' ? weex : null);
+      // eslint-disable-next-line
+      BroadcastChannel_ =
+          context.BroadcastChannel ||
+              (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
+      const titleNView = {
+          autoBackButton: true,
+          titleSize: '17px',
+      };
+      const pageId = `page${Date.now()}`;
+      style = Object.assign({}, style);
+      if (style.titleNView !== false && style.titleNView !== 'none') {
+          style.titleNView = Object.assign(titleNView, style.titleNView);
+      }
+      const defaultStyle = {
+          top: 0,
+          bottom: 0,
+          usingComponents: {},
+          popGesture: 'close',
+          scrollIndicator: 'none',
+          animationType: 'pop-in',
+          animationDuration: 200,
+          uniNView: {
+              path: `${(typeof process === 'object' &&
+                process.env &&
+                process.env.VUE_APP_TEMPLATE_PATH) ||
+                ''}/${url}.js`,
+              defaultFontSize: plus_.screen.resolutionWidth / 20,
+              viewport: plus_.screen.resolutionWidth,
+          },
+      };
+      style = Object.assign(defaultStyle, style);
+      const page = plus_.webview.create('', pageId, style, {
+          extras: {
+              from: getPageId(),
+              runtime: getRuntime(),
+              data,
+              useGlobalEvent: !BroadcastChannel_,
+          },
+      });
+      page.addEventListener('close', onClose);
+      addEventListener(pageId, (message) => {
+          if (typeof onMessage === 'function') {
+              onMessage(message.data);
+          }
+          if (!message.keep) {
+              page.close('auto');
+          }
+      });
+      page.show(style.animationType, style.animationDuration);
+      return new Page(page);
+  }
+
+  function getStatusBarStyle$1() {
+      let style = plus.navigator.getStatusBarStyle();
+      if (style === 'UIStatusBarStyleBlackTranslucent' ||
+          style === 'UIStatusBarStyleBlackOpaque' ||
+          style === 'null') {
+          style = 'light';
+      }
+      else if (style === 'UIStatusBarStyleDefault') {
+          style = 'dark';
+      }
+      return style;
+  }
+  const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) => {
+      initI18nScanCodeMsgsOnce();
+      const { t } = useI18n();
+      const statusBarStyle = getStatusBarStyle$1();
+      const isDark = statusBarStyle !== 'light';
+      let result;
+      let success = false;
+      const page = showPage({
+          url: '__uniappscan',
+          data: Object.assign({}, options, {
+              messages: {
+                  fail: t('uni.scanCode.fail'),
+                  'flash.on': t('uni.scanCode.flash.on'),
+                  'flash.off': t('uni.scanCode.flash.off'),
+              },
+          }),
+          style: {
+              // @ts-ignore
+              animationType: options.animationType || 'pop-in',
+              titleNView: {
+                  autoBackButton: true,
+                  // @ts-ignore
+                  type: 'float',
+                  // @ts-ignore
+                  titleText: options.titleText || t('uni.scanCode.title'),
+                  titleColor: '#ffffff',
+                  backgroundColor: 'rgba(0,0,0,0)',
+                  buttons: !options.onlyFromCamera
+                      ? [
+                          {
+                              // @ts-ignore
+                              text: options.albumText || t('uni.scanCode.album'),
+                              fontSize: '17px',
+                              width: '60px',
+                              onclick: () => {
+                                  page.sendMessage({
+                                      type: 'gallery',
+                                  });
+                              },
+                          },
+                      ]
+                      : [],
+              },
+              popGesture: 'close',
+              background: '#000000',
+              backButtonAutoControl: 'close',
+          },
+          onMessage({ event, detail, }) {
+              result = detail;
+              success = event === 'marked';
+          },
+          onClose() {
+              if (isDark) {
+                  plus.navigator.setStatusBarStyle('dark');
+              }
+              result
+                  ? success
+                      ? (delete result.message, resolve(result))
+                      : reject(result.message)
+                  : reject('cancel');
+          },
+      });
+      if (isDark) {
+          plus.navigator.setStatusBarStyle('light');
+          page.webview.addEventListener('popGesture', ({ type, result }) => {
+              if (type === 'start') {
+                  plus.navigator.setStatusBarStyle('dark');
+              }
+              else if (type === 'end' && !result) {
+                  plus.navigator.setStatusBarStyle('light');
+              }
+          });
+      }
+  }, ScanCodeProtocol);
+
   const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
-      UniServiceJSBridge.on(ON_THEME_CHANGE, res => {
+      UniServiceJSBridge.on(ON_THEME_CHANGE, (res) => {
           UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
       });
   });
@@ -5929,7 +6267,7 @@ var serviceContext = (function (vue) {
           }
       },
   };
-  const callbacks$2 = {
+  const callbacks$1 = {
       pause: null,
       resume: null,
       start: null,
@@ -5940,29 +6278,29 @@ var serviceContext = (function (vue) {
       const state = res.state;
       delete res.state;
       delete res.errMsg;
-      if (state && typeof callbacks$2[state] === 'function') {
-          callbacks$2[state](res);
+      if (state && typeof callbacks$1[state] === 'function') {
+          callbacks$1[state](res);
       }
   }
   class RecorderManager {
       constructor() { }
       onError(callback) {
-          callbacks$2.error = callback;
+          callbacks$1.error = callback;
       }
       onFrameRecorded(callback) { }
       onInterruptionBegin(callback) { }
       onInterruptionEnd(callback) { }
       onPause(callback) {
-          callbacks$2.pause = callback;
+          callbacks$1.pause = callback;
       }
       onResume(callback) {
-          callbacks$2.resume = callback;
+          callbacks$1.resume = callback;
       }
       onStart(callback) {
-          callbacks$2.start = callback;
+          callbacks$1.start = callback;
       }
       onStop(callback) {
-          callbacks$2.stop = callback;
+          callbacks$1.stop = callback;
       }
       pause() {
           Recorder.pause();
@@ -6493,7 +6831,7 @@ var serviceContext = (function (vue) {
 
   const socketTasks = [];
   const socketsMap = {};
-  const globalEvent$1 = {
+  const globalEvent = {
       open: '',
       close: '',
       error: '',
@@ -6595,8 +6933,8 @@ var serviceContext = (function (vue) {
       }
       socketStateChange(name, res = {}) {
           const data = name === 'message' ? res : {};
-          if (this === socketTasks[0] && globalEvent$1[name]) {
-              UniServiceJSBridge.invokeOnCallback(globalEvent$1[name], data);
+          if (this === socketTasks[0] && globalEvent[name]) {
+              UniServiceJSBridge.invokeOnCallback(globalEvent[name], data);
           }
           // WYQ fix: App平台修复websocket onOpen时发送数据报错的Bug
           this._callbacks[name].forEach((callback) => {
@@ -6695,7 +7033,7 @@ var serviceContext = (function (vue) {
   function on(event) {
       const api = `onSocket${capitalize(event)}`;
       return defineOnApi(api, () => {
-          globalEvent$1[event] = api;
+          globalEvent[event] = api;
       });
   }
   const onSocketOpen = /*#__PURE__*/ on('open');
@@ -7077,7 +7415,7 @@ var serviceContext = (function (vue) {
       'error',
       'waiting',
   ];
-  const callbacks$1 = {
+  const callbacks = {
       canplay: [],
       play: [],
       pause: [],
@@ -7256,7 +7594,7 @@ var serviceContext = (function (vue) {
       });
   }
   function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-      callbacks$1[state].forEach((callback) => {
+      callbacks[state].forEach((callback) => {
           if (typeof callback === 'function') {
               callback(state === 'error'
                   ? {
@@ -7271,7 +7609,7 @@ var serviceContext = (function (vue) {
       eventNames.forEach((item) => {
           BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
               function (callback) {
-                  callbacks$1[item].push(callback);
+                  callbacks[item].push(callback);
               };
       });
   });
@@ -7496,133 +7834,6 @@ var serviceContext = (function (vue) {
           enableHighAccuracy: altitude,
       });
   }, GetLocationProtocol, GetLocationOptions);
-
-  let plus_;
-  let weex_;
-  let BroadcastChannel_;
-  function getRuntime() {
-      return typeof window === 'object' &&
-          typeof navigator === 'object' &&
-          typeof document === 'object'
-          ? 'webview'
-          : 'v8';
-  }
-  function getPageId() {
-      return plus_.webview.currentWebview().id;
-  }
-  let channel;
-  let globalEvent;
-  const callbacks = {};
-  function onPlusMessage$1(res) {
-      const message = res.data && res.data.__message;
-      if (!message || !message.__page) {
-          return;
-      }
-      const pageId = message.__page;
-      const callback = callbacks[pageId];
-      callback && callback(message);
-      if (!message.keep) {
-          delete callbacks[pageId];
-      }
-  }
-  function addEventListener(pageId, callback) {
-      if (getRuntime() === 'v8') {
-          if (BroadcastChannel_) {
-              channel && channel.close();
-              channel = new BroadcastChannel_(getPageId());
-              channel.onmessage = onPlusMessage$1;
-          }
-          else if (!globalEvent) {
-              globalEvent = weex_.requireModule('globalEvent');
-              globalEvent.addEventListener('plusMessage', onPlusMessage$1);
-          }
-      }
-      else {
-          // @ts-ignore
-          window.__plusMessage = onPlusMessage$1;
-      }
-      callbacks[pageId] = callback;
-  }
-  class Page {
-      constructor(webview) {
-          this.webview = webview;
-      }
-      sendMessage(data) {
-          const message = {
-              __message: {
-                  data,
-              },
-          };
-          const id = this.webview.id;
-          if (BroadcastChannel_) {
-              const channel = new BroadcastChannel_(id);
-              channel.postMessage(message);
-          }
-          else {
-              plus_.webview.postMessageToUniNView &&
-                  plus_.webview.postMessageToUniNView(message, id);
-          }
-      }
-      close() {
-          this.webview.close();
-      }
-  }
-  function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
-      // eslint-disable-next-line
-      plus_ = context.plus || plus;
-      // eslint-disable-next-line
-      weex_ = context.weex || (typeof weex === 'object' ? weex : null);
-      // eslint-disable-next-line
-      BroadcastChannel_ =
-          context.BroadcastChannel ||
-              (typeof BroadcastChannel === 'object' ? BroadcastChannel : null);
-      const titleNView = {
-          autoBackButton: true,
-          titleSize: '17px',
-      };
-      const pageId = `page${Date.now()}`;
-      style = Object.assign({}, style);
-      if (style.titleNView !== false && style.titleNView !== 'none') {
-          style.titleNView = Object.assign(titleNView, style.titleNView);
-      }
-      const defaultStyle = {
-          top: 0,
-          bottom: 0,
-          usingComponents: {},
-          popGesture: 'close',
-          scrollIndicator: 'none',
-          animationType: 'pop-in',
-          animationDuration: 200,
-          uniNView: {
-              path: `${(typeof process === 'object' &&
-                process.env &&
-                process.env.VUE_APP_TEMPLATE_PATH) ||
-                ''}/${url}.js`,
-              defaultFontSize: plus_.screen.resolutionWidth / 20,
-              viewport: plus_.screen.resolutionWidth,
-          },
-      };
-      style = Object.assign(defaultStyle, style);
-      const page = plus_.webview.create('', pageId, style, {
-          extras: {
-              from: getPageId(),
-              runtime: getRuntime(),
-              data,
-              useGlobalEvent: !BroadcastChannel_,
-          },
-      });
-      page.addEventListener('close', onClose);
-      addEventListener(pageId, (message) => {
-          if (typeof onMessage === 'function') {
-              onMessage(message.data);
-          }
-          if (!message.keep) {
-              page.close('auto');
-          }
-      });
-      page.show(style.animationType, style.animationDuration);
-      return new Page(page);
-  }
 
   function getStatusBarStyle() {
       let style = plus.navigator.getStatusBarStyle();
@@ -8646,7 +8857,6 @@ var serviceContext = (function (vue) {
 
   const VD_SYNC = 'vdSync';
   const ON_WEBVIEW_READY = 'onWebviewReady';
-  const INVOKE_SERVICE_API = 'invokeServiceApi';
   const ACTION_TYPE_DICT = 0;
 
   function onNodeEvent(nodeId, evt, pageNode) {
@@ -8668,6 +8878,28 @@ var serviceContext = (function (vue) {
                   onNodeEvent(action[1], action[2], pageNode);
                   break;
           }
+      });
+  }
+
+  function subscribeAd() {
+      // view 层通过 UniViewJSBridge.invokeServiceMethod('getAdData', args, function({data})=>{console.log(data)})
+      registerServiceMethod('getAdData', (args, resolve) => {
+          // TODO args: view 层传输的参数，处理完之后，resolve:回传给 service，如resolve({data})
+      });
+  }
+
+  const API_ROUTE = [
+      'switchTab',
+      'reLaunch',
+      'redirectTo',
+      'navigateTo',
+      'navigateBack',
+  ];
+  function subscribeNavigator() {
+      API_ROUTE.forEach((name) => {
+          registerServiceMethod(name, (args) => {
+              uni[name](args);
+          });
       });
   }
 
@@ -9173,11 +9405,10 @@ var serviceContext = (function (vue) {
           // 非纯原生
           subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
           subscribe(VD_SYNC, onVdSync);
-          subscribe(INVOKE_SERVICE_API, onInvokeServiceApi);
+          subscribeServiceMethod();
+          subscribeAd();
+          subscribeNavigator();
       }
-  }
-  function onInvokeServiceApi({ data: { method, args }, }) {
-      uni[method] && uni[method](args);
   }
 
   let appCtx;
@@ -10531,6 +10762,7 @@ var serviceContext = (function (vue) {
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
+    scanCode: scanCode,
     onThemeChange: onThemeChange,
     getImageInfo: getImageInfo,
     getVideoInfo: getVideoInfo,
