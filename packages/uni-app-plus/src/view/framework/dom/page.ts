@@ -128,6 +128,9 @@ function initPageCss(route: string) {
   element.type = 'text/css'
   element.rel = 'stylesheet'
   element.href = route + '.css'
+  element.onload = function () {
+    window.dispatchEvent(new CustomEvent('updateview'))
+  }
   document.head.appendChild(element)
 }
 
