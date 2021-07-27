@@ -279,6 +279,10 @@ process.env.SCOPED_SLOTS_COMPILER = modes.includes(scopedSlotsCompiler) ? scoped
 if (process.env.UNI_PLATFORM === 'mp-kuaishou' && process.env.SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
+// Vue3 暂时固定为 legacy 模式
+if (process.env.UNI_USING_VUE3) {
+  process.env.SCOPED_SLOTS_COMPILER = modes[0]
+}
 
 if (
   process.env.UNI_USING_COMPONENTS ||
