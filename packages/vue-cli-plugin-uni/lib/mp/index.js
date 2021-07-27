@@ -128,7 +128,8 @@ class PreprocessAssetsPlugin {
 
 function initSubpackageConfig (webpackConfig, vueOptions) {
   if (process.env.UNI_OUTPUT_DEFAULT_DIR === process.env.UNI_OUTPUT_DIR) { // 未自定义output
-    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
+    process.env.UNI_OUTPUT_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, (process.env.UNI_SUBPACKGE || process.env
+      .UNI_MP_PLUGIN))
   }
   vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
   webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
@@ -175,7 +176,8 @@ module.exports = {
 
       const UNI_MP_PLUGIN_MAIN = process.env.UNI_MP_PLUGIN_MAIN
       if (UNI_MP_PLUGIN_MAIN) {
-        process.UNI_ENTRY[UNI_MP_PLUGIN_MAIN.split('.')[0]] = path.resolve(process.env.UNI_INPUT_DIR, UNI_MP_PLUGIN_MAIN)
+        process.UNI_ENTRY[UNI_MP_PLUGIN_MAIN.split('.')[0]] = path.resolve(process.env.UNI_INPUT_DIR,
+          UNI_MP_PLUGIN_MAIN)
       }
     }
 

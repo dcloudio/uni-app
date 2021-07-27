@@ -1,5 +1,14 @@
-import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, NO, invokeArrayFns, makeMap, isSet, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
+import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
+
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+const ON_ERROR = 'onError';
 
 const targetMap = new WeakMap();
 const effectStack = [];
@@ -235,7 +244,14 @@ function createGetter(isReadonly = false, shallow = false) {
             return isReadonly;
         }
         else if (key === "__v_raw" /* RAW */ &&
-            receiver === (isReadonly ? readonlyMap : reactiveMap).get(target)) {
+            receiver ===
+                (isReadonly
+                    ? shallow
+                        ? shallowReadonlyMap
+                        : readonlyMap
+                    : shallow
+                        ? shallowReactiveMap
+                        : reactiveMap).get(target)) {
             return target;
         }
         const targetIsArray = isArray(target);
@@ -268,7 +284,7 @@ function createGetter(isReadonly = false, shallow = false) {
         return res;
     };
 }
-const set = /*#__PURE__*/ createSetter();
+const set$1 = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
@@ -318,7 +334,7 @@ function ownKeys(target) {
 }
 const mutableHandlers = {
     get,
-    set,
+    set: set$1,
     deleteProperty,
     has,
     ownKeys
@@ -364,7 +380,7 @@ function get$1(target, key, isReadonly = false, isShallow = false) {
     }
     !isReadonly && track(rawTarget, "get" /* GET */, rawKey);
     const { has } = getProto(rawTarget);
-    const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
+    const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
     if (has.call(rawTarget, key)) {
         return wrap(target.get(key));
     }
@@ -400,7 +416,7 @@ function add(value) {
     }
     return this;
 }
-function set$1(key, value) {
+function set$1$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
     const { has, get } = getProto(target);
@@ -461,7 +477,7 @@ function createForEach(isReadonly, isShallow) {
         const observed = this;
         const target = observed["__v_raw" /* RAW */];
         const rawTarget = toRaw(target);
-        const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
+        const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
         !isReadonly && track(rawTarget, "iterate" /* ITERATE */, ITERATE_KEY);
         return target.forEach((value, key) => {
             // important: make sure the callback is
@@ -479,7 +495,7 @@ function createIterableMethod(method, isReadonly, isShallow) {
         const isPair = method === 'entries' || (method === Symbol.iterator && targetIsMap);
         const isKeyOnly = method === 'keys' && targetIsMap;
         const innerIterator = target[method](...args);
-        const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
+        const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
         !isReadonly &&
             track(rawTarget, "iterate" /* ITERATE */, isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
         // return a wrapped iterator which returns observed versions of the
@@ -520,7 +536,7 @@ const mutableInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1,
+    set: set$1$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, false)
@@ -534,7 +550,7 @@ const shallowInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1,
+    set: set$1$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, true)
@@ -555,15 +571,34 @@ const readonlyInstrumentations = {
     clear: createReadonlyMethod("clear" /* CLEAR */),
     forEach: createForEach(true, false)
 };
+const shallowReadonlyInstrumentations = {
+    get(key) {
+        return get$1(this, key, true, true);
+    },
+    get size() {
+        return size(this, true);
+    },
+    has(key) {
+        return has$1.call(this, key, true);
+    },
+    add: createReadonlyMethod("add" /* ADD */),
+    set: createReadonlyMethod("set" /* SET */),
+    delete: createReadonlyMethod("delete" /* DELETE */),
+    clear: createReadonlyMethod("clear" /* CLEAR */),
+    forEach: createForEach(true, true)
+};
 const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator];
 iteratorMethods.forEach(method => {
     mutableInstrumentations[method] = createIterableMethod(method, false, false);
     readonlyInstrumentations[method] = createIterableMethod(method, true, false);
     shallowInstrumentations[method] = createIterableMethod(method, false, true);
+    shallowReadonlyInstrumentations[method] = createIterableMethod(method, true, true);
 });
 function createInstrumentationGetter(isReadonly, shallow) {
     const instrumentations = shallow
-        ? shallowInstrumentations
+        ? isReadonly
+            ? shallowReadonlyInstrumentations
+            : shallowInstrumentations
         : isReadonly
             ? readonlyInstrumentations
             : mutableInstrumentations;
@@ -591,6 +626,9 @@ const shallowCollectionHandlers = {
 const readonlyCollectionHandlers = {
     get: createInstrumentationGetter(true, false)
 };
+const shallowReadonlyCollectionHandlers = {
+    get: createInstrumentationGetter(true, true)
+};
 function checkIdentityKeys(target, has, key) {
     const rawKey = toRaw(key);
     if (rawKey !== key && has.call(target, rawKey)) {
@@ -604,7 +642,9 @@ function checkIdentityKeys(target, has, key) {
 }
 
 const reactiveMap = new WeakMap();
+const shallowReactiveMap = new WeakMap();
 const readonlyMap = new WeakMap();
+const shallowReadonlyMap = new WeakMap();
 function targetTypeMap(rawType) {
     switch (rawType) {
         case 'Object':
@@ -629,7 +669,7 @@ function reactive(target) {
     if (target && target["__v_isReadonly" /* IS_READONLY */]) {
         return target;
     }
-    return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers);
+    return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers, reactiveMap);
 }
 /**
  * Return a shallowly-reactive copy of the original object, where only the root
@@ -637,14 +677,14 @@ function reactive(target) {
  * root level).
  */
 function shallowReactive(target) {
-    return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers);
+    return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers, shallowReactiveMap);
 }
 /**
  * Creates a readonly copy of the original object. Note the returned copy is not
  * made reactive, but `readonly` can be called on an already reactive object.
  */
 function readonly(target) {
-    return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers);
+    return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
 }
 /**
  * Returns a reactive-copy of the original object, where only the root level
@@ -653,9 +693,9 @@ function readonly(target) {
  * This is used for creating the props proxy object for stateful components.
  */
 function shallowReadonly(target) {
-    return createReactiveObject(target, true, shallowReadonlyHandlers, readonlyCollectionHandlers);
+    return createReactiveObject(target, true, shallowReadonlyHandlers, shallowReadonlyCollectionHandlers, shallowReadonlyMap);
 }
-function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers) {
+function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
     if (!isObject(target)) {
         if ((process.env.NODE_ENV !== 'production')) {
             console.warn(`value cannot be made reactive: ${String(target)}`);
@@ -669,7 +709,6 @@ function createReactiveObject(target, isReadonly, baseHandlers, collectionHandle
         return target;
     }
     // target already has corresponding Proxy
-    const proxyMap = isReadonly ? readonlyMap : reactiveMap;
     const existingProxy = proxyMap.get(target);
     if (existingProxy) {
         return existingProxy;
@@ -825,12 +864,14 @@ class ComputedRefImpl {
         this["__v_isReadonly" /* IS_READONLY */] = isReadonly;
     }
     get value() {
-        if (this._dirty) {
-            this._value = this.effect();
-            this._dirty = false;
+        // the computed ref may get wrapped by other proxies e.g. readonly() #3376
+        const self = toRaw(this);
+        if (self._dirty) {
+            self._value = this.effect();
+            self._dirty = false;
         }
-        track(toRaw(this), "get" /* GET */, 'value');
-        return this._value;
+        track(self, "get" /* GET */, 'value');
+        return self._value;
     }
     set value(newValue) {
         this._setter(newValue);
@@ -1344,8 +1385,11 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     let hasExtends = false;
     if (__VUE_OPTIONS_API__ && !isFunction(comp)) {
         const extendEmits = (raw) => {
-            hasExtends = true;
-            extend(normalized, normalizeEmitsOptions(raw, appContext, true));
+            const normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
+            if (normalizedFromExtend) {
+                hasExtends = true;
+                extend(normalized, normalizedFromExtend);
+            }
         };
         if (!asMixin && appContext.mixins.length) {
             appContext.mixins.forEach(extendEmits);
@@ -1400,10 +1444,11 @@ isSSR = false) {
     const attrs = {};
     // def(attrs, InternalObjectKey, 1) // fixed by xxxxxx
     def(attrs, '__vInternal', 1);
+    instance.propsDefaults = Object.create(null);
     setFullProps(instance, rawProps, props, attrs);
     // validation
     if ((process.env.NODE_ENV !== 'production')) {
-        validateProps(props, instance);
+        validateProps(rawProps || {}, props, instance);
     }
     if (isStateful) {
         // stateful
@@ -1460,9 +1505,15 @@ function resolvePropValue(options, props, key, value, instance) {
         if (hasDefault && value === undefined) {
             const defaultValue = opt.default;
             if (opt.type !== Function && isFunction(defaultValue)) {
-                setCurrentInstance(instance);
-                value = defaultValue(props);
-                setCurrentInstance(null);
+                const { propsDefaults } = instance;
+                if (key in propsDefaults) {
+                    value = propsDefaults[key];
+                }
+                else {
+                    setCurrentInstance(instance);
+                    value = propsDefaults[key] = defaultValue(props);
+                    setCurrentInstance(null);
+                }
             }
             else {
                 value = defaultValue;
@@ -1582,14 +1633,14 @@ function getTypeIndex(type, expectedTypes) {
 /**
  * dev only
  */
-function validateProps(props, instance) {
-    const rawValues = toRaw(props);
+function validateProps(rawProps, props, instance) {
+    const resolvedValues = toRaw(props);
     const options = instance.propsOptions[0];
     for (const key in options) {
         let opt = options[key];
         if (opt == null)
             continue;
-        validateProp(key, rawValues[key], opt, !hasOwn(rawValues, key));
+        validateProp(key, resolvedValues[key], opt, !hasOwn(rawProps, key) && !hasOwn(rawProps, hyphenate(key)));
     }
 }
 /**
@@ -1835,7 +1886,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                 if (cleanup) {
                     cleanup();
                 }
-                return callWithErrorHandling(source, instance, 3 /* WATCH_CALLBACK */, [onInvalidate]);
+                return callWithAsyncErrorHandling(source, instance, 3 /* WATCH_CALLBACK */, [onInvalidate]);
             };
         }
     }
@@ -1848,7 +1899,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
         getter = () => traverse(baseGetter());
     }
     let cleanup;
-    const onInvalidate = (fn) => {
+    let onInvalidate = (fn) => {
         cleanup = runner.options.onStop = () => {
             callWithErrorHandling(fn, instance, 4 /* WATCH_CLEANUP */);
         };
@@ -2062,10 +2113,7 @@ function createAppContext() {
 }
 let uid$1 = 0;
 // fixed by xxxxxx
-function createAppAPI(
-// render: RootRenderFunction,
-// hydrate?: RootHydrateFunction
-) {
+function createAppAPI() {
     return function createApp(rootComponent, rootProps = null) {
         if (rootProps != null && !isObject(rootProps)) {
             (process.env.NODE_ENV !== 'production') && warn(`root props passed to app.mount() must be an object.`);
@@ -2112,7 +2160,7 @@ function createAppAPI(
                 if (__VUE_OPTIONS_API__) {
                     if (!context.mixins.includes(mixin)) {
                         context.mixins.push(mixin);
-                        // global mixin with props/emits de-optimizes props/emits
+                        // window mixin with props/emits de-optimizes props/emits
                         // normalization caching.
                         if (mixin.props || mixin.emits) {
                             context.deopt = true;
@@ -2192,17 +2240,12 @@ function resolveDirective(name) {
     return resolveAsset(DIRECTIVES, name);
 }
 // implementation
-function resolveAsset(type, name, warnMissing = true) {
+function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
     const instance = currentInstance;
     if (instance) {
         const Component = instance.type;
-        // self name has highest priority
+        // explicit self name has highest priority
         if (type === COMPONENTS) {
-            // special self referencing call generated by compiler
-            // inferred from SFC filename
-            if (name === `_self`) {
-                return Component;
-            }
             const selfName = getComponentName(Component);
             if (selfName &&
                 (selfName === name ||
@@ -2215,8 +2258,12 @@ function resolveAsset(type, name, warnMissing = true) {
         // local registration
         // check instance[type] first for components with mixin or extends.
         resolve(instance[type] || Component[type], name) ||
-            // global registration
+            // window registration
             resolve(instance.appContext[type], name);
+        if (!res && maybeSelfReference) {
+            // fallback to implicit self-reference
+            return Component;
+        }
         if ((process.env.NODE_ENV !== 'production') && warnMissing && !res) {
             warn(`Failed to resolve ${type.slice(0, -1)}: ${name}`);
         }
@@ -2584,8 +2631,8 @@ function createDuplicateChecker() {
         }
     };
 }
-let isInBeforeCreate = false;
-function applyOptions(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
+let shouldCacheAccess = true;
+function applyOptions$1(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
     const { 
     // composition
     mixins, extends: extendsOptions, 
@@ -2605,15 +2652,15 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     }
     // applyOptions is called non-as-mixin once per instance
     if (!asMixin) {
-        isInBeforeCreate = true;
+        shouldCacheAccess = false;
         callSyncHook('beforeCreate', "bc" /* BEFORE_CREATE */, options, instance, globalMixins);
-        isInBeforeCreate = false;
-        // global mixins are applied first
+        shouldCacheAccess = true;
+        // window mixins are applied first
         applyMixins(instance, globalMixins, deferredData, deferredWatch, deferredProvide);
     }
     // extending a base component...
     if (extendsOptions) {
-        applyOptions(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
+        applyOptions$1(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
     }
     // local mixins
     if (mixins) {
@@ -2858,43 +2905,29 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     }
 }
 function callSyncHook(name, type, options, instance, globalMixins) {
-    callHookFromMixins(name, type, globalMixins, instance);
+    for (let i = 0; i < globalMixins.length; i++) {
+        callHookWithMixinAndExtends(name, type, globalMixins[i], instance);
+    }
+    callHookWithMixinAndExtends(name, type, options, instance);
+}
+function callHookWithMixinAndExtends(name, type, options, instance) {
     const { extends: base, mixins } = options;
+    const selfHook = options[name];
     if (base) {
-        callHookFromExtends(name, type, base, instance);
+        callHookWithMixinAndExtends(name, type, base, instance);
     }
     if (mixins) {
-        callHookFromMixins(name, type, mixins, instance);
+        for (let i = 0; i < mixins.length; i++) {
+            callHookWithMixinAndExtends(name, type, mixins[i], instance);
+        }
     }
-    const selfHook = options[name];
     if (selfHook) {
         callWithAsyncErrorHandling(selfHook.bind(instance.proxy), instance, type);
     }
 }
-function callHookFromExtends(name, type, base, instance) {
-    if (base.extends) {
-        callHookFromExtends(name, type, base.extends, instance);
-    }
-    const baseHook = base[name];
-    if (baseHook) {
-        callWithAsyncErrorHandling(baseHook.bind(instance.proxy), instance, type);
-    }
-}
-function callHookFromMixins(name, type, mixins, instance) {
-    for (let i = 0; i < mixins.length; i++) {
-        const chainedMixins = mixins[i].mixins;
-        if (chainedMixins) {
-            callHookFromMixins(name, type, chainedMixins, instance);
-        }
-        const fn = mixins[i][name];
-        if (fn) {
-            callWithAsyncErrorHandling(fn.bind(instance.proxy), instance, type);
-        }
-    }
-}
 function applyMixins(instance, mixins, deferredData, deferredWatch, deferredProvide) {
     for (let i = 0; i < mixins.length; i++) {
-        applyOptions(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
+        applyOptions$1(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
     }
 }
 function resolveData(instance, dataFn, publicThis) {
@@ -2902,7 +2935,9 @@ function resolveData(instance, dataFn, publicThis) {
         warn(`The data option must be a function. ` +
             `Plain object usage is no longer supported.`);
     }
+    shouldCacheAccess = false;
     const data = dataFn.call(publicThis, publicThis);
+    shouldCacheAccess = true;
     if ((process.env.NODE_ENV !== 'production') && isPromise(data)) {
         warn(`data() returned a Promise - note data() cannot be async; If you ` +
             `intend to perform data fetching before component renders, use ` +
@@ -3075,7 +3110,7 @@ const PublicInstanceProxyHandlers = {
                 accessCache[key] = 3 /* CONTEXT */;
                 return ctx[key];
             }
-            else if (!__VUE_OPTIONS_API__ || !isInBeforeCreate) {
+            else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
                 accessCache[key] = 4 /* OTHER */;
             }
         }
@@ -3101,7 +3136,7 @@ const PublicInstanceProxyHandlers = {
             return ctx[key];
         }
         else if (
-        // global properties
+        // window properties
         ((globalProperties = appContext.config.globalProperties),
             hasOwn(globalProperties, key))) {
             return globalProperties[key];
@@ -3213,7 +3248,7 @@ function createRenderContext(instance) {
             set: NOOP
         });
     });
-    // expose global properties
+    // expose window properties
     const { globalProperties } = instance.appContext.config;
     Object.keys(globalProperties).forEach(key => {
         Object.defineProperty(target, key, {
@@ -3290,6 +3325,8 @@ function createComponentInstance(vnode, parent, suspense) {
         // emit
         emit: null,
         emitted: null,
+        // props default value
+        propsDefaults: EMPTY_OBJ,
         // state
         ctx: EMPTY_OBJ,
         data: EMPTY_OBJ,
@@ -3401,8 +3438,12 @@ function setupStatefulComponent(instance, isSSR) {
         if (isPromise(setupResult)) {
             if (isSSR) {
                 // return the promise so server-renderer can wait on it
-                return setupResult.then((resolvedResult) => {
-                    handleSetupResult(instance, resolvedResult);
+                return setupResult
+                    .then((resolvedResult) => {
+                    handleSetupResult(instance, resolvedResult, isSSR);
+                })
+                    .catch(e => {
+                    handleError(e, instance, 0 /* SETUP_FUNCTION */);
                 });
             }
             else if ((process.env.NODE_ENV !== 'production')) {
@@ -3411,11 +3452,11 @@ function setupStatefulComponent(instance, isSSR) {
             }
         }
         else {
-            handleSetupResult(instance, setupResult);
+            handleSetupResult(instance, setupResult, isSSR);
         }
     }
     else {
-        finishComponentSetup(instance);
+        finishComponentSetup(instance, isSSR);
     }
 }
 function handleSetupResult(instance, setupResult, isSSR) {
@@ -3443,7 +3484,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
     else if ((process.env.NODE_ENV !== 'production') && setupResult !== undefined) {
         warn(`setup() should return an object. Received: ${setupResult === null ? 'null' : typeof setupResult}`);
     }
-    finishComponentSetup(instance);
+    finishComponentSetup(instance, isSSR);
 }
 function finishComponentSetup(instance, isSSR) {
     const Component = instance.type;
@@ -3461,12 +3502,13 @@ function finishComponentSetup(instance, isSSR) {
     if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
         pauseTracking();
-        applyOptions(instance, Component);
+        applyOptions$1(instance, Component);
         resetTracking();
         currentInstance = null;
     }
     // warn missing template/render
-    if ((process.env.NODE_ENV !== 'production') && !Component.render && instance.render === NOOP) {
+    // the runtime compilation of template in SSR is done by server-render
+    if ((process.env.NODE_ENV !== 'production') && !Component.render && instance.render === NOOP && !isSSR) {
         /* istanbul ignore if */
         if (Component.template) {
             warn(`Component provided template option but ` +
@@ -3504,9 +3546,6 @@ function createSetupContext(instance) {
         // We use getters in dev in case libs like test-utils overwrite instance
         // properties (overwrites should not be done in prod)
         return Object.freeze({
-            get props() {
-                return instance.props;
-            },
             get attrs() {
                 return new Proxy(instance.attrs, attrHandlers);
             },
@@ -3596,7 +3635,7 @@ function defineEmit() {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.7";
+const version = "3.0.9";
 
 // import deepCopy from './deepCopy'
 /**
@@ -3921,8 +3960,8 @@ const prodEffectOptions = {
 function createDevEffectOptions(instance) {
     return {
         scheduler: queueJob,
-        onTrack: instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0,
-        onTrigger: instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0
+        onTrack: instance.rtc ? e => invokeArrayFns$1(instance.rtc, e) : void 0,
+        onTrigger: instance.rtg ? e => invokeArrayFns$1(instance.rtg, e) : void 0
     };
 }
 function setupRenderEffect(instance) {
@@ -3938,7 +3977,7 @@ function setupRenderEffect(instance) {
             const { bu, u } = instance;
             // beforeUpdate hook
             if (bu) {
-                invokeArrayFns(bu);
+                invokeArrayFns$1(bu);
             }
             patch(instance);
             // updated hook
@@ -3952,7 +3991,7 @@ function unmountComponent(instance) {
     const { bum, effects, update, um } = instance;
     // beforeUnmount hook
     if (bum) {
-        invokeArrayFns(bum);
+        invokeArrayFns$1(bum);
     }
     if (effects) {
         for (let i = 0; i < effects.length; i++) {
@@ -4009,7 +4048,15 @@ function createVueApp(rootComponent, rootProps = null) {
     return app;
 }
 
-function applyOptions$1(options, instance, publicThis) {
+function withModifiers() { }
+function createVNode$1() { }
+
+function applyOptions(options, instance, publicThis) {
+    const mpType = options.mpType || publicThis.$mpType;
+    if (!mpType) {
+        // 仅 App,Page 类型支持 on 生命周期
+        return;
+    }
     Object.keys(options).forEach((name) => {
         if (name.indexOf('on') === 0) {
             const hook = options[name];
@@ -4020,7 +4067,7 @@ function applyOptions$1(options, instance, publicThis) {
     });
 }
 
-function set$2(target, key, val) {
+function set(target, key, val) {
     return (target[key] = val);
 }
 function hasHook(name) {
@@ -4032,24 +4079,66 @@ function hasHook(name) {
 }
 function callHook(name, args) {
     const hooks = this.$[name];
-    let ret;
-    if (hooks) {
-        for (let i = 0; i < hooks.length; i++) {
-            ret = hooks[i](args);
-        }
-    }
-    return ret;
+    return hooks && invokeArrayFns(hooks, args);
 }
 
 function errorHandler(err, instance, info) {
     if (!instance) {
         throw err;
     }
-    const appInstance = instance.$.appContext.$appInstance;
-    if (!appInstance) {
+    const app = getApp();
+    if (!app || !app.$vm) {
         throw err;
     }
-    appInstance.$callHook('onError', err, info);
+    {
+        app.$vm.$callHook(ON_ERROR, err, info);
+    }
+}
+
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str)
+        .split('')
+        .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    })
+        .join(''));
+}
+function getCurrentUserInfo() {
+    const token = uni.getStorageSync('uni_id_token') || '';
+    const tokenArr = token.split('.');
+    if (!token || tokenArr.length !== 3) {
+        return {
+            uid: null,
+            role: [],
+            permission: [],
+            tokenExpired: 0,
+        };
+    }
+    let userInfo;
+    try {
+        userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+    }
+    catch (error) {
+        throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
+    }
+    userInfo.tokenExpired = userInfo.exp * 1000;
+    delete userInfo.exp;
+    delete userInfo.iat;
+    return userInfo;
+}
+function uniIdMixin(globalProperties) {
+    globalProperties.uniIDHasRole = function (roleId) {
+        const { role } = getCurrentUserInfo();
+        return role.indexOf(roleId) > -1;
+    };
+    globalProperties.uniIDHasPermission = function (permissionId) {
+        const { permission } = getCurrentUserInfo();
+        return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
+    };
+    globalProperties.uniIDTokenValid = function () {
+        const { tokenExpired } = getCurrentUserInfo();
+        return tokenExpired > Date.now();
+    };
 }
 
 function initApp(app) {
@@ -4058,11 +4147,15 @@ function initApp(app) {
         appConfig.errorHandler = errorHandler;
     }
     const globalProperties = appConfig.globalProperties;
-    globalProperties.$hasHook = hasHook;
-    globalProperties.$callHook = callHook;
+    uniIdMixin(globalProperties);
+    {
+        // 小程序，待重构，不再挂靠全局
+        globalProperties.$hasHook = hasHook;
+        globalProperties.$callHook = callHook;
+    }
     if (__VUE_OPTIONS_API__) {
-        globalProperties.$set = set$2;
-        globalProperties.$applyOptions = applyOptions$1;
+        globalProperties.$set = set;
+        globalProperties.$applyOptions = applyOptions;
     }
 }
 
@@ -4089,38 +4182,10 @@ var plugin = {
     },
 };
 
-// @ts-ignore
-const createHook$1 = (lifecycle) => (hook, target) => 
-// post-create lifecycle registrations are noops during SSR
-!isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-const onShow = /*#__PURE__*/ createHook$1("onShow" /* ON_SHOW */);
-const onHide = /*#__PURE__*/ createHook$1("onHide" /* ON_HIDE */);
-const onLaunch = /*#__PURE__*/ createHook$1("onLaunch" /* ON_LAUCH */);
-const onError = /*#__PURE__*/ createHook$1("onError" /* ON_ERROR */);
-const onThemeChange = /*#__PURE__*/ createHook$1("onThemeChange" /* ON_THEME_CHANGE */);
-const onPageNotFound = /*#__PURE__*/ createHook$1("onPageNotFound" /* ON_PAGE_NOT_FOUND */);
-const onUnhandledRejection = /*#__PURE__*/ createHook$1("onUnhandledRejection" /* ON_UNHANDLE_REJECTION */);
-const onLoad = /*#__PURE__*/ createHook$1("onLoad" /* ON_LOAD */);
-const onReady = /*#__PURE__*/ createHook$1("onReady" /* ON_READY */);
-const onUnload = /*#__PURE__*/ createHook$1("onUnload" /* ON_UNLOAD */);
-const onResize = /*#__PURE__*/ createHook$1("onResize" /* ON_RESIZE */);
-const onBackPress = /*#__PURE__*/ createHook$1("onBackPress" /* ON_BACK_PRESS */);
-const onPageScroll = /*#__PURE__*/ createHook$1("onPageScroll" /* ON_PAGE_SCROLL */);
-const onTabItemTap = /*#__PURE__*/ createHook$1("onTabItemTap" /* ON_TAB_ITEM_TAP */);
-const onReachBottom = /*#__PURE__*/ createHook$1("onReachBottom" /* ON_REACH_BOTTOM */);
-const onPullDownRefresh = /*#__PURE__*/ createHook$1("onPullDownRefresh" /* ON_PULL_DOWN_REFRESH */);
-const onShareTimeline = /*#__PURE__*/ createHook$1("onShareTimeline" /* ON_SHARE_TIMELINE */);
-const onAddToFavorites = /*#__PURE__*/ createHook$1("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
-const onShareAppMessage = /*#__PURE__*/ createHook$1("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
-const onNavigationBarButtonTap = /*#__PURE__*/ createHook$1("onNavigationBarButtonTap" /* ON_NAVIGATION_BAR_BUTTON_TAP */);
-const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED */);
-const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputClicked" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED */);
-const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputConfirmed" /* ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED */);
-const onNavigationBarSearchInputFocusChanged = /*#__PURE__*/ createHook$1("onNavigationBarSearchInputFocusChanged" /* ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED */);
-
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
+const createSSRApp = createApp;
 
-export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createHook$1 as createHook, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onAddToFavorites, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onHide, onLaunch, onLoad, onMounted, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives };
+export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives, withModifiers };
