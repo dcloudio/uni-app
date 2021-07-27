@@ -837,6 +837,7 @@ const ON_HIDE = 'onHide';
 const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
 const ON_THEME_CHANGE = 'onThemeChange';
+const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 //Page
@@ -964,6 +965,7 @@ exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
 exports.ON_BACK_PRESS = ON_BACK_PRESS;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_HIDE = ON_HIDE;
+exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;

@@ -1,11 +1,12 @@
+import { ON_KEYBOARD_HEIGHT_CHANGE } from '@dcloudio/uni-shared'
 import {
   API_SHOW_KEYBOARD,
   API_HIDE_KEYBOARD,
-  defineAsyncApi,
-} from '@dcloudio/uni-api'
-import type {
   API_TYPE_SHOW_KEYBOARD,
   API_TYPE_HIDE_KEYBOARD,
+  defineAsyncApi,
+  defineOnApi,
+  defineOffApi,
 } from '@dcloudio/uni-api'
 
 export const showKeyboard = defineAsyncApi<API_TYPE_SHOW_KEYBOARD>(
@@ -23,3 +24,25 @@ export const hideKeyboard = defineAsyncApi<API_TYPE_HIDE_KEYBOARD>(
     resolve()
   }
 )
+
+function onKeyboardHeightChangeCallback(res: any) {
+  UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res)
+}
+
+export const onKeyboardHeightChange = defineOnApi<
+  typeof uni.onKeyboardHeightChange
+>(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+  UniServiceJSBridge.on(
+    ON_KEYBOARD_HEIGHT_CHANGE,
+    onKeyboardHeightChangeCallback
+  )
+})
+
+export const offKeyboardHeightChange = defineOffApi<
+  typeof uni.offKeyboardHeightChange
+>(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+  UniServiceJSBridge.off(
+    ON_KEYBOARD_HEIGHT_CHANGE,
+    onKeyboardHeightChangeCallback
+  )
+})

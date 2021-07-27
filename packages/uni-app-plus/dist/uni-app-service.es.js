@@ -1129,6 +1129,7 @@ var serviceContext = (function (vue) {
   const ON_LAUNCH = 'onLaunch';
   const ON_ERROR = 'onError';
   const ON_THEME_CHANGE = 'onThemeChange';
+  const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
   //Page
   const ON_LOAD = 'onLoad';
   const ON_READY = 'onReady';
@@ -6591,6 +6592,15 @@ var serviceContext = (function (vue) {
       plus.key.hideSoftKeybord();
       resolve();
   });
+  function onKeyboardHeightChangeCallback(res) {
+      UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
+  }
+  const onKeyboardHeightChange = defineOnApi(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+      UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, onKeyboardHeightChangeCallback);
+  });
+  const offKeyboardHeightChange = defineOffApi(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+      UniServiceJSBridge.off(ON_KEYBOARD_HEIGHT_CHANGE, onKeyboardHeightChangeCallback);
+  });
 
   class DownloadTask {
       constructor(downloader) {
@@ -8797,6 +8807,16 @@ var serviceContext = (function (vue) {
           };
           emit(ON_THEME_CHANGE, args);
       });
+      let keyboardHeightChange = 0;
+      plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
+          // 安卓设备首次获取高度为 0
+          if (keyboardHeightChange !== event.height) {
+              keyboardHeightChange = event.height;
+              emit(ON_KEYBOARD_HEIGHT_CHANGE, {
+                  height: keyboardHeightChange
+              });
+          }
+      });
       plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
       // nvue webview post message
       plusGlobalEvent.addEventListener('WebviewPostMessage', subscribePlusMessage);
@@ -10776,6 +10796,8 @@ var serviceContext = (function (vue) {
     chooseVideo: chooseVideo,
     showKeyboard: showKeyboard,
     hideKeyboard: hideKeyboard,
+    onKeyboardHeightChange: onKeyboardHeightChange,
+    offKeyboardHeightChange: offKeyboardHeightChange,
     downloadFile: downloadFile,
     request: request,
     connectSocket: connectSocket,

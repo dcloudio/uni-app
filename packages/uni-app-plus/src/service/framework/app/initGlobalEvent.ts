@@ -3,6 +3,7 @@ import {
   ON_APP_ENTER_BACKGROUND,
   ON_APP_ENTER_FOREGROUND,
   ON_THEME_CHANGE,
+  ON_KEYBOARD_HEIGHT_CHANGE,
 } from '@dcloudio/uni-shared'
 import { EVENT_BACKBUTTON, backbuttonListener } from './utils'
 
@@ -34,6 +35,20 @@ export function initGlobalEvent() {
         theme: event.uistyle,
       }
       emit(ON_THEME_CHANGE, args)
+    }
+  )
+
+  let keyboardHeightChange = 0
+  plusGlobalEvent.addEventListener(
+    'KeyboardHeightChange',
+    function (event: { height: number }) {
+      // 安卓设备首次获取高度为 0
+      if (keyboardHeightChange !== event.height) {
+        keyboardHeightChange = event.height
+        emit(ON_KEYBOARD_HEIGHT_CHANGE, {
+          height: keyboardHeightChange,
+        })
+      }
     }
   )
 
