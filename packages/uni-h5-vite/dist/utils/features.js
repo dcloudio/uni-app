@@ -117,8 +117,8 @@ function initManifestFeature({ manifestJson, command, platform, }) {
     };
     if (command === 'build') {
         // TODO 需要预编译一遍？
-        features.wxs = false;
-        features.longpress = false;
+        features.wxs = true;
+        features.longpress = true;
     }
     if (manifestJson.h5 &&
         manifestJson.h5.router &&
