@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-plus-nvue",
-  "version": "2.0.0-alpha-31920210727001",
+  "version": "2.0.0-alpha-31920210727002",
   "description": "uni-app app-plus-nvue",
   "main": "dist/index.js",
   "repository": {
@@ -13,5 +13,5 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "74b5f3e5b9348f85be6ec5ffe640b88b148b61e3"
+  "gitHead": "b1e2cb10c2dae93aac7f8356101a9e188353af5c"
 }
