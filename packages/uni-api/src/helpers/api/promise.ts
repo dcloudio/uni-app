@@ -1,4 +1,5 @@
 import { extend, isPlainObject, isFunction } from '@vue/shared'
+import { invokeApi, wrapperReturnValue } from '../interceptor'
 
 import { API_SUCCESS, API_FAIL, API_COMPLETE } from './callback'
 
@@ -25,15 +26,18 @@ export function handlePromise(promise: Promise<unknown>) {
   return promise
 }
 
-export function promisify(fn: Function) {
+export function promisify(name: string, fn: Function) {
   return (args = {}) => {
     if (hasCallback(args)) {
-      return fn(args)
+      return wrapperReturnValue(name, invokeApi(name, fn, args))
     }
-    return handlePromise(
-      new Promise((resolve, reject) => {
-        fn(extend(args, { success: resolve, fail: reject }))
-      })
+    return wrapperReturnValue(
+      name,
+      handlePromise(
+        new Promise((resolve, reject) => {
+          invokeApi(name, fn, extend(args, { success: resolve, fail: reject }))
+        })
+      )
     )
   }
 }

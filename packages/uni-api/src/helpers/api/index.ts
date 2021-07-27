@@ -214,6 +214,7 @@ export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
   options?: ApiOptions<T>
 ) {
   return promisify(
+    name,
     wrapperTaskApi(name, fn, __DEV__ ? protocol : undefined, options)
   ) as unknown as T
 }
@@ -245,6 +246,7 @@ export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   options?: ApiOptions<T>
 ) {
   return promisify(
+    name,
     wrapperAsyncApi(name, fn as any, __DEV__ ? protocol : undefined, options)
   ) as AsyncApi<P>
 }
