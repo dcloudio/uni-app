@@ -17,7 +17,7 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
     if (isWindows) {
       // TODO 等 https://github.com/vitejs/vite/issues/3331 修复后，可以移除下列代码
       const item = config.resolve.alias.find((item) =>
-        typeof item.find !== 'string' ? item.find.test('@') : false
+        typeof item.find !== 'string' ? item.find.test('@/') : false
       )
       if (item) {
         item.customResolver = customResolver

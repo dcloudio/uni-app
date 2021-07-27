@@ -44,7 +44,7 @@ export const moduleAliasFormatter: Formatter = {
     }
     if (lang) {
       return `预编译器错误：代码使用了${lang}语言，但未安装相应的编译器插件，请前往插件市场安装该插件:
-        https://ext.dcloud.net.cn/plugin?name=${preprocessor}`
+https://ext.dcloud.net.cn/plugin?name=${preprocessor}`
     }
     return msg
   },

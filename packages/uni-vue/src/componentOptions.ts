@@ -15,7 +15,8 @@ export function applyOptions(
   instance: ComponentInternalInstance,
   publicThis: ComponentPublicInstance
 ) {
-  if (!publicThis.$mpType) {
+  const mpType = options.mpType || publicThis.$mpType
+  if (!mpType) {
     // 仅 App,Page 类型支持 on 生命周期
     return
   }
@@ -27,7 +28,7 @@ export function applyOptions(
       }
     }
   })
-  if (__PLATFORM__ === 'app' && publicThis.$mpType === 'page') {
+  if (__PLATFORM__ === 'app' && mpType === 'page') {
     invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
     invokeHook(publicThis, ON_SHOW)
   }

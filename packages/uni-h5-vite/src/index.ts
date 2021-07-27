@@ -1,5 +1,7 @@
+import fs from 'fs'
+import path from 'path'
 import { ResolvedConfig } from 'vite'
-import { UniVitePlugin } from '@dcloudio/uni-cli-shared'
+import { isInHBuilderX, UniVitePlugin } from '@dcloudio/uni-cli-shared'
 import { uniCssPlugin } from './plugins/css'
 import { uniCssScopedPlugin } from './plugins/cssScoped'
 import { uniInjectPlugin } from './plugins/inject'
@@ -36,6 +38,14 @@ const UniH5Plugin: UniVitePlugin = {
     },
   },
   config(config, env) {
+    if (isInHBuilderX()) {
+      if (
+        !fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'index.html'))
+      ) {
+        console.error(`请确认您的项目模板是否支持vue3：根目录缺少 index.html`)
+        process.exit()
+      }
+    }
     return {
       optimizeDeps: {
         exclude: ['@dcloudio/uni-h5', '@dcloudio/uni-h5-vue'],

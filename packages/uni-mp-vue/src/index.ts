@@ -5,5 +5,6 @@ export function createApp(rootComponent: unknown, rootProps = null) {
   rootComponent && ((rootComponent as any).mpType = 'app')
   return createVueApp(rootComponent, rootProps).use(plugin)
 }
+export const createSSRApp = createApp
 // @ts-ignore
 export * from '../lib/vue.runtime.esm.js'

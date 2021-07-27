@@ -1,6 +1,5 @@
-import { isFunction, isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
+import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
-import { injectHook as injectHook$1 } from 'vue';
 
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -10,136 +9,6 @@ const invokeArrayFns = (fns, arg) => {
     return ret;
 };
 const ON_ERROR = 'onError';
-
-function applyOptions$1(options, instance, publicThis) {
-    if (!publicThis.$mpType) {
-        // 仅 App,Page 类型支持 on 生命周期
-        return;
-    }
-    Object.keys(options).forEach((name) => {
-        if (name.indexOf('on') === 0) {
-            const hook = options[name];
-            if (isFunction(hook)) {
-                injectHook$1(name, hook.bind(publicThis), instance);
-            }
-        }
-    });
-}
-
-function set$2(target, key, val) {
-    return (target[key] = val);
-}
-function hasHook(name) {
-    const hooks = this.$[name];
-    if (hooks && hooks.length) {
-        return true;
-    }
-    return false;
-}
-function callHook(name, args) {
-    const hooks = this.$[name];
-    return hooks && invokeArrayFns(hooks, args);
-}
-
-function errorHandler(err, instance, info) {
-    if (!instance) {
-        throw err;
-    }
-    const app = getApp();
-    if (!app || !app.$vm) {
-        throw err;
-    }
-    {
-        app.$vm.$callHook(ON_ERROR, err, info);
-    }
-}
-
-function b64DecodeUnicode(str) {
-    return decodeURIComponent(atob(str)
-        .split('')
-        .map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    })
-        .join(''));
-}
-function getCurrentUserInfo() {
-    const token = uni.getStorageSync('uni_id_token') || '';
-    const tokenArr = token.split('.');
-    if (!token || tokenArr.length !== 3) {
-        return {
-            uid: null,
-            role: [],
-            permission: [],
-            tokenExpired: 0,
-        };
-    }
-    let userInfo;
-    try {
-        userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-    }
-    catch (error) {
-        throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
-    }
-    userInfo.tokenExpired = userInfo.exp * 1000;
-    delete userInfo.exp;
-    delete userInfo.iat;
-    return userInfo;
-}
-function uniIdMixin(globalProperties) {
-    globalProperties.uniIDHasRole = function (roleId) {
-        const { role } = getCurrentUserInfo();
-        return role.indexOf(roleId) > -1;
-    };
-    globalProperties.uniIDHasPermission = function (permissionId) {
-        const { permission } = getCurrentUserInfo();
-        return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
-    };
-    globalProperties.uniIDTokenValid = function () {
-        const { tokenExpired } = getCurrentUserInfo();
-        return tokenExpired > Date.now();
-    };
-}
-
-function initApp(app) {
-    const appConfig = app._context.config;
-    if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = errorHandler;
-    }
-    const globalProperties = appConfig.globalProperties;
-    uniIdMixin(globalProperties);
-    {
-        // 小程序，待重构，不再挂靠全局
-        globalProperties.$hasHook = hasHook;
-        globalProperties.$callHook = callHook;
-    }
-    if (__VUE_OPTIONS_API__) {
-        globalProperties.$set = set$2;
-        globalProperties.$applyOptions = applyOptions$1;
-    }
-}
-
-var plugin = {
-    install(app) {
-        initApp(app);
-        const globalProperties = app._context.config.globalProperties;
-        const oldCallHook = globalProperties.$callHook;
-        globalProperties.$callHook = function callHook(name, args) {
-            if (name === 'mounted') {
-                oldCallHook.call(this, 'bm'); // beforeMount
-                this.$.isMounted = true;
-                name = 'm';
-            }
-            return oldCallHook.call(this, name, args);
-        };
-        const oldMount = app.mount;
-        app.mount = function mount(rootContainer) {
-            const instance = oldMount.call(app, rootContainer);
-            // @ts-ignore
-            createMiniProgramApp(instance);
-            return instance;
-        };
-    },
-};
 
 const targetMap = new WeakMap();
 const effectStack = [];
@@ -415,7 +284,7 @@ function createGetter(isReadonly = false, shallow = false) {
         return res;
     };
 }
-const set = /*#__PURE__*/ createSetter();
+const set$1 = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
@@ -465,7 +334,7 @@ function ownKeys(target) {
 }
 const mutableHandlers = {
     get,
-    set,
+    set: set$1,
     deleteProperty,
     has,
     ownKeys
@@ -547,7 +416,7 @@ function add(value) {
     }
     return this;
 }
-function set$1(key, value) {
+function set$1$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
     const { has, get } = getProto(target);
@@ -667,7 +536,7 @@ const mutableInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1,
+    set: set$1$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, false)
@@ -681,7 +550,7 @@ const shallowInstrumentations = {
     },
     has: has$1,
     add,
-    set: set$1,
+    set: set$1$1,
     delete: deleteEntry,
     clear,
     forEach: createForEach(false, true)
@@ -2763,7 +2632,7 @@ function createDuplicateChecker() {
     };
 }
 let shouldCacheAccess = true;
-function applyOptions(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
+function applyOptions$1(instance, options, deferredData = [], deferredWatch = [], deferredProvide = [], asMixin = false) {
     const { 
     // composition
     mixins, extends: extendsOptions, 
@@ -2791,7 +2660,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
     }
     // extending a base component...
     if (extendsOptions) {
-        applyOptions(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
+        applyOptions$1(instance, extendsOptions, deferredData, deferredWatch, deferredProvide, true);
     }
     // local mixins
     if (mixins) {
@@ -3058,7 +2927,7 @@ function callHookWithMixinAndExtends(name, type, options, instance) {
 }
 function applyMixins(instance, mixins, deferredData, deferredWatch, deferredProvide) {
     for (let i = 0; i < mixins.length; i++) {
-        applyOptions(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
+        applyOptions$1(instance, mixins[i], deferredData, deferredWatch, deferredProvide, true);
     }
 }
 function resolveData(instance, dataFn, publicThis) {
@@ -3633,7 +3502,7 @@ function finishComponentSetup(instance, isSSR) {
     if (__VUE_OPTIONS_API__) {
         currentInstance = instance;
         pauseTracking();
-        applyOptions(instance, Component);
+        applyOptions$1(instance, Component);
         resetTracking();
         currentInstance = null;
     }
@@ -4179,9 +4048,144 @@ function createVueApp(rootComponent, rootProps = null) {
     return app;
 }
 
+function withModifiers() { }
+function createVNode$1() { }
+
+function applyOptions(options, instance, publicThis) {
+    const mpType = options.mpType || publicThis.$mpType;
+    if (!mpType) {
+        // 仅 App,Page 类型支持 on 生命周期
+        return;
+    }
+    Object.keys(options).forEach((name) => {
+        if (name.indexOf('on') === 0) {
+            const hook = options[name];
+            if (isFunction(hook)) {
+                injectHook(name, hook.bind(publicThis), instance);
+            }
+        }
+    });
+}
+
+function set(target, key, val) {
+    return (target[key] = val);
+}
+function hasHook(name) {
+    const hooks = this.$[name];
+    if (hooks && hooks.length) {
+        return true;
+    }
+    return false;
+}
+function callHook(name, args) {
+    const hooks = this.$[name];
+    return hooks && invokeArrayFns(hooks, args);
+}
+
+function errorHandler(err, instance, info) {
+    if (!instance) {
+        throw err;
+    }
+    const app = getApp();
+    if (!app || !app.$vm) {
+        throw err;
+    }
+    {
+        app.$vm.$callHook(ON_ERROR, err, info);
+    }
+}
+
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str)
+        .split('')
+        .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    })
+        .join(''));
+}
+function getCurrentUserInfo() {
+    const token = uni.getStorageSync('uni_id_token') || '';
+    const tokenArr = token.split('.');
+    if (!token || tokenArr.length !== 3) {
+        return {
+            uid: null,
+            role: [],
+            permission: [],
+            tokenExpired: 0,
+        };
+    }
+    let userInfo;
+    try {
+        userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+    }
+    catch (error) {
+        throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
+    }
+    userInfo.tokenExpired = userInfo.exp * 1000;
+    delete userInfo.exp;
+    delete userInfo.iat;
+    return userInfo;
+}
+function uniIdMixin(globalProperties) {
+    globalProperties.uniIDHasRole = function (roleId) {
+        const { role } = getCurrentUserInfo();
+        return role.indexOf(roleId) > -1;
+    };
+    globalProperties.uniIDHasPermission = function (permissionId) {
+        const { permission } = getCurrentUserInfo();
+        return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
+    };
+    globalProperties.uniIDTokenValid = function () {
+        const { tokenExpired } = getCurrentUserInfo();
+        return tokenExpired > Date.now();
+    };
+}
+
+function initApp(app) {
+    const appConfig = app._context.config;
+    if (isFunction(app._component.onError)) {
+        appConfig.errorHandler = errorHandler;
+    }
+    const globalProperties = appConfig.globalProperties;
+    uniIdMixin(globalProperties);
+    {
+        // 小程序，待重构，不再挂靠全局
+        globalProperties.$hasHook = hasHook;
+        globalProperties.$callHook = callHook;
+    }
+    if (__VUE_OPTIONS_API__) {
+        globalProperties.$set = set;
+        globalProperties.$applyOptions = applyOptions;
+    }
+}
+
+var plugin = {
+    install(app) {
+        initApp(app);
+        const globalProperties = app._context.config.globalProperties;
+        const oldCallHook = globalProperties.$callHook;
+        globalProperties.$callHook = function callHook(name, args) {
+            if (name === 'mounted') {
+                oldCallHook.call(this, 'bm'); // beforeMount
+                this.$.isMounted = true;
+                name = 'm';
+            }
+            return oldCallHook.call(this, name, args);
+        };
+        const oldMount = app.mount;
+        app.mount = function mount(rootContainer) {
+            const instance = oldMount.call(app, rootContainer);
+            // @ts-ignore
+            createMiniProgramApp(instance);
+            return instance;
+        };
+    },
+};
+
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
     return createVueApp(rootComponent, rootProps).use(plugin);
 }
+const createSSRApp = createApp;
 
-export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives };
+export { callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, defineComponent, defineEmit, defineProps, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onUnmounted, onUpdated, provide, reactive, readonly, ref, resolveDirective, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, version, warn, watch, watchEffect, withDirectives, withModifiers };
