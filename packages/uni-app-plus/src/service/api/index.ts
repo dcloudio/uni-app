@@ -12,6 +12,7 @@ export * from './device/addPhoneContact'
 export * from './device/clipboard'
 export * from './device/network'
 export * from './device/soterAuthentication'
+export * from './device/scanCode'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
