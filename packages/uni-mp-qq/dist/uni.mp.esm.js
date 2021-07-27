@@ -927,5 +927,12 @@ var parseOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
+wx.createApp = createApp;
+wx.createPage = createPage;
+wx.createComponent = createComponent;
+
+qq.createApp = createApp;
+qq.createPage = createPage;
+qq.createComponent = createComponent;
 
 export { createApp, createComponent, createPage };

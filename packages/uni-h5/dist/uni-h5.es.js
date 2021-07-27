@@ -2675,7 +2675,7 @@ function wrapperOffApi(name, fn, options) {
   };
 }
 function normalizeErrMsg(errMsg) {
-  if (isString(errMsg)) {
+  if (!errMsg || isString(errMsg)) {
     return errMsg;
   }
   if (errMsg.stack) {

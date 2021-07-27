@@ -987,7 +987,7 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     });
 }
 
-function createPage(vueOptions) {
+function createPage$1(vueOptions) {
     vueOptions = vueOptions.default || vueOptions;
     const pageOptions = {
         onLoad(query) {
@@ -1076,7 +1076,7 @@ function initVm(mpInstance, createComponent) {
         }
     }
 }
-function createComponent(vueOptions) {
+function createComponent$1(vueOptions) {
     vueOptions = vueOptions.default || vueOptions;
     const mpComponentOptions = {
         props: initComponentProps(vueOptions.props),
@@ -1128,5 +1128,8 @@ function createComponent(vueOptions) {
 }
 
 const createApp = initCreateApp(parseAppOptions);
+my.createApp = createApp;
+my.createPage = createPage;
+my.createComponent = createComponent;
 
-export { createApp, createComponent, createPage };
+export { createApp, createComponent$1 as createComponent, createPage$1 as createPage };

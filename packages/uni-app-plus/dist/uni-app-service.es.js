@@ -624,7 +624,7 @@ var serviceContext = (function (vue) {
       };
   }
   function normalizeErrMsg(errMsg) {
-      if (isString(errMsg)) {
+      if (!errMsg || isString(errMsg)) {
           return errMsg;
       }
       if (errMsg.stack) {
@@ -8813,7 +8813,7 @@ var serviceContext = (function (vue) {
           if (keyboardHeightChange !== event.height) {
               keyboardHeightChange = event.height;
               emit(ON_KEYBOARD_HEIGHT_CHANGE, {
-                  height: keyboardHeightChange
+                  height: keyboardHeightChange,
               });
           }
       });

@@ -1448,7 +1448,7 @@ function beforeInvokeApi(name, args, protocol, options) {
   }
 }
 function normalizeErrMsg(errMsg) {
-  if (shared.isString(errMsg)) {
+  if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
   }
   if (errMsg.stack) {

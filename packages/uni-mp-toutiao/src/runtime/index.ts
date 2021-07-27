@@ -12,3 +12,6 @@ import * as parseComponentOptions from './parseComponentOptions'
 export const createApp = initCreateApp()
 export const createPage = initCreatePage(parsePageOptions)
 export const createComponent = initCreateComponent(parseComponentOptions)
+;(tt as any).createApp = createApp
+;(tt as any).createPage = createPage
+;(tt as any).createComponent = createComponent

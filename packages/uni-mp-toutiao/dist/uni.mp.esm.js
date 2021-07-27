@@ -1086,5 +1086,8 @@ var parsePageOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
+tt.createApp = createApp;
+tt.createPage = createPage;
+tt.createComponent = createComponent;
 
 export { createApp, createComponent, createPage };

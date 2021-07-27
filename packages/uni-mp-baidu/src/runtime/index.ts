@@ -13,3 +13,6 @@ import * as parseComponentOptions from './parseComponentOptions'
 export const createApp = initCreateApp(parseAppOptions)
 export const createPage = initCreatePage(parsePageOptions)
 export const createComponent = initCreateComponent(parseComponentOptions)
+;(swan as any).createApp = createApp
+;(swan as any).createPage = createPage
+;(swan as any).createComponent = createComponent

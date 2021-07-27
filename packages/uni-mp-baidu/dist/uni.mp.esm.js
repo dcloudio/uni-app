@@ -1032,5 +1032,8 @@ var parsePageOptions = /*#__PURE__*/Object.freeze({
 const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
+swan.createApp = createApp;
+swan.createPage = createPage;
+swan.createComponent = createComponent;
 
 export { createApp, createComponent, createPage };
