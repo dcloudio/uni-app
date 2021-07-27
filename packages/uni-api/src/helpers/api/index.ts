@@ -131,7 +131,7 @@ function wrapperOffApi<T extends ApiLike>(
 }
 
 function normalizeErrMsg(errMsg: string | Error) {
-  if (isString(errMsg)) {
+  if (!errMsg || isString(errMsg)) {
     return errMsg
   }
   if (errMsg.stack) {
