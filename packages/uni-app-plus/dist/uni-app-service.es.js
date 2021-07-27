@@ -419,6 +419,105 @@ var serviceContext = (function (vue) {
       return callbackId;
   }
 
+  const HOOK_SUCCESS = 'success';
+  const HOOK_FAIL = 'fail';
+  const HOOK_COMPLETE = 'complete';
+  const globalInterceptors = {};
+  const scopedInterceptors = {};
+  function wrapperHook(hook) {
+      return function (data) {
+          return hook(data) || data;
+      };
+  }
+  function queue(hooks, data) {
+      let promise = false;
+      for (let i = 0; i < hooks.length; i++) {
+          const hook = hooks[i];
+          if (promise) {
+              promise = Promise.resolve(wrapperHook(hook));
+          }
+          else {
+              const res = hook(data);
+              if (isPromise(res)) {
+                  promise = Promise.resolve(res);
+              }
+              if (res === false) {
+                  return {
+                      then() { },
+                      catch() { },
+                  };
+              }
+          }
+      }
+      return (promise || {
+          then(callback) {
+              return callback(data);
+          },
+          catch() { },
+      });
+  }
+  function wrapperOptions(interceptors, options = {}) {
+      [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
+          const hooks = interceptors[name];
+          if (!isArray(hooks)) {
+              return;
+          }
+          const oldCallback = options[name];
+          options[name] = function callbackInterceptor(res) {
+              queue(hooks, res).then((res) => {
+                  return (isFunction(oldCallback) && oldCallback(res)) || res;
+              });
+          };
+      });
+      return options;
+  }
+  function wrapperReturnValue(method, returnValue) {
+      const returnValueHooks = [];
+      if (isArray(globalInterceptors.returnValue)) {
+          returnValueHooks.push(...globalInterceptors.returnValue);
+      }
+      const interceptor = scopedInterceptors[method];
+      if (interceptor && isArray(interceptor.returnValue)) {
+          returnValueHooks.push(...interceptor.returnValue);
+      }
+      returnValueHooks.forEach((hook) => {
+          returnValue = hook(returnValue) || returnValue;
+      });
+      return returnValue;
+  }
+  function getApiInterceptorHooks(method) {
+      const interceptor = Object.create(null);
+      Object.keys(globalInterceptors).forEach((hook) => {
+          if (hook !== 'returnValue') {
+              interceptor[hook] = globalInterceptors[hook].slice();
+          }
+      });
+      const scopedInterceptor = scopedInterceptors[method];
+      if (scopedInterceptor) {
+          Object.keys(scopedInterceptor).forEach((hook) => {
+              if (hook !== 'returnValue') {
+                  interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+              }
+          });
+      }
+      return interceptor;
+  }
+  function invokeApi(method, api, options, ...params) {
+      const interceptor = getApiInterceptorHooks(method);
+      if (interceptor && Object.keys(interceptor).length) {
+          if (isArray(interceptor.invoke)) {
+              const res = queue(interceptor.invoke, options);
+              return res.then((options) => {
+                  return api(wrapperOptions(interceptor, options), ...params);
+              });
+          }
+          else {
+              return api(wrapperOptions(interceptor, options), ...params);
+          }
+      }
+      return api(options, ...params);
+  }
+
   function hasCallback(args) {
       if (isPlainObject(args) &&
           [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
@@ -429,14 +528,14 @@ var serviceContext = (function (vue) {
   function handlePromise(promise) {
       return promise;
   }
-  function promisify(fn) {
+  function promisify(name, fn) {
       return (args = {}) => {
           if (hasCallback(args)) {
-              return fn(args);
+              return wrapperReturnValue(name, invokeApi(name, fn, args));
           }
-          return handlePromise(new Promise((resolve, reject) => {
-              fn(extend(args, { success: resolve, fail: reject }));
-          }));
+          return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
+              invokeApi(name, fn, extend(args, { success: resolve, fail: reject }));
+          })));
       };
   }
 
@@ -566,13 +665,13 @@ var serviceContext = (function (vue) {
       return wrapperOffApi(name, fn, options);
   }
   function defineTaskApi(name, fn, protocol, options) {
-      return promisify(wrapperTaskApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
+      return promisify(name, wrapperTaskApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
   }
   function defineSyncApi(name, fn, protocol, options) {
       return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
   }
   function defineAsyncApi(name, fn, protocol, options) {
-      return promisify(wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
+      return promisify(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
   }
 
   const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
@@ -2016,9 +2115,6 @@ var serviceContext = (function (vue) {
       }
       return number < 0 ? -result : result;
   }, Upx2pxProtocol);
-
-  const globalInterceptors = {};
-  const scopedInterceptors = {};
 
   const API_ADD_INTERCEPTOR = 'addInterceptor';
   const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
@@ -9184,14 +9280,14 @@ var serviceContext = (function (vue) {
   class AdBase extends AdEventHandler {
       constructor(adInstance, options) {
           super();
+          this.preload = true;
           this._isLoaded = false;
           this._isLoading = false;
-          this._preload = true;
           this._loadPromiseResolve = null;
           this._loadPromiseReject = null;
           this._showPromiseResolve = null;
           this._showPromiseReject = null;
-          this._preload = options.preload !== undefined ? options.preload : false;
+          this.preload = options.preload !== undefined ? options.preload : false;
           const ad = (this._adInstance = adInstance);
           ad.onLoad(() => {
               this._isLoaded = true;
@@ -9211,7 +9307,7 @@ var serviceContext = (function (vue) {
               this._isLoaded = false;
               this._isLoading = false;
               this._dispatchEvent(EventType.close, e);
-              if (this._preload === true) {
+              if (this.preload === true) {
                   this._loadAd();
               }
           });
@@ -9297,6 +9393,7 @@ var serviceContext = (function (vue) {
   class FullScreenVideoAd extends AdBase {
       constructor(options) {
           super(plus.ad.createFullScreenVideoAd(options), options);
+          this.preload = false;
       }
   }
   const createFullScreenVideoAd = (defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
@@ -9306,6 +9403,7 @@ var serviceContext = (function (vue) {
   class InterstitialAd extends AdBase {
       constructor(options) {
           super(plus.ad.createInterstitialAd(options), options);
+          this.preload = false;
           this._loadAd();
       }
   }

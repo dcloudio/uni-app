@@ -957,10 +957,10 @@ export default function vueFactory(exports) {
     if (type === "clear"
     /* CLEAR */
     ) {
-      // collection being cleared
-      // trigger all effects for target
-      depsMap.forEach(add);
-    } else if (key === 'length' && isArray(target)) {
+        // collection being cleared
+        // trigger all effects for target
+        depsMap.forEach(add);
+      } else if (key === 'length' && isArray(target)) {
       depsMap.forEach((dep, key) => {
         if (key === 'length' || key >= newValue) {
           add(dep);
@@ -1088,12 +1088,12 @@ export default function vueFactory(exports) {
       if (key === "__v_isReactive"
       /* IS_REACTIVE */
       ) {
-        return !isReadonly;
-      } else if (key === "__v_isReadonly"
+          return !isReadonly;
+        } else if (key === "__v_isReadonly"
       /* IS_READONLY */
       ) {
-        return isReadonly;
-      } else if (key === "__v_raw"
+          return isReadonly;
+        } else if (key === "__v_raw"
       /* RAW */
       && receiver === (isReadonly ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target)) {
         return target;
@@ -1587,16 +1587,16 @@ export default function vueFactory(exports) {
       if (key === "__v_isReactive"
       /* IS_REACTIVE */
       ) {
-        return !isReadonly;
-      } else if (key === "__v_isReadonly"
+          return !isReadonly;
+        } else if (key === "__v_isReadonly"
       /* IS_READONLY */
       ) {
-        return isReadonly;
-      } else if (key === "__v_raw"
+          return isReadonly;
+        } else if (key === "__v_raw"
       /* RAW */
       ) {
-        return target;
-      }
+          return target;
+        }
 
       return Reflect.get(hasOwn(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
     };
@@ -1733,8 +1733,8 @@ export default function vueFactory(exports) {
     if (targetType === 0
     /* INVALID */
     ) {
-      return target;
-    }
+        return target;
+      }
 
     var proxy = new Proxy(target, targetType === 2
     /* COLLECTION */
@@ -3033,12 +3033,12 @@ export default function vueFactory(exports) {
       if (vnode.shapeFlag & 4
       /* STATEFUL_COMPONENT */
       ) {
-        // withProxy is a proxy with a different `has` trap only for
-        // runtime-compiled render functions using `with` block.
-        var proxyToUse = withProxy || proxy;
-        result = normalizeVNode(render.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx));
-        fallthroughAttrs = attrs;
-      } else {
+          // withProxy is a proxy with a different `has` trap only for
+          // runtime-compiled render functions using `with` block.
+          var proxyToUse = withProxy || proxy;
+          result = normalizeVNode(render.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx));
+          fallthroughAttrs = attrs;
+        } else {
         // functional
         var _render = Component; // in dev, mark attrs accessed if optional props (attrs === props)
 
@@ -3073,9 +3073,9 @@ export default function vueFactory(exports) {
       if (process.env.NODE_ENV !== 'production' && result.patchFlag > 0 && result.patchFlag & 2048
       /* DEV_ROOT_FRAGMENT */
       ) {
-        ;
-        [root, setRoot] = getChildRoot(result);
-      }
+          ;
+          [root, setRoot] = getChildRoot(result);
+        }
 
       if (fallthroughAttrs && inheritAttrs !== false) {
         var keys = Object.keys(fallthroughAttrs);
@@ -3089,16 +3089,16 @@ export default function vueFactory(exports) {
           || shapeFlag & 6
           /* COMPONENT */
           ) {
-            if (propsOptions && keys.some(isModelListener)) {
-              // If a v-model listener (onUpdate:xxx) has a corresponding declared
-              // prop, it indicates this component expects to handle v-model and
-              // it should not fallthrough.
-              // related: #1543, #1643, #1989
-              fallthroughAttrs = filterModelListeners(fallthroughAttrs, propsOptions);
-            }
+              if (propsOptions && keys.some(isModelListener)) {
+                // If a v-model listener (onUpdate:xxx) has a corresponding declared
+                // prop, it indicates this component expects to handle v-model and
+                // it should not fallthrough.
+                // related: #1543, #1643, #1989
+                fallthroughAttrs = filterModelListeners(fallthroughAttrs, propsOptions);
+              }
 
-            root = cloneVNode(root, fallthroughAttrs);
-          } else if (process.env.NODE_ENV !== 'production' && !accessedAttrs && root.type !== Comment$1) {
+              root = cloneVNode(root, fallthroughAttrs);
+            } else if (process.env.NODE_ENV !== 'production' && !accessedAttrs && root.type !== Comment$1) {
             var allAttrs = Object.keys(attrs);
             var eventAttrs = [];
             var extraAttrs = [];
@@ -3292,33 +3292,33 @@ export default function vueFactory(exports) {
       if (patchFlag & 1024
       /* DYNAMIC_SLOTS */
       ) {
-        // slot content that references values that might have changed,
-        // e.g. in a v-for
-        return true;
-      }
+          // slot content that references values that might have changed,
+          // e.g. in a v-for
+          return true;
+        }
 
       if (patchFlag & 16
       /* FULL_PROPS */
       ) {
-        if (!prevProps) {
-          return !!nextProps;
-        } // presence of this flag indicates props are always non-null
+          if (!prevProps) {
+            return !!nextProps;
+          } // presence of this flag indicates props are always non-null
 
 
-        return hasPropsChanged(prevProps, nextProps, emits);
-      } else if (patchFlag & 8
+          return hasPropsChanged(prevProps, nextProps, emits);
+        } else if (patchFlag & 8
       /* PROPS */
       ) {
-        var dynamicProps = nextVNode.dynamicProps;
+          var dynamicProps = nextVNode.dynamicProps;
 
-        for (var i = 0; i < dynamicProps.length; i++) {
-          var key = dynamicProps[i];
+          for (var i = 0; i < dynamicProps.length; i++) {
+            var key = dynamicProps[i];
 
-          if (nextProps[key] !== prevProps[key] && !isEmitListener(emits, key)) {
-            return true;
+            if (nextProps[key] !== prevProps[key] && !isEmitListener(emits, key)) {
+              return true;
+            }
           }
         }
-      }
     } else {
       // this path is only taken by manually written render functions
       // so presence of any children leads to a forced update
@@ -4552,9 +4552,9 @@ export default function vueFactory(exports) {
     } else if (vnode.shapeFlag & 128
     /* SUSPENSE */
     ) {
-      vnode.ssContent.transition = hooks.clone(vnode.ssContent);
-      vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
-    } else {
+        vnode.ssContent.transition = hooks.clone(vnode.ssContent);
+        vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
+      } else {
       vnode.transition = hooks;
     }
   }
@@ -4573,8 +4573,8 @@ export default function vueFactory(exports) {
         ret = ret.concat(getTransitionRawChildren(child.children, keepComment));
       } // comment placeholders should be skipped, e.g. v-if
       else if (keepComment || child.type !== Comment$1) {
-        ret.push(child);
-      }
+          ret.push(child);
+        }
     } // #1126 if a transition children list contains multiple sub fragments, these
     // fragments will be merged into a flat children array. Since each v-for
     // fragment may contain different static bindings inside, we need to de-op
@@ -4992,8 +4992,8 @@ export default function vueFactory(exports) {
           if (rawVNode.shapeFlag & 128
           /* SUSPENSE */
           ) {
-            rawVNode.ssContent = vnode;
-          }
+              rawVNode.ssContent = vnode;
+            }
         } // #1513 it's possible for the returned vnode to be cloned due to attr
         // fallthrough or scopeId, so the vnode here may not be the final vnode
         // that is mounted. Instead of caching it directly, we store the pending
@@ -5123,18 +5123,18 @@ export default function vueFactory(exports) {
     if (shapeFlag & 256
     /* COMPONENT_SHOULD_KEEP_ALIVE */
     ) {
-      shapeFlag -= 256
-      /* COMPONENT_SHOULD_KEEP_ALIVE */
-      ;
-    }
+        shapeFlag -= 256
+        /* COMPONENT_SHOULD_KEEP_ALIVE */
+        ;
+      }
 
     if (shapeFlag & 512
     /* COMPONENT_KEPT_ALIVE */
     ) {
-      shapeFlag -= 512
-      /* COMPONENT_KEPT_ALIVE */
-      ;
-    }
+        shapeFlag -= 512
+        /* COMPONENT_KEPT_ALIVE */
+        ;
+      }
 
     vnode.shapeFlag = shapeFlag;
   }
@@ -5757,37 +5757,37 @@ export default function vueFactory(exports) {
       if (patchFlag & 8
       /* PROPS */
       ) {
-        // Compiler-generated props & no keys change, just set the updated
-        // the props.
-        var propsToUpdate = instance.vnode.dynamicProps;
+          // Compiler-generated props & no keys change, just set the updated
+          // the props.
+          var propsToUpdate = instance.vnode.dynamicProps;
 
-        for (var i = 0; i < propsToUpdate.length; i++) {
-          var key = propsToUpdate[i]; // PROPS flag guarantees rawProps to be non-null
+          for (var i = 0; i < propsToUpdate.length; i++) {
+            var key = propsToUpdate[i]; // PROPS flag guarantees rawProps to be non-null
 
-          var value = rawProps[key];
+            var value = rawProps[key];
 
-          if (options) {
-            // attr / props separation was done on init and will be consistent
-            // in this code path, so just check if attrs have it.
-            if (hasOwn(attrs, key)) {
+            if (options) {
+              // attr / props separation was done on init and will be consistent
+              // in this code path, so just check if attrs have it.
+              if (hasOwn(attrs, key)) {
+                if (value !== attrs[key]) {
+                  attrs[key] = value;
+                  hasAttrsChanged = true;
+                }
+              } else {
+                var camelizedKey = camelize(key);
+                props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance, false
+                /* isAbsent */
+                );
+              }
+            } else {
               if (value !== attrs[key]) {
                 attrs[key] = value;
                 hasAttrsChanged = true;
               }
-            } else {
-              var camelizedKey = camelize(key);
-              props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance, false
-              /* isAbsent */
-              );
-            }
-          } else {
-            if (value !== attrs[key]) {
-              attrs[key] = value;
-              hasAttrsChanged = true;
             }
           }
         }
-      }
     } else {
       // full props update.
       if (setFullProps(instance, rawProps, props, attrs)) {
@@ -5799,9 +5799,13 @@ export default function vueFactory(exports) {
       var kebabKey;
 
       for (var _key6 in rawCurrentProps) {
-        if (!rawProps || !hasOwn(rawProps, _key6) && ((kebabKey = hyphenate(_key6)) === _key6 || !hasOwn(rawProps, kebabKey))) {
+        if (!rawProps || // for camelCase
+        !hasOwn(rawProps, _key6) && ( // it's possible the original props was passed in as kebab-case
+        // and converted to camelCase (#955)
+        (kebabKey = hyphenate(_key6)) === _key6 || !hasOwn(rawProps, kebabKey))) {
           if (options) {
-            if (rawPrevProps && (rawPrevProps[_key6] !== undefined || // for kebab-case
+            if (rawPrevProps && ( // for camelCase
+            rawPrevProps[_key6] !== undefined || // for kebab-case
             rawPrevProps[kebabKey] !== undefined)) {
               props[_key6] = resolvePropValue(options, rawCurrentProps, _key6, undefined, instance, true
               /* isAbsent */
@@ -6246,18 +6250,18 @@ export default function vueFactory(exports) {
     if (instance.vnode.shapeFlag & 32
     /* SLOTS_CHILDREN */
     ) {
-      var type = children._;
+        var type = children._;
 
-      if (type) {
-        // users can get the shallow readonly version of the slots object through `this.$slots`,
-        // we should avoid the proxy object polluting the slots of the internal instance
-        instance.slots = toRaw(children); // make compiler marker non-enumerable
+        if (type) {
+          // users can get the shallow readonly version of the slots object through `this.$slots`,
+          // we should avoid the proxy object polluting the slots of the internal instance
+          instance.slots = toRaw(children); // make compiler marker non-enumerable
 
-        def(children, '_', type);
+          def(children, '_', type);
+        } else {
+          normalizeObjectSlots(children, instance.slots = {});
+        }
       } else {
-        normalizeObjectSlots(children, instance.slots = {});
-      }
-    } else {
       instance.slots = {};
 
       if (children) {
@@ -6279,41 +6283,41 @@ export default function vueFactory(exports) {
     if (vnode.shapeFlag & 32
     /* SLOTS_CHILDREN */
     ) {
-      var type = children._;
+        var type = children._;
 
-      if (type) {
-        // compiled slots.
-        if (process.env.NODE_ENV !== 'production' && isHmrUpdating) {
-          // Parent was HMR updated so slot content may have changed.
-          // force update slots and mark instance for hmr as well
-          extend(slots, children);
-        } else if (optimized && type === 1
-        /* STABLE */
-        ) {
-          // compiled AND stable.
-          // no need to update, and skip stale slots removal.
-          needDeletionCheck = false;
-        } else {
-          // compiled but dynamic (v-if/v-for on slots) - update slots, but skip
-          // normalization.
-          extend(slots, children); // #2893
-          // when rendering the optimized slots by manually written render function,
-          // we need to delete the `slots._` flag if necessary to make subsequent updates reliable,
-          // i.e. let the `renderSlot` create the bailed Fragment
-
-          if (!optimized && type === 1
+        if (type) {
+          // compiled slots.
+          if (process.env.NODE_ENV !== 'production' && isHmrUpdating) {
+            // Parent was HMR updated so slot content may have changed.
+            // force update slots and mark instance for hmr as well
+            extend(slots, children);
+          } else if (optimized && type === 1
           /* STABLE */
           ) {
-            delete slots._;
-          }
-        }
-      } else {
-        needDeletionCheck = !children.$stable;
-        normalizeObjectSlots(children, slots);
-      }
+              // compiled AND stable.
+              // no need to update, and skip stale slots removal.
+              needDeletionCheck = false;
+            } else {
+            // compiled but dynamic (v-if/v-for on slots) - update slots, but skip
+            // normalization.
+            extend(slots, children); // #2893
+            // when rendering the optimized slots by manually written render function,
+            // we need to delete the `slots._` flag if necessary to make subsequent updates reliable,
+            // i.e. let the `renderSlot` create the bailed Fragment
 
-      deletionComparisonTarget = children;
-    } else if (children) {
+            if (!optimized && type === 1
+            /* STABLE */
+            ) {
+                delete slots._;
+              }
+          }
+        } else {
+          needDeletionCheck = !children.$stable;
+          normalizeObjectSlots(children, slots);
+        }
+
+        deletionComparisonTarget = children;
+      } else if (children) {
       // non slot object children (direct value) passed to a component
       normalizeVNodeSlots(instance, children);
       deletionComparisonTarget = {
@@ -6658,8 +6662,8 @@ export default function vueFactory(exports) {
           if (domType !== 3
           /* TEXT */
           ) {
-            nextNode = onMismatch();
-          } else {
+              nextNode = onMismatch();
+            } else {
             if (node.data !== vnode.children) {
               hasMismatch = true;
               process.env.NODE_ENV !== 'production' && warn("Hydration text mismatch:" + "\n- Client: ".concat(JSON.stringify(node.data)) + "\n- Server: ".concat(JSON.stringify(vnode.children)));
@@ -6686,8 +6690,8 @@ export default function vueFactory(exports) {
           if (domType !== 1
           /* ELEMENT */
           ) {
-            nextNode = onMismatch();
-          } else {
+              nextNode = onMismatch();
+            } else {
             // determine anchor, adopt content
             nextNode = node; // if the static vnode has its content stripped during build,
             // adopt it from the server-rendered HTML.
@@ -6722,58 +6726,58 @@ export default function vueFactory(exports) {
           if (shapeFlag & 1
           /* ELEMENT */
           ) {
-            if (domType !== 1
-            /* ELEMENT */
-            || vnode.type.toLowerCase() !== node.tagName.toLowerCase()) {
-              nextNode = onMismatch();
-            } else {
-              nextNode = hydrateElement(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized);
-            }
-          } else if (shapeFlag & 6
+              if (domType !== 1
+              /* ELEMENT */
+              || vnode.type.toLowerCase() !== node.tagName.toLowerCase()) {
+                nextNode = onMismatch();
+              } else {
+                nextNode = hydrateElement(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized);
+              }
+            } else if (shapeFlag & 6
           /* COMPONENT */
           ) {
-            // when setting up the render effect, if the initial vnode already
-            // has .el set, the component will perform hydration instead of mount
-            // on its sub-tree.
-            vnode.slotScopeIds = slotScopeIds;
-            var container = parentNode(node);
-            mountComponent(vnode, container, null, parentComponent, parentSuspense, isSVGContainer(container), optimized); // component may be async, so in the case of fragments we cannot rely
-            // on component's rendered output to determine the end of the fragment
-            // instead, we do a lookahead to find the end anchor node.
+              // when setting up the render effect, if the initial vnode already
+              // has .el set, the component will perform hydration instead of mount
+              // on its sub-tree.
+              vnode.slotScopeIds = slotScopeIds;
+              var container = parentNode(node);
+              mountComponent(vnode, container, null, parentComponent, parentSuspense, isSVGContainer(container), optimized); // component may be async, so in the case of fragments we cannot rely
+              // on component's rendered output to determine the end of the fragment
+              // instead, we do a lookahead to find the end anchor node.
 
-            nextNode = isFragmentStart ? locateClosingAsyncAnchor(node) : nextSibling(node); // #3787
-            // if component is async, it may get moved / unmounted before its
-            // inner component is loaded, so we need to give it a placeholder
-            // vnode that matches its adopted DOM.
+              nextNode = isFragmentStart ? locateClosingAsyncAnchor(node) : nextSibling(node); // #3787
+              // if component is async, it may get moved / unmounted before its
+              // inner component is loaded, so we need to give it a placeholder
+              // vnode that matches its adopted DOM.
 
-            if (isAsyncWrapper(vnode)) {
-              var subTree;
+              if (isAsyncWrapper(vnode)) {
+                var subTree;
 
-              if (isFragmentStart) {
-                subTree = createVNode(Fragment);
-                subTree.anchor = nextNode ? nextNode.previousSibling : container.lastChild;
-              } else {
-                subTree = node.nodeType === 3 ? createTextVNode('') : createVNode('div');
+                if (isFragmentStart) {
+                  subTree = createVNode(Fragment);
+                  subTree.anchor = nextNode ? nextNode.previousSibling : container.lastChild;
+                } else {
+                  subTree = node.nodeType === 3 ? createTextVNode('') : createVNode('div');
+                }
+
+                subTree.el = node;
+                vnode.component.subTree = subTree;
               }
-
-              subTree.el = node;
-              vnode.component.subTree = subTree;
-            }
-          } else if (shapeFlag & 64
+            } else if (shapeFlag & 64
           /* TELEPORT */
           ) {
-            if (domType !== 8
-            /* COMMENT */
-            ) {
-              nextNode = onMismatch();
-            } else {
-              nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, rendererInternals, hydrateChildren);
-            }
-          } else if (shapeFlag & 128
+              if (domType !== 8
+              /* COMMENT */
+              ) {
+                  nextNode = onMismatch();
+                } else {
+                nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, rendererInternals, hydrateChildren);
+              }
+            } else if (shapeFlag & 128
           /* SUSPENSE */
           ) {
-            nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, isSVGContainer(parentNode(node)), slotScopeIds, optimized, rendererInternals, hydrateNode);
-          } else if (process.env.NODE_ENV !== 'production') {
+              nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, isSVGContainer(parentNode(node)), slotScopeIds, optimized, rendererInternals, hydrateNode);
+            } else if (process.env.NODE_ENV !== 'production') {
             warn('Invalid HostVNode type:', type, "(".concat(typeof type, ")"));
           }
 
@@ -6802,78 +6806,78 @@ export default function vueFactory(exports) {
       if (forcePatchValue || patchFlag !== -1
       /* HOISTED */
       ) {
-        if (dirs) {
-          invokeDirectiveHook(vnode, null, parentComponent, 'created');
-        } // props
+          if (dirs) {
+            invokeDirectiveHook(vnode, null, parentComponent, 'created');
+          } // props
 
 
-        if (props) {
-          if (forcePatchValue || !optimized || patchFlag & 16
-          /* FULL_PROPS */
-          || patchFlag & 32
-          /* HYDRATE_EVENTS */
+          if (props) {
+            if (forcePatchValue || !optimized || patchFlag & 16
+            /* FULL_PROPS */
+            || patchFlag & 32
+            /* HYDRATE_EVENTS */
+            ) {
+              for (var key in props) {
+                if (forcePatchValue && key.endsWith('value') || isOn(key) && !isReservedProp(key)) {
+                  patchProp(el, key, null, props[key]);
+                }
+              }
+            } else if (props.onClick) {
+              // Fast path for click listeners (which is most often) to avoid
+              // iterating through props.
+              patchProp(el, 'onClick', null, props.onClick);
+            }
+          } // vnode / directive hooks
+
+
+          var vnodeHooks;
+
+          if (vnodeHooks = props && props.onVnodeBeforeMount) {
+            invokeVNodeHook(vnodeHooks, parentComponent, vnode);
+          }
+
+          if (dirs) {
+            invokeDirectiveHook(vnode, null, parentComponent, 'beforeMount');
+          }
+
+          if ((vnodeHooks = props && props.onVnodeMounted) || dirs) {
+            queueEffectWithSuspense(() => {
+              vnodeHooks && invokeVNodeHook(vnodeHooks, parentComponent, vnode);
+              dirs && invokeDirectiveHook(vnode, null, parentComponent, 'mounted');
+            }, parentSuspense);
+          } // children
+
+
+          if (shapeFlag & 16
+          /* ARRAY_CHILDREN */
+          && // skip if element has innerHTML / textContent
+          !(props && (props.innerHTML || props.textContent))) {
+            var next = hydrateChildren(el.firstChild, vnode, el, parentComponent, parentSuspense, slotScopeIds, optimized);
+            var _hasWarned = false;
+
+            while (next) {
+              hasMismatch = true;
+
+              if (process.env.NODE_ENV !== 'production' && !_hasWarned) {
+                warn("Hydration children mismatch in <".concat(vnode.type, ">: ") + "server rendered element contains more child nodes than client vdom.");
+                _hasWarned = true;
+              } // The SSRed DOM contains more nodes than it should. Remove them.
+
+
+              var cur = next;
+              next = next.nextSibling;
+              remove(cur);
+            }
+          } else if (shapeFlag & 8
+          /* TEXT_CHILDREN */
           ) {
-            for (var key in props) {
-              if (forcePatchValue && key.endsWith('value') || isOn(key) && !isReservedProp(key)) {
-                patchProp(el, key, null, props[key]);
+              if (el.textContent !== vnode.children) {
+                hasMismatch = true;
+                process.env.NODE_ENV !== 'production' && warn("Hydration text content mismatch in <".concat(vnode.type, ">:\n") + "- Client: ".concat(el.textContent, "\n") + "- Server: ".concat(vnode.children));
+                el.textContent = vnode.children;
               }
             }
-          } else if (props.onClick) {
-            // Fast path for click listeners (which is most often) to avoid
-            // iterating through props.
-            patchProp(el, 'onClick', null, props.onClick);
-          }
-        } // vnode / directive hooks
-
-
-        var vnodeHooks;
-
-        if (vnodeHooks = props && props.onVnodeBeforeMount) {
-          invokeVNodeHook(vnodeHooks, parentComponent, vnode);
         }
-
-        if (dirs) {
-          invokeDirectiveHook(vnode, null, parentComponent, 'beforeMount');
-        }
-
-        if ((vnodeHooks = props && props.onVnodeMounted) || dirs) {
-          queueEffectWithSuspense(() => {
-            vnodeHooks && invokeVNodeHook(vnodeHooks, parentComponent, vnode);
-            dirs && invokeDirectiveHook(vnode, null, parentComponent, 'mounted');
-          }, parentSuspense);
-        } // children
-
-
-        if (shapeFlag & 16
-        /* ARRAY_CHILDREN */
-        && // skip if element has innerHTML / textContent
-        !(props && (props.innerHTML || props.textContent))) {
-          var next = hydrateChildren(el.firstChild, vnode, el, parentComponent, parentSuspense, slotScopeIds, optimized);
-          var _hasWarned = false;
-
-          while (next) {
-            hasMismatch = true;
-
-            if (process.env.NODE_ENV !== 'production' && !_hasWarned) {
-              warn("Hydration children mismatch in <".concat(vnode.type, ">: ") + "server rendered element contains more child nodes than client vdom.");
-              _hasWarned = true;
-            } // The SSRed DOM contains more nodes than it should. Remove them.
-
-
-            var cur = next;
-            next = next.nextSibling;
-            remove(cur);
-          }
-        } else if (shapeFlag & 8
-        /* TEXT_CHILDREN */
-        ) {
-          if (el.textContent !== vnode.children) {
-            hasMismatch = true;
-            process.env.NODE_ENV !== 'production' && warn("Hydration text content mismatch in <".concat(vnode.type, ">:\n") + "- Client: ".concat(el.textContent, "\n") + "- Server: ".concat(vnode.children));
-            el.textContent = vnode.children;
-          }
-        }
-      }
 
       return el.nextSibling;
     };
@@ -7217,9 +7221,9 @@ export default function vueFactory(exports) {
       if (n2.patchFlag === -2
       /* BAIL */
       ) {
-        optimized = false;
-        n2.dynamicChildren = null;
-      }
+          optimized = false;
+          n2.dynamicChildren = null;
+        }
 
       var {
         type,
@@ -7253,20 +7257,20 @@ export default function vueFactory(exports) {
           if (shapeFlag & 1
           /* ELEMENT */
           ) {
-            processElement(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          } else if (shapeFlag & 6
+              processElement(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            } else if (shapeFlag & 6
           /* COMPONENT */
           ) {
-            processComponent(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          } else if (shapeFlag & 64
+              processComponent(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            } else if (shapeFlag & 64
           /* TELEPORT */
           ) {
-            type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals);
-          } else if (shapeFlag & 128
+              type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals);
+            } else if (shapeFlag & 128
           /* SUSPENSE */
           ) {
-            type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals);
-          } else if (process.env.NODE_ENV !== 'production') {
+              type.process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals);
+            } else if (process.env.NODE_ENV !== 'production') {
             warn('Invalid VNode type:', type, "(".concat(typeof type, ")"));
           }
 
@@ -7389,12 +7393,12 @@ export default function vueFactory(exports) {
       if (!(process.env.NODE_ENV !== 'production') && vnode.el && hostCloneNode !== undefined && patchFlag === -1
       /* HOISTED */
       ) {
-        // If a vnode has non-null el, it means it's being reused.
-        // Only static vnodes can be reused, so its mounted DOM nodes should be
-        // exactly the same, and we can simply do a clone here.
-        // only do this in production since cloned trees cannot be HMR updated.
-        el = vnode.el = hostCloneNode(vnode.el);
-      } else {
+          // If a vnode has non-null el, it means it's being reused.
+          // Only static vnodes can be reused, so its mounted DOM nodes should be
+          // exactly the same, and we can simply do a clone here.
+          // only do this in production since cloned trees cannot be HMR updated.
+          el = vnode.el = hostCloneNode(vnode.el);
+        } else {
         el = vnode.el = hostCreateElement( // fixed by xxxxxx
         vnode.type, container); // mount children first, since some props may rely on child content
         // being already rendered, e.g. `<select value>`
@@ -7402,12 +7406,12 @@ export default function vueFactory(exports) {
         if (shapeFlag & 8
         /* TEXT_CHILDREN */
         ) {
-          hostSetElementText(el, vnode.children);
-        } else if (shapeFlag & 16
+            hostSetElementText(el, vnode.children);
+          } else if (shapeFlag & 16
         /* ARRAY_CHILDREN */
         ) {
-          mountChildren(vnode.children, el, null, parentComponent, parentSuspense, isSVG && type !== 'foreignObject', slotScopeIds, optimized || !!vnode.dynamicChildren);
-        }
+            mountChildren(vnode.children, el, null, parentComponent, parentSuspense, isSVG && type !== 'foreignObject', slotScopeIds, optimized || !!vnode.dynamicChildren);
+          }
 
         if (dirs) {
           invokeDirectiveHook(vnode, null, parentComponent, 'created');
@@ -7481,8 +7485,8 @@ export default function vueFactory(exports) {
         if (process.env.NODE_ENV !== 'production' && subTree.patchFlag > 0 && subTree.patchFlag & 2048
         /* DEV_ROOT_FRAGMENT */
         ) {
-          subTree = filterSingleRoot(subTree.children) || subTree;
-        }
+            subTree = filterSingleRoot(subTree.children) || subTree;
+          }
 
         if (vnode === subTree) {
           var parentVNode = parentComponent.vnode;
@@ -7537,26 +7541,26 @@ export default function vueFactory(exports) {
         if (patchFlag & 16
         /* FULL_PROPS */
         ) {
-          // element props contain dynamic keys, full diff needed
-          patchProps(el, n2, oldProps, newProps, parentComponent, parentSuspense, isSVG);
-        } else {
+            // element props contain dynamic keys, full diff needed
+            patchProps(el, n2, oldProps, newProps, parentComponent, parentSuspense, isSVG);
+          } else {
           // class
           // this flag is matched when the element has dynamic class bindings.
           if (patchFlag & 2
           /* CLASS */
           ) {
-            if (oldProps.class !== newProps.class) {
-              hostPatchProp(el, 'class', null, newProps.class, isSVG);
-            }
-          } // style
+              if (oldProps.class !== newProps.class) {
+                hostPatchProp(el, 'class', null, newProps.class, isSVG);
+              }
+            } // style
           // this flag is matched when the element has dynamic style bindings
 
 
           if (patchFlag & 4
           /* STYLE */
           ) {
-            hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG);
-          } // props
+              hostPatchProp(el, 'style', oldProps.style, newProps.style, isSVG);
+            } // props
           // This flag is matched when the element has dynamic prop/attr bindings
           // other than class and style. The keys of dynamic prop/attrs are saved for
           // faster iteration.
@@ -7567,19 +7571,19 @@ export default function vueFactory(exports) {
           if (patchFlag & 8
           /* PROPS */
           ) {
-            // if the flag is present then dynamicProps must be non-null
-            var propsToUpdate = n2.dynamicProps;
+              // if the flag is present then dynamicProps must be non-null
+              var propsToUpdate = n2.dynamicProps;
 
-            for (var i = 0; i < propsToUpdate.length; i++) {
-              var key = propsToUpdate[i];
-              var prev = oldProps[key];
-              var next = newProps[key];
+              for (var i = 0; i < propsToUpdate.length; i++) {
+                var key = propsToUpdate[i];
+                var prev = oldProps[key];
+                var next = newProps[key];
 
-              if (next !== prev || hostForcePatchProp && hostForcePatchProp(el, key)) {
-                hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
+                if (next !== prev || hostForcePatchProp && hostForcePatchProp(el, key)) {
+                  hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
+                }
               }
             }
-          }
         } // text
         // This flag is matched when the element has only dynamic text children.
 
@@ -7587,10 +7591,10 @@ export default function vueFactory(exports) {
         if (patchFlag & 1
         /* TEXT */
         ) {
-          if (n1.children !== n2.children) {
-            hostSetElementText(el, n2.children);
+            if (n1.children !== n2.children) {
+              hostSetElementText(el, n2.children);
+            }
           }
-        }
       } else if (!optimized && dynamicChildren == null) {
         // unoptimized, full diff
         patchProps(el, n2, oldProps, newProps, parentComponent, parentSuspense, isSVG);
@@ -7625,7 +7629,9 @@ export default function vueFactory(exports) {
 
         var container = // oldVNode may be an errored async setup() component inside Suspense
         // which will not have a mounted element
-        oldVNode.el && (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
+        oldVNode.el && ( // - In the case of a Fragment, we need to provide the actual parent
+        // of the Fragment itself so it can move its children.
+        oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
         // which also requires the correct parent container
         !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
         oldVNode.shapeFlag & 6
@@ -7734,8 +7740,8 @@ export default function vueFactory(exports) {
         if (n2.shapeFlag & 512
         /* COMPONENT_KEPT_ALIVE */
         ) {
-          parentComponent.ctx.activate(n2, container, anchor, isSVG, optimized);
-        } else {
+            parentComponent.ctx.activate(n2, container, anchor, isSVG, optimized);
+          } else {
           mountComponent(n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized);
         }
       } else {
@@ -7927,8 +7933,8 @@ export default function vueFactory(exports) {
           if (initialVNode.shapeFlag & 256
           /* COMPONENT_SHOULD_KEEP_ALIVE */
           ) {
-            instance.a && queuePostRenderEffect(instance.a, parentSuspense);
-          }
+              instance.a && queuePostRenderEffect(instance.a, parentSuspense);
+            }
 
           instance.isMounted = true;
 
@@ -8062,62 +8068,62 @@ export default function vueFactory(exports) {
         if (patchFlag & 128
         /* KEYED_FRAGMENT */
         ) {
-          // this could be either fully-keyed or mixed (some keyed some not)
-          // presence of patchFlag means children are guaranteed to be arrays
-          patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          return;
-        } else if (patchFlag & 256
+            // this could be either fully-keyed or mixed (some keyed some not)
+            // presence of patchFlag means children are guaranteed to be arrays
+            patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            return;
+          } else if (patchFlag & 256
         /* UNKEYED_FRAGMENT */
         ) {
-          // unkeyed
-          patchUnkeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          return;
-        }
+            // unkeyed
+            patchUnkeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            return;
+          }
       } // children has 3 possibilities: text, array or no children.
 
 
       if (shapeFlag & 8
       /* TEXT_CHILDREN */
       ) {
-        // text children fast path
-        if (prevShapeFlag & 16
-        /* ARRAY_CHILDREN */
-        ) {
-          unmountChildren(c1, parentComponent, parentSuspense);
-        }
-
-        if (c2 !== c1) {
-          hostSetElementText(container, c2);
-        }
-      } else {
-        if (prevShapeFlag & 16
-        /* ARRAY_CHILDREN */
-        ) {
-          // prev children was array
-          if (shapeFlag & 16
+          // text children fast path
+          if (prevShapeFlag & 16
           /* ARRAY_CHILDREN */
           ) {
-            // two arrays, cannot assume anything, do full diff
-            patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          } else {
-            // no new children, just unmount old
-            unmountChildren(c1, parentComponent, parentSuspense, true);
+              unmountChildren(c1, parentComponent, parentSuspense);
+            }
+
+          if (c2 !== c1) {
+            hostSetElementText(container, c2);
           }
         } else {
+        if (prevShapeFlag & 16
+        /* ARRAY_CHILDREN */
+        ) {
+            // prev children was array
+            if (shapeFlag & 16
+            /* ARRAY_CHILDREN */
+            ) {
+                // two arrays, cannot assume anything, do full diff
+                patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+              } else {
+              // no new children, just unmount old
+              unmountChildren(c1, parentComponent, parentSuspense, true);
+            }
+          } else {
           // prev children was text OR null
           // new children is array OR null
           if (prevShapeFlag & 8
           /* TEXT_CHILDREN */
           ) {
-            hostSetElementText(container, '');
-          } // mount new if array
+              hostSetElementText(container, '');
+            } // mount new if array
 
 
           if (shapeFlag & 16
           /* ARRAY_CHILDREN */
           ) {
-            mountChildren(c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          }
+              mountChildren(c2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            }
         }
       }
     };
@@ -8211,120 +8217,120 @@ export default function vueFactory(exports) {
       // (b c)
       // i = 0, e1 = 0, e2 = -1
       else if (i > e2) {
-        while (i <= e1) {
-          unmount(c1[i], parentComponent, parentSuspense, true);
-          i++;
-        }
-      } // 5. unknown sequence
-      // [i ... e1 + 1]: a b [c d e] f g
-      // [i ... e2 + 1]: a b [e d c h] f g
-      // i = 2, e1 = 4, e2 = 5
-      else {
-        var s1 = i; // prev starting index
+          while (i <= e1) {
+            unmount(c1[i], parentComponent, parentSuspense, true);
+            i++;
+          }
+        } // 5. unknown sequence
+        // [i ... e1 + 1]: a b [c d e] f g
+        // [i ... e2 + 1]: a b [e d c h] f g
+        // i = 2, e1 = 4, e2 = 5
+        else {
+            var s1 = i; // prev starting index
 
-        var s2 = i; // next starting index
-        // 5.1 build key:index map for newChildren
+            var s2 = i; // next starting index
+            // 5.1 build key:index map for newChildren
 
-        var keyToNewIndexMap = new Map();
+            var keyToNewIndexMap = new Map();
 
-        for (i = s2; i <= e2; i++) {
-          var nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
+            for (i = s2; i <= e2; i++) {
+              var nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
 
-          if (nextChild.key != null) {
-            if (process.env.NODE_ENV !== 'production' && keyToNewIndexMap.has(nextChild.key)) {
-              warn("Duplicate keys found during update:", JSON.stringify(nextChild.key), "Make sure keys are unique.");
+              if (nextChild.key != null) {
+                if (process.env.NODE_ENV !== 'production' && keyToNewIndexMap.has(nextChild.key)) {
+                  warn("Duplicate keys found during update:", JSON.stringify(nextChild.key), "Make sure keys are unique.");
+                }
+
+                keyToNewIndexMap.set(nextChild.key, i);
+              }
+            } // 5.2 loop through old children left to be patched and try to patch
+            // matching nodes & remove nodes that are no longer present
+
+
+            var j;
+            var patched = 0;
+            var toBePatched = e2 - s2 + 1;
+            var moved = false; // used to track whether any node has moved
+
+            var maxNewIndexSoFar = 0; // works as Map<newIndex, oldIndex>
+            // Note that oldIndex is offset by +1
+            // and oldIndex = 0 is a special value indicating the new node has
+            // no corresponding old node.
+            // used for determining longest stable subsequence
+
+            var newIndexToOldIndexMap = new Array(toBePatched);
+
+            for (i = 0; i < toBePatched; i++) {
+              newIndexToOldIndexMap[i] = 0;
             }
 
-            keyToNewIndexMap.set(nextChild.key, i);
-          }
-        } // 5.2 loop through old children left to be patched and try to patch
-        // matching nodes & remove nodes that are no longer present
+            for (i = s1; i <= e1; i++) {
+              var prevChild = c1[i];
+
+              if (patched >= toBePatched) {
+                // all new children have been patched so this can only be a removal
+                unmount(prevChild, parentComponent, parentSuspense, true);
+                continue;
+              }
+
+              var newIndex = void 0;
+
+              if (prevChild.key != null) {
+                newIndex = keyToNewIndexMap.get(prevChild.key);
+              } else {
+                // key-less node, try to locate a key-less node of the same type
+                for (j = s2; j <= e2; j++) {
+                  if (newIndexToOldIndexMap[j - s2] === 0 && isSameVNodeType(prevChild, c2[j])) {
+                    newIndex = j;
+                    break;
+                  }
+                }
+              }
+
+              if (newIndex === undefined) {
+                unmount(prevChild, parentComponent, parentSuspense, true);
+              } else {
+                newIndexToOldIndexMap[newIndex - s2] = i + 1;
+
+                if (newIndex >= maxNewIndexSoFar) {
+                  maxNewIndexSoFar = newIndex;
+                } else {
+                  moved = true;
+                }
+
+                patch(prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+                patched++;
+              }
+            } // 5.3 move and mount
+            // generate longest stable subsequence only when nodes have moved
 
 
-        var j;
-        var patched = 0;
-        var toBePatched = e2 - s2 + 1;
-        var moved = false; // used to track whether any node has moved
+            var increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : EMPTY_ARR;
+            j = increasingNewIndexSequence.length - 1; // looping backwards so that we can use last patched node as anchor
 
-        var maxNewIndexSoFar = 0; // works as Map<newIndex, oldIndex>
-        // Note that oldIndex is offset by +1
-        // and oldIndex = 0 is a special value indicating the new node has
-        // no corresponding old node.
-        // used for determining longest stable subsequence
+            for (i = toBePatched - 1; i >= 0; i--) {
+              var nextIndex = s2 + i;
+              var _nextChild = c2[nextIndex];
 
-        var newIndexToOldIndexMap = new Array(toBePatched);
+              var _anchor2 = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor;
 
-        for (i = 0; i < toBePatched; i++) {
-          newIndexToOldIndexMap[i] = 0;
-        }
-
-        for (i = s1; i <= e1; i++) {
-          var prevChild = c1[i];
-
-          if (patched >= toBePatched) {
-            // all new children have been patched so this can only be a removal
-            unmount(prevChild, parentComponent, parentSuspense, true);
-            continue;
-          }
-
-          var newIndex = void 0;
-
-          if (prevChild.key != null) {
-            newIndex = keyToNewIndexMap.get(prevChild.key);
-          } else {
-            // key-less node, try to locate a key-less node of the same type
-            for (j = s2; j <= e2; j++) {
-              if (newIndexToOldIndexMap[j - s2] === 0 && isSameVNodeType(prevChild, c2[j])) {
-                newIndex = j;
-                break;
+              if (newIndexToOldIndexMap[i] === 0) {
+                // mount new
+                patch(null, _nextChild, container, _anchor2, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+              } else if (moved) {
+                // move if:
+                // There is no stable subsequence (e.g. a reverse)
+                // OR current node is not among the stable sequence
+                if (j < 0 || i !== increasingNewIndexSequence[j]) {
+                  move(_nextChild, container, _anchor2, 2
+                  /* REORDER */
+                  );
+                } else {
+                  j--;
+                }
               }
             }
           }
-
-          if (newIndex === undefined) {
-            unmount(prevChild, parentComponent, parentSuspense, true);
-          } else {
-            newIndexToOldIndexMap[newIndex - s2] = i + 1;
-
-            if (newIndex >= maxNewIndexSoFar) {
-              maxNewIndexSoFar = newIndex;
-            } else {
-              moved = true;
-            }
-
-            patch(prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-            patched++;
-          }
-        } // 5.3 move and mount
-        // generate longest stable subsequence only when nodes have moved
-
-
-        var increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : EMPTY_ARR;
-        j = increasingNewIndexSequence.length - 1; // looping backwards so that we can use last patched node as anchor
-
-        for (i = toBePatched - 1; i >= 0; i--) {
-          var nextIndex = s2 + i;
-          var _nextChild = c2[nextIndex];
-
-          var _anchor2 = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor;
-
-          if (newIndexToOldIndexMap[i] === 0) {
-            // mount new
-            patch(null, _nextChild, container, _anchor2, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          } else if (moved) {
-            // move if:
-            // There is no stable subsequence (e.g. a reverse)
-            // OR current node is not among the stable sequence
-            if (j < 0 || i !== increasingNewIndexSequence[j]) {
-              move(_nextChild, container, _anchor2, 2
-              /* REORDER */
-              );
-            } else {
-              j--;
-            }
-          }
-        }
-      }
     };
 
     var move = (vnode, container, anchor, moveType, parentSuspense = null) => {
@@ -8339,23 +8345,23 @@ export default function vueFactory(exports) {
       if (shapeFlag & 6
       /* COMPONENT */
       ) {
-        move(vnode.component.subTree, container, anchor, moveType);
-        return;
-      }
+          move(vnode.component.subTree, container, anchor, moveType);
+          return;
+        }
 
       if (shapeFlag & 128
       /* SUSPENSE */
       ) {
-        vnode.suspense.move(container, anchor, moveType);
-        return;
-      }
+          vnode.suspense.move(container, anchor, moveType);
+          return;
+        }
 
       if (shapeFlag & 64
       /* TELEPORT */
       ) {
-        type.move(vnode, container, anchor, internals);
-        return;
-      }
+          type.move(vnode, container, anchor, internals);
+          return;
+        }
 
       if (type === Fragment) {
         hostInsert(el, container, anchor);
@@ -8384,10 +8390,10 @@ export default function vueFactory(exports) {
         if (moveType === 0
         /* ENTER */
         ) {
-          transition.beforeEnter(el);
-          hostInsert(el, container, anchor);
-          queuePostRenderEffect(() => transition.enter(el), parentSuspense);
-        } else {
+            transition.beforeEnter(el);
+            hostInsert(el, container, anchor);
+            queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+          } else {
           var {
             leave,
             delayLeave,
@@ -8434,9 +8440,9 @@ export default function vueFactory(exports) {
       if (shapeFlag & 256
       /* COMPONENT_SHOULD_KEEP_ALIVE */
       ) {
-        parentComponent.ctx.deactivate(vnode);
-        return;
-      }
+          parentComponent.ctx.deactivate(vnode);
+          return;
+        }
 
       var shouldInvokeDirs = shapeFlag & 1
       /* ELEMENT */
@@ -8450,14 +8456,14 @@ export default function vueFactory(exports) {
       if (shapeFlag & 6
       /* COMPONENT */
       ) {
-        unmountComponent(vnode.component, parentSuspense, doRemove);
-      } else {
+          unmountComponent(vnode.component, parentSuspense, doRemove);
+        } else {
         if (shapeFlag & 128
         /* SUSPENSE */
         ) {
-          vnode.suspense.unmount(parentSuspense, doRemove);
-          return;
-        }
+            vnode.suspense.unmount(parentSuspense, doRemove);
+            return;
+          }
 
         if (shouldInvokeDirs) {
           invokeDirectiveHook(vnode, null, parentComponent, 'beforeUnmount');
@@ -8466,8 +8472,9 @@ export default function vueFactory(exports) {
         if (shapeFlag & 64
         /* TELEPORT */
         ) {
-          vnode.type.remove(vnode, parentComponent, parentSuspense, optimized, internals, doRemove);
-        } else if (dynamicChildren && (type !== Fragment || patchFlag > 0 && patchFlag & 64
+            vnode.type.remove(vnode, parentComponent, parentSuspense, optimized, internals, doRemove);
+          } else if (dynamicChildren && ( // #1153: fast path should not be taken for non-stable (v-for) fragments
+        type !== Fragment || patchFlag > 0 && patchFlag & 64
         /* STABLE_FRAGMENT */
         )) {
           // fast path for block nodes: only need to unmount dynamic children.
@@ -8619,14 +8626,14 @@ export default function vueFactory(exports) {
       if (vnode.shapeFlag & 6
       /* COMPONENT */
       ) {
-        return getNextHostNode(vnode.component.subTree);
-      }
+          return getNextHostNode(vnode.component.subTree);
+        }
 
       if (vnode.shapeFlag & 128
       /* SUSPENSE */
       ) {
-        return vnode.suspense.next();
-      }
+          return vnode.suspense.next();
+        }
 
       return hostNextSibling(vnode.anchor || vnode.el);
     };
@@ -8705,9 +8712,9 @@ export default function vueFactory(exports) {
           if (c2.patchFlag <= 0 || c2.patchFlag === 32
           /* HYDRATE_EVENTS */
           ) {
-            c2 = ch2[i] = cloneIfMounted(ch2[i]);
-            c2.el = c1.el;
-          }
+              c2 = ch2[i] = cloneIfMounted(ch2[i]);
+              c2.el = c1.el;
+            }
 
           if (!shallow) traverseStaticChildren(c1, c2);
         } // also inherit for comment nodes, but not placeholders (e.g. v-if which
@@ -8860,8 +8867,8 @@ export default function vueFactory(exports) {
           if (shapeFlag & 16
           /* ARRAY_CHILDREN */
           ) {
-            mountChildren(children, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-          }
+              mountChildren(children, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            }
         };
 
         if (disabled) {
@@ -8952,11 +8959,11 @@ export default function vueFactory(exports) {
         if (shapeFlag & 16
         /* ARRAY_CHILDREN */
         ) {
-          for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            unmount(child, parentComponent, parentSuspense, true, !!child.dynamicChildren);
+            for (var i = 0; i < children.length; i++) {
+              var child = children[i];
+              unmount(child, parentComponent, parentSuspense, true, !!child.dynamicChildren);
+            }
           }
-        }
       }
     },
 
@@ -8976,8 +8983,8 @@ export default function vueFactory(exports) {
     if (moveType === 0
     /* TARGET_CHANGE */
     ) {
-      insert(vnode.targetAnchor, container, parentAnchor);
-    }
+        insert(vnode.targetAnchor, container, parentAnchor);
+      }
 
     var {
       el,
@@ -9002,12 +9009,12 @@ export default function vueFactory(exports) {
       if (shapeFlag & 16
       /* ARRAY_CHILDREN */
       ) {
-        for (var i = 0; i < children.length; i++) {
-          move(children[i], container, parentAnchor, 2
-          /* REORDER */
-          );
+          for (var i = 0; i < children.length; i++) {
+            move(children[i], container, parentAnchor, 2
+            /* REORDER */
+            );
+          }
         }
-      }
     } // move main view anchor if this is a re-order.
 
 
@@ -9033,16 +9040,16 @@ export default function vueFactory(exports) {
       if (vnode.shapeFlag & 16
       /* ARRAY_CHILDREN */
       ) {
-        if (isTeleportDisabled(vnode.props)) {
-          vnode.anchor = hydrateChildren(nextSibling(node), vnode, parentNode(node), parentComponent, parentSuspense, slotScopeIds, optimized);
-          vnode.targetAnchor = targetNode;
-        } else {
-          vnode.anchor = nextSibling(node);
-          vnode.targetAnchor = hydrateChildren(targetNode, vnode, target, parentComponent, parentSuspense, slotScopeIds, optimized);
-        }
+          if (isTeleportDisabled(vnode.props)) {
+            vnode.anchor = hydrateChildren(nextSibling(node), vnode, parentNode(node), parentComponent, parentSuspense, slotScopeIds, optimized);
+            vnode.targetAnchor = targetNode;
+          } else {
+            vnode.anchor = nextSibling(node);
+            vnode.targetAnchor = hydrateChildren(targetNode, vnode, target, parentComponent, parentSuspense, slotScopeIds, optimized);
+          }
 
-        target._lpa = vnode.targetAnchor && nextSibling(vnode.targetAnchor);
-      }
+          target._lpa = vnode.targetAnchor && nextSibling(vnode.targetAnchor);
+        }
     }
 
     return vnode.anchor && nextSibling(vnode.anchor);
@@ -9369,20 +9376,24 @@ export default function vueFactory(exports) {
     if (shapeFlag & 128
     /* SUSPENSE */
     ) {
-      type.normalize(vnode);
-    }
+        type.normalize(vnode);
+      }
 
     if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
     !isBlockNode && // has current parent block
-    currentBlock && (patchFlag > 0 || shapeFlag & 6
+    currentBlock && ( // presence of a patch flag indicates this node needs patching on updates.
+    // component nodes also should always be patched, because even if the
+    // component doesn't need to update, it needs to persist the instance on to
+    // the next vnode so that it can be properly unmounted later.
+    patchFlag > 0 || shapeFlag & 6
     /* COMPONENT */
     ) && // the EVENTS flag is only for hydration and if it is the only flag, the
     // vnode should not be considered dynamic due to handler caching.
     patchFlag !== 32
     /* HYDRATE_EVENTS */
     ) {
-      currentBlock.push(vnode);
-    }
+        currentBlock.push(vnode);
+      }
 
     return vnode;
   }
@@ -9532,18 +9543,18 @@ export default function vueFactory(exports) {
       || shapeFlag & 64
       /* TELEPORT */
       ) {
-        // Normalize slot to plain children for plain element and Teleport
-        var slot = children.default;
+          // Normalize slot to plain children for plain element and Teleport
+          var slot = children.default;
 
-        if (slot) {
-          // _c marker is added by withCtx() indicating this is a compiled slot
-          slot._c && (slot._d = false);
-          normalizeChildren(vnode, slot());
-          slot._c && (slot._d = true);
-        }
+          if (slot) {
+            // _c marker is added by withCtx() indicating this is a compiled slot
+            slot._c && (slot._d = false);
+            normalizeChildren(vnode, slot());
+            slot._c && (slot._d = true);
+          }
 
-        return;
-      } else {
+          return;
+        } else {
         type = 32
         /* SLOTS_CHILDREN */
         ;
@@ -9559,10 +9570,10 @@ export default function vueFactory(exports) {
           if (currentRenderingInstance.slots._ === 1
           /* STABLE */
           ) {
-            children._ = 1
-            /* STABLE */
-            ;
-          } else {
+              children._ = 1
+              /* STABLE */
+              ;
+            } else {
             children._ = 2
             /* DYNAMIC */
             ;
@@ -9586,11 +9597,11 @@ export default function vueFactory(exports) {
       if (shapeFlag & 64
       /* TELEPORT */
       ) {
-        type = 16
-        /* ARRAY_CHILDREN */
-        ;
-        children = [createTextVNode(children)];
-      } else {
+          type = 16
+          /* ARRAY_CHILDREN */
+          ;
+          children = [createTextVNode(children)];
+        } else {
         type = 8
         /* TEXT_CHILDREN */
         ;
@@ -9909,7 +9920,8 @@ export default function vueFactory(exports) {
         /* CONTEXT */
         ;
         return ctx[key];
-      } else if (globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) {
+      } else if ( // window properties
+      globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)) {
         {
           return globalProperties[key];
         }
@@ -11195,15 +11207,15 @@ export default function vueFactory(exports) {
     if (vnode.shapeFlag & 128
     /* SUSPENSE */
     ) {
-      var suspense = vnode.suspense;
-      vnode = suspense.activeBranch;
+        var suspense = vnode.suspense;
+        vnode = suspense.activeBranch;
 
-      if (suspense.pendingBranch && !suspense.isHydrating) {
-        suspense.effects.push(() => {
-          setVarsOnVNode(suspense.activeBranch, vars);
-        });
-      }
-    } // drill down HOCs until it's a non-component vnode
+        if (suspense.pendingBranch && !suspense.isHydrating) {
+          suspense.effects.push(() => {
+            setVarsOnVNode(suspense.activeBranch, vars);
+          });
+        }
+      } // drill down HOCs until it's a non-component vnode
 
 
     while (vnode.component) {

@@ -1271,6 +1271,105 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   });
   return callbackId;
 }
+const HOOK_SUCCESS = "success";
+const HOOK_FAIL = "fail";
+const HOOK_COMPLETE = "complete";
+const globalInterceptors = {};
+const scopedInterceptors = {};
+function wrapperHook(hook) {
+  return function(data) {
+    return hook(data) || data;
+  };
+}
+function queue(hooks, data) {
+  let promise = false;
+  for (let i = 0; i < hooks.length; i++) {
+    const hook = hooks[i];
+    if (promise) {
+      promise = Promise.resolve(wrapperHook(hook));
+    } else {
+      const res = hook(data);
+      if (shared.isPromise(res)) {
+        promise = Promise.resolve(res);
+      }
+      if (res === false) {
+        return {
+          then() {
+          },
+          catch() {
+          }
+        };
+      }
+    }
+  }
+  return promise || {
+    then(callback) {
+      return callback(data);
+    },
+    catch() {
+    }
+  };
+}
+function wrapperOptions(interceptors, options = {}) {
+  [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
+    const hooks = interceptors[name];
+    if (!shared.isArray(hooks)) {
+      return;
+    }
+    const oldCallback = options[name];
+    options[name] = function callbackInterceptor(res) {
+      queue(hooks, res).then((res2) => {
+        return shared.isFunction(oldCallback) && oldCallback(res2) || res2;
+      });
+    };
+  });
+  return options;
+}
+function wrapperReturnValue(method, returnValue) {
+  const returnValueHooks = [];
+  if (shared.isArray(globalInterceptors.returnValue)) {
+    returnValueHooks.push(...globalInterceptors.returnValue);
+  }
+  const interceptor = scopedInterceptors[method];
+  if (interceptor && shared.isArray(interceptor.returnValue)) {
+    returnValueHooks.push(...interceptor.returnValue);
+  }
+  returnValueHooks.forEach((hook) => {
+    returnValue = hook(returnValue) || returnValue;
+  });
+  return returnValue;
+}
+function getApiInterceptorHooks(method) {
+  const interceptor = Object.create(null);
+  Object.keys(globalInterceptors).forEach((hook) => {
+    if (hook !== "returnValue") {
+      interceptor[hook] = globalInterceptors[hook].slice();
+    }
+  });
+  const scopedInterceptor = scopedInterceptors[method];
+  if (scopedInterceptor) {
+    Object.keys(scopedInterceptor).forEach((hook) => {
+      if (hook !== "returnValue") {
+        interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+      }
+    });
+  }
+  return interceptor;
+}
+function invokeApi(method, api2, options, ...params) {
+  const interceptor = getApiInterceptorHooks(method);
+  if (interceptor && Object.keys(interceptor).length) {
+    if (shared.isArray(interceptor.invoke)) {
+      const res = queue(interceptor.invoke, options);
+      return res.then((options2) => {
+        return api2(wrapperOptions(interceptor, options2), ...params);
+      });
+    } else {
+      return api2(wrapperOptions(interceptor, options), ...params);
+    }
+  }
+  return api2(options, ...params);
+}
 function hasCallback(args) {
   if (shared.isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => shared.isFunction(args[cb]))) {
     return true;
@@ -1285,14 +1384,14 @@ function handlePromise(promise) {
   }
   return promise;
 }
-function promisify(fn) {
+function promisify(name, fn) {
   return (args = {}) => {
     if (hasCallback(args)) {
-      return fn(args);
+      return wrapperReturnValue(name, invokeApi(name, fn, args));
     }
-    return handlePromise(new Promise((resolve, reject) => {
-      fn(shared.extend(args, { success: resolve, fail: reject }));
-    }));
+    return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
+      invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }));
+    })));
   };
 }
 function formatApiArgs(args, options) {
@@ -1374,13 +1473,13 @@ function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
 }
 function defineTaskApi(name, fn, protocol, options) {
-  return promisify(wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(name, wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 function defineSyncApi(name, fn, protocol, options) {
   return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
 }
 function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(name, wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
 }
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_STORAGE = "getStorage";

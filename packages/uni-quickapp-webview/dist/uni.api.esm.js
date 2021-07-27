@@ -1,4 +1,4 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
 
 function getBaseSystemInfo() {
   return qa.getSystemInfoSync()
@@ -140,6 +140,105 @@ function isBoolean(...args) {
     return args.some((elem) => elem.toLowerCase() === 'boolean');
 }
 
+const HOOK_SUCCESS = 'success';
+const HOOK_FAIL = 'fail';
+const HOOK_COMPLETE = 'complete';
+const globalInterceptors = {};
+const scopedInterceptors = {};
+function wrapperHook(hook) {
+    return function (data) {
+        return hook(data) || data;
+    };
+}
+function queue(hooks, data) {
+    let promise = false;
+    for (let i = 0; i < hooks.length; i++) {
+        const hook = hooks[i];
+        if (promise) {
+            promise = Promise.resolve(wrapperHook(hook));
+        }
+        else {
+            const res = hook(data);
+            if (isPromise(res)) {
+                promise = Promise.resolve(res);
+            }
+            if (res === false) {
+                return {
+                    then() { },
+                    catch() { },
+                };
+            }
+        }
+    }
+    return (promise || {
+        then(callback) {
+            return callback(data);
+        },
+        catch() { },
+    });
+}
+function wrapperOptions(interceptors, options = {}) {
+    [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
+        const hooks = interceptors[name];
+        if (!isArray(hooks)) {
+            return;
+        }
+        const oldCallback = options[name];
+        options[name] = function callbackInterceptor(res) {
+            queue(hooks, res).then((res) => {
+                return (isFunction(oldCallback) && oldCallback(res)) || res;
+            });
+        };
+    });
+    return options;
+}
+function wrapperReturnValue(method, returnValue) {
+    const returnValueHooks = [];
+    if (isArray(globalInterceptors.returnValue)) {
+        returnValueHooks.push(...globalInterceptors.returnValue);
+    }
+    const interceptor = scopedInterceptors[method];
+    if (interceptor && isArray(interceptor.returnValue)) {
+        returnValueHooks.push(...interceptor.returnValue);
+    }
+    returnValueHooks.forEach((hook) => {
+        returnValue = hook(returnValue) || returnValue;
+    });
+    return returnValue;
+}
+function getApiInterceptorHooks(method) {
+    const interceptor = Object.create(null);
+    Object.keys(globalInterceptors).forEach((hook) => {
+        if (hook !== 'returnValue') {
+            interceptor[hook] = globalInterceptors[hook].slice();
+        }
+    });
+    const scopedInterceptor = scopedInterceptors[method];
+    if (scopedInterceptor) {
+        Object.keys(scopedInterceptor).forEach((hook) => {
+            if (hook !== 'returnValue') {
+                interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+            }
+        });
+    }
+    return interceptor;
+}
+function invokeApi(method, api, options, ...params) {
+    const interceptor = getApiInterceptorHooks(method);
+    if (interceptor && Object.keys(interceptor).length) {
+        if (isArray(interceptor.invoke)) {
+            const res = queue(interceptor.invoke, options);
+            return res.then((options) => {
+                return api(wrapperOptions(interceptor, options), ...params);
+            });
+        }
+        else {
+            return api(wrapperOptions(interceptor, options), ...params);
+        }
+    }
+    return api(options, ...params);
+}
+
 function handlePromise(promise) {
     if (__UNI_FEATURE_PROMISE__) {
         return promise
@@ -248,105 +347,6 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
-
-const HOOK_SUCCESS = 'success';
-const HOOK_FAIL = 'fail';
-const HOOK_COMPLETE = 'complete';
-const globalInterceptors = {};
-const scopedInterceptors = {};
-function wrapperHook(hook) {
-    return function (data) {
-        return hook(data) || data;
-    };
-}
-function queue(hooks, data) {
-    let promise = false;
-    for (let i = 0; i < hooks.length; i++) {
-        const hook = hooks[i];
-        if (promise) {
-            promise = Promise.resolve(wrapperHook(hook));
-        }
-        else {
-            const res = hook(data);
-            if (isPromise(res)) {
-                promise = Promise.resolve(res);
-            }
-            if (res === false) {
-                return {
-                    then() { },
-                    catch() { },
-                };
-            }
-        }
-    }
-    return (promise || {
-        then(callback) {
-            return callback(data);
-        },
-        catch() { },
-    });
-}
-function wrapperOptions(interceptors, options = {}) {
-    [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
-        const hooks = interceptors[name];
-        if (!isArray(hooks)) {
-            return;
-        }
-        const oldCallback = options[name];
-        options[name] = function callbackInterceptor(res) {
-            queue(hooks, res).then((res) => {
-                return (isFunction(oldCallback) && oldCallback(res)) || res;
-            });
-        };
-    });
-    return options;
-}
-function wrapperReturnValue(method, returnValue) {
-    const returnValueHooks = [];
-    if (isArray(globalInterceptors.returnValue)) {
-        returnValueHooks.push(...globalInterceptors.returnValue);
-    }
-    const interceptor = scopedInterceptors[method];
-    if (interceptor && isArray(interceptor.returnValue)) {
-        returnValueHooks.push(...interceptor.returnValue);
-    }
-    returnValueHooks.forEach((hook) => {
-        returnValue = hook(returnValue) || returnValue;
-    });
-    return returnValue;
-}
-function getApiInterceptorHooks(method) {
-    const interceptor = Object.create(null);
-    Object.keys(globalInterceptors).forEach((hook) => {
-        if (hook !== 'returnValue') {
-            interceptor[hook] = globalInterceptors[hook].slice();
-        }
-    });
-    const scopedInterceptor = scopedInterceptors[method];
-    if (scopedInterceptor) {
-        Object.keys(scopedInterceptor).forEach((hook) => {
-            if (hook !== 'returnValue') {
-                interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
-            }
-        });
-    }
-    return interceptor;
-}
-function invokeApi(method, api, options, ...params) {
-    const interceptor = getApiInterceptorHooks(method);
-    if (interceptor && Object.keys(interceptor).length) {
-        if (isArray(interceptor.invoke)) {
-            const res = queue(interceptor.invoke, options);
-            return res.then((options) => {
-                return api(wrapperOptions(interceptor, options), ...params);
-            });
-        }
-        else {
-            return api(wrapperOptions(interceptor, options), ...params);
-        }
-    }
-    return api(options, ...params);
-}
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
