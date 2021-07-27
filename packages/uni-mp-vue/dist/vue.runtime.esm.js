@@ -3055,8 +3055,29 @@ const publicPropertiesMap = extend(Object.create(null), {
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
     $forceUpdate: i => () => queueJob(i.update),
     // $nextTick: i => nextTick.bind(i.proxy!), // fixed by xxxxxx
-    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
+    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP),
+    // compat
+    $children: getCompatChildren
 });
+function getCompatChildren(instance) {
+    const root = instance.subTree;
+    const children = [];
+    if (root) {
+        walk(root, children);
+    }
+    return children;
+}
+function walk(vnode, children) {
+    if (vnode.component) {
+        children.push(vnode.component.proxy);
+    }
+    else if (vnode.shapeFlag & 16 /* ARRAY_CHILDREN */) {
+        const vnodes = vnode.children;
+        for (let i = 0; i < vnodes.length; i++) {
+            walk(vnodes[i], children);
+        }
+    }
+}
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
         const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
