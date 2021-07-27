@@ -1,4 +1,4 @@
-export function publishHandler(eventType, args, pageIds) {
+export function publishHandler (eventType, args, pageIds) {
   args = JSON.stringify(args)
   if (process.env.NODE_ENV !== 'production') {
     console.log(`UNIAPP[publishHandler]:[${+new Date()}]`, eventType, args, pageIds)
