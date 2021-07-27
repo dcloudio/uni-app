@@ -11,7 +11,7 @@ import { AdBase } from './adBase'
 class InterstitialAd extends AdBase implements UniApp.InterstitialAdContext {
   constructor(options: any) {
     super(plus.ad.createInterstitialAd(options), options)
-
+    this.preload = false
     this._loadAd()
   }
 }

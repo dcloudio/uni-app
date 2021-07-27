@@ -14,6 +14,7 @@ class FullScreenVideoAd
 {
   constructor(options: any) {
     super(plus.ad.createFullScreenVideoAd(options), options)
+    this.preload = false
   }
 }
 

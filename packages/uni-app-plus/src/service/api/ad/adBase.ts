@@ -64,23 +64,20 @@ class AdEventHandler {
 }
 
 class AdBase extends AdEventHandler {
+  preload: boolean = true
+
   private _isLoaded: boolean = false
-
   private _isLoading: boolean = false
-
-  private _preload: boolean = true
-
   private _loadPromiseResolve: Function | null = null
   private _loadPromiseReject: Function | null = null
   private _showPromiseResolve: Function | null = null
   private _showPromiseReject: Function | null = null
-
   private _adInstance: any
 
   constructor(adInstance: any, options: any) {
     super()
 
-    this._preload = options.preload !== undefined ? options.preload : false
+    this.preload = options.preload !== undefined ? options.preload : false
 
     const ad = (this._adInstance = adInstance)
 
@@ -105,7 +102,7 @@ class AdBase extends AdEventHandler {
       this._isLoading = false
       this._dispatchEvent(EventType.close, e)
 
-      if (this._preload === true) {
+      if (this.preload === true) {
         this._loadAd()
       }
     })
