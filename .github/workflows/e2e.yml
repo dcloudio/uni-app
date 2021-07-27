@@ -67,7 +67,7 @@ jobs:
           start: npm run dev:ssr
           working-directory: ./packages/playground/ssr
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
+          wait-on-timeout: 240
           browser: chrome
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
