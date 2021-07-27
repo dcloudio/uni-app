@@ -105,7 +105,8 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
         __UNI_WXS_API__: JSON.stringify(process.env.UNI_USING_WXS_API === 'true'),
         __UNI_PROMISE_API__: JSON.stringify(process.env.UNI_USING_PROMISE_API === 'true'),
         __VUE_OPTIONS_API__: JSON.stringify(process.env.UNI_USING_VUE3_OPTIONS_API === 'true'),
-        __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated)
+        __VUE_CREATED_DEFERRED__: JSON.stringify(deferredCreated),
+        __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
       })
     }
     if (process.env.UNI_PLATFORM === 'h5') {
