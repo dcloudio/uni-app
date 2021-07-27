@@ -31,8 +31,10 @@ function uniCssPlugin() {
             const entryName = entryChunk.name;
             const entryCssAsset = chunks.find(({ name }) => name === entryName + '.css');
             if (entryCssAsset) {
-                entryCssAsset.source +=
-                    '\n' + generateBuiltInCssCode([...uni_cli_shared_1.buildInCssSet]);
+                entryCssAsset.source =
+                    generateBuiltInCssCode([...uni_cli_shared_1.buildInCssSet]) +
+                        '\n' +
+                        entryCssAsset.source;
             }
         },
     };

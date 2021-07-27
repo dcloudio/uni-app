@@ -34,8 +34,10 @@ export function uniCssPlugin(): Plugin {
         ({ name }) => name === entryName + '.css'
       ) as OutputAsset
       if (entryCssAsset) {
-        entryCssAsset.source +=
-          '\n' + generateBuiltInCssCode([...buildInCssSet])
+        entryCssAsset.source =
+          generateBuiltInCssCode([...buildInCssSet]) +
+          '\n' +
+          entryCssAsset.source
       }
     },
   }
