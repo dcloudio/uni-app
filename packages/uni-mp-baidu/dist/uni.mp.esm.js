@@ -469,7 +469,7 @@ function initBehaviors(vueOptions, initBehavior) {
             }
         });
     }
-    if (vueExtends.props) {
+    if (vueExtends && vueExtends.props) {
         const behavior = {};
         initProps(behavior, vueExtends.props, true);
         behaviors.push(initBehavior(behavior));

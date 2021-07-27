@@ -71,7 +71,7 @@ export function initBehaviors(
       }
     })
   }
-  if (vueExtends.props) {
+  if (vueExtends && vueExtends.props) {
     const behavior = {}
     initProps(behavior, vueExtends.props, true)
     behaviors.push(initBehavior(behavior) as string)
