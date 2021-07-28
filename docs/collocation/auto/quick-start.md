@@ -22,6 +22,8 @@ uni-app提供了一批API，这些API可以操控uni-app应用，包括运行、
 
 目前仅 [cli](https://uniapp.dcloud.net.cn/quickstart?id=_2-通过vue-cli命令行) 工程支持。有利于持续集成。
 
+非`cli`项目中使用自动化测试参考: [https://ext.dcloud.net.cn/plugin?id=5708](https://ext.dcloud.net.cn/plugin?id=5708)
+
 推荐使用方式：研发提交源码到版本库后，持续集成系统自动拉取源码，自动运行自动化测试。
 
 暂不支持百度，先忽略百度相关测试代码
@@ -357,5 +359,3 @@ await tag.$('.test')
 3. 微信小程序暂不支持父子选择器
 4. 百度小程序选择元素必须有事件的元素才能被选中，否则提示元素不存在
 5. 分包中的页面，打开之后要延迟时间长一点，否则不能正确获取到页面信息
-
-
