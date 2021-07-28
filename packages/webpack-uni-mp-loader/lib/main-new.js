@@ -78,7 +78,9 @@ createPage(Page)
     })
 
     if (process.env.UNI_USING_VUE3) {
-      content = content + ';createApp().app.mount(\'#app\');'
+      if (content.indexOf('createSSRApp') !== -1) {
+        content = content + ';createApp().app.mount(\'#app\');'
+      }
     }
 
     const resourcePath = 'app'
