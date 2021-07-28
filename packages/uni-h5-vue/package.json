@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-vue",
-  "version": "3.0.0-alpha-3000020210728001",
+  "version": "3.0.0-alpha-3000020210728002",
   "description": "@dcloudio/uni-h5-vue",
   "main": "dist/vue.runtime.cjs.js",
   "module": "dist/vue.runtime.esm.js",
@@ -17,5 +17,5 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "gitHead": "3b83cc9dc4c9a214747c626f79693559c338044f"
+  "gitHead": "4dd0e035b52584ff028ee3028c46adc555be0529"
 }

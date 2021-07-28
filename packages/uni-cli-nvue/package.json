@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-nvue",
-  "version": "3.0.0-alpha-3000020210728001",
+  "version": "3.0.0-alpha-3000020210728002",
   "description": "uni-cli-nvue",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "Apache-2.0",
-  "gitHead": "3b83cc9dc4c9a214747c626f79693559c338044f",
+  "gitHead": "4dd0e035b52584ff028ee3028c46adc555be0529",
   "dependencies": {
     "terser-webpack-plugin": "^5.1.4",
     "vue-loader": "^16.3.3",
