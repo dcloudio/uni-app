@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp')
 const loaderUtils = require('loader-utils')
+const moduleAlias = require('module-alias')
 
 require('./error-reporting')
 
@@ -373,8 +374,6 @@ if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
   }
   console.log(perfMsg)
 }
-
-const moduleAlias = require('module-alias')
 
 // 将 template-compiler 指向修订后的版本
 moduleAlias.addAlias('vue-template-compiler', '@dcloudio/vue-cli-plugin-uni/packages/vue-template-compiler')

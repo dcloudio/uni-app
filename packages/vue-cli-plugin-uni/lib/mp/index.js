@@ -181,6 +181,16 @@ module.exports = {
       }
     }
 
+    const alias = { // 仅 mp-weixin
+      'mpvue-page-factory': require.resolve(
+        '@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
+    }
+
+    if (process.env.UNI_USING_VUE3) {
+      alias.vuex = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex')
+      alias['@vue/devtools-api'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/devtools-api')
+    }
+
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
@@ -197,10 +207,7 @@ module.exports = {
       },
       resolve: {
         extensions: ['.nvue'],
-        alias: { // 仅 mp-weixin
-          'mpvue-page-factory': require.resolve(
-            '@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
-        }
+        alias
       },
       module: {
         rules: [{
