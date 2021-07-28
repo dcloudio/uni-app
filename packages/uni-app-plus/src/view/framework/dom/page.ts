@@ -10,6 +10,7 @@ import {
   ON_REACH_BOTTOM,
   PageCreateData,
   UniNodeJSON,
+  scrollTo,
 } from '@dcloudio/uni-shared'
 
 import { UniElement } from './elements/UniElement'
@@ -171,4 +172,16 @@ function initPageScroll(
   requestAnimationFrame(() =>
     document.addEventListener('scroll', createScrollListener(opts))
   )
+}
+
+export function pageScrollTo(
+  {
+    scrollTop,
+    selector,
+    duration,
+  }: { selector?: string; scrollTop?: number; duration?: number },
+  publish: (err?: string) => void
+) {
+  scrollTo(selector! || scrollTop! || 0, duration!)
+  publish()
 }

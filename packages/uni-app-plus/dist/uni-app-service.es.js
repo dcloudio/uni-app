@@ -4832,6 +4832,34 @@ var serviceContext = (function (vue) {
 
   const API_HIDE_TOAST = 'hideToast';
 
+  const API_LOAD_FONT_FACE = 'loadFontFace';
+  const LoadFontFaceProtocol = {
+      family: {
+          type: String,
+          required: true,
+      },
+      source: {
+          type: String,
+          required: true,
+      },
+      desc: Object,
+  };
+
+  const API_PAGE_SCROLL_TO = 'pageScrollTo';
+  const PageScrollToProtocol = {
+      scrollTop: Number,
+      selector: String,
+      duration: Number,
+  };
+  const DEFAULT_DURATION = 300;
+  const PageScrollToOptions = {
+      formatArgs: {
+          duration(value, params) {
+              params.duration = Math.max(0, parseInt(value + '') || DEFAULT_DURATION);
+          },
+      },
+  };
+
   const API_SHOW_ACTION_SHEET = 'showActionSheet';
   const ShowActionSheetProtocol = {
       itemList: {
@@ -8114,6 +8142,29 @@ var serviceContext = (function (vue) {
       resolve();
   });
 
+  const VD_SYNC = 'vdSync';
+  const ON_WEBVIEW_READY = 'onWebviewReady';
+  const PAGE_SCROLL_TO = 'pageScrollTo';
+  const LOAD_FONT_FACE = 'loadFontFace';
+  const ACTION_TYPE_DICT = 0;
+
+  const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
+      const pageId = getPageIdByVm(getCurrentPageVm());
+      UniServiceJSBridge.invokeViewMethod(LOAD_FONT_FACE, options, pageId, (err) => {
+          if (err) {
+              reject(err);
+          }
+          else {
+              resolve();
+          }
+      });
+  }, LoadFontFaceProtocol);
+
+  const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
+      const pageId = getPageIdByVm(getCurrentPageVm());
+      UniServiceJSBridge.invokeViewMethod(PAGE_SCROLL_TO, options, pageId, resolve);
+  }, PageScrollToProtocol, PageScrollToOptions);
+
   const providers = {
       oauth(callback) {
           plus.oauth.getServices((services) => {
@@ -8891,10 +8942,6 @@ var serviceContext = (function (vue) {
           });
       });
   }
-
-  const VD_SYNC = 'vdSync';
-  const ON_WEBVIEW_READY = 'onWebviewReady';
-  const ACTION_TYPE_DICT = 0;
 
   function onNodeEvent(nodeId, evt, pageNode) {
       pageNode.fireEvent(nodeId, evt);
@@ -10840,6 +10887,8 @@ var serviceContext = (function (vue) {
     hideLoading: hideLoading,
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
+    loadFontFace: loadFontFace,
+    pageScrollTo: pageScrollTo,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,

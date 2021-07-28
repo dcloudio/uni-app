@@ -171,6 +171,64 @@
       offsetLeft
     };
   }
+  function addFont(family, source, desc) {
+    const fonts = document.fonts;
+    if (fonts) {
+      const fontFace = new FontFace(family, source, desc);
+      return fontFace.load().then(() => {
+        fonts.add(fontFace);
+      });
+    }
+    return new Promise((resolve2) => {
+      const style = document.createElement("style");
+      const values = [];
+      if (desc) {
+        const { style: style2, weight, stretch, unicodeRange, variant, featureSettings } = desc;
+        style2 && values.push(`font-style:${style2}`);
+        weight && values.push(`font-weight:${weight}`);
+        stretch && values.push(`font-stretch:${stretch}`);
+        unicodeRange && values.push(`unicode-range:${unicodeRange}`);
+        variant && values.push(`font-variant:${variant}`);
+        featureSettings && values.push(`font-feature-settings:${featureSettings}`);
+      }
+      style.innerText = `@font-face{font-family:"${family}";src:${source};${values.join(";")}}`;
+      document.head.appendChild(style);
+      resolve2();
+    });
+  }
+  function scrollTo(scrollTop, duration) {
+    if (isString(scrollTop)) {
+      const el = document.querySelector(scrollTop);
+      if (el) {
+        scrollTop = el.getBoundingClientRect().top + window.pageYOffset;
+      }
+    }
+    if (scrollTop < 0) {
+      scrollTop = 0;
+    }
+    const documentElement = document.documentElement;
+    const { clientHeight, scrollHeight } = documentElement;
+    scrollTop = Math.min(scrollTop, scrollHeight - clientHeight);
+    if (duration === 0) {
+      documentElement.scrollTop = document.body.scrollTop = scrollTop;
+      return;
+    }
+    if (window.scrollY === scrollTop) {
+      return;
+    }
+    const scrollTo2 = (duration2) => {
+      if (duration2 <= 0) {
+        window.scrollTo(0, scrollTop);
+        return;
+      }
+      const distaince = scrollTop - window.scrollY;
+      requestAnimationFrame(function() {
+        window.scrollTo(0, window.scrollY + distaince / duration2 * 10);
+        scrollTo2(duration2 - 10);
+      });
+    };
+    scrollTo2(duration);
+  }
   function plusReady(callback) {
     if (typeof callback !== "function") {
       return;
@@ -5445,6 +5503,8 @@
   [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   const VD_SYNC = "vdSync";
   const ON_WEBVIEW_READY = "onWebviewReady";
+  const PAGE_SCROLL_TO = "pageScrollTo";
+  const LOAD_FONT_FACE = "loadFontFace";
   const ACTION_TYPE_DICT = 0;
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
@@ -12669,7 +12729,7 @@
       let val = Number(props2.lowerThreshold);
       return isNaN(val) ? 50 : val;
     });
-    function scrollTo(scrollToValue, direction2) {
+    function scrollTo2(scrollToValue, direction2) {
       const container = main.value;
       let transformValue = 0;
       let transform = "";
@@ -12746,7 +12806,7 @@
       if (props2.scrollY) {
         {
           if (props2.scrollWithAnimation) {
-            scrollTo(val, "y");
+            scrollTo2(val, "y");
           } else {
             main.value.scrollTop = val;
           }
@@ -12757,7 +12817,7 @@
       if (props2.scrollX) {
         {
           if (props2.scrollWithAnimation) {
-            scrollTo(val, "x");
+            scrollTo2(val, "x");
           } else {
             main.value.scrollLeft = val;
           }
@@ -12779,7 +12839,7 @@
             let scrollLeft = main.value.scrollLeft;
             let x = scrollLeft + left;
             if (props2.scrollWithAnimation) {
-              scrollTo(x, "x");
+              scrollTo2(x, "x");
             } else {
               main.value.scrollLeft = x;
             }
@@ -12789,7 +12849,7 @@
             let scrollTop = main.value.scrollTop;
             let y = scrollTop + top;
             if (props2.scrollWithAnimation) {
-              scrollTo(y, "y");
+              scrollTo2(y, "y");
             } else {
               main.value.scrollTop = y;
             }
@@ -15845,6 +15905,10 @@
     }
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }
+  function pageScrollTo({ scrollTop, selector, duration }, publish) {
+    scrollTo(selector || scrollTop || 0, duration);
+    publish();
+  }
   function onVdSync(actions) {
     const dictAction = actions[0];
     const getDict = createGetDict(dictAction[0] === ACTION_TYPE_DICT ? dictAction[1] : []);
@@ -16015,6 +16079,13 @@
     });
     callback(result);
   }
+  function loadFontFace({ family, source, desc }, publish) {
+    addFont(family, source, desc).then(() => {
+      publish();
+    }).catch((err) => {
+      publish(err.toString());
+    });
+  }
   const pageVm = { $el: document.body };
   function initViewMethods() {
     const pageId = getCurrentPageId();
@@ -16022,6 +16093,8 @@
     registerViewMethod(pageId, "requestComponentInfo", (args, publish) => {
       requestComponentInfo(pageVm, args.reqs, publish);
     });
+    registerViewMethod(pageId, PAGE_SCROLL_TO, pageScrollTo);
+    registerViewMethod(pageId, LOAD_FONT_FACE, loadFontFace);
   }
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;

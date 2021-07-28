@@ -45,6 +45,8 @@ export * from './ui/popup/showActionSheet'
 export * from './ui/popup/showToast'
 export * from './ui/startPullDownRefresh'
 export * from './ui/stopPullDownRefresh'
+export * from './ui/loadFontFace'
+export * from './ui/pageScrollTo'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'

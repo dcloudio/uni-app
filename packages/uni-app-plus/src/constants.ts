@@ -2,6 +2,10 @@ export const VD_SYNC = 'vdSync'
 
 export const ON_WEBVIEW_READY = 'onWebviewReady'
 
+export const PAGE_SCROLL_TO = 'pageScrollTo'
+
+export const LOAD_FONT_FACE = 'loadFontFace'
+
 export let ACTION_MINIFY = true
 // __tests__
 export function setActionMinify(minify: boolean) {
