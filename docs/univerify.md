@@ -197,8 +197,8 @@ univerifyStyle 数据结构：
     },  
     "privacyTerms": {  
         "defaultCheckBoxState":"true", // 条款勾选框初始状态 默认值： true
-        "uncheckedImage":"", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.1.23+ 版本支持)   
-        "checkedImage":"", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.1.23+ 版本支持)   
+        "uncheckedImage":"", // 可选 条款勾选框未选中状态图片（仅支持本地图片 建议尺寸 24x24px）(3.2.0+ 版本支持)   
+        "checkedImage":"", // 可选 条款勾选框选中状态图片（仅支持本地图片 建议尺寸24x24px）(3.2.0+ 版本支持)   
         "textColor": "#BBBBBB", // 文字颜色 默认值：#BBBBBB  
         "termsColor": "#5496E3", //  协议文字颜色 默认值： #5496E3  
         "prefix": "我已阅读并同意", // 条款前的文案 默认值：“我已阅读并同意”  
