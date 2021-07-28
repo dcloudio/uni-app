@@ -22,8 +22,7 @@ uni-app提供了一批API，这些API可以操控uni-app应用，包括运行、
 
 目前仅 [cli](https://uniapp.dcloud.net.cn/quickstart?id=_2-通过vue-cli命令行) 工程支持。有利于持续集成。
 
-非`cli`项目中使用自动化测试参考: [https://ext.dcloud.net.cn/plugin?id=5708](https://ext.dcloud.net.cn/plugin?id=5708)
-
+[HBuilderX uniapp自动化测试插件](https://ext.dcloud.net.cn/plugin?id=5708), 支持在HBuilderX内对uniapp普通项目、cli项目进行自动化测试。此插件简化了测试环境安装、测试用例创建、测试运行、测试设备选择等步骤。
 推荐使用方式：研发提交源码到版本库后，持续集成系统自动拉取源码，自动运行自动化测试。
 
 暂不支持百度，先忽略百度相关测试代码
