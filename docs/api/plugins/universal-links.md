@@ -39,7 +39,7 @@ Error: not set parameter 'UniversalLinks' @'oauth-weixin'
 **开启Associated Domains服务后需要重新生成profile文件，提交云端打包时使用**
 
 #### 第二步骤 自动生成通用连接(Universal Links)
-HBuilderX (3.1.23版本起) 新增QQ互联和新浪微博开放平台的通用链接的设置。以微信模块为例,QQ与微博与之类似。
+HBuilderX (3.2.0 版本起) 新增QQ互联和新浪微博开放平台的通用链接的设置。以微信模块为例,QQ与微博与之类似。
 
 打开项目的manifest.json文件，在“(App) SDK配置”项中的微信登录（微信分享、微信支付）下的“iOS平台通用链接（Universal Links）”中，
 点击如图所示【自动生成】
