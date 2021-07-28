@@ -60,7 +60,7 @@ export class UniEvent {
   }
 }
 
-function createUniEvent(evt: Record<string, any>) {
+export function createUniEvent(evt: Record<string, any>) {
   if (evt instanceof UniEvent) {
     return evt
   }

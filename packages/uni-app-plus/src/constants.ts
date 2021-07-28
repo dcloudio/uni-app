@@ -16,3 +16,8 @@ export const ACTION_TYPE_DICT = 0
 export type Value = string | number | boolean | null
 export type Dictionary = Value[]
 export type DictAction = [typeof ACTION_TYPE_DICT, Dictionary]
+
+export const WEBVIEW_INSERTED = 'webviewInserted'
+export const WEBVIEW_REMOVED = 'webviewRemoved'
+export const WEBVIEW_ID_PREFIX = 'webviewId'
+export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'

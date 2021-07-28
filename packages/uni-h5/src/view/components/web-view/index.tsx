@@ -13,11 +13,15 @@ import {
   useAttrs,
 } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { updateElementStyle, once } from '@dcloudio/uni-shared'
+import {
+  updateElementStyle,
+  once,
+  ON_WEB_INVOKE_APP_SERVICE,
+} from '@dcloudio/uni-shared'
 import { onWebInvokeAppService } from '../../../service/onWebInvokeAppService'
 
 const Invoke = /*#__PURE__*/ once(() =>
-  UniServiceJSBridge.on('onWebInvokeAppService', onWebInvokeAppService)
+  UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
 )
 
 const props = {

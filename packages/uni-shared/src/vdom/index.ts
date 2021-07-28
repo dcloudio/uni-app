@@ -5,6 +5,7 @@ export {
   UniEventListener,
   parseEventName,
   normalizeEventType,
+  createUniEvent,
 } from './Event'
 export {
   ATTR_CLASS,

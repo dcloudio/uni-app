@@ -33,6 +33,7 @@ import {
   Value,
   VD_SYNC,
 } from '../../../constants'
+import { getPageById } from '@dcloudio/uni-core'
 
 export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
@@ -351,4 +352,27 @@ export function createPageNode(
   setup?: boolean
 ) {
   return new UniPageNode(pageId, pageOptions, setup)
+}
+
+export function getPageNode(pageId: string): UniPageNode | null {
+  const page = getPageById(parseInt(pageId))
+  if (!page) return null
+  return (page as any).__page_container__ as UniPageNode
+}
+
+export function findNodeByTagName(
+  tagName: string,
+  uniNode: UniNode
+): UniNode | null {
+  if (uniNode.nodeName === tagName.toLocaleUpperCase()) {
+    return uniNode
+  }
+  const { childNodes } = uniNode
+  for (let i = 0; i < childNodes.length; i++) {
+    const uniNode = findNodeByTagName(tagName, childNodes[i])
+    if (uniNode) {
+      return uniNode
+    }
+  }
+  return null
 }

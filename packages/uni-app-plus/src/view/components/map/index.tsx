@@ -247,6 +247,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onBeforeUnmount(() => {
       if (map) {
         map.close()
+        _setMap(null)
       }
     })
 
@@ -274,7 +275,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
 type Callback = (res: any) => void
 function useMapMethods(props: Props, trigger: CustomEventTrigger) {
-  let map: Map
+  let map: Map | null
   function moveToLocation(
     resolve: Callback,
     {
@@ -368,18 +369,18 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
           }
         }
       }
-      map.addOverlay(nativeMarker as unknown as PlusMapsOverlay)
+      map?.addOverlay(nativeMarker as unknown as PlusMapsOverlay)
       // 此处5+文档中PlusMapsMarker对象只有方法，没有属性
       // @ts-expect-error
       map.__markers__.push(nativeMarker)
-      map.__markers_map__[id + ''] = nativeMarker
+      map && (map.__markers_map__[id + ''] = nativeMarker)
     })
   }
   function _clearMarkers() {
     if (!map) return
     const markers = map.__markers__
     markers.forEach((marker) => {
-      map.removeOverlay(marker as unknown as PlusMapsOverlay)
+      map?.removeOverlay(marker as unknown as PlusMapsOverlay)
     })
     map.__markers__ = []
     map.__markers_map__ = {}
@@ -396,7 +397,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
     if (!map) return
     if (map.__lines__.length > 0) {
       map.__lines__.forEach((circle) => {
-        map.removeOverlay(circle as unknown as PlusMapsOverlay)
+        map?.removeOverlay(circle as unknown as PlusMapsOverlay)
       })
       map.__lines__ = []
     }
@@ -423,7 +424,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
       if (width) {
         polyline.setLineWidth(width)
       }
-      map.addOverlay(polyline as unknown as PlusMapsOverlay)
+      map?.addOverlay(polyline as unknown as PlusMapsOverlay)
       // 此处5+文档中PlusMapsPolyline对象只有方法，没有属性
       // @ts-expect-error
       map.__lines__.push(polyline)
@@ -433,7 +434,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
     if (!map) return
     if (map.__circles__.length > 0) {
       map.__circles__.forEach((circle) => {
-        map.removeOverlay(circle as unknown as PlusMapsOverlay)
+        map?.removeOverlay(circle as unknown as PlusMapsOverlay)
       })
       map.__circles__ = []
     }
@@ -458,7 +459,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
       if (strokeWidth) {
         nativeCircle.setLineWidth(strokeWidth)
       }
-      map.addOverlay(nativeCircle as unknown as PlusMapsOverlay)
+      map?.addOverlay(nativeCircle as unknown as PlusMapsOverlay)
       // 此处5+文档中PlusMapsCircle对象只有方法，没有属性
       // @ts-expect-error
       map.__circles__.push(nativeCircle)
@@ -485,7 +486,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
     _addMarkers,
     _addMapLines,
     _addMapCircles,
-    _setMap(_map: Map) {
+    _setMap(_map: Map | null) {
       map = _map
     },
   }
