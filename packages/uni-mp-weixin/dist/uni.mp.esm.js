@@ -1,4 +1,61 @@
-import { isArray, hasOwn, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+import { isPlainObject, isArray, hasOwn, toNumber, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
+const eventChannels = {};
+const eventChannelStack = [];
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
 
 function setModel(target, key, value, modifiers) {
     if (isArray(modifiers)) {
@@ -82,6 +139,14 @@ function initBaseInstance(instance, options) {
             });
         }
     }
+    ctx.getOpenerEventChannel = function () {
+        // 微信小程序使用自身getOpenerEventChannel
+        {
+            return options.mpInstance.getOpenerEventChannel();
+        }
+    };
+    ctx.$hasHook = hasHook;
+    ctx.$callHook = callHook;
     // $emit
     instance.emit = createEmitFn(instance.emit, ctx);
 }
@@ -112,45 +177,21 @@ function initMocks(instance, mpInstance, mocks) {
         }
     });
 }
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
+function hasHook(name) {
+    const hooks = this.$[name];
+    if (hooks && hooks.length) {
+        return true;
+    }
+    return false;
 }
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+function callHook(name, args) {
+    if (name === 'onLoad' && args && args.__id__) {
+        this.__eventChannel__ = getEventChannel(args.__id__);
+        delete args.__id__;
+    }
+    const hooks = this.$[name];
+    return hooks && invokeArrayFns(hooks, args);
+}
 
 const PAGE_HOOKS = [
     ON_LOAD,
@@ -304,7 +345,7 @@ function initRefs(instance, mpInstance) {
     });
 }
 function findVmByVueId(instance, vuePid) {
-    // TODO vue3 中 没有 $children
+    // 标准 vue3 中 没有 $children，定制了内核
     const $children = instance.$children;
     // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
     for (let i = $children.length - 1; i >= 0; i--) {
@@ -916,12 +957,12 @@ function handleLink(event) {
 }
 
 var parseOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes
+    __proto__: null,
+    mocks: mocks,
+    isPage: isPage,
+    initRelation: initRelation,
+    handleLink: handleLink,
+    initLifetimes: initLifetimes
 });
 
 const createApp = initCreateApp();

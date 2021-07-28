@@ -6,10 +6,10 @@ interface EventChannelListener {
 }
 
 export class EventChannel {
-  id: number
+  id?: number
   private listener: Record<string, EventChannelListener[]>
   private emitCache: Record<string, any[][]>
-  constructor(id: number, events?: NavigateToOptionEvents) {
+  constructor(id?: number, events?: NavigateToOptionEvents) {
     this.id = id
     this.listener = {}
     this.emitCache = {}

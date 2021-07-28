@@ -3,7 +3,7 @@ import { App } from 'vue'
 import { isFunction } from '@vue/shared'
 
 import { applyOptions } from './componentOptions'
-import { set, hasHook, callHook } from './componentInstance'
+import { set } from './componentInstance'
 import { errorHandler } from './appConfig'
 import { uniIdMixin } from './uni-id-mixin'
 
@@ -14,11 +14,6 @@ export function initApp(app: App) {
   }
   const globalProperties = appConfig.globalProperties
   uniIdMixin(globalProperties)
-  if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
-    // 小程序，待重构，不再挂靠全局
-    globalProperties.$hasHook = hasHook
-    globalProperties.$callHook = callHook
-  }
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions

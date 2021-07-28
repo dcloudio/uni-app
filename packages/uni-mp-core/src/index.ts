@@ -35,6 +35,7 @@ export {
 // protocols
 export {
   redirectTo,
+  navigateTo,
   previewImage,
   getSystemInfo,
   getSystemInfoSync,

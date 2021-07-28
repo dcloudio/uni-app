@@ -1,5 +1,6 @@
 export {
   redirectTo,
+  navigateTo,
   previewImage,
   getSystemInfo,
   getSystemInfoSync,

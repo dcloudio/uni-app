@@ -613,6 +613,26 @@ function initGetProvider(providers) {
     };
 }
 
+function addSafeAreaInsets(fromRes, toRes) {
+    if (fromRes.safeArea) {
+        const safeArea = fromRes.safeArea;
+        toRes.safeAreaInsets = {
+            top: safeArea.top,
+            left: safeArea.left,
+            right: fromRes.windowWidth - safeArea.right,
+            bottom: fromRes.windowHeight - safeArea.bottom,
+        };
+    }
+}
+
+const getSystemInfo = {
+    returnValue: addSafeAreaInsets,
+};
+
+const getSystemInfoSync = getSystemInfo;
+
+const redirectTo = {};
+
 const previewImage = {
     args(fromArgs, toArgs) {
         let currentIndex = parseInt(fromArgs.current);
@@ -646,22 +666,6 @@ const previewImage = {
         };
     },
 };
-function addSafeAreaInsets(fromRes, toRes) {
-    if (fromRes.safeArea) {
-        const safeArea = fromRes.safeArea;
-        toRes.safeAreaInsets = {
-            top: safeArea.top,
-            left: safeArea.left,
-            right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom,
-        };
-    }
-}
-const getSystemInfo = {
-    returnValue: addSafeAreaInsets,
-};
-const getSystemInfoSync = getSystemInfo;
-const redirectTo = {};
 
 const getProvider = initGetProvider({
     oauth: ['weixin'],

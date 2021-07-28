@@ -85,7 +85,7 @@ export function findVmByVueId(
   instance: ComponentPublicInstance,
   vuePid: string
 ): ComponentPublicInstance | undefined {
-  // TODO vue3 中 没有 $children
+  // 标准 vue3 中 没有 $children，定制了内核
   const $children = (instance as any).$children
   // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
   for (let i = $children.length - 1; i >= 0; i--) {

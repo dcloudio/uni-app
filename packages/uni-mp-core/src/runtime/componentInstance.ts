@@ -1,3 +1,4 @@
+import { EventChannel, invokeArrayFns } from '@dcloudio/uni-shared'
 import {
   capitalize,
   hasOwn,
@@ -8,6 +9,7 @@ import {
 } from '@vue/shared'
 
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
+import { getEventChannel } from '../api/protocols/navigateTo'
 import { MPComponentInstance } from '../index'
 
 function setModel(
@@ -141,6 +143,20 @@ export function initBaseInstance(
     }
   }
 
+  ctx.getOpenerEventChannel = function () {
+    // 微信小程序使用自身getOpenerEventChannel
+    if (__PLATFORM__ === 'mp-weixin') {
+      return options.mpInstance.getOpenerEventChannel()
+    }
+    if (!this.__eventChannel__) {
+      this.__eventChannel__ = new EventChannel()
+    }
+    return this.__eventChannel__
+  }
+
+  ctx.$hasHook = hasHook
+  ctx.$callHook = callHook
+
   // $emit
   instance.emit = createEmitFn(instance.emit, ctx)
 }
@@ -184,4 +200,21 @@ export function initMocks(
       ctx[mock] = mpInstance[mock]
     }
   })
+}
+
+function hasHook(this: ComponentPublicInstance, name: string) {
+  const hooks = (this.$ as any)[name]
+  if (hooks && hooks.length) {
+    return true
+  }
+  return false
+}
+
+function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
+  if (name === 'onLoad' && args && (args as any).__id__) {
+    ;(this as any).__eventChannel__ = getEventChannel((args as any).__id__)
+    delete (args as any).__id__
+  }
+  const hooks = (this.$ as any)[name]
+  return hooks && invokeArrayFns(hooks, args)
 }

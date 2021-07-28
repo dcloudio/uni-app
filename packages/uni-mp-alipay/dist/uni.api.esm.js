@@ -1,5 +1,41 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
 
+const eventChannels = {};
+const eventChannelStack = [];
+let id = 0;
+function initEventChannel(events, cache = true) {
+    id++;
+    const eventChannel = new my.EventChannel(id, events);
+    if (cache) {
+        eventChannels[id] = eventChannel;
+        eventChannelStack.push(eventChannel);
+    }
+    return eventChannel;
+}
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
+const navigateTo = {
+    args(fromArgs) {
+        const id = initEventChannel(fromArgs.events).id;
+        if (fromArgs.url) {
+            fromArgs.url =
+                fromArgs.url +
+                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                    '__id__=' +
+                    id;
+        }
+    },
+    returnValue(fromRes) {
+        fromRes.eventChannel = getEventChannel();
+    },
+};
+
 function getBaseSystemInfo() {
   return my.getSystemInfoSync()
 }
@@ -624,6 +660,7 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+
 const redirectTo = {};
 
 const getProvider = initGetProvider({
@@ -1212,7 +1249,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   saveImageToPhotosAlbum: saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
   chooseAddress: chooseAddress,
-  redirectTo: redirectTo
+  redirectTo: redirectTo,
+  navigateTo: navigateTo
 });
 
 var index = initUni(shims, protocols);

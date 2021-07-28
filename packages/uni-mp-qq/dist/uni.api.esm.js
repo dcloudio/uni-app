@@ -1,5 +1,41 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isPromise, isFunction, extend } from '@vue/shared';
 
+const eventChannels = {};
+const eventChannelStack = [];
+let id = 0;
+function initEventChannel(events, cache = true) {
+    id++;
+    const eventChannel = new qq.EventChannel(id, events);
+    if (cache) {
+        eventChannels[id] = eventChannel;
+        eventChannelStack.push(eventChannel);
+    }
+    return eventChannel;
+}
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
+const navigateTo = {
+    args(fromArgs) {
+        const id = initEventChannel(fromArgs.events).id;
+        if (fromArgs.url) {
+            fromArgs.url =
+                fromArgs.url +
+                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                    '__id__=' +
+                    id;
+        }
+    },
+    returnValue(fromRes) {
+        fromRes.eventChannel = getEventChannel();
+    },
+};
+
 function getBaseSystemInfo() {
   return qq.getSystemInfoSync()
 }
@@ -613,6 +649,26 @@ function initGetProvider(providers) {
     };
 }
 
+function addSafeAreaInsets(fromRes, toRes) {
+    if (fromRes.safeArea) {
+        const safeArea = fromRes.safeArea;
+        toRes.safeAreaInsets = {
+            top: safeArea.top,
+            left: safeArea.left,
+            right: fromRes.windowWidth - safeArea.right,
+            bottom: fromRes.windowHeight - safeArea.bottom,
+        };
+    }
+}
+
+const getSystemInfo = {
+    returnValue: addSafeAreaInsets,
+};
+
+const getSystemInfoSync = getSystemInfo;
+
+const redirectTo = {};
+
 const previewImage = {
     args(fromArgs, toArgs) {
         let currentIndex = parseInt(fromArgs.current);
@@ -646,22 +702,6 @@ const previewImage = {
         };
     },
 };
-function addSafeAreaInsets(fromRes, toRes) {
-    if (fromRes.safeArea) {
-        const safeArea = fromRes.safeArea;
-        toRes.safeAreaInsets = {
-            top: safeArea.top,
-            left: safeArea.left,
-            right: fromRes.windowWidth - safeArea.right,
-            bottom: fromRes.windowHeight - safeArea.bottom,
-        };
-    }
-}
-const getSystemInfo = {
-    returnValue: addSafeAreaInsets,
-};
-const getSystemInfoSync = getSystemInfo;
-const redirectTo = {};
 
 const getProvider = initGetProvider({
     oauth: ['qq'],
@@ -678,6 +718,7 @@ var shims = /*#__PURE__*/Object.freeze({
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   redirectTo: redirectTo,
+  navigateTo: navigateTo,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync

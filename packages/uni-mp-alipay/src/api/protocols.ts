@@ -2,7 +2,7 @@ import { isPlainObject, isArray } from '@vue/shared'
 
 import { addSafeAreaInsets } from '@dcloudio/uni-mp-core'
 
-export { redirectTo } from '@dcloudio/uni-mp-core'
+export { redirectTo, navigateTo } from '@dcloudio/uni-mp-core'
 
 function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
@@ -202,7 +202,7 @@ export const compressImage = {
   },
   returnValue(
     fromRes: my.ICompressImageSuccessResult,
-    toRes: UniApp.CompressImageSuccessData
+    toRes: UniApp.CompressVideoSuccessData
   ) {
     const apFilePaths = fromRes.apFilePaths
     if (apFilePaths && apFilePaths.length) {
@@ -234,7 +234,7 @@ export const previewImage = {
     const currentIndex = Number(fromArgs.current)
     if (isNaN(currentIndex)) {
       if (fromArgs.current && isArray(fromArgs.urls)) {
-        const index = fromArgs.urls.indexOf(fromArgs.current)
+        const index = fromArgs.urls.indexOf(fromArgs.current as string)
         toArgs.current = ~index ? index : 0
       }
     } else {

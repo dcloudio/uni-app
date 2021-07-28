@@ -1,4 +1,124 @@
-import { isArray, hasOwn, toNumber, isPlainObject, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+import { isPlainObject, isArray, hasOwn, toNumber, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+
+const encode = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_THEME_CHANGE = 'onThemeChange';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+//Page
+const ON_LOAD = 'onLoad';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
+const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+
+class EventChannel {
+    constructor(id, events) {
+        this.id = id;
+        this.listener = {};
+        this.emitCache = {};
+        if (events) {
+            Object.keys(events).forEach((name) => {
+                this.on(name, events[name]);
+            });
+        }
+    }
+    emit(eventName, ...args) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
+        }
+        fns.forEach((opt) => {
+            opt.fn.apply(opt.fn, args);
+        });
+        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
+    }
+    on(eventName, fn) {
+        this._addListener(eventName, 'on', fn);
+        this._clearCache(eventName);
+    }
+    once(eventName, fn) {
+        this._addListener(eventName, 'once', fn);
+        this._clearCache(eventName);
+    }
+    off(eventName, fn) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return;
+        }
+        if (fn) {
+            for (let i = 0; i < fns.length;) {
+                if (fns[i].fn === fn) {
+                    fns.splice(i, 1);
+                    i--;
+                }
+                i++;
+            }
+        }
+        else {
+            delete this.listener[eventName];
+        }
+    }
+    _clearCache(eventName) {
+        const cacheArgs = this.emitCache[eventName];
+        if (cacheArgs) {
+            for (; cacheArgs.length > 0;) {
+                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
+            }
+        }
+    }
+    _addListener(eventName, type, fn) {
+        (this.listener[eventName] || (this.listener[eventName] = [])).push({
+            fn,
+            type,
+        });
+    }
+}
+
+const eventChannels = {};
+const eventChannelStack = [];
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
 
 function setModel(target, key, value, modifiers) {
     if (isArray(modifiers)) {
@@ -82,6 +202,14 @@ function initBaseInstance(instance, options) {
             });
         }
     }
+    ctx.getOpenerEventChannel = function () {
+        if (!this.__eventChannel__) {
+            this.__eventChannel__ = new EventChannel();
+        }
+        return this.__eventChannel__;
+    };
+    ctx.$hasHook = hasHook;
+    ctx.$callHook = callHook;
     // $emit
     instance.emit = createEmitFn(instance.emit, ctx);
 }
@@ -112,45 +240,21 @@ function initMocks(instance, mpInstance, mocks) {
         }
     });
 }
-
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
+function hasHook(name) {
+    const hooks = this.$[name];
+    if (hooks && hooks.length) {
+        return true;
+    }
+    return false;
 }
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_THEME_CHANGE = 'onThemeChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-//Page
-const ON_LOAD = 'onLoad';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+function callHook(name, args) {
+    if (name === 'onLoad' && args && args.__id__) {
+        this.__eventChannel__ = getEventChannel(args.__id__);
+        delete args.__id__;
+    }
+    const hooks = this.$[name];
+    return hooks && invokeArrayFns(hooks, args);
+}
 
 const PAGE_HOOKS = [
     ON_LOAD,
@@ -304,7 +408,7 @@ function initRefs(instance, mpInstance) {
     });
 }
 function findVmByVueId(instance, vuePid) {
-    // TODO vue3 中 没有 $children
+    // 标准 vue3 中 没有 $children，定制了内核
     const $children = instance.$children;
     // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
     for (let i = $children.length - 1; i >= 0; i--) {
@@ -882,8 +986,8 @@ function parse$2(appOptions) {
 }
 
 var parseAppOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  parse: parse$2
+    __proto__: null,
+    parse: parse$2
 });
 
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
@@ -988,13 +1092,13 @@ function parse$1(componentOptions) {
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
-  parse: parse$1,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes
+    __proto__: null,
+    mocks: mocks,
+    isPage: isPage,
+    initRelation: initRelation,
+    parse: parse$1,
+    handleLink: handleLink,
+    initLifetimes: initLifetimes
 });
 
 function parse(pageOptions) {
@@ -1020,18 +1124,19 @@ function parse(pageOptions) {
 }
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  parse: parse,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation
+    __proto__: null,
+    parse: parse,
+    handleLink: handleLink,
+    initLifetimes: initLifetimes,
+    mocks: mocks,
+    isPage: isPage,
+    initRelation: initRelation
 });
 
 const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
+swan.EventChannel = EventChannel;
 swan.createApp = createApp;
 swan.createPage = createPage;
 swan.createComponent = createComponent;
