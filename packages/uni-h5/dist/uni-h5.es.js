@@ -14681,7 +14681,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
     uni[name](arg);
   }
 };
-const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on("onWebInvokeAppService", onWebInvokeAppService));
+const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
 const props$e = {
   src: {
     type: String,

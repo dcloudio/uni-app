@@ -79,6 +79,8 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
 
+export declare function createUniEvent(evt: Record<string, any>): UniEvent;
+
 export declare const DATA_RE: RegExp;
 
 export declare function debounce(fn: Function, delay: number): {

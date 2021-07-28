@@ -5506,6 +5506,9 @@
   const PAGE_SCROLL_TO = "pageScrollTo";
   const LOAD_FONT_FACE = "loadFontFace";
   const ACTION_TYPE_DICT = 0;
+  const WEBVIEW_INSERTED = "webviewInserted";
+  const WEBVIEW_REMOVED = "webviewRemoved";
+  const WEBVIEW_ID_PREFIX = "webviewId";
   const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -6640,7 +6643,7 @@
     return fields;
   }
   const uniLabelKey = PolySymbol("uniLabel");
-  const props$p = {
+  const props$q = {
     for: {
       type: String,
       default: ""
@@ -6648,7 +6651,7 @@
   };
   var Label = /* @__PURE__ */ defineBuiltInComponent({
     name: "Label",
-    props: props$p,
+    props: props$q,
     setup(props2, {
       slots
     }) {
@@ -7104,7 +7107,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  const props$o = {
+  const props$p = {
     canvasId: {
       type: String,
       default: ""
@@ -7120,7 +7123,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$o,
+    props: props$p,
     computed: {
       id() {
         return this.canvasId;
@@ -7580,7 +7583,7 @@
     });
   }
   const uniCheckGroupKey = PolySymbol("uniCheckGroup");
-  const props$n = {
+  const props$o = {
     name: {
       type: String,
       default: ""
@@ -7588,7 +7591,7 @@
   };
   var CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$n,
+    props: props$o,
     emits: ["change"],
     setup(props2, {
       emit: emit2,
@@ -7642,7 +7645,7 @@
     }
     return getFieldsValue;
   }
-  const props$m = {
+  const props$n = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -7666,7 +7669,7 @@
   };
   var Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$m,
+    props: props$n,
     setup(props2, {
       slots
     }) {
@@ -7814,7 +7817,7 @@
       });
     }
   }
-  const props$l = {
+  const props$m = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -8636,7 +8639,7 @@
       }
     }, id2, true);
   }
-  const props$k = /* @__PURE__ */ extend({}, props$l, {
+  const props$l = /* @__PURE__ */ extend({}, props$m, {
     id: {
       type: String,
       default: ""
@@ -8664,7 +8667,7 @@
   });
   var Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$k,
+    props: props$l,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, {
       emit: emit2
@@ -8753,7 +8756,7 @@
       };
     }
   });
-  const props$j = {
+  const props$k = {
     src: {
       type: String,
       default: ""
@@ -8792,7 +8795,7 @@
   };
   var Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$j,
+    props: props$k,
     setup(props2, {
       emit: emit2
     }) {
@@ -9093,7 +9096,7 @@
   function getValueString(value) {
     return value === null ? "" : String(value);
   }
-  const props$i = /* @__PURE__ */ extend({}, {
+  const props$j = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -9158,7 +9161,7 @@
       type: String,
       default: "done"
     }
-  }, props$l);
+  }, props$m);
   const emit = [
     "input",
     "focus",
@@ -9364,7 +9367,7 @@
       trigger: trigger2
     };
   }
-  const props$h = /* @__PURE__ */ extend({}, props$i, {
+  const props$i = /* @__PURE__ */ extend({}, props$j, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -9376,7 +9379,7 @@
   });
   var Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$h,
+    props: props$i,
     emits: ["confirm", ...emit],
     setup(props2, {
       emit: emit2
@@ -9537,16 +9540,16 @@
     });
     return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
   };
-  let webview;
+  let webview$2;
   let pullToRefreshStyle;
   function initScrollBounce() {
     {
       plusReady(() => {
-        if (!webview) {
-          webview = plus.webview.currentWebview();
+        if (!webview$2) {
+          webview$2 = plus.webview.currentWebview();
         }
         if (!pullToRefreshStyle) {
-          pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
+          pullToRefreshStyle = (webview$2.getStyle() || {}).pullToRefresh || {};
         }
       });
     }
@@ -9554,7 +9557,7 @@
   function disableScrollBounce({ disable }) {
     {
       if (pullToRefreshStyle && pullToRefreshStyle.support) {
-        webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
+        webview$2.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
           support: !disable
         }));
       }
@@ -9581,7 +9584,7 @@
     const instance = getCurrentInstance();
     instance.rebuild = callback;
   }
-  const props$g = {
+  const props$h = {
     scaleArea: {
       type: Boolean,
       default: false
@@ -9590,7 +9593,7 @@
   var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     inheritAttrs: false,
     name: "MovableArea",
-    props: props$g,
+    props: props$h,
     setup(props2, {
       slots
     }) {
@@ -10209,7 +10212,7 @@
     this._springY.reconfigure(e2, t2, n);
     this._springScale.reconfigure(e2, t2, n);
   };
-  const props$f = {
+  const props$g = {
     direction: {
       type: String,
       default: "none"
@@ -10265,7 +10268,7 @@
   };
   var MovableView = /* @__PURE__ */ defineBuiltInComponent({
     name: "MovableView",
-    props: props$f,
+    props: props$g,
     emits: ["change", "scale"],
     setup(props2, {
       slots,
@@ -10858,7 +10861,7 @@
     };
   }
   const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-  const props$e = {
+  const props$f = {
     hoverClass: {
       type: String,
       default: "navigator-hover"
@@ -10900,7 +10903,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$e,
+    props: props$f,
     setup(props2, {
       slots
     }) {
@@ -10957,7 +10960,7 @@
       };
     }
   });
-  const props$d = {
+  const props$e = {
     value: {
       type: Array,
       default() {
@@ -11004,7 +11007,7 @@
   }
   var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     name: "PickerView",
-    props: props$d,
+    props: props$e,
     emits: ["change", "pickstart", "pickend", "update:value"],
     setup(props2, {
       slots,
@@ -11965,7 +11968,7 @@
     backgroundColor: "#EBEBEB",
     activeMode: "backwards"
   };
-  const props$c = {
+  const props$d = {
     percent: {
       type: [Number, String],
       default: 0,
@@ -12014,7 +12017,7 @@
   };
   var Progress = /* @__PURE__ */ defineBuiltInComponent({
     name: "Progress",
-    props: props$c,
+    props: props$d,
     setup(props2) {
       const state = useProgressState(props2);
       _activeAnimation(state, props2);
@@ -12088,7 +12091,7 @@
     }
   }
   const uniRadioGroupKey = PolySymbol("uniCheckGroup");
-  const props$b = {
+  const props$c = {
     name: {
       type: String,
       default: ""
@@ -12096,7 +12099,7 @@
   };
   var RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$b,
+    props: props$c,
     setup(props2, {
       emit: emit2,
       slots
@@ -12177,7 +12180,7 @@
     }
     return fields;
   }
-  const props$a = {
+  const props$b = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -12201,7 +12204,7 @@
   };
   var Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$a,
+    props: props$b,
     setup(props2, {
       slots
     }) {
@@ -12497,7 +12500,7 @@
     });
     return parentNode;
   }
-  const props$9 = {
+  const props$a = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -12510,7 +12513,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$9,
+    props: props$a,
     setup(props2) {
       const rootRef = ref(null);
       function _renderNodes(nodes) {
@@ -12537,7 +12540,7 @@
     }
   });
   const passiveOptions = passive(true);
-  const props$8 = {
+  const props$9 = {
     scrollX: {
       type: [Boolean, String],
       default: false
@@ -12600,7 +12603,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$8,
+    props: props$9,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, {
       emit: emit2,
@@ -13030,7 +13033,7 @@
       }
     });
   }
-  const props$7 = {
+  const props$8 = {
     name: {
       type: String,
       default: ""
@@ -13086,7 +13089,7 @@
   };
   var Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$7,
+    props: props$8,
     emits: ["changing", "change"],
     setup(props2, {
       emit: emit2
@@ -13257,7 +13260,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  const props$6 = {
+  const props$7 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -13738,7 +13741,7 @@
   }
   var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$6,
+    props: props$7,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, {
       slots,
@@ -13844,7 +13847,7 @@
       };
     }
   });
-  const props$5 = {
+  const props$6 = {
     itemId: {
       type: String,
       default: ""
@@ -13852,7 +13855,7 @@
   };
   var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$5,
+    props: props$6,
     setup(props2, {
       slots
     }) {
@@ -13903,7 +13906,7 @@
       };
     }
   });
-  const props$4 = {
+  const props$5 = {
     name: {
       type: String,
       default: ""
@@ -13931,7 +13934,7 @@
   };
   var Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$4,
+    props: props$5,
     emits: ["change"],
     setup(props2, {
       emit: emit2
@@ -14035,7 +14038,7 @@
     }
     return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  const props$3 = /* @__PURE__ */ extend({}, props$i, {
+  const props$4 = /* @__PURE__ */ extend({}, props$j, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -14056,7 +14059,7 @@
   }
   var Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$3,
+    props: props$4,
     emit: ["confirm", "linechange", ...emit],
     setup(props2, {
       emit: emit2
@@ -14859,7 +14862,7 @@
     });
   }
   const TEMP_PATH = "_doc/uniapp_temp/";
-  const props$2 = {
+  const props$3 = {
     src: {
       type: String,
       default: ""
@@ -14930,7 +14933,7 @@
   }
   var CoverImage = /* @__PURE__ */ defineBuiltInComponent({
     name: "CoverImage",
-    props: props$2,
+    props: props$3,
     emits: ["click", "load", "error"],
     setup(props2, {
       emit: emit2
@@ -15067,7 +15070,7 @@
       opacity: opacity ? Number("0x" + opacity) / 255 : 1
     };
   }
-  const props$1 = {
+  const props$2 = {
     id: {
       type: String,
       default: ""
@@ -15111,7 +15114,7 @@
   };
   var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Map",
-    props: props$1,
+    props: props$2,
     emits: ["click", "regionchange", "controltap", "markertap", "callouttap"],
     setup(props2, {
       emit: emit2
@@ -15199,6 +15202,7 @@
       onBeforeUnmount(() => {
         if (map2) {
           map2.close();
+          _setMap(null);
         }
       });
       return () => {
@@ -15311,9 +15315,9 @@
             };
           }
         }
-        map2.addOverlay(nativeMarker);
+        map2 == null ? void 0 : map2.addOverlay(nativeMarker);
         map2.__markers__.push(nativeMarker);
-        map2.__markers_map__[id2 + ""] = nativeMarker;
+        map2 && (map2.__markers_map__[id2 + ""] = nativeMarker);
       });
     }
     function _clearMarkers() {
@@ -15321,7 +15325,7 @@
         return;
       const markers = map2.__markers__;
       markers.forEach((marker) => {
-        map2.removeOverlay(marker);
+        map2 == null ? void 0 : map2.removeOverlay(marker);
       });
       map2.__markers__ = [];
       map2.__markers_map__ = {};
@@ -15339,7 +15343,7 @@
         return;
       if (map2.__lines__.length > 0) {
         map2.__lines__.forEach((circle) => {
-          map2.removeOverlay(circle);
+          map2 == null ? void 0 : map2.removeOverlay(circle);
         });
         map2.__lines__ = [];
       }
@@ -15358,7 +15362,7 @@
         if (width) {
           polyline.setLineWidth(width);
         }
-        map2.addOverlay(polyline);
+        map2 == null ? void 0 : map2.addOverlay(polyline);
         map2.__lines__.push(polyline);
       });
     }
@@ -15367,7 +15371,7 @@
         return;
       if (map2.__circles__.length > 0) {
         map2.__circles__.forEach((circle) => {
-          map2.removeOverlay(circle);
+          map2 == null ? void 0 : map2.removeOverlay(circle);
         });
         map2.__circles__ = [];
       }
@@ -15394,7 +15398,7 @@
         if (strokeWidth) {
           nativeCircle.setLineWidth(strokeWidth);
         }
-        map2.addOverlay(nativeCircle);
+        map2 == null ? void 0 : map2.addOverlay(nativeCircle);
         map2.__circles__.push(nativeCircle);
       });
     }
@@ -15536,7 +15540,7 @@
     }
   }
   var video = "uni-video {\n  width: 300px;\n  height: 225px;\n  display: inline-block;\n  line-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\nuni-video[hidden] {\n  display: none;\n}\n\n.uni-video-container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  overflow: hidden;\n  background-color: black;\n}\n\n.uni-video-slot {\n  position: absolute;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  pointer-events: none;\n}\n";
-  const props = {
+  const props$1 = {
     id: {
       type: String,
       default: ""
@@ -15656,7 +15660,7 @@
   const methods = ["play", "pause", "stop", "seek", "sendDanmu", "playbackRate", "requestFullScreen", "exitFullScreen"];
   var Video = /* @__PURE__ */ defineBuiltInComponent({
     name: "Video",
-    props,
+    props: props$1,
     emits,
     setup(props2, {
       emit: emit2
@@ -15741,8 +15745,108 @@
       super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson, ".uni-video-slot");
     }
   }
+  var webview$1 = "uni-web-view {\n  display: inline-block;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n}\n";
+  const props = {
+    src: {
+      type: String,
+      default: ""
+    },
+    webviewStyles: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  };
+  let webview;
+  const insertHTMLWebView = ({
+    htmlId,
+    src,
+    webviewStyles
+  }) => {
+    const parentWebview = plus.webview.currentWebview();
+    const styles = extend(webviewStyles, {
+      "uni-app": "none",
+      isUniH5: true
+    });
+    const parentTitleNView = parentWebview.getTitleNView();
+    if (parentTitleNView) {
+      let defaultTop = NAVBAR_HEIGHT + parseFloat(styles.top || "0");
+      if (plus.navigator.isImmersedStatusbar()) {
+        defaultTop += plus.navigator.getStatusbarHeight();
+      }
+      styles.top = String(defaultTop);
+      styles.bottom = styles.bottom || "0";
+    }
+    webview = plus.webview.create(src, htmlId, styles);
+    if (parentTitleNView) {
+      webview.addEventListener("titleUpdate", function() {
+        const title = webview == null ? void 0 : webview.getTitle();
+        parentWebview.setStyle({
+          titleNView: {
+            titleText: !title || title === "null" ? " " : title
+          }
+        });
+      });
+    }
+    plus.webview.currentWebview().append(webview);
+  };
+  const removeHTMLWebView = () => {
+    plus.webview.currentWebview().remove(webview);
+    webview == null ? void 0 : webview.close("none");
+    webview = null;
+  };
   var WebView = /* @__PURE__ */ defineBuiltInComponent({
-    name: "WebView"
+    name: "WebView",
+    props,
+    setup(props2) {
+      const pageId = getCurrentPageId();
+      const containerRef = ref(null);
+      const {
+        position,
+        hidden,
+        onParentReady
+      } = useNative(containerRef);
+      const webviewStyles = computed$1(() => props2.webviewStyles);
+      onParentReady(() => {
+        const htmlId = ref(WEBVIEW_ID_PREFIX + pageId);
+        insertHTMLWebView({
+          htmlId: htmlId.value,
+          src: getRealPath(props2.src),
+          webviewStyles: webviewStyles.value
+        });
+        UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, pageId);
+        if (hidden.value)
+          webview == null ? void 0 : webview.hide();
+      });
+      onBeforeUnmount(() => {
+        removeHTMLWebView();
+        UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, pageId);
+      });
+      watch(() => props2.src, (val) => {
+        const realPath = getRealPath(val) || "";
+        if (!realPath) {
+          return;
+        }
+        if (/^(http|https):\/\//.test(realPath) && props2.webviewStyles.progress) {
+          webview == null ? void 0 : webview.setStyle({
+            progress: {
+              color: props2.webviewStyles.progress.color
+            }
+          });
+        }
+        webview == null ? void 0 : webview.loadURL(realPath);
+      });
+      watch(webviewStyles, (webviewStyles2) => {
+        webview == null ? void 0 : webview.setStyle(webviewStyles2);
+      });
+      watch(hidden, (val) => {
+        webview && webview[val ? "hide" : "show"]();
+      });
+      return () => createVNode("uni-web-view", {
+        "ref": containerRef
+      }, null, 512);
+    }
   });
   class UniWebView extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
@@ -15905,7 +16009,11 @@
     }
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }
-  function pageScrollTo({ scrollTop, selector, duration }, publish) {
+  function pageScrollTo({
+    scrollTop,
+    selector,
+    duration
+  }, publish) {
     scrollTo(selector || scrollTop || 0, duration);
     publish();
   }
@@ -16079,7 +16187,11 @@
     });
     callback(result);
   }
-  function loadFontFace({ family, source, desc }, publish) {
+  function loadFontFace({
+    family,
+    source,
+    desc
+  }, publish) {
     addFont(family, source, desc).then(() => {
       publish();
     }).catch((err) => {

@@ -1,4 +1,7 @@
 declare namespace NodeJS {
+  interface Process {
+    UNI_NVUE_ENTRY: Record<string, string>
+  }
   interface ProcessEnv {
     UNI_PLATFORM: UniApp.PLATFORM
     UNI_INPUT_DIR: string

@@ -7,12 +7,11 @@ const module_1 = require("./module");
 const plugins_1 = require("./plugins");
 function createConfig(mode) {
     return {
-        target: 'node',
         mode: mode,
         devtool: false,
         watch: mode === 'development',
         entry() {
-            return {};
+            return process.UNI_NVUE_ENTRY;
         },
         externals: {
             vue: 'Vue',

@@ -1,4 +1,4 @@
-import { getPageNode, findNodeByTagName } from './framework/dom/Page'
+import { findNodeByTagName } from './framework/dom/Page'
 import { createUniEvent } from '@dcloudio/uni-shared'
 
 type Name =
@@ -29,19 +29,16 @@ export const onWebInvokeAppService: WebInvokeAppService = (
 }
 
 function onMessage(pageId: string, arg: any) {
-  const page = getPageNode(pageId)
-  if (!page) {
-    return
-  }
-  const uniNode = findNodeByTagName('web-view', page)
-  uniNode?.dispatchEvent(
-    createUniEvent({
-      type: 'onMessage',
-      target: Object.create(null),
-      currentTarget: Object.create(null),
-      detail: {
-        data: [arg],
-      },
-    })
-  )
+  const uniNode = findNodeByTagName('web-view', parseInt(pageId))
+  uniNode &&
+    uniNode.dispatchEvent(
+      createUniEvent({
+        type: 'onMessage',
+        target: Object.create(null),
+        currentTarget: Object.create(null),
+        detail: {
+          data: [arg],
+        },
+      })
+    )
 }

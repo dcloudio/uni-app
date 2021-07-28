@@ -25,6 +25,8 @@ import {
   PageNodeOptions,
 } from '@dcloudio/uni-shared'
 
+import { getPageById } from '@dcloudio/uni-core'
+
 import {
   ACTION_MINIFY,
   ACTION_TYPE_DICT,
@@ -33,7 +35,6 @@ import {
   Value,
   VD_SYNC,
 } from '../../../constants'
-import { getPageById } from '@dcloudio/uni-core'
 
 export default class UniPageNode extends UniNode implements IUniPageNode {
   pageId: number
@@ -240,19 +241,42 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
     }
   }
 }
+export function getPageNode(pageId: number): UniPageNode | null {
+  const page = getPageById(pageId)
+  if (!page) return null
+  return (page as any).__page_container__ as UniPageNode
+}
 
-function findNodeById(id: number, uniNode: UniNode): UniNode | null {
-  if (uniNode.nodeId === id) {
+function findNode(
+  name: 'nodeId' | 'nodeName',
+  value: string | number,
+  uniNode: UniNode | number
+): UniNode | null {
+  if (typeof uniNode === 'number') {
+    uniNode = getPageNode(uniNode) as UniNode
+  }
+  if (uniNode[name] === value) {
     return uniNode
   }
   const { childNodes } = uniNode
   for (let i = 0; i < childNodes.length; i++) {
-    const uniNode = findNodeById(id, childNodes[i])
+    const uniNode = findNode(name, value, childNodes[i])
     if (uniNode) {
       return uniNode
     }
   }
   return null
+}
+
+export function findNodeById(nodeId: number, uniNode: UniNode | number) {
+  return findNode('nodeId', nodeId, uniNode)
+}
+
+export function findNodeByTagName(
+  tagName: string,
+  uniNode: UniNode | number
+): UniNode | null {
+  return findNode('nodeName', tagName.toUpperCase(), uniNode)
 }
 
 function pushCreateAction(
@@ -352,27 +376,4 @@ export function createPageNode(
   setup?: boolean
 ) {
   return new UniPageNode(pageId, pageOptions, setup)
-}
-
-export function getPageNode(pageId: string): UniPageNode | null {
-  const page = getPageById(parseInt(pageId))
-  if (!page) return null
-  return (page as any).__page_container__ as UniPageNode
-}
-
-export function findNodeByTagName(
-  tagName: string,
-  uniNode: UniNode
-): UniNode | null {
-  if (uniNode.nodeName === tagName.toLocaleUpperCase()) {
-    return uniNode
-  }
-  const { childNodes } = uniNode
-  for (let i = 0; i < childNodes.length; i++) {
-    const uniNode = findNodeByTagName(tagName, childNodes[i])
-    if (uniNode) {
-      return uniNode
-    }
-  }
-  return null
 }

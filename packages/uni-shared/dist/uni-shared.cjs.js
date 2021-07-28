@@ -1014,6 +1014,7 @@ exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
 exports.createRpx2Unit = createRpx2Unit;
+exports.createUniEvent = createUniEvent;
 exports.debounce = debounce;
 exports.decode = decode;
 exports.decodedQuery = decodedQuery;

@@ -1708,11 +1708,12 @@ var serviceContext = (function (vue) {
           return this;
       },
   };
+  var Emitter = E;
 
   // TODO 等待 vue3 的兼容模式自带emitter
   function initBridge(subscribeNamespace) {
       // TODO vue3 compatibility builds
-      const emitter = new E();
+      const emitter = new Emitter();
       return {
           on(event, callback) {
               return emitter.on(event, callback);
@@ -2337,7 +2338,7 @@ var serviceContext = (function (vue) {
       },
   ];
 
-  const emitter = new E();
+  const emitter = new Emitter();
   const $on = defineSyncApi(API_ON, (name, callback) => {
       emitter.on(name, callback);
       return () => emitter.off(name, callback);
@@ -8147,6 +8148,9 @@ var serviceContext = (function (vue) {
   const PAGE_SCROLL_TO = 'pageScrollTo';
   const LOAD_FONT_FACE = 'loadFontFace';
   const ACTION_TYPE_DICT = 0;
+  const WEBVIEW_INSERTED = 'webviewInserted';
+  const WEBVIEW_REMOVED = 'webviewRemoved';
+  const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 
   const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
       const pageId = getPageIdByVm(getCurrentPageVm());
@@ -9480,10 +9484,282 @@ var serviceContext = (function (vue) {
       }
   }
 
+  function onWebviewInserted(_, pageId) {
+      const page = getPageById(parseInt(pageId));
+      page && (page.__uniapp_webview = true);
+  }
+  function onWebviewRemoved(_, pageId) {
+      const page = getPageById(parseInt(pageId));
+      page && delete page.__uniapp_webview;
+  }
+
+  class UniPageNode extends UniNode {
+      constructor(pageId, options, setup = false) {
+          super(NODE_TYPE_PAGE, '#page', null);
+          this._id = 1;
+          this._created = false;
+          this._createActionMap = new Map();
+          this.updateActions = [];
+          this.dicts = [];
+          this.nodeId = 0;
+          this.pageId = pageId;
+          this.pageNode = this;
+          this.isUnmounted = false;
+          this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
+          this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+          this.normalizeDict = this._normalizeDict.bind(this);
+          this._update = this.update.bind(this);
+          setup && this.setup();
+      }
+      _normalizeDict(value, normalizeValue = true) {
+          if (!isPlainObject(value)) {
+              return this.addDict(value);
+          }
+          const dictArray = [];
+          Object.keys(value).forEach((n) => {
+              const dict = [this.addDict(n)];
+              const v = value[n];
+              if (normalizeValue) {
+                  dict.push(this.addDict(v));
+              }
+              else {
+                  dict.push(v);
+              }
+              dictArray.push(dict);
+          });
+          return dictArray;
+      }
+      addDict(value) {
+          const { dicts } = this;
+          const index = dicts.indexOf(value);
+          if (index > -1) {
+              return index;
+          }
+          return dicts.push(value) - 1;
+      }
+      onCreate(thisNode, nodeName) {
+          pushCreateAction(this, thisNode.nodeId, nodeName);
+          return thisNode;
+      }
+      onInsertBefore(thisNode, newChild, refChild) {
+          pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
+          return newChild;
+      }
+      onRemoveChild(oldChild) {
+          pushRemoveAction(this, oldChild.nodeId);
+          return oldChild;
+      }
+      onAddEvent(thisNode, name, flag) {
+          if (thisNode.parentNode) {
+              pushAddEventAction(this, thisNode.nodeId, name, flag);
+          }
+      }
+      onRemoveEvent(thisNode, name) {
+          if (thisNode.parentNode) {
+              pushRemoveEventAction(this, thisNode.nodeId, name);
+          }
+      }
+      onSetAttribute(thisNode, qualifiedName, value) {
+          if (thisNode.parentNode) {
+              pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
+          }
+      }
+      onRemoveAttribute(thisNode, qualifiedName) {
+          if (thisNode.parentNode) {
+              pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
+          }
+      }
+      onTextContent(thisNode, text) {
+          if (thisNode.parentNode) {
+              pushSetTextAction(this, thisNode.nodeId, text);
+          }
+      }
+      onNodeValue(thisNode, val) {
+          if (thisNode.parentNode) {
+              pushSetTextAction(this, thisNode.nodeId, val);
+          }
+      }
+      genId() {
+          return this._id++;
+      }
+      push(action, extras) {
+          if (this.isUnmounted) {
+              if ((process.env.NODE_ENV !== 'production')) {
+                  console.log(formatLog('PageNode', 'push.prevent', action));
+              }
+              return;
+          }
+          switch (action[0]) {
+              case ACTION_TYPE_CREATE:
+                  this._createActionMap.set(action[1], action);
+                  break;
+              case ACTION_TYPE_INSERT:
+                  const createAction = this._createActionMap.get(action[1]);
+                  if (createAction) {
+                      createAction[3] = action[2]; // parentNodeId
+                      createAction[4] = action[3]; // anchorId
+                      if (extras) {
+                          createAction[5] = extras;
+                      }
+                  }
+                  else {
+                      if ((process.env.NODE_ENV !== 'production')) {
+                          console.error(formatLog(`Insert`, action, 'not found createAction'));
+                      }
+                  }
+                  break;
+          }
+          // insert 被合并进 create
+          if (action[0] !== ACTION_TYPE_INSERT) {
+              this.updateActions.push(action);
+          }
+          vue.queuePostFlushCb(this._update);
+      }
+      restore() {
+          this.push(this.createAction);
+          // TODO restore children
+          this.push(this.createdAction);
+      }
+      setup() {
+          this.send([this.createAction]);
+      }
+      update() {
+          const { dicts, updateActions, _createActionMap } = this;
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
+          }
+          _createActionMap.clear();
+          // 首次
+          if (!this._created) {
+              this._created = true;
+              updateActions.push(this.createdAction);
+          }
+          if (updateActions.length) {
+              if (dicts.length) {
+                  updateActions.unshift([ACTION_TYPE_DICT, dicts]);
+              }
+              this.send(updateActions);
+              dicts.length = 0;
+              updateActions.length = 0;
+          }
+      }
+      send(action) {
+          UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
+      }
+      fireEvent(id, evt) {
+          const node = findNodeById(id, this);
+          if (node) {
+              node.dispatchEvent(evt);
+          }
+          else if ((process.env.NODE_ENV !== 'production')) {
+              console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
+          }
+      }
+  }
+  function getPageNode(pageId) {
+      const page = getPageById(pageId);
+      if (!page)
+          return null;
+      return page.__page_container__;
+  }
+  function findNode(name, value, uniNode) {
+      if (typeof uniNode === 'number') {
+          uniNode = getPageNode(uniNode);
+      }
+      if (uniNode[name] === value) {
+          return uniNode;
+      }
+      const { childNodes } = uniNode;
+      for (let i = 0; i < childNodes.length; i++) {
+          const uniNode = findNode(name, value, childNodes[i]);
+          if (uniNode) {
+              return uniNode;
+          }
+      }
+      return null;
+  }
+  function findNodeById(nodeId, uniNode) {
+      return findNode('nodeId', nodeId, uniNode);
+  }
+  function findNodeByTagName(tagName, uniNode) {
+      return findNode('nodeName', tagName.toUpperCase(), uniNode);
+  }
+  function pushCreateAction(pageNode, nodeId, nodeName) {
+      pageNode.push([
+          ACTION_TYPE_CREATE,
+          nodeId,
+          pageNode.addDict(nodeName),
+          -1,
+          -1,
+      ]);
+  }
+  function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
+      const nodeJson = newChild.toJSON({
+          attr: true,
+          normalize: pageNode.normalizeDict,
+      });
+      pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
+  }
+  function pushRemoveAction(pageNode, nodeId) {
+      pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
+  }
+  function pushAddEventAction(pageNode, nodeId, name, value) {
+      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
+  }
+  function pushRemoveEventAction(pageNode, nodeId, name) {
+      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
+  }
+  function normalizeAttrValue(pageNode, name, value) {
+      return name === 'style' && isPlainObject(value)
+          ? pageNode.normalizeDict(value)
+          : pageNode.addDict(value);
+  }
+  function pushSetAttributeAction(pageNode, nodeId, name, value) {
+      pageNode.push([
+          ACTION_TYPE_SET_ATTRIBUTE,
+          nodeId,
+          pageNode.addDict(name),
+          normalizeAttrValue(pageNode, name, value),
+      ]);
+  }
+  function pushRemoveAttributeAction(pageNode, nodeId, name) {
+      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
+  }
+  function pushSetTextAction(pageNode, nodeId, text) {
+      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
+  }
+  function createPageNode(pageId, pageOptions, setup) {
+      return new UniPageNode(pageId, pageOptions, setup);
+  }
+
+  const onWebInvokeAppService = ({ name, arg }, pageIds) => {
+      if (name === 'postMessage') {
+          onMessage(pageIds[0], arg);
+      }
+      else {
+          uni[name](arg);
+      }
+  };
+  function onMessage(pageId, arg) {
+      const uniNode = findNodeByTagName('web-view', parseInt(pageId));
+      uniNode &&
+          uniNode.dispatchEvent(createUniEvent({
+              type: 'onMessage',
+              target: Object.create(null),
+              currentTarget: Object.create(null),
+              detail: {
+                  data: [arg],
+              },
+          }));
+  }
+
   function initSubscribeHandlers() {
       const { subscribe, subscribeHandler } = UniServiceJSBridge;
       onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
           subscribeHandler(type, data, pageId);
+      });
+      onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data, webviewIds }) => {
+          onWebInvokeAppService(data, webviewIds);
       });
       if (__uniConfig.renderer !== 'native') {
           // 非纯原生
@@ -9492,6 +9768,8 @@ var serviceContext = (function (vue) {
           subscribeServiceMethod();
           subscribeAd();
           subscribeNavigator();
+          subscribe(WEBVIEW_INSERTED, onWebviewInserted);
+          subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
       }
   }
 
@@ -10162,230 +10440,6 @@ var serviceContext = (function (vue) {
       backWebview(webview, () => {
           backPage(webview);
       });
-  }
-
-  class UniPageNode extends UniNode {
-      constructor(pageId, options, setup = false) {
-          super(NODE_TYPE_PAGE, '#page', null);
-          this._id = 1;
-          this._created = false;
-          this._createActionMap = new Map();
-          this.updateActions = [];
-          this.dicts = [];
-          this.nodeId = 0;
-          this.pageId = pageId;
-          this.pageNode = this;
-          this.isUnmounted = false;
-          this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
-          this.createdAction = [ACTION_TYPE_PAGE_CREATED];
-          this.normalizeDict = this._normalizeDict.bind(this);
-          this._update = this.update.bind(this);
-          setup && this.setup();
-      }
-      _normalizeDict(value, normalizeValue = true) {
-          if (!isPlainObject(value)) {
-              return this.addDict(value);
-          }
-          const dictArray = [];
-          Object.keys(value).forEach((n) => {
-              const dict = [this.addDict(n)];
-              const v = value[n];
-              if (normalizeValue) {
-                  dict.push(this.addDict(v));
-              }
-              else {
-                  dict.push(v);
-              }
-              dictArray.push(dict);
-          });
-          return dictArray;
-      }
-      addDict(value) {
-          const { dicts } = this;
-          const index = dicts.indexOf(value);
-          if (index > -1) {
-              return index;
-          }
-          return dicts.push(value) - 1;
-      }
-      onCreate(thisNode, nodeName) {
-          pushCreateAction(this, thisNode.nodeId, nodeName);
-          return thisNode;
-      }
-      onInsertBefore(thisNode, newChild, refChild) {
-          pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
-          return newChild;
-      }
-      onRemoveChild(oldChild) {
-          pushRemoveAction(this, oldChild.nodeId);
-          return oldChild;
-      }
-      onAddEvent(thisNode, name, flag) {
-          if (thisNode.parentNode) {
-              pushAddEventAction(this, thisNode.nodeId, name, flag);
-          }
-      }
-      onRemoveEvent(thisNode, name) {
-          if (thisNode.parentNode) {
-              pushRemoveEventAction(this, thisNode.nodeId, name);
-          }
-      }
-      onSetAttribute(thisNode, qualifiedName, value) {
-          if (thisNode.parentNode) {
-              pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
-          }
-      }
-      onRemoveAttribute(thisNode, qualifiedName) {
-          if (thisNode.parentNode) {
-              pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
-          }
-      }
-      onTextContent(thisNode, text) {
-          if (thisNode.parentNode) {
-              pushSetTextAction(this, thisNode.nodeId, text);
-          }
-      }
-      onNodeValue(thisNode, val) {
-          if (thisNode.parentNode) {
-              pushSetTextAction(this, thisNode.nodeId, val);
-          }
-      }
-      genId() {
-          return this._id++;
-      }
-      push(action, extras) {
-          if (this.isUnmounted) {
-              if ((process.env.NODE_ENV !== 'production')) {
-                  console.log(formatLog('PageNode', 'push.prevent', action));
-              }
-              return;
-          }
-          switch (action[0]) {
-              case ACTION_TYPE_CREATE:
-                  this._createActionMap.set(action[1], action);
-                  break;
-              case ACTION_TYPE_INSERT:
-                  const createAction = this._createActionMap.get(action[1]);
-                  if (createAction) {
-                      createAction[3] = action[2]; // parentNodeId
-                      createAction[4] = action[3]; // anchorId
-                      if (extras) {
-                          createAction[5] = extras;
-                      }
-                  }
-                  else {
-                      if ((process.env.NODE_ENV !== 'production')) {
-                          console.error(formatLog(`Insert`, action, 'not found createAction'));
-                      }
-                  }
-                  break;
-          }
-          // insert 被合并进 create
-          if (action[0] !== ACTION_TYPE_INSERT) {
-              this.updateActions.push(action);
-          }
-          vue.queuePostFlushCb(this._update);
-      }
-      restore() {
-          this.push(this.createAction);
-          // TODO restore children
-          this.push(this.createdAction);
-      }
-      setup() {
-          this.send([this.createAction]);
-      }
-      update() {
-          const { dicts, updateActions, _createActionMap } = this;
-          if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
-          }
-          _createActionMap.clear();
-          // 首次
-          if (!this._created) {
-              this._created = true;
-              updateActions.push(this.createdAction);
-          }
-          if (updateActions.length) {
-              if (dicts.length) {
-                  updateActions.unshift([ACTION_TYPE_DICT, dicts]);
-              }
-              this.send(updateActions);
-              dicts.length = 0;
-              updateActions.length = 0;
-          }
-      }
-      send(action) {
-          UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
-      }
-      fireEvent(id, evt) {
-          const node = findNodeById(id, this);
-          if (node) {
-              node.dispatchEvent(evt);
-          }
-          else if ((process.env.NODE_ENV !== 'production')) {
-              console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
-          }
-      }
-  }
-  function findNodeById(id, uniNode) {
-      if (uniNode.nodeId === id) {
-          return uniNode;
-      }
-      const { childNodes } = uniNode;
-      for (let i = 0; i < childNodes.length; i++) {
-          const uniNode = findNodeById(id, childNodes[i]);
-          if (uniNode) {
-              return uniNode;
-          }
-      }
-      return null;
-  }
-  function pushCreateAction(pageNode, nodeId, nodeName) {
-      pageNode.push([
-          ACTION_TYPE_CREATE,
-          nodeId,
-          pageNode.addDict(nodeName),
-          -1,
-          -1,
-      ]);
-  }
-  function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
-      const nodeJson = newChild.toJSON({
-          attr: true,
-          normalize: pageNode.normalizeDict,
-      });
-      pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
-  }
-  function pushRemoveAction(pageNode, nodeId) {
-      pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
-  }
-  function pushAddEventAction(pageNode, nodeId, name, value) {
-      pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
-  }
-  function pushRemoveEventAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
-  }
-  function normalizeAttrValue(pageNode, name, value) {
-      return name === 'style' && isPlainObject(value)
-          ? pageNode.normalizeDict(value)
-          : pageNode.addDict(value);
-  }
-  function pushSetAttributeAction(pageNode, nodeId, name, value) {
-      pageNode.push([
-          ACTION_TYPE_SET_ATTRIBUTE,
-          nodeId,
-          pageNode.addDict(name),
-          normalizeAttrValue(pageNode, name, value),
-      ]);
-  }
-  function pushRemoveAttributeAction(pageNode, nodeId, name) {
-      pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
-  }
-  function pushSetTextAction(pageNode, nodeId, text) {
-      pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
-  }
-  function createPageNode(pageId, pageOptions, setup) {
-      return new UniPageNode(pageId, pageOptions, setup);
   }
 
   function setupPage(component) {

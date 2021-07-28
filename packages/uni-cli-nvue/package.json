@@ -20,6 +20,9 @@
   "license": "Apache-2.0",
   "gitHead": "4dd0e035b52584ff028ee3028c46adc555be0529",
   "dependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel-loader": "^8.2.2",
     "terser-webpack-plugin": "^5.1.4",
     "vue-loader": "^16.3.3",
     "webpack": "^5.45.1"
