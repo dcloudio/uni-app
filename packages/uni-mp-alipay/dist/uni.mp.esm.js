@@ -258,7 +258,12 @@ function hasHook(name) {
     return false;
 }
 function callHook(name, args) {
-    if (name === 'onLoad' && args && args.__id__) {
+    if (name === 'mounted') {
+        callHook.call(this, 'bm'); // beforeMount
+        this.$.isMounted = true;
+        name = 'm';
+    }
+    else if (name === 'onLoad' && args && args.__id__) {
         this.__eventChannel__ = getEventChannel(args.__id__);
         delete args.__id__;
     }

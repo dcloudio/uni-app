@@ -106,10 +106,10 @@ export declare const defaultRpx2Unit: {
 declare type DictArray = [number, number][];
 
 export declare class EventChannel {
-    id: number;
+    id?: number;
     private listener;
     private emitCache;
-    constructor(id: number, events?: NavigateToOptionEvents);
+    constructor(id?: number, events?: NavigateToOptionEvents);
     emit(eventName: string, ...args: any[]): number | undefined;
     on(eventName: string, fn: EventChannelListener['fn']): void;
     once(eventName: string, fn: EventChannelListener['fn']): void;

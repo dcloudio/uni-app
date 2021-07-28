@@ -1,13 +1,6 @@
-import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns as invokeArrayFns$1, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
+import { isSymbol, extend, isMap, isObject, toRawType, def, isArray, isString, isFunction, isPromise, toHandlerKey, remove, EMPTY_OBJ, camelize, capitalize, normalizeClass, normalizeStyle, isOn, NOOP, isGloballyWhitelisted, isIntegerKey, hasOwn, hasChanged, invokeArrayFns, makeMap, isSet, NO, toNumber, hyphenate, isReservedProp, EMPTY_ARR, toTypeString } from '@vue/shared';
 export { camelize } from '@vue/shared';
 
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
 const ON_ERROR = 'onError';
 
 const targetMap = new WeakMap();
@@ -3055,29 +3048,8 @@ const publicPropertiesMap = extend(Object.create(null), {
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
     $forceUpdate: i => () => queueJob(i.update),
     // $nextTick: i => nextTick.bind(i.proxy!), // fixed by xxxxxx
-    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP),
-    // compat
-    $children: getCompatChildren
+    $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
 });
-function getCompatChildren(instance) {
-    const root = instance.subTree;
-    const children = [];
-    if (root) {
-        walk(root, children);
-    }
-    return children;
-}
-function walk(vnode, children) {
-    if (vnode.component) {
-        children.push(vnode.component.proxy);
-    }
-    else if (vnode.shapeFlag & 16 /* ARRAY_CHILDREN */) {
-        const vnodes = vnode.children;
-        for (let i = 0; i < vnodes.length; i++) {
-            walk(vnodes[i], children);
-        }
-    }
-}
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
         const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
@@ -3981,8 +3953,8 @@ const prodEffectOptions = {
 function createDevEffectOptions(instance) {
     return {
         scheduler: queueJob,
-        onTrack: instance.rtc ? e => invokeArrayFns$1(instance.rtc, e) : void 0,
-        onTrigger: instance.rtg ? e => invokeArrayFns$1(instance.rtg, e) : void 0
+        onTrack: instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0,
+        onTrigger: instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0
     };
 }
 function setupRenderEffect(instance) {
@@ -3998,7 +3970,7 @@ function setupRenderEffect(instance) {
             const { bu, u } = instance;
             // beforeUpdate hook
             if (bu) {
-                invokeArrayFns$1(bu);
+                invokeArrayFns(bu);
             }
             patch(instance);
             // updated hook
@@ -4012,7 +3984,7 @@ function unmountComponent(instance) {
     const { bum, effects, update, um } = instance;
     // beforeUnmount hook
     if (bum) {
-        invokeArrayFns$1(bum);
+        invokeArrayFns(bum);
     }
     if (effects) {
         for (let i = 0; i < effects.length; i++) {
@@ -4091,17 +4063,6 @@ function applyOptions(options, instance, publicThis) {
 function set(target, key, val) {
     return (target[key] = val);
 }
-function hasHook(name) {
-    const hooks = this.$[name];
-    if (hooks && hooks.length) {
-        return true;
-    }
-    return false;
-}
-function callHook(name, args) {
-    const hooks = this.$[name];
-    return hooks && invokeArrayFns(hooks, args);
-}
 
 function errorHandler(err, instance, info) {
     if (!instance) {
@@ -4169,11 +4130,6 @@ function initApp(app) {
     }
     const globalProperties = appConfig.globalProperties;
     uniIdMixin(globalProperties);
-    {
-        // 小程序，待重构，不再挂靠全局
-        globalProperties.$hasHook = hasHook;
-        globalProperties.$callHook = callHook;
-    }
     if (__VUE_OPTIONS_API__) {
         globalProperties.$set = set;
         globalProperties.$applyOptions = applyOptions;
@@ -4183,16 +4139,6 @@ function initApp(app) {
 var plugin = {
     install(app) {
         initApp(app);
-        const globalProperties = app._context.config.globalProperties;
-        const oldCallHook = globalProperties.$callHook;
-        globalProperties.$callHook = function callHook(name, args) {
-            if (name === 'mounted') {
-                oldCallHook.call(this, 'bm'); // beforeMount
-                this.$.isMounted = true;
-                name = 'm';
-            }
-            return oldCallHook.call(this, name, args);
-        };
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);

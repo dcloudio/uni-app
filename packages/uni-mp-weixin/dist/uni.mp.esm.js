@@ -185,7 +185,12 @@ function hasHook(name) {
     return false;
 }
 function callHook(name, args) {
-    if (name === 'onLoad' && args && args.__id__) {
+    if (name === 'mounted') {
+        callHook.call(this, 'bm'); // beforeMount
+        this.$.isMounted = true;
+        name = 'm';
+    }
+    else if (name === 'onLoad' && args && args.__id__) {
         this.__eventChannel__ = getEventChannel(args.__id__);
         delete args.__id__;
     }
@@ -323,15 +328,27 @@ function initWxsCallMethods(methods, wxsCallMethods) {
         };
     });
 }
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+        {
+            if (component.dataset.vueGeneric === 'scoped') {
+                component
+                    .selectAllComponents('.scoped-ref')
+                    .forEach((scopedComponent) => {
+                    selectAllComponents(scopedComponent, selector, $refs);
+                });
+            }
+        }
+    });
+}
 function initRefs(instance, mpInstance) {
     Object.defineProperty(instance, 'refs', {
         get() {
             const $refs = {};
-            const components = mpInstance.selectAllComponents('.vue-ref');
-            components.forEach((component) => {
-                const ref = component.dataset.ref;
-                $refs[ref] = component.$vm || component;
-            });
+            selectAllComponents(mpInstance, '.vue-ref', $refs);
             const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
             forComponents.forEach((component) => {
                 const ref = component.dataset.ref;

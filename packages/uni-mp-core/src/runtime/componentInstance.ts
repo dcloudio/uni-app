@@ -211,7 +211,11 @@ function hasHook(this: ComponentPublicInstance, name: string) {
 }
 
 function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
-  if (name === 'onLoad' && args && (args as any).__id__) {
+  if (name === 'mounted') {
+    callHook.call(this, 'bm') // beforeMount
+    this.$.isMounted = true
+    name = 'm'
+  } else if (name === 'onLoad' && args && (args as any).__id__) {
     ;(this as any).__eventChannel__ = getEventChannel((args as any).__id__)
     delete (args as any).__id__
   }

@@ -56,6 +56,31 @@ export function initWxsCallMethods(
   })
 }
 
+function selectAllComponents(
+  mpInstance: MPComponentInstance,
+  selector: string,
+  $refs: Record<string, ComponentPublicInstance>
+) {
+  const components = mpInstance.selectAllComponents(selector)
+  components.forEach((component) => {
+    const ref = component.dataset.ref
+    $refs[ref] = component.$vm || component
+    if (__PLATFORM__ === 'mp-weixin') {
+      if (component.dataset.vueGeneric === 'scoped') {
+        component
+          .selectAllComponents('.scoped-ref')
+          .forEach((scopedComponent) => {
+            selectAllComponents(
+              scopedComponent as MPComponentInstance,
+              selector,
+              $refs
+            )
+          })
+      }
+    }
+  })
+}
+
 export function initRefs(
   instance: ComponentInternalInstance,
   mpInstance: MPComponentInstance
@@ -63,11 +88,7 @@ export function initRefs(
   Object.defineProperty(instance, 'refs', {
     get() {
       const $refs: Record<string, any> = {}
-      const components = mpInstance.selectAllComponents('.vue-ref')
-      components.forEach((component) => {
-        const ref = component.dataset.ref
-        $refs[ref] = component.$vm || component
-      })
+      selectAllComponents(mpInstance, '.vue-ref', $refs)
       const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
       forComponents.forEach((component) => {
         const ref = component.dataset.ref
