@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-quickapp-webview",
-  "version": "2.0.0-alpha-32020210728001",
+  "version": "2.0.0-alpha-32020210728002",
   "description": "uni-app quickapp-webview",
   "main": "dist/index.js",
   "repository": {
@@ -17,5 +17,5 @@
     "name": "quickapp-webview",
     "title": "快应用(Webview)版"
   },
-  "gitHead": "b1e2cb10c2dae93aac7f8356101a9e188353af5c"
+  "gitHead": "a4f303ad6e172d370c42cc84399aa5587826b690"
 }
