@@ -10,6 +10,7 @@ import {
 } from '../../../constants'
 import { NAVBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { useNative } from '../../../helpers/useNative'
+import { getStatusbarHeight } from '../../../helpers/statusBar'
 
 const props = {
   src: {
@@ -48,7 +49,7 @@ const insertHTMLWebView = ({
   if (parentTitleNView) {
     let defaultTop: number = NAVBAR_HEIGHT + parseFloat(styles.top || '0')
     if (plus.navigator.isImmersedStatusbar()) {
-      defaultTop += plus.navigator.getStatusbarHeight()
+      defaultTop += getStatusbarHeight()
     }
     styles.top = String(defaultTop)
     styles.bottom = styles.bottom || '0'

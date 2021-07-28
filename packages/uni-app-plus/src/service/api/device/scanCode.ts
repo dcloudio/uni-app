@@ -6,20 +6,7 @@ import {
   ScanCodeProtocol,
 } from '@dcloudio/uni-api'
 import { useI18n, initI18nScanCodeMsgsOnce } from '@dcloudio/uni-core'
-
-function getStatusBarStyle() {
-  let style = plus.navigator.getStatusBarStyle()
-  if (
-    style === 'UIStatusBarStyleBlackTranslucent' ||
-    style === 'UIStatusBarStyleBlackOpaque' ||
-    style === 'null'
-  ) {
-    style = 'light'
-  } else if (style === 'UIStatusBarStyleDefault') {
-    style = 'dark'
-  }
-  return style
-}
+import { getStatusBarStyle } from '../../../helpers/statusBar'
 
 export const scanCode = defineAsyncApi<API_TYPE_SCAN_CODE>(
   API_SCAN_CODE,

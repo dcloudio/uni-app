@@ -5,20 +5,7 @@ import {
   ChooseLocationProtocol,
 } from '@dcloudio/uni-api'
 import { showPage } from '../page'
-
-function getStatusBarStyle() {
-  let style = plus.navigator.getStatusBarStyle()
-  if (
-    style === 'UIStatusBarStyleBlackTranslucent' ||
-    style === 'UIStatusBarStyleBlackOpaque' ||
-    style === 'null'
-  ) {
-    style = 'light'
-  } else if (style === 'UIStatusBarStyleDefault') {
-    style = 'dark'
-  }
-  return style
-}
+import { getStatusBarStyle } from '../../../helpers/statusBar'
 
 export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
   API_CHOOSE_LOCATION,

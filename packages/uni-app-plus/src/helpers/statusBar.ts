@@ -8,3 +8,17 @@ export function getStatusbarHeight() {
       )
     : 0
 }
+
+export function getStatusBarStyle() {
+  let style = plus.navigator.getStatusBarStyle()
+  if (
+    style === 'UIStatusBarStyleBlackTranslucent' ||
+    style === 'UIStatusBarStyleBlackOpaque' ||
+    style === 'null'
+  ) {
+    style = 'light'
+  } else if (style === 'UIStatusBarStyleDefault') {
+    style = 'dark'
+  }
+  return style
+}
