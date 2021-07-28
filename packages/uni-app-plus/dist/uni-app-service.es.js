@@ -3937,6 +3937,23 @@ var serviceContext = (function (vue) {
       // noop
   });
 
+  const API_ON_WINDOW_RESIZE = 'onWindowResize';
+  const API_OFF_WINDOW_RESIZE = 'offWindowResize';
+
+  /**
+   * 监听窗口大小变化
+   */
+  const onWindowResize = defineOnApi(API_ON_WINDOW_RESIZE, () => {
+      // 生命周期包括onResize，框架直接监听resize
+      // window.addEventListener('resize', onResize)
+  });
+  /**
+   * 取消监听窗口大小变化
+   */
+  const offWindowResize = defineOffApi(API_OFF_WINDOW_RESIZE, () => {
+      // window.removeEventListener('resize', onResize)
+  });
+
   const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
 
   const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
@@ -10715,6 +10732,8 @@ var serviceContext = (function (vue) {
     createVideoContext: createVideoContext,
     createMapContext: createMapContext,
     createAnimation: createAnimation,
+    onWindowResize: onWindowResize,
+    offWindowResize: offWindowResize,
     onTabBarMidButtonTap: onTabBarMidButtonTap,
     createCanvasContext: createCanvasContext,
     canvasGetImageData: canvasGetImageData,

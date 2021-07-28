@@ -4403,6 +4403,12 @@ const createAnimation$1 = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (o
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
 });
+const API_ON_WINDOW_RESIZE = "onWindowResize";
+const API_OFF_WINDOW_RESIZE = "offWindowResize";
+const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
+});
+const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
+});
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
   UniServiceJSBridge.invokeViewMethod("getSelectedTextRange", {}, getCurrentPageId(), (res) => {
@@ -5263,8 +5269,6 @@ const SetTabBarBadgeOptions = {
     }
   }, IndexOptions.formatArgs)
 };
-const API_ON_WINDOW_RESIZE = "onWindowResize";
-const API_OFF_WINDOW_RESIZE = "offWindowResize";
 const initIntersectionObserverPolyfill = function() {
   if (typeof window !== "object") {
     return;
@@ -18990,10 +18994,6 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, 8, ["data-show", "style"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
-const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
-});
-const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
-});
 const showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, { resolve, reject }) => {
   const state2 = getLayoutState();
   if (!state2) {
@@ -19133,6 +19133,8 @@ var api = {
   createVideoContext,
   createMapContext,
   createAnimation: createAnimation$1,
+  onWindowResize,
+  offWindowResize,
   onTabBarMidButtonTap,
   createCanvasContext,
   canvasGetImageData,
@@ -19225,8 +19227,6 @@ var api = {
   showTabBarRedDot,
   removeTabBarBadge,
   setTabBarBadge,
-  onWindowResize,
-  offWindowResize,
   showTopWindow,
   hideTopWindow,
   showLeftWindow,

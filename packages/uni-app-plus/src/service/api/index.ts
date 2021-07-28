@@ -77,6 +77,8 @@ export {
   createVideoContext,
   createMapContext,
   createAnimation,
+  onWindowResize,
+  offWindowResize,
   onTabBarMidButtonTap,
   createCanvasContext,
   canvasGetImageData,

@@ -13,6 +13,7 @@ export * from './service/ui/createMediaQueryObserver'
 export * from './service/ui/createSelectorQuery'
 export * from './service/ui/createAnimation'
 export * from './service/ui/tabBar'
+export * from './service/ui/window'
 
 export * from './service/keyboard/getSelectedTextRange'
 
@@ -84,7 +85,6 @@ export * from './protocols/ui/showToast'
 export * from './protocols/ui/startPullDownRefresh'
 export * from './protocols/ui/stopPullDownRefresh'
 export * from './protocols/ui/tabBar'
-export * from './protocols/ui/window'
 
 export * from './protocols/plugin/getProvider'
 export * from './protocols/plugin/oauth'
