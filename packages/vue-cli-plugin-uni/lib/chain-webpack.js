@@ -93,7 +93,11 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     const deferredCreated = process.env.UNI_PLATFORM === 'mp-toutiao' ||
       process.env.UNI_PLATFORM === 'quickapp-webview'
     const defines = {
+      // UNI_ENV好像没用
       'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
+      'process.env.UNI_APP_ID': JSON.stringify(process.env.UNI_APP_ID),
+      'process.env.UNI_APP_NAME': JSON.stringify(process.env.UNI_APP_NAME),
+      'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
       'process.env.RUN_BY_HBUILDERX': process.env.RUN_BY_HBUILDERX,
