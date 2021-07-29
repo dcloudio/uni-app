@@ -19,3 +19,5 @@ export function initApp(app: App) {
     globalProperties.$applyOptions = applyOptions
   }
 }
+
+export { traverse } from './reactivity'

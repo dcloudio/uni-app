@@ -377,8 +377,8 @@
   function compile(tokens, values) {
     const compiled = [];
     let index2 = 0;
-    const mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-    if (mode === "unknown") {
+    const mode2 = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
+    if (mode2 === "unknown") {
       return compiled;
     }
     while (index2 < tokens.length) {
@@ -391,7 +391,7 @@
           compiled.push(values[parseInt(token.value, 10)]);
           break;
         case "named":
-          if (mode === "named") {
+          if (mode2 === "named") {
             compiled.push(values[token.value]);
           }
           break;
@@ -595,6 +595,24 @@
     }
     {
       useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { cancel: "\u53D6\u6D88", confirm: "\u78BA\u5B9A" }));
+    }
+  });
+  const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
+    const name = "uni.picker.";
+    {
+      useI18n().add(LOCALE_EN, normalizeMessages(name, { done: "Done", cancel: "Cancel" }));
+    }
+    {
+      useI18n().add(LOCALE_ES, normalizeMessages(name, { done: "OK", cancel: "Cancelar" }));
+    }
+    {
+      useI18n().add(LOCALE_FR, normalizeMessages(name, { done: "OK", cancel: "Annuler" }));
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, { done: "\u5B8C\u6210", cancel: "\u53D6\u6D88" }));
     }
   });
   const initI18nButtonMsgsOnce = /* @__PURE__ */ once(() => {
@@ -1817,8 +1835,8 @@
     }
     const rawMode = getCompatConfigForKey("MODE", instance) || 2;
     const val = getCompatConfigForKey(key, instance);
-    const mode = isFunction(rawMode) ? rawMode(instance && instance.type) : rawMode;
-    if (mode === 2) {
+    const mode2 = isFunction(rawMode) ? rawMode(instance && instance.type) : rawMode;
+    if (mode2 === 2) {
       return val !== false;
     } else {
       return val === true || val === "suppress-warning";
@@ -4872,7 +4890,7 @@
     cachedNow = 0;
   };
   const getNow = () => cachedNow || (p$1.then(reset), cachedNow = _getNow());
-  function addEventListener(el, event, handler, options) {
+  function addEventListener$1(el, event, handler, options) {
     el.addEventListener(event, handler, options);
   }
   function removeEventListener(el, event, handler, options) {
@@ -4887,7 +4905,7 @@
       const [name, options] = parseName(rawName);
       if (nextValue) {
         const invoker = invokers[rawName] = createInvoker$1(nextValue, instance);
-        addEventListener(el, name, invoker, options);
+        addEventListener$1(el, name, invoker, options);
       } else if (existingInvoker) {
         removeEventListener(el, name, existingInvoker, options);
         invokers[rawName] = void 0;
@@ -5221,14 +5239,14 @@
           style[attr3] = elementComputedStyle[attr3];
         });
         changeAttrs.length = 0;
-        callbacks.forEach(function(callback) {
+        callbacks$1.forEach(function(callback) {
           callback(style);
         });
       }, 0);
     }
     changeAttrs.push(attr2);
   }
-  var callbacks = [];
+  var callbacks$1 = [];
   function onChange(callback) {
     if (!getSupport()) {
       return;
@@ -5237,13 +5255,13 @@
       init();
     }
     if (typeof callback === "function") {
-      callbacks.push(callback);
+      callbacks$1.push(callback);
     }
   }
   function offChange(callback) {
-    var index2 = callbacks.indexOf(callback);
+    var index2 = callbacks$1.indexOf(callback);
     if (index2 >= 0) {
-      callbacks.splice(index2, 1);
+      callbacks$1.splice(index2, 1);
     }
   }
   var safeAreaInsets = {
@@ -6620,17 +6638,17 @@
     }
   });
   function provideForm(trigger2) {
-    const fields = [];
+    const fields2 = [];
     provide(uniFormKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       submit(evt) {
         trigger2("submit", evt, {
-          value: fields.reduce((res, field) => {
+          value: fields2.reduce((res, field) => {
             if (field.submit) {
               const [name, value] = field.submit();
               name && (res[name] = value);
@@ -6640,14 +6658,14 @@
         });
       },
       reset(evt) {
-        fields.forEach((field) => field.reset && field.reset());
+        fields2.forEach((field) => field.reset && field.reset());
         trigger2("reset", evt);
       }
     });
-    return fields;
+    return fields2;
   }
   const uniLabelKey = PolySymbol("uniLabel");
-  const props$q = {
+  const props$r = {
     for: {
       type: String,
       default: ""
@@ -6655,7 +6673,7 @@
   };
   var Label = /* @__PURE__ */ defineBuiltInComponent({
     name: "Label",
-    props: props$q,
+    props: props$r,
     setup(props2, {
       slots
     }) {
@@ -7111,7 +7129,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  const props$p = {
+  const props$q = {
     canvasId: {
       type: String,
       default: ""
@@ -7127,7 +7145,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$p,
+    props: props$q,
     computed: {
       id() {
         return this.canvasId;
@@ -7587,7 +7605,7 @@
     });
   }
   const uniCheckGroupKey = PolySymbol("uniCheckGroup");
-  const props$o = {
+  const props$p = {
     name: {
       type: String,
       default: ""
@@ -7595,7 +7613,7 @@
   };
   var CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$o,
+    props: props$p,
     emits: ["change"],
     setup(props2, {
       emit: emit2,
@@ -7614,8 +7632,8 @@
     }
   });
   function useProvideCheckGroup(props2, trigger2) {
-    const fields = [];
-    const getFieldsValue = () => fields.reduce((res, field) => {
+    const fields2 = [];
+    const getFieldsValue = () => fields2.reduce((res, field) => {
       if (field.value.checkboxChecked) {
         res.push(field.value.value);
       }
@@ -7623,10 +7641,10 @@
     }, new Array());
     provide(uniCheckGroupKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       checkboxChange($event) {
         trigger2("change", $event, {
@@ -7649,7 +7667,7 @@
     }
     return getFieldsValue;
   }
-  const props$n = {
+  const props$o = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -7673,7 +7691,7 @@
   };
   var Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$n,
+    props: props$o,
     setup(props2, {
       slots
     }) {
@@ -7821,7 +7839,7 @@
       });
     }
   }
-  const props$m = {
+  const props$n = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -8643,7 +8661,7 @@
       }
     }, id2, true);
   }
-  const props$l = /* @__PURE__ */ extend({}, props$m, {
+  const props$m = /* @__PURE__ */ extend({}, props$n, {
     id: {
       type: String,
       default: ""
@@ -8671,7 +8689,7 @@
   });
   var Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$l,
+    props: props$m,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, {
       emit: emit2
@@ -8760,7 +8778,7 @@
       };
     }
   });
-  const props$k = {
+  const props$l = {
     src: {
       type: String,
       default: ""
@@ -8799,7 +8817,7 @@
   };
   var Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$k,
+    props: props$l,
     setup(props2, {
       emit: emit2
     }) {
@@ -8815,7 +8833,7 @@
       });
       return () => {
         const {
-          mode
+          mode: mode2
         } = props2;
         const {
           imgSrc,
@@ -8829,7 +8847,7 @@
           }, null, 4), imgSrc ? createVNode("img", {
             "src": imgSrc,
             "draggable": props2.draggable
-          }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode] ? createVNode(ResizeSensor, {
+          }, null, 8, ["src", "draggable"]) : createVNode("img", null, null), FIX_MODES[mode2] ? createVNode(ResizeSensor, {
             "onResize": fixSize
           }, null, 8, ["onResize"]) : createVNode("span", null, null)],
           _: 1
@@ -8935,9 +8953,9 @@
   function useImageSize(rootRef, props2, state) {
     const fixSize = () => {
       const {
-        mode
+        mode: mode2
       } = props2;
-      const names = FIX_MODES[mode];
+      const names = FIX_MODES[mode2];
       if (!names) {
         return;
       }
@@ -9100,7 +9118,7 @@
   function getValueString(value) {
     return value === null ? "" : String(value);
   }
-  const props$j = /* @__PURE__ */ extend({}, {
+  const props$k = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -9165,7 +9183,7 @@
       type: String,
       default: "done"
     }
-  }, props$m);
+  }, props$n);
   const emit = [
     "input",
     "focus",
@@ -9371,7 +9389,7 @@
       trigger: trigger2
     };
   }
-  const props$i = /* @__PURE__ */ extend({}, props$j, {
+  const props$j = /* @__PURE__ */ extend({}, props$k, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -9383,7 +9401,7 @@
   });
   var Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$i,
+    props: props$j,
     emits: ["confirm", ...emit],
     setup(props2, {
       emit: emit2
@@ -9588,7 +9606,7 @@
     const instance = getCurrentInstance();
     instance.rebuild = callback;
   }
-  const props$h = {
+  const props$i = {
     scaleArea: {
       type: Boolean,
       default: false
@@ -9597,7 +9615,7 @@
   var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     inheritAttrs: false,
     name: "MovableArea",
-    props: props$h,
+    props: props$i,
     setup(props2, {
       slots
     }) {
@@ -10216,7 +10234,7 @@
     this._springY.reconfigure(e2, t2, n);
     this._springScale.reconfigure(e2, t2, n);
   };
-  const props$g = {
+  const props$h = {
     direction: {
       type: String,
       default: "none"
@@ -10272,7 +10290,7 @@
   };
   var MovableView = /* @__PURE__ */ defineBuiltInComponent({
     name: "MovableView",
-    props: props$g,
+    props: props$h,
     emits: ["change", "scale"],
     setup(props2, {
       slots,
@@ -10865,7 +10883,7 @@
     };
   }
   const OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
-  const props$f = {
+  const props$g = {
     hoverClass: {
       type: String,
       default: "navigator-hover"
@@ -10907,7 +10925,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$f,
+    props: props$g,
     setup(props2, {
       slots
     }) {
@@ -10964,7 +10982,7 @@
       };
     }
   });
-  const props$e = {
+  const props$f = {
     value: {
       type: Array,
       default() {
@@ -11011,7 +11029,7 @@
   }
   var PickerView = /* @__PURE__ */ defineBuiltInComponent({
     name: "PickerView",
-    props: props$e,
+    props: props$f,
     emits: ["change", "pickstart", "pickend", "update:value"],
     setup(props2, {
       slots,
@@ -11972,7 +11990,7 @@
     backgroundColor: "#EBEBEB",
     activeMode: "backwards"
   };
-  const props$d = {
+  const props$e = {
     percent: {
       type: [Number, String],
       default: 0,
@@ -12021,7 +12039,7 @@
   };
   var Progress = /* @__PURE__ */ defineBuiltInComponent({
     name: "Progress",
-    props: props$d,
+    props: props$e,
     setup(props2) {
       const state = useProgressState(props2);
       _activeAnimation(state, props2);
@@ -12095,7 +12113,7 @@
     }
   }
   const uniRadioGroupKey = PolySymbol("uniCheckGroup");
-  const props$c = {
+  const props$d = {
     name: {
       type: String,
       default: ""
@@ -12103,7 +12121,7 @@
   };
   var RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$c,
+    props: props$d,
     setup(props2, {
       emit: emit2,
       slots
@@ -12121,23 +12139,23 @@
     }
   });
   function useProvideRadioGroup(props2, trigger2) {
-    const fields = [];
+    const fields2 = [];
     onMounted(() => {
-      _resetRadioGroupValue(fields.length - 1);
+      _resetRadioGroupValue(fields2.length - 1);
     });
     const getFieldsValue = () => {
       var _a;
-      return (_a = fields.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
+      return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
     };
     provide(uniRadioGroupKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       radioChange($event, field) {
-        const index2 = fields.indexOf(field);
+        const index2 = fields2.indexOf(field);
         _resetRadioGroupValue(index2, true);
         trigger2("change", $event, {
           value: getFieldsValue()
@@ -12145,16 +12163,20 @@
       }
     });
     const uniForm = inject(uniFormKey, false);
-    if (uniForm) {
-      uniForm.addField({
-        submit: () => {
-          let data = ["", null];
-          if (props2.name !== "") {
-            data[0] = props2.name;
-            data[1] = getFieldsValue();
-          }
-          return data;
+    const formField = {
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
         }
+        return data;
+      }
+    };
+    if (uniForm) {
+      uniForm.addField(formField);
+      onBeforeUnmount(() => {
+        uniForm.removeField(formField);
       });
     }
     function setFieldChecked(field, radioChecked) {
@@ -12164,27 +12186,27 @@
       };
     }
     function _resetRadioGroupValue(key, change) {
-      fields.forEach((value, index2) => {
+      fields2.forEach((value, index2) => {
         if (index2 === key) {
           return;
         }
         if (change) {
-          setFieldChecked(fields[index2], false);
+          setFieldChecked(fields2[index2], false);
         } else {
-          fields.forEach((v2, i) => {
+          fields2.forEach((v2, i) => {
             if (index2 >= i) {
               return;
             }
-            if (fields[i].value.radioChecked) {
-              setFieldChecked(fields[index2], false);
+            if (fields2[i].value.radioChecked) {
+              setFieldChecked(fields2[index2], false);
             }
           });
         }
       });
     }
-    return fields;
+    return fields2;
   }
-  const props$b = {
+  const props$c = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -12208,7 +12230,7 @@
   };
   var Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$b,
+    props: props$c,
     setup(props2, {
       slots
     }) {
@@ -12504,7 +12526,7 @@
     });
     return parentNode;
   }
-  const props$a = {
+  const props$b = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -12517,7 +12539,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$a,
+    props: props$b,
     setup(props2) {
       const rootRef = ref(null);
       function _renderNodes(nodes) {
@@ -12544,7 +12566,7 @@
     }
   });
   const passiveOptions = passive(true);
-  const props$9 = {
+  const props$a = {
     scrollX: {
       type: [Boolean, String],
       default: false
@@ -12607,7 +12629,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$9,
+    props: props$a,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, {
       emit: emit2,
@@ -13037,7 +13059,7 @@
       }
     });
   }
-  const props$8 = {
+  const props$9 = {
     name: {
       type: String,
       default: ""
@@ -13093,7 +13115,7 @@
   };
   var Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$8,
+    props: props$9,
     emits: ["changing", "change"],
     setup(props2, {
       emit: emit2
@@ -13264,7 +13286,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  const props$7 = {
+  const props$8 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -13745,7 +13767,7 @@
   }
   var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$7,
+    props: props$8,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, {
       slots,
@@ -13851,7 +13873,7 @@
       };
     }
   });
-  const props$6 = {
+  const props$7 = {
     itemId: {
       type: String,
       default: ""
@@ -13859,7 +13881,7 @@
   };
   var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$6,
+    props: props$7,
     setup(props2, {
       slots
     }) {
@@ -13910,7 +13932,7 @@
       };
     }
   });
-  const props$5 = {
+  const props$6 = {
     name: {
       type: String,
       default: ""
@@ -13938,7 +13960,7 @@
   };
   var Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$5,
+    props: props$6,
     emits: ["change"],
     setup(props2, {
       emit: emit2
@@ -14042,7 +14064,7 @@
     }
     return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  const props$4 = /* @__PURE__ */ extend({}, props$j, {
+  const props$5 = /* @__PURE__ */ extend({}, props$k, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -14063,7 +14085,7 @@
   }
   var Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$4,
+    props: props$5,
     emit: ["confirm", "linechange", ...emit],
     setup(props2, {
       emit: emit2
@@ -14646,6 +14668,8 @@
       };
     }
   });
+  const JSON_PREFIX = "$JSON$:";
+  const JSON_PREFIX_LEN = JSON_PREFIX.length;
   class UniComponent extends UniNode {
     constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
       super(id2, tag, parentNodeId);
@@ -14694,6 +14718,9 @@
       this.$props[name] = null;
     }
     setAttr(name, value) {
+      if (isString(value) && value.indexOf(JSON_PREFIX) === 0) {
+        value = JSON.parse(value.substr(JSON_PREFIX_LEN));
+      }
       this.$props[name] = value;
     }
     removeAttr(name) {
@@ -14975,7 +15002,7 @@
     });
   }
   const TEMP_PATH = "_doc/uniapp_temp/";
-  const props$3 = {
+  const props$4 = {
     src: {
       type: String,
       default: ""
@@ -15046,7 +15073,7 @@
   }
   var CoverImage = /* @__PURE__ */ defineBuiltInComponent({
     name: "CoverImage",
-    props: props$3,
+    props: props$4,
     emits: ["click", "load", "error"],
     setup(props2, {
       emit: emit2
@@ -15183,7 +15210,7 @@
       opacity: opacity ? Number("0x" + opacity) / 255 : 1
     };
   }
-  const props$2 = {
+  const props$3 = {
     id: {
       type: String,
       default: ""
@@ -15227,7 +15254,7 @@
   };
   var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Map",
-    props: props$2,
+    props: props$3,
     emits: ["click", "regionchange", "controltap", "markertap", "callouttap"],
     setup(props2, {
       emit: emit2
@@ -15566,8 +15593,404 @@
       super(id2, "uni-open-data", parentNodeId, refNodeId);
     }
   }
+  let plus_;
+  let weex_;
+  let BroadcastChannel_;
+  function getRuntime() {
+    return typeof window === "object" && typeof navigator === "object" && typeof document === "object" ? "webview" : "v8";
+  }
+  function getPageId() {
+    return plus_.webview.currentWebview().id;
+  }
+  let channel;
+  let globalEvent;
+  const callbacks = {};
+  function onPlusMessage(res) {
+    const message = res.data && res.data.__message;
+    if (!message || !message.__page) {
+      return;
+    }
+    const pageId = message.__page;
+    const callback = callbacks[pageId];
+    callback && callback(message);
+    if (!message.keep) {
+      delete callbacks[pageId];
+    }
+  }
+  function addEventListener(pageId, callback) {
+    if (getRuntime() === "v8") {
+      if (BroadcastChannel_) {
+        channel && channel.close();
+        channel = new BroadcastChannel_(getPageId());
+        channel.onmessage = onPlusMessage;
+      } else if (!globalEvent) {
+        globalEvent = weex_.requireModule("globalEvent");
+        globalEvent.addEventListener("plusMessage", onPlusMessage);
+      }
+    } else {
+      window.__plusMessage = onPlusMessage;
+    }
+    callbacks[pageId] = callback;
+  }
+  class Page {
+    constructor(webview2) {
+      this.webview = webview2;
+    }
+    sendMessage(data) {
+      const message = JSON.parse(JSON.stringify({
+        __message: {
+          data
+        }
+      }));
+      const id2 = this.webview.id;
+      if (BroadcastChannel_) {
+        const channel2 = new BroadcastChannel_(id2);
+        channel2.postMessage(message);
+      } else {
+        plus_.webview.postMessageToUniNView && plus_.webview.postMessageToUniNView(message, id2);
+      }
+    }
+    close() {
+      this.webview.close();
+    }
+  }
+  function showPage({
+    context = {},
+    url,
+    data = {},
+    style = {},
+    onMessage,
+    onClose
+  }) {
+    plus_ = context.plus || plus;
+    weex_ = context.weex || (typeof weex === "object" ? weex : null);
+    BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === "object" ? BroadcastChannel : null);
+    const titleNView = {
+      autoBackButton: true,
+      titleSize: "17px"
+    };
+    const pageId = `page${Date.now()}`;
+    style = Object.assign({}, style);
+    if (style.titleNView !== false && style.titleNView !== "none") {
+      style.titleNView = Object.assign(titleNView, style.titleNView);
+    }
+    const defaultStyle = {
+      top: 0,
+      bottom: 0,
+      usingComponents: {},
+      popGesture: "close",
+      scrollIndicator: "none",
+      animationType: "pop-in",
+      animationDuration: 200,
+      uniNView: {
+        path: `${typeof process === "object" && process.env && {}.VUE_APP_TEMPLATE_PATH || ""}/${url}.js`,
+        defaultFontSize: plus_.screen.resolutionWidth / 20,
+        viewport: plus_.screen.resolutionWidth
+      }
+    };
+    style = Object.assign(defaultStyle, style);
+    const page = plus_.webview.create("", pageId, style, {
+      extras: {
+        from: getPageId(),
+        runtime: getRuntime(),
+        data,
+        useGlobalEvent: !BroadcastChannel_
+      }
+    });
+    page.addEventListener("close", onClose);
+    addEventListener(pageId, (message) => {
+      if (typeof onMessage === "function") {
+        onMessage(message.data);
+      }
+      if (!message.keep) {
+        page.close("auto");
+      }
+    });
+    page.show(style.animationType, style.animationDuration);
+    return new Page(page);
+  }
+  const mode = {
+    SELECTOR: "selector",
+    MULTISELECTOR: "multiSelector",
+    TIME: "time",
+    DATE: "date"
+  };
+  const fields = {
+    YEAR: "year",
+    MONTH: "month",
+    DAY: "day"
+  };
+  function padLeft(num) {
+    return num > 9 ? num : `0${num}`;
+  }
+  function getDate(str, _mode) {
+    str = String(str || "");
+    const date = new Date();
+    if (_mode === mode.TIME) {
+      const strs = str.split(":");
+      if (strs.length === 2) {
+        date.setHours(parseInt(strs[0]), parseInt(strs[1]));
+      }
+    } else {
+      const strs = str.split("-");
+      if (strs.length === 3) {
+        date.setFullYear(parseInt(strs[0]), parseInt(String(parseFloat(strs[1]) - 1)), parseInt(strs[2]));
+      }
+    }
+    return date;
+  }
+  function getDefaultStartValue(props2) {
+    if (props2.mode === mode.TIME) {
+      return "00:00";
+    }
+    if (props2.mode === mode.DATE) {
+      const year = new Date().getFullYear() - 100;
+      switch (props2.fields) {
+        case fields.YEAR:
+          return year;
+        case fields.MONTH:
+          return year + "-01";
+        default:
+          return year + "-01-01";
+      }
+    }
+    return "";
+  }
+  function getDefaultEndValue(props2) {
+    if (props2.mode === mode.TIME) {
+      return "23:59";
+    }
+    if (props2.mode === mode.DATE) {
+      const year = new Date().getFullYear() + 100;
+      switch (props2.fields) {
+        case fields.YEAR:
+          return year;
+        case fields.MONTH:
+          return year + "-12";
+        default:
+          return year + "-12-31";
+      }
+    }
+    return "";
+  }
+  const props$2 = {
+    name: {
+      type: String,
+      default: ""
+    },
+    range: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    rangeKey: {
+      type: String,
+      default: ""
+    },
+    value: {
+      type: [Number, String, Array],
+      default: 0
+    },
+    mode: {
+      type: String,
+      default: mode.SELECTOR,
+      validator(val) {
+        return Object.values(mode).indexOf(val) >= 0;
+      }
+    },
+    fields: {
+      type: String,
+      default: ""
+    },
+    start: {
+      type: String,
+      default: getDefaultStartValue
+    },
+    end: {
+      type: String,
+      default: getDefaultEndValue
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
   var Picker = /* @__PURE__ */ defineBuiltInComponent({
-    name: "Picker"
+    name: "Picker",
+    props: props$2,
+    emits: ["change", "cancel", "columnchange"],
+    setup(props2, {
+      emit: emit2
+    }) {
+      initI18nPickerMsgsOnce();
+      const {
+        t: t2,
+        getLocale
+      } = useI18n();
+      const rootRef = ref(null);
+      const trigger2 = useCustomEvent(rootRef, emit2);
+      const valueSync = ref(null);
+      const page = ref(null);
+      const _setValueSync = () => {
+        let val = props2.value;
+        switch (props2.mode) {
+          case mode.MULTISELECTOR:
+            {
+              if (!Array.isArray(val)) {
+                val = [];
+              }
+              if (!Array.isArray(valueSync.value)) {
+                valueSync.value = [];
+              }
+              const length = valueSync.value.length = Math.max(val.length, props2.range.length);
+              for (let index2 = 0; index2 < length; index2++) {
+                const val0 = Number(val[index2]);
+                const val1 = Number(valueSync.value[index2]);
+                const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+                valueSync.value.splice(index2, 1, val2 < 0 ? 0 : val2);
+              }
+            }
+            break;
+          case mode.TIME:
+          case mode.DATE:
+            valueSync.value = String(val);
+            break;
+          default: {
+            const _valueSync = Number(val);
+            valueSync.value = _valueSync < 0 ? 0 : _valueSync;
+            break;
+          }
+        }
+      };
+      const _updatePicker = (data) => {
+        page.value && page.value.sendMessage(data);
+      };
+      const _showWeexPicker = (data) => {
+        let res = {
+          event: "cancel"
+        };
+        page.value = showPage({
+          url: "__uniapppicker",
+          data,
+          style: {
+            titleNView: void 0,
+            animationType: "none",
+            animationDuration: 0,
+            background: "rgba(0,0,0,0)",
+            popGesture: "none"
+          },
+          onMessage: (message) => {
+            const event = message.event;
+            if (event === "created") {
+              _updatePicker(data);
+              return;
+            }
+            if (event === "columnchange") {
+              delete message.event;
+              trigger2(event, {}, message);
+              return;
+            }
+            res = message;
+          },
+          onClose: () => {
+            page.value = null;
+            const event = res.event;
+            delete res.event;
+            event && trigger2(event, {}, res);
+          }
+        });
+      };
+      const _showNativePicker = (data, popover) => {
+        plus.nativeUI[props2.mode === mode.TIME ? "pickTime" : "pickDate"]((res) => {
+          const date = res.date;
+          trigger2("change", {}, {
+            value: props2.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}`
+          });
+        }, () => {
+          trigger2("cancel", {}, {});
+        }, props2.mode === mode.TIME ? {
+          time: getDate(props2.value, mode.TIME),
+          popover
+        } : {
+          date: getDate(props2.value, mode.DATE),
+          minDate: getDate(props2.start, mode.DATE),
+          maxDate: getDate(props2.end, mode.DATE),
+          popover
+        });
+      };
+      const _showPicker = (data, popover) => {
+        if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
+          _showNativePicker(data, popover);
+        } else {
+          data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY;
+          _showWeexPicker(data);
+        }
+      };
+      const _show = (event) => {
+        if (props2.disabled) {
+          return;
+        }
+        const eventTarget = event.currentTarget;
+        const rect = eventTarget.getBoundingClientRect();
+        _showPicker(Object.assign({}, props2, {
+          value: valueSync.value,
+          locale: getLocale(),
+          messages: {
+            done: t2("uni.picker.done"),
+            cancel: t2("uni.picker.cancel")
+          }
+        }), {
+          top: rect.top + getNavigationBarHeight(),
+          left: rect.left,
+          width: rect.width,
+          height: rect.height
+        });
+      };
+      const uniForm = inject(uniFormKey, false);
+      const formField = {
+        submit: () => [props2.name, valueSync.value],
+        reset: () => {
+          switch (props2.mode) {
+            case mode.SELECTOR:
+              valueSync.value = 0;
+              break;
+            case mode.MULTISELECTOR:
+              Array.isArray(props2.value) && (valueSync.value = props2.value.map((val) => 0));
+              break;
+            case mode.DATE:
+            case mode.TIME:
+              valueSync.value = "";
+              break;
+          }
+        }
+      };
+      if (uniForm) {
+        uniForm.addField(formField);
+        onBeforeUnmount(() => uniForm.removeField(formField));
+      }
+      Object.keys(props2).forEach((key) => {
+        if (key !== "name") {
+          watch(() => props2[key], (val) => {
+            const data = {};
+            data[key] = val;
+            _updatePicker(data);
+          }, {
+            deep: true
+          });
+        }
+      });
+      watch(() => props2.value, _setValueSync, {
+        deep: true
+      });
+      _setValueSync();
+      return () => createVNode("uni-picker", {
+        "ref": rootRef,
+        "onClick": _show
+      }, {
+        default: () => [createVNode("slot", null, null)]
+      }, 8, ["onClick"]);
+    }
   });
   class UniPicker extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
@@ -16192,25 +16615,25 @@
     const { subscribe } = UniViewJSBridge;
     subscribe(VD_SYNC, onVdSync);
   }
-  function getRootInfo(fields) {
+  function getRootInfo(fields2) {
     const info = {};
-    if (fields.id) {
+    if (fields2.id) {
       info.id = "";
     }
-    if (fields.dataset) {
+    if (fields2.dataset) {
       info.dataset = {};
     }
-    if (fields.rect) {
+    if (fields2.rect) {
       info.left = 0;
       info.right = 0;
       info.top = 0;
       info.bottom = 0;
     }
-    if (fields.size) {
+    if (fields2.size) {
       info.width = document.documentElement.clientWidth;
       info.height = document.documentElement.clientHeight;
     }
-    if (fields.scrollOffset) {
+    if (fields2.scrollOffset) {
       const documentElement = document.documentElement;
       const body = document.body;
       info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
@@ -16220,36 +16643,36 @@
     }
     return info;
   }
-  function getNodeInfo(el, fields) {
+  function getNodeInfo(el, fields2) {
     const info = {};
     const { top } = getWindowOffset();
-    if (fields.id) {
+    if (fields2.id) {
       info.id = el.id;
     }
-    if (fields.dataset) {
+    if (fields2.dataset) {
       info.dataset = getCustomDataset(el);
     }
-    if (fields.rect || fields.size) {
+    if (fields2.rect || fields2.size) {
       const rect = el.getBoundingClientRect();
-      if (fields.rect) {
+      if (fields2.rect) {
         info.left = rect.left;
         info.right = rect.right;
         info.top = rect.top - top;
         info.bottom = rect.bottom - top;
       }
-      if (fields.size) {
+      if (fields2.size) {
         info.width = rect.width;
         info.height = rect.height;
       }
     }
-    if (Array.isArray(fields.properties)) {
-      fields.properties.forEach((prop) => {
+    if (Array.isArray(fields2.properties)) {
+      fields2.properties.forEach((prop) => {
         prop = prop.replace(/-([a-z])/g, function(e2, t2) {
           return t2.toUpperCase();
         });
       });
     }
-    if (fields.scrollOffset) {
+    if (fields2.scrollOffset) {
       if (el.tagName === "UNI-SCROLL-VIEW") {
         const scroll = el.children[0].children[0];
         info.scrollLeft = scroll.scrollLeft;
@@ -16263,13 +16686,13 @@
         info.scrollWidth = 0;
       }
     }
-    if (Array.isArray(fields.computedStyle)) {
+    if (Array.isArray(fields2.computedStyle)) {
       const sytle = getComputedStyle(el);
-      fields.computedStyle.forEach((name) => {
+      fields2.computedStyle.forEach((name) => {
         info[name] = sytle[name];
       });
     }
-    if (fields.context) {
+    if (fields2.context) {
       info.contextInfo = getContextInfo(el);
     }
     return info;
@@ -16292,7 +16715,7 @@
     };
     return matches2.call(element, selectors);
   }
-  function getNodesInfo(pageVm2, component, selector, single, fields) {
+  function getNodesInfo(pageVm2, component, selector, single, fields2) {
     const selfElement = findElm(component, pageVm2);
     const parentElement = selfElement.parentElement;
     if (!parentElement) {
@@ -16303,7 +16726,7 @@
     if (single) {
       const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
       if (node) {
-        return getNodeInfo(node, fields);
+        return getNodeInfo(node, fields2);
       }
       return null;
     } else {
@@ -16311,22 +16734,22 @@
       const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
       if (nodeList && nodeList.length) {
         [].forEach.call(nodeList, (node) => {
-          infos.push(getNodeInfo(node, fields));
+          infos.push(getNodeInfo(node, fields2));
         });
       }
       if (!maybeFragment && matches(selfElement, selector)) {
-        infos.unshift(getNodeInfo(selfElement, fields));
+        infos.unshift(getNodeInfo(selfElement, fields2));
       }
       return infos;
     }
   }
   function requestComponentInfo(page, reqs, callback) {
     const result = [];
-    reqs.forEach(({ component, selector, single, fields }) => {
+    reqs.forEach(({ component, selector, single, fields: fields2 }) => {
       if (component === null) {
-        result.push(getRootInfo(fields));
+        result.push(getRootInfo(fields2));
       } else {
-        result.push(getNodesInfo(page, component, selector, single, fields));
+        result.push(getNodesInfo(page, component, selector, single, fields2));
       }
     });
     callback(result);

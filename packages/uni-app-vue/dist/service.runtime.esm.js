@@ -11114,11 +11114,29 @@ export default function vueFactory(exports) {
 
     invoker.modifiers = [...modifiers];
     return invoker;
-  } // fixed by xxxxxx 不强制更新value，否则即使不变，也会从 service 同步到 view 中
+  }
 
+  var forcePatchProps = {
+    AD: ['data'],
+    'AD-DRAW': ['data'],
+    'LIVE-PLAYER': ['picture-in-picture-mode'],
+    MAP: ['markers', 'polyline', 'circles', 'controls', 'include-points', 'polygons'],
+    PICKER: ['range', 'value'],
+    'PICKER-VIEW': ['value'],
+    'RICH-TEXT': ['nodes'],
+    VIDEO: ['danmu-list', 'header'],
+    'WEB-VIEW': ['webview-styles']
+  };
 
-  var forcePatchProp = (_, key) => false; // key === 'value'
+  var forcePatchProp = (_, key) => {
+    var keys = forcePatchProps[_.nodeName];
 
+    if (keys && keys.indexOf(key) > -1) {
+      return true;
+    }
+
+    return false;
+  };
 
   var patchProp = (el, key, prevValue, nextValue, parentComponent) => {
     switch (key) {
@@ -11138,6 +11156,16 @@ export default function vueFactory(exports) {
             patchEvent(el, key, prevValue, nextValue);
           }
         } else {
+          if (isProxy(nextValue)) {
+            var equal = prevValue === nextValue; // 触发收集最新依赖
+
+            nextValue = '$JSON$:' + JSON.stringify(nextValue);
+
+            if (equal && el.getAttribute(key) === nextValue) {
+              return;
+            }
+          }
+
           patchAttr(el, key, nextValue);
         }
 

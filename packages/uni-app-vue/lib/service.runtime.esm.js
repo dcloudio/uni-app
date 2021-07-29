@@ -9116,8 +9116,31 @@ function createInvoker(initialValue, instance) {
     return invoker;
 }
 
-// fixed by xxxxxx 不强制更新value，否则即使不变，也会从 service 同步到 view 中
-const forcePatchProp = (_, key) => false; // key === 'value'
+const forcePatchProps = {
+    AD: ['data'],
+    'AD-DRAW': ['data'],
+    'LIVE-PLAYER': ['picture-in-picture-mode'],
+    MAP: [
+        'markers',
+        'polyline',
+        'circles',
+        'controls',
+        'include-points',
+        'polygons'
+    ],
+    PICKER: ['range', 'value'],
+    'PICKER-VIEW': ['value'],
+    'RICH-TEXT': ['nodes'],
+    VIDEO: ['danmu-list', 'header'],
+    'WEB-VIEW': ['webview-styles']
+};
+const forcePatchProp = (_, key) => {
+    const keys = forcePatchProps[_.nodeName];
+    if (keys && keys.indexOf(key) > -1) {
+        return true;
+    }
+    return false;
+};
 const patchProp = (el, key, prevValue, nextValue, parentComponent) => {
     switch (key) {
         // special
@@ -9135,6 +9158,14 @@ const patchProp = (el, key, prevValue, nextValue, parentComponent) => {
                 }
             }
             else {
+                if (isProxy(nextValue)) {
+                    const equal = prevValue === nextValue;
+                    // 触发收集最新依赖
+                    nextValue = '$JSON$:' + JSON.stringify(nextValue);
+                    if (equal && el.getAttribute(key) === nextValue) {
+                        return;
+                    }
+                }
                 patchAttr(el, key, nextValue);
             }
             break;

@@ -11052,16 +11052,20 @@ function useProvideRadioGroup(props2, trigger) {
     }
   });
   const uniForm = inject(uniFormKey, false);
-  if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = getFieldsValue();
-        }
-        return data;
+  const formField = {
+    submit: () => {
+      let data = ["", null];
+      if (props2.name !== "") {
+        data[0] = props2.name;
+        data[1] = getFieldsValue();
       }
+      return data;
+    }
+  };
+  if (uniForm) {
+    uniForm.addField(formField);
+    onBeforeUnmount(() => {
+      uniForm.removeField(formField);
     });
   }
   function setFieldChecked(field, radioChecked) {
