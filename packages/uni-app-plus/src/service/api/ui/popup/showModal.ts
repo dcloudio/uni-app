@@ -37,7 +37,7 @@ export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
         }
       },
       title as PlusNativeUIConfirmStyles,
-      showCancel ? [cancelText, confirmText] : [confirmText]
+      showCancel ? [cancelText!, confirmText!] : [confirmText!]
     )
   },
   ShowModalProtocol,

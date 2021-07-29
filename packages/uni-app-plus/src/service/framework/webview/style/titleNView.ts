@@ -47,7 +47,7 @@ export function initTitleNView(
 function createTitleImageTags(titleImage: string) {
   return [
     {
-      tag: 'img',
+      tag: 'img' as 'img',
       src: titleImage,
       position: {
         left: 'auto',
