@@ -79,6 +79,9 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      UNI_APP_ID: JSON.stringify(process.env.UNI_APP_ID),
+      UNI_APP_NAME: JSON.stringify(process.env.UNI_APP_NAME),
+      UNI_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       VUE_APP_PLATFORM: JSON.stringify(process.env.UNI_PLATFORM),
       UNI_CLOUD_PROVIDER: process.env.UNI_CLOUD_PROVIDER,
       HBX_USER_TOKEN: JSON.stringify(process.env.HBX_USER_TOKEN || ''),

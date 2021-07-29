@@ -20,6 +20,9 @@ process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cw
 
 const manifestJsonObj = require('@dcloudio/uni-cli-shared/lib/manifest').getManifestJson()
 
+process.env.UNI_APP_ID = manifestJsonObj.appid || ''
+process.env.UNI_APP_NAME = manifestJsonObj.name || ''
+
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
   if (manifestJsonObj.vueVersion === '3' || manifestJsonObj.vueVersion === 3) {
