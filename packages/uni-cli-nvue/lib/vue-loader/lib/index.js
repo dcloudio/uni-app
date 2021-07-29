@@ -110,6 +110,9 @@ module.exports = function (source) {
   // template
   let templateImport = `var render, staticRenderFns`
   let templateRequest
+  // fixed by xxxxxx (recyclable,auto components)
+  templateImport += `, recyclableRender, components`
+  const recyclable = descriptor.template && !!(template.attrs && template.attrs.recyclable)
   if (descriptor.template) {
     const src = descriptor.template.src || resourcePath
     const idQuery = `&id=${id}`
@@ -117,7 +120,9 @@ module.exports = function (source) {
     const attrsQuery = attrsToQuery(descriptor.template.attrs)
     const query = `?vue&type=template${idQuery}${scopedQuery}${attrsQuery}${inheritQuery}`
     const request = templateRequest = stringifyRequest(src + query)
-    templateImport = `import { render, staticRenderFns } from ${request}`
+    // templateImport = `import { render, staticRenderFns } from ${request}`
+    // fixed by xxxxxx (auto components)
+    templateImport = `import { render, staticRenderFns, recyclableRender, components } from ${request}`
   }
 
   // script
@@ -133,7 +138,7 @@ module.exports = function (source) {
     )
   }
 
-  // styles
+  // styles fixed by xxxxxx
   let stylesCode = ``
   if (descriptor.styles.length) {
     stylesCode = genStylesCode(
@@ -143,10 +148,10 @@ module.exports = function (source) {
       resourcePath,
       stringifyRequest,
       needsHotReload,
-      isServer || isShadow // needs explicit injection?
+      true // isServer || isShadow // needs explicit injection?
     )
   }
-
+  // fixed by xxxxxx (injectStyles,auto components)
   let code = `
 ${templateImport}
 ${scriptImport}
@@ -159,10 +164,11 @@ var component = normalizer(
   render,
   staticRenderFns,
   ${hasFunctional ? `true` : `false`},
-  ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
+  ${`null`/* fixed by xxxxxx */},
   ${hasScoped ? JSON.stringify(id) : `null`},
   ${isServer ? JSON.stringify(hash(request)) : `null`}
-  ${isShadow ? `,true` : ``}
+  ${isShadow ? `,true` : ``},
+  components
 )
   `.trim() + `\n`
 
@@ -174,11 +180,14 @@ var component = normalizer(
       stringifyRequest
     )
   }
-
+  
   if (needsHotReload) {
     code += `\n` + genHotReloadCode(id, hasFunctional, templateRequest)
   }
-
+  // fixed by xxxxxx (app-nvue injectStyles)
+  if (/injectStyles/.test(stylesCode)) {
+    code +=`\ninjectStyles.call(component)`
+  }
   // Expose filename. This is used by the devtools and Vue runtime warnings.
   if (!isProduction) {
     // Expose the file's full path in development, so that it can be opened
@@ -189,7 +198,9 @@ var component = normalizer(
     // For security reasons, only expose the file's basename in production.
     code += `\ncomponent.options.__file = ${JSON.stringify(filename)}`
   }
-
+  if (recyclable) { // fixed by xxxxxx app-plus recyclable
+    code += `\nrecyclableRender && (component.options["@render"] = recyclableRender)` // fixed by xxxxxx
+  }
   code += `\nexport default component.exports`
   return code
 }

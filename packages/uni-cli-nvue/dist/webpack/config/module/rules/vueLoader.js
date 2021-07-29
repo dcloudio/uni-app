@@ -7,6 +7,7 @@ exports.vueLoader = {
         {
             loader: 'vue-loader',
             options: {
+                hotReload: false,
                 compiler: require('../../../../../lib/weex-template-compiler'),
             },
         },

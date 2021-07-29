@@ -6,6 +6,7 @@ export const vueLoader: RuleSetRule = {
     {
       loader: 'vue-loader',
       options: {
+        hotReload: false,
         compiler: require('../../../../../lib/weex-template-compiler'),
       },
     },
