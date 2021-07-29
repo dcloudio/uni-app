@@ -14290,7 +14290,7 @@
   function getContextInfo(el) {
     return el.__uniContextInfo;
   }
-  class AnimationElement extends UniElement {
+  class UniAnimationElement extends UniElement {
     constructor(id2, element, parentNodeId, refNodeId, nodeJson, propNames = []) {
       super(id2, element, parentNodeId, refNodeId, nodeJson, [
         ...animation.props,
@@ -14314,7 +14314,7 @@
     }
   }
   const PROP_NAMES_HOVER$1 = ["space", "decode"];
-  class UniTextElement extends AnimationElement {
+  class UniTextElement extends UniAnimationElement {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, document.createElement("uni-text"), parentNodeId, refNodeId, nodeJson, PROP_NAMES_HOVER$1);
       this._text = "";
@@ -14351,7 +14351,7 @@
     "hover-start-time",
     "hover-stay-time"
   ];
-  class UniHoverElement extends AnimationElement {
+  class UniHoverElement extends UniAnimationElement {
     constructor(id2, element, parentNodeId, refNodeId, nodeJson, propNames = []) {
       super(id2, element, parentNodeId, refNodeId, nodeJson, [
         ...PROP_NAMES_HOVER,

@@ -6,7 +6,7 @@ import { UniElement } from './UniElement'
 interface AnimationProps {
   animation: any
 }
-export class AnimationElement<T extends object> extends UniElement<
+export class UniAnimationElement<T extends object> extends UniElement<
   T & AnimationProps
 > {
   constructor(

@@ -1,5 +1,5 @@
 import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
-import { AnimationElement } from './AnimationElement'
+import { UniAnimationElement } from './UniAnimationElement'
 
 interface HoverProps {
   'hover-class': string | 'none'
@@ -13,7 +13,7 @@ const PROP_NAMES_HOVER = [
   'hover-start-time',
   'hover-stay-time',
 ]
-export class UniHoverElement extends AnimationElement<HoverProps> {
+export class UniHoverElement extends UniAnimationElement<HoverProps> {
   private _hover?: Hover
   constructor(
     id: number,
