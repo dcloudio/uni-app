@@ -1712,11 +1712,12 @@ var serviceContext = (function (vue) {
           return this;
       },
   };
+  var Emitter = E;
 
   // TODO 等待 vue3 的兼容模式自带emitter
   function initBridge(subscribeNamespace) {
       // TODO vue3 compatibility builds
-      const emitter = new E();
+      const emitter = new Emitter();
       return {
           on(event, callback) {
               return emitter.on(event, callback);
@@ -2341,7 +2342,7 @@ var serviceContext = (function (vue) {
       },
   ];
 
-  const emitter = new E();
+  const emitter = new Emitter();
   const $on = defineSyncApi(API_ON, (name, callback) => {
       emitter.on(name, callback);
       return () => emitter.off(name, callback);

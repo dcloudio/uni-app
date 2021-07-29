@@ -5,3 +5,4 @@ packages/uni-cli-nvue/lib
 packages/uni-cli-shared/lib
 packages/uni-components/lib
 packages/uni-mp-vue/lib
+packages/uni-cloud/lib

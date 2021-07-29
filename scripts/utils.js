@@ -21,6 +21,7 @@ const priority = {
   'uni-app-plus': 30,
   'uni-app-vite': 30,
   'vite-plugin-uni': 20,
+  'uni-cloud': 10,
   'size-check': 1,
 }
 
