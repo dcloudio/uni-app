@@ -1,4 +1,4 @@
-import { showPage } from '../page.js'
+import { showPage } from '../../../helpers/page.js'
 import {
   defineAsyncApi,
   API_SCAN_CODE,

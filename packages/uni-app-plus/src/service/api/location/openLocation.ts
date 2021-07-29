@@ -5,7 +5,7 @@ import {
   OpenLocationProtocol,
   OpenLocationOptions,
 } from '@dcloudio/uni-api'
-import { showPage } from '../page.js'
+import { showPage } from '../../../helpers/page.js'
 
 export const openLocation = <API_TYPE_OPEN_LOCATION>defineAsyncApi(
   API_OPEN_LOCATION,

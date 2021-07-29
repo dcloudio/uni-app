@@ -1,4 +1,4 @@
-import { inject, provide, ref, onMounted } from 'vue'
+import { inject, provide, ref, onMounted, onBeforeUnmount } from 'vue'
 import type { Ref, ExtractPropTypes, WritableComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '../form'
@@ -77,16 +77,20 @@ function useProvideRadioGroup(
   })
 
   const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+  const formField = {
+    submit: () => {
+      let data: [string, any] = ['', null]
+      if (props.name !== '') {
+        data[0] = props.name
+        data[1] = getFieldsValue()
+      }
+      return data
+    },
+  }
   if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data: [string, any] = ['', null]
-        if (props.name !== '') {
-          data[0] = props.name
-          data[1] = getFieldsValue()
-        }
-        return data
-      },
+    uniForm.addField(formField)
+    onBeforeUnmount(() => {
+      uniForm.removeField(formField)
     })
   }
 

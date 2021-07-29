@@ -64,7 +64,7 @@ function addEventListener(pageId: string, callback: CallBack) {
   callbacks[pageId] = callback
 }
 
-class Page {
+export class Page {
   webview: PlusWebviewWebviewObject
 
   constructor(webview: PlusWebviewWebviewObject) {
@@ -72,11 +72,13 @@ class Page {
   }
 
   sendMessage(data: any) {
-    const message = {
-      __message: {
-        data,
-      },
-    }
+    const message = JSON.parse(
+      JSON.stringify({
+        __message: {
+          data,
+        },
+      })
+    )
     const id = this.webview.id
     if (BroadcastChannel_) {
       const channel = new BroadcastChannel_(id)
