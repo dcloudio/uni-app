@@ -30,6 +30,7 @@
 * [《uni-app 快速入门 从零开始实现新闻资讯类跨端应用》](https://coding.imooc.com/class/433.html)，出品人：meHaoTian
 * [《uni-app实战直播app全栈开发》](https://study.163.com/course/courseMain.htm?courseId=1210217810&share=2&shareId=480000001892585)，出品人：帝莎IT学院
 * [《uni-app博客实战开发教程》](https://ke.qq.com/course/3455428?tuin=258d8def)，出品人：卢小兵
+* [《uni-app快速入门到社区论坛项目多端开发实战》](https://www.bilibili.com/video/BV1oy4y1j75s?p=1)，出品人：千锋教育
 
 
 目前各大视频学习网站都有不少uni-app的学习资源，更多资源请点击搜索链接：
