@@ -1,6 +1,6 @@
 import '@dcloudio/uni-components/style/text.css'
 import { DecodeOptions, parseText } from '@dcloudio/uni-components'
-import { UniElement } from './UniElement'
+import { AnimationElement } from './AnimationElement'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
 
 interface TextProps {
@@ -10,7 +10,7 @@ interface TextProps {
 
 const PROP_NAMES_HOVER = ['space', 'decode']
 
-export class UniTextElement extends UniElement<TextProps> {
+export class UniTextElement extends AnimationElement<TextProps> {
   private _text: string = ''
 
   constructor(
