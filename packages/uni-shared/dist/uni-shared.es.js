@@ -1,7 +1,11 @@
 import { camelize, extend, isString, isPlainObject, isArray, isHTMLTag, isSVGTag, capitalize, hyphenate } from '@vue/shared';
 
+let lastLogTime = 0;
 function formatLog(module, ...args) {
-    return `[${Date.now()}][${module}]：${args
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
         .map((arg) => JSON.stringify(arg))
         .join(' ')}`;
 }

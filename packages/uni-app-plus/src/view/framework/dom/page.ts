@@ -64,6 +64,24 @@ export function createElement(
   return element
 }
 
+const pageReadyCallbacks: (() => void)[] = []
+let isPageReady = false
+export function onPageReady(callback: () => void) {
+  if (isPageReady) {
+    return callback()
+  }
+  pageReadyCallbacks.push(callback)
+}
+
+function setPageReady() {
+  if (__DEV__) {
+    console.log(formatLog('setPageReady', pageReadyCallbacks.length))
+  }
+  isPageReady = true
+  pageReadyCallbacks.forEach((fn) => fn())
+  pageReadyCallbacks.length = 0
+}
+
 export function onPageCreated() {}
 
 export function onPageCreate({
@@ -85,10 +103,6 @@ export function onPageCreate({
   // 初始化页面容器元素
   initPageElement()
 
-  if (css) {
-    initPageCss(route)
-  }
-
   const pageId = plus.webview.currentWebview().id!
   ;(window as any).__id__ = pageId
   document.title = `${route}[${pageId}]`
@@ -99,6 +113,12 @@ export function onPageCreate({
     document.addEventListener('touchmove', disableScrollListener)
   } else if (onPageScroll || onPageReachBottom) {
     initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance)
+  }
+
+  if (css) {
+    initPageCss(route)
+  } else {
+    setPageReady()
   }
 }
 
@@ -125,13 +145,15 @@ function initPageElement() {
 }
 
 function initPageCss(route: string) {
+  if (__DEV__) {
+    console.log(formatLog('initPageCss', route + '.css'))
+  }
   const element = document.createElement('link')
   element.type = 'text/css'
   element.rel = 'stylesheet'
   element.href = route + '.css'
-  element.onload = function () {
-    window.dispatchEvent(new CustomEvent('updateview'))
-  }
+  element.onload = setPageReady
+  element.onerror = setPageReady
   document.head.appendChild(element)
 }
 

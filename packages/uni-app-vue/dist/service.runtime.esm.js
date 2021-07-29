@@ -37,9 +37,13 @@ export default function vueFactory(exports) {
    */
 
   var capitalize$1 = cacheStringFunction$1(str => str.charAt(0).toUpperCase() + str.slice(1));
+  var lastLogTime = 0;
 
   function formatLog(module, ...args) {
-    return "[".concat(Date.now(), "][").concat(module, "]\uFF1A").concat(args.map(arg => JSON.stringify(arg)).join(' '));
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]\uFF1A").concat(args.map(arg => JSON.stringify(arg)).join(' '));
   }
 
   class DOMException extends Error {

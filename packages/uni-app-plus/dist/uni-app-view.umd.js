@@ -153,8 +153,12 @@
     const n = parseFloat(val);
     return isNaN(n) ? val : n;
   };
+  let lastLogTime = 0;
   function formatLog(module, ...args) {
-    return `[${Date.now()}][${module}]\uFF1A${args.map((arg) => JSON.stringify(arg)).join(" ")}`;
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]\uFF1A${args.map((arg) => JSON.stringify(arg)).join(" ")}`;
   }
   function getCustomDataset(el) {
     return extend({}, el.dataset, el.__uniDataset);
@@ -15926,6 +15930,22 @@
     elements.set(id2, element);
     return element;
   }
+  const pageReadyCallbacks = [];
+  let isPageReady = false;
+  function onPageReady(callback) {
+    if (isPageReady) {
+      return callback();
+    }
+    pageReadyCallbacks.push(callback);
+  }
+  function setPageReady() {
+    {
+      console.log(formatLog("setPageReady", pageReadyCallbacks.length));
+    }
+    isPageReady = true;
+    pageReadyCallbacks.forEach((fn) => fn());
+    pageReadyCallbacks.length = 0;
+  }
   function onPageCreated() {
   }
   function onPageCreate({
@@ -15945,9 +15965,6 @@
     initPageInfo(route);
     initSystemInfo(platform, pixelRatio2, windowWidth);
     initPageElement();
-    if (css) {
-      initPageCss(route);
-    }
     const pageId = plus.webview.currentWebview().id;
     window.__id__ = pageId;
     document.title = `${route}[${pageId}]`;
@@ -15956,6 +15973,11 @@
       document.addEventListener("touchmove", disableScrollListener);
     } else if (onPageScroll || onPageReachBottom) {
       initPageScroll(onPageScroll, onPageReachBottom, onReachBottomDistance);
+    }
+    if (css) {
+      initPageCss(route);
+    } else {
+      setPageReady();
     }
   }
   function initPageInfo(route) {
@@ -15974,13 +15996,15 @@
     createElement(0, "div", -1, -1).$ = document.getElementById("app");
   }
   function initPageCss(route) {
+    {
+      console.log(formatLog("initPageCss", route + ".css"));
+    }
     const element = document.createElement("link");
     element.type = "text/css";
     element.rel = "stylesheet";
     element.href = route + ".css";
-    element.onload = function() {
-      window.dispatchEvent(new CustomEvent("updateview"));
-    };
+    element.onload = setPageReady;
+    element.onerror = setPageReady;
     document.head.appendChild(element);
   }
   function initCssVar(statusbarHeight, windowTop, windowBottom) {
@@ -16018,6 +16042,17 @@
     publish();
   }
   function onVdSync(actions) {
+    const firstAction = actions[0];
+    if (firstAction[0] === ACTION_TYPE_PAGE_CREATE) {
+      onPageCreateSync(firstAction);
+    } else {
+      onPageReady(() => onPageUpdateSync(actions));
+    }
+  }
+  function onPageCreateSync(action) {
+    return onPageCreate(action[1]);
+  }
+  function onPageUpdateSync(actions) {
     const dictAction = actions[0];
     const getDict = createGetDict(dictAction[0] === ACTION_TYPE_DICT ? dictAction[1] : []);
     actions.forEach((action) => {

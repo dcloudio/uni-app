@@ -10,19 +10,39 @@ import {
   ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_TEXT,
+  PageCreateAction,
 } from '@dcloudio/uni-shared'
 import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
 import { ACTION_TYPE_DICT, DictAction, Dictionary } from '../../../constants'
 import { createGetDict, decodeNodeJson } from './decodeActions'
-import { $, createElement, onPageCreate, onPageCreated } from './page'
+import {
+  $,
+  createElement,
+  onPageCreate,
+  onPageCreated,
+  onPageReady,
+} from './page'
 import { flushPostActionJobs } from './scheduler'
 
 export function onVdSync(actions: (PageAction | DictAction)[]) {
+  const firstAction = actions[0]
+  // page create
+  if (firstAction[0] === ACTION_TYPE_PAGE_CREATE) {
+    onPageCreateSync(firstAction)
+  } else {
+    onPageReady(() => onPageUpdateSync(actions))
+  }
+}
+
+function onPageCreateSync(action: PageCreateAction) {
+  return onPageCreate(action[1])
+}
+
+function onPageUpdateSync(actions: (PageAction | DictAction)[]) {
   const dictAction = actions[0]
   const getDict = createGetDict(
     dictAction[0] === ACTION_TYPE_DICT ? (dictAction[1] as Dictionary) : []
   )
-
   actions.forEach((action) => {
     switch (action[0]) {
       case ACTION_TYPE_PAGE_CREATE:
