@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.define = void 0;
 const webpack_1 = require("webpack");
-exports.define = new webpack_1.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-    'process.env.VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+const shared_1 = require("@vue/shared");
+const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
+exports.define = new webpack_1.DefinePlugin(shared_1.extend({
     'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
     'process.env.HBX_USER_TOKEN': JSON.stringify(process.env.HBX_USER_TOKEN || ''),
-    'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
-});
+}, uni_cli_shared_1.initDefine()));

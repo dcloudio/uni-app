@@ -1,15 +1,27 @@
-'use strict'
-Object.defineProperty(exports, '__esModule', { value: true })
-const uni_shared_1 = require('@dcloudio/uni-shared')
-const uni_cli_shared_1 = require('@dcloudio/uni-cli-shared')
-const validateFunction_1 = require('./validateFunction')
+import { once } from '@dcloudio/uni-shared'
+import {
+  COMMON_EXCLUDE,
+  uniViteInjectPlugin,
+  UniVitePlugin,
+} from '@dcloudio/uni-cli-shared'
+
+import { uniValidateFunctionPlugin } from './validateFunction'
+
 process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
-const uniCloudSpaces = []
+
+const uniCloudSpaces: {
+  id: string
+  name: string
+  clientSecret?: string
+  apiEndpoint?: string
+}[] = []
+
 initUniCloudEnv()
+
 /**
  * @type {import('vite').Plugin}
  */
-const UniCloudPlugin = {
+const UniCloudPlugin: UniVitePlugin = {
   name: 'vite:uni-cloud',
   config(config) {
     const silent = config.build && config.build.ssr ? true : false
@@ -57,12 +69,14 @@ const UniCloudPlugin = {
     }
   },
 }
-const initUniCloudWarningOnce = uni_shared_1.once(() => {
+
+const initUniCloudWarningOnce = once(() => {
   uniCloudSpaces.length &&
     console.warn(
       '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
     )
 })
+
 function initUniCloudEnv() {
   if (!process.env.UNI_CLOUD_SPACES) {
     return
@@ -94,11 +108,12 @@ function initUniCloudEnv() {
     )
   } catch (e) {}
 }
-exports.default = [
+
+export default [
   UniCloudPlugin,
-  uni_cli_shared_1.uniViteInjectPlugin({
-    exclude: [...uni_cli_shared_1.COMMON_EXCLUDE],
+  uniViteInjectPlugin({
+    exclude: [...COMMON_EXCLUDE],
     uniCloud: ['@dcloudio/uni-cloud', 'default'],
   }),
-  validateFunction_1.uniValidateFunctionPlugin(),
+  uniValidateFunctionPlugin(),
 ]

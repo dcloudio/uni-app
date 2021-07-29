@@ -1255,4 +1255,4 @@ var protocols = /*#__PURE__*/Object.freeze({
 
 var index = initUni(shims, protocols);
 
-export { index as default };
+export default index;

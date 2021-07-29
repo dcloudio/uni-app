@@ -1,10 +1,8 @@
-'use strict'
-Object.defineProperty(exports, '__esModule', { value: true })
-exports.uniValidateFunctionPlugin = void 0
-function replaceModuleExports(code) {
+import { Plugin } from 'vite'
+function replaceModuleExports(code: string) {
   return code.replace(/module\.exports\s*=/, 'export default ')
 }
-function uniValidateFunctionPlugin() {
+export function uniValidateFunctionPlugin(): Plugin {
   return {
     name: 'vite:uni-cloud-vf',
     enforce: 'pre',
@@ -15,4 +13,3 @@ function uniValidateFunctionPlugin() {
     },
   }
 }
-exports.uniValidateFunctionPlugin = uniValidateFunctionPlugin
