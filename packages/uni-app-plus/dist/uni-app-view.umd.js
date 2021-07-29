@@ -14421,8 +14421,230 @@
       super(id2, document.createElement("uni-view"), parentNodeId, refNodeId, nodeJson);
     }
   }
+  function getStatusbarHeight() {
+    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === "iOS" ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0;
+  }
+  function getNavigationBarHeight() {
+    const webview2 = plus.webview.currentWebview();
+    const style = webview2.getStyle();
+    const titleNView = style && style.titleNView;
+    if (titleNView && titleNView.type === "default") {
+      return NAVBAR_HEIGHT + getStatusbarHeight();
+    }
+    return 0;
+  }
+  const onDrawKey = Symbol("onDraw");
+  function getFixed($el) {
+    let fixed;
+    while ($el) {
+      const style = getComputedStyle($el);
+      const transform = style.transform || style.webkitTransform;
+      fixed = transform && transform !== "none" ? false : fixed;
+      fixed = style.position === "fixed" ? true : fixed;
+      $el = $el.parentElement;
+    }
+    return fixed;
+  }
+  function useNativeAttrs(props2, ignore) {
+    return computed$1(() => {
+      const object = {};
+      Object.keys(props2).forEach((key) => {
+        if (ignore && ignore.includes(key)) {
+          return;
+        }
+        let val = props2[key];
+        val = key === "src" ? getRealPath(val) : val;
+        object[key.replace(/[A-Z]/g, (str) => "-" + str.toLowerCase())] = val;
+      });
+      return object;
+    });
+  }
+  function useNative(rootRef) {
+    const position = reactive({
+      top: "0px",
+      left: "0px",
+      width: "0px",
+      height: "0px",
+      position: "static"
+    });
+    const hidden = ref(false);
+    function updatePosition() {
+      const el = rootRef.value;
+      const rect = el.getBoundingClientRect();
+      hidden.value = rect.width === 0 || rect.height === 0;
+      if (!hidden.value) {
+        position.position = getFixed(el) ? "absolute" : "static";
+        const keys = ["top", "left", "width", "height"];
+        keys.forEach((key) => {
+          let val = rect[key];
+          val = key === "top" ? val + (position.position === "static" ? document.documentElement.scrollTop || document.body.scrollTop || 0 : getNavigationBarHeight()) : val;
+          position[key] = val + "px";
+        });
+      }
+    }
+    let request = null;
+    function requestPositionUpdate() {
+      if (request) {
+        cancelAnimationFrame(request);
+      }
+      request = requestAnimationFrame(() => {
+        request = null;
+        updatePosition();
+      });
+    }
+    window.addEventListener("updateview", requestPositionUpdate);
+    let onDrawCallbacks = [];
+    let attachedCallback;
+    function onParentReady(callback) {
+      const onDraw2 = inject(onDrawKey);
+      const newCallback = (parentPosition) => {
+        callback(parentPosition);
+        onDrawCallbacks.forEach((callback2) => callback2(position));
+        onDrawCallbacks = null;
+      };
+      if (onDraw2) {
+        onDraw2(newCallback);
+      } else {
+        attachedCallback = () => newCallback({
+          top: "0px",
+          left: "0px",
+          width: Number.MAX_SAFE_INTEGER + "px",
+          height: Number.MAX_SAFE_INTEGER + "px",
+          position: "static"
+        });
+      }
+    }
+    const onDraw = function(callback) {
+      if (onDrawCallbacks) {
+        onDrawCallbacks.push(callback);
+      } else {
+        callback(position);
+      }
+    };
+    provide(onDrawKey, onDraw);
+    onMounted(() => {
+      updatePosition();
+      if (attachedCallback) {
+        attachedCallback();
+      }
+    });
+    return {
+      position,
+      hidden,
+      onParentReady
+    };
+  }
   var Ad = /* @__PURE__ */ defineBuiltInComponent({
-    name: "Ad"
+    name: "Ad",
+    props: {
+      adpid: {
+        type: [Number, String],
+        default: ""
+      },
+      data: {
+        type: Object,
+        default: null
+      },
+      dataCount: {
+        type: Number,
+        default: 5
+      },
+      channel: {
+        type: String,
+        default: ""
+      }
+    },
+    setup(props2, {
+      emit: emit2
+    }) {
+      const rootRef = ref(null);
+      const containerRef = ref(null);
+      const trigger2 = useCustomEvent(rootRef, emit2);
+      const attrs2 = useNativeAttrs(props2, ["id"]);
+      const {
+        position,
+        onParentReady
+      } = useNative(containerRef);
+      let adView;
+      onParentReady(() => {
+        adView = plus.ad.createAdView(Object.assign({}, attrs2.value, position));
+        plus.webview.currentWebview().append(adView);
+        adView.setDislikeListener((data) => {
+          containerRef.value.style.height = "0";
+          window.dispatchEvent(new CustomEvent("updateview"));
+          trigger2("close", {}, data);
+        });
+        adView.setRenderingListener((data) => {
+          if (data.result === 0) {
+            containerRef.value.style.height = data.height + "px";
+            window.dispatchEvent(new CustomEvent("updateview"));
+          } else {
+            trigger2("error", {}, {
+              errCode: data.result
+            });
+          }
+        });
+        adView.setAdClickedListener(() => {
+          trigger2("adclicked", {}, {});
+        });
+        watch(() => position, (position2) => adView.setStyle(position2), {
+          deep: true
+        });
+        watch(() => props2.adpid, (val) => {
+          if (val) {
+            loadData();
+          }
+        });
+        watch(() => props2.data, (val) => {
+          if (val) {
+            adView.renderingBind(val);
+          }
+        });
+        function loadData() {
+          let args = {
+            adpid: props2.adpid,
+            width: position.width,
+            count: props2.dataCount
+          };
+          if (props2.channel !== void 0) {
+            args.ext = {
+              channel: props2.channel
+            };
+          }
+          UniViewJSBridge.invokeServiceMethod("getAdData", args, ({
+            code,
+            data,
+            message
+          }) => {
+            if (code === 0) {
+              adView.renderingBind(data);
+            } else {
+              trigger2("error", {}, {
+                errMsg: message
+              });
+            }
+          });
+        }
+        if (props2.adpid) {
+          loadData();
+        }
+      });
+      onBeforeUnmount(() => {
+        if (adView) {
+          adView.close();
+        }
+      });
+      return () => {
+        return createVNode("uni-ad", {
+          "ref": rootRef
+        }, {
+          default: () => [createVNode("div", {
+            "ref": containerRef,
+            "class": "uni-ad-container"
+          }, null, 512)]
+        }, 512);
+      };
+    }
   });
   class UniComponent extends UniNode {
     constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
@@ -14595,119 +14817,6 @@
     }
   }
   var coverImage = "uni-cover-image {\n  display: block;\n  line-height: 1.2;\n  overflow: hidden;\n  height: 100%;\n  width: 100%;\n  pointer-events: auto;\n}\n\nuni-cover-image[hidden] {\n  display: none;\n}\n\nuni-cover-image .uni-cover-image {\n  width: 100%;\n  height: 100%;\n}\n";
-  function getStatusbarHeight() {
-    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === "iOS" ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0;
-  }
-  function getNavigationBarHeight() {
-    const webview2 = plus.webview.currentWebview();
-    const style = webview2.getStyle();
-    const titleNView = style && style.titleNView;
-    if (titleNView && titleNView.type === "default") {
-      return NAVBAR_HEIGHT + getStatusbarHeight();
-    }
-    return 0;
-  }
-  const onDrawKey = Symbol("onDraw");
-  function getFixed($el) {
-    let fixed;
-    while ($el) {
-      const style = getComputedStyle($el);
-      const transform = style.transform || style.webkitTransform;
-      fixed = transform && transform !== "none" ? false : fixed;
-      fixed = style.position === "fixed" ? true : fixed;
-      $el = $el.parentElement;
-    }
-    return fixed;
-  }
-  function useNativeAttrs(props2, ignore) {
-    return computed$1(() => {
-      const object = {};
-      Object.keys(props2).forEach((key) => {
-        if (ignore && ignore.includes(key)) {
-          return;
-        }
-        let val = props2[key];
-        val = key === "src" ? getRealPath(val) : val;
-        object[key.replace(/[A-Z]/g, (str) => "-" + str.toLowerCase())] = val;
-      });
-      return object;
-    });
-  }
-  function useNative(rootRef) {
-    const position = reactive({
-      top: "0px",
-      left: "0px",
-      width: "0px",
-      height: "0px",
-      position: "static"
-    });
-    const hidden = ref(false);
-    function updatePosition() {
-      const el = rootRef.value;
-      const rect = el.getBoundingClientRect();
-      hidden.value = rect.width === 0 || rect.height === 0;
-      if (!hidden.value) {
-        position.position = getFixed(el) ? "absolute" : "static";
-        const keys = ["top", "left", "width", "height"];
-        keys.forEach((key) => {
-          let val = rect[key];
-          val = key === "top" ? val + (position.position === "static" ? document.documentElement.scrollTop || document.body.scrollTop || 0 : getNavigationBarHeight()) : val;
-          position[key] = val + "px";
-        });
-      }
-    }
-    let request = null;
-    function requestPositionUpdate() {
-      if (request) {
-        cancelAnimationFrame(request);
-      }
-      request = requestAnimationFrame(() => {
-        request = null;
-        updatePosition();
-      });
-    }
-    window.addEventListener("updateview", requestPositionUpdate);
-    let onDrawCallbacks = [];
-    let attachedCallback;
-    function onParentReady(callback) {
-      const onDraw2 = inject(onDrawKey);
-      const newCallback = (parentPosition) => {
-        callback(parentPosition);
-        onDrawCallbacks.forEach((callback2) => callback2(position));
-        onDrawCallbacks = null;
-      };
-      if (onDraw2) {
-        onDraw2(newCallback);
-      } else {
-        attachedCallback = () => newCallback({
-          top: "0px",
-          left: "0px",
-          width: Number.MAX_SAFE_INTEGER + "px",
-          height: Number.MAX_SAFE_INTEGER + "px",
-          position: "static"
-        });
-      }
-    }
-    const onDraw = function(callback) {
-      if (onDrawCallbacks) {
-        onDrawCallbacks.push(callback);
-      } else {
-        callback(position);
-      }
-    };
-    provide(onDrawKey, onDraw);
-    onMounted(() => {
-      updatePosition();
-      if (attachedCallback) {
-        attachedCallback();
-      }
-    });
-    return {
-      position,
-      hidden,
-      onParentReady
-    };
-  }
   let id = 0;
   function useCover(rootRef, trigger2, content) {
     const { position, hidden, onParentReady } = useNative(rootRef);

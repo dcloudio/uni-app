@@ -8970,10 +8970,39 @@ var serviceContext = (function (vue) {
       });
   }
 
+  const _adDataCache = {};
+  function getAdData(data, onsuccess, onerror) {
+      const { adpid, width } = data;
+      const key = adpid + '-' + width;
+      const adDataList = _adDataCache[key];
+      if (adDataList && adDataList.length > 0) {
+          onsuccess(adDataList.splice(0, 1)[0]);
+          return;
+      }
+      plus.ad.getAds(data, (res) => {
+          const list = res.ads;
+          onsuccess(list.splice(0, 1)[0]);
+          _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
+      }, (err) => {
+          onerror({
+              errCode: err.code,
+              errMsg: err.message,
+          });
+      });
+  }
   function subscribeAd() {
-      // view 层通过 UniViewJSBridge.invokeServiceMethod('getAdData', args, function({data})=>{console.log(data)})
       registerServiceMethod('getAdData', (args, resolve) => {
-          // TODO args: view 层传输的参数，处理完之后，resolve:回传给 service，如resolve({data})
+          getAdData(args, (res) => {
+              resolve({
+                  code: 0,
+                  data: res,
+              });
+          }, (err) => {
+              resolve({
+                  code: 1,
+                  message: err,
+              });
+          });
       });
   }
 
