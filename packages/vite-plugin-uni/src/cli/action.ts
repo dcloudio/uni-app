@@ -29,7 +29,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
       await build(extend(options, { watch: true }))
     }
     if (options.platform === 'app') {
-      await runNVue('prod')
+      await runNVue('dev')
     }
   } catch (e) {
     console.error(`error when starting dev server:\n${e.stack || e}`)
@@ -44,7 +44,7 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       ? buildSSR(options)
       : build(options))
     if (options.platform === 'app') {
-      await runNVue('dev')
+      await runNVue('prod')
     }
     console.log(` DONE  Build complete.`)
   } catch (e) {

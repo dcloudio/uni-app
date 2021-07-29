@@ -10,4 +10,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * 注意：该包的依赖包含了 lib 中的 vue-loader,weex-styler,weex-template-compiler
+ */
 __exportStar(require("./webpack"), exports);

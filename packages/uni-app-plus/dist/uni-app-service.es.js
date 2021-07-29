@@ -6072,7 +6072,15 @@ var serviceContext = (function (vue) {
       return new Page(page);
   }
 
-  function getStatusBarStyle$1() {
+  function getStatusbarHeight() {
+      // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+      return plus.navigator.isImmersedStatusbar()
+          ? Math.round(plus.os.name === 'iOS'
+              ? plus.navigator.getSafeAreaInsets().top
+              : plus.navigator.getStatusbarHeight())
+          : 0;
+  }
+  function getStatusBarStyle() {
       let style = plus.navigator.getStatusBarStyle();
       if (style === 'UIStatusBarStyleBlackTranslucent' ||
           style === 'UIStatusBarStyleBlackOpaque' ||
@@ -6084,10 +6092,11 @@ var serviceContext = (function (vue) {
       }
       return style;
   }
+
   const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) => {
       initI18nScanCodeMsgsOnce();
       const { t } = useI18n();
-      const statusBarStyle = getStatusBarStyle$1();
+      const statusBarStyle = getStatusBarStyle();
       const isDark = statusBarStyle !== 'light';
       let result;
       let success = false;
@@ -7891,18 +7900,6 @@ var serviceContext = (function (vue) {
       });
   }, GetLocationProtocol, GetLocationOptions);
 
-  function getStatusBarStyle() {
-      let style = plus.navigator.getStatusBarStyle();
-      if (style === 'UIStatusBarStyleBlackTranslucent' ||
-          style === 'UIStatusBarStyleBlackOpaque' ||
-          style === 'null') {
-          style = 'light';
-      }
-      else if (style === 'UIStatusBarStyleDefault') {
-          style = 'dark';
-      }
-      return style;
-  }
   const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, reject }) => {
       const statusBarStyle = getStatusBarStyle();
       const isDark = statusBarStyle !== 'light';
@@ -10526,15 +10523,6 @@ var serviceContext = (function (vue) {
       //     routeOptions.meta.visible = true
       //   }
       return routeOptions;
-  }
-
-  function getStatusbarHeight() {
-      // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-      return plus.navigator.isImmersedStatusbar()
-          ? Math.round(plus.os.name === 'iOS'
-              ? plus.navigator.getSafeAreaInsets().top
-              : plus.navigator.getStatusbarHeight())
-          : 0;
   }
 
   function registerPage({ url, path, query, openType, webview, vm, }) {

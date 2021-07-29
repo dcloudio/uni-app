@@ -1,20 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rules = void 0;
-exports.rules = [
-    {
-        test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],
-        loader: 'vue-loader',
-    },
-    {
-        test: /\.js$/,
-        use: [
-            {
-                loader: 'babel-loader',
-                options: {
-                    babelrc: false,
-                },
-            },
-        ],
-    },
-];
+const babelLoader_1 = require("./babelLoader");
+const vueLoader_1 = require("./vueLoader");
+exports.rules = [vueLoader_1.vueLoader, babelLoader_1.babelLoader];

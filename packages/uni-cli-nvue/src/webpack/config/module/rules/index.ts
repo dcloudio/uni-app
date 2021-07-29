@@ -1,18 +1,4 @@
 import { RuleSetRule } from 'webpack'
-export const rules: RuleSetRule[] = [
-  {
-    test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],
-    loader: 'vue-loader',
-  },
-  {
-    test: /\.js$/,
-    use: [
-      {
-        loader: 'babel-loader',
-        options: {
-          babelrc: false,
-        },
-      },
-    ],
-  },
-]
+import { babelLoader } from './babelLoader'
+import { vueLoader } from './vueLoader'
+export const rules: RuleSetRule[] = [vueLoader, babelLoader]

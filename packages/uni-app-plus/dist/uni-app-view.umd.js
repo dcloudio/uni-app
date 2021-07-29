@@ -15773,7 +15773,7 @@
     if (parentTitleNView) {
       let defaultTop = NAVBAR_HEIGHT + parseFloat(styles.top || "0");
       if (plus.navigator.isImmersedStatusbar()) {
-        defaultTop += plus.navigator.getStatusbarHeight();
+        defaultTop += getStatusbarHeight();
       }
       styles.top = String(defaultTop);
       styles.bottom = styles.bottom || "0";
