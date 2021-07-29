@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.optimization = void 0;
 const terser_webpack_plugin_1 = __importDefault(require("terser-webpack-plugin"));
 exports.optimization = {
+    nodeEnv: false,
     minimizer: [
         new terser_webpack_plugin_1.default({
             terserOptions: {

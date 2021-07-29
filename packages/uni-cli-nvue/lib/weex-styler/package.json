@@ -1,0 +1,67 @@
+{
+  "_args": [
+    [
+      "weex-styler@0.3.1",
+      "/Users/fxy/Documents/DCloud/HBuilderX/uniapp-cli"
+    ]
+  ],
+  "_development": true,
+  "_from": "weex-styler@0.3.1",
+  "_id": "weex-styler@0.3.1",
+  "_inBundle": false,
+  "_integrity": "sha512-xkX5/wS/QLiJXKwbdpeytbLN0kHviQwj9CLdvBxqu+RRZABZpTniKZr1oxjh9Q0+n/aRC+smwFpQpUKvXh9V1g==",
+  "_location": "/weex-styler",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "weex-styler@0.3.1",
+    "name": "weex-styler",
+    "escapedName": "weex-styler",
+    "rawSpec": "0.3.1",
+    "saveSpec": null,
+    "fetchSpec": "0.3.1"
+  },
+  "_requiredBy": [
+    "/weex-vue-loader"
+  ],
+  "_resolved": "https://registry.npmjs.org/weex-styler/-/weex-styler-0.3.1.tgz",
+  "_spec": "0.3.1",
+  "_where": "/Users/fxy/Documents/DCloud/HBuilderX/uniapp-cli",
+  "author": {
+    "name": "songsiqi",
+    "email": "songsiqi2006@126.com"
+  },
+  "bugs": {
+    "url": "https://github.com/weexteam/weex-styler/issues"
+  },
+  "dependencies": {
+    "css": "~2.2.1"
+  },
+  "description": "Weex <style> transformer",
+  "devDependencies": {
+    "chai": "~3.4.1",
+    "gulp": "~3.9.0",
+    "gulp-jscs": "~3.0.2",
+    "gulp-mocha": "~2.2.0",
+    "isparta": "~4.0.0",
+    "sinon": "~1.17.2",
+    "sinon-chai": "~2.8.0"
+  },
+  "homepage": "https://github.com/weexteam/weex-styler#readme",
+  "keywords": [
+    "weex"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "weex-styler",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weexteam/weex-styler.git"
+  },
+  "scripts": {
+    "cover": "node node_modules/isparta/bin/isparta cover node_modules/gulp-mocha/node_modules/.bin/_mocha -- --reporter dot",
+    "test": "gulp test && npm run cover"
+  },
+  "version": "0.3.1"
+}
