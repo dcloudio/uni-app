@@ -11,7 +11,7 @@ import { onPlusMessage } from '../initGlobalEvent'
 import { subscribeAd } from './ad'
 import { subscribeNavigator } from './navigator'
 import { subscribeWebviewReady } from './webviewReady'
-import { onWebviewInserted, onWebviewRemoved } from './webviewLifeCycle'
+import { onWebviewInserted, onWebviewRemoved } from './webviewLifecycle'
 import {
   onWebInvokeAppService,
   WebInvokeAppService,
