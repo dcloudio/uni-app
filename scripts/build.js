@@ -57,7 +57,9 @@ async function build(target) {
   const types = target.endsWith('-shared') || (buildTypes && pkg.types)
   // if building a specific format, do not remove dist.
   // if (!formats && bundler !== 'vite') {
-  await fs.remove(`${pkgDir}/dist`)
+  if (target !== 'uni-cloud') {
+    await fs.remove(`${pkgDir}/dist`)
+  }
   // }
 
   const env = devOnly ? 'development' : 'production'

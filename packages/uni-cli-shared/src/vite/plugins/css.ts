@@ -55,7 +55,7 @@ export function uniCssPlugin({ app }: UniCssPluginOptions): Plugin {
         moduleSideEffects: 'no-treeshake',
       }
     },
-    buildEnd() {
+    generateBundle() {
       const findCssModuleIds = (
         moduleId: string,
         cssModuleIds?: Set<string>
@@ -90,8 +90,6 @@ export function uniCssPlugin({ app }: UniCssPluginOptions): Plugin {
           cssChunks.set(normalizeCssChunkFilename(id), findCssModuleIds(id))
         }
       })
-    },
-    generateBundle() {
       if (!cssChunks.size) {
         return
       }
