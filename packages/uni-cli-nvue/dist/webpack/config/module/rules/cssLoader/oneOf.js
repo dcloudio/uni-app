@@ -9,27 +9,29 @@ const loader_1 = require("../../../../loader");
 const styleLoader = { loader: loader_1.resolveLoader('style') };
 const preprocessLoader = { loader: loader_1.resolveLoader('preprocess') };
 const postcssLoader = {
-    loader: 'postcss-loader',
+    loader: require.resolve('postcss-loader'),
     options: {
         sourceMap: false,
-        parser: require('postcss-comment'),
-        plugins: [
-            require('postcss-import')({
-                resolve(id) {
-                    if (id.startsWith('~@/')) {
-                        return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(3));
+        postcssOptions: {
+            parser: require('postcss-comment'),
+            plugins: [
+                require('postcss-import')({
+                    resolve(id) {
+                        if (id.startsWith('~@/')) {
+                            return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(3));
+                        }
+                        else if (id.startsWith('@/')) {
+                            return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(2));
+                        }
+                        else if (id.startsWith('/') && !id.startsWith('//')) {
+                            return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(1));
+                        }
+                        return id;
                     }
-                    else if (id.startsWith('@/')) {
-                        return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(2));
-                    }
-                    else if (id.startsWith('/') && !id.startsWith('//')) {
-                        return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(1));
-                    }
-                    return id;
-                },
-            }),
-        ],
-    },
+                })
+            ]
+        }
+    }
 };
 function createOneOf(preLoader) {
     const use = [styleLoader, preprocessLoader];
@@ -40,11 +42,11 @@ function createOneOf(preLoader) {
     return [
         {
             resourceQuery: /\?vue/,
-            use,
+            use
         },
         {
-            use,
-        },
+            use
+        }
     ];
 }
 exports.createOneOf = createOneOf;

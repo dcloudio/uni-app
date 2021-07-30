@@ -5,61 +5,61 @@ export function createCssLoaders(): RuleSetRule[] {
   return [
     {
       test: /\.css$/,
-      oneOf: createOneOf(),
+      oneOf: createOneOf()
     },
     {
       test: /\.scss$/,
-      oneOf: createOneOf(scssLoader),
+      oneOf: createOneOf(scssLoader)
     },
     {
       test: /\.sass$/,
-      oneOf: createOneOf(sassLoader),
+      oneOf: createOneOf(sassLoader)
     },
     {
       test: /\.less$/,
-      oneOf: createOneOf(lessLoader),
+      oneOf: createOneOf(lessLoader)
     },
     {
       test: /\.styl(us)?$/,
-      oneOf: createOneOf(stylusLoader),
-    },
+      oneOf: createOneOf(stylusLoader)
+    }
   ]
 }
 
 const scssLoader = {
-  loader: 'sass-loader',
+  loader: require.resolve('sass-loader'),
   options: {
     sourceMap: false,
     additionalData: '@import "@/uni.scss";',
     sassOptions: {
-      outputStyle: 'expanded',
-    },
-  },
+      outputStyle: 'expanded'
+    }
+  }
 }
 
 const sassLoader = {
-  loader: 'sass-loader',
+  loader: require.resolve('sass-loader'),
   options: {
     sourceMap: false,
     additionalData: '@import "@/uni.sass"',
     sassOptions: {
       outputStyle: 'expanded',
-      indentedSyntax: true,
-    },
-  },
+      indentedSyntax: true
+    }
+  }
 }
 
 const lessLoader = {
-  loader: 'less-loader',
+  loader: require.resolve('less-loader'),
   options: {
-    sourceMap: false,
-  },
+    sourceMap: false
+  }
 }
 
 const stylusLoader = {
-  loader: 'stylus-loader',
+  loader: require.resolve('stylus-loader'),
   options: {
     sourceMap: false,
-    preferPathResolver: 'webpack',
-  },
+    preferPathResolver: 'webpack'
+  }
 }
