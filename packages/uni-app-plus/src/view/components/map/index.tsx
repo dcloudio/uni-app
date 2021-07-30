@@ -18,6 +18,7 @@ import {
 import { useNativeAttrs, useNative } from '../../../helpers/useNative'
 import { getCurrentPageId } from '@dcloudio/uni-core'
 import { getRealPath } from '../../../platform/getRealPath'
+import CoverImage from '../cover-image'
 
 interface Coordinate {
   latitude: number
@@ -83,7 +84,6 @@ type Control = {
 }
 interface Map extends PlusMapsMap {
   __markers__: Markers
-  __markers_map__: Record<string, PlusMapsMarker>
   __lines__: Lines
   __circles__: Circles
 }
@@ -152,11 +152,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       map = extend(
         plus.maps.create(
           getCurrentPageId() + '-map-' + (props.id || Date.now()),
-          Object.assign({}, attrs.value, position)
+          Object.assign(
+            {},
+            attrs.value,
+            position,
+            (() => {
+              if (props.latitude && props.longitude) {
+                return {
+                  center: new plus.maps.Point!(
+                    Number(props.longitude),
+                    Number(props.latitude)
+                  ),
+                }
+              }
+            })()
+          )
         ),
         {
           __markers__: [],
-          __markers_map__: {},
           __lines__: [],
           __circles__: [],
         }
@@ -187,12 +200,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         (position) => map && map.setStyles(position),
         { deep: true }
       )
-      watch(
-        () => hidden.value,
-        (val) => {
-          map && map[val ? 'hide' : 'show']()
-        }
-      )
+      watch(hidden, (val) => {
+        map && map[val ? 'hide' : 'show']()
+      })
       watch(
         () => props.scale,
         (val) => {
@@ -212,19 +222,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         () => props.markers,
         (val) => {
           _addMarkers(val as Markers, true)
-        }
+        },
+        { deep: true }
       )
       watch(
         () => props.polyline,
         (val) => {
           _addMapLines(val as Lines)
-        }
+        },
+        { deep: true }
       )
       watch(
         () => props.circles,
         (val) => {
           _addMapCircles(val as Circles)
-        }
+        },
+        { deep: true }
       )
     })
 
@@ -240,6 +253,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           id: control.id,
           iconPath: getRealPath(control.iconPath),
           position: position,
+          clickable: control.clickable,
         }
       })
     )
@@ -256,12 +270,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-map ref={rootRef} id={props.id}>
           <div ref={containerRef} class="uni-map-container" />
           {mapControls.value.map((control, index) => (
-            <v-uni-cover-image
+            <CoverImage
               key={index}
               src={control.iconPath}
               style={control.position}
               auto-size
+              // @ts-expect-error
               onClick={() =>
+                control.clickable &&
                 trigger('controltap', {} as Event, { controlId: control.id })
               }
             />
@@ -278,10 +294,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
   let map: Map | null
   function moveToLocation(
     resolve: Callback,
-    {
-      longitude,
-      latitude,
-    }: { longitude?: Props['longitude']; latitude?: Props['latitude'] } = {}
+    { longitude, latitude }: Partial<Coordinate> = {}
   ) {
     if (!map) return
     map.setCenter(
@@ -310,7 +323,7 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
     const rect = map.getBounds()
     resolve({
       southwest: rect.getSouthWest(),
-      northeast: rect.getNorthEast(), // 5plus API 名字写错了
+      northeast: rect.getNorthEast(),
       errMsg: 'getRegion:ok',
     })
   }
@@ -373,7 +386,6 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
       // 此处5+文档中PlusMapsMarker对象只有方法，没有属性
       // @ts-expect-error
       map.__markers__.push(nativeMarker)
-      map && (map.__markers_map__[id + ''] = nativeMarker)
     })
   }
   function _clearMarkers() {
@@ -383,7 +395,6 @@ function useMapMethods(props: Props, trigger: CustomEventTrigger) {
       map?.removeOverlay(marker as unknown as PlusMapsOverlay)
     })
     map.__markers__ = []
-    map.__markers_map__ = {}
   }
   function _addMarkers(markers: Markers, clear?: boolean) {
     if (clear) {

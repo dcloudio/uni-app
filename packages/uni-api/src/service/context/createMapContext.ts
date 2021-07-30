@@ -24,7 +24,7 @@ const operateMapWrap = (
   id: string,
   pageId: number,
   type: string,
-  options?: Data
+  options?: any
 ) => {
   operateMap(id, pageId, type, options, (res) => {
     options && operateMapCallback(options, res)
@@ -41,8 +41,9 @@ export class MapContext implements UniApp.MapContext {
   getCenterLocation(options: any) {
     operateMapWrap(this.id, this.pageId, 'getCenterLocation', options)
   }
-  moveToLocation() {
-    operateMapWrap(this.id, this.pageId, 'moveToLocation')
+  // @ts-expect-error
+  moveToLocation(options: any) {
+    operateMapWrap(this.id, this.pageId, 'moveToLocation', options)
   }
   getScale(options: any) {
     operateMapWrap(this.id, this.pageId, 'getScale', options)
@@ -73,6 +74,7 @@ export class MapContext implements UniApp.MapContext {
   openMapApp() {}
 }
 
+// @ts-expect-error
 export const createMapContext = <API_TYPE_CREATE_MAP_CONTEXT>defineSyncApi(
   API_CREATE_MAP_CONTEXT,
   (id, context) => {
