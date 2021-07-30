@@ -9,6 +9,13 @@ export function getCurrentWebview() {
   return null
 }
 
+export function getWebview(page?: ComponentPublicInstance) {
+  if (page) {
+    return page.$getAppWebview!()
+  }
+  return getCurrentWebview()
+}
+
 let pullDownRefreshWebview: PlusWebviewWebviewObject | null = null
 
 export function getPullDownRefreshWebview() {

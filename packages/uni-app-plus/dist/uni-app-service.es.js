@@ -4844,6 +4844,47 @@ var serviceContext = (function (vue) {
       desc: Object,
   };
 
+  const FRONT_COLORS = ['#ffffff', '#000000'];
+  const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+  const SetNavigationBarColorOptions = {
+      formatArgs: {
+          animation(animation, params) {
+              if (!animation) {
+                  animation = { duration: 0, timingFunc: 'linear' };
+              }
+              params.animation = {
+                  duration: animation.duration || 0,
+                  timingFunc: animation.timingFunc || 'linear',
+              };
+          },
+      },
+  };
+  const SetNavigationBarColorProtocol = {
+      frontColor: {
+          type: String,
+          required: true,
+          validator(frontColor) {
+              if (FRONT_COLORS.indexOf(frontColor) === -1) {
+                  return `invalid frontColor "${frontColor}"`;
+              }
+          },
+      },
+      backgroundColor: {
+          type: String,
+          required: true,
+      },
+      animation: Object,
+  };
+  const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+  const SetNavigationBarTitleProtocol = {
+      title: {
+          type: String,
+          required: true,
+      },
+  };
+  const API_SHOW_NAVIGATION_BAR_LOADING = 'showNavigationBarLoading';
+  const API_HIDE_NAVIGATION_BAR_LOADING = 'hideNavigationBarLoading';
+
   const API_PAGE_SCROLL_TO = 'pageScrollTo';
   const PageScrollToProtocol = {
       scrollTop: Number,
@@ -5602,6 +5643,12 @@ var serviceContext = (function (vue) {
           return page.$getAppWebview();
       }
       return null;
+  }
+  function getWebview(page) {
+      if (page) {
+          return page.$getAppWebview();
+      }
+      return getCurrentWebview();
   }
   let pullDownRefreshWebview = null;
   function getPullDownRefreshWebview() {
@@ -8474,6 +8521,72 @@ var serviceContext = (function (vue) {
       UniServiceJSBridge.invokeViewMethod(PAGE_SCROLL_TO, options, pageId, resolve);
   }, PageScrollToProtocol, PageScrollToOptions);
 
+  const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
+      const webview = getWebview(__page__);
+      if (webview) {
+          const style = webview.getStyle();
+          if (style && style.titleNView) {
+              webview.setStyle({
+                  titleNView: {
+                      titleText: title
+                  }
+              });
+          }
+          resolve();
+      }
+      else {
+          reject();
+      }
+  }, SetNavigationBarTitleProtocol);
+  const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
+      plus.nativeUI.showWaiting('', {
+          modal: false
+      });
+      resolve();
+  });
+  const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
+      plus.nativeUI.closeWaiting();
+      resolve();
+  });
+  function setPageMeta(statusBarStyle) {
+      const pages = getCurrentPages();
+      if (!pages.length) {
+          return;
+      }
+      // 框架内部页面跳转会从这里获取style配置
+      pages[pages.length - 1].$page.statusBarStyle = statusBarStyle;
+  }
+  const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __page__, frontColor, backgroundColor }, { resolve, reject }) => {
+      const webview = getWebview(__page__);
+      if (webview) {
+          const styles = {};
+          if (frontColor) {
+              styles.titleColor = frontColor;
+          }
+          if (backgroundColor) {
+              styles.backgroundColor = backgroundColor;
+          }
+          const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
+          plus.navigator.setStatusBarStyle(statusBarStyle);
+          // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
+          setPageMeta(statusBarStyle);
+          const style = webview.getStyle();
+          if (style && style.titleNView) {
+              if (style.titleNView.autoBackButton) {
+                  styles.backButton = styles.backButton || {};
+                  styles.backButton.color = frontColor;
+              }
+              webview.setStyle({
+                  titleNView: styles
+              });
+          }
+          resolve();
+      }
+      else {
+          reject();
+      }
+  }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+
   const providers = {
       oauth(callback) {
           plus.oauth.getServices((services) => {
@@ -11093,6 +11206,10 @@ var serviceContext = (function (vue) {
     stopPullDownRefresh: stopPullDownRefresh,
     loadFontFace: loadFontFace,
     pageScrollTo: pageScrollTo,
+    setNavigationBarTitle: setNavigationBarTitle,
+    showNavigationBarLoading: showNavigationBarLoading,
+    hideNavigationBarLoading: hideNavigationBarLoading,
+    setNavigationBarColor: setNavigationBarColor,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,
