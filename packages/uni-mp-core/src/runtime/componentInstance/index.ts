@@ -9,8 +9,9 @@ import {
 } from '@vue/shared'
 
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-import { getEventChannel } from '../api/protocols/navigateTo'
-import { MPComponentInstance } from '../index'
+import { getEventChannel } from '../../api/protocols/navigateTo'
+import { MPComponentInstance } from '../component'
+import { getClass, getStyle, getValue } from './utils'
 
 function setModel(
   this: ComponentPublicInstance,
@@ -185,7 +186,9 @@ export function initComponentInstance(
   ctx.__set_sync = setSync
   ctx.__get_orig = getOrig
   // TODO
-  // ctx.__get_style = getStyle
+  ctx.__get_value = getValue
+  ctx.__get_class = getClass
+  ctx.__get_style = getStyle
   ctx.__map = map
 }
 

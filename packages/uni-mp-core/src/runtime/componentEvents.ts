@@ -8,24 +8,12 @@ import {
 } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
 import { MPComponentInstance } from './component'
+import { getTarget } from './util'
 
 interface Event extends WechatMiniprogram.BaseEvent {
   detail: Record<string, any>
   stopPropagation: () => void
   preventDefault: () => void
-}
-
-function getValue(obj: any, path: string): unknown {
-  const parts = path.split('.')
-  let key: string | number = parts[0]
-  if (key.indexOf('__$n') === 0) {
-    //number index
-    key = parseInt(key.replace('__$n', ''))
-  }
-  if (parts.length === 1) {
-    return obj[key]
-  }
-  return getValue(obj[key], parts.slice(1).join('.'))
 }
 
 function getExtraValue(
@@ -50,7 +38,7 @@ function getExtraValue(
         if (dataPath.indexOf('#s#') === 0) {
           vFor = dataPath.substr(3)
         } else {
-          vFor = getValue(context, dataPath)
+          vFor = getTarget(context, dataPath)
         }
       }
 
@@ -61,11 +49,11 @@ function getExtraValue(
       } else {
         if (isArray(vFor)) {
           context = vFor.find((vForItem) => {
-            return getValue(vForItem, propPath) === value
+            return getTarget(vForItem, propPath) === value
           })
         } else if (isPlainObject(vFor)) {
           context = Object.keys(vFor).find((vForKey) => {
-            return getValue(vFor[vForKey], propPath) === value
+            return getTarget(vFor[vForKey], propPath) === value
           })
         } else {
           console.error('v-for 暂不支持循环数据：', vFor)
@@ -73,7 +61,7 @@ function getExtraValue(
       }
 
       if (valuePath) {
-        context = getValue(context, valuePath)
+        context = getTarget(context, valuePath)
       }
     }
   })
@@ -116,12 +104,12 @@ function processEventExtra(
             }
           } else if (dataPath.indexOf('$event.') === 0) {
             // $event.target.value
-            extraObj['$' + index] = getValue(
+            extraObj['$' + index] = getTarget(
               event,
               dataPath.replace('$event.', '')
             )
           } else {
-            extraObj['$' + index] = getValue(instance, dataPath)
+            extraObj['$' + index] = getTarget(instance, dataPath)
           }
         }
       } else {
@@ -305,19 +293,25 @@ export function handleEvent(this: MPComponentInstance, event: Event) {
             }
             handler.once = true
           }
-          ret.push(
-            handler.apply(
-              handlerCtx,
-              processEventArgs(
-                this.$vm!,
-                event,
-                eventArray[1],
-                eventArray[2],
-                isCustom,
-                methodName
-              )
-            )
+          let params = processEventArgs(
+            this.$vm!,
+            event,
+            eventArray[1],
+            eventArray[2],
+            isCustom,
+            methodName
           )
+          params = Array.isArray(params) ? params : []
+          // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
+          if (
+            /=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(
+              handler.toString()
+            )
+          ) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event])
+          }
+          ret.push(handler.apply(handlerCtx, params))
         }
       })
     }

@@ -5,13 +5,26 @@ import {
   addInterceptor,
   removeInterceptor,
 } from '@dcloudio/uni-api/src/service/base/interceptor'
-
+import {
+  $on,
+  $off,
+  $once,
+  $emit,
+} from '@dcloudio/uni-api/src/service/base/eventBus'
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'
 
 import { MPProtocols } from './protocols'
 
-const baseApis = { upx2px, addInterceptor, removeInterceptor }
+const baseApis = {
+  $on,
+  $off,
+  $once,
+  $emit,
+  upx2px,
+  addInterceptor,
+  removeInterceptor,
+}
 
 export function initUni(api: Record<string, any>, protocols: MPProtocols) {
   const wrapper = initWrapper(protocols)
