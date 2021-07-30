@@ -38,6 +38,6 @@ export function initBridge(
     },
     subscribeHandler(event: string, args: unknown, pageId?: number): void {
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId)
-    }
+    },
   }
 }

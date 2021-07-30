@@ -1,7 +1,13 @@
 import webpack from 'webpack'
+import { once } from '@dcloudio/uni-shared'
+
 import { createConfig } from './config'
+import { initModuleAlias } from './alias'
+
+const initModuleAliasOnce = once(initModuleAlias)
 
 function runWebpack(mode: 'production' | 'development') {
+  initModuleAliasOnce()
   return new Promise((resolve, reject) => {
     webpack(createConfig(mode), (err, stats) => {
       if (err) {

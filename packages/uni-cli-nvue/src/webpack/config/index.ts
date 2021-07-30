@@ -1,8 +1,8 @@
 import { Configuration } from 'webpack'
-import { optimization } from './optimization'
-import { output } from './output'
-import { module } from './module'
-import { plugins } from './plugins'
+import { createOptimization } from './optimization'
+import { createOutput } from './output'
+import { createModule } from './module'
+import { createPlugins } from './plugins'
 export function createConfig(
   mode: 'production' | 'development'
 ): Configuration {
@@ -16,9 +16,9 @@ export function createConfig(
     externals: {
       vue: 'Vue',
     },
-    optimization,
-    output,
-    module,
-    plugins,
+    optimization: createOptimization(),
+    output: createOutput(),
+    module: createModule(),
+    plugins: createPlugins(),
   }
 }

@@ -18,7 +18,6 @@ export type EventCallback = Function
 E.prototype = {
   on: function (name: EventName, callback: EventCallback, ctx?: any) {
     var e = this.e || (this.e = {})
-
     ;(e[name] || (e[name] = [])).push({
       fn: callback,
       ctx: ctx,

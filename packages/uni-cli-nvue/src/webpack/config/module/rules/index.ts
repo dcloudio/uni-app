@@ -1,4 +1,6 @@
 import { RuleSetRule } from 'webpack'
-import { babelLoader } from './babelLoader'
-import { vueLoader } from './vueLoader'
-export const rules: RuleSetRule[] = [vueLoader, babelLoader]
+import { createBabelLoader } from './babelLoader'
+import { createVueLoader } from './vueLoader'
+export function createRules(): RuleSetRule[] {
+  return [createVueLoader(), createBabelLoader()]
+}

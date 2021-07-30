@@ -64,7 +64,6 @@ export function registerPage({
   initWebview(webview, path, query, routeOptions.meta)
 
   const route = path.substr(1)
-
   ;(webview as any).__uniapp_route = route
 
   const pageInstance = initPageInternalInstance(

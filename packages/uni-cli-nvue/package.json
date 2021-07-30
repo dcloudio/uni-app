@@ -23,6 +23,7 @@
     "@babel/core": "^7.14.8",
     "@babel/preset-env": "^7.14.8",
     "babel-loader": "^8.2.2",
+    "de-indent": "^1.0.2",
     "terser-webpack-plugin": "^5.1.4",
     "vue-loader": "^15.9.6",
     "webpack": "^5.45.1",
@@ -30,6 +31,7 @@
     "weex-template-compiler": "^2.5.16-weex.1"
   },
   "devDependencies": {
-    "@types/terser-webpack-plugin": "^5.0.4"
+    "@types/terser-webpack-plugin": "^5.0.4",
+    "vue-template-compiler": "^2.6.14"
   }
 }

@@ -23,7 +23,7 @@ export function subscribeViewMethod(pageId: number) {
  */
 export function unsubscribeViewMethod(pageId: number) {
   UniViewJSBridge.unsubscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API))
-  Object.keys(viewMethods).forEach(name => {
+  Object.keys(viewMethods).forEach((name) => {
     if (name.indexOf(pageId + '.') === 0) {
       delete viewMethods[name]
     }
@@ -50,7 +50,7 @@ function onInvokeViewMethod(
   {
     id,
     name,
-    args
+    args,
   }: {
     id: number
     name: string

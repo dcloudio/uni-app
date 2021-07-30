@@ -1,2 +1,4 @@
-const { VueLoaderPlugin } = require('../../../../lib/vue-loader')
-export const vueLoaderPlugin = new VueLoaderPlugin()
+export function createVueLoaderPlugin() {
+  const { VueLoaderPlugin } = require('../../../../lib/vue-loader')
+  return new VueLoaderPlugin()
+}

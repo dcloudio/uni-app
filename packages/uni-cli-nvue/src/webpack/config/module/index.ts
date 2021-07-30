@@ -1,7 +1,9 @@
 import { Configuration } from 'webpack'
 
-import { rules } from './rules'
+import { createRules } from './rules'
 
-export const module: Configuration['module'] = {
-  rules,
+export function createModule(): Configuration['module'] {
+  return {
+    rules: createRules(),
+  }
 }

@@ -1,12 +1,14 @@
 import { Configuration } from 'webpack'
-import { define } from './define'
-import { banner } from './banner'
-import { provide } from './provide'
-import { vueLoaderPlugin } from './vueLoader'
+import { createDefinePlugin } from './define'
+import { createBannerPlugin } from './banner'
+import { createProvidePlugin } from './provide'
+import { createVueLoaderPlugin } from './vueLoader'
 
-export const plugins: Configuration['plugins'] = [
-  define,
-  banner,
-  provide,
-  vueLoaderPlugin,
-]
+export function createPlugins(): Configuration['plugins'] {
+  return [
+    createDefinePlugin(),
+    createBannerPlugin(),
+    createProvidePlugin(),
+    createVueLoaderPlugin(),
+  ]
+}

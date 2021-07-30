@@ -6,10 +6,21 @@ import { createServer, createSSRServer } from './server'
 import { initEnv } from './utils'
 
 async function runNVue(mode: 'prod' | 'dev') {
+  let hasCliNVue = false
+  try {
+    if (require.resolve('@dcloudio/uni-cli-nvue')) {
+      hasCliNVue = true
+    }
+  } catch (e) {}
+  if (!hasCliNVue) {
+    return
+  }
   let nvue
   try {
     nvue = require('@dcloudio/uni-cli-nvue')
-  } catch (e) {}
+  } catch (e) {
+    console.error(e)
+  }
   if (!nvue) {
     return
   }

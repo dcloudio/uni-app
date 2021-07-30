@@ -24,7 +24,7 @@ function onInvokeServiceMethod(
   {
     id,
     name,
-    args
+    args,
   }: {
     id: number
     name: string
