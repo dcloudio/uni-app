@@ -373,9 +373,6 @@ function initBridge(subscribeNamespace) {
       emitter.off(`${subscribeNamespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
-      if (process.env.NODE_ENV !== "production") {
-        console.log(uniShared.formatLog(subscribeNamespace, "subscribeHandler", pageId, event, args));
-      }
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
   };
@@ -10587,6 +10584,7 @@ function onPageHeadBackButton() {
   } else {
     uni.navigateBack({
       from: "backbutton"
+    }).catch(() => {
     });
   }
 }

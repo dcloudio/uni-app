@@ -250,7 +250,7 @@ function onPageHeadBackButton() {
   } else {
     ;(uni.navigateBack as Function)({
       from: 'backbutton',
-    })
+    }).catch(() => {})
   }
 }
 

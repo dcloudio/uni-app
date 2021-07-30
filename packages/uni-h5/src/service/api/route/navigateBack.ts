@@ -10,15 +10,16 @@ import { ON_BACK_PRESS } from '@dcloudio/uni-shared'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
-  ({ delta }, { resolve, reject }) => {
+  (args, { resolve, reject }) => {
     let canBack = true
-    if (invokeHook(ON_BACK_PRESS) === true) {
+    if (invokeHook(ON_BACK_PRESS, { from: (args as any).from }) === true) {
       canBack = false
     }
     if (!canBack) {
       return reject(ON_BACK_PRESS)
     }
-    getApp().$router.go(-delta!)
+
+    getApp().$router.go(-args.delta!)
     return resolve()
   },
   NavigateBackProtocol,
