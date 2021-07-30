@@ -112,7 +112,7 @@ module.exports = function (source) {
   let templateRequest
   // fixed by xxxxxx (recyclable,auto components)
   templateImport += `, recyclableRender, components`
-  const recyclable = descriptor.template && !!(template.attrs && template.attrs.recyclable)
+  const recyclable = descriptor.template && !!(descriptor.template.attrs && descriptor.template.attrs.recyclable)
   if (descriptor.template) {
     const src = descriptor.template.src || resourcePath
     const idQuery = `&id=${id}`
