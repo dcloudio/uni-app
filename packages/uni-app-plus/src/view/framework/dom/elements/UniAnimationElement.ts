@@ -1,4 +1,3 @@
-import { watch } from 'vue'
 import { UniNodeJSON } from '@dcloudio/uni-shared'
 import { animation } from '@dcloudio/uni-components'
 import { UniElement } from './UniElement'
@@ -9,6 +8,7 @@ interface AnimationProps {
 export class UniAnimationElement<T extends object> extends UniElement<
   T & AnimationProps
 > {
+  private $animate?: boolean
   constructor(
     id: number,
     element: Element,
@@ -29,16 +29,22 @@ export class UniAnimationElement<T extends object> extends UniElement<
     }
     fn.call(context)
   }
-  init(nodeJson: Partial<UniNodeJSON>) {
-    super.init(nodeJson)
-    const item = animation.watch.animation
-    watch(
-      () => this.$props.animation,
-      () => {
-        this.call(item.handler)
-      },
-      { deep: item.deep }
-    )
-    this.call(animation.mounted)
+  setAttribute(name: string, value: unknown) {
+    if (name === 'animation') {
+      this.$animate = true
+    }
+    return super.setAttribute(name, value)
+  }
+  update(isMounted: boolean = false) {
+    if (!this.$animate) {
+      return
+    }
+    if (isMounted) {
+      return this.call(animation.mounted)
+    }
+    if (this.$animate) {
+      this.$animate = false
+      this.call(animation.watch.animation.handler)
+    }
   }
 }

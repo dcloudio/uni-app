@@ -1,4 +1,4 @@
-import { UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode } from '@dcloudio/uni-shared';
+import { UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 
 /**
  * Make a map and return a function for checking if a key
@@ -9134,7 +9134,11 @@ const forcePatchProps = {
     VIDEO: ['danmu-list', 'header'],
     'WEB-VIEW': ['webview-styles']
 };
+const forcePatchPropKeys = ['animation'];
 const forcePatchProp = (_, key) => {
+    if (forcePatchPropKeys.indexOf(key) > -1) {
+        return true;
+    }
     const keys = forcePatchProps[_.nodeName];
     if (keys && keys.indexOf(key) > -1) {
         return true;
@@ -9158,13 +9162,18 @@ const patchProp = (el, key, prevValue, nextValue, parentComponent) => {
                 }
             }
             else {
-                if (isProxy(nextValue)) {
+                // 非基本类型
+                if (isObject(nextValue)) {
                     const equal = prevValue === nextValue;
-                    // 触发收集最新依赖
-                    nextValue = '$JSON$:' + JSON.stringify(nextValue);
+                    // 可触发收集响应式数据的最新依赖
+                    nextValue = JSON_PROTOCOL + JSON.stringify(nextValue);
                     if (equal && el.getAttribute(key) === nextValue) {
                         return;
                     }
+                }
+                else if (prevValue === nextValue) {
+                    // 基本类型
+                    return;
                 }
                 patchAttr(el, key, nextValue);
             }
@@ -9728,7 +9737,6 @@ const withKeys = (fn, modifiers) => {
 
 const vShow = {
     beforeMount(el, { value }) {
-        el._vod = (el.style.display === 'none' ? '' : el.style.display);
         setDisplay(el, value);
     },
     updated(el, { value, oldValue }) {
@@ -9741,7 +9749,7 @@ const vShow = {
     }
 };
 function setDisplay(el, value) {
-    el.style.display = value ? el._vod : 'none';
+    el.setAttribute('.vShow', !!value);
 }
 
 const rendererOptions = extend({ patchProp, forcePatchProp }, nodeOps);

@@ -257,6 +257,7 @@ export const ATTR_STYLE = 'style'
 export class UniBaseNode extends UniNode {
   attributes: Record<string, unknown> = Object.create(null)
   style: null | string | Record<string, string | string[]> = null
+  vShow: null | boolean = null
 
   protected _html: string | null = null
 
@@ -266,7 +267,6 @@ export class UniBaseNode extends UniNode {
     container: UniElement | IUniPageNode
   ) {
     super(nodeType, nodeName, container)
-    // this.style = proxyStyle(new UniCSSStyleDeclaration())
   }
 
   get className() {

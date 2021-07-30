@@ -39,7 +39,7 @@ export class UniTextElement extends UniAnimationElement<TextProps> {
     this.update()
   }
 
-  update() {
+  update(isMounted: boolean = false) {
     const {
       $props: { space, decode },
     } = this
@@ -47,5 +47,6 @@ export class UniTextElement extends UniAnimationElement<TextProps> {
       space,
       decode,
     }).join('<br>')
+    super.update(isMounted)
   }
 }

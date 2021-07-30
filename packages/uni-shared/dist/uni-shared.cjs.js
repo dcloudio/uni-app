@@ -577,8 +577,8 @@ class UniBaseNode extends UniNode {
         super(nodeType, nodeName, container);
         this.attributes = Object.create(null);
         this.style = null;
+        this.vShow = null;
         this._html = null;
-        // this.style = proxyStyle(new UniCSSStyleDeclaration())
     }
     get className() {
         return (this.attributes[ATTR_CLASS] || '');
@@ -833,6 +833,7 @@ const UNI_SSR_GLOBAL_DATA = 'globalData';
 const SCHEME_RE = /^([a-z-]+:)?\/\//i;
 const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+const JSON_PROTOCOL = 'json://';
 // lifecycle
 // App and Page
 const ON_SHOW = 'onShow';
@@ -958,6 +959,7 @@ exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.DATA_RE = DATA_RE;
 exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
+exports.JSON_PROTOCOL = JSON_PROTOCOL;
 exports.NAVBAR_HEIGHT = NAVBAR_HEIGHT;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;

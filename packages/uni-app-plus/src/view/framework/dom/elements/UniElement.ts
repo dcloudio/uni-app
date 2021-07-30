@@ -7,6 +7,7 @@ import { patchStyle } from '../modules/style'
 import { patchEvent } from '../modules/events'
 import { UniCustomElement } from '../components'
 import { queuePostActionJob } from '../scheduler'
+import { decodeAttr } from '../utils'
 
 export class UniElement<T extends object> extends UniNode {
   declare $: UniCustomElement
@@ -47,7 +48,7 @@ export class UniElement<T extends object> extends UniNode {
       },
       { flush: 'sync' }
     )
-    this.update()
+    this.update(true)
   }
   setAttrs(attrs: Record<string, any>) {
     Object.keys(attrs).forEach((name) => {
@@ -84,6 +85,7 @@ export class UniElement<T extends object> extends UniNode {
     }
   }
   setAttribute(name: string, value: unknown) {
+    value = decodeAttr(value)
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
     } else {
@@ -97,5 +99,5 @@ export class UniElement<T extends object> extends UniNode {
       this.$.removeAttribute(name)
     }
   }
-  update() {}
+  update(isMounted: boolean = false) {}
 }

@@ -20,6 +20,8 @@ export const DATA_RE = /^data:.*,.*/
 
 export const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE'
 
+export const JSON_PROTOCOL = 'json://'
+
 // lifecycle
 
 // App and Page

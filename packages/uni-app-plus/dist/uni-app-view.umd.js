@@ -322,6 +322,7 @@
   const PRIMARY_COLOR = "#007aff";
   const SCHEME_RE = /^([a-z-]+:)?\/\//i;
   const DATA_RE = /^data:.*,.*/;
+  const JSON_PROTOCOL = "json://";
   const ON_PAGE_SCROLL = "onPageScroll";
   const ON_REACH_BOTTOM = "onReachBottom";
   const isObject = (val) => val !== null && typeof val === "object";
@@ -6083,6 +6084,13 @@
       postActionJobs.clear();
     }
   }
+  const JSON_PROTOCOL_LEN = JSON_PROTOCOL.length;
+  function decodeAttr(value) {
+    if (isString(value) && value.indexOf(JSON_PROTOCOL) === 0) {
+      value = JSON.parse(value.substr(JSON_PROTOCOL_LEN));
+    }
+    return value;
+  }
   class UniElement extends UniNode {
     constructor(id2, element, parentNodeId, refNodeId, nodeJson, propNames = []) {
       super(id2, element.tagName, parentNodeId, element);
@@ -6108,7 +6116,7 @@
       watch(this.$props, () => {
         queuePostActionJob(this._update);
       }, { flush: "sync" });
-      this.update();
+      this.update(true);
     }
     setAttrs(attrs2) {
       Object.keys(attrs2).forEach((name) => {
@@ -6145,6 +6153,7 @@
       }
     }
     setAttribute(name, value) {
+      value = decodeAttr(value);
       if (this.$propNames.indexOf(name) !== -1) {
         this.$props[name] = value;
       } else {
@@ -6158,7 +6167,7 @@
         this.$.removeAttribute(name);
       }
     }
-    update() {
+    update(isMounted = false) {
     }
   }
   class UniComment extends UniNode {
@@ -14304,13 +14313,23 @@
       };
       fn.call(context);
     }
-    init(nodeJson) {
-      super.init(nodeJson);
-      const item = animation.watch.animation;
-      watch(() => this.$props.animation, () => {
-        this.call(item.handler);
-      }, { deep: item.deep });
-      this.call(animation.mounted);
+    setAttribute(name, value) {
+      if (name === "animation") {
+        this.$animate = true;
+      }
+      return super.setAttribute(name, value);
+    }
+    update(isMounted = false) {
+      if (!this.$animate) {
+        return;
+      }
+      if (isMounted) {
+        return this.call(animation.mounted);
+      }
+      if (this.$animate) {
+        this.$animate = false;
+        this.call(animation.watch.animation.handler);
+      }
     }
   }
   const PROP_NAMES_HOVER$1 = ["space", "decode"];
@@ -14327,7 +14346,7 @@
       this._text = text2;
       this.update();
     }
-    update() {
+    update(isMounted = false) {
       const {
         $props: { space, decode }
       } = this;
@@ -14335,6 +14354,7 @@
         space,
         decode
       }).join("<br>");
+      super.update(isMounted);
     }
   }
   class UniTextNode extends UniNode {
@@ -14358,7 +14378,7 @@
         ...propNames
       ]);
     }
-    update() {
+    update(isMounted = false) {
       const hoverClass = this.$props["hover-class"];
       if (hoverClass && hoverClass !== "none") {
         if (!this._hover) {
@@ -14370,6 +14390,7 @@
           this._hover.removeEvent();
         }
       }
+      super.update(isMounted);
     }
   }
   class Hover {
@@ -14691,8 +14712,6 @@
       };
     }
   });
-  const JSON_PREFIX = "$JSON$:";
-  const JSON_PREFIX_LEN = JSON_PREFIX.length;
   class UniComponent extends UniNode {
     constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
       super(id2, tag, parentNodeId);
@@ -14741,10 +14760,7 @@
       this.$props[name] = null;
     }
     setAttr(name, value) {
-      if (isString(value) && value.indexOf(JSON_PREFIX) === 0) {
-        value = JSON.parse(value.substr(JSON_PREFIX_LEN));
-      }
-      this.$props[name] = value;
+      this.$props[name] = decodeAttr(value);
     }
     removeAttr(name) {
       this.$props[name] = null;

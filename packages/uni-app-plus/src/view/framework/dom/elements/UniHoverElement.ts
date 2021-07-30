@@ -28,7 +28,7 @@ export class UniHoverElement extends UniAnimationElement<HoverProps> {
       ...propNames,
     ])
   }
-  update() {
+  update(isMounted: boolean = false) {
     const hoverClass = this.$props['hover-class']
     if (hoverClass && hoverClass !== 'none') {
       if (!this._hover) {
@@ -40,6 +40,7 @@ export class UniHoverElement extends UniAnimationElement<HoverProps> {
         this._hover.removeEvent()
       }
     }
+    super.update(isMounted)
   }
 }
 

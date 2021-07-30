@@ -35,6 +35,7 @@ export class UniEvent {
   bubbles: boolean
   cancelable: boolean
   defaultPrevented: boolean = false
+  detail?: Record<string, any>
 
   timeStamp = Date.now()
 

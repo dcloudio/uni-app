@@ -186,6 +186,8 @@ export declare interface IUniPageNode {
     onNodeValue: (thisNode: UniNode, val: string | null) => void;
 }
 
+export declare const JSON_PROTOCOL = "json://";
+
 export declare const NAVBAR_HEIGHT = 44;
 
 declare type NavigateToOptionEvents = Record<string, (...args: any[]) => void>;
@@ -410,6 +412,7 @@ export declare const UNI_SSR_TITLE = "title";
 export declare class UniBaseNode extends UniNode {
     attributes: Record<string, unknown>;
     style: null | string | Record<string, string | string[]>;
+    vShow: null | boolean;
     protected _html: string | null;
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get className(): string;
@@ -451,6 +454,7 @@ export declare class UniEvent {
     bubbles: boolean;
     cancelable: boolean;
     defaultPrevented: boolean;
+    detail?: Record<string, any>;
     timeStamp: number;
     _stop: boolean;
     _end: boolean;

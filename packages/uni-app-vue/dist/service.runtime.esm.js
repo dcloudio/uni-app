@@ -386,7 +386,8 @@ export default function vueFactory(exports) {
       super(nodeType, nodeName, container);
       this.attributes = Object.create(null);
       this.style = null;
-      this._html = null; // this.style = proxyStyle(new UniCSSStyleDeclaration())
+      this.vShow = null;
+      this._html = null;
     }
 
     get className() {
@@ -562,6 +563,8 @@ export default function vueFactory(exports) {
     }
 
   }
+
+  var JSON_PROTOCOL = 'json://';
   /**
    * Make a map and return a function for checking if a key
    * is in that map.
@@ -569,7 +572,6 @@ export default function vueFactory(exports) {
    * \/\*#\_\_PURE\_\_\*\/
    * So that rollup can tree-shake them if necessary.
    */
-
 
   function makeMap(str, expectsLowerCase) {
     var map = Object.create(null);
@@ -11127,8 +11129,13 @@ export default function vueFactory(exports) {
     VIDEO: ['danmu-list', 'header'],
     'WEB-VIEW': ['webview-styles']
   };
+  var forcePatchPropKeys = ['animation'];
 
   var forcePatchProp = (_, key) => {
+    if (forcePatchPropKeys.indexOf(key) > -1) {
+      return true;
+    }
+
     var keys = forcePatchProps[_.nodeName];
 
     if (keys && keys.indexOf(key) > -1) {
@@ -11156,14 +11163,18 @@ export default function vueFactory(exports) {
             patchEvent(el, key, prevValue, nextValue);
           }
         } else {
-          if (isProxy(nextValue)) {
-            var equal = prevValue === nextValue; // 触发收集最新依赖
+          // 非基本类型
+          if (isObject(nextValue)) {
+            var equal = prevValue === nextValue; // 可触发收集响应式数据的最新依赖
 
-            nextValue = '$JSON$:' + JSON.stringify(nextValue);
+            nextValue = JSON_PROTOCOL + JSON.stringify(nextValue);
 
             if (equal && el.getAttribute(key) === nextValue) {
               return;
             }
+          } else if (prevValue === nextValue) {
+            // 基本类型
+            return;
           }
 
           patchAttr(el, key, nextValue);
@@ -11844,7 +11855,6 @@ export default function vueFactory(exports) {
     beforeMount(el, {
       value
     }) {
-      el._vod = el.style.display === 'none' ? '' : el.style.display;
       setDisplay(el, value);
     },
 
@@ -11865,7 +11875,7 @@ export default function vueFactory(exports) {
   };
 
   function setDisplay(el, value) {
-    el.style.display = value ? el._vod : 'none';
+    el.setAttribute('.vShow', !!value);
   }
 
   var rendererOptions = extend({

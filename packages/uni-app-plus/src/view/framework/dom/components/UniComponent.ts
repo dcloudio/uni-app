@@ -1,4 +1,4 @@
-import { hasOwn, isString } from '@vue/shared'
+import { hasOwn } from '@vue/shared'
 import {
   App,
   Component,
@@ -14,9 +14,8 @@ import { createInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
 import { $, removeElement } from '../page'
 import { queuePostActionJob } from '../scheduler'
+import { decodeAttr } from '../utils'
 
-const JSON_PREFIX = '$JSON$:'
-const JSON_PREFIX_LEN = JSON_PREFIX.length
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
   protected $props!: Record<string, any>
@@ -82,10 +81,7 @@ export class UniComponent extends UniNode {
     this.$props[name] = null
   }
   setAttr(name: string, value: unknown) {
-    if (isString(value) && value.indexOf(JSON_PREFIX) === 0) {
-      value = JSON.parse(value.substr(JSON_PREFIX_LEN))
-    }
-    this.$props[name] = value
+    this.$props[name] = decodeAttr(value)
   }
   removeAttr(name: string) {
     this.$props[name] = null
