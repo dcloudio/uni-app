@@ -94,6 +94,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       process.env.UNI_PLATFORM === 'quickapp-webview'
     const defines = {
       // UNI_ENV好像没用
+      __UNI_FEATURE_PROMISE__: JSON.stringify(false),
       'process.env.UNI_ENV': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_APP_ID': JSON.stringify(process.env.UNI_APP_ID),
       'process.env.UNI_APP_NAME': JSON.stringify(process.env.UNI_APP_NAME),
