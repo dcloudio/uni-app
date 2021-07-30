@@ -183,7 +183,7 @@
         fonts.add(fontFace);
       });
     }
-    return new Promise((resolve2) => {
+    return new Promise((resolve) => {
       const style = document.createElement("style");
       const values = [];
       if (desc) {
@@ -197,7 +197,7 @@
       }
       style.innerText = `@font-face{font-family:"${family}";src:${source};${values.join(";")}}`;
       document.head.appendChild(style);
-      resolve2();
+      resolve();
     });
   }
   function scrollTo(scrollTop, duration) {
@@ -715,9 +715,6 @@
         emitter.off(`${subscribeNamespace}.${event}`, callback);
       },
       subscribeHandler(event, args, pageId) {
-        {
-          console.log(formatLog(subscribeNamespace, "subscribeHandler", pageId, event, args));
-        }
         emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
       }
     };
@@ -762,9 +759,6 @@
       handler(args, publish);
     } else {
       publish({});
-      {
-        console.error(formatLog("invokeViewMethod", name, "not register"));
-      }
     }
   }
   const ViewJSBridge = /* @__PURE__ */ extend(initBridge("service"), {
@@ -4055,31 +4049,7 @@
     return result;
   }
   const isTeleport = (type) => type.__isTeleport;
-  const COMPONENTS = "components";
-  function resolveComponent(name, maybeSelfReference) {
-    return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
-  }
   const NULL_DYNAMIC_COMPONENT = Symbol();
-  function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
-    const instance = currentRenderingInstance || currentInstance;
-    if (instance) {
-      const Component = instance.type;
-      if (type === COMPONENTS) {
-        const selfName = getComponentName(Component);
-        if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
-          return Component;
-        }
-      }
-      const res = resolve(instance[type] || Component[type], name) || resolve(instance.appContext[type], name);
-      if (!res && maybeSelfReference) {
-        return Component;
-      }
-      return res;
-    }
-  }
-  function resolve(registry, name) {
-    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
-  }
   const Fragment = Symbol(void 0);
   const Text$1 = Symbol(void 0);
   const Comment$1 = Symbol(void 0);
@@ -7271,7 +7241,7 @@
     function actionsChanged({
       actions,
       reserve
-    }, resolve2) {
+    }, resolve) {
       if (!actions) {
         return;
       }
@@ -7322,7 +7292,7 @@
               });
               color = LinearGradient;
             } else if (data[0] === "pattern") {
-              const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve2, function(image2) {
+              const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve, function(image2) {
                 if (image2) {
                   c2d[method1] = c2d.createPattern(image2, data[2]);
                 }
@@ -7371,7 +7341,7 @@
             var url = dataArray[0];
             var otherData = dataArray.slice(1);
             _images = _images || {};
-            if (checkImageLoaded(url, actions.slice(index2 + 1), resolve2, function(image2) {
+            if (checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
               if (image2) {
                 c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
               }
@@ -7393,7 +7363,7 @@
         }
       }
       if (!actionsWaiting.value) {
-        resolve2({
+        resolve({
           errMsg: "drawCanvas:ok"
         });
       }
@@ -7435,7 +7405,7 @@
         }
       });
     }
-    function checkImageLoaded(src, actions, resolve2, fn) {
+    function checkImageLoaded(src, actions, resolve, fn) {
       var image2 = _images[src];
       if (image2.ready) {
         fn(image2);
@@ -7453,7 +7423,7 @@
             actionsChanged({
               actions: action[0],
               reserve: action[1]
-            }, resolve2);
+            }, resolve);
             action = actions2.shift();
           }
         };
@@ -7471,7 +7441,7 @@
       dataType,
       quality = 1,
       type = "png"
-    }, resolve2) {
+    }, resolve) {
       const canvas2 = canvasRef.value;
       let data;
       const maxWidth = canvas2.offsetWidth - x;
@@ -7528,10 +7498,10 @@
       }
       newCanvas.height = newCanvas.width = 0;
       context.__hidpi__ = false;
-      if (!resolve2) {
+      if (!resolve) {
         return result;
       } else {
-        resolve2(result);
+        resolve(result);
       }
     }
     function putImageData({
@@ -7541,7 +7511,7 @@
       width,
       height,
       compressed
-    }, resolve2) {
+    }, resolve) {
       try {
         if (!height) {
           height = Math.round(data.length / 4 / width);
@@ -7556,12 +7526,12 @@
         canvasRef.value.getContext("2d").drawImage(canvas2, x, y, width, height);
         canvas2.height = canvas2.width = 0;
       } catch (error) {
-        resolve2({
+        resolve({
           errMsg: "canvasPutImageData:fail"
         });
         return;
       }
-      resolve2({
+      resolve({
         errMsg: "canvasPutImageData:ok"
       });
     }
@@ -7575,7 +7545,7 @@
       fileType,
       quality,
       dirname
-    }, resolve2) {
+    }, resolve) {
       const res = getImageData({
         x,
         y,
@@ -7589,7 +7559,7 @@
         quality
       });
       if (!res.data || !res.data.length) {
-        resolve2({
+        resolve({
           errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         });
         return;
@@ -7602,10 +7572,10 @@
       putImageData,
       toTempFilePath
     };
-    function _handleSubscribe(type, data, resolve2) {
+    function _handleSubscribe(type, data, resolve) {
       let method = methods2[type];
       if (type.indexOf("_") !== 0 && typeof method === "function") {
-        method(data, resolve2);
+        method(data, resolve);
       }
     }
     return extend(methods2, {
@@ -8524,7 +8494,7 @@
       });
     });
     const id2 = useContextInfo();
-    useSubscribe((type, data, resolve2) => {
+    useSubscribe((type, data, resolve) => {
       const { options, callbackId } = data;
       let res;
       let range;
@@ -8661,7 +8631,7 @@
         errMsg = "not ready";
       }
       if (callbackId) {
-        resolve2({
+        resolve({
           callbackId,
           data: extend({}, res, {
             errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
@@ -9107,17 +9077,17 @@
       uniForm.removeField(ctx);
     });
   }
-  function getSelectedTextRange(_, resolve2) {
+  function getSelectedTextRange(_, resolve) {
     const activeElement = document.activeElement;
     if (!activeElement) {
-      return resolve2({});
+      return resolve({});
     }
     const data = {};
     if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
       data.start = activeElement.selectionStart;
       data.end = activeElement.selectionEnd;
     }
-    resolve2(data);
+    resolve(data);
   }
   const UniViewJSBridgeSubscribe = function() {
     registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
@@ -14253,8 +14223,8 @@
     if (!name) {
       return;
     }
-    registerViewMethod(pageId || getCurrentPageId(), name, ({ type, data }, resolve2) => {
-      callback(type, data, resolve2);
+    registerViewMethod(pageId || getCurrentPageId(), name, ({ type, data }, resolve) => {
+      callback(type, data, resolve);
     });
   }
   function removeSubscribe(name) {
@@ -15315,9 +15285,14 @@
         _setMap
       } = useMapMethods(props2, trigger2);
       onParentReady(() => {
-        map2 = extend(plus.maps.create(getCurrentPageId() + "-map-" + (props2.id || Date.now()), Object.assign({}, attrs2.value, position)), {
+        map2 = extend(plus.maps.create(getCurrentPageId() + "-map-" + (props2.id || Date.now()), Object.assign({}, attrs2.value, position, (() => {
+          if (props2.latitude && props2.longitude) {
+            return {
+              center: new plus.maps.Point(Number(props2.longitude), Number(props2.latitude))
+            };
+          }
+        })())), {
           __markers__: [],
-          __markers_map__: {},
           __lines__: [],
           __circles__: []
         });
@@ -15342,7 +15317,7 @@
         watch(() => position, (position2) => map2 && map2.setStyles(position2), {
           deep: true
         });
-        watch(() => hidden.value, (val) => {
+        watch(hidden, (val) => {
           map2 && map2[val ? "hide" : "show"]();
         });
         watch(() => props2.scale, (val) => {
@@ -15355,12 +15330,18 @@
         });
         watch(() => props2.markers, (val) => {
           _addMarkers(val, true);
+        }, {
+          deep: true
         });
         watch(() => props2.polyline, (val) => {
           _addMapLines(val);
+        }, {
+          deep: true
         });
         watch(() => props2.circles, (val) => {
           _addMapCircles(val);
+        }, {
+          deep: true
         });
       });
       const mapControls = computed$1(() => props2.controls.map((control) => {
@@ -15375,7 +15356,8 @@
         return {
           id: control.id,
           iconPath: getRealPath(control.iconPath),
-          position: position2
+          position: position2,
+          clickable: control.clickable
         };
       }));
       onBeforeUnmount(() => {
@@ -15392,12 +15374,12 @@
           default: () => [createVNode("div", {
             "ref": containerRef,
             "class": "uni-map-container"
-          }, null, 512), mapControls.value.map((control, index2) => createVNode(resolveComponent("v-uni-cover-image"), {
+          }, null, 512), mapControls.value.map((control, index2) => createVNode(CoverImage, {
             "key": index2,
             "src": control.iconPath,
             "style": control.position,
             "auto-size": true,
-            "onClick": () => trigger2("controltap", {}, {
+            "onClick": () => control.clickable && trigger2("controltap", {}, {
               controlId: control.id
             })
           }, null, 8, ["src", "style", "auto-size", "onClick"])), createVNode("div", {
@@ -15410,42 +15392,42 @@
   });
   function useMapMethods(props2, trigger2) {
     let map2;
-    function moveToLocation(resolve2, {
+    function moveToLocation(resolve, {
       longitude,
       latitude
     } = {}) {
       if (!map2)
         return;
       map2.setCenter(new plus.maps.Point(Number(longitude || props2.longitude), Number(latitude || props2.latitude)));
-      resolve2({
+      resolve({
         errMsg: "moveToLocation:ok"
       });
     }
-    function getCenterLocation(resolve2) {
+    function getCenterLocation(resolve) {
       if (!map2)
         return;
       map2.getCurrentCenter((state, point) => {
-        resolve2({
+        resolve({
           longitude: point.getLng(),
           latitude: point.getLat(),
           errMsg: "getCenterLocation:ok"
         });
       });
     }
-    function getRegion(resolve2) {
+    function getRegion(resolve) {
       if (!map2)
         return;
       const rect = map2.getBounds();
-      resolve2({
+      resolve({
         southwest: rect.getSouthWest(),
         northeast: rect.getNorthEast(),
         errMsg: "getRegion:ok"
       });
     }
-    function getScale(resolve2) {
+    function getScale(resolve) {
       if (!map2)
         return;
-      resolve2({
+      resolve({
         scale: map2.getZoom(),
         errMsg: "getScale:ok"
       });
@@ -15496,7 +15478,6 @@
         }
         map2 == null ? void 0 : map2.addOverlay(nativeMarker);
         map2.__markers__.push(nativeMarker);
-        map2 && (map2.__markers_map__[id2 + ""] = nativeMarker);
       });
     }
     function _clearMarkers() {
@@ -15507,7 +15488,6 @@
         map2 == null ? void 0 : map2.removeOverlay(marker);
       });
       map2.__markers__ = [];
-      map2.__markers_map__ = {};
     }
     function _addMarkers(markers, clear2) {
       if (clear2) {
@@ -15587,8 +15567,8 @@
       getRegion,
       getScale
     };
-    useSubscribe((type, data, resolve2) => {
-      methods2[type] && methods2[type](resolve2, data);
+    useSubscribe((type, data, resolve) => {
+      methods2[type] && methods2[type](resolve, data);
     }, useContextInfo(), true);
     return {
       _addMarkers,

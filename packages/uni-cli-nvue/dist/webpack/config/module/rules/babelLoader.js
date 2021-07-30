@@ -1,14 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.babelLoader = void 0;
-exports.babelLoader = {
-    test: /\.js$/,
-    use: [
-        {
-            loader: 'babel-loader',
-            options: {
-                babelrc: false,
+exports.createBabelLoader = void 0;
+function createBabelLoader() {
+    return {
+        test: /\.js$/,
+        use: [
+            {
+                loader: 'babel-loader',
+                options: {
+                    babelrc: false,
+                },
             },
-        },
-    ],
-};
+        ],
+    };
+}
+exports.createBabelLoader = createBabelLoader;

@@ -1,5 +1,4 @@
 // TODO 等待 vue3 的兼容模式自带emitter
-import { formatLog } from '@dcloudio/uni-shared'
 import E from './TinyEmitter'
 
 export function initBridge(

@@ -1,4 +1,3 @@
-import { formatLog } from '@dcloudio/uni-shared'
 import { INVOKE_SERVICE_API } from '../../constants'
 
 type ServiceMethod<Args = any, Res = any> = (

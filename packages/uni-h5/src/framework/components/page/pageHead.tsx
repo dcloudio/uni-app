@@ -248,9 +248,10 @@ function onPageHeadBackButton() {
       url: '/',
     })
   } else {
-    ;(uni.navigateBack as Function)({
+    uni.navigateBack({
       from: 'backbutton',
-    }).catch(() => {})
+      success() {}, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    } as UniApp.NavigateBackOptions)
   }
 }
 

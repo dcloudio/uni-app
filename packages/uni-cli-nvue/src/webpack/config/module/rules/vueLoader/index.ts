@@ -1,11 +1,11 @@
 import { RuleSetRule } from 'webpack'
-import { VueLoaderOptions } from 'vue-loader'
 import { makeMap } from '@vue/shared'
 import type { CompilerOptions, CompiledResult } from 'vue-template-compiler'
 import { initEasycomsOnce } from '@dcloudio/uni-cli-shared'
 import { createCompilerOptions } from './compilerOptions'
 import { resolveLib } from '../../../../../utils'
 import { generateEasycomCode } from './easycom'
+import { VueLoaderOptions } from '../../../../../../lib/vue-loader'
 
 export function createVueLoader(): RuleSetRule {
   initEasycomsOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM)

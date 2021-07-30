@@ -20796,8 +20796,9 @@ function onPageHeadBackButton() {
     });
   } else {
     uni.navigateBack({
-      from: "backbutton"
-    }).catch(() => {
+      from: "backbutton",
+      success() {
+      }
     });
   }
 }

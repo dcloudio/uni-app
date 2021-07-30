@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vueLoaderPlugin = void 0;
-const { VueLoaderPlugin } = require('../../../../lib/vue-loader');
-exports.vueLoaderPlugin = new VueLoaderPlugin();
+exports.createVueLoaderPlugin = void 0;
+function createVueLoaderPlugin() {
+    const { VueLoaderPlugin } = require('../../../../lib/vue-loader');
+    return new VueLoaderPlugin();
+}
+exports.createVueLoaderPlugin = createVueLoaderPlugin;

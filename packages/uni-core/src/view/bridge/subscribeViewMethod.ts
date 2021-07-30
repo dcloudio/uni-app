@@ -1,4 +1,3 @@
-import { formatLog } from '@dcloudio/uni-shared'
 import { INVOKE_VIEW_API } from '../../constants'
 
 type ViewMethod<Args = any, Res = any> = (

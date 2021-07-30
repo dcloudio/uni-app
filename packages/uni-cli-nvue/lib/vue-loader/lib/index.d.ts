@@ -1,4 +1,4 @@
-import { Plugin } from 'webpack'
+// import { Plugin } from 'webpack' // fixed by xxxxxx
 import { VueTemplateCompiler } from '@vue/component-compiler-utils/dist/types'
 import { CompilerOptions } from 'vue-template-compiler'
 

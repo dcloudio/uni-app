@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.module = void 0;
+exports.createModule = void 0;
 const rules_1 = require("./rules");
-exports.module = {
-    rules: rules_1.rules,
-};
+function createModule() {
+    return {
+        rules: rules_1.createRules(),
+    };
+}
+exports.createModule = createModule;

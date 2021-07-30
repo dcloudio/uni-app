@@ -16,10 +16,10 @@ function createConfig(mode) {
         externals: {
             vue: 'Vue',
         },
-        optimization: optimization_1.optimization,
-        output: output_1.output,
-        module: module_1.module,
-        plugins: plugins_1.plugins,
+        optimization: optimization_1.createOptimization(),
+        output: output_1.createOutput(),
+        module: module_1.createModule(),
+        plugins: plugins_1.createPlugins(),
     };
 }
 exports.createConfig = createConfig;
