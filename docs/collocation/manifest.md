@@ -127,8 +127,7 @@ splash（启动封面）是App必然存在的、不可取消的。
 |android|Object|Android 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |ios|Object|iOS 应用配置，详见: [完整 manifest.json](/collocation/manifest?id=完整-manifestjson)|
 |sdkConfigs|Object|SDK配置，仅打包生效 [详见](/collocation/manifest?id=sdkConfigs)|
-
-<!-- |orientation|Array|同 screenOrientation 配置，仅打包生效，推荐使用 screenOrientation| -->
+|orientation|Array|同 screenOrientation 配置，仅打包生效，已废弃，推荐使用 screenOrientation|
 
 ##### App SdkConfigs@sdkConfigs
 
