@@ -41,7 +41,6 @@ export class MapContext implements UniApp.MapContext {
   getCenterLocation(options: any) {
     operateMapWrap(this.id, this.pageId, 'getCenterLocation', options)
   }
-  // @ts-expect-error
   moveToLocation(options: any) {
     operateMapWrap(this.id, this.pageId, 'moveToLocation', options)
   }
@@ -74,7 +73,6 @@ export class MapContext implements UniApp.MapContext {
   openMapApp() {}
 }
 
-// @ts-expect-error
 export const createMapContext = <API_TYPE_CREATE_MAP_CONTEXT>defineSyncApi(
   API_CREATE_MAP_CONTEXT,
   (id, context) => {

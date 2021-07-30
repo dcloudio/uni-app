@@ -816,9 +816,10 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
 
-"@dcloudio/types@^2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.4.3.tgz#c6439a187ae3428cac64817f83e6515d368fc550"
+"@dcloudio/types@^2.4.4":
+  version "2.4.4"
+  resolved "https://registry.nlark.com/@dcloudio/types/download/@dcloudio/types-2.4.4.tgz#ae8b09aa0ae51d72d625e1061b4e6948c8ea01d5"
+  integrity sha1-rosJqgrlHXLWJeEGG05pSMjqAdU=
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
