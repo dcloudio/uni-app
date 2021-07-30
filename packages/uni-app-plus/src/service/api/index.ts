@@ -66,6 +66,7 @@ export * from './route/navigateTo'
 export * from './route/redirectTo'
 export * from './route/reLaunch'
 export * from './route/switchTab'
+export * from './route/preloadPage'
 
 export {
   upx2px,

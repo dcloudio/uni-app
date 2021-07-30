@@ -13,6 +13,10 @@ import { navigate, RouteOptions } from './utils'
 import { showWebview } from './webview'
 import { setStatusBarStyle } from '../../statusBar'
 import { ComponentPublicInstance } from 'vue'
+import {
+  removePreloadWebview,
+  PreloadWebviewObject,
+} from '../../framework/page/preLoad'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -73,10 +77,9 @@ function _redirectTo({
         if (lastPage) {
           const webview = (lastPage as ComponentPublicInstance)
             .$getAppWebview!()
-          // TODO preload
-          //   if (webview.__preload__) {
-          //     removePreloadWebview(webview)
-          //   }
+          if ((webview as PreloadWebviewObject).__preload__) {
+            removePreloadWebview(webview)
+          }
           webview.close('none')
         }
         resolve(undefined)

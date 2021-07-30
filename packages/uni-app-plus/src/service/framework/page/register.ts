@@ -6,7 +6,7 @@ import {
   ON_REACH_BOTTOM_DISTANCE,
   PageNodeOptions,
 } from '@dcloudio/uni-shared'
-import { initPageInternalInstance } from '@dcloudio/uni-core'
+import { initPageInternalInstance, initPageVm } from '@dcloudio/uni-core'
 
 import { initEntry } from '../app/initEntry'
 import { initRouteOptions } from './routeOptions'
@@ -16,6 +16,7 @@ import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
 import { addCurrentPage } from './getCurrentPages'
 import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
+import { preloadWebviews, PreloadWebviewObject } from './preLoad'
 
 interface RegisterPageOptions {
   url: string
@@ -39,7 +40,29 @@ export function registerPage({
   if (webview) {
     initEntry()
   }
-  // TODO preloadWebview
+
+  if (preloadWebviews[url]) {
+    webview = preloadWebviews[url]
+    const _webview = webview as PreloadWebviewObject
+    if (_webview.__page__) {
+      // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+      if (getCurrentPages().find((page) => page === _webview.__page__)) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(
+            `[uni-app] preloadWebview(${path},${_webview.id}) already in use`
+          )
+        }
+        webview = undefined
+      } else {
+        // TODO eventChannel
+        addCurrentPage(_webview.__page__)
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[uni-app] reuse preloadWebview(${path},${_webview.id})`)
+        }
+        return _webview
+      }
+    }
+  }
 
   const routeOptions = initRouteOptions(path, openType)
 
@@ -82,7 +105,12 @@ export function registerPage({
       initPageOptions(routeOptions)
     )
   } else {
-    vm && addCurrentPage(vm)
+    initPageVm(vm!, pageInstance)
+    addCurrentPage(vm!)
+
+    if ((webview as any).__preload__) {
+      ;(webview as any).__page__ = vm
+    }
   }
   return webview
 }
