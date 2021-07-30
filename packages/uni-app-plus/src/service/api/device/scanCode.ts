@@ -29,20 +29,19 @@ export const scanCode = defineAsyncApi<API_TYPE_SCAN_CODE>(
         },
       }),
       style: {
-        // @ts-ignore
+        // @ts-expect-error
         animationType: options.animationType || 'pop-in',
         titleNView: {
           autoBackButton: true,
-          // @ts-ignore
           type: 'float',
-          // @ts-ignore
+          // @ts-expect-error
           titleText: options.titleText || t('uni.scanCode.title'),
           titleColor: '#ffffff',
           backgroundColor: 'rgba(0,0,0,0)',
           buttons: !options.onlyFromCamera
             ? [
                 {
-                  // @ts-ignore
+                  // @ts-expect-error
                   text: options.albumText || t('uni.scanCode.album'),
                   fontSize: '17px',
                   width: '60px',

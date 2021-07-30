@@ -103,6 +103,7 @@ export const getUserInfo = defineAsyncApi<API_TYPE_GET_USER_INFO>(
             nickname?: PlusOauthUserInfo['nickname']
             gender?: PlusOauthUserInfo['sex']
             headimgurl?: PlusOauthUserInfo['headimgurl']
+            unionId?: string
           } = { nickName: '' }
           if (provider === 'weixin') {
             const wechatUserInfo = loginService.userInfo
@@ -115,7 +116,6 @@ export const getUserInfo = defineAsyncApi<API_TYPE_GET_USER_INFO>(
                 province: wechatUserInfo.province,
                 country: wechatUserInfo.country,
                 avatarUrl: wechatUserInfo.headimgurl,
-                // @ts-ignore
                 unionId: wechatUserInfo.unionid,
               }
           } else if (provider === 'apple') {

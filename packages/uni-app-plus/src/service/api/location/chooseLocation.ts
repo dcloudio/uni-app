@@ -20,8 +20,7 @@ export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
       style: {
         // @ts-ignore
         animationType: options.animationType || 'slide-in-bottom',
-        // @ts-ignore
-        titleNView: false,
+        titleNView: undefined,
         popGesture: 'close',
         scrollIndicator: 'none',
       },
