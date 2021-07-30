@@ -1,4 +1,4 @@
-import { isPlainObject, isArray, hasOwn, toNumber, isObject, isFunction, extend, NOOP, camelize } from '@vue/shared';
+import { isPlainObject, hasOwn, isArray, extend, hyphenate, isObject, toNumber, isFunction, NOOP, camelize } from '@vue/shared';
 
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
@@ -18,6 +18,14 @@ function stringifyQuery(obj, encodeStr = encode) {
             .join('&')
         : null;
     return res ? `?${res}` : '';
+}
+
+function cache(fn) {
+    const cache = Object.create(null);
+    return (str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    };
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -118,6 +126,202 @@ function getEventChannel(id) {
         return eventChannel;
     }
     return eventChannelStack.shift();
+}
+
+function initBehavior(options) {
+    return Behavior(options);
+}
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.dataset.ref;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.vue-ref', $refs);
+            const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+            forComponents.forEach((component) => {
+                const ref = component.dataset.ref;
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+function getTarget(obj, path) {
+    const parts = path.split('.');
+    let key = parts[0];
+    if (key.indexOf('__$n') === 0) {
+        //number index
+        key = parseInt(key.replace('__$n', ''));
+    }
+    if (!obj) {
+        obj = {};
+    }
+    if (parts.length === 1) {
+        return obj[key];
+    }
+    return getTarget(obj[key], parts.slice(1).join('.'));
+}
+
+function getValue(dataPath, target) {
+    return getTarget(target || this, dataPath);
+}
+function getClass(dynamicClass, staticClass) {
+    return renderClass(staticClass, dynamicClass);
+}
+function getStyle(dynamicStyle, staticStyle) {
+    if (!dynamicStyle && !staticStyle) {
+        return '';
+    }
+    var dynamicStyleObj = normalizeStyleBinding(dynamicStyle);
+    var styleObj = staticStyle
+        ? extend(staticStyle, dynamicStyleObj)
+        : dynamicStyleObj;
+    return Object.keys(styleObj)
+        .map(function (name) {
+        return hyphenate(name) + ':' + styleObj[name];
+    })
+        .join(';');
+}
+function toObject(arr) {
+    var res = {};
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i]) {
+            extend(res, arr[i]);
+        }
+    }
+    return res;
+}
+function normalizeStyleBinding(bindingStyle) {
+    if (Array.isArray(bindingStyle)) {
+        return toObject(bindingStyle);
+    }
+    if (typeof bindingStyle === 'string') {
+        return parseStyleText(bindingStyle);
+    }
+    return bindingStyle;
+}
+var parseStyleText = cache(function parseStyleText(cssText) {
+    var res = {};
+    var listDelimiter = /;(?![^(]*\))/g;
+    var propertyDelimiter = /:(.+)/;
+    cssText.split(listDelimiter).forEach(function (item) {
+        if (item) {
+            var tmp = item.split(propertyDelimiter);
+            tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim());
+        }
+    });
+    return res;
+});
+function isDef(v) {
+    return v !== undefined && v !== null;
+}
+function renderClass(staticClass, dynamicClass) {
+    if (isDef(staticClass) || isDef(dynamicClass)) {
+        return concat(staticClass, stringifyClass(dynamicClass));
+    }
+    /* istanbul ignore next */
+    return '';
+}
+function concat(a, b) {
+    return a ? (b ? a + ' ' + b : a) : b || '';
+}
+function stringifyClass(value) {
+    if (Array.isArray(value)) {
+        return stringifyArray(value);
+    }
+    if (isObject(value)) {
+        return stringifyObject(value);
+    }
+    if (typeof value === 'string') {
+        return value;
+    }
+    /* istanbul ignore next */
+    return '';
+}
+function stringifyArray(value) {
+    var res = '';
+    var stringified;
+    for (var i = 0, l = value.length; i < l; i++) {
+        if (isDef((stringified = stringifyClass(value[i]))) && stringified !== '') {
+            if (res) {
+                res += ' ';
+            }
+            res += stringified;
+        }
+    }
+    return res;
+}
+function stringifyObject(value) {
+    var res = '';
+    for (var key in value) {
+        if (value[key]) {
+            if (res) {
+                res += ' ';
+            }
+            res += key;
+        }
+    }
+    return res;
 }
 
 function setModel(target, key, value, modifiers) {
@@ -229,7 +433,9 @@ function initComponentInstance(instance, options) {
     ctx.__set_sync = setSync;
     ctx.__get_orig = getOrig;
     // TODO
-    // ctx.__get_style = getStyle
+    ctx.__get_value = getValue;
+    ctx.__get_class = getClass;
+    ctx.__get_style = getStyle;
     ctx.__map = map;
 }
 function initMocks(instance, mpInstance, mocks) {
@@ -357,85 +563,6 @@ function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };
-}
-
-function initBehavior(options) {
-    return Behavior(options);
-}
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.dataset.ref;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.vue-ref', $refs);
-            const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-            forComponents.forEach((component) => {
-                const ref = component.dataset.ref;
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
@@ -600,18 +727,6 @@ function applyOptions(componentOptions, vueOptions, initBehavior) {
     componentOptions.behaviors = initBehaviors(vueOptions, initBehavior);
 }
 
-function getValue(obj, path) {
-    const parts = path.split('.');
-    let key = parts[0];
-    if (key.indexOf('__$n') === 0) {
-        //number index
-        key = parseInt(key.replace('__$n', ''));
-    }
-    if (parts.length === 1) {
-        return obj[key];
-    }
-    return getValue(obj[key], parts.slice(1).join('.'));
-}
 function getExtraValue(instance, dataPathsArray) {
     let context = instance;
     dataPathsArray.forEach((dataPathArray) => {
@@ -633,7 +748,7 @@ function getExtraValue(instance, dataPathsArray) {
                     vFor = dataPath.substr(3);
                 }
                 else {
-                    vFor = getValue(context, dataPath);
+                    vFor = getTarget(context, dataPath);
                 }
             }
             if (Number.isInteger(vFor)) {
@@ -645,12 +760,12 @@ function getExtraValue(instance, dataPathsArray) {
             else {
                 if (isArray(vFor)) {
                     context = vFor.find((vForItem) => {
-                        return getValue(vForItem, propPath) === value;
+                        return getTarget(vForItem, propPath) === value;
                     });
                 }
                 else if (isPlainObject(vFor)) {
                     context = Object.keys(vFor).find((vForKey) => {
-                        return getValue(vFor[vForKey], propPath) === value;
+                        return getTarget(vFor[vForKey], propPath) === value;
                     });
                 }
                 else {
@@ -658,7 +773,7 @@ function getExtraValue(instance, dataPathsArray) {
                 }
             }
             if (valuePath) {
-                context = getValue(context, valuePath);
+                context = getTarget(context, valuePath);
             }
         }
     });
@@ -699,10 +814,10 @@ function processEventExtra(instance, extra, event) {
                     }
                     else if (dataPath.indexOf('$event.') === 0) {
                         // $event.target.value
-                        extraObj['$' + index] = getValue(event, dataPath.replace('$event.', ''));
+                        extraObj['$' + index] = getTarget(event, dataPath.replace('$event.', ''));
                     }
                     else {
-                        extraObj['$' + index] = getValue(instance, dataPath);
+                        extraObj['$' + index] = getTarget(instance, dataPath);
                     }
                 }
             }
@@ -839,7 +954,14 @@ function handleEvent(event) {
                         }
                         handler.once = true;
                     }
-                    ret.push(handler.apply(handlerCtx, processEventArgs(this.$vm, event, eventArray[1], eventArray[2], isCustom, methodName)));
+                    let params = processEventArgs(this.$vm, event, eventArray[1], eventArray[2], isCustom, methodName);
+                    params = Array.isArray(params) ? params : [];
+                    // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
+                    if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+                        // eslint-disable-next-line no-sparse-arrays
+                        params = params.concat([, , , , , , , , , , event]);
+                    }
+                    ret.push(handler.apply(handlerCtx, params));
                 }
             });
         }
