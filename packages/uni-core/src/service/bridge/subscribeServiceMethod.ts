@@ -24,7 +24,7 @@ function onInvokeServiceMethod(
   {
     id,
     name,
-    args,
+    args
   }: {
     id: number
     name: string
@@ -45,8 +45,5 @@ function onInvokeServiceMethod(
     handler(args, publish)
   } else {
     publish({})
-    if (__DEV__) {
-      console.error(formatLog('invokeViewMethod', name, 'not register'))
-    }
   }
 }

@@ -22,15 +22,9 @@ export function subscribeViewMethod(pageId: number) {
  * @param pageId
  */
 export function unsubscribeViewMethod(pageId: number) {
-  if (__DEV__) {
-    console.log(formatLog('unsubscribeViewMethod', pageId, INVOKE_VIEW_API))
-  }
   UniViewJSBridge.unsubscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API))
-  Object.keys(viewMethods).forEach((name) => {
+  Object.keys(viewMethods).forEach(name => {
     if (name.indexOf(pageId + '.') === 0) {
-      if (__DEV__) {
-        console.log(formatLog('unsubscribeViewMethod', name))
-      }
       delete viewMethods[name]
     }
   })
@@ -56,7 +50,7 @@ function onInvokeViewMethod(
   {
     id,
     name,
-    args,
+    args
   }: {
     id: number
     name: string
@@ -73,8 +67,5 @@ function onInvokeViewMethod(
     handler(args, publish)
   } else {
     publish({})
-    if (__DEV__) {
-      console.error(formatLog('invokeViewMethod', name, 'not register'))
-    }
   }
 }

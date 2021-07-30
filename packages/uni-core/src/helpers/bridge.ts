@@ -37,12 +37,7 @@ export function initBridge(
       emitter.off(`${subscribeNamespace}.${event}`, callback)
     },
     subscribeHandler(event: string, args: unknown, pageId?: number): void {
-      if (__DEV__) {
-        console.log(
-          formatLog(subscribeNamespace, 'subscribeHandler', pageId, event, args)
-        )
-      }
       emitter.emit(`${subscribeNamespace}.${event}`, args, pageId)
-    },
+    }
   }
 }
