@@ -4714,6 +4714,8 @@ var serviceContext = (function (vue) {
   const RedirectToProtocol = BaseRouteProtocol;
   const ReLaunchProtocol = BaseRouteProtocol;
   const SwitchTabProtocol = BaseRouteProtocol;
+  const PreloadPageProtocol = BaseRouteProtocol;
+  const UnPreloadPageProtocol = BaseRouteProtocol;
   const NavigateToOptions = 
   /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
   const RedirectToOptions = 
@@ -8528,8 +8530,8 @@ var serviceContext = (function (vue) {
           if (style && style.titleNView) {
               webview.setStyle({
                   titleNView: {
-                      titleText: title
-                  }
+                      titleText: title,
+                  },
               });
           }
           resolve();
@@ -8540,7 +8542,7 @@ var serviceContext = (function (vue) {
   }, SetNavigationBarTitleProtocol);
   const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
       plus.nativeUI.showWaiting('', {
-          modal: false
+          modal: false,
       });
       resolve();
   });
@@ -8577,7 +8579,7 @@ var serviceContext = (function (vue) {
                   styles.backButton.color = frontColor;
               }
               webview.setStyle({
-                  titleNView: styles
+                  titleNView: styles,
               });
           }
           resolve();
@@ -9472,22 +9474,22 @@ var serviceContext = (function (vue) {
   const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
   const WEBVIEW_ID_PREFIX = 'webviewId';
 
-  let preloadWebview;
+  let preloadWebview$1;
   function setPreloadWebview(webview) {
-      preloadWebview = webview;
+      preloadWebview$1 = webview;
   }
   function getPreloadWebview() {
-      return preloadWebview;
+      return preloadWebview$1;
   }
   function createPreloadWebview() {
-      if (!preloadWebview || preloadWebview.__uniapp_route) {
+      if (!preloadWebview$1 || preloadWebview$1.__uniapp_route) {
           // 不存在，或已被使用
-          preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
+          preloadWebview$1 = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()));
           if ((process.env.NODE_ENV !== 'production')) {
-              console.log(formatLog('createPreloadWebview', preloadWebview.id));
+              console.log(formatLog('createPreloadWebview', preloadWebview$1.id));
           }
       }
-      return preloadWebview;
+      return preloadWebview$1;
   }
 
   function onWebviewClose(webview) {
@@ -9723,14 +9725,14 @@ var serviceContext = (function (vue) {
           isLaunchWebviewReady = true;
           setPreloadWebview(plus.webview.getLaunchWebview());
       }
-      else if (!preloadWebview) {
+      else if (!preloadWebview$1) {
           // preloadWebview 不存在，重新加载一下
           setPreloadWebview(plus.webview.getWebviewById(pageId));
       }
-      if (preloadWebview.id !== pageId) {
-          return console.error(`webviewReady[${preloadWebview.id}][${pageId}] not match`);
+      if (preloadWebview$1.id !== pageId) {
+          return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
       }
-      preloadWebview.loaded = true; // 标记已 ready
+      preloadWebview$1.loaded = true; // 标记已 ready
       UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
       isLaunchWebview && onLaunchWebviewReady();
   }
@@ -10518,9 +10520,9 @@ var serviceContext = (function (vue) {
           return callback();
       }
       // 未创建 preloadWebview 或 preloadWebview 已被使用
-      const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
+      const waitPreloadWebview = !preloadWebview$1 || (preloadWebview$1 && preloadWebview$1.__uniapp_route);
       // 已创建未 loaded
-      const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
+      const waitPreloadWebviewReady = preloadWebview$1 && !preloadWebview$1.loaded;
       if (waitPreloadWebview || waitPreloadWebviewReady) {
           setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
       }
@@ -10528,7 +10530,7 @@ var serviceContext = (function (vue) {
           callback();
       }
       if (waitPreloadWebviewReady) {
-          onWebviewReady(preloadWebview.id, pendingNavigate);
+          onWebviewReady(preloadWebview$1.id, pendingNavigate);
       }
   }
   function pendingNavigate() {
@@ -10798,12 +10800,79 @@ var serviceContext = (function (vue) {
       return routeOptions;
   }
 
+  const preloadWebviews = {};
+  function removePreloadWebview(webview) {
+      const url = Object.keys(preloadWebviews).find((url) => preloadWebviews[url].id === webview.id);
+      if (url) {
+          if (process.env.NODE_ENV !== 'production') {
+              console.log(`[uni-app] removePreloadWebview(${webview.id})`);
+          }
+          delete preloadWebviews[url];
+      }
+  }
+  function closePreloadWebview({ url }) {
+      const webview = preloadWebviews[url];
+      if (webview) {
+          if (webview.__page__) {
+              if (!getCurrentPages().find((page) => page === webview.__page__)) {
+                  // 未使用
+                  webview.close('none');
+              }
+              else {
+                  // 被使用
+                  webview.__preload__ = false;
+              }
+          }
+          else {
+              // 未使用
+              webview.close('none');
+          }
+          delete preloadWebviews[url];
+      }
+      return webview;
+  }
+  function preloadWebview({ url, path, query, }) {
+      if (!preloadWebviews[url]) {
+          const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find((route) => route.path === path)));
+          preloadWebviews[url] = createWebview({
+              path,
+              routeOptions,
+              query,
+              webviewStyle: {
+                  __preload__: true,
+                  __query__: JSON.stringify(query),
+              },
+          });
+      }
+      return preloadWebviews[url];
+  }
+
   function registerPage({ url, path, query, openType, webview, vm, }) {
       // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
       if (webview) {
           initEntry();
       }
-      // TODO preloadWebview
+      if (preloadWebviews[url]) {
+          webview = preloadWebviews[url];
+          const _webview = webview;
+          if (_webview.__page__) {
+              // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+              if (getCurrentPages().find((page) => page === _webview.__page__)) {
+                  if (process.env.NODE_ENV !== 'production') {
+                      console.log(`[uni-app] preloadWebview(${path},${_webview.id}) already in use`);
+                  }
+                  webview = undefined;
+              }
+              else {
+                  // TODO eventChannel
+                  addCurrentPage(_webview.__page__);
+                  if (process.env.NODE_ENV !== 'production') {
+                      console.log(`[uni-app] reuse preloadWebview(${path},${_webview.id})`);
+                  }
+                  return _webview;
+              }
+          }
+      }
       const routeOptions = initRouteOptions(path, openType);
       if (!webview) {
           webview = createWebview({ path, routeOptions, query });
@@ -10828,7 +10897,11 @@ var serviceContext = (function (vue) {
           createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
       }
       else {
-          vm && addCurrentPage(vm);
+          initPageVm(vm, pageInstance);
+          addCurrentPage(vm);
+          if (webview.__preload__) {
+              webview.__page__ = vm;
+          }
       }
       return webview;
   }
@@ -10937,10 +11010,9 @@ var serviceContext = (function (vue) {
               if (lastPage) {
                   const webview = lastPage
                       .$getAppWebview();
-                  // TODO preload
-                  //   if (webview.__preload__) {
-                  //     removePreloadWebview(webview)
-                  //   }
+                  if (webview.__preload__) {
+                      removePreloadWebview(webview);
+                  }
                   webview.close('none');
               }
               resolve(undefined);
@@ -11079,6 +11151,38 @@ var serviceContext = (function (vue) {
           }
       });
   }
+
+  const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
+      const webview = closePreloadWebview({
+          url,
+      });
+      if (webview) {
+          return {
+              id: webview.id,
+              url,
+              errMsg: 'unPreloadPage:ok',
+          };
+      }
+      return {
+          url,
+          errMsg: 'unPreloadPage:fail not found',
+      };
+  }, UnPreloadPageProtocol);
+  const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
+      const urls = url.split('?');
+      const path = urls[0];
+      const query = parseQuery(urls[1] || '');
+      const webview = preloadWebview({
+          url,
+          path,
+          query,
+      });
+      resolve({
+          id: webview.id,
+          url,
+          errMsg: 'preloadPage:ok',
+      });
+  }, PreloadPageProtocol);
 
   var uni$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -11229,7 +11333,9 @@ var serviceContext = (function (vue) {
     navigateTo: navigateTo,
     redirectTo: redirectTo,
     reLaunch: reLaunch,
-    switchTab: switchTab
+    switchTab: switchTab,
+    unPreloadPage: unPreloadPage,
+    preloadPage: preloadPage
   });
 
   const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {

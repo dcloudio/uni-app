@@ -11,6 +11,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * 注意：该包的依赖包含了 lib 中的 weex-template-compiler 依赖的 de-indent
+ * 注意：该包的依赖包含了 lib 中三方包的依赖
  */
 __exportStar(require("./webpack"), exports);
