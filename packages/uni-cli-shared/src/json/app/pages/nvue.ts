@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { normalizePath } from '../../../utils'
 
@@ -20,6 +21,7 @@ function genNVueEntryCode(route: string) {
   return `import App from '${normalizePath(
     path.resolve(process.env.UNI_INPUT_DIR, route)
   )}.nvue?mpType=page'
+${genNVueAppStyle()}  
 if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
     Promise.prototype.finally = function(callback) {
     var promise = this.constructor
@@ -39,4 +41,57 @@ App.route = '${route}'
 App.el = '#root'
 new Vue(App)
 `
+}
+
+interface VueSfcStyle {
+  src?: string
+  attrs: Record<string, string>
+}
+
+function genNVueAppStyle() {
+  if (process.env.UNI_NVUE_COMPILER !== 'uni-app') {
+    return ''
+  }
+  const appVuePath = path.resolve(process.env.UNI_INPUT_DIR, 'App.vue')
+  let code = 'Vue.prototype.__$appStyle__ = {}\n'
+  let styles = []
+  try {
+    if (fs.existsSync(appVuePath)) {
+      const {
+        parseComponent,
+      } = require('@dcloudio/uni-cli-nvue/lib/weex-template-compiler')
+      styles = parseComponent(fs.readFileSync(appVuePath, 'utf8')).styles
+    }
+  } catch (e) {}
+  const loaderUtils = require('loader-utils')
+  const stringifyRequest = (r: string) => loaderUtils.stringifyRequest({}, r)
+  styles.forEach((style: VueSfcStyle, index: number) => {
+    if (!style.src) {
+      style.src = normalizePath(appVuePath)
+    }
+    code =
+      code +
+      `import __style${index} from ${genStyleRequest(
+        style,
+        index,
+        stringifyRequest
+      )}
+Vue.prototype.__merge_style(__style${index},Vue.prototype.__$appStyle__)\n`
+  })
+  return code
+}
+
+function genStyleRequest(
+  style: VueSfcStyle,
+  i: number,
+  stringifyRequest: Function
+) {
+  const {
+    attrsToQuery,
+  } = require('@dcloudio/uni-cli-nvue/lib/vue-loader/lib/codegen/utils')
+
+  const src = style.src
+  const attrsQuery = attrsToQuery(style.attrs, 'css')
+  const query = `?vue&type=style&index=${i}${attrsQuery}`
+  return stringifyRequest(src + query)
 }
