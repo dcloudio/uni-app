@@ -24,8 +24,9 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 
 <b style="color:#268BD2"> %PLATFORM%</b> **可取值如下：**
 
-|值|平台|
+|值|生效条件|
 |:-|:-|
+|VUE3|HBuilderX 3.2.0+|
 |APP-PLUS|App|
 |APP-PLUS-NVUE或APP-NVUE|App nvue|
 |H5|H5|
