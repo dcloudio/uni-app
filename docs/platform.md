@@ -54,7 +54,7 @@ uni-app 已将常用的组件、JS API 封装到框架中，开发者按照 uni-
 * 条件编译是利用注释实现的，在不同语法里注释写法不一样，js使用 ``// 注释``、css 使用 ``/* 注释 */``、vue/nvue 模板里使用 ``<!-- 注释 -->``；
 * 条件编译APP-PLUS包含APP-NVUE和APP-VUE，APP-PLUS-NVUE和APP-NVUE没什么区别，为了简写后面出了APP-NVUE ；
 * 使用条件编译请保证`编译前`和`编译后`文件的正确性，比如json文件中不能有多余的逗号；
-* `VUE3` 需要在项目的 `manifest.json` 文件跟节点配置 `"vueVersion" : "3"`
+* `VUE3` 需要在项目的 `manifest.json` 文件根节点配置 `"vueVersion" : "3"`
 
 ### API 的条件编译
 
