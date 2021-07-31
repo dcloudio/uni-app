@@ -1,5 +1,10 @@
 import { LoaderContext } from 'webpack'
-import { preJs, preCss, preHtml, preJson } from '@dcloudio/uni-cli-shared'
+import {
+  preNVueJs,
+  preNVueCss,
+  preNVueHtml,
+  preNVueJson,
+} from '@dcloudio/uni-cli-shared'
 import { normalizePreprocessErrMsg } from '../../utils/preprocess'
 const utils = require('loader-utils')
 function preprocessLoader(this: LoaderContext<{}>, content: string, map: any) {
@@ -25,13 +30,13 @@ function preContent(
 ) {
   switch (type) {
     case 'js':
-      return preJs(content)
+      return preNVueJs(content)
     case 'html':
-      return preHtml(content)
+      return preNVueHtml(content)
     case 'css':
-      return preCss(content)
+      return preNVueCss(content)
     case 'json':
-      return preJson(content)
+      return preNVueJson(content)
   }
   return content
 }

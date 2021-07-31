@@ -1,12 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBannerPlugin = void 0;
-const webpack_1 = require("webpack");
+const BannerPlugin_1 = __importDefault(require("../../plugin/BannerPlugin"));
 function createBannerPlugin() {
-    return new webpack_1.BannerPlugin({
+    return new BannerPlugin_1.default({
         banner: '"use weex:vue";',
-        raw: true,
-        exclude: 'Vue',
     });
 }
 exports.createBannerPlugin = createBannerPlugin;

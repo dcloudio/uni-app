@@ -6,7 +6,14 @@ const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const compilerOptions_1 = require("./compilerOptions");
 const utils_1 = require("../../../../../utils");
 const easycom_1 = require("./easycom");
-function createVueLoader() {
+const loader_1 = require("../../../../loader");
+const preprocessLoader = {
+    loader: loader_1.resolveLoader('preprocess'),
+    options: {
+        type: ['js', 'html'],
+    },
+};
+function createVueLoader(options) {
     uni_cli_shared_1.initEasycomsOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM);
     return {
         test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],
@@ -16,9 +23,10 @@ function createVueLoader() {
                 options: {
                     hotReload: false,
                     compiler: createCompiler(),
-                    compilerOptions: compilerOptions_1.createCompilerOptions(),
+                    compilerOptions: compilerOptions_1.createCompilerOptions(options),
                 },
             },
+            preprocessLoader,
         ],
     };
 }

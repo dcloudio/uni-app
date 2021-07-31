@@ -7,7 +7,12 @@ exports.createOneOf = void 0;
 const path_1 = __importDefault(require("path"));
 const loader_1 = require("../../../../loader");
 const styleLoader = { loader: loader_1.resolveLoader('style') };
-const preprocessLoader = { loader: loader_1.resolveLoader('preprocess') };
+const preprocessLoader = {
+    loader: loader_1.resolveLoader('preprocess'),
+    options: {
+        type: ['js'],
+    },
+};
 const postcssLoader = {
     loader: require.resolve('postcss-loader'),
     options: {
@@ -27,11 +32,11 @@ const postcssLoader = {
                             return path_1.default.resolve(process.env.UNI_INPUT_DIR, id.substr(1));
                         }
                         return id;
-                    }
-                })
-            ]
-        }
-    }
+                    },
+                }),
+            ],
+        },
+    },
 };
 function createOneOf(preLoader) {
     const use = [styleLoader, preprocessLoader];
@@ -42,11 +47,11 @@ function createOneOf(preLoader) {
     return [
         {
             resourceQuery: /\?vue/,
-            use
+            use,
         },
         {
-            use
-        }
+            use,
+        },
     ];
 }
 exports.createOneOf = createOneOf;

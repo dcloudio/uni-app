@@ -6,10 +6,10 @@ const boolAttr_1 = require("./boolAttr");
 const easycom_1 = require("./easycom");
 const renderWhole_1 = require("./renderWhole");
 const tags_1 = require("./tags");
-function createModules() {
+function createModules(options) {
     // 先处理 easycom
     const modules = [easycom_1.createEasycomModule(), renderWhole_1.createRenderWholeModule()];
-    if (process.env.UNI_NVUE_COMPILER === 'uni-app') {
+    if (options.compiler === 'uni-app') {
         modules.push(tags_1.createTagsModule());
     }
     modules.push(assetUrl_1.createAssetUrlModule());

@@ -1,5 +1,11 @@
 import { RuleSetRule } from 'webpack'
-
+import { resolveLoader } from '../../../loader'
+const preprocessLoader = {
+  loader: resolveLoader('preprocess'),
+  options: {
+    type: ['js'],
+  },
+}
 export function createBabelLoader(): RuleSetRule {
   return {
     test: /\.js$/,
@@ -10,6 +16,7 @@ export function createBabelLoader(): RuleSetRule {
           babelrc: false,
         },
       },
+      preprocessLoader,
     ],
   }
 }

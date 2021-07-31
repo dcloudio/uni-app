@@ -8,6 +8,7 @@ const terser_webpack_plugin_1 = __importDefault(require("terser-webpack-plugin")
 function createOptimization() {
     return {
         nodeEnv: false,
+        moduleIds: 'deterministic',
         minimizer: [
             new terser_webpack_plugin_1.default({
                 terserOptions: {

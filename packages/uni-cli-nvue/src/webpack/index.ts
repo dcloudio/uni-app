@@ -3,13 +3,18 @@ import { once } from '@dcloudio/uni-shared'
 
 import { createConfig } from './config'
 import { initModuleAlias } from './alias'
+import { initEnv } from '../utils/env'
 
 const initModuleAliasOnce = once(initModuleAlias)
 
-function runWebpack(mode: 'production' | 'development') {
+function runWebpack(
+  mode: 'production' | 'development',
+  options: NVueCompilerOptions
+) {
+  initEnv(options)
   initModuleAliasOnce()
   return new Promise((resolve, reject) => {
-    webpack(createConfig(mode), (err, stats) => {
+    webpack(createConfig(mode, options), (err, stats) => {
       if (err) {
         return reject(err.stack || err)
       }
@@ -32,10 +37,10 @@ function runWebpack(mode: 'production' | 'development') {
   })
 }
 
-export function runWebpackBuild() {
-  return runWebpack('production')
+export function runWebpackBuild(options: NVueCompilerOptions) {
+  return runWebpack('production', options)
 }
 
-export function runWebpackDev() {
-  return runWebpack('development')
+export function runWebpackDev(options: NVueCompilerOptions) {
+  return runWebpack('development', options)
 }

@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCompilerOptions = void 0;
 const modules_1 = require("./modules");
-function createCompilerOptions() {
+function createCompilerOptions(options) {
     return {
-        modules: modules_1.createModules(),
+        modules: modules_1.createModules(options),
     };
 }
 exports.createCompilerOptions = createCompilerOptions;

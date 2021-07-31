@@ -6,8 +6,15 @@ import { createCompilerOptions } from './compilerOptions'
 import { resolveLib } from '../../../../../utils'
 import { generateEasycomCode } from './easycom'
 import { VueLoaderOptions } from '../../../../../../lib/vue-loader'
+import { resolveLoader } from '../../../../loader'
+const preprocessLoader = {
+  loader: resolveLoader('preprocess'),
+  options: {
+    type: ['js', 'html'],
+  },
+}
 
-export function createVueLoader(): RuleSetRule {
+export function createVueLoader(options: NVueCompilerOptions): RuleSetRule {
   initEasycomsOnce(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM)
   return {
     test: [/\.nvue(\?[^?]+)?$/, /\.vue(\?[^?]+)?$/],
@@ -17,9 +24,10 @@ export function createVueLoader(): RuleSetRule {
         options: {
           hotReload: false,
           compiler: createCompiler(),
-          compilerOptions: createCompilerOptions(),
+          compilerOptions: createCompilerOptions(options),
         } as VueLoaderOptions,
       },
+      preprocessLoader,
     ],
   }
 }

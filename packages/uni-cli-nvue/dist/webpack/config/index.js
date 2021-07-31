@@ -5,7 +5,8 @@ const optimization_1 = require("./optimization");
 const output_1 = require("./output");
 const module_1 = require("./module");
 const plugins_1 = require("./plugins");
-function createConfig(mode) {
+const resolve_1 = require("./resolve");
+function createConfig(mode, options) {
     return {
         mode: mode,
         devtool: false,
@@ -16,9 +17,10 @@ function createConfig(mode) {
         externals: {
             vue: 'Vue',
         },
+        module: module_1.createModule(options),
         optimization: optimization_1.createOptimization(),
         output: output_1.createOutput(),
-        module: module_1.createModule(),
+        resolve: resolve_1.createResolve(),
         plugins: plugins_1.createPlugins(),
     };
 }

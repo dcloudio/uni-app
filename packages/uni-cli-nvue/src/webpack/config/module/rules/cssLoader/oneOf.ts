@@ -2,7 +2,12 @@ import path from 'path'
 import { resolveLoader } from '../../../../loader'
 
 const styleLoader = { loader: resolveLoader('style') }
-const preprocessLoader = { loader: resolveLoader('preprocess') }
+const preprocessLoader = {
+  loader: resolveLoader('preprocess'),
+  options: {
+    type: ['js'],
+  },
+}
 const postcssLoader = {
   loader: require.resolve('postcss-loader'),
   options: {
@@ -20,11 +25,11 @@ const postcssLoader = {
               return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
             }
             return id
-          }
-        })
-      ]
-    }
-  }
+          },
+        }),
+      ],
+    },
+  },
 }
 export function createOneOf(preLoader?: {
   loader: string
@@ -38,10 +43,10 @@ export function createOneOf(preLoader?: {
   return [
     {
       resourceQuery: /\?vue/,
-      use
+      use,
     },
     {
-      use
-    }
+      use,
+    },
   ]
 }

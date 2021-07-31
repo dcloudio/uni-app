@@ -1,7 +1,9 @@
 import { CompilerOptions } from 'vue-template-compiler'
 import { createModules } from './modules'
-export function createCompilerOptions(): CompilerOptions {
+export function createCompilerOptions(
+  options: NVueCompilerOptions
+): CompilerOptions {
   return {
-    modules: createModules(),
+    modules: createModules(options),
   }
 }

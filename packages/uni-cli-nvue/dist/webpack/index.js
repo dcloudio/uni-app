@@ -8,11 +8,13 @@ const webpack_1 = __importDefault(require("webpack"));
 const uni_shared_1 = require("@dcloudio/uni-shared");
 const config_1 = require("./config");
 const alias_1 = require("./alias");
+const env_1 = require("../utils/env");
 const initModuleAliasOnce = uni_shared_1.once(alias_1.initModuleAlias);
-function runWebpack(mode) {
+function runWebpack(mode, options) {
+    env_1.initEnv(options);
     initModuleAliasOnce();
     return new Promise((resolve, reject) => {
-        webpack_1.default(config_1.createConfig(mode), (err, stats) => {
+        webpack_1.default(config_1.createConfig(mode, options), (err, stats) => {
             if (err) {
                 return reject(err.stack || err);
             }
@@ -31,11 +33,11 @@ function runWebpack(mode) {
         });
     });
 }
-function runWebpackBuild() {
-    return runWebpack('production');
+function runWebpackBuild(options) {
+    return runWebpack('production', options);
 }
 exports.runWebpackBuild = runWebpackBuild;
-function runWebpackDev() {
-    return runWebpack('development');
+function runWebpackDev(options) {
+    return runWebpack('development', options);
 }
 exports.runWebpackDev = runWebpackDev;

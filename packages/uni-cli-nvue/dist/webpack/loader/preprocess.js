@@ -23,13 +23,13 @@ function preprocessLoader(content, map) {
 function preContent(type, content) {
     switch (type) {
         case 'js':
-            return uni_cli_shared_1.preJs(content);
+            return uni_cli_shared_1.preNVueJs(content);
         case 'html':
-            return uni_cli_shared_1.preHtml(content);
+            return uni_cli_shared_1.preNVueHtml(content);
         case 'css':
-            return uni_cli_shared_1.preCss(content);
+            return uni_cli_shared_1.preNVueCss(content);
         case 'json':
-            return uni_cli_shared_1.preJson(content);
+            return uni_cli_shared_1.preNVueJson(content);
     }
     return content;
 }

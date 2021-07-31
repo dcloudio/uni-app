@@ -3,8 +3,10 @@ import { createOptimization } from './optimization'
 import { createOutput } from './output'
 import { createModule } from './module'
 import { createPlugins } from './plugins'
+import { createResolve } from './resolve'
 export function createConfig(
-  mode: 'production' | 'development'
+  mode: 'production' | 'development',
+  options: NVueCompilerOptions
 ): Configuration {
   return {
     mode: mode,
@@ -16,9 +18,10 @@ export function createConfig(
     externals: {
       vue: 'Vue',
     },
+    module: createModule(options),
     optimization: createOptimization(),
     output: createOutput(),
-    module: createModule(),
+    resolve: createResolve(),
     plugins: createPlugins(),
   }
 }

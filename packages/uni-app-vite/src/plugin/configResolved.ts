@@ -1,21 +1,9 @@
 import { Plugin, ResolvedConfig } from 'vite'
-import {
-  parseManifestJsonOnce,
-  getNVueCompiler,
-  getNVueStyleCompiler,
-} from '@dcloudio/uni-cli-shared'
 
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
 import { cssPlugin, cssPostPlugin } from '../plugins/vitejs/plugins/css'
 
 export const configResolved: Plugin['configResolved'] = (config) => {
-  const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  if (getNVueCompiler(manifestJson) === 'uni-app') {
-    process.env.UNI_USING_NVUE_COMPILER = 'uni-app'
-  }
-  if (getNVueStyleCompiler(manifestJson) === 'uni-app') {
-    process.env.UNI_USING_NVUE_STYLE_COMPILER = 'uni-app'
-  }
   if (process.env.UNI_APP_CODE_SPLITING) {
     initCodeSpliting(config as ResolvedConfig)
   } else {

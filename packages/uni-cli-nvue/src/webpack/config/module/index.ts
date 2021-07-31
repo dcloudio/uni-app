@@ -2,8 +2,10 @@ import { Configuration } from 'webpack'
 
 import { createRules } from './rules'
 
-export function createModule(): Configuration['module'] {
+export function createModule(
+  options: NVueCompilerOptions
+): Configuration['module'] {
   return {
-    rules: createRules(),
+    rules: createRules(options),
   }
 }

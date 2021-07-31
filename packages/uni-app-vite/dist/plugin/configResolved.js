@@ -1,17 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configResolved = void 0;
-const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const asset_1 = require("../plugins/vitejs/plugins/asset");
 const css_1 = require("../plugins/vitejs/plugins/css");
 const configResolved = (config) => {
-    const manifestJson = uni_cli_shared_1.parseManifestJsonOnce(process.env.UNI_INPUT_DIR);
-    if (uni_cli_shared_1.getNVueCompiler(manifestJson) === 'uni-app') {
-        process.env.UNI_USING_NVUE_COMPILER = 'uni-app';
-    }
-    if (uni_cli_shared_1.getNVueStyleCompiler(manifestJson) === 'uni-app') {
-        process.env.UNI_USING_NVUE_STYLE_COMPILER = 'uni-app';
-    }
     if (process.env.UNI_APP_CODE_SPLITING) {
         initCodeSpliting(config);
     }

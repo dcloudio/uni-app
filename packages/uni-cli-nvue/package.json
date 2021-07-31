@@ -47,10 +47,12 @@
     "vue-hot-reload-api": "^2.3.0",
     "vue-style-loader": "^4.1.0",
     "vue-template-es2015-compiler": "^1.9.0",
-    "webpack": "^5.45.1"
+    "webpack": "^5.45.1",
+    "webpack-sources": "^3.1.2"
   },
   "devDependencies": {
     "@types/terser-webpack-plugin": "^5.0.4",
+    "@types/webpack-sources": "^2.1.1",
     "vue-template-compiler": "^2.6.14"
   }
 }

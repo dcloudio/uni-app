@@ -35,7 +35,7 @@ function convertLengthShorthand (rule, prop) {
  * @param {*} index 
  */
 function mergeStyle (object, classNames, preClassNames, ruleResult, prop, index) {
-  if (!process.env.UNI_USING_NVUE_STYLE_COMPILER) {
+  if (process.env.UNI_NVUE_STYLE_COMPILER !== 'uni-app') {
     object[classNames] = object[classNames] || {}
     object[classNames][prop] = ruleResult[prop]
     return
@@ -110,7 +110,7 @@ function parse (code, done) {
 
             /* istanbul ignore else */
             if (typeof subResult.value === 'number' || typeof subResult.value === 'string') {
-              if (process.env.UNI_USING_NVUE_STYLE_COMPILER) {
+              if (process.env.UNI_NVUE_STYLE_COMPILER === 'uni-app') {
                 var oldValue = ruleResult[camelCasedName]
                 // 增加 important 权重信息
                 ruleResult[camelCasedName] = Array.isArray(oldValue) && oldValue[1] > importantWeight ? oldValue : [subResult.value, importantWeight]
@@ -128,7 +128,7 @@ function parse (code, done) {
           rule.selectors.forEach(function (selector) {
             selector = selector.replace(/\s*([\+\~\>])\s*/g, '$1').replace(/\s+/, ' ')
             // 支持组合选择器
-            const res = selector.match(process.env.UNI_USING_NVUE_STYLE_COMPILER ? /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/ : /^(\.)([A-Za-z0-9_\-:]+)$/)
+            const res = selector.match(process.env.UNI_NVUE_STYLE_COMPILER === 'uni-app' ? /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/ : /^(\.)([A-Za-z0-9_\-:]+)$/)
             if (res) {
               var preClassNames = res[1]
               var classNames = res[2]
