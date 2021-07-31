@@ -3,10 +3,24 @@ export function initNVue(
   pagesJson: UniApp.PagesJson
 ) {}
 
+export function getRenderer(manifestJson: Record<string, any>) {
+  const platformOptions = manifestJson['app-plus']
+  if (platformOptions && platformOptions.renderer === 'native') {
+    return 'native'
+  }
+  return ''
+}
+
 export function getNVueCompiler(manifestJson: Record<string, any>) {
   const platformOptions = manifestJson['app-plus']
-  if (platformOptions && platformOptions.nvueCompiler === 'weex') {
-    return 'weex'
+  if (platformOptions) {
+    const { nvueCompiler } = platformOptions
+    if (nvueCompiler === 'weex') {
+      return 'weex'
+    }
+    if (nvueCompiler === 'vue') {
+      return 'vue'
+    }
   }
   return 'uni-app'
 }

@@ -3,6 +3,8 @@ import { definePageCode } from './definePage'
 import { normalizeAppUniConfig } from './uniConfig'
 import { normalizeAppUniRoutes } from './uniRoutes'
 
+export * from './nvue'
+
 export function normalizeAppPagesJson(pagesJson: Record<string, any>) {
   return polyfillCode + restoreGlobalCode + definePageCode(pagesJson)
 }

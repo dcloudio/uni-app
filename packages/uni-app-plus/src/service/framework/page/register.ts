@@ -14,9 +14,10 @@ import { createWebview, initWebview } from '../webview'
 import { createPage } from './define'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
-import { addCurrentPage } from './getCurrentPages'
+import { addCurrentPage, getAllPages } from './getCurrentPages'
 import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
 import { preloadWebviews, PreloadWebviewObject } from './preLoad'
+import { navigateFinish } from '../../api/route/utils'
 
 interface RegisterPageOptions {
   url: string
@@ -24,7 +25,6 @@ interface RegisterPageOptions {
   query: Record<string, string>
   openType: UniApp.OpenType
   webview?: PlusWebviewWebviewObject
-  vm?: ComponentPublicInstance // nvue vm instance
   // eventChannel: unknown
 }
 
@@ -34,7 +34,6 @@ export function registerPage({
   query,
   openType,
   webview,
-  vm,
 }: RegisterPageOptions) {
   // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
   if (webview) {
@@ -96,7 +95,14 @@ export function registerPage({
     routeOptions.meta
   )
 
-  if (!(webview as any).nvue) {
+  initNVueEntryPage(webview)
+
+  if ((webview as any).nvue) {
+    // nvue 时，先启用一个占位 vm
+    const fakeNVueVm = createNVueVm(webview, pageInstance)
+    initPageVm(fakeNVueVm, pageInstance)
+    addCurrentPage(fakeNVueVm)
+  } else {
     createPage(
       parseInt(webview.id!),
       route,
@@ -104,13 +110,6 @@ export function registerPage({
       pageInstance,
       initPageOptions(routeOptions)
     )
-  } else {
-    initPageVm(vm!, pageInstance)
-    addCurrentPage(vm!)
-
-    if ((webview as any).__preload__) {
-      ;(webview as any).__page__ = vm
-    }
   }
   return webview
 }
@@ -138,4 +137,45 @@ function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
     windowBottom:
       tabBar.indexOf(meta.route) >= 0 && tabBar.cover ? tabBar.height : 0,
   }
+}
+
+function initNVueEntryPage(webview: PlusWebviewWebviewObject) {
+  const isLaunchNVuePage = webview.id === '1' && (webview as any).nvue
+  // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+  if (isLaunchNVuePage) {
+    if (
+      __uniConfig.splashscreen &&
+      __uniConfig.splashscreen.autoclose &&
+      !__uniConfig.splashscreen.alwaysShowBeforeRender
+    ) {
+      plus.navigator.closeSplashscreen()
+    }
+    __uniConfig.onReady(function () {
+      navigateFinish()
+    })
+  }
+}
+
+function createNVueVm(
+  webview: PlusWebviewWebviewObject,
+  pageInstance: Page.PageInstance['$page']
+) {
+  return {
+    $: {}, // navigateBack 时，invokeHook 会调用 $
+    onNVuePageCreated(vm: ComponentPublicInstance, curNVuePage: unknown) {
+      // 替换真实的 nvue 的 vm
+      initPageVm(vm, pageInstance)
+      const pages = getAllPages()
+      const index = pages.findIndex((p) => p === curNVuePage)
+      if (index > -1) {
+        pages.splice(index, 1, vm)
+      }
+      if ((webview as any).__preload__) {
+        ;(webview as any).__page__ = vm
+      }
+    },
+    $getAppWebview() {
+      return webview
+    },
+  } as unknown as ComponentPublicInstance
 }

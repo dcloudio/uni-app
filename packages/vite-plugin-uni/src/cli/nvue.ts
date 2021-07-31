@@ -3,20 +3,22 @@ import {
   getNVueCompiler,
   getNVueStyleCompiler,
 } from '@dcloudio/uni-cli-shared'
+import { getRenderer } from '../../../uni-cli-shared/dist/json/app/manifest/nvue'
 
-function initNVueCompilerOptions() {
+export function initNVueEnv() {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  const nvueCompilerOptions = {
-    compiler: 'uni-app',
-    styleCompiler: 'weex',
+  if (getRenderer(manifestJson) === 'native') {
+    process.env.UNI_RENDERER = 'native'
   }
-  if (getNVueCompiler(manifestJson) === 'uni-app') {
-    nvueCompilerOptions.compiler = 'uni-app'
+  const nvueCompiler = getNVueCompiler(manifestJson)
+  if (nvueCompiler === 'uni-app') {
+    process.env.UNI_NVUE_COMPILER = 'uni-app'
+  } else if (nvueCompiler === 'vue') {
+    process.env.UNI_NVUE_COMPILER = 'vue'
   }
   if (getNVueStyleCompiler(manifestJson) === 'uni-app') {
-    nvueCompilerOptions.styleCompiler = 'uni-app'
+    process.env.UNI_NVUE_STYLE_COMPILER = 'uni-app'
   }
-  return nvueCompilerOptions
 }
 
 export async function runNVue(mode: 'prod' | 'dev') {
@@ -38,10 +40,12 @@ export async function runNVue(mode: 'prod' | 'dev') {
   if (!nvue) {
     return
   }
-  const options = initNVueCompilerOptions()
+  if (process.env.UNI_NVUE_COMPILER === 'vue') {
+    return
+  }
   if (mode === 'prod') {
-    await nvue.runWebpackBuild(options)
+    await nvue.runWebpackBuild()
   } else {
-    await nvue.runWebpackDev(options)
+    await nvue.runWebpackDev()
   }
 }

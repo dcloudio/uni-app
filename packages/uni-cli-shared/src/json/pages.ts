@@ -4,6 +4,7 @@ import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import { once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { normalizePath } from '../utils'
 import { parseJson } from './json'
+import { initWebpackNVueEntry } from './app/pages'
 
 export const parsePagesJson = (
   inputDir: string,
@@ -40,8 +41,17 @@ export function normalizePagesJson(jsonStr: string, platform: UniApp.PLATFORM) {
   )
   // pageStyle
   normalizePages(pagesJson.pages, platform)
+
+  if (platform === 'app' && process.env.UNI_NVUE_COMPILER !== 'vue') {
+    initWebpackNVueEntry(pagesJson.pages)
+  }
+
   // globalStyle
-  pagesJson.globalStyle = normalizePageStyle(pagesJson.globalStyle!, platform)
+  pagesJson.globalStyle = normalizePageStyle(
+    null,
+    pagesJson.globalStyle!,
+    platform
+  )
   // tabBar
   if (pagesJson.tabBar) {
     const tabBar = normalizeTabBar(pagesJson.tabBar!)
@@ -70,7 +80,7 @@ function normalizePages(
   platform: UniApp.PLATFORM
 ) {
   return pages.filter((page) => {
-    page.style = normalizePageStyle(page.style!, platform)
+    page.style = normalizePageStyle(page.path, page.style!, platform)
     return true
   })
 }
@@ -93,9 +103,17 @@ function normalizeSubpackages(
 }
 
 function normalizePageStyle(
+  pagePath: string | null,
   pageStyle: UniApp.PagesJsonPageStyle,
   platform: UniApp.PLATFORM
 ) {
+  const isNVue =
+    pagePath &&
+    process.env.UNI_NVUE_COMPILER !== 'vue' &&
+    fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
+      ? true
+      : undefined
+
   if (pageStyle) {
     if (platform === 'h5') {
       extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
@@ -112,9 +130,10 @@ function normalizePageStyle(
         pageStyle.pullToRefresh = normalizePullToRefresh(pageStyle)
       }
     }
+    pageStyle.isNVue = isNVue
     return removePlatformStyle(pageStyle)
   }
-  return { navigationBar: {} }
+  return { navigationBar: {}, isNVue }
 }
 
 const navigationBarMaps = {
@@ -323,13 +342,9 @@ export function normalizePagesRoute(
       (tabBarPage: { pagePath: string }) => tabBarPage.pagePath === pagePath
     )
     const isTabBar = tabBarIndex !== -1 ? true : undefined
-    const isNVue = fs.existsSync(
-      path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue')
-    )
     let windowTop = 0
     const meta = extend(
       {
-        isNVue: isNVue || undefined,
         isQuit: isEntry || isTabBar ? true : undefined,
         isEntry: isEntry || undefined,
         isTabBar: isTabBar || undefined,

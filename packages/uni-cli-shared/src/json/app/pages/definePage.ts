@@ -3,7 +3,10 @@ import { normalizeIdentifier, normalizePagePath } from '../../../utils'
 export function definePageCode(pagesJson: Record<string, any>) {
   const importPagesCode: string[] = []
   const definePagesCode: string[] = []
-  pagesJson.pages.forEach((page: UniApp.UniRoute) => {
+  pagesJson.pages.forEach((page: UniApp.PagesJsonPageOptions) => {
+    if (page.style.isNVue) {
+      return
+    }
     const pagePath = page.path
     const pageIdentifier = normalizeIdentifier(pagePath)
     const pagePathWithExtname = normalizePagePath(pagePath, 'app')

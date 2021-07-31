@@ -3,7 +3,6 @@ import { once } from '@dcloudio/uni-shared'
 
 import { createConfig } from './config'
 import { initModuleAlias } from './alias'
-import { initEnv } from '../utils/env'
 
 const initModuleAliasOnce = once(initModuleAlias)
 
@@ -11,7 +10,6 @@ function runWebpack(
   mode: 'production' | 'development',
   options: NVueCompilerOptions
 ) {
-  initEnv(options)
   initModuleAliasOnce()
   return new Promise((resolve, reject) => {
     webpack(createConfig(mode, options), (err, stats) => {

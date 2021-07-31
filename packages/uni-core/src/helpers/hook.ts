@@ -30,7 +30,12 @@ export function invokeHook(
   if (!vm) {
     return
   }
-  const hooks = vm.$[name as string]
+  // 兼容 nvue
+
+  const hooks =
+    __PLATFORM__ === 'app'
+      ? ((vm as any)._$weex ? vm.$options : vm.$)[name as string]
+      : vm.$[name as string]
   return hooks && invokeArrayFns(hooks, args)
 }
 

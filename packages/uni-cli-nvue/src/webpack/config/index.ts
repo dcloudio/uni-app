@@ -4,6 +4,7 @@ import { createOutput } from './output'
 import { createModule } from './module'
 import { createPlugins } from './plugins'
 import { createResolve } from './resolve'
+import { createEntry } from './entry'
 export function createConfig(
   mode: 'production' | 'development',
   options: NVueCompilerOptions
@@ -12,9 +13,7 @@ export function createConfig(
     mode: mode,
     devtool: false,
     watch: mode === 'development',
-    entry() {
-      return process.UNI_NVUE_ENTRY
-    },
+    entry: createEntry(),
     externals: {
       vue: 'Vue',
     },

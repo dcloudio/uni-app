@@ -9,5 +9,8 @@ declare namespace NodeJS {
     UNI_CLI_CONTEXT: string
     UNI_COMPILER_VERSION: string
     UNI_HBUILDERX_PLUGINS: string
+    UNI_RENDERER?: 'native'
+    UNI_NVUE_COMPILER: 'uni-app' | 'weex' | 'vue'
+    UNI_NVUE_STYLE_COMPILER: 'uni-app' | 'weex'
   }
 }

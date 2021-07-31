@@ -6,14 +6,13 @@ const output_1 = require("./output");
 const module_1 = require("./module");
 const plugins_1 = require("./plugins");
 const resolve_1 = require("./resolve");
+const entry_1 = require("./entry");
 function createConfig(mode, options) {
     return {
         mode: mode,
         devtool: false,
         watch: mode === 'development',
-        entry() {
-            return process.UNI_NVUE_ENTRY;
-        },
+        entry: entry_1.createEntry(),
         externals: {
             vue: 'Vue',
         },

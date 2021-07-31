@@ -4,10 +4,10 @@ import { createBoolAttrModule } from './boolAttr'
 import { createEasycomModule } from './easycom'
 import { createRenderWholeModule } from './renderWhole'
 import { createTagsModule } from './tags'
-export function createModules(options: NVueCompilerOptions): ModuleOptions[] {
+export function createModules(_: NVueCompilerOptions): ModuleOptions[] {
   // 先处理 easycom
   const modules = [createEasycomModule(), createRenderWholeModule()]
-  if (options.compiler === 'uni-app') {
+  if (process.env.UNI_NVUE_COMPILER === 'uni-app') {
     modules.push(createTagsModule())
   }
 

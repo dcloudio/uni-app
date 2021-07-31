@@ -5,6 +5,7 @@ import { BuildOptions, InlineConfig } from 'vite'
 import { isInHBuilderX } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
+import { initNVueEnv } from './nvue'
 
 export const PLATFORMS = [
   'app',
@@ -81,6 +82,9 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
       ),
       process.exit(1)
     )
+  }
+  if (process.env.UNI_PLATFORM === 'app') {
+    initNVueEnv()
   }
 }
 

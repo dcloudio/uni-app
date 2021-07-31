@@ -1866,7 +1866,9 @@ var serviceContext = (function (vue) {
       if (!vm) {
           return;
       }
-      const hooks = vm.$[name];
+      // 兼容 nvue
+      const hooks = (vm._$weex ? vm.$options : vm.$)[name]
+          ;
       return hooks && invokeArrayFns(hooks, args);
   }
 
@@ -10847,7 +10849,7 @@ var serviceContext = (function (vue) {
       return preloadWebviews[url];
   }
 
-  function registerPage({ url, path, query, openType, webview, vm, }) {
+  function registerPage({ url, path, query, openType, webview, }) {
       // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
       if (webview) {
           initEntry();
@@ -10893,15 +10895,15 @@ var serviceContext = (function (vue) {
       const route = path.substr(1);
       webview.__uniapp_route = route;
       const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta);
-      if (!webview.nvue) {
-          createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
+      initNVueEntryPage(webview);
+      if (webview.nvue) {
+          // nvue 时，先启用一个占位 vm
+          const fakeNVueVm = createNVueVm(webview, pageInstance);
+          initPageVm(fakeNVueVm, pageInstance);
+          addCurrentPage(fakeNVueVm);
       }
       else {
-          initPageVm(vm, pageInstance);
-          addCurrentPage(vm);
-          if (webview.__preload__) {
-              webview.__page__ = vm;
-          }
+          createPage(parseInt(webview.id), route, query, pageInstance, initPageOptions(routeOptions));
       }
       return webview;
   }
@@ -10925,6 +10927,40 @@ var serviceContext = (function (vue) {
           statusbarHeight,
           windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
           windowBottom: tabBar$1.indexOf(meta.route) >= 0 && tabBar$1.cover ? tabBar$1.height : 0,
+      };
+  }
+  function initNVueEntryPage(webview) {
+      const isLaunchNVuePage = webview.id === '1' && webview.nvue;
+      // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+      if (isLaunchNVuePage) {
+          if (__uniConfig.splashscreen &&
+              __uniConfig.splashscreen.autoclose &&
+              !__uniConfig.splashscreen.alwaysShowBeforeRender) {
+              plus.navigator.closeSplashscreen();
+          }
+          __uniConfig.onReady(function () {
+              navigateFinish();
+          });
+      }
+  }
+  function createNVueVm(webview, pageInstance) {
+      return {
+          $: {},
+          onNVuePageCreated(vm, curNVuePage) {
+              // 替换真实的 nvue 的 vm
+              initPageVm(vm, pageInstance);
+              const pages = getAllPages();
+              const index = pages.findIndex((p) => p === curNVuePage);
+              if (index > -1) {
+                  pages.splice(index, 1, vm);
+              }
+              if (webview.__preload__) {
+                  webview.__page__ = vm;
+              }
+          },
+          $getAppWebview() {
+              return webview;
+          },
       };
   }
 

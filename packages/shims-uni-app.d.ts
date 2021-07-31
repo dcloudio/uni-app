@@ -67,6 +67,7 @@ declare namespace UniApp {
       alwaysShowBeforeRender: boolean
       autoclose: boolean
     }
+    onReady: (fn: Function) => void
   }
 
   interface UniRoute {
@@ -160,6 +161,7 @@ declare namespace UniApp {
   }
 
   interface PagesJsonPageStyle extends PagesJsonPagePlatformStyle {
+    isNVue?: boolean
     disableScroll?: boolean
     enablePullDownRefresh?: boolean
     navigationBar: PageNavigationBar
@@ -175,7 +177,6 @@ declare namespace UniApp {
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number
     route: string
-    isNVue?: boolean
     isQuit?: boolean
     isEntry?: boolean
     isTabBar?: boolean
