@@ -104,11 +104,12 @@ function normalizeSubpackages(
 
 function normalizePageStyle(
   pagePath: string | null,
-  pageStyle: UniApp.PagesJsonPageStyle,
+  pageStyle: UniApp.PagesJsonPageStyle | undefined,
   platform: UniApp.PLATFORM
 ) {
   const isNVue =
     pagePath &&
+    process.env.UNI_INPUT_DIR &&
     process.env.UNI_NVUE_COMPILER !== 'vue' &&
     fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
       ? true
