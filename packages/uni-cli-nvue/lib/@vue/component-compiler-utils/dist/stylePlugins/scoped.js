@@ -54,22 +54,9 @@ exports.default = (options) => {
                             // So all leading spaces must be eliminated to avoid problems.
                             selector.first.spaces.before = '';
                         }
-                        // fixed by xxxxxx (h5,app-plus v3 平台继续使用 attribute,其他平台使用 className)
-                        if(
-                        process.env.UNI_PLATFORM === 'h5' ||
-                        (
-                            process.env.UNI_PLATFORM === 'app-plus' &&
-                            process.env.UNI_USING_V3
-                        )
-                        ){
-                        selector.insertAfter(node, selectorParser.attribute({
-                            attribute: id
-                        }));
-                        } else {
                         selector.insertAfter(node, selectorParser.className({
                             value: id
                         }));
-                        }
                     });
                 }).processSync(node.selector);
             });

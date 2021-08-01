@@ -6,22 +6,22 @@ export function initWebpackNVueEntry(pages: UniApp.PagesJsonPageOptions[]) {
   process.UNI_NVUE_ENTRY = {}
   pages.forEach((page) => {
     if (page.style.isNVue) {
-      process.UNI_NVUE_ENTRY[page.path] = genWebpackBase64Code(page.path)
+      process.UNI_NVUE_ENTRY[page.path] = genWebpackBase64Code(
+        genNVueEntryCode(page.path)
+      )
     }
   })
 }
 
-function genWebpackBase64Code(route: string) {
-  return `data:text/javascript;base64,${Buffer.from(
-    genNVueEntryCode(route)
-  ).toString('base64')}`
+function genWebpackBase64Code(code: string) {
+  return `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
 }
 
 function genNVueEntryCode(route: string) {
-  return `import App from '${normalizePath(
+  return `import '${genWebpackBase64Code(genNVueAppStyle())}'
+import App from '${normalizePath(
     path.resolve(process.env.UNI_INPUT_DIR, route)
-  )}.nvue?mpType=page'
-${genNVueAppStyle()}  
+  )}.nvue?mpType=page'  
 if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
     Promise.prototype.finally = function(callback) {
     var promise = this.constructor

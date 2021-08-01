@@ -174,7 +174,7 @@ var EXTENDED_COLOR_KEYWORDS = {
 var LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/
 var SUPPORT_CSS_UNIT = ['px', 'pt', 'wx']
 
-if(process.env.UNI_USING_NVUE_COMPILER){
+if(process.env.UNI_NVUE_COMPILER === 'uni-app'){
   SUPPORT_CSS_UNIT.push('upx')
   SUPPORT_CSS_UNIT.push('rpx')
 }

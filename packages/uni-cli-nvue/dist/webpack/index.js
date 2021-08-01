@@ -19,13 +19,15 @@ function runWebpack(mode, options) {
             if (stats.hasErrors()) {
                 return reject(stats.toString());
             }
-            const info = stats.toJson();
             if (stats.hasWarnings()) {
+                const info = stats.toJson({ all: false, warnings: true });
                 console.warn(info.warnings);
             }
             console.log(stats.toString({
-                chunks: true,
-                colors: true, // 在控制台展示颜色
+                all: false,
+                assets: true,
+                colors: true,
+                timings: true,
             }));
             resolve(void 0);
         });

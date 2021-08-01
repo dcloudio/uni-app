@@ -4930,7 +4930,7 @@ function genDefaultModel (
   var event = lazy ? 'change' : 'input';
 
   var valueExpression = "$event.target.attr.value" + (trim ? '.trim()' : '');
-  if(process.env.UNI_USING_NVUE_COMPILER){
+  if(process.env.UNI_NVUE_COMPILER === 'uni-app'){
     valueExpression = "$event.detail.value" + (trim ? '.trim()' : '');
   }
   if (number) {
