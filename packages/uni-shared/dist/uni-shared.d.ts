@@ -40,6 +40,8 @@ export declare const ATTR_CLASS = "class";
 
 export declare const ATTR_STYLE = "style";
 
+export declare const ATTR_V_SHOW = ".vShow";
+
 export declare const BACKGROUND_COLOR = "#f7f7f7";
 
 export declare const BUILT_IN_TAGS: string[];

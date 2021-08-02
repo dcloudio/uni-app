@@ -276,6 +276,7 @@
   };
   const ATTR_CLASS = "class";
   const ATTR_STYLE = "style";
+  const ATTR_V_SHOW = ".vShow";
   const ACTION_TYPE_PAGE_CREATE = 1;
   const ACTION_TYPE_PAGE_CREATED = 2;
   const ACTION_TYPE_CREATE = 3;
@@ -6062,6 +6063,10 @@
     }
     return value;
   }
+  function patchVShow(el, value) {
+    el._vod = el.style.display === "none" ? "" : el.style.display;
+    el.style.display = value ? el._vod : "none";
+  }
   class UniElement extends UniNode {
     constructor(id2, element, parentNodeId, refNodeId, nodeJson, propNames = []) {
       super(id2, element.tagName, parentNodeId, element);
@@ -6110,6 +6115,8 @@
         patchClass(this.$, value);
       } else if (name === ATTR_STYLE) {
         patchStyle(this.$, value);
+      } else if (name === ATTR_V_SHOW) {
+        patchVShow(this.$, value);
       } else {
         this.setAttribute(name, value);
       }
@@ -14704,6 +14711,9 @@
       if (hasOwn$1(nodeJson, "t")) {
         this.setText(nodeJson.t || "");
       }
+      if (nodeJson.a && hasOwn$1(nodeJson.a, ATTR_V_SHOW)) {
+        patchVShow(this.$, nodeJson.a[ATTR_V_SHOW]);
+      }
       this.insert(parentNodeId, refNodeId);
       flushPostFlushCbs();
     }
@@ -14731,7 +14741,13 @@
       this.$props[name] = null;
     }
     setAttr(name, value) {
-      this.$props[name] = decodeAttr(value);
+      if (name === ATTR_V_SHOW) {
+        if (this.$) {
+          patchVShow(this.$, value);
+        }
+      } else {
+        this.$props[name] = decodeAttr(value);
+      }
     }
     removeAttr(name) {
       this.$props[name] = null;

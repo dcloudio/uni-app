@@ -572,6 +572,7 @@ class UniNode extends UniEventTarget {
 }
 const ATTR_CLASS = 'class';
 const ATTR_STYLE = 'style';
+const ATTR_V_SHOW = '.vShow';
 class UniBaseNode extends UniNode {
     constructor(nodeType, nodeName, container) {
         super(nodeType, nodeName, container);
@@ -951,6 +952,7 @@ exports.ACTION_TYPE_SET_ATTRIBUTE = ACTION_TYPE_SET_ATTRIBUTE;
 exports.ACTION_TYPE_SET_TEXT = ACTION_TYPE_SET_TEXT;
 exports.ATTR_CLASS = ATTR_CLASS;
 exports.ATTR_STYLE = ATTR_STYLE;
+exports.ATTR_V_SHOW = ATTR_V_SHOW;
 exports.BACKGROUND_COLOR = BACKGROUND_COLOR;
 exports.BUILT_IN_TAGS = BUILT_IN_TAGS;
 exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;

@@ -8,13 +8,19 @@ import {
   // @ts-expect-error
   flushPostFlushCbs,
 } from 'vue'
-import { formatLog, parseEventName, UniNodeJSON } from '@dcloudio/uni-shared'
+import {
+  ATTR_V_SHOW,
+  formatLog,
+  parseEventName,
+  UniNodeJSON,
+} from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker } from '../modules/events'
 import { createWrapper, UniCustomElement } from '.'
 import { $, removeElement } from '../page'
 import { queuePostActionJob } from '../scheduler'
 import { decodeAttr } from '../utils'
+import { patchVShow, VShowElement } from '../directives/vShow'
 
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
@@ -49,6 +55,10 @@ export class UniComponent extends UniNode {
     if (hasOwn(nodeJson, 't')) {
       this.setText(nodeJson.t || '')
     }
+    // 初始化时，处理一次vShow
+    if (nodeJson.a && hasOwn(nodeJson.a, ATTR_V_SHOW)) {
+      patchVShow(this.$ as VShowElement, nodeJson.a[ATTR_V_SHOW])
+    }
     this.insert(parentNodeId, refNodeId)
     // 延迟到insert之后，再flush，确保mounted等生命周期触发正常
     flushPostFlushCbs()
@@ -81,7 +91,13 @@ export class UniComponent extends UniNode {
     this.$props[name] = null
   }
   setAttr(name: string, value: unknown) {
-    this.$props[name] = decodeAttr(value)
+    if (name === ATTR_V_SHOW) {
+      if (this.$) {
+        patchVShow(this.$ as VShowElement, value)
+      }
+    } else {
+      this.$props[name] = decodeAttr(value)
+    }
   }
   removeAttr(name: string) {
     this.$props[name] = null

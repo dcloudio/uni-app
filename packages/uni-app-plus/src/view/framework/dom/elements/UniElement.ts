@@ -1,5 +1,10 @@
 import { hasOwn } from '@vue/shared'
-import { ATTR_CLASS, ATTR_STYLE, UniNodeJSON } from '@dcloudio/uni-shared'
+import {
+  ATTR_CLASS,
+  ATTR_STYLE,
+  ATTR_V_SHOW,
+  UniNodeJSON,
+} from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
 import { patchClass } from '../modules/class'
@@ -8,6 +13,7 @@ import { patchEvent } from '../modules/events'
 import { UniCustomElement } from '../components'
 import { queuePostActionJob } from '../scheduler'
 import { decodeAttr } from '../utils'
+import { patchVShow, VShowElement } from '../directives/vShow'
 
 export class UniElement<T extends object> extends UniNode {
   declare $: UniCustomElement
@@ -71,6 +77,8 @@ export class UniElement<T extends object> extends UniNode {
       patchClass(this.$, value as string)
     } else if (name === ATTR_STYLE) {
       patchStyle(this.$, value as string | Record<string, any>)
+    } else if (name === ATTR_V_SHOW) {
+      patchVShow(this.$ as VShowElement, value)
     } else {
       this.setAttribute(name, value as string)
     }

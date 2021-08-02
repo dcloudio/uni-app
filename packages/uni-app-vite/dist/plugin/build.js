@@ -8,6 +8,7 @@ const path_1 = __importDefault(require("path"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function buildOptions() {
     return {
+        assetsInlineLimit: 0,
         rollupOptions: {
             input: uni_cli_shared_1.resolveMainPathOnce(process.env.UNI_INPUT_DIR),
             external: ['vue'],

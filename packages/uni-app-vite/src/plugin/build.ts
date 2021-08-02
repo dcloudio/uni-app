@@ -5,6 +5,7 @@ import { normalizePath, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
 
 export function buildOptions(): UserConfig['build'] {
   return {
+    assetsInlineLimit: 0,
     rollupOptions: {
       input: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
       external: ['vue'],
