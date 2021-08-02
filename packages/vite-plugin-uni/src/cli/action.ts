@@ -7,12 +7,13 @@ import { createServer, createSSRServer } from './server'
 import { initEnv } from './utils'
 
 export async function runDev(options: CliOptions & ServerOptions) {
+  extend(options, { watch: true, minify: false })
   initEnv('dev', options)
   try {
     if (options.platform === 'h5') {
       await (options.ssr ? createSSRServer(options) : createServer(options))
     } else {
-      await build(extend(options, { watch: true }))
+      await build(options)
     }
     if (options.platform === 'app') {
       await runNVue('dev')

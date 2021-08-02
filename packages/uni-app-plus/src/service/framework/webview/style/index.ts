@@ -23,7 +23,6 @@ export function parseWebviewStyle(
         routeMeta[name as keyof UniApp.PageRouteMeta]
     }
   })
-
   initNVue(webviewStyle, routeMeta, path)
   initPopGesture(webviewStyle, routeMeta)
   initBackgroundColor(webviewStyle, routeMeta)

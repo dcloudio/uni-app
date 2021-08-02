@@ -1,8 +1,9 @@
-export function createServiceContext(Vue,weex, plus,instanceContext){
-const setTimeout = instanceContext.setTimeout;
-const clearTimeout = instanceContext.clearTimeout;
-const setInterval = instanceContext.setInterval;
-const clearInterval = instanceContext.clearInterval;
+export function createServiceContext(weex, plus, instanceContext){
+const Vue = instanceContext.Vue;
+let setTimeout = instanceContext.setTimeout;
+let clearTimeout = instanceContext.clearTimeout;
+let setInterval = instanceContext.setInterval;
+let clearInterval = instanceContext.clearInterval;
 const __uniConfig = instanceContext.__uniConfig;
 const __uniRoutes = instanceContext.__uniRoutes;
 
@@ -1867,8 +1868,12 @@ var serviceContext = (function (vue) {
           return;
       }
       // 兼容 nvue
-      const hooks = (vm._$weex ? vm.$options : vm.$)[name]
-          ;
+      {
+          if (vm.__call_hook) {
+              return vm.__call_hook(name, args);
+          }
+      }
+      const hooks = vm.$[name];
       return hooks && invokeArrayFns(hooks, args);
   }
 
@@ -9511,6 +9516,9 @@ var serviceContext = (function (vue) {
 
   let lastStatusBarStyle;
   let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+  function restoreOldSetStatusBarStyle(setStatusBarStyle) {
+      oldSetStatusBarStyle = setStatusBarStyle;
+  }
   function newSetStatusBarStyle(style) {
       lastStatusBarStyle = style;
       oldSetStatusBarStyle(style);
@@ -9694,7 +9702,8 @@ var serviceContext = (function (vue) {
   function initWebview(webview, path, query, routeMeta) {
       // 首页或非 nvue 页面
       if (webview.id === '1' || !routeMeta.isNVue) {
-          initWebviewStyle(webview, path, query, routeMeta);
+          // path 必须参数为空，因为首页已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
+          initWebviewStyle(webview, '', query, routeMeta);
       }
       initWebviewEvent(webview);
   }
@@ -10101,6 +10110,36 @@ var serviceContext = (function (vue) {
           }
           return instance;
       };
+  }
+
+  function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
+      // 确保部分全局变量 是 app-service 中的
+      // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
+      // plus 如果不用 app-service，资源路径会出问题
+      // 若首页 nvue 被销毁，如 redirectTo 或 reLaunch，则这些全局功能会损坏
+      // 设置 vue3
+      // @ts-ignore 最终vue会被替换为vue
+      vue = newVue;
+      if (plus !== newPlus) {
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log(`[restoreGlobal][${Date.now()}]`);
+          }
+          weex = newWeex;
+          // @ts-ignore
+          plus = newPlus;
+          restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
+          plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+          /* eslint-disable no-window-assign */
+          // @ts-ignore
+          setTimeout = newSetTimeout;
+          // @ts-ignore
+          clearTimeout = newClearTimeout;
+          // @ts-ignore
+          setInterval = newSetInterval;
+          // @ts-ignore
+          clearInterval = newClearInterval;
+      }
+      __uniConfig.serviceReady = true;
   }
 
   const EventType = {
@@ -10947,6 +10986,8 @@ var serviceContext = (function (vue) {
       return {
           $: {},
           onNVuePageCreated(vm, curNVuePage) {
+              vm.$ = {}; // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
+              vm.$getAppWebview = () => webview;
               // 替换真实的 nvue 的 vm
               initPageVm(vm, pageInstance);
               const pages = getAllPages();
@@ -11361,6 +11402,7 @@ var serviceContext = (function (vue) {
     shareWithSystem: shareWithSystem,
     requestPayment: requestPayment,
     __vuePlugin: index$1,
+    restoreGlobal: restoreGlobal,
     createRewardedVideoAd: createRewardedVideoAd,
     createFullScreenVideoAd: createFullScreenVideoAd,
     createInterstitialAd: createInterstitialAd,

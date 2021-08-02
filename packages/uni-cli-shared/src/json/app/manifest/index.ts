@@ -19,7 +19,6 @@ export function normalizeAppManifestJson(
     initAppStatusbar(initDefaultManifestJson(), pagesJson),
     userManifestJson
   )
-
   initArguments(manifestJson, pagesJson)
   initPlus(manifestJson, pagesJson)
   initNVue(manifestJson, pagesJson)
@@ -27,8 +26,12 @@ export function normalizeAppManifestJson(
   initSplashscreen(manifestJson, userManifestJson)
   initConfusion(manifestJson)
   initUniApp(manifestJson)
-  initLaunchwebview(manifestJson, pagesJson) // 依赖 initArguments 先执行
-  initTabBar(manifestJson, pagesJson) // 依赖 initLaunchwebview 先执行
+  // 依赖 initArguments 先执行
+  initTabBar(
+    initLaunchwebview(manifestJson, pagesJson),
+    manifestJson,
+    pagesJson
+  )
   return manifestJson
 }
 

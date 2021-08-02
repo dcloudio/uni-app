@@ -1,17 +1,14 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { build as buildByVite, BuildOptions } from 'vite'
+import { build as buildByVite, BuildOptions, InlineConfig } from 'vite'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 
 export async function build(options: CliOptions) {
   await buildByVite(
-    addConfigFile({
-      root: process.env.VITE_ROOT_DIR,
-      logLevel: options.logLevel,
-      clearScreen: options.clearScreen,
-      build: cleanOptions(options) as BuildOptions,
-    })
+    addConfigFile(
+      initBuildOptions(options, cleanOptions(options) as BuildOptions)
+    )
   )
 }
 
@@ -24,12 +21,7 @@ export async function buildSSR(options: CliOptions) {
   ssrBuildClientOptions.outDir = process.env.UNI_OUTPUT_DIR
   process.env.UNI_SSR_CLIENT = 'true'
   await buildByVite(
-    addConfigFile({
-      root: process.env.VITE_ROOT_DIR,
-      logLevel: options.logLevel,
-      clearScreen: options.clearScreen,
-      build: ssrBuildClientOptions,
-    })
+    addConfigFile(initBuildOptions(options, ssrBuildClientOptions))
   )
   const ssrServerDir = path.resolve(outputDir, 'server')
   process.env.UNI_OUTPUT_DIR = ssrServerDir
@@ -54,12 +46,7 @@ export async function buildSSR(options: CliOptions) {
   process.env.UNI_SSR_CLIENT = ''
   process.env.UNI_SSR_SERVER = 'true'
   await buildByVite(
-    addConfigFile({
-      root: process.env.VITE_ROOT_DIR,
-      logLevel: options.logLevel,
-      clearScreen: options.clearScreen,
-      build: ssrBuildServerOptions,
-    })
+    addConfigFile(initBuildOptions(options, ssrBuildServerOptions))
   )
   // copy ssr-manfiest.json to server
   const assets = ['ssr-manifest.json', 'index.html']
@@ -69,4 +56,17 @@ export async function buildSSR(options: CliOptions) {
       fs.copyFileSync(ssrManifestFile, path.join(ssrServerDir, asset))
     }
   })
+}
+
+function initBuildOptions(
+  options: CliOptions,
+  build: BuildOptions
+): InlineConfig {
+  return {
+    root: process.env.VITE_ROOT_DIR,
+    logLevel: options.logLevel,
+    clearScreen: options.clearScreen,
+    mode: process.env.NODE_ENV,
+    build,
+  }
 }

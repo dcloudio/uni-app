@@ -68,6 +68,7 @@ declare namespace UniApp {
       autoclose: boolean
     }
     onReady: (fn: Function) => void
+    serviceReady: boolean
   }
 
   interface UniRoute {

@@ -163,6 +163,8 @@ function createNVueVm(
   return {
     $: {}, // navigateBack 时，invokeHook 会调用 $
     onNVuePageCreated(vm: ComponentPublicInstance, curNVuePage: unknown) {
+      ;(vm as any).$ = {} // 补充一个 nvue 的 $ 对象，模拟 vue3 的，不然有部分地方访问了 $
+      vm.$getAppWebview = () => webview
       // 替换真实的 nvue 的 vm
       initPageVm(vm, pageInstance)
       const pages = getAllPages()

@@ -132,6 +132,27 @@ function createConfig(entryFile, output, buildOption) {
       })
     )
   }
+  if (buildOption.replaceAfterBundled) {
+    const replacements = buildOption.replaceAfterBundled
+    plugins.push({
+      name: 'replace-after-bundled',
+      generateBundle(_options, bundles) {
+        Object.keys(bundles).forEach((name) => {
+          const bundle = bundles[name]
+          if (!bundle.code) {
+            return
+          }
+          Object.keys(replacements).forEach((replacement) => {
+            bundle.code = bundle.code.replace(
+              new RegExp(replacement, 'g'),
+              replacements[replacement]
+            )
+          })
+        })
+      },
+    })
+  }
+
   return {
     input: resolve(entryFile),
     external,

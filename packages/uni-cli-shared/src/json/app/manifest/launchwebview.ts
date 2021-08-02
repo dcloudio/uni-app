@@ -13,8 +13,6 @@ export function initLaunchwebview(
       }
     } catch (e) {}
   }
-  // 标记入口页，方便后边的 initTabBar 使用
-  process.env.UNI_ENTRY_PAGE_PATH = entryPagePath
 
   manifestJson.plus.useragent.value = 'uni-app'
   extend(manifestJson.plus.launchwebview, {
@@ -26,8 +24,8 @@ export function initLaunchwebview(
   const entryPage = pagesJson.pages.find((p) => p.path === entryPagePath)
   if (entryPage?.style.isNVue) {
     manifestJson.plus.launchwebview.uniNView = { path: entryPagePath + '.js' }
-    manifestJson.plus.launchwebview.id = '2'
   } else {
     manifestJson.launch_path = '__uniappview.html'
   }
+  return entryPagePath
 }

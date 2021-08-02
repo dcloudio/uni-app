@@ -56,6 +56,7 @@ export * from './plugin/registerRuntime'
 export * from './plugin/share'
 export * from './plugin/requestPayment'
 export * from './plugin/vuePlugin'
+export * from './plugin/restoreGlobal'
 
 export * from './ad/rewardedVideoAd'
 export * from './ad/fullScreenVideoAd'
