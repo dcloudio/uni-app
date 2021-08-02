@@ -39,3 +39,11 @@ export function normalizePagePath(pagePath: string, platform: UniApp.PLATFORM) {
   }
   console.error(`${pagePath} not found`)
 }
+
+export function removeExt(str: string, ext?: string) {
+  if (ext) {
+    const reg = new RegExp(ext.replace(/\./, '\\.') + '$')
+    return normalizePath(str.replace(reg, ''))
+  }
+  return normalizePath(str.replace(/\.\w+$/g, ''))
+}

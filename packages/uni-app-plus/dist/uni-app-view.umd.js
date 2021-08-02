@@ -3957,7 +3957,8 @@
           unmount(container._vnode, null, null, true);
         }
       } else {
-        patch(container._vnode || null, vnode, container, null, null, null, isSVG);
+        const p2 = container.__vueParent;
+        patch(container._vnode || null, vnode, container, null, p2, null, isSVG);
       }
       container._vnode = vnode;
     };
@@ -16593,6 +16594,9 @@
     publish();
   }
   function onVdSync(actions) {
+    {
+      console.log(formatLog("onVdSync", actions));
+    }
     const firstAction = actions[0];
     if (firstAction[0] === ACTION_TYPE_PAGE_CREATE) {
       onPageCreateSync(firstAction);

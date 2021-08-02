@@ -6701,7 +6701,9 @@ function baseCreateRenderer(options, createHydrationFns) {
             }
         }
         else {
-            patch(container._vnode || null, vnode, container, null, null, null, isSVG);
+            // fixed by xxxxxx __vueParent
+            const p = container.__vueParent;
+            patch(container._vnode || null, vnode, container, null, p, null, isSVG);
         }
         // fixed by xxxxxx 调整到UniComponent里边触发flushPostFlushCbs
         // flushPostFlushCbs()

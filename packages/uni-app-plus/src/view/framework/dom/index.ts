@@ -11,6 +11,7 @@ import {
   ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_TEXT,
   PageCreateAction,
+  formatLog,
 } from '@dcloudio/uni-shared'
 import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
 import { ACTION_TYPE_DICT, DictAction, Dictionary } from '../../../constants'
@@ -25,6 +26,9 @@ import {
 import { flushPostActionJobs } from './scheduler'
 
 export function onVdSync(actions: (PageAction | DictAction)[]) {
+  if (__DEV__) {
+    console.log(formatLog('onVdSync', actions))
+  }
   const firstAction = actions[0]
   // page create
   if (firstAction[0] === ACTION_TYPE_PAGE_CREATE) {
