@@ -94,12 +94,31 @@ function normalizeSubpackages(
       if (root && subPages.length) {
         subPages.forEach((subPage) => {
           subPage.path = normalizePath(path.join(root, subPage.path))
+          subPage.style = normalizeSubpackageSubNVues(root, subPage.style)
           pages.push(subPage)
         })
       }
     })
   }
   return pages
+}
+
+function normalizeSubpackageSubNVues(
+  root: string,
+  style: UniApp.PagesJsonPageStyle
+) {
+  const platformStyle = style['app'] || style['app-plus']
+  if (!platformStyle) {
+    return style
+  }
+  if (Array.isArray(platformStyle.subNVues)) {
+    platformStyle.subNVues.forEach((subNVue) => {
+      if (subNVue.path) {
+        subNVue.path = normalizePath(path.join(root, subNVue.path))
+      }
+    })
+  }
+  return style
 }
 
 function normalizePageStyle(

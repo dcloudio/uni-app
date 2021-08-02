@@ -161,6 +161,12 @@ declare namespace UniApp {
     'quickapp-webview-union'?: PagesJsonPageStyle
   }
 
+  interface PagesJsonPageStyleSubNVue {
+    id?: string
+    path: string
+    type: 'popup' | 'navigationBar'
+    style?: unknown
+  }
   interface PagesJsonPageStyle extends PagesJsonPagePlatformStyle {
     isNVue?: boolean
     disableScroll?: boolean
@@ -174,6 +180,7 @@ declare namespace UniApp {
     // app-plus
     animationType?: string
     animationDuration?: number
+    subNVues?: PagesJsonPageStyleSubNVue[]
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number

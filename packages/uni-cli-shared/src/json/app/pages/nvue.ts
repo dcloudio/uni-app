@@ -1,15 +1,27 @@
 import fs from 'fs'
 import path from 'path'
-import { normalizePath } from '../../../utils'
+import { normalizePath, removeExt } from '../../../utils'
 
 export function initWebpackNVueEntry(pages: UniApp.PagesJsonPageOptions[]) {
   process.UNI_NVUE_ENTRY = {}
-  pages.forEach((page) => {
-    if (page.style.isNVue) {
-      process.UNI_NVUE_ENTRY[page.path] = genWebpackBase64Code(
-        genNVueEntryCode(page.path)
+  pages.forEach(({ path, style: { isNVue, subNVues } }) => {
+    if (isNVue) {
+      process.UNI_NVUE_ENTRY[path] = genWebpackBase64Code(
+        genNVueEntryCode(path)
       )
     }
+    if (!Array.isArray(subNVues)) {
+      return
+    }
+    subNVues.forEach(({ path }) => {
+      if (!path) {
+        return
+      }
+      const subNVuePath = removeExt(path.split('?')[0])
+      process.UNI_NVUE_ENTRY[subNVuePath] = genWebpackBase64Code(
+        genNVueEntryCode(subNVuePath)
+      )
+    })
   })
 }
 

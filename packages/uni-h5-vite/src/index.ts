@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { ResolvedConfig } from 'vite'
 import { isInHBuilderX, UniVitePlugin } from '@dcloudio/uni-cli-shared'
 import { uniCssPlugin } from './plugins/css'
 import { uniCssScopedPlugin } from './plugins/cssScoped'
