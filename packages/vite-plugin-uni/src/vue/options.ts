@@ -12,7 +12,7 @@ import {
 import { VitePluginUniResolvedOptions } from '..'
 import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { createTransformEvent } from './transforms/transformEvent'
-import { transformContext } from './transforms/transformContext'
+// import { transformContext } from './transforms/transformContext'
 
 function createUniVueTransformAssetUrls(
   base: string
@@ -98,7 +98,7 @@ export function initPluginVueOptions(
     },
     {}
   )
-  compilerOptions.nodeTransforms.unshift(transformContext)
+  // compilerOptions.nodeTransforms.unshift(transformContext)
   compilerOptions.nodeTransforms.unshift(createTransformEvent(eventOpts))
   if (options.platform !== 'mp-weixin') {
     compilerOptions.nodeTransforms.unshift(transformMatchMedia)

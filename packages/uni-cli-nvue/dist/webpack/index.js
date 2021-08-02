@@ -26,8 +26,8 @@ function runWebpack(mode, options) {
             console.log(stats.toString({
                 all: false,
                 assets: true,
-                colors: true,
-                timings: true,
+                colors: true, // 在控制台展示颜色
+                // timings: true,
             }));
             resolve(void 0);
         });

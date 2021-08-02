@@ -16,20 +16,6 @@ import { createDefine } from './utils'
 import { createHandleHotUpdate } from './handleHotUpdate'
 import { createTransformIndexHtml } from './transformIndexHtml'
 
-function initLogger({ logger, command }: ResolvedConfig) {
-  if (command !== 'serve') {
-    return
-  }
-  const { info } = logger
-  logger.info = (msg, opts) => {
-    // 兼容 HBuilderX 日志输出协议（可以让 HBuilderX 读取到 server 地址，自动打开浏览器）
-    if (msg && (msg.includes(' > Local:') || msg.includes(' > Network:'))) {
-      msg = msg.replace('>', '-')
-    }
-    return info(msg, opts)
-  }
-}
-
 const UniH5Plugin: UniVitePlugin = {
   name: 'vite:uni-h5',
   uni: {
@@ -54,7 +40,6 @@ const UniH5Plugin: UniVitePlugin = {
     }
   },
   configResolved(config) {
-    initLogger(config)
     // TODO 禁止 optimizeDeps
     ;(config as any).cacheDir = ''
   },

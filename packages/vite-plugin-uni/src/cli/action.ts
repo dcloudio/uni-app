@@ -1,4 +1,5 @@
 import { extend } from '@vue/shared'
+import { RollupWatcher } from 'rollup'
 import { BuildOptions, ServerOptions } from 'vite'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
@@ -13,7 +14,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
     if (options.platform === 'h5') {
       await (options.ssr ? createSSRServer(options) : createServer(options))
     } else {
-      await build(options)
+      const watcher = (await build(options)) as RollupWatcher
+      watcher.on('event', (event) => {
+        if (event.code === 'BUNDLE_END') {
+          console.log(`DONE  Build complete. Watching for changes...`)
+        }
+      })
     }
     if (options.platform === 'app') {
       await runNVue('dev')
@@ -33,7 +39,7 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     if (options.platform === 'app') {
       await runNVue('prod')
     }
-    console.log(` DONE  Build complete.`)
+    console.log(`DONE  Build complete.`)
   } catch (e) {
     console.error(`error during build:\n${e.stack || e}`)
     process.exit(1)

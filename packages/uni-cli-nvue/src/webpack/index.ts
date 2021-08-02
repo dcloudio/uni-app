@@ -30,7 +30,7 @@ function runWebpack(
           all: false,
           assets: true,
           colors: true, // 在控制台展示颜色
-          timings: true,
+          // timings: true,
         })
       )
       resolve(void 0)

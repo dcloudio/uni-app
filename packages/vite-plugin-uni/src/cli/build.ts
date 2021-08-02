@@ -5,7 +5,7 @@ import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 
 export async function build(options: CliOptions) {
-  await buildByVite(
+  return buildByVite(
     addConfigFile(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )

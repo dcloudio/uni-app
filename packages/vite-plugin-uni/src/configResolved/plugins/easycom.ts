@@ -123,7 +123,7 @@ export function uniEasycomPlugin(
   }
 }
 
-const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveEasycom } from '@dcloudio/uni-app';`
+const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`
 
 function genResolveEasycomCode(
   importDeclarations: string[],
@@ -135,7 +135,7 @@ function genResolveEasycomCode(
   }
   return `resolveEasycom(${code.replace(
     '_resolveComponent',
-    '_resolveDynamicComponent'
+    '__resolveDynamicComponent'
   )}, ${name})`
 }
 

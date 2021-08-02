@@ -1,1 +1,1 @@
-export { formatMsg } from './format'
+export { formatErrMsg, formatInfoMsg } from './format'
