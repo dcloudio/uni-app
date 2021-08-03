@@ -53,6 +53,10 @@ interface CheckVersionResponse {
 const INTERVAL = 1000 * 60 * 60 * 24
 
 export async function checkUpdate(options: CheckUpdateOptions) {
+  if (process.env.CI) {
+    debugCheckUpdate('isInCI')
+    return
+  }
   if (isInHBuilderX()) {
     debugCheckUpdate('isInHBuilderX')
     return
