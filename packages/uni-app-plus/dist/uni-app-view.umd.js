@@ -14515,16 +14515,17 @@
     function updatePosition() {
       const el = rootRef.value;
       const rect = el.getBoundingClientRect();
+      const keys = ["width", "height"];
       hidden.value = rect.width === 0 || rect.height === 0;
       if (!hidden.value) {
         position.position = getFixed(el) ? "absolute" : "static";
-        const keys = ["top", "left", "width", "height"];
-        keys.forEach((key) => {
-          let val = rect[key];
-          val = key === "top" ? val + (position.position === "static" ? document.documentElement.scrollTop || document.body.scrollTop || 0 : getNavigationBarHeight()) : val;
-          position[key] = val + "px";
-        });
+        keys.push("top", "left");
       }
+      keys.forEach((key) => {
+        let val = rect[key];
+        val = key === "top" ? val + (position.position === "static" ? document.documentElement.scrollTop || document.body.scrollTop || 0 : getNavigationBarHeight()) : val;
+        position[key] = val + "px";
+      });
     }
     let request = null;
     function requestPositionUpdate() {

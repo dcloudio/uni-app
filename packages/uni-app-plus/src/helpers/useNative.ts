@@ -51,24 +51,25 @@ export function useNative(rootRef: Ref<HTMLElement | null>) {
   function updatePosition() {
     const el = rootRef.value as HTMLElement
     const rect = el.getBoundingClientRect()
+    const keys: Prop[] = ['width', 'height']
     hidden.value = rect.width === 0 || rect.height === 0
     if (!hidden.value) {
       position.position = getFixed(el) ? 'absolute' : 'static'
-      const keys: Prop[] = ['top', 'left', 'width', 'height']
-      keys.forEach((key) => {
-        let val = rect[key]
-        val =
-          key === 'top'
-            ? val +
-              (position.position === 'static'
-                ? document.documentElement.scrollTop ||
-                  document.body.scrollTop ||
-                  0
-                : getNavigationBarHeight())
-            : val
-        position[key] = val + 'px'
-      })
+      keys.push('top', 'left')
     }
+    keys.forEach((key) => {
+      let val = rect[key]
+      val =
+        key === 'top'
+          ? val +
+            (position.position === 'static'
+              ? document.documentElement.scrollTop ||
+                document.body.scrollTop ||
+                0
+              : getNavigationBarHeight())
+          : val
+      position[key] = val + 'px'
+    })
   }
 
   let request: null | number = null
