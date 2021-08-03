@@ -27,6 +27,7 @@
     ],
     "rootDir": ".",
     "paths": {
+      "types/alias": ["packages/uni-cli-shared/types/alias.d.ts"],
       "@dcloudio/*": ["packages/*/src"],
       "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"]
     }
@@ -42,6 +43,7 @@
     "test-dts",
     "packages/uni-h5/types",
     "packages/uni-app-vite/types",
+    "packages/uni-cli-shared/types",
     "node_modules/mini-types/types/api/index.d.ts",
     "node_modules/mini-types/types/page.d.ts",
     "node_modules/mini-types/types/component.d.ts",
