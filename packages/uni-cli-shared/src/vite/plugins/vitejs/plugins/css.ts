@@ -724,13 +724,13 @@ async function compileCSS(
       }
       if (server) {
         // register glob importers so we can trigger updates on file add/remove
-        if (!(id in server._globImporters)) {
-          server._globImporters[id] = {
+        if (!(id in (server as any)._globImporters)) {
+          ;(server as any)._globImporters[id] = {
             module: server.moduleGraph.getModuleById(id)!,
             importGlobs: [],
           }
         }
-        server._globImporters[id].importGlobs.push({
+        ;(server as any)._globImporters[id].importGlobs.push({
           base: config.root,
           pattern,
         })
@@ -882,8 +882,8 @@ async function doUrlReplace(
 
   return `url(${wrap}${await replacer(rawUrl)}${wrap})`
 }
-
-async function minifyCSS(css: string, config: ResolvedConfig) {
+// fixed by xxxxxx
+export async function minifyCSS(css: string, config: ResolvedConfig) {
   const { code, warnings } = await transform(css, {
     loader: 'css',
     minify: true,

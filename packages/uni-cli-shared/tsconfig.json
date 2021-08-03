@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.node.json",
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "dist",
     "paths": {
       "types/alias": ["types/alias.d.ts"]

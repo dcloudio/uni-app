@@ -83,6 +83,11 @@ export function initEnv(type: 'dev' | 'build', options: CliOptions) {
   //     process.exit(1)
   //   )
   // }
+  if (process.env.NODE_ENV === 'production') {
+    if (!(options as BuildOptions).minify) {
+      ;(options as BuildOptions).minify = 'terser'
+    }
+  }
   if (process.env.UNI_PLATFORM === 'app') {
     initNVueEnv()
   }
