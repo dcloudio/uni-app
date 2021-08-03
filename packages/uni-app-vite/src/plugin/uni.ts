@@ -12,4 +12,8 @@ export const uniOptions: UniVitePlugin['uni'] = {
   transformEvent: {
     tap: 'click',
   },
+  transformAssetUrls: {
+    base: '/',
+    tags: {},
+  },
 }

@@ -24,6 +24,24 @@ const UniH5Plugin = {
         transformEvent: {
             tap: 'click',
         },
+        transformAssetUrls: {
+            base: '/',
+            tags: {
+                audio: ['src'],
+                video: ['src', 'poster'],
+                img: ['src'],
+                image: ['src'],
+                'cover-image': ['src'],
+                // h5
+                'v-uni-audio': ['src'],
+                'v-uni-video': ['src', 'poster'],
+                'v-uni-image': ['src'],
+                'v-uni-cover-image': ['src'],
+                // nvue
+                'u-image': ['src'],
+                'u-video': ['src', 'poster'],
+            },
+        },
     },
     config(config, env) {
         if (uni_cli_shared_1.isInHBuilderX()) {

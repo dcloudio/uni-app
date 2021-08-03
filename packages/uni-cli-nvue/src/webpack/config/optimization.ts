@@ -1,5 +1,5 @@
 import TerserPlugin from 'terser-webpack-plugin'
-import { Configuration } from 'webpack'
+import { Configuration, WebpackPluginInstance } from 'webpack'
 
 export function createOptimization(): Configuration['optimization'] {
   return {
@@ -13,7 +13,7 @@ export function createOptimization(): Configuration['optimization'] {
             ascii_only: true,
           },
         },
-      }),
+      }) as unknown as WebpackPluginInstance,
     ],
   }
 }
