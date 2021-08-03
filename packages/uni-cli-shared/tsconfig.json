@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.node.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "types/alias": ["types/alias.d.ts"]
+    }
   },
   "include": [
     "src",
