@@ -1,6 +1,5 @@
-import { ComponentPublicInstance } from 'vue'
+import { callWithErrorHandling, ComponentPublicInstance } from 'vue'
 import { isString } from '@vue/shared'
-import { invokeArrayFns } from '@dcloudio/uni-shared'
 import { getCurrentPageVm } from './page'
 
 export function invokeHook(name: string, args?: unknown): unknown
@@ -37,7 +36,14 @@ export function invokeHook(
     }
   }
   const hooks = vm.$[name as string]
-  return hooks && invokeArrayFns(hooks, args)
+  if (!hooks) {
+    return
+  }
+  let ret
+  for (let i = 0; i < hooks.length; i++) {
+    ret = callWithErrorHandling(hooks[i], vm.$, name as any, [args])
+  }
+  return ret
 }
 
 export function hasHook(vm: ComponentPublicInstance | number, name: string) {

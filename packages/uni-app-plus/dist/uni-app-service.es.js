@@ -1067,13 +1067,6 @@ var serviceContext = (function (vue) {
   function cacheStringFunction(fn) {
       return cache(fn);
   }
-  const invokeArrayFns = (fns, arg) => {
-      let ret;
-      for (let i = 0; i < fns.length; i++) {
-          ret = fns[i](arg);
-      }
-      return ret;
-  };
   function once(fn, ctx = null) {
       let res;
       return ((...args) => {
@@ -1874,7 +1867,14 @@ var serviceContext = (function (vue) {
           }
       }
       const hooks = vm.$[name];
-      return hooks && invokeArrayFns(hooks, args);
+      if (!hooks) {
+          return;
+      }
+      let ret;
+      for (let i = 0; i < hooks.length; i++) {
+          ret = vue.callWithErrorHandling(hooks[i], vm.$, name, [args]);
+      }
+      return ret;
   }
 
   function normalizeRoute(toRoute) {
