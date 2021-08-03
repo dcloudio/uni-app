@@ -1067,6 +1067,13 @@ var serviceContext = (function (vue) {
   function cacheStringFunction(fn) {
       return cache(fn);
   }
+  const invokeArrayFns = (fns, arg) => {
+      let ret;
+      for (let i = 0; i < fns.length; i++) {
+          ret = fns[i](arg);
+      }
+      return ret;
+  };
   function once(fn, ctx = null) {
       let res;
       return ((...args) => {
@@ -1867,14 +1874,7 @@ var serviceContext = (function (vue) {
           }
       }
       const hooks = vm.$[name];
-      if (!hooks) {
-          return;
-      }
-      let ret;
-      for (let i = 0; i < hooks.length; i++) {
-          ret = vue.callWithErrorHandling(hooks[i], vm.$, name, [args]);
-      }
-      return ret;
+      return hooks && invokeArrayFns(hooks, args);
   }
 
   function normalizeRoute(toRoute) {
@@ -8941,8 +8941,13 @@ var serviceContext = (function (vue) {
           }
       });
       if (mpType === 'page') {
-          invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
-          invokeHook(publicThis, ON_SHOW);
+          try {
+              invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
+              invokeHook(publicThis, ON_SHOW);
+          }
+          catch (e) {
+              console.error(e.message + '\n' + e.stack);
+          }
       }
   }
 
