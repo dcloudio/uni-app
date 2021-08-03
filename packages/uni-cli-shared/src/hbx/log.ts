@@ -12,7 +12,7 @@ export const h5ServeFormatter: Formatter = {
 const REMOVED_MSGS = [
   'build started...',
   (msg: string) => {
-    return msg.startsWith('built in ')
+    return /built in [0-9]+ms\./.test(msg)
   },
   'watching for file changes...',
 ]

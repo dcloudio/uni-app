@@ -18,12 +18,11 @@ const UniAppNVuePlugin = (): UniVitePlugin => {
         path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
       )
       if (process.env.NODE_ENV === 'production') {
-        runWebpackBuild()
-      } else {
-        runWebpackDev().then((compiler) => {
-          watching = compiler.watching
-        })
+        return runWebpackBuild().then(() => {})
       }
+      return runWebpackDev().then((compiler) => {
+        watching = compiler.watching
+      })
     },
     configResolved() {
       if (process.env.UNI_NVUE_COMPILER === 'vue') {
@@ -52,10 +51,8 @@ const UniAppNVuePlugin = (): UniVitePlugin => {
         return
       }
       const curNVueEntry = JSON.stringify(Object.keys(entry))
-      console.log('watchChange', lastNVueEntry, curNVueEntry)
       if (curNVueEntry !== lastNVueEntry) {
         lastNVueEntry = curNVueEntry
-        console.log('invalidate')
         watching.invalidate()
       }
     },

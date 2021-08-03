@@ -19,13 +19,11 @@ const UniAppNVuePlugin = () => {
             }
             pagesJsonPath = uni_cli_shared_1.normalizePath(path_1.default.resolve(process.env.UNI_INPUT_DIR, 'pages.json'));
             if (process.env.NODE_ENV === 'production') {
-                webpack_1.runWebpackBuild();
+                return webpack_1.runWebpackBuild().then(() => { });
             }
-            else {
-                webpack_1.runWebpackDev().then((compiler) => {
-                    watching = compiler.watching;
-                });
-            }
+            return webpack_1.runWebpackDev().then((compiler) => {
+                watching = compiler.watching;
+            });
         },
         configResolved() {
             if (process.env.UNI_NVUE_COMPILER === 'vue') {
@@ -53,10 +51,8 @@ const UniAppNVuePlugin = () => {
                 return;
             }
             const curNVueEntry = JSON.stringify(Object.keys(entry));
-            console.log('watchChange', lastNVueEntry, curNVueEntry);
             if (curNVueEntry !== lastNVueEntry) {
                 lastNVueEntry = curNVueEntry;
-                console.log('invalidate');
                 watching.invalidate();
             }
         },

@@ -16,11 +16,9 @@ function runWebpack(
       if (err) {
         return reject(err.stack || err)
       }
-
       if (stats!.hasErrors()) {
         return reject(stats!.toString())
       }
-
       if (stats!.hasWarnings()) {
         const info = stats!.toJson({ all: false, warnings: true })
         console.warn(info.warnings)

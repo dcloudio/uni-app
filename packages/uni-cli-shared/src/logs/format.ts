@@ -27,8 +27,8 @@ const initInfoFormattersOnce = once(() => {
     ) {
       infoFormatters.push(h5ServeFormatter)
     }
-    infoFormatters.push(removeInfoFormatter)
   }
+  infoFormatters.push(removeInfoFormatter)
 })
 
 export function formatErrMsg(msg: string) {
