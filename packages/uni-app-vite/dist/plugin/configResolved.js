@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configResolved = void 0;
-const asset_1 = require("../plugins/vitejs/plugins/asset");
-const css_1 = require("../plugins/vitejs/plugins/css");
+const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
+const uni_cli_shared_2 = require("@dcloudio/uni-cli-shared");
 const configResolved = (config) => {
     if (process.env.UNI_APP_CODE_SPLITING) {
         initCodeSpliting(config);
@@ -20,9 +20,9 @@ exports.configResolved = configResolved;
 function initCodeSpliting(config) {
     // 替换内置插件
     const replacedPlugins = [
-        asset_1.assetPlugin(config),
-        css_1.cssPlugin(config),
-        css_1.cssPostPlugin(config),
+        uni_cli_shared_1.assetPlugin(config),
+        uni_cli_shared_2.cssPlugin(config),
+        uni_cli_shared_2.cssPostPlugin(config),
     ];
     replacedPlugins.forEach((plugin) => {
         const index = config.plugins.findIndex((p) => p.name === plugin.name);

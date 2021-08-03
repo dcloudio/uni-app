@@ -1,0 +1,1 @@
+export { Plugin } from 'vite'

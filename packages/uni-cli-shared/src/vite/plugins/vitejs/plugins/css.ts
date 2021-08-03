@@ -43,7 +43,7 @@ import type Sass from 'sass'
 // and causes the CI tests fail, see: https://github.com/vitejs/vite/pull/2860
 import type Stylus from 'stylus'
 import type Less from 'less'
-import { Alias } from '../../../../types/alias'
+import { Alias } from '../../../../../types/alias'
 
 // const debug = createDebugger('vite:css')
 

@@ -1,0 +1,1 @@
+export { ResolvedConfig } from 'vite'

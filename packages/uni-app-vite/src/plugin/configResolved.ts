@@ -1,7 +1,7 @@
 import { Plugin, ResolvedConfig } from 'vite'
 
-import { assetPlugin } from '../plugins/vitejs/plugins/asset'
-import { cssPlugin, cssPostPlugin } from '../plugins/vitejs/plugins/css'
+import { assetPlugin } from '@dcloudio/uni-cli-shared'
+import { cssPlugin, cssPostPlugin } from '@dcloudio/uni-cli-shared'
 
 export const configResolved: Plugin['configResolved'] = (config) => {
   if (process.env.UNI_APP_CODE_SPLITING) {
