@@ -8,6 +8,7 @@ const path_1 = __importDefault(require("path"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function uniCopyPlugin() {
     return uni_cli_shared_1.uniViteCopyPlugin({
+        copyOnce: true,
         targets: [
             {
                 src: uni_cli_shared_1.normalizePath(path_1.default.resolve(__dirname, '../../lib/template/*.js')),
@@ -15,6 +16,10 @@ function uniCopyPlugin() {
             },
             {
                 src: uni_cli_shared_1.normalizePath(path_1.default.resolve(__dirname, '../../lib/template/*.png')),
+                dest: process.env.UNI_OUTPUT_DIR,
+            },
+            {
+                src: uni_cli_shared_1.normalizePath(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')),
                 dest: process.env.UNI_OUTPUT_DIR,
             },
             {
@@ -33,10 +38,6 @@ function uniCopyPlugin() {
                         .toString()
                         .replace('/*__uniConfig*/', `var __uniConfig = ${JSON.stringify(__uniConfig)}`);
                 },
-            },
-            {
-                src: uni_cli_shared_1.normalizePath(require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')),
-                dest: process.env.UNI_OUTPUT_DIR,
             },
         ],
         hook: 'writeBundle',

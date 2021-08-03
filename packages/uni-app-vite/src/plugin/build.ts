@@ -1,10 +1,20 @@
+import fs from 'fs'
 import path from 'path'
 import { UserConfig } from 'vite'
 
-import { normalizePath, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
+import {
+  emptyDir,
+  normalizePath,
+  resolveMainPathOnce,
+} from '@dcloudio/uni-cli-shared'
 
 export function buildOptions(): UserConfig['build'] {
+  // 开始编译时，清空输出目录
+  if (fs.existsSync(process.env.UNI_OUTPUT_DIR)) {
+    emptyDir(process.env.UNI_OUTPUT_DIR)
+  }
   return {
+    emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
     assetsInlineLimit: 0,
     rollupOptions: {
       input: resolveMainPathOnce(process.env.UNI_INPUT_DIR),

@@ -17,6 +17,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "uni-app": {
+    "name": "uni-cli-nvue",
+    "apply": "app",
+    "main": "dist/plugin.js"
+  },
   "license": "Apache-2.0",
   "gitHead": "4dd0e035b52584ff028ee3028c46adc555be0529",
   "dependencies": {

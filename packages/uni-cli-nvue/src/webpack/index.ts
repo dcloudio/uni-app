@@ -11,8 +11,8 @@ function runWebpack(
   options: NVueCompilerOptions
 ) {
   initModuleAliasOnce()
-  return new Promise((resolve, reject) => {
-    webpack(createConfig(mode, options), (err, stats) => {
+  return new Promise<webpack.Compiler>((resolve, reject) => {
+    const compiler = webpack(createConfig(mode, options), (err, stats) => {
       if (err) {
         return reject(err.stack || err)
       }
@@ -25,23 +25,25 @@ function runWebpack(
         const info = stats!.toJson({ all: false, warnings: true })
         console.warn(info.warnings)
       }
-      console.log(
-        stats!.toString({
-          all: false,
-          assets: true,
-          colors: true, // 在控制台展示颜色
-          // timings: true,
-        })
-      )
-      resolve(void 0)
+      if (process.env.DEBUG) {
+        console.log(
+          stats!.toString({
+            all: false,
+            assets: true,
+            colors: true, // 在控制台展示颜色
+            // timings: true,
+          })
+        )
+      }
+      resolve(compiler)
     })
   })
 }
 
-export function runWebpackBuild(options: NVueCompilerOptions) {
+export function runWebpackBuild(options: NVueCompilerOptions = {}) {
   return runWebpack('production', options)
 }
 
-export function runWebpackDev(options: NVueCompilerOptions) {
+export function runWebpackDev(options: NVueCompilerOptions = {}) {
   return runWebpack('development', options)
 }

@@ -3,6 +3,7 @@ declare namespace NodeJS {
     UNI_NVUE_ENTRY: Record<string, string>
   }
   interface ProcessEnv {
+    NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string

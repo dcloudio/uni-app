@@ -36,6 +36,7 @@ export function normalizeAppManifestJson(
 }
 
 export {
+  getRenderer,
   getNVueCompiler,
   getNVueStyleCompiler,
   getNVueFlexDirection,

@@ -9,6 +9,7 @@ function createOptimization() {
     return {
         nodeEnv: false,
         moduleIds: 'deterministic',
+        chunkIds: 'deterministic',
         minimizer: [
             new terser_webpack_plugin_1.default({
                 terserOptions: {

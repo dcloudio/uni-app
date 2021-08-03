@@ -8,6 +8,7 @@ import {
 
 export function uniCopyPlugin() {
   return uniViteCopyPlugin({
+    copyOnce: true, // 仅copy一次，不支持动态更新 rpxCalcMaxDeviceWidth，rpxCalcBaseDeviceWidth
     targets: [
       {
         src: normalizePath(path.resolve(__dirname, '../../lib/template/*.js')),
@@ -15,6 +16,12 @@ export function uniCopyPlugin() {
       },
       {
         src: normalizePath(path.resolve(__dirname, '../../lib/template/*.png')),
+        dest: process.env.UNI_OUTPUT_DIR,
+      },
+      {
+        src: normalizePath(
+          require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')
+        ),
         dest: process.env.UNI_OUTPUT_DIR,
       },
       {
@@ -41,12 +48,6 @@ export function uniCopyPlugin() {
               `var __uniConfig = ${JSON.stringify(__uniConfig)}`
             )
         },
-      },
-      {
-        src: normalizePath(
-          require.resolve('@dcloudio/uni-app-plus/dist/uni-app-view.umd.js')
-        ),
-        dest: process.env.UNI_OUTPUT_DIR,
       },
     ],
     hook: 'writeBundle',

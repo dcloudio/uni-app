@@ -4,10 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildOptions = void 0;
+const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 function buildOptions() {
+    // 开始编译时，清空输出目录
+    if (fs_1.default.existsSync(process.env.UNI_OUTPUT_DIR)) {
+        uni_cli_shared_1.emptyDir(process.env.UNI_OUTPUT_DIR);
+    }
     return {
+        emptyOutDir: false,
         assetsInlineLimit: 0,
         rollupOptions: {
             input: uni_cli_shared_1.resolveMainPathOnce(process.env.UNI_INPUT_DIR),

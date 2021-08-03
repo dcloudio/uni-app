@@ -12,7 +12,7 @@ const initModuleAliasOnce = uni_shared_1.once(alias_1.initModuleAlias);
 function runWebpack(mode, options) {
     initModuleAliasOnce();
     return new Promise((resolve, reject) => {
-        webpack_1.default(config_1.createConfig(mode, options), (err, stats) => {
+        const compiler = webpack_1.default(config_1.createConfig(mode, options), (err, stats) => {
             if (err) {
                 return reject(err.stack || err);
             }
@@ -23,21 +23,23 @@ function runWebpack(mode, options) {
                 const info = stats.toJson({ all: false, warnings: true });
                 console.warn(info.warnings);
             }
-            console.log(stats.toString({
-                all: false,
-                assets: true,
-                colors: true, // 在控制台展示颜色
-                // timings: true,
-            }));
-            resolve(void 0);
+            if (process.env.DEBUG) {
+                console.log(stats.toString({
+                    all: false,
+                    assets: true,
+                    colors: true, // 在控制台展示颜色
+                    // timings: true,
+                }));
+            }
+            resolve(compiler);
         });
     });
 }
-function runWebpackBuild(options) {
+function runWebpackBuild(options = {}) {
     return runWebpack('production', options);
 }
 exports.runWebpackBuild = runWebpackBuild;
-function runWebpackDev(options) {
+function runWebpackDev(options = {}) {
     return runWebpack('development', options);
 }
 exports.runWebpackDev = runWebpackDev;
