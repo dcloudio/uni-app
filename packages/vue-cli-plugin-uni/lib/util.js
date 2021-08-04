@@ -21,7 +21,6 @@ module.exports = {
   getWatchOptions () {
     return {
       ignored: [
-        /node_modules/,
         path.resolve(process.env.UNI_INPUT_DIR, '*.md'),
         path.resolve(process.env.UNI_INPUT_DIR, '.hbuilderx'),
         path.resolve(process.env.UNI_INPUT_DIR, '.editorconfig'),
