@@ -10,7 +10,6 @@ import {
 import { VitePluginUniResolvedOptions } from '..'
 import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { createTransformEvent } from './transforms/transformEvent'
-import { initPluginUniOptions } from '../utils/plugin'
 // import { transformContext } from './transforms/transformContext'
 
 function createUniVueTransformAssetUrls(
@@ -38,7 +37,8 @@ function createUniVueTransformAssetUrls(
 
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
-  UniVitePlugins: UniVitePlugin[]
+  UniVitePlugins: UniVitePlugin[],
+  uniPluginOptions: Required<Required<UniVitePlugin>['uni']>
 ) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
   if (!vueOptions.include) {
@@ -55,13 +55,12 @@ export function initPluginVueOptions(
     options.base
   )
 
-  const {
-    compilerOptions: { isNativeTag, isCustomElement, directiveTransforms },
-  } = initPluginUniOptions(UniVitePlugins)
-
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
+  const {
+    compilerOptions: { isNativeTag, isCustomElement, directiveTransforms },
+  } = uniPluginOptions
   compilerOptions.isNativeTag = isNativeTag
   compilerOptions.isCustomElement = isCustomElement
   if (directiveTransforms) {

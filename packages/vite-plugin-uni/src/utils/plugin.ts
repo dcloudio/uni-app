@@ -1,9 +1,9 @@
 import path from 'path'
-import { Plugin } from 'vite'
-import { extend, isArray, isString } from '@vue/shared'
+import type { Plugin } from 'vite'
+import { extend, isArray, isString, isFunction } from '@vue/shared'
 import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
-import { UniVitePlugin } from '@dcloudio/uni-cli-shared'
-import { CompilerOptions } from '@vue/compiler-sfc'
+import type { CopyOptions, UniVitePlugin } from '@dcloudio/uni-cli-shared'
+import type { Target } from 'rollup-plugin-copy'
 
 interface PluginConfig {
   id: string
@@ -16,13 +16,16 @@ interface PluginConfig {
 }
 
 export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
+  const assets: string[] = []
+  const targets: Target[] = []
   const transformEvent: Record<string, string> = Object.create(null)
-  const compilerOptions: CompilerOptions = {
+  const compilerOptions: Required<UniVitePlugin>['uni']['compilerOptions'] = {
     isNativeTag,
     isCustomElement,
   }
   UniVitePlugins.forEach((plugin) => {
     const {
+      copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
       transformEvent: pluginTransformEvent,
     } = plugin.uni || {}
@@ -41,8 +44,24 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]) {
     if (pluginTransformEvent) {
       extend(transformEvent, pluginTransformEvent)
     }
+    if (pluginCopyOptions) {
+      let copyOptions = pluginCopyOptions as CopyOptions
+      if (isFunction(pluginCopyOptions)) {
+        copyOptions = pluginCopyOptions()
+      }
+      if (copyOptions.assets) {
+        assets.push(...copyOptions.assets)
+      }
+      if (copyOptions.targets) {
+        targets.push(...copyOptions.targets)
+      }
+    }
   })
   return {
+    copyOptions: {
+      assets,
+      targets,
+    },
     transformEvent,
     compilerOptions,
   }

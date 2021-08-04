@@ -14,23 +14,9 @@ import { createBuild } from './build'
 import { createOptimizeDeps } from './optimizeDeps'
 import { createDefine } from './define'
 
-import {
-  initPluginViteLegacyOptions,
-  initPluginVueJsxOptions,
-  initPluginVueOptions,
-} from '../vue'
-
-// function normalizeRoot(config: UserConfig) {
-//   return normalizePath(config.root ? path.resolve(config.root) : process.cwd())
-// }
-
-// function normalizeInputDir(config: UserConfig) {
-//   return process.env.UNI_INPUT_DIR || path.resolve(normalizeRoot(config), 'src')
-// }
-
 export function createConfig(
   options: VitePluginUniResolvedOptions,
-  uniPlugins: Plugin[]
+  _uniPlugins: Plugin[]
 ): Plugin['config'] {
   return (config, env) => {
     options.command = env.command
@@ -44,10 +30,6 @@ export function createConfig(
       base = '/'
     }
     options.base = base!
-    // TODO 似乎没必要
-    options.vueOptions = initPluginVueOptions(options, uniPlugins)
-    options.vueJsxOptions = initPluginVueJsxOptions(options)
-    options.viteLegacyOptions = initPluginViteLegacyOptions(options)
 
     return {
       base,

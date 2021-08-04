@@ -7,13 +7,21 @@ import vuePlugin from '@vitejs/plugin-vue'
 import type VueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 
-import { initModuleAlias, initPreContext } from '@dcloudio/uni-cli-shared'
+import {
+  CopyOptions,
+  initModuleAlias,
+  initPreContext,
+} from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { createConfigureServer } from './configureServer'
-import { initExtraPlugins } from './utils'
-import { initPluginVueOptions } from './vue'
+import { initExtraPlugins, initPluginUniOptions } from './utils'
+import {
+  initPluginViteLegacyOptions,
+  initPluginVueJsxOptions,
+  initPluginVueOptions,
+} from './vue'
 // import { createResolveId } from './resolveId'
 
 const debugUni = debug('vite:uni:plugin')
@@ -39,6 +47,7 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   outputDir: string
   assetsDir: string
   devServer?: ViteDevServer
+  copyOptions?: Required<CopyOptions>
 }
 
 export { runDev, runBuild } from './cli/action'
@@ -76,13 +85,13 @@ export default function uniPlugin(
   if (createViteLegacyPlugin && options.viteLegacyOptions !== false) {
     plugins.push(
       ...(createViteLegacyPlugin(
-        options.viteLegacyOptions
+        initPluginViteLegacyOptions(options)
       ) as unknown as Plugin[])
     )
   }
 
   if (createVueJsxPlugin && options.vueJsxOptions !== false) {
-    plugins.push(createVueJsxPlugin(options.vueJsxOptions))
+    plugins.push(createVueJsxPlugin(initPluginVueJsxOptions(options)))
   }
 
   const uniPlugins = initExtraPlugins(
@@ -90,6 +99,11 @@ export default function uniPlugin(
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   )
   debugUni(uniPlugins)
+
+  const uniPluginOptions = initPluginUniOptions(uniPlugins)
+
+  options.copyOptions = uniPluginOptions.copyOptions
+
   plugins.push({
     name: 'vite:uni',
     config: createConfig(options, uniPlugins),
@@ -99,7 +113,9 @@ export default function uniPlugin(
   })
   plugins.push(...uniPlugins)
 
-  plugins.unshift(vuePlugin(initPluginVueOptions(options, uniPlugins)))
+  plugins.unshift(
+    vuePlugin(initPluginVueOptions(options, uniPlugins, uniPluginOptions))
+  )
 
   return plugins
 }
