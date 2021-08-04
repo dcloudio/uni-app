@@ -62,7 +62,8 @@ const tags = {
     'cashier',
     'ix-grid',
     'ix-native-grid',
-    'ix-native-list'
+    'ix-native-list',
+    'mkt'
   ]
 }
 
