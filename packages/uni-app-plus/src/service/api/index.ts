@@ -49,6 +49,7 @@ export * from './ui/stopPullDownRefresh'
 export * from './ui/loadFontFace'
 export * from './ui/pageScrollTo'
 export * from './ui/navigationBar'
+export * from './ui/tabBar'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'

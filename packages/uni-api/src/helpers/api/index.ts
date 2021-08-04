@@ -236,7 +236,7 @@ export function defineSyncApi<T extends ApiLike>(
 export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
   name: string,
   fn: (
-    args: Omit<P, CALLBACK_TYPES>,
+    args: P extends undefined ? undefined : Omit<P, CALLBACK_TYPES>,
     res: {
       resolve: (res: AsyncApiRes<P> | void) => void
       reject: (errMsg?: string, errRes?: any) => void

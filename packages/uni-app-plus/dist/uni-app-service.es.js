@@ -1067,6 +1067,12 @@ var serviceContext = (function (vue) {
   function cacheStringFunction(fn) {
       return cache(fn);
   }
+  function getLen(str = '') {
+      return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+  }
+  function removeLeadingSlash(str) {
+      return str.indexOf('/') === 0 ? str.substr(1) : str;
+  }
   const invokeArrayFns = (fns, arg) => {
       let ret;
       for (let i = 0; i < fns.length; i++) {
@@ -5011,6 +5017,104 @@ var serviceContext = (function (vue) {
 
   const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
 
+  const IndexProtocol = {
+      index: {
+          type: Number,
+          required: true,
+      },
+  };
+  const IndexOptions = {
+      beforeInvoke() {
+          const pageMeta = getCurrentPageMeta();
+          if (pageMeta && !pageMeta.isTabBar) {
+              return 'not TabBar page';
+          }
+      },
+      formatArgs: {
+          index(value) {
+              if (!__uniConfig.tabBar.list[value]) {
+                  return 'tabbar item not found';
+              }
+          },
+      },
+  };
+  const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
+  const SetTabBarItemProtocol = 
+  /*#__PURE__*/ extend({
+      text: String,
+      iconPath: String,
+      selectedIconPath: String,
+      pagePath: String,
+  }, IndexProtocol);
+  const SetTabBarItemOptions = {
+      beforeInvoke: IndexOptions.beforeInvoke,
+      formatArgs: /*#__PURE__*/ extend({
+          pagePath(value, params) {
+              if (value) {
+                  params.pagePath = removeLeadingSlash(value);
+              }
+          },
+      }, IndexOptions.formatArgs),
+  };
+  const API_SET_TAB_BAR_STYLE = 'setTabBarStyle';
+  const SetTabBarStyleProtocol = {
+      color: String,
+      selectedColor: String,
+      backgroundColor: String,
+      backgroundImage: String,
+      backgroundRepeat: String,
+      borderStyle: String,
+  };
+  const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
+  const SetTabBarStyleOptions = {
+      beforeInvoke: IndexOptions.beforeInvoke,
+      formatArgs: {
+          backgroundImage(value, params) {
+              if (value && !GRADIENT_RE.test(value)) {
+                  params.backgroundImage = getRealPath(value);
+              }
+          },
+          borderStyle(value, params) {
+              if (value) {
+                  params.borderStyle = value === 'white' ? 'white' : 'black';
+              }
+          },
+      },
+  };
+  const API_HIDE_TAB_BAR = 'hideTabBar';
+  const HideTabBarProtocol = {
+      animation: Boolean,
+  };
+  const API_SHOW_TAB_BAR = 'showTabBar';
+  const ShowTabBarProtocol = HideTabBarProtocol;
+  const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot';
+  const HideTabBarRedDotProtocol = IndexProtocol;
+  const HideTabBarRedDotOptions = IndexOptions;
+  const API_SHOW_TAB_BAR_RED_DOT = 'showTabBarRedDot';
+  const ShowTabBarRedDotProtocol = IndexProtocol;
+  const ShowTabBarRedDotOptions = IndexOptions;
+  const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge';
+  const RemoveTabBarBadgeProtocol = IndexProtocol;
+  const RemoveTabBarBadgeOptions = IndexOptions;
+  const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
+  const SetTabBarBadgeProtocol = 
+  /*#__PURE__*/ extend({
+      text: {
+          type: String,
+          required: true,
+      },
+  }, IndexProtocol);
+  const SetTabBarBadgeOptions = {
+      beforeInvoke: IndexOptions.beforeInvoke,
+      formatArgs: /*#__PURE__*/ extend({
+          text(value, params) {
+              if (getLen(value) >= 4) {
+                  params.text = '...';
+              }
+          },
+      }, IndexOptions.formatArgs),
+  };
+
   const API_GET_PROVIDER = 'getProvider';
   const GetProviderProtocol = {
       service: {
@@ -5257,7 +5361,7 @@ var serviceContext = (function (vue) {
           }));
       };
   }
-  function isTabBarPage(path = '') {
+  function isTabBarPage$1(path = '') {
       if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
           return false;
       }
@@ -5482,7 +5586,7 @@ var serviceContext = (function (vue) {
    * @param {number} index
    * @param {string} text
    */
-  function setTabBarBadge(type, index, text) {
+  function setTabBarBadge$1(type, index, text) {
       if (!tabBar) {
           return;
       }
@@ -5509,7 +5613,7 @@ var serviceContext = (function (vue) {
   /**
    * 动态设置 tabBar 某一项的内容
    */
-  function setTabBarItem(index, text, iconPath, selectedIconPath) {
+  function setTabBarItem$1(index, text, iconPath, selectedIconPath) {
       const item = {
           index,
       };
@@ -5528,14 +5632,14 @@ var serviceContext = (function (vue) {
    * 动态设置 tabBar 的整体样式
    * @param {Object} style 样式
    */
-  function setTabBarStyle(style) {
+  function setTabBarStyle$1(style) {
       tabBar && tabBar.setTabBarStyle(style);
   }
   /**
    * 隐藏 tabBar
    * @param {boolean} animation 是否需要动画效果
    */
-  function hideTabBar(animation) {
+  function hideTabBar$1(animation) {
       visible = false;
       tabBar &&
           tabBar.hideTabBar({
@@ -5546,7 +5650,7 @@ var serviceContext = (function (vue) {
    * 显示 tabBar
    * @param {boolean} animation 是否需要动画效果
    */
-  function showTabBar(animation) {
+  function showTabBar$1(animation) {
       visible = true;
       tabBar &&
           tabBar.showTabBar({
@@ -5603,11 +5707,11 @@ var serviceContext = (function (vue) {
           }
           return false;
       },
-      setTabBarBadge,
-      setTabBarItem,
-      setTabBarStyle,
-      hideTabBar,
-      showTabBar,
+      setTabBarBadge: setTabBarBadge$1,
+      setTabBarItem: setTabBarItem$1,
+      setTabBarStyle: setTabBarStyle$1,
+      hideTabBar: hideTabBar$1,
+      showTabBar: showTabBar$1,
       append(webview) {
           tabBar &&
               tabBar.append({
@@ -5665,6 +5769,35 @@ var serviceContext = (function (vue) {
   }
   function setPullDownRefreshWebview(webview) {
       pullDownRefreshWebview = webview;
+  }
+  function isTabBarPage(path = '') {
+      if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+          return false;
+      }
+      try {
+          if (!path) {
+              const pages = getCurrentPages();
+              if (!pages.length) {
+                  return false;
+              }
+              const page = pages[pages.length - 1];
+              if (!page) {
+                  return false;
+              }
+              return page.$page.meta.isTabBar;
+          }
+          if (!/^\//.test(path)) {
+              path = '/' + path;
+          }
+          const route = __uniRoutes.find((route) => route.path === path);
+          return route && route.meta.isTabBar;
+      }
+      catch (e) {
+          if (process.env.NODE_ENV !== 'production') {
+              console.log('getCurrentPages is not ready');
+          }
+      }
+      return false;
   }
 
   function getStatusbarHeight() {
@@ -5731,7 +5864,7 @@ var serviceContext = (function (vue) {
           height: 0,
           cover: false,
       };
-      if (isTabBarPage()) {
+      if (isTabBarPage$1()) {
           tabBarView.height = tabBar$1.visible ? tabBar$1.height : 0;
           tabBarView.cover = tabBar$1.cover;
       }
@@ -8596,6 +8729,74 @@ var serviceContext = (function (vue) {
       }
   }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 
+  const setTabBarBadge = defineAsyncApi(API_SET_TAB_BAR_BADGE, ({ index, text }, { resolve, reject }) => {
+      tabBar$1.setTabBarBadge('text', index, text);
+      resolve();
+  }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+  const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath }, { resolve, reject }) => {
+      tabBar$1.setTabBarItem(index, text, iconPath, selectedIconPath);
+      const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath);
+      if (route) {
+          const meta = route.meta;
+          meta.isTabBar = true;
+          meta.tabBarIndex = index;
+          meta.isQuit = true;
+          const tabBar = __uniConfig.tabBar;
+          if (tabBar && tabBar.list && tabBar.list[index] && pagePath) {
+              tabBar.list[index].pagePath = pagePath.startsWith('/')
+                  ? pagePath.substring(1)
+                  : pagePath;
+          }
+      }
+      resolve();
+  }, SetTabBarItemProtocol, SetTabBarItemOptions);
+  const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (style = {}, { resolve, reject }) => {
+      if (!isTabBarPage()) {
+          return {
+              errMsg: 'setTabBarStyle:fail not TabBar page',
+          };
+      }
+      const borderStyles = {
+          black: 'rgba(0,0,0,0.4)',
+          white: 'rgba(255,255,255,0.4)',
+      };
+      const borderStyle = style.borderStyle;
+      if (borderStyle && borderStyle in borderStyles) {
+          style.borderStyle = borderStyles[borderStyle];
+      }
+      tabBar$1.setTabBarStyle(style);
+      resolve();
+  }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
+  const hideTabBar = defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) => {
+      const animation = args && args.animation;
+      if (!isTabBarPage()) {
+          return reject('not TabBar page');
+      }
+      tabBar$1.hideTabBar(Boolean(animation));
+      resolve();
+  }, HideTabBarProtocol);
+  const showTabBar = defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) => {
+      const animation = args && args.animation;
+      if (!isTabBarPage()) {
+          return reject('not TabBar page');
+      }
+      tabBar$1.showTabBar(Boolean(animation));
+      resolve();
+  }, ShowTabBarProtocol);
+  const showTabBarRedDot = defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, ({ index }, { resolve, reject }) => {
+      tabBar$1.setTabBarBadge('redDot', index);
+      resolve();
+  }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
+  const setTabBarBadgeNone = (index) => tabBar$1.setTabBarBadge('none', index);
+  const removeTabBarBadge = defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, ({ index }, { resolve, reject }) => {
+      setTabBarBadgeNone(index);
+      resolve();
+  }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
+  const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, ({ index }, { resolve, reject }) => {
+      setTabBarBadgeNone(index);
+      resolve();
+  }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+
   const providers = {
       oauth(callback) {
           plus.oauth.getServices((services) => {
@@ -10179,6 +10380,9 @@ var serviceContext = (function (vue) {
           if (typeof callback !== 'function') {
               return;
           }
+          if (!this._callbacks[type]) {
+              this._callbacks[type] = [];
+          }
           this._callbacks[type].push(callback);
       }
       _removeEventListener(type, callback) {
@@ -11396,6 +11600,14 @@ var serviceContext = (function (vue) {
     showNavigationBarLoading: showNavigationBarLoading,
     hideNavigationBarLoading: hideNavigationBarLoading,
     setNavigationBarColor: setNavigationBarColor,
+    setTabBarBadge: setTabBarBadge,
+    setTabBarItem: setTabBarItem,
+    setTabBarStyle: setTabBarStyle,
+    hideTabBar: hideTabBar,
+    showTabBar: showTabBar,
+    showTabBarRedDot: showTabBarRedDot,
+    removeTabBarBadge: removeTabBarBadge,
+    hideTabBarRedDot: hideTabBarRedDot,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,

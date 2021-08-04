@@ -22,7 +22,7 @@ let tabBar: any
 function setTabBarBadge(
   type: 'none' | 'text' | 'redDot',
   index: number,
-  text: string
+  text?: string
 ) {
   if (!tabBar) {
     return
