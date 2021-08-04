@@ -1,6 +1,7 @@
 export * from './storage/storage'
 export * from './file/getFileInfo'
 export * from './file/openDocument'
+export * from './file/saveFile'
 
 export * from './device/systemInfo'
 export * from './device/compass'
