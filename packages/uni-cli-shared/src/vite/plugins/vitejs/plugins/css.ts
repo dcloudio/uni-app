@@ -190,11 +190,19 @@ function normalizeCssChunkFilename(id: string) {
 function findCssModuleIds(
   this: PluginContext,
   moduleId: string,
-  cssModuleIds?: Set<string>
+  cssModuleIds?: Set<string>,
+  seen?: Set<string>
 ) {
   if (!cssModuleIds) {
     cssModuleIds = new Set<string>()
   }
+  if (!seen) {
+    seen = new Set<string>()
+  }
+  if (seen.has(moduleId)) {
+    return cssModuleIds
+  }
+  seen.add(moduleId)
   const moduleInfo = this.getModuleInfo(moduleId)
   if (moduleInfo) {
     moduleInfo.importedIds.forEach((id) => {
@@ -205,7 +213,7 @@ function findCssModuleIds(
       if (cssLangRE.test(id) && !commonjsProxyRE.test(id)) {
         cssModuleIds!.add(id)
       } else {
-        findCssModuleIds.call(this, id, cssModuleIds)
+        findCssModuleIds.call(this, id, cssModuleIds, seen)
       }
     })
   }
