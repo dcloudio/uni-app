@@ -1,3 +1,3 @@
 export default function getCurrentSubNVue() {
-  return uni.getSubNVueById(plus.webview.currentWebview().id)
+  return uni.getSubNVueById(plus.webview.currentWebview().id, true)
 }

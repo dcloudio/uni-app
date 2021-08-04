@@ -5497,6 +5497,7 @@
   }
   [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
   const VD_SYNC = "vdSync";
+  const APP_SERVICE_ID = "__uniapp__service";
   const ON_WEBVIEW_READY = "onWebviewReady";
   const PAGE_SCROLL_TO = "pageScrollTo";
   const LOAD_FONT_FACE = "loadFontFace";
@@ -5504,7 +5505,6 @@
   const WEBVIEW_INSERTED = "webviewInserted";
   const WEBVIEW_REMOVED = "webviewRemoved";
   const WEBVIEW_ID_PREFIX = "webviewId";
-  const APP_SERVICE_ID = "__uniapp__service";
   const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
   });

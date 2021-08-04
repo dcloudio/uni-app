@@ -2,7 +2,7 @@ import { extend } from '@vue/shared'
 
 import { getCurrentPageId, ViewJSBridge } from '@dcloudio/uni-core'
 
-const APP_SERVICE_ID = '__uniapp__service'
+import { APP_SERVICE_ID } from '../../constants'
 
 export const UniViewJSBridge = /*#__PURE__*/ extend(ViewJSBridge, {
   publishHandler,

@@ -1,5 +1,7 @@
 export const VD_SYNC = 'vdSync'
 
+export const APP_SERVICE_ID = '__uniapp__service'
+
 export const ON_WEBVIEW_READY = 'onWebviewReady'
 
 export const PAGE_SCROLL_TO = 'pageScrollTo'

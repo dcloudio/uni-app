@@ -52,6 +52,7 @@ export * from './ui/loadFontFace'
 export * from './ui/pageScrollTo'
 export * from './ui/navigationBar'
 export * from './ui/tabBar'
+export * from './ui/subNVue'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'

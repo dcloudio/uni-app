@@ -8704,6 +8704,7 @@ var serviceContext = (function (vue) {
   });
 
   const VD_SYNC = 'vdSync';
+  const APP_SERVICE_ID = '__uniapp__service';
   const ON_WEBVIEW_READY = 'onWebviewReady';
   const PAGE_SCROLL_TO = 'pageScrollTo';
   const LOAD_FONT_FACE = 'loadFontFace';
@@ -8862,6 +8863,94 @@ var serviceContext = (function (vue) {
       setTabBarBadgeNone(index);
       resolve();
   }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+
+  const EVENT_TYPE_NAME = 'UniAppSubNVue';
+  class SubNvue {
+      constructor(id, isSub) {
+          this.callbacks = [];
+          const webview = (this.webview = plus.webview.getWebviewById(id));
+          this.isSub = isSub || false;
+          if (webview.__uniapp_mask_id) {
+              const maskWebview = (this.maskWebview =
+                  webview.__uniapp_mask_id === '0'
+                      ? {
+                          setStyle({ mask }) {
+                              requireNativePlugin('uni-tabview').setMask({
+                                  color: mask,
+                              });
+                          },
+                      }
+                      : plus.webview.getWebviewById(webview.__uniapp_mask_id));
+              const closeMask = function () {
+                  maskWebview.setStyle({
+                      mask: 'none',
+                  });
+              };
+              webview.addEventListener('hide', closeMask);
+              webview.addEventListener('close', closeMask);
+          }
+      }
+      show(...args) {
+          if (this.maskWebview) {
+              const maskColor = this.webview.__uniapp_mask;
+              this.maskWebview.setStyle({
+                  mask: maskColor,
+              });
+          }
+          this.webview.show(...args);
+      }
+      hide(...args) {
+          this.webview.hide(...args);
+      }
+      setStyle(style) {
+          this.webview.setStyle(style);
+      }
+      initMessage() {
+          if (this.messageReady) {
+              return;
+          }
+          this.messageReady = true;
+          const listener = (event) => {
+              if (event.data && event.data.type === EVENT_TYPE_NAME) {
+                  const target = event.data.target;
+                  if (target.id === this.webview.id && target.isSub === this.isSub) {
+                      this.callbacks.forEach((callback) => {
+                          callback({
+                              origin: this.webview.__uniapp_host,
+                              data: event.data.data,
+                          });
+                      });
+                  }
+              }
+          };
+          const globalEvent = requireNativePlugin('globalEvent');
+          globalEvent.addEventListener('plusMessage', listener);
+          this.webview.addEventListener('close', () => {
+              // TODO 暂时仅清空回调
+              this.callbacks.length = 0;
+              // globalEvent.removeEventListener('plusMessage', listener)
+          });
+      }
+      postMessage(data) {
+          const webviewExt = plus.webview;
+          webviewExt.postMessageToUniNView({
+              type: EVENT_TYPE_NAME,
+              data,
+              target: {
+                  id: this.webview.id,
+                  isSub: !this.isSub,
+              },
+          }, APP_SERVICE_ID);
+      }
+      onMessage(callback) {
+          this.initMessage();
+          this.callbacks.push(callback);
+      }
+  }
+  const getSubNVueById = function (id, isSub) {
+      // TODO 暂时通过 isSub 区分来自 subNVue 页面
+      return new SubNvue(id, isSub);
+  };
 
   const providers = {
       oauth(callback) {
@@ -9971,12 +10060,100 @@ var serviceContext = (function (vue) {
       webview.setStyle(webviewStyle);
   }
 
+  function initSubNVues(webview, path, routeMeta) {
+      const subNVues = routeMeta.subNVues || [];
+      subNVues.forEach((subNVue) => {
+          if (!subNVue.path) {
+              return;
+          }
+          const style = subNVue.style || {};
+          const isNavigationBar = subNVue.type === 'navigationBar';
+          const isPopup = subNVue.type === 'popup';
+          style.uniNView = {
+              path: subNVue.path.replace('.nvue', '.js'),
+              defaultFontSize: __uniConfig.defaultFontSize,
+              viewport: __uniConfig.viewport,
+          };
+          const extras = {
+              __uniapp_host: path,
+              __uniapp_origin: style.uniNView.path.split('?')[0].replace('.js', ''),
+              __uniapp_origin_id: webview.id,
+              __uniapp_origin_type: webview.__uniapp_type,
+          };
+          let maskWebview;
+          if (isNavigationBar) {
+              style.position = 'dock';
+              style.dock = 'top';
+              style.top = '0';
+              style.width = '100%';
+              style.height = String(NAVBAR_HEIGHT + getStatusbarHeight());
+              delete style.left;
+              delete style.right;
+              delete style.bottom;
+              delete style.margin;
+          }
+          else if (isPopup) {
+              style.position = 'absolute';
+              if (isTabBarPage$1(path)) {
+                  maskWebview = tabBar$1;
+              }
+              else {
+                  maskWebview = webview;
+              }
+              extras.__uniapp_mask = style.mask || 'rgba(0,0,0,0.5)';
+              extras.__uniapp_mask_id = maskWebview.id;
+          }
+          delete style.mask;
+          const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
+          if (isPopup) {
+              if (!maskWebview.popupSubNVueWebviews) {
+                  maskWebview.popupSubNVueWebviews = {};
+              }
+              maskWebview.popupSubNVueWebviews[subNVueWebview.id] = subNVueWebview;
+              const hideSubNVue = function () {
+                  maskWebview.setStyle({
+                      mask: 'none',
+                  });
+                  subNVueWebview.hide('auto');
+              };
+              maskWebview.addEventListener('maskClick', hideSubNVue);
+              let isRemoved = false; // 增加个 remove 标记，防止出错
+              subNVueWebview.addEventListener('show', () => {
+                  if (!isRemoved) {
+                      plus.key.removeEventListener('backbutton', backbuttonListener);
+                      plus.key.addEventListener('backbutton', hideSubNVue);
+                      isRemoved = true;
+                  }
+              });
+              subNVueWebview.addEventListener('hide', () => {
+                  if (isRemoved) {
+                      plus.key.removeEventListener('backbutton', hideSubNVue);
+                      plus.key.addEventListener('backbutton', backbuttonListener);
+                      isRemoved = false;
+                  }
+              });
+              subNVueWebview.addEventListener('close', () => {
+                  delete maskWebview.popupSubNVueWebviews[subNVueWebview.id];
+                  if (isRemoved) {
+                      plus.key.removeEventListener('backbutton', hideSubNVue);
+                      plus.key.addEventListener('backbutton', backbuttonListener);
+                      isRemoved = false;
+                  }
+              });
+          }
+          else {
+              webview.append(subNVueWebview);
+          }
+      });
+  }
+
   function initWebview(webview, path, query, routeMeta) {
       // 首页或非 nvue 页面
       if (webview.id === '1' || !routeMeta.isNVue) {
           // path 必须参数为空，因为首页已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
           initWebviewStyle(webview, '', query, routeMeta);
       }
+      initSubNVues(webview, path, routeMeta);
       initWebviewEvent(webview);
   }
 
@@ -11678,6 +11855,7 @@ var serviceContext = (function (vue) {
     showTabBarRedDot: showTabBarRedDot,
     removeTabBarBadge: removeTabBarBadge,
     hideTabBarRedDot: hideTabBarRedDot,
+    getSubNVueById: getSubNVueById,
     getProvider: getProvider,
     login: login,
     getUserInfo: getUserInfo,
