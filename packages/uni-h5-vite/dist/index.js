@@ -21,6 +21,9 @@ const transformIndexHtml_1 = require("./transformIndexHtml");
 const UniH5Plugin = {
     name: 'vite:uni-h5',
     uni: {
+        copyOptions: {
+            assets: ['hybrid/html'],
+        },
         transformEvent: {
             tap: 'click',
         },

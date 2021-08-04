@@ -1,17 +1,16 @@
 import { extend, hasOwn, isArray } from '@vue/shared'
-import { ParserOptions } from '@vue/compiler-core'
-import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
-
-import { isCustomElement, isNativeTag } from '@dcloudio/uni-shared'
+import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { isCustomElement } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
-  parseCompatConfigOnce,
+  // parseCompatConfigOnce,
   UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '..'
 import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { createTransformEvent } from './transforms/transformEvent'
+import { initPluginUniOptions } from '../utils/plugin'
 // import { transformContext } from './transforms/transformContext'
 
 function createUniVueTransformAssetUrls(
@@ -56,41 +55,32 @@ export function initPluginVueOptions(
     options.base
   )
 
-  let isCompilerNativeTag: ParserOptions['isNativeTag'] = isNativeTag
-  let isCompilerCustomElement: ParserOptions['isCustomElement'] =
-    isCustomElement
+  const {
+    compilerOptions: { isNativeTag, isCustomElement, directiveTransforms },
+  } = initPluginUniOptions(UniVitePlugins)
 
-  let directiveTransforms: CompilerOptions['directiveTransforms']
-
-  UniVitePlugins.forEach((plugin) => {
-    const compilerOptions = plugin.uni?.compilerOptions
-    if (compilerOptions) {
-      if (compilerOptions.isNativeTag) {
-        isCompilerNativeTag = compilerOptions.isNativeTag
-      }
-      if (compilerOptions.isCustomElement) {
-        isCompilerCustomElement = compilerOptions.isCustomElement
-      }
-      if (compilerOptions.directiveTransforms) {
-        directiveTransforms = compilerOptions.directiveTransforms
-      }
-    }
-  })
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
-  compilerOptions.isNativeTag = isCompilerNativeTag
+
+  compilerOptions.isNativeTag = isNativeTag
+  compilerOptions.isCustomElement = isCustomElement
+  if (directiveTransforms) {
+    compilerOptions.directiveTransforms = extend(
+      compilerOptions.directiveTransforms || {},
+      directiveTransforms
+    )
+  }
+
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
 
-  const compatConfig = parseCompatConfigOnce(options.inputDir)
+  // const compatConfig = parseCompatConfigOnce(options.inputDir)
 
-  compilerOptions.compatConfig = extend(
-    compilerOptions.compatConfig || {},
-    compatConfig
-  )
-
-  compilerOptions.isCustomElement = isCompilerCustomElement
+  // compilerOptions.compatConfig = extend(
+  //   compilerOptions.compatConfig || {},
+  //   compatConfig
+  // )
 
   const eventOpts = UniVitePlugins.reduce<Record<string, string>>(
     (eventOpts, UniVitePlugin) => {
@@ -104,15 +94,8 @@ export function initPluginVueOptions(
     compilerOptions.nodeTransforms.unshift(transformMatchMedia)
   }
 
-  if (directiveTransforms) {
-    compilerOptions.directiveTransforms = extend(
-      compilerOptions.directiveTransforms || {},
-      directiveTransforms
-    )
-  }
   // App,MP 平台不支持使用静态节点
   compilerOptions.hoistStatic = false
-
   return vueOptions
 }
 

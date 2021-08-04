@@ -3628,14 +3628,14 @@ var serviceContext = (function (vue) {
   });
 
   // let eventReady = false
-  let index$2 = 0;
+  let index$3 = 0;
   let optionsCache = {};
   function operateEditor(componentId, pageId, type, options) {
       const data = { options };
       const needCallOptions = options &&
           ('success' in options || 'fail' in options || 'complete' in options);
       if (needCallOptions) {
-          const callbackId = String(index$2++);
+          const callbackId = String(index$3++);
           data.callbackId = callbackId;
           optionsCache[callbackId] = options;
       }
@@ -4138,6 +4138,10 @@ var serviceContext = (function (vue) {
   };
   const API_STOP_BEACON_DISCOVERY = 'stopBeaconDiscovery';
 
+  const API_GET_SCREEN_BRIGHTNESS = 'getScreenBrightness';
+  const API_SET_SCREEN_BRIGHTNESS = 'setScreenBrightness';
+  const API_SET_KEEP_SCREEN_ON = 'setKeepScreenOn';
+
   const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'soterAuthentication';
   const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice';
   const CheckAuthModes = [
@@ -4221,6 +4225,21 @@ var serviceContext = (function (vue) {
   const API_REMOVE_STORAGE = 'removeStorage';
   const RemoveStorageProtocol = GetStorageProtocol;
   const RemoveStorageSyncProtocol = GetStorageSyncProtocol;
+
+  const API_SAVE_FILE = 'saveFile';
+  const SaveFileOptions = {
+      formatArgs: {
+          tempFilePath(savedFilePath, params) {
+              params.tempFilePath = getRealPath(savedFilePath);
+          },
+      },
+  };
+  const SaveFileProtocol = {
+      tempFilePath: {
+          type: String,
+          required: true,
+      },
+  };
 
   const API_GET_FILE_INFO = 'getFileInfo';
   const GetFileInfoOptions = {
@@ -5573,6 +5592,45 @@ var serviceContext = (function (vue) {
       });
   }, OpenDocumentProtocol, OpenDocumentOptions);
 
+  function getFileName(path) {
+      const array = path.split('/');
+      return array[array.length - 1];
+  }
+  function getExtName(path) {
+      const array = path.split('.');
+      return array.length > 1 ? '.' + array[array.length - 1] : '';
+  }
+
+  let index$2 = 0;
+  const SAVED_DIR = 'uniapp_save';
+  const SAVE_PATH = `_doc/${SAVED_DIR}`;
+  function getSavedFileDir(success, fail) {
+      fail = fail || function () { };
+      plus.io.requestFileSystem(plus.io.PRIVATE_DOC, (fs) => {
+          // 请求_doc fs
+          fs.root.getDirectory(SAVED_DIR, {
+              // 获取文件保存目录对象
+              create: true,
+          }, success, fail);
+      }, fail);
+  }
+  const saveFile = defineAsyncApi(API_SAVE_FILE, ({ tempFilePath }, { resolve, reject }) => {
+      const errorCallback = warpPlusErrorCallback(reject);
+      const fileName = `${Date.now()}${index$2++}${getExtName(tempFilePath)}`;
+      plus.io.resolveLocalFileSystemURL(tempFilePath, (entry) => {
+          // 读取临时文件 FileEntry
+          getSavedFileDir((dir) => {
+              entry.copyTo(dir, fileName, () => {
+                  // 复制临时文件 FileEntry，为了避免把相册里的文件删除，使用 copy，微信中是要删除临时文件的
+                  const savedFilePath = SAVE_PATH + '/' + fileName;
+                  resolve({
+                      savedFilePath,
+                  });
+              }, errorCallback);
+          }, errorCallback);
+      }, errorCallback);
+  }, SaveFileProtocol, SaveFileOptions);
+
   const isIOS = plus.os.name === 'iOS';
   let config;
   /**
@@ -6687,6 +6745,19 @@ var serviceContext = (function (vue) {
       });
   });
 
+  const getScreenBrightness = defineAsyncApi(API_GET_SCREEN_BRIGHTNESS, (_, { resolve }) => {
+      const value = plus.screen.getBrightness(false);
+      resolve({ value });
+  });
+  const setScreenBrightness = defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, (options, { resolve }) => {
+      plus.screen.setBrightness(options.value, false);
+      resolve();
+  });
+  const setKeepScreenOn = defineAsyncApi(API_SET_KEEP_SCREEN_ON, (options, { resolve }) => {
+      plus.device.setWakelock(!!options.keepScreenOn);
+      resolve();
+  });
+
   const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
       const path = TEMP_PATH + '/download/';
       plus.io.getImageInfo(extend(options, {
@@ -6894,11 +6965,6 @@ var serviceContext = (function (vue) {
   const saveImageToPhotosAlbum = defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (options, { resolve, reject }) => {
       plus.gallery.save(options.filePath, warpPlusSuccessCallback(resolve), warpPlusErrorCallback(reject));
   }, SaveImageToPhotosAlbumProtocol, SaveImageToPhotosAlbumOptions);
-
-  function getFileName(path) {
-      const array = path.split('/');
-      return array[array.length - 1];
-  }
 
   const compressImage$1 = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
       const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
@@ -11508,6 +11574,7 @@ var serviceContext = (function (vue) {
     getStorageInfo: getStorageInfo,
     getFileInfo: getFileInfo$1,
     openDocument: openDocument,
+    saveFile: saveFile,
     getSystemInfoSync: getSystemInfoSync,
     getSystemInfo: getSystemInfo,
     onCompassChange: onCompassChange,
@@ -11557,6 +11624,9 @@ var serviceContext = (function (vue) {
     startSoterAuthentication: startSoterAuthentication,
     scanCode: scanCode,
     onThemeChange: onThemeChange,
+    getScreenBrightness: getScreenBrightness,
+    setScreenBrightness: setScreenBrightness,
+    setKeepScreenOn: setKeepScreenOn,
     getImageInfo: getImageInfo,
     getVideoInfo: getVideoInfo,
     previewImage: previewImage,

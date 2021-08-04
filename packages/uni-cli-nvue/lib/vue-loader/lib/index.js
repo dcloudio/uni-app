@@ -166,8 +166,8 @@ var component = normalizer(
   ${hasFunctional ? `true` : `false`},
   ${`null`/* fixed by xxxxxx */},
   ${hasScoped ? JSON.stringify(id) : `null`},
-  ${isServer ? JSON.stringify(hash(request)) : `null`}
-  ${isShadow ? `,true` : ``},
+  ${isServer ? JSON.stringify(hash(request)) : `null`},
+  ${isShadow ? `,true` : `false`},
   components
 )
   `.trim() + `\n`

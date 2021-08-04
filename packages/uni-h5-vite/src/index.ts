@@ -18,6 +18,9 @@ import { createTransformIndexHtml } from './transformIndexHtml'
 const UniH5Plugin: UniVitePlugin = {
   name: 'vite:uni-h5',
   uni: {
+    copyOptions: {
+      assets: ['hybrid/html'],
+    },
     transformEvent: {
       tap: 'click',
     },

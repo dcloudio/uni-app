@@ -1,6 +1,14 @@
-import { Plugin } from 'vite'
-import { ParserOptions } from '@vue/compiler-core'
-import { CompilerOptions } from '@vue/compiler-sfc'
+import type { Plugin } from 'vite'
+import type { ParserOptions } from '@vue/compiler-core'
+import type { CompilerOptions } from '@vue/compiler-sfc'
+import type { Target } from 'rollup-plugin-copy'
+interface CopyOptions {
+  /**
+   * 静态资源，配置的目录，在 uni_modules 中同样支持
+   */
+  assets?: string[]
+  targets?: readonly Target[]
+}
 export interface UniVitePlugin extends Plugin {
   uni?: {
     compilerOptions?: {
@@ -9,6 +17,7 @@ export interface UniVitePlugin extends Plugin {
       directiveTransforms?: CompilerOptions['directiveTransforms']
     }
     transformEvent?: Record<string, string>
+    copyOptions?: CopyOptions | (() => CopyOptions)
   }
 }
 
