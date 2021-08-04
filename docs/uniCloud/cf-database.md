@@ -162,7 +162,6 @@ exports.main = async (event, context) => {
 
 | 参数		| 类型	|  说明																			|
 | ----		| ------|  ----------------------------------------	|
-| inserted| Number| 插入成功条数															|
 |ids			| Array	|批量插入所有记录的id												|
 
 示例：
