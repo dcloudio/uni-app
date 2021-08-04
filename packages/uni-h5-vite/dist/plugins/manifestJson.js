@@ -26,11 +26,11 @@ function uniManifestJsonPlugin() {
                 const manifest = uni_cli_shared_1.parseJson(code);
                 const { debug, h5 } = manifest;
                 const appid = (manifest.appid || '').replace('__UNI__', '');
-                const router = Object.assign(Object.assign({}, defaultRouter), ((h5 && h5.router) || {}));
+                const router = { ...defaultRouter, ...((h5 && h5.router) || {}) };
                 if (!router.base) {
                     router.base = '/';
                 }
-                const async = Object.assign(Object.assign({}, defaultAsync), ((h5 && h5.async) || {}));
+                const async = { ...defaultAsync, ...((h5 && h5.async) || {}) };
                 const networkTimeout = uni_cli_shared_1.normalizeNetworkTimeout(manifest.networkTimeout);
                 const sdkConfigs = (h5 && h5.sdkConfigs) || {};
                 const qqMapKey = (sdkConfigs.maps &&

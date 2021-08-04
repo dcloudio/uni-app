@@ -1,12 +1,10 @@
 import path from 'path'
 import { parse as parseUrl } from 'url'
 import fs, { promises as fsp } from 'fs'
-import mime from 'mime/lite'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl } from '../utils'
-import { FS_PREFIX } from '../constants'
-import { OutputOptions, PluginContext, RenderedChunk } from 'rollup'
+import { PluginContext, RenderedChunk } from 'rollup'
 import MagicString from 'magic-string'
 import { createHash } from 'crypto'
 
@@ -107,20 +105,6 @@ export function assetPlugin(config: ResolvedConfig): Plugin {
         return null
       }
     },
-
-    generateBundle(_, bundle) {
-      // do not emit assets for SSR build
-      if (config.command === 'build' && config.build.ssr) {
-        for (const file in bundle) {
-          if (
-            bundle[file].type === 'asset' &&
-            !file.includes('ssr-manifest.json')
-          ) {
-            delete bundle[file]
-          }
-        }
-      }
-    },
   }
 }
 
@@ -154,28 +138,8 @@ export function fileToUrl(
   id: string,
   config: ResolvedConfig,
   ctx: PluginContext
-): string | Promise<string> {
-  if (config.command === 'serve') {
-    return fileToDevUrl(id, config)
-  } else {
-    return fileToBuiltUrl(id, config, ctx)
-  }
-}
-
-function fileToDevUrl(id: string, config: ResolvedConfig) {
-  let rtn: string
-  if (checkPublicFile(id, config)) {
-    // in public dir, keep the url as-is
-    rtn = id
-  } else if (id.startsWith(config.root)) {
-    // in project root, infer short public path
-    rtn = '/' + path.posix.relative(config.root, id)
-  } else {
-    // outside of project root, use absolute fs path
-    // (this is special handled by the serve static middleware
-    rtn = path.posix.join(FS_PREFIX + id)
-  }
-  return config.base + rtn.replace(/^\//, '')
+): string {
+  return fileToBuiltUrl(id, config, ctx)
 }
 
 export function getAssetFilename(
@@ -184,97 +148,19 @@ export function getAssetFilename(
 ): string | undefined {
   return assetHashToFilenameMap.get(config)?.get(hash)
 }
-
-/**
- * converts the source filepath of the asset to the output filename based on the assetFileNames option. \
- * this function imitates the behavior of rollup.js. \
- * https://rollupjs.org/guide/en/#outputassetfilenames
- *
- * @example
- * ```ts
- * const content = Buffer.from('text');
- * const fileName = assetFileNamesToFileName(
- *   'assets/[name].[hash][extname]',
- *   '/path/to/file.txt',
- *   getAssetHash(content),
- *   content
- * )
- * // fileName: 'assets/file.982d9e3e.txt'
- * ```
- *
- * @param assetFileNames filename pattern. e.g. `'assets/[name].[hash][extname]'`
- * @param file filepath of the asset
- * @param contentHash hash of the asset. used for `'[hash]'` placeholder
- * @param content content of the asset. passed to `assetFileNames` if `assetFileNames` is a function
- * @returns output filename
- */
-export function assetFileNamesToFileName(
-  assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined>,
-  file: string,
-  contentHash: string,
-  content: string | Buffer
-): string {
-  const basename = path.basename(file)
-
-  // placeholders for `assetFileNames`
-  // `hash` is slightly different from the rollup's one
-  const extname = path.extname(basename)
-  const ext = extname.substr(1)
-  const name = basename.slice(0, -extname.length)
-  const hash = contentHash
-
-  if (typeof assetFileNames === 'function') {
-    assetFileNames = assetFileNames({
-      name: file,
-      source: content,
-      type: 'asset',
-    })
-    if (typeof assetFileNames !== 'string') {
-      throw new TypeError('assetFileNames must return a string')
-    }
-  } else if (typeof assetFileNames !== 'string') {
-    throw new TypeError('assetFileNames must be a string or a function')
-  }
-
-  const fileName = assetFileNames.replace(
-    /\[\w+\]/g,
-    (placeholder: string): string => {
-      switch (placeholder) {
-        case '[ext]':
-          return ext
-
-        case '[extname]':
-          return extname
-
-        case '[hash]':
-          return hash
-
-        case '[name]':
-          return name
-      }
-      throw new Error(
-        `invalid placeholder ${placeholder} in assetFileNames "${assetFileNames}"`
-      )
-    }
-  )
-
-  return fileName
-}
-
 /**
  * Register an asset to be emitted as part of the bundle (if necessary)
  * and returns the resolved public URL
  */
-async function fileToBuiltUrl(
+function fileToBuiltUrl(
   id: string,
   config: ResolvedConfig,
   pluginContext: PluginContext,
   skipPublicCheck = false
-): Promise<string> {
+): string {
   if (!skipPublicCheck && checkPublicFile(id, config)) {
     return config.base + id.slice(1)
   }
-
   const cache = assetCache.get(config)!
   const cached = cache.get(id)
   if (cached) {
@@ -282,56 +168,19 @@ async function fileToBuiltUrl(
   }
 
   const file = cleanUrl(id)
-  const content = await fsp.readFile(file)
+  const content = fs.readFileSync(file)
 
   let url: string
-  if (
-    config.build.lib ||
-    (!file.endsWith('.svg') &&
-      content.length < Number(config.build.assetsInlineLimit))
-  ) {
-    // base64 inlined as a string
-    url = `data:${mime.getType(file)};base64,${content.toString('base64')}`
-  } else {
-    // emit as asset
-    // rollup supports `import.meta.ROLLUP_FILE_URL_*`, but it generates code
-    // that uses runtime url sniffing and it can be verbose when targeting
-    // non-module format. It also fails to cascade the asset content change
-    // into the chunk's hash, so we have to do our own content hashing here.
-    // https://bundlers.tooling.report/hashing/asset-cascade/
-    // https://github.com/rollup/rollup/issues/3415
-    const map = assetHashToFilenameMap.get(config)!
-    const contentHash = getAssetHash(content)
-    const { search, hash } = parseUrl(id)
-    const postfix = (search || '') + (hash || '')
-    const output = config.build?.rollupOptions?.output
-    const assetFileNames =
-      (output && !Array.isArray(output) ? output.assetFileNames : undefined) ??
-      // defaults to '<assetsDir>/[name].[hash][extname]'
-      // slightly different from rollup's one ('assets/[name]-[hash][extname]')
-      path.posix.join(config.build.assetsDir, '[name].[hash][extname]')
-    const fileName = assetFileNamesToFileName(
-      assetFileNames,
-      file,
-      contentHash,
-      content
-    )
-    if (!map.has(contentHash)) {
-      map.set(contentHash, fileName)
-    }
-    const emittedSet = emittedHashMap.get(config)!
-    if (!emittedSet.has(contentHash)) {
-      pluginContext.emitFile({
-        fileName,
-        type: 'asset',
-        source: content,
-      })
-      emittedSet.add(contentHash)
-    }
 
-    url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
+  const map = assetHashToFilenameMap.get(config)!
+  const contentHash = getAssetHash(content)
+  const { search, hash } = parseUrl(id)
+  const postfix = (search || '') + (hash || '')
+  const fileName = '/' + path.posix.relative(process.env.UNI_INPUT_DIR, id)
+  if (!map.has(contentHash)) {
+    map.set(contentHash, fileName)
   }
-
+  url = `__VITE_ASSET__${contentHash}__${postfix ? `$_${postfix}__` : ``}`
   cache.set(id, url)
   return url
 }
@@ -340,12 +189,12 @@ export function getAssetHash(content: Buffer): string {
   return createHash('sha256').update(content).digest('hex').slice(0, 8)
 }
 
-export async function urlToBuiltUrl(
+export function urlToBuiltUrl(
   url: string,
   importer: string,
   config: ResolvedConfig,
   pluginContext: PluginContext
-): Promise<string> {
+): string {
   if (checkPublicFile(url, config)) {
     return config.base + url.slice(1)
   }

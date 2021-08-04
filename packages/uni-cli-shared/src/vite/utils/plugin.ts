@@ -9,11 +9,16 @@ export interface UniViteFilterPluginOptions {
   filter: (id: string) => boolean
 }
 
-export function injectAssetAndCssPlugins(config: ResolvedConfig) {
-  replacePlugins(
-    [assetPlugin(config), cssPlugin(config), cssPostPlugin(config)],
-    config
-  )
+export function injectAssetPlugin(config: ResolvedConfig) {
+  replacePlugins([assetPlugin(config)], config)
+}
+
+export function injectCssPlugin(config: ResolvedConfig) {
+  replacePlugins([cssPlugin(config)], config)
+}
+
+export function injectCssPostPlugin(config: ResolvedConfig) {
+  replacePlugins([cssPostPlugin(config)], config)
 }
 
 export function replacePlugins(plugins: Plugin[], config: ResolvedConfig) {

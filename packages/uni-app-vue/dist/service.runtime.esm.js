@@ -2307,8 +2307,16 @@ export default function vueFactory(exports) {
   var preFlushIndex = 0;
   var pendingPostFlushCbs = [];
   var activePostFlushCbs = null;
-  var postFlushIndex = 0;
-  var resolvedPromise = Promise.resolve();
+  var postFlushIndex = 0; // fixed by xxxxxx iOS
+
+  var iOSPromise = {
+    then(callback) {
+      setTimeout(() => callback(), 0);
+    }
+
+  };
+  var isIOS = plus.os.name === 'iOS';
+  var resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
   var currentFlushPromise = null;
   var currentPreFlushParentJob = null;
   var RECURSION_LIMIT = 100;

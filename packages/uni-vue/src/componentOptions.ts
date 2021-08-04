@@ -29,7 +29,11 @@ export function applyOptions(
     }
   })
   if (__PLATFORM__ === 'app' && mpType === 'page') {
-    invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
-    invokeHook(publicThis, ON_SHOW)
+    try {
+      invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
+      invokeHook(publicThis, ON_SHOW)
+    } catch (e) {
+      console.error(e.message + '\n' + e.stack)
+    }
   }
 }

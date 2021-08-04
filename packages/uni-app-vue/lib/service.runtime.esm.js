@@ -1374,7 +1374,14 @@ let preFlushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const resolvedPromise = Promise.resolve();
+// fixed by xxxxxx iOS
+const iOSPromise = {
+    then(callback) {
+        setTimeout(() => callback(), 0);
+    }
+};
+const isIOS = plus.os.name === 'iOS';
+const resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
 let currentFlushPromise = null;
 let currentPreFlushParentJob = null;
 const RECURSION_LIMIT = 100;

@@ -14,6 +14,29 @@ import { transformMatchMedia } from './transforms/transformMatchMedia'
 import { createTransformEvent } from './transforms/transformEvent'
 // import { transformContext } from './transforms/transformContext'
 
+function createUniVueTransformAssetUrls(
+  base: string
+): SFCTemplateCompileOptions['transformAssetUrls'] {
+  return {
+    base,
+    tags: {
+      audio: ['src'],
+      video: ['src', 'poster'],
+      img: ['src'],
+      image: ['src'],
+      'cover-image': ['src'],
+      // h5
+      'v-uni-audio': ['src'],
+      'v-uni-video': ['src', 'poster'],
+      'v-uni-image': ['src'],
+      'v-uni-cover-image': ['src'],
+      // nvue
+      'u-image': ['src'],
+      'u-video': ['src', 'poster'],
+    },
+  }
+}
+
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
   UniVitePlugins: UniVitePlugin[]
@@ -29,15 +52,18 @@ export function initPluginVueOptions(
 
   const templateOptions = vueOptions.template || (vueOptions.template = {})
 
-  let transformAssetUrls: SFCTemplateCompileOptions['transformAssetUrls']
+  templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
+    options.base
+  )
+
   let isCompilerNativeTag: ParserOptions['isNativeTag'] = isNativeTag
   let isCompilerCustomElement: ParserOptions['isCustomElement'] =
     isCustomElement
 
   let directiveTransforms: CompilerOptions['directiveTransforms']
 
-  UniVitePlugins.forEach(({ uni }) => {
-    const compilerOptions = uni?.compilerOptions
+  UniVitePlugins.forEach((plugin) => {
+    const compilerOptions = plugin.uni?.compilerOptions
     if (compilerOptions) {
       if (compilerOptions.isNativeTag) {
         isCompilerNativeTag = compilerOptions.isNativeTag
@@ -48,20 +74,13 @@ export function initPluginVueOptions(
       if (compilerOptions.directiveTransforms) {
         directiveTransforms = compilerOptions.directiveTransforms
       }
-      if (uni!.transformAssetUrls) {
-        transformAssetUrls = uni!.transformAssetUrls
-      }
     }
   })
-
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
   compilerOptions.isNativeTag = isCompilerNativeTag
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
-  }
-  if (transformAssetUrls) {
-    templateOptions.transformAssetUrls = transformAssetUrls
   }
 
   const compatConfig = parseCompatConfigOnce(options.inputDir)

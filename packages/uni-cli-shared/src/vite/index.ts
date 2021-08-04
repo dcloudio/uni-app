@@ -1,6 +1,6 @@
 import { Plugin } from 'vite'
 import { ParserOptions } from '@vue/compiler-core'
-import { CompilerOptions, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { CompilerOptions } from '@vue/compiler-sfc'
 export interface UniVitePlugin extends Plugin {
   uni?: {
     compilerOptions?: {
@@ -9,7 +9,6 @@ export interface UniVitePlugin extends Plugin {
       directiveTransforms?: CompilerOptions['directiveTransforms']
     }
     transformEvent?: Record<string, string>
-    transformAssetUrls?: SFCTemplateCompileOptions['transformAssetUrls']
   }
 }
 
