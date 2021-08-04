@@ -69,7 +69,7 @@ const basecheckIsSoterEnrolledInDevice = ({
   reject?: (errMsg: string, errRes?: any) => void
 }) => {
   const wrapReject = (errMsg: string, errRes?: any) =>
-    reject && reject(errMsg, ...errRes)
+    reject && reject(errMsg, errRes)
   const wrapResolve = (res?: any) => resolve && resolve(res)
   if (checkAuthMode === 'fingerPrint') {
     if (checkIsSupportFingerPrint()) {
