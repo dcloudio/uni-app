@@ -14725,6 +14725,9 @@
           this.setAttr(n, a2[n]);
         });
       }
+      if (hasOwn$1(nodeJson, "s")) {
+        this.setAttr("style", nodeJson.s);
+      }
       if (e2) {
         Object.keys(e2).forEach((n) => {
           this.addEvent(n, e2[n]);
@@ -14745,6 +14748,16 @@
       if (name === ATTR_V_SHOW) {
         if (this.$) {
           patchVShow(this.$, value);
+        }
+      } else if (name === ATTR_STYLE) {
+        const newStyle = decodeAttr(value);
+        const oldStyle = this.$props.style;
+        if (isPlainObject(newStyle) && isPlainObject(oldStyle)) {
+          Object.keys(newStyle).forEach((n) => {
+            oldStyle[n] = newStyle[n];
+          });
+        } else {
+          this.$props.style = newStyle;
         }
       } else {
         this.$props[name] = decodeAttr(value);

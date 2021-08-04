@@ -1,4 +1,4 @@
-import { hasOwn } from '@vue/shared'
+import { hasOwn, isPlainObject } from '@vue/shared'
 import {
   App,
   Component,
@@ -9,6 +9,7 @@ import {
   flushPostFlushCbs,
 } from 'vue'
 import {
+  ATTR_STYLE,
   ATTR_V_SHOW,
   formatLog,
   parseEventName,
@@ -70,6 +71,9 @@ export class UniComponent extends UniNode {
         this.setAttr(n, a[n])
       })
     }
+    if (hasOwn(nodeJson, 's')) {
+      this.setAttr('style', nodeJson.s)
+    }
     if (e) {
       Object.keys(e).forEach((n) => {
         this.addEvent(n, e[n])
@@ -94,6 +98,16 @@ export class UniComponent extends UniNode {
     if (name === ATTR_V_SHOW) {
       if (this.$) {
         patchVShow(this.$ as VShowElement, value)
+      }
+    } else if (name === ATTR_STYLE) {
+      const newStyle = decodeAttr(value)
+      const oldStyle = this.$props.style
+      if (isPlainObject(newStyle) && isPlainObject(oldStyle)) {
+        Object.keys(newStyle).forEach((n) => {
+          ;(oldStyle as any)[n] = (newStyle as any)[n]
+        })
+      } else {
+        this.$props.style = newStyle
       }
     } else {
       this.$props[name] = decodeAttr(value)
