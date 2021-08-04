@@ -1380,7 +1380,7 @@ const iOSPromise = {
         setTimeout(() => callback(), 0);
     }
 };
-const isIOS = plus.os.name === 'iOS';
+const isIOS = exports.platform === 'iOS';
 const resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
 let currentFlushPromise = null;
 let currentPreFlushParentJob = null;

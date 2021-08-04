@@ -2315,7 +2315,7 @@ export default function vueFactory(exports) {
     }
 
   };
-  var isIOS = plus.os.name === 'iOS';
+  var isIOS = exports.platform === 'iOS';
   var resolvedPromise = isIOS ? iOSPromise : Promise.resolve();
   var currentFlushPromise = null;
   var currentPreFlushParentJob = null;
