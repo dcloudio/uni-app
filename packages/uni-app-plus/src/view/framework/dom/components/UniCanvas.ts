@@ -17,7 +17,7 @@ export class UniCanvas extends UniComponent {
       parentNodeId,
       refNodeId,
       nodeJson,
-      'canvas > div'
+      'uni-canvas > div'
     )
   }
 }

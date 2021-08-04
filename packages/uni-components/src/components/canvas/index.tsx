@@ -108,11 +108,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       true
     )
 
-    /* registerViewMethod<
-      { type: triggerMethodsName; data: any },
-      { callbackId: number; data: any }
-    >(getCurrentPageId(), `canvas.${props.canvasId}`, _handleSubscribe) */
-
     onMounted(() => {
       _resize()
     })
@@ -136,7 +131,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <div style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;">
             {slots.default && slots.default()}
           </div>
-          {/* @ts-ignore */}
+          {/* @ts-expect-error */}
           <ResizeSensor ref={sensor} onResize={_resize} />
         </uni-canvas>
       )
