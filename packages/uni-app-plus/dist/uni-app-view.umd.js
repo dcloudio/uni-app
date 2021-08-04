@@ -14852,7 +14852,7 @@
   var canvas = "uni-canvas {\n  width: 300px;\n  height: 150px;\n  display: block;\n  position: relative;\n}\n\nuni-canvas > .uni-canvas-canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n";
   class UniCanvas extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-canvas", Canvas, parentNodeId, refNodeId, nodeJson, "canvas > div");
+      super(id2, "uni-canvas", Canvas, parentNodeId, refNodeId, nodeJson, "uni-canvas > div");
     }
   }
   var checkbox = "uni-checkbox {\n  -webkit-tap-highlight-color: transparent;\n  display: inline-block;\n  cursor: pointer;\n}\n\nuni-checkbox[hidden] {\n  display: none;\n}\n\nuni-checkbox[disabled] {\n  cursor: not-allowed;\n}\n\n.uni-checkbox-wrapper {\n  display: inline-flex;\n  align-items: center;\n  vertical-align: middle;\n}\n\n.uni-checkbox-input {\n  margin-right: 5px;\n  -webkit-appearance: none;\n          appearance: none;\n  outline: 0;\n  border: 1px solid #d1d1d1;\n  background-color: #ffffff;\n  border-radius: 3px;\n  width: 22px;\n  height: 22px;\n  position: relative;\n}\n\n.uni-checkbox-input svg {\n  color: #007aff;\n  font-size: 22px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -48%) scale(0.73);\n}\n\nuni-checkbox:not([disabled]) .uni-checkbox-input:hover {\n  border-color: #007aff;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled {\n  background-color: #e1e1e1;\n}\n\n.uni-checkbox-input.uni-checkbox-input-disabled:before {\n  color: #adadad;\n}\n\nuni-checkbox-group {\n  display: block;\n}\n";

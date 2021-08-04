@@ -10204,7 +10204,7 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   }, 8, ["class"]);
 }
 function useShowTabBar(emit2) {
-  const route = vueRouter.useRoute();
+  const route = usePageRoute();
   const tabBar2 = useTabBar();
   const showTabBar = vue.computed(() => route.meta.isTabBar && tabBar2.shown);
   return showTabBar;

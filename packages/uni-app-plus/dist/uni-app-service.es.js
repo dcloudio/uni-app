@@ -6154,7 +6154,7 @@ var serviceContext = (function (vue) {
       baseCheckIsSupportSoterAuthentication(resolve);
   });
   const basecheckIsSoterEnrolledInDevice = ({ checkAuthMode, resolve, reject, }) => {
-      const wrapReject = (errMsg, errRes) => reject && reject(errMsg, ...errRes);
+      const wrapReject = (errMsg, errRes) => reject && reject(errMsg, errRes);
       const wrapResolve = (res) => resolve && resolve(res);
       if (checkAuthMode === 'fingerPrint') {
           if (checkIsSupportFingerPrint()) {

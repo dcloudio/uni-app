@@ -1,13 +1,14 @@
 import {
   parseManifestJsonOnce,
-  getRenderer,
+  getAppRenderer,
+  getAppCodeSpliting,
   getNVueCompiler,
   getNVueStyleCompiler,
 } from '@dcloudio/uni-cli-shared'
 
 export function initNVueEnv() {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  if (getRenderer(manifestJson) === 'native') {
+  if (getAppRenderer(manifestJson) === 'native') {
     process.env.UNI_RENDERER = 'native'
   }
   const nvueCompiler = getNVueCompiler(manifestJson)
@@ -18,5 +19,8 @@ export function initNVueEnv() {
   }
   if (getNVueStyleCompiler(manifestJson) === 'uni-app') {
     process.env.UNI_NVUE_STYLE_COMPILER = 'uni-app'
+  }
+  if (getAppCodeSpliting(manifestJson)) {
+    process.env.UNI_APP_CODE_SPLITING = 'true'
   }
 }

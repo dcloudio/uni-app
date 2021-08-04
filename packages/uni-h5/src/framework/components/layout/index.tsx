@@ -18,7 +18,7 @@ import {
   nextTick,
 } from 'vue'
 
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView } from 'vue-router'
 
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { updateCssVar } from '@dcloudio/uni-core'
@@ -334,7 +334,7 @@ function createLayoutTsx(
 }
 
 function useShowTabBar(emit: SetupContext<['change']>['emit']) {
-  const route = useRoute()
+  const route = usePageRoute()
   const tabBar = useTabBar()!
   // TODO meida query
   const showTabBar = computed(() => route.meta.isTabBar && tabBar.shown)

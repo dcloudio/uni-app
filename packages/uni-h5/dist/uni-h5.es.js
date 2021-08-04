@@ -18828,7 +18828,7 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   }, 8, ["class"]);
 }
 function useShowTabBar(emit2) {
-  const route = useRoute();
+  const route = usePageRoute();
   const tabBar2 = useTabBar();
   const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
   updateCssVar({

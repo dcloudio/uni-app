@@ -176,7 +176,7 @@ function fileToBuiltUrl(
   const contentHash = getAssetHash(content)
   const { search, hash } = parseUrl(id)
   const postfix = (search || '') + (hash || '')
-  const fileName = '/' + path.posix.relative(process.env.UNI_INPUT_DIR, id)
+  const fileName = path.posix.relative(process.env.UNI_INPUT_DIR, id)
   if (!map.has(contentHash)) {
     map.set(contentHash, fileName)
   }

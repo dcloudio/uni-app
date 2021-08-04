@@ -3,14 +3,6 @@ export function initNVue(
   pagesJson: UniApp.PagesJson
 ) {}
 
-export function getRenderer(manifestJson: Record<string, any>) {
-  const platformOptions = manifestJson['app-plus']
-  if (platformOptions && platformOptions.renderer === 'native') {
-    return 'native'
-  }
-  return ''
-}
-
 export function getNVueCompiler(manifestJson: Record<string, any>) {
   const platformOptions = manifestJson['app-plus']
   if (platformOptions) {

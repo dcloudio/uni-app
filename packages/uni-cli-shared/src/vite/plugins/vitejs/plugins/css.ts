@@ -15,25 +15,10 @@ import {
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import postcssrc from 'postcss-load-config'
-import {
-  NormalizedOutputOptions,
-  OutputChunk,
-  RenderedChunk,
-  RollupError,
-  SourceMap,
-} from 'rollup'
-import { dataToEsm } from '@rollup/pluginutils'
+import { PluginContext, RollupError, SourceMap } from 'rollup'
 import chalk from 'chalk'
-import { CLIENT_PUBLIC_PATH } from '../constants'
 import { ResolveFn, ViteDevServer } from '../'
-import {
-  getAssetFilename,
-  assetUrlRE,
-  registerAssetToChunk,
-  fileToUrl,
-  checkPublicFile,
-} from './asset'
-import MagicString from 'magic-string'
+import { fileToUrl, assetUrlRE, getAssetFilename } from './asset'
 import * as Postcss from 'postcss'
 import type Sass from 'sass'
 // We need to disable check of extraneous import which is buggy for stylus,
@@ -41,9 +26,10 @@ import type Sass from 'sass'
 import type Stylus from 'stylus'
 import type Less from 'less'
 import { Alias } from 'types/alias'
-import type { ModuleNode } from '../server/moduleGraph'
 import { transform, formatMessages } from 'esbuild'
 
+import { resolveMainPathOnce } from '../../../../utils'
+import { EXTNAME_VUE_RE } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -87,7 +73,6 @@ export const cssLangRE = new RegExp(cssLangs)
 const cssModuleRE = new RegExp(`\\.module${cssLangs}`)
 const directRequestRE = /(\?|&)direct\b/
 const commonjsProxyRE = /\?commonjs-proxy/
-const inlineRE = /(\?|&)inline\b/
 
 const enum PreprocessLang {
   less = 'less',
@@ -110,11 +95,6 @@ export const isDirectCSSRequest = (request: string): boolean =>
 const cssModulesCache = new WeakMap<
   ResolvedConfig,
   Map<string, Record<string, string>>
->()
-
-export const chunkToEmittedCssFileMap = new WeakMap<
-  RenderedChunk,
-  Set<string>
 >()
 
 const postcssConfigCache = new WeakMap<
@@ -155,8 +135,9 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
       }
 
       const urlReplacer: CssUrlReplacer = async (url, importer) => {
-        if (checkPublicFile(url, config)) {
-          return config.base + url.slice(1)
+        if (url.startsWith('/') && !url.startsWith('//')) {
+          // /static/logo.png => @/static/logo.png
+          url = '@' + url
         }
         const resolved = await resolveUrl(url, importer)
         if (resolved) {
@@ -188,44 +169,6 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
         }
       }
 
-      // dev
-      if (server) {
-        // server only logic for handling CSS @import dependency hmr
-        const { moduleGraph } = server
-        const thisModule = moduleGraph.getModuleById(id)
-        if (thisModule) {
-          // CSS modules cannot self-accept since it exports values
-          const isSelfAccepting = !modules
-          if (deps) {
-            // record deps in the module graph so edits to @import css can trigger
-            // main import to hot update
-            const depModules = new Set<string | ModuleNode>()
-            for (const file of deps) {
-              depModules.add(
-                cssLangRE.test(file)
-                  ? moduleGraph.createFileOnlyEntry(file)
-                  : await moduleGraph.ensureEntryFromUrl(
-                      await fileToUrl(file, config, this)
-                    )
-              )
-            }
-            moduleGraph.updateModuleInfo(
-              thisModule,
-              depModules,
-              // The root CSS proxy module is self-accepting and should not
-              // have an explicit accept list
-              new Set(),
-              isSelfAccepting
-            )
-            for (const file of deps) {
-              this.addWatchFile(file)
-            }
-          } else {
-            thisModule.isSelfAccepting = isSelfAccepting
-          }
-        }
-      }
-
       return {
         code: css,
         // TODO CSS source map
@@ -235,255 +178,130 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
   }
 }
 
+function normalizeCssChunkFilename(id: string) {
+  return normalizePath(
+    path.relative(
+      process.env.UNI_INPUT_DIR,
+      id.split('?')[0].replace(EXTNAME_VUE_RE, '.css')
+    )
+  )
+}
+
+function findCssModuleIds(
+  this: PluginContext,
+  moduleId: string,
+  cssModuleIds?: Set<string>
+) {
+  if (!cssModuleIds) {
+    cssModuleIds = new Set<string>()
+  }
+  const moduleInfo = this.getModuleInfo(moduleId)
+  if (moduleInfo) {
+    moduleInfo.importedIds.forEach((id) => {
+      if (id.includes('pages.json.js')) {
+        // 查询main.js时，需要忽略pages.json.js，否则会把所有页面样式加进来
+        return
+      }
+      if (cssLangRE.test(id) && !commonjsProxyRE.test(id)) {
+        cssModuleIds!.add(id)
+      } else {
+        findCssModuleIds.call(this, id, cssModuleIds)
+      }
+    })
+  }
+  return cssModuleIds
+}
+
 /**
  * Plugin applied after user plugins
  */
 export function cssPostPlugin(config: ResolvedConfig): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
-  let pureCssChunks: Set<string>
-
-  // when there are multiple rollup outputs and extracting CSS, only emit once,
-  // since output formats have no effect on the generated CSS.
-  let outputToExtractedCSSMap: Map<NormalizedOutputOptions, string>
-  let hasEmitted = false
-
+  let cssChunks: Map<string, Set<string>>
+  const viewCssCode = fs.readFileSync(
+    require.resolve('@dcloudio/uni-app-plus/dist/style.css'),
+    'utf8'
+  )
   return {
     name: 'vite:css-post',
-
     buildStart() {
-      // Ensure new caches for every build (i.e. rebuilding in watch mode)
-      pureCssChunks = new Set<string>()
-      outputToExtractedCSSMap = new Map<NormalizedOutputOptions, string>()
-      hasEmitted = false
+      cssChunks = new Map<string, Set<string>>()
     },
-
     async transform(css, id, ssr) {
       if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
         return
       }
-
-      const inlined = inlineRE.test(id)
-      const modules = cssModulesCache.get(config)!.get(id)
-      const modulesCode =
-        modules && dataToEsm(modules, { namedExports: true, preferConst: true })
-
-      if (config.command === 'serve') {
-        if (isDirectCSSRequest(id)) {
-          return css
-        } else {
-          // server only
-          if (ssr) {
-            return modulesCode || `export default ${JSON.stringify(css)}`
-          }
-          if (inlined) {
-            return `export default ${JSON.stringify(css)}`
-          }
-          return [
-            `import { updateStyle, removeStyle } from ${JSON.stringify(
-              path.posix.join(config.base, CLIENT_PUBLIC_PATH)
-            )}`,
-            `const id = ${JSON.stringify(id)}`,
-            `const css = ${JSON.stringify(css)}`,
-            `updateStyle(id, css)`,
-            // css modules exports change on edit so it can't self accept
-            `${modulesCode || `import.meta.hot.accept()\nexport default css`}`,
-            `import.meta.hot.prune(() => removeStyle(id))`,
-          ].join('\n')
-        }
-      }
-
       // build CSS handling ----------------------------------------------------
-
-      // record css
-      if (!inlined) {
-        styles.set(id, css)
-      } else {
-        css = await minifyCSS(css, config)
-      }
-
+      styles.set(id, css)
       return {
-        code: modulesCode || `export default ${JSON.stringify(css)}`,
+        code: '',
         map: { mappings: '' },
         // avoid the css module from being tree-shaken so that we can retrieve
         // it in renderChunk()
-        moduleSideEffects: inlined ? false : 'no-treeshake',
+        moduleSideEffects: 'no-treeshake',
       }
     },
 
-    async renderChunk(code, chunk, opts) {
-      let chunkCSS = ''
-      let isPureCssChunk = true
-      const ids = Object.keys(chunk.modules)
-      for (const id of ids) {
-        if (
-          !isCSSRequest(id) ||
-          cssModuleRE.test(id) ||
-          commonjsProxyRE.test(id)
-        ) {
-          isPureCssChunk = false
+    async generateBundle() {
+      const moduleIds = Array.from(this.getModuleIds())
+      const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
+      moduleIds.forEach((id) => {
+        if (id === mainPath) {
+          // 全局样式
+          cssChunks.set('app.css', findCssModuleIds.call(this, id))
+        } else if (id.includes('mpType=page')) {
+          // 页面样式
+          cssChunks.set(
+            normalizeCssChunkFilename(id),
+            findCssModuleIds.call(this, id)
+          )
         }
-        if (styles.has(id)) {
-          chunkCSS += styles.get(id)
-        }
+      })
+      if (!cssChunks.size) {
+        return
       }
-
-      if (!chunkCSS) {
-        return null
-      }
-
       // resolve asset URL placeholders to their built file URLs and perform
       // minification if necessary
       const processChunkCSS = async (
         css: string,
         {
+          dirname,
           inlined,
           minify,
         }: {
+          dirname: string
           inlined: boolean
           minify: boolean
         }
       ) => {
         // replace asset url references with resolved url.
-        const isRelativeBase = config.base === '' || config.base.startsWith('.')
         css = css.replace(assetUrlRE, (_, fileHash, postfix = '') => {
-          const filename = getAssetFilename(fileHash, config) + postfix
-          registerAssetToChunk(chunk, filename)
-          if (!isRelativeBase || inlined) {
-            // absolute base or relative base but inlined (injected as style tag into
-            // index.html) use the base as-is
-            return config.base + filename
-          } else {
-            // relative base + extracted CSS - asset file will be in the same dir
-            return `./${path.posix.basename(filename)}`
-          }
+          return normalizePath(
+            path.relative(dirname, getAssetFilename(fileHash, config) + postfix)
+          )
         })
-        // only external @imports should exist at this point - and they need to
-        // be hoisted to the top of the CSS chunk per spec (#1845)
-        if (css.includes('@import')) {
-          css = await hoistAtImports(css)
-        }
         if (minify && config.build.minify) {
           css = await minifyCSS(css, config)
         }
         return css
       }
 
-      if (config.build.cssCodeSplit) {
-        if (isPureCssChunk) {
-          // this is a shared CSS-only chunk that is empty.
-          pureCssChunks.add(chunk.fileName)
-        }
-        if (opts.format === 'es' || opts.format === 'cjs') {
-          chunkCSS = await processChunkCSS(chunkCSS, {
-            inlined: false,
-            minify: true,
-          })
-          // emit corresponding css file
-          const fileHandle = this.emitFile({
-            name: chunk.name + '.css',
-            type: 'asset',
-            source: chunkCSS,
-          })
-          chunkToEmittedCssFileMap.set(
-            chunk,
-            new Set([this.getFileName(fileHandle)])
-          )
-        } else if (!config.build.ssr) {
-          // legacy build, inline css
-          chunkCSS = await processChunkCSS(chunkCSS, {
-            inlined: true,
-            minify: true,
-          })
-          const style = `__vite_style__`
-          const injectCode =
-            `var ${style} = document.createElement('style');` +
-            `${style}.innerHTML = ${JSON.stringify(chunkCSS)};` +
-            `document.head.appendChild(${style});`
-          if (config.build.sourcemap) {
-            const s = new MagicString(code)
-            s.prepend(injectCode)
-            return {
-              code: s.toString(),
-              map: s.generateMap({ hires: true }),
-            }
-          } else {
-            return { code: injectCode + code }
-          }
-        }
-      } else {
-        // non-split extracted CSS will be minified together
-        chunkCSS = await processChunkCSS(chunkCSS, {
-          inlined: false,
-          minify: false,
-        })
-        outputToExtractedCSSMap.set(
-          opts,
-          (outputToExtractedCSSMap.get(opts) || '') + chunkCSS
-        )
+      const genCssCode = (fileName: string) => {
+        return [...cssChunks.get(fileName)!]
+          .map((id) => styles.get(id) || '')
+          .join('\n')
       }
-      return null
-    },
-
-    async generateBundle(opts, bundle) {
-      // remove empty css chunks and their imports
-      if (pureCssChunks.size) {
-        const emptyChunkFiles = [...pureCssChunks]
-          .map((file) => path.basename(file))
-          .join('|')
-          .replace(/\./g, '\\.')
-        const emptyChunkRE = new RegExp(
-          opts.format === 'es'
-            ? `\\bimport\\s*"[^"]*(?:${emptyChunkFiles})";\n?`
-            : `\\brequire\\(\\s*"[^"]*(?:${emptyChunkFiles})"\\);\n?`,
-          'g'
+      for (const filename of cssChunks.keys()) {
+        let source = await processChunkCSS(
+          (filename === 'app.css' ? viewCssCode + '\n' : '') +
+            genCssCode(filename),
+          { dirname: path.dirname(filename), inlined: false, minify: true }
         )
-        for (const file in bundle) {
-          const chunk = bundle[file]
-          if (chunk.type === 'chunk') {
-            // remove pure css chunk from other chunk's imports,
-            // and also register the emitted CSS files under the importer
-            // chunks instead.
-            chunk.imports = chunk.imports.filter((file) => {
-              if (pureCssChunks.has(file)) {
-                const css = chunkToEmittedCssFileMap.get(
-                  bundle[file] as OutputChunk
-                )
-                if (css) {
-                  let existing = chunkToEmittedCssFileMap.get(chunk)
-                  if (!existing) {
-                    existing = new Set()
-                  }
-                  css.forEach((file) => existing!.add(file))
-                  chunkToEmittedCssFileMap.set(chunk, existing)
-                }
-                return false
-              }
-              return true
-            })
-            chunk.code = chunk.code.replace(
-              emptyChunkRE,
-              // remove css import while preserving source map location
-              (m) => `/* empty css ${''.padEnd(m.length - 15)}*/`
-            )
-          }
-        }
-        pureCssChunks.forEach((fileName) => {
-          delete bundle[fileName]
-        })
-      }
-
-      let extractedCss = outputToExtractedCSSMap.get(opts)
-      if (extractedCss && !hasEmitted) {
-        hasEmitted = true
-        // minify css
-        if (config.build.minify) {
-          extractedCss = await minifyCSS(extractedCss, config)
-        }
         this.emitFile({
-          name: 'style.css',
+          fileName: filename,
           type: 'asset',
-          source: extractedCss,
+          source,
         })
       }
     },
@@ -882,8 +700,8 @@ async function doUrlReplace(
 
   return `url(${wrap}${await replacer(rawUrl)}${wrap})`
 }
-// fixed by xxxxxx
-export async function minifyCSS(css: string, config: ResolvedConfig) {
+
+async function minifyCSS(css: string, config: ResolvedConfig) {
   const { code, warnings } = await transform(css, {
     loader: 'css',
     minify: true,
@@ -895,14 +713,6 @@ export async function minifyCSS(css: string, config: ResolvedConfig) {
     )
   }
   return code
-}
-
-// #1845
-// CSS @import can only appear at top of the file. We need to hoist all @import
-// to top when multiple files are concatenated.
-async function hoistAtImports(css: string) {
-  const postcss = await import('postcss')
-  return (await postcss.default([AtImportHoistPlugin]).process(css)).css
 }
 
 const AtImportHoistPlugin: Postcss.PluginCreator<any> = () => {

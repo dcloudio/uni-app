@@ -1,9 +1,8 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import { Plugin } from 'vite'
 import { normalizePath, resolveMainPathOnce } from '../../utils'
 import { EXTNAME_VUE_RE } from '../../constants'
-import { minifyCSS } from './vitejs/plugins/css'
 
 const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
 const cssLangRE = new RegExp(cssLangs)
@@ -38,12 +37,8 @@ interface UniCssPluginOptions {
 export function uniCssPlugin({ app }: UniCssPluginOptions): Plugin {
   const styles: Map<string, string> = new Map<string, string>()
   let cssChunks: Map<string, Set<string>>
-  let resolvedConfig: ResolvedConfig
   return {
     name: 'vite:uni-app-css',
-    configResolved(config) {
-      resolvedConfig = config
-    },
     buildStart() {
       cssChunks = new Map<string, Set<string>>()
     },
@@ -105,9 +100,9 @@ export function uniCssPlugin({ app }: UniCssPluginOptions): Plugin {
       for (const fileName of cssChunks.keys()) {
         let source =
           (fileName === 'app.css' ? app + '\n' : '') + genCssCode(fileName)
-        if (resolvedConfig.build.minify) {
-          source = await minifyCSS(source, resolvedConfig)
-        }
+        // if (resolvedConfig.build.minify) {
+        //   source = await minifyCSS(source, resolvedConfig)
+        // }
         this.emitFile({
           fileName,
           type: 'asset',
