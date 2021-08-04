@@ -45,6 +45,9 @@ class AdEventHandler {
     if (typeof callback !== 'function') {
       return
     }
+    if (!this._callbacks[type]) {
+      this._callbacks[type] = []
+    }
     this._callbacks[type].push(callback)
   }
 
