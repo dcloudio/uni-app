@@ -4,6 +4,7 @@ import { Plugin } from 'vite'
 import { parseVueRequest } from '../utils'
 import { EXTNAME_VUE } from '../../constants'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import { preHtml, preJs } from '../../preprocess'
 
 const debugScoped = debug('vite:uni:scoped')
 
@@ -51,14 +52,19 @@ export function uniCssScopedPlugin(
       if (!EXTNAME_VUE.includes(path.extname(ctx.file))) {
         return
       }
-      if (ctx.file.endsWith('App.vue')) {
-        return
-      }
+      const scoped = !ctx.file.endsWith('App.vue')
       debugScoped('hmr', ctx.file)
       const oldRead = ctx.read
       ctx.read = async () => {
-        const code = await oldRead()
-        return addScoped(code)
+        let code = await oldRead()
+        // hotUpdate preprocess
+        if (code.includes('#endif')) {
+          code = preJs(preHtml(code))
+        }
+        if (scoped) {
+          code = addScoped(code)
+        }
+        return code
       }
     },
   }
