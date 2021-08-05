@@ -1,6 +1,6 @@
 {
   "name": "vue-loader",
-  "version": "15.9.7",
+  "version": "15.9.8",
   "description": "Vue single-file component loader for Webpack",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

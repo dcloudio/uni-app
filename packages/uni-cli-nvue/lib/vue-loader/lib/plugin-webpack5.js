@@ -3,9 +3,20 @@ const id = 'vue-loader-plugin'
 const NS = 'vue-loader'
 const BasicEffectRulePlugin = require('webpack/lib/rules/BasicEffectRulePlugin')
 const BasicMatcherRulePlugin = require('webpack/lib/rules/BasicMatcherRulePlugin')
-const DescriptionDataMatcherRulePlugin = require('webpack/lib/rules/DescriptionDataMatcherRulePlugin')
 const RuleSetCompiler = require('webpack/lib/rules/RuleSetCompiler')
 const UseEffectRulePlugin = require('webpack/lib/rules/UseEffectRulePlugin')
+
+const objectMatcherRulePlugins = []
+try {
+  const ObjectMatcherRulePlugin = require('webpack/lib/rules/ObjectMatcherRulePlugin')
+  objectMatcherRulePlugins.push(
+    new ObjectMatcherRulePlugin('assert', 'assertions'),
+    new ObjectMatcherRulePlugin('descriptionData')
+  )
+} catch (e) {
+  const DescriptionDataMatcherRulePlugin = require('webpack/lib/rules/DescriptionDataMatcherRulePlugin')
+  objectMatcherRulePlugins.push(new DescriptionDataMatcherRulePlugin())
+}
 
 const ruleSetCompiler = new RuleSetCompiler([
   new BasicMatcherRulePlugin('test', 'resource'),
@@ -20,7 +31,7 @@ const ruleSetCompiler = new RuleSetCompiler([
   new BasicMatcherRulePlugin('realResource'),
   new BasicMatcherRulePlugin('issuer'),
   new BasicMatcherRulePlugin('compiler'),
-  new DescriptionDataMatcherRulePlugin(),
+  ...objectMatcherRulePlugins,
   new BasicEffectRulePlugin('type'),
   new BasicEffectRulePlugin('sideEffects'),
   new BasicEffectRulePlugin('parser'),

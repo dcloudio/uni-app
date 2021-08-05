@@ -52,7 +52,7 @@
     "vue-hot-reload-api": "^2.3.0",
     "vue-style-loader": "^4.1.0",
     "vue-template-es2015-compiler": "^1.9.0",
-    "webpack": "~5.45.1",
+    "webpack": "^5.48.0",
     "webpack-sources": "^3.1.2"
   },
   "devDependencies": {
